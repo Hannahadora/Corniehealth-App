@@ -127,7 +127,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
           component: () =>
             import("@/views/dashboard/ehr/riskassessment/index.vue"),
         },
-        {
+      {
           path: "referral",
           props: true,
           name: "Referral",

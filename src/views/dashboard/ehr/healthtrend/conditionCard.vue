@@ -1,5 +1,11 @@
 <template>
-  <detail-card height="313px" title="Current Conditions" :count="1" more="">
+  <detail-card
+    height="313px"
+    title="Current Conditions"
+    :count="1"
+    more=""
+    @add="$router.push('condition')"
+  >
     <div
       class="
         w-full
@@ -13,20 +19,21 @@
       :key="i"
     >
       <div class="flex flex-col">
-        <span class="font-semibold">{{ item.name }}</span>
+        <span class="font-semibold text-primary">{{ item.name }}</span>
         <span class="text-gray-400">{{ item.severity }}</span>
       </div>
       <div class="flex flex-col">
-        <span class="font-semibold">Onset</span>
-        <span class="text-gray-400"
-          >{{ item.onset.key }}: {{ item.onset.text }}</span
-        >
+        <span class="font-semibold text-primary">Onset</span>
+        <span class="text-gray-400">
+          {{ item.onset.key }}: {{ item.onset.text }}
+        </span>
       </div>
       <div class="flex flex-col">
-        <span class="font-semibold">Abatement</span>
-        <span class="text-gray-400"
-          >{{ item.abatement.key }}: {{ item.abatement.text }}</span
-        >
+        <span class="font-semibold text-primary">Abatement</span>
+        <span class="text-gray-400" v-if="abatement">
+          {{ item.abatement.key }}: {{ item.abatement.text }}
+        </span>
+        <span class="text-gray-400" v-else> N/A </span>
       </div>
     </div>
   </detail-card>
@@ -94,11 +101,7 @@ export default class conditionCard extends Vue {
 
   printAbatement(condition: ICondition) {
     const latest = this.latestAbatement(condition);
-    if (!latest)
-      return {
-        key: "N/A",
-        text: "N/A",
-      };
+    if (!latest) return;
     return this.displayTimeable(latest, "string");
   }
 
