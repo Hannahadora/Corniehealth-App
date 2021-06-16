@@ -15,7 +15,7 @@
     >
       <nav class="inline-flex flex-col space-y-2">
         <a
-          v-for :key=index"(link, index) in nav"
+          v-for="(link, index) in nav"  :key="index"
           class="flex items-center text-gray-600 py-2 cursor-pointer"
           :class="[
             [
