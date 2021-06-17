@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import AccountSecurity from "../views/settings/AccountSecurity.vue";
-import Dashboard from "../views/dashboard/base.vue";
+import Dashboard from "../views/dashboard/dashboard.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {

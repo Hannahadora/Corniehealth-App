@@ -3,9 +3,12 @@
     <div class="w-full">
       <cornie-side-bar />
     </div>
-    <div class="w-full h-full">
-      <nav-bar />
-      <router-view class="w-full body-content bg-gray-100" />
+    <div class="h-full">
+      <nav-bar class="" />
+      <div class="px-4 pt-2 flex flex-col body-content bg-gray-100">
+        <bread-crumbs class="" />
+        <router-view class="" />
+      </div>
     </div>
   </main>
 </template>
@@ -13,13 +16,16 @@
 import { Options, Vue } from "vue-class-component";
 import CornieSideBar from "@/components/corniesidebar.vue";
 import NavBar from "@/components/navbar.vue";
+import BreadCrumbs from "@/components/breadcrumbs.vue";
+
 @Options({
   components: {
     CornieSideBar,
     NavBar,
+    BreadCrumbs,
   },
 })
-export default class SignUp extends Vue {}
+export default class Dashboard extends Vue {}
 </script>
 <style>
 .main-app {
@@ -28,5 +34,6 @@ export default class SignUp extends Vue {}
 }
 .body-content {
   min-height: 91%;
+  height: 91%;
 }
 </style>

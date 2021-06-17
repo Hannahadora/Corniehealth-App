@@ -26,28 +26,28 @@
       </div>
       <div class="mt-5 flex h-3/4 items-center w-full flex-col justify-between">
         <router-link
-          to="/dashboard"
+          to="settings"
           active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <dashboard-icon class="text-gray-300" />
         </router-link>
         <router-link
-          to="/schedule"
+          to="schedule"
           active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <schedule-icon />
         </router-link>
         <router-link
-          to="/book"
+          to="book"
           active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <book-icon />
         </router-link>
         <router-link
-          to="/clinic"
+          to="clinic"
           active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
@@ -96,7 +96,7 @@
           <chart-icon />
         </router-link>
         <router-link
-          to="/refer"
+          to="refer"
           class="hover:bg-light-blue-600 hover:opacity-50"
           active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
@@ -104,9 +104,9 @@
         </router-link>
       </div>
       <router-link
-        to="#"
-        class="hover:bg-light-blue-600 hover:opacity-50"
-        active-class="flex justify-center w-3/4 py-2 mt-auto rounded-2xl bg-blue-500"
+        to="support"
+        class="hover:bg-light-blue-600 hover:opacity-50 mt-auto"
+        active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
       >
         <support-icon />
       </router-link>
