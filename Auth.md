@@ -353,3 +353,60 @@ Request Body
     ]
 }
 ```
+#### Turn on 2FA
+
+```http
+  POST /org/security/2fa/setup
+```
+
+Request Body
+```json
+{
+  "userId": "4d2686f4-38d7-4916-81ee-793606f670bb",
+  "token": "22yK9X"
+}
+```
+
+200 Response
+```json
+{}
+```
+
+#### Turn off 2FA
+
+```http
+  POST /org/security/2fa/status/off
+```
+
+Request Body
+```json
+{
+  "userId": "4d2686f4-38d7-4916-81ee-793606f670bb",
+  "password": "1234567"
+}
+```
+
+200 Response
+```json
+{}
+```
+
+#### Change password
+
+```http
+  POST /auth/change-password
+```
+
+Request Body
+```json
+{
+  "userId": "7d9befdf-240c-407a-a78d-4e6ad486d3b5",
+  "previousPassword": "123ffd456",
+  "newPassword": "123fddfd456"
+}
+```
+
+200 Response
+```json
+{}
+```
