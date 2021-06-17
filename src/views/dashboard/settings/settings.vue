@@ -32,7 +32,6 @@
 
 <script>
 import UpdatePassword from "@/views/settings/UpdatePassword.vue";
-import BellIcon from "@/compo";
 export default {
   name: "AccountSecurity",
   components: {
