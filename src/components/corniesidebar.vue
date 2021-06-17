@@ -27,28 +27,28 @@
       <div class="mt-5 flex h-3/4 items-center w-full flex-col justify-between">
         <router-link
           to="/dashboard"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <dashboard-icon class="text-gray-300" />
         </router-link>
         <router-link
           to="/schedule"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <schedule-icon />
         </router-link>
         <router-link
           to="/book"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <book-icon />
         </router-link>
         <router-link
           to="/clinic"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >
           <clinic-icon />
@@ -56,49 +56,49 @@
         <router-link
           to="notes"
           class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <clip-board-icon />
         </router-link>
         <router-link
           class="hover:bg-light-blue-600 hover:opacity-50"
           to="prespcriptions"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <pill-icon />
         </router-link>
         <router-link
           to="awards"
           class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <medal-icon />
         </router-link>
         <router-link
           to="payment"
           class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <debit-card-icon />
         </router-link>
         <router-link
           to="wallet"
           class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <wallet-icon />
         </router-link>
         <router-link
           to="chart"
           class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <chart-icon />
         </router-link>
         <router-link
           to="/refer"
           class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
         >
           <refer-icon />
         </router-link>

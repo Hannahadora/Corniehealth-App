@@ -1,12 +1,6 @@
 <template>
-  <main class="main-app h-screen">
-    <div class="w-full">
-      <cornie-side-bar />
-    </div>
-    <div class="w-full h-full">
-      <nav-bar />
-      <router-view class="w-full body-content bg-gray-100" />
-    </div>
+  <main class="main-app h-screen w-full block">
+    <router-view />
   </main>
 </template>
 <script lang="ts">
@@ -19,15 +13,8 @@ import NavBar from "@/components/navbar.vue";
     NavBar,
   },
 })
-export default class extends Vue {}
+export default class App extends Vue {}
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
-.main-app {
-  display: grid;
-  grid-template-columns: 5.5% 94.5%;
-}
-.body-content {
-  min-height: 91%;
-}
 </style>
