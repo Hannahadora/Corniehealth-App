@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
-import AccountSecurity from "../views/settings/AccountSecurity.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -33,13 +32,10 @@ const routes: Array<RouteRecordRaw> = [
         name: "Settings",
         component: () => import("@/views/dashboard/settings/settings.vue"),
       },
+     
     ],
   },
-  {
-    path: "/accountsecurity",
-    name: "AccountSecurity",
-    component: AccountSecurity,
-  },
+  
 ];
 
 const router = createRouter({
