@@ -21,7 +21,7 @@
 
         <div class="mt-8">
           <div class="mt-6">
-            <form action="#" method="POST">
+            <form @submit.prevent="submit">
               <div>
                 <label
                   for="email"
@@ -52,6 +52,7 @@
                       sm:text-sm
                       sm:leading-5
                     "
+                    v-model="email"
                   />
                 </div>
               </div>
@@ -86,6 +87,7 @@
                       sm:text-sm
                       sm:leading-5
                     "
+                    v-model="password"
                   />
                 </div>
               </div>
@@ -176,3 +178,49 @@
     </div>
   </div>
 </template>
+
+<script>
+import store from "@/store"
+export default {
+  name: "Login",
+  data(){
+    return{
+      email: "",
+      password: "",
+      domain: "",
+      url: "http://18.132.188.41:7000/auth/login"
+    }
+  },
+  computed:{
+    payload(){
+      return {
+        email: this.email,
+        authPassword: this.password
+      }
+    }
+  },
+  methods:{
+    async submit(){
+      try {
+        const response = await fetch(this.url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(this.payload)
+        })
+        if(response.ok){
+          const data = await response.json()
+          const token = data.token
+          store.commit("setAuthToken", token)
+          this.$router.replace("/dashboard")
+        } else {
+          console.log(this.payload)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+}
+</script>
