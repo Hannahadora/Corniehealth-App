@@ -26,7 +26,7 @@
       </div>
       <div class="mt-5 flex h-3/4 items-center w-full flex-col justify-between">
         <router-link
-          to="settings"
+          to="/dashboard/settings"
           active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
           class="hover:bg-light-blue-600 hover:opacity-50"
         >

@@ -23,19 +23,22 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/signup.vue"),
   },
   {
+    path: "/login",
+    name: "Sign In",
+    component: () => import("@/views/auth/login.vue"),
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
     children: [
       {
-        path: "/dashboard/settings",
+        path: "settings",
         name: "Settings",
         component: () => import("@/views/dashboard/settings/settings.vue"),
       },
-     
     ],
   },
-  
 ];
 
 const router = createRouter({
