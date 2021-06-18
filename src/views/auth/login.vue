@@ -21,7 +21,7 @@
 
         <div class="mt-8">
           <div class="mt-6">
-            <form action="#" method="POST">
+            <form @submit.prevent="submit">
               <div>
                 <label
                   for="email"
@@ -52,6 +52,7 @@
                       sm:text-sm
                       sm:leading-5
                     "
+                    v-model="email"
                   />
                 </div>
               </div>
@@ -86,6 +87,7 @@
                       sm:text-sm
                       sm:leading-5
                     "
+                    v-model="password"
                   />
                 </div>
               </div>
@@ -176,6 +178,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import store from "@/store";
 export default {
@@ -211,6 +214,8 @@ export default {
           const token = data.token;
           store.commit("setAuthToken", token);
           this.$router.replace("/dashboard");
+        } else {
+          console.log(this.payload);
         }
       } catch (error) {
         console.log(error);
