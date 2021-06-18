@@ -1,6 +1,8 @@
 <template>
   <div class="update-password">
-    <div>
+  
+    <section class='my-10 grid grid-cols-2 gap-4 '>
+        <div>
       <label for="currentPassword"> Current Password </label>
       <br />
       <input
@@ -10,7 +12,9 @@
         v-model="currentPassword"
       />
     </div>
-    <section class="flex">
+    </section>
+  
+    <section class="  grid grid-cols-2 gap-4">
       <div>
         <label for="NewPassword"> New Password </label>
         <br />
@@ -27,23 +31,28 @@
         />
       </div>
     </section>
+
+  <button class='update-password-button my-10 px-6 py-2 flex justify-end text-white'>
+    Save
+  </button>
   </div>
 </template>
 
 <script>
+
 export default {
   name: "UpdatePassword",
+
+ 
 };
 </script>
 
 <style scoped>
 .update-password {
   border-top: 1px solid #b8c3de;
-  margin: 50px 0px;
+  border-bottom: 1px solid #b8c3de;
 }
-.update-password div {
-  margin: 20px 0px;
-}
+
 .update-password label {
   font-family: Inter;
   font-style: normal;
@@ -58,8 +67,12 @@ export default {
   box-sizing: border-box;
   border-radius: 4px;
   padding: 10px;
+  width:100%;
 }
-.flex div {
-  margin-right: 20px;
+.update-password-button{
+  background: #EC0868;
+  border-radius: 124px;
+  border:none;
 }
+
 </style>

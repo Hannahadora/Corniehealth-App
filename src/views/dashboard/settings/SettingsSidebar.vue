@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-2 mb-5 rounded-lg settings bg-white w-full h-full">
-    <div class="w-full h-full p-3 border-r-2">
+  <div class="mt-2 mb-5 rounded-lg  bg-white w-full h-full">
+    <div class="w-full h-full p-3">
       <div class="flex flex-col">
         <div class="justify-center">
           <input
@@ -112,58 +112,7 @@
         </div>
       </div>
     </div>
-    <div class="p-3 w-full h-full">
-      <div class="px-3">
-        <div class="border-b-2 py-2 text-xl font-semibold text-primary">
-          Account Security
-        </div>
-        <div class="py-5">
-          <div class="flex justify-between py-3">
-            <div>
-              <div class="text-lg font-semibold py-1 text-black">Password</div>
-              <div class="text-base font-normal text-black">
-                The same passworrd strength are enforced for all users across
-                the app. <span class="text-primary uppercase">view policy</span>
-              </div>
-            </div>
-            <a
-              href=""
-              class="
-                rounded-full
-                border-primary border
-                bg-transparent
-                px-3
-                py-2
-              "
-              >Update Password</a
-            >
-          </div>
-
-          <div class="flex justify-between py-3">
-            <div>
-              <div class="text-lg font-semibold py-1 text-black">
-                Two Factor Authentication
-              </div>
-              <div class="text-base font-normal text-black">
-                Two factor authentication enforced for all users across the app.
-                <span class="text-primary uppercase">view policy</span>
-              </div>
-            </div>
-            <a
-              href=""
-              class="
-                rounded-full
-                border-primary border
-                bg-transparent
-                px-3
-                py-2
-              "
-              >Configure</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
+    
   </div>
 </template>
 <script lang="ts">
@@ -175,8 +124,5 @@ import { Options, Vue } from "vue-class-component";
 export default class Settings extends Vue {}
 </script>
 <style scoped>
-.settings {
-  display: grid;
-  grid-template-columns: 30% 70%;
-}
+
 </style>
