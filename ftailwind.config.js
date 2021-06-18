@@ -1,7 +1,12 @@
-const colors = require('tailwindcss/colors')
+const colors = require("tailwindcss/colors");
 
 module.exports = {
-  purge: [],
+  purge: {
+    content: ["./public/**/*.html", "./src/**/*.vue"],
+    options: {
+      safelist: ["bg-success", "border-success", "bg-error", "border-error"],
+    },
+  },
   presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -15,12 +20,14 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
+      selected: "#F2F7FF",
 
       danger: "#EC0868",
       primary: "#0A4269",
       warning: "#F7B538",
       success: "#35BA83",
 
+      error: "#EC0868",
       black: colors.black,
       white: colors.white,
       gray: colors.coolGray,
@@ -120,7 +127,6 @@ module.exports = {
     },
     blur: {
       0: "0",
-      none: "0",
       sm: "4px",
       DEFAULT: "8px",
       md: "12px",
@@ -176,7 +182,6 @@ module.exports = {
       inner: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
       none: "none",
     },
-    caretColor: (theme) => theme("colors"),
     contrast: {
       0: "0",
       50: ".5",
@@ -187,9 +192,6 @@ module.exports = {
       200: "2",
     },
     container: {},
-    content: {
-      none: "none",
-    },
     cursor: {
       auto: "auto",
       default: "default",
@@ -831,8 +833,6 @@ module.exports = {
     "even",
     "visited",
     "checked",
-    "empty",
-    "read-only",
     "group-hover",
     "group-focus",
     "focus-within",
@@ -882,7 +882,6 @@ module.exports = {
     backgroundPosition: ["responsive"],
     backgroundRepeat: ["responsive"],
     backgroundSize: ["responsive"],
-    backgroundOrigin: ["responsive"],
     blur: ["responsive"],
     borderCollapse: ["responsive"],
     borderColor: [

@@ -33,6 +33,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Settings",
         component: () => import("@/views/dashboard/settings/settings.vue"),
       },
+      {
+        path: "/dashboard/settings/security",
+        name: "Account Security",
+        component: () => import("@/views/dashboard/settings/security/security.vue"),
+      },
     ],
   },
   {
