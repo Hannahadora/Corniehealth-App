@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-if="displayPasswordSetting">
-        <span @click="closeUpadtePassword()" class="float-right">
+        <span @click="closeUpadtePassword()" class="cursor-pointer float-right">
           <svg
             width="20"
             height="20"
@@ -78,7 +78,7 @@
           />
         </svg>
       </span>
-      <TwoFactorAuth></TwoFactorAuth>
+      <TwoFactorAuth />
     </div>
     <password-policy v-model:visible="viewPolicy" />
   </main>

@@ -1,5 +1,5 @@
 <template>
-  <form class="flex flex-col w-1/2 justify-center">
+  <form class="flex flex-col w-1/2 justify-center" @submit.prevent="submit">
     <h2 class="text-center my-3 font-bold text-lg">Create Account Password</h2>
     <input
       placeholder="Password"
@@ -27,6 +27,7 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import store from "@/store/";
+import { quantumClient } from "@/plugins/http";
 
 @Options({})
 export default class ActivateAccount extends Vue {
@@ -48,24 +49,17 @@ export default class ActivateAccount extends Vue {
   }
   async submit() {
     if (this.password != this.confirmation) return;
+    const errMsg = "Account not activated";
     try {
-      const response = await fetch(
-        "http://18.132.188.41:7000/auth/account/activate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.payload),
-        }
+      const data = await quantumClient().post(
+        "/auth/account/activate/",
+        this.payload
       );
-      if (!response.ok) alert("Account not activated");
-      const data = await response.json();
-      if (!data.success) alert("Account not activated");
+      if (!data.success) return alert(errMsg);
       store.commit("setAuthToken", data.token);
       this.$router.replace("/dashboard");
     } catch (error) {
-      alert("Account not activated");
+      alert(errMsg);
     }
   }
 }
