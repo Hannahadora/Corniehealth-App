@@ -24,6 +24,7 @@
   </form>
 </template>
 <script lang="ts">
+import { quantumClient } from "@/plugins/http";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 
@@ -50,26 +51,18 @@ export default class VerifyEmailCode extends Vue {
       emailVerificationCode: this.codeSync,
     };
   }
-  async submit() {
-    try {
-      const response = await fetch(
-        "http://18.132.188.41:7000/auth/code/verify/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.payload),
-        }
-      );
-      if (!response.ok) return alert("Email not verified");
-      const data = await response.json();
 
-      if (!data.success) return alert("Email not verified");
+  async submit() {
+    const errMsg = "Email not verified";
+    try {
+      const data = await quantumClient().post(
+        "/auth/code/verify/",
+        this.payload
+      );
+      if (!data.success) return alert(errMsg);
       this.verifiedSync = true;
     } catch (error) {
-      console.log(error);
-      alert("Email not verified");
+      alert(errMsg);
     }
   }
 }

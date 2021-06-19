@@ -65,9 +65,8 @@
                   Password
                 </label>
                 <div class="mt-1 rounded-md shadow-sm">
-                  <input
+                  <password-input
                     id="password"
-                    type="password"
                     required
                     class="
                       appearance-none
@@ -91,7 +90,6 @@
                   />
                 </div>
               </div>
-
               <div class="mt-6 flex items-center justify-between">
                 <div class="flex items-center">
                   <input
@@ -181,8 +179,14 @@
 
 <script>
 import store from "@/store";
+import { quantumClient } from "@/plugins/http";
+import PasswordInput from "@/components/PasswordInput.vue";
+
 export default {
   name: "Login",
+  components: {
+    PasswordInput,
+  },
   data() {
     return {
       email: "",
@@ -202,23 +206,12 @@ export default {
   methods: {
     async submit() {
       try {
-        const response = await fetch(this.url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.payload),
-        });
-        if (response.ok) {
-          const data = await response.json();
-          const token = data.token;
-          store.commit("setAuthToken", token);
-          this.$router.replace("/dashboard");
-        } else {
-          console.log(this.payload);
-        }
+        const data = await quantumClient().post("/auth/login", this.payload);
+        const token = data.token;
+        store.commit("setAuthToken", token);
+        this.$router.replace("/dashboard");
       } catch (error) {
-        console.log(error);
+        console.log("login failed ", error);
       }
     },
   },
