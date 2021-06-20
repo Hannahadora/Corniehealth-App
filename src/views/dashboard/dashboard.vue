@@ -1,11 +1,18 @@
 <template>
-  <main class="main-app h-screen">
-    <div class="w-full">
+  <main
+    class="h-screen grid"
+    :class="{ 'main-app': hovered, 'mini-app': !hovered }"
+  >
+    <div
+      class="w-full"
+      @mouseover="hovered = true"
+      @mouseleave="hovered = false"
+    >
       <cornie-side-bar />
     </div>
-    <div class="h-full">
-      <nav-bar class="" />
-      <div class="px-4 pt-2 flex flex-col body-content bg-gray-100">
+    <div class="h-full ml-2">
+      <nav-bar class="ml" />
+      <div class="pr-4 pl-6 pt-2 flex flex-col body-content bg-gray-100">
         <bread-crumbs class="" />
         <router-view class="" />
       </div>
@@ -25,12 +32,16 @@ import BreadCrumbs from "@/components/breadcrumbs.vue";
     BreadCrumbs,
   },
 })
-export default class Dashboard extends Vue {}
+export default class Dashboard extends Vue {
+  hovered = false;
+}
 </script>
 <style>
+.mini-app {
+  grid-template-columns: 5% 95%;
+}
 .main-app {
-  display: grid;
-  grid-template-columns: 5.5% 94.5%;
+  grid-template-columns: 17% 82%;
 }
 .body-content {
   min-height: 91%;

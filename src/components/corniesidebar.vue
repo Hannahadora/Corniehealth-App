@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @mouseover="hovered = true" @mouseleave="hovered = false">
     <div
       class="
         flex flex-col
@@ -7,109 +7,136 @@
         items-center
         min-h-screen
         h-screen
-        w-16
         bg-primary
         shadow-md
         fixed
+        justify-center
+        px-3
       "
+      :class="{ 'w-20': !hovered, 'w-56': hovered }"
     >
       <div
         class="
           flex flex-row
-          justify-items-center
+          justify-between
           border-b-2
           pb-1
+          items-center
           border-gray-300
         "
       >
         <img src="@/assets/img/logo.svg" />
+        <h2 class="text-white text-xl font-semibold ml-1" v-if="hovered">
+          CornieHealth
+        </h2>
       </div>
-      <div class="mt-5 flex h-3/4 items-center w-full flex-col justify-between">
-        <router-link
+      <div
+        class="
+          mt-5
+          flex
+          h-3/4
+          items-center
+          w-full
+          flex-col
+          justify-between
+          text-white text-lg
+          overflow-y-auto
+        "
+      >
+        <sidebar-link
           to="/dashboard/settings"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
-          class="hover:bg-light-blue-600 hover:opacity-50"
+          text="Dashboard"
+          :hovered="hovered"
         >
-          <dashboard-icon class="text-gray-300" />
-        </router-link>
-        <router-link
-          to="schedule"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
-          class="hover:bg-light-blue-600 hover:opacity-50"
+          <dashboard-icon />
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/engagements"
+          text="Engagements"
+          :hovered="hovered"
         >
           <schedule-icon />
-        </router-link>
-        <router-link
-          to="book"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
-          class="hover:bg-light-blue-600 hover:opacity-50"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/clinical"
+          :hovered="hovered"
+          text="Clinical"
         >
           <book-icon />
-        </router-link>
-        <router-link
-          to="clinic"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
-          class="hover:bg-light-blue-600 hover:opacity-50"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/in-patient"
+          :hovered="hovered"
+          text="In-Patient"
         >
           <clinic-icon />
-        </router-link>
-        <router-link
-          to="notes"
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dasboard/diagnostics"
+          :hovered="hovered"
+          text="Diagnostics"
         >
           <clip-board-icon />
-        </router-link>
-        <router-link
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          to="prespcriptions"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/medications"
+          :hovered="hovered"
+          text="Medications"
         >
           <pill-icon />
-        </router-link>
-        <router-link
-          to="awards"
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/certificates"
+          :hovered="hovered"
+          text="Certificates"
         >
           <medal-icon />
-        </router-link>
-        <router-link
-          to="payment"
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/payments"
+          :hovered="hovered"
+          text="Bills & Payments"
         >
           <debit-card-icon />
-        </router-link>
-        <router-link
-          to="wallet"
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/accounting"
+          :hovered="hovered"
+          text="Accounting"
         >
           <wallet-icon />
-        </router-link>
-        <router-link
-          to="chart"
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/analytics"
+          :hovered="hovered"
+          text="Analytics"
         >
           <chart-icon />
-        </router-link>
-        <router-link
-          to="refer"
-          class="hover:bg-light-blue-600 hover:opacity-50"
-          active-class="flex justify-center w-3/4 py-1 rounded-2xl bg-blue-400"
+        </sidebar-link>
+        <sidebar-link
+          to="/dashboard/referrals"
+          :hovered="hovered"
+          text="Referrals"
         >
           <refer-icon />
-        </router-link>
+        </sidebar-link>
       </div>
-      <router-link
+      <sidebar-link
         to="support"
-        class="hover:bg-light-blue-600 hover:opacity-50 mt-auto"
-        active-class="flex justify-center w-3/4 py-2 rounded-2xl bg-blue-500"
+        :hovered="hovered"
+        text="Feedback & Support"
+        class="
+          mt-auto
+          bg-opacity-20 bg-white
+          text-white
+          py-2
+          rounded-2xl
+          w-full
+          px-3
+        "
       >
-        <support-icon />
-      </router-link>
+        <support-icon class="" />
+      </sidebar-link>
     </div>
   </div>
 </template>
@@ -127,9 +154,11 @@ import WalletIcon from "./icons/wallet.vue";
 import ChartIcon from "./icons/chart.vue";
 import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
+import SidebarLink from "./sidebarlink.vue";
 
 @Options({
   components: {
+    SidebarLink,
     SupportIcon,
     ChartIcon,
     ReferIcon,
@@ -144,5 +173,7 @@ import SupportIcon from "./icons/support.vue";
     ClipBoardIcon,
   },
 })
-export default class CorniDashboardeSideBar extends Vue {}
+export default class CorniDashboardeSideBar extends Vue {
+  hovered = false;
+}
 </script>
