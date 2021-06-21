@@ -1,78 +1,176 @@
 <template>
-  <div class="update-password">
+  <div class="border-t border-b border-gray-300">
   
     <section class='my-10 grid grid-cols-2 gap-4 '>
         <div>
-      <label for="currentPassword"> Current Password </label>
+      <label  
+      for="currentPassword"
+      class="
+      font-bold
+      text-base
+      uppercase
+      "
+      > Current Password </label>
       <br />
-      <input
-        type="password"
-        id="currentPassword"
-        placeholder="Enter Password"
-        v-model="currentPassword"
-      />
+      <password-input
+                    id="currentPassword"
+                    required
+                    class="
+                      appearance-none
+                      w-full
+                      px-3
+                      py-2
+                      border border-gray-300
+                      rounded-md
+                      placeholder-gray-400
+                      focus:outline-none
+                      focus:shadow-outline-blue
+                      focus:border-blue-300
+                      transition
+                      duration-150
+                      ease-in-out
+                      sm:text-sm
+                      sm:leading-5
+                    "
+                    placeholder="Enter Password"
+                    v-model="currentPassword"
+                  />
     </div>
     </section>
   
     <section class="  grid grid-cols-2 gap-4">
       <div>
-        <label for="NewPassword"> New Password </label>
+        <label for="NewPassword"
+        class='font-bold
+          text-base
+          uppercase
+      '
+        > New Password </label>
         <br />
-        <input type="password" id="NewPassword" v-model="NewPassword" />
+        <password-input
+                    id="newPassword"
+                    required
+                    class="
+                      appearance-none
+                      w-full
+                      px-3
+                      py-2
+                      border border-gray-300
+                      rounded-md
+                      placeholder-gray-400
+                      focus:outline-none
+                      focus:shadow-outline-blue
+                      focus:border-blue-300
+                      transition
+                      duration-150
+                      ease-in-out
+                      sm:text-sm
+                      sm:leading-5
+                    "
+                    placeholder="Enter Password"
+                    v-model="newPassword"
+                  />
       </div>
       <div>
-        <label for="ConfirmPassword"> Confirm Password </label>
+        <label for="ConfirmPassword"
+        class='
+        font-bold
+      text-base
+      uppercase
+        '
+        > Confirm Password </label>
         <br />
-        <input
-          type="password"
-          id="ConfirmPassword"
-          placeholder="Confirm New Password"
-          v-model="ConfirmPassword"
+        <password-input
+                      id="ConfirmPassword"
+                    required
+                    class="
+                      appearance-none
+                      w-full
+                      px-3
+                      py-2
+                      border border-gray-300
+                      rounded-md
+                      placeholder-gray-400
+                      focus:outline-none
+                      focus:shadow-outline-blue
+                      focus:border-blue-300
+                      transition
+                      duration-150
+                      ease-in-out
+                      sm:text-sm
+                      sm:leading-5
+                    "
+                    placeholder="Confirm New Password"
+                    v-model="ConfirmPassword"
         />
       </div>
     </section>
 
-  <button class='update-password-button my-10 px-6 py-2 flex justify-end text-white'>
+  <span class="flex justify-end"> 
+    <button
+  type="submit"
+  @click ='updatePassword()'
+   class='my-10 px-6 py-2  text-white appearance-none
+                      border-none
+                      bg-pink-600
+                      rounded-3xl
+                      placeholder-gray-400
+                      focus:outline-none
+                      focus:shadow-outline-blue
+                      focus:border-blue-300
+                      transition
+                      duration-150
+                      ease-in-out 
+                      sm:text-sm
+                      sm:leading-5
+                    '
+   >
     Save
-  </button>
+  </button> 
+  </span>
   </div>
 </template>
 
 <script>
+import PasswordInput from "@/components/PasswordInput.vue";
+import { quantumClient } from "@/plugins/http";
+import store from "@/store";
 
 export default {
   name: "UpdatePassword",
-
+    components: {
+    PasswordInput,
+  },
+  data() {
+    return {
+      currentPassword: "",
+      newPassword: "",
+      url: "http://18.132.188.41:7000/auth/change-password",
+      userId:''
+    };
+  },
+  computed: {
+    payload() {
+      return {
+       previousPassword: this.currentPassword,
+      newPassword: this.newPassword,
+      userId:store.state.Id
+      };
+    },
+  },
+    methods: {
+    async updatePassword() {
+      try {
+        await quantumClient().post("auth/change-password", this.payload);
+        alert('Password Changed Suceesfully')
+      } catch (error) {
+        console.log( error);
+      }
+    },
+  },
  
 };
 </script>
 
 <style scoped>
-.update-password {
-  border-top: 1px solid #b8c3de;
-  border-bottom: 1px solid #b8c3de;
-}
-
-.update-password label {
-  font-family: Inter;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 19px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-.update-password input {
-  border: 1px solid #b8c3de;
-  box-sizing: border-box;
-  border-radius: 4px;
-  padding: 10px;
-  width:100%;
-}
-.update-password-button{
-  background: #EC0868;
-  border-radius: 124px;
-  border:none;
-}
-
 </style>
