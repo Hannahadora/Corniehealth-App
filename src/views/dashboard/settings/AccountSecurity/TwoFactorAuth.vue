@@ -2,7 +2,7 @@
     <div class="border-t border-b border-gray-300">
         <div class=" flex mt-10 mb-6">
                Disabled
-              <ToogleCheck class='mx-4'></ToogleCheck>
+              <ToogleCheck  class='mx-4'></ToogleCheck>
                Enabled
         </div>
        <div class='flex '>
@@ -114,6 +114,7 @@ export default {
     NotificationIcon,
     PasswordInput
   }
+  
  
 };
 </script>
