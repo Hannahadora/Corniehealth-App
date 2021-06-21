@@ -3,14 +3,16 @@ import store from "@/store";
 
 let interval: number | undefined;
 
+const storeAuthToken = (): string => store.state.user.authToken;
+
 async function refreshToken() {
-  if (!store.state.authToken) return;
+  if (!storeAuthToken()) return;
   const client = quantumClient();
   try {
     const data = await client.post("/auth/refresh-token", {});
     if (!data.success) return;
     const token = data.token;
-    store.commit("setAuthToken", token);
+    store.commit("user/setAuthToken", token);
   } catch (error) {
     console.log("Token refresh failed");
   }
@@ -28,7 +30,7 @@ export const quantumClient = () =>
   new JSONClient(
     {
       "Content-Type": "application/json",
-      Authorization: store.state.authToken,
+      Authorization: storeAuthToken(),
     },
     "http://18.132.188.41:7000"
   );
@@ -36,5 +38,5 @@ export const quantumClient = () =>
 export const cornieClient = () =>
   new JSONClient({
     "Content-Type": "application/json",
-    Authorization: store.state.authToken,
+    Authorization: storeAuthToken(),
   });

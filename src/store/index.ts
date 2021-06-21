@@ -1,14 +1,8 @@
-import { createStore } from "vuex";
+import { createStore, StoreOptions } from "vuex";
+import UserStore from "./user";
 
 export default createStore({
-  state: {
-    authToken: "",
+  modules: {
+    user: UserStore,
   },
-  mutations: {
-    setAuthToken(state, token) {
-      state.authToken = token;
-    },
-  },
-  actions: {},
-  modules: {},
-});
+} as StoreOptions<any>);

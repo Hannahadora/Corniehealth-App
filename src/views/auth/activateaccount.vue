@@ -56,7 +56,8 @@ export default class ActivateAccount extends Vue {
         this.payload
       );
       if (!data.success) return alert(errMsg);
-      store.commit("setAuthToken", data.token);
+      store.commit("user/setAuthToken", data.token);
+      store.commit("user/setUser", data.user);
       this.$router.replace("/dashboard");
     } catch (error) {
       alert(errMsg);
