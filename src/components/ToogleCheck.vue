@@ -1,8 +1,11 @@
 <template>
   <div class="toogle-check">
        <label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" :checked="checked"
+                @change="$emit('update:checked', $event.target.checked)"
+                >
                 <span class="slider round"></span>
+                {label}
         </label>
   </div>
 </template>
@@ -78,6 +81,16 @@ input:checked + .slider:before {
 <script>
 export default {
   name: "ToogleCheck",
- 
+    props: {
+      label: {
+        type: String,
+        required: false,
+      },
+      checked: {
+        type: Boolean,
+        required: true,
+      },
+    },
+
 };
 </script>

@@ -1,21 +1,25 @@
 <template>
   <div class="flex flex-row items-center text-primary h-5 italic">
-    <span class="mr-4">
+    <router-link :to="pages.base" class="mr-4">
       <three-dot-icon />
-    </span>
-    <span class="mr-2">
+    </router-link>
+    <span class="mr-2" v-if="pages.parent">
       <chevron-right-icon />
     </span>
-    <span class="flex items-center mr-2">
+    <span class="flex items-center mr-2" v-if="pages.parent">
       <page-icon />
-      <span class="ml-2 capitalize">Dashboard</span>
+      <router-link :to="pages.parent" class="ml-2 capitalize"
+        >Dashboard</router-link
+      >
     </span>
     <span class="mr-2">
       <chevron-right-icon />
     </span>
     <span class="flex items-center">
       <page-icon active />
-      <span class="ml-2 capitalize">Settings</span>
+      <router-link to="" class="ml-2 capitalize">{{
+        pages.active
+      }}</router-link>
     </span>
   </div>
 </template>
@@ -32,5 +36,23 @@ import PageIcon from "@/components/icons/page.vue";
     PageIcon,
   },
 })
-export default class BreadCrumbs extends Vue {}
+export default class BreadCrumbs extends Vue {
+  get pages() {
+    let fullPath = this.$router.currentRoute.value.fullPath;
+    if (fullPath.endsWith("/")) {
+      fullPath = fullPath.slice(0, fullPath.length - 1);
+    }
+    let lastSep = fullPath.lastIndexOf("/");
+    let parent = fullPath.substring(0, lastSep);
+
+    lastSep = parent.lastIndexOf("/");
+    let base = parent.substring(0, lastSep);
+    if (!base.startsWith("/")) base = `/${base}`;
+    return {
+      base,
+      parent,
+      active: this.$router.currentRoute.value.name,
+    };
+  }
+}
 </script>

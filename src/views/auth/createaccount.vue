@@ -39,6 +39,7 @@
   </form>
 </template>
 <script lang="ts">
+import { quantumClient } from "@/plugins/http";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 
@@ -71,21 +72,16 @@ export default class CreateAccount extends Vue {
       email: payload.email,
     };
   }
+
   async submit() {
+    const errMsg = "Account not created";
     try {
-      const response = await fetch("http://18.132.188.41:7000/auth/signup/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.payload),
-      });
-      if (!response.ok) alert("Account not created");
-      const data = await response.json();
-      if (!data.success) alert("Account not created");
+      const data = await quantumClient().post("/auth/signup/", this.payload);
+      if (!data.success) alert(errMsg);
       this.setUser(data);
     } catch (error) {
-      alert("Account not created");
+      alert(errMsg);
+      console.log(error);
     }
   }
 }

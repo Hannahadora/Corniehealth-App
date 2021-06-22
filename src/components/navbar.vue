@@ -1,9 +1,19 @@
 <template>
   <nav class="p-5 flex min-w-full items-center w-full border-b-2 h-14">
-    <span class="flex items-center justify-items-center pr-2 border-r-2">
+    <span
+      @click="$router.back()"
+      class="
+        flex
+        items-center
+        justify-items-center
+        pr-2
+        border-r-2
+        cursor-pointer
+      "
+    >
       <arrow-left-icon />
     </span>
-    <h2 class="text-2xl font-semibold ml-3">Settings</h2>
+    <h2 class="text-2xl font-semibold ml-3 capitalize">{{ name }}</h2>
     <span class="flex items-center justify-center ml-auto">
       <settings-icon />
     </span>
@@ -58,5 +68,9 @@ import ChevronDown from "./icons/chevrondown.vue";
     BellIcon,
   },
 })
-export default class NavBar extends Vue {}
+export default class NavBar extends Vue {
+  get name() {
+    return this.$route.name;
+  }
+}
 </script>

@@ -9,6 +9,7 @@
     "build-css": "tailwindcss build src/index.css -o src/styles.css"
   },
   "dependencies": {
+    "@scelloo/cloudenly-ui": "^0.2.6",
     "core-js": "^3.6.5",
     "postcss-loader": "^5.3.0",
     "vee-validate": "^4.4.2",
