@@ -2,7 +2,7 @@
     <div class="border-t border-b border-gray-300">
         <div class=" flex mt-10 mb-6">
                Disabled
-              <ToogleCheck  class='mx-4'></ToogleCheck>
+              <ToogleCheck @updated='checkedValue'  class='mx-4'></ToogleCheck>
                Enabled
         </div>
        <div class='flex '>
@@ -77,7 +77,7 @@
   
   <span class="flex justify-end"> <button
   type="submit"
-  @click ='updateTwoFactor()'
+  @click ='saveTwoFactor()'
    class='my-10 px-6 py-2 flex justify-end text-white appearance-none
                       border-none
                       bg-pink-600
@@ -105,6 +105,8 @@ import ListBoxes from "@/components/ListBoxes.vue";
 import ToogleCheck from "@/components/ToogleCheck.vue";
 import NotificationIcon from "@/components/icons/notification.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
+import { quantumClient } from "@/plugins/http";
+import store from "@/store";
 
 export default {
   name: "TwoFactorAuth",
@@ -113,8 +115,57 @@ export default {
     ToogleCheck,
     NotificationIcon,
     PasswordInput
+  },
+  data(){
+    return{
+     value: '',
+    password:'',
+    userId:'',
+    token:''
+    }
+  },
+  computed: {
+    payloadOff() {
+      return {
+       password:store.state.user.password,
+       userId:store.state.Id,
+      };
+    },
+    payloadOn() {
+      return {
+      // token not yet given
+       token:this.token,
+       userId:store.state.Id,
+      };
+    },
+  },
+  methods:{
+  saveTwoFactor(){
+      console.log('Two Factor Completely Setup')
+  },
+
+  checkedValue(e){
+    this.value = e
+   if(this.value){
+      try {
+        quantumClient().post("/org/security/2fa/setup", this.payloadOn);
+        alert('Turned Off Two-Factor Suceesfully')
+      } catch (error) {
+        console.log( error);
+      }  
   }
-  
+  else{   
+      try {
+        quantumClient().post("/org/security/2fa/status/off", this.payloadOff);
+        alert('Turned Off Two-Factor Suceesfully')
+      } catch (error) {
+        console.log( error);
+      }  
+  }
+  },
+ 
+  }
+
  
 };
 </script>

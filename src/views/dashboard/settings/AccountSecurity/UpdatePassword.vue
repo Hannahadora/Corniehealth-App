@@ -145,7 +145,6 @@ export default {
     return {
       currentPassword: "",
       newPassword: "",
-      url: "http://18.132.188.41:7000/auth/change-password",
       userId:''
     };
   },
@@ -161,7 +160,7 @@ export default {
     methods: {
     async updatePassword() {
       try {
-        await quantumClient().post("auth/change-password", this.payload);
+        await quantumClient().post("/auth/change-password", this.payload);
         alert('Password Changed Suceesfully')
       } catch (error) {
         console.log( error);
