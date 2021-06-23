@@ -1,31 +1,13 @@
 <template>
-  <ul class="accordion">
-    <slot></slot>
-  </ul>
+  <div class="w-full mx-4 flex flex-col">
+    <slot :name="`item-${i}`" v-for="i in count" :key="i"></slot>
+  </div>
 </template>
-
 <script>
 export default {
-  props: {},
-  data() {
-    return {
-      Accordion: {
-        count: 0,
-        active: null
-      }
-    };
+  name: "Accordion",
+  props: {
+    count: Number,
   },
-  provide() {
-    return { Accordion: this.Accordion };
-  }
 };
 </script>
-
-<style scoped>
-.accordion {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border: 1px solid;
-}
-</style>
