@@ -1,91 +1,46 @@
 <template>
-  <li class="accordion__item">
-    <div 
-      class="accordion__trigger"
-      :class="{'accordion__trigger_active': visible}"
-      @click="open">
-
-      <!-- This slot will handle the title/header of the accordion and is the part you click on -->
-      <slot name="accordion-trigger"></slot>
-    </div>
-
-    <transition 
-      name="accordion"
-      @enter="start"
-      @after-enter="end"
-      @before-leave="start"
-      @after-leave="end">
-
-      <div class="accordion__content"
-        v-show="visible">
-        <ul>
-          <!-- This slot will handle all the content that is passed to the accordion -->
-          <slot name="accordion-content"></slot>
-        </ul>
+  <div class="w-full" :class="{ 'order-first': expand }">
+    <div
+      class="h-11 w-full flex items-center justify-between px-3 border-2"
+      :class="{ 'border rounded-t-xl bg-primary border-primary': expand }"
+    >
+      <div class="font-semibold" :class="{ 'text-white': expand }">
+        <slot name="title" />
       </div>
-    </transition>
-  </li>
+      <span class="flex items-center">
+        <span
+          class="mr-3 cursor-pointer"
+          :class="{ 'fill-current text-white': expand }"
+          ><slot name="misc"
+        /></span>
+        <chevron-down-icon
+          class="cursor-pointer stroke-current text-white"
+          @click="expand = false"
+          v-if="expand"
+        />
+        <chevron-right-icon
+          class="cursor-pointer"
+          v-else
+          @click="expand = true"
+        />
+      </span>
+    </div>
+    <div v-if="expand" class="w-full border-2"><slot name="content" /></div>
+  </div>
 </template>
-
-
 <script>
+import ChevronRightIcon from "@/components/icons/chevronright.vue";
+import ChevronDownIcon from "./icons/chevrondown.vue";
 export default {
-  props: {},
-  inject: ["Accordion"],
+  name: "AccordionItem",
+  components: {
+    ChevronRightIcon,
+    ChevronDownIcon,
+  },
   data() {
     return {
-      index: null
+      expand: false,
     };
   },
-  computed: {
-    visible() {
-      return this.index == this.Accordion.active;
-    }
-  },
-  methods: {
-    open() {
-      if (this.visible) {
-        this.Accordion.active = null;
-      } else {
-        this.Accordion.active = this.index;
-      }
-    },
-    start(el) {
-      el.style.height = el.scrollHeight + "px";
-    },
-    end(el) {
-      el.style.height = "";
-    }
-  },
-  created() {
-    this.index = this.Accordion.count++;
-  }
 };
 </script>
-
-<style lang="scss" scoped>
-.accordion__item {
-  cursor: pointer;
-  padding: 10px 20px 10px 40px;
-  border-bottom: 1px solid #ebebeb;
-  position: relative;
-}
-
-.accordion__trigger {
-  display: flex;
-  justify-content: space-between;
-}
-
-.accordion-enter-active,
-.accordion-leave-active {
-  will-change: height, opacity;
-  transition: height 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
-}
-
-.accordion-enter,
-.accordion-leave-to {
-  height: 0 !important;
-  opacity: 0;
-}
-</style>
