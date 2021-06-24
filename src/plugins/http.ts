@@ -36,7 +36,10 @@ export const quantumClient = () =>
   );
 
 export const cornieClient = () =>
-  new JSONClient({
-    "Content-Type": "application/json",
-    Authorization: storeAuthToken(),
-  });
+  new JSONClient(
+    {
+      "Content-Type": "application/json",
+      Authorization: storeAuthToken(),
+    },
+    "https://corniehealth.herokuapp.com/"
+  );

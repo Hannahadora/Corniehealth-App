@@ -13,7 +13,6 @@ import IconInput from "./IconInput.vue";
 import OpenEyeIcon from "./icons/eye.vue";
 
 @Options({
-  inheritAttrs: true,
   components: {
     IconInput,
     OpenEyeIcon,

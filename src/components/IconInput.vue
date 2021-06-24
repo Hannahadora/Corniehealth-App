@@ -14,6 +14,7 @@
     <input
       v-bind="$attrs"
       name="q"
+      v-model="valueSync"
       class="py-2 text-sm text-black rounded-md w-full"
       :class="{
         'pl-10': prepend,
@@ -21,8 +22,6 @@
         'pl-2': !prepend,
         'pr-2': !append,
       }"
-      placeholder="Search..."
-      autocomplete="off"
     />
     <span
       class="absolute inset-y-0 right-0 flex items-center pr-2"
@@ -36,12 +35,18 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, PropSync } from "vue-property-decorator";
 
 @Options({
   inheritAttrs: false,
 })
 export default class IconInput extends Vue {
+  @Prop({ type: String })
+  modelValue!: string;
+
+  @PropSync("modelValue")
+  valueSync!: string;
+
   @Prop({ required: false, default: "" })
   width!: string;
 

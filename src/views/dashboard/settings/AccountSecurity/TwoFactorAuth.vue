@@ -112,8 +112,6 @@ import ListBoxes from "@/components/ListBoxes.vue";
 import ToogleCheck from "@/components/ToogleCheck.vue";
 import NotificationIcon from "@/components/icons/notification.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
-import { quantumClient } from "@/plugins/http";
-import store from "@/store";
 
 export default {
   name: "TwoFactorAuth",

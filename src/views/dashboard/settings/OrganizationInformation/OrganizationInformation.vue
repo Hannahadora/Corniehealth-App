@@ -1,355 +1,663 @@
 <template>
-  <main class="p-6 ">
-    <h3
-    class='
-    text-primary
-    text-xl
-    font-bold
-    border-b border-gray-300
-    '
-    >
-      Organization Information</h3>
+  <main class="p-6">
+    <h3 class="text-primary text-xl font-bold border-b border-gray-300">
+      Organization Information
+    </h3>
     <section>
-    <div class="image-upload flex mt-10">
-      <img src='../../../../assets/img/avatar.png' ref='img'  id='display_image' />
-      <br>
-     <input type="file"  accept="image/*" name="image" id="file"  @change="onFileChanged" hidden>
-     <label for="file" class='text-pink-600 font-bold cursor-pointer'> Upload Image</label>
-    </div>
-     <form method="POST">
-    <div class="main-box mt-10 ">
-        <div class='w-full h-full '> 
-        <div>
-          <label  
-          for="OrganizationName" class="font-bold text-base uppercase mb-4"> Organization Name </label>
-          <br />
-          <input id="OrganizationName" required
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          placeholder="Enter "
-          v-model="OrganizationName"
-          />
-        </div>
+      <div class="image-upload flex mt-10 items-center">
+        <avatar class="mr-2" :src="displayImg" />
+        <br />
+        <input
+          type="file"
+          accept="image/*"
+          name="image"
+          id="file"
+          @change="onFileChanged"
+          hidden
+        />
+        <label for="file" class="text-pink-600 font-bold cursor-pointer">
+          Upload Image</label
+        >
+      </div>
+      <form @submit.prevent="submitForm">
+        <div class="main-box mt-10">
+          <div class="w-full h-full">
+            <div>
+              <label
+                for="OrganizationName"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Organization Name
+              </label>
+              <br />
+              <input
+                id="OrganizationName"
+                required
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                placeholder="Enter "
+                v-model="OrganizationName"
+              />
+            </div>
 
-        <div>
-          <label  
-          for="Alias" class="font-bold text-base uppercase mb-4"> Alias  </label>
-          <br />
-          <input id="Alias" required
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          placeholder="Enter "
-          v-model="alias"
-          />
-        </div>
+            <div>
+              <label for="Alias" class="font-bold text-base uppercase mb-4">
+                Alias
+              </label>
+              <br />
+              <input
+                id="Alias"
+                required
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                placeholder="Enter "
+                v-model="alias"
+              />
+            </div>
 
-        <div>
-           <label  
-          for="OrganizationType" class="font-bold text-base uppercase mb-4"> Organization Type </label>
-          <br />
-          <select name="select" id="OrganizationType" v-model='OrganizationType'
-          class="  w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
+            <div>
+              <label
+                for="OrganizationType"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Organization Type
+              </label>
+              <br />
+              <select
+                name="select"
+                id="OrganizationType"
+                v-model="OrganizationType"
+                class="
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+              >
+                <option
+                  v-for="(orgType, i) in orgTypes"
+                  :key="i"
+                  :value="orgType.code"
+                >
+                  {{ orgType.display }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="ReferenceOrganization"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Reference organization
+              </label>
+              <br />
+              <input
+                id="ReferenceOrganization"
+                required
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                placeholder="Enter "
+                v-model="ReferenceOrganization"
+              />
+            </div>
+
+            <div>
+              <label
+                for="RegistrationNumber"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Registration Number
+              </label>
+              <br />
+              <input
+                id="RegistrationNumber"
+                required
+                type="Number"
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                placeholder="Enter "
+                v-model="RegistrationNumber"
+              />
+            </div>
+
+            <div>
+              <label
+                for="PhoneNumber"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Phone Number
+              </label>
+              <br />
+              <div id="PhoneNumber" class="flex">
+                <select
+                  class="
+                    border border-gray-300
+                    my-4
+                    px-3
+                    py-2
+                    rounded-l-md
+                    placeholder-gray-400
+                    focus:outline-none
+                    focus:shadow-outline-blue
+                    focus:border-blue-300
+                    transition
+                    duration-150
+                    ease-in-out
+                    sm:text-sm
+                    sm:leading-5
+                  "
+                >
+                  <option value="1">Nig</option>
+                  <option value="1">Nig</option>
+                  <option value="1">Nig</option>
+                </select>
+                <input
+                  placeholder="(+234) --"
+                  class="
+                    rounded-r-md
+                    appearance-none
+                    w-full
+                    my-4
+                    px-3
+                    py-2
+                    border border-gray-300
+                    placeholder-gray-400
+                    focus:outline-none
+                    focus:shadow-outline-blue
+                    focus:border-blue-300
+                    transition
+                    duration-150
+                    ease-in-out
+                    sm:text-sm
+                    sm:leading-5
+                  "
+                  type="number"
+                  v-model="PhoneNumber"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="w-full h-full">
+            <div>
+              <label
+                for="DomainName"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Domain Name
+              </label>
+              <br />
+              <div id="DomainName" class="flex">
+                <input
+                  class="
+                    appearance-none
+                    w-1/2
+                    border border-gray-300
+                    bg-gray-500
+                    my-4
+                    px-3
+                    py-2
+                    rounded-l-md
+                    placeholder-white
+                    focus:outline-none
+                    focus:shadow-outline-blue
+                    focus:border-blue-300
+                    transition
+                    duration-150
+                    ease-in-out
+                    sm:text-sm
+                    sm:leading-5
+                  "
+                  disabled
+                  placeholder="https://corniehealth.com/"
+                />
+
+                <input
+                  placeholder="Domain--"
+                  class="
+                    rounded-r-md
+                    appearance-none
+                    w-1/2
+                    my-4
+                    px-3
+                    py-2
+                    border border-gray-300
+                    placeholder-gray-400
+                    focus:outline-none
+                    focus:shadow-outline-blue
+                    focus:border-blue-300
+                    transition
+                    duration-150
+                    ease-in-out
+                    sm:text-sm
+                    sm:leading-5
+                  "
+                  v-model="DomainName"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="OrganizationIdentifier"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Organization Identifier
+              </label>
+              <br />
+              <input
+                id="OrganizationIdentifier"
+                required
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                placeholder="Enter "
+                v-model="OrganizationIdentifier"
+              />
+            </div>
+
+            <div>
+              <label
+                for="ProviderProfile"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Provider Profile
+              </label>
+              <br />
+              <select
+                name="select"
+                id="ProviderProfile"
+                class="
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                v-model="ProviderProfile"
+              >
+                <option
+                  v-for="(prov, i) in provProfiles"
+                  :key="i"
+                  :value="prov"
+                >
+                  {{ prov }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="IncorporationType"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Incorporation Type
+              </label>
+              <br />
+              <select
+                name="select"
+                id="IncorporationType"
+                class="
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                v-model="IncorporationType"
+              >
+                <option
+                  v-for="(incType, i) in incTypes"
+                  :key="i"
+                  :value="incType"
+                >
+                  {{ incType }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="EmailAddress"
+                class="font-bold text-base uppercase mb-4"
+              >
+                Email Address
+              </label>
+              <br />
+              <input
+                id="Email Address"
+                required
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                type="email"
+                placeholder="Enter "
+                v-model="EmailAddress"
+              />
+            </div>
+
+            <div>
+              <label for="Website" class="font-bold text-base uppercase mb-4">
+                Website
+              </label>
+              <br />
+              <input
+                id="Website"
+                required
+                class="
+                  appearance-none
+                  w-full
+                  my-4
+                  px-3
+                  py-2
+                  border border-gray-300
+                  rounded-md
+                  placeholder-gray-400
+                  focus:outline-none
+                  focus:shadow-outline-blue
+                  focus:border-blue-300
+                  transition
+                  duration-150
+                  ease-in-out
+                  sm:text-sm
+                  sm:leading-5
+                "
+                placeholder="Enter "
+                v-model="Website"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="my-8 flex justify-end">
+        <span>
+          <button
+            class="
+              border border-blue-800
+              mr-8
+              rounded-3xl
+              px-6
+              py-2
+              placeholder-gray-400
+              focus:outline-none
+              focus:shadow-outline-blue
+              focus:border-blue-300
+              transition
+              duration-150
+              ease-in-out
+              sm:text-sm
+              sm:leading-5
+              cursor-pointer
+            "
           >
-            <option  value="First Option" > Select </option>
-            <option  value="First Option"> First Option </option>
-            <option  value="First Option"> First Option </option>
-            <option  value="First Option"> First Option </option>
-          </select>
-        </div>
-
-        <div>
-          <label  
-          for="ReferenceOrganization" class="font-bold text-base uppercase mb-4"> Reference organization </label>
-          <br />
-          <input id="ReferenceOrganization" required
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          placeholder="Enter "
-          v-model="ReferenceOrganization"
-          />
-        </div>
-
-           <div>
-          <label  
-          for="RegistrationNumber" class="font-bold text-base uppercase mb-4"> Registration Number  </label>
-          <br />
-          <input id="RegistrationNumber" required type='Number'
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          placeholder="Enter "
-          v-model="RegistrationNumber"
-          />
-        </div>
-      
-       <div>
-           <label  
-          for="PhoneNumber" class="font-bold text-base uppercase mb-4"> Phone Number  </label>
-          <br />
-        <div id="PhoneNumber"  class='flex'>
-          <select class=' border border-gray-300   my-4 px-3 py-2 rounded-l-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 '>
-            <option value="1"> Nig </option>
-            <option value="1"> Nig </option>
-            <option value="1"> Nig </option>
-          </select>
-          <input placeholder="(+234) --" class='  rounded-r-md appearance-none w-full  my-4 px-3 py-2 border border-gray-300 placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 ' type='number' v-model='PhoneNumber' />
-        </div>
-       </div>
-
-    </div>  
-    <div class='w-full h-full ' > 
-   
-      <div>
-           <label  
-          for="DomainName" class="font-bold text-base uppercase mb-4"> Domain Name </label>
-          <br />
-        <div id="DomainName"  class='flex'>
-          <input class=' appearance-none w-1/2 border border-gray-300  bg-gray-500   my-4 px-3 py-2 rounded-l-md placeholder-white
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 ' disabled placeholder="https://corniehealth.com/"/>
-          
-          <input placeholder="Domain--" class='  rounded-r-md appearance-none w-1/2  my-4 px-3 py-2 border border-gray-300 placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 ' v-model='DomainName' />
-        </div>
-       </div>
-      
-        <div>
-          <label  
-          for="OrganizationIdentifier" class="font-bold text-base uppercase mb-4"> Organization Identifier </label>
-          <br />
-          <input id="OrganizationIdentifier" required
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          placeholder="Enter "
-          v-model="OrganizationIdentifier"
-          />
-        </div>
-
-         <div>
-           <label  
-          for="ProviderProfile" class="font-bold text-base uppercase mb-4"> Provider Profile </label>
-          <br />
-          <select name="select" id="ProviderProfile" 
-          class="  w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 " v-model='ProviderProfile'
-          >
-            <option  value="First Option" > Select </option>
-            <option  value="First Option"> First Option </option>
-            <option  value="First Option"> First Option </option>
-            <option  value="First Option"> First Option </option>
-          </select>
-        </div>
-      
-        <div>
-           <label  
-          for="IncorporationType" class="font-bold text-base uppercase mb-4"> Incorporation Type </label>
-          <br />
-          <select name="select" id="IncorporationType" 
-          class="  w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 " v-model='IncorporationType'
-          >
-            <option  value="First Option" > Select </option>
-            <option  value="First Option"> First Option </option>
-            <option  value="First Option"> First Option </option>
-            <option  value="First Option"> First Option </option>
-          </select>
-        </div>  
-
-        <div>
-          <label  
-          for="EmailAddress" class="font-bold text-base uppercase mb-4"> Email Address </label>
-          <br />
-          <input id="Email Address" required
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          type='email'
-          placeholder="Enter "
-          v-model="EmailAddress"
-          />
-        </div>
-
-        <div>
-          <label  
-          for="Website" class="font-bold text-base uppercase mb-4"> Website </label>
-          <br />
-          <input id="Website" required
-          class=" appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400
-          focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out
-          sm:text-sm sm:leading-5 "
-          placeholder="Enter "
-          v-model="Website"
-          />
-        </div>
-    
-      </div>   
-  
-    </div> 
-    </form> 
-
-    <div class="my-8 flex justify-end">
-        <span >
-          <button class=' border border-blue-800 mr-8
-           rounded-3xl   px-6 py-2 
-                      placeholder-gray-400
-                      focus:outline-none
-                      focus:shadow-outline-blue
-                      focus:border-blue-300
-                      transition
-                      duration-150
-                      ease-in-out 
-                      sm:text-sm
-                      sm:leading-5
-                      cursor-pointer
-          '> 
-          Revert Changes
-        </button>
+            Revert Changes
+          </button>
         </span>
-         <span >
-          <button type='submit' @click='submitForm' class='
-          px-6 py-2  text-white appearance-none
-                      border-none
-                      bg-pink-600
-                      rounded-3xl
-                      placeholder-gray-400
-                      focus:outline-none
-                      focus:shadow-outline-blue
-                      focus:border-blue-300
-                      transition
-                      duration-150
-                      ease-in-out 
-                      sm:text-sm
-                      sm:leading-5
-                     cursor-pointer
-          '> 
-          Save Changes
-        </button>
+        <span>
+          <button
+            type="submit"
+            class="
+              px-6
+              py-2
+              text-white
+              appearance-none
+              border-none
+              bg-pink-600
+              rounded-3xl
+              placeholder-gray-400
+              focus:outline-none
+              focus:shadow-outline-blue
+              focus:border-blue-300
+              transition
+              duration-150
+              ease-in-out
+              sm:text-sm
+              sm:leading-5
+              cursor-pointer
+            "
+          >
+            Save Changes
+          </button>
         </span>
-      </div> 
+      </div>
     </section>
   </main>
 </template>
 
-
 <script>
-import { quantumClient } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
+import Avatar from "@/components/avatar.vue";
 
 export default {
   name: "OrganizationInformation",
   components: {
+    Avatar,
   },
   data() {
-  return {
-      OrganizationName:'',
-      alias:'',
-      OrganizationType: '',
-      ReferenceOrganization:'',
-      RegistrationNumber:'',
-      PhoneNumber:"",
-      DomainName:"",
-      OrganizationIdentifier:"",
-      ProviderProfile:"",
-      IncorporationType:"",
-      EmailAddress:" ",
-      Website:"",
-      
+    return {
+      displayImg: require("@/assets/img/placeholder.png"),
+      OrganizationName: "",
+      alias: "",
+      OrganizationType: "",
+      ReferenceOrganization: "",
+      RegistrationNumber: "",
+      PhoneNumber: "",
+      DomainName: "",
+      OrganizationIdentifier: "",
+      ProviderProfile: "",
+      IncorporationType: "",
+      EmailAddress: " ",
+      Website: "",
 
-// Still having issues getting the right souce path
-    imageFile:{
-      selectedImage: null,
-    },
-  
-    BASE_URL:'https://corniehealth.herokuapp.com/api/v1'
-  }
-},
- computed: {
+      orgTypes: [],
+      provProfiles: [],
+      incStatus: [],
+    };
+  },
+  computed: {
     payload() {
       return {
-      name:this.OrganizationName,
-      image: this.imageFile.selectedImage,
-      alias: this.alias,
-      organizationType:this.OrganizationType,
-      registrationNumber:this.RegistrationNumber,
-      domainName: this.DomainName,
-      identifier: this.OrganizationIdentifier,
-      providerProfile: this.ProviderProfile,
-      incorporationType: this.IncorporationType,
-      website: this.Website,
-    
-      // This is missing
-      // referenceOrganization , phoneNumber,   EmailAddress, 
-
-      // this does not exist
-      // incorporationStatus:''
-      
+        name: this.OrganizationName,
+        image: this.displayImg,
+        alias: this.alias,
+        organizationType: this.OrganizationType,
+        registrationNumber: this.RegistrationNumber,
+        domainName: this.DomainName,
+        identifier: this.OrganizationIdentifier,
+        providerProfile: this.ProviderProfile,
+        incorporationType: this.IncorporationType,
+        website: this.Website,
       };
     },
   },
-  methods:{
-  onFileChanged (event) {
-    this.imageFile.selectedImage = event.target.files[0]
-    this.$refs.img.src = this.imageFile.selectedImage
-     console.log(this.$refs.img.src)
-  },
-  onUpload() {
-    // upload file
-  },
-     async submitForm() {
-      try {
-        await quantumClient().post(this.BASEURL+"/organization", this.payload);
-        alert('Account created Sucessfully')
-      } catch (error) {
-        console.log( error);
-      }
+  async created() {
+    try {
+      await this.fetchDropDown();
+    } catch (error) {
+      console.log(error);
     }
-  
   },
-
-  async mounted(){
-      try{
-      await fetch(this.BASEURL+'/organization/getOrganisationType')
-      .then(response => {
-      console.log(response)
-      });
-        await fetch(this.BASEURL+'/organization​/getProviderProfile')
-      .then(response => {
-      console.log(response)
-      });
-
-        await fetch(this.BASEURL+'/organization/getIncorporationType')
-      .then(response => {
-      console.log(response)
-      });
-
+  methods: {
+    onFileChanged(event) {
+      const imageFile = event.target.files[0];
+      this.uploadImage(imageFile);
+    },
+    async uploadImage(img) {
+      const form = new FormData();
+      form.set("file", img);
+      try {
+        const response = await fetch(
+          "http://18.135.196.19:5001/document-management/upload/corniehealth",
+          {
+            method: "POST",
+            body: form,
+          }
+        );
+        if (!response.ok) return alert("File upload failed");
+        const data = await response.json();
+        this.displayImg = data.fileUrl;
+      } catch (error) {
+        console.log("Upload failed");
+        alert("File not uploaded");
       }
-      catch (error) {
-        console.log( error);
+    },
+    async submitForm() {
+      try {
+        await cornieClient().post("/api/v1/organization");
+        alert("Organization updated Sucessfully");
+      } catch (error) {
+        console.log(error);
       }
-      
-      
- 
-  } 
-
+    },
+    async fetchDropDown() {
+      const orgType = cornieClient().get(
+        "/api/v1/organization/getOrganisationType"
+      );
+      const providerProfile = cornieClient().get(
+        "/api/v1/organization/getProviderProfile"
+      );
+      const incType = cornieClient().get(
+        "/api/v1/organization/getIncorporationType"
+      );
+      const response = await Promise.all([orgType, providerProfile, incType]);
+      this.orgTypes = response[0].data;
+      this.provProfiles = response[1].data;
+      this.incTypes = response[2].data;
+    },
+  },
 };
 </script>
 
 <style scoped>
-.main-box{
+.main-box {
   display: grid;
-  grid-template-columns: repeat(2, 1fr );
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 3rem;
 }
 
@@ -361,8 +669,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
 </style>
