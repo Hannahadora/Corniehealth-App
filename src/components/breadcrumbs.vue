@@ -8,9 +8,9 @@
     </span>
     <span class="flex items-center mr-2" v-if="pages.parent">
       <page-icon />
-      <router-link :to="pages.parent" class="ml-2 capitalize"
-        >Dashboard</router-link
-      >
+      <router-link :to="pages.parent" class="ml-2 capitalize">{{
+        pages.parentName
+      }}</router-link>
     </span>
     <span class="mr-2">
       <chevron-right-icon />
@@ -48,9 +48,13 @@ export default class BreadCrumbs extends Vue {
     lastSep = parent.lastIndexOf("/");
     let base = parent.substring(0, lastSep);
     if (!base.startsWith("/")) base = `/${base}`;
+    const parentName = this.$route.matched.find((match) => {
+      return match.path == parent;
+    })?.name;
     return {
       base,
       parent,
+      parentName,
       active: this.$router.currentRoute.value.name,
     };
   }

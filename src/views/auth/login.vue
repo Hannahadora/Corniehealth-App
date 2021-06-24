@@ -207,10 +207,7 @@ export default {
     async submit() {
       try {
         const data = await quantumClient().post("/auth/login", this.payload);
-        const token = data.token;
-        store.commit("user/setAuthToken", token);
-        const user = data.user;
-        store.commit("user/setUser", user);
+        store.commit("user/setLoginInfo", data);
         this.$router.replace("/dashboard");
       } catch (error) {
         console.log("login failed ", error);

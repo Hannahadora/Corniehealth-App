@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
-
+import Settings from "@/views/dashboard/settings/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -40,7 +40,21 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "settings",
         name: "Settings",
-        component: () => import("@/views/dashboard/settings/settings.vue"),
+        component: Settings,
+        children: [
+          {
+            path: "account-security",
+            name: "Account Security",
+            component: () =>
+              import("@/views/dashboard/settings/AccountSecurity/index.vue"),
+          },
+          {
+            path: "devices",
+            name: "Devices",
+            component: () =>
+              import("@/views/dashboard/settings/devices/index.vue"),
+          },
+        ],
       },
     ],
   },
