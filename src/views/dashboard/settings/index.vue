@@ -4,18 +4,18 @@
       <settings-sidebar></settings-sidebar>
     </div>
     <div class="p-3 w-full h-full">
-      <account-security></account-security>
+      <router-view />
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import SettingsSidebar from './SettingsSidebar.vue'
-import AccountSecurity from './AccountSecurity/AccountSecurity.vue'
+import SettingsSidebar from "./SettingsSidebar.vue";
+import AccountSecurity from "./AccountSecurity/index.vue";
 @Options({
   components: {
     SettingsSidebar,
-    AccountSecurity
+    AccountSecurity,
   },
 })
 export default class Settings extends Vue {}
