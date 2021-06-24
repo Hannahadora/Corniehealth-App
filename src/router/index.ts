@@ -56,6 +56,11 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+      {
+        path: "organizationinformation",
+        name: "OrganizationInformation",
+        component: () => import("@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"),
+      },
     ],
   },
 ];
