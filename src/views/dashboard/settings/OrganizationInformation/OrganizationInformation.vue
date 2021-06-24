@@ -19,7 +19,7 @@
           Upload Image</label
         >
       </div>
-      <form method="POST">
+      <form @submit.prevent="submitForm">
         <div class="main-box mt-10">
           <div class="w-full h-full">
             <div>
@@ -117,10 +117,13 @@
                   sm:leading-5
                 "
               >
-                <option value="First Option">Select</option>
-                <option value="First Option">First Option</option>
-                <option value="First Option">First Option</option>
-                <option value="First Option">First Option</option>
+                <option
+                  v-for="(orgType, i) in orgTypes"
+                  :key="i"
+                  :value="orgType.code"
+                >
+                  {{ orgType.display }}
+                </option>
               </select>
             </div>
 
@@ -373,10 +376,13 @@
                 "
                 v-model="ProviderProfile"
               >
-                <option value="First Option">Select</option>
-                <option value="First Option">First Option</option>
-                <option value="First Option">First Option</option>
-                <option value="First Option">First Option</option>
+                <option
+                  v-for="(prov, i) in provProfiles"
+                  :key="i"
+                  :value="prov"
+                >
+                  {{ prov }}
+                </option>
               </select>
             </div>
 
@@ -410,10 +416,13 @@
                 "
                 v-model="IncorporationType"
               >
-                <option value="First Option">Select</option>
-                <option value="First Option">First Option</option>
-                <option value="First Option">First Option</option>
-                <option value="First Option">First Option</option>
+                <option
+                  v-for="(incType, i) in incTypes"
+                  :key="i"
+                  :value="incType"
+                >
+                  {{ incType }}
+                </option>
               </select>
             </div>
 
@@ -513,7 +522,6 @@
         <span>
           <button
             type="submit"
-            @click="submitForm"
             class="
               px-6
               py-2
@@ -543,7 +551,7 @@
 </template>
 
 <script>
-import { cornieClient, quantumClient } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import Avatar from "@/components/avatar.vue";
 
 export default {
@@ -567,7 +575,9 @@ export default {
       EmailAddress: " ",
       Website: "",
 
-      BASE_URL: "https://corniehealth.herokuapp.com/api/v1",
+      orgTypes: [],
+      provProfiles: [],
+      incStatus: [],
     };
   },
   computed: {
@@ -619,11 +629,8 @@ export default {
     },
     async submitForm() {
       try {
-        await quantumClient().post(
-          this.BASEURL + "/organization",
-          this.payload
-        );
-        alert("Account created Sucessfully");
+        await cornieClient().post("/api/v1/organization");
+        alert("Organization updated Sucessfully");
       } catch (error) {
         console.log(error);
       }
@@ -633,13 +640,15 @@ export default {
         "/api/v1/organization/getOrganisationType"
       );
       const providerProfile = cornieClient().get(
-        "/api/v1/organization​/getProviderProfile"
+        "/api/v1/organization/getProviderProfile"
       );
       const incType = cornieClient().get(
         "/api/v1/organization/getIncorporationType"
       );
-      const data = await Promise.all([orgType, providerProfile, incType]);
-      console.log(data);
+      const response = await Promise.all([orgType, providerProfile, incType]);
+      this.orgTypes = response[0].data;
+      this.provProfiles = response[1].data;
+      this.incTypes = response[2].data;
     },
   },
 };

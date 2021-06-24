@@ -195,11 +195,6 @@ export default {
       domain: "",
     };
   },
-  watch: {
-    password(val) {
-      console.log(val);
-    },
-  },
   computed: {
     payload() {
       return {

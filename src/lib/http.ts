@@ -31,7 +31,6 @@ export class JSONClient implements HttpClient {
       method: method,
       headers: { ...this.headers },
       body: this.buildBody(method, body),
-      mode: "no-cors",
     });
     if (!response.ok) {
       throw new ErrorResponse(response);
