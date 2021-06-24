@@ -1,9 +1,9 @@
 <template>
   <div class="toogle-check">
        <label class="switch">
-                <input type="checkbox" :checked="checked"
-                @change="$emit('update:checked', $event.target.checked)"
-                >
+                <input type="checkbox" v-model='checked'
+                @change="changes()"
+                />
                 <span class="slider round"></span>
                 {label}
         </label>
@@ -13,21 +13,17 @@
 
 
 <style scoped>
-
 .switch {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
 }
-
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
-
 .slider {
   position: absolute;
   cursor: pointer;
@@ -39,7 +35,6 @@
   -webkit-transition: .4s;
   transition: .4s;
 }
-
 .slider:before {
   position: absolute;
   content: "";
@@ -51,29 +46,20 @@
   -webkit-transition: .4s;
   transition: .4s;
 }
-
 input:checked + .slider {
  background: #FF5964;
 }
-
-
-
 input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
-
-
 .slider.round {
   border-radius: 34px;
 }
-
 .slider.round:before {
   border-radius: 50%;
 }
-
-
 </style>
 
 
@@ -86,11 +72,19 @@ export default {
         type: String,
         required: false,
       },
-      checked: {
-        type: Boolean,
-        required: true,
-      },
     },
-
+    data(){
+      return{
+        checked : " ",
+      }
+    },
+    methods: {
+      changes() {
+        const checked = this.checked
+        this.$emit('updated', checked)
+      }
+      
+    },
+   
 };
 </script>

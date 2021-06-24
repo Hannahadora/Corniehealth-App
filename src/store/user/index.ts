@@ -4,17 +4,27 @@ import { StoreOptions } from "vuex";
 interface UserState {
   user: User;
   authToken: string;
+  emailVerified: boolean;
+  requiresTwoFactorAuth: boolean;
+  requiresSecurityQuestion: boolean;
 }
 export default {
   namespaced: true,
   state: {
     user: {} as User,
     authToken: "",
+    requiresSecurityQuestion: false,
+    requiresTwoFactorAuth: false,
+    emailVerified: false,
   },
   getters: {},
   mutations: {
-    setAuthToken(state, token) {
-      state.authToken = token;
+    setLoginInfo(state, payload) {
+      state.user = payload.user;
+      state.emailVerified = payload.emailVerified;
+      state.requiresTwoFactorAuth = payload.requiresTwoFactorAuth;
+      state.requiresSecurityQuestion = payload.requiresSecurityQuestion;
+      state.authToken = payload.token;
     },
   },
   actions: {},

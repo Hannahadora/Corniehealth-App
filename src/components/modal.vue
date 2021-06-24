@@ -14,8 +14,8 @@
       bg-gray-500 bg-opacity-50
     "
   >
-    <div v-bind="$attrs" class="bg-gray-50 rounded-lg w-1/2 opacity-100">
-      <div class="flex flex-col items-start p-1">
+    <div v-bind="$attrs" class="bg-gray-50 rounded-lg opacity-100">
+      <div class="flex flex-col items-start">
         <div class="flex items-center w-full justify-between">
           <div class=""><slot name="title" /></div>
           <span

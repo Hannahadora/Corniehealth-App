@@ -17,6 +17,7 @@
     "vue-class-component": "^8.0.0-rc.1",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.8",
+    "vuedraggable": "^4.0.3",
     "vuex": "^4.0.1",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^1.0.1"

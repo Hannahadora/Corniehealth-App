@@ -68,6 +68,7 @@
                   <password-input
                     id="password"
                     required
+                    autocomplete
                     class="
                       appearance-none
                       block
@@ -189,10 +190,9 @@ export default {
   },
   data() {
     return {
-      email: "",
       password: "",
+      email: "",
       domain: "",
-      url: "http://18.132.188.41:7000/auth/login",
     };
   },
   computed: {
@@ -207,11 +207,8 @@ export default {
     async submit() {
       try {
         const data = await quantumClient().post("/auth/login", this.payload);
-        const token = data.token;
-        store.commit("user/setAuthToken", token);
-        const user = data.user;
-        store.commit("user/setUser", user);
-        this.$router.replace("/dashboard");
+        store.commit("user/setLoginInfo", data);
+        this.$router.replace("/dashboard/settings/org-info");
       } catch (error) {
         console.log("login failed ", error);
       }
