@@ -153,7 +153,7 @@ export default {
       return {
        previousPassword: this.currentPassword,
       newPassword: this.newPassword,
-      userId:store.state.Id
+      userId:store.state.user.Id
       };
     },
   },

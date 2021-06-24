@@ -128,7 +128,7 @@ export default {
     payloadOff() {
       return {
        password:store.state.user.password,
-       userId:store.state.Id,
+       userId:store.state.user.Id,
       };
     },
     payloadOn() {
@@ -149,7 +149,7 @@ export default {
    if(this.value){
       try {
         quantumClient().post("/org/security/2fa/setup", this.payloadOn);
-        alert('Turned Off Two-Factor Suceesfully')
+        alert('Turned ON Two-Factor Suceesfully')
       } catch (error) {
         console.log( error);
       }  

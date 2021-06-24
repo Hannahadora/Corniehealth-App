@@ -83,6 +83,8 @@ export default {
         const checked = this.checked
         this.$emit('updated', checked)
       }
-    }
+      
+    },
+   
 };
 </script>
