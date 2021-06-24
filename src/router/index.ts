@@ -54,12 +54,15 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/devices/index.vue"),
           },
+          {
+            path: "org-info",
+            name: "OrganizationInformation",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
+              ),
+          },
         ],
-      },
-      {
-        path: "organizationinformation",
-        name: "OrganizationInformation",
-        component: () => import("@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"),
       },
     ],
   },
