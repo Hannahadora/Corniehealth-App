@@ -1,7 +1,7 @@
 <template>
-  <div class="mt-2 mb-5 rounded-lg  bg-white w-full h-full">
-    <div class="w-full h-full p-3">
-      <div class="flex flex-col">
+  <div class="mt-2 mb-5 rounded-lg bg-white w-full h-full max-h-full">
+    <div class="w-full h-full max-h-full p-3">
+      <div class="flex flex-col h-full w-full overflow-auto max-h-full">
         <div class="justify-center">
           <input
             type="search"
@@ -112,7 +112,6 @@
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 <script lang="ts">
@@ -123,6 +122,4 @@ import { Options, Vue } from "vue-class-component";
 })
 export default class Settings extends Vue {}
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

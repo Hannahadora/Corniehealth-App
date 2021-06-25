@@ -1,5 +1,5 @@
 <template>
-  <div class="h-3/4 flex justify-center">
+  <div class="h-full flex justify-center">
     <device-empty-state v-if="false" />
     <device-existing-state />
   </div>

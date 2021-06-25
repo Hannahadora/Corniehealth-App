@@ -1,6 +1,6 @@
 <template>
   <main
-    class="h-screen grid"
+    class="h-screen grid overflow-hidden"
     :class="{ 'main-app': hovered, 'mini-app': !hovered }"
   >
     <div

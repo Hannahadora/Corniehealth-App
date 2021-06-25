@@ -30,16 +30,19 @@
                 Organization Name
               </label>
               <br />
-              <orgInput id="OrganizationName" placeholder="Enter" v-model="OrganizationName"/>
+              <orgInput
+                id="OrganizationName"
+                placeholder="Enter"
+                v-model="OrganizationName"
+              />
             </div>
-            
 
             <div>
               <label for="Alias" class="font-bold text-base uppercase mb-4">
                 Alias
               </label>
               <br />
-              <orgInput id="Alias"  placeholder="Enter" v-model="alias"/>
+              <orgInput id="Alias" placeholder="Enter" v-model="alias" />
             </div>
 
             <div>
@@ -50,15 +53,19 @@
                 Organization Type
               </label>
               <br />
-                <orgSelect  name="select" id="OrganizationType" v-model="OrganizationType">
-                  <option
+              <orgSelect
+                name="select"
+                id="OrganizationType"
+                v-model="OrganizationType"
+              >
+                <option
                   v-for="(orgType, i) in orgTypes"
                   :key="i"
                   :value="orgType.code"
                 >
                   {{ orgType.display }}
                 </option>
-                </orgSelect> 
+              </orgSelect>
             </div>
 
             <div>
@@ -69,7 +76,11 @@
                 Reference organization
               </label>
               <br />
-              <orgInput id="ReferenceOrganization" placeholder="Enter" v-model="ReferenceOrganization"/>
+              <orgInput
+                id="ReferenceOrganization"
+                placeholder="Enter"
+                v-model="ReferenceOrganization"
+              />
             </div>
 
             <div>
@@ -80,7 +91,12 @@
                 Registration Number
               </label>
               <br />
-              <orgInput  id="RegistrationNumber" type="Number"     placeholder="Enter " v-model="RegistrationNumber"/>
+              <orgInput
+                id="RegistrationNumber"
+                type="Number"
+                placeholder="Enter "
+                v-model="RegistrationNumber"
+              />
             </div>
 
             <div>
@@ -141,7 +157,6 @@
             </div>
           </div>
 
-
           <div class="w-full h-full">
             <div>
               <label
@@ -175,7 +190,6 @@
                   disabled
                   placeholder="https://corniehealth.com/"
                 />
-
                 <input
                   placeholder="Domain--"
                   class="
@@ -209,7 +223,11 @@
                 Organization Identifier
               </label>
               <br />
-              <orgInput  id="OrganizationIdentifier" placeholder="Enter " v-model="OrganizationIdentifier"/>
+              <orgInput
+                id="OrganizationIdentifier"
+                placeholder="Enter "
+                v-model="OrganizationIdentifier"
+              />
             </div>
 
             <div>
@@ -220,15 +238,19 @@
                 Provider Profile
               </label>
               <br />
-                <orgSelect  name="select"  id="ProviderProfile" v-model="ProviderProfile">
-                     <option
+              <orgSelect
+                name="select"
+                id="ProviderProfile"
+                v-model="ProviderProfile"
+              >
+                <option
                   v-for="(prov, i) in provProfiles"
                   :key="i"
                   :value="prov"
                 >
                   {{ prov }}
                 </option>
-                </orgSelect> 
+              </orgSelect>
             </div>
 
             <div>
@@ -239,7 +261,11 @@
                 Incorporation Type
               </label>
               <br />
-                <orgSelect  name="select"   id="IncorporationType"  v-model="IncorporationType">
+              <orgSelect
+                name="select"
+                id="IncorporationType"
+                v-model="IncorporationType"
+              >
                 <option
                   v-for="(incType, i) in incTypes"
                   :key="i"
@@ -247,7 +273,7 @@
                 >
                   {{ incType }}
                 </option>
-                </orgSelect>
+              </orgSelect>
             </div>
 
             <div>
@@ -258,7 +284,12 @@
                 Email Address
               </label>
               <br />
-              <orgInput    id="Email Address" type='email' placeholder="Enter" v-model="EmailAddress"/>
+              <orgInput
+                id="Email Address"
+                type="email"
+                placeholder="Enter"
+                v-model="EmailAddress"
+              />
             </div>
 
             <div>
@@ -266,63 +297,63 @@
                 Website
               </label>
               <br />
-               <orgInput   id="Website"  placeholder="Enter"  v-model="Website" />             
+              <orgInput id="Website" placeholder="Enter" v-model="Website" />
             </div>
           </div>
         </div>
 
         <div class="my-8 flex justify-end">
-        <span>
-          <button
-            class="
-              border border-blue-800
-              mr-8
-              rounded-3xl
-              px-6
-              py-2
-              placeholder-gray-400
-              focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-              cursor-pointer
-            "
-          >
-            Revert Changes
-          </button>
-        </span>
-        <span>
-          <button
-            type="submit"
-            class="
-              px-6
-              py-2
-              text-white
-              appearance-none
-              border-none
-              bg-pink-600
-              rounded-3xl
-              placeholder-gray-400
-              focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-              cursor-pointer
-            "
-          >
-            Save Changes
-          </button>
-        </span>
-      </div>
-      </form>    
+          <span>
+            <button
+              class="
+                border border-blue-800
+                mr-8
+                rounded-3xl
+                px-6
+                py-2
+                placeholder-gray-400
+                focus:outline-none
+                focus:shadow-outline-blue
+                focus:border-blue-300
+                transition
+                duration-150
+                ease-in-out
+                sm:text-sm
+                sm:leading-5
+                cursor-pointer
+              "
+            >
+              Revert Changes
+            </button>
+          </span>
+          <span>
+            <button
+              type="submit"
+              class="
+                px-6
+                py-2
+                text-white
+                appearance-none
+                border-none
+                bg-pink-600
+                rounded-3xl
+                placeholder-gray-400
+                focus:outline-none
+                focus:shadow-outline-blue
+                focus:border-blue-300
+                transition
+                duration-150
+                ease-in-out
+                sm:text-sm
+                sm:leading-5
+                cursor-pointer
+              "
+            >
+              Save Changes
+            </button>
+          </span>
+        </div>
+      </form>
     </section>
   </main>
 </template>
@@ -330,16 +361,15 @@
 <script>
 import { cornieClient } from "@/plugins/http";
 import Avatar from "@/components/avatar.vue";
-import OrgInput from "@/components/orgInput.vue"
-import OrgSelect from "@/components/orgSelect.vue"
-
+import OrgInput from "@/components/orgInput.vue";
+import OrgSelect from "@/components/orgSelect.vue";
 
 export default {
   name: "OrganizationInformation",
   components: {
     Avatar,
     OrgInput,
-    OrgSelect
+    OrgSelect,
   },
   data() {
     return {
@@ -359,7 +389,7 @@ export default {
 
       orgTypes: [],
       provProfiles: [],
-      incStatus: [],
+      incTypes: [],
     };
   },
   computed: {

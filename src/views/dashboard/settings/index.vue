@@ -1,5 +1,7 @@
 <template>
-  <div class="mt-2 mb-5 rounded-lg settings bg-white w-full h-full">
+  <div
+    class="mt-2 mb-5 rounded-lg settings bg-white w-full h-full overflow-auto"
+  >
     <div class="w-full h-full p-3 border-r-2">
       <settings-sidebar></settings-sidebar>
     </div>
@@ -24,5 +26,6 @@ export default class Settings extends Vue {}
 .settings {
   display: grid;
   grid-template-columns: 30% 70%;
+  max-height: 60%;
 }
 </style>
