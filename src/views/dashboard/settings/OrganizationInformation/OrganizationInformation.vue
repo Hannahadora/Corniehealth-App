@@ -30,28 +30,9 @@
                 Organization Name
               </label>
               <br />
-              <input
+              <orgInput
                 id="OrganizationName"
-                required
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
-                placeholder="Enter "
+                placeholder="Enter"
                 v-model="OrganizationName"
               />
             </div>
@@ -61,30 +42,7 @@
                 Alias
               </label>
               <br />
-              <input
-                id="Alias"
-                required
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
-                placeholder="Enter "
-                v-model="alias"
-              />
+              <orgInput id="Alias" placeholder="Enter" v-model="alias" />
             </div>
 
             <div>
@@ -95,27 +53,10 @@
                 Organization Type
               </label>
               <br />
-              <select
+              <orgSelect
                 name="select"
                 id="OrganizationType"
                 v-model="OrganizationType"
-                class="
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
               >
                 <option
                   v-for="(orgType, i) in orgTypes"
@@ -124,7 +65,7 @@
                 >
                   {{ orgType.display }}
                 </option>
-              </select>
+              </orgSelect>
             </div>
 
             <div>
@@ -135,28 +76,9 @@
                 Reference organization
               </label>
               <br />
-              <input
+              <orgInput
                 id="ReferenceOrganization"
-                required
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
-                placeholder="Enter "
+                placeholder="Enter"
                 v-model="ReferenceOrganization"
               />
             </div>
@@ -169,28 +91,9 @@
                 Registration Number
               </label>
               <br />
-              <input
+              <orgInput
                 id="RegistrationNumber"
-                required
                 type="Number"
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
                 placeholder="Enter "
                 v-model="RegistrationNumber"
               />
@@ -253,6 +156,7 @@
               </div>
             </div>
           </div>
+
           <div class="w-full h-full">
             <div>
               <label
@@ -286,7 +190,6 @@
                   disabled
                   placeholder="https://corniehealth.com/"
                 />
-
                 <input
                   placeholder="Domain--"
                   class="
@@ -320,27 +223,8 @@
                 Organization Identifier
               </label>
               <br />
-              <input
+              <orgInput
                 id="OrganizationIdentifier"
-                required
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
                 placeholder="Enter "
                 v-model="OrganizationIdentifier"
               />
@@ -354,26 +238,9 @@
                 Provider Profile
               </label>
               <br />
-              <select
+              <orgSelect
                 name="select"
                 id="ProviderProfile"
-                class="
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
                 v-model="ProviderProfile"
               >
                 <option
@@ -383,7 +250,7 @@
                 >
                   {{ prov }}
                 </option>
-              </select>
+              </orgSelect>
             </div>
 
             <div>
@@ -394,26 +261,9 @@
                 Incorporation Type
               </label>
               <br />
-              <select
+              <orgSelect
                 name="select"
                 id="IncorporationType"
-                class="
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
                 v-model="IncorporationType"
               >
                 <option
@@ -423,7 +273,7 @@
                 >
                   {{ incType }}
                 </option>
-              </select>
+              </orgSelect>
             </div>
 
             <div>
@@ -434,29 +284,10 @@
                 Email Address
               </label>
               <br />
-              <input
+              <orgInput
                 id="Email Address"
-                required
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
                 type="email"
-                placeholder="Enter "
+                placeholder="Enter"
                 v-model="EmailAddress"
               />
             </div>
@@ -466,86 +297,63 @@
                 Website
               </label>
               <br />
-              <input
-                id="Website"
-                required
-                class="
-                  appearance-none
-                  w-full
-                  my-4
-                  px-3
-                  py-2
-                  border border-gray-300
-                  rounded-md
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
-                placeholder="Enter "
-                v-model="Website"
-              />
+              <orgInput id="Website" placeholder="Enter" v-model="Website" />
             </div>
           </div>
         </div>
-      </form>
 
-      <div class="my-8 flex justify-end">
-        <span>
-          <button
-            class="
-              border border-blue-800
-              mr-8
-              rounded-3xl
-              px-6
-              py-2
-              placeholder-gray-400
-              focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-              cursor-pointer
-            "
-          >
-            Revert Changes
-          </button>
-        </span>
-        <span>
-          <button
-            type="submit"
-            class="
-              px-6
-              py-2
-              text-white
-              appearance-none
-              border-none
-              bg-pink-600
-              rounded-3xl
-              placeholder-gray-400
-              focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-              cursor-pointer
-            "
-          >
-            Save Changes
-          </button>
-        </span>
-      </div>
+        <div class="my-8 flex justify-end">
+          <span>
+            <button
+              class="
+                border border-blue-800
+                mr-8
+                rounded-3xl
+                px-6
+                py-2
+                placeholder-gray-400
+                focus:outline-none
+                focus:shadow-outline-blue
+                focus:border-blue-300
+                transition
+                duration-150
+                ease-in-out
+                sm:text-sm
+                sm:leading-5
+                cursor-pointer
+              "
+            >
+              Revert Changes
+            </button>
+          </span>
+          <span>
+            <button
+              type="submit"
+              class="
+                px-6
+                py-2
+                text-white
+                appearance-none
+                border-none
+                bg-pink-600
+                rounded-3xl
+                placeholder-gray-400
+                focus:outline-none
+                focus:shadow-outline-blue
+                focus:border-blue-300
+                transition
+                duration-150
+                ease-in-out
+                sm:text-sm
+                sm:leading-5
+                cursor-pointer
+              "
+            >
+              Save Changes
+            </button>
+          </span>
+        </div>
+      </form>
     </section>
   </main>
 </template>
@@ -553,11 +361,15 @@
 <script>
 import { cornieClient } from "@/plugins/http";
 import Avatar from "@/components/avatar.vue";
+import OrgInput from "@/components/orgInput.vue";
+import OrgSelect from "@/components/orgSelect.vue";
 
 export default {
   name: "OrganizationInformation",
   components: {
     Avatar,
+    OrgInput,
+    OrgSelect,
   },
   data() {
     return {
@@ -577,7 +389,7 @@ export default {
 
       orgTypes: [],
       provProfiles: [],
-      incStatus: [],
+      incTypes: [],
     };
   },
   computed: {
@@ -629,7 +441,7 @@ export default {
     },
     async submitForm() {
       try {
-        await cornieClient().post("/api/v1/organization");
+        await cornieClient().post("/api/v1/organization", this.payload);
         alert("Organization updated Sucessfully");
       } catch (error) {
         console.log(error);

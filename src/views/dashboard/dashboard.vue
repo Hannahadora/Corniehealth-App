@@ -1,17 +1,17 @@
 <template>
   <main
-    class="h-screen grid"
+    class="h-screen grid overflow-hidden"
     :class="{ 'main-app': hovered, 'mini-app': !hovered }"
   >
     <div
-      class="w-full"
+      class="block"
       @mouseover="hovered = true"
       @mouseleave="hovered = false"
     >
       <cornie-side-bar />
     </div>
-    <div class="h-full ml-2">
-      <nav-bar class="ml" />
+    <div class="h-full w-auto">
+      <nav-bar class="" />
       <div class="pr-4 pl-6 pt-2 flex flex-col body-content bg-gray-100">
         <bread-crumbs class="" />
         <router-view class="" />
