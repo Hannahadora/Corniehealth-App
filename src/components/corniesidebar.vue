@@ -12,8 +12,8 @@
         fixed
         justify-center
         px-3
+        w-auto
       "
-      :class="{ 'w-20': !hovered, 'w-56': hovered }"
     >
       <div
         class="

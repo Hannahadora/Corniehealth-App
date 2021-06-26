@@ -98,7 +98,8 @@ export default class SidebarLink extends Vue {
   }
   get active() {
     const currentRoute = this.$route.fullPath;
-    return currentRoute == this.to;
+
+    return currentRoute == this.$router.resolve(this.to).path;
   }
   mounted() {
     document.addEventListener("click", (e) => {

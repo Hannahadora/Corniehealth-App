@@ -25,7 +25,7 @@ export default class Settings extends Vue {}
 <style scoped>
 .settings {
   display: grid;
-  grid-template-columns: 30% 70%;
+  grid-template-columns: 25% 75%;
   max-height: 60%;
 }
 </style>
