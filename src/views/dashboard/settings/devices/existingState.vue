@@ -103,6 +103,27 @@ export default class DeviceExistingState extends Vue {
       expiryDate: "06-June-2025",
       more: "",
     },
+    {
+      identifier: "A18903",
+      deviceType: "Spine Board",
+      manDate: "09-July-2021",
+      expiryDate: "06-June-2025",
+      more: "",
+    },
+    {
+      identifier: "A18903",
+      deviceType: "Spine Board",
+      manDate: "09-July-2021",
+      expiryDate: "06-June-2025",
+      more: "",
+    },
+    {
+      identifier: "A18903",
+      deviceType: "Spine Board",
+      manDate: "09-July-2021",
+      expiryDate: "06-June-2025",
+      more: "",
+    },
   ];
 
   showColumnFilter = false;
@@ -130,5 +151,20 @@ table thead th:first-child {
 }
 table thead th:last-child {
   border-top-right-radius: 0.4rem 0.4rem !important;
+}
+table thead tr th {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+table tbody td {
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
+table tbody tr {
+  border: 1px solid #b8c3de;
+}
+table tbody tr:nth-child(even) {
+  background-color: white !important;
 }
 </style>

@@ -41,12 +41,19 @@ const routes: Array<RouteRecordRaw> = [
         path: "settings",
         name: "Settings",
         component: Settings,
+        redirect: "/dashboard/settings/org-info",
         children: [
           {
             path: "account-security",
             name: "Account Security",
             component: () =>
               import("@/views/dashboard/settings/AccountSecurity/index.vue"),
+          },
+          {
+            path: "bank-accounts",
+            name: "Bank & Accounts",
+            component: () =>
+              import("@/views/dashboard/settings/bankaccounts/index.vue"),
           },
           {
             path: "devices",
