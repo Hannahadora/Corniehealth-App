@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="mt-2 mb-5 rounded-lg settings bg-white w-full h-full overflow-auto"
-  >
+  <div class="mt-2 mb-5 rounded-lg settings bg-white w-full overflow-auto">
     <div class="w-full h-full p-3 border-r-2">
       <settings-sidebar></settings-sidebar>
     </div>

@@ -106,7 +106,11 @@ export default class Settings extends Vue {
 
   get userSecurity() {
     return [
-      { name: "Account Security", to: "acc-security", icon: "security-icon" },
+      {
+        name: "Account Security",
+        to: "account-security",
+        icon: "security-icon",
+      },
       { name: "Domains", to: "domains", icon: "domain-icon" },
       { name: "Practitioners", to: "practitioners", icon: "practitioner-icon" },
       { name: "Group", to: "group", icon: "group-icon" },
