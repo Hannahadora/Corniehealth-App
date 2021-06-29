@@ -63,18 +63,19 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "org-info",
-            name: "OrganizationInformation",
+            name: "Organization Information",
             component: () =>
               import(
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
+          {
+            path: "contact-info",
+            name: "Contact Information",
+            component: () =>
+              import("@/views/dashboard/contact/contact-information.vue"),
+          },
         ],
-      },
-      {
-        path: "contact",
-        name: "Contact Information",
-        component: () => import("@/views/dashboard/contact/contact-information.vue"),
       },
     ],
   },
