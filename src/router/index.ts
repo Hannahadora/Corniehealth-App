@@ -54,6 +54,14 @@ const routes: Array<RouteRecordRaw> = [
             name: "Bank & Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
+            children:[
+              {
+                path: "add-payment-account",
+                name: "New Payment Account",
+                component: () =>
+                  import("@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"),
+              },
+            ]
           },
           {
             path: "devices",
