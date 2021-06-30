@@ -15,7 +15,7 @@
         hover:opacity-90
       "
     >
-      New Account
+       <p> <router-link to="/dashboard/settings/bank-accounts/add-payment-account">New Account</router-link>   </p>
     </button>
   </div>
 </template>

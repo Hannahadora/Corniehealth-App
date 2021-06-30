@@ -137,14 +137,14 @@ import Accordion from "@/components/accordion.vue";
 import AccordionItem from "@/components/accordion-component.vue";
 import SettingsSidebar from "../settings/SettingsSidebar.vue";
 import Addicon from "@/components/icons/add.vue";
-import AddContact from "./addcontact.vue"
+// import AddContact from "./addcontact.vue"
 @Options({
   components: {
     Accordion,
     AccordionItem,
     SettingsSidebar,
     Addicon,
-    AddContact,
+    // AddContact,
   },
 })
 export default class ContactInfo extends Vue {}
