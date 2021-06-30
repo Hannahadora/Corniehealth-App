@@ -1,103 +1,84 @@
 <template>
-  <main class="p-6 ">
-    <h3
-    class='
-    text-primary
-    text-xl
-    font-bold
-    border-b border-gray-300
-    '
-    >
-      Account Security</h3>
+  <main class="p-6">
+    <h3 class="text-primary text-xl font-bold border-b border-gray-300">
+      Account Security
+    </h3>
     <section class="acc-main">
       <div class="flex justify-between my-10">
         <div>
-          <h4 class='text-lg font-bold'>Password</h4>
-          <p
-           class='
-              text-base
-              text-black
-              flex
-            '
-          >
+          <h4 class="text-lg font-bold">Password</h4>
+          <p class="text-base text-black flex">
             The same password strength are enforced for all users across the
             app.
             <a
               @click="viewPolicy = !viewPolicy"
-              class="ml-1  text-blue-600 cursor-pointer text-xs"
+              class="ml-1 text-blue-600 cursor-pointer text-xs"
             >
               VIEW POLICY
             </a>
           </p>
         </div>
         <div v-if="!isShowingPassword">
-          <button 
-            class='
+          <button
+            class="
               bg-white
-              border
-              border-gray-300
+              border border-gray-300
               rounded-3xl
               font-bold
-              text-center
-              text-primary
+              text-center text-primary
               py-3
               px-3
-              '
-          ref="pass" @click="displayUpadtePassword()">
+            "
+            ref="pass"
+            @click="displayUpadtePassword()"
+          >
             Update Password
           </button>
         </div>
       </div>
       <div v-if="displayPasswordSetting">
-               <span
+        <span
           class="cursor-pointer flex items-center justify-end"
-           @click="closeUpadtePassword()"
+          @click="closeUpadtePassword()"
         >
           <close-icon />
         </span>
-        <update-password/>
+        <update-password />
       </div>
       <div class="flex justify-between my-10">
         <div>
-          <h4 
-          class='text-lg font-bold'
-          >Two Factor Authentication</h4>
-          <p
-           class='
-            text-base
-            text-black
-            flex
-          '
-          >
+          <h4 class="text-lg font-bold">Two Factor Authentication</h4>
+          <p class="text-base text-black flex">
             Two factor authentication enforced for all users within your domain.
-           <notification-icon class="cursor-pointer"/>
+            <notification-icon class="cursor-pointer" />
           </p>
         </div>
         <div v-if="!isShowingTwoFactor">
           <button
-            class='
-               bg-white
-              border
-              border-gray-300
+            class="
+              bg-white
+              border border-gray-300
               rounded-3xl
               font-bold
-              text-center
-              text-primary
+              text-center text-primary
               py-3
               px-3
-                '
-           @click="displayTwoFactorAuth()">Configure</button>
+            "
+            @click="displayTwoFactorAuth()"
+          >
+            Configure
+          </button>
         </div>
       </div>
-       <div v-if="displayTwoFactor">
+      <div v-if="displayTwoFactor">
         <span
           class="cursor-pointer flex items-center justify-end"
-           @click="closeTwoFactor()"
+          @click="closeTwoFactor()"
         >
           <close-icon />
         </span>
-      <TwoFactorAuth />
-    </div>
+        <TwoFactorAuth />
+      </div>
     </section>
     <password-policy v-model:visible="viewPolicy" />
   </main>
@@ -118,7 +99,7 @@ export default {
     TwoFactorAuth,
     CloseIcon,
     PasswordPolicy,
-    NotificationIcon
+    NotificationIcon,
   },
   data() {
     return {
@@ -153,5 +134,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

@@ -33,14 +33,20 @@
         </span>
         <span class="flex px-3 pb-2 border-b-4 flex-grow" />
       </span>
-      <div>Put your tabs here</div>
+      <div>
+        <Collection v-if="active == 1" />
+      </div>
     </div>
   </div>
 </template>
 <script>
+import Collection from "./collections.vue";
+
 export default {
   name: "BanksAndAccounts",
-  components: {},
+  components: {
+    Collection,
+  },
   data() {
     return {
       tabs: ["Payments", "Collections", "Currency Conversions"],
