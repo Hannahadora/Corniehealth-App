@@ -36,16 +36,19 @@
       </span>
       <div>
         <payment  v-if="active == 0" />
+        <Collection v-if="active == 1" />
       </div>
     </div>
   </div>
 </template>
 <script>
 import Payment from "./Payment/payment.vue";
+import Collection from "./collections.vue";
 
 export default {
   name: "BanksAndAccounts",
   components: {
+    Collection,
     Payment
   },
   data() {
