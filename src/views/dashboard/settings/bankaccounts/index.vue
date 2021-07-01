@@ -1,4 +1,5 @@
 <template>
+   <router-view />
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span
@@ -33,14 +34,23 @@
         </span>
         <span class="flex px-3 pb-2 border-b-4 flex-grow" />
       </span>
-      <div>Put your tabs here</div>
+      <div>
+        <payment  v-if="active == 0" />
+        <!-- <Collection v-if="active == 1" /> -->
+      </div>
     </div>
   </div>
 </template>
 <script>
+import Payment from "./Payment/payment.vue";
+// import Collection from "./collections.vue";
+
 export default {
   name: "BanksAndAccounts",
-  components: {},
+  components: {
+    // Collection,
+    Payment
+  },
   data() {
     return {
       tabs: ["Payments", "Collections", "Currency Conversions"],

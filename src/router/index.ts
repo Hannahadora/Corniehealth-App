@@ -54,6 +54,14 @@ const routes: Array<RouteRecordRaw> = [
             name: "Bank & Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
+            children:[
+              {
+                path: "add-payment-account",
+                name: "New Payment Account",
+                component: () =>
+                  import("@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"),
+              },
+            ]
           },
           {
             path: "devices",
@@ -63,11 +71,17 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "org-info",
-            name: "OrganizationInformation",
+            name: "Organization Information",
             component: () =>
               import(
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
+          },
+          {
+            path: "contact-info",
+            name: "Contact Information",
+            component: () =>
+              import("@/views/dashboard/contact/contact-information.vue"),
           },
         ],
       },

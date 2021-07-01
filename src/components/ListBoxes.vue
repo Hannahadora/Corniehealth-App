@@ -3,6 +3,7 @@
     <label >
         <input
         :type = 'types'
+        :v-model = 'modelName'
         > 
         {{value}}     
      </label>
@@ -51,6 +52,10 @@ export default {
       type: String || Number,
       default: "",
     },
+    modelName: {
+       type: String,
+        required: false,
+    }
   },
 };
 </script>
