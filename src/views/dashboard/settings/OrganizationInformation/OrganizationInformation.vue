@@ -254,6 +254,17 @@
             </div>
 
             <div>
+              <label for="incStat" class="font-bold text-base uppercase mb-4">
+                Incorporation Status
+              </label>
+              <br />
+              <orgSelect name="select" id="incStat" v-model="IncStatus">
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+              </orgSelect>
+            </div>
+
+            <div>
               <label
                 for="IncorporationType"
                 class="font-bold text-base uppercase mb-4"
@@ -386,6 +397,7 @@ export default {
       IncorporationType: "",
       EmailAddress: " ",
       Website: "",
+      IncStatus: "",
 
       orgTypes: [],
       provProfiles: [],
@@ -398,13 +410,14 @@ export default {
         name: this.OrganizationName,
         image: this.displayImg,
         alias: this.alias,
-        organizationType: this.OrganizationType,
+        organisationType: this.OrganizationType,
         registrationNumber: this.RegistrationNumber,
         domainName: this.DomainName,
         identifier: this.OrganizationIdentifier,
         providerProfile: this.ProviderProfile,
         incorporationType: this.IncorporationType,
         website: this.Website,
+        incorporationStatus: this.IncStatus,
       };
     },
   },

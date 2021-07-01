@@ -4,7 +4,6 @@
     :placeholder="placeholder"
     v-model="modelValueSync"
     :type="type"
-    required
     class="
       appearance-none
       w-full

@@ -13,6 +13,7 @@
         focus:outline-none
         hover:opacity-90
       "
+      @click="$emit('add-device')"
     >
       Add a New Device
     </button>

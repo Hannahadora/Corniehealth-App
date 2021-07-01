@@ -1,9 +1,11 @@
 import { JSONClient } from "@/lib/http";
+import localstore from "./localstore";
 import store from "@/store";
 
 let interval: number | undefined;
 
-const storeAuthToken = (): string => store.state.user.authToken;
+const storeAuthToken = (): string =>
+  store.state.user.authToken || localstore.get("authToken");
 
 async function refreshToken() {
   if (!storeAuthToken()) return;
@@ -35,11 +37,15 @@ export const quantumClient = () =>
     "http://18.132.188.41:7000"
   );
 
+const cornieUrl =
+  process.env.NODE_ENV == "production"
+    ? "https://corniehealth.herokuapp.com/"
+    : "http://localhost:7000";
 export const cornieClient = () =>
   new JSONClient(
     {
       "Content-Type": "application/json",
       Authorization: storeAuthToken(),
     },
-    "https://corniehealth.herokuapp.com/"
+    cornieUrl
   );

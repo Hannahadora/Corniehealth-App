@@ -25,6 +25,7 @@
           focus:outline-none
           hover:opacity-90
         "
+        @click="$emit('add-device')"
       >
         Add a New Device
       </button>
@@ -35,6 +36,7 @@
         <icon-input
           class="border border-gray-600 rounded-full focus:outline-none"
           type="search"
+          v-model="query"
         >
           <template v-slot:prepend>
             <search-icon />
@@ -49,11 +51,20 @@
     </div>
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'"> <three-dot-icon /> </span>
+        <span v-if="getKeyValue(item).key == 'action'">
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="updateDevice(item.data.id)"
+          />
+        </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-    <column-filter v-model:visible="showColumnFilter" />
+    <column-filter
+      :columns="rawHeaders"
+      v-model:preferred="preferredHeaders"
+      v-model:visible="showColumnFilter"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -67,6 +78,20 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "./columnfilter.vue";
+import { Prop } from "vue-property-decorator";
+import IDevice from "@/types/IDevice";
+import { flatten } from "@/plugins/flatten";
+import search from "@/plugins/search";
+
+const first = (num: number, vals: any[]) => {
+  const res = [];
+  for (let index = 0; index < vals.length; index++) {
+    const element = vals[index];
+    res.push(element);
+  }
+  return res;
+};
+
 @Options({
   components: {
     Table,
@@ -81,53 +106,96 @@ import ColumnFilter from "./columnfilter.vue";
   },
 })
 export default class DeviceExistingState extends Vue {
-  headers = [
+  @Prop({ type: Array, default: [] })
+  devices!: IDevice[];
+
+  query = "";
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "Identifier",
-      value: "identifier",
+      value: "id",
+      show: true,
     },
-    { title: "Device Type", value: "deviceType", filter: true },
-    { title: "Manufacture Date", value: "manDate" },
+    { title: "Device Type", value: "name", show: true },
+    { title: "Manufacture Date", value: "manufacturerDate", show: true },
     {
       title: "Expiration Date",
-      value: "expiryDate",
+      value: "expirationDate",
       filter: true,
+      show: true,
     },
-    { title: "", value: "more", image: true },
+    {
+      title: "Name Type",
+      value: "nameType",
+      show: false,
+    },
+    {
+      title: "Status",
+      value: "status",
+      show: false,
+    },
+    {
+      title: "Status Reason",
+      value: "statusReason",
+      show: false,
+    },
+    {
+      title: "System Type",
+      value: "systemType",
+      show: false,
+    },
+    {
+      title: "Issuer",
+      value: "issuer",
+      show: false,
+    },
+    {
+      title: "Jurisdiction",
+      value: "id",
+      show: false,
+    },
   ];
-  items = [
-    {
-      identifier: "A18903",
-      deviceType: "Spine Board",
-      manDate: "09-July-2021",
-      expiryDate: "06-June-2025",
-      more: "",
-    },
-    {
-      identifier: "A18903",
-      deviceType: "Spine Board",
-      manDate: "09-July-2021",
-      expiryDate: "06-June-2025",
-      more: "",
-    },
-    {
-      identifier: "A18903",
-      deviceType: "Spine Board",
-      manDate: "09-July-2021",
-      expiryDate: "06-June-2025",
-      more: "",
-    },
-    {
-      identifier: "A18903",
-      deviceType: "Spine Board",
-      manDate: "09-July-2021",
-      expiryDate: "06-June-2025",
-      more: "",
-    },
-  ];
+
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "action", image: true }];
+  }
+
+  get items() {
+    const devices = this.devices.map((device) => {
+      const flattened = flatten(device);
+      if (flattened.manufacturerDate) {
+        flattened.manufacturerDate = new Date(
+          flattened.manufacturerDate
+        ).toLocaleDateString("en-US");
+      }
+      if (flattened.expirationDate) {
+        flattened.expirationDate = new Date(
+          flattened.expirationDate
+        ).toLocaleDateString("en-US");
+      }
+      flattened.action = flattened.id;
+      return flattened;
+    });
+    if (!this.query) return devices;
+    return search.searchObjectArray(devices, this.query);
+  }
 
   showColumnFilter = false;
+  columns = [
+    { selected: false, name: "Car" },
+    { selected: false, name: "Bus" },
+  ];
 
+  updateDevice(id: string) {
+    const device = this.devices.find((d) => d.id == id);
+    this.$emit("update-device", device);
+  }
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
