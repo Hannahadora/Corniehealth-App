@@ -6,8 +6,13 @@
         <template v-slot:misc>
           <add-icon class="cursor-pointer" @click="addNew(key)" />
         </template>
-        <div class="w-full p-2" v-for="contact in contacts" :key="contact.id">
-          <contact-card :contact="contact" />
+        <div class="w-full p-2 flex flex-wrap">
+          <contact-card
+            :contact="contact"
+            v-for="contact in contacts"
+            :key="contact.id"
+            class="m-1"
+          />
         </div>
       </accordion-item>
     </accordion>

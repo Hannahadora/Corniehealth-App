@@ -1,8 +1,7 @@
 <template>
   <div
     class="
-      shadow-lg
-      w-80
+      shadow-xl
       text-black
       flex flex-row
       rounded-lg
@@ -13,10 +12,7 @@
     "
   >
     <span class="flex items-center p-2">
-      <img
-        class="h-10 w-10 rounded-full mr-1"
-        src="https://avatars.githubusercontent.com/u/66243665?v=4"
-      />
+      <img class="h-10 w-10 rounded-full mr-1" :src="contact.image" />
       <div class="text-black">
         <div class="font-semibold capitalize">
           {{ contact.fname }} {{ contact.lname }}
@@ -31,7 +27,6 @@
     </span>
     <div
       class="
-        w-2/5
         justify-center
         items-center
         flex
@@ -39,6 +34,8 @@
         bg-gray-300
         opacity-0
         hover:opacity-100
+        flex-grow
+        px-3
       "
     >
       <edit-icon class="mr-3" @click="editContact" />
