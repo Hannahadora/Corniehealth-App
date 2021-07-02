@@ -36,6 +36,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    redirect: "/dashboard/settings",
     children: [
       {
         path: "settings",
@@ -54,14 +55,16 @@ const routes: Array<RouteRecordRaw> = [
             name: "Bank & Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
-            children:[
+            children: [
               {
                 path: "add-payment-account",
                 name: "New Payment Account",
                 component: () =>
-                  import("@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"),
+                  import(
+                    "@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"
+                  ),
               },
-            ]
+            ],
           },
           {
             path: "devices",
@@ -81,7 +84,9 @@ const routes: Array<RouteRecordRaw> = [
             path: "contact-info",
             name: "Contact Information",
             component: () =>
-              import("@/views/dashboard/contact/contact-information.vue"),
+              import(
+                "@/views/dashboard/settings/contact/contact-information.vue"
+              ),
           },
         ],
       },

@@ -15,7 +15,7 @@
     </span>
     <form class="mt-5 w-full" @submit.prevent="submit">
       <span class="grid grid-cols-2">
-        <d-input v-model="deviceModel.id" label="Identifier" />
+        <d-input v-model="deviceModel.id" label="Identifier" disabled />
         <d-select v-model="deviceModel.reference" label="reference" disabled />
       </span>
       <span
@@ -234,7 +234,7 @@
           "
           type="submit"
         >
-          Add Device
+          {{ action }} Device
         </button>
       </span>
     </form>
@@ -283,10 +283,22 @@ export default class UpdateDevice extends Vue {
   @devices.Mutation
   setDevices!: any;
 
+  @devices.Mutation
+  updateDevices!: any;
+
+  get isUpdate() {
+    return Boolean(this.device.id);
+  }
+
+  get action() {
+    return this.isUpdate ? "Update" : "Add";
+  }
+
   @Watch("device")
   deviceUpdated(device: IDevice) {
-    this.deviceModel = { ...device };
+    this.deviceModel = JSON.parse(JSON.stringify({ ...device }));
   }
+
   done() {
     this.$emit("device-added");
   }
@@ -298,8 +310,13 @@ export default class UpdateDevice extends Vue {
     carrier.expirationDate = new Date(carrier.expirationDate).toISOString();
     return model;
   }
+
   async submit() {
-    //this.done();
+    if (this.isUpdate) return this.update();
+    else this.create();
+  }
+
+  async create() {
     try {
       const response = await cornieClient().post("/api/v1/devices/create", [
         this.payload,
@@ -307,11 +324,27 @@ export default class UpdateDevice extends Vue {
       if (response.success) {
         this.setDevices(response.data.devices);
         alert("Device added");
+        this.done();
       }
     } catch (error) {
       console.error(error);
     }
-    console.log(this.payload);
+  }
+
+  async update() {
+    try {
+      const response = await cornieClient().patch(
+        "/api/v1/devices/update",
+        this.payload
+      );
+      if (response.success) {
+        this.updateDevices([response.data.device]);
+        alert("Device updated");
+        this.done();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
   setDeviceModel() {
     this.deviceModel = JSON.parse(JSON.stringify({ ...this.device }));

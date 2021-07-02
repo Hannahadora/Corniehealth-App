@@ -208,7 +208,7 @@ export default {
       try {
         const data = await quantumClient().post("/auth/login", this.payload);
         store.commit("user/setLoginInfo", data);
-        this.$router.replace("/dashboard/settings/org-info");
+        this.$router.replace("/dashboard/");
       } catch (error) {
         console.log("login failed ", error);
       }

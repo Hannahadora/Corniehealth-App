@@ -25,7 +25,7 @@
         />
       </span>
     </div>
-    <div v-if="expand" class="w-full border-2"><slot name="content" /></div>
+    <div v-if="expand" class="w-full border-2"><slot name="default" /></div>
   </div>
 </template>
 <script>

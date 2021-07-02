@@ -20,16 +20,18 @@ export default {
       state.devices = [...devices];
     },
     setDropdownData(state, data) {
-      console.log("committing");
       state.dropdownData = { ...data };
     },
     updateDevices(state, devices: IDevice[]) {
+      console.log("updating devices");
       const storedDevices = [...state.devices];
       devices.forEach((device) => {
         const index = storedDevices.findIndex((d) => d.id == device.id);
-        if (index) storedDevices[index] = device;
+        if (index >= 0) storedDevices[index] = device;
         else storedDevices.push(device);
       });
+      console.log(storedDevices);
+      state.devices = [...storedDevices];
     },
   },
   actions: {
