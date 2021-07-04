@@ -9,6 +9,7 @@
       cursor-pointer
       overflow-x-hidden
       justify-between
+      border
     "
   >
     <span class="flex items-center p-2">
