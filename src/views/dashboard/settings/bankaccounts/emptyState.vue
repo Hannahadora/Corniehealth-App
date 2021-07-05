@@ -14,8 +14,10 @@
         focus:outline-none
         hover:opacity-90
       "
+           @click="$emit('add-account')"
     >
-       <p> <router-link to="/dashboard/settings/bank-accounts/add-payment-account">New Account</router-link>   </p>
+       <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
+      New Account
     </button>
   </div>
 </template>

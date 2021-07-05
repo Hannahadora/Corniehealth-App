@@ -38,9 +38,7 @@ export const quantumClient = () =>
   );
 
 const cornieUrl =
-  process.env.NODE_ENV == "production"
-    ? "https://corniehealth.herokuapp.com/"
-    : "http://localhost:7000/";
+   "https://corniehealth.herokuapp.com/";
 export const cornieClient = () =>
   new JSONClient(
     {

@@ -1,5 +1,4 @@
 <template>
-  <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span
         class="
@@ -63,7 +62,8 @@
        
      </div>
 
-     <div
+      <form class="mt-5 w-full" @submit.prevent="submit">
+         <div
      class='border-b-2 
      mb-10
      '>
@@ -75,23 +75,27 @@
                <label for='categories' class="font-bold text-base uppercase mb-4"> categories </label>
                <orgSelect
                 name="select"
+                :modelValue = 'PaymentsCategories'
                 id=" categories"
-                v-model="categories"
               >
-                <option >
-                 Option 1
+                     <option
+                  v-for="(PaymentsCategory, i) in   PaymentsCategories"
+                  :key="i"
+                  :value="PaymentsCategory"
+                >
+                  {{ PaymentsCategory }}
                 </option>
               </orgSelect>
      </div>
 
     <div>
-               <label for='categories' class="font-bold text-base uppercase mb-4"> locations </label>
+               <label for='locations' class="font-bold text-base uppercase mb-4"> locations </label>
                <orgSelect
                 name="select"
                 id="locations"
-                v-model="locations"
+                 modelValue="locations"
               >
-                <option >
+                <option  >
                   option 1
                 </option>
               </orgSelect>
@@ -106,38 +110,35 @@
                <orgSelect
                 name="select"
                 id="bank"
-                v-model="bank"
+            :modelValue ='AllBanks'
               >
-                <option >
-                   option1
+               <option
+                  v-for="(bank, i) in AllBanks"
+                  :key="i"
+                  :value="bank"
+                
+                >
+                  {{ bank }}
                 </option>
               </orgSelect>
      </div>
 
     <div>
                <label for='accountNumber' class="font-bold text-base uppercase mb-4"> account number </label>
-               <orgSelect
-                name="select"
+               <orgInput
                 id="accountNumber"
+                placeholder="Enter "
                 v-model="accountNumber"
-              >
-                <option >
-                 option 1
-                </option>
-              </orgSelect>
+              />
      </div>
 
    <div>
                <label for='accountName' class="font-bold text-base uppercase mb-4"> account nAME </label>
-               <orgSelect
-                name="select"
+              <orgInput
                 id="accountName"
+                placeholder="Enter"
                 v-model="accountName"
-              >
-                <option >
-                 option 1
-                </option>
-              </orgSelect>
+              />
      </div>
 
      </div>
@@ -151,9 +152,7 @@
 
     </div>
 
-    
-
-    <div class="my-8 flex justify-end">
+       <div class="my-8 flex justify-end">
           <span>
             <button
               class="
@@ -186,7 +185,7 @@
                 text-white
                 appearance-none
                 border-none
-                bg-gray-400
+                bg-gray-600
                 rounded-3xl
                 placeholder-gray-400
                 focus:outline-none
@@ -205,27 +204,91 @@
           </span>
     </div>
 
-  </div>
+      </form>
+
   </div>
 </template>
 <script>
 import OrgSelect from "@/components/orgSelect.vue";
 import FileIcon from "@/components/icons/file.vue";
+import OrgInput from "@/components/orgInput.vue";
+
+import { cornieClient } from "@/plugins/http";
+
 
 export default {
   name: "AddPaymentAccount",
   components: {
    OrgSelect,
    FileIcon,
+    OrgInput,
   },
+
   data(){
-    return{
-     picked:true
+    return {
+          picked : true , 
+          accountName: '',
+          accountNumber :'',
+          PaymentsCategories: [],
+         AllBanks  : [],
+         locations:''
     }
   },
+   computed: {
+    payload() {
+      return{
+        paymentCategories : this.PaymentsCategories,
+        accountName : this.accountName,
+        accountNumber : this.accountNumber,
+        bank : this.AllBanks
+      }
+  },
+
+   },
+
+  //  fetching of the dropdown data
+    async created() {
+    try {
+      await this.fetchDropDown();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+   methods:{
   
 
-};
+    //Add Organization Payment Account
+  async submit() {
+    try {
+      console.log(this.payload)
+      const response = await cornieClient().post("/api/v1/payments", 
+        this.payload);
+      if (response.success) {
+        alert("Payment Account added");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  // fetching select dropdown
+
+      async fetchDropDown() {
+      const PaymentsCategories = cornieClient().get(
+        "/api/v1/payments/getPaymentsCategories/all"
+      );
+      const AllBanks = cornieClient().get(
+        "/api/v1/payments/getAllBanks/all"
+      );
+      const response = await Promise.all([PaymentsCategories, AllBanks]);
+      this.PaymentsCategories = response[0].data;
+      this.AllBanks  = response[1].data;
+    },
+
+   }
+}; 
+
 </script>
 <style>
 .select-box {
