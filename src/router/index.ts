@@ -32,6 +32,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "Sign In",
     component: () => import("@/views/auth/login.vue"),
   },
+  //reset password
+  {
+    path: "/reset/password",
+    name: "Reset Password",
+    component: () => import("@/views/auth/resetpassword.vue"),
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
