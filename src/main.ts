@@ -3,4 +3,10 @@ import App from "./App.vue";
 import store from "./store";
 import router from "./router";
 import "./index.css";
-createApp(App).use(router).use(store).mount("#app");
+import { registerGlobalComponents } from "./components/globals";
+
+const app = createApp(App).use(router).use(store);
+
+registerGlobalComponents(app);
+
+app.mount("#app");

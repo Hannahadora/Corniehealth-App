@@ -10,8 +10,8 @@
         <slot name="text" />
       </section>
       <section class="w-full h-full mt-2">
-        <div class="h-5/6 w-1/2 block rounded-lg bg-white">
-          <slot name="default" />
+        <div class="h-5/6 w-2/3 block rounded-lg bg-white">
+          <slot />
         </div>
       </section>
     </div>

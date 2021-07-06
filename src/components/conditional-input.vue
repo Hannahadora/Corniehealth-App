@@ -5,7 +5,6 @@
     </label>
     <span class="flex">
       <select
-        v-model="codeSync"
         class="
           border border-gray-300
           px-3
@@ -22,13 +21,8 @@
           sm:leading-5
         "
       >
-        <option
-          :selected="code.default"
-          :value="code.dialCode"
-          v-for="(code, i) in codes"
-          :key="i"
-        >
-          {{ code.dialCode }}
+        <option v-for="(item, i) in items" :value="item.code || item" :key="i">
+          {{ item.display || item }}
         </option>
       </select>
       <input
@@ -42,34 +36,22 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
-import { countryCodes } from "@/plugins/countrycodes";
 
 @Options({
   inheritAttrs: false,
 })
-export default class PhoneInput extends Vue {
+export default class DInput extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
   @PropSync("modelValue")
   valueSync!: string;
 
-  @Prop({ type: String, default: "" })
-  code!: string;
-
-  @PropSync("code")
-  codeSync!: string;
+  @Prop({ type: Array, default: [] })
+  items!: any[];
 
   @Prop({ type: String, default: "" })
   label!: string;
-
-  get codes() {
-    return countryCodes.sort((a, b) => {
-      if (a.dialCode > b.dialCode) return 1;
-      if (a.dialCode < b.dialCode) return -1;
-      return 0;
-    });
-  }
 }
 </script>
 <style scoped>
