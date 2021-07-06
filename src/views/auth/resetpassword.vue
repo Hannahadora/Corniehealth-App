@@ -14,7 +14,7 @@
                     </figure>
             </div>
             <!-- ... -->
-            <div class="bg-blue-50 w-96 lg:w-0 xl:w-0 md:w-0 p-48 xl:p-0 lg:p-0  md:p-0">
+            <div class="bg-blue-50 w-96 lg:w-full xl:w-full md:w-full p-48 xl:p-0 lg:p-0  md:p-0">
                  <div v-if="step === 1" class="rounded-lg  w-80 lg:w-3/4 xl:w-3/4 md:w-3/4 lg:h-2/2 xl:h-2/2 md:h-2/2 relative mt-12 lg:mt-48 xl:mt-48 md:mt-48  right-44 lg:right-32 xl:right-32 md:right-32 border-2 border-gray-300  flex bg-white shadow-lg">
                     <div class="absolute mt-36 ml-12 lg:hidden sm:block">
                         <a href="" class="nav-image xl:mr-5 sm:mx-auto cornie-logo relative bottom-56 lg:bottom-0 xl:bottom-0 md:bottom-0">
@@ -120,18 +120,12 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
-import CreateAccount from './createaccount.vue'
-import VerifyEmailCode from './verifyemailcode.vue'
-import ActivateAccount from './activateaccount.vue'
 import { Watch } from 'vue-property-decorator'
 
 type CreatedUser = { id: string; email: string }
 
 @Options({
   components: {
-    VerifyEmailCode,
-    CreateAccount,
-    ActivateAccount
   }
 })
 export default class SignUp extends Vue {
