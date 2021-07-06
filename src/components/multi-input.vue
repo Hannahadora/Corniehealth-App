@@ -4,7 +4,8 @@
       v-for="i in length"
       :key="i"
       maxlength="1"
-      class="max-w-rem rounded mb-2 border-primary border-2 py-2 px-4"
+      :class="[customClass]"
+      class="max-w-rem rounded mb-2 border py-2 text-center focus:outline-none"
       placeholder="--"
       @keydown="keyPressed(i - 1)"
       :ref="`input${i - 1}`"
@@ -21,6 +22,9 @@ import { Prop, Watch } from "vue-property-decorator";
 export default class MultiInput extends Vue {
   @Prop({ type: Number, default: 4 })
   length!: number;
+
+  @Prop({ type: String, default: "" })
+  customClass!: string;
 
   model: any[] = [];
 
@@ -61,6 +65,6 @@ export default class MultiInput extends Vue {
 </script>
 <style scoped>
 .max-w-rem {
-  max-width: 3rem;
+  max-width: 2.5rem;
 }
 </style>
