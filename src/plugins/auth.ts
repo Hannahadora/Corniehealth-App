@@ -14,14 +14,14 @@ export async function isLoggedIn() {
 
 export async function logout() {
   clearInterval(interval);
-  localstore.put("authToken", "");
+  localstore.remove("authToken");
   store.commit("user/setAuthToken", "");
 }
 
 let interval: number | undefined;
 export function startRefresher(expiryInMins: number) {
+  if (interval) return;
   const expiryInMilliSecs = expiryInMins * 60 * 1000;
-  clearInterval(interval);
   interval = setInterval(refreshToken, expiryInMilliSecs);
 }
 
