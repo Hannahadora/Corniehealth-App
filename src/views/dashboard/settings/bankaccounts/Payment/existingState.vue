@@ -13,10 +13,10 @@
           hover:opacity-90
           flex
         "
+         @click="$emit('add-account')"
       >
     <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
-    
-    <p> <router-link to="/dashboard/settings/bank-accounts/add-payment-account">New Account</router-link>   </p>
+      New Account
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -25,6 +25,7 @@
         <icon-input
           class="border border-gray-600 rounded-full focus:outline-none"
           type="search"
+          v-model="query"
         >
           <template v-slot:prepend>
             <search-icon />
@@ -62,6 +63,9 @@ import TableSettingIcon from "@/components/icons/tablesetting.vue"
 import BankAddIcon from "@/components/icons/bankadd.vue"
 import extraModal from "./extraModal.vue"
 import AdvancedFilters from "./advancedFilters.vue"
+
+
+import { cornieClient } from "@/plugins/http";
 @Options({
   components: {
     Table,
@@ -93,39 +97,28 @@ export default class BankAccountsExistingState extends Vue {
     // Displaying Icon in the header - <table-setting-icon/> 
     { title: "", value: "more", image: true,  },
   ];
-  items = [
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-       {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-  ];
+  items = [];
 
 showExtraModal = false;
 showAdvancedFilters = false;
+
+    async fetchOrgPayments() {
+      const OrgPayments = cornieClient().get(
+        "/api/v1/payments/myOrg/getMyOrgPayments"
+      );
+      const response = await OrgPayments
+      this.items = response.data;
+    }
+
+  //  fetching of Org Payments
+    async created() {
+    try {
+      await this.fetchOrgPayments();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
@@ -137,8 +130,13 @@ showAdvancedFilters = false;
       index,
     };
   }
+
 }
 </script>
+
+
+
+
 <style>
 table thead th {
   background: #0a4269 !important;

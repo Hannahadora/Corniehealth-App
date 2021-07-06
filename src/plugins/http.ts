@@ -38,7 +38,6 @@ export const quantumClient = () =>
   );
 
 const cornieUrl = "https://corniehealth.herokuapp.com/";
-
 export const cornieClient = () =>
   new JSONClient(
     {
