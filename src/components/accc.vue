@@ -477,11 +477,11 @@ video {
   transition-duration: 0.5s;
 }
 .acc {
-  border: solid 1px #0A4269;
+  border: solid 1px #0a4269;
 }
 </style>
 
-  <template>
+<template>
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.0/css/font-awesome.css"
