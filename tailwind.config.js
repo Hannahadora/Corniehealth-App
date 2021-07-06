@@ -3,6 +3,9 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   purge: {
     content: ["./public/**/*.html", "./src/**/*.vue"],
+    options: {
+      safelist: ["border-blue-400", "border-red-400", "border-green-400"],
+    },
   },
   presets: [],
   darkMode: false, // or 'media' or 'class'
