@@ -13,10 +13,10 @@
           hover:opacity-90
           flex
         "
-         @click="$emit('add-account')"
+        @click="$emit('add-account')"
       >
-    <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
-      New Account
+        <span class="mt-2 mr-2"> <bank-add-icon /> </span>
+        New Account
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -33,20 +33,25 @@
         </icon-input>
       </span>
       <span class="flex justify-between items-center">
-        <three-dot-icon class="mr-7" />  
+        <three-dot-icon class="mr-7" />
         <print-icon class="mr-7" />
         <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showAdvancedFilters = true"  />
+        <filter-icon
+          class="cursor-pointer"
+          @click="showAdvancedFilters = true"
+        />
       </span>
     </div>
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'"> <three-dot-icon @click="showExtraModal = true" />  </span>
+        <span v-if="getKeyValue(item).key == 'more'">
+          <three-dot-icon @click="showExtraModal = true" />
+        </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-     <extra-modal v-model:visible='showExtraModal'/>
-     <advanced-filters v-model:visible='showAdvancedFilters'/>
+    <extra-modal v-model:visible="showExtraModal" />
+    <advanced-filters v-model:visible="showAdvancedFilters" />
   </div>
 </template>
 <script lang="ts">
@@ -59,11 +64,10 @@ import PrintIcon from "@/components/icons/print.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
-import TableSettingIcon from "@/components/icons/tablesetting.vue"
-import BankAddIcon from "@/components/icons/bankadd.vue"
-import extraModal from "./extraModal.vue"
-import AdvancedFilters from "./advancedFilters.vue"
-
+import TableSettingIcon from "@/components/icons/tablesetting.vue";
+import BankAddIcon from "@/components/icons/bankadd.vue";
+import extraModal from "./extraModal.vue";
+import AdvancedFilters from "./advancedFilters.vue";
 
 import { cornieClient } from "@/plugins/http";
 @Options({
@@ -79,7 +83,7 @@ import { cornieClient } from "@/plugins/http";
     BankAddIcon,
     TableSettingIcon,
     extraModal,
-    AdvancedFilters
+    AdvancedFilters,
   },
 })
 export default class BankAccountsExistingState extends Vue {
@@ -88,37 +92,36 @@ export default class BankAccountsExistingState extends Vue {
       title: "ACCOUNT NAME",
       value: "accountName",
     },
-    { title: "ACCOUNT NUMBER", value: "accountNumber"},
+    { title: "ACCOUNT NUMBER", value: "accountNumber" },
     { title: "Location(s)", value: "Location" },
     {
       title: "PAYMENT CATEGORY(IES)",
       value: "paymentCategory",
     },
-    // Displaying Icon in the header - <table-setting-icon/> 
-    { title: "", value: "more", image: true,  },
+    // Displaying Icon in the header - <table-setting-icon/>
+    { title: "", value: "more", image: true },
   ];
   items = [];
 
-showExtraModal = false;
-showAdvancedFilters = false;
+  showExtraModal = false;
+  showAdvancedFilters = false;
 
-    async fetchOrgPayments() {
-      const OrgPayments = cornieClient().get(
-        "/api/v1/payments/myOrg/getMyOrgPayments"
-      );
-      const response = await OrgPayments
-      this.items = response.data;
-    }
+  async fetchOrgPayments() {
+    const OrgPayments = cornieClient().get(
+      "/api/v1/payments/myOrg/getMyOrgPayments"
+    );
+    const response = await OrgPayments;
+    this.items = response.data;
+  }
 
   //  fetching of Org Payments
-    async created() {
+  async created() {
     try {
       await this.fetchOrgPayments();
     } catch (error) {
       console.log(error);
     }
   }
-
 
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
@@ -130,12 +133,8 @@ showAdvancedFilters = false;
       index,
     };
   }
-
 }
 </script>
-
-
-
 
 <style>
 table thead th {
