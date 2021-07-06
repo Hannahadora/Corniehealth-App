@@ -1,5 +1,5 @@
 <template>
-  <div class="w-1/2 flex flex-col justify-center items-center">
+  <div class="w-full h-full flex flex-col justify-center items-center">
     <img src="@/assets/img/nobank.svg" />
     <h3 class="text-center text-black mt-5">{{ msg }}</h3>
     <h4 class="text-black text-center">Add new account</h4>
@@ -14,9 +14,9 @@
         focus:outline-none
         hover:opacity-90
       "
-           @click="$emit('add-account')"
+      @click="$emit('add-account')"
     >
-       <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
+      <span class="mt-2 mr-2"> <bank-add-icon /> </span>
       New Account
     </button>
   </div>
