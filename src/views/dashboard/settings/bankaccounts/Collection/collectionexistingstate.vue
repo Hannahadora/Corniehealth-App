@@ -71,6 +71,9 @@ import TableSettingIcon from "@/components/icons/tablesetting.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
 import extraModal from "../Payment/extraModal.vue";
 import AdvancedFilters from "../Payment/advancedFilters.vue";
+import { Prop } from "vue-property-decorator";
+import ICollection from "@/types/ICollection";
+
 @Options({
   components: {
     Table,
@@ -88,6 +91,9 @@ import AdvancedFilters from "../Payment/advancedFilters.vue";
   },
 })
 export default class BankAccountsExistingState extends Vue {
+  @Prop({ type: Object, required: true, default: [] })
+  collections!: ICollection;
+
   headers = [
     {
       title: "ACCOUNT NAME",
@@ -103,40 +109,10 @@ export default class BankAccountsExistingState extends Vue {
     // Displaying Icon in the header - <table-setting-icon/>
     { title: "", value: "more", image: true },
   ];
-  items = [
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      status: "Active",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      status: "Inactive",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      status: "Active",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-    {
-      accountName: "Scelloo Limited",
-      accountNumber: "0222315465, WEMA Bank",
-      Location: "All Locations Selected",
-      status: "Inactive",
-      paymentCategory: "Supplier Invoices",
-      more: "",
-    },
-  ];
+
+  get items() {
+    return this.collections;
+  }
 
   showExtraModal = false;
   showAdvancedFilters = false;

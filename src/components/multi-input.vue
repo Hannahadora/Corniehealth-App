@@ -23,6 +23,11 @@ export default class MultiInput extends Vue {
   @Prop({ type: Number, default: 4 })
   length!: number;
 
+  /**
+   * css classes that will be applied to the individual input fields.
+   * This is a good place to change border color to
+   * reflect success or failure of the code filled in.
+   */
   @Prop({ type: String, default: "" })
   customClass!: string;
 

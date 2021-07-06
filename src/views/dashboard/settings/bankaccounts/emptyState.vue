@@ -1,5 +1,5 @@
 <template>
-  <div class="w-1/2 flex flex-col justify-center items-center">
+  <div class="w-full h-full flex flex-col justify-center items-center">
     <img src="@/assets/img/nobank.svg" />
     <h3 class="text-center text-black mt-5">{{ msg }}</h3>
     <h4 class="text-black text-center">Add new account</h4>
@@ -15,7 +15,11 @@
         hover:opacity-90
       "
     >
-       <p> <router-link to="/dashboard/settings/bank-accounts/add-payment-account">New Account</router-link>   </p>
+      <p>
+        <router-link to="/dashboard/settings/bank-accounts/add-payment-account"
+          >New Account</router-link
+        >
+      </p>
     </button>
   </div>
 </template>
