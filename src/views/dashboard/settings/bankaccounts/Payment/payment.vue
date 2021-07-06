@@ -8,7 +8,7 @@
 </div>
 </template> 
 
-<script lang="ts">
+<script >
 import BankEmptyState  from "../emptyState.vue";
 import BankAccountsExistingState from "./existingState.vue";
 import AddPaymentAccount from "./addPaymentAccount.vue";
@@ -37,7 +37,7 @@ export default {
       if(response.data.length > 0){
         this.hasPayments = true
       }
-    }
+    },
   }
 
 </script>

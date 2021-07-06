@@ -75,7 +75,7 @@
                <label for='categories' class="font-bold text-base uppercase mb-4"> categories </label>
                <orgSelect
                 name="select"
-                :modelValue = 'PaymentsCategories'
+                v-model = 'PaymentCategories'
                 id=" categories"
               >
                      <option
@@ -110,7 +110,7 @@
                <orgSelect
                 name="select"
                 id="bank"
-            :modelValue ='AllBanks'
+               v-model ='AllBank'
               >
                <option
                   v-for="(bank, i) in AllBanks"
@@ -231,16 +231,18 @@ export default {
           accountNumber :'',
           PaymentsCategories: [],
          AllBanks  : [],
+         PaymentCategories: '',
+         AllBank  : '',
          locations:''
     }
   },
    computed: {
     payload() {
       return{
-        paymentCategories : this.PaymentsCategories,
+        paymentCategories : this.PaymentCategories,
         accountName : this.accountName,
         accountNumber : this.accountNumber,
-        bank : this.AllBanks
+        bank : this.AllBank
       }
   },
 
