@@ -94,6 +94,12 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/contact/contact-information.vue"
               ),
           },
+          {
+            path: "location",
+            name: "Location & Location Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/location/index.vue"),
+          },
         ],
       },
     ],
