@@ -1,16 +1,12 @@
 <template>
   <div class="toogle-check">
-       <label class="switch">
-                <input type="checkbox" v-model='checked'
-                @change="changes()"
-                />
-                <span class="slider round"></span>
-                {label}
-        </label>
+    <label class="switch">
+      <input type="checkbox" v-model="checked" @change="changes()" />
+      <span class="slider round"></span>
+      {label}
+    </label>
   </div>
 </template>
-
-
 
 <style scoped>
 .switch {
@@ -32,8 +28,8 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 .slider:before {
   position: absolute;
@@ -43,11 +39,11 @@
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 input:checked + .slider {
- background: #FF5964;
+  background: #ff5964;
 }
 input:checked + .slider:before {
   -webkit-transform: translateX(26px);
@@ -62,29 +58,25 @@ input:checked + .slider:before {
 }
 </style>
 
-
-
 <script>
 export default {
   name: "ToogleCheck",
-    props: {
-      label: {
-        type: String,
-        required: false,
-      },
+  props: {
+    label: {
+      type: String,
+      required: false,
     },
-    data(){
-      return{
-        checked : " ",
-      }
+  },
+  data() {
+    return {
+      checked: " ",
+    };
+  },
+  methods: {
+    changes() {
+      const checked = this.checked;
+      this.$emit("updated", checked);
     },
-    methods: {
-      changes() {
-        const checked = this.checked
-        this.$emit('updated', checked)
-      }
-      
-    },
-   
+  },
 };
 </script>

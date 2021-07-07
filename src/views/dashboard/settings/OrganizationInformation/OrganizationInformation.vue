@@ -111,7 +111,7 @@
                 <select
                   class="
                     border border-gray-300
-                    my-4
+                    my-2
                     px-3
                     py-2
                     rounded-l-md
@@ -136,7 +136,7 @@
                     rounded-r-md
                     appearance-none
                     w-full
-                    my-4
+                    my-2
                     px-3
                     py-2
                     border border-gray-300

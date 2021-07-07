@@ -1,19 +1,65 @@
 <template>
-  <div class="h-full flex justify-center">
-    <bank-empty-state  msg='No payment account recorded' v-if='false'/>  
-    <bank-accounts-existing-state />
+  <div class="h-screen flex justify-center">
+    <AddPaymentAccount v-if="addAccount" />
+    <template v-else>
+      <bank-accounts-existing-state
+         v-if="!empty"
+        @add-account="addAccount = true"
+      />
+      <bank-empty-state
+        v-else
+        @add-account="addAccount = true"
+        msg="No payment account recorded"
+      />
+    </template>
   </div>
 </template>
 
-<script lang="ts">
-import BankEmptyState  from "../emptyState.vue";
+<script  lang="ts">
+import { Options, Vue } from "vue-class-component";
+import BankEmptyState from "../emptyState.vue";
 import BankAccountsExistingState from "./existingState.vue";
+import AddPaymentAccount from "./addPaymentAccount.vue";
+import IPayment from "@/types/IPayment";
 
-export default {
-  name: "Payment",
+import { cornieClient } from "@/plugins/http";
+
+
+@Options({
   components: {
-     BankEmptyState,
-     BankAccountsExistingState
+      BankEmptyState,
+    BankAccountsExistingState,
+    AddPaymentAccount,
   },
-}
+})
+
+export default class Payment extends Vue {
+  payments = [] as  IPayment[];
+
+  
+
+  get empty() {
+    return this.payments.length < 1;
+  }
+
+  async fetchPayments() {
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/payments/myOrg/getMyOrgPayments"
+      );
+      if (response.success){
+          this.payments = [...response.data];
+          console.log(this.payments)
+      } 
+      else console.log(response.message);
+    } catch (error) {
+      console.log("failed to fetch payments");
+    }
+  }
+
+  created() {
+    this. fetchPayments();
+  }
+};
+
 </script>

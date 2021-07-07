@@ -36,6 +36,13 @@ export default class LocalStore {
     this.store(key, value);
   }
 
+  remove(key: string) {
+    if (!this.has(key)) return;
+    delete this.expiryDates[key];
+    delete this.workingData[key];
+    this.commit("dates", this.expiryDates);
+    this.commit("data", this.workingData);
+  }
   private store(key: string, value: any) {
     this.workingData[key] = value;
     this.commit("data", this.workingData);

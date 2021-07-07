@@ -9,24 +9,16 @@
           />
         </span>
       </div>
-      <div class="block p-3 ">
-        <li class='
-        list-none
-        my-4
-        flex
-        cursor-pointer
-        '> <eye-icon class='mr-3 '/> View & Edit </li>
-        <li  class='
-        list-none
-        my-4
-        flex
-        cursor-pointer
-        '> <close-icon class='mr-3 '  /> Deactivate Account </li>
-        <li  class='
-        list-none
-        my-4 flex cursor-pointer
-        '> <delete-icon class='mr-3 ' /> Delete Account </li>
-        
+      <div class="block p-3">
+        <li class="list-none my-4 flex cursor-pointer">
+          <eye-icon class="mr-3" /> View & Edit
+        </li>
+        <li class="list-none my-4 flex cursor-pointer">
+          <close-icon class="mr-3" /> Deactivate Account
+        </li>
+        <li class="list-none my-4 flex cursor-pointer">
+          <delete-icon class="mr-3" /> Delete Account
+        </li>
       </div>
     </modal>
   </div>
@@ -45,8 +37,7 @@ export default {
     ArrowLeftIcon,
     CloseIcon,
     EyeIcon,
-    DeleteIcon
-
+    DeleteIcon,
   },
   props: {
     visible: {

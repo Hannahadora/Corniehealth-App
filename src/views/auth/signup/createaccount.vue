@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full block p-8">
+  <div class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg">
     <h2 class="font-bold text-3xl mb-10">Join Corniehealth</h2>
     <form class="w-full" @submit.prevent="submit">
       <div class="w-full grid grid-cols-2 gap-y-4 gap-x-3 mb-3">
@@ -48,6 +48,7 @@
       <cornie-btn
         class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
         type="submit"
+        :loading="loading"
       >
         Continue
       </cornie-btn>
@@ -57,6 +58,12 @@
       >
         Quantum
       </cornie-btn>
+      <span class="w-full flex text-sm mt-2">
+        Already have an account?
+        <router-link class="ml-1 text-blue-500" to="/signin"
+          >Sign In</router-link
+        >
+      </span>
     </form>
   </div>
 </template>
@@ -90,7 +97,7 @@ export default class CreateAccount extends Vue {
   phone = "";
   dialCode = "";
   fullName = "";
-
+  loading = false;
   get payload() {
     const { firstName, lastName, middleName } = this.splitName();
     return {
@@ -119,6 +126,7 @@ export default class CreateAccount extends Vue {
 
   async submit() {
     const errMsg = "Account not created";
+    this.loading = true;
     try {
       const data = await quantumClient().post("/auth/signup/", this.payload);
       if (!data.success) {
@@ -128,6 +136,7 @@ export default class CreateAccount extends Vue {
     } catch (error) {
       alert(errMsg);
     }
+    this.loading = false;
   }
 }
 </script>

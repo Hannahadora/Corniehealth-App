@@ -7,15 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Home,
-  },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    redirect: "/dashboard",
   },
   {
     path: "/signup",
@@ -24,24 +16,21 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/login",
-    name: "Login",
-    component: () => import("@/views/auth/login.vue"),
-  },
-  {
-    path: "/login",
     name: "Sign In",
-    component: () => import("@/views/auth/login.vue"),
+    alias: "/signin",
+    component: () => import("@/views/auth/signin/index.vue"),
   },
   //reset password
   {
     path: "/reset/password",
     name: "Reset Password",
-    component: () => import("@/views/auth/resetpassword.vue"),
+    component: () => import("@/views/auth/reset/resetpassword.vue"),
   },
   {
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    meta: { requiresAuth: true },
     redirect: "/dashboard/settings",
     children: [
       {
@@ -113,5 +102,4 @@ const router = createRouter({
     return { left: 0, top: 0 };
   },
 });
-
 export default router;
