@@ -1,43 +1,32 @@
 <template>
    <div class="h-screen flex justify-center">
-    <AddPaymentAccount v-if="addAccount"/>
+    <new-exchange-rate v-if="newExchangeRate"/>
     <template v-else>
-    <bank-accounts-existing-state v-if='hasPayments' @add-account="addAccount= true"/>
-    <bank-empty-state  v-if='!hasPayments'  @add-account="addAccount= true" msg='No payment account recorded' />   
+    <empty-state  v-if='true'   @newExchangeRate="addAccount= true"  />  
+     <current-state v-else @newExchangeRate="newExchangeRate= true"/> 
     </template>
 </div>
 </template> 
 
-<script >
-import BankEmptyState  from "../emptyState.vue";
-import BankAccountsExistingState from "./existingState.vue";
-import AddPaymentAccount from "./addPaymentAccount.vue";
+<script>
+import emptyState  from "./emptyState.vue";
+import currentState from "./currentState.vue";
+import NewExchangeRate from "./newExchangeRate.vue"
 
-
-import { cornieClient } from "@/plugins/http";
 
 export default {
-  name: "Payment",
+  name: "CurrencyConversion",
   components: {
-     BankEmptyState,
-     BankAccountsExistingState,
-     AddPaymentAccount
+     emptyState, 
+     currentState,
+     NewExchangeRate
   },
   data(){
     return{
-      addAccount: false,
-      hasPayments: false
+      newExchangeRate: false,
     }
   },
-      async created() {
-      const OrgPayments = cornieClient().get(
-        "/api/v1/payments/myOrg/getMyOrgPayments"
-      );
-      const response = await OrgPayments
-      if(response.data.length > 0){
-        this.hasPayments = true
-      }
-    },
+  
   }
 
 </script>

@@ -68,8 +68,9 @@ import TableSettingIcon from "@/components/icons/tablesetting.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
 import extraModal from "./extraModal.vue";
 import AdvancedFilters from "./advancedFilters.vue";
+import { Prop } from "vue-property-decorator";
+import IPayment from "@/types/IPayment";
 
-import { cornieClient } from "@/plugins/http";
 @Options({
   components: {
     Table,
@@ -87,6 +88,13 @@ import { cornieClient } from "@/plugins/http";
   },
 })
 export default class BankAccountsExistingState extends Vue {
+
+  
+ @Prop({ type: Array, default: [] })
+  payments!: IPayment[];
+
+  query = "";
+
   headers = [
     {
       title: "ACCOUNT NAME",
@@ -101,26 +109,14 @@ export default class BankAccountsExistingState extends Vue {
     // Displaying Icon in the header - <table-setting-icon/>
     { title: "", value: "more", image: true },
   ];
-  items = [];
 
+  
   showExtraModal = false;
   showAdvancedFilters = false;
 
-  async fetchOrgPayments() {
-    const OrgPayments = cornieClient().get(
-      "/api/v1/payments/myOrg/getMyOrgPayments"
-    );
-    const response = await OrgPayments;
-    this.items = response.data;
-  }
 
-  //  fetching of Org Payments
-  async created() {
-    try {
-      await this.fetchOrgPayments();
-    } catch (error) {
-      console.log(error);
-    }
+   get items() {
+    return this.payments;
   }
 
   getKeyValue(item: any) {

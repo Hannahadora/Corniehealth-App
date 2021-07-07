@@ -14,7 +14,7 @@
         focus:outline-none
         hover:opacity-90
       "
-           @click="$emit('add-currency')"
+           @click="$emit('newExchangeRate')"
     >
        <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
       New  Exchange Rate
