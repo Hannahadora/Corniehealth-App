@@ -4,7 +4,7 @@ import store from "./store";
 import router from "./router";
 import "./index.css";
 import { registerGlobalComponents } from "./components/globals";
-
+import "./middlewares";
 const app = createApp(App).use(router).use(store);
 
 registerGlobalComponents(app);
