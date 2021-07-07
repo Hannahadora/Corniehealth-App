@@ -12,6 +12,7 @@
 import BankEmptyState  from "../emptyState.vue";
 import BankAccountsExistingState from "./existingState.vue";
 import AddPaymentAccount from "./addPaymentAccount.vue";
+import IPayment from "@/types/IPayment";
 
 
 import { cornieClient } from "@/plugins/http";
