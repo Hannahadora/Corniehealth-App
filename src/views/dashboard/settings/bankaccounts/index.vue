@@ -37,6 +37,7 @@
       <div>
         <payment v-if="active == 0" />
         <collection v-if="active == 1" />
+        <currency-conversion v-if='active == 2' />
       </div>
     </div>
   </div>
@@ -44,12 +45,14 @@
 <script>
 import Payment from "./Payment/payment.vue";
 import Collection from "./Collection/collections.vue";
+import CurrencyConversion from "./CurrencyConversion/currencyConversion.vue"
 
 export default {
   name: "BanksAndAccounts",
   components: {
     Collection,
     Payment,
+    CurrencyConversion
   },
   data() {
     return {
