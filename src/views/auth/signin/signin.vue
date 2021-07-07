@@ -85,7 +85,7 @@ export default class Signin extends Vue {
     try {
       const data = await quantumClient().post("/auth/login", this.payload);
       store.commit("user/setLoginInfo", data);
-      this.$router.replace("/dashboard/");
+      this.$emit("logged-in");
     } catch (error) {
       console.log("login failed ", error);
     }

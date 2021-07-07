@@ -4,7 +4,7 @@ import localstore from "./localstore";
 
 export function rememberLogin(token: string) {
   localstore.put("authToken", token, 2);
-  startRefresher(900);
+  startTokenRefresher(900);
 }
 
 export async function isLoggedIn() {
@@ -12,6 +12,21 @@ export async function isLoggedIn() {
   return Boolean(token);
 }
 
+export async function refreshUser() {
+  const user = store.state.user.user;
+  if (user?.id) return;
+  const data = await fetchUserData();
+  store.commit("user/setLoginInfo", data);
+}
+
+async function fetchUserData() {
+  try {
+    const response = await quantumClient().get("auth/refresh_linchpin");
+    return response;
+  } catch (error) {
+    console.log("error");
+  }
+}
 export async function logout() {
   clearInterval(interval);
   localstore.remove("authToken");
@@ -19,7 +34,7 @@ export async function logout() {
 }
 
 let interval: number | undefined;
-export function startRefresher(expiryInMins: number) {
+export function startTokenRefresher(expiryInMins: number) {
   if (interval) return;
   const expiryInMilliSecs = expiryInMins * 60 * 1000;
   interval = setInterval(refreshToken, expiryInMilliSecs);

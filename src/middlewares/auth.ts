@@ -1,4 +1,4 @@
-import { isLoggedIn, startRefresher } from "@/plugins/auth";
+import { isLoggedIn, refreshUser, startTokenRefresher } from "@/plugins/auth";
 import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 
 export async function authMiddleware(
@@ -8,7 +8,8 @@ export async function authMiddleware(
 ) {
   if (!to.matched.some((record) => record.meta.requiresAuth)) return next();
   if (await isLoggedIn()) {
-    startRefresher(900);
+    startTokenRefresher(900);
+    refreshUser();
     next();
   } else {
     next({

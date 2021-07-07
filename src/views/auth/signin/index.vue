@@ -1,10 +1,10 @@
 <template>
   <auth>
-    <template v-if="userCreated">
-      <recommendation v-if="false" />
-      <two-factor />
+    <template v-if="loggedIn">
+      <two-factor v-if="twoFactor" />
+      <recommendation v-else />
     </template>
-    <sign-in v-else />
+    <sign-in v-else @logged-in="loggedIn = true" />
   </auth>
 </template>
 <script lang="ts">
@@ -13,6 +13,7 @@ import Auth from "../auth.vue";
 import SignIn from "./signin.vue";
 import Recommendation from "./recommedation.vue";
 import TwoFactor from "./twofactor.vue";
+import store from "@/store";
 
 @Options({
   components: {
@@ -23,6 +24,13 @@ import TwoFactor from "./twofactor.vue";
   },
 })
 export default class BaseSignIn extends Vue {
-  userCreated = false;
+  loggedIn = false;
+
+  get twoFactor() {
+    return (
+      store.state.user.requiresTwoFactorAuth ||
+      store.state.user.requiresSecurityQuestion
+    );
+  }
 }
 </script>
