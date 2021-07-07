@@ -13,7 +13,7 @@
     >
       <arrow-left-icon />
     </span>
-    <h2 class="text-2xl font-semibold ml-3 capitalize">{{ name }}</h2>
+    <h2 class="text-2xl font-semibold ml-3 capitalize">{{ routeName }}</h2>
     <span class="flex items-center justify-center ml-auto">
       <settings-icon />
     </span>
@@ -36,7 +36,19 @@
         "
       >
         <img
-          src="@/assets/img/avatar.png"
+          v-if="profilePhoto"
+          :src="profilePhoto"
+          class="
+            object-cover object-center
+            w-full
+            h-full
+            visible
+            group-hover:hidden
+          "
+        />
+        <img
+          v-else
+          src="@/assets/img/placeholder.png"
           class="
             object-cover object-center
             w-full
@@ -47,7 +59,7 @@
         />
       </div>
     </span>
-    <span class="font-medium ml-1"> Farouq A.L</span>
+    <span class="font-medium ml-1">{{ name }}</span>
     <span class="ml-1">
       <chevron-down />
     </span>
@@ -59,7 +71,10 @@ import ArrowLeftIcon from "./icons/arrowleft.vue";
 import SettingsIcon from "./icons/settings.vue";
 import BellIcon from "./icons/bell.vue";
 import ChevronDown from "./icons/chevrondown.vue";
+import { namespace } from "vuex-class";
+import User from "@/types/user";
 
+const account = namespace("user");
 @Options({
   components: {
     ArrowLeftIcon,
@@ -69,8 +84,24 @@ import ChevronDown from "./icons/chevrondown.vue";
   },
 })
 export default class NavBar extends Vue {
-  get name() {
+  get routeName() {
     return this.$route.name;
+  }
+
+  @account.State
+  user!: User;
+
+  get profilePhoto() {
+    return this.user.photo;
+  }
+
+  get name() {
+    if (!this.user.id) return "";
+    const lastName = this.user.lname;
+    const firstInitials = this.user.fname.charAt(0).toUpperCase();
+    let middleInitials = this.user.mname?.charAt(0)?.toUpperCase() || "";
+    middleInitials = middleInitials ? `${middleInitials}.` : "";
+    return `${lastName} ${firstInitials}. ${middleInitials}`;
   }
 }
 </script>
