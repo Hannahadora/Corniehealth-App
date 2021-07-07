@@ -84,7 +84,6 @@
   </main>
 </template>
 
-
 <script>
 import UpdatePassword from "./UpdatePassword.vue";
 import TwoFactorAuth from "./TwoFactorAuth.vue";
@@ -133,5 +132,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
