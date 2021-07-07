@@ -1,5 +1,16 @@
 <template>
   <auth>
+    <template v-slot:text>
+      <div v-if="userCreated">
+        <h2 class="text-3xl font-bold text-white">
+          You’ve successfully created an account
+        </h2>
+        <p class="text-white">
+          One last step and you are all good to go <br />
+          An email with a verification code has been sent to you
+        </p>
+      </div>
+    </template>
     <verify-activate v-if="userCreated" :user="user" />
     <create-account v-model:user="user" v-else />
   </auth>
