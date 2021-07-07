@@ -77,7 +77,7 @@ import PrintIcon from "@/components/icons/print.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
-import ColumnFilter from "./columnfilter.vue";
+import ColumnFilter from "@/components/columnfilter.vue";
 import { Prop } from "vue-property-decorator";
 import IDevice from "@/types/IDevice";
 import { flatten } from "@/plugins/flatten";

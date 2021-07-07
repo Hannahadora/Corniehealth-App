@@ -4,6 +4,7 @@
     <template v-else>
       <bank-accounts-existing-state
          v-if="!empty"
+         :payments="payments"
         @add-account="addAccount = true"
       />
       <bank-empty-state
