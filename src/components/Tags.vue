@@ -56,7 +56,7 @@ export default {
     },
   },
   methods: {
-    deleteTag(e) {
+    deleteTag() {
       this.$refs.tag.parentElement.remove();
     },
   },

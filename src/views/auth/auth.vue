@@ -10,7 +10,7 @@
         <slot name="text" />
       </section>
       <section class="w-full h-full mt-2">
-        <div class="h-5/6 w-2/3 block rounded-lg bg-white">
+        <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
           <slot />
         </div>
       </section>
@@ -25,6 +25,65 @@ export default class Auth extends Vue {}
 </script>
 <style scoped>
 .auth {
+  background-color: unset;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-size: 50%;
+}
+.auth-content {
+  grid-template-columns: 25% 65%;
+  column-gap: 15%;
+}
+@media (min-width: 640px) { 
+.auth {
+  background-color: unset;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-size: 50%;
+}
+.auth-content {
+  grid-template-columns: 25% 65%;
+  column-gap: 15%;
+}
+}
+@media (min-width: 768px) { 
+  .auth {
+    background-color: #e5e5e5;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: url("../../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
+}
+@media (min-width: 1024px) { 
+  .auth {
+    background-color: #e5e5e5;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: url("../../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
+}
+@media (min-width: 1280px) { 
+  .auth {
   background-color: #e5e5e5;
   min-width: 100vw;
   min-height: 100vh;
@@ -36,5 +95,21 @@ export default class Auth extends Vue {}
 .auth-content {
   grid-template-columns: 25% 65%;
   column-gap: 15%;
+}
+}
+@media (min-width: 1536px) { 
+  .auth {
+    background-color: #e5e5e5;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: url("../../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
 }
 </style>

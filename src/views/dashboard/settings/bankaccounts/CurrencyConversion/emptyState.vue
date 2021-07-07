@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full h-full flex flex-col justify-center items-center">
-    <img src="@/assets/img/nobank.svg" />
-    <h3 class="text-center text-black mt-5">{{ msg }}</h3>
+  <div class="w-1/2 flex flex-col justify-center items-center">
+    <img src="@/assets/img/nocurrency.svg" />
+    <h3 class="text-center text-black mt-5">No collection account recorded </h3>
     <h4 class="text-black text-center">Add new account</h4>
     <button
       class="
@@ -14,10 +14,10 @@
         focus:outline-none
         hover:opacity-90
       "
-      @click="$emit('add-account')"
+           @click="$emit('newExchangeRate')"
     >
-      <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-      New Account
+       <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
+      New  Exchange Rate
     </button>
   </div>
 </template>
@@ -26,7 +26,7 @@
 import { Options, Vue } from "vue-class-component";
 
 @Options({})
-export default class BankEmptyState extends Vue {
-  msg!: string;
+export default class emptyState extends Vue {
+  
 }
 </script>

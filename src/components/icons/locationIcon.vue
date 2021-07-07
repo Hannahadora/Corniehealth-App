@@ -1,4 +1,5 @@
-.<template>
+.
+<template>
   <svg
     width="144"
     height="120"

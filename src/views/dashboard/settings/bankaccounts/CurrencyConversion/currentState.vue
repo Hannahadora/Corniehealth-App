@@ -13,10 +13,10 @@
           hover:opacity-90
           flex
         "
-        @click="$emit('add-account')"
+        @click="$emit('newExchangeRate')"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-        New Account
+        New  Exchange Rate
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -38,14 +38,13 @@
         <table-refresh-icon class="mr-7" />
         <filter-icon
           class="cursor-pointer"
-          @click="showAdvancedFilters = true"
         />
       </span>
     </div>
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon @click="showExtraModal = true" />
+          <three-dot-icon  />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
@@ -64,10 +63,7 @@ import PrintIcon from "@/components/icons/print.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
-import TableSettingIcon from "@/components/icons/tablesetting.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
-import extraModal from "./extraModal.vue";
-import AdvancedFilters from "./advancedFilters.vue";
 import { Prop } from "vue-property-decorator";
 import IPayment from "@/types/IPayment";
 
@@ -81,13 +77,10 @@ import IPayment from "@/types/IPayment";
     TableRefreshIcon,
     FilterIcon,
     IconInput,
-    BankAddIcon,
-    TableSettingIcon,
-    extraModal,
-    AdvancedFilters,
+    BankAddIcon
   },
 })
-export default class BankAccountsExistingState extends Vue {
+export default class currentState extends Vue {
 
   
  @Prop({ type: Array, default: [] })
@@ -111,8 +104,7 @@ export default class BankAccountsExistingState extends Vue {
   ];
 
   
-  showExtraModal = false;
-  showAdvancedFilters = false;
+  
 
 
    get items() {

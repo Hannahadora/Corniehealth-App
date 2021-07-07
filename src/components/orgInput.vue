@@ -7,7 +7,7 @@
     class="
       appearance-none
       w-full
-      my-4
+      my-2
       px-3
       py-2
       border border-gray-300
