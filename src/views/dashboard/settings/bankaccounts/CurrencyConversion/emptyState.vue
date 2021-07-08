@@ -14,19 +14,26 @@
         focus:outline-none
         hover:opacity-90
       "
-           @click="$emit('newExchangeRate')"
+           @click="showNewExchangeRateModal  = true"
     >
        <span class='mt-2 mr-2'> <bank-add-icon/>  </span> 
       New  Exchange Rate
     </button>
+
+     <new-exchange-rate  v-model:visible="showNewExchangeRateModal"  />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import NewExchangeRate from "./newExchangeRate.vue"
 
-@Options({})
+@Options({
+  components: {
+    NewExchangeRate,
+  },
+})
 export default class emptyState extends Vue {
-  
+  showNewExchangeRateModal  = false
 }
 </script>
