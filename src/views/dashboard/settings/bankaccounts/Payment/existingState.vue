@@ -33,16 +33,14 @@
         </icon-input>
       </span>
       <span class="flex justify-between items-center">
-        <three-dot-icon class="mr-7" />
         <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
         <filter-icon
           class="cursor-pointer"
           @click="showColumnFilter = true"
         />
       </span>
     </div>
-    <Table :headers="headers" :items="items"  class="tableu rounded-xl mt-5">
+    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
 
         <span v-if="getKeyValue(item).key == 'more'">
@@ -99,7 +97,7 @@ const first = (num: number, vals: any[]) => {
     BankAddIcon,
     TableSettingIcon,
     extraModal,
-    ColumnFilter
+    ColumnFilter,
   },
 })
 export default class BankAccountsExistingState extends Vue {
@@ -129,8 +127,6 @@ export default class BankAccountsExistingState extends Vue {
       value: "paymentCategories",
       show: true,
     },
-    // Displaying Icon in the header - <table-setting-icon/>
-    { title: "", value: "more", image: true },
   ];
 
   get headers() {
@@ -149,8 +145,11 @@ export default class BankAccountsExistingState extends Vue {
       return payment;
     })
     return payments;
-    if (!this.query) return payments;
-    return search.searchObjectArray(payments, this.query);
+    if (!this.query) {
+      return payments;
+    } else {
+      return search.searchObjectArray(payments, this.query);
+    }
   }
 
   showExtraModal = false;

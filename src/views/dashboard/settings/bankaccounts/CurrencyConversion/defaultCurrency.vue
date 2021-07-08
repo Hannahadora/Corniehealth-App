@@ -2,31 +2,18 @@
   <div class="rounded-md">
     <modal :visible="visible" class="mx-14 w-3/12 p-0">
       <div class="block p-3">
-        <h3 class="font-bold text-xl text-primary mb-4"> Exchange Rate </h3>
+        <h3 class="font-bold text-xl text-primary mb-4">Default Currency </h3>
          <form  @submit.prevent="submit">
           <div>
-            <label for="Currency" class="font-bold text-base uppercase mb-4">
+            <label for="defaultCurrency" class="font-bold text-base uppercase mb-4">
               Currency
             </label>
-            <orgSelect name="select" id="Currency" v-model="Currency">
-              <option v-for="(Currency, i) in Currencies" :key="i" :value="Currency.code">
-                {{ Currency.code }}
+            <orgSelect name="select" id="defaultCurrency" v-model="defaultCurrency">
+              <option v-for="(defaultCurrency, i) in defaultCurrencies" :key="i" :value="defaultCurrency.code">
+                {{ defaultCurrency.code }}
               </option>
             </orgSelect>
           </div>
-           <div>
-            <label
-              for="exchangeRate"
-              class="font-bold text-base uppercase mb-4"
-            >
-             Exchange rate
-            </label>
-            <orgInput
-              id="exchangeRate"
-              v-model="exchangeRate"
-            />
-           </div>
-           
            <div class="my-8 flex justify-end">
           <span>
             <button
@@ -78,7 +65,7 @@
               Save
             </button>
           </span>
-        </div>
+          </div>
           </form> 
       
         
@@ -89,16 +76,15 @@
 <script>
 import Modal from "@/components/modal.vue";
 import OrgSelect from "@/components/orgSelect.vue";
-import OrgInput from "@/components/orgInput.vue";
+
 
 import { cornieClient } from "@/plugins/http";
 
 export default {
-  name: "NewExchangeRate",
+  name: "defaultCurrency",
   components: {
     Modal,
     OrgSelect,
-    OrgInput,
   },
   props: {
     visible: {
@@ -109,9 +95,8 @@ export default {
   },
   data() {
     return {
-      Currency:'',
-      exchangeRate:'',
-      Currencies : ''
+      defaultCurrency:'',
+      defaultCurrencies : ''
     };
   },
   computed: {
@@ -125,8 +110,7 @@ export default {
     },
     payload() {
       return {
-       code:this.Currency,
-        exchangeRate:this.exchangeRate
+       code:this.defaultCurrency,
       };
     },
   },
@@ -147,7 +131,7 @@ export default {
       try {
         console.log(this.payload);
         const response = await cornieClient().post(
-          "/api/v1/currency",
+          "/api/v1/currency/setDefault",
           this.payload
         );
         if (response.success) {
@@ -165,7 +149,7 @@ export default {
         "/api/v1/currency/getCurrencies/world"
       );
       const response = await Promise.all([worldCurrencies])
-      this.Currencies = response[0].data;
+      this.defaultCurrencies= response[0].data;
     },
   },
 };

@@ -35,8 +35,10 @@ import { cornieClient } from "@/plugins/http";
 })
 
 export default class Payment extends Vue {
-  payments = [] as IPayment[];
-  
+  payments = [] as  IPayment[];
+
+ addAccount = false
+
   get empty() {
     return this.payments.length < 1;
   }

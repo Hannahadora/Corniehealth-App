@@ -140,12 +140,13 @@ export default {
       userId: "",
     };
   },
+
   computed: {
     payload() {
       return {
         previousPassword: this.currentPassword,
         newPassword: this.newPassword,
-        userId: store.state.user.id,
+        userId: store.state.user.user.id,
       };
     },
   },
@@ -153,9 +154,9 @@ export default {
     async updatePassword() {
       try {
         await quantumClient().post("auth/change-password", this.payload);
-        alert("Password Changed Suceesfully");
+        alert("Password Changed Succesfully");
       } catch (error) {
-        console.log(error);
+        alert("An error occured when changing your password");
       }
     },
   },

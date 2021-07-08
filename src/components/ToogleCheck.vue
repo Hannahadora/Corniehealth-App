@@ -1,9 +1,8 @@
 <template>
   <div class="toogle-check">
     <label class="switch">
-      <input type="checkbox" v-model="checked" @change="changes()" />
+      <input type="checkbox" v-model="modelSync" />
       <span class="slider round"></span>
-      {label}
     </label>
   </div>
 </template>
@@ -66,16 +65,19 @@ export default {
       type: String,
       required: false,
     },
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
   },
-  data() {
-    return {
-      checked: " ",
-    };
-  },
-  methods: {
-    changes() {
-      const checked = this.checked;
-      this.$emit("updated", checked);
+  computed: {
+    modelSync: {
+      get() {
+        return this.modelValue;
+      },
+      set(val) {
+        this.$emit("update:modelValue", val);
+      },
     },
   },
 };
