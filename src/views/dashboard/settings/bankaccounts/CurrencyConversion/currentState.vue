@@ -12,8 +12,26 @@
           focus:outline-none
           hover:opacity-90
           flex
+          mr-6
         "
-        @click="$emit('newExchangeRate')"
+        @click="  showDefaultCurrencyModal  = true"
+      >
+        <span class="mt-2 mr-2"> <bank-add-icon /> </span>
+        Set  Default Currecncy
+      </button>
+      <button
+        class="
+          bg-danger
+          rounded-full
+          text-white
+          mt-5
+          py-2
+          px-3
+          focus:outline-none
+          hover:opacity-90
+          flex
+        "
+        @click="showNewExchangeRateModal  = true"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
         New  Exchange Rate
@@ -33,15 +51,10 @@
         </icon-input>
       </span>
       <span class="flex justify-between items-center">
-        <three-dot-icon class="mr-7" />
         <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon
-          class="cursor-pointer"
-        />
       </span>
     </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
           <three-dot-icon  />
@@ -49,8 +62,8 @@
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-    <extra-modal v-model:visible="showExtraModal" />
-    <advanced-filters v-model:visible="showAdvancedFilters" />
+     <default-currency v-model:visible="showDefaultCurrencyModal"/>
+    <new-exchange-rate  v-model:visible="showNewExchangeRateModal"  />
   </div>
 </template>
 <script lang="ts">
@@ -60,12 +73,13 @@ import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
-import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
-import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
 import { Prop } from "vue-property-decorator";
-import IPayment from "@/types/IPayment";
+import ICurrency from "@/types/ICurrency";
+import NewExchangeRate from "./newExchangeRate.vue"
+import defaultCurrency from "./defaultCurrency.vue"
+import search from "@/plugins/search";
 
 @Options({
   components: {
@@ -74,41 +88,54 @@ import IPayment from "@/types/IPayment";
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
-    TableRefreshIcon,
-    FilterIcon,
     IconInput,
-    BankAddIcon
+    BankAddIcon,
+    NewExchangeRate,
+    defaultCurrency
   },
 })
 export default class currentState extends Vue {
 
   
  @Prop({ type: Array, default: [] })
-  payments!: IPayment[];
+  currencies!: ICurrency[];
 
   query = "";
 
+  showNewExchangeRateModal  = false;
+  showDefaultCurrencyModal = false
+
   headers = [
     {
-      title: "ACCOUNT NAME",
-      value: "accountName",
+      title: "CURRENCY",
+      value: "currency",
     },
-    { title: "ACCOUNT NUMBER", value: "accountNumber" },
-    { title: "Location(s)", value: "Location" },
+    { title: "CONVERSION", value: "conversion" },
+   
     {
-      title: "PAYMENT CATEGORY(IES)",
-      value: "paymentCategory",
+      title: "EXCHANGE RATE",
+      value: "exchangeRate",
     },
+     { title: "CREATED", value: "createdAt" }
     // Displaying Icon in the header - <table-setting-icon/>
-    { title: "", value: "more", image: true },
+  
   ];
-
   
   
+  
 
+
+    get header() {
+    return [...this.headers, { title: "", value: "action", image: true }];
+  }
 
    get items() {
-    return this.payments;
+    if(!this.query){
+    return this.currencies;
+    }
+    else{
+       return search.searchObjectArray(this.currencies, this.query);
+    }
   }
 
   getKeyValue(item: any) {

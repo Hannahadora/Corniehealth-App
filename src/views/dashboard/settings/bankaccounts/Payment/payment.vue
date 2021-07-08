@@ -37,7 +37,7 @@ import { cornieClient } from "@/plugins/http";
 export default class Payment extends Vue {
   payments = [] as  IPayment[];
 
-  
+ addAccount = false
 
   get empty() {
     return this.payments.length < 1;
@@ -50,7 +50,6 @@ export default class Payment extends Vue {
       );
       if (response.success){
           this.payments = [...response.data];
-          console.log(this.payments)
       } 
       else console.log(response.message);
     } catch (error) {
