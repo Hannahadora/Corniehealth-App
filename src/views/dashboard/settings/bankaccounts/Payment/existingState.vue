@@ -42,7 +42,7 @@
         />
       </span>
     </div>
-    <Table :headers="headers" :items="items"  class="tableu rounded-xl mt-5">
+    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
           <three-dot-icon @click="showExtraModal = true" />
@@ -50,10 +50,7 @@
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-    <column-filter
-      :columns="headers"
-     v-model:visible="showAdvancedFilters"
-    />
+    <column-filter :columns="headers" v-model:visible="showAdvancedFilters" />
     <extra-modal v-model:visible="showExtraModal" />
   </div>
 </template>
@@ -87,13 +84,11 @@ import search from "@/plugins/search";
     BankAddIcon,
     TableSettingIcon,
     extraModal,
-    ColumnFilter
+    ColumnFilter,
   },
 })
 export default class BankAccountsExistingState extends Vue {
-
-  
- @Prop({ type: Array, default: [] })
+  @Prop({ type: Array, default: [] })
   payments!: IPayment[];
 
   query = "";
@@ -113,17 +108,11 @@ export default class BankAccountsExistingState extends Vue {
     { title: "", value: "more", image: true },
   ];
 
-  
   showExtraModal = false;
   showAdvancedFilters = false;
-  columns = [
-    { selected: false, name: "Car" },
-    { selected: false, name: "Bus" },
-  ];
 
-   get items() {
-    return this.payments;
-    if(!this.query)return this.payments;
+  get items() {
+    if (!this.query) return this.payments;
     return search.searchObjectArray(this.payments, this.query);
   }
 
@@ -137,8 +126,6 @@ export default class BankAccountsExistingState extends Vue {
       index,
     };
   }
-
-
 }
 </script>
 
