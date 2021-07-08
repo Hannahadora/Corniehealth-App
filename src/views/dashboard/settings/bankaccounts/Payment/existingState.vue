@@ -33,19 +33,20 @@
         </icon-input>
       </span>
       <span class="flex justify-between items-center">
-        <three-dot-icon class="mr-7" />
         <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
         <filter-icon
           class="cursor-pointer"
           @click="showAdvancedFilters = true"
         />
       </span>
     </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon @click="showExtraModal = true" />
+        <span v-if="getKeyValue(item).key == 'action'">
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="showExtraModal = true"
+          />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
@@ -104,16 +105,21 @@ export default class BankAccountsExistingState extends Vue {
       title: "PAYMENT CATEGORY(IES)",
       value: "paymentCategories",
     },
-    // Displaying Icon in the header - <table-setting-icon/>
-    { title: "", value: "more", image: true },
   ];
 
   showExtraModal = false;
   showAdvancedFilters = false;
 
+  get header() {
+    return [...this.headers, { title: "", value: "action", image: true }];
+  }
+
   get items() {
-    if (!this.query) return this.payments;
-    return search.searchObjectArray(this.payments, this.query);
+    if (!this.query) {
+      return this.payments;
+    } else {
+      return search.searchObjectArray(this.payments, this.query);
+    }
   }
 
   getKeyValue(item: any) {
