@@ -47,7 +47,7 @@
     </div>
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'">
+        <span v-if="getKeyValue(item).key == 'action'">
           <three-dot-icon @click="showExtraModal = true" />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>

@@ -38,21 +38,23 @@
         <table-refresh-icon class="mr-7" />
         <filter-icon
           class="cursor-pointer"
-          @click="showAdvancedFilters = true"
+          @click="showColumnFilter = true"
         />
       </span>
     </div>
     <Table :headers="headers" :items="items"  class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
+
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon @click="showExtraModal = true" />
+          <three-dot-icon class="cursor-pointer" @click="showExtraModal = true" />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
     <column-filter
-      :columns="headers"
-     v-model:visible="showAdvancedFilters"
+      :columns="rawHeaders"
+      v-model:preferred="preferredHeaders"
+     v-model:visible="showColumnFilter"
     />
     <extra-modal v-model:visible="showExtraModal" />
   </div>
@@ -74,6 +76,16 @@ import extraModal from "./extraModal.vue";
 import { Prop } from "vue-property-decorator";
 import IPayment from "@/types/IPayment";
 import search from "@/plugins/search";
+
+const first = (num: number, vals: any[]) => {
+  const res = [];
+  for (let index = 0; index < vals.length; index++) {
+    const element = vals[index];
+    res.push(element);
+  }
+  return res;
+};
+
 @Options({
   components: {
     Table,
@@ -91,42 +103,62 @@ import search from "@/plugins/search";
   },
 })
 export default class BankAccountsExistingState extends Vue {
-
-  
  @Prop({ type: Array, default: [] })
   payments!: IPayment[];
 
   query = "";
-
-  headers = [
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "ACCOUNT NAME",
       value: "accountName",
+      show: true,
     },
-    { title: "ACCOUNT NUMBER", value: "accountNumber" },
-    { title: "Location(s)", value: "location" },
+    { 
+      title: "ACCOUNT NUMBER",
+      value: "accountNumber",
+      show: true, 
+     },
+    { 
+      title: "Location(s)", 
+      value: "location", 
+      show: true, 
+    },
     {
       title: "PAYMENT CATEGORY(IES)",
       value: "paymentCategories",
+      show: true,
     },
     // Displaying Icon in the header - <table-setting-icon/>
     { title: "", value: "more", image: true },
   ];
 
-  
-  showExtraModal = false;
-  showAdvancedFilters = false;
-  columns = [
-    { selected: false, name: "Car" },
-    { selected: false, name: "Bus" },
-  ];
-
-   get items() {
-    return this.payments;
-    if(!this.query)return this.payments;
-    return search.searchObjectArray(this.payments, this.query);
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "more", image: true }];
   }
 
+  get items() {
+    console.log(this.payments);
+    const payments = this.payments.map((payment) => {
+      (payment as any).more = payment.id
+      return payment;
+    })
+    return payments;
+    if (!this.query) return payments;
+    return search.searchObjectArray(payments, this.query);
+  }
+
+  showExtraModal = false;
+  showColumnFilter = false;
+  columns = [
+    { selected: false, name: "Invoice" },
+    { selected: false, name: "Receipt" },
+  ];
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
@@ -137,11 +169,8 @@ export default class BankAccountsExistingState extends Vue {
       index,
     };
   }
-
-
 }
 </script>
-
 <style>
 table thead th {
   background: #0a4269 !important;
