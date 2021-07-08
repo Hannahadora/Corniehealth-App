@@ -3,7 +3,6 @@
     v-model="modelValueSync"
     class="
       w-full
-      my-2
       px-3
       py-2
       border border-gray-300
