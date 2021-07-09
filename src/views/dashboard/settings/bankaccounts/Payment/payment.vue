@@ -42,7 +42,6 @@ export default class Payment extends Vue {
   get empty() {
     return this.payments.length < 1;
   }
-
   async fetchPayments() {
     try {
       const response = await cornieClient().get(
