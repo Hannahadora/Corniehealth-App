@@ -129,12 +129,22 @@ export default class currentState extends Vue {
     return [...this.headers, { title: "", value: "action", image: true }];
   }
 
+ 
+
    get items() {
+     const currencies = this.currencies.map((currency) => {
+       (currency as any).createdAt = new Date(
+         (currency as any).createdAt 
+       ).toLocaleDateString("en-US");
+
+       return currency
+     })
+      return currencies
     if(!this.query){
-    return this.currencies;
+    return currencies;
     }
     else{
-       return search.searchObjectArray(this.currencies, this.query);
+       return search.searchObjectArray(currencies, this.query);
     }
   }
 

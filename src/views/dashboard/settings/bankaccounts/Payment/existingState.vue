@@ -104,6 +104,10 @@ export default class BankAccountsExistingState extends Vue {
   payments!: IPayment[];
 
   query = "";
+
+  itemId = this.payments.map((payment) => {
+    return payment.id;
+  });
   preferredHeaders = [];
   rawHeaders = [
     {
