@@ -40,11 +40,11 @@
         />
       </span>
     </div>
-    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
+    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
 
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon class="cursor-pointer" @click="showExtraModal = true" />
+          <three-dot-icon  class="cursor-pointer" @click="showExtraModal = true" />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
@@ -54,7 +54,7 @@
       v-model:preferred="preferredHeaders"
      v-model:visible="showColumnFilter"
     />
-    <extra-modal v-model:visible="showExtraModal" />
+    <extra-modal  v-model:visible="showExtraModal" />
   </div>
 </template>
 <script lang="ts">
@@ -105,6 +105,10 @@ export default class BankAccountsExistingState extends Vue {
   payments!: IPayment[];
 
   query = "";
+
+   itemId = this.payments.map((payment) => {
+      return payment.id;
+    })
   preferredHeaders = [];
   rawHeaders = [
     {
@@ -139,7 +143,6 @@ export default class BankAccountsExistingState extends Vue {
   }
 
   get items() {
-    console.log(this.payments);
     const payments = this.payments.map((payment) => {
       (payment as any).more = payment.id
       return payment;
