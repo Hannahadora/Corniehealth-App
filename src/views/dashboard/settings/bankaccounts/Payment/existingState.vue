@@ -34,17 +34,16 @@
       </span>
       <span class="flex justify-between items-center">
         <print-icon class="mr-7" />
-        <filter-icon
-          class="cursor-pointer"
-          @click="showColumnFilter = true"
-        />
+        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
     </div>
-    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
+    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
-
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon class="cursor-pointer" @click="showExtraModal = true" />
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="showExtraModal = true"
+          />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
@@ -52,7 +51,7 @@
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
-     v-model:visible="showColumnFilter"
+      v-model:visible="showColumnFilter"
     />
     <extra-modal v-model:visible="showExtraModal" />
   </div>
@@ -101,7 +100,7 @@ const first = (num: number, vals: any[]) => {
   },
 })
 export default class BankAccountsExistingState extends Vue {
- @Prop({ type: Array, default: [] })
+  @Prop({ type: Array, default: [] })
   payments!: IPayment[];
 
   query = "";
@@ -112,15 +111,15 @@ export default class BankAccountsExistingState extends Vue {
       value: "accountName",
       show: true,
     },
-    { 
+    {
       title: "ACCOUNT NUMBER",
       value: "accountNumber",
-      show: true, 
-     },
-    { 
-      title: "Location(s)", 
-      value: "location", 
-      show: true, 
+      show: true,
+    },
+    {
+      title: "Location(s)",
+      value: "location",
+      show: true,
     },
     {
       title: "PAYMENT CATEGORY(IES)",
@@ -139,12 +138,10 @@ export default class BankAccountsExistingState extends Vue {
   }
 
   get items() {
-    console.log(this.payments);
     const payments = this.payments.map((payment) => {
-      (payment as any).more = payment.id
+      (payment as any).more = payment.id;
       return payment;
-    })
-    return payments;
+    });
     if (!this.query) {
       return payments;
     } else {
@@ -154,10 +151,7 @@ export default class BankAccountsExistingState extends Vue {
 
   showExtraModal = false;
   showColumnFilter = false;
-  columns = [
-    { selected: false, name: "Invoice" },
-    { selected: false, name: "Receipt" },
-  ];
+
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
