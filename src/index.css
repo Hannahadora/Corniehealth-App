@@ -23,3 +23,30 @@ select {
     height: 0.5rem;
     outline: 1px solid slategrey;
   }
+
+  table thead th {
+    background: #0a4269 !important;
+  
+    color: white !important;
+  }
+  table thead th:first-child {
+    border-top-left-radius: 0.4rem 0.4rem !important;
+  }
+  table thead th:last-child {
+    border-top-right-radius: 0.4rem 0.4rem !important;
+  }
+  table thead tr th {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  table tbody td {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  table tbody tr {
+    border: 1px solid #b8c3de;
+  }
+  table tbody tr:nth-child(even) {
+    background-color: white !important;
+  }

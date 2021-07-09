@@ -1,8 +1,6 @@
 <template>
   <span>
-    <label class="block uppercase mb-1 text-xs font-semibold">{{
-      label
-    }}</label>
+    <label class="block uppercase mb-1 text-sm font-bold">{{ label }}</label>
     <input
       class="rounded-lg border p-2 w-11/12 focus:outline-none"
       v-model="valueSync"
