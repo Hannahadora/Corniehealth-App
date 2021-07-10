@@ -14,27 +14,17 @@
     </span>
     <form class="w-full mt-5" @submit.prevent="submit">
       <div class="grid grid-cols-3">
-        <d-select v-model="paymentCategories" label="Categories">
-          <option
-            v-for="(collectionCategory, i) in collectionsCategory"
-            :key="i"
-            :value="collectionCategory"
-          >
-            {{ colectionCategory }}
-          </option>
+        <d-select
+          v-model="paymentCategories"
+          label="Categories"
+          :items="collectionscategory"
+        >
         </d-select>
-        <d-select v-model="location" label="Location">
-          <option v-for="(location, i) in locations" :key="i" :value="location">
-            {{ location }}
-          </option>
+        <d-select v-model="location" label="Location" :items="locations">
         </d-select>
       </div>
       <div class="grid grid-cols-3">
-        <d-select v-model="bank" label="Bank">
-          <option v-for="(bank, i) in AllBanks" :key="i" :value="bank">
-            {{ bank }}
-          </option>
-        </d-select>
+        <d-select v-model="bank" label="Bank" :items="AllBanks" />
         <d-input v-model="accountNumber" label="Account Number" />
         <d-input v-model="accountName" label="Account Name" disabled />
       </div>
@@ -87,10 +77,9 @@ export default {
       accountName: "",
       accountNumber: "",
       paymentCategories: "",
-      AllBanks: "",
+      AllBanks: [],
       bank: "",
       collectionsCategory: [],
-      collectionCategory: "",
     };
   },
   computed: {

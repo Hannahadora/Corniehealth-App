@@ -13,10 +13,14 @@
           hover:opacity-90
           flex
         "
-        @click="$emit('add-account')"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-        <p>New Account</p>
+
+        <p>
+          <router-link to="/dashboard/settings/location/new-location"
+            >New Location</router-link
+          >
+        </p>
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -65,10 +69,10 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import TableSettingIcon from "@/components/icons/tablesetting.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
-import extraModal from "../Payment/extraModal.vue";
-import AdvancedFilters from "../Payment/advancedFilters.vue";
+import ILocation from "@/types/ILocation";
 import { Prop } from "vue-property-decorator";
-import ICollection from "@/types/ICollection";
+// import extraModal from "../Payment/extraModal.vue";
+// import AdvancedFilters from "../Payment/advancedFilters.vue";
 
 @Options({
   components: {
@@ -82,32 +86,31 @@ import ICollection from "@/types/ICollection";
     IconInput,
     BankAddIcon,
     TableSettingIcon,
-    extraModal,
-    AdvancedFilters,
+    // extraModal,
+    // AdvancedFilters,
   },
 })
-export default class BankAccountsExistingState extends Vue {
+export default class LocationExistingState extends Vue {
   @Prop({ type: Object, required: true, default: [] })
-  collections!: ICollection;
+  location!: ILocation;
 
   headers = [
     {
-      title: "ACCOUNT NAME",
-      value: "accountName",
+      title: "country Name",
+      value: "countryName",
     },
-    { title: "ACCOUNT NUMBER", value: "accountNumber" },
-    { title: "Location(s)", value: "Location" },
-    { title: "Status", value: "status" },
+    { title: "Address", value: "address" },
+    { title: "Country", value: "country" },
+    { title: "State", value: "state" },
     {
-      title: "PAYMENT CATEGORY(IES)",
-      value: "paymentCategory",
+      title: "Hours of Operation",
+      value: "hoursOfOperation",
     },
     // Displaying Icon in the header - <table-setting-icon/>
     { title: "", value: "more", image: true },
   ];
-
   get items() {
-    return this.collections;
+    return this.location;
   }
 
   showExtraModal = false;

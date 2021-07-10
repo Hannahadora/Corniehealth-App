@@ -99,6 +99,14 @@ const routes: Array<RouteRecordRaw> = [
             name: "Location & Location Hierarchy",
             component: () =>
               import("@/views/dashboard/settings/location/index.vue"),
+            children: [
+              {
+                path: "new-location",
+                name: "New Location",
+                component: () =>
+                  import("@/views/dashboard/settings/location/newLocation.vue"),
+              },
+            ],
           },
         ],
       },
