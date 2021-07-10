@@ -36,10 +36,10 @@ export default class Collection extends Vue {
       const response = await cornieClient().get(
         "/api/v1/collection/myOrg/getMyOrgCollections"
       );
-      if (response.success) this.collections = [...response.data];
-      else console.log(response.message);
+      if (response.success) this.collections = response.data || [];
+      else alert(response.message);
     } catch (error) {
-      console.log("failed to fetch collections");
+      alert("failed to fetch collections");
     }
   }
 

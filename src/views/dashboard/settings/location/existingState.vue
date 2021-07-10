@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full mx-5">
-    <span class="flex justify-end">
+  <div class="w-full">
+    <span class="flex justify-end w-full">
       <button
         class="
           bg-danger
@@ -11,16 +11,10 @@
           px-3
           focus:outline-none
           hover:opacity-90
-          flex
         "
+        @click="$emit('add-location')"
       >
-        <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-
-        <p>
-          <router-link to="/dashboard/settings/location/new-location"
-            >New Location</router-link
-          >
-        </p>
+        New Location
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -29,6 +23,7 @@
         <icon-input
           class="border border-gray-600 rounded-full focus:outline-none"
           type="search"
+          v-model="query"
         >
           <template v-slot:prepend>
             <search-icon />
@@ -36,25 +31,27 @@
         </icon-input>
       </span>
       <span class="flex justify-between items-center">
-        <three-dot-icon class="mr-7" />
         <print-icon class="mr-7" />
         <table-refresh-icon class="mr-7" />
-        <filter-icon
-          class="cursor-pointer"
-          @click="showAdvancedFilters = true"
-        />
+        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
     </div>
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon @click="showExtraModal = true" />
+        <span v-if="getKeyValue(item).key == 'action'">
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="updateLocation(item.data.id)"
+          />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-    <extra-modal v-model:visible="showExtraModal" />
-    <advanced-filters v-model:visible="showAdvancedFilters" />
+    <column-filter
+      :columns="rawHeaders"
+      v-model:preferred="preferredHeaders"
+      v-model:visible="showColumnFilter"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -67,12 +64,11 @@ import PrintIcon from "@/components/icons/print.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
-import TableSettingIcon from "@/components/icons/tablesetting.vue";
-import BankAddIcon from "@/components/icons/bankadd.vue";
-import ILocation from "@/types/ILocation";
+import ColumnFilter from "@/components/columnfilter.vue";
+import search from "@/plugins/search";
+import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-// import extraModal from "../Payment/extraModal.vue";
-// import AdvancedFilters from "../Payment/advancedFilters.vue";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
 
 @Options({
   components: {
@@ -84,75 +80,87 @@ import { Prop } from "vue-property-decorator";
     TableRefreshIcon,
     FilterIcon,
     IconInput,
-    BankAddIcon,
-    TableSettingIcon,
-    // extraModal,
-    // AdvancedFilters,
+    ColumnFilter,
   },
 })
 export default class LocationExistingState extends Vue {
-  @Prop({ type: Object, required: true, default: [] })
-  location!: ILocation;
+  showColumnFilter = false;
+  query = "";
 
-  headers = [
+  @Prop({ type: Array, default: [] })
+  locations!: ILocation[];
+
+  getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
+  rawHeaders = [
     {
-      title: "country Name",
-      value: "countryName",
+      title: "Location Name",
+      value: "name",
+      show: true,
     },
-    { title: "Address", value: "address" },
-    { title: "Country", value: "country" },
-    { title: "State", value: "state" },
+    { title: "Address", value: "address", show: true },
+    { title: "Country", value: "country", show: true },
     {
-      title: "Hours of Operation",
+      title: "State",
+      value: "state",
+      show: true,
+    },
+    {
+      title: "Hours of operation",
       value: "hoursOfOperation",
+      show: false,
     },
-    // Displaying Icon in the header - <table-setting-icon/>
-    { title: "", value: "more", image: true },
+    {
+      title: "Operational Status",
+      value: "operationalStatus",
+      show: false,
+    },
+    {
+      title: "Alias",
+      value: "alias",
+      show: false,
+    },
+    {
+      title: "Description",
+      value: "description",
+      show: false,
+    },
+    {
+      title: "Physical Type",
+      value: "physicalType",
+      show: false,
+    },
   ];
-  get items() {
-    return this.location;
+
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-  showExtraModal = false;
-  showAdvancedFilters = false;
+  get items() {
+    const locations = this.locations.map((location) => {
+      const opHours = this.stringifyOperationHours(location.hoursOfOperation);
+      return {
+        ...location,
+        hoursOfOperation: opHours,
+      };
+    });
+    if (!this.query) return locations;
+    return search.searchObjectArray(locations, this.query);
+  }
 
-  getKeyValue(item: any) {
-    const { data, index, ...rest } = item;
-    const key = Object.values(rest)[0] as string;
-    const value = data[key];
-    return {
-      key,
-      value,
-      index,
-    };
+  stringifyOperationHours(opHours: HoursOfOperation[]) {
+    const [opHour, ...rest] = opHours;
+    if (!opHour) return "All Day";
+    return `${opHour.openTime} - ${opHour.closeTime}`;
+  }
+  updateLocation(id: string) {
+    const location = this.locations.find((l) => l.id == id);
+    this.$emit("update-location", location);
   }
 }
 </script>
-<style>
-table thead th {
-  background: #0a4269 !important;
-
-  color: white !important;
-}
-table thead th:first-child {
-  border-top-left-radius: 0.4rem 0.4rem !important;
-}
-table thead th:last-child {
-  border-top-right-radius: 0.4rem 0.4rem !important;
-}
-table thead tr th {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-}
-
-table tbody td {
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
-}
-table tbody tr {
-  border: 1px solid #b8c3de;
-}
-table tbody tr:nth-child(even) {
-  background-color: white !important;
-}
-</style>

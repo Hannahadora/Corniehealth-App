@@ -33,25 +33,27 @@
         </icon-input>
       </span>
       <span class="flex justify-between items-center">
-        <three-dot-icon class="mr-7" />
         <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon
-          class="cursor-pointer"
-          @click="showAdvancedFilters = true"
-        />
+        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
     </div>
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon @click="showExtraModal = true" />
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="showExtraModal = true"
+          />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
+    <column-filter
+      :columns="rawHeaders"
+      v-model:preferred="preferredHeaders"
+      v-model:visible="showColumnFilter"
+    />
     <extra-modal v-model:visible="showExtraModal" />
-    <advanced-filters v-model:visible="showAdvancedFilters" />
   </div>
 </template>
 <script lang="ts">
@@ -61,15 +63,26 @@ import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
+import ColumnFilter from "@/components/columnfilter.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import TableSettingIcon from "@/components/icons/tablesetting.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
 import extraModal from "./extraModal.vue";
-import AdvancedFilters from "./advancedFilters.vue";
+import { Prop } from "vue-property-decorator";
+import IPayment from "@/types/IPayment";
+import search from "@/plugins/search";
 
-import { cornieClient } from "@/plugins/http";
+const first = (num: number, vals: any[]) => {
+  const res = [];
+  for (let index = 0; index < vals.length; index++) {
+    const element = vals[index];
+    res.push(element);
+  }
+  return res;
+};
+
 @Options({
   components: {
     Table,
@@ -83,45 +96,65 @@ import { cornieClient } from "@/plugins/http";
     BankAddIcon,
     TableSettingIcon,
     extraModal,
-    AdvancedFilters,
+    ColumnFilter,
   },
 })
 export default class BankAccountsExistingState extends Vue {
-  headers = [
+  @Prop({ type: Array, default: [] })
+  payments!: IPayment[];
+
+  query = "";
+
+  itemId = this.payments.map((payment) => {
+    return payment.id;
+  });
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "ACCOUNT NAME",
       value: "accountName",
+      show: true,
     },
-    { title: "ACCOUNT NUMBER", value: "accountNumber" },
-    { title: "Location(s)", value: "Location" },
+    {
+      title: "ACCOUNT NUMBER",
+      value: "accountNumber",
+      show: true,
+    },
+    {
+      title: "Location(s)",
+      value: "location",
+      show: true,
+    },
     {
       title: "PAYMENT CATEGORY(IES)",
-      value: "paymentCategory",
+      value: "paymentCategories",
+      show: true,
     },
-    // Displaying Icon in the header - <table-setting-icon/>
-    { title: "", value: "more", image: true },
   ];
-  items = [];
 
-  showExtraModal = false;
-  showAdvancedFilters = false;
-
-  async fetchOrgPayments() {
-    const OrgPayments = cornieClient().get(
-      "/api/v1/payments/myOrg/getMyOrgPayments"
-    );
-    const response = await OrgPayments;
-    this.items = response.data;
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "more", image: true }];
   }
 
-  //  fetching of Org Payments
-  async created() {
-    try {
-      await this.fetchOrgPayments();
-    } catch (error) {
-      console.log(error);
+  get items() {
+    const payments = this.payments.map((payment) => {
+      (payment as any).more = payment.id;
+      return payment;
+    });
+    if (!this.query) {
+      return payments;
+    } else {
+      return search.searchObjectArray(payments, this.query);
     }
   }
+
+  showExtraModal = false;
+  showColumnFilter = false;
 
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
@@ -135,7 +168,6 @@ export default class BankAccountsExistingState extends Vue {
   }
 }
 </script>
-
 <style>
 table thead th {
   background: #0a4269 !important;

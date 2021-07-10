@@ -1,8 +1,8 @@
 <template>
   <div class="border-t border-b border-gray-300">
-    <div class="flex mt-10 mb-6">
+    <div class="flex mt-10 mb-6 items-center">
       Disabled
-      <ToogleCheck @updated="checkedValue" class="mx-4"></ToogleCheck>
+      <ToogleCheck v-model="twoFA" class="mx-4" />
       Enabled
     </div>
     <div class="flex">
@@ -15,7 +15,7 @@
     </div>
     <div class="grid grid-cols-3 gap-x-16 my-10">
       <div class="col-span-2 mt-10">
-        <label for="otp"> Enter the one time password sent to you email </label>
+        <label for="otp"> Enter the one time pin sent to you email </label>
         <br />
         <input
           type="text"
@@ -41,12 +41,14 @@
           "
         />
         <br />
-        <p class="text-pink-600 font-bold cursor-pointer">SEND CODE</p>
+        <p class="text-pink-600 font-bold cursor-pointer" @click="sendCode">
+          SEND CODE
+        </p>
       </div>
 
       <div class="grid-cols-3 my-10">
         <label for="Password" class="font-bold text-base uppercase">
-          Corfirm Password
+          Confirm Password
         </label>
         <br />
         <password-input
@@ -129,9 +131,21 @@ export default {
       password: "",
       userId: "",
       token: "",
+      twoFA: false,
     };
   },
+  created() {
+    this.twoFA = this.requiresTwoFactorAuth;
+  },
+  watch: {
+    requiresTwoFactorAuth() {
+      this.twoFA = this.requiresTwoFactorAuth;
+    },
+  },
   computed: {
+    requiresTwoFactorAuth() {
+      return store.state.user.requiresTwoFactorAuth;
+    },
     payloadOff() {
       return {
         password: store.state.user.password,
@@ -142,7 +156,7 @@ export default {
       return {
         // token not yet given
         token: this.token,
-        userId: store.state.Id,
+        userId: store.state.user.user.id,
       };
     },
   },
@@ -150,8 +164,18 @@ export default {
     saveTwoFactor() {
       console.log("Two Factor Completely Setup");
     },
-
-    // still working on this
+    async sendCode() {
+      const payload = {
+        userId: store.state.user.user.id,
+        email: store.state.user.user.email,
+      };
+      try {
+        await quantumClient().post("/org/security/2fa/setup/otp", payload);
+        alert("Code has been sent to your email " + payload.email);
+      } catch (error) {
+        alert("Code not sent please try again");
+      }
+    },
     async turnOn() {
       try {
         await quantumClient().post("/org/security/2fa/setup", this.payloadOn);
@@ -170,10 +194,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    },
-
-    checkedValue(e) {
-      e ? this.turnOn() : this.turnOff();
     },
   },
 };
