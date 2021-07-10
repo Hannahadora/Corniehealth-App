@@ -42,18 +42,34 @@
         <span v-if="getKeyValue(item).key == 'more'">
           <three-dot-icon
             class="cursor-pointer"
-            @click="showExtraModal = true"
+            @click="showMenu(item.data.id)"
           />
         </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+        <span v-else> {{ getKeyValue(item).value }}</span>
       </template>
     </Table>
+        <details-menu v-model:visible="showExtraModal" class="origin-top-right relative left-3/4 -mt-48 -top-10 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none rounded-lg opacity-100">
+          <div class="py-1 mt-4" role="none"> 
+          <div class="block p-3">
+            <li  @click="updatePayment(newitem)" class="list-none flex px-4 py-2 mb-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer" role="menuitem">
+              <eye-icon class="mr-3 mt-1" /> View & Edit
+            </li>
+            <li @click="showDelete(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
+              <delete-icon class="mr-3" /> Delete Account
+            </li>
+            <li @click="deactivate(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
+              <close-icon class="mr-3" /> Deactivate Account
+            </li>
+          </div>
+          </div>
+        </details-menu>
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-    <extra-modal v-model:visible="showExtraModal" />
+    <delete-modal v-model:visible="showDeleteModal" :paymentId="paymentId"/>
+    <!-- <extra-modal v-model:visible="showExtraModal"  :payments="payments" :items="items"/>-->
   </div>
 </template>
 <script lang="ts">
@@ -73,7 +89,13 @@ import extraModal from "./extraModal.vue";
 import { Prop } from "vue-property-decorator";
 import IPayment from "@/types/IPayment";
 import search from "@/plugins/search";
-
+import DetailsMenu from "@/components/menu.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import CloseIcon from "@/components/icons/close.vue";
+import DeleteModal from "./deleteModal.vue";
+import { cornieClient } from "@/plugins/http";
+import Swal from "sweetalert2";
 const first = (num: number, vals: any[]) => {
   const res = [];
   for (let index = 0; index < vals.length; index++) {
@@ -85,6 +107,9 @@ const first = (num: number, vals: any[]) => {
 
 @Options({
   components: {
+    DeleteIcon,
+    EyeIcon,
+    CloseIcon,
     Table,
     SortIcon,
     ThreeDotIcon,
@@ -97,13 +122,25 @@ const first = (num: number, vals: any[]) => {
     TableSettingIcon,
     extraModal,
     ColumnFilter,
+    DetailsMenu,
+    DeleteModal
   },
 })
 export default class BankAccountsExistingState extends Vue {
   @Prop({ type: Array, default: [] })
   payments!: IPayment[];
 
+  addAccount = false
+  addPayment = false;
+  update = false;
   query = "";
+  newitem = "";
+  paymentId = {};
+  editPayments = {};
+  showDeleteModal = false;
+  showExtraModal = false;
+  showColumnFilter = false;
+
 
   itemId = this.payments.map((payment) => {
     return payment.id;
@@ -140,22 +177,28 @@ export default class BankAccountsExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "more", image: true }];
   }
-
   get items() {
     const payments = this.payments.map((payment) => {
       (payment as any).more = payment.id;
       return payment;
     });
-    if (!this.query) {
-      return payments;
-    } else {
-      return search.searchObjectArray(payments, this.query);
-    }
+    return payments;
+    if (!this.query) return payments;
+    return search.searchObjectArray(payments, this.query);
   }
+  updatePayment(id: string) {
+    const payment = this.payments.find((d) => d.id == id);
+    this.$emit("add-account", payment);
+    console.log(payment)
+  }
+  public showDelete(id: string): void {
+    const payment = this.payments.find((d) => d.id == id);
+    this.showDeleteModal = true;
 
-  showExtraModal = false;
-  showColumnFilter = false;
-
+    this.paymentId = id;
+  }
+  
+  
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
@@ -166,6 +209,40 @@ export default class BankAccountsExistingState extends Vue {
       index,
     };
   }
+ async deactivate() {
+    try {
+      // returning error  Expected 2 arguments, but got 1.
+      //const response = await cornieClient().post(`/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`);
+      const response = await cornieClient().post('/api/v1/payments/deactivateActivatePaymentAccount/',this.paymentId);
+      if (response.success) {
+         Swal.fire({
+          position:'top-end',
+          width:300,
+          padding:'0.5em',
+          icon: 'success',
+          title: 'Account Deactivated!',
+          showConfirmButton: false,
+          timer:15000
+        })
+      }
+    } catch (error) {
+      Swal.fire({
+        position:'top-end',
+        icon: 'error',
+        width:300,
+        padding:'0.5em',
+        title: 'Not Deactivated!',
+        showConfirmButton: false,
+        timer:15000
+      })
+      console.error(error);
+    }
+  }
+  public showMenu(data: string): void {
+    this.showExtraModal = true;
+    this.newitem = data;
+  }
+ 
 }
 </script>
 <style>
