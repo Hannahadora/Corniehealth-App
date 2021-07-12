@@ -45,7 +45,7 @@
 </template>
 <script>
 import Modal from "@/components/modal.vue";
-import DInput from "./dinput.vue";
+import DInput from "./dInput.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
