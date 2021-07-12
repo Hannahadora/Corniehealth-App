@@ -1,14 +1,34 @@
 <template>
-  <div class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg">
+  <div
+    class="
+      w-80
+      lg:w-full
+      xl:w-full
+      md:w-full
+      h-full
+      block
+      p-4
+      relative
+      right-32
+      lg:right-0
+      xl:right-0
+      md:right-0
+      border-2 border-gray-300
+      rounded-lg
+    "
+  >
     <h2 class="font-bold text-3xl mb-10">Join Corniehealth</h2>
-    <form class="w-full" @submit.prevent="submit">
+    <v-form class="w-full" @submit="submit">
       <div class="w-full grid grid-cols-2 gap-y-4 gap-x-3 mb-3">
         <cornie-select
+          required
           class="w-full"
-          :items="['Patient', 'Provider', 'Payer']"
+          :items="['Patient', 'Provider', 'Payer', 'HMO']"
           label="Account Type"
+          v-model="accountType"
         />
         <cornie-input
+          :rules="requiredString"
           v-model="fullName"
           required
           class="w-full"
@@ -16,14 +36,14 @@
         />
         <cornie-input
           v-model="email"
-          required
+          :rules="emailRule"
           class="w-full"
           label="Email Address"
         />
         <phone-input
           v-model:code="dialCode"
           v-model="phone"
-          required
+          :rules="phoneRule"
           class="w-full"
           label="Phone"
         />
@@ -64,7 +84,7 @@
           >Sign In</router-link
         >
       </span>
-    </form>
+    </v-form>
   </div>
 </template>
 <script lang="ts">
@@ -75,9 +95,15 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import ConditionalInput from "@/components/conditional-input.vue";
+import { string } from "yup";
+import { namespace } from "vuex-class";
+
+const phoneRegex =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 type CreatedUser = { id: string; email: string };
 
+const user = namespace("user");
 @Options({
   components: {
     CornieInput,
@@ -93,11 +119,20 @@ export default class CreateAccount extends Vue {
   @Prop({ required: false })
   user!: CreatedUser;
 
+  requiredString = string().required().trim();
+  phoneRule = string().matches(phoneRegex, "A valid phone number is required");
+  emailRule = string().email("A valid email is required").required();
+
   email = "";
   phone = "";
-  dialCode = "";
+  dialCode = "+234";
   fullName = "";
+  accountType = "Provider";
   loading = false;
+
+  @user.Mutation
+  setCornieData!: (data: any) => void;
+
   get payload() {
     const { firstName, lastName, middleName } = this.splitName();
     return {
@@ -129,10 +164,12 @@ export default class CreateAccount extends Vue {
     this.loading = true;
     try {
       const data = await quantumClient().post("/auth/signup/", this.payload);
-      if (!data.success) {
+      if (data.success) {
+        this.setUser(data);
+        this.setCornieData({ accountType: this.accountType });
+      } else {
         alert(errMsg);
       }
-      this.setUser(data);
     } catch (error) {
       alert(errMsg);
     }

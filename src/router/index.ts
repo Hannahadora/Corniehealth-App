@@ -27,11 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/reset/resetpassword.vue"),
   },
   {
-    path: "/dashboard",
+    path: "/dashboard/provider",
     name: "Dashboard",
     component: Dashboard,
     meta: { requiresAuth: true },
-    redirect: "/dashboard/settings",
+    redirect: "/dashboard/provider/settings",
     children: [
       {
         path: "settings",

@@ -1,24 +1,37 @@
 <template>
   <span>
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
-    <select
-      v-bind="$attrs"
+    <field
+      :name="inputName"
+      v-slot="{ meta, field, errorMessage }"
       v-model="value"
-      class="rounded-lg border p-2 w-11/12 focus:outline-none"
+      :rules="rules"
     >
-      <option v-for="(item, i) in items" :key="i" :value="item.code || item">
-        {{ item.display || item }}
-      </option>
-    </select>
+      <select
+        v-bind="field"
+        :class="{
+          'border-red-500': Boolean(errorMessage),
+          'border-green-400': meta.valid && meta.touched,
+        }"
+        class="rounded-lg border p-2 w-11/12 focus:outline-none"
+      >
+        <option v-for="(item, i) in items" :key="i" :value="item.code || item">
+          {{ item.display || item }}
+        </option>
+      </select>
+    </field>
   </span>
 </template>
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { Field, useField } from "vee-validate";
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync } from "vue-property-decorator";
+import { Field } from "vee-validate";
 
 @Options({
   name: "CornieSelect",
+  components: {
+    Field,
+  },
 })
 export default class DSelect extends Vue {
   @Prop({ type: String })
@@ -38,5 +51,10 @@ export default class DSelect extends Vue {
 
   @Prop({ type: Object })
   rules!: any;
+
+  get inputName() {
+    const id = Math.random().toString(36).substring(2, 9);
+    return this.name || `input-${id}`;
+  }
 }
 </script>

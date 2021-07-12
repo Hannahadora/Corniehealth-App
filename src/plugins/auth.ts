@@ -1,5 +1,5 @@
 import store from "@/store";
-import { quantumClient } from "./http";
+import { cornieClient, quantumClient } from "./http";
 import localstore from "./localstore";
 
 export function rememberLogin(token: string) {
@@ -17,16 +17,32 @@ export async function refreshUser() {
   if (user?.id) return;
   const data = await fetchUserData();
   if (!data) return;
-  store.commit("user/setLoginInfo", data);
+  store.commit("user/setLoginInfo", data.quantum);
+  store.commit("user/setCornieData", data.cornie);
 }
 
 async function fetchUserData() {
   try {
-    const response = await quantumClient().get("auth/refresh_linchpin");
-    return response;
+    const quantumResponse = quantumClient().get("auth/refresh_linchpin");
+    const cornieResponse = fetchCornieData();
+    const [quantum, cornie] = await Promise.all([
+      quantumResponse,
+      cornieResponse,
+    ]);
+    return { quantum, cornie };
   } catch (error) {
     console.log("error");
   }
+}
+
+export async function fetchCornieData() {
+  try {
+    const res = await cornieClient().get("/api/v1/account");
+    return res.success ? res.data : {};
+  } catch (error) {
+    console.log(error);
+  }
+  return {};
 }
 export async function logout() {
   clearInterval(interval);
