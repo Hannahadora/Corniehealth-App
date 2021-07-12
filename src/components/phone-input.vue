@@ -1,6 +1,6 @@
 <template>
-  <span>
-    <label class="block uppercase mb-1 text-sm font-bold">
+  <span class="w-11/12">
+    <label class="block uppercase mb-1 text-xs font-bold">
       {{ label }}
     </label>
     <span class="flex">
@@ -22,9 +22,10 @@
           sm:leading-5
         "
       >
+        <option value="+234" selected="selected" hidden>+234</option>
         <option
-          :selected="code.default"
           :value="code.dialCode"
+          :selected="code.default"
           v-for="(code, i) in codes"
           :key="i"
         >
@@ -34,7 +35,8 @@
       <input
         class="rounded-r-lg border p-2 w-11/12 focus:outline-none"
         v-model="valueSync"
-        v-bind="$attrs"
+        type="tel"
+        pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
       />
     </span>
   </span>
@@ -45,7 +47,7 @@ import { Prop, PropSync } from "vue-property-decorator";
 import { countryCodes } from "@/plugins/countrycodes";
 
 @Options({
-  inheritAttrs: false,
+  name: "PhoneInput",
 })
 export default class PhoneInput extends Vue {
   @Prop({ type: String, default: "" })
@@ -54,10 +56,10 @@ export default class PhoneInput extends Vue {
   @PropSync("modelValue")
   valueSync!: string;
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String })
   code!: string;
 
-  @PropSync("code")
+  @PropSync("code", { default: "+234" })
   codeSync!: string;
 
   @Prop({ type: String, default: "" })
@@ -73,7 +75,7 @@ export default class PhoneInput extends Vue {
 }
 </script>
 <style scoped>
-select {
+select- {
   background-size: 0%;
 }
 </style>

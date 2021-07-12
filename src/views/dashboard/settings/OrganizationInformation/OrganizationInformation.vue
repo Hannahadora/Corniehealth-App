@@ -122,7 +122,11 @@
             label="Incorporation Type"
             v-model="IncorporationType"
           />
-          <phone-input label="Phone Number" v-model="PhoneNumber" />
+          <phone-input
+            label="Phone Number"
+            v-model:code="DialCode"
+            v-model="PhoneNumber"
+          />
           <cornie-input
             class="w-full"
             label="Email Address"
@@ -217,7 +221,7 @@ export default {
       OrganizationType: "",
       ReferenceOrganization: "",
       RegistrationNumber: "",
-      DialCode: "",
+      DialCode: "+234",
       PhoneNumber: "",
       DomainName: "",
       OrganizationIdentifier: "",
@@ -225,7 +229,7 @@ export default {
       IncorporationType: "",
       EmailAddress: " ",
       Website: "",
-      IncStatus: "",
+      IncorporationStatus: "",
 
       orgTypes: [],
       provProfiles: [],
@@ -236,7 +240,6 @@ export default {
   },
   computed: {
     payload() {
-      console.log("Image", this.img.url);
       return {
         name: this.OrganizationName,
         image: this.img.url,
@@ -247,7 +250,7 @@ export default {
         providerProfile: this.ProviderProfile,
         incorporationType: this.IncorporationType,
         website: this.Website,
-        incorporationStatus: this.IncStatus,
+        incorporationStatus: this.IncorporationStatus,
       };
     },
   },

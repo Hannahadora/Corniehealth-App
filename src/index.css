@@ -50,3 +50,50 @@ select {
   table tbody tr:nth-child(even) {
     background-color: white !important;
   }
+
+  input[type="checkbox"]:before {
+    position: relative;
+    display: block;
+    width: 11px;
+    height: 11px;
+    content: "";
+    background: white;
+    border: 1px solid #0a4269;
+  }
+  
+  input[type="checkbox"]:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #0a4269;
+  }
+  
+  /* Large checkboxes */
+  input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+  }
+  
+  input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+  }
+  
+  input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+  }
+  
+  /* Custom checkbox */
+  input[type="checkbox"]:checked:after {
+    background-image: url("./assets/tick.svg");
+    background-color: #0a4269;
+  }

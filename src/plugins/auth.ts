@@ -16,6 +16,7 @@ export async function refreshUser() {
   const user = store.state.user.user;
   if (user?.id) return;
   const data = await fetchUserData();
+  if (!data) return;
   store.commit("user/setLoginInfo", data);
 }
 
