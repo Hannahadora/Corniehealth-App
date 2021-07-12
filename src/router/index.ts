@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
+import HmoDashboard from "../views/dashboardHmo/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,6 +26,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/reset/password",
     name: "Reset Password",
     component: () => import("@/views/auth/reset/resetpassword.vue"),
+  },
+  //HMO Dashboard
+  {
+    path: "/dashboard/HMO",
+    name: "HmoDashboard",
+    component: () =>
+    import("@/views/dashboardHmo/dashboard.vue"),
   },
   {
     path: "/dashboard",
