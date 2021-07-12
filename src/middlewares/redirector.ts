@@ -7,7 +7,6 @@ export async function redirector(
   _: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
-  if (to.path) return next();
   if (!to.path.includes("dashboard")) return next();
   const accountType = store.state.user.cornieData.accountType || "Provider";
   const expectedPath = `/dashboard/${accountType}`.toLowerCase();
