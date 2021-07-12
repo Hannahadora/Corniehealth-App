@@ -3,8 +3,8 @@
     <label class="block uppercase mb-1 text-xs font-semibold">{{
       label
     }}</label>
-    <input
-    type="date"
+    <textarea
+    rows="4"
       class="rounded-lg border p-2 w-80 focus:outline-none"
       v-model="valueSync"
       v-bind="$attrs"
