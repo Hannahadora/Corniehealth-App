@@ -17,7 +17,7 @@
                             Deaactivate Account
                         </h3>
                         <div class="mt-4">
-                        <d-input label="Deactivation Date" v-model="deactivateTillDate" />
+                        <d-input label="Deactivation Date" class="mb-5" v-model="deactivateTillDate" />
                         <d-text label="Reason For Deactivating" v-model="reasonsForDeactivation" />
                         </div>
                     </div>
@@ -112,33 +112,6 @@ export default {
       console.error(error);
     }
   },
-    async deletePayment() {
-    this.loading = true;
-      try {
-        const response = await cornieClient().delete(`/api/v1/payments/${this.paymentId}`);
-        if (response.success) {
-            this.show= false;
-            this.loading = false;
-          Swal.fire({
-                  title: response.message,
-                  text: response.success,
-                  icon: "success",
-                  showCancelButton: false,
-                  confirmButtonColor: "#0A4269",
-                  confirmButtonText: "Okay, Thanks"
-                });
-        }
-      } catch (error) {
-          Swal.fire({
-                  title: response.message,
-                  text: error,
-                  icon: "error",
-                  showCancelButton: false,
-                  confirmButtonColor: "#0A4269",
-                  confirmButtonText: "Okay, Thanks"
-                });
-      }
-    },
   },
   computed: {
       payload() {

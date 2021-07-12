@@ -5,7 +5,7 @@
     }}</label>
     <textarea
     rows="4"
-      class="rounded-lg border p-2 w-full focus:outline-none"
+      class="rounded-lg border p-2 w-80 focus:outline-none"
       v-model="valueSync"
       v-bind="$attrs"
     />
