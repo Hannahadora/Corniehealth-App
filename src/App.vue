@@ -13,7 +13,11 @@ import NavBar from "@/components/navbar.vue";
     NavBar,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  created() {
+    console.log(this.$router.getRoutes());
+  }
+}
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");

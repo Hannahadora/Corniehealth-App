@@ -44,81 +44,15 @@
         "
       >
         <sidebar-link
-          to="/dashboard/settings"
-          text="Dashboard"
+          v-for="(link, i) in links"
+          :key="i"
+          :to="link.to"
+          :text="link.name"
           :hovered="hovered"
         >
-          <dashboard-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/engagements"
-          text="Engagements"
-          :hovered="hovered"
-        >
-          <schedule-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/clinical"
-          :hovered="hovered"
-          text="Clinical"
-        >
-          <book-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/in-patient"
-          :hovered="hovered"
-          text="In-Patient"
-        >
-          <clinic-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dasboard/diagnostics"
-          :hovered="hovered"
-          text="Diagnostics"
-        >
-          <clip-board-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/medications"
-          :hovered="hovered"
-          text="Medications"
-        >
-          <pill-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/certificates"
-          :hovered="hovered"
-          text="Certificates"
-        >
-          <medal-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/payments"
-          :hovered="hovered"
-          text="Bills & Payments"
-        >
-          <debit-card-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/accounting"
-          :hovered="hovered"
-          text="Accounting"
-        >
-          <wallet-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/analytics"
-          :hovered="hovered"
-          text="Analytics"
-        >
-          <chart-icon />
-        </sidebar-link>
-        <sidebar-link
-          to="/dashboard/referrals"
-          :hovered="hovered"
-          text="Referrals"
-        >
-          <refer-icon />
+          <keep-alive>
+            <component :is="link.icon"></component>
+          </keep-alive>
         </sidebar-link>
       </div>
       <sidebar-link
@@ -175,5 +109,51 @@ import SidebarLink from "./sidebarlink.vue";
 })
 export default class CorniDashboardeSideBar extends Vue {
   hovered = false;
+
+  providerLinks = [
+    { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
+    { name: "Engagements", to: "engagements", icon: "schedule-icon" },
+    { name: "Clinical", to: "clinical", icon: "book-icon" },
+    { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
+    { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },
+    { name: "Medications", to: "medications", icon: "pill-icon" },
+    { name: "Certificates", to: "certificates", icon: "medal-icon" },
+    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon" },
+    { name: "Accounting", to: "accounting", icon: "wallet-icon" },
+    { name: "Analytics", to: "analytics", icon: "chart-icon" },
+    { name: "Referrals", to: "refs", icon: "refer-icon" },
+  ];
+
+  hmoLinks = [
+    { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
+    { name: "Experience", to: "experience", icon: "refer-icon" },
+    { name: "Health Plans", to: "health-plans", icon: "book-icon" },
+    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon" },
+    { name: "Accounting", to: "accounting", icon: "wallet-icon" },
+    { name: "Analytics", to: "analytics", icon: "chart-icon" },
+    { name: "Approvals", to: "analytics", icon: "chart-icon" },
+  ];
+  get accType() {
+    const paths = this.$route.path.split("/");
+    let typeIndex = -1;
+    paths.forEach((path, i) => {
+      if (path == "dashboard") typeIndex = i + 1;
+    });
+
+    if (typeIndex >= 0) return paths[typeIndex];
+  }
+
+  get links() {
+    const accType = this.accType?.toLowerCase();
+    let links = [];
+    if (accType == "hmo") links = [...this.hmoLinks];
+    else links = [...this.providerLinks];
+    return links.map((link) => {
+      return {
+        ...link,
+        to: `/dashboard/${accType}/${link.to}`,
+      };
+    });
+  }
 }
 </script>
