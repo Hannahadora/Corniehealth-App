@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import HmoDashboard from "../views/dashboardHmo/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
+import HMOHome from "@/views/dashboardHmo/home/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -31,8 +32,26 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/dashboard/HMO",
     name: "HmoDashboard",
-    component: () =>
-    import("@/views/dashboardHmo/dashboard.vue"),
+    component: HmoDashboard,
+    meta: { requiresAuth: true },
+    redirect: "/dashboard/settings",
+    children: [
+      {
+        path: "/hmo/home",
+        name: "HMOHome",
+        component: Home,
+        redirect: "/dashboard/hmo/home",
+        children: [
+          {
+            path: "experience-management",
+            name: "Experience Management",
+            component: () =>
+              import("@/views/dashboard/settings/AccountSecurity/index.vue"),
+          },
+          
+        ],
+      },
+    ],
   },
   {
     path: "/dashboard",

@@ -305,7 +305,7 @@ export default {
       if (response.success) {
         Swal.fire({
           title: response.message,
-          text: success,
+          text: response.success,
           icon: "success",
           showCancelButton: false,
           confirmButtonColor: "#0A4269",

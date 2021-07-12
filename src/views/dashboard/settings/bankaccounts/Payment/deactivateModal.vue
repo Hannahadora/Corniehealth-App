@@ -88,27 +88,25 @@ export default {
         this.show= false;
             this.loading = false;
          Swal.fire({
-          position:'top-end',
-          width:300,
-          padding:'0.5em',
-          icon: 'success',
-          title: 'Account Deactivated!',
-          showConfirmButton: false,
-          timer:15000
-        })
+          title: response.message,
+          text: response.success,
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonColor: "#0A4269",
+          confirmButtonText: "Okay, Thanks"
+        });
       }
     } catch (error) {
       this.show= false;
             this.loading = false;
       Swal.fire({
-        position:'top-end',
-        icon: 'error',
-        width:300,
-        padding:'0.5em',
-        title: 'Not Deactivated!',
-        showConfirmButton: false,
-        timer:15000
-      })
+        title: response.message,
+        text: error,
+        icon: "error",
+        showCancelButton: false,
+        confirmButtonColor: "#0A4269",
+        confirmButtonText: "Okay, Thanks"
+      });
       console.error(error);
     }
   },
