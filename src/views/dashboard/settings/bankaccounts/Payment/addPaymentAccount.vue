@@ -337,8 +337,8 @@ export default {
       const PaymentsCategories = cornieClient().get(
         "/api/v1/payments/getPaymentsCategories/all"
       );
-      const banks = cornieClient().get("/api/v1/payments/getbanks/all");
-      const response = await Promise.all([PaymentsCategories, banks]);
+      const AllBanks = cornieClient().get("/api/v1/payments/getAllBanks/all");
+      const response = await Promise.all([PaymentsCategories, AllBanks]);
       this.PaymentsCategories = response[0].data;
       this.banks = response[1].data;
     },
