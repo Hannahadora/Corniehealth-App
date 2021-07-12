@@ -1,4 +1,5 @@
 <template>
+<div>
   <router-view />
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
@@ -41,6 +42,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 <script>
 import Payment from "./Payment/payment.vue";
