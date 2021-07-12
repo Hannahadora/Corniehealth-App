@@ -57,7 +57,7 @@
             <li @click="showDelete(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
               <delete-icon class="mr-3" /> Delete Account
             </li>
-            <li @click="deactivate(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
+            <li @click="showDeactivate(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
               <close-icon class="mr-3" /> Deactivate Account
             </li>
           </div>
@@ -69,6 +69,7 @@
       v-model:visible="showColumnFilter"
     />
     <delete-modal v-model:visible="showDeleteModal" :paymentId="paymentId"/>
+    <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
     <!-- <extra-modal v-model:visible="showExtraModal"  :payments="payments" :items="items"/>-->
   </div>
 </template>
@@ -94,6 +95,7 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import DeleteModal from "./deleteModal.vue";
+import DeactivateModal from "./deactivateModal.vue";
 import { cornieClient } from "@/plugins/http";
 import Swal from "sweetalert2";
 const first = (num: number, vals: any[]) => {
@@ -123,7 +125,8 @@ const first = (num: number, vals: any[]) => {
     extraModal,
     ColumnFilter,
     DetailsMenu,
-    DeleteModal
+    DeleteModal,
+    DeactivateModal
   },
 })
 export default class BankAccountsExistingState extends Vue {
@@ -138,6 +141,7 @@ export default class BankAccountsExistingState extends Vue {
   paymentId = {};
   editPayments = {};
   showDeleteModal = false;
+  showDeativateModal = false;
   showExtraModal = false;
   showColumnFilter = false;
 
@@ -197,6 +201,12 @@ export default class BankAccountsExistingState extends Vue {
 
     this.paymentId = id;
   }
+  public showDeactivate(id: string): void {
+    const payment = this.payments.find((d) => d.id == id);
+    this.showDeativateModal = true;
+
+    this.paymentId = id;
+  }
   
   
   getKeyValue(item: any) {
@@ -209,35 +219,7 @@ export default class BankAccountsExistingState extends Vue {
       index,
     };
   }
- async deactivate() {
-    try {
-      // returning error  Expected 2 arguments, but got 1.
-      //const response = await cornieClient().post(`/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`);
-      const response = await cornieClient().post('/api/v1/payments/deactivateActivatePaymentAccount/',this.paymentId);
-      if (response.success) {
-         Swal.fire({
-          position:'top-end',
-          width:300,
-          padding:'0.5em',
-          icon: 'success',
-          title: 'Account Deactivated!',
-          showConfirmButton: false,
-          timer:15000
-        })
-      }
-    } catch (error) {
-      Swal.fire({
-        position:'top-end',
-        icon: 'error',
-        width:300,
-        padding:'0.5em',
-        title: 'Not Deactivated!',
-        showConfirmButton: false,
-        timer:15000
-      })
-      console.error(error);
-    }
-  }
+ 
   public showMenu(data: string): void {
     this.showExtraModal = true;
     this.newitem = data;
