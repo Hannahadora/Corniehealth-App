@@ -26,7 +26,7 @@
         <span class="flex">
           <cornie-select
             v-model="opHour.closeTime.time"
-            :items="['8:00']"
+            :items="['8:00', '5:00']"
             class="w-24 mr-1"
           />
           <cornie-select
@@ -43,9 +43,10 @@
 import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import ObjectSet from "@/lib/objectset";
+import { Field } from "vee-validate";
 
 const isEqual = require("lodash").isEqual;
 
@@ -95,9 +96,11 @@ const opHours = [
 ];
 
 @Options({
+  name: "HoursOfOperation",
   components: {
     CornieInput,
     CornieSelect,
+    Field,
   },
 })
 export default class OperationHours extends Vue {
@@ -109,17 +112,18 @@ export default class OperationHours extends Vue {
   all = true;
 
   buildTime({ time, period }: any) {
-    return `${time}${period}`;
+    return `${time} ${period}`;
   }
 
   splitTime(time: string) {
     let periodIndex = time.toUpperCase().indexOf("PM");
-    if (!periodIndex) periodIndex = time.toUpperCase().indexOf("AM");
+    if (periodIndex < 0) periodIndex = time.toUpperCase().indexOf("AM");
     return {
-      time: time.substring(0, periodIndex),
+      time: time.substring(0, periodIndex).trim(),
       period: time.substring(periodIndex),
     };
   }
+
   mapOpHours() {
     const selectedDays = this.opHours.filter((opHour) => opHour.selected);
     return selectedDays.map((opHour) => {
@@ -149,6 +153,11 @@ export default class OperationHours extends Vue {
   hourChanged() {
     this.markAll();
     const opHours = this.mapOpHours();
+    console.log("IS equal?", this.modelValue);
+    if (isEqual([...opHours], [...this.modelValue])) {
+      console.log("Equal");
+      return;
+    }
     this.$emit("update:modelValue", opHours);
   }
 
@@ -172,9 +181,13 @@ export default class OperationHours extends Vue {
       };
     });
   }
+
   @Watch("modelValue", { deep: true })
-  propChanged() {
-    this.setOpHours();
+  propChanged(cur: any[], prev: any[]) {
+    if (!isEqual(cur, prev)) {
+      this.setOpHours();
+      console.log("not equal");
+    }
   }
 
   created() {

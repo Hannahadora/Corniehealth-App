@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "settings/",
         name: "Settings",
         component: Settings,
-        redirect: (to) => `${to.path}/org-info`,
+        redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
             path: "account-security",
@@ -90,33 +90,15 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/location/index.vue"),
           },
-        ],
-      },
-      /** 
-      {
-        path: "hmo",
-        name: "HMO",
-        component: Dashboard,
-        redirect: "",
-        children: [
           {
-            path: "settings/",
-            name: "Settings",
-            component: Settings,
-            redirect: "/dashboard/hmo/settings/org-info",
-            children: [
-              {
-                path: "org-info",
-                name: "Organization Information",
-                component: () =>
-                  import(
-                    "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
-                  ),
-              },
-            ],
+            path: "add-location/:id?",
+            props: true,
+            name: "Create or Update Location",
+            component: () =>
+              import("@/views/dashboard/settings/location/addLocation.vue"),
           },
         ],
-      },**/
+      },
     ],
   },
 ];
