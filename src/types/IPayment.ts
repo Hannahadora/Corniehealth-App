@@ -1,5 +1,5 @@
 export default interface IPayment{
-    id: string;
+    id?: string;
     accountName: string;
     accountNumber: string;
     bank: string;

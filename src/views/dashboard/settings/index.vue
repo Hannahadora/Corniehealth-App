@@ -27,5 +27,6 @@ export default class Settings extends Vue {}
   display: grid;
   grid-template-columns: 25% 75%;
   height: 60%;
+  min-height: 82vh;
 }
 </style>

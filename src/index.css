@@ -23,3 +23,77 @@ select {
     height: 0.5rem;
     outline: 1px solid slategrey;
   }
+
+  table thead th {
+    background: #0a4269 !important;
+  
+    color: white !important;
+  }
+  table thead th:first-child {
+    border-top-left-radius: 0.4rem 0.4rem !important;
+  }
+  table thead th:last-child {
+    border-top-right-radius: 0.4rem 0.4rem !important;
+  }
+  table thead tr th {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  table tbody td {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  table tbody tr {
+    border: 1px solid #b8c3de;
+  }
+  table tbody tr:nth-child(even) {
+    background-color: white !important;
+  }
+
+  input[type="checkbox"]:before {
+    position: relative;
+    display: block;
+    width: 11px;
+    height: 11px;
+    content: "";
+    background: white;
+    border: 1px solid #0a4269;
+  }
+  
+  input[type="checkbox"]:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #0a4269;
+  }
+  
+  /* Large checkboxes */
+  input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+  }
+  
+  input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+  }
+  
+  input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+  }
+  
+  /* Custom checkbox */
+  input[type="checkbox"]:checked:after {
+    background-image: url("./assets/tick.svg");
+    background-color: #0a4269;
+  }

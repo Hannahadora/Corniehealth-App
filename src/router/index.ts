@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -27,17 +28,17 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/reset/resetpassword.vue"),
   },
   {
-    path: "/dashboard",
+    path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
+    redirect: (to) => `${to.path}/settings`.replace("//", "/"),
     meta: { requiresAuth: true },
-    redirect: "/dashboard/settings",
     children: [
       {
-        path: "settings",
+        path: "settings/",
         name: "Settings",
         component: Settings,
-        redirect: "/dashboard/settings/org-info",
+        redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
             path: "account-security",
@@ -88,6 +89,13 @@ const routes: Array<RouteRecordRaw> = [
             name: "Location & Location Hierarchy",
             component: () =>
               import("@/views/dashboard/settings/location/index.vue"),
+          },
+          {
+            path: "add-location/:id?",
+            props: true,
+            name: "Create or Update Location",
+            component: () =>
+              import("@/views/dashboard/settings/location/addLocation.vue"),
           },
           {
             path: "health-services",

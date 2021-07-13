@@ -1,8 +1,7 @@
 <template>
-  <main class="w-1/2 flex flex-col justify-center items-center">
-    <location-icon />
-    <h3 class="text-center text-black mt-5"></h3>
-    <h4 class="text-black text-center">Add New Location</h4>
+  <div class="w-full flex flex-col justify-center items-center h-96">
+    <img src="@/assets/img/empty-location.svg" />
+    <h3 class="text-center mt-5">You have no locations</h3>
     <button
       class="
         bg-danger
@@ -14,22 +13,17 @@
         focus:outline-none
         hover:opacity-90
       "
+      @click="$router.push('add-location')"
     >
-      <p>
-        <router-link to="/dashboard/settings/location/add-location"
-          >Add New Location</router-link
-        >
-      </p>
+      New Location
     </button>
-  </main>
+  </div>
 </template>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
 
-<script>
-import LocationIcon from "@/components/icons/locationIcon.vue";
-export default {
-  name: "locationEmptyState",
-  components: {
-    LocationIcon,
-  },
-};
+@Options({
+  components: {},
+})
+export default class LocationEmptyState extends Vue {}
 </script>
