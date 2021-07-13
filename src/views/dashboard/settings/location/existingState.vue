@@ -82,7 +82,6 @@
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-    <confirm :visible="true" />
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
@@ -108,7 +107,6 @@ import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import Confirm from "@/components/confirm.vue";
 
 const location = namespace("location");
 
@@ -126,7 +124,6 @@ const location = namespace("location");
     EyeIcon,
     ColumnFilter,
     TableOptions,
-    Confirm,
   },
 })
 export default class LocationExistingState extends Vue {
