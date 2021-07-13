@@ -134,13 +134,7 @@ export default class CorniDashboardeSideBar extends Vue {
     { name: "Approvals", to: "analytics", icon: "chart-icon" },
   ];
   get accType() {
-    const paths = this.$route.path.split("/");
-    let typeIndex = -1;
-    paths.forEach((path, i) => {
-      if (path == "dashboard") typeIndex = i + 1;
-    });
-
-    if (typeIndex >= 0) return paths[typeIndex];
+    return this.$route.params.type as string;
   }
 
   get links() {
@@ -151,7 +145,7 @@ export default class CorniDashboardeSideBar extends Vue {
     return links.map((link) => {
       return {
         ...link,
-        to: `/dashboard/${accType}/${link.to}`,
+        to: `/dashboard/${accType}/${link.to}/`,
       };
     });
   }
