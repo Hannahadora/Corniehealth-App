@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: (to) => `${to.path}/settings`,
+    redirect: (to) => `${to.path}/settings`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
       {
