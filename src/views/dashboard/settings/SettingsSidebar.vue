@@ -18,7 +18,7 @@
           <div class="flex flex-col mt-1 text-gray-500">
             <s-bar-link
               :name="item.name"
-              :to="item.to"
+              :to="mapUrl(item.to)"
               v-for="(item, index) in setting"
               :key="index"
             >
@@ -91,7 +91,7 @@ export default class Settings extends Vue {
       { name: "Organization Information", to: "org-info", icon: "org-icon" },
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
       {
-        name: "Location & Location Hierarchy",
+        name: "Location Hierarchy",
         to: "location",
         icon: "location-icon",
       },
@@ -162,6 +162,12 @@ export default class Settings extends Vue {
     if (type.toLowerCase() == "hmo") return hmo;
     return provider;
   }
+
+  mapUrl(url: string) {
+    const settingsBase = this.$router.resolve({ name: "Settings" }).href;
+    return `${settingsBase}/${url}`.replace("//", "/");
+  }
+
   filter(navs: INav[]) {
     if (!this.query) return navs;
     return navs.filter((nav) =>

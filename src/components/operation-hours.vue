@@ -48,7 +48,13 @@ import { HoursOfOperation } from "@/types/ILocation";
 import ObjectSet from "@/lib/objectset";
 import { Field } from "vee-validate";
 
-const isEqual = require("lodash").isEqual;
+import { isEmpty, isEqual, xorWith } from "lodash";
+
+const isArrayEqual = (x: any[], y: any[]) => {
+  const first = JSON.parse(JSON.stringify(x));
+  const second = JSON.parse(JSON.stringify(y));
+  return isEmpty(xorWith(first, second, isEqual));
+};
 
 const opHours = [
   {
@@ -151,24 +157,9 @@ export default class OperationHours extends Vue {
 
   @Watch("opHours", { deep: true })
   hourChanged() {
-    this.markAll();
     const opHours = this.mapOpHours();
-    console.log("IS equal?", this.modelValue);
-    if (isEqual([...opHours], [...this.modelValue])) {
-      console.log("Equal");
-      return;
-    }
+    if (isArrayEqual(opHours, this.modelValue)) return;
     this.$emit("update:modelValue", opHours);
-  }
-
-  markAll() {
-    let all = true;
-    this.opHours.forEach((val) => {
-      if (!val.selected) {
-        all = false;
-      }
-    });
-    this.all = all;
   }
 
   @Watch("all")
@@ -180,14 +171,6 @@ export default class OperationHours extends Vue {
         selected: true,
       };
     });
-  }
-
-  @Watch("modelValue", { deep: true })
-  propChanged(cur: any[], prev: any[]) {
-    if (!isEqual(cur, prev)) {
-      this.setOpHours();
-      console.log("not equal");
-    }
   }
 
   created() {

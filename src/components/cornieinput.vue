@@ -2,8 +2,9 @@
   <field
     :name="inputName"
     as="span"
-    v-slot="{ errorMessage, meta }"
+    v-slot="{ errorMessage, meta, field }"
     :rules="rules"
+    v-model="valueSync"
   >
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
     <input
@@ -12,9 +13,9 @@
         'border-green-400': meta.valid && meta.touched,
       }"
       class="rounded-lg border p-2 w-11/12 focus:outline-none"
-      v-model="valueSync"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...field }"
       :name="inputName"
+      v-model="valueSync"
     />
     <span v-if="errorMessage" class="text-xs text-red-500 block">{{
       errorMessage
