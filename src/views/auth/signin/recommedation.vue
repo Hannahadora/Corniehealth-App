@@ -18,7 +18,7 @@
         </cornie-btn>
 
         <cornie-btn
-          @click="$router.replace('/dashboard/')"
+          @click="$router.replace('/dashboard')"
           class="bg-primary mt-2 rounded-full p-3 w-2/6 md:w-1/2"
         >
           Skip For later

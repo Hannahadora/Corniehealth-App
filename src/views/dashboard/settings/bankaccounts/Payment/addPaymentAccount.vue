@@ -11,7 +11,7 @@
         mx-auto
       "
     >
-      Add Payment Account
+      {{ action }} Payment Account
     </span>
 
     <div class="flex justify-between border-b-2">
@@ -106,8 +106,8 @@
             <label for="bank" class="font-bold text-base uppercase mb-4">
               bank
             </label>
-            <orgSelect name="select" id="bank" v-model="AllBank">
-              <option v-for="(bank, i) in AllBanks" :key="i" :value="bank">
+            <orgSelect name="select" id="bank" v-model="bank">
+              <option v-for="(bank, i) in banks" :key="i" :value="bank">
                 {{ bank }}
               </option>
             </orgSelect>
@@ -174,6 +174,7 @@
         </span>
         <span>
           <button
+          :loading="loading"
             type="submit"
             class="
               px-6
@@ -206,9 +207,9 @@
 import OrgSelect from "@/components/orgSelect.vue";
 import FileIcon from "@/components/icons/file.vue";
 import OrgInput from "@/components/orgInput.vue";
-
+import {mapGetters} from "vuex";
 import { cornieClient } from "@/plugins/http";
-
+import Swal from "sweetalert2";
 export default {
   name: "AddPaymentAccount",
   components: {
@@ -216,16 +217,24 @@ export default {
     FileIcon,
     OrgInput,
   },
+  props: {
+    payment: {
+      type: Object,
+      required: true,
+      default: {},
+    },
 
+  },
   data() {
     return {
       picked: true,
+      loading: false,
       accountName: "",
       accountNumber: "",
       PaymentsCategories: [],
-      AllBanks: [],
+      banks: [],
       PaymentCategories: "",
-      AllBank: "",
+      bank: "",
       locations: "",
     };
   },
@@ -235,13 +244,18 @@ export default {
         paymentCategories: this.PaymentCategories,
         accountName: this.accountName,
         accountNumber: this.accountNumber,
-        bank: this.AllBank,
+        bank: this.bank,
       };
     },
+    action() {
+    return this.payment ? "Update" : "Add";
+    }
   },
+ 
 
   //  fetching of the dropdown data
   async created() {
+    this.setPayment();
     try {
       await this.fetchDropDown();
     } catch (error) {
@@ -249,10 +263,29 @@ export default {
     }
   },
 
+  watch: {
+    payment(){
+      this.setPayment();
+    }
+  },
+
   methods: {
+    setPayment(){
+      if (!this.payment.id) return;
+      this.paymentCategories = this.payment.paymentCategories
+      this.accountName = this.payment.accountName
+      this.accountNumber = this.payment.accountNumber
+      this.bank = this.payment.bank
+    },
     //Add Organization Payment Account
-    async submit() {
+     async submit() {
+    if (this.payment) return this.update();
+    else this.create();
+    },
+    async create() {
+      this.loading = true;
       try {
+         this.loading = false;
         console.log(this.payload);
         const response = await cornieClient().post(
           "/api/v1/payments",
@@ -265,7 +298,39 @@ export default {
         console.error(error);
       }
     },
+    async update() {
+       this.loading = true;
+    try {
+     const response = await cornieClient().put(`/api/v1/payments/${this.payment.id}`);
+      if (response.success) {
+        Swal.fire({
+          title: response.message,
+          text: success,
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonColor: "#0A4269",
+          confirmButtonText: "Okay, Thanks"
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: response.message,
+        text: error,
+        icon: "error",
+        showCancelButton: false,
+        confirmButtonColor: "#0A4269",
+        confirmButtonText: "Okay, Thanks"
+      });
+      console.error(error);
+    }
+  },
+  updatePayments(){
+    this.$store.dispatch('updatePayments', {
+    id: this.$route.params.id, 
+    data: this.payments
+    });
 
+  },
     // fetching select dropdown
 
     async fetchDropDown() {
@@ -275,7 +340,7 @@ export default {
       const AllBanks = cornieClient().get("/api/v1/payments/getAllBanks/all");
       const response = await Promise.all([PaymentsCategories, AllBanks]);
       this.PaymentsCategories = response[0].data;
-      this.AllBanks = response[1].data;
+      this.banks = response[1].data;
     },
   },
 };

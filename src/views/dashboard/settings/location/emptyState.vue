@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col justify-center items-center h-96">
     <img src="@/assets/img/empty-location.svg" />
-    <h3 class="text-center mt-5">You have no devices</h3>
+    <h3 class="text-center mt-5">You have no locations</h3>
     <button
       class="
         bg-danger
@@ -13,7 +13,7 @@
         focus:outline-none
         hover:opacity-90
       "
-      @click="$emit('add-location')"
+      @click="$router.push('add-location')"
     >
       New Location
     </button>

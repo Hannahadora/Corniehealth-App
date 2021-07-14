@@ -61,6 +61,8 @@ import CornieSelect from "@/components/cornieselect.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
 import { quantumClient } from "@/plugins/http";
 import store from "@/store";
+import { fetchCornieData } from "@/plugins/auth";
+import { nextTick } from "@vue/runtime-core";
 
 @Options({
   components: {
@@ -85,6 +87,8 @@ export default class Signin extends Vue {
     try {
       const data = await quantumClient().post("/auth/login", this.payload);
       store.commit("user/setLoginInfo", data);
+      const cornieData = await fetchCornieData();
+      store.commit("user/setCornieData", cornieData);
       this.$emit("logged-in");
     } catch (error) {
       console.log("login failed ", error);

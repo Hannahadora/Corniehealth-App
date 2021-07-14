@@ -139,12 +139,28 @@ export default class Settings extends Vue {
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
     ];
   }
+
   get settings() {
-    return {
+    const provider = {
       Organization: this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
     };
+    const hmo = {
+      Organization: this.filter(this.organization),
+      "Users & Security": this.filter([
+        {
+          name: "Account Security",
+          to: "account-security",
+          icon: "security-icon",
+        },
+        { name: "Domains", to: "domains", icon: "domain-icon" },
+      ]),
+    };
+
+    const type = this.$route.params.type as string;
+    if (type.toLowerCase() == "hmo") return hmo;
+    return provider;
   }
   filter(navs: INav[]) {
     if (!this.query) return navs;

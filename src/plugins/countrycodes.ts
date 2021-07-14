@@ -957,6 +957,7 @@ export const countryCodes = [
     name: "Nigeria",
     dialCode: "+234",
     isoCode: "NG",
+    default: true,
     flag: "https://www.countryflags.io/NG/flat/64.png",
   },
   {

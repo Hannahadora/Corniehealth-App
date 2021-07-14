@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
         class="
@@ -12,7 +12,7 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$emit('add-location')"
+        @click="$router.push('add-location')"
       >
         New Location
       </button>
@@ -39,10 +39,45 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
-          <three-dot-icon
-            class="cursor-pointer"
-            @click="updateLocation(item.data.id)"
-          />
+          <table-options>
+            <li
+              @click="$router.push(`add-location/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                my-1
+                py-3
+              "
+            >
+              <eye-icon class="mr-3 mt-1" />
+              View & Edit
+            </li>
+            <li
+              @click="showDelete(newitem)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+              <delete-icon class="mr-3" /> Delete Account
+            </li>
+          </table-options>
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
@@ -67,8 +102,13 @@ import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { namespace } from "vuex-class";
+import TableOptions from "@/components/table-options.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+
+const location = namespace("location");
 
 @Options({
   components: {
@@ -80,14 +120,17 @@ import ILocation, { HoursOfOperation } from "@/types/ILocation";
     TableRefreshIcon,
     FilterIcon,
     IconInput,
+    DeleteIcon,
+    EyeIcon,
     ColumnFilter,
+    TableOptions,
   },
 })
 export default class LocationExistingState extends Vue {
   showColumnFilter = false;
   query = "";
 
-  @Prop({ type: Array, default: [] })
+  @location.State
   locations!: ILocation[];
 
   getKeyValue = getTableKeyValue;
@@ -146,6 +189,7 @@ export default class LocationExistingState extends Vue {
       const opHours = this.stringifyOperationHours(location.hoursOfOperation);
       return {
         ...location,
+        action: location.id,
         hoursOfOperation: opHours,
       };
     });
@@ -157,10 +201,6 @@ export default class LocationExistingState extends Vue {
     const [opHour, ...rest] = opHours;
     if (!opHour) return "All Day";
     return `${opHour.openTime} - ${opHour.closeTime}`;
-  }
-  updateLocation(id: string) {
-    const location = this.locations.find((l) => l.id == id);
-    this.$emit("update-location", location);
   }
 }
 </script>

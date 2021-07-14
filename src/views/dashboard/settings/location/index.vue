@@ -12,21 +12,11 @@
           mx-auto
         "
       >
-        {{ pageTitle }}
+        Location & Location Hierarchy
       </span>
       <span class="w-full">
-        <add-location v-if="addLocation" />
-        <template v-else>
-          <location-empty-state
-            v-if="empty"
-            @add-location="addLocation = true"
-          />
-          <location-existing-state
-            v-else
-            @add-location="addLocation = true"
-            @update-location="updateLocation"
-          />
-        </template>
+        <location-empty-state v-if="empty" />
+        <location-existing-state v-else />
       </span>
     </div>
   </div>
@@ -37,6 +27,9 @@ import { Options, Vue } from "vue-class-component";
 import LocationEmptyState from "./emptyState.vue";
 import LocationExistingState from "./existingState.vue";
 import AddLocation from "./addLocation.vue";
+import { namespace } from "vuex-class";
+
+const location = namespace("location");
 
 @Options({
   name: "LocationIndex",
@@ -49,17 +42,19 @@ import AddLocation from "./addLocation.vue";
 export default class LocationIndex extends Vue {
   addLocation = false;
   locationToUpdate = {} as ILocation;
+
   get empty() {
-    return false;
+    return this.locations.length < 1;
   }
 
-  get pageTitle() {
-    if (!this.addLocation) return "Location & Location Hierarchy";
-    if (this.locationToUpdate.id) return "Update Location";
-    return "New Location";
-  }
-  updateLocation(loc: ILocation) {
-    console.log(loc);
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  created() {
+    this.fetchLocations();
   }
 }
 </script>

@@ -77,11 +77,13 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import store from "@/store/";
-import { quantumClient } from "@/plugins/http";
+import { cornieClient, quantumClient } from "@/plugins/http";
 import PasswordInput from "@/components/PasswordInput.vue";
 import EllipseIcon from "@/components/icons/ellipse.vue";
 import TickIcon from "@/components/icons/tick.vue";
+import { namespace } from "vuex-class";
 
+const user = namespace("user");
 @Options({
   components: {
     PasswordInput,
@@ -104,9 +106,13 @@ export default class ActivateAccount extends Vue {
 
   loading = false;
 
+  @user.State
+  cornieData!: any;
+
   get valid() {
     return this.passedReqs >= 5;
   }
+
   get passedReqs() {
     return (
       Number(this.oneUpperCase) +
@@ -166,6 +172,15 @@ export default class ActivateAccount extends Vue {
       password: this.password,
     };
   }
+  async saveCornieData() {
+    const payload = this.cornieData;
+    try {
+      await cornieClient().post("/api/v1/account/set-type", payload);
+    } catch (error) {
+      console.log("an error occured", error);
+    }
+  }
+
   async submit() {
     if (this.password != this.confirmation) return;
     if (!this.valid) return;
@@ -178,6 +193,7 @@ export default class ActivateAccount extends Vue {
       if (!data.success) return alert(errMsg);
       store.commit("user/setLoginInfo", data);
       this.$router.replace("/dashboard");
+      this.saveCornieData();
     } catch (error) {
       alert(errMsg);
     }
