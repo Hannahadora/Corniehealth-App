@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <modal :visible="visible">
+    <modal v-model:visible="show">
       <div
         class="fixed z-10 inset-0 overflow-y-auto"
         aria-labelledby="modal-title"
@@ -56,29 +56,23 @@
                     class="text-lg leading-6 text-primary font-medium"
                     id="modal-title"
                   >
-                    Deaactivate Account
+                    {{ title }}
                   </h3>
                   <div class="mt-4">
-                    <d-input
-                      label="Deactivation Date"
-                      class="mb-5"
-                      v-model="deactivateTillDate"
-                    />
-                    <d-text
-                      label="Reason For Deactivating"
-                      v-model="reasonsForDeactivation"
-                    />
+                    <p class="text-sm leading-2 font-semibold">
+                      {{ message }}
+                    </p>
                   </div>
                 </div>
                 <close-icon
                   class="items-end absolute right-5 top-5 cursor-pointer"
-                  @click="show = false"
+                  @click="cancelled"
                 />
               </div>
             </div>
             <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <cornie-btn
-                @click="deactivate"
+                @click="approved"
                 class="
                   w-full
                   inline-flex
@@ -99,12 +93,11 @@
                 "
                 type="submit"
               >
-                Proceed
+                {{ yes }}
               </cornie-btn>
               <button
                 type="button"
-                @click="show = false"
-                :loading="loading"
+                @click="cancelled"
                 class="
                   mt-3
                   w-full
@@ -127,7 +120,7 @@
                   sm:text-sm
                 "
               >
-                Cancel
+                {{ no }}
               </button>
             </div>
           </div>
@@ -138,88 +131,59 @@
 </template>
 <script>
 import Modal from "@/components/modal.vue";
-import DText from "./dtext.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/close.vue";
-import { cornieClient } from "@/plugins/http";
-import Swal from "sweetalert2";
+
 export default {
-  name: "extraModal",
+  name: "Confirm",
   components: {
     Modal,
-    DInput,
     ArrowLeftIcon,
     CloseIcon,
-    EyeIcon,
-    DeleteIcon,
-    DText,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    paymentId: {
-      type: String,
-    },
   },
   data() {
     return {
       loading: false,
-      reasonsForDeactivation: "",
-      deactivateTillDate: "",
+      resolve: (value) => null,
+      yes: "Proceed",
+      no: "Cancel",
+      message:
+        "Are you sure you want to do this? This action cannot be undone.",
+      title: "Confirm this action",
+      show: false,
     };
   },
   methods: {
-      async deactivate() {
-           this.loading = true;
-    try {
-      const response = await cornieClient().post(`/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`, this.payload);
-      if (response.success) {
-        this.show= false;
-            this.loading = false;
-         Swal.fire({
-          title: response.message,
-          text: response.success,
-          icon: "success",
-          showCancelButton: false,
-          confirmButtonColor: "#0A4269",
-          confirmButtonText: "Okay, Thanks"
-        });
-      }
-    } catch (error) {
-      this.show= false;
-            this.loading = false;
-      Swal.fire({
-        title: response.message,
-        text: error,
-        icon: "error",
-        showCancelButton: false,
-        confirmButtonColor: "#0A4269",
-        confirmButtonText: "Okay, Thanks"
+    approved() {
+      this.show = false;
+      this.resolve(true);
+      this.reset();
+    },
+    cancelled() {
+      this.show = false;
+      this.resolve(false);
+      this.reset();
+    },
+    reset() {
+      this.yes = "Proceed";
+      this.no = "Cancel";
+      this.message =
+        "Are you sure you want to do this? This action cannot be undone.";
+      this.title = "Confirm this action";
+    },
+    confirm(setup = {}) {
+      this.message = setup.message || this.message;
+      this.yes = setup.yes || this.yes;
+      this.no = setup.no || this.no;
+      this.title = setup.title || this.title;
+      this.show = true;
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve;
       });
-      console.error(error);
-    }
-  },
-  },
-  computed: {
-    payload() {
-      return {
-        reasonsForDeactivation: this.reasonsForDeactivation,
-        deactivateTillDate: this.deactivateTillDate,
-      };
     },
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
+  },
+  created() {
+    window.confirmAction = this.confirm;
   },
 };
 </script>

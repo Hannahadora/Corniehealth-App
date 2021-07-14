@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
-import HmoDashboard from "../views/dashboardHmo/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
-import HMOHome from "@/views/dashboardHmo/home/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -28,43 +26,18 @@ const routes: Array<RouteRecordRaw> = [
     name: "Reset Password",
     component: () => import("@/views/auth/reset/resetpassword.vue"),
   },
-  //HMO Dashboard
   {
-    path: "/dashboard/HMO",
-    name: "HmoDashboard",
-    component: HmoDashboard,
-    meta: { requiresAuth: true },
-    redirect: "/dashboard/settings",
-    children: [
-      {
-        path: "/hmo/home",
-        name: "HMOHome",
-        component: Home,
-        redirect: "/dashboard/hmo/home",
-        children: [
-          {
-            path: "experience-management",
-            name: "Experience Management",
-            component: () =>
-              import("@/views/dashboard/settings/AccountSecurity/index.vue"),
-          },
-          
-        ],
-      },
-    ],
-  },
-  {
-    path: "/dashboard",
+    path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
+    redirect: (to) => `${to.path}/settings`.replace("//", "/"),
     meta: { requiresAuth: true },
-    redirect: "/dashboard/settings",
     children: [
       {
-        path: "settings",
+        path: "settings/",
         name: "Settings",
         component: Settings,
-        redirect: "/dashboard/settings/org-info",
+        redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
             path: "account-security",
@@ -115,6 +88,20 @@ const routes: Array<RouteRecordRaw> = [
             name: "Location & Location Hierarchy",
             component: () =>
               import("@/views/dashboard/settings/location/index.vue"),
+          },
+          {
+            path: "add-location/:id?",
+            props: true,
+            name: "Create or Update Location",
+            component: () =>
+              import("@/views/dashboard/settings/location/addLocation.vue"),
+
+          },
+          {
+            path: "domains",
+            name: "Domains",
+            component: () =>
+              import("@/views/dashboard/settings/domain/index.vue"),
           },
         ],
       },

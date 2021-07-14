@@ -9,6 +9,7 @@ interface UserState {
   requiresTwoFactorAuth: boolean;
   requiresSecurityQuestion: boolean;
   authTime?: Date;
+  cornieData: { accountType: string };
 }
 export default {
   namespaced: true,
@@ -19,9 +20,13 @@ export default {
     requiresSecurityQuestion: false,
     requiresTwoFactorAuth: false,
     emailVerified: false,
+    cornieData: {} as any,
   },
   getters: {},
   mutations: {
+    setCornieData(state, payload) {
+      state.cornieData = { ...state.cornieData, ...payload };
+    },
     setAuthToken(state, token) {
       state.authToken = token;
       state.authTime = new Date();

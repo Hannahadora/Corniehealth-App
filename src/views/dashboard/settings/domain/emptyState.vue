@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col justify-center items-center h-96">
-    <img src="@/assets/img/empty-location.svg" />
-    <h3 class="text-center mt-5">You have no locations</h3>
+    <img src="@/assets/img/empty-domain.svg" />
+    <h3 class="text-center mt-5">You have no domains on record</h3>
     <button
       class="
         bg-danger
@@ -13,9 +13,9 @@
         focus:outline-none
         hover:opacity-90
       "
-      @click="$router.push('add-location')"
+      @click="$emit('add-domain')"
     >
-      New Location
+      Create New Domain
     </button>
   </div>
 </template>
@@ -25,5 +25,5 @@ import { Options, Vue } from "vue-class-component";
 @Options({
   components: {},
 })
-export default class LocationEmptyState extends Vue {}
+export default class DomainEmptyState extends Vue {}
 </script>

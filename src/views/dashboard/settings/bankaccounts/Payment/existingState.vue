@@ -40,21 +40,13 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon
-            class="cursor-pointer"
-            @click="showMenu(item.data.id)"
-          />
-        </span>
-        <span v-else> {{ getKeyValue(item).value }}</span>
-      </template>
-    </Table>
         <details-menu v-model:visible="showExtraModal" class="origin-top-right relative left-3/4 -mt-48 -top-10 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none rounded-lg opacity-100">
           <div class="py-1 mt-4" role="none"> 
           <div class="block p-3">
             <li  @click="updatePayment(newitem)" class="list-none flex px-4 py-2 mb-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer" role="menuitem">
               <eye-icon class="mr-3 mt-1" /> View & Edit
             </li>
-            <li @click="showDelete(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
+            <li @click="deleteItem(getKeyValue(item).value)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
               <delete-icon class="mr-3" /> Delete Account
             </li>
             <li @click="showDeactivate(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
@@ -63,6 +55,14 @@
           </div>
           </div>
         </details-menu>
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="showMenu(item.data.id)"
+          />
+        </span>
+        <span v-else> {{ getKeyValue(item).value }}</span>
+      </template>
+    </Table>
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
@@ -189,6 +189,9 @@ export default class BankAccountsExistingState extends Vue {
     return payments;
     if (!this.query) return payments;
     return search.searchObjectArray(payments, this.query);
+  }
+  deleteItem(id: string){
+    
   }
   updatePayment(id: string) {
     const payment = this.payments.find((d) => d.id == id);

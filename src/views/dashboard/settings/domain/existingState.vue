@@ -1,6 +1,40 @@
 <template>
-  <div class="w-full pb-7">
+  <div class="w-full">
+    <span
+        class="
+          flex
+          border-b-2
+          w-full
+          font-semibold
+          text-xl text-primary
+          py-2
+          mx-auto
+        "
+      >
+        Domains
+      </span>
     <span class="flex justify-end w-full">
+    <button
+        class="
+          outline-primary
+          rounded-full
+          text-black
+          mt-5
+          mr-3
+          py-2
+          pr-10
+          pl-10
+          px-3
+          focus:outline-none
+          hover:bg-primary
+          hover:text-white
+
+        "
+        @click="$emit('send-invite')"
+      >
+        + Invite
+      </button>
+
       <button
         class="
           bg-danger
@@ -8,14 +42,17 @@
           text-white
           mt-5
           py-2
+          pr-5
+          pl-5
           px-3
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-location')"
+        @click="$emit('add-domain')"
       >
-        New Location
+        Create New Domain
       </button>
+      
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
       <span class="flex items-center">
@@ -39,49 +76,24 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="$router.push(`add-location/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1
-                py-3
-              "
-            >
-              <eye-icon class="mr-3 mt-1" />
-              View & Edit
-            </li>
-            <li
-              @click="showDelete(newitem)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete Account
-            </li>
-          </table-options>
+          <three-dot-icon
+            class="cursor-pointer"
+          />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
+   <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+      <template v-slot:item="{ item }">
+        <span v-if="getKeyValue(item).key == 'action'">
+          <three-dot-icon
+            class="cursor-pointer"
+            @click="updateDomain(item.data.id)"
+          />
+        </span>
+        <span v-else> {{ getKeyValue(item).value }} </span>
+      </template>
+    </Table>-->
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
@@ -102,13 +114,8 @@ import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { namespace } from "vuex-class";
-import TableOptions from "@/components/table-options.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
-
-const location = namespace("location");
+import { Prop } from "vue-property-decorator";
+import IDomain from "@/types/IDomain";
 
 @Options({
   components: {
@@ -120,57 +127,39 @@ const location = namespace("location");
     TableRefreshIcon,
     FilterIcon,
     IconInput,
-    DeleteIcon,
-    EyeIcon,
     ColumnFilter,
-    TableOptions,
   },
 })
-export default class LocationExistingState extends Vue {
+export default class DomainExistingState extends Vue {
   showColumnFilter = false;
   query = "";
 
-  @location.State
-  locations!: ILocation[];
+  @Prop({ type: Array, default: [] })
+  domains!: IDomain[];
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Location Name",
+      title: "Domain Name",
       value: "name",
       show: true,
     },
-    { title: "Address", value: "address", show: true },
-    { title: "Country", value: "country", show: true },
+    { title: "Accounts", value: "accounts", show: true },
+    { title: "Domain Name", value: "domainName", show: true },
     {
-      title: "State",
-      value: "state",
+      title: "Email",
+      value: "email",
       show: true,
     },
     {
-      title: "Hours of operation",
-      value: "hoursOfOperation",
+      title: "Date Created",
+      value: "dateCreated",
       show: false,
     },
     {
-      title: "Operational Status",
-      value: "operationalStatus",
-      show: false,
-    },
-    {
-      title: "Alias",
-      value: "alias",
-      show: false,
-    },
-    {
-      title: "Description",
-      value: "description",
-      show: false,
-    },
-    {
-      title: "Physical Type",
-      value: "physicalType",
+      title: "Account ID",
+      value: "accountID",
       show: false,
     },
   ];
@@ -185,22 +174,24 @@ export default class LocationExistingState extends Vue {
   }
 
   get items() {
-    const locations = this.locations.map((location) => {
-      const opHours = this.stringifyOperationHours(location.hoursOfOperation);
+    const domains = this.domains.map((domain) => {
       return {
-        ...location,
-        action: location.id,
-        hoursOfOperation: opHours,
+        ...domain,
       };
     });
-    if (!this.query) return locations;
-    return search.searchObjectArray(locations, this.query);
+    if (!this.query) return domains;
+    return search.searchObjectArray(domains, this.query);
   }
 
-  stringifyOperationHours(opHours: HoursOfOperation[]) {
-    const [opHour, ...rest] = opHours;
-    if (!opHour) return "All Day";
-    return `${opHour.openTime} - ${opHour.closeTime}`;
+
+  updateDomain(id: string) {
+    const domain = this.domains.find((l) => l.id == id);
+    this.$emit("update-domain", domain);
   }
 }
 </script>
+<style>
+.outline-primary{
+    border: 2px solid #0A4269;
+}
+</style>
