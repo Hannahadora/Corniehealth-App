@@ -14,7 +14,7 @@ on record</h3>
         focus:outline-none
         hover:opacity-90
       "
-      @click="$emit('add-service')"
+       @click="$router.push('add-health-services')"
     >
       Add New 
     </button>
