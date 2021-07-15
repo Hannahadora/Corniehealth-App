@@ -275,8 +275,8 @@ mounted() {
 },
   methods: {
     ...mapActions('payment', ['getPaymentById']),
-    setPayment(){
-      const payment = this.getPaymentById(this.id);
+   async setPayment(){
+      const payment = await this.getPaymentById(this.id);
       if (!payment) return;
       this.paymentCategories = this.payment.paymentCategories
       this.accountName = this.payment.accountName

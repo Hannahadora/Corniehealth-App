@@ -11,7 +11,7 @@
         mx-auto
       "
     >
-      {{ allaction }} Domain
+      Create New Domain
     </span>
   <div class="w-full h-56">
     <form class="mt-5 w-full" @submit.prevent="submit">
@@ -34,7 +34,7 @@
           </option>-->
         </OrgSelect>
       </div>
-   <span class="flex justify-end w-full border-t-2 mt-10">
+   <span class="flex justify-end w-full border-t-2 mt-36">
     <button
      @click="$router.push('domains')"
         class="
@@ -191,16 +191,17 @@ export default class AddDomain extends Vue {
 
   async updateDomain() {
     const url = `/api/v1/domain/${this.id}`;
-    const payload = { ...this.payload, id: this.id };
+    const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        console.log(response.data);
          alert("Domain Name Updated");
+        console.log(response.data);
       }else{
          alert(response.message);
       }
     } catch (error) {
+       alert(error);
       console.log(error);
     }
   }

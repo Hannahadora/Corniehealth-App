@@ -16,12 +16,12 @@
   <div class="w-full h-full">
     <form class="mt-5 w-full" @submit.prevent="submit">
       <div class="w-full grid grid-cols-2 gap-5">
-        <cornie-input label="Organization Name" placeholder="--Enter--" v-model="orgName" />
-        <cornie-input label="Email Address" placeholder="--Enter--" v-model="email"/>
-        <d-text label="Message" placeholder="Enter Message" v-model="message"/>
+        <cornie-input label="Organization Name" placeholder="--Enter--" v-model="orgName" :rules="required" />
+        <cornie-input label="Email Address" placeholder="--Enter--" v-model="email" :rules="required"/>
+        <d-text label="Message" placeholder="Enter Message" v-model="message" :rules="required"/>
 
       </div>
-    <span class="flex justify-end w-full border-t-2 mt-30">
+    <span class="flex justify-end w-full border-t-2 mt-36">
     <button
      @click="$router.push('domains')"
         class="
@@ -108,7 +108,7 @@ export default class SendInvite extends Vue {
     this.loading = true;
     try {
       const response = await cornieClient().get(
-        "/api/v1/domain/sendIvite",
+        "/api/v1/domain/sendInvite",
         this.payload
       );
       if (response.success) {
@@ -119,6 +119,8 @@ export default class SendInvite extends Vue {
         alert(response.message);
       }
     } catch (error) {
+        this.loading = false;
+        alert(error);
       console.log(error);
     }
   }
