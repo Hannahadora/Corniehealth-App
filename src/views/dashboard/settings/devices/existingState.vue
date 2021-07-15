@@ -6,7 +6,8 @@
         border-b-2
         w-full
         font-semibold
-        text-xl text-primary
+        text-xl 
+        text-primary
         py-2
         mx-auto
       "
