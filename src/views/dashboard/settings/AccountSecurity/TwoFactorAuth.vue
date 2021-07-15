@@ -171,17 +171,29 @@ export default {
       };
       try {
         await quantumClient().post("/org/security/2fa/setup/otp", payload);
-        alert("Code has been sent to your email " + payload.email);
+        window.notify({
+          msg: "Code has been sent to your email " + payload.email,
+          status: "success",
+        });
       } catch (error) {
-        alert("Code not sent please try again");
+        window.notify({
+          msg: "Code not sent please try again",
+          status: "error",
+        });
       }
     },
     async turnOn() {
       try {
         await quantumClient().post("/org/security/2fa/setup", this.payloadOn);
-        alert("Turned ON Two-Factor Suceesfully");
+        window.notify({
+          msg: "Turned ON Two-Factor Suceesfully",
+          status: "success",
+        });
       } catch (error) {
-        console.log(error);
+        window.notify({
+          msg: "Not turned on please try again",
+          status: "error",
+        });
       }
     },
     async turnOff() {
@@ -190,9 +202,15 @@ export default {
           "/org/security/2fa/status/off",
           this.payloadOff
         );
-        alert("Turned Off Two-Factor Suceesfully");
+        window.notify({
+          msg: "Turned OFF Two-Factor Succesfully",
+          status: "success",
+        });
       } catch (error) {
-        console.log(error);
+        window.notify({
+          msg: "Not turned off please try again",
+          status: "error",
+        });
       }
     },
   },
