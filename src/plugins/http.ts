@@ -14,7 +14,7 @@ export const quantumClient = () =>
     "http://18.132.188.41:7000"
   );
 
-const cornieUrl = "http://localhost:7000";
+const cornieUrl = "https://corniehealth.herokuapp.com";
 export const cornieClient = () =>
   new JSONClient(
     {
