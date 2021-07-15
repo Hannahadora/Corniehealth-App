@@ -1,21 +1,27 @@
 <template>
   <div class="h-full flex justify-center">
-    <div class="w-full mx-5">
+    <div class="w-full">
+    <span
+        class="
+          flex
+          border-b-2
+          w-full
+          font-semibold
+          text-xl text-primary
+          py-2
+          mx-auto
+        "
+      >
+       Domains
+      </span>
       <span class="w-full">
-        <add-domain v-if="addDomain" />
-        <template v-else>
           <domain-empty-state
-            v-if="empty"
-            @add-domain="addDomain = true"
+                v-if="empty"
           />
           <domain-existing-state
-            v-else
-            @add-domain="addDomain = true"
-            @update-domain="updateDomain"
-          />
-        </template>
-          <send-invite
-            v-if="sendInvite"
+        
+          v-else
+            :domains="domains"
           />
       </span>
     </div>
@@ -24,15 +30,18 @@
 <script lang="ts">
 import IDomain from "@/types/IDomain";
 import { Options, Vue } from "vue-class-component";
-import DomaninEmptyState from "./emptyState.vue";
+import DomainEmptyState from "./emptyState.vue";
 import DomainExistingState from "./existingState.vue";
 import SendInvite from "./sendInvite.vue";
 import AddDomain from "./addDomain.vue";
+import { namespace } from "vuex-class";
+
+const domain = namespace("domain");
 
 @Options({
   name: "DomainIndex",
   components: {
-    DomaninEmptyState,
+    DomainEmptyState,
     DomainExistingState,
     AddDomain,
     SendInvite
@@ -40,19 +49,21 @@ import AddDomain from "./addDomain.vue";
 })
 export default class DomainIndex extends Vue {
   addDomain = false;
-  sendInvite = false;
   DomainToUpdate = {} as IDomain;
+
   get empty() {
-    return false;
+    return this.domains.length < 1;
   }
 
-//   get pageTitle() {
-//     if (!this.addDomain) return "Domains";
-//     //if (this.domainToUpdate.id) return "Update addDomain";
-//     return "Domains";
-//   }
-  updateDomain(loc: IDomain) {
-    console.log(loc);
+ @domain.State
+  domains!: IDomain[];
+
+  @domain.Action
+  fetchDomains!: () => Promise<void>;
+
+
+created() {
+    if (this.domains.length < 1) this.fetchDomains();
   }
 }
 </script>

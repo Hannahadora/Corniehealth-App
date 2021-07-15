@@ -1,9 +1,8 @@
 export default interface IDomain{
     id?: string;
     domainName: string;
-    organizationName: string;
-    role: string;
+    orgName: string;
+    roleForDomain: string;
     email: string;
-    accountID: string;
     message: string;
   }

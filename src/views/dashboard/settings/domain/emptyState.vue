@@ -13,7 +13,7 @@
         focus:outline-none
         hover:opacity-90
       "
-      @click="$emit('add-domain')"
+       @click="$router.push('add-domain')"
     >
       Create New Domain
     </button>

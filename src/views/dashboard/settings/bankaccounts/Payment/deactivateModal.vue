@@ -79,6 +79,7 @@
             <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <cornie-btn
                 @click="deactivate"
+                 :loading="loading"
                 class="
                   w-full
                   inline-flex
@@ -102,9 +103,8 @@
                 Proceed
               </cornie-btn>
               <button
+               @click="$router.push('bank-accounts')"
                 type="button"
-                @click="show = false"
-                :loading="loading"
                 class="
                   mt-3
                   w-full
@@ -139,6 +139,7 @@
 <script>
 import Modal from "@/components/modal.vue";
 import DText from "./dtext.vue";
+import DInput from "./dinput.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
@@ -176,33 +177,18 @@ export default {
   methods: {
       async deactivate() {
            this.loading = true;
-    try {
-      const response = await cornieClient().post(`/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`, this.payload);
-      if (response.success) {
-        this.show= false;
-            this.loading = false;
-         Swal.fire({
-          title: response.message,
-          text: response.success,
-          icon: "success",
-          showCancelButton: false,
-          confirmButtonColor: "#0A4269",
-          confirmButtonText: "Okay, Thanks"
-        });
-      }
-    } catch (error) {
-      this.show= false;
-            this.loading = false;
-      Swal.fire({
-        title: response.message,
-        text: error,
-        icon: "error",
-        showCancelButton: false,
-        confirmButtonColor: "#0A4269",
-        confirmButtonText: "Okay, Thanks"
-      });
-      console.error(error);
-    }
+          try {
+            const response = await cornieClient().post(`/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`, this.payload);
+            if (response.success) {
+                  this.loading = false;
+                  alert("Payment account deactivated");
+            }else{
+              alert(response.message);
+            }
+          } catch (error) {
+                  this.loading = false;
+            console.error(error);
+          }
   },
   },
   computed: {

@@ -1,18 +1,5 @@
 <template>
   <div class="w-full">
-    <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
-      >
-        Domains
-      </span>
     <span class="flex justify-end w-full">
     <button
         class="
@@ -30,7 +17,7 @@
           hover:text-white
 
         "
-        @click="$emit('send-invite')"
+        @click="$router.push('send-invite')"
       >
         + Invite
       </button>
@@ -48,7 +35,7 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$emit('add-domain')"
+        @click="$router.push('add-domain')"
       >
         Create New Domain
       </button>
@@ -76,29 +63,55 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
-          <three-dot-icon
-            class="cursor-pointer"
-          />
+          <table-options>
+            <li
+              @click="$router.push(`add-domain/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                my-1
+                py-3
+              "
+            >
+              
+              <span class="mr-3 text-2xl bold text-primary">+</span> Rename
+            </li>
+            <li
+              @click="deleteItem(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+              <delete-icon class="mr-3" /> Remove
+            </li>
+          </table-options>
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-   <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <three-dot-icon
-            class="cursor-pointer"
-            @click="updateDomain(item.data.id)"
-          />
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
-      </template>
-    </Table>-->
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
+   <!-- <show-confrim  v-model:visible="showModal"  yes="Proceed" no="Cancel" title="Delete Domain" message="Are you sure you want to remove this domain? This action cannot be undone."/>-->
   </div>
 </template>
 <script lang="ts">
@@ -112,10 +125,17 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
+import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import IDomain from "@/types/IDomain";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import { namespace } from "vuex-class";
+
+
+const domain = namespace("domain");
 
 @Options({
   components: {
@@ -128,38 +148,42 @@ import IDomain from "@/types/IDomain";
     FilterIcon,
     IconInput,
     ColumnFilter,
+    TableOptions,
+    DeleteIcon,
+    EyeIcon
   },
+  
 })
 export default class DomainExistingState extends Vue {
   showColumnFilter = false;
+  showModal = false;
+  loading = false;
   query = "";
 
-  @Prop({ type: Array, default: [] })
+   @domain.State
   domains!: IDomain[];
+
+  @domain.Action
+  deleteDomain!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    {
-      title: "Domain Name",
-      value: "name",
-      show: true,
-    },
-    { title: "Accounts", value: "accounts", show: true },
+    { title: "Organizatin Name", value: "orgName", show: true },
     { title: "Domain Name", value: "domainName", show: true },
     {
-      title: "Email",
-      value: "email",
+      title: "Role",
+      value: "roleForDomain",
       show: true,
     },
     {
       title: "Date Created",
-      value: "dateCreated",
+      value: "createdAt",
       show: false,
     },
     {
-      title: "Account ID",
-      value: "accountID",
+      title: "Organization ID",
+      value: "organizationId",
       show: false,
     },
   ];
@@ -172,22 +196,34 @@ export default class DomainExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
+  
+
 
   get items() {
     const domains = this.domains.map((domain) => {
-      return {
-        ...domain,
-      };
+       (domain as any).createdAt = new Date(
+         (domain as any).createdAt 
+       ).toLocaleDateString("en-US");
+        (domain as any).action = domain.id;
+      return domain;
     });
+    
     if (!this.query) return domains;
     return search.searchObjectArray(domains, this.query);
   }
+ 
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this domain",
+      title: "Delete Domain Name"
+    });
+    if (!confirmed) return;
 
-
-  updateDomain(id: string) {
-    const domain = this.domains.find((l) => l.id == id);
-    this.$emit("update-domain", domain);
+    if (await this.deleteDomain(id)) alert("Domain deleted");
+    else alert("Domain not deleted");
   }
+
+
 }
 </script>
 <style>

@@ -50,16 +50,13 @@ const routes: Array<RouteRecordRaw> = [
             name: "Bank & Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
-            children: [
-              {
-                path: "add-payment-account",
-                name: "New Payment Account",
-                component: () =>
-                  import(
-                    "@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"
-                  ),
-              },
-            ],
+          },
+          {
+            path: "add-payment-account/:id?",
+            props: true,
+            name: "New Payment Account",
+            component: () =>
+              import("@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"),
           },
           {
             path: "devices",
@@ -102,6 +99,22 @@ const routes: Array<RouteRecordRaw> = [
             name: "Domains",
             component: () =>
               import("@/views/dashboard/settings/domain/index.vue"),
+          },
+          {
+            path: "add-domain/:id?",
+            props: true,
+            name: "Create or Rename Domain",
+            component: () =>
+              import("@/views/dashboard/settings/domain/addDomain.vue"),
+
+          },
+          {
+            path: "send-invite/:id?",
+            props: true,
+            name: "Send Invitation",
+            component: () =>
+              import("@/views/dashboard/settings/domain/sendInvite.vue"),
+
           },
         ],
       },
