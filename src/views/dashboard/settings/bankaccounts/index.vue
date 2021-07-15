@@ -2,7 +2,7 @@
 <div>
   <router-view />
   <div class="h-full flex justify-center">
-    <div class="w-full mx-5">
+    <div class="w-full">
       <span
         class="
           flex

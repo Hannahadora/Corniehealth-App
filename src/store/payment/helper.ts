@@ -1,14 +1,23 @@
-import { IndexableObject } from "@/lib/http";
 import { cornieClient } from "@/plugins/http";
-import localstore from "@/plugins/localstore";
 import IPayment from "@/types/IPayment";
 
-export async function fetchPayments(): Promise<IPayment[]> {
+export async function fetchPayments() {
   try {
-    const res = await cornieClient().get("/api/v1/payments/myOrg/getMyOrgPayments");
-    return res.data.devices as IPayment[];
+    const response = await cornieClient().get(
+      "/api/v1/payments/myOrg/getMyOrgPayments"
+    );
+    if (response.success) return response.data;
   } catch (error) {
-    console.log("there was an error");
+    console.log(error);
   }
-  return [];
+  return [] as IPayment[];
+}
+export async function deletePayment(id: string) {
+  try {
+    const response = await cornieClient().delete(`/api/v1/payment/${id}`);
+    if (response.success) return true;
+  } catch (error) {
+    return false;
+  }
+  return false;
 }

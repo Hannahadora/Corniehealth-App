@@ -32,16 +32,17 @@
         leave-class="translate-y-0 opacity-100"
         leave-to-class="-translate-y-3 opacity-0"
       >
-        <div v-show="isVisible" class="absolute pt-2 z-10 -left-10">
+        <div v-show="isVisible" class="absolute pt-2 z-10 -left-12">
           <div
             class="
               relative
               py-1
+              p-2
               bg-white
               border border-gray-200
               rounded-md
               block
-              w-36
+              w-40
               shadow-xl
             "
           >

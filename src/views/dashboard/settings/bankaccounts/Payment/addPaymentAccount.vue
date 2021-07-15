@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mx-5">
+  <div class="w-full">
     <span
       class="
         flex
@@ -21,7 +21,7 @@
         </p>
         <div class="flex my-4">
           <input
-            class="mr-3"
+            class="mr-3 mt-2"
             type="radio"
             id="yes"
             v-model="picked"
@@ -29,7 +29,7 @@
           />
           <label class="mr-3" for="yes">Yes</label>
           <input
-            class="mr-3"
+            class="mr-3 mt-2"
             type="radio"
             id="no"
             v-model="picked"
@@ -151,6 +151,7 @@
       <div class="my-8 flex justify-end">
         <span>
           <button
+          @click="$router.push('bank-accounts')"
             class="
               border border-blue-800
               mr-8
@@ -173,7 +174,7 @@
           </button>
         </span>
         <span>
-          <button
+          <cornie-btn
           :loading="loading"
             type="submit"
             class="
@@ -182,12 +183,9 @@
               text-white
               appearance-none
               border-none
-              bg-gray-600
-              rounded-3xl
-              placeholder-gray-400
+              bg-danger
+              rounded-full
               focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
               transition
               duration-150
               ease-in-out
@@ -197,7 +195,7 @@
             "
           >
             Activate Account
-          </button>
+          </cornie-btn>
         </span>
       </div>
     </form>
@@ -207,9 +205,12 @@
 import OrgSelect from "@/components/orgSelect.vue";
 import FileIcon from "@/components/icons/file.vue";
 import OrgInput from "@/components/orgInput.vue";
-import {mapGetters} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import { cornieClient } from "@/plugins/http";
 import Swal from "sweetalert2";
+import payment from '@/store/payment';
+import ActionTypes from '@/store/payment/index';
+
 export default {
   name: "AddPaymentAccount",
   components: {
@@ -218,10 +219,10 @@ export default {
     OrgInput,
   },
   props: {
-    payment: {
-      type: Object,
+    id: {
+      type: String,
       required: true,
-      default: {},
+      default: "",
     },
 
   },
@@ -248,8 +249,9 @@ export default {
       };
     },
     action() {
-    return this.payment ? "Update" : "Add";
-    }
+    return this.id ? "Update" : "Add";
+    },
+      
   },
  
 
@@ -264,23 +266,29 @@ export default {
   },
 
   watch: {
-    payment(){
+    idChanged(){
       this.setPayment();
     }
   },
-
+mounted() {
+   this.getPaymentById(this.id);
+},
   methods: {
-    setPayment(){
-      if (!this.payment.id) return;
-      this.paymentCategories = this.payment.paymentCategories
-      this.accountName = this.payment.accountName
-      this.accountNumber = this.payment.accountNumber
-      this.bank = this.payment.bank
+    ...mapActions('payment', ['getPaymentById']),
+   async setPayment(){
+      const payment = await this.getPaymentById(this.id);
+      if (!payment) return;
+      this.paymentCategories = this.payment.paymentCategories;
+      this.accountName = this.payment.accountName;
+      this.accountNumber = this.payment.accountNumber;
+      this.bank = this.payment.bank;
     },
     //Add Organization Payment Account
      async submit() {
-    if (this.payment) return this.update();
-    else this.create();
+      this.loading = true;
+      if (this.id) await this.update();
+      else await this.create();
+      this.loading = false;
     },
     async create() {
       this.loading = true;
@@ -305,7 +313,7 @@ export default {
       if (response.success) {
         Swal.fire({
           title: response.message,
-          text: success,
+          text: response.success,
           icon: "success",
           showCancelButton: false,
           confirmButtonColor: "#0A4269",
