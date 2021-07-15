@@ -278,10 +278,10 @@ mounted() {
    async setPayment(){
       const payment = await this.getPaymentById(this.id);
       if (!payment) return;
-      this.paymentCategories = this.payment.paymentCategories
-      this.accountName = this.payment.accountName
-      this.accountNumber = this.payment.accountNumber
-      this.bank = this.payment.bank
+      this.paymentCategories = this.payment.paymentCategories;
+      this.accountName = this.payment.accountName;
+      this.accountNumber = this.payment.accountNumber;
+      this.bank = this.payment.bank;
     },
     //Add Organization Payment Account
      async submit() {

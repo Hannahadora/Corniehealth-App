@@ -40,7 +40,6 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-
         <table-options>
             <li
               @click="$router.push(`add-payment-account/${getKeyValue(item).value}`)"
@@ -196,9 +195,6 @@ export default class BankAccountsExistingState extends Vue {
   deletePayment!: (id: string) => Promise<boolean>;
 
 
-  itemId = this.payments.map((payment) => {
-    return payment.id;
-  });
   preferredHeaders = [];
   rawHeaders = [
     {
