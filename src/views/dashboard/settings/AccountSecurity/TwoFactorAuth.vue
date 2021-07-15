@@ -5,13 +5,13 @@
       <ToogleCheck v-model="twoFA" class="mx-4" />
       Enabled
     </div>
-    <div class="flex">
-      <list-boxes
-        types="checkbox"
-        value="Enforce two factor authentication during sign in for all users within your domain."
+    <div class="flex items-center">
+      <list-boxes types="checkbox" class="mt-2" />
+      <span class="ml-2"
+        >Enforce two factor authentication during sign in for all users within
+        your domain.</span
       >
-      </list-boxes>
-      <notification-icon class="cursor-pointer" />
+      <notification-icon class="cursor-pointer ml-2 my-auto" />
     </div>
     <div class="grid grid-cols-3 gap-x-16 my-10">
       <div class="col-span-2 mt-10">
