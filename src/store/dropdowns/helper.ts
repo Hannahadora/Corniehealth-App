@@ -3,7 +3,6 @@ import localstore from "@/plugins/localstore";
 
 export const fetchDropdownData = async (name: string) => {
   const localData = fetchLocalData(name);
-  console.log(Object.values(localData).length);
   if (Object.values(localData).length > 0) return localData;
   return await fetchRemoteData(name);
 };

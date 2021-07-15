@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import ILocation from "@/types/ILocation";
 import { StoreOptions } from "vuex";
-import { fetchLocations } from "./helper";
+import { deleteLocation, fetchLocations } from "./helper";
 
 interface LocationState {
   locations: ILocation[];
@@ -23,14 +23,28 @@ export default {
       );
       state.locations = [...locationSet];
     },
+    deleteLocation(state, id: string) {
+      const index = state.locations.findIndex((location) => location.id == id);
+      if (index < 0) return;
+      const locations = [...state.locations];
+      locations.splice(index, 1);
+      state.locations = [...locations];
+    },
   },
   actions: {
     async fetchLocations(ctx) {
       const locations = await fetchLocations();
       ctx.commit("setLocations", locations);
     },
-    getLocationById(ctx, id: string) {
+    async getLocationById(ctx, id: string) {
+      if (ctx.state.locations.length < 1) await ctx.dispatch("fetchLocations");
       return ctx.state.locations.find((location) => location.id == id);
+    },
+    async deleteLocation(ctx, id: string) {
+      const deleted = await deleteLocation(id);
+      if (!deleted) return false;
+      ctx.commit("deleteLocation", id);
+      return true;
     },
   },
 } as StoreOptions<LocationState>;

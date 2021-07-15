@@ -60,7 +60,7 @@
               View & Edit
             </li>
             <li
-              @click="showDelete(newitem)"
+              @click="deleteLoc(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -75,7 +75,7 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Delete Account
+              <delete-icon class="mr-3" /> Delete Location
             </li>
           </table-options>
         </span>
@@ -132,6 +132,9 @@ export default class LocationExistingState extends Vue {
 
   @location.State
   locations!: ILocation[];
+
+  @location.Action
+  deleteLocation!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -201,6 +204,15 @@ export default class LocationExistingState extends Vue {
     const [opHour, ...rest] = opHours;
     if (!opHour) return "All Day";
     return `${opHour.openTime} - ${opHour.closeTime}`;
+  }
+  async deleteLoc(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this location",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteLocation(id)) alert("Location deleted");
+    else alert("Location not deleted");
   }
 }
 </script>

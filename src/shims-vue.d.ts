@@ -6,10 +6,10 @@ declare module "*.vue" {
 }
 
 interface ConfirmSetup {
-  message: string;
-  yes: string;
-  no: string;
-  title: string;
+  message?: string;
+  yes?: string;
+  no?: string;
+  title?: string;
 }
 declare function confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
 

@@ -12,7 +12,7 @@
           mx-auto
         "
       >
-        Add Location
+        {{ id ? "Update Location" : "Add Location" }}
       </span>
       <span class="w-full">
         <div class="w-full h-screen">
@@ -158,11 +158,11 @@
                   w-1/4
                   mr-3
                 "
-                @click="$router.push('location')"
+                @click="$router.back()"
               >
                 Cancel
               </button>
-              <button
+              <cornie-btn
                 class="
                   w-1/4
                   rounded-full
@@ -176,7 +176,7 @@
                 type="submit"
               >
                 Save
-              </button>
+              </cornie-btn>
             </span>
           </v-form>
         </div>
@@ -212,7 +212,7 @@ export default class AddLocation extends Vue {
   id!: string;
 
   @location.Action
-  getLocationById!: (id: string) => ILocation;
+  getLocationById!: (id: string) => Promise<ILocation>;
 
   loading = false;
 
@@ -251,8 +251,8 @@ export default class AddLocation extends Vue {
     this.setLocation();
   }
 
-  setLocation() {
-    const location = this.getLocationById(this.id);
+  async setLocation() {
+    const location = await this.getLocationById(this.id);
     if (!location) return;
     this.name = location.name;
     this.locationStatus = location.locationStatus;
@@ -320,6 +320,7 @@ export default class AddLocation extends Vue {
         this.payload
       );
       if (response.success) {
+        alert("Location created");
         console.log(response.data);
       }
     } catch (error) {
@@ -334,6 +335,7 @@ export default class AddLocation extends Vue {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         console.log(response.data);
+        alert("Location updated");
       }
     } catch (error) {
       console.log(error);
