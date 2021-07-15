@@ -40,7 +40,7 @@
       "
     >
       <edit-icon class="mr-3" @click="editContact" />
-      <delete-icon @click="deleteContact" class="text-danger fill-current" />
+      <delete-icon @click="removeContact" class="text-danger fill-current" />
     </div>
     <add-contact
       v-model:visible="editingContact"
@@ -54,6 +54,7 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import AddContact from "./addContact.vue";
 import { cornieClient } from "@/plugins/http";
+import { mapActions } from "vuex";
 
 export default {
   name: "ContactCard",
@@ -71,16 +72,18 @@ export default {
     };
   },
   methods: {
+    ...mapActions("contact", ["deleteContact"]),
     editContact() {
       this.editingContact = true;
     },
-    async deleteContact() {
-      try {
-        await cornieClient().delete(`/api/v1/contacts/${this.contact.id}`);
-        alert("Contact deleted");
-      } catch (error) {
-        alert("there was an error");
-      }
+    async removeContact() {
+      const confirm = await window.confirmAction({
+        message: `Are you sure you want to delete ${this.contact.fname}'s contact`,
+      });
+      if (!confirm) return;
+
+      const res = await this.deleteContact(this.contact.id);
+      if (res) notify({ msg: "Contact deleted", status: "success" });
     },
   },
 };

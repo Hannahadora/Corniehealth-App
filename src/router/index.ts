@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
-
+import BankAccounts from "@/views/dashboard/settings/bankaccounts/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -49,8 +49,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "bank-accounts",
             name: "Bank & Accounts",
-            component: () =>
-              import("@/views/dashboard/settings/bankaccounts/index.vue"),
+            component: BankAccounts,
             children: [
               {
                 path: "add-payment-account",

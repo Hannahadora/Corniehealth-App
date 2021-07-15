@@ -73,7 +73,8 @@
             >
               Cancel
             </button>
-            <button
+            <cornie-btn
+              :loading="loading"
               type="submit"
               class="
                 bg-danger
@@ -88,7 +89,7 @@
               "
             >
               Save
-            </button>
+            </cornie-btn>
           </div>
         </form>
       </div>
@@ -108,6 +109,9 @@ import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import IContact from "@/types/IContact";
 import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+
+const contact = namespace("contact");
 
 @Options({
   components: {
@@ -132,6 +136,11 @@ export default class AddContact extends Vue {
 
   @Prop({ type: Object, required: false, default: null })
   contact!: IContact;
+
+  @contact.Mutation
+  updateContacts!: (contacts: IContact[]) => void;
+
+  loading = false;
 
   fname = "";
   lname = "";
@@ -181,8 +190,39 @@ export default class AddContact extends Vue {
     return Boolean(this.contact?.id);
   }
 
+  get id() {
+    return this.contact.id;
+  }
   async submit() {
-    this.createContact();
+    this.loading = true;
+    this.isUpdate ? await this.update() : await this.create();
+    this.loading = false;
+  }
+
+  async create() {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/contacts",
+        this.payload
+      );
+      if (response.success) this.updateContacts([response.data]);
+      notify({ msg: "Contact Created", status: "success" });
+    } catch (error) {
+      notify({ msg: "Contact not Created", status: "error" });
+    }
+  }
+
+  async update() {
+    try {
+      const response = await cornieClient().put(
+        `/api/v1/contacts/${this.id}`,
+        this.payload
+      );
+      if (response.success) this.updateContacts([response.data]);
+      notify({ msg: "Contact Updated", status: "success" });
+    } catch (error) {
+      notify({ msg: "Contact not updated", status: "error" });
+    }
   }
   get payload() {
     return {
@@ -198,18 +238,6 @@ export default class AddContact extends Vue {
       email: this.email,
       address: this.address,
     };
-  }
-  async createContact() {
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/contacts",
-        this.payload
-      );
-      console.log(response);
-      alert("Contact Created");
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   mounted() {

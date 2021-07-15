@@ -205,6 +205,7 @@ export default class LocationExistingState extends Vue {
     if (!opHour) return "All Day";
     return `${opHour.openTime} - ${opHour.closeTime}`;
   }
+  
   async deleteLoc(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this location",

@@ -40,6 +40,9 @@ import AccordionItem from "@/components/accordion-component.vue";
 import Addicon from "@/components/icons/add.vue";
 import AdminCard from "./admincard.vue";
 import Contacts from "./contacts.vue";
+import { namespace } from "vuex-class";
+
+const contact = namespace("contact");
 
 @Options({
   components: {
@@ -50,7 +53,14 @@ import Contacts from "./contacts.vue";
     Contacts,
   },
 })
-export default class ContactInfo extends Vue {}
+export default class ContactInfo extends Vue {
+  @contact.Action
+  fetchContacts!: () => Promise<void>;
+
+  async created() {
+    await this.fetchContacts();
+  }
+}
 </script>
 <style scoped>
 .settings {
