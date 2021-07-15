@@ -62,7 +62,6 @@ import PasswordInput from "@/components/PasswordInput.vue";
 import { quantumClient } from "@/plugins/http";
 import store from "@/store";
 import { fetchCornieData } from "@/plugins/auth";
-import { nextTick } from "@vue/runtime-core";
 
 @Options({
   components: {
@@ -91,7 +90,7 @@ export default class Signin extends Vue {
       store.commit("user/setCornieData", cornieData);
       this.$emit("logged-in");
     } catch (error) {
-      console.log("login failed ", error);
+      window.notify({ msg: "Username or password incorrect", status: "error" });
     }
     this.loading = false;
   }
