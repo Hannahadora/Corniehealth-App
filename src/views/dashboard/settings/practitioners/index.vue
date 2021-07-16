@@ -15,8 +15,8 @@
         Practitioners
       </span>
       <span class="w-full">
-        <location-empty-state v-if="empty" />
-        <location-existing-state v-else />
+        <practitioner-empty-state v-if="empty" />
+        <practitioner-existing-state v-else />
       </span>
     </div>
   </div>
