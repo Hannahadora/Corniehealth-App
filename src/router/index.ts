@@ -140,7 +140,7 @@ const routes: Array<RouteRecordRaw> = [
             name: "Create or Update Practitioner",
             component: () =>
               import(
-                "@/views/dashboard/settings/practitioner/addPractitioner.vue"
+                "@/views/dashboard/settings/practitioners/addPractitioner.vue"
               ),
           },
         ],
