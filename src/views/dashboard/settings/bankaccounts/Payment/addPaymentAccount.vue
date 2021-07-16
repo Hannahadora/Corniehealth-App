@@ -237,6 +237,7 @@ export default {
       PaymentCategories: "",
       bank: "",
       locations: "",
+      self:null,
     };
   },
   computed: {
@@ -278,10 +279,11 @@ mounted() {
    async setPayment(){
       const payment = await this.getPaymentById(this.id);
       if (!payment) return;
-      this.paymentCategories = this.payment.paymentCategories;
-      this.accountName = this.payment.accountName;
-      this.accountNumber = this.payment.accountNumber;
-      this.bank = this.payment.bank;
+      console.log(payment)
+      this.paymentCategories = payment.paymentCategories;
+      this.accountName = payment.accountName;
+      this.accountNumber = payment.accountNumber;
+      this.bank = payment.bank;
     },
     //Add Organization Payment Account
      async submit() {
@@ -309,26 +311,14 @@ mounted() {
     async update() {
        this.loading = true;
     try {
-     const response = await cornieClient().put(`/api/v1/payments/${this.payment.id}`);
+     const response = await cornieClient().put(`/api/v1/payments/${this.id}`);
       if (response.success) {
-        Swal.fire({
-          title: response.message,
-          text: response.success,
-          icon: "success",
-          showCancelButton: false,
-          confirmButtonColor: "#0A4269",
-          confirmButtonText: "Okay, Thanks"
-        });
+       alert("Payment Account Updated");
+        this.loading = false;
       }
     } catch (error) {
-      Swal.fire({
-        title: response.message,
-        text: error,
-        icon: "error",
-        showCancelButton: false,
-        confirmButtonColor: "#0A4269",
-        confirmButtonText: "Okay, Thanks"
-      });
+      alert(error);
+         this.loading = false;
       console.error(error);
     }
   },

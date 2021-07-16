@@ -21,18 +21,13 @@
         <domain-input label="Domain Name" placeholder="--Enter--" :rules="required" v-model="domainName" v-on:input="checkDomain"/>
         <span class="text-xs font-bold">{{ result }}</span>
         </div>
-        <OrgSelect
-        :rules="required"
+        <cornie-select
+          :rules="required"
+          :items="['Super admin']"
           label="IAM Role"
           v-model="roleForDomain"
-        >
-         <option>
-           super admin
-          </option>
-         <!--<option v-for="(role, i) in roleForDomain" :key="i" :value="role">
-            {{ role }}
-          </option>-->
-        </OrgSelect>
+              >
+              </cornie-select>
       </div>
    <span class="flex justify-end w-full border-t-2 mt-36">
     <button

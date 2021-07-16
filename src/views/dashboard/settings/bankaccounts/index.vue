@@ -17,15 +17,7 @@
         Bank & Accounts
       </span>
       <span class="flex w-full font-semibold py-2 mx-auto mt-4">
-        <span
-          class="
-            flex
-            px-3
-            py-2
-            border-b-4
-            cursor-pointer
-            hover:bg-gray-300 hover:bg-opacity-20
-          "
+        <span class="flex px-3 py-2 border-b-4 cursor-pointer  hover:bg-gray-300 hover:bg-opacity-20"
           @click="active = i"
           v-for="(tab, i) in tabs"
           :key="i"
@@ -33,8 +25,7 @@
         >
           {{ tab }}
         </span>
-        <span class="flex px-3 pb-2 border-b-4 flex-grow" />
-      </span>
+        <span class="flex px-3 pb-2 border-b-4 flex-grow"></span>
       <div>
         <payment v-if="active == 0" />
         <collection v-if="active == 1" />
