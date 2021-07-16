@@ -113,11 +113,13 @@ export default class SendInvite extends Vue {
       );
       if (response.success) {
         this.loading = false;
-          window.notify({ msg: "Invitation has been sent successfully", status: "success" });
+          alert("Invitation sent successfully");
+         // window.notify({ msg: "Invitation sent successfully", status: "success" });
       }
     } catch (error) {
         this.loading = false;
-        window.notify({ msg: "Invitation has not been sent", status: "error" });
+         alert("Invitation not sent");
+       // window.notify({ msg: "Invitation not sent", status: "error" });
     }
   }
 
