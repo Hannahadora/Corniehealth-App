@@ -68,7 +68,7 @@ export class JSONClient implements HttpClient {
   public put(url: string, data: IndexableObject) {
     return this.exec(url, "PUT", data);
   }
-  public delete(url: string, data: IndexableObject) {
+  public delete(url: string, data?: IndexableObject) {
     return this.exec(url, "DELETE", data);
   }
 }

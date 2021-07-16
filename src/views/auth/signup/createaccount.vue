@@ -97,6 +97,7 @@ import PhoneInput from "@/components/phone-input.vue";
 import ConditionalInput from "@/components/conditional-input.vue";
 import { string } from "yup";
 import { namespace } from "vuex-class";
+import { ErrorResponse } from "@/lib/http";
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -168,10 +169,23 @@ export default class CreateAccount extends Vue {
         this.setUser(data);
         this.setCornieData({ accountType: this.accountType });
       } else {
-        alert(errMsg);
+        window.notify({ msg: errMsg });
       }
     } catch (error) {
-      alert(errMsg);
+      if (error instanceof ErrorResponse && error.response.status == 422) {
+        const errors = await error.response.json();
+        let msg = "";
+        errors.errors.forEach((error: any) => (msg = `${msg} ${error.msg}`));
+        window.notify({ msg, status: "error" });
+      } else if (
+        error instanceof ErrorResponse &&
+        error.response.status == 400
+      ) {
+        const response = await error.response.json();
+        window.notify({ msg: response.message, status: "error" });
+      } else {
+        window.notify({ msg: errMsg });
+      }
     }
     this.loading = false;
   }

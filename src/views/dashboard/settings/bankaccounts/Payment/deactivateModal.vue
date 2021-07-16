@@ -59,7 +59,7 @@
                     Deaactivate Account
                   </h3>
                   <div class="mt-4">
-                    <d-input
+                    <cornie-input
                       label="Deactivation Date"
                       class="mb-5"
                       v-model="deactivateTillDate"
@@ -79,6 +79,7 @@
             <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <cornie-btn
                 @click="deactivate"
+                :loading="loading"
                 class="
                   w-full
                   inline-flex
@@ -102,9 +103,8 @@
                 Proceed
               </cornie-btn>
               <button
+                @click="$router.push('bank-accounts')"
                 type="button"
-                @click="show = false"
-                :loading="loading"
                 class="
                   mt-3
                   w-full
@@ -139,17 +139,18 @@
 <script>
 import Modal from "@/components/modal.vue";
 import DText from "./dtext.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { cornieClient } from "@/plugins/http";
-import Swal from "sweetalert2";
+
 export default {
   name: "extraModal",
   components: {
     Modal,
-    DInput,
+    CornieInput,
     ArrowLeftIcon,
     CloseIcon,
     EyeIcon,
@@ -182,30 +183,13 @@ export default {
           this.payload
         );
         if (response.success) {
-          this.show = false;
           this.loading = false;
-          Swal.fire({
-            position: "top-end",
-            width: 300,
-            padding: "0.5em",
-            icon: "success",
-            title: "Account Deactivated!",
-            showConfirmButton: false,
-            timer: 15000,
-          });
+          alert("Payment account deactivated");
+        } else {
+          alert(response.message);
         }
       } catch (error) {
-        this.show = false;
         this.loading = false;
-        Swal.fire({
-          position: "top-end",
-          icon: "error",
-          width: 300,
-          padding: "0.5em",
-          title: "Not Deactivated!",
-          showConfirmButton: false,
-          timer: 15000,
-        });
         console.error(error);
       }
     },

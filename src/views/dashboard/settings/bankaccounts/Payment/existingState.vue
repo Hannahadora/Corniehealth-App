@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mx-5">
+  <div class="w-full">
     <span class="flex justify-end">
       <button
         class="
@@ -13,7 +13,7 @@
           hover:opacity-90
           flex
         "
-        @click="$emit('add-account')"
+         @click="$router.push('add-payment-account')"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
         New Account
@@ -40,37 +40,74 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon
-            class="cursor-pointer"
-            @click="showMenu(item.data.id)"
-          />
+        <table-options>
+            <li
+              @click="$router.push(`add-payment-account/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                my-1
+                py-3
+              "
+            >
+              
+             <eye-icon class="mr-3" /> View & Edit
+            </li>
+            <li
+              @click="deleteItem(getKeyValue(item).value)" 
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <delete-icon class="mr-3" /> Delete Account
+            </li>
+            <li
+              @click="showDeactivate(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <close-icon class="mr-3" /> Deactivate Account
+            </li>
+        </table-options>
+       
         </span>
         <span v-else> {{ getKeyValue(item).value }}</span>
       </template>
     </Table>
-        <details-menu v-model:visible="showExtraModal" class="origin-top-right relative left-3/4 -mt-48 -top-10 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none rounded-lg opacity-100">
-          <div class="py-1 mt-4" role="none"> 
-          <div class="block p-3">
-            <li  @click="updatePayment(newitem)" class="list-none flex px-4 py-2 mb-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer" role="menuitem">
-              <eye-icon class="mr-3 mt-1" /> View & Edit
-            </li>
-            <li @click="showDelete(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
-              <delete-icon class="mr-3" /> Delete Account
-            </li>
-            <li @click="showDeactivate(newitem)" class="list-none flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 mb-3 hover:text-gray-900 cursor-pointer" role="menuitem">
-              <close-icon class="mr-3" /> Deactivate Account
-            </li>
-          </div>
-          </div>
-        </details-menu>
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-    <delete-modal v-model:visible="showDeleteModal" :paymentId="paymentId"/>
     <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
-    <!-- <extra-modal v-model:visible="showExtraModal"  :payments="payments" :items="items"/>-->
   </div>
 </template>
 <script lang="ts">
@@ -78,6 +115,7 @@ import { Options, Vue } from "vue-class-component";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
+import TableOptions from "@/components/table-options.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
@@ -97,7 +135,12 @@ import CloseIcon from "@/components/icons/close.vue";
 import DeleteModal from "./deleteModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
 import { cornieClient } from "@/plugins/http";
+import ShowComfirm from "@/components/confirm.vue";
 import Swal from "sweetalert2";
+import { namespace } from "vuex-class";
+
+
+const payment = namespace("payment");
 const first = (num: number, vals: any[]) => {
   const res = [];
   for (let index = 0; index < vals.length; index++) {
@@ -111,6 +154,7 @@ const first = (num: number, vals: any[]) => {
   components: {
     DeleteIcon,
     EyeIcon,
+    TableOptions,
     CloseIcon,
     Table,
     SortIcon,
@@ -126,12 +170,11 @@ const first = (num: number, vals: any[]) => {
     ColumnFilter,
     DetailsMenu,
     DeleteModal,
-    DeactivateModal
+    DeactivateModal,
+    ShowComfirm
   },
 })
 export default class BankAccountsExistingState extends Vue {
-  @Prop({ type: Array, default: [] })
-  payments!: IPayment[];
 
   addAccount = false
   addPayment = false;
@@ -140,15 +183,18 @@ export default class BankAccountsExistingState extends Vue {
   newitem = "";
   paymentId = {};
   editPayments = {};
-  showDeleteModal = false;
-  showDeativateModal = false;
-  showExtraModal = false;
+  loading = false;
   showColumnFilter = false;
+  showDeativateModal = false;
 
 
-  itemId = this.payments.map((payment) => {
-    return payment.id;
-  });
+   @payment.State
+  payments!: IPayment[];
+
+  @payment.Action
+  deletePayment!: (id: string) => Promise<boolean>;
+
+
   preferredHeaders = [];
   rawHeaders = [
     {
@@ -190,21 +236,27 @@ export default class BankAccountsExistingState extends Vue {
     if (!this.query) return payments;
     return search.searchObjectArray(payments, this.query);
   }
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this payment account",
+      title: "Delete Payment Account"
+    });
+    if (!confirmed) return;
+
+    if (await this.deletePayment(id)) alert("Payment account deleted");
+    else alert("Payment account not deleted");
+  }
+
+
   updatePayment(id: string) {
     const payment = this.payments.find((d) => d.id == id);
     this.$emit("add-account", payment);
     console.log(payment)
   }
-  public showDelete(id: string): void {
-    const payment = this.payments.find((d) => d.id == id);
-    this.showDeleteModal = true;
-
-    this.paymentId = id;
-  }
+  
   public showDeactivate(id: string): void {
     const payment = this.payments.find((d) => d.id == id);
     this.showDeativateModal = true;
-
     this.paymentId = id;
   }
   
@@ -218,11 +270,6 @@ export default class BankAccountsExistingState extends Vue {
       value,
       index,
     };
-  }
- 
-  public showMenu(data: string): void {
-    this.showExtraModal = true;
-    this.newitem = data;
   }
  
 }

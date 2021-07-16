@@ -2,7 +2,6 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -51,16 +50,15 @@ const routes: Array<RouteRecordRaw> = [
             name: "Bank & Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
-            children: [
-              {
-                path: "add-payment-account",
-                name: "New Payment Account",
-                component: () =>
-                  import(
-                    "@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"
-                  ),
-              },
-            ],
+          },
+          {
+            path: "add-payment-account/:id?",
+            props: true,
+            name: "New Payment Account",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"
+              ),
           },
           {
             path: "devices",
@@ -86,17 +84,9 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "location",
-            name: "Location & Location Hierarchy",
+            name: "Location Hierarchy",
             component: () =>
               import("@/views/dashboard/settings/location/index.vue"),
-            children: [
-              {
-                path: "new-location",
-                name: "New Location",
-                component: () =>
-                  import("@/views/dashboard/settings/location/newLocation.vue"),
-              },
-            ],
           },
           {
             path: "add-location/:id?",
@@ -104,6 +94,54 @@ const routes: Array<RouteRecordRaw> = [
             name: "Create or Update Location",
             component: () =>
               import("@/views/dashboard/settings/location/addLocation.vue"),
+          },
+          {
+            path: "domains",
+            name: "Domains",
+            component: () =>
+              import("@/views/dashboard/settings/domain/index.vue"),
+          },
+          {
+            path: "add-domain/:id?",
+            props: true,
+            name: "Create or Rename Domain",
+            component: () =>
+              import("@/views/dashboard/settings/domain/addDomain.vue"),
+          },
+          {
+            path: "send-invite/:id?",
+            props: true,
+            name: "Send Invitation",
+            component: () =>
+              import("@/views/dashboard/settings/domain/sendInvite.vue"),
+          },
+          {
+            path: "health-services",
+            name: "Healthcare Services",
+            component: () =>
+              import("@/views/dashboard/settings/healthcare/index.vue"),
+          },
+          {
+            path: "add-health-services/:id?",
+            props: true,
+            name: "Add a New Healthcare Service",
+            component: () =>
+              import("@/views/dashboard/settings/healthcare/addServices.vue"),
+          },
+          {
+            path: "practitioners",
+            name: "Practitioners",
+            component: () =>
+              import("@/views/dashboard/settings/practitioners/index.vue"),
+          },
+          {
+            path: "add-practitioner/:id?",
+            props: true,
+            name: "Create or Update Practitioner",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/practitioner/addPractitioner.vue"
+              ),
           },
         ],
       },

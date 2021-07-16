@@ -114,8 +114,10 @@ export default {
   methods: {
     displayUpadtePassword() {
       this.displayPasswordSetting = true;
+      this.displayTwoFactor = false;
     },
     displayTwoFactorAuth() {
+      this.displayPasswordSetting = false;
       this.displayTwoFactor = true;
     },
     closeUpadtePassword() {

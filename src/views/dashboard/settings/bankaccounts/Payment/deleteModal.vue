@@ -75,7 +75,7 @@ export default {
     };
   },
   methods: {
-       async deletePayment() {
+    async deletePayment() {
            this.loading = true;
       try {
         const response = await cornieClient().delete(`/api/v1/payments/${this.paymentId}`);

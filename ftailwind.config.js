@@ -10,6 +10,11 @@ module.exports = {
   presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    extend: {
+        outline: {
+          primary: '2px solid #0A4269',
+        }
+      },
     screens: {
       sm: "640px",
       md: "768px",

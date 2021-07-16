@@ -12,7 +12,7 @@
           mx-auto
         "
       >
-        Location & Location Hierarchy
+        Location Hierarchy
       </span>
       <span class="w-full">
         <location-empty-state v-if="empty" />
@@ -54,7 +54,7 @@ export default class LocationIndex extends Vue {
   fetchLocations!: () => Promise<void>;
 
   created() {
-    this.fetchLocations();
+    if (this.locations.length < 1) this.fetchLocations();
   }
 }
 </script>

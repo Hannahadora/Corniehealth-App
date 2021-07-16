@@ -14,7 +14,7 @@
         focus:outline-none
         hover:opacity-90
       "
-      @click="$emit('add-account')"
+      @click="$router.push('add-payment-account')"
     >
       <span class="mt-2 mr-2"> <bank-add-icon /> </span>
       New Account
