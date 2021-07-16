@@ -38,7 +38,7 @@
               <cornie-select
                 :rules="required"
                 :items="dropdowns.gender"
-                v-model="Gender"
+                v-model="gender"
                 label="Gender"
               />
               <phone-input
@@ -61,7 +61,7 @@
               <cornie-select
                 :rules="required"
                 :items="dropdowns.department"
-                v-model="Department"
+                v-model="department"
                 label="Department"
               />
               <cornie-select
@@ -96,7 +96,7 @@
               <cornie-input v-model="issuer" label="Issuer" />
               <cornie-select
                 :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                v-model="communication"
+                v-model="communicationLanguage"
                 label="Communication"
               />
               <cornie-input v-model="licenseNumber" label="License Number" />
