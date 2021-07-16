@@ -1,16 +1,8 @@
 <template>
   <div class="w-full flex p-3 border rounded-lg align-center justify-between">
     <div class="flex w-3/4 border-r-2 justify-between pr-12">
-      <avatar
-        v-if="contact.image"
-        class="h-14 w-14 my-auto"
-        :src="contact.image"
-      />
-      <avatar
-        v-else
-        class="h-14 w-14 my-auto"
-        src="@/assets/image/placeholder.svg"
-      />
+      <avatar class="h-14 w-14 my-auto" :src="image" />
+
       <span class="flex flex-col">
         <span class="text-blue-500 text-sm font-semibold uppercase block"
           >Name</span
@@ -53,6 +45,7 @@
     </button>
 
     <add-contact
+      v-if="contact.id"
       v-model:visible="editingContact"
       :purpose="contact.purpose"
       :contact="contact"
@@ -60,11 +53,12 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import Avatar from "@/components/avatar.vue";
 import { namespace } from "vuex-class";
 import IContact from "@/types/IContact";
 import AddContact from "./addContact.vue";
+import { useHandleImage } from "@/composables/useHandleImage";
 
 const contact = namespace("contact");
 
@@ -85,9 +79,14 @@ export default class AdminCard extends Vue {
     const contact =
       this.contacts.find(
         (contact) => contact.purpose.toLowerCase() == "root"
-      ) || {};
-    console.log(contact);
+      ) || ({} as IContact);
     return contact;
+  }
+
+  img = setup(() => useHandleImage());
+
+  get image() {
+    return this.contact.image || this.img.placeholder;
   }
 }
 </script>
