@@ -1,4 +1,4 @@
-import import { cornieClient } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import ILocation from "@/types/ILocation";
 
 export async function fetchLocations() {
