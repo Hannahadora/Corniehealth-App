@@ -32,6 +32,7 @@
    <span class="flex justify-end w-full border-t-2 mt-36">
     <button
      @click="$router.push('domains')"
+     type="button"
         class="
           outline-primary
           rounded-full
@@ -156,12 +157,12 @@ export default class AddDomain extends Vue {
         this.payload
       );
       if (response.success) {
-         alert("Domain added");
-         // window.notify({ msg: "Domain added", status: "success" });
+         //alert("Domain added");
+          window.notify({ msg: "Domain added", status: "success" });
       }
     } catch (error) {
-       alert("Domain not added");
-     // window.notify({ msg: "Domain not added", status: "error" });
+       //alert("Domain not added");
+      window.notify({ msg: "Domain not added", status: "error" });
     }
   }
   async checkDomain() {
@@ -189,12 +190,12 @@ export default class AddDomain extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        alert("Domain name updated");
-       // window.notify({ msg: "Domain name updated", status: "success" });
+       // alert("Domain name updated");
+        window.notify({ msg: "Domain name updated", status: "success" });
       }
     } catch (error) {
-      alert("Domain name not updated");
-      // window.notify({ msg: "Domain name not updated", status: "error" });
+      //alert("Domain name not updated");
+       window.notify({ msg: "Domain name not updated", status: "error" });
     }
   }
   async fetchRoles() {
@@ -211,9 +212,8 @@ export default class AddDomain extends Vue {
     } catch (error) {
       console.log(error);
     }
-    // const data = await this.getDropdowns("domain");
-   // this.dropdowns = data;
   }
+ 
   //  fetching of the dropdown data
 
 }
