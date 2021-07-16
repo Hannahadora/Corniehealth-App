@@ -4,6 +4,7 @@ import {
   refreshUser,
   fetchCornieData,
 } from "@/plugins/auth";
+import router from "@/router";
 import store from "@/store";
 import { RouteLocationNormalized, NavigationGuardNext } from "vue-router";
 
