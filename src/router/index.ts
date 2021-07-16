@@ -56,7 +56,9 @@ const routes: Array<RouteRecordRaw> = [
             props: true,
             name: "New Payment Account",
             component: () =>
-              import("@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"),
+              import(
+                "@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"
+              ),
           },
           {
             path: "devices",
@@ -92,7 +94,6 @@ const routes: Array<RouteRecordRaw> = [
             name: "Create or Update Location",
             component: () =>
               import("@/views/dashboard/settings/location/addLocation.vue"),
-
           },
           {
             path: "domains",
@@ -106,7 +107,6 @@ const routes: Array<RouteRecordRaw> = [
             name: "Create or Rename Domain",
             component: () =>
               import("@/views/dashboard/settings/domain/addDomain.vue"),
-
           },
           {
             path: "send-invite/:id?",
@@ -114,7 +114,19 @@ const routes: Array<RouteRecordRaw> = [
             name: "Send Invitation",
             component: () =>
               import("@/views/dashboard/settings/domain/sendInvite.vue"),
-
+          },
+          {
+            path: "health-services",
+            name: "Healthcare Services",
+            component: () =>
+              import("@/views/dashboard/settings/healthcare/index.vue"),
+          },
+          {
+            path: "add-health-services/:id?",
+            props: true,
+            name: "Add a New Healthcare Service",
+            component: () =>
+              import("@/views/dashboard/settings/healthcare/addServices.vue"),
           },
         ],
       },

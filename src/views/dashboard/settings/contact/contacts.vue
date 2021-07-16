@@ -26,8 +26,10 @@ import AccordionItem from "@/components/accordion-component.vue";
 import AddIcon from "@/components/icons/add.vue";
 import ContactCard from "@/views/dashboard/settings/contact/contactcard.vue";
 import AddContact from "./addContact.vue";
-import { cornieClient } from "@/plugins/http";
 import IContact from "@/types/IContact";
+import { namespace } from "vuex-class";
+
+const contact = namespace("contact");
 
 @Options({
   components: {
@@ -41,7 +43,12 @@ import IContact from "@/types/IContact";
 export default class Contacts extends Vue {
   addContact = false;
 
-  contacts = [] as IContact[];
+  @contact.State
+  contacts!: IContact[];
+
+  @contact.Action
+  fetchContacts!: () => Promise<void>;
+
   purpose = "";
   getChildren(purpose: string) {
     return this.contacts.filter((contact) => contact.purpose == purpose);
@@ -60,16 +67,6 @@ export default class Contacts extends Vue {
   addNew(purpose: string) {
     this.purpose = purpose;
     this.addContact = true;
-  }
-  async fetchContacts() {
-    try {
-      const response = await cornieClient().get(
-        "/api/v1/contacts/myOrg/contacts"
-      );
-      this.contacts = response.data;
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   created() {

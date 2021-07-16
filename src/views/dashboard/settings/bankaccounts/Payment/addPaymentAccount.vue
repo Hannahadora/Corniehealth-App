@@ -151,7 +151,7 @@
       <div class="my-8 flex justify-end">
         <span>
           <button
-          @click="$router.push('bank-accounts')"
+            @click="$router.push('bank-accounts')"
             class="
               border border-blue-800
               mr-8
@@ -175,7 +175,7 @@
         </span>
         <span>
           <cornie-btn
-          :loading="loading"
+            :loading="loading"
             type="submit"
             class="
               px-6
@@ -205,11 +205,8 @@
 import OrgSelect from "@/components/orgSelect.vue";
 import FileIcon from "@/components/icons/file.vue";
 import OrgInput from "@/components/orgInput.vue";
-import {mapGetters, mapActions} from "vuex";
+import { mapActions } from "vuex";
 import { cornieClient } from "@/plugins/http";
-import Swal from "sweetalert2";
-import payment from '@/store/payment';
-import ActionTypes from '@/store/payment/index';
 
 export default {
   name: "AddPaymentAccount",
@@ -224,7 +221,6 @@ export default {
       required: true,
       default: "",
     },
-
   },
   data() {
     return {
@@ -250,11 +246,9 @@ export default {
       };
     },
     action() {
-    return this.id ? "Update" : "Add";
+      return this.id ? "Update" : "Add";
     },
-      
   },
- 
 
   //  fetching of the dropdown data
   async created() {
@@ -267,16 +261,16 @@ export default {
   },
 
   watch: {
-    idChanged(){
+    idChanged() {
       this.setPayment();
-    }
+    },
   },
-mounted() {
-   this.getPaymentById(this.id);
-},
+  mounted() {
+    this.getPaymentById(this.id);
+  },
   methods: {
-    ...mapActions('payment', ['getPaymentById']),
-   async setPayment(){
+    ...mapActions("payment", ["getPaymentById"]),
+    async setPayment() {
       const payment = await this.getPaymentById(this.id);
       if (!payment) return;
       console.log(payment)
@@ -286,7 +280,7 @@ mounted() {
       this.bank = payment.bank;
     },
     //Add Organization Payment Account
-     async submit() {
+    async submit() {
       this.loading = true;
       if (this.id) await this.update();
       else await this.create();
@@ -295,41 +289,31 @@ mounted() {
     async create() {
       this.loading = true;
       try {
-         this.loading = false;
+        this.loading = false;
         console.log(this.payload);
         const response = await cornieClient().post(
           "/api/v1/payments",
           this.payload
         );
-        if (response.success) {
-          alert("Payment Account added");
-        }
+        if (response.success)
+          window.notify({ msg: "Payment account added", status: "success" });
       } catch (error) {
-        console.error(error);
+        window.notify({ msg: "Payment account not added", status: "error" });
       }
     },
     async update() {
-       this.loading = true;
-    try {
-     const response = await cornieClient().put(`/api/v1/payments/${this.id}`);
-      if (response.success) {
-       alert("Payment Account Updated");
-        this.loading = false;
+      this.loading = true;
+      try {
+        const response = await cornieClient().put(
+          `/api/v1/payments/${this.id}`
+        );
+        if (response.success)
+          window.notify({ msg: "Payment account updated", status: "success" });
+      } catch (error) {
+        window.notify({ msg: "Payment account not updated", status: "error" });
+        console.error(error);
       }
-    } catch (error) {
-      alert(error);
-         this.loading = false;
-      console.error(error);
-    }
-  },
-  updatePayments(){
-    this.$store.dispatch('updatePayments', {
-    id: this.$route.params.id, 
-    data: this.payments
-    });
-
-  },
-    // fetching select dropdown
+    },
 
     async fetchDropDown() {
       const PaymentsCategories = cornieClient().get(

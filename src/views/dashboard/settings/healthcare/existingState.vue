@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pb-7">
+    <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
         class="
@@ -12,9 +12,9 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-location')"
+        @click="$router.push('add-health-services')"
       >
-        New Location
+        Add New
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -41,7 +41,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-location/${getKeyValue(item).value}`)"
+              @click="$router.push(`add-health-services/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -60,7 +60,7 @@
               View & Edit
             </li>
             <li
-              @click="deleteLoc(getKeyValue(item).value)"
+              @click="showDelete(newitem)"
               class="
                 list-none
                 flex
@@ -75,7 +75,7 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Delete Location
+              <delete-icon class="mr-3" /> Delete Account
             </li>
           </table-options>
         </span>
@@ -100,15 +100,11 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 
-const location = namespace("location");
+import { first, getTableKeyValue } from "@/plugins/utils";
 
 @Options({
   components: {
@@ -126,59 +122,69 @@ const location = namespace("location");
     TableOptions,
   },
 })
-export default class LocationExistingState extends Vue {
-  showColumnFilter = false;
-  query = "";
 
-  @location.State
-  locations!: ILocation[];
+export default class HealthcareExistingState extends Vue {
+    showColumnFilter = false;
+    query = "";
 
-  @location.Action
-  deleteLocation!: (id: string) => Promise<boolean>;
-
-  getKeyValue = getTableKeyValue;
-  preferredHeaders = [];
-  rawHeaders = [
+    getKeyValue = getTableKeyValue;
+    preferredHeaders = [];
+    rawHeaders = [
     {
-      title: "Location Name",
+      title: "Name",
       value: "name",
       show: true,
     },
-    { title: "Address", value: "address", show: true },
-    { title: "Country", value: "country", show: true },
+    
     {
-      title: "State",
-      value: "state",
+      title: "Location",
+      value: "location",
       show: true,
     },
     {
-      title: "Hours of operation",
-      value: "hoursOfOperation",
+      title: "Communication",
+      value: "communication",
+      show: true,
+    },
+    {
+      title: "Phone",
+      value: "phone",
+      show: true,
+    },
+    {
+      title: "Code",
+      value: "code",
+      show: true,
+    },
+      {
+      title: "Type",
+      value: "type",
       show: false,
     },
     {
-      title: "Operational Status",
-      value: "operationalStatus",
+      title: "Comment",
+      value: "comment",
       show: false,
     },
-    {
-      title: "Alias",
-      value: "alias",
+     {
+      title: "Programs",
+      value: "programs",
       show: false,
     },
-    {
-      title: "Description",
-      value: "description",
+     {
+      title: "Specialty",
+      value: "specialty",
       show: false,
     },
-    {
-      title: "Physical Type",
-      value: "physicalType",
+     {
+      title: "Category",
+      value: "category",
       show: false,
     },
+   
   ];
 
-  get headers() {
+    get headers() {
     const preferred =
       this.preferredHeaders.length > 0
         ? this.preferredHeaders
@@ -187,33 +193,8 @@ export default class LocationExistingState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-  get items() {
-    const locations = this.locations.map((location) => {
-      const opHours = this.stringifyOperationHours(location.hoursOfOperation);
-      return {
-        ...location,
-        action: location.id,
-        hoursOfOperation: opHours,
-      };
-    });
-    if (!this.query) return locations;
-    return search.searchObjectArray(locations, this.query);
-  }
 
-  stringifyOperationHours(opHours: HoursOfOperation[]) {
-    const [opHour, ...rest] = opHours;
-    if (!opHour) return "All Day";
-    return `${opHour.openTime} - ${opHour.closeTime}`;
-  }
-  
-  async deleteLoc(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this location",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteLocation(id)) alert("Location deleted");
-    else alert("Location not deleted");
-  }
+ 
 }
 </script>

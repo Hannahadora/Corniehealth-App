@@ -156,13 +156,10 @@ export default class AddDomain extends Vue {
         this.payload
       );
       if (response.success) {
-         alert("Domain Added");
-        console.log(response.data);
-      }else{
-        alert(response.message);
+          window.notify({ msg: "Domain added", status: "success" });
       }
     } catch (error) {
-      console.log(error);
+      window.notify({ msg: "Domain not added", status: "error" });
     }
   }
   async checkDomain() {
@@ -190,14 +187,10 @@ export default class AddDomain extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-         alert("Domain Name Updated");
-        console.log(response.data);
-      }else{
-         alert(response.message);
+        window.notify({ msg: "Domain name updated", status: "success" });
       }
     } catch (error) {
-       alert(error);
-      console.log(error);
+       window.notify({ msg: "Domain name not updated", status: "error" });
     }
   }
   async fetchRoles() {

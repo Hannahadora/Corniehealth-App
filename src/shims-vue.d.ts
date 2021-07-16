@@ -11,10 +11,18 @@ interface ConfirmSetup {
   no?: string;
   title?: string;
 }
+
+interface INotify {
+  msg: string;
+  status?: "success" | "error" | "info";
+}
+
+declare function notify(data: INotify): void;
 declare function confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
 
 declare module "@scelloo/cloudenly-ui/*";
 
 interface Window {
   confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
+  notify(data: INotify): void;
 }
