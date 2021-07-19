@@ -34,3 +34,13 @@ export async function fetchDevices(): Promise<IDevice[]> {
   }
   return [];
 }
+
+export async function deleteDevice(id: string): Promise<boolean> {
+  try {
+    const response = await cornieClient().delete(`/api/v1/devices/${id}`);
+    if (response.success) return true;
+  } catch (error) {
+    return false;
+  }
+  return false;
+}
