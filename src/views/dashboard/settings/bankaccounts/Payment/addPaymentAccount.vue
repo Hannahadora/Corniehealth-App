@@ -233,6 +233,7 @@ export default {
       PaymentCategories: "",
       bank: "",
       locations: "",
+      self:null,
     };
   },
   computed: {
@@ -272,10 +273,11 @@ export default {
     async setPayment() {
       const payment = await this.getPaymentById(this.id);
       if (!payment) return;
-      this.paymentCategories = this.payment.paymentCategories;
-      this.accountName = this.payment.accountName;
-      this.accountNumber = this.payment.accountNumber;
-      this.bank = this.payment.bank;
+      console.log(payment)
+      this.paymentCategories = payment.paymentCategories;
+      this.accountName = payment.accountName;
+      this.accountNumber = payment.accountNumber;
+      this.bank = payment.bank;
     },
     //Add Organization Payment Account
     async submit() {
@@ -303,7 +305,7 @@ export default {
       this.loading = true;
       try {
         const response = await cornieClient().put(
-          `/api/v1/payments/${this.payment.id}`
+          `/api/v1/payments/${this.id}`
         );
         if (response.success)
           window.notify({ msg: "Payment account updated", status: "success" });
