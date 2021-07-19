@@ -21,22 +21,18 @@
         <domain-input label="Domain Name" placeholder="--Enter--" :rules="required" v-model="domainName" v-on:input="checkDomain"/>
         <span class="text-xs font-bold">{{ result }}</span>
         </div>
-        <OrgSelect
-        :rules="required"
+        <cornie-select
+          :rules="required"
+          :items="['Super admin']"
           label="IAM Role"
           v-model="roleForDomain"
-        >
-         <option>
-           super admin
-          </option>
-         <!--<option v-for="(role, i) in roleForDomain" :key="i" :value="role">
-            {{ role }}
-          </option>-->
-        </OrgSelect>
+              >
+              </cornie-select>
       </div>
    <span class="flex justify-end w-full border-t-2 mt-36">
     <button
      @click="$router.push('domains')"
+     type="button"
         class="
           outline-primary
           rounded-full
@@ -161,13 +157,12 @@ export default class AddDomain extends Vue {
         this.payload
       );
       if (response.success) {
-         alert("Domain Added");
-        console.log(response.data);
-      }else{
-        alert(response.message);
+         //alert("Domain added");
+          window.notify({ msg: "Domain added", status: "success" });
       }
     } catch (error) {
-      console.log(error);
+       //alert("Domain not added");
+      window.notify({ msg: "Domain not added", status: "error" });
     }
   }
   async checkDomain() {
@@ -195,14 +190,12 @@ export default class AddDomain extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-         alert("Domain Name Updated");
-        console.log(response.data);
-      }else{
-         alert(response.message);
+       // alert("Domain name updated");
+        window.notify({ msg: "Domain name updated", status: "success" });
       }
     } catch (error) {
-       alert(error);
-      console.log(error);
+      //alert("Domain name not updated");
+       window.notify({ msg: "Domain name not updated", status: "error" });
     }
   }
   async fetchRoles() {
@@ -219,9 +212,8 @@ export default class AddDomain extends Vue {
     } catch (error) {
       console.log(error);
     }
-    // const data = await this.getDropdowns("domain");
-   // this.dropdowns = data;
   }
+ 
   //  fetching of the dropdown data
 
 }

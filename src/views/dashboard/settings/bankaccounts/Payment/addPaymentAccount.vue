@@ -233,6 +233,7 @@ export default {
       PaymentCategories: "",
       bank: "",
       locations: "",
+      self: null,
     };
   },
   computed: {
@@ -305,7 +306,7 @@ export default {
       this.loading = true;
       try {
         const response = await cornieClient().put(
-          `/api/v1/payments/${this.payment.id}`
+          `/api/v1/payments/${this.id}`
         );
         if (response.success)
           window.notify({ msg: "Payment account updated", status: "success" });

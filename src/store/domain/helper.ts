@@ -6,22 +6,20 @@ export async function fetchDomains() {
     const response = await cornieClient().get(
       "/api/v1/domain/myOrg/getMyOrgdomains"
     );
-    if (response.success) {
+    if (response.success){
       return response.data;
-    }else{
-      alert("Failed to fetch");
-    }
-      
+    } 
   } catch (error) {
     console.log(error);
-    alert("Failed to fetch");
   }
   return [] as IDomain[];
 }
 export async function deleteDomain(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/domain/${id}`);
-    if (response.success) return true;
+    if (response.success) {
+      return true;
+    }
   } catch (error) {
     return false;
   }
