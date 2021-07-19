@@ -17,3 +17,17 @@ export function getTableKeyValue(item: any) {
     index,
   };
 }
+
+const isObj = (val: any) => val.constructor.name === "Object";
+
+export function flatten(data: any) {
+  let result = {} as IIndexableObject;
+  Object.entries(data).forEach(([key, val]) => {
+    if (isObj(val)) {
+      result = { ...result, ...flatten(val) };
+    } else {
+      if (key) result[key] = val;
+    }
+  });
+  return result;
+}

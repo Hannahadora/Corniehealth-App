@@ -6,8 +6,7 @@
         border-b-2
         w-full
         font-semibold
-        text-xl 
-        text-primary
+        text-xl text-primary
         py-2
         mx-auto
       "
@@ -53,10 +52,16 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
-          <three-dot-icon
-            class="cursor-pointer"
-            @click="updateDevice(item.data.id)"
-          />
+          <table-options>
+            <table-option @click="updateDevice(item.data.id)">
+              <eye-icon class="mr-3 mt-1" />
+              View & Edit
+            </table-option>
+            <table-option @click="removeDevice(item.data.id)">
+              <delete-icon class="mr-3" />
+              Delete Device
+            </table-option>
+          </table-options>
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
@@ -71,7 +76,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
-import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
@@ -81,29 +85,29 @@ import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import { Prop } from "vue-property-decorator";
 import IDevice from "@/types/IDevice";
-import { flatten } from "@/plugins/flatten";
 import search from "@/plugins/search";
+import { first, flatten } from "@/plugins/utils";
+import TableOptions from "@/components/table-options.vue";
+import TableOption from "@/components/table-option.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import { namespace } from "vuex-class";
 
-const first = (num: number, vals: any[]) => {
-  const res = [];
-  for (let index = 0; index < vals.length; index++) {
-    const element = vals[index];
-    res.push(element);
-  }
-  return res;
-};
-
+const device = namespace("device");
 @Options({
   components: {
     Table,
     SortIcon,
-    ThreeDotIcon,
+    TableOptions,
     SearchIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
+    EyeIcon,
+    DeleteIcon,
     ColumnFilter,
+    TableOption,
   },
 })
 export default class DeviceExistingState extends Vue {
@@ -158,6 +162,9 @@ export default class DeviceExistingState extends Vue {
     },
   ];
 
+  @device.Action
+  deleteDevice!: (id: string) => Promise<boolean>;
+
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -188,15 +195,26 @@ export default class DeviceExistingState extends Vue {
   }
 
   showColumnFilter = false;
-  columns = [
-    { selected: false, name: "Car" },
-    { selected: false, name: "Bus" },
-  ];
 
   updateDevice(id: string) {
     const device = this.devices.find((d) => d.id == id);
     this.$emit("update-device", device);
   }
+
+  async removeDevice(id: string) {
+    const confirmed = await window.confirmAction({
+      title: "You are about to delete this device",
+      message: "Are you sure?",
+    });
+    if (!confirmed) return;
+    const deleted = await this.deleteDevice(id);
+    if (deleted) {
+      window.notify({ msg: "Device Deleted", status: "success" });
+    } else {
+      window.notify({ msg: "Device not deleted", status: "error" });
+    }
+  }
+
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;

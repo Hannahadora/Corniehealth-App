@@ -225,7 +225,7 @@ export default class AddPractitioner extends Vue {
   setPractitioner() {
     const practitioner = this.getPractitionerById(this.id);
     if (!practitioner) return;
-    this.name = practitioner.name;
+    this.name = `${practitioner.firstName} ${practitioner.lastName}`;
     this.email = practitioner.email;
     this.activeState = practitioner.activeState;
     this.gender = practitioner.gender;
@@ -267,9 +267,7 @@ export default class AddPractitioner extends Vue {
       availabilityExceptions: this.availabilityExceptions,
       consultationChannel: this.consultationChannel,
       organizationId: this.organizationId,
-      hoursOfOperation: [
-        { day: "Monday", openTime: "8:30 pm", closeTime: "10:00 pm" },
-      ],
+      hoursOfOperation: this.hoursOfOperation,
     };
   }
 
