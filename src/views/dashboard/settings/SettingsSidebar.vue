@@ -1,7 +1,7 @@
 <template>
   <div class="mt-2 mb-5 rounded-lg bg-white w-full h-full max-h-full">
     <div class="w-full h-full max-h-full p-2">
-      <div class="flex flex-col h-full w-full overflow-auto max-h-full">
+      <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
         <icon-input
           autocomplete="off"
           type="search"

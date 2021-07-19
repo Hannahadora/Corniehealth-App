@@ -15,17 +15,16 @@
         Healthcare Services
       </span>
       <span class="w-full">
-          <healthcare-empty-state v-if="empty"/>
-          <healthcare-existing-state v-else />
+        <healthcare-empty-state v-if="empty" />
+        <healthcare-existing-state v-else />
       </span>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import  HealthcareEmptyState from "./emptyState.vue";
+import HealthcareEmptyState from "./emptyState.vue";
 import HealthcareExistingState from "./existingState.vue";
-
 
 @Options({
   name: "HealthcareIndex ",
@@ -35,11 +34,8 @@ import HealthcareExistingState from "./existingState.vue";
   },
 })
 export default class HealthcareIndex extends Vue {
-  
   get empty() {
     return false;
   }
-
- 
 }
 </script>

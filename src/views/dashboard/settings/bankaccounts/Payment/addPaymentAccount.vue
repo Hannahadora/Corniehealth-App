@@ -269,14 +269,16 @@ export default {
   },
   methods: {
     ...mapActions("payment", ["getPaymentById"]),
+
     async setPayment() {
       const payment = await this.getPaymentById(this.id);
       if (!payment) return;
-      this.paymentCategories = this.payment.paymentCategories;
-      this.accountName = this.payment.accountName;
-      this.accountNumber = this.payment.accountNumber;
-      this.bank = this.payment.bank;
+      this.paymentCategories = payment.paymentCategories;
+      this.accountName = payment.accountName;
+      this.accountNumber = payment.accountNumber;
+      this.bank = payment.bank;
     },
+
     //Add Organization Payment Account
     async submit() {
       this.loading = true;
@@ -288,7 +290,7 @@ export default {
       this.loading = true;
       try {
         this.loading = false;
-        console.log(this.payload);
+
         const response = await cornieClient().post(
           "/api/v1/payments",
           this.payload
