@@ -6,7 +6,7 @@
       <settings-sidebar class="overflow-hidden" />
     </div>
     <div class="p-3 w-full h-full overflow-auto">
-      <router-view />
+      <router-view class="h-screen" />
     </div>
   </div>
 </template>
