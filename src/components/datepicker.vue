@@ -51,4 +51,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: transparent;
   background: transparent;
 }
+
+input[type="date"] {
+  padding-left: 3rem;
+}
 </style>
