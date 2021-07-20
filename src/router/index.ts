@@ -128,6 +128,19 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/healthcare/addServices.vue"),
           },
+          {
+            path: "care-team",
+            name: "Care Teams",
+            component: () =>
+              import("@/views/dashboard/settings/careteam/index.vue"),
+          },
+          {
+            path: "add-careteam/:id?",
+            props: true,
+            name: "Create a Care Team",
+            component: () =>
+              import("@/views/dashboard/settings/careteam/addCareteam.vue"),
+          },
         ],
       },
     ],
