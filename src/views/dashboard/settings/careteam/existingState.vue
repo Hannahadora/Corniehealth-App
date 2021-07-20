@@ -44,7 +44,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-domain/${getKeyValue(item).value}`)"
+              @click="$router.push(`add-careteam/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -108,7 +108,6 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-   <!-- <show-confrim  v-model:visible="showModal"  yes="Proceed" no="Cancel" title="Delete Domain" message="Are you sure you want to remove this domain? This action cannot be undone."/>-->
   </div>
 </template>
 <script lang="ts">
@@ -126,14 +125,14 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IDomain from "@/types/IDomain";
+import ICareteam from "@/types/ICareteam";
 import CloseIcon from "@/components/icons/close.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
 
 
-const domain = namespace("domain");
+const careteam = namespace("careteam");
 
 @Options({
   components: {
@@ -153,36 +152,46 @@ const domain = namespace("domain");
   },
   
 })
-export default class DomainExistingState extends Vue {
+export default class CareteamExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
 
-  @domain.State
-  domains!: IDomain[];
+  @careteam.State
+  careteams!: ICareteam[];
 
-  @domain.Action
-  deleteDomain!: (id: string) => Promise<boolean>;
+  @careteam.Action
+  deleteCareteam!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Organizatin Name", value: "orgName", show: true },
-    { title: "Domain Name", value: "domainName", show: true },
+    { title: "Identfier", value: "identifier", show: true },
+    { title: "Status", value: "status", show: true },
     {
-      title: "Role",
-      value: "roleForDomain",
+      title: "Category",
+      value: "category",
       show: true,
     },
     {
-      title: "Date Created",
-      value: "createdAt",
+      title: "Name",
+      value: "name",
+      show: true,
+    },
+    {
+      title: "Subject",
+      value: "subject",
+      show: true,
+    },
+    {
+      title: "Period",
+      value: "period",
       show: false,
     },
     {
-      title: "Organization ID",
-      value: "organizationId",
+      title: "Participants",
+      value: "participants",
       show: false,
     },
   ];
@@ -193,35 +202,31 @@ export default class DomainExistingState extends Vue {
         ? this.preferredHeaders
         : this.rawHeaders;
     const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
+    return [...first(6, headers), { title: "", value: "action", image: true }];
   }
   
 
 
   get items() {
-    const domains = this.domains.map((domain) => {
-       (domain as any).createdAt = new Date(
-         (domain as any).createdAt 
-       ).toLocaleDateString("en-US");
-        (domain as any).action = domain.id;
+    const careteams = this.careteams.map((careteam) => {
         return {
-        ...domain,
+        ...careteam,
         };
     });
     
-    if (!this.query) return domains;
-    return search.searchObjectArray(domains, this.query);
+    if (!this.query) return careteams;
+    return search.searchObjectArray(careteams, this.query);
   }
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this domain",
-      title: "Delete Domain Name"
+      message: "You are about to delete this care team",
+      title: "Delete Care Team"
     });
     if (!confirmed) return;
 
-    if (await this.deleteDomain(id)) window.notify({ msg: "Domain deleted", status: "error" });
-    else window.notify({ msg: "Domain not deleted", status: "error" });
+    if (await this.deleteCareteam(id)) window.notify({ msg: "Care team deleted", status: "error" });
+    else window.notify({ msg: "Care team not deleted", status: "error" });
   }
  
 

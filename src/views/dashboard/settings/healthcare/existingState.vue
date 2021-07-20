@@ -12,7 +12,7 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-health-services')"
+        @click="$router.push('add-health-service')"
       >
         Add New
       </button>

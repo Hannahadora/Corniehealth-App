@@ -206,22 +206,22 @@
               >
                 Cancel
               </button>
-              <button
-                class="
-                  w-1/4
-                  rounded-full
-                  font-semibold
-                  p-2
-                  text-white
-                  border
-                  bg-danger
-                  mt-4
-                "
+              <cornie-btn
                 :loading="loading"
                 type="submit"
-              >
-                Save
-              </button>
+                  class="
+                    bg-danger
+                    rounded-full
+                    text-white
+                    mt-5
+                    pr-10
+                    pl-10
+                    focus:outline-none
+                    hover:opacity-90
+                  "
+                >
+              Save
+            </cornie-btn>
             </span>
           </v-form>
         </div>
@@ -235,7 +235,14 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import OperationHours from "@/components/operation-hours.vue";
+import IHealthcare from "@/types/IHealthcare";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import { string } from "yup";
+import { Prop, Watch } from "vue-property-decorator";
+import OrgSelect from "@/components/orgSelect.vue";
 
+const healthcare = namespace("healthcare");
 
 @Options({
   components: {
@@ -247,9 +254,147 @@ import OperationHours from "@/components/operation-hours.vue";
 })
 
 export default class AddService extends Vue {
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  
+  @healthcare.Action
+  getHealthcareById!: (id: string) => IHealthcare;
+
 
  loading = false;
 activeStates = ["yes", "No"]
+
+name = "";
+  activeState = "";
+  eligibilityComment = "";
+  provisionCode = "";
+  eligibilityCode = "";
+  coverageArea = "";
+  type = "";
+  phone = "";
+  address = "";
+  characteristics = "";
+  communication = "";
+  photo = "";
+  specialty = "";
+  referralMethod = "";
+  appointmentRequired = "";
+  providedBy = "";
+  category = "";
+  notAvailableDescription = "";
+  notAvailableDateRange = "";
+  notAvailableChannel = "";
+  availabilityExceptions = "";
+  extraDetails = "";
+  comment = "";
+  hoursOfOperation = "";
+
+
+   required = string().required();
+
+
+@Watch("id")
+  idChanged() {
+    this.setHealthcare();
+  }
+ async setHealthcare() {
+    const healthcare = await this.getHealthcareById(this.id);
+    if (!healthcare) return;
+
+    this.name = healthcare.name;
+    this.activeState = healthcare.activeState;
+    this.eligibilityComment = healthcare.eligibilityComment;
+    this.coverageArea = healthcare.coverageArea;
+    this.type = healthcare.type;
+    this.phone = healthcare.phone;
+    this.address = healthcare.address;
+    this.characteristics = healthcare.characteristics;
+    this.communication = healthcare.communication;
+    this.photo = healthcare.photo;
+    this.specialty = healthcare.specialty;
+    this.referralMethod = healthcare.referralMethod;
+    this.appointmentRequired = healthcare.appointmentRequired;
+    this.providedBy = healthcare.providedBy;
+    this.category = healthcare.category;
+    this.notAvailableDescription = healthcare.notAvailableDescription;
+    this.notAvailableDateRange = healthcare.notAvailableDateRange;
+    this.notAvailableChannel = healthcare.notAvailableChannel;
+    this.availabilityExceptions = healthcare.availabilityExceptions;
+    this.extraDetails = healthcare.extraDetails;
+    this.comment = healthcare.comment;
+    this.hoursOfOperation = healthcare.hoursOfOperation;
+   
+ }
+  allaction() {
+    return this.id ? "Update" : "Create New";
+    }
+   get payload() {
+    return {
+     name: this.name,
+      activeState: this.activeState,
+    eligibilityComment: this.eligibilityComment,
+    coverageArea: this.coverageArea ,
+    type: this.type,
+    phone: this.phone ,
+    address: this.address ,
+    characteristics: this.characteristics ,
+    communication: this.communication,
+    photo: this.photo ,
+    specialty: this.specialty ,
+   referralMethod:  this.referralMethod,
+   appointmentRequired:  this.appointmentRequired,
+    providedBy: this.providedBy,
+   category:  this.category ,
+    notAvailableDescription: this.notAvailableDescription ,
+    notAvailableDateRange: this.notAvailableDateRange,
+   notAvailableChannel: this.notAvailableChannel ,
+    availabilityExceptions: this.availabilityExceptions ,
+   extraDetails:  this.extraDetails,
+   comment:  this.comment ,
+   hoursOfOperation:  this.hoursOfOperation 
+   
+    }
+   }
+  
+  
+   async submit() {
+    this.loading = true;
+    if (this.id) await this.updateHealthcare();
+    else await this.createHealthcare();
+    this.loading = false;
+  }
+
+  async createHealthcare() {
+
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/healthCareServcie",
+        this.payload
+      );
+      if (response.success) {
+          window.notify({ msg: "Healthcare service  added", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Health care service  not added", status: "error" });
+    }
+  }
+  async updateHealthcare() {
+    const url = `/api/v1/healthCareService/${this.id}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Health care service updated", status: "success" });
+      }
+    } catch (error) {
+       window.notify({ msg: "Health care servcie not updated", status: "error" });
+    }
+  }
  
+  async created() {
+    this.setHealthcare();
+  }
+
 }
 </script>

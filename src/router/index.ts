@@ -122,7 +122,7 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/healthcare/index.vue"),
           },
           {
-            path: "add-health-services/:id?",
+            path: "add-health-service/:id?",
             props: true,
             name: "Add a New Healthcare Service",
             component: () =>

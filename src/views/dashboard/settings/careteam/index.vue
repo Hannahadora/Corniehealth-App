@@ -5,13 +5,11 @@
        Care Teams
     </span>
       <span class="w-full">
-        <!--  <careteam-empty-state
+          <careteam-empty-state
                 v-if="empty"
           />
           <careteam-existing-state
           v-else
-          />-->
-           <careteam-existing-state
           />
       </span>
     </div>
