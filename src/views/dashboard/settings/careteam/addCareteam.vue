@@ -75,7 +75,7 @@
             >
             </cornie-select>
             <cornie-input label="Reason Reference"  v-model="participant.reasonReference" placeholder="--Enter--" :rules="required"/>
-           <cornie-input label="Managing Organization" v-model="participant.managingOrganization"  placeholder="--Enter--" :rules="required"/>
+           <cornie-input label="Managing Organization" class="bg-gray-200" disabled v-model="participant.managingOrganization"  placeholder="--Enter--" :rules="required"/>
             <phone-input
               :rules="requiredRule"
               label="Phone"
@@ -109,7 +109,7 @@
 
         "
       >
-        Cancel
+        Revert Changes
       </button>
 
       <cornie-btn
@@ -341,7 +341,7 @@ async checkParticipant() {
         const response = await cornieClient().get(
           "/api/v1/organization/myOrg/get"
         );
-        this.identifier = response.data.name
+        this.identifier = response.data.OrganizationIdentifier
         this.participant.managingOrganization = response.data.name
       } catch (error) {
         alert("Could not fetch organization");

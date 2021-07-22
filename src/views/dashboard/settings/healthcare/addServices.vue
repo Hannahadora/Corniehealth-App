@@ -22,6 +22,7 @@
                 :rules="required"
                 v-model="identifier"
                 label="Identifier"
+                class="bg-gray-200" disabled
               />
         
               <cornie-select
@@ -63,7 +64,7 @@
               <cornie-select
                 :rules="required"
                 :items="activeStates"
-                v-model="location"
+                v-model="address"
                 label="location"
               />
 
@@ -101,7 +102,7 @@
 
                <cornie-select
                 :items="activeStates"
-                v-model="serviceProvisionCode"
+                v-model="provisionCode"
                 label="service provision code"
                 :rules="required"
               />
@@ -124,83 +125,65 @@
                 </span>
               
             </div>
-            <span
-              class="
-                flex
-                border-b-2
-                w-full
-                font-semibold
-                text-xl text-primary
-                py-2
-                mt-4
-                mx-auto
-              "
-            >
-              Eligibility
-            </span>
-            <!-- <div class="w-full grid grid-cols-2 gap-5 mt-3">
-              <cornie-input v-model="longitude" label="Longitude" />
-              <cornie-input v-model="latitude" label="Latitude" />
-              <cornie-input v-model="altitude" label="Altitude" />
+            <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
+           Eligibility
+        </span>
+            <div class="w-full grid grid-cols-2 gap-5 mt-3">
+        <cornie-select
+                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                v-model="eligibilityCode"
+                label="Code"
+              />
+              <cornie-input v-model="eligibilityComment" label="Comment" />
+              <cornie-input v-model="programs" label="Latitude" />
+              <cornie-input v-model="characteristics" label="Characteristics" />
               <cornie-select
                 :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                v-model="managingOrg"
-                label="Managing Organization"
+                v-model="communication"
+                label="Communication"
               />
               <cornie-select
                 :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                v-model="partOf"
-                label="Part Of"
+                v-model="referralMethod"
+                label="referral method"
               />
-            </div> -->
-            <span
-              class="
-                flex
-                border-b-2
-                w-full
-                font-semibold
-                text-xl text-primary
-                py-2
-                mt-4
-                mx-auto
-              "
-            >
-              Available Time
-            </span>
+              <cornie-select
+                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                v-model="appointmentRequired"
+                label="appointment required?"
+              />
+            </div> 
+             <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
+          Available Time
+        </span>
             <div class="mt-3 w-full">
-              <operation-hours v-model="hoursOfOperation" />
+             <!-- <operation-hours v-model="hoursOfOperation" />-->
             </div>
 
-             <span
-              class="
-                flex
-                border-b-2
-                w-full
-                font-semibold
-                text-xl text-primary
-                py-2
-                mt-4
-                mx-auto
-              "
-            >
-             Not Available
-            </span>
+             <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
+           Not Available
+        </span>
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
-              <cornie-select
+            <cornie-input
                 :rules="required"
-                v-model="availabilityExceptions"
-                :items="['X-MAS', 'SALAH']"
-                label="Availability Exceptions"
+                v-model="notAvailableDescription"
+                label="description"
               />
+               <date-picker
+              label="During"
+              v-model="notAvailableDateRange"
+              placeholder="--Enter--" :rules="required"
+            />
+           
               <cornie-input
                 :rules="required"
-                v-model="openTo"
-                label="Open To"
+                v-model="availabilityExceptions"
+                label="availability exceptions"
               />
               <cornie-select
                 :rules="required"
-                v-model="careOptions"
-                label="Care Options"
+                v-model="notAvailableChannel"
+                label="channel"
                 :items="['dental', 'hospice']"
               />
             </div>
@@ -218,7 +201,7 @@
                 "
                 @click="$router.push('health-services')"
               >
-                Cancel
+                  Revert Changes
               </button>
               <cornie-btn
                 :loading="loading"
@@ -258,14 +241,18 @@ import { namespace } from "vuex-class";
 import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
 import OrgSelect from "@/components/orgSelect.vue";
+import DatePicker from "./datepicker.vue";
 
 const healthcare = namespace("healthcare");
-
+const dropdown = namespace("dropdown");
 @Options({
   components: {
     CornieInput,
+     Modal,
+     DatePicker,
     CornieSelect,
     PhoneInput,
+    Avatar,
     OperationHours,
   },
 })
@@ -278,11 +265,14 @@ export default class AddService extends Vue {
   
   @healthcare.Action
   getHealthcareById!: (id: string) => IHealthcare;
-
+  dropdowns = {} as IIndexableObject;
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
  loading = false;
 activeStates = ["yes", "No"]
 
+  identifier = "";
   name = "";
   activeState = "";
   eligibilityComment = "";
@@ -323,6 +313,7 @@ activeStates = ["yes", "No"]
     this.name = healthcare.name;
     this.activeState = healthcare.activeState;
     this.eligibilityComment = healthcare.eligibilityComment;
+    this.provisionCode = healthcare.provisionCode;
     this.coverageArea = healthcare.coverageArea;
     this.type = healthcare.type;
     this.phone = healthcare.phone;
@@ -341,6 +332,7 @@ activeStates = ["yes", "No"]
     this.availabilityExceptions = healthcare.availabilityExceptions;
     this.extraDetails = healthcare.extraDetails;
     this.comment = healthcare.comment;
+    this.eligibilityCode = healthcare.eligibilityCode;
     this.hoursOfOperation = healthcare.hoursOfOperation;
    
  }
@@ -352,6 +344,7 @@ activeStates = ["yes", "No"]
      name: this.name,
       activeState: this.activeState,
     eligibilityComment: this.eligibilityComment,
+    provisionCode: this.provisionCode,
     coverageArea: this.coverageArea ,
     type: this.type,
     phone: this.phone ,
@@ -370,7 +363,8 @@ activeStates = ["yes", "No"]
     availabilityExceptions: this.availabilityExceptions ,
    extraDetails:  this.extraDetails,
    comment:  this.comment ,
-   hoursOfOperation:  this.hoursOfOperation 
+   hoursOfOperation:  this.hoursOfOperation ,
+   eligibilityCode:  this.eligibilityCode 
    
     }
    }
@@ -409,9 +403,22 @@ activeStates = ["yes", "No"]
        window.notify({ msg: "Health care servcie not updated", status: "error" });
     }
   }
- 
+  async fetchOrgInfo() {
+      try {
+        const response = await cornieClient().get(
+          "/api/v1/organization/myOrg/get"
+        );
+        this.identifier = response.data.OrganizationIdentifier;
+      } catch (error) {
+        alert("Could not fetch organization");
+      }
+    }
+
   async created() {
     this.setHealthcare();
+    this.fetchOrgInfo();
+     const data = await this.getDropdowns("healthCareService");
+    this.dropdowns = data;
   }
 
 }

@@ -261,7 +261,7 @@ export default class CareteamExistingState extends Vue {
       return;
     }else{
         try {
-          const response = await cornieClient().post(`/api/v1/care-team/deactivate/${id}`,{});
+          const response = await cornieClient().post(`/api/v1/care-teams/deactivate/${id}`,{});
           if (response.success) {
             window.notify({ msg: "Care team deactivated", status: "success" });
           } 
@@ -280,7 +280,7 @@ export default class CareteamExistingState extends Vue {
       return;
     }else{
         try {
-          const response = await cornieClient().post(`/api/v1/care-team/activate/${id}`,{});
+          const response = await cornieClient().post(`/api/v1/care-teams/activate/${id}`,{});
           if (response.success) {
             window.notify({ msg: "Care team activated", status: "success" });
           } 
