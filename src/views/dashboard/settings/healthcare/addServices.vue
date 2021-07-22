@@ -130,7 +130,7 @@
         </span>
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
         <cornie-select
-                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                :items="['code']"
                 v-model="eligibilityCode"
                 label="Code"
               />
@@ -138,17 +138,17 @@
               <cornie-input v-model="programs" label="Latitude" />
               <cornie-input v-model="characteristics" label="Characteristics" />
               <cornie-select
-                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                :items="['Full']"
                 v-model="communication"
                 label="Communication"
               />
               <cornie-select
-                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                :items="['reffer']"
                 v-model="referralMethod"
                 label="referral method"
               />
               <cornie-select
-                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                :items="['appointment']"
                 v-model="appointmentRequired"
                 label="appointment required?"
               />
@@ -157,7 +157,7 @@
           Available Time
         </span>
             <div class="mt-3 w-full">
-             <!-- <operation-hours v-model="hoursOfOperation" />-->
+              <operation-hours v-model="hoursOfOperation" />
             </div>
 
              <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
@@ -336,9 +336,7 @@ activeStates = ["yes", "No"]
     this.hoursOfOperation = healthcare.hoursOfOperation;
    
  }
-  allaction() {
-    return this.id ? "Update" : "Create New";
-    }
+ 
    get payload() {
     return {
      name: this.name,
@@ -408,7 +406,8 @@ activeStates = ["yes", "No"]
         const response = await cornieClient().get(
           "/api/v1/organization/myOrg/get"
         );
-        this.identifier = response.data.OrganizationIdentifier;
+        console.log(response);
+        this.identifier = response.data.identifier;
       } catch (error) {
         alert("Could not fetch organization");
       }

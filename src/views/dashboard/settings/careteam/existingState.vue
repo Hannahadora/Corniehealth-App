@@ -60,7 +60,7 @@
               "
             >
               
-              <span class="mr-3 text-2xl bold text-primary">+</span> Add Member
+              <span class="mr-3 text-2xl bold text-primary">+</span> Edit Care Team
             </li>
             <li
               @click="deleteItem(getKeyValue(item).value)"

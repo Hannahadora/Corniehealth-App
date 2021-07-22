@@ -75,7 +75,7 @@
             >
             </cornie-select>
             <cornie-input label="Reason Reference"  v-model="participant.reasonReference" placeholder="--Enter--" :rules="required"/>
-           <cornie-input label="Managing Organization" class="bg-gray-200" disabled v-model="participant.managingOrganization"  placeholder="--Enter--" :rules="required"/>
+           <cornie-input label="Managing Organization"  v-model="participant.managingOrganization"  placeholder="--Enter--" :rules="required"/>
             <phone-input
               :rules="requiredRule"
               label="Phone"
@@ -286,16 +286,17 @@ async checkParticipant() {
     this.participant = {...emptyParticipant};
   }
    async removeParticipant(id:string, index:number, fieldType:object) {
-     console.log(id);
-       try {
-      const response = await cornieClient().delete(`/api/v1/participants/${id}`);
-      if (response.success) {
-          this.participants.splice(index, 1);
-          window.notify({ msg: "Participant deleted", status: "success" });
-      }
-      } catch (error) {
-        window.notify({ msg: "Participant not deleted", status: "error" });
-      }
+     this.participants.splice(index, 1);
+       window.notify({ msg: "Participant deleted", status: "success" });
+      //  try {
+      // const response = await cornieClient().delete(`/api/v1/participants/${id}`);
+      // if (response.success) {
+      //     this.participants.splice(index, 1);
+      //     window.notify({ msg: "Participant deleted", status: "success" });
+      // }
+      // } catch (error) {
+      //   window.notify({ msg: "Participant not deleted", status: "error" });
+      // }
     }
    
    async submit() {
@@ -341,7 +342,7 @@ async checkParticipant() {
         const response = await cornieClient().get(
           "/api/v1/organization/myOrg/get"
         );
-        this.identifier = response.data.OrganizationIdentifier
+        this.identifier = response.data.identifier
         this.participant.managingOrganization = response.data.name
       } catch (error) {
         alert("Could not fetch organization");

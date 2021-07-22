@@ -60,7 +60,7 @@
               View & Edit
             </li>
             <li
-              @click="showDelete(newitem)"
+              @click="deleteItem(getKeyValue(item).value)"
               class="
                 list-none
                 flex
