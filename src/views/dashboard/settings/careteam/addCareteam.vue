@@ -37,14 +37,14 @@
            Participant
         </span>
         <div class="col-span-full mb-5">
-          <div v-if="participants.length > 0">
+          <div>
            <div class="grid grid-cols-7 gap-2 col-span-full mb-4" v-for="(input, index) in participants" :key="`-${index}`">
                 <p class="text-xs text-dark font-semibold">{{ input.name}}</p>
                 <p class="text-xs text-dark font-semibold">{{ input.role}}</p>
                 <p class="text-xs text-dark font-semibold">{{ input.managingOrganization}}</p>
                 <p class="text-xs text-dark font-semibold">{{input.phone.dialCode + input.phone.number}}</p>
                 <p class="text-xs text-dark font-semibold">{{input.email}}</p>
-                <d-edit class="ml-20"  @click="editParticipant(input.careTeamId,index,participants)"/>
+                <d-edit class="ml-20 cursor-pointer"  @click="editParticipant(input.careTeamId,index,participants)"/>
                 <c-delete @click="removeParticipant(index, participants)" class="cursor-pointer"/>
             </div>
           </div>
@@ -62,7 +62,7 @@
             <date-picker
           label="Period"
           v-model="participant.period.start"
-          v-model:end = "participant.period.end"   placeholder="--Enter--" :rules="required"
+          v-model:end = "participant.period.end"  placeholder="--Enter--" :rules="required"
         />
            
          <!--   <cornie-input label="Period" v-model="participant.period.start" v-model:end = "participant.period.end"   placeholder="--Enter--" :rules="required"/>-->
@@ -224,7 +224,7 @@ export default class AddCareteam extends Vue {
     this.subject = careteam.subject;
     this.period = careteam.period;
     this.participants = careteam.participants;
-  
+  console.log(careteam);
  }
    get payload() {
     return {
@@ -308,8 +308,8 @@ async checkParticipant() {
   async createCareteam() {
     this.payload.period.start = new Date(this.payload.period.start).toISOString()
     this.payload.period.end = new Date(this.payload.period.end).toISOString()
-   // this.payload.participants.[period.start] = new Date(this.payload.participants.[period.start]).toISOString()
-   // this.payload.participants.[period.end] = new Date(this.payload.participants.[period.end]).toISOString()
+    this.participant.period.start = new Date(this.participant.period.start).toISOString()
+    this.participant.period.end = new Date(this.participant.period.end).toISOString()
     try {
       const response = await cornieClient().post(
         "/api/v1/care-teams",

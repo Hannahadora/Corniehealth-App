@@ -107,7 +107,21 @@
               />
 
             <!-- Image Upload  -->
-
+              <span class="flex items-center mt-3">
+                  <avatar class="mr-2" v-if="img.url" :src="img.url" />
+                  <avatar class="mr-2" v-else :src="img.placeholder" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="image"
+                    id="file"
+                    @change="img.onChange"
+                    hidden
+                  />
+                  <label for="file" class="text-pink-600 font-bold cursor-pointer">
+                    Upload
+                  </label>
+                </span>
               
             </div>
             <span
@@ -230,12 +244,15 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, Vue, setup } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
+import Modal from "@/components/modal.vue";
 import PhoneInput from "@/components/phone-input.vue";
+import Avatar from "@/components/avatar.vue";
 import OperationHours from "@/components/operation-hours.vue";
 import IHealthcare from "@/types/IHealthcare";
+import { useHandleImage } from "@/composables/useHandleImage";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -254,6 +271,7 @@ const healthcare = namespace("healthcare");
 })
 
 export default class AddService extends Vue {
+  img = setup(() => useHandleImage());
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -265,7 +283,7 @@ export default class AddService extends Vue {
  loading = false;
 activeStates = ["yes", "No"]
 
-name = "";
+  name = "";
   activeState = "";
   eligibilityComment = "";
   provisionCode = "";
@@ -311,7 +329,7 @@ name = "";
     this.address = healthcare.address;
     this.characteristics = healthcare.characteristics;
     this.communication = healthcare.communication;
-    this.photo = healthcare.photo;
+    this.img.url = healthcare.photo;
     this.specialty = healthcare.specialty;
     this.referralMethod = healthcare.referralMethod;
     this.appointmentRequired = healthcare.appointmentRequired;
@@ -340,7 +358,7 @@ name = "";
     address: this.address ,
     characteristics: this.characteristics ,
     communication: this.communication,
-    photo: this.photo ,
+    photo: this.img.url ,
     specialty: this.specialty ,
    referralMethod:  this.referralMethod,
    appointmentRequired:  this.appointmentRequired,

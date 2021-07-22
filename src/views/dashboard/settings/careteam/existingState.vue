@@ -78,9 +78,11 @@
                 cursor-pointer
               "
             >
+           
               <delete-icon class="mr-3" /> Delete
             </li>
             <li
+             v-if="item.data.status == 'active'"
               @click="deactivateCareteam(getKeyValue(item).value)"
               class="
                 list-none
@@ -97,6 +99,25 @@
               "
             >
                <close-icon class="mr-3" /> Deactivate Account
+            </li>
+            <li
+            v-if="item.data.status == 'inactive'"
+              @click="activateCareteam(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <close-icon class="mr-3" /> Activate Account
             </li>
           </table-options>
         </span>
@@ -240,7 +261,7 @@ export default class CareteamExistingState extends Vue {
       return;
     }else{
         try {
-          const response = await cornieClient().post("/api/v1/care-team/deactivate",{id});
+          const response = await cornieClient().post(`/api/v1/care-team/deactivate/${id}`,{});
           if (response.success) {
             window.notify({ msg: "Care team deactivated", status: "success" });
           } 
@@ -259,7 +280,7 @@ export default class CareteamExistingState extends Vue {
       return;
     }else{
         try {
-          const response = await cornieClient().post("/api/v1/care-team/activate",{id});
+          const response = await cornieClient().post(`/api/v1/care-team/activate/${id}`,{});
           if (response.success) {
             window.notify({ msg: "Care team activated", status: "success" });
           } 

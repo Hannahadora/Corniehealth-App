@@ -129,7 +129,7 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/healthcare/addServices.vue"),
           },
           {
-            path: "care-team",
+            path: "care-teams",
             name: "Care Teams",
             component: () =>
               import("@/views/dashboard/settings/careteam/index.vue"),
