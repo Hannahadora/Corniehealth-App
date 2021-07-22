@@ -7,11 +7,11 @@
         v-model="myValue"
         v-bind="$attrs"
       >
-        <Dropdown
+        <MultiSelect
         class="focus:outline-none"
             style="width: 100%; outline: transparant !important"
             :style="{
-                borderColor: Boolean(!myValue) ? '' : Boolean(errorMessage) ? '#EC0868' : '#35BA83'
+                borderColor: myValueIsDefault ? '' : Boolean(errorMessage) || Boolean(myValue.length <= 0) ? '#EC0868' : '#35BA83'
             }"
             @update:modelValue="handleChange" 
             v-model="myValue" 
@@ -26,20 +26,26 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Dropdown from 'primevue/dropdown'
-import { Prop } from 'vue-property-decorator';
+import MultiSelect from 'primevue/multiselect'
+import { Prop, Watch } from 'vue-property-decorator';
 import { Field } from 'vee-validate';
 
 @Options({
   name: "DateRangePicker",
   components: {
-    Dropdown,
+    MultiSelect,
     Field,
   },
 })
 
 export default class MySelect extends Vue {
     myValue = '';
+    myValueIsDefault = true;
+
+    @Watch('myValue')
+    onChange(): void {
+        this.myValueIsDefault = false;
+    }
 
     @Prop({ type: String, default: '' })
     label!: any;
