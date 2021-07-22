@@ -14,7 +14,7 @@
         'border-red-500': Boolean(errorMessage),
         'border-green-400': meta.valid && meta.touched,
       }"
-      class="rounded-lg border p-2 w-80 focus:outline-none"
+      class="rounded-lg border p-2 w-11/12 focus:outline-none"
       v-bind="{ ...$attrs, ...field }"
       :name="inputName"
       v-model="valueSync"

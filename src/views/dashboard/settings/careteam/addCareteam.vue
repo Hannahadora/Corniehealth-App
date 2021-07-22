@@ -6,10 +6,10 @@
   <div class="w-full h-screen">
     <form class="mt-5 w-full" @submit.prevent="submit">
       <div class="w-full grid grid-cols-2 gap-5">
-        <cornie-input label="Organization Name" v-model="identifier"  placeholder="--Automatically Generated--"/>
+        <cornie-input label="Organization Name" v-model="identifier"  placeholder="--Automatically Generated--" class="bg-gray-200" disabled/>
         <cornie-select
           :rules="required"
-          :items="dropdowns.status"
+          :items="['Active', 'Inactive']"
           v-model="status"
           label="Status"
           aria-selected="--Select--"
@@ -27,48 +27,67 @@
         <div>
         <cornie-input label="Subject" v-model="subject"   placeholder="--Enter--" :rules="required"/>
         </div>
-        <cornie-input label="Period" v-model="period"  placeholder="--Enter--" :rules="required"/>
+          <date-picker
+          label="Period"
+          v-model="participant.period.start"
+          v-model:end = "participant.period.end"   placeholder="--Enter--" :rules="required"
+        />
+      <!--  <cornie-input label="Period" v-model="period.start" v-model:end="period.end"  placeholder="--Enter--" :rules="required"/>-->
         <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
            Participant
         </span>
-          <div v-if="addParticipants.length > 0">
-           <div class="grid grid-cols-7 gap-3 col-span-full" v-for="(input, index) in addParticipants" :key="`phoneInput-${index}`">
-                <p class="text-xs text-dark font-semibold">{{ input.member}}</p>
+        <div class="col-span-full mb-5">
+          <div v-if="participants.length > 0">
+           <div class="grid grid-cols-7 gap-2 col-span-full mb-4" v-for="(input, index) in participants" :key="`-${index}`">
+                <p class="text-xs text-dark font-semibold">{{ input.name}}</p>
                 <p class="text-xs text-dark font-semibold">{{ input.role}}</p>
-                <p class="text-xs text-dark font-semibold">{{ input.org}}</p>
-                <p class="text-xs text-dark font-semibold">{{input.phone}}</p>
+                <p class="text-xs text-dark font-semibold">{{ input.managingOrganization}}</p>
+                <p class="text-xs text-dark font-semibold">{{input.phone.dialCode + input.phone.number}}</p>
                 <p class="text-xs text-dark font-semibold">{{input.email}}</p>
-                <d-edit class="ml-20"  @click="editField(index,addParticipants)"/>
-                <c-delete @click="removeField(index, addParticipants)" class="cursor-pointer"/>
+                <d-edit class="ml-20"  @click="editParticipant(input.careTeamId,index,participants)"/>
+                <c-delete @click="removeParticipant(index, participants)" class="cursor-pointer"/>
             </div>
           </div>
-
-            <cornie-select
-              :rules="required"
-              :items="dropdowns.name"
-              label="Name"
-              v-model="participants.name"
-              aria-selected="--Select--"
-            >
-            </cornie-select>
+        </div>
+          <cornie-input label="Name" v-model="participant.name"  placeholder="--Enter--" :rules="required"/>
             <cornie-select
               :rules="required"
               :items="dropdowns.role"
               label="Role"
-              v-model="participants.role"
+              v-model="participant.role"
               aria-selected="--Select--"
             >
             </cornie-select>
-            <cornie-input label="On behalf of" v-model="participants.onBehalfOf"  placeholder="--Enter--" :rules="required"/>
-            <cornie-input label="Period" v-model="participants.period"   placeholder="--Enter--" :rules="required"/>
-            <cornie-input label="Reason Code" v-model="participants.reasonCode"  placeholder="--Enter--" :rules="required"/>
-            <cornie-input label="Reason Reference"  v-model="participants.reasonReference" placeholder="--Enter--" :rules="required"/>
-            <cornie-input label="Managing Organization" v-model="participants.managingOrganization"  placeholder="--Enter--" :rules="required"/>
-            <cornie-input label="Phone"  v-model="participants.phone" placeholder="--Enter--" :rules="required"/>
-            <cornie-input label="Email"  v-model="participants.email" placeholder="--Enter--" :rules="required"/>
-            <Textarea     label="Notes"  v-model="participants.notes" placeholder="--Enter--" :rules="required"/>
+            <cornie-input label="On behalf of" v-model="participant.onBehalfOf"  placeholder="--Enter--" :rules="required"/>
+            <date-picker
+          label="Period"
+          v-model="participant.period.start"
+          v-model:end = "participant.period.end"   placeholder="--Enter--" :rules="required"
+        />
+           
+         <!--   <cornie-input label="Period" v-model="participant.period.start" v-model:end = "participant.period.end"   placeholder="--Enter--" :rules="required"/>-->
+            <cornie-select
+              :rules="required"
+              :items="dropdowns.reasonCode"
+             label="Reason Code"
+             v-model="participant.reasonCode"
+              aria-selected="--Select--"
+            >
+            </cornie-select>
+            <cornie-input label="Reason Reference"  v-model="participant.reasonReference" placeholder="--Enter--" :rules="required"/>
+           <cornie-input label="Managing Organization" v-model="participant.managingOrganization"  placeholder="--Enter--" :rules="required"/>
+            <phone-input
+              :rules="requiredRule"
+              label="Phone"
+              v-model="participant.phone.number"
+              v-model:code = "participant.phone.dialCode"
+            />
+            
+           <!-- <cornie-input label="Phone"  v-model="participants.phone" placeholder="--Enter--" :rules="required"/>-->
+            <cornie-input label="Email"  v-model="participant.email" placeholder="--Enter--" :rules="required"/>
+            <Textarea     label="Notes"  v-model="participant.notes" placeholder="--Enter--" :rules="required"/>
             <span></span>
-          <span><c-add class="float-right cursor-pointer mb-2 mt-8 mr-5"  @click="addField" /></span>
+          <span><c-add class="float-right cursor-pointer mb-2 mt-8 mr-5"  @click="checkParticipant" /></span>
       </div>
     <span class="flex justify-end w-full border-t-2 h-full">
     <button
@@ -121,6 +140,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
+import PhoneInput from "@/components/phone-input.vue";
 import ICareteam, { Participants }  from "@/types/ICareteam";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
@@ -132,9 +152,23 @@ import DEdit from "@/components/icons/dedit.vue";
 import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
+import DatePicker from "./datepicker.vue";
 
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
+
+const emptyParticipant: Participants = {
+  name: "",
+  role: "",
+  onBehalfOf:"",
+  period: {start:"2011/12/15", end:"2017/12/19"}, 
+  reasonCode:"",
+  reasonReference:"",
+  managingOrganization:"",
+  phone: {number:"", dialCode:""},
+  email:"",
+  notes:"",
+};
 
 @Options({
   components: {
@@ -146,7 +180,9 @@ const dropdown = namespace("dropdown");
     DEdit,
     CDelete,
     CAdd,
-    AddIcon
+    AddIcon,
+    PhoneInput,
+    DatePicker
   },
 })
 export default class AddCareteam extends Vue {
@@ -159,18 +195,15 @@ export default class AddCareteam extends Vue {
 
   loading = false;
 
+
   identifier = "";
   status = "";
   category = "";
   name = "";
   subject = "";
+  participant = {...emptyParticipant};
   participants: Participants[] = [];
-  period = {start:"", end:""};
-  //participants = { name: "" , role:"", onBehalfOf:"", period: {start:"", end:""}, reasonCode:"", reasonReference:"", managingOrganization:"",phone: {number:"", dialCode:""}, email:"",notes:"",careTeamId:""}
-// :items="['category']"
-  //participants =  [{ member: "John Gerald O." , role:"Med. Lab. Scientist",  behalf:this.all.behalf,period:this.all.period, code:this.all.code, ref:this.all.ref, org:"Reddingtion Hospital", phone:"+234-90-234-55667", email:"jgeraldo@reddingtion.org",notes:this.all.notes}];
-  addParticipants: any[] =  [];
-  
+  period = {start:"2011/09/12", end:"2011/12/19"};
   required = string().required();
 
   dropdowns = {} as IIndexableObject;
@@ -193,9 +226,6 @@ export default class AddCareteam extends Vue {
     this.participants = careteam.participants;
   
  }
-  allaction() {
-    return this.id ? "Update" : "Create New";
-    }
    get payload() {
     return {
     identifier:  this.identifier,
@@ -208,14 +238,64 @@ export default class AddCareteam extends Vue {
     }
    }
 
-   async editField(index:number, fieldType:object) {
-     this.participants = this.addParticipants[index]
+async checkParticipant() {
+    this.loading = true;
+    if (this.id) await this.updateParticipant();
+    else await this.addParticipant();
+    this.loading = false;
+  }
+   async editParticipant(id:string, index:number, fieldType:object) {
+      this.participant = this.participants[index]
     }
-   async addField(event:object) {
-      this.addParticipants.push(this.participants);
+   async updateParticipant() {
+      const url = `/api/v1/participants/${this.id}`;
+      const payload = { ...this.participant };
+      try {
+        const response = await cornieClient().put(url, payload);
+        if (response.success) {
+          window.notify({ msg: "Participant updated", status: "success" });
+        }
+      } catch (error) {
+        window.notify({ msg: "Participant not updated", status: "error" });
+      }
     }
-   async removeField(index:number, fieldType:object) {
-       this.addParticipants.splice(index, 1);
+   async addParticipant() {
+     if(!this.id){
+        this.participants.push({...this.participant});
+        this.reset();
+         window.notify({ msg: "Participant added", status: "success" });
+        return
+     }
+    //  this.participant.careTeamId = this.id;
+      try {
+      const response = await cornieClient().post(
+        "/api/v1/participants",
+        this.participant
+      );
+      if (response.success) {
+          this.participants.push(response.data);
+          window.notify({ msg: "Participant added", status: "success" });
+          this.reset();
+      }
+      } catch (error) {
+        window.notify({ msg: "Participant  not added", status: "error" });
+      }
+    }
+
+  async reset(){
+    this.participant = {...emptyParticipant};
+  }
+   async removeParticipant(id:string, index:number, fieldType:object) {
+     console.log(id);
+       try {
+      const response = await cornieClient().delete(`/api/v1/participants/${id}`);
+      if (response.success) {
+          this.participants.splice(index, 1);
+          window.notify({ msg: "Participant deleted", status: "success" });
+      }
+      } catch (error) {
+        window.notify({ msg: "Participant not deleted", status: "error" });
+      }
     }
    
    async submit() {
@@ -226,7 +306,10 @@ export default class AddCareteam extends Vue {
   }
 
   async createCareteam() {
-
+    this.payload.period.start = new Date(this.payload.period.start).toISOString()
+    this.payload.period.end = new Date(this.payload.period.end).toISOString()
+   // this.payload.participants.[period.start] = new Date(this.payload.participants.[period.start]).toISOString()
+   // this.payload.participants.[period.end] = new Date(this.payload.participants.[period.end]).toISOString()
     try {
       const response = await cornieClient().post(
         "/api/v1/care-teams",
@@ -253,10 +336,22 @@ export default class AddCareteam extends Vue {
        window.notify({ msg: "Care team not updated", status: "error" });
     }
   }
+  async fetchOrgInfo() {
+      try {
+        const response = await cornieClient().get(
+          "/api/v1/organization/myOrg/get"
+        );
+        this.identifier = response.data.name
+        this.participant.managingOrganization = response.data.name
+      } catch (error) {
+        alert("Could not fetch organization");
+      }
+    }
 
   async created() {
     this.setCareteam();
-     const data = await this.getDropdowns("careteam");
+    this.fetchOrgInfo();
+     const data = await this.getDropdowns("careTeam");
     this.dropdowns = data;
   }
 

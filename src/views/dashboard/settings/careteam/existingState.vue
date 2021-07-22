@@ -81,7 +81,7 @@
               <delete-icon class="mr-3" /> Delete
             </li>
             <li
-              @click="showDeactivate(getKeyValue(item).value)"
+              @click="deactivateCareteam(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -130,7 +130,7 @@ import CloseIcon from "@/components/icons/close.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
-
+import { cornieClient } from "@/plugins/http";
 
 const careteam = namespace("careteam");
 
@@ -182,7 +182,7 @@ export default class CareteamExistingState extends Vue {
     {
       title: "Subject",
       value: "subject",
-      show: true,
+      show: false,
     },
     {
       title: "Period",
@@ -202,18 +202,20 @@ export default class CareteamExistingState extends Vue {
         ? this.preferredHeaders
         : this.rawHeaders;
     const headers = preferred.filter((header) => header.show);
-    return [...first(6, headers), { title: "", value: "action", image: true }];
+    return [...first(4, headers), { title: "", value: "action", image: true }];
   }
   
 
 
   get items() {
     const careteams = this.careteams.map((careteam) => {
-        return {
+      const allparticipant = careteam.participants;
+      return {
         ...careteam,
-        };
+        action: careteam.id,
+        participants: allparticipant,
+      };
     });
-    
     if (!this.query) return careteams;
     return search.searchObjectArray(careteams, this.query);
   }
@@ -225,10 +227,48 @@ export default class CareteamExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deleteCareteam(id)) window.notify({ msg: "Care team deleted", status: "error" });
+    if (await this.deleteCareteam(id)) window.notify({ msg: "Care team deleted", status: "success" });
     else window.notify({ msg: "Care team not deleted", status: "error" });
   }
- 
+
+ async deactivateCareteam(id:string) {
+   const confirmed = await window.confirmAction({
+      message: "You are about to deactivate this care team",
+      title: "Deactivate Care Team"
+    });
+    if (!confirmed) {
+      return;
+    }else{
+        try {
+          const response = await cornieClient().post("/api/v1/care-team/deactivate",{id});
+          if (response.success) {
+            window.notify({ msg: "Care team deactivated", status: "success" });
+          } 
+        } catch (error) {
+          window.notify({ msg: "Care team not deactivated", status: "error" });
+          console.error(error);
+        }
+      }
+    }
+ async activateCareteam(id:string) {
+   const confirmed = await window.confirmAction({
+      message: "You are about to activate this care team",
+      title: "Activate Care Team"
+    });
+    if (!confirmed) {
+      return;
+    }else{
+        try {
+          const response = await cornieClient().post("/api/v1/care-team/activate",{id});
+          if (response.success) {
+            window.notify({ msg: "Care team activated", status: "success" });
+          } 
+        } catch (error) {
+          window.notify({ msg: "Care team not activated", status: "error" });
+          console.error(error);
+        }
+      }
+    }
 
 }
 </script>

@@ -6,11 +6,12 @@ export default interface ICareteam{
     name: string;
     subject: string;
     period: {
-      start: string,
+        start: string,
       end: string
-    };
+    }
     participants: Participants[];
   }
+
 
   export interface Participants {
       id?: string;
@@ -20,7 +21,7 @@ export default interface ICareteam{
       period: {
         start: string,
         end: string
-      };
+        };
       reasonCode: string;
       reasonReference: string;
       managingOrganization: string;
@@ -29,7 +30,7 @@ export default interface ICareteam{
         dialCode: string
       };
       email: string;
-      careTeamId: string;
+      careTeamId?: string;
       notes: string;
     
   }

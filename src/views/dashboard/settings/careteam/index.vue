@@ -50,7 +50,7 @@ export default class CareteamIndex extends Vue {
 
 created() {
   this.fetchCareteams();
-   // if (this.careteams.length < 1) this.fetchCareteams();
+    if (this.careteams.length < 1) this.fetchCareteams();
   }
 }
 </script>
