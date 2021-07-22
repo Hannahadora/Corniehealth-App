@@ -1,5 +1,6 @@
 <template>
   <span>
+    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
     <Field 
       :name="inputName"
       v-slot="{ meta, handleChange, errorMessage }"
@@ -86,6 +87,9 @@ export default class DRangePicker extends Vue {
 
   @Prop({ type: String, default: ''})
   name: any;
+
+  @Prop({ type: String, default: ''})
+  label: any;
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

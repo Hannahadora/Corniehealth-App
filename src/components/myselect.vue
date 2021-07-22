@@ -1,7 +1,8 @@
 <template>
   <span>
+    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
       <Field :name="inputName"
-        v-slot="{ meta, handleChange, errorMessage }"
+        v-slot="{ handleChange, errorMessage }"
         :rules="rules"
         v-model="myValue"
         v-bind="$attrs"
@@ -10,12 +11,13 @@
         class="focus:outline-none"
             style="width: 100%; outline: transparant !important"
             :style="{
-                borderColor: !meta.valid ? errorMessage ? '#EC0868' : '' : '#35BA83'
+                borderColor: Boolean(!myValue) ? '' : Boolean(errorMessage) ? '#EC0868' : '#35BA83'
             }"
             @update:modelValue="handleChange" 
             v-model="myValue" 
             :options="items" 
-            :optionLabel="label"
+            :optionLabel="optionLabel"
+            :placeholder="placeholder"
         />
 
         <span v-if="errorMessage" class="text-red-400">{{ errorMessage }}</span>
@@ -37,10 +39,16 @@ import { Field } from 'vee-validate';
 })
 
 export default class MySelect extends Vue {
-    myValue = 1;
+    myValue = '';
 
     @Prop({ type: String, default: '' })
     label!: any;
+
+    @Prop({ type: String, default: '' })
+    optionLabel!: any;
+
+    @Prop({ type: String, default: '' })
+    placeholder!: any;
     
     @Prop({ type: String, default: '' })
     name!: any;
