@@ -28,4 +28,5 @@ export interface HoursOfOperation {
   day: string;
   openTime: string;
   closeTime: string;
+  selected: boolean;
 }

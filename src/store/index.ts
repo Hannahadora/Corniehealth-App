@@ -7,6 +7,7 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
+import practitioner from "./practitioner";
 import HealthcareStore from "./healthcare";
 import CareteamStore from "./careteam";
 
@@ -19,6 +20,7 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    practitioner: practitioner,
     healthcare: HealthcareStore,
     careteam: CareteamStore,
   },
