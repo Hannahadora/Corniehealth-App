@@ -1,27 +1,6 @@
 <template>
   <div class="w-full">
     <span class="flex justify-end w-full">
-    <button
-        class="
-          outline-primary
-          rounded-full
-          text-black
-          mt-5
-          mr-3
-          py-2
-          pr-10
-          pl-10
-          px-3
-          focus:outline-none
-          hover:bg-primary
-          hover:text-white
-
-        "
-        @click="$router.push('send-invite')"
-      >
-        + Invite
-      </button>
-
       <button
         class="
           bg-danger
@@ -35,9 +14,9 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-domain')"
+        @click="$router.push('add-careteam')"
       >
-        Create New Domain
+        Create a Care Team
       </button>
       
     </span>
@@ -65,7 +44,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-domain/${getKeyValue(item).value}`)"
+              @click="$router.push(`add-careteam/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -81,7 +60,7 @@
               "
             >
               
-              <span class="mr-3 text-2xl bold text-primary">+</span> Rename
+              <span class="mr-3 text-2xl bold text-primary">+</span> Edit Care Team
             </li>
             <li
               @click="deleteItem(getKeyValue(item).value)"
@@ -99,7 +78,46 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Remove
+           
+              <delete-icon class="mr-3" /> Delete
+            </li>
+            <li
+             v-if="item.data.status == 'active'"
+              @click="deactivateCareteam(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <close-icon class="mr-3" /> Deactivate Account
+            </li>
+            <li
+            v-if="item.data.status == 'inactive'"
+              @click="activateCareteam(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <close-icon class="mr-3" /> Activate Account
             </li>
           </table-options>
         </span>
@@ -111,7 +129,6 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-   <!-- <show-confrim  v-model:visible="showModal"  yes="Proceed" no="Cancel" title="Delete Domain" message="Are you sure you want to remove this domain? This action cannot be undone."/>-->
   </div>
 </template>
 <script lang="ts">
@@ -129,13 +146,14 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IDomain from "@/types/IDomain";
+import ICareteam from "@/types/ICareteam";
+import CloseIcon from "@/components/icons/close.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
 
-
-const domain = namespace("domain");
+const careteam = namespace("careteam");
 
 @Options({
   components: {
@@ -150,40 +168,51 @@ const domain = namespace("domain");
     ColumnFilter,
     TableOptions,
     DeleteIcon,
-    EyeIcon
+    EyeIcon,
+    CloseIcon
   },
   
 })
-export default class DomainExistingState extends Vue {
+export default class CareteamExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
 
-  @domain.State
-  domains!: IDomain[];
+  @careteam.State
+  careteams!: ICareteam[];
 
-  @domain.Action
-  deleteDomain!: (id: string) => Promise<boolean>;
+  @careteam.Action
+  deleteCareteam!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Organizatin Name", value: "orgName", show: true },
-    { title: "Domain Name", value: "domainName", show: true },
+    { title: "Identfier", value: "identifier", show: true },
+    { title: "Status", value: "status", show: true },
     {
-      title: "Role",
-      value: "roleForDomain",
+      title: "Category",
+      value: "category",
       show: true,
     },
     {
-      title: "Date Created",
-      value: "createdAt",
+      title: "Name",
+      value: "name",
+      show: true,
+    },
+    {
+      title: "Subject",
+      value: "subject",
       show: false,
     },
     {
-      title: "Organization ID",
-      value: "organizationId",
+      title: "Period",
+      value: "period",
+      show: false,
+    },
+    {
+      title: "Participants",
+      value: "participants",
       show: false,
     },
   ];
@@ -200,31 +229,67 @@ export default class DomainExistingState extends Vue {
 
 
   get items() {
-    const domains = this.domains.map((domain) => {
-       (domain as any).createdAt = new Date(
-         (domain as any).createdAt 
-       ).toLocaleDateString("en-US");
-        (domain as any).action = domain.id;
-        return {
-        ...domain,
-        };
+    const careteams = this.careteams.map((careteam) => {
+      const allparticipant = careteam.participants;
+      return {
+        ...careteam,
+        action: careteam.id,
+        participants: allparticipant,
+      };
     });
-    
-    if (!this.query) return domains;
-    return search.searchObjectArray(domains, this.query);
+    if (!this.query) return careteams;
+    return search.searchObjectArray(careteams, this.query);
   }
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this domain",
-      title: "Delete Domain Name"
+      message: "You are about to delete this care team",
+      title: "Delete Care Team"
     });
     if (!confirmed) return;
 
-    if (await this.deleteDomain(id)) window.notify({ msg: "Domain deleted", status: "error" });
-    else window.notify({ msg: "Domain not deleted", status: "error" });
+    if (await this.deleteCareteam(id)) window.notify({ msg: "Care team deleted", status: "success" });
+    else window.notify({ msg: "Care team not deleted", status: "error" });
   }
- 
+
+ async deactivateCareteam(id:string) {
+   const confirmed = await window.confirmAction({
+      message: "You are about to deactivate this care team",
+      title: "Deactivate Care Team"
+    });
+    if (!confirmed) {
+      return;
+    }else{
+        try {
+          const response = await cornieClient().post(`/api/v1/care-teams/deactivate/${id}`,{});
+          if (response.success) {
+            window.notify({ msg: "Care team deactivated", status: "success" });
+          } 
+        } catch (error) {
+          window.notify({ msg: "Care team not deactivated", status: "error" });
+          console.error(error);
+        }
+      }
+    }
+ async activateCareteam(id:string) {
+   const confirmed = await window.confirmAction({
+      message: "You are about to activate this care team",
+      title: "Activate Care Team"
+    });
+    if (!confirmed) {
+      return;
+    }else{
+        try {
+          const response = await cornieClient().post(`/api/v1/care-teams/activate/${id}`,{});
+          if (response.success) {
+            window.notify({ msg: "Care team activated", status: "success" });
+          } 
+        } catch (error) {
+          window.notify({ msg: "Care team not activated", status: "error" });
+          console.error(error);
+        }
+      }
+    }
 
 }
 </script>

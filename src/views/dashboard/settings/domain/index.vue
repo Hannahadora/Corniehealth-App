@@ -21,7 +21,7 @@
           <domain-existing-state
         
           v-else
-            :domains="domains"
+
           />
       </span>
     </div>
@@ -63,6 +63,7 @@ export default class DomainIndex extends Vue {
 
 
 created() {
+  this.fetchDomains()
     if (this.domains.length < 1) this.fetchDomains();
   }
 }

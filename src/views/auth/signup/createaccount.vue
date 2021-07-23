@@ -23,7 +23,7 @@
         <cornie-select
           required
           class="w-full"
-          :items="['Patient', 'Provider', 'Payer', 'HMO']"
+          :items="['Patient', 'Provider', 'HMO']"
           label="Account Type"
           v-model="accountType"
         />
@@ -78,7 +78,7 @@
       >
         Quantum
       </cornie-btn>
-      <span class="w-full flex text-sm mt-2">
+      <span class="w-full flex text-sm mt-2 mb-2">
         Already have an account?
         <router-link class="ml-1 text-blue-500" to="/signin"
           >Sign In</router-link

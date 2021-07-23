@@ -6,7 +6,7 @@
     <icon-input
       type="date"
       width="w-11/12"
-      class="rounded-lg border p-2 focus:outline-none"
+      class="rounded-lg border pl-12 p-2 focus:outline-none"
       v-model="valueSync"
     >
       <template v-slot:prepend> <calendar-icon class="" /> </template>
@@ -50,9 +50,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   height: auto;
   color: transparent;
   background: transparent;
-}
-
-input[type="date"] {
-  padding-left: 3rem;
 }
 </style>

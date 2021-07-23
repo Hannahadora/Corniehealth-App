@@ -33,26 +33,57 @@
             Upload
           </label>
         </span>
-        <form @submit.prevent="submit">
+        <v-form @submit="submit">
           <div class="mt-2 grid grid-cols-2 p-1 gap-y-2">
-            <cornie-input label="First Name" v-model="fname" />
-            <cornie-input label="Last Name" v-model="lname" />
-            <cornie-input label="Purpose" :modelValue="purpose" />
+            <cornie-input
+              :rules="requiredRule"
+              label="First Name"
+              v-model="fname"
+            />
+            <cornie-input
+              :rules="requiredRule"
+              label="Last Name"
+              v-model="lname"
+            />
+            <cornie-input
+              :rules="requiredRule"
+              label="Purpose"
+              :modelValue="purpose"
+            />
             <cornie-select
               label="Gender"
               v-model="gender"
+              :rules="requiredRule"
               :items="['Male', 'Female', 'Unspecified']"
             />
-            <cornie-input label="Email Address" v-model="email" />
-            <phone-input label="Phone Number" v-model="phone" />
+            <cornie-input
+              :rules="requiredRule"
+              label="Email Address"
+              v-model="email"
+            />
+            <phone-input
+              :rules="requiredRule"
+              label="Phone Number"
+              v-model="phone"
+            />
             <cornie-select
+              :rules="requiredRule"
               label="Country"
               v-model="country"
               :items="['Nigeria']"
             />
-            <cornie-select label="State" v-model="state" :items="['ABia']" />
-            <cornie-input label="City" v-model="city" />
-            <cornie-input label="Address" v-model="address" />
+            <cornie-select
+              :rules="requiredRule"
+              label="State"
+              v-model="state"
+              :items="states"
+            />
+            <cornie-input :rules="requiredRule" label="City" v-model="city" />
+            <cornie-input
+              :rules="requiredRule"
+              label="Address"
+              v-model="address"
+            />
           </div>
           <div class="flex justify-end w-full mt-4 mb-3">
             <button
@@ -91,7 +122,7 @@
               Save
             </cornie-btn>
           </div>
-        </form>
+        </v-form>
       </div>
     </modal>
   </div>
@@ -110,7 +141,8 @@ import PhoneInput from "@/components/phone-input.vue";
 import IContact from "@/types/IContact";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
-
+import { getStates } from "@/plugins/nation-states";
+import { string } from "yup";
 const contact = namespace("contact");
 
 @Options({
@@ -142,6 +174,8 @@ export default class AddContact extends Vue {
 
   loading = false;
 
+  requiredRule = string().required();
+
   fname = "";
   lname = "";
   gender = "";
@@ -152,6 +186,9 @@ export default class AddContact extends Vue {
   city = "";
   address = "";
 
+  get states() {
+    return getStates();
+  }
   @Watch("visible")
   unsetContacts(val: boolean) {
     if (val) return;

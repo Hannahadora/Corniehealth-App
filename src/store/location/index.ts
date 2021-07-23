@@ -24,11 +24,7 @@ export default {
       state.locations = [...locationSet];
     },
     deleteLocation(state, id: string) {
-      const index = state.locations.findIndex((location) => location.id == id);
-      if (index < 0) return;
-      const locations = [...state.locations];
-      locations.splice(index, 1);
-      state.locations = [...locations];
+      state.locations = state.locations.filter((location) => location.id != id);
     },
   },
   actions: {

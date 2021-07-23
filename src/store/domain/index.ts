@@ -36,7 +36,8 @@ export default {
       const domains = await fetchDomains();
       ctx.commit("setDomains", domains);
     },
-    getDomainById(ctx, id: string) {
+    async getDomainById(ctx, id: string) {
+      if (ctx.state.domains.length < 1) await ctx.dispatch("fetchDomains");
       return ctx.state.domains.find((domain) => domain.id == id);
     },
     async deleteDomain(ctx, id: string) {

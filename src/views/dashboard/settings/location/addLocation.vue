@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex justify-center">
+  <div class="h-screen flex justify-center">
     <div class="w-full mx-5">
       <span
         class="

@@ -9,6 +9,7 @@
     >
       <select
         v-bind="field"
+        @change="$emit('change', $event)"
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
