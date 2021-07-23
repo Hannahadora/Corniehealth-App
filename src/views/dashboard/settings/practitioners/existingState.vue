@@ -41,7 +41,9 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-practitioner/${getKeyValue(item).value}`)"
+              @click="
+                $router.push(`add-practitioner/${getKeyValue(item).value}`)
+              "
               class="
                 list-none
                 items-center
@@ -60,7 +62,7 @@
               View & Edit
             </li>
             <li
-              @click="showDelete(newitem)"
+              @click="remove(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -134,7 +136,7 @@ export default class PractitionerExistingState extends Vue {
   practitioners!: IPractitioner[];
 
   @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>
+  deletePractitioner!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -194,7 +196,9 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     const practitioners = this.practitioners.map((practitioner) => {
-      const opHours = this.stringifyOperationHours(practitioner.hoursOfOperation);
+      const opHours = this.stringifyOperationHours(
+        practitioner.hoursOfOperation
+      );
       return {
         ...practitioner,
         action: practitioner.id,
@@ -211,14 +215,16 @@ export default class PractitionerExistingState extends Vue {
     return `${opHour.openTime} - ${opHour.closeTime}`;
   }
 
-  async deletePract(id: string) {
+  async remove(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this practitioner",
     });
     if (!confirmed) return;
 
-    if (await this.deletePractitioner(id)) alert("Practitioner deleted");
-    else alert("Practitioner not deleted");
+    if (await this.deletePractitioner(id))
+      window.notify({ msg: "Practitioner deleted", status: "success" });
+    else window.notify({ msg: "Practitioner not deleted", status: "error" });
+    window.notify({ msg: "Practitioner not deleted", status: "error" });
   }
 }
 </script>

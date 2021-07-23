@@ -7,6 +7,7 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
+import practitioner from "./practitioner";
 export default createStore({
   modules: {
     user: UserStore,
@@ -16,5 +17,6 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    practitioner: practitioner,
   },
 } as StoreOptions<any>);

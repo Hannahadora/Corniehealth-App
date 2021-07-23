@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IPractitioner from "@/types/IPractitioner";
 import { StoreOptions } from "vuex";
-import { fetchPractitioners } from "./helper";
+import { deletePractitioner, fetchPractitioners } from "./helper";
 
 interface PractitionerState {
   practitioners: IPractitioner[];
@@ -23,6 +23,15 @@ export default {
       );
       state.practitioners = [...practitionerSet];
     },
+    deletePractitioner(state, id: string) {
+      const index = state.practitioners.findIndex(
+        (practitioner) => practitioner.id == id
+      );
+      if (index < 0) return;
+      const practitioners = [...state.practitioners];
+      practitioners.splice(index, 1);
+      state.practitioners = [...practitioners];
+    },
   },
   actions: {
     async fetchPractitioners(ctx) {
@@ -33,6 +42,11 @@ export default {
       return ctx.state.practitioners.find(
         (practitioner) => practitioner.id == id
       );
+    },
+    async deletePractitioner(ctx, id: string) {
+      const deleted = await deletePractitioner(id);
+      if (deleted) ctx.commit("deletePractitioner", id);
+      return deleted;
     },
   },
 } as StoreOptions<PractitionerState>;

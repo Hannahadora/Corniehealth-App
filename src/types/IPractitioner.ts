@@ -6,7 +6,10 @@ export default interface IPractitioner {
   email: string;
   activeState: string;
   gender: string;
-  phone: string;
+  phone: {
+    number: string;
+    code: string;
+  };
   address: string;
   dateOfBirth: "2021-07-16";
   image: string;
@@ -20,7 +23,9 @@ export default interface IPractitioner {
   availabilityExceptions: string;
   consultationChannel: string;
   hoursOfOperation: HoursOfOperation[];
+  qualificationCode?: string;
   organizationId: string;
+  type: string;
 }
 
 export interface HoursOfOperation {
