@@ -33,7 +33,7 @@
     <button
      @click="$router.push('domains')"
      type="button"
-        class="
+      class="
           outline-primary
           rounded-full
           text-black

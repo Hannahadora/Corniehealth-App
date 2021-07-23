@@ -115,7 +115,7 @@ export default class Settings extends Vue {
       { name: "Domains", to: "domains", icon: "domain-icon" },
       { name: "Practitioners", to: "practitioners", icon: "practitioner-icon" },
       { name: "Group", to: "group", icon: "group-icon" },
-      { name: "Care Team", to: "care-team", icon: "team-icon" },
+      { name: "Care Team", to: "care-teams", icon: "team-icon" },
       {
         name: "Roles and Privileges",
         to: "roles-privileges",

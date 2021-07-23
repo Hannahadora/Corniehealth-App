@@ -7,6 +7,8 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
+import HealthcareStore from "./healthcare";
+import CareteamStore from "./careteam";
 
 export default createStore({
   modules: {
@@ -17,5 +19,7 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    healthcare: HealthcareStore,
+    careteam: CareteamStore,
   },
 } as StoreOptions<any>);
