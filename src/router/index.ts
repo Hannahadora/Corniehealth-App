@@ -129,6 +129,21 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/healthcare/addServices.vue"),
           },
           {
+            path: "practitioners",
+            name: "Practitioners",
+            component: () =>
+              import("@/views/dashboard/settings/practitioners/index.vue"),
+          },
+          {
+            path: "add-practitioner/:id?",
+            props: true,
+            name: "Create or Update Practitioner",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/practitioners/addPractitioner.vue"
+              ),
+          },
+          {
             path: "care-teams",
             name: "Care Teams",
             component: () =>
