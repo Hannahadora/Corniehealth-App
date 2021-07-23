@@ -225,7 +225,7 @@ get items() {
     });
     if (!confirmed) return;
 
-    if (await this.deleteHealthcare(id)) window.notify({ msg: "Healthcare service deleted", status: "error" });
+    if (await this.deleteHealthcare(id)) window.notify({ msg: "Healthcare service deleted", status: "success" });
     else window.notify({ msg: "Healthcare service not deleted", status: "error" });
   }
  
