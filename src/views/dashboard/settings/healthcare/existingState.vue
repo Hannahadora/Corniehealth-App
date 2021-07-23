@@ -75,7 +75,7 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Delete Account
+              <delete-icon class="mr-3" /> Delete Healthcare
             </li>
           </table-options>
         </span>

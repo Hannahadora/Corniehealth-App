@@ -34,7 +34,7 @@
 
               <cornie-select
                 :rules="required"
-                :items="activeStates"
+                :items="['providers']"
                 v-model="providedBy"
                 label="Provided by"
               />
@@ -42,28 +42,28 @@
 
               <cornie-select
                 :rules="required"
-                :items="activeStates"
+                :items="['category']"
                 v-model="category"
                 label="category"
               />
 
               <cornie-select
                 :rules="required"
-                :items="activeStates"
+                :items="['type']"
                 v-model="type"
                 label="type"
               />
 
               <cornie-select
                 :rules="required"
-                :items="activeStates"
+                :items="['special']"
                 v-model="specialty"
                 label="specialty"
               />
 
               <cornie-select
                 :rules="required"
-                :items="activeStates"
+                :items="['Abuja']"
                 v-model="address"
                 label="location"
               />
@@ -94,7 +94,7 @@
               />
 
               <cornie-select
-                :items="activeStates"
+                :items="['coveragearea']"
                 v-model="coverageArea"
                 label="Coverage area"
                 :rules="required"
@@ -135,7 +135,7 @@
                 label="Code"
               />
               <cornie-input v-model="eligibilityComment" label="Comment" />
-              <cornie-input v-model="programs" label="Latitude" />
+              <cornie-input v-model="programs" label="Programs" />
               <cornie-input v-model="characteristics" label="Characteristics" />
               <cornie-select
                 :items="['Full']"
@@ -148,7 +148,7 @@
                 label="referral method"
               />
               <cornie-select
-                :items="['appointment']"
+                :items="['Yes', 'No']"
                 v-model="appointmentRequired"
                 label="appointment required?"
               />
@@ -234,7 +234,7 @@ import Modal from "@/components/modal.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Avatar from "@/components/avatar.vue";
 import OperationHours from "@/components/operation-hours.vue";
-import IHealthcare from "@/types/IHealthcare";
+import IHealthcare, { HoursOfOperation }  from "@/types/IHealthcare";
 import { useHandleImage } from "@/composables/useHandleImage";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
@@ -270,7 +270,7 @@ export default class AddService extends Vue {
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
  loading = false;
-activeStates = ["yes", "No"]
+activeStates = ["active", "inactive"]
 
   identifier = "";
   name = "";
@@ -296,7 +296,7 @@ activeStates = ["yes", "No"]
   availabilityExceptions = "";
   extraDetails = "";
   comment = "";
-  hoursOfOperation = "";
+  hoursOfOperation: HoursOfOperation[] = [];
 
 
    required = string().required();
@@ -376,10 +376,11 @@ activeStates = ["yes", "No"]
   }
 
   async createHealthcare() {
+    this.payload.notAvailableDateRange = new Date(this.payload.notAvailableDateRange).toISOString()
 
     try {
       const response = await cornieClient().post(
-        "/api/v1/healthCareServcie",
+        "/api/v1/healthCareService",
         this.payload
       );
       if (response.success) {
