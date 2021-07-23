@@ -41,7 +41,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-health-services/${getKeyValue(item).value}`)"
+              @click="$router.push(`add-health-service/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -151,28 +151,28 @@ export default class HealthcareExistingState extends Vue {
     
     {
       title: "Location",
-      value: "location",
+      value: "address",
       show: true,
     },
     {
       title: "Communication",
       value: "communication",
-      show: true,
+      show: false,
     },
     {
       title: "Phone",
       value: "phone",
-      show: true,
+      show: false,
     },
     {
-      title: "Code",
-      value: "code",
+      title: "Provison Code",
+      value: "provisionCode",
       show: true,
     },
       {
       title: "Type",
       value: "type",
-      show: false,
+      show: true,
     },
     {
       title: "Comment",

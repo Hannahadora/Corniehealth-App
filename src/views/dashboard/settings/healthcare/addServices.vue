@@ -309,7 +309,6 @@ activeStates = ["active", "inactive"]
  async setHealthcare() {
     const healthcare = await this.getHealthcareById(this.id);
     if (!healthcare) return;
-
     this.name = healthcare.name;
     this.activeState = healthcare.activeState;
     this.eligibilityComment = healthcare.eligibilityComment;
