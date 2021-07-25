@@ -2,7 +2,7 @@
   <span>
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
       <Field :name="inputName"
-        v-slot="{ handleChange, errorMessage }"
+        v-slot="{ meta, handleChange, errorMessage }"
         :rules="rules"
         v-model="myValue"
         v-bind="$attrs"
@@ -11,7 +11,7 @@
         class="focus:outline-none"
             style="width: 100%; outline: transparant !important"
             :style="{
-                borderColor: Boolean(!myValue) ? '' : Boolean(errorMessage) ? '#EC0868' : '#35BA83'
+                borderColor: Boolean(!meta.dirty) ? '' : Boolean(errorMessage) ? '#EC0868' : '#35BA83'
             }"
             @update:modelValue="handleChange" 
             v-model="myValue" 

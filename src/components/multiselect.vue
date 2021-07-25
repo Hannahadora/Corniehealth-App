@@ -2,23 +2,26 @@
   <span>
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
       <Field :name="inputName"
-        v-slot="{ handleChange, errorMessage }"
+        v-slot="{ meta, handleChange, errorMessage }"
         :rules="rules"
         v-model="myValue"
         v-bind="$attrs"
       >
         <MultiSelect
-        class="focus:outline-none"
-            style="width: 100%; outline: transparant !important"
-            :style="{
-                borderColor: myValueIsDefault ? '' : Boolean(errorMessage) || Boolean(myValue.length <= 0) ? '#EC0868' : '#35BA83'
-            }"
-            @update:modelValue="handleChange" 
-            v-model="myValue" 
-            :options="items" 
-            :optionLabel="optionLabel"
-            :placeholder="`--${placeholder}--`"
-        />
+          class="focus:outline-none"
+          style="width: 100%; outline: transparant !important"
+          :style="{
+              borderColor: Boolean(!meta.dirty) ? '' : Boolean(errorMessage) ? '#EC0868' : '#35BA83'
+          }"
+          @update:modelValue="handleChange" 
+          v-model="myValue" 
+          :options="items" 
+          :optionLabel="optionLabel"
+          :placeholder="placeholder"
+          :showToggleAll="false"
+        >
+          
+        </MultiSelect>
 
         <span v-if="errorMessage" class="text-red-400">{{ errorMessage }}</span>
       </Field>
@@ -27,7 +30,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import MultiSelect from 'primevue/multiselect'
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 import { Field } from 'vee-validate';
 
 @Options({
@@ -40,12 +43,6 @@ import { Field } from 'vee-validate';
 
 export default class MySelect extends Vue {
     myValue = '';
-    myValueIsDefault = true;
-
-    @Watch('myValue')
-    onChange(): void {
-        this.myValueIsDefault = false;
-    }
 
     @Prop({ type: String, default: '' })
     label!: any;

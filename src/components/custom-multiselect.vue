@@ -7,35 +7,39 @@
         v-model="myValue"
         v-bind="$attrs"
       >
-        <Dropdown 
+        <MultiSelect 
             v-model="myValue" 
             :options="filteredItems" 
             optionLabel="name"
             @update:modelValue="handleChange" 
             :placeholder="placeholder" 
-            style="width: 100%; outline: transparant !important"
+            style="width: 100%"
             :style="{
                 borderColor: Boolean(!meta.dirty) ? '' : Boolean(errorMessage) ? '#EC0868' : '#35BA83'
             }"
+            display="comma"
+            :showToggleAll="false"
         >
             <template #value="slotProps">
-                <div class="country-item country-item-value flex items-center" v-if="slotProps.value && (optionLabel ? myValue[optionLabel] : Boolean(myValue))">
-                    <ContactIcon v-if="isContact && (optionLabel ? myValue[optionLabel] : myValue)" />
-                    <div class="ml-2" :class="{ 'p-2': !(optionLabel ? myValue[optionLabel] : myValue)}">
-                        {{ optionLabel ? slotProps.value[optionLabel] : slotProps.value }}
+                <div class="flex">
+                    <div class="country-item country-item-value flex items-center p-multiselect-car-token mx-1" v-for="(option, index) of slotProps.value" :key="index">
+                        <ContactIcon v-if="isContact && (optionLabel ? option[optionLabel] : option)" />
+                        <div class="ml-2" :class="{ 'p2': !(optionLabel ? option[optionLabel] : option)}">
+                            <span>{{optionLabel ? option[optionLabel] : option}}</span>
+                        </div>
                     </div>
+                    <span  v-if="!slotProps.value || slotProps.value.length === 0" class="p-3 rounded">
+                        {{ placeholder }}
+                    </span>
                 </div>
-                <span v-else class="p-2">
-                    {{ placeholder }}
-                </span>
             </template>
             <template #header="">
                 <div :class="{ 'p-2': withFilter }">
-                    <input v-if="withFilter" v-model="filterText" class="rounded-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username">
+                    <input v-if="withFilter" autofocus v-model="filterText" class="rounded-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Search">
                 </div>
             </template>
             <template #option="slotProps">
-                <div class="country-item flex items-center">
+                <div class="country-item flex items-center w-full">
                     <ContactIcon v-if="isContact" />
                     <div class="ml-2 w-full">
                         <span class="flex justify-between">
@@ -45,12 +49,22 @@
                     </div>
                 </div>
             </template>
+            <template #chip="slotProps">
+                <div class="country-item flex items-center p-2">
+                    <div class="country-item country-item-value flex items-center p-multiselect-car-token mx-1" v-for="(option, index) of slotProps.value" :key="index">
+                        <!-- <ContactIcon v-if="isContact && option" /> -->
+                        <div class="-2" :class="{ 'p-2': !option}">
+                            <span>{{ option }}</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
             <template #emptyfilter="slotProps">
                 <div class="country-item flex items-center p-2">
                     {{ slotProps }}
                 </div>
             </template>
-        </Dropdown>
+        </MultiSelect>
 
         <span v-if="errorMessage" class="text-red-400">{{ errorMessage }}</span>
       </Field>
@@ -58,7 +72,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Dropdown from 'primevue/dropdown'
+import MultiSelect from 'primevue/multiselect'
 import { Prop } from 'vue-property-decorator';
 import { Field } from 'vee-validate';
 import ContactIcon from '@/components/icons/contactinfo.vue'
@@ -66,14 +80,14 @@ import ContactIcon from '@/components/icons/contactinfo.vue'
 @Options({
   name: "DateRangePicker",
   components: {
-    Dropdown,
+    MultiSelect,
     Field,
     ContactIcon,
   },
 })
 
 export default class MySelect extends Vue {
-    myValue: any = '';
+    myValue: any[] = [ ];
     showList = false;
     filterText = '';
 
@@ -112,7 +126,6 @@ export default class MySelect extends Vue {
     get filteredItems() {
         if (this.items.length <= 0) return [ ];
         if (!this.filterText) return this.items;
-        console.log(this.filterText, "text");
         
         return this.items.filter((i: any) => {
             return this.optionLabel ? 
@@ -126,3 +139,9 @@ export default class MySelect extends Vue {
     }
 }
 </script>
+
+<style scoped>
+    .p-multiselect-header {
+        display: none !important;
+    }
+</style>
