@@ -160,7 +160,7 @@ export default class DomainExistingState extends Vue {
   loading = false;
   query = "";
 
-   @domain.State
+  @domain.State
   domains!: IDomain[];
 
   @domain.Action
@@ -205,7 +205,9 @@ export default class DomainExistingState extends Vue {
          (domain as any).createdAt 
        ).toLocaleDateString("en-US");
         (domain as any).action = domain.id;
-      return domain;
+        return {
+        ...domain,
+        };
     });
     
     if (!this.query) return domains;
@@ -219,10 +221,10 @@ export default class DomainExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deleteDomain(id)) alert("Domain deleted");
-    else alert("Domain not deleted");
+    if (await this.deleteDomain(id)) window.notify({ msg: "Domain deleted", status: "error" });
+    else window.notify({ msg: "Domain not deleted", status: "error" });
   }
-
+ 
 
 }
 </script>

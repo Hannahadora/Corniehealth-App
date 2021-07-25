@@ -6,7 +6,7 @@
     <field
       :name="inputName"
       v-slot="{ errorMessage, meta, field }"
-      :rules="rules"
+      :rules="customRules"
       v-model="valueSync"
     >
       <span class="flex">
@@ -72,6 +72,9 @@ import { countryCodes } from "@/plugins/countrycodes";
 import { Field } from "vee-validate";
 import { string } from "yup";
 
+const phoneRegex =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 @Options({
   name: "PhoneInput",
   components: {
@@ -100,6 +103,15 @@ export default class PhoneInput extends Vue {
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `phone-${id}`;
+  }
+
+  get customRules() {
+    const phoneRule = string().matches(
+      phoneRegex,
+      "A valid phone number is required"
+    );
+    if (this.rules) return phoneRule.concat(this.rules);
+    return phoneRule;
   }
 
   @Prop({ type: Object })

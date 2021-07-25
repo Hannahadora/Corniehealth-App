@@ -15,8 +15,12 @@
     </span>
     <form class="mt-5 w-full" @submit.prevent="submit">
       <span class="grid grid-cols-2">
-        <d-input v-model="deviceModel.id" label="Identifier" disabled />
-        <d-select v-model="deviceModel.reference" label="reference" disabled />
+        <cornie-input v-model="deviceModel.id" label="Identifier" disabled />
+        <cornie-select
+          v-model="deviceModel.reference"
+          label="reference"
+          disabled
+        />
       </span>
       <span
         class="
@@ -33,43 +37,43 @@
         UDI CARRIER
       </span>
       <span class="grid grid-cols-2 gap-4 mt-3">
-        <d-input
+        <cornie-input
           label="Device identifier"
           v-model="deviceModel.udiCarrier.deviceIdentifier"
         />
-        <d-input label="issuer" v-model="deviceModel.udiCarrier.issuer" />
-        <d-input
+        <cornie-input label="issuer" v-model="deviceModel.udiCarrier.issuer" />
+        <cornie-input
           label="jurisdiction"
           v-model="deviceModel.udiCarrier.jurisdiction"
         />
-        <d-input
+        <cornie-input
           label="carrier aidc"
           v-model="deviceModel.udiCarrier.carrierAIDC"
         />
-        <d-select
+        <cornie-select
           label="carrier hr "
           v-model="deviceModel.udiCarrier.carrierHR"
         />
-        <d-select
+        <cornie-select
           label="entry type"
           v-model="deviceModel.udiCarrier.entryType"
           :items="dropdownData.entryType"
         />
-        <d-select
+        <cornie-select
           label="status"
           v-model="deviceModel.udiCarrier.status"
           :items="dropdownData.status"
         />
-        <d-select
+        <cornie-select
           label="status reason"
           v-model="deviceModel.udiCarrier.statusReason"
           :items="dropdownData.statusReason"
         />
-        <d-input
+        <cornie-input
           label="distinct identifier"
           v-model="deviceModel.udiCarrier.distinctIdentifier"
         />
-        <d-input
+        <cornie-input
           label="manufacturer"
           v-model="deviceModel.udiCarrier.manufacturer"
         />
@@ -81,11 +85,11 @@
           label="expiration date"
           v-model="deviceModel.udiCarrier.expirationDate"
         />
-        <d-input
+        <cornie-input
           label="lot number"
           v-model="deviceModel.udiCarrier.lotNumber"
         />
-        <d-input
+        <cornie-input
           label="serial number"
           v-model="deviceModel.udiCarrier.serialNumber"
         />
@@ -105,17 +109,17 @@
         Device Name
       </span>
       <span class="grid grid-cols-2 gap-4 mt-3">
-        <d-input label="Name" v-model="deviceModel.deviceName.name" />
-        <d-select
+        <cornie-input label="Name" v-model="deviceModel.deviceName.name" />
+        <cornie-select
           label="Name Type"
           :items="dropdownData.nameType"
           v-model="deviceModel.deviceName.nameType"
         />
-        <d-input
+        <cornie-input
           label="Model number"
           v-model="deviceModel.deviceName.modelNumber"
         />
-        <d-input
+        <cornie-input
           label="Part Number"
           v-model="deviceModel.deviceName.partNumber"
         />
@@ -135,11 +139,14 @@
         Specialization
       </span>
       <span class="grid grid-cols-2 gap-4 mt-3">
-        <d-input
+        <cornie-input
           label="System type"
           v-model="deviceModel.specialization.systemType"
         />
-        <d-input label="Version" v-model="deviceModel.specialization.version" />
+        <cornie-input
+          label="Version"
+          v-model="deviceModel.specialization.version"
+        />
       </span>
       <span
         class="
@@ -156,9 +163,12 @@
         Version
       </span>
       <span class="grid grid-cols-2 gap-4 mt-3">
-        <d-input label="type" v-model="deviceModel.version.versionType" />
-        <d-input label="component" v-model="deviceModel.version.component" />
-        <d-input label="value" v-model="deviceModel.version.value" />
+        <cornie-input label="type" v-model="deviceModel.version.versionType" />
+        <cornie-input
+          label="component"
+          v-model="deviceModel.version.component"
+        />
+        <cornie-input label="value" v-model="deviceModel.version.value" />
       </span>
       <span
         class="
@@ -175,24 +185,33 @@
         Property
       </span>
       <span class="grid grid-cols-2 gap-4 mt-3">
-        <d-input label="type" v-model="deviceModel.property.propertyType" />
-        <d-input
+        <cornie-input
+          label="type"
+          v-model="deviceModel.property.propertyType"
+        />
+        <cornie-input
           label="value quantity"
           v-model="deviceModel.property.valueQuantity"
         />
-        <d-input label="value code" v-model="deviceModel.property.valueCode" />
-        <d-select label="patient" v-model="deviceModel.property.patient" />
-        <d-select label="owner" v-model="deviceModel.property.owner" />
-        <d-select
+        <cornie-input
+          label="value code"
+          v-model="deviceModel.property.valueCode"
+        />
+        <cornie-select label="patient" v-model="deviceModel.property.patient" />
+        <cornie-select label="owner" v-model="deviceModel.property.owner" />
+        <cornie-select
           label="support contact"
           v-model="deviceModel.property.supportContact"
         />
 
-        <d-input label="location" v-model="deviceModel.property.location" />
-        <d-input label="url" v-model="deviceModel.property.url" />
-        <d-input label="notes" v-model="deviceModel.property.notes" />
-        <d-input label="safety" v-model="deviceModel.property.safety" />
-        <d-input label="parent" v-model="deviceModel.property.parent" />
+        <cornie-input
+          label="location"
+          v-model="deviceModel.property.location"
+        />
+        <cornie-input label="url" v-model="deviceModel.property.url" />
+        <cornie-input label="notes" v-model="deviceModel.property.notes" />
+        <cornie-input label="safety" v-model="deviceModel.property.safety" />
+        <cornie-input label="parent" v-model="deviceModel.property.parent" />
       </span>
       <span
         class="
@@ -243,8 +262,8 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
-import DInput from "./dinput.vue";
-import DSelect from "./dselect.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
 import DatePicker from "./datepicker.vue";
 import IDevice from "@/types/IDevice";
 
@@ -252,7 +271,7 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
 const devices = namespace("device");
-
+const dropdown = namespace("dropdown");
 const emptyDevice: IDevice = {
   udiCarrier: {},
   deviceName: {},
@@ -263,8 +282,8 @@ const emptyDevice: IDevice = {
 
 @Options({
   components: {
-    DInput,
-    DSelect,
+    CornieInput,
+    CornieSelect,
     DatePicker,
   },
 })
@@ -274,14 +293,10 @@ export default class UpdateDevice extends Vue {
 
   deviceModel = {} as IDevice;
 
-  @devices.State
-  dropdownData!: any;
+  dropdownData = {} as IIndexableObject;
 
-  @devices.Action
-  fetchDropdownData!: () => Promise<void>;
-
-  @devices.Mutation
-  setDevices!: any;
+  @dropdown.Action
+  getDropdowns!: (key: string) => Promise<IIndexableObject>;
 
   @devices.Mutation
   updateDevices!: any;
@@ -306,8 +321,12 @@ export default class UpdateDevice extends Vue {
   get payload() {
     const model = JSON.parse(JSON.stringify({ ...this.deviceModel }));
     const carrier = model.udiCarrier as any;
-    carrier.manufacturerDate = new Date(carrier.manufacturerDate).toISOString();
-    carrier.expirationDate = new Date(carrier.expirationDate).toISOString();
+    if (carrier.manufacturerDate)
+      carrier.manufacturerDate = new Date(
+        carrier.manufacturerDate
+      ).toISOString();
+    if (carrier.manufacturerDate)
+      carrier.expirationDate = new Date(carrier.expirationDate).toISOString();
     return model;
   }
 
@@ -318,32 +337,47 @@ export default class UpdateDevice extends Vue {
 
   async create() {
     try {
-      const response = await cornieClient().post("/api/v1/devices/create", [
-        this.payload,
-      ]);
+      const response = await cornieClient().post(
+        "/api/v1/devices",
+        this.payload
+      );
       if (response.success) {
-        this.setDevices(response.data.devices);
-        alert("Device added");
+        this.updateDevices([response.data]);
+        window.notify({
+          msg: "Device Added",
+          status: "success",
+        });
         this.done();
       }
     } catch (error) {
       console.error(error);
+      window.notify({
+        msg: "Device Not Added",
+        status: "error",
+      });
     }
   }
 
   async update() {
+    const id = this.device.id;
     try {
-      const response = await cornieClient().patch(
-        "/api/v1/devices/update",
+      const response = await cornieClient().put(
+        `/api/v1/devices/${id}`,
         this.payload
       );
       if (response.success) {
-        this.updateDevices([response.data.device]);
-        alert("Device updated");
+        this.updateDevices([response.data]);
+        window.notify({
+          msg: "Device updated",
+          status: "success",
+        });
         this.done();
       }
     } catch (error) {
-      console.error(error);
+      window.notify({
+        msg: "Device Not updated",
+        status: "error",
+      });
     }
   }
   setDeviceModel() {
@@ -355,24 +389,9 @@ export default class UpdateDevice extends Vue {
     }
     if (expDate) expDate = new Date(expDate).toLocaleDateString("en-US");
   }
-  created() {
+  async created() {
     this.setDeviceModel();
-    if (this.dropdownData && Object.values(this.dropdownData).length > 1)
-      return;
-    this.fetchDropdownData();
+    this.dropdownData = await this.getDropdowns("device");
   }
 }
 </script>
-<style>
-input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: auto;
-  height: auto;
-  color: transparent;
-  background: transparent;
-}
-</style>
