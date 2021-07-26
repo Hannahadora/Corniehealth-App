@@ -3,11 +3,27 @@
     <div class="w-2/12 flex font-semibold text-xl p-2">
     <img src="https://via.placeholder.com/100" alt="Photo" class="rounded-full">
     </div>
-    <div class="w-7/12 flex items-center">
-    <span><i class="pi pi-exclamation-circle p-2"></i> info</span>
+    <div class="w-7/12 flex flex-col justify-center">
+      <div class="w-full flex items-center mb-4">
+        <div class="w-7/12 flex flex-col">
+          <span class="uppercase font-semibold card_header">Name</span>
+          <span class="card_text">User Name</span>
+        </div>
+        <div class="w-5/12 flex flex-col">
+          <span class="uppercase font-semibold card_header">Role</span>
+          <span class="card_text">Root Administrator</span>
+        </div>
+      </div>
+      <div class="w-full flex flex-col">
+        <span class="uppercase font-semibold card_header">Domain</span>
+        <span class="card_text">https://corniehealth.blahblah.com</span>
+      </div>
     </div>
     <div class="w-3/12 flex items-center">
-    <span><i class="pi pi-exclamation-circle p-2"></i> info</span>
+      <div class="w-full">
+        <span>A </span>
+        <span class="card_text"><a >Transfer Admin Rights</a></span>
+      </div>
     </div>
   </div>
 </template>
