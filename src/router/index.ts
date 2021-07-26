@@ -15,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/signup/signup.vue"),
   },
   {
+    path: "/roles",
+    name: "Test",
+    component: () => import("@/views/dashboard/settings/rolesprivileges/index.vue"),
+  },
+  {
     path: "/login",
     name: "Sign In",
     alias: "/signin",
