@@ -10,6 +10,7 @@
     </div>
 
     <UserDetails />
+    <Modal :show="true" />
     <div class="w-8/12 mx-auto border-b-2 my-12"></div>
 
     <div class="w-full flex mb-12">
@@ -38,12 +39,14 @@ import { Options, Vue } from "vue-class-component";
 import UserDetails from './components/user-details.vue'
 import RoleCard from './components/role-card.vue'
 import Button from '@/components/globals/corniebtn.vue'
+import Modal from '@/components/modal-right.vue'
 
 @Options({
   components: {
     UserDetails,
     Button,
     RoleCard,
+    Modal,
   },
 })
 export default class RolesAndPrivileges extends Vue {
