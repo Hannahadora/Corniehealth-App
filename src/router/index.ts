@@ -15,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/signup/signup.vue"),
   },
   {
+    path: "/roles",
+    name: "Test",
+    component: () => import("@/views/dashboard/settings/rolesprivileges/index.vue"),
+  },
+  {
     path: "/login",
     name: "Sign In",
     alias: "/signin",
@@ -135,11 +140,39 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/healthcare/index.vue"),
           },
           {
-            path: "add-health-services/:id?",
+            path: "add-health-service/:id?",
             props: true,
             name: "Add a New Healthcare Service",
             component: () =>
               import("@/views/dashboard/settings/healthcare/addServices.vue"),
+          },
+          {
+            path: "practitioners",
+            name: "Practitioners",
+            component: () =>
+              import("@/views/dashboard/settings/practitioners/index.vue"),
+          },
+          {
+            path: "add-practitioner/:id?",
+            props: true,
+            name: "Create or Update Practitioner",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/practitioners/addPractitioner.vue"
+              ),
+          },
+          {
+            path: "care-teams",
+            name: "Care Teams",
+            component: () =>
+              import("@/views/dashboard/settings/careteam/index.vue"),
+          },
+          {
+            path: "add-careteam/:id?",
+            props: true,
+            name: "Create a Care Team",
+            component: () =>
+              import("@/views/dashboard/settings/careteam/addCareteam.vue"),
           },
         ],
       },

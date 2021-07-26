@@ -1,8 +1,7 @@
 <template>
   <div class="w-full flex flex-col justify-center items-center h-96">
-    <img src="@/assets/img/empty-service.svg" />
-    <h3 class="text-center mt-5">There are no healthcare services <br>
-on record</h3>
+    <img src="@/assets/img/practitioners.svg" />
+    <h3 class="text-center mt-5">There are no Practitioners on record</h3>
     <button
       class="
         bg-danger
@@ -14,9 +13,9 @@ on record</h3>
         focus:outline-none
         hover:opacity-90
       "
-       @click="$router.push('add-health-service')"
+      @click="$router.push('add-practitioner')"
     >
-      Add New 
+      Add a Practitioner
     </button>
   </div>
 </template>
@@ -26,5 +25,5 @@ import { Options, Vue } from "vue-class-component";
 @Options({
   components: {},
 })
-export default class  HealthcareEmptyState extends Vue {}
+export default class PractitionerEmptyState extends Vue {}
 </script>

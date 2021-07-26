@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full pb-7">
+  <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
         class="
@@ -12,9 +12,9 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-health-service')"
+        @click="$router.push('add-practitioner')"
       >
-        Add New
+        Add a Practitioner
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -41,7 +41,9 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-health-service/${getKeyValue(item).value}`)"
+              @click="
+                $router.push(`add-practitioner/${getKeyValue(item).value}`)
+              "
               class="
                 list-none
                 items-center
@@ -60,7 +62,7 @@
               View & Edit
             </li>
             <li
-              @click="deleteItem(getKeyValue(item).value)"
+              @click="remove(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -75,7 +77,7 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Delete Healthcare
+              <delete-icon class="mr-3" /> Delete Practitioner
             </li>
           </table-options>
         </span>
@@ -100,16 +102,16 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
+import search from "@/plugins/search";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import IHealthcare from "@/types/IHealthcare";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { namespace } from "vuex-class";
 
+const practitioner = namespace("practitioner");
 
-const healthcare = namespace("healthcare");
 @Options({
   components: {
     Table,
@@ -126,78 +128,64 @@ const healthcare = namespace("healthcare");
     TableOptions,
   },
 })
+export default class PractitionerExistingState extends Vue {
+  showColumnFilter = false;
+  query = "";
 
-export default class HealthcareExistingState extends Vue {
-    showColumnFilter = false;
-    query = "";
-    
-  loading = false;
+  @practitioner.State
+  practitioners!: IPractitioner[];
 
+  @practitioner.Action
+  deletePractitioner!: (id: string) => Promise<boolean>;
 
-  @healthcare.State
-  healthcares!: IHealthcare[];
-
-  @healthcare.Action
-  deleteHealthcare!: (id: string) => Promise<boolean>;
-
-    getKeyValue = getTableKeyValue;
-    preferredHeaders = [];
-    rawHeaders = [
+  getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "Name",
       value: "name",
       show: true,
     },
-    
+    { title: "Department", value: "department", show: true },
+    { title: "Job Designation", value: "jobDesignation", show: true },
     {
-      title: "Location",
+      title: "Active State",
+      value: "activeState",
+      show: true,
+    },
+    {
+      title: "Code",
+      value: "qualificationIssuer",
+      show: true,
+    },
+    {
+      title: "Address",
       value: "address",
-      show: true,
-    },
-    {
-      title: "Communication",
-      value: "communication",
       show: false,
     },
     {
-      title: "Phone",
-      value: "phone",
+      title: "Access Role",
+      value: "accessRole",
       show: false,
     },
     {
-      title: "Provison Code",
-      value: "provisionCode",
-      show: true,
-    },
-      {
-      title: "Type",
-      value: "type",
-      show: true,
+      title: "Gender",
+      value: "gender",
+      show: false,
     },
     {
-      title: "Comment",
-      value: "comment",
+      title: "Description",
+      value: "description",
       show: false,
     },
-     {
-      title: "Programs",
-      value: "programs",
+    {
+      title: "Physical Type",
+      value: "physicalType",
       show: false,
     },
-     {
-      title: "Specialty",
-      value: "specialty",
-      show: false,
-    },
-     {
-      title: "Category",
-      value: "category",
-      show: false,
-    },
-   
   ];
 
-    get headers() {
+  get headers() {
     const preferred =
       this.preferredHeaders.length > 0
         ? this.preferredHeaders
@@ -206,30 +194,37 @@ export default class HealthcareExistingState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-get items() {
-    const healthcares = this.healthcares.map((healthcare) => {
-        return {
-        ...healthcare,
-         action: healthcare.id,
-        };
+  get items() {
+    const practitioners = this.practitioners.map((practitioner) => {
+      const opHours = this.stringifyOperationHours(
+        practitioner.hoursOfOperation
+      );
+      return {
+        ...practitioner,
+        action: practitioner.id,
+        hoursOfOperation: opHours,
+      };
     });
-    
-    if (!this.query) return healthcares;
-    return search.searchObjectArray(healthcares, this.query);
+    if (!this.query) return practitioners;
+    return search.searchObjectArray(practitioners, this.query);
   }
- 
-  async deleteItem(id: string) {
+
+  stringifyOperationHours(opHours: HoursOfOperation[]) {
+    const [opHour, ...rest] = opHours;
+    if (!opHour) return "All Day";
+    return `${opHour.openTime} - ${opHour.closeTime}`;
+  }
+
+  async remove(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this healthcare service",
-      title: "Delete Healthcare Servcie"
+      message: "You are about to delete this practitioner",
     });
     if (!confirmed) return;
 
-    if (await this.deleteHealthcare(id)) window.notify({ msg: "Healthcare service deleted", status: "success" });
-    else window.notify({ msg: "Healthcare service not deleted", status: "error" });
+    if (await this.deletePractitioner(id))
+      window.notify({ msg: "Practitioner deleted", status: "success" });
+    else window.notify({ msg: "Practitioner not deleted", status: "error" });
+    window.notify({ msg: "Practitioner not deleted", status: "error" });
   }
- 
-
- 
 }
 </script>

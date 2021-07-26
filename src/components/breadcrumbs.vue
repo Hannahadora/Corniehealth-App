@@ -7,7 +7,7 @@
       <chevron-right-icon />
     </span>
     <span class="flex items-center mr-2" v-if="pages.parent">
-      <page-icon />
+      <!-- <page-icon /> -->
       <router-link :to="pages.parent" class="ml-2 capitalize">{{
         pages.parentName
       }}</router-link>
@@ -27,13 +27,13 @@
 import { Options, Vue } from "vue-class-component";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import PageIcon from "@/components/icons/page.vue";
+// import PageIcon from "@/components/icons/page.vue";
 
 @Options({
   components: {
     ThreeDotIcon,
     ChevronRightIcon,
-    PageIcon,
+    // PageIcon,
   },
 })
 export default class BreadCrumbs extends Vue {
