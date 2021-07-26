@@ -16,6 +16,7 @@
         }"
         class="rounded-lg border p-2 w-11/12 focus:outline-none"
       >
+        <option disabled selected :value="null">{{ placeholder }}</option>
         <option v-for="(item, i) in items" :key="i" :value="item.code || item">
           {{ item.display || item }}
         </option>
@@ -49,6 +50,9 @@ export default class DSelect extends Vue {
 
   @Prop({ type: String, default: "" })
   label!: string;
+
+  @Prop({ type: String, default: "" })
+  placeholder!: string;
 
   @Prop({ type: String })
   name!: string;
