@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full pb-7">
+  <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
         class="
@@ -12,9 +12,9 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-health-service')"
+        @click="$router.push('add-care-partners')"
       >
-        Add New
+        Add a Care Partner
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -23,6 +23,7 @@
         <icon-input
           class="border border-gray-600 rounded-full focus:outline-none"
           type="search"
+          placeholder="Search Table"
           v-model="query"
         >
           <template v-slot:prepend>
@@ -40,8 +41,8 @@
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
-            <li
-              @click="$router.push(`add-health-service/${getKeyValue(item).value}`)"
+            <!-- <li
+              @click="$router.push(`add-care-partner/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -58,9 +59,9 @@
             >
               <eye-icon class="mr-3 mt-1" />
               View & Edit
-            </li>
+            </li> -->
             <li
-              @click="deleteItem(getKeyValue(item).value)"
+              @click="deletePartner(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -75,7 +76,7 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Delete Healthcare
+              <delete-icon class="mr-3" /> Delete
             </li>
           </table-options>
         </span>
@@ -100,16 +101,16 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import TableOptions from "@/components/table-options.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
-import IHealthcare from "@/types/IHealthcare";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
+import TableOptions from "@/components/table-options.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import ICarePartner from "@/types/ICarePartner";
 
+const CarePartnersStore = namespace("CarePartnersStore");
 
-const healthcare = namespace("healthcare");
 @Options({
   components: {
     Table,
@@ -126,37 +127,52 @@ const healthcare = namespace("healthcare");
     TableOptions,
   },
 })
+export default class CarePartnersExistingState extends Vue {
+  showColumnFilter = false;
+  query = "";
 
-export default class HealthcareExistingState extends Vue {
-    showColumnFilter = false;
-    query = "";
-    
-  loading = false;
+  @CarePartnersStore.State
+  carePartners!: ICarePartner[];
 
+  @CarePartnersStore.Action
+  delete!: (partner: ICarePartner) => Promise<boolean>;
 
-  @healthcare.State
-  healthcares!: IHealthcare[];
-
-  @healthcare.Action
-  deleteHealthcare!: (id: string) => Promise<boolean>;
-
-    getKeyValue = getTableKeyValue;
-    preferredHeaders = [];
-    rawHeaders = [
+  getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
+  rawHeaders = [
     {
-      title: "Name",
+      title: "Organisation Name",
       value: "name",
       show: true,
     },
-    
     {
-      title: "Location",
-      value: "address",
+      title: "Organisation Type",
+      value: "organisationType",
       show: true,
     },
     {
-      title: "Communication",
-      value: "communication",
+      title: "Provider Profile",
+      value: "providerProfile",
+      show: true,
+    },
+    {
+      title: "Incorporation Status",
+      value: "incorporationStatus",
+      show: true,
+    },
+    {
+      title: "Incorporation Type",
+      value: "incorporationType",
+      show: true,
+    },
+    {
+      title: "Address",
+      value: "address",
+      show: false,
+    },
+    {
+      title: "Email",
+      value: "email",
       show: false,
     },
     {
@@ -164,40 +180,9 @@ export default class HealthcareExistingState extends Vue {
       value: "phone",
       show: false,
     },
-    {
-      title: "Provison Code",
-      value: "provisionCode",
-      show: true,
-    },
-      {
-      title: "Type",
-      value: "type",
-      show: true,
-    },
-    {
-      title: "Comment",
-      value: "comment",
-      show: false,
-    },
-     {
-      title: "Programs",
-      value: "programs",
-      show: false,
-    },
-     {
-      title: "Specialty",
-      value: "specialty",
-      show: false,
-    },
-     {
-      title: "Category",
-      value: "category",
-      show: false,
-    },
-   
   ];
 
-    get headers() {
+  get headers() {
     const preferred =
       this.preferredHeaders.length > 0
         ? this.preferredHeaders
@@ -206,30 +191,25 @@ export default class HealthcareExistingState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-get items() {
-    const healthcares = this.healthcares.map((healthcare) => {
-        return {
-        ...healthcare,
-         action: healthcare.id,
-        };
+  get items() {
+    const partners = this.carePartners.map((partner) => {
+      return {
+        ...partner,
+        action: partner.id,
+      };
     });
-    
-    if (!this.query) return healthcares;
-    return search.searchObjectArray(healthcares, this.query);
+    if (!this.query) return partners;
+    return search.searchObjectArray(partners, this.query);
   }
- 
-  async deleteItem(id: string) {
+  
+  async deletePartner(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this healthcare service",
-      title: "Delete Healthcare Servcie"
+      message: "You are about to delete this care partner",
     });
     if (!confirmed) return;
-
-    if (await this.deleteHealthcare(id)) window.notify({ msg: "Healthcare service deleted", status: "success" });
-    else window.notify({ msg: "Healthcare service not deleted", status: "error" });
+    const partner = this.carePartners.find(element => element.id == id)
+    if (partner && await this.delete(partner)) alert("Care partner deleted");
+    else alert("Care partner not deleted");
   }
- 
-
- 
 }
 </script>
