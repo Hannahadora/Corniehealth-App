@@ -5,12 +5,28 @@
         <h2>Roles and Privileges</h2>
       </div>
       <div class="w-2/12 flex items-center justify-end">
-        <span><i class="pi pi-exclamation-circle p-2"></i> info</span>
+        <span @click="toggleModalVissibility" class="cursor-pointer"><i class="pi pi-exclamation-circle p-2"></i></span>
       </div>
     </div>
 
     <UserDetails />
-    <Modal :show="true" />
+    <Modal :show="showModal" @close-modal="toggleModalVissibility">
+      <ModalContent />
+      <template v-slot:cancel>
+        <Button :loading="false" >
+          <button @click="toggleModalVissibility" class="close_btn_border mr-3 text-gray-500 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+            Close
+          </button>
+        </Button>
+      </template>
+      <!-- <template v-slot:accept>
+        <Button :loading="false">
+          <button class="bg-red-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full">
+            New Role
+          </button>
+        </Button>
+      </template> -->
+    </Modal>
     <div class="w-8/12 mx-auto border-b-2 my-12"></div>
 
     <div class="w-full flex mb-12">
@@ -19,7 +35,7 @@
       </div>
       <div class="w-4/12 flex justify-end">
         <Button :loading="false">
-          <button class="bg-red-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full">
+          <button class="bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
             New Role
           </button>
         </Button>
@@ -38,8 +54,10 @@
 import { Options, Vue } from "vue-class-component";
 import UserDetails from './components/user-details.vue'
 import RoleCard from './components/role-card.vue'
+import ModalContent from './components/roles-privileges-modal.vue'
 import Button from '@/components/globals/corniebtn.vue'
 import Modal from '@/components/modal-right.vue'
+import X from '@/components/daterangepicker.vue'
 
 @Options({
   components: {
@@ -47,10 +65,15 @@ import Modal from '@/components/modal-right.vue'
     Button,
     RoleCard,
     Modal,
+    ModalContent
   },
 })
 export default class RolesAndPrivileges extends Vue {
- 
+  showModal: boolean = false;
+
+  toggleModalVissibility() {
+    this.showModal = !this.showModal;
+  }
 }
 </script>
 <style>
@@ -113,6 +136,14 @@ export default class RolesAndPrivileges extends Vue {
     width: 44px;
     height: 44px;
     transition: all .5s ease-in-out
+  }
+
+  .close_btn_border {
+    border: 1px solid #211F45;
+  }
+
+  .steps_line-h {
+    line-height: 24px;
   }
 
 </style>
