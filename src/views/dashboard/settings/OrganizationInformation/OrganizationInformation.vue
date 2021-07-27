@@ -3,7 +3,7 @@
     <h3 class="text-primary text-xl font-bold border-b border-gray-300">
       Organization Information
     </h3>
-    <section>
+    <section class="pb-4">
       <div class="image-upload flex mt-10 items-center">
         <avatar class="mr-2" v-if="img.url" :src="img.url" />
         <avatar class="mr-2" v-else :src="img.placeholder" />
