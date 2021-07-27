@@ -19,7 +19,6 @@
               class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
             >
               <h2 class="font-semibold uppercase text-sm">{{ key }}</h2>
-
               <chevron-right-icon
                 @click="open = -1"
                 v-if="open == i"
