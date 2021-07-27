@@ -174,6 +174,19 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/careteam/addCareteam.vue"),
           },
+          {
+            path: "group",
+            name: "Group",
+            component: () =>
+              import("@/views/dashboard/settings/group/index.vue"),
+          },
+          {
+            path: "add-group/:id?",
+            props: true,
+            name: "Add a New Group",
+            component: () =>
+              import("@/views/dashboard/settings/group/addGroup.vue"),
+          },
         ],
       },
     ],

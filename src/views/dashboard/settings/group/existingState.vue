@@ -1,6 +1,7 @@
 <template>
   <div class="w-full">
     <span class="flex justify-end w-full">
+
       <button
         class="
           bg-danger
@@ -14,9 +15,9 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-careteam')"
+        @click="$router.push('add-group')"
       >
-        Create a Care Team
+        Add a Group
       </button>
       
     </span>
@@ -44,7 +45,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-careteam/${getKeyValue(item).value}`)"
+              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -60,7 +61,102 @@
               "
             >
               
-              <span class="mr-3 text-2xl bold text-primary">+</span> Edit Care Team
+                <eye-icon class="mr-3" /> View
+            </li>
+            <li
+              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                my-1
+                py-3
+              "
+            >
+              
+              <edit-icon class="mr-3" /> Edit
+            </li>
+            <li
+              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                my-1
+                py-3
+              "
+            >
+              
+              <span class="mr-3 text-2xl bold text-primary">+</span> Update status
+            </li>
+            <li
+              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                my-1
+                py-3
+              "
+            >
+              
+              <span class="mr-3 text-2xl bold text-primary">+</span> Add member
+            </li>
+            <li
+             v-if="item.data.status == 'active'"
+              @click="deactivateGroup(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <close-icon class="mr-3" /> Deactivate
+            </li>
+            <li
+            v-if="item.data.status == 'inactive'"
+              @click="activateGroup(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                my-1
+                py-3
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+               <close-icon class="mr-3" /> Activate
             </li>
             <li
               @click="deleteItem(getKeyValue(item).value)"
@@ -78,46 +174,7 @@
                 cursor-pointer
               "
             >
-           
               <delete-icon class="mr-3" /> Delete
-            </li>
-            <li
-             v-if="item.data.status == 'active'"
-              @click="deactivateCareteam(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Deactivate Account
-            </li>
-            <li
-            v-if="item.data.status == 'inactive'"
-              @click="activateCareteam(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Activate Account
             </li>
           </table-options>
         </span>
@@ -146,14 +203,15 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import ICareteam from "@/types/ICareteam";
-import CloseIcon from "@/components/icons/close.vue";
+import IGroup from "@/types/IGroup";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
-const careteam = namespace("careteam");
+const group = namespace("group");
 
 @Options({
   components: {
@@ -161,6 +219,7 @@ const careteam = namespace("careteam");
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
+    CloseIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -169,50 +228,40 @@ const careteam = namespace("careteam");
     TableOptions,
     DeleteIcon,
     EyeIcon,
-    CloseIcon
+    EditIcon
   },
   
 })
-export default class CareteamExistingState extends Vue {
+export default class GroupExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
 
-  @careteam.State
-  careteams!: ICareteam[];
+  @group.State
+  groups!: IGroup[];
 
-  @careteam.Action
-  deleteCareteam!: (id: string) => Promise<boolean>;
+  @group.Action
+  deleteGroup!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identfier", value: "identifier", show: true },
-    { title: "Status", value: "status", show: true },
+    { title: "Identifier", value: "name", show: true },
+    { title: "Name", value: "name", show: true },
     {
-      title: "Category",
-      value: "category",
+      title: "Quantity",
+      value: "quantity",
       show: true,
     },
     {
-      title: "Name",
-      value: "name",
-      show: true,
-    },
-    {
-      title: "Subject",
-      value: "subject",
+      title: "Type",
+      value: "type",
       show: false,
     },
     {
-      title: "Period",
-      value: "period",
-      show: false,
-    },
-    {
-      title: "Participants",
-      value: "participants",
+      title: "Status",
+      value: "state",
       show: false,
     },
   ];
@@ -229,63 +278,61 @@ export default class CareteamExistingState extends Vue {
 
 
   get items() {
-    const careteams = this.careteams.map((careteam) => {
-     // const allparticipant = careteam.participants;
-      return {
-        ...careteam,
-        action: careteam.id,
-      //  participants: allparticipant,
-      };
+    const groups = this.groups.map((group) => {
+        return {
+        ...group,
+         action: group.id,
+        };
     });
-    if (!this.query) return careteams;
-    return search.searchObjectArray(careteams, this.query);
+    
+    if (!this.query) return groups;
+    return search.searchObjectArray(groups, this.query);
   }
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this care team",
-      title: "Delete Care Team"
+      message: "You are about to delete this group",
+      title: "Delete Group"
     });
     if (!confirmed) return;
 
-    if (await this.deleteCareteam(id)) window.notify({ msg: "Care team deleted", status: "success" });
-    else window.notify({ msg: "Care team not deleted", status: "error" });
+    if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
+    else window.notify({ msg: "Group not deleted", status: "error" });
   }
-
- async deactivateCareteam(id:string) {
+  async deactivateGroup(id:string) {
    const confirmed = await window.confirmAction({
-      message: "You are about to deactivate this care team",
-      title: "Deactivate Care Team"
+      message: "You are about to deactivate this group",
+      title: "Deactivate group"
     });
     if (!confirmed) {
       return;
     }else{
         try {
-          const response = await cornieClient().post(`/api/v1/care-teams/deactivate/${id}`,{});
+          const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
           if (response.success) {
-            window.notify({ msg: "Care team deactivated", status: "success" });
+            window.notify({ msg: "Group deactivated", status: "success" });
           } 
         } catch (error) {
-          window.notify({ msg: "Care team not deactivated", status: "error" });
+          window.notify({ msg: "Group not deactivated", status: "error" });
           console.error(error);
         }
       }
     }
- async activateCareteam(id:string) {
+ async activateGroup(id:string) {
    const confirmed = await window.confirmAction({
-      message: "You are about to activate this care team",
-      title: "Activate Care Team"
+      message: "You are about to activate this group",
+      title: "Activate group"
     });
     if (!confirmed) {
       return;
     }else{
         try {
-          const response = await cornieClient().post(`/api/v1/care-teams/activate/${id}`,{});
+          const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
           if (response.success) {
-            window.notify({ msg: "Care team activated", status: "success" });
+            window.notify({ msg: "Group activated", status: "success" });
           } 
         } catch (error) {
-          window.notify({ msg: "Care team not activated", status: "error" });
+          window.notify({ msg: "Group not activated", status: "error" });
           console.error(error);
         }
       }
