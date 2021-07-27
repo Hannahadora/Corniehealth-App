@@ -11,8 +11,9 @@
         <span
           class="mr-3 cursor-pointer"
           :class="{ 'fill-current text-white': expand }"
-          ><slot name="misc"
-        /></span>
+        >
+          <slot name="misc" />
+        </span>
         <chevron-down-icon
           class="cursor-pointer stroke-current text-white"
           @click="expand = false"

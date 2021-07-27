@@ -15,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/signup/signup.vue"),
   },
   {
+    path: "/roles",
+    name: "Test",
+    component: () => import("@/views/dashboard/settings/rolesprivileges/index.vue"),
+  },
+  {
     path: "/login",
     name: "Sign In",
     alias: "/signin",
@@ -39,6 +44,19 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
+          {
+            path: "care-partners",
+            name: "Care Partners",
+            component: () =>
+              import("@/views/dashboard/settings/CarePartners/index.vue")
+          },
+          {
+            path: "add-care-partners/:id?",
+            props: true,
+            name: "Add a Care Partner",
+            component: () =>
+              import("@/views/dashboard/settings/CarePartners/AddCarePartner.vue")
+          },
           {
             path: "account-security",
             name: "Account Security",
