@@ -1,14 +1,17 @@
 <template>
   <div class="w-full" :class="{ 'order-first': expand }">
     <div
-      class="h-11 w-full flex items-center bg-primary justify-between px-3 border-2"
-      :class="{ 'border rounded-t-xl bg-primary border-primary': expand }"
+      class="h-11 w-full flex items-center justify-between px-3 border-2"
+      :class="{ 'border-0 rounded-t-xl bg-primary border-primary': expand }"
     >
       <div class="font-semibold" :class="{ 'text-white': expand }">
-        <slot name="title" />
+        {{ title }}
       </div>
       <span class="flex items-center">
-        <info-icon/>
+        <info-icon  class="cursor-pointer" :title="titledescription"  @click="expand = false" v-if="expand"  :class="{ 'fill-current text-white': expand }">
+        </info-icon>
+        <ainfo-icon  class="cursor-pointer" :title="titledescription"  v-else @click="expand = true" :class="{ 'fill-current text-white': expand }">
+        </ainfo-icon>
         <span
           class="mr-3 cursor-pointer"
           :class="{ 'fill-current text-white': expand }"
@@ -16,12 +19,14 @@
           <slot name="misc" />
         </span>
         <chevron-down-icon
-          class="cursor-pointer stroke-current text-white"
+          class="cursor-pointer stroke-current"
+           :class="{ 'text-white': expand }"
           @click="expand = false"
           v-if="expand"
         />
         <chevron-right-icon
-          class="cursor-pointer stroke-current text-white"
+          class="cursor-pointer stroke-current"
+           :class="{ 'text-white': expand }"
           v-else
           @click="expand = true"
         />
@@ -30,21 +35,31 @@
     <div v-if="expand" class="w-full border-2"><slot name="default" /></div>
   </div>
 </template>
-<script>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync } from "vue-property-decorator";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "./icons/chevrondown.vue";
 import InfoIcon from "./icons/info.vue";
-export default {
+import AinfoIcon from "./icons/ainfo.vue";
+
+@Options({
   name: "AccordionItem",
   components: {
     ChevronRightIcon,
     ChevronDownIcon,
-    InfoIcon
+    InfoIcon,
+    AinfoIcon
   },
-  data() {
-    return {
-      expand: false,
-    };
-  },
-};
+})
+export default class AccordionComponent extends Vue {
+  expand =  false;
+
+  @Prop({ type: String, default: "" })
+  title!: string;
+
+  @Prop({ type: String, default: "" })
+  titledescription!: string;
+
+}
 </script>

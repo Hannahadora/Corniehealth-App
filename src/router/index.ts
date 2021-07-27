@@ -39,6 +39,13 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
     children: [
       {
+        path: "/add-group/:id?",
+        props: true,
+        name: "Add a New Group",
+        component: () =>
+          import("@/views/dashboard/settings/group/addGroup.vue"),
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
@@ -179,13 +186,6 @@ const routes: Array<RouteRecordRaw> = [
             name: "Group",
             component: () =>
               import("@/views/dashboard/settings/group/index.vue"),
-          },
-          {
-            path: "add-group/:id?",
-            props: true,
-            name: "Add a New Group",
-            component: () =>
-              import("@/views/dashboard/settings/group/addGroup.vue"),
           },
         ],
       },
