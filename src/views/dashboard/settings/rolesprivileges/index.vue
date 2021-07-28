@@ -9,8 +9,79 @@
       </div>
     </div>
 
-    <UserDetails />
-    <Modal :show="showModal" @close-modal="toggleModalVissibility">
+        <!-- <div class="-full">
+      <div class="w-3/12"> -->
+        <Overlay :show="show">
+            <Modal>
+              <template v-slot:header>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-5 capitalize modal_titlee cursor-pointer" id="modal-title">
+                    Transfer admin rights
+                </h3>
+              </template>
+
+              <template v-slot:body>
+                <p class="text-sm text-gray-500">
+                    Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.
+                </p>
+              </template>
+              <template v-slot:buttons>
+                <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <Button>
+                      <button type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
+                        Yes
+                      </button>
+                    </Button>
+                    <Button>
+                      <button @click="toggleModal" type="button" class="mt-3 w-full inline-flex justify-center px-4 py-2 text-base text-white-700 font-bold hover:bg-gray-50 focus:outline-none focus:none sm:mt-0 sm:ml-3 sm:w-auto">
+                        No
+                      </button>
+                    </Button>
+                </div>
+              </template>
+            </Modal>
+        </Overlay>
+      <!-- </div>
+    </div> -->
+
+    <!-- <div class="-full">
+      <div class="w-3/12"> -->
+        <Overlay :show="false">
+            <Modal>
+              <template v-slot:header>
+                <h3 class="text-lg leading-6 font-medium capitalize text-gray-900 mb-5 font-bold modal_titlee" id="modal-title">
+                    Transfer admin rights
+                </h3>
+              </template>
+
+              <template v-slot:body>
+                <div class="w-full">
+                  <div class="container">
+                    <Dropdown :items="[ { name: 'Practictioner'}, { name: 'Person'}, { name: 'User'} ]" :optionLabel="'name'" :isContact="true" :placeholder="'--Select--'" />
+                  </div>
+                </div>
+              </template>
+              <template v-slot:buttons>
+                <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <Button>
+                      <button type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
+                        Transfer
+                      </button>
+                    </Button>
+                    <Button>
+                      <button type="button" class="mt-3 w-full inline-flex justify-center px-4 py-2 text-base text-white-700 font-bold hover:bg-gray-50 focus:outline-none focus:none sm:mt-0 sm:ml-3 sm:w-auto">
+                      No
+                      </button>
+                    </Button>
+                </div>
+              </template>
+            </Modal>
+        </Overlay>
+      <!-- </div>
+    </div> -->
+    
+    <UserDetails @toggle-rights-modal="toggleModal" />
+    
+    <SideModal :show="showModal" @close-modal="toggleModalVissibility">
       <ModalContent />
       <template v-slot:cancel>
         <Button :loading="false" >
@@ -26,7 +97,7 @@
           </button>
         </Button>
       </template> -->
-    </Modal>
+    </SideModal>
     <div class="w-8/12 mx-auto border-b-2 my-12"></div>
 
     <div class="w-full flex mb-12">
@@ -56,24 +127,33 @@ import UserDetails from './components/user-details.vue'
 import RoleCard from './components/role-card.vue'
 import ModalContent from './components/roles-privileges-modal.vue'
 import Button from '@/components/globals/corniebtn.vue'
-import Modal from '@/components/modal-right.vue'
-import X from '@/components/daterangepicker.vue'
+import SideModal from '@/components/modal-right.vue'
+import Overlay from './components/overlay.vue'
+import Modal from './components/modal.vue'
+import Dropdown from '@/components/multiselectsearch.vue'
 
 @Options({
   components: {
     UserDetails,
     Button,
     RoleCard,
+    SideModal,
+    ModalContent,
     Modal,
-    ModalContent
+    Overlay,
+    Dropdown,
   },
 })
 export default class RolesAndPrivileges extends Vue {
   showModal: boolean = false;
-
   toggleModalVissibility() {
     this.showModal = !this.showModal;
   }
+
+show = false;
+ toggleModal() {
+  this.show = !this.show;
+ }
 }
 </script>
 <style>

@@ -9,6 +9,18 @@
             </div>
         </div>
 
+            <SideModal :show="false" >
+                <ModalContent />
+                <template v-slot:cancel>
+                    <Button :loading="false" >
+                    <button class="close_btn_border mr-3 text-gray-500 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                        Close
+                    </button>
+                    </Button>
+                </template>
+            </SideModal>
+            
+
         <div class="w-full curved flex py-2 mt-8">
             <div class="w-4/12">
                 <cornie-input :label="'Role Name'" class="w-full" style="width: 100%" placeholder="--Enter--" />
@@ -41,7 +53,7 @@
         <div class="w-full mt-5">
             <Accordion>
                 <template v-slot:title>
-                    <p >Test</p>
+                    <p class="flex justify-between"><span>Test </span></p>
                 </template>
                 <template v-slot:default>
                     <div class="container my-3 p-3">
@@ -99,6 +111,7 @@
                 </template>
             </Accordion>
         </div>
+        
 
         <div class="w-full my-5">
             <div class="container flex justify-end">
@@ -120,6 +133,10 @@ import Button from '@/components/globals/corniebtn.vue'
 import Accordion from '@/components/accordion-component.vue'
 import Checkbox from '@/components/custom-checkbox.vue';
 import ToggleCheck from '@/components/ToogleCheck.vue';
+// import Tooltip from '@/components/tooltip.vue';
+
+import SideModal from '@/components/modal-right.vue'
+import ModalContent from './components/import-privileges.vue'
 
 @Options({
   components: {
@@ -128,10 +145,15 @@ import ToggleCheck from '@/components/ToogleCheck.vue';
     Accordion,
     Checkbox,
     ToggleCheck,
+    SideModal,
+    ModalContent,
+    // Tooltip,
   },
 })
 export default class RolesAndPrivileges extends Vue {
- 
+    hello() {
+        alert('hi')
+    }
 }
 </script>
 <style>

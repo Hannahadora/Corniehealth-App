@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/roles",
     name: "Test",
-    component: () => import("@/views/dashboard/settings/rolesprivileges/index.vue"),
+    component: () => import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
   },
   {
     path: "/login",
