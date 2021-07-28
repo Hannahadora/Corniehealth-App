@@ -1,3 +1,5 @@
+import Period from "./IPeriod";
+
 export default interface IPractitioner {
   name: string;
   id: string;
@@ -26,10 +28,12 @@ export default interface IPractitioner {
   qualificationCode?: string;
   organizationId: string;
   type: string;
+  period: Period;
 }
 
 export interface HoursOfOperation {
   day: string;
   openTime: string;
   closeTime: string;
+  selected: boolean;
 }

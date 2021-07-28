@@ -21,7 +21,7 @@ declare function notify(data: INotify): void;
 declare function confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
 
 declare module "@scelloo/cloudenly-ui/*";
-
+declare module "v-calendar";
 interface Window {
   confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
   notify(data: INotify): void;

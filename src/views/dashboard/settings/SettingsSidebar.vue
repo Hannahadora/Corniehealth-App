@@ -14,24 +14,43 @@
           </template>
         </icon-input>
         <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
-          <h2 class="font-semibold uppercase text-sm">{{ key }}</h2>
-          <div class="flex flex-col mt-1 text-gray-500">
-            <s-bar-link
-              :name="item.name"
-              :to="mapUrl(item.to)"
-              v-for="(item, index) in setting"
-              :key="index"
+          <span>
+            <div
+              class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
             >
-              <template v-slot="{ active }">
-                <keep-alive>
-                  <component
-                    :is="item.icon"
-                    :class="{ 'fill-current': active }"
-                  ></component>
-                </keep-alive>
-              </template>
-            </s-bar-link>
-          </div>
+              <h2 class="font-semibold uppercase text-sm">{{ key }}</h2>
+              <chevron-right-icon
+                @click="open = -1"
+                v-if="open == i"
+                class="cursor-pointer"
+              />
+              <chevron-down-icon
+                v-else
+                @click="open = i"
+                class="cursor-pointer"
+              />
+            </div>
+            <div
+              class="flex flex-col mt-1 text-gray-500"
+              :class="{ hidden: open != i }"
+            >
+              <s-bar-link
+                :name="item.name"
+                :to="mapUrl(item.to)"
+                v-for="(item, index) in setting"
+                :key="index"
+              >
+                <template v-slot="{ active }">
+                  <keep-alive>
+                    <component
+                      :is="item.icon"
+                      :class="{ 'fill-current': active }"
+                    ></component>
+                  </keep-alive>
+                </template>
+              </s-bar-link>
+            </div>
+          </span>
         </div>
       </div>
     </div>
@@ -58,6 +77,8 @@ import HealthServiceIcon from "@/components/icons/healthservice.vue";
 import TemplatesIcon from "@/components/icons/templates.vue";
 import DevicesIcon from "@/components/icons/devices.vue";
 import PartnersIcon from "@/components/icons/partners.vue";
+import ChevronRightIcon from "@/components/icons/chevronright.vue";
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 
 type INav = { name: string; to: string; icon: string };
 
@@ -66,6 +87,8 @@ type INav = { name: string; to: string; icon: string };
   components: {
     SBarLink,
     ApprovalIcon,
+    ChevronRightIcon,
+    ChevronDownIcon,
     IconInput,
     OrgIcon,
     LocationIcon,
@@ -87,6 +110,7 @@ type INav = { name: string; to: string; icon: string };
 })
 export default class Settings extends Vue {
   query = "";
+  open = 0;
   get organization() {
     return [
       { name: "Organization Information", to: "org-info", icon: "org-icon" },
