@@ -11,18 +11,27 @@
         <slot name="prepend" />
       </div>
     </span>
-    <input
-      v-bind="$attrs"
-      name="q"
+    <field
+      :name="inputName"
+      v-slot="{ errorMessage, meta, field }"
+      :rules="rules"
       v-model="valueSync"
-      class="py-2 text-sm text-black rounded-md w-full"
-      :class="{
-        'pl-10': prepend,
-        'pr-10': append,
-        'pl-2': !prepend,
-        'pr-2': !append,
-      }"
-    />
+    >
+      <input
+        v-bind="{ ...$attrs, ...field }"
+        name="q"
+        v-model="valueSync"
+        class="py-2 text-sm text-black rounded-md w-full focus:outline-none"
+        :class="{
+          'pl-10': prepend,
+          'pr-10': append,
+          'pl-2': !prepend,
+          'pr-2': !append,
+          'border-red-500': Boolean(errorMessage),
+          'border-green-400': meta.valid && meta.touched,
+        }"
+      />
+    </field>
     <span
       class="absolute inset-y-0 right-0 flex items-center pr-2"
       v-if="append"
@@ -36,9 +45,13 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
-
+import { Field } from "vee-validate";
 @Options({
   inheritAttrs: false,
+  name: "IconInput",
+  components: {
+    Field,
+  },
 })
 export default class IconInput extends Vue {
   @Prop({ type: String })
@@ -49,6 +62,14 @@ export default class IconInput extends Vue {
 
   @Prop({ required: false, default: "" })
   width!: string;
+
+  @Prop({ type: Object })
+  rules!: any;
+
+  get inputName() {
+    const id = Math.random().toString(36).substring(2, 9);
+    return `input-${id}`;
+  }
 
   get prepend() {
     return Boolean(this.$slots.prepend);
