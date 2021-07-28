@@ -111,7 +111,6 @@
                 </template>
             </Accordion>
         </div>
-        
 
         <div class="w-full my-5">
             <div class="container flex justify-end">
