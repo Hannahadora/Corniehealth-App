@@ -19,7 +19,6 @@
     >
       <input
         v-bind="{ ...$attrs, ...field }"
-        name="q"
         v-model="valueSync"
         class="py-2 text-sm text-black rounded-md w-full focus:outline-none"
         :class="{
