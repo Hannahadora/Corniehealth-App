@@ -1,6 +1,6 @@
 export default interface IHealthCareService {
-    id?: string;
-    name: string;
+  id?: string;
+  name: string;
   activeState: string;
   eligibilityComment: string;
   provisionCode: string;
@@ -23,7 +23,7 @@ export default interface IHealthCareService {
   availabilityExceptions: string;
   extraDetails: string;
   comment: string;
- hoursOfOperation: HoursOfOperation[];
+  hoursOfOperation: HoursOfOperation[];
 }
 export interface HoursOfOperation {
   day: string;

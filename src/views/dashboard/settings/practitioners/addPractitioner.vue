@@ -58,7 +58,7 @@
                 :rules="required"
                 label="Phone Number"
               />
-              <cornie-input :rules="required" v-model="email" label="Email" />
+              <cornie-input :rules="emailRule" v-model="email" label="Email" />
               <cornie-input
                 :rules="required"
                 v-model="address"
@@ -108,7 +108,7 @@
                 v-model="qualificationCode"
                 label="Code"
               />
-              <date-picker label="Period" />
+              <period-picker label="Period" v-model="period" />
               <cornie-input v-model="qualificationIssuer" label="Issuer" />
               <cornie-select
                 :items="dropdown.CommunicationLanguage"
@@ -186,16 +186,19 @@ import { string } from "yup";
 import DatePicker from "@/components/datepicker.vue";
 import { Prop, Watch } from "vue-property-decorator";
 import { useHandleImage } from "@/composables/useHandleImage";
+import PeriodPicker from "@/components/daterangepicker.vue";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
 import Avatar from "@/components/avatar.vue";
+import Period from "@/types/IPeriod";
 @Options({
   name: "AddPractitioner",
   components: {
     CornieInput,
     CornieSelect,
     PhoneInput,
+    PeriodPicker,
     OperationHours,
     DatePicker,
     Avatar,
@@ -237,8 +240,9 @@ export default class AddPractitioner extends Vue {
   organizationId = "";
   dialCode = "";
   dropdown = {} as IIndexableObject;
-
+  period = {} as Period;
   required = string().required();
+  emailRule = string().email().required();
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -272,6 +276,7 @@ export default class AddPractitioner extends Vue {
     this.consultationChannel = practitioner.consultationChannel;
     this.organizationId = practitioner.organizationId;
     this.hoursOfOperation = practitioner.hoursOfOperation;
+    this.period = practitioner.period || {};
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -304,6 +309,7 @@ export default class AddPractitioner extends Vue {
       consultationChannel: this.consultationChannel,
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
+      period: this.period,
     };
   }
 
