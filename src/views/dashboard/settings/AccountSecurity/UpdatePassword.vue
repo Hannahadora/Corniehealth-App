@@ -123,9 +123,9 @@
 </template>
 
 <script>
-import PasswordInput from "@/components/PasswordInput.vue";
-import { quantumClient } from "@/plugins/http";
-import store from "@/store";
+import PasswordInput from "@/components/PasswordInput.vue"
+import { quantumClient } from "@/plugins/http"
+import store from "@/store"
 
 export default {
   name: "UpdatePassword",
