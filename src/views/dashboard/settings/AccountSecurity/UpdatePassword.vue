@@ -1,6 +1,6 @@
 <template>
-  <div class="border-t border-b border-gray-300">
-    <section class="my-10 grid grid-cols-2 gap-4">
+  <div class="border-t border-b border-primary-300">
+    <div class="flex mt-10 mb-6 items-center">
       <div>
         <label for="currentPassword" class="font-bold text-base uppercase">
           Current Password
@@ -30,9 +30,8 @@
           v-model="currentPassword"
         />
       </div>
-    </section>
-
-    <section class="grid grid-cols-2 gap-4">
+    </div>
+    <div class="grid grid-cols-2 gap-4">
       <div>
         <label for="NewPassword" class="font-bold text-base uppercase">
           New Password
@@ -91,7 +90,7 @@
           v-model="ConfirmPassword"
         />
       </div>
-    </section>
+    </div>
 
     <span class="flex justify-end">
       <button
@@ -104,7 +103,7 @@
           text-white
           appearance-none
           border-none
-          bg-pink-600
+          bg-danger
           rounded-3xl
           placeholder-gray-400
           focus:outline-none

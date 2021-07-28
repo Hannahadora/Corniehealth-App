@@ -102,7 +102,7 @@
               <span class="mr-3 text-2xl bold text-primary">+</span> Update status
             </li>
             <li
-              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              @click="showMember(getKeyValue(item).value)"
               class="
                 list-none
                 items-center
@@ -122,7 +122,7 @@
             </li>
             <li
              v-if="item.data.status == 'active'"
-              @click="deactivateGroup(getKeyValue(item).value)"
+              @click="showDeactivateGroup(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -186,6 +186,8 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
+       <member-modal v-model:visible="showMemberModal" :paymentId="paymentId"/>
+        <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
   </div>
 </template>
 <script lang="ts">
@@ -237,6 +239,9 @@ export default class GroupExistingState extends Vue {
   showModal = false;
   loading = false;
   query = "";
+  showMemberModal = false;
+  showDeativateModal = false;
+  paymentId ="";
 
   @group.State
   groups!: IGroup[];
@@ -299,6 +304,17 @@ export default class GroupExistingState extends Vue {
     if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
     else window.notify({ msg: "Group not deleted", status: "error" });
   }
+   async showMember(id: string) {
+    const group = this.groups.find((d) => d.id == id);
+    this.showMemberModal = true;
+    this.paymentId = id;
+  }
+  async showDeactivateGroup(id: string) {
+    const payment = this.groups.find((d) => d.id == id);
+    this.showDeativateModal = true;
+    this.paymentId = id;
+  }
+
   async deactivateGroup(id:string) {
    const confirmed = await window.confirmAction({
       message: "You are about to deactivate this group",

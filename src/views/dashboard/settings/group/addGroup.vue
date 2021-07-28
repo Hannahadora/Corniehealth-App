@@ -6,7 +6,7 @@
   <div class="w-full h-screen">
     <form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-56">
-            <accordion-component title="Basic info" :expand="false" titledescription="Input the basic information">
+            <accordion-component title="Basic info" :expand="expand == true" titledescription="Input the basic information">
                 <div class="w-full grid grid-cols-3 gap-5 p-5">
                     <cornie-input label="Identifier"  placeholder="XXXX" class="bg-gray-200" disabled/>
                     <cornie-select
@@ -18,8 +18,12 @@
                     >
                     </cornie-select>
                     <cornie-select
+                    v-for="option in options"
+                    :key="option.value"
+                    v-bind:value="option.value"
+                    :onChange = "setValue(option.text)"
+                    :items="items"
                     :rules="required"
-                    :items="['Active', 'Inactive']"
                     v-model="status"
                     label="Status"
                     placeholder="--Select--"
@@ -124,7 +128,7 @@
                     <cornie-select
                     :rules="required"
                     :items="['Active', 'Inactive']"
-                    v-model="status"
+                    v-model="memberStatus"
                     label="Status"
                     placeholder="--Select--"
                     >
@@ -222,6 +226,9 @@ export default class AddGroup extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Boolean, default: "" })
+  expand!: boolean;
+
   
   @group.Action
   getGroupById!: (id: string) => IGroup;
@@ -229,7 +236,9 @@ export default class AddGroup extends Vue {
   loading = false;
 
 
+
   state = "";
+  status = false;
   type = "";
   name = "";
   code = "";
@@ -247,7 +256,12 @@ export default class AddGroup extends Vue {
   memberStatus = "";
   memberEntity = "";
 
-
+  aoption = "Active";
+options = [
+  {text: 'Active' , value: true},
+  {text: 'Inactive' , value: false},
+];
+items = ['Active', 'Inactive'];
 
   required = string().required();
 
@@ -263,6 +277,7 @@ export default class AddGroup extends Vue {
     const group = await this.getGroupById(this.id);
     if (!group) return;
     this.state = group.state;
+    this.status = group.status;
     this.type = group.type;
     this.name = group.name;
     this.code = group.code;
@@ -284,6 +299,7 @@ export default class AddGroup extends Vue {
    get payload() {
     return {
         state:  this.state,
+        status:  this.status,
         type: this.type,
         name:  this.name ,
         code:  this.code ,
@@ -308,7 +324,13 @@ export default class AddGroup extends Vue {
 //   async reset(){
 //     this.participant = {...emptyParticipant};
 //   }
-   
+    async setValue(value:string){
+        if(value == 'Active'){
+          this.status = true
+        }else{
+          this.status = false
+        }
+    }
    
    async submit() {
     this.loading = true;
@@ -319,7 +341,7 @@ export default class AddGroup extends Vue {
 
   async createGroup() {
     // this.payload.period.start = new Date(this.payload.period.start).toISOString()
- this.payload.period = new Date(this.payload.period).toISOString()
+ this.payload.period = new Date(this.payload.period).toISOString();
     try {
       const response = await cornieClient().post(
         "/api/v1/group",

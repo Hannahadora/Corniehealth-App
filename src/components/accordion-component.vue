@@ -42,6 +42,7 @@ import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "./icons/chevrondown.vue";
 import InfoIcon from "./icons/info.vue";
 import AinfoIcon from "./icons/ainfo.vue";
+import { FormValidationResult } from 'vee-validate';
 
 @Options({
   name: "AccordionItem",

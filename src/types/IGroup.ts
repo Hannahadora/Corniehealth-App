@@ -1,6 +1,7 @@
 export default interface IGroup{
     id?: string;
     state: string;
+    status: boolean;
     type: string;
     name: string;
     code: string;
