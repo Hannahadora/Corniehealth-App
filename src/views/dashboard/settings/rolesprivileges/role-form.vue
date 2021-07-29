@@ -2,10 +2,10 @@
     <div class="container mx-auto">
         <div class="w-full border-b-2 curved flex py-2">
             <div class="w-9/12 flex font-bold text-xl py-2">
-                <h2>New Role</h2>
+                <h2>Create a New Role</h2>
             </div>
             <div class="w-9/12 flex items-center justify-end">
-                <span class="cursor-pointer"><i class="pi pi-exclamation-circle p-2"></i> User Stats</span>
+                <!-- <span class="cursor-pointer"><i class="pi pi-exclamation-circle p-2"></i> User Stats</span> -->
             </div>
         </div>
 
@@ -23,16 +23,16 @@
 
         <div class="w-full curved flex py-2 mt-8">
             <div class="w-4/12">
-                <cornie-input :label="'Role Name'" class="w-full" style="width: 100%" placeholder="--Enter--" />
+                <cornie-input :label="'Role Name'" v-model="role.name" class="w-full" style="width: 100%" placeholder="--Enter--" />
             </div>
             <div class="w-1/12"></div>
             <div class="w-4/12">
-                <cornie-input :label="'Role Name'" class="w-full" style="width: 100%" placeholder="--Enter--" />
+                <cornie-input :label="'Role Name'" v-model="role.description" class="w-full" style="width: 100%" placeholder="--Enter--" />
             </div>
         </div>
 
         <div class="w-full border-b-2 curved flex py-2 mt-5">
-            <div class="w-full flex font-bold text-xl py-2">
+            <div class="w-full flex font-bold text-lg py-2">
                 <h2>Access Control</h2>
             </div>
         </div>
@@ -44,7 +44,7 @@
                 </p>
             </div>
             <div class="w-3/12 flex justify-end">
-                <Button class="import_button px-8 py-2">
+                <Button @click="toggleSideBar" class="import_button px-8 py-2">
                     Import from Role
                 </Button>
             </div>
@@ -118,11 +118,32 @@
                     Cancel
                 </Button>
 
-                <Button class="px-8 py-2 ml-3 bg-red-500 rounded-full text-white font-bold">
+                <Button @click="onSubmit" class="px-8 py-2 ml-3 bg-red-500 rounded-full text-white font-bold">
                     Save
                 </Button>
             </div>
         </div>
+
+            
+    <SideModal :show="sideBarShown" @close-modal="toggleSideBar">
+      <ImortPrivilege />
+      <template v-slot:cancel>
+        <Button :loading="false" >
+          <button @click="toggleSideBar" class="close_btn_border mr-3 text-gray-500 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+            Close
+          </button>
+        </Button>
+      </template>
+      <!-- <template v-slot:accept>
+        <Button :loading="false">
+          <button class="bg-red-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full">
+            New Role
+          </button>
+        </Button>
+      </template> -->
+    </SideModal>
+
+
     </div>
 </template>
 <script lang="ts">
@@ -133,9 +154,13 @@ import Accordion from '@/components/accordion-component.vue'
 import Checkbox from '@/components/custom-checkbox.vue';
 import ToggleCheck from '@/components/ToogleCheck.vue';
 // import Tooltip from '@/components/tooltip.vue';
+import ImortPrivilege from './components/import-privileges.vue'
 
 import SideModal from '@/components/modal-right.vue'
-import ModalContent from './components/import-privileges.vue'
+// import ModalContent from './components/import-privileges.vue'
+import { namespace } from 'vuex-class';
+
+const roles = namespace('roles');
 
 @Options({
   components: {
@@ -145,7 +170,8 @@ import ModalContent from './components/import-privileges.vue'
     Checkbox,
     ToggleCheck,
     SideModal,
-    ModalContent,
+    // ModalContent,
+    ImortPrivilege
     // Tooltip,
   },
 })
@@ -153,6 +179,44 @@ export default class RolesAndPrivileges extends Vue {
     hello() {
         alert('hi')
     }
+
+    sideBarShown = false;
+
+
+    @roles.State
+    org!: any;
+
+    role: any = { }
+
+    @roles.Action
+    createRole!: (role: any) => any;
+
+    @roles.Action
+    getOrg!: () => any;
+
+
+    toggleSideBar() {
+        this.sideBarShown = !this.sideBarShown;
+    }
+
+    async created() {
+        console.log(this.org, "ord");
+        
+        await this.getOrg();
+    }
+
+    get orgId() {
+        if (!this.org) return '';
+        console.log(this.org, "gggg");
+        
+        return this.org.id;
+    }
+
+    onSubmit() {
+        this.role.orgId = this.org.id;
+        this.createRole(this.role);
+    }
+
 }
 </script>
 <style>

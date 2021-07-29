@@ -5,7 +5,7 @@
         <h2>Roles and Privileges</h2>
       </div>
       <div class="w-2/12 flex items-center justify-end">
-        <span @click="toggleModalVissibility" class="cursor-pointer"><i class="pi pi-exclamation-circle p-2"></i></span>
+        <span @click="toggleModalVissibility" class="cursor-pointer"><i class="pi pi-exclamation-circle p-2"></i><Icon /></span>
       </div>
     </div>
 
@@ -27,7 +27,7 @@
               <template v-slot:buttons>
                 <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <Button>
-                      <button type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
+                      <button @click="comfirmTransfer" type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
                         Yes
                       </button>
                     </Button>
@@ -45,7 +45,7 @@
 
     <!-- <div class="-full">
       <div class="w-3/12"> -->
-        <Overlay :show="false">
+        <Overlay :show="showTransferComfirmModal">
             <Modal>
               <template v-slot:header>
                 <h3 class="text-lg leading-6 font-medium capitalize text-gray-900 mb-5 font-bold modal_titlee" id="modal-title">
@@ -56,18 +56,18 @@
               <template v-slot:body>
                 <div class="w-full">
                   <div class="container">
-                    <Dropdown :items="[ { name: 'Practictioner'}, { name: 'Person'}, { name: 'User'} ]" :optionLabel="'name'" :isContact="true" :placeholder="'--Select--'" />
+                    <Dropdown v-model="transferToContact" :items="allContacts" :optionLabel="'name'" :isContact="true" :placeholder="'--Select--'" />
                   </div>
                 </div>
               </template>
               <template v-slot:buttons>
                 <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <Button>
-                      <button type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
+                      <button @click="transferAdminRight" type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
                         Transfer
                       </button>
                     </Button>
-                    <Button>
+                    <Button @click="() => showTransferComfirmModal = false">
                       <button type="button" class="mt-3 w-full inline-flex justify-center px-4 py-2 text-base text-white-700 font-bold hover:bg-gray-50 focus:outline-none focus:none sm:mt-0 sm:ml-3 sm:w-auto">
                       No
                       </button>
@@ -79,7 +79,7 @@
       <!-- </div>
     </div> -->
     
-    <UserDetails @toggle-rights-modal="toggleModal" />
+    <UserDetails @toggle-rights-modal="toggleModal" :user="user" />
     
     <SideModal :show="showModal" @close-modal="toggleModalVissibility">
       <ModalContent />
@@ -102,7 +102,9 @@
 
     <div class="w-full flex mb-12">
       <div class="w-8/12">
-        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore aliquam fuga nemo animi et magnam ad unde doloremque dolores veritatis.</p>
+      <p>
+        Here are roles you have created. These roles can be assigned to users, defining their access level within CornieHealth.
+      </p>
       </div>
       <div class="w-4/12 flex justify-end">
         <Button :loading="false">
@@ -113,11 +115,20 @@
       </div>
     </div>
 
-    <div class="w-full border flex py-2">
+    <div class="w-full border flex py-2" id="rolesCon" v-if="roles && roles.length > 0">
+      <div class="w-full role" v-for="(role, index) in roles" :key="index">
+        <RoleCard :role="role" />
+      </div>
+      <!-- <RoleCard />
       <RoleCard />
+      <RoleCard /> -->
+    </div>
+
+    <div class="w-full border flex justify-center py-12 " v-else>
+      <p class="font-semibold text-gray-500 text-center">No roles yet</p>
+      <!-- <RoleCard />
       <RoleCard />
-      <RoleCard />
-      <RoleCard />
+      <RoleCard /> -->
     </div>
   </div>
 </template>
@@ -131,6 +142,18 @@ import SideModal from '@/components/modal-right.vue'
 import Overlay from './components/overlay.vue'
 import Modal from './components/modal.vue'
 import Dropdown from '@/components/multiselectsearch.vue'
+import { namespace } from 'vuex-class'
+import User from '@/types/user'
+import IPractitioner from '@/types/IPractitioner'
+import Icon from './components/icon.vue'
+
+const roles = namespace('roles');
+const userStore = namespace('user');
+const contacts = namespace('practitioner');
+
+interface ITransferRightTo {
+  to: string
+}
 
 @Options({
   components: {
@@ -142,17 +165,85 @@ import Dropdown from '@/components/multiselectsearch.vue'
     Modal,
     Overlay,
     Dropdown,
+    Icon,
   },
 })
 export default class RolesAndPrivileges extends Vue {
+  @roles.Action
+  getPractitioner!: () => Promise<any>
+
+  @roles.Action
+  getRoles!: () => Promise<any>
+
+  @userStore.State
+  user!: User;
+
+  @roles.State
+  roles!: User;
+
+  @contacts.State
+  contacts!: IPractitioner[];
+
+  @contacts.Action
+  fetchPractitioners!: () => Promise<IPractitioner[]>;
+
+  transferData: any = { }
+  transferToContact: any = { to: ''}
+
+  @roles.Action
+  transferRight!: (body: ITransferRightTo) => any;
+
   showModal: boolean = false;
   toggleModalVissibility() {
     this.showModal = !this.showModal;
   }
 
-show = false;
- toggleModal() {
-  this.show = !this.show;
+  show = false;
+  showTransferComfirmModal = false;
+  transferConfirmed = false;
+
+  toggleModal() {
+    console.log(this.contacts, "contacts");
+    
+      this.show = !this.show;
+  }
+
+ comfirmTransfer() {
+   this.showTransferComfirmModal = true;
+   this.show = false;
+ }
+
+ rightTransfered() {
+   this.transferConfirmed = false;
+ }
+
+ cancelTransfer() {
+   this.showTransferComfirmModal = false;
+ }
+
+ get allContacts() {
+   if (!this.contacts) return [];
+   return this.contacts.map((i: any) => {
+     return {
+       ...i,
+       name: `${i.fname} ${i.lname}`
+     }
+   })
+ }
+
+ transferAdminRight() {
+   this.transferRight({
+     to: this.transferToContact.id,
+   })
+ }
+
+ async created() {
+   this.getPractitioner() 
+   await this.getRoles();
+   await this.fetchPractitioners();
+   this.user.role = this.roles.find((i: any) => i.isSuperAdmin);
+   console.log(this.user, "user");
+   
  }
 }
 </script>
@@ -224,6 +315,14 @@ show = false;
 
   .steps_line-h {
     line-height: 24px;
+  }
+
+  .role {
+    min-width: 200px;
+  }
+
+  #rolesCon {
+    overflow-x: scroll;
   }
 
 </style>

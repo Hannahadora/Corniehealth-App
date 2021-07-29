@@ -3,15 +3,15 @@
     <div class="w-2/12 flex font-semibold text-xl p-2">
       <img src="https://via.placeholder.com/100" alt="Photo" class="rounded-full">
     </div>
-    <div class="w-7/12 flex flex-col justify-center">
+    <div class="w-7/12 flex flex-col justify-center border-r-2">
       <div class="w-full flex items-center mb-4">
         <div class="w-7/12 flex flex-col">
           <span class="uppercase font-bold card_header">Name</span>
-          <span class="card_text">User Name</span>
+          <span class="card_text">{{ user.lname }} {{ user.lname }}</span>
         </div>
         <div class="w-5/12 flex flex-col">
           <span class="uppercase font-bold card_header">Role</span>
-          <span class="card_text">Root Administrator</span>
+          <span class="card_text">{{ user.role ? user.role.name : '' }}</span>
         </div>
       </div>
       <div class="w-full flex flex-col">
@@ -21,10 +21,10 @@
     </div>
     
 
-    <div class="w-3/12 flex items-center">
-      <div class="w-full">
+    <div class="w-3/12 flex items-center px-2">
+      <div class="w-full flex justify-end">
         <span @click="toggleModal" class="cursor-pointer">
-          <span>A </span>
+          <span> </span>
           <span class="card_text"><a >Transfer Admin Rights</a></span>
         </span>
       </div>
@@ -33,7 +33,8 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-
+import { Prop } from "vue-property-decorator";
+import User from '@/types/user'
 
 @Options({
   components: {
@@ -41,6 +42,9 @@ import { Options, Vue } from "vue-class-component";
   },
 })
 export default class RolesAndPrivileges extends Vue {
+  @Prop()
+  user!: User;
+
   toggleModal() {
     this.$emit('toggle-rights-modal')
   }
