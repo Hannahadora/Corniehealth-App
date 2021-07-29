@@ -25,7 +25,7 @@ module.exports = {
       primary: "#0A4269",
       warning: "#F7B538",
       success: "#35BA83",
-
+      "blue-yonder": "#6F6C93",
       black: colors.black,
       white: colors.white,
       gray: colors.coolGray,

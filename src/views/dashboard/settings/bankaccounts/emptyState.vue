@@ -1,7 +1,6 @@
 <template>
-  <div class="w-full h-full flex flex-col justify-center items-center">
-    <img src="@/assets/img/nobank.svg" />
-    <h3 class="text-center text-black mt-5">{{ msg }}</h3>
+  <div class="w-full flex flex-col h-2/3 justify-center items-center">
+    <img src="@/assets/img/nobank.svg" class="" />
     <h4 class="text-black text-center">Add new account</h4>
     <button
       class="
@@ -26,7 +25,5 @@
 import { Options, Vue } from "vue-class-component";
 
 @Options({})
-export default class BankEmptyState extends Vue {
-  msg!: string;
-}
+export default class BankEmptyState extends Vue {}
 </script>

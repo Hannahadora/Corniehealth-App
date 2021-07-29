@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IHealthcare from "@/types/IHealthcare";
 import { StoreOptions } from "vuex";
-import { deleteHealthcare,fetchHealthcares } from "./helper";
+import { deleteHealthcare, fetchHealthcares } from "./helper";
 
 interface HealthcareState {
   healthcares: IHealthcare[];
@@ -24,7 +24,9 @@ export default {
       state.healthcares = [...healthcareSet];
     },
     deleteHealthcare(state, id: string) {
-      const index = state.healthcares.findIndex((healthcare) => healthcare.id == id);
+      const index = state.healthcares.findIndex(
+        (healthcare) => healthcare.id == id
+      );
       if (index < 0) return;
       const healthcares = [...state.healthcares];
       healthcares.splice(index, 1);
@@ -37,7 +39,8 @@ export default {
       ctx.commit("setHealthcares", healthcares);
     },
     async getHealthcareById(ctx, id: string) {
-      if (ctx.state.healthcares.length < 1) await ctx.dispatch("fetchHealthcares");
+      if (ctx.state.healthcares.length < 1)
+        await ctx.dispatch("fetchHealthcares");
       return ctx.state.healthcares.find((healthcare) => healthcare.id == id);
     },
     async deleteHealthcare(ctx, id: string) {

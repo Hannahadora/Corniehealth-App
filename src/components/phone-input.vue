@@ -106,10 +106,10 @@ export default class PhoneInput extends Vue {
   }
 
   get customRules() {
-    const phoneRule = string().matches(
-      phoneRegex,
-      "A valid phone number is required"
-    );
+    const phoneRule = string()
+      .matches(phoneRegex, "A valid phone number is required")
+      .min(9, "A valid phone number must contain at least 11 digits")
+      .max(11);
     if (this.rules) return phoneRule.concat(this.rules);
     return phoneRule;
   }
