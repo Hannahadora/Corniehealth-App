@@ -24,7 +24,7 @@
           />
         </div>
         <hr />
-        <div class="w-full h-full">
+        <div class="w-4/12 h-full">
           <slot></slot>
         </div>
       </div>
