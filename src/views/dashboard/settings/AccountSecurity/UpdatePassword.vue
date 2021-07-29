@@ -2,10 +2,9 @@
   <div class="border-t border-b border-primary-300">
     <div class="flex mt-10 mb-6 items-center">
       <div>
-        <label for="currentPassword" class="font-bold text-base uppercase">
+        <label for="currentPassword" class="font-bold text-base uppercase mb-5">
           Current Password
         </label>
-        <br />
         <password-input
           id="currentPassword"
           required
@@ -33,10 +32,9 @@
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <label for="NewPassword" class="font-bold text-base uppercase">
+        <label for="NewPassword" class="font-bold text-base uppercase mb-5">
           New Password
         </label>
-        <br />
         <password-input
           id="newPassword"
           required
@@ -62,10 +60,9 @@
         />
       </div>
       <div>
-        <label for="ConfirmPassword" class="font-bold text-base uppercase">
+        <label for="ConfirmPassword" class="font-bold text-base uppercase mb-5">
           Confirm Password
         </label>
-        <br />
         <password-input
           id="ConfirmPassword"
           required

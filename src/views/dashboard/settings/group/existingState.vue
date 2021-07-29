@@ -1,7 +1,6 @@
 <template>
   <div class="w-full">
     <span class="flex justify-end w-full">
-
       <button
         class="
           bg-danger
@@ -15,7 +14,7 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-group')"
+        @click="$router.push('/dashboard/provider/add-group')"
       >
         Add a Group
       </button>
@@ -45,7 +44,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              @click="$router.push(`/dashboard/provider/view-group/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -56,15 +55,13 @@
                 hover:bg-gray-100
                 hover:text-gray-900
                 cursor-pointer
-                my-1
-                py-3
+                my-1 -m-6 p-5 py-2
               "
             >
-              
                 <eye-icon class="mr-3" /> View
             </li>
             <li
-              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              @click="$router.push(`/dashboard/provider/add-group/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -75,15 +72,14 @@
                 hover:bg-gray-100
                 hover:text-gray-900
                 cursor-pointer
-                my-1
-                py-3
+                 my-1 -m-6 p-5 py-2
               "
             >
               
               <edit-icon class="mr-3" /> Edit
             </li>
             <li
-              @click="$router.push(`add-group/${getKeyValue(item).value}`)"
+              @click="displayMember(getKeyValue(item).value)"
               class="
                 list-none
                 items-center
@@ -94,40 +90,19 @@
                 hover:bg-gray-100
                 hover:text-gray-900
                 cursor-pointer
-                my-1
-                py-3
-              "
-            >
-              
-              <span class="mr-3 text-2xl bold text-primary">+</span> Update status
-            </li>
-            <li
-              @click="showMember(getKeyValue(item).value)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1
-                py-3
+                my-1 -m-6 p-5 py-2
               "
             >
               
               <span class="mr-3 text-2xl bold text-primary">+</span> Add member
             </li>
             <li
-             v-if="item.data.status == 'active'"
+             v-if="item.data.status == true"
               @click="showDeactivateGroup(getKeyValue(item).value)"
               class="
                 list-none
                 flex
-                my-1
-                py-3
+                 my-1 -m-6 p-5 py-2
                 items-center
                 text-xs
                 font-semibold
@@ -140,13 +115,12 @@
                <close-icon class="mr-3" /> Deactivate
             </li>
             <li
-            v-if="item.data.status == 'inactive'"
+            v-if="item.data.status == false"
               @click="activateGroup(getKeyValue(item).value)"
               class="
                 list-none
                 flex
-                my-1
-                py-3
+                 my-1 -m-6 p-5 py-2
                 items-center
                 text-xs
                 font-semibold
@@ -163,8 +137,7 @@
               class="
                 list-none
                 flex
-                my-1
-                py-3
+                 my-1 -m-6 p-5 py-2
                 items-center
                 text-xs
                 font-semibold
@@ -207,6 +180,8 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import IGroup from "@/types/IGroup";
 import DeleteIcon from "@/components/icons/delete.vue";
+import MemberModal from "./memberModal.vue";
+import DeactivateModal from "./deactivateModal.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/close.vue";
@@ -230,7 +205,9 @@ const group = namespace("group");
     TableOptions,
     DeleteIcon,
     EyeIcon,
-    EditIcon
+    EditIcon,
+    MemberModal,
+    DeactivateModal
   },
   
 })
@@ -252,7 +229,6 @@ export default class GroupExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", value: "name", show: true },
     { title: "Name", value: "name", show: true },
     {
       title: "Quantity",
@@ -262,11 +238,76 @@ export default class GroupExistingState extends Vue {
     {
       title: "Type",
       value: "type",
-      show: false,
+      show: true,
     },
     {
       title: "Status",
-      value: "state",
+      value: "memberStatus",
+      show: true,
+    },
+    {
+      title: "Managing Entity",
+      value: "managingEntity",
+      show: false,
+    },
+    {
+      title: "Characteristics Code",
+      value: "characteristicsCode",
+      show: false,
+    },
+    {
+      title: "Code",
+      value: "code",
+      show: false,
+    },
+    {
+      title: "Value Range",
+      value: "valueRange",
+      show: false,
+    },
+    {
+      title: "Period",
+      value: "period",
+      show: false,
+    },
+    {
+      title: "Value Boolean",
+      value: "valueBoolean",
+      show: false,
+    },
+    {
+      title: "Value Reference",
+      value: "valueRef",
+      show: false,
+    },
+    {
+      title: "Exclude",
+      value: "exclude",
+      show: false,
+    },
+    {
+      title: "Member Period",
+      value: "memberPeriod",
+      show: false,
+    },
+    {
+      title: "Member Status",
+      value: "memberStatus",
+      show: false,
+    },
+    {
+      title: "Member Entity",
+      value: "memberEntity",
+      show: false,
+    },
+    {
+      title: "Value Quantity",
+      value: "valueQuantity",
+      show: false,
+    },
+    {
+      title: "Value Codeable Concept",
+      value: "valueCodeableConcept",
       show: false,
     },
   ];
@@ -284,6 +325,12 @@ export default class GroupExistingState extends Vue {
 
   get items() {
     const groups = this.groups.map((group) => {
+       (group as any).period = new Date(
+         (group as any).period 
+       ).toLocaleDateString("en-US");
+       (group as any).memberPeriod = new Date(
+         (group as any).memberPeriod 
+       ).toLocaleDateString("en-US");
         return {
         ...group,
          action: group.id,
@@ -304,40 +351,21 @@ export default class GroupExistingState extends Vue {
     if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
     else window.notify({ msg: "Group not deleted", status: "error" });
   }
-   async showMember(id: string) {
-    const group = this.groups.find((d) => d.id == id);
+   async displayMember(id: string) {
+     console.log("Hello i m here");
+    const group = await this.groups.find((d) => d.id == id);
     this.showMemberModal = true;
     this.paymentId = id;
   }
   async showDeactivateGroup(id: string) {
-    const payment = this.groups.find((d) => d.id == id);
+    const payment = await this.groups.find((d) => d.id == id);
     this.showDeativateModal = true;
     this.paymentId = id;
   }
-
-  async deactivateGroup(id:string) {
+async activateGroup(id:string) {
    const confirmed = await window.confirmAction({
-      message: "You are about to deactivate this group",
-      title: "Deactivate group"
-    });
-    if (!confirmed) {
-      return;
-    }else{
-        try {
-          const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
-          if (response.success) {
-            window.notify({ msg: "Group deactivated", status: "success" });
-          } 
-        } catch (error) {
-          window.notify({ msg: "Group not deactivated", status: "error" });
-          console.error(error);
-        }
-      }
-    }
- async activateGroup(id:string) {
-   const confirmed = await window.confirmAction({
-      message: "You are about to activate this group",
-      title: "Activate group"
+      message: "You are about to activate this Group",
+      title: "Activate Group"
     });
     if (!confirmed) {
       return;
@@ -353,6 +381,25 @@ export default class GroupExistingState extends Vue {
         }
       }
     }
+//  async activateGroup(id:string) {
+//    const confirmed = await window.confirmAction({
+//       message: "You are about to activate this group",
+//       title: "Activate group"
+//     });
+//     if (!confirmed) {
+//       return;
+//     }else{
+//         try {
+//           const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
+//           if (response.success) {
+//             window.notify({ msg: "Group activated", status: "success" });
+//           } 
+//         } catch (error) {
+//           window.notify({ msg: "Group not activated", status: "error" });
+//           console.error(error);
+//         }
+//       }
+//     }
 
 }
 </script>

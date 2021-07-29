@@ -49,8 +49,8 @@
               sm:w-full
             "
           >
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-end">
+            <div class="bg-white px-2 pt-3 pb-2 sm:p-3 sm:pb-2">
+              <div>
                 <div class="mt-3 text-center sm:mt-0 sm:text-left">
                   <h3
                     class="text-lg leading-6 text-primary font-medium"
@@ -58,13 +58,16 @@
                   >
                     Deactivate Group
                   </h3>
-                  <div class="mt-4">
-                   <date-picker
-                    label="Deactivation Date"
-                      class="mb-5"
-                      v-model="deactivateTillDate"   placeholder="--Enter--" :rules="required"
-                    />
+                  <div class="mt-5">
+                    <div class="mb-7">
+                      <date-picker
+                        label="Deactivation Date"
+                         
+                          v-model="deactivateTillDate"   placeholder="--Enter--" :rules="required"
+                        />
+                      </div>
                     <Textarea
+                     class="mb-5"
                       label="Reason For Deactivating"
                       v-model="reasonsForDeactivation"
                     />
@@ -192,19 +195,19 @@ export default class memberModal extends Vue {
    async deactivate() {
       this.loading = true;
       try {
-        const response = await cornieClient().post(
-          `/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`,
-          this.payload
-        );
+        const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${this.paymentId}`,this.payload);
         if (response.success) {
           this.loading = false;
-          alert("Payment account deactivated");
+           window.notify({ msg: response.message, status: "success" });
+            this.show = false;
         } else {
-          alert(response.message);
+           window.notify({ msg: response.message, status: "error" });
+            this.show = false;
         }
       } catch (error) {
         this.loading = false;
-        console.error(error);
+         window.notify({ msg: error, status: "error" });
+          this.show = false;
       }
     }
 

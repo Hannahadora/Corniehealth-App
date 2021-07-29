@@ -1,57 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 select {
     appearance: none;
     -webkit-appearance: none;
     background: url("./assets/img/chevrondown.svg");
     background-repeat: no-repeat;
     background-position: 95% 50%;
-  }
-  ::-webkit-scrollbar {
+}
+
+ ::-webkit-scrollbar {
     width: 0.3rem;
-  }
-   
-  ::-webkit-scrollbar-track {
+}
+
+ ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     width: 0.75rem;
-  }
-   
-  ::-webkit-scrollbar-thumb {
+}
+
+ ::-webkit-scrollbar-thumb {
     background-color: #0A4269;
     height: 0.5rem;
     outline: 1px solid slategrey;
-  }
+}
 
-  table thead th {
+table thead th {
     background: #0a4269 !important;
-  
     color: white !important;
-  }
-  table thead th:first-child {
+}
+
+table thead th:first-child {
     border-top-left-radius: 0.4rem 0.4rem !important;
-  }
-  table thead th:last-child {
+}
+
+table thead th:last-child {
     border-top-right-radius: 0.4rem 0.4rem !important;
-  }
-  table thead tr th {
+}
+
+table thead tr th {
     padding-top: 1rem !important;
     padding-bottom: 1rem !important;
-  }
-  
-  table tbody td {
+}
+
+table tbody td {
     padding-top: 1.5rem !important;
     padding-bottom: 1.5rem !important;
-  }
-  table tbody tr {
-    border: 1px solid #b8c3de;
-  }
-  table tbody tr:nth-child(even) {
-    background-color: white !important;
-  }
+}
 
-  input[type="checkbox"]:before {
+table tbody tr {
+    border: 1px solid #b8c3de;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: white !important;
+}
+
+input[type="checkbox"]:before {
     position: relative;
     display: block;
     width: 11px;
@@ -59,9 +63,9 @@ select {
     content: "";
     background: white;
     border: 1px solid #0a4269;
-  }
-  
-  input[type="checkbox"]:after {
+}
+
+input[type="checkbox"]:after {
     position: relative;
     display: block;
     left: 0px;
@@ -72,31 +76,32 @@ select {
     border-radius: 3px;
     text-align: center;
     border: 1px solid #0a4269;
-  }
-  
-  /* Large checkboxes */
-  input[type="checkbox"] {
+}
+
+
+/* Large checkboxes */
+
+input[type="checkbox"] {
     height: 22px;
     width: 22px;
-  }
-  
-  input[type="checkbox"]:before {
+}
+
+input[type="checkbox"]:before {
     width: 24px;
     border: hidden;
     height: 20px;
-  }
-  
-  input[type="checkbox"]:after {
+}
+
+input[type="checkbox"]:after {
     top: -20px;
     width: 22px;
     height: 22px;
-  }
-  
-  /* Custom checkbox */
-  input[type="checkbox"]:checked:after {
+}
+
+
+/* Custom checkbox */
+
+input[type="checkbox"]:checked:after {
     background-image: url("./assets/tick.svg");
     background-color: #0a4269;
-  }
-
-
-  
+}

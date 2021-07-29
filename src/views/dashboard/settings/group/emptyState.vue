@@ -13,7 +13,7 @@
         focus:outline-none
         hover:opacity-90
       "
-       @click="$router.push('/add-group')"
+       @click="$router.push('/dashboard/provider/add-group')"
     >
       Add a Group
     </button>

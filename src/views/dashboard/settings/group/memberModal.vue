@@ -49,8 +49,8 @@
               sm:w-full
             "
           >
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-end">
+            <div class="bg-white px-2 pt-3 pb-2 sm:p-3 sm:pb-2">
+              <div>
                 <div class="mt-3 text-center sm:mt-0 sm:text-left">
                   <h3
                     class="text-lg leading-6 text-primary font-medium"
@@ -58,18 +58,20 @@
                   >
                     Add a Member
                   </h3>
-                  <div class="mt-4">
-                   <cornie-select
-                        :rules="required"
-                        :items="['Active', 'Inactive']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                        >
-                    </cornie-select>
+                  <div class="mt-5">
+                    <div  class="mb-5">
+                        <cornie-select
+                          :rules="required"
+                          :items="['Active', 'Inactive']"
+                          v-model="type"
+                          label="Type"
+                          placeholder="--Select--"
+                          >
+                      </cornie-select>
+                    </div>
                     <cornie-input
                       label="Name"
-                      class="mb-5"
+                      class="mb-3"
                       placeholder="--Input--"
                       v-model="name"
                     />
@@ -83,7 +85,7 @@
             </div>
             <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <cornie-btn
-                @click="deactivate"
+                @click="addmember"
                 :loading="loading"
                 class="
                   w-full
@@ -105,10 +107,10 @@
                 "
                 type="submit"
               >
-                Proceed
+                Add
               </cornie-btn>
               <button
-                @click="$router.push('group')"
+                @click="show = false"
                 type="button"
                 class="
                   mt-3
@@ -118,11 +120,9 @@
                   shadow-sm
                   px-4
                   py-2
-                  bg-white
                   text-base
                   font-medium
-                  text-gray-700
-                  hover:bg-gray-50
+                  text-primary
                   focus:outline-none
                   sm:mt-0
                   sm:ml-3
@@ -141,7 +141,6 @@
 </template>
 <script lang="ts">
 import Modal from "@/components/modal.vue";
-import DText from "./dtext.vue";
 import { Prop, PropSync } from "vue-property-decorator";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -162,7 +161,6 @@ import { Options, Vue } from "vue-class-component";
     CloseIcon,
     EyeIcon,
     DeleteIcon,
-    DText,
   },
 })
 export default class memberModal extends Vue {
@@ -176,21 +174,20 @@ export default class memberModal extends Vue {
   show!: boolean;
 
   loading = false;
-  reasonsForDeactivation = "";
-  deactivateTillDate = "";
-
+  type = "";
+  name = "";
 
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
   }
   get  payload() {
       return {
-        reasonsForDeactivation: this.reasonsForDeactivation,
-        deactivateTillDate: this.deactivateTillDate,
+        type: this.type,
+        name: this.name,
       };
     }
 
-   async deactivate() {
+   async addmember() {
       this.loading = true;
       try {
         const response = await cornieClient().post(
@@ -199,13 +196,16 @@ export default class memberModal extends Vue {
         );
         if (response.success) {
           this.loading = false;
-          alert("Payment account deactivated");
+          window.notify({ msg: response.message, status: "success" });
+            this.show = false;
         } else {
-          alert(response.message);
+         window.notify({ msg: response.message, status: "error" });
+            this.show = false;
         }
       } catch (error) {
         this.loading = false;
-        console.error(error);
+        window.notify({ msg: error, status: "error" });
+            this.show = false;
       }
     }
 

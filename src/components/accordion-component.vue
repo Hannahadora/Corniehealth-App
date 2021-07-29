@@ -1,5 +1,6 @@
 <template>
   <div class="w-full" :class="{ 'order-first': expand }">
+  {{expand}}
     <div
       class="h-11 w-full flex items-center justify-between px-3 border-2"
       :class="{ 'border-0 rounded-t-xl bg-primary border-primary': expand }"
@@ -55,12 +56,10 @@ import { FormValidationResult } from 'vee-validate';
 })
 export default class AccordionComponent extends Vue {
   expand =  false;
-
   @Prop({ type: String, default: "" })
   title!: string;
 
   @Prop({ type: String, default: "" })
   titledescription!: string;
-
 }
 </script>

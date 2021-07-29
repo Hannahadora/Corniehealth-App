@@ -1,12 +1,13 @@
 <template>
 <div class="bg-white rounded p-5 mt-5">
 <span class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto">
-    Add a Group
+    {{ allaction }} Group
 </span>
   <div class="w-full h-screen">
     <form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-56">
-            <accordion-component title="Basic info" :expand="expand == true" titledescription="Input the basic information">
+        
+            <accordion-component title="Basic info"  :expand="expandAcc" titledescription="Input the basic information">
                 <div class="w-full grid grid-cols-3 gap-5 p-5">
                     <cornie-input label="Identifier"  placeholder="XXXX" class="bg-gray-200" disabled/>
                     <cornie-select
@@ -18,10 +19,7 @@
                     >
                     </cornie-select>
                     <cornie-select
-                    v-for="option in options"
-                    :key="option.value"
-                    v-bind:value="option.value"
-                    :onChange = "setValue(option.text)"
+                    :onChange = "setValue(options.text)"
                     :items="items"
                     :rules="required"
                     v-model="status"
@@ -59,7 +57,7 @@
                         <cornie-input label="Code"  placeholder="--Enter--" v-model="characteristicsCode"/>
                 </div>
             </accordion-component>
-            <accordion-component title="Value">
+            <accordion-component title="Value"  :expand="expandAcca">
                 <div class="w-full grid grid-cols-3 gap-5 p-5">
                     <cornie-input label="Identifier"  placeholder="XXXX" class="bg-gray-200" disabled/>
                     <cornie-select
@@ -110,7 +108,7 @@
                         />
                 </div>
             </accordion-component>
-            <accordion-component title="Member">
+            <accordion-component title="Member"  :expand="expandAccb">
                 <div class="w-full grid grid-cols-3 gap-5 p-5">
                     <cornie-select
                     :rules="required"
@@ -226,14 +224,12 @@ export default class AddGroup extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Boolean, default: "" })
-  expand!: boolean;
-
   
   @group.Action
   getGroupById!: (id: string) => IGroup;
 
   loading = false;
+  showacc = false;
 
 
 
@@ -255,6 +251,9 @@ export default class AddGroup extends Vue {
   memberPeriod = "";
   memberStatus = "";
   memberEntity = "";
+expandAcc = true;
+expandAcca = false;
+expandAccb = false;
 
   aoption = "Active";
 options = [
@@ -319,6 +318,9 @@ items = ['Active', 'Inactive'];
     }
    }
 
+  get allaction() {
+    return this.id ? "Edit" : "Add a";
+  }
  
 
 //   async reset(){
