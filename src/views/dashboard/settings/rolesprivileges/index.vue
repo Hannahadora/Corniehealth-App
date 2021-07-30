@@ -1,11 +1,11 @@
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto px-2">
     <div class="w-full border-b-2 curved flex py-2">
       <div class="w-10/12 flex font-semibold text-xl py-2">
         <h2>Roles and Privileges</h2>
       </div>
       <div class="w-2/12 flex items-center justify-end">
-        <span @click="toggleModalVissibility" class="cursor-pointer"><i class="pi pi-exclamation-circle p-2"></i><Icon /></span>
+        <span @click="toggleModalVissibility" class="cursor-pointer"><Icon :type="2" /></span>
       </div>
     </div>
 
@@ -27,7 +27,7 @@
               <template v-slot:buttons>
                 <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <Button>
-                      <button @click="comfirmTransfer" type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
+                      <button style="background: #FE4D3C" @click="comfirmTransfer" type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
                         Yes
                       </button>
                     </Button>
@@ -62,8 +62,8 @@
               </template>
               <template v-slot:buttons>
                 <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <Button>
-                      <button @click="transferAdminRight" type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
+                    <Button :loading="transfering">
+                      <button style="background: #FE4D3C" @click="transferAdminRight" type="button" class="w-full inline-flex justify-center rounded-full border-transparent font-bold shadow-sm px-6 py-3 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:none sm:ml-3 sm:w-auto sm:text-sm">
                         Transfer
                       </button>
                     </Button>
@@ -108,28 +108,16 @@
       </div>
       <div class="w-4/12 flex justify-end">
         <Button :loading="false">
-          <button class="bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+          <router-link :to="{ name: 'Roles Form' }" style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
             New Role
-          </button>
+          </router-link>
         </Button>
       </div>
     </div>
-
-    <div class="w-full border flex py-2" id="rolesCon" v-if="roles && roles.length > 0">
-      <div class="w-full role" v-for="(role, index) in roles" :key="index">
-        <RoleCard :role="role" />
-      </div>
-      <!-- <RoleCard />
-      <RoleCard />
-      <RoleCard /> -->
-    </div>
-
-    <div class="w-full border flex justify-center py-12 " v-else>
-      <p class="font-semibold text-gray-500 text-center">No roles yet</p>
-      <!-- <RoleCard />
-      <RoleCard />
-      <RoleCard /> -->
-    </div>
+   
+   <div class="w-full">
+    <DTable :roles="roles" />
+   </div>
   </div>
 </template>
 <script lang="ts">
@@ -145,6 +133,14 @@ import Dropdown from '@/components/multiselectsearch.vue'
 import { namespace } from 'vuex-class'
 import User from '@/types/user'
 import IPractitioner from '@/types/IPractitioner'
+import { first, getTableKeyValue } from "@/plugins/utils";
+import search from "@/plugins/search";
+import TableOptions from "@/components/table-options.vue";
+import ColumnFilter from "@/components/columnfilter.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import DTable from './components/DTable.vue'
+import SupportIcon from '@/components/icons/support.vue'
 import Icon from './components/icon.vue'
 
 const roles = namespace('roles');
@@ -155,8 +151,17 @@ interface ITransferRightTo {
   to: string
 }
 
+interface IRole {
+  name: string,
+  description: string,
+  isDefault: boolean,
+  isSuperAdmin: boolean,
+  id: string,
+}
+
 @Options({
   components: {
+    Icon,
     UserDetails,
     Button,
     RoleCard,
@@ -165,10 +170,103 @@ interface ITransferRightTo {
     Modal,
     Overlay,
     Dropdown,
-    Icon,
+    TableOptions,
+    ColumnFilter,
+
+    DeleteIcon,
+    EyeIcon,
+    DTable,
+    SupportIcon,
   },
 })
 export default class RolesAndPrivileges extends Vue {
+  query = "";
+  x = "";
+  getKeyValue = getTableKeyValue;
+  showColumnFilter = false;
+  transfering = false;
+  preferredHeaders = [];
+  rawHeaders = [
+    {
+      title: "Name",
+      value: "name",
+      show: true,
+    },
+    { title: "Description", value: "description", show: true },
+    { title: "Org Id", value: "orgId", show: true },
+    {
+      title: "Is Admin",
+      value: "isSuperAdmin",
+      show: true,
+    },
+    {
+      title: "Default",
+      value: "isDefault",
+      show: true,
+    },
+    {
+      title: "Created At",
+      value: "createdAt",
+      show: false,
+    },
+    {
+      title: "Updated At",
+      value: "updatedAt",
+      show: false,
+    },
+    {
+      title: "Created By",
+      value: "createdBy",
+      show: false,
+    },
+    {
+      title: "Deleted At",
+      value: "deletedAt",
+      show: false,
+    },
+    {
+      title: "App Slug",
+      value: "appSlug",
+      show: false,
+    },
+  ];
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "action", image: true }];
+  }
+
+  get items() {
+    const roles = this.roles.map((role) => {
+      // const opHours = this.stringifyOperationHours(
+      //   practitioner.hoursOfOperation
+      // );
+      
+      return {
+        ...role,
+        action: role.id,
+        // hoursOfOperation: opHours,
+      };
+    });
+    if (!this.query) return roles;
+    return search.searchObjectArray(roles, this.query);
+  }
+
+  // async remove(id: string) {
+  //   const confirmed = await window.confirmAction({
+  //     message: "You are about to delete this practitioner",
+  //   });
+  //   if (!confirmed) return;
+
+  //   if (await this.deletePractitioner(id))
+  //     window.notify({ msg: "Practitioner deleted", status: "success" });
+  //   else window.notify({ msg: "Practitioner not deleted", status: "error" });
+  //   window.notify({ msg: "Practitioner not deleted", status: "error" });
+  // }
+
   @roles.Action
   getPractitioner!: () => Promise<any>
 
@@ -179,12 +277,12 @@ export default class RolesAndPrivileges extends Vue {
   user!: User;
 
   @roles.State
-  roles!: User;
+  roles!: IRole[];
 
-  @contacts.State
-  contacts!: IPractitioner[];
+  @roles.State
+  practitioners!: IPractitioner[];
 
-  @contacts.Action
+  @roles.Action
   fetchPractitioners!: () => Promise<IPractitioner[]>;
 
   transferData: any = { }
@@ -203,9 +301,12 @@ export default class RolesAndPrivileges extends Vue {
   transferConfirmed = false;
 
   toggleModal() {
-    console.log(this.contacts, "contacts");
+    console.log(this.fetchPractitioners().then(res => console.log(res)
+    ), "contacts");
     
       this.show = !this.show;
+      console.log(this.x, "xxxxx");
+      
   }
 
  comfirmTransfer() {
@@ -222,19 +323,28 @@ export default class RolesAndPrivileges extends Vue {
  }
 
  get allContacts() {
-   if (!this.contacts) return [];
-   return this.contacts.map((i: any) => {
+   if (!this.practitioners) return [];
+   return this.practitioners.map((i: any) => {
      return {
        ...i,
-       name: `${i.fname} ${i.lname}`
+       name: `${i.firstName} ${i.lastName}`
      }
    })
  }
 
- transferAdminRight() {
-   this.transferRight({
+ async transferAdminRight() {
+   this.transfering = true;
+   try {
+     await this.transferRight({
      to: this.transferToContact.id,
    })
+   this.showTransferComfirmModal = false;
+   this.transfering = false;
+   } catch (error) {
+     this.transfering = false;
+     console.log(error);
+     
+   }
  }
 
  async created() {
@@ -243,7 +353,11 @@ export default class RolesAndPrivileges extends Vue {
    await this.fetchPractitioners();
    this.user.role = this.roles.find((i: any) => i.isSuperAdmin);
    console.log(this.user, "user");
-   
+   this.fetchPractitioners()
+    .then(res => {
+      console.log(res, "pres");
+      
+    })
  }
 }
 </script>

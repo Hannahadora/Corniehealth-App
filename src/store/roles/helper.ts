@@ -40,10 +40,27 @@ export async function getOrg() {
   return { };
 }
 
+export async function fetchPractitioners() {
+  try {
+    const response = await cornieClient().get(
+        "/api/v1/practitioner"
+    );
+      console.log(response.data, "ORG");
+      
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching roles", status: "error" });
+  }
+  return { };
+}
+
 export async function deleteRole(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/roles/${id}`);
-    return response.data as any;
+
+    console.log(response, "role delete");
+    
+    return response.success as boolean;
   } catch (error) {
     notify({
       msg: "There was an error deleting this role",
@@ -70,13 +87,16 @@ export async function createRole(role: any) {
 
 export async function transferRight(body: any) {
   try {
-    const response = await cornieClient().post(`/api/v1/transfer-admin/`, body);
+    const response = await cornieClient().post(`/api/v1/roles/transfer-admin/`, body);
     console.log(response, "transfer");
-    
+    notify({
+      msg: "Right transfered successfully",
+      status: "success",
+    });
     return response.data as any;
   } catch (error) {
     notify({
-      msg: "There was an error deleting this role",
+      msg: "There was an error transfering right",
       status: "error",
     });
   }

@@ -1,17 +1,25 @@
 <template>
-  <!-- <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="#0A4269"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M14 8H8L8 14H6L6 8L0 8L0 6L6 6L6 0L8 0L8 6L14 6V8Z" />
-  </svg> -->
-  <img src="file:///Users/ogbaragodwin/Downloads/Vector%20(2).svg" alt="">
+    <span>
+      <img v-if="type === 1" :src="img" alt="Hi">
+      <img v-if="type === 2" :src="img2" alt="Hi">
+      <img v-if="type === 3" :src="img3" alt="Hi">
+    </span>
 </template>
 <script>
+
+import img from '@/assets/transfer-icon.svg'
+import img2 from '@/assets/info_icon.svg'
+import img3 from '@/assets/doc.svg'
+
 export default {
   name: "AddIcon",
+  props: [ 'type' ],
+  data() {
+    return {
+      img,
+      img2,
+      img3
+    }
+  }
 };
 </script>

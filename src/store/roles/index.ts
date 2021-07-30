@@ -1,12 +1,13 @@
 // import ObjectSet from "@/lib/objectset";
 // import ICareteam from "@/types/ICareteam";
 import { StoreOptions } from "vuex";
-import { getPractitioner, getRoles, deleteRole, createRole, getOrg, transferRight } from "./helper";
+import { getPractitioner, getRoles, deleteRole, createRole, getOrg, transferRight, fetchPractitioners } from "./helper";
 
 interface RolesStore {
   privileges: any[],
   roles: any[],
-  org: any
+  org: any,
+  practitioners: [],
 }
 
 export default {
@@ -15,6 +16,7 @@ export default {
     privileges: [],
     roles: [ ],
     org: { },
+    practitioners: [],
   },
   mutations: {
     setPrivileges(state, privileges) {
@@ -28,6 +30,10 @@ export default {
 
     setOrg(state, org) {
       if (org) state.org = org;
+    },
+
+    setPractitioners(state, prs) {
+      if (prs) state.practitioners = prs;
     },
 
     removeRole(state, roleId) {
@@ -61,6 +67,9 @@ export default {
     // },
     async deleteRole(ctx, id: string) {
       const deleted = await deleteRole(id);
+      console.log(!deleted, "boolean");
+      console.log(deleted, "deleted");
+      
       if (!deleted) return false;
       ctx.commit("removeRole", id);
       return true;
@@ -78,6 +87,12 @@ export default {
       if (!deleted) return false;
       // ctx.commit("removeRole", id);
       return true;
+    },
+
+    async fetchPractitioners(ctx) {
+      const practitioners = await fetchPractitioners();
+      ctx.commit("setPractitioners", practitioners);
+      return practitioners;
     },
   },
 } as StoreOptions<RolesStore>

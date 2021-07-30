@@ -44,8 +44,11 @@
                 </p>
             </div>
             <div class="w-3/12 flex justify-end">
-                <Button @click="toggleSideBar" class="import_button px-8 py-2">
-                    Import from Role
+                <Button @click="toggleSideBar" class="import_button px-8 py-2 ">
+                    <span class="flex items-center">
+                        <Icon :type="3" />
+                        <span class="ml-2">Import from Role</span>
+                    </span>
                 </Button>
             </div>
         </div>
@@ -53,7 +56,125 @@
         <div class="w-full mt-5">
             <Accordion>
                 <template v-slot:title>
-                    <p class="flex justify-between"><span>Test </span></p>
+                    <p class="flex justify-between"><span>Analytics </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+            <Accordion>
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+            <Accordion>
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Accounting </span></p>
                 </template>
                 <template v-slot:default>
                     <div class="container my-3 p-3">
@@ -114,11 +235,15 @@
 
         <div class="w-full my-5">
             <div class="container flex justify-end">
-                <Button class="import_button px-8 py-2">
+                <Button class="import_button px-8 py-2"
+                     @click="
+                        $router.push({ name: 'Roles'})
+                    "
+                >
                     Cancel
                 </Button>
 
-                <Button @click="onSubmit" class="px-8 py-2 ml-3 bg-red-500 rounded-full text-white font-bold">
+                <Button style="background: #FE4D3C" @click="onSubmit" class="px-8 py-2 ml-3 bg-red-500 rounded-full text-white font-bold">
                     Save
                 </Button>
             </div>
@@ -155,6 +280,7 @@ import Checkbox from '@/components/custom-checkbox.vue';
 import ToggleCheck from '@/components/ToogleCheck.vue';
 // import Tooltip from '@/components/tooltip.vue';
 import ImortPrivilege from './components/import-privileges.vue'
+import Icon from './components/icon.vue'
 
 import SideModal from '@/components/modal-right.vue'
 // import ModalContent from './components/import-privileges.vue'
@@ -171,7 +297,8 @@ const roles = namespace('roles');
     ToggleCheck,
     SideModal,
     // ModalContent,
-    ImortPrivilege
+    ImortPrivilege,
+    Icon,
     // Tooltip,
   },
 })
