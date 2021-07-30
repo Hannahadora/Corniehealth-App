@@ -230,11 +230,11 @@ export default class CareteamExistingState extends Vue {
 
   get items() {
     const careteams = this.careteams.map((careteam) => {
-      const allparticipant = careteam.participants;
+     // const allparticipant = careteam.participants;
       return {
         ...careteam,
         action: careteam.id,
-        participants: allparticipant,
+      //  participants: allparticipant,
       };
     });
     if (!this.query) return careteams;
