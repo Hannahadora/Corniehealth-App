@@ -6,7 +6,7 @@
   <div class="w-full h-screen">
     <v-form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-56">
-            <accordion-component title="Basic info" opened>
+            <accordion-component title="Basic info" :opened = 'true'>
                 <template v-slot:default>
                     <div class="w-full grid grid-cols-3 gap-5 p-5">
                       <cornie-input label="Identifier"  placeholder="XXXX" class="bg-gray-200" disabled/>
