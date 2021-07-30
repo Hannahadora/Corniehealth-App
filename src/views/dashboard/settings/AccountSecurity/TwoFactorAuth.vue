@@ -21,6 +21,7 @@
         <label for="otp"> Enter the one time pin sent to you email </label>
         <br />
         <input
+        autocomplete="false"
           type="text"
           id="otp"
           placeholder="Enter OTP"

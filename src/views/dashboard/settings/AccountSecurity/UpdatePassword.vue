@@ -1,13 +1,11 @@
 <template>
   <div class="border-t border-b border-primary-300">
     <div class="flex mt-10 mb-6 items-center">
-      <div>
+      <div class="grid-cols-1 my-10">
         <label for="currentPassword" class="font-bold text-base uppercase mb-5">
           Current Password
         </label>
-        <password-input
-          id="currentPassword"
-          required
+       <password-input
           class="
             appearance-none
             w-full
@@ -19,9 +17,6 @@
             focus:outline-none
             focus:shadow-outline-blue
             focus:border-blue-300
-            transition
-            duration-150
-            ease-in-out
             sm:text-sm
             sm:leading-5
           "
@@ -30,14 +25,12 @@
         />
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="flex grid grid-cols-2 gap-4 my-10">
       <div>
         <label for="NewPassword" class="font-bold text-base uppercase mb-5">
           New Password
         </label>
         <password-input
-          id="newPassword"
-          required
           class="
             appearance-none
             w-full
@@ -64,8 +57,6 @@
           Confirm Password
         </label>
         <password-input
-          id="ConfirmPassword"
-          required
           class="
             appearance-none
             w-full
@@ -88,7 +79,6 @@
         />
       </div>
     </div>
-
     <span class="flex justify-end">
       <button
         type="submit"

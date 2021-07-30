@@ -5,16 +5,13 @@
       <div class="password-main">
         <div>
           <h4>Password</h4>
-          <p>
+          <span>
             The same password strength are enforced for all users across the
             app.
-            <div
-              @click="viewPolicy = !viewPolicy"
-              class="ml-1 text-blue-700 mt-1 font-bold cursor-pointer text-xs"
-            >
+            <div  @click="viewPolicy = !viewPolicy" class="ml-1 text-blue-700 mt-1 font-bold cursor-pointer text-xs">
               VIEW POLICY
             </div>
-          </p>
+          </span>
         </div>
         <div v-if="!isShowingPassword">
           <button ref="pass" @click="displayUpadtePassword()">
@@ -29,7 +26,7 @@
           <path d="M12 2C17.53 2 22 6.47 22 12C22 17.53 17.53 22 12 22C6.47 22 2 17.53 2 12C2 6.47 6.47 2 12 2ZM15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z" fill="#211F45"/>
           </svg>
         </span>
-        <UpdatePassword/>
+        <UpdatePassword />
       </div>
       <div class="two-factor-box">
         <div>

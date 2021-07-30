@@ -19,13 +19,13 @@ select {
 }
 
  ::-webkit-scrollbar-thumb {
-    background-color: #0A4269;
+    background-color: #211F45;
     height: 0.5rem;
     outline: 1px solid slategrey;
 }
 
 table thead th {
-    background: #0a4269 !important;
+    background: #211F45 !important;
     color: white !important;
 }
 
@@ -62,7 +62,7 @@ input[type="checkbox"]:before {
     height: 11px;
     content: "";
     background: white;
-    border: 1px solid #0a4269;
+    border: 1px solid #909396;
 }
 
 input[type="checkbox"]:after {
@@ -75,7 +75,7 @@ input[type="checkbox"]:after {
     background-position: center;
     border-radius: 3px;
     text-align: center;
-    border: 1px solid #0a4269;
+    border: 1px solid #211F45;
 }
 
 
@@ -103,5 +103,5 @@ input[type="checkbox"]:after {
 
 input[type="checkbox"]:checked:after {
     background-image: url("./assets/tick.svg");
-    background-color: #0a4269;
+    background-color: #211F45;
 }
