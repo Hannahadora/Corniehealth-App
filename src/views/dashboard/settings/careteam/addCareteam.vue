@@ -152,7 +152,7 @@ import DEdit from "@/components/icons/dedit.vue";
 import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import DatePicker from "./datepicker.vue";
+import DatePicker from "@/components/daterangepicker.vue";
 
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
@@ -224,7 +224,6 @@ export default class AddCareteam extends Vue {
     this.subject = careteam.subject;
     this.period = careteam.period;
     this.participants = careteam.participants;
-  console.log(careteam);
  }
    get payload() {
     return {

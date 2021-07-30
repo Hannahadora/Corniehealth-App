@@ -1,14 +1,11 @@
 <template>
-  <div class="border-t border-b border-gray-300">
-    <section class="my-10 grid grid-cols-2 gap-4">
-      <div>
-        <label for="currentPassword" class="font-bold text-base uppercase">
+  <div class="border-t border-b border-primary-300">
+    <div class="flex mt-10 mb-6 items-center">
+      <div class="grid-cols-1 my-10">
+        <label for="currentPassword" class="font-bold text-base uppercase mb-5">
           Current Password
         </label>
-        <br />
-        <password-input
-          id="currentPassword"
-          required
+       <password-input
           class="
             appearance-none
             w-full
@@ -20,9 +17,6 @@
             focus:outline-none
             focus:shadow-outline-blue
             focus:border-blue-300
-            transition
-            duration-150
-            ease-in-out
             sm:text-sm
             sm:leading-5
           "
@@ -30,17 +24,13 @@
           v-model="currentPassword"
         />
       </div>
-    </section>
-
-    <section class="grid grid-cols-2 gap-4">
+    </div>
+    <div class="flex grid grid-cols-2 gap-4 my-10">
       <div>
-        <label for="NewPassword" class="font-bold text-base uppercase">
+        <label for="NewPassword" class="font-bold text-base uppercase mb-5">
           New Password
         </label>
-        <br />
         <password-input
-          id="newPassword"
-          required
           class="
             appearance-none
             w-full
@@ -63,13 +53,10 @@
         />
       </div>
       <div>
-        <label for="ConfirmPassword" class="font-bold text-base uppercase">
+        <label for="ConfirmPassword" class="font-bold text-base uppercase mb-5">
           Confirm Password
         </label>
-        <br />
         <password-input
-          id="ConfirmPassword"
-          required
           class="
             appearance-none
             w-full
@@ -91,8 +78,7 @@
           v-model="ConfirmPassword"
         />
       </div>
-    </section>
-
+    </div>
     <span class="flex justify-end">
       <button
         type="submit"
@@ -104,7 +90,7 @@
           text-white
           appearance-none
           border-none
-          bg-pink-600
+          bg-danger
           rounded-3xl
           placeholder-gray-400
           focus:outline-none
@@ -124,9 +110,9 @@
 </template>
 
 <script>
-import PasswordInput from "@/components/PasswordInput.vue";
-import { quantumClient } from "@/plugins/http";
-import store from "@/store";
+import PasswordInput from "@/components/PasswordInput.vue"
+import { quantumClient } from "@/plugins/http"
+import store from "@/store"
 
 export default {
   name: "UpdatePassword",
