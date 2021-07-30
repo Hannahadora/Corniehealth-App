@@ -59,9 +59,9 @@ export default class AccordionComponent extends Vue {
   title!: string;
 
 @Prop({ type: Boolean, default: false })
-  opened!: boolean;
+  modelValue!: boolean;
 
-  @PropSync('opened')
+  @PropSync('modelValue')
   expand!: boolean;
 
   @Prop({ type: String, default: "" })

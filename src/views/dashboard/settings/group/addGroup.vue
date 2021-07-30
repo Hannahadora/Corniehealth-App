@@ -4,15 +4,15 @@
     {{ allaction }} Group
 </span>
   <div class="w-full h-screen">
-    <v-form class="mt-5 w-full" @submit.prevent="submit">
-        <div class="border mb-56">
-            <accordion-component title="Basic info" opened>
+    <form class="mt-5 w-full" @submit.prevent="submit">
+        <div class="border mb-44">
+            <accordion-component title="Basic info" v-model = "opened">
                 <template v-slot:default>
                     <div class="w-full grid grid-cols-3 gap-5 p-5">
                       <cornie-input label="Identifier"  placeholder="XXXX" class="bg-gray-200" disabled/>
                       <cornie-select
                       :rules="required"
-                      :items="['Active', 'Inactive']"
+                      :items="['state']"
                       v-model="state"
                       label="State"
                       placeholder="--Select--"
@@ -29,7 +29,7 @@
                       </cornie-select>
                       <cornie-select
                           :rules="required"
-                          :items="['Active', 'Inactive']"
+                          :items="['type']"
                           v-model="type"
                           label="Type"
                           placeholder="--Select--"
@@ -39,14 +39,14 @@
                       <cornie-input label="Code"  placeholder="--Enter--" v-model="code"/>
                           <cornie-select
                           :rules="required"
-                          :items="['Active', 'Inactive']"
+                          :items="['quantity']"
                           v-model="quantity"
                           label="Quantity"
                           placeholder="--Select--"
                           ></cornie-select>
                           <cornie-select
                           :rules="required"
-                          :items="['Active', 'Inactive']"
+                          :items="['Managing entity']"
                           v-model="managingEntity"
                           label="Managing Entity"
                           placeholder="--Select--"
@@ -58,39 +58,59 @@
                     </div>
                 </template>        
             </accordion-component>
-            <accordion-component  title="Value">
-                <template>
+            <accordion-component  title="Value" v-model = "openedR">
+                <template v-slot:default>
                     <div class="w-full grid grid-cols-3 gap-5 p-5">
                         <cornie-select
                         :rules="required"
-                        :items="['Active', 'Inactive']"
-                        v-model="memberEntity"
-                        label="entity"
+                        :items="['value Boolean']"
+                        v-model="valueBoolean"
+                        label="Value Boolean"
                         placeholder="--Select--"
                         >
                         </cornie-select>
+                          <cornie-input label="value codeable concept"  placeholder="--Enter--" v-model="valueCodeableConcept"/>
+                            <cornie-select
+                        :rules="required"
+                        :items="['Value Quantity']"
+                        v-model="valueQuantity"
+                        label="Value Quantity"
+                        placeholder="--Select--"
+                        >
+                        </cornie-select>
+                             <cornie-select
+                        :rules="required"
+                        :items="['Value Range']"
+                        v-model="valueRange"
+                        label="Value Range"
+                        placeholder="--Select--"
+                        >
+                        </cornie-select>
+                            
+                             <cornie-select
+                        :rules="required"
+                        :items="['exclude']"
+                        v-model="exclude"
+                        label="exclude"
+                        placeholder="--Select--"
+                        >
+                        </cornie-select>
+                          <cornie-input label="value reference"  placeholder="--Enter--" v-model="valueRef"/>
+                            
                             <date-picker
                             label="Period"
-                            v-model="memberPeriod"
+                            v-model="period"
                             placeholder="--Enter--" :rules="required"
                             />
-                        <cornie-select
-                        :rules="required"
-                        :items="['Active', 'Inactive']"
-                        v-model="memberStatus"
-                        label="Status"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
                     </div>
                 </template>
             </accordion-component>
-            <accordion-component title="Member">
-                <template>
+            <accordion-component title="Member" v-model = "openedT">
+                <template v-slot:default>
                     <div class="w-full grid grid-cols-3 gap-5 p-5">
                         <cornie-select
                         :rules="required"
-                        :items="['Active', 'Inactive']"
+                        :items="['Member Entity']"
                         v-model="memberEntity"
                         label="entity"
                         placeholder="--Select--"
@@ -103,7 +123,7 @@
                             />
                         <cornie-select
                         :rules="required"
-                        :items="['Active', 'Inactive']"
+                        :items="['Member Status']"
                         v-model="memberStatus"
                         label="Status"
                         placeholder="--Select--"
@@ -115,7 +135,7 @@
         </div>
         <span class="flex justify-end w-full">
         <button
-        @click="$router.push('group')"
+        @click="$router.push('/dashboard/provider/settings/group')"
         type="button"
         class="
             outline-primary
@@ -155,7 +175,7 @@
         </cornie-btn>
         
         </span>
-    </v-form>
+    </form>
   </div>
 </div>
 </template>
@@ -211,6 +231,8 @@ export default class AddGroup extends Vue {
   expand = false;
   isVisible = '';
 opened = true;
+openedR = false;
+openedT = false;
 
 
   state = "";
@@ -231,9 +253,7 @@ opened = true;
   memberPeriod = "";
   memberStatus = "";
   memberEntity = "";
-expandAcc = true;
-expandAcca = false;
-expandAccb = false;
+
 
   aoption = "Active";
 options = [
@@ -354,8 +374,9 @@ items = ['Active', 'Inactive'];
 
   async created() {
     this.setGroup();
-     const data = await this.getDropdowns("groups");
+     const data = await this.getDropdowns("group");
     this.dropdowns = data;
+    console.log("data");
     console.log(data);
   }
 

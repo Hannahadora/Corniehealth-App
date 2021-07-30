@@ -149,7 +149,7 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { cornieClient } from "@/plugins/http";
-import DatePicker from "@/components/datepicker.vue";
+import DatePicker from "@/components/single-datepicker.vue";
 import { Options, Vue } from "vue-class-component";
 
 @Options({

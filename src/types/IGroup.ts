@@ -18,4 +18,13 @@ export default interface IGroup{
     memberPeriod: string;
     memberStatus: string;
     memberEntity: string;
+    getStatusDetails: {
+      active: boolean
+      collectionId: string
+      deactivateTillDate: string
+      groupId: string
+      id?: string
+      paymentId: string
+      reasonsForDeactivation: string
+    }
   }

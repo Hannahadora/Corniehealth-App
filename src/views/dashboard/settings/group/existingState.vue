@@ -97,7 +97,7 @@
               <span class="mr-3 text-2xl bold text-primary">+</span> Add member
             </li>
             <li
-             v-if="item.data.status == true"
+             v-if="item.data.groupStatusDetails.active == true"
               @click="showDeactivateGroup(getKeyValue(item).value)"
               class="
                 list-none
@@ -115,7 +115,7 @@
                <close-icon class="mr-3" /> Deactivate
             </li>
             <li
-            v-if="item.data.status == false"
+            v-if="item.data.groupStatusDetails.active == false"
               @click="activateGroup(getKeyValue(item).value)"
               class="
                 list-none
@@ -242,13 +242,13 @@ export default class GroupExistingState extends Vue {
     },
     {
       title: "Status",
-      value: "memberStatus",
-      show: true,
+      value: "status",
+      show: false,
     },
     {
       title: "Managing Entity",
       value: "managingEntity",
-      show: false,
+      show: true,
     },
     {
       title: "Characteristics Code",
@@ -331,6 +331,7 @@ export default class GroupExistingState extends Vue {
        (group as any).memberPeriod = new Date(
          (group as any).memberPeriod 
        ).toLocaleDateString("en-US");
+       console.log(group);
         return {
         ...group,
          action: group.id,

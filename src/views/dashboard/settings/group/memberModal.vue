@@ -176,12 +176,14 @@ export default class memberModal extends Vue {
   loading = false;
   type = "";
   name = "";
+  groupId = "";
 
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
   }
   get  payload() {
       return {
+        groupId: this.paymentId,
         type: this.type,
         name: this.name,
       };
@@ -191,12 +193,11 @@ export default class memberModal extends Vue {
       this.loading = true;
       try {
         const response = await cornieClient().post(
-          `/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`,
-          this.payload
+          '/api/v1/groupMembers/',this.payload
         );
         if (response.success) {
           this.loading = false;
-          window.notify({ msg: response.message, status: "success" });
+          window.notify({ msg: "Member added", status: "success" });
             this.show = false;
         } else {
          window.notify({ msg: response.message, status: "error" });
