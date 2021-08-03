@@ -12,6 +12,7 @@ import practitioner from "./practitioner";
 import HealthcareStore from "./healthcare";
 import CareteamStore from "./careteam";
 import GroupteamStore from "./group";
+import PracticeformStore from "./practiceform";
 
 export default createStore({
   modules: {
@@ -28,5 +29,6 @@ export default createStore({
     healthcare: HealthcareStore,
     careteam: CareteamStore,
     group: GroupteamStore,
+    practiceform: PracticeformStore,
   },
 } as StoreOptions<any>);

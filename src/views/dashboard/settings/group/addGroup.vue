@@ -351,9 +351,11 @@ items = ['Active', 'Inactive'];
       );
       if (response.success) {
           window.notify({ msg: "Group created", status: "success" });
+          this.$router.push('/dashboard/provider/settings/group')
       }
     } catch (error) {
       window.notify({ msg: "Group not created", status: "error" });
+      this.$router.push('/dashboard/provider/settings/group')
     }
   }
  
@@ -365,9 +367,11 @@ items = ['Active', 'Inactive'];
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Group updated", status: "success" });
+        this.$router.push('/dashboard/provider/settings/group')
       }
     } catch (error) {
        window.notify({ msg: "Group not updated", status: "error" });
+       this.$router.push('/dashboard/provider/settings/group')
     }
   }
 

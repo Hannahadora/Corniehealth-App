@@ -2,14 +2,14 @@
   <span class="flex items-center">
     <label class="radio-container">
       {{ label }}
-      <input v-bind="$attrs" type="radio" v-model="checked" />
+      <input v-bind="$attrs" type="checkbox" v-model="checked" />
       <span class="checkmark"></span>
     </label>
   </span>
 </template>
 <script>
 export default {
-  name: "CornieRadio",
+  name: "CornieCheckbox",
   inheritAttrs: false,
   props: {
     label: String,
@@ -66,7 +66,7 @@ export default {
 
 /* When the radio button is checked, add a blue background */
 .radio-container input:checked ~ .checkmark {
-  background-color: #211F45;
+  background-color: #0a4269;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */

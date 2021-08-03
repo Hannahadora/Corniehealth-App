@@ -16,7 +16,6 @@ interface INotify {
   msg: string;
   status?: "success" | "error" | "info";
 }
-
 declare function notify(data: INotify): void;
 declare function confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
 

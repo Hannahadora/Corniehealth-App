@@ -77,7 +77,7 @@
         </div>
         <span class="flex justify-end w-full">
         <cornie-btn
-        @click="$router.push('group')"
+        @click="$router.push('/dashboard/provider/settings/group')"
         type="button"
         class="
             bg-danger
