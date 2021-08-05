@@ -1,5 +1,5 @@
 <template>
-  <span class="w-11/12">
+  <span class="w-11/12 block my-auto">
     <label class="block uppercase mb-1 text-xs font-bold">
       {{ label }}
     </label>
@@ -10,48 +10,40 @@
       v-model="valueSync"
     >
       <span class="flex">
-        <field
-          :name="`${inputName}-code`"
-          v-slot="{ meta: codeMeta, field: codeField }"
-          :rules="rules ? required : undefined"
-          v-model="codeSync"
-        >
-          <select
-            v-bind="codeField"
-            :class="{
-              'border-red-500': Boolean(errorMessage),
-              'border-green-400': codeMeta.valid && codeMeta.touched,
-            }"
-            class="
-              border border-gray-300
-              px-3
-              py-2
-              rounded-l-md
-              placeholder-gray-400
-              focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-            "
+        <span class="flex w-2/5">
+          <field
+            :name="`${inputName}-code`"
+            v-slot="{ meta: codeMeta, handleChange, errorMessage: codeError }"
+            :rules="rules ? required : undefined"
+            v-model="codeSync"
           >
-            <option value="+234" selected="selected" hidden>+234</option>
-            <option
-              :value="code.dialCode"
-              :selected="code.default"
-              v-for="(code, i) in codes"
-              :key="i"
+            <cornie-select
+              class="w-full rounded-r-none"
+              :items="codes"
+              v-model="codeSync"
+              :class="{
+                'border-red-500': Boolean(codeError),
+                'border-green-400': codeMeta.valid && codeMeta.touched,
+              }"
+              @update:modelValue="handleChange"
             >
-              {{ code.dialCode }}
-            </option>
-          </select>
-        </field>
+              <template v-slot:item="{ item }">
+                <span class="flex items-center">
+                  {{ item.isoCode }}
+                  <img class="ml-1 w-4" :src="item.flag" />
+                </span>
+              </template>
+              <template v-slot:selected="{ item }">
+                <span class="block p-2">
+                  <img :src="item?.flag" width="23" />
+                </span>
+              </template>
+            </cornie-select>
+          </field>
+        </span>
         <input
           :class="{
-            'border-red-500': Boolean(errorMessage),
+            'border-red-500': Boolean(codeError),
             'border-green-400': meta.valid && meta.touched,
           }"
           class="rounded-r-lg border p-2 w-11/12 focus:outline-none"
@@ -59,9 +51,9 @@
           v-bind="field"
         />
       </span>
-      <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-        errorMessage
-      }}</span>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">
+        {{ errorMessage }}
+      </span>
     </field>
   </span>
 </template>
@@ -71,6 +63,7 @@ import { Prop, PropSync } from "vue-property-decorator";
 import { countryCodes } from "@/plugins/countrycodes";
 import { Field } from "vee-validate";
 import { string } from "yup";
+import CornieSelect from "./cornieselect.vue";
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -79,6 +72,7 @@ const phoneRegex =
   name: "PhoneInput",
   components: {
     Field,
+    CornieSelect,
   },
 })
 export default class PhoneInput extends Vue {
@@ -119,16 +113,34 @@ export default class PhoneInput extends Vue {
 
   required = string().required();
   get codes() {
-    return countryCodes.sort((a, b) => {
-      if (a.dialCode > b.dialCode) return 1;
-      if (a.dialCode < b.dialCode) return -1;
-      return 0;
-    });
+    return countryCodes
+      .sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      })
+      .map((country) => ({
+        ...country,
+        display: country.dialCode,
+        code: country.dialCode,
+        flag: `https://flagcdn.com/224x168/${country.isoCode.toLowerCase()}.png`,
+      }));
   }
 }
 </script>
 <style scoped>
-select- {
-  background-size: 0%;
+.style-chooser .vs__search::placeholder,
+.style-chooser .vs__dropdown-toggle,
+.style-chooser .vs__dropdown-menu {
+  background: #dfe5fb;
+  border: none;
+  color: #394066;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+
+.phone-grid {
+  display: grid;
+  columns: 10% 90%;
 }
 </style>
