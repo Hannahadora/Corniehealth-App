@@ -1,8 +1,8 @@
 <template>
-    <div class="w-3/12 flex flex-col items-center justify-center">
+    <div class="w-full flex flex-col items-center justify-center">
         <div class="container">
             <div class="w-11/12 mx-auto flex flex-col items-center faint-border card_shadow role_card  py-5 my-3">
-                <span class="uppercase font-bold mt-2 text">Name</span>
+                <span class="uppercase font-bold mt-2 text">{{ role.name }}</span>
                 <span class="my-2">
                     <div class="flex rounded-full card_image">
                     <img src="https://via.placeholder.com/100" class="rounded-full card_round_image" alt="User Image">
@@ -16,7 +16,7 @@
                             <!-- </button> -->
                         </Button>
                     </span>
-                    <span class="my-2 deactivate_btn"><a >Deactivate</a></span>
+                    <span class="my-2 deactivate_btn cursor-pointer" @click="deleteRole(role.id)"><a >Delete</a></span>
                 </div>
             </div>
         </div>
@@ -24,6 +24,10 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
+const roles = namespace('roles');
 
 @Options({
   components: {
@@ -31,7 +35,17 @@ import { Options, Vue } from "vue-class-component";
   },
 })
 export default class RolesAndPrivileges extends Vue {
- 
+    @Prop()
+    role!: any;
+
+    @roles.Action
+    deleteRole!: (id: string) => any;
+
+    removeRole(id: string) {
+        alert('deleting')
+        this.deleteRole(id)
+    }
+
 }
 </script>
 <style>
