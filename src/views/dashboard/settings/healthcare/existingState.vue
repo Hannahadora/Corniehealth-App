@@ -12,7 +12,7 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('add-health-services')"
+        @click="$router.push('add-health-service')"
       >
         Add New
       </button>
@@ -41,7 +41,7 @@
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
-              @click="$router.push(`add-health-services/${getKeyValue(item).value}`)"
+              @click="$router.push(`add-health-service/${getKeyValue(item).value}`)"
               class="
                 list-none
                 items-center
@@ -60,7 +60,7 @@
               View & Edit
             </li>
             <li
-              @click="showDelete(newitem)"
+              @click="deleteItem(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -75,7 +75,7 @@
                 cursor-pointer
               "
             >
-              <delete-icon class="mr-3" /> Delete Account
+              <delete-icon class="mr-3" /> Delete Healthcare
             </li>
           </table-options>
         </span>
@@ -103,9 +103,13 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-
+import IHealthcare from "@/types/IHealthcare";
+import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
+import { namespace } from "vuex-class";
 
+
+const healthcare = namespace("healthcare");
 @Options({
   components: {
     Table,
@@ -126,6 +130,15 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 export default class HealthcareExistingState extends Vue {
     showColumnFilter = false;
     query = "";
+    
+  loading = false;
+
+
+  @healthcare.State
+  healthcares!: IHealthcare[];
+
+  @healthcare.Action
+  deleteHealthcare!: (id: string) => Promise<boolean>;
 
     getKeyValue = getTableKeyValue;
     preferredHeaders = [];
@@ -138,28 +151,28 @@ export default class HealthcareExistingState extends Vue {
     
     {
       title: "Location",
-      value: "location",
+      value: "address",
       show: true,
     },
     {
       title: "Communication",
       value: "communication",
-      show: true,
+      show: false,
     },
     {
       title: "Phone",
       value: "phone",
-      show: true,
+      show: false,
     },
     {
-      title: "Code",
-      value: "code",
+      title: "Provison Code",
+      value: "provisionCode",
       show: true,
     },
       {
       title: "Type",
       value: "type",
-      show: false,
+      show: true,
     },
     {
       title: "Comment",
@@ -193,7 +206,29 @@ export default class HealthcareExistingState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
+get items() {
+    const healthcares = this.healthcares.map((healthcare) => {
+        return {
+        ...healthcare,
+         action: healthcare.id,
+        };
+    });
+    
+    if (!this.query) return healthcares;
+    return search.searchObjectArray(healthcares, this.query);
+  }
+ 
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this healthcare service",
+      title: "Delete Healthcare Servcie"
+    });
+    if (!confirmed) return;
 
+    if (await this.deleteHealthcare(id)) window.notify({ msg: "Healthcare service deleted", status: "success" });
+    else window.notify({ msg: "Healthcare service not deleted", status: "error" });
+  }
+ 
 
  
 }

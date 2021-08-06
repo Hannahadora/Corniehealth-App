@@ -1,7 +1,6 @@
 <template>
   <div
     class="
-      shadow-xl
       text-black
       flex flex-row
       rounded-lg

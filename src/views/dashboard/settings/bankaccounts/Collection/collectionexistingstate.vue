@@ -13,14 +13,10 @@
           hover:opacity-90
           flex
         "
+        @click="$emit('add-account')"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-
-        <p>
-          <router-link to="/dashboard/settings/bank-accounts/add-collection"
-            >New Account</router-link
-          >
-        </p>
+        <p>New Account</p>
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">

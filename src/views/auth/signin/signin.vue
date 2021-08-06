@@ -10,7 +10,7 @@
         />
         <cornie-input
           v-model="email"
-          required
+          :rules="emailRule"
           class="w-full"
           label="Mobile Number or Email"
         />
@@ -20,7 +20,7 @@
           </span>
           <password-input
             id="password"
-            required
+            :rules="requiredRule"
             v-model="password"
             class="border rounded"
           />
@@ -62,7 +62,7 @@ import PasswordInput from "@/components/PasswordInput.vue";
 import { quantumClient } from "@/plugins/http";
 import store from "@/store";
 import { fetchCornieData } from "@/plugins/auth";
-
+import { string } from "yup";
 @Options({
   components: {
     CornieInput,
@@ -81,6 +81,8 @@ export default class Signin extends Vue {
     };
   }
 
+  requiredRule = string().required();
+  emailRule = string().email();
   async submit() {
     this.loading = true;
     try {

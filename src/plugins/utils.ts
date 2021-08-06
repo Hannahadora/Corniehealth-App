@@ -12,6 +12,7 @@ export function getTableKeyValue(item: any) {
   const key = Object.values(rest)[0] as string;
   const value = data[key];
   return {
+    all: data,
     key,
     value,
     index,

@@ -21,11 +21,12 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
 
-      danger: "#EC0868",
-      primary: "#0A4269",
+      danger: "#FE4D3C",
+      primary: "#211F45",
       warning: "#F7B538",
       success: "#35BA83",
-
+      "blue-yonder": "#6F6C93",
+      "white-cotton-ball": "#F5F4FA",
       black: colors.black,
       white: colors.white,
       gray: colors.coolGray,

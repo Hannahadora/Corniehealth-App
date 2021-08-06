@@ -15,6 +15,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/signup/signup.vue"),
   },
   {
+    path: "/roles",
+    name: "Test",
+    component: () =>
+      import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
+  },
+  {
     path: "/login",
     name: "Sign In",
     alias: "/signin",
@@ -34,11 +40,40 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
     children: [
       {
+        path: "add-group/:id?",
+        props: true,
+        name: "Add a New Group",
+        component: () =>
+          import("@/views/dashboard/settings/group/addGroup.vue"),
+      },
+      {
+        path: "view-group/:id?",
+        props: true,
+        name: "View Group Details",
+        component: () =>
+          import("@/views/dashboard/settings/group/viewGroup.vue"),
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
+          {
+            path: "care-partners",
+            name: "Care Partners",
+            component: () =>
+              import("@/views/dashboard/settings/CarePartners/index.vue"),
+          },
+          {
+            path: "add-care-partners/:id?",
+            props: true,
+            name: "Add a Care Partner",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/CarePartners/AddCarePartner.vue"
+              ),
+          },
           {
             path: "account-security",
             name: "Account Security",
@@ -73,6 +108,12 @@ const routes: Array<RouteRecordRaw> = [
               import(
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
+          },
+          {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/org-hierarchy/index.vue"),
           },
           {
             path: "contact-info",
@@ -122,12 +163,61 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/healthcare/index.vue"),
           },
           {
-            path: "add-health-services/:id?",
+            path: "add-health-service/:id?",
             props: true,
             name: "Add a New Healthcare Service",
             component: () =>
               import("@/views/dashboard/settings/healthcare/addServices.vue"),
           },
+          {
+            path: "practitioners",
+            name: "Practitioners",
+            component: () =>
+              import("@/views/dashboard/settings/practitioners/index.vue"),
+          },
+          {
+            path: "add-practitioner/:id?",
+            props: true,
+            name: "Create or Update Practitioner",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/practitioners/addPractitioner.vue"
+              ),
+          },
+          {
+            path: "care-teams",
+            name: "Care Teams",
+            component: () =>
+              import("@/views/dashboard/settings/careteam/index.vue"),
+          },
+          {
+            path: "add-careteam/:id?",
+            props: true,
+            name: "Create a Care Team",
+            component: () =>
+              import("@/views/dashboard/settings/careteam/addCareteam.vue"),
+          },
+          {
+            path: "roles-privileges",
+            props: true,
+            name: "Roles",
+            component: () =>
+              import("@/views/dashboard/settings/rolesprivileges/index.vue"),
+          },
+          {
+            path: "addroles/:id?",
+            props: true,
+            name: "Roles Form",
+            component: () =>
+              import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
+          },
+          {
+            path: "group",
+            name: "Group",
+            component: () =>
+              import("@/views/dashboard/settings/group/index.vue"),
+          },
+           
         ],
       },
     ],

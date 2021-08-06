@@ -78,12 +78,6 @@ export const countryCodes = [
     flag: "https://www.countryflags.io/AW/flat/64.png",
   },
   {
-    name: "Ascension Island",
-    dialCode: "+247",
-    isoCode: "AC",
-    flag: "https://www.countryflags.io/AC/flat/64.png",
-  },
-  {
     name: "Australia",
     dialCode: "+61",
     isoCode: "AU",
@@ -922,12 +916,6 @@ export const countryCodes = [
     dialCode: "+31",
     isoCode: "NL",
     flag: "https://www.countryflags.io/NL/flat/64.png",
-  },
-  {
-    name: "Netherlands Antilles",
-    dialCode: "+599",
-    isoCode: "AN",
-    flag: "https://www.countryflags.io/AN/flat/64.png",
   },
   {
     name: "New Caledonia",

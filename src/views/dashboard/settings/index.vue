@@ -1,12 +1,12 @@
 <template>
   <div
-    class="mt-2 mb-5 rounded-lg settings h-full bg-white w-full overflow-hidden"
+    class="mt-2 mb-5 rounded-lg settings bg-white w-full overflow-hidden"
   >
     <div class="w-full h-full p-3 border-r-2 overflow-hidden">
       <settings-sidebar class="overflow-hidden" />
     </div>
-    <div class="p-3 w-full h-full overflow-auto">
-      <router-view class="h-screen" />
+    <div class="p-3 w-full overflow-auto">
+      <router-view />
     </div>
   </div>
 </template>
@@ -26,7 +26,6 @@ export default class Settings extends Vue {}
 .settings {
   display: grid;
   grid-template-columns: 25% 75%;
-  height: 60%;
-  min-height: 82vh;
+  height: 82vh;
 }
 </style>

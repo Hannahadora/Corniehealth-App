@@ -14,6 +14,7 @@ export async function fetchDomains() {
   }
   return [] as IDomain[];
 }
+
 export async function deleteDomain(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/domain/${id}`);

@@ -1,24 +1,19 @@
-import { HoursOfOperation } from "./ILocation";
+import Period from "./IPeriod";
 
-export { HoursOfOperation };
 export default interface IPractitioner {
+  name: string;
   id: string;
   firstName: string;
-
   lastName: string;
-
   email: string;
-
   activeState: string;
-
   gender: string;
-
-  phone: string;
-
+  phone: {
+    number: string;
+    code: string;
+  };
   address: string;
-
-  dateOfBirth: string;
-
+  dateOfBirth: "2021-07-16";
   image: string;
   jobDesignation: string;
   department: string;
@@ -30,5 +25,15 @@ export default interface IPractitioner {
   availabilityExceptions: string;
   consultationChannel: string;
   hoursOfOperation: HoursOfOperation[];
+  qualificationCode?: string;
   organizationId: string;
+  type: string;
+  period: Period;
+}
+
+export interface HoursOfOperation {
+  day: string;
+  openTime: string;
+  closeTime: string;
+  selected: boolean;
 }

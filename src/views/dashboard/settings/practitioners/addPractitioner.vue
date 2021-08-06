@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen flex justify-center">
-    <div class="w-full mx-5">
+    <div class="w-full h-screen mx-5 pb-5">
       <span
         class="
           flex
@@ -14,15 +14,26 @@
       >
         Add a Practitioner
       </span>
-      <span class="w-full">
-        <div class="w-full h-screen">
-          <v-form class="mt-5 w-full" @submit="submit">
-            <div class="w-full grid grid-cols-2 gap-5">
-              <cornie-input
-                :rules="required"
-                v-model="qualificationIdentifier"
-                label="Identifier"
+      <span class="w-full h-full block">
+        <div class="w-full h-screen block">
+          <v-form class="w-full h-screen my-5 block" @submit="submit">
+            <span class="flex items-center mt-3 mb-3">
+              <avatar class="mr-2" v-if="img.url" :src="img.url" />
+              <avatar class="mr-2" v-else :src="img.placeholder" />
+              <input
+                type="file"
+                accept="image/*"
+                name="image"
+                id="file"
+                @change="img.onChange"
+                hidden
               />
+              <label for="file" class="text-pink-600 font-bold cursor-pointer">
+                Upload
+              </label>
+            </span>
+            <div class="w-full grid grid-cols-2 gap-5">
+              <cornie-input :modelValue="id" label="Identifier" disabled />
               <cornie-select
                 :rules="required"
                 :items="['active', 'inactive']"
@@ -37,37 +48,41 @@
               />
               <cornie-select
                 :rules="required"
-                :items="['male', 'female']"
+                :items="['male', 'female', 'other']"
                 v-model="gender"
                 label="Gender"
               />
               <phone-input
                 v-model="phone"
+                v-model:code="dialCode"
                 :rules="required"
                 label="Phone Number"
               />
-              <cornie-input :rules="required" v-model="email" label="Email" />
+              <cornie-input :rules="emailRule" v-model="email" label="Email" />
               <cornie-input
                 :rules="required"
                 v-model="address"
                 label="Address"
               />
-              <input type="date" name="Date of Birth" v-model="dateOfBirth" />
-              <cornie-select
+              <date-picker label="Date of Birth" v-model="dateOfBirth" />
+              <cornie-input
                 :rules="required"
-                :items="['Doctor', 'nurse']"
                 v-model="jobDesignation"
                 label="Job Designation"
               />
-              <cornie-select
+              <cornie-input
                 :rules="required"
-                :items="['Finance']"
-                v-model="Department"
+                v-model="department"
                 label="Department"
               />
               <cornie-select
                 :rules="required"
-                :items="['Root']"
+                :items="[
+                  {
+                    code: 'c7453f3b-e712-4cb3-a86f-02d1f51198eb',
+                    display: 'Clinician',
+                  },
+                ]"
                 v-model="accessRole"
                 label="Access Role"
               />
@@ -87,17 +102,17 @@
               Qualification
             </span>
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
-              <cornie-input v-model="identifier" label="Idenifier" />
+              <cornie-input disabled label="Identifier" />
               <cornie-select
-                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                v-model="code"
+                :items="dropdown.Qualification"
+                v-model="qualificationCode"
                 label="Code"
               />
-              <input type="date" name="Period" v-model="period" />
-              <cornie-input v-model="issuer" label="Issuer" />
+              <period-picker label="Period" v-model="period" />
+              <cornie-input v-model="qualificationIssuer" label="Issuer" />
               <cornie-select
-                :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                v-model="communication"
+                :items="dropdown.CommunicationLanguage"
+                v-model="communicationLanguage"
                 label="Communication"
               />
               <cornie-input v-model="licenseNumber" label="License Number" />
@@ -106,7 +121,7 @@
             <div class="mt-3 w-full">
               <operation-hours v-model="hoursOfOperation" />
             </div>
-            <div class="w-full grid grid-cols-2 gap-5 mt-3">
+            <div class="w-full grid grid-cols-2 gap-5 mt-5">
               <cornie-select
                 :rules="required"
                 v-model="availabilityExceptions"
@@ -116,12 +131,12 @@
 
               <cornie-select
                 :rules="required"
-                v-model="consulationChannel"
+                v-model="consultationChannel"
                 label="Consulation Channel"
-                :items="['..', '..']"
+                :items="dropdown.ConsultationChannel"
               />
             </div>
-            <span class="flex w-full mb-2 justify-end">
+            <span class="flex w-full mt-5 pb-3 justify-end">
               <button
                 class="
                   rounded-full
@@ -136,7 +151,7 @@
               >
                 Cancel
               </button>
-              <button
+              <cornie-btn
                 class="
                   w-1/4
                   rounded-full
@@ -150,7 +165,7 @@
                 type="submit"
               >
                 Save
-              </button>
+              </cornie-btn>
             </span>
           </v-form>
         </div>
@@ -159,37 +174,51 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/operation-hours.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
+import DatePicker from "@/components/datepicker.vue";
 import { Prop, Watch } from "vue-property-decorator";
+import { useHandleImage } from "@/composables/useHandleImage";
+import PeriodPicker from "@/components/daterangepicker.vue";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
-
+import Avatar from "@/components/avatar.vue";
+import Period from "@/types/IPeriod";
 @Options({
+  name: "AddPractitioner",
   components: {
     CornieInput,
     CornieSelect,
     PhoneInput,
+    PeriodPicker,
     OperationHours,
+    DatePicker,
+    Avatar,
   },
 })
 export default class AddPractitioner extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  img = setup(() => useHandleImage());
+
   @practitioner.Action
-  getPractitionerById!: (id: string) => IPractitioner;
+  getPractitionerById!: (id: string) => Promise<IPractitioner>;
+
+  @practitioner.Mutation
+  updatePractitioners!: (practitioners: IPractitioner[]) => void;
 
   loading = false;
 
+  qualificationCode = "";
   name = "";
   email = "";
   activeState = "";
@@ -197,22 +226,23 @@ export default class AddPractitioner extends Vue {
   phone = "";
   address = "";
   dateOfBirth = "";
-  image = "";
   jobDesignation = "";
   department = "";
   accessRole = "";
-  qualificationIdentifier = "";
+  qualificationIdentifier = "11-22";
   qualificationIssuer = "";
   licenseNumber = "";
+  type = "";
   communicationLanguage = "";
   availabilityExceptions = "";
   consultationChannel = "";
   hoursOfOperation: HoursOfOperation[] = [];
   organizationId = "";
-
-  dropdowns = {} as IIndexableObject;
-
+  dialCode = "";
+  dropdown = {} as IIndexableObject;
+  period = {} as Period;
   required = string().required();
+  emailRule = string().email().required();
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -222,17 +252,19 @@ export default class AddPractitioner extends Vue {
     this.setPractitioner();
   }
 
-  setPractitioner() {
-    const practitioner = this.getPractitionerById(this.id);
+  async setPractitioner() {
+    const practitioner = await this.getPractitionerById(this.id);
     if (!practitioner) return;
     this.name = `${practitioner.firstName} ${practitioner.lastName}`;
     this.email = practitioner.email;
     this.activeState = practitioner.activeState;
     this.gender = practitioner.gender;
-    this.phone = practitioner.phone;
+    this.phone = practitioner.phone?.number;
+    this.dialCode = (practitioner.phone as any).dialCode;
+    this.type = practitioner.type;
     this.address = practitioner.address;
     this.dateOfBirth = practitioner.dateOfBirth;
-    this.image = practitioner.image;
+    this.img.url = practitioner.image;
     this.jobDesignation = practitioner.jobDesignation;
     this.department = practitioner.department;
     this.accessRole = practitioner.accessRole;
@@ -244,6 +276,11 @@ export default class AddPractitioner extends Vue {
     this.consultationChannel = practitioner.consultationChannel;
     this.organizationId = practitioner.organizationId;
     this.hoursOfOperation = practitioner.hoursOfOperation;
+    this.period = practitioner.period || {};
+  }
+  serializeDate(date: string) {
+    if (!date) return "";
+    return new Date(date).toISOString();
   }
   get payload() {
     const [firstName, lastName] = this.name.split(" ");
@@ -253,10 +290,14 @@ export default class AddPractitioner extends Vue {
       email: this.email,
       activeState: this.activeState,
       gender: this.gender,
-      phone: this.phone,
+      phone: {
+        number: this.phone,
+        dialCode: this.dialCode,
+      },
+      type: this.type,
       address: this.address,
-      dateOfBirth: this.dateOfBirth,
-      image: this.image,
+      dateOfBirth: this.serializeDate(this.dateOfBirth),
+      image: this.img.url,
       jobDesignation: this.jobDesignation,
       department: this.department,
       accessRole: this.accessRole,
@@ -268,6 +309,7 @@ export default class AddPractitioner extends Vue {
       consultationChannel: this.consultationChannel,
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
+      period: this.period,
     };
   }
 
@@ -285,10 +327,12 @@ export default class AddPractitioner extends Vue {
         this.payload
       );
       if (response.success) {
-        window.notify({ msg: "Practitioner added", status: "success" });
+        window.notify({ msg: "Practitioner created", status: "success" });
+        this.updatePractitioners([response.data]);
       }
     } catch (error) {
-      window.notify({ msg: "Practitioner not added", status: "error" });
+      window.notify({ msg: "Practitioner not created", status: "error" });
+      console.log(error);
     }
   }
 
@@ -298,17 +342,22 @@ export default class AddPractitioner extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        console.log(response.data);
+        window.notify({ msg: "Practitioner updated", status: "success" });
+        this.updatePractitioners([response.data]);
       }
     } catch (error) {
+      window.notify({ msg: "Practitioner not updated", status: "error" });
       console.log(error);
     }
   }
 
+  async setDropdown() {
+    const data = await this.getDropdowns("practitioner");
+    this.dropdown = data;
+  }
   async created() {
     this.setPractitioner();
-    const data = await this.getDropdowns("practitioner");
-    this.dropdowns = data;
+    this.setDropdown();
   }
 }
 </script>
