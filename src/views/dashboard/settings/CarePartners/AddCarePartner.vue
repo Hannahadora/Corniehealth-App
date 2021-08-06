@@ -103,6 +103,8 @@
               focus:outline-none
               hover:bg-primary
               hover:text-white
+              border-primary
+              border-2
             "
           >
             Cancel
