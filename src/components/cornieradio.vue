@@ -1,19 +1,27 @@
 <template>
-  <span class="flex items-center">
-    <label class="radio-container">
+  <div class="flex items-center inline-block" v-bind="$attrs" @click="checked = value">
+    <radio-on v-if="checked == value"/>
+    <radio-off v-else />
+    <label class="ml-2">
       {{ label }}
-      <input v-bind="$attrs" type="radio" v-model="checked" />
-      <span class="checkmark"></span>
     </label>
-  </span>
+  </div>
 </template>
 <script>
+import RadioOff from "@/components/icons/RadioOff.vue"
+import RadioOn from "@/components/icons/RadioOn.vue"
+
 export default {
   name: "CornieRadio",
   inheritAttrs: false,
+  components: {
+    RadioOff,
+    RadioOn
+  },
   props: {
     label: String,
-    modelValue: String,
+    value: [String, Number],
+    modelValue: [String, Number],
   },
   computed: {
     checked: {
@@ -22,6 +30,7 @@ export default {
       },
       set(val) {
         this.$emit("update:modelValue", val);
+
       },
     },
   },

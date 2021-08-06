@@ -1,0 +1,165 @@
+<template>
+  <main class="p-6">
+    <div class="flex justify-items-end">
+      <span class="flex-grow"></span>
+      <button
+        class="
+          bg-danger
+          rounded-full
+          text-white
+          py-2
+          px-6
+          focus:outline-none
+          hover:opacity-90
+        "
+        @click="showNewFunctionDialog = true"
+      >
+        <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
+        New Function
+      </button>
+      <button
+        @click="$router.back()"
+        class="
+          outline-primary
+          rounded-full
+          text-black
+          ml-2
+          py-2
+          px-6
+          focus:outline-none
+          outline
+          hover:bg-primary
+          hover:text-white
+        "
+      >
+        View Org. Structure
+      </button>
+    </div>
+    <empty-state
+      heading="No function recorded"
+      subheading="Add new function"
+      v-if="isEmpty"
+    >
+      <template #icon>
+        <img src="@/assets/img/functions.svg" class="inline-block mr-2" />
+      </template>
+    </empty-state>
+    <existing-state v-else />
+    <cornie-dialog :visible="showNewFunctionDialog" right class="w-4/12 h-full">
+      <card class="h-full flex flex-col">
+        <card-title class="bg-primary">
+          <icon-btn @click="showNewFunctionDialog = false">
+            <arrow-left stroke="#ffffff" />
+          </icon-btn>
+        </card-title>
+        <card-text class="p-6 flex-grow flex flex-col">
+          <v-form class="flex-grow flex flex-col" @submit="null">
+            <h1 class="text-primary text-xl font-extrabold mb-5">
+              New Function
+            </h1>
+            <cornie-input
+              class="w-full mb-6"
+              label="function name"
+              placeholder="--Enter--"
+              v-model="functionName"
+            />
+            <cornie-select
+              class="w-full mb-6"
+              label="Hierarchy"
+              placeholder="--Select--"
+              v-model="hierarchy"
+            />
+            <cornie-select
+              class="w-full mb-6"
+              label="supervisory function"
+              placeholder="--Select--"
+              v-model="supervisoryFunction"
+            />
+            <span class="flex-grow"></span>
+            <custom-checkbox
+              label="Automatically create a group for this function"
+            />
+
+            <div class="flex justify-items-end">
+              <span class="flex-grow"></span>
+              <button
+                @click="showNewFunctionDialog = false"
+                class="
+                  outline-primary
+                  rounded-full
+                  text-black
+                  mr-2
+                  py-2
+                  px-6
+                  focus:outline-none
+                  outline
+                  hover:bg-primary
+                  hover:text-white
+                "
+              >
+                Cancel
+              </button>
+              <button
+                class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  py-2
+                  px-6
+                  focus:outline-none
+                  hover:opacity-90
+                "
+                @click="isEmpty = false; showNewFunctionDialog = false"
+              >
+                Create Function
+              </button>
+            </div>
+          </v-form>
+        </card-text>
+      </card>
+    </cornie-dialog>
+  </main>
+</template>
+
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import EmptyState from "@/components/EmptyState.vue";
+import CornieDialog from "@/components/Dialog.vue";
+import Card from "@/components/card.vue";
+import CardText from "@/components/card-text.vue";
+import CardTitle from "@/components/card-title.vue";
+import ArrowLeft from "@/components/icons/arrowleft.vue";
+import IconBtn from "@/components/iconbtn.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CustomCheckbox from "@/components/custom-checkbox.vue";
+import { string as yupString } from "yup";
+import ExistingState from "./ExistingState.vue"
+
+@Options({
+  name: "Functions",
+  components: {
+    EmptyState,
+    CornieDialog,
+    Card,
+    CardText,
+    CardTitle,
+    ArrowLeft,
+    CornieInput,
+    IconBtn,
+    CornieSelect,
+    CustomCheckbox,
+    ExistingState
+  },
+})
+export default class Functions extends Vue {
+  showNewFunctionDialog = false;
+
+  required = yupString().required();
+
+  isEmpty = true
+}
+</script>
+
+<style>
+</style>

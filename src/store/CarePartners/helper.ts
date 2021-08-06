@@ -30,6 +30,21 @@ export default abstract class CarePartnersClient {
             return []
         }
     }
+
+    static async search(payload: {q: string}): Promise<ICarePartner[]> {
+        try {
+            const response = await cornieClient().get(
+                "/api/v1/care-partners/search",
+                payload
+            )
+            if(response.success)
+                return response.data as ICarePartner[]
+            return []
+        } catch(error) {
+            console.log(error)
+            return []
+        }
+    }
     
     static async delete(id: string): Promise<boolean> {
         try {

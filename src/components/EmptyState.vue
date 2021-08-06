@@ -13,8 +13,7 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Prop, Watch } from "vue-property-decorator";
-
+import { Prop } from "vue-property-decorator";
 
 @Options({})
 export default class EmptyState extends Vue {

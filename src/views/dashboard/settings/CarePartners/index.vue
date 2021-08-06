@@ -30,7 +30,7 @@
               focus:outline-none
               hover:opacity-90
             "
-            @click="$router.push('add-care-partners')"
+            @click="showAddCarePartners = true"
           >
             Add a Care Partner
           </button>
@@ -40,6 +40,9 @@
         <existing-state />
       </template>
     </div>
+    <cornie-dialog :visible="showAddCarePartners" center class="w-6/12">
+      <add-care-partners @close="showAddCarePartners = false"/>
+    </cornie-dialog>
   </main>
 </template>
 
@@ -49,16 +52,22 @@ import EmptyState from "@/components/EmptyState.vue";
 import { namespace } from "vuex-class"
 import ICarePartner from "@/types/ICarePartner";
 import ExistingState from "./ExistingState.vue"
+import AddCarePartners from "./AddCarePartner.vue"
+import CornieDialog from "@/components/Dialog.vue"
 
 const CarePartnersStore = namespace("CarePartnersStore")
 
 @Options({
   components: {
     EmptyState,
-    ExistingState
+    ExistingState,
+    AddCarePartners,
+    CornieDialog
   },
 })
 export default class CarePartners extends Vue {
+
+  showAddCarePartners = false
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];

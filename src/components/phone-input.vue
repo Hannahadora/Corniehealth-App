@@ -1,5 +1,5 @@
 <template>
-  <span class="w-11/12">
+  <span class="w-12/12">
     <label class="block uppercase mb-1 text-xs font-bold">
       {{ label }}
     </label>
@@ -54,7 +54,7 @@
             'border-red-500': Boolean(errorMessage),
             'border-green-400': meta.valid && meta.touched,
           }"
-          class="rounded-r-lg border p-2 w-11/12 focus:outline-none"
+          class="rounded-r-lg border p-2 w-full focus:outline-none"
           type="tel"
           v-bind="field"
         />

@@ -45,6 +45,12 @@ const routes: Array<RouteRecordRaw> = [
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/OrganisationHierarchy/index.vue")
+          },
+          {
             path: "care-partners",
             name: "Care Partners",
             component: () =>
@@ -176,6 +182,11 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+      {
+        path: "org-heirarchy/new-designation",
+        name: "New Designation",
+        component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
+      }
     ],
   },
 ];

@@ -1,22 +1,5 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full">
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          px-3
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="showAddCarePartners = true"
-      >
-        Add a Care Partner
-      </button>
-    </span>
     <div class="flex w-full justify-between mt-5 items-center">
       <span class="flex items-center">
         <sort-icon class="mr-5" />
@@ -69,9 +52,6 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-    <cornie-dialog :visible="showAddCarePartners" center class="w-6/12">
-      <add-care-partners @close="showAddCarePartners = false" />
-    </cornie-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -92,10 +72,6 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import ICarePartner from "@/types/ICarePartner";
-import CornieDialog from "@/components/Dialog.vue"
-import AddCarePartners from "./AddCarePartner.vue"
-import IEmail from "@/types/IEmail";
-import IPhone from "@/types/IPhone";
 
 const CarePartnersStore = namespace("CarePartnersStore");
 
@@ -113,14 +89,11 @@ const CarePartnersStore = namespace("CarePartnersStore");
     EyeIcon,
     ColumnFilter,
     TableOptions,
-    CornieDialog,
-    AddCarePartners
   },
 })
 export default class CarePartnersExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-  showAddCarePartners = false
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];
@@ -132,30 +105,20 @@ export default class CarePartnersExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Organisation Name",
-      value: "name",
+      title: "Function Name",
+      value: "functionName",
       show: true,
     },
     {
-      title: "Organisation Type",
-      value: "organisationType",
+      title: "Hierarchy",
+      value: "hierarchy",
       show: true,
     },
     {
-      title: "Address",
-      value: "address",
+      title: "Supervisory Function",
+      value: "supervisoryFunction",
       show: true,
-    },
-    {
-      title: "Email",
-      value: "email",
-      show: true,
-    },
-    {
-      title: "Phone",
-      value: "phone",
-      show: true,
-    },
+    }
   ];
 
   get headers() {
@@ -172,21 +135,19 @@ export default class CarePartnersExistingState extends Vue {
       return {
         ...partner,
         action: partner.id,
-        email: (partner.email as unknown as IEmail).address,
-        phone: (partner.phone as unknown as IPhone).dialCode || "+234" + (partner.phone as unknown as IPhone).number,
       };
     });
     if (!this.query) return partners;
     return search.searchObjectArray(partners, this.query);
   }
-
+  
   async deletePartner(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this care partner",
     });
     if (!confirmed) return;
-    const partner = this.carePartners.find((element) => element.id == id);
-    if (partner && (await this.delete(partner))) alert("Care partner deleted");
+    const partner = this.carePartners.find(element => element.id == id)
+    if (partner && await this.delete(partner)) alert("Care partner deleted");
     else alert("Care partner not deleted");
   }
 }

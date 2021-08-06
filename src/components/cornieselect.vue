@@ -1,6 +1,9 @@
 <template>
-  <span>
-    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
+  <span class="block">
+    <label class="block uppercase mb-1 text-xs font-bold">
+      {{ label }}
+      <span class="text-danger ml-1" v-if="required"> * </span>
+    </label>
     <field
       :name="inputName"
       v-slot="{ meta, field, errorMessage }"
@@ -14,16 +17,16 @@
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
         }"
-        class="rounded-lg border p-2 w-11/12 focus:outline-none"
+        class="rounded-lg border p-2 w-full focus:outline-none"
       >
         <option disabled selected :value="null">{{ placeholder }}</option>
         <option v-for="(item, i) in items" :key="i" :value="item.code || item">
           {{ item.display || item }}
         </option>
       </select>
-      <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-        errorMessage
-      }}</span>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">
+        {{ errorMessage }}
+      </span>
     </field>
   </span>
 </template>
@@ -59,6 +62,9 @@ export default class DSelect extends Vue {
 
   @Prop({ type: Object })
   rules!: any;
+
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

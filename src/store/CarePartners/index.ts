@@ -5,7 +5,7 @@ import CarePartnersClient from "./helper";
 interface CarePartnersStore {
     carePartners: ICarePartner[]
 }
-export default <StoreOptions<CarePartnersStore>> {
+export default <StoreOptions<CarePartnersStore>>{
     namespaced: true,
     state: {
         carePartners: []
@@ -30,23 +30,27 @@ export default <StoreOptions<CarePartnersStore>> {
     actions: {
         async create(context, payload: ICarePartner): Promise<boolean> {
             const partner = await CarePartnersClient.create(payload);
-            if(partner.id != null) {
-                context.commit("add", partner)
+            if (partner.id != null) {
+                context.dispatch("get")
                 return true
             }
             return false
         },
-        
-        async get(context, payload: null): Promise<void> {
+
+        async get(context): Promise<void> {
             const partners = await CarePartnersClient.get();
-            if(partners.length > 0)
+            if (partners.length > 0)
                 context.commit("set", partners)
+        },
+
+        async search(context, payload: { q: string }): Promise<ICarePartner[]> {
+            return await CarePartnersClient.search(payload);
         },
 
         async delete(context, payload: ICarePartner): Promise<boolean> {
             const deleted = await CarePartnersClient.delete(payload.id as string)
-            if(deleted)
-                context.commit("remove", payload)
+            if (deleted)
+                context.dispatch("get")
             return deleted
         }
     }

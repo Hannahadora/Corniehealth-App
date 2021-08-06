@@ -1,23 +1,24 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full">
+    <div class="flex items-center mb-6">
+      <span class="flex-grow"></span>
       <button
         class="
           bg-danger
           rounded-full
           text-white
-          mt-5
           py-2
-          px-3
+          px-6
           focus:outline-none
           hover:opacity-90
         "
-        @click="showAddCarePartners = true"
+        @click="$router.push({ name: 'New Designation'})"
       >
-        Add a Care Partner
+        <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
+        New Designation
       </button>
-    </span>
-    <div class="flex w-full justify-between mt-5 items-center">
+    </div>
+    <div class="flex w-full justify-between mt-6 items-center">
       <span class="flex items-center">
         <sort-icon class="mr-5" />
         <icon-input
@@ -69,9 +70,6 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-    <cornie-dialog :visible="showAddCarePartners" center class="w-6/12">
-      <add-care-partners @close="showAddCarePartners = false" />
-    </cornie-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -92,10 +90,6 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import ICarePartner from "@/types/ICarePartner";
-import CornieDialog from "@/components/Dialog.vue"
-import AddCarePartners from "./AddCarePartner.vue"
-import IEmail from "@/types/IEmail";
-import IPhone from "@/types/IPhone";
 
 const CarePartnersStore = namespace("CarePartnersStore");
 
@@ -113,14 +107,11 @@ const CarePartnersStore = namespace("CarePartnersStore");
     EyeIcon,
     ColumnFilter,
     TableOptions,
-    CornieDialog,
-    AddCarePartners
   },
 })
 export default class CarePartnersExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-  showAddCarePartners = false
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];
@@ -132,28 +123,23 @@ export default class CarePartnersExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Organisation Name",
-      value: "name",
+      title: "Title",
+      value: "functionName",
       show: true,
     },
     {
-      title: "Organisation Type",
-      value: "organisationType",
+      title: "Job Level",
+      value: "hierarchy",
       show: true,
     },
     {
-      title: "Address",
-      value: "address",
+      title: "Function",
+      value: "supervisoryFunction",
       show: true,
     },
     {
-      title: "Email",
-      value: "email",
-      show: true,
-    },
-    {
-      title: "Phone",
-      value: "phone",
+      title: "Reporting To",
+      value: "supervisoryFunction",
       show: true,
     },
   ];
@@ -172,8 +158,6 @@ export default class CarePartnersExistingState extends Vue {
       return {
         ...partner,
         action: partner.id,
-        email: (partner.email as unknown as IEmail).address,
-        phone: (partner.phone as unknown as IPhone).dialCode || "+234" + (partner.phone as unknown as IPhone).number,
       };
     });
     if (!this.query) return partners;

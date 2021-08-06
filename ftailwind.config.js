@@ -27,8 +27,8 @@ module.exports = {
       current: "currentColor",
       selected: "#F2F7FF",
 
-      danger: "#EC0868",
-      primary: "#0A4269",
+      danger: "#FE4D3C",
+      primary: "#211F45",
       warning: "#F7B538",
       success: "#35BA83",
 

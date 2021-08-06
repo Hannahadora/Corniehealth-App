@@ -1,138 +1,132 @@
 <template>
-  <main class="p-6">
-    <span
-      class="
-        flex
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
-    >
-      Add a Care Partner
-    </span>
-    <form @submit.prevent="submit">
-      <div class="w-full grid grid-cols-2 gap-5 mt-4">
-        <cornie-input
-          label="organisation identifier"
-          placeholder="--Automatically Generated--"
-          v-model="identifier"
-        />
-        <cornie-select
-          label="organisation type"
-          placeholder="--Select--"
-          :rules="required"
-          v-model="organisationType"
-          :items="organisationTypeOptions"
-        />
-        <cornie-input
-          label="organisation name"
-          placeholder="--Enter--"
-          :rules="required"
-          v-model="name"
-        />
-        <cornie-input 
-          label="alias" 
-          placeholder="--Enter--" 
-          v-model="alias" 
-        />
-        <domain-input
-          label="domain name"
-          placeholder="--Domain--"
-          v-model="domainName"
-        />
-        <cornie-select
-          label="Provider Profile"
-          placeholder="--Select--"
-          v-model="providerProfile"
-          :rules="required"
-          :items="providerProfileOptions"
-        />
-        <cornie-select
-          :items="['Ongoing', 'Completed']"
-          label="Incorporation Status"
-          :rules="required"
-          v-model="incorporationStatus"
-        />
-        <cornie-select
-          label="Incorporation type"
-          placeholder="--Select--"
-          :rules="required"
-          v-model="incorporationType"
-          :items="incorporationTypeOptions"
-        />
-        <cornie-input
-          label="registration number"
-          placeholder="--Enter--"
-          v-model="registrationNumber"
-        />
-        <phone-input
-          label="phone" 
-          placeholder="--Enter--" 
-          :rules="required"
-          v-model="phoneNumber" 
-          v-model:code="dialCode"
-        />
-        <cornie-input
-          label="address"
-          placeholder="--Enter--"
-          v-model="address"
-        />
-        <cornie-input
-          label="email"
-          placeholder="--Enter--"
-          :rules="required"
-          v-model="email"
-        />
-        <cornie-input label="web" placeholder="--Enter--" v-model="website" />
-        <cornie-input
-          label="reference organisation"
-          placeholder="--Enter--"
-          v-model="referenceOrganisation"
-        />
-      </div>
-      <span class="flex justify-end w-full border-t-2 mt-5">
-        <button
-          @click="$router.back()"
-          type="button"
-          class="
-            outline-primary
-            rounded-full
-            text-black
-            mt-5
-            mr-3
-            py-2
-            pr-8
-            pl-8
-            px-3
-            focus:outline-none
-            hover:bg-primary
-            hover:text-white
-          "
-        >
-          Revert Changes
-        </button>
-        <cornie-btn
-          :loading="loading"
-          type="submit"
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            pr-10
-            pl-10
-            focus:outline-none
-            hover:opacity-90
-          "
-        >
-          Add
-        </cornie-btn>
+  <card>
+    <card-title>
+      <span class="flex font-semibold text-xl text-primary py-2 font-extrabold">
+        New Care Partner
       </span>
-    </form>
-  </main>
+      <span class="flex-grow" />
+      <icon-btn @click="close">
+        <close stroke="#211F45" />
+      </icon-btn>
+    </card-title>
+    <card-text class="flex mx-3 border-b-2 pb-6">
+      <cornie-menu>
+        <template #activator="{ on }">
+          <icon-input
+            class="border border-gray-600 rounded-full focus:outline-none"
+            type="search"
+            placeholder="Search Care Partners"
+            v-model="searchString"
+            v-on="on"
+          >
+            <template v-slot:prepend>
+              <search-icon />
+            </template>
+          </icon-input>
+        </template>
+        <card>
+          <card-text
+            v-for="(item, index) in searchItems"
+            :key="index"
+            @click="selectedCarePartner = item"
+            class="cursor-pointer hover:bg-gray-50 flex flex-col"
+          >
+            <span> {{ item.name }} </span>
+            <span class="text-sm text-gray-600 italic">
+              {{ item.address }}
+            </span>
+          </card-text>
+        </card>
+      </cornie-menu>
+    </card-text>
+    <card-text>
+      <v-form @submit="submit">
+        <div class="w-full flex">
+          <div class="w-1/2 mx-4">
+            <cornie-input
+              label="organisation name"
+              class="my-6"
+              required
+              placeholder="--Enter--"
+              :rules="required"
+              v-model="name"
+            />
+            <cornie-input
+              label="address"
+              class="my-6"
+              placeholder="--Enter--"
+              v-model="address"
+            />
+            <phone-input
+              label="phone"
+              class="my-6"
+              placeholder="--Enter--"
+              :rules="required"
+              v-model="phoneNumber"
+              v-model:code="dialCode"
+            />
+          </div>
+          <div class="w-1/2 mx-4">
+            <cornie-select
+              label="organisation type"
+              class="my-6"
+              required
+              placeholder="--Select--"
+              :rules="required"
+              v-model="organisationType"
+              :items="organisationTypeOptions"
+            />
+            <cornie-input
+              label="email"
+              class="my-6"
+              required
+              placeholder="--Enter--"
+              :rules="required"
+              v-model="email"
+            />
+          </div>
+        </div>
+        <span class="flex justify-end w-full mt-5">
+          <button
+            @click="close"
+            type="button"
+            class="
+              outline-primary
+              rounded-full
+              text-black
+              mt-5
+              mr-3
+              py-2
+              pr-8
+              pl-8
+              px-3
+              focus:outline-none
+              hover:bg-primary
+              hover:text-white
+            "
+          >
+            Cancel
+          </button>
+          <cornie-btn
+            :loading="loading"
+            type="submit"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              pr-10
+              pl-10
+              focus:outline-none
+              hover:opacity-90
+            "
+          >
+            Invite
+          </cornie-btn>
+        </span>
+      </v-form>
+    </card-text>
+  </card>
 </template>
 
 <script lang="ts">
@@ -145,7 +139,17 @@ import { string as yupString } from "yup";
 import ICarePartner from "@/types/ICarePartner";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import { Prop } from "vue-property-decorator";
+import Card from "@/components/card.vue";
+import CardText from "@/components/card-text.vue";
+import CardTitle from "@/components/card-title.vue";
+import IconBtn from "@/components/iconbtn.vue";
+import Close from "@/components/icons/close.vue";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import CornieMenu from "@/components/CornieMenu.vue";
+import { Watch } from "vue-property-decorator";
+import IPhone from "@/types/IPhone";
+import IEmail from "@/types/IEmail";
 
 const CarePartnersStore = namespace("CarePartnersStore");
 const dropdown = namespace("dropdown");
@@ -156,37 +160,55 @@ const dropdown = namespace("dropdown");
     CornieSelect,
     DomainInput,
     PhoneInput,
+    Card,
+    CardText,
+    CardTitle,
+    Close,
+    IconBtn,
+    IconInput,
+    SearchIcon,
+    CornieMenu,
   },
+  emits: ["close"],
 })
 export default class AddCarePartners extends Vue implements ICarePartner {
-  
-  identifier = "";
   organisationType = "";
   name = "";
-  alias = "";
-  domainName = "";
-  providerProfile = "";
-  incorporationStatus = "";
-  incorporationType = "";
-  registrationNumber = "";
   phoneNumber = "";
   dialCode = "";
   address = "";
   email = "";
-  website = "";
-  referenceOrganisation = "";
   organisationTypeOptions: string[] = [];
-  providerProfileOptions: string[] = [];
-  incorporationTypeOptions: string[] = [];
+  id = "";
+  searchString = "";
+  searchItems: ICarePartner[] = [];
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];
 
-  get phone(): {dialCode: string, number: string} {
+  @CarePartnersStore.Action
+  search!: (payload: { q: string }) => Promise<ICarePartner[]>;
+
+  get phone(): IPhone {
     return {
       dialCode: this.dialCode,
-      number: this.phoneNumber
-    }
+      number: this.phoneNumber,
+    };
+  }
+
+  set phone(phone: IPhone) {
+    this.dialCode = phone.dialCode || "+234";
+    this.phoneNumber = phone.number;
+  }
+
+  set selectedCarePartner(partner: ICarePartner) {
+    this.name = partner.name;
+    this.organisationType = partner.organisationType;
+    this.phone = partner.phone as IPhone;
+    this.address = partner.address as string;
+    this.email = (partner.email as unknown as IEmail).address;
+    this.id = partner.id as string;
+    this.searchString = partner.name;
   }
 
   loading = false;
@@ -196,37 +218,55 @@ export default class AddCarePartners extends Vue implements ICarePartner {
   @CarePartnersStore.Action
   create!: (partner: ICarePartner) => Promise<boolean>;
 
-
   @dropdown.Action
   getDropdowns!: (name: string) => Promise<string[]>;
 
+  close() {
+    this.$emit("close");
+  }
+
   async submit() {
     this.loading = true;
-    const created = await this.create(this);
+    if (this.id)
+      var created = await this.create({
+        id: this.id,
+        name: this.name,
+        organisationType: this.organisationType,
+        email: this.email,
+        phone: this.phone,
+        address: this.address,
+      });
+    else var created = await this.create({
+      name: this.name,
+      organisationType: this.organisationType,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
+    });
     this.loading = false;
-    if (created) this.$router.back();
-    else alert("Failed to create care partner. Please retry");
+    if (!created)
+      notify({ msg: "Failed to add care partner", status: "error" });
+    else notify({ msg: "Care Partner added", status: "success" });
+    this.close();
   }
 
   async fetchDropDown() {
-    const orgType = cornieClient().get(
+    const response = await cornieClient().get(
       "/api/v1/organization/getOrganisationType"
     );
-    const providerProfile = cornieClient().get(
-      "/api/v1/organization/getProviderProfile"
-    );
-    const incType = cornieClient().get(
-      "/api/v1/organization/getIncorporationType"
-    );
-    const response = await Promise.all([orgType, providerProfile, incType]);
-    this.organisationTypeOptions = response[0].data;
-    this.providerProfileOptions = response[1].data;
-    this.incorporationTypeOptions = response[2].data;
+
+    this.organisationTypeOptions = response.data;
   }
 
-  async mounted() {
-    this.fetchDropDown();
+  @Watch("searchString")
+  async onSearchStringChanged() {
+    if (this.searchString.length > 0)
+      this.searchItems = await this.search({ q: this.searchString });
+    else this.searchItems = [];
+  }
 
+  mounted() {
+    this.fetchDropDown();
   }
 }
 </script>
