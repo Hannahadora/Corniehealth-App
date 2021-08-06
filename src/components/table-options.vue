@@ -12,8 +12,8 @@
           inline-flex
           items-center
           justify-between
-          px-2
-          py-1
+          px-4
+          py-3
           font-medium
           text-gray-700
           rounded-md
@@ -36,13 +36,13 @@
           <div
             class="
               relative
-              py-1
-              p-2
+              py-2
+              p-4
               bg-white
               border border-gray-200
               rounded-md
               block
-              w-40
+              w-56
               shadow-xl
             "
           >

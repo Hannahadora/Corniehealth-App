@@ -26,6 +26,7 @@ module.exports = {
       warning: "#F7B538",
       success: "#35BA83",
       "blue-yonder": "#6F6C93",
+      "white-cotton-ball": "#F5F4FA",
       black: colors.black,
       white: colors.white,
       gray: colors.coolGray,

@@ -62,9 +62,11 @@
               v-model="email"
             />
             <phone-input
+              v-model:code="code"
               :rules="requiredRule"
               label="Phone Number"
               v-model="phone"
+              class="w-full"
             />
             <cornie-select
               :rules="requiredRule"
@@ -168,6 +170,8 @@ export default class AddContact extends Vue {
 
   @Prop({ type: Object, required: false, default: null })
   contact!: IContact;
+
+  code = "+234";
 
   @contact.Mutation
   updateContacts!: (contacts: IContact[]) => void;

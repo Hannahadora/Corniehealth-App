@@ -10,6 +10,8 @@
      <textarea
     rows="4"
     cols="50"
+    maxlength="255"
+    v-on:keyup="limiter(this, 140)"
       :class="{
         'border-red-500': Boolean(errorMessage),
         'border-green-400': meta.valid && meta.touched,
@@ -56,5 +58,6 @@ export default class DInput extends Vue {
 
   @Prop({ type: Object })
   rules!: any;
+
 }
 </script>

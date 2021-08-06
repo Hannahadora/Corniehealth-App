@@ -123,6 +123,7 @@
             v-model="IncorporationType"
           />
           <phone-input
+            class="w-full"
             label="Phone Number"
             v-model:code="DialCode"
             v-model="PhoneNumber"

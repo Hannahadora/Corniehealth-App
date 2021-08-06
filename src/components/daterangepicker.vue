@@ -67,7 +67,11 @@
               v-model="range"
               is-range
               color="red"
-              :model-config="{ type: 'string' }"
+              :model-config="{
+                type: 'string',
+                mask: 'iso',
+                timeAdjust: '12:00:00',
+              }"
             >
             </DatePicker>
           </span>
@@ -102,8 +106,19 @@ export default class DRangePicker extends Vue {
   @Prop({ type: Object, default: { ...defaultRange } })
   modelValue!: Period;
 
-  @PropSync("modelValue")
-  range!: Period;
+  get range() {
+    return this.modelValue;
+  }
+
+  set range(val: any) {
+    console.log("Val is ", val);
+    const start = new Date(val.start?.replaceAll("X", "")).toISOString();
+    const end = new Date(val.start?.replaceAll("X", "")).toISOString();
+    this.$emit("update:modelValue", {
+      start,
+      end,
+    });
+  }
 
   datePickerVissible = false;
 
