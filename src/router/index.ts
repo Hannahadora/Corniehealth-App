@@ -17,7 +17,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/roles",
     name: "Test",
-    component: () => import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
+    component: () =>
+      import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
   },
   {
     path: "/login",
@@ -62,14 +63,16 @@ const routes: Array<RouteRecordRaw> = [
             path: "care-partners",
             name: "Care Partners",
             component: () =>
-              import("@/views/dashboard/settings/CarePartners/index.vue")
+              import("@/views/dashboard/settings/CarePartners/index.vue"),
           },
           {
             path: "add-care-partners/:id?",
             props: true,
             name: "Add a Care Partner",
             component: () =>
-              import("@/views/dashboard/settings/CarePartners/AddCarePartner.vue")
+              import(
+                "@/views/dashboard/settings/CarePartners/AddCarePartner.vue"
+              ),
           },
           {
             path: "account-security",
@@ -105,6 +108,12 @@ const routes: Array<RouteRecordRaw> = [
               import(
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
+          },
+          {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/org-hierarchy/index.vue"),
           },
           {
             path: "contact-info",

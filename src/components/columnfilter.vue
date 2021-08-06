@@ -1,9 +1,11 @@
 <template>
   <div class="overflow-y-auto">
-    <modal :visible="visible" class="mx-14 h-3/4 w-4/12 p-0 overflow-y-auto">
-      <div
-        class="flex bg-primary w-full h-3/4 overflow-y-auto rounded-t-lg p-2"
-      >
+    <modal
+      :visible="visible"
+      style="height: 95%"
+      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
+    >
+      <div class="flex bg-primary w-full overflow-y-auto rounded-t-lg p-2">
         <span class="block pr-2 border-r-2">
           <arrow-left-icon
             class="stroke-current text-white cursor-pointer"
@@ -11,7 +13,7 @@
           />
         </span>
       </div>
-      <div class="block p-3">
+      <div class="flex flex-col p-3">
         <h2 class="font-semibold text-primary">Table Columns</h2>
         <p class="text-xs mt-2">
           Choose headings to display on table, and the order you wish to display
@@ -30,14 +32,7 @@
         >
           <template #item="{ element, index }">
             <span
-              class="
-                items-center
-                hover:bg-gray-100
-                w-full
-                flex
-                justify-between
-                hover:shadow-lg
-              "
+              class="items-center hover:bg-gray-100 w-full flex justify-between"
             >
               <label class="py-3 px-3">
                 <input
@@ -48,11 +43,11 @@
                 />
                 {{ element.title }}
               </label>
-              <drag-icon class="cursor-pointer mr-2" />
+              <drag-icon class="cursor-pointer mr-2 hover:shadow-lg" />
             </span>
           </template>
         </draggable>
-        <div class="flex justify-end w-full mt-3 mb-2">
+        <div class="flex justify-end w-full mt-auto">
           <button
             class="
               rounded-full

@@ -1,183 +1,230 @@
 <template>
-<div class="bg-white rounded p-5 mt-5">
-<span class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto">
-    {{ allaction }} Group
-</span>
-  <div class="w-full h-screen">
-    <form class="mt-5 w-full" @submit.prevent="submit">
+  <div class="bg-white rounded p-5 mt-5">
+    <span
+      class="
+        flex
+        border-b-2
+        w-full
+        font-semibold
+        text-xl text-primary
+        py-2
+        mx-auto
+      "
+    >
+      {{ allaction }} Group
+    </span>
+    <div class="w-full h-screen">
+      <form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-44">
-            <accordion-component title="Basic info" v-model = "opened">
-                <template v-slot:default>
-                    <div class="w-full grid grid-cols-3 gap-5 p-5">
-                      <cornie-input label="Identifier"  placeholder="XXXX" class="bg-gray-200" disabled/>
-                      <cornie-select
-                      :rules="required"
-                      :items="['state']"
-                      v-model="state"
-                      label="State"
-                      placeholder="--Select--"
-                      >
-                      </cornie-select>
-                      <cornie-select
-                      :onChange = "setValue(options.text)"
-                      :items="items"
-                      :rules="required"
-                      v-model="status"
-                      label="Status"
-                      placeholder="--Select--"
-                      >
-                      </cornie-select>
-                      <cornie-select
-                          :rules="required"
-                          :items="['type']"
-                          v-model="type"
-                          label="Type"
-                          placeholder="--Select--"
-                          >
-                      </cornie-select>
-                      <cornie-input label="Name"  placeholder="--Enter--" v-model="name"/>
-                      <cornie-input label="Code"  placeholder="--Enter--" v-model="code"/>
-                          <cornie-select
-                          :rules="required"
-                          :items="['quantity']"
-                          v-model="quantity"
-                          label="Quantity"
-                          placeholder="--Select--"
-                          ></cornie-select>
-                          <cornie-select
-                          :rules="required"
-                          :items="['Managing entity']"
-                          v-model="managingEntity"
-                          label="Managing Entity"
-                          placeholder="--Select--"
-                          ></cornie-select>
-                          <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
-                              Charateristics
-                          </span>
-                          <cornie-input label="Code"  placeholder="--Enter--" v-model="characteristicsCode"/>
-                    </div>
-                </template>        
-            </accordion-component>
-            <accordion-component  title="Value" v-model = "openedR">
-                <template v-slot:default>
-                    <div class="w-full grid grid-cols-3 gap-5 p-5">
-                        <cornie-select
-                        :rules="required"
-                        :items="['value Boolean']"
-                        v-model="valueBoolean"
-                        label="Value Boolean"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
-                          <cornie-input label="value codeable concept"  placeholder="--Enter--" v-model="valueCodeableConcept"/>
-                            <cornie-select
-                        :rules="required"
-                        :items="['Value Quantity']"
-                        v-model="valueQuantity"
-                        label="Value Quantity"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
-                             <cornie-select
-                        :rules="required"
-                        :items="['Value Range']"
-                        v-model="valueRange"
-                        label="Value Range"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
-                            
-                             <cornie-select
-                        :rules="required"
-                        :items="['exclude']"
-                        v-model="exclude"
-                        label="exclude"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
-                          <cornie-input label="value reference"  placeholder="--Enter--" v-model="valueRef"/>
-                            
-                            <date-picker
-                            label="Period"
-                            v-model="period"
-                            placeholder="--Enter--" :rules="required"
-                            />
-                    </div>
-                </template>
-            </accordion-component>
-            <accordion-component title="Member" v-model = "openedT">
-                <template v-slot:default>
-                    <div class="w-full grid grid-cols-3 gap-5 p-5">
-                        <cornie-select
-                        :rules="required"
-                        :items="['Member Entity']"
-                        v-model="memberEntity"
-                        label="entity"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
-                            <date-picker
-                            label="Period"
-                            v-model="memberPeriod"
-                            placeholder="--Enter--" :rules="required"
-                            />
-                        <cornie-select
-                        :rules="required"
-                        :items="['Member Status']"
-                        v-model="memberStatus"
-                        label="Status"
-                        placeholder="--Select--"
-                        >
-                        </cornie-select>
-                    </div>
-                </template>
-            </accordion-component>
+          <accordion-component title="Basic info" v-model="opened">
+            <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-5 p-5">
+                <cornie-input
+                  label="Identifier"
+                  placeholder="XXXX"
+                  class="bg-gray-200"
+                  disabled
+                />
+                <cornie-select
+                  :rules="required"
+                  :items="['state']"
+                  v-model="state"
+                  label="State"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :onChange="setValue(options.text)"
+                  :items="items"
+                  :rules="required"
+                  v-model="status"
+                  label="Status"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :rules="required"
+                  :items="['type']"
+                  v-model="type"
+                  label="Type"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-input
+                  label="Name"
+                  placeholder="--Enter--"
+                  v-model="name"
+                />
+                <cornie-input
+                  label="Code"
+                  placeholder="--Enter--"
+                  v-model="code"
+                />
+                <cornie-select
+                  :rules="required"
+                  :items="['quantity']"
+                  v-model="quantity"
+                  label="Quantity"
+                  placeholder="--Select--"
+                ></cornie-select>
+                <cornie-select
+                  :rules="required"
+                  :items="['Managing entity']"
+                  v-model="managingEntity"
+                  label="Managing Entity"
+                  placeholder="--Select--"
+                ></cornie-select>
+                <span
+                  class="
+                    flex
+                    border-b-2
+                    w-full
+                    text-sm text-dark
+                    py-2
+                    mx-auto
+                    font-semibold
+                    col-span-full
+                    mb-2
+                    mt-4
+                  "
+                >
+                  Charateristics
+                </span>
+                <cornie-input
+                  label="Code"
+                  placeholder="--Enter--"
+                  v-model="characteristicsCode"
+                />
+              </div>
+            </template>
+          </accordion-component>
+          <accordion-component title="Value" v-model="openedR">
+            <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-5 p-5">
+                <cornie-select
+                  :rules="required"
+                  :items="['value Boolean']"
+                  v-model="valueBoolean"
+                  label="Value Boolean"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-input
+                  label="value codeable concept"
+                  placeholder="--Enter--"
+                  v-model="valueCodeableConcept"
+                />
+                <cornie-select
+                  :rules="required"
+                  :items="['Value Quantity']"
+                  v-model="valueQuantity"
+                  label="Value Quantity"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :rules="required"
+                  :items="['Value Range']"
+                  v-model="valueRange"
+                  label="Value Range"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+
+                <cornie-select
+                  :rules="required"
+                  :items="['exclude']"
+                  v-model="exclude"
+                  label="exclude"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-input
+                  label="value reference"
+                  placeholder="--Enter--"
+                  v-model="valueRef"
+                />
+
+                <date-picker
+                  label="Period"
+                  v-model="period"
+                  placeholder="--Enter--"
+                  :rules="required"
+                />
+              </div>
+            </template>
+          </accordion-component>
+          <accordion-component title="Member" v-model="openedT">
+            <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-5 p-5">
+                <cornie-select
+                  :rules="required"
+                  :items="['Member Entity']"
+                  v-model="memberEntity"
+                  label="entity"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <date-picker
+                  label="Period"
+                  v-model="memberPeriod"
+                  placeholder="--Enter--"
+                  :rules="required"
+                />
+                <cornie-select
+                  :rules="required"
+                  :items="['Member Status']"
+                  v-model="memberStatus"
+                  label="Status"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+              </div>
+            </template>
+          </accordion-component>
         </div>
         <span class="flex justify-end w-full">
-        <button
-        @click="$router.push('/dashboard/provider/settings/group')"
-        type="button"
-        class="
-            outline-primary
-            rounded-full
-            text-black
-            mt-5
-            mr-3
-            py-2
-            pr-8
-            pl-8
-            px-3
-            focus:outline-none
-            hover:bg-primary
-            hover:text-white
-
-            "
-        >
-            Cancel
-        </button>
-
-        <cornie-btn
-        :loading="loading"
-        type="submit"
+          <button
+            @click="$router.push('/dashboard/provider/settings/group')"
+            type="button"
             class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            
-            pr-10
-            pl-10
-            focus:outline-none
-            hover:opacity-90
+              outline-primary
+              rounded-full
+              text-black
+              mt-5
+              mr-3
+              py-2
+              pr-8
+              pl-8
+              px-3
+              focus:outline-none
+              hover:bg-primary
+              hover:text-white
             "
-        >
+          >
+            Cancel
+          </button>
+
+          <cornie-btn
+            :loading="loading"
+            type="submit"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              pr-10
+              pl-10
+              focus:outline-none
+              hover:opacity-90
+            "
+          >
             Save
-        </cornie-btn>
-        
+          </cornie-btn>
         </span>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -197,12 +244,10 @@ import DEdit from "@/components/icons/dedit.vue";
 import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import DatePicker from "@/components/single-datepicker.vue";
+import DatePicker from "@/components/datepicker.vue";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");
-
-
 @Options({
   components: {
     CornieInput,
@@ -223,18 +268,14 @@ export default class AddGroup extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  
   @group.Action
   getGroupById!: (id: string) => IGroup;
-
   loading = false;
   expand = false;
-  isVisible = '';
-opened = true;
-openedR = false;
-openedT = false;
-
-
+  isVisible = "";
+  opened = true;
+  openedR = false;
+  openedT = false;
   state = "";
   status = false;
   type = "";
@@ -253,26 +294,21 @@ openedT = false;
   memberPeriod = "";
   memberStatus = "";
   memberEntity = "";
-
-
   aoption = "Active";
-options = [
-  {text: 'Active' , value: true},
-  {text: 'Inactive' , value: false},
-];
-items = ['Active', 'Inactive'];
-
+  options = [
+    { text: "Active", value: true },
+    { text: "Inactive", value: false },
+  ];
+  items = ["Active", "Inactive"];
   required = string().required();
-
   dropdowns = {} as IIndexableObject;
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
-
-@Watch("id")
+  @Watch("id")
   idChanged() {
     this.setGroup();
   }
- async setGroup() {
+  async setGroup() {
     const group = await this.getGroupById(this.id);
     if (!group) return;
     this.state = group.state;
@@ -293,70 +329,62 @@ items = ['Active', 'Inactive'];
     this.memberPeriod = group.memberPeriod;
     this.memberStatus = group.memberStatus;
     this.memberEntity = group.memberEntity;
-
- }
-   get payload() {
+  }
+  get payload() {
     return {
-        state:  this.state,
-        status:  this.status,
-        type: this.type,
-        name:  this.name ,
-        code:  this.code ,
-        quantity:  this.quantity ,
-        managingEntity:  this.managingEntity ,
-        characteristicsCode:  this.characteristicsCode ,
-        valueCodeableConcept:  this.valueCodeableConcept ,
-        valueBoolean:  this.valueBoolean ,
-        valueQuantity:  this.valueQuantity ,
-        valueRange:  this.valueRange ,
-        valueRef:  this.valueRef ,
-        exclude:  this.exclude ,
-        period:  this.period ,
-        memberPeriod:  this.memberPeriod ,
-        memberStatus:  this.memberStatus ,
-        memberEntity:  this.memberEntity ,
-    }
-   }
-
+      state: this.state,
+      status: this.status,
+      type: this.type,
+      name: this.name,
+      code: this.code,
+      quantity: this.quantity,
+      managingEntity: this.managingEntity,
+      characteristicsCode: this.characteristicsCode,
+      valueCodeableConcept: this.valueCodeableConcept,
+      valueBoolean: this.valueBoolean,
+      valueQuantity: this.valueQuantity,
+      valueRange: this.valueRange,
+      valueRef: this.valueRef,
+      exclude: this.exclude,
+      period: this.period,
+      memberPeriod: this.memberPeriod,
+      memberStatus: this.memberStatus,
+      memberEntity: this.memberEntity,
+    };
+  }
   get allaction() {
     return this.id ? "Edit" : "Add a";
   }
- 
 
-//   async reset(){
-//     this.participant = {...emptyParticipant};
-//   }
-    async setValue(value:string){
-        if(value == 'Active'){
-          this.status = true
-        }else{
-          this.status = false
-        }
+  //   async reset(){
+  //     this.participant = {...emptyParticipant};
+  //   }
+  async setValue(value: string) {
+    if (value == "Active") {
+      this.status = true;
+    } else {
+      this.status = false;
     }
-   
-   async submit() {
+  }
+
+  async submit() {
     this.loading = true;
     if (this.id) await this.updateGroup();
     else await this.createGroup();
     this.loading = false;
   }
-
   async createGroup() {
     // this.payload.period.start = new Date(this.payload.period.start).toISOString()
- this.payload.period = new Date(this.payload.period).toISOString();
+    this.payload.period = new Date(this.payload.period).toISOString();
     try {
-      const response = await cornieClient().post(
-        "/api/v1/group",
-        this.payload
-      );
+      const response = await cornieClient().post("/api/v1/group", this.payload);
       if (response.success) {
-          window.notify({ msg: "Group created", status: "success" });
+        window.notify({ msg: "Group created", status: "success" });
       }
     } catch (error) {
       window.notify({ msg: "Group not created", status: "error" });
     }
   }
- 
 
   async updateGroup() {
     const url = `/api/v1/group/${this.id}`;
@@ -367,23 +395,20 @@ items = ['Active', 'Inactive'];
         window.notify({ msg: "Group updated", status: "success" });
       }
     } catch (error) {
-       window.notify({ msg: "Group not updated", status: "error" });
+      window.notify({ msg: "Group not updated", status: "error" });
     }
   }
-
-
   async created() {
     this.setGroup();
-     const data = await this.getDropdowns("group");
+    const data = await this.getDropdowns("group");
     this.dropdowns = data;
     console.log("data");
     console.log(data);
   }
-
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #0A4269;
+.outline-primary {
+  border: 2px solid #0a4269;
 }
 </style>

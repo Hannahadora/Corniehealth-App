@@ -62,12 +62,13 @@
                     <div class="mb-7">
                       <date-picker
                         label="Deactivation Date"
-                         
-                          v-model="deactivateTillDate"   placeholder="--Enter--" :rules="required"
-                        />
-                      </div>
+                        v-model="deactivateTillDate"
+                        placeholder="--Enter--"
+                        :rules="required"
+                      />
+                    </div>
                     <Textarea
-                     class="mb-5"
+                      class="mb-5"
                       label="Reason For Deactivating"
                       v-model="reasonsForDeactivation"
                     />
@@ -149,13 +150,13 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { cornieClient } from "@/plugins/http";
-import DatePicker from "@/components/single-datepicker.vue";
+import DatePicker from "@/components/datepicker.vue";
 import { Options, Vue } from "vue-class-component";
 
 @Options({
-   name: "memberModal",
+  name: "memberModal",
   components: {
-     Modal,
+    Modal,
     CornieInput,
     DatePicker,
     CornieSelect,
@@ -179,37 +180,38 @@ export default class memberModal extends Vue {
   loading = false;
   reasonsForDeactivation = "";
   deactivateTillDate = "";
- required = string().required();
-
+  required = string().required();
 
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
   }
-  get  payload() {
-      return {
-        reasonsForDeactivation: this.reasonsForDeactivation,
-        deactivateTillDate: this.deactivateTillDate,
-      };
-    }
+  get payload() {
+    return {
+      reasonsForDeactivation: this.reasonsForDeactivation,
+      deactivateTillDate: this.deactivateTillDate,
+    };
+  }
 
-   async deactivate() {
-      this.loading = true;
-      try {
-        const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${this.paymentId}`,this.payload);
-        if (response.success) {
-          this.loading = false;
-           window.notify({ msg: response.message, status: "success" });
-            this.show = false;
-        } else {
-           window.notify({ msg: response.message, status: "error" });
-            this.show = false;
-        }
-      } catch (error) {
+  async deactivate() {
+    this.loading = true;
+    try {
+      const response = await cornieClient().post(
+        `/api/v1/group/deactivateActivateGroupAccount/${this.paymentId}`,
+        this.payload
+      );
+      if (response.success) {
         this.loading = false;
-         window.notify({ msg: error, status: "error" });
-          this.show = false;
+        window.notify({ msg: response.message, status: "success" });
+        this.show = false;
+      } else {
+        window.notify({ msg: response.message, status: "error" });
+        this.show = false;
       }
+    } catch (error) {
+      this.loading = false;
+      window.notify({ msg: error, status: "error" });
+      this.show = false;
     }
-
+  }
 }
 </script>
