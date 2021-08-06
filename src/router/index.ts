@@ -189,6 +189,20 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/careteam/addCareteam.vue"),
           },
           {
+            path: "roles-privileges",
+            props: true,
+            name: "Roles",
+            component: () =>
+              import("@/views/dashboard/settings/rolesprivileges/index.vue"),
+          },
+          {
+            path: "addroles/:id?",
+            props: true,
+            name: "Roles Form",
+            component: () =>
+              import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
+          },
+          {
             path: "group",
             name: "Group",
             component: () =>

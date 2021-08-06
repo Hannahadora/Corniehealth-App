@@ -16,7 +16,7 @@
                     <i class="pi pi-arrow-left mr-3 text-white font-bold" style="font-size:1.2rem"></i> <span class="text-gray-500"> |</span>
                 </span>
             </div>
-            <div class="bg-white px-4 pb-4 sm:pb-4">
+            <div class="bg-white pb-4 sm:pb-4">
                 <slot></slot>
             </div>
             <div class=" px-4 py-8 sm:px-6 sm:flex sm:flex-row-reverse" id="buttonArea">
