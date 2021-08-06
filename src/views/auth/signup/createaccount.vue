@@ -49,7 +49,7 @@
         />
         <conditional-input
           class="w-full"
-          :items="['BVN']"
+          :items="['NIN']"
           label="Identity Reference"
         />
       </div>

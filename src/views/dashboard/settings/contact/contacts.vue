@@ -1,12 +1,16 @@
 <template>
   <div class="w-full">
     <accordion>
-      <accordion-item v-for="(contacts, key) in titles" :key="key">
-        <template v-slot:title> {{ key }} </template>
+      <accordion-item
+        :title="key"
+        :first="i == 0"
+        v-for="(contacts, key, i) in titles"
+        :key="key"
+      >
         <template v-slot:misc>
           <add-icon class="cursor-pointer" @click="addNew(key)" />
         </template>
-        <div class="w-full p-2 flex flex-wrap">
+        <div class="w-full border p-2 flex flex-wrap">
           <contact-card
             :contact="contact"
             v-for="contact in contacts"
