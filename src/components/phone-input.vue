@@ -10,7 +10,7 @@
       v-model="valueSync"
     >
       <span class="flex">
-        <span class="flex w-2/5">
+        <span class="flex">
           <field
             :name="`${inputName}-code`"
             v-slot="{ meta: codeMeta, handleChange, errorMessage: codeError }"
@@ -35,7 +35,7 @@
               </template>
               <template v-slot:selected="{ item }">
                 <span class="block p-2">
-                  <img :src="item?.flag" width="23" />
+                  <img :src="item?.flag" class="h-4 w-7" />
                 </span>
               </template>
             </cornie-select>
@@ -123,7 +123,7 @@ export default class PhoneInput extends Vue {
         ...country,
         display: country.dialCode,
         code: country.dialCode,
-        flag: `https://flagcdn.com/224x168/${country.isoCode.toLowerCase()}.png`,
+        flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
       }));
   }
 }
