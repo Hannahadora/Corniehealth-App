@@ -14,6 +14,8 @@ import CareteamStore from "./careteam";
 import RolesStore from './roles'
 import GroupteamStore from "./group";
 
+import ShiftsStore from './shift'
+
 export default createStore({
   modules: {
     user: UserStore,
@@ -30,5 +32,7 @@ export default createStore({
     careteam: CareteamStore,
     roles: RolesStore,
     group: GroupteamStore,
+
+    shifts: ShiftsStore,
   },
 } as StoreOptions<any>);
