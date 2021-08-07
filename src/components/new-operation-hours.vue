@@ -1,9 +1,16 @@
 <template>
-  <div class="grid grid-cols-1 gap-y-6 w-full">
+  <div class="grid grid-cols-1 mt-4 gap-y-6 w-full">
     <label class="flex items-center">
       <input type="checkbox" class="mr-3" v-model="all" />
       All days
     </label>
+    <div class="day-grid grid w-full">
+      <span class="font-bold block"></span>
+      <span class="font-bold uppercase text-sm">
+        <span>Start Time</span>
+        <span class="ml-14">End Time</span>
+      </span>
+    </div>
     <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
       <label class="flex items-center">
         <input
@@ -14,6 +21,7 @@
         />
         {{ opHour.day }}:
       </label>
+
       <div class="flex items-center">
         <span class="flex">
           <cornie-select
@@ -42,17 +50,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import { Prop, Watch } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
-import ObjectSet from "@/lib/objectset";
 import { Field } from "vee-validate";
-
-import { isEmpty, isEqual, xorWith } from "lodash";
-import { number } from "yup/lib/locale";
-
-const isArrayEqual = (x: any[], y: any[]) => {
-  const first = JSON.parse(JSON.stringify(x));
-  const second = JSON.parse(JSON.stringify(y));
-  return isEmpty(xorWith(first, second, isEqual));
-};
 
 const opHours = [
   {
