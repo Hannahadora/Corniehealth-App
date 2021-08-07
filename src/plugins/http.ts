@@ -20,7 +20,6 @@ const cornieUrl =
   //   : "http://localhost:7000";
   "https://corniehealth.herokuapp.com";
 
-
 export const cornieClient = () =>
   new JSONClient(
     {
