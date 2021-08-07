@@ -13,7 +13,7 @@
           hover:opacity-90
           flex
         "
-         @click="$router.push('add-payment-account')"
+        @click="$router.push('add-payment-account')"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
         New Account
@@ -40,9 +40,11 @@
     <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-        <table-options>
+          <table-options>
             <li
-              @click="$router.push(`add-payment-account/${getKeyValue(item).value}`)"
+              @click="
+                $router.push(`add-payment-account/${getKeyValue(item).value}`)
+              "
               class="
                 list-none
                 items-center
@@ -57,11 +59,10 @@
                 py-3
               "
             >
-              
-             <eye-icon class="mr-3" /> View & Edit
+              <eye-icon class="mr-3" /> View & Edit
             </li>
             <li
-              @click="deleteItem(getKeyValue(item).value)" 
+              @click="deleteItem(getKeyValue(item).value)"
               class="
                 list-none
                 flex
@@ -76,7 +77,7 @@
                 cursor-pointer
               "
             >
-               <delete-icon class="mr-3" /> Delete Account
+              <delete-icon class="mr-3" /> Delete Account
             </li>
             <li
               @click="showDeactivate(getKeyValue(item).value)"
@@ -94,10 +95,9 @@
                 cursor-pointer
               "
             >
-               <close-icon class="mr-3" /> Deactivate Account
+              <close-icon class="mr-3" /> Deactivate Account
             </li>
-        </table-options>
-       
+          </table-options>
         </span>
         <span v-else> {{ getKeyValue(item).value }}</span>
       </template>
@@ -107,7 +107,10 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-    <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
+    <deactivate-modal
+      v-model:visible="showDeativateModal"
+      :paymentId="paymentId"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -138,7 +141,6 @@ import { cornieClient } from "@/plugins/http";
 import ShowComfirm from "@/components/confirm.vue";
 import Swal from "sweetalert2";
 import { namespace } from "vuex-class";
-
 
 const payment = namespace("payment");
 const first = (num: number, vals: any[]) => {
@@ -171,12 +173,11 @@ const first = (num: number, vals: any[]) => {
     DetailsMenu,
     DeleteModal,
     DeactivateModal,
-    ShowComfirm
+    ShowComfirm,
   },
 })
 export default class BankAccountsExistingState extends Vue {
-
-  addAccount = false
+  addAccount = false;
   addPayment = false;
   update = false;
   query = "";
@@ -187,13 +188,11 @@ export default class BankAccountsExistingState extends Vue {
   showColumnFilter = false;
   showDeativateModal = false;
 
-
-   @payment.State
+  @payment.State
   payments!: IPayment[];
 
   @payment.Action
   deletePayment!: (id: string) => Promise<boolean>;
-
 
   preferredHeaders = [];
   rawHeaders = [
@@ -239,7 +238,7 @@ export default class BankAccountsExistingState extends Vue {
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this payment account",
-      title: "Delete Payment Account"
+      title: "Delete Payment Account",
     });
     if (!confirmed) return;
 
@@ -247,20 +246,18 @@ export default class BankAccountsExistingState extends Vue {
     else alert("Payment account not deleted");
   }
 
-
   updatePayment(id: string) {
     const payment = this.payments.find((d) => d.id == id);
     this.$emit("add-account", payment);
-    console.log(payment)
+    console.log(payment);
   }
-  
+
   public showDeactivate(id: string): void {
     const payment = this.payments.find((d) => d.id == id);
     this.showDeativateModal = true;
     this.paymentId = id;
   }
-  
-  
+
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
@@ -271,34 +268,5 @@ export default class BankAccountsExistingState extends Vue {
       index,
     };
   }
- 
 }
 </script>
-<style>
-table thead th {
-  background: #0a4269 !important;
-
-  color: white !important;
-}
-table thead th:first-child {
-  border-top-left-radius: 0.4rem 0.4rem !important;
-}
-table thead th:last-child {
-  border-top-right-radius: 0.4rem 0.4rem !important;
-}
-table thead tr th {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-}
-
-table tbody td {
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
-}
-table tbody tr {
-  border: 1px solid #b8c3de;
-}
-table tbody tr:nth-child(even) {
-  background-color: white !important;
-}
-</style>
