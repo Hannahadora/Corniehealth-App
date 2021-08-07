@@ -104,6 +104,7 @@
   </div>
 </template>
 <script lang="ts">
+import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
@@ -151,15 +152,7 @@ export default class CornieSelect extends Vue {
   }
 
   mounted() {
-    document.addEventListener("click", (e) => {
-      const select = document.getElementById(this.id);
-      let targetElement: any = e.target; // clicked element
-      do {
-        if (targetElement == select || targetElement.id?.includes(this.id)) {
-          return;
-        }
-        targetElement = (targetElement as any).parentNode;
-      } while (targetElement);
+    clickOutside(this.id, () => {
       this.showDatalist = false;
     });
   }

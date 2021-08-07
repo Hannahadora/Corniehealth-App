@@ -1,13 +1,13 @@
 <template>
-  <span>
+  <span class="block w-11/12">
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
     <Field
+      v-model="date"
+      :rules="customRules"
       :name="inputName"
       v-slot="{ meta, handleChange, errorMessage }"
-      v-model="range"
-      v-bind="$attrs"
     >
-      <div class="relative" style="z-index: 9000; width: 100%">
+      <div class="relative" style="width: 100%" :id="inputName">
         <div @click="toggleDropdown">
           <button
             type="button"
@@ -18,7 +18,9 @@
               rounded-md
               border border-gray-300
               shadow-sm
-              p-2
+              px-2
+              z-50
+              py-1
               bg-white
               text-sm
               font-medium
@@ -26,7 +28,6 @@
               hover:bg-gray-50
               focus:outline-none
             "
-            id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"
             :class="{
@@ -38,9 +39,8 @@
             <span class="ml-2.5">{{ inputFieldText }}</span>
           </button>
         </div>
-
         <div
-          v-if="datePickerVissible"
+          v-if="visible"
           class="
             origin-top-right
             absolute
@@ -56,58 +56,77 @@
           "
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="menu-button"
           tabindex="-1"
         >
-          <span>
-            <DatePicker
-              @update:modelValue="handleChange"
-              style="width: 100%"
-              mode="date"
-              v-model="range"
-            >
-            </DatePicker>
-          </span>
+          <v-date-picker
+            @update:modelValue="handleChange"
+            v-model="date"
+            mode="date"
+            color="red"
+            :model-config="{
+              type: 'string',
+              mask: 'DD/MM/YYYY',
+            }"
+            style="width: 100%"
+          />
         </div>
-        <span v-if="errorMessage" class="text-red-400">{{ errorMessage }}</span>
+        <span v-if="errorMessage" class="text-red-400 text-xs">{{
+          errorMessage
+        }}</span>
       </div>
     </Field>
   </span>
 </template>
 <script lang="ts">
-import { DatePicker } from "v-calendar";
+import { DatePicker as VDatePicker } from "v-calendar";
 import { Options, Vue } from "vue-class-component";
 import CalendarIcon from "@/components/icons/calendar.vue";
-import { Prop, Watch } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { Field } from "vee-validate";
-
+import { clickOutside, createDate } from "@/plugins/utils";
+import { date } from "yup";
 @Options({
   name: "DatePicker",
+  inheritAttrs: false,
   components: {
-    DatePicker,
+    VDatePicker,
     CalendarIcon,
     Field,
   },
 })
-export default class DRangePicker extends Vue {
-  range = new Date(Date.now());
+export default class DatePicker extends Vue {
+  @Prop({
+    required: false,
+    type: String,
+    default: new Date(Date.now()).toLocaleDateString("en-NG"),
+  })
+  modelValue!: string;
 
-  datePickerVissible = false;
+  @PropSync("modelValue")
+  date!: string;
 
-  @Watch("range")
-  onChange(): void {
-    console.log(this.range, "range");
+  @Prop({ type: Object })
+  rules!: any;
 
-    this.datePickerVissible = false;
-  }
+  visible = false;
 
   toggleDropdown(): void {
-    this.datePickerVissible = !this.datePickerVissible;
+    this.visible = !this.visible;
+  }
+
+  get customRules() {
+    const defaultRule = date();
+    if (this.rules) return defaultRule.concat(this.rules);
+    return defaultRule;
+  }
+
+  @Watch("date")
+  changed() {
+    this.visible = false;
   }
 
   get inputFieldText() {
-    if (!this.range) return `--/--/----`;
-    return `${new Date(this.range).toLocaleDateString()}`;
+    return this.date || "dd/mm/yyyy";
   }
 
   @Prop({ type: String, default: "" })
@@ -119,6 +138,10 @@ export default class DRangePicker extends Vue {
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
+  }
+
+  mounted() {
+    clickOutside(this.inputName, () => (this.visible = false));
   }
 }
 </script>
