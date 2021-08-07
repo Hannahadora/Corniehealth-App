@@ -115,12 +115,12 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-          },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
+          // },
           {
             path: "contact-info",
             name: "Contact Information",
