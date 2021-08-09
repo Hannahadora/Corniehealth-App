@@ -11,6 +11,7 @@
       font-semibold
       text-gray-700
       hover:bg-gray-100
+      rounded-md
       hover:text-gray-900
       cursor-pointer
     "

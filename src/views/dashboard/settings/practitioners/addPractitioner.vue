@@ -64,7 +64,11 @@
                 v-model="address"
                 label="Address"
               />
-              <date-picker label="Date of Birth" v-model="dateOfBirth" />
+              <date-picker
+                label="Date of Birth"
+                :rules="dobValidator"
+                v-model="dateOfBirth"
+              />
               <cornie-input
                 :rules="required"
                 v-model="jobDesignation"
@@ -182,7 +186,7 @@ import OperationHours from "@/components/new-operation-hours.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
-import { string } from "yup";
+import { string, date } from "yup";
 import DatePicker from "@/components/datepicker.vue";
 import { Prop, Watch } from "vue-property-decorator";
 import { useHandleImage } from "@/composables/useHandleImage";
@@ -192,6 +196,8 @@ const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
 import Avatar from "@/components/avatar.vue";
 import Period from "@/types/IPeriod";
+import { createDate } from "@/plugins/utils";
+
 @Options({
   name: "AddPractitioner",
   components: {
@@ -218,6 +224,10 @@ export default class AddPractitioner extends Vue {
 
   loading = false;
 
+  dobValidator = date().max(
+    createDate(0, 0, -16),
+    "Practitioner must be at least 16yrs"
+  );
   qualificationCode = "";
   name = "";
   email = "";
@@ -238,7 +248,7 @@ export default class AddPractitioner extends Vue {
   consultationChannel = "";
   hoursOfOperation: HoursOfOperation[] = [];
   organizationId = "";
-  dialCode = "";
+  dialCode = "+234";
   dropdown = {} as IIndexableObject;
   period = {} as Period;
   required = string().required();
