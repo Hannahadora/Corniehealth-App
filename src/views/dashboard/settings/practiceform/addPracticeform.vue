@@ -32,7 +32,7 @@
            DESCRIPTION: Kindly tell us about your medical history!
         </div>-->
        <draggable v-model="questions"  v-for="(input, index) in questions" :key="index" :class="{'active':index === 0}" item-key="id" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
-           <template #item="{ element, index }">
+           <template #item="{ element }">
           <all-questions  :title="input.name" titledescription="Export to Habits" class="" >
                 <template v-slot:default>
                     <div class="border-2 border-gray-200 pb-14" >
