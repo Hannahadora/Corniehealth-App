@@ -119,7 +119,7 @@ import DEdit from "@/components/icons/dedit.vue";
 import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import DatePicker from "@/components/datepicker.vue";
+import DatePicker from "@/components/daterangepicker.vue";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");

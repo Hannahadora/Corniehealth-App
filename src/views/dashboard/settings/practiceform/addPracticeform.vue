@@ -20,18 +20,28 @@
           </span>
       </div>
       <div class="w-full h-screen">
-        <cornie-input contenteditable="true" placeholder="FORM TITLE: Blank Form" v-model="formTitle" :value="'Blank Form'" class="rounded-lg border p-2 w-full focus:outline-none mb-6"  @input="formTitleGet($event)"/>
-         <cornie-input  placeholder="DESCRIPTION: Kindly tell us about your medical history!" class="w-full mb-6 text-black" @input="DescriptionGet($event)" v-model="description"/>
+        <div>
+        <label class="relative top-9 ml-2 text-black">FORM TITLE: </label>
+        <cornie-input contenteditable="true" v-model="formTitle" class="rounded-lg border p-2 pl-28 w-full focus:outline-none mb-6"  @input="formTitleGet($event)"/>
+         </div>
+         <div>
+          <label class="relative top-9 ml-2 text-black">DESCRIPTION:</label>
+          <cornie-input class="w-full mb-6 pl-28 text-black" @input="DescriptionGet($event)" v-model="description"/>
+        </div>
        <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
            DESCRIPTION: Kindly tell us about your medical history!
         </div>-->
-       <draggable v-model="questions"  v-for="(input, index) in questions" :key="index" :class="{'active':index === 0}" item-key="id" class="my-2 border-0 w-full flex-col rounded-md flex">
+       <draggable v-model="questions"  v-for="(input, index) in questions" :key="index" :class="{'active':index === 0}" item-key="id" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
+           <template #item="{ element, index }">
           <all-questions  :title="input.name" titledescription="Export to Habits" class="" >
                 <template v-slot:default>
                     <div class="border-2 border-gray-200 pb-14" >
                       <div>
                         <div class="w-full grid grid-cols-2 gap-4 p-5">
+                             <label>
                               <cornie-input  label="Question"  placeholder="--Type question here--" class="mb-6 text-black col-span-2" v-model="questions[index].question" @input="ashowquestions(index,$event)"/>
+                               {{ element.title }}
+                              </label>
                               <cornie-select :rules="required" :items="['paragraph','radio-button','checkbox']"  @change="showOptionType(answerType)" v-model="questions[index].answerType" label="Answer Type" placeholder="Paragraph">
                               </cornie-select>
                               <cornie-input  label="Answer" v-model="questions[index].answerOptions"  v-if="questions[index].answerType === 'paragraph'" placeholder="--Placeholder--" class="mb-6 text-black col-span-2" />
@@ -63,6 +73,7 @@
                     </div>
                 </template>
           </all-questions>
+           </template>
        </draggable>
       </div>
     </form>
@@ -86,6 +97,7 @@ import OrgSelect from "@/components/orgSelect.vue";
 import AllQuestions from "@/components/questions.vue";
 import MoveIcon from "@/components/icons/move.vue";
 import PlusIcon from "@/components/icons/plus.vue";
+import Draggable from "vuedraggable";
 
 const practiceform = namespace("practiceform");
 const dropdown = namespace("dropdown");
@@ -102,6 +114,7 @@ const dropdown = namespace("dropdown");
     CornieInput,
     CornieSelect,
     AccordionComponent,
+    Draggable
   },
 })
 export default class AddPracticeform extends Vue {
@@ -117,11 +130,8 @@ export default class AddPracticeform extends Vue {
   @practiceform.Action
   getPracticeformById!: (id: string) => IPracticeform;
 
-  
-emptyTQuestion = {};
   loading = false;
   expand = false;
-
 
   isVisible = '';
   questionoptionsothers = [""] as  any;
@@ -137,7 +147,7 @@ emptyTQuestion = {};
   formType = "";
   formTitle = "Blank Form";
   displayTitle = "Blank Form";
-  description = "";
+  description = "Kindly tell us about your medical history!";
   question = "Type question here";
   name = "Others";
   answerType ="paragraph";
@@ -146,7 +156,7 @@ emptyTQuestion = {};
    questionOptions = [] as any;
    questionOption = [];
 
-  questions: Question[] = [];
+  questions: Question[] = [{name:'Others',answerOptions:[""],question:"Type questions", answerType:"paragraph"}];
   getEmptyQuestion(): Question {
     return{
       question: "Type question here",
@@ -213,6 +223,7 @@ emptyTQuestion = {};
     async DescriptionGet(e:any){
       this.description = e.target.innerText;
     }
+    
     async addOptionothers(question:any,index:number) {
     this.questionoptionsothers.push(question);
        this.questions[index].answerOptions.push(question);
@@ -308,5 +319,9 @@ emptyTQuestion = {};
 }
 :focus-visible {
     outline: none;
+}
+::placeholder{
+  color:#000;
+
 }
 </style>
