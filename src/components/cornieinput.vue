@@ -8,6 +8,7 @@
   >
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
     <input
+      autocomplete="off"
       :class="{
         'border-red-500': Boolean(errorMessage),
         'border-green-400': meta.valid && meta.touched,

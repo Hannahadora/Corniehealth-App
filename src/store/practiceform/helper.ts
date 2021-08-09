@@ -1,25 +1,49 @@
 import { cornieClient } from "@/plugins/http";
-import IGroup from "@/types/IGroup";
+import IPracticeform from "@/types/IPracticeform";
 
-export async function fetchGroups() {
+export async function fetchPracticeforms() {
   try {
     const response = await cornieClient().get(
-      "/api/v1/group"
+      "/api/v1/practice-form"
     );
     if (response.success){
-      
       return response.data;
-
     } 
   } catch (error) {
     console.log(error);
   }
-  return [] as IGroup[];
+  return [] as IPracticeform[];
+}
+export async function fetchPracticeformsTemplates() {
+  try {
+    const response = await cornieClient().get(
+      "/api/v1/practice-form/template-forms"
+    );
+    if (response.success){
+      return response.data;
+    } 
+  } catch (error) {
+    console.log(error);
+  }
+  return [] as IPracticeform[];
+}
+export async function fetchPracticeformsQuestions() {
+  try {
+    const response = await cornieClient().get(
+      "/api/v1/practice-form/template-questions"
+    );
+    if (response.success){
+      return response.data;
+    } 
+  } catch (error) {
+    console.log(error);
+  }
+  return [] as IPracticeform[];
 }
 
-export async function deleteGroup(id: string) {
+export async function deletePracticeform(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/group/${id}`);
+    const response = await cornieClient().delete(`/api/v1/practice-form/${id}`);
     if (response.success) {
       return true;
     }

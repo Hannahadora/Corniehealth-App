@@ -3,7 +3,10 @@
    <div class="grid  grid-cols-1 grid-flow-col gap-4">
         <div>
             <div class="h-11 w-full flex items-center justify-between px-3 border-2 border-0 rounded-t-xl bg-primary border-primary">
-            <div class="font-semibold text-white uppercase">
+            <div contenteditable="true" v-if="title == 'Others'" class="font-semibold text-white uppercase">
+                {{ title }}
+            </div>
+            <div  class="font-semibold text-white uppercase" v-else>
                 {{ title }}
             </div>
             <span class="flex items-center">

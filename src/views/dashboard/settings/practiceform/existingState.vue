@@ -23,28 +23,38 @@
           </div>
         </span>
     </div>
-    <div class="w-full order-first mt-5">
+    <div class="w-full order-first mt-5"  v-for="(item, i) in sortFunc" :key="i">
       <div  class="h-11 w-full flex items-center justify-between px-3 border-2 border-0 rounded-t-xl bg-primary border-primary">
-        <div class="font-semibold text-white">
-          Medical history form for new  patients
+        <div class="font-semibold text-white uppercase">
+         {{item.formTitle}}
         </div>
         <span class="flex items-center">
-        <!-- <info-icon  class="cursor-pointer"  :class="{ 'fill-current text-white': expand }">
-          </info-icon>-->
-        <whiteedit-icon  class="cursor-pointer fill-current text-white">
-          </whiteedit-icon>
+          <whiteedit-icon  class="cursor-pointer fill-current text-white"  @click="$router.push(`/dashboard/provider/add-practice-form-template/${item.id}`)"></whiteedit-icon>
           <span class="mr-3 cursor-pointer" :class="{ 'fill-current text-white': expand }">
             <slot name="misc" />
           </span>
-          <whitedelete-icon  class="cursor-pointer stroke-current text-white">
+          <whitedelete-icon  class="cursor-pointer stroke-current text-white"  @click="deleteItem(item.id)">
           </whitedelete-icon>
         </span>
       </div>
       <div class="border-2 border-gray-200">
-        <div class="w-full grid grid-cols-3 gap-4 p-5">
-            <h3 class="font-bold uppercase text-left">Created by</h3>
-            <p class="text-center">Mike Eze</p>
-            <p class="text-right">3/18/2020</p>
+        <div class="w-full grid grid-cols-3 gap-1 p-5 -mb-5">
+            <h3 class="font-bold uppercase text-left">Created By</h3>
+            <p class="text-center">{{item.createdBy.firstName}}  {{item.createdBy.lastName}}</p>
+            <p class="text-right">{{item.createdAt}}</p>
+        </div>
+        <div class="w-full grid grid-cols-3 gap-0 p-5 -mb-5">
+            <h3 class="font-bold uppercase text-left">Last Modified By</h3>
+            <p class="text-center">{{item.updatedBy.firstName}}  {{item.updatedBy.lastName}}</p>
+            <p class="text-right">{{item.updatedAt}}</p>
+        </div>
+        <div class="w-full grid grid-cols-3 gap-0 p-5 -mb-5">
+            <h3 class="font-bold uppercase text-left">Form Type</h3>
+            <p class="text-center">{{item.formType}}</p>
+        </div>
+        <div class="w-full grid grid-cols-3 gap-0 -mb-5 p-5">
+            <h3 class="font-bold uppercase text-left">Links</h3>
+            <p class="text-center">{{item.links}}</p>
         </div>
       </div>
     </div>
@@ -66,7 +76,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IGroup from "@/types/IGroup";
+import IPracticeform from "@/types/IPracticeform";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import WhiteeditIcon from "@/components/icons/whiteedit.vue";
@@ -78,7 +88,7 @@ import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-const group = namespace("group");
+const practiceform = namespace("practiceform");
 
 @Options({
   components: {
@@ -105,7 +115,7 @@ const group = namespace("group");
   },
   
 })
-export default class GroupExistingState extends Vue {
+export default class PracticeformExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
@@ -116,141 +126,40 @@ export default class GroupExistingState extends Vue {
   showSelect = false;
   paymentId ="";
 
-  @group.State
-  groups!: IGroup[];
+  @practiceform.State
+  practiceforms!: IPracticeform[];
 
-  @group.Action
-  deleteGroup!: (id: string) => Promise<boolean>;
-
-  getKeyValue = getTableKeyValue;
-  preferredHeaders = [];
-  rawHeaders = [
-    { title: "Name", value: "name", show: true },
-    {
-      title: "Quantity",
-      value: "quantity",
-      show: true,
-    },
-    {
-      title: "Type",
-      value: "type",
-      show: true,
-    },
-    {
-      title: "Status",
-      value: "status",
-      show: false,
-    },
-    {
-      title: "Managing Entity",
-      value: "managingEntity",
-      show: true,
-    },
-    {
-      title: "Characteristics Code",
-      value: "characteristicsCode",
-      show: false,
-    },
-    {
-      title: "Code",
-      value: "code",
-      show: false,
-    },
-    {
-      title: "Value Range",
-      value: "valueRange",
-      show: false,
-    },
-    {
-      title: "Period",
-      value: "period",
-      show: false,
-    },
-    {
-      title: "Value Boolean",
-      value: "valueBoolean",
-      show: false,
-    },
-    {
-      title: "Value Reference",
-      value: "valueRef",
-      show: false,
-    },
-    {
-      title: "Exclude",
-      value: "exclude",
-      show: false,
-    },
-    {
-      title: "Member Period",
-      value: "memberPeriod",
-      show: false,
-    },
-    {
-      title: "Member Status",
-      value: "memberStatus",
-      show: false,
-    },
-    {
-      title: "Member Entity",
-      value: "memberEntity",
-      show: false,
-    },
-    {
-      title: "Value Quantity",
-      value: "valueQuantity",
-      show: false,
-    },
-    {
-      title: "Value Codeable Concept",
-      value: "valueCodeableConcept",
-      show: false,
-    },
-  ];
-
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
-  }
-  
+  @practiceform.Action
+  deletePracticeform!: (id: string) => Promise<boolean>;
 
 
   get items() {
-    const groups = this.groups.map((group) => {
-       (group as any).period = new Date(
-         (group as any).period 
+    const practiceforms = this.practiceforms.map((practiceform) => {
+       (practiceform as any).createdAt = new Date(
+         (practiceform as any).createdAt 
        ).toLocaleDateString("en-US");
-       (group as any).memberPeriod = new Date(
-         (group as any).memberPeriod 
+       (practiceform as any).updatedAt = new Date(
+         (practiceform as any).updatedAt 
        ).toLocaleDateString("en-US");
-
-       
         return {
-        ...group,
-         action: group.id,
+        ...practiceform,
         };
     });
-    if (!this.query) return groups;
-    return search.searchObjectArray(groups, this.query);
+    if (!this.query) return practiceforms;
+    return search.searchObjectArray(practiceforms, this.query);
   }
 
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this group",
-      title: "Delete Group"
+      message: "You are about to delete this practice form",
+      title: "Delete Practice Form"
     });
     if (!confirmed) return;
 
-    if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
-    else window.notify({ msg: "Group not deleted", status: "error" });
+    if (await this.deletePracticeform(id)) window.notify({ msg: "Practice form deleted", status: "success" });
+    else window.notify({ msg: "Practice form not deleted", status: "error" });
   }
-  
-
       get sortFunc (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;

@@ -1,7 +1,7 @@
 <template>
    <span class="relative">
     <div class="bg-white rounded-t p-1 shadow">
-      <icon-input class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
+      <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
             <template v-slot:prepend>
               <search-icon />
             </template>
@@ -21,7 +21,7 @@
         "
           >
         <div
-          class="flex flex-row px-1 divide-y-2 divide-solid cursor-pointer"
+          class="flex flex-row px-1 divide-y-2 divide-solid cursor-pointer hover:bg-gray-100 rounded-full"
           v-for="(item, i) in filteredItems"
           :key="i"
           @click="selected(item)"
@@ -84,6 +84,22 @@ export default class AutoComplete extends Vue {
     });
      if(item == 'Blank form'){
             this.$router.push({path: '/dashboard/provider/add-practice-form-template' })
+        }
+
+     if(item == 'Others'){
+            this.$emit('createdquestions','Others');
+        }
+     if(item == 'Habits'){
+            this.$emit('createdquestions','Habits');
+        }
+     if(item == 'Diet Template'){
+            this.$emit('createdquestions', 'Diet');
+        }
+     if(item == 'Exercise'){
+            this.$emit('createdquestions', 'Exercise');
+        }
+     if(item == 'Sleep'){
+            this.$emit('createdquestions', 'Sleep');
         }
   }
 }

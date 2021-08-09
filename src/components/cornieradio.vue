@@ -2,7 +2,7 @@
   <span class="flex items-center">
     <label class="radio-container">
       {{ label }}
-      <input v-bind="$attrs" type="radio" v-model="checked" />
+      <input v-bind="$attrs" type="checkbox" v-model="checked" />
       <span class="checkmark"></span>
     </label>
   </span>

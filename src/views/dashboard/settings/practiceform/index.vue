@@ -15,15 +15,8 @@
        Practice Forms/Templates
       </span>
       <span class="w-full">
-      <practiceform-existing-state/>
-         <!-- <practiceform-empty-state
-                v-if="empty"
-          />
-          <practiceform-existing-state
-        
-          v-else
-
-          />-->
+          <practiceform-empty-state v-if="empty" />
+          <practiceform-existing-state v-else />
       </span>
     </div>
   </div>
@@ -47,9 +40,9 @@ const practiceform = namespace("practiceform");
 export default class PracticeformIndex extends Vue {
   PracticeformToUpdate = {} as IPracticeform;
 
-  // get empty() {
-  //   return this.practiceforms.length < 1;
-  // }
+  get empty() {
+    return this.practiceforms.length < 1;
+  }
 
  @practiceform.State
   practiceforms!: IPracticeform[];
@@ -58,10 +51,10 @@ export default class PracticeformIndex extends Vue {
   fetchPracticeforms!: () => Promise<void>;
 
 
-  //created() {
-  // this.fetchPracticeforms()
-  //   if (this.practiceforms.length < 1) this.fetchPracticeforms();
-  // }
+  created() {
+  this.fetchPracticeforms()
+    if (this.practiceforms.length < 1) this.fetchPracticeforms();
+  }
 
 }
 </script>

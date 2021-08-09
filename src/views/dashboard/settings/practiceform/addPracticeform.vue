@@ -1,78 +1,71 @@
 <template>
-<div class="bg-white rounded p-5 mt-5 max-h-96 overflow-y-auto">
-<span class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto">
-    Blank Form
-</span>
-  <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex justify-end w-full">
-        <button type="button" class="flex outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-5 pl-5 px-3 focus:outline-none hover:bg-primary hover:text-white">
-            <plus-icon class="mt-1 mr-2" />  Add Question
-        </button>
-        <button class="bg-danger rounded-full text-white mt-5 py-1 pr-8 pl-8 px-2 focus:outline-none hover:opacity-90" @click="$router.push('/dashboard/provider/add-group')">
-            Save Form
-        </button>
-
-      
-    </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-  <div class="w-full h-screen">
-    <form class="mt-5 w-full" @submit.prevent="submit">
-        <div class="w-full order-first mt-5 hover:max-h-40 overflow-y-auto">
-            <cornie-input  placeholder="FORM TITLE: Blank Form" class="w-full mb-6 text-black" v-model="valueCodeableConcept"/>
-            <cornie-input  placeholder="DESCRIPTION: Kindly tell us about your medical history!" class="w-full mb-6 text-black" v-model="valueCodeableConcept"/>
-           <div class="grid  grid-cols-1 grid-flow-col gap-4">
-                <div>
-                    <div  class="h-11 w-full flex items-center justify-between px-3 border-2 border-0 rounded-t-xl bg-primary border-primary">
-                        <div class="font-semibold text-white">
-                        Others
+<div class="bg-white rounded overflow-auto max-h-96 p-5 mt-5">
+  <cornie-input contenteditable="true" v-model="formTitle" :value="'Blank Form'" placholder="Blank Form" class="flex float-left border-none w-full font-semibold text-xl text-primary py-2 mx-auto" type="text" @input="display($event)"/>
+   <form class="mt-5 w-full" @submit.prevent="submit" autocomplete="off">
+      <div class="flex w-full mt-5 mb-5 items-center">
+          <span class="flex justify-end w-full">
+            <div class="dropdown inline-block relative">
+                <button type="button" class="flex outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-5 pl-5 px-3 focus:outline-none hover:bg-primary hover:text-white">
+                  <plus-icon class="mt-1 mr-2" />  Add Question
+                </button>
+                <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+                  <li class="">
+                      <Select :items="items"  @createdquestions="addQuestion"></Select>
+                  </li>
+                </ul>
+              </div>
+            <cornie-btn  :loading="loading" type="submit" class="bg-danger rounded-full text-white mt-5 py-1 pr-8 pl-8 px-2 focus:outline-none hover:opacity-90">
+                Save Form
+            </cornie-btn>
+          </span>
+      </div>
+      <div class="w-full h-screen">
+        <cornie-input contenteditable="true" placeholder="FORM TITLE: Blank Form" v-model="formTitle" :value="'Blank Form'" class="rounded-lg border p-2 w-full focus:outline-none mb-6"  @input="formTitleGet($event)"/>
+         <cornie-input  placeholder="DESCRIPTION: Kindly tell us about your medical history!" class="w-full mb-6 text-black" @input="DescriptionGet($event)" v-model="description"/>
+       <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
+           DESCRIPTION: Kindly tell us about your medical history!
+        </div>-->
+       <draggable v-model="questions"  v-for="(input, index) in questions" :key="index" :class="{'active':index === 0}" item-key="id" class="my-2 border-0 w-full flex-col rounded-md flex">
+          <all-questions  :title="input.name" titledescription="Export to Habits" class="" >
+                <template v-slot:default>
+                    <div class="border-2 border-gray-200 pb-14" >
+                      <div>
+                        <div class="w-full grid grid-cols-2 gap-4 p-5">
+                              <cornie-input  label="Question"  placeholder="--Type question here--" class="mb-6 text-black col-span-2" v-model="questions[index].question" @input="ashowquestions(index,$event)"/>
+                              <cornie-select :rules="required" :items="['paragraph','radio-button','checkbox']"  @change="showOptionType(answerType)" v-model="questions[index].answerType" label="Answer Type" placeholder="Paragraph">
+                              </cornie-select>
+                              <cornie-input  label="Answer" v-model="questions[index].answerOptions"  v-if="questions[index].answerType === 'paragraph'" placeholder="--Placeholder--" class="mb-6 text-black col-span-2" />
+                                <div v-if="questions[index].answerType === 'radio-button'">
+                                  <div  v-for="(input, index) in questionoptionsothers" :key="`${index}`">
+                                    <span class="flex item-center mb-2">
+                                      <cornie-radio class="text-black col-span-2"/>
+                                      <span contenteditable="true" class="mt-3">Option</span>
+                                    </span>
+                                  </div>
+                                  <span class="cursor-pointer text-danger mt-5 mr-2 font-bold float-left" @click="addOptionothers(questionoptionsothers,index)">Add option</span>
+                              </div>
+                              <div class="flex flex-col" v-if="questions[index].answerType === 'checkbox'">
+                                  <div  v-for="(input, index) in questionoptionsothers" :key="`${index}`">
+                                    <span class="flex item-center mb-2">
+                                      <label class="inline-flex items-center mt-3">
+                                          <input type="checkbox" class="form-checkbox h-5 w-5">
+                                      </label>
+                                      <span contenteditable="true" class="mt-3 ml-3">Checkbox</span>
+                                    </span> 
+                                  </div>
+                                  <span class="cursor-pointer text-danger mt-5 mr-2 font-bold float-left" @click="addOptionothers(questionoptionsothers)">Add option</span>
+                              </div>
                         </div>
-                        <span class="flex items-center">
-                        <p class="text-white">Export to Habits</p>
-                        <span class="mr-3 cursor-pointer" :class="{ 'fill-current text-white': expand }">
-                            <slot name="misc" />
-                        </span>
-                        <info-icon  class="cursor-pointer fill-current text-white">
-                        </info-icon>
-                        </span>
+                        <div class="w-full">
+                              <span class="cursor-pointer text-danger mt-5 mr-2 font-bold float-right" @click="removeQuestion(index)">Delete</span>
+                        </div>
+                      </div>
                     </div>
-                    <div class="border-2 border-gray-200">
-                            <div class="w-full grid grid-cols-2 gap-4 p-5">
-                                <cornie-input  label="Question"  placeholder="--Type question here--" class="mb-6 text-black col-span-2" v-model="valueCodeableConcept"/>
-                                <cornie-select :rules="required" :items="['Paragraph','Radio','Select']" v-model="memberStatus" label="Answer Type" placeholder="Paragraph">
-                                </cornie-select>
-                                <cornie-input  label="Answer"  placeholder="--Placeholder--" class="mb-6 text-black col-span-2" v-model="valueCodeableConcept"/>
-                                 <div>
-                                    <cornie-radio  label="Paragraph"  placeholder="--Placeholder--" class="mb-6 text-black col-span-2" v-model="valueCodeableConcept"/>
-                                    <cornie-radio  label="Radio"  placeholder="--Placeholder--" class="mb-6 text-black col-span-2" v-model="valueCodeableConcept"/>
-                                    <cornie-radio  label="Select"  placeholder="--Placeholder--" class="mb-6 text-black col-span-2" v-model="valueCodeableConcept"/>
-                                </div>
-                                <div class="flex flex-col">
-                                    <label class="inline-flex items-center mt-3">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5" checked><span class="ml-2 text-gray-700">Paragraph</span>
-                                    </label>
-                                    <label class="inline-flex items-center mt-3">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5"><span class="ml-2 text-gray-700">Radio</span>
-                                    </label>
-                                    <label class="inline-flex items-center mt-3">
-                                        <input type="checkbox" class="form-checkbox h-5 w-5"><span class="ml-2 text-gray-700">Select</span>
-                                    </label>
-                                    
-                                </div>
-                            <span class="cursor-pointer text-danger mt-5 mr-2 font-bold float-right">Delete</span>
-                            </div>
-                       
-                    </div>
-                </div>
-                <move-icon class="cursor-pointer mt-3"/>
-           </div>
-        </div>
+                </template>
+          </all-questions>
+       </draggable>
+      </div>
     </form>
-  </div>
 </div>
 </template>
 <script lang="ts">
@@ -82,91 +75,87 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import Textarea from "@/components/textarea.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import IGroup from "@/types/IGroup";
+import IPracticeform, {  Question } from "@/types/IPracticeform";
 import InfoIcon from "@/components/icons/info.vue";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
-import { Prop, Watch } from "vue-property-decorator";
+import Select from "@/components/newautocomplete.vue";
+import { Prop, Watch , PropSync} from "vue-property-decorator";
 import OrgSelect from "@/components/orgSelect.vue";
-import ColumnFilter from "@/components/columnfilter.vue";
-import DEdit from "@/components/icons/dedit.vue";
-import CDelete from "@/components/icons/cdelete.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import CAdd from "@/components/icons/cadd.vue";
-import AddIcon from "@/components/icons/add.vue";
+import AllQuestions from "@/components/questions.vue";
 import MoveIcon from "@/components/icons/move.vue";
-import DatePicker from "@/components/single-datepicker.vue";
+import PlusIcon from "@/components/icons/plus.vue";
 
-const group = namespace("group");
+const practiceform = namespace("practiceform");
 const dropdown = namespace("dropdown");
-
 
 @Options({
   components: {
     InfoIcon,
+    Select,
+    PlusIcon,
+    MoveIcon,
+    AllQuestions,
     CornieRadio,
     CornieCheckbox,
-    MoveIcon,
     CornieInput,
     CornieSelect,
-    PlusIcon,
-    OrgSelect,
-    ColumnFilter,
-    Textarea,
-    DEdit,
-    CDelete,
-    CAdd,
-    AddIcon,
-    PhoneInput,
-    DatePicker,
     AccordionComponent,
   },
 })
-export default class AddGroup extends Vue {
+export default class AddPracticeform extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  
-  @group.Action
-  getGroupById!: (id: string) => IGroup;
+  @practiceform.State
+  practiceformsquestions!: IPracticeform[];
 
+  @practiceform.State
+  practiceformstemplates!: IPracticeform[];
+
+  @practiceform.Action
+  getPracticeformById!: (id: string) => IPracticeform;
+
+  
+emptyTQuestion = {};
   loading = false;
   expand = false;
+
+
   isVisible = '';
-opened = true;
-openedR = false;
-openedT = false;
+  questionoptionsothers = [""] as  any;
+  questionoptionothers= [""];
 
+//  questionforms = [] as  any;
+//   questionform= [];
+  
+  items = ['Habits','Diet Template','Exercise','Sleep','Others'];
+ 
+  othersType ="";
+  habitType ="";
+  formType = "";
+  formTitle = "Blank Form";
+  displayTitle = "Blank Form";
+  description = "";
+  question = "Type question here";
+  name = "Others";
+  answerType ="paragraph";
+  answerOptions = [] as any;
 
-  state = "";
-  status = false;
-  type = "";
-  name = "";
-  code = "";
-  quantity = "";
-  managingEntity = "";
-  characteristicsCode = "";
-  valueCodeableConcept = "";
-  valueBoolean = "";
-  valueQuantity = "";
-  valueRange = "";
-  valueRef = "";
-  exclude = "";
-  period = "";
-  memberPeriod = "";
-  memberStatus = "";
-  memberEntity = "";
+   questionOptions = [] as any;
+   questionOption = [];
 
-
-  aoption = "Active";
-options = [
-  {text: 'Active' , value: true},
-  {text: 'Inactive' , value: false},
-];
-items = ['Active', 'Inactive'];
+  questions: Question[] = [];
+  getEmptyQuestion(): Question {
+    return{
+      question: "Type question here",
+      name: "Others",
+      answerType: "paragraph",
+      answerOptions:  [""], 
+    }
+  };
+  
 
   required = string().required();
 
@@ -176,51 +165,26 @@ items = ['Active', 'Inactive'];
 
 @Watch("id")
   idChanged() {
-    this.setGroup();
+    this.setPracticeform();
   }
- async setGroup() {
-    const group = await this.getGroupById(this.id);
-    if (!group) return;
-    this.state = group.state;
-    this.status = group.status;
-    this.type = group.type;
-    this.name = group.name;
-    this.code = group.code;
-    this.quantity = group.quantity;
-    this.managingEntity = group.managingEntity;
-    this.characteristicsCode = group.characteristicsCode;
-    this.valueCodeableConcept = group.valueCodeableConcept;
-    this.valueBoolean = group.valueBoolean;
-    this.valueQuantity = group.valueQuantity;
-    this.valueRange = group.valueRange;
-    this.valueRef = group.valueRef;
-    this.exclude = group.exclude;
-    this.period = group.period;
-    this.memberPeriod = group.memberPeriod;
-    this.memberStatus = group.memberStatus;
-    this.memberEntity = group.memberEntity;
-
+ async setPracticeform() {
+    const practiceform = await this.getPracticeformById(this.id);
+    if (!practiceform) return;
+    this.formType = practiceform.formType;
+    this.formTitle = practiceform.formTitle;
+    this.displayTitle = practiceform.displayTitle;
+    this.description = practiceform.description;
+    this.questions = practiceform.questions;
+    
+    
  }
    get payload() {
     return {
-        state:  this.state,
-        status:  this.status,
-        type: this.type,
-        name:  this.name ,
-        code:  this.code ,
-        quantity:  this.quantity ,
-        managingEntity:  this.managingEntity ,
-        characteristicsCode:  this.characteristicsCode ,
-        valueCodeableConcept:  this.valueCodeableConcept ,
-        valueBoolean:  this.valueBoolean ,
-        valueQuantity:  this.valueQuantity ,
-        valueRange:  this.valueRange ,
-        valueRef:  this.valueRef ,
-        exclude:  this.exclude ,
-        period:  this.period ,
-        memberPeriod:  this.memberPeriod ,
-        memberStatus:  this.memberStatus ,
-        memberEntity:  this.memberEntity ,
+        formType:  this.formType,
+        formTitle:  this.formTitle,
+        displayTitle:  this.displayTitle,
+        description:  this.description,
+        questions:  this.questions,
     }
    }
 
@@ -229,65 +193,108 @@ items = ['Active', 'Inactive'];
   }
  
 
-//   async reset(){
-//     this.participant = {...emptyParticipant};
-//   }
-    async setValue(value:string){
-        if(value == 'Active'){
-          this.status = true
-        }else{
-          this.status = false
-        }
+  // async reset(){
+  //   this.question = {...emptyQuestion};
+  // }
+
+    async showOptionType(value:string){
+        this.answerType = value;
     }
+    async display(e:any){
+      this.displayTitle = e.target.innerText;
+      this.formType = e.target.innerText;
+    }
+    async changequestion(){
+      this.getEmptyQuestion();
+    }
+    async formTitleGet(e:any){
+      this.formTitle = e.target.innerText;
+    }
+    async DescriptionGet(e:any){
+      this.description = e.target.innerText;
+    }
+    async addOptionothers(question:any,index:number) {
+    this.questionoptionsothers.push(question);
+       this.questions[index].answerOptions.push(question);
+    }
+  
+    async ashowquestions(index:string,e:any){
+      let value = e.target.value;
+     // Vue.set<Question>(this.questions,index,value)
+     // this.set(this.questions,"question", value )
+      console.log("index");
+      console.log(index);
+    }
+    async addQuestion(value:string) {
+      const question = 
+      value == "Others"
+      ? this.getEmptyQuestion()
+      : this.getTemplateQuestion(value);
+      this.questions.push(question);
+    }
+
+    getTemplateQuestion(name:string){
+      return{
+        question: "Type question here",
+        name: name,
+        answerType:"paragraph",
+        answerOptions: [""],
+      }
+    }
+    
+    async removeQuestion(index:number) {
+          this.questions.splice(index, 1);
+     }
    
    async submit() {
     this.loading = true;
-    if (this.id) await this.updateGroup();
-    else await this.createGroup();
+    if (this.id) await this.updatePracticeform();
+    else await this.createPracticeform();
     this.loading = false;
   }
 
-  async createGroup() {
-    // this.payload.period.start = new Date(this.payload.period.start).toISOString()
- this.payload.period = new Date(this.payload.period).toISOString();
+  async createPracticeform() {
+    this.displayTitle = this.formTitle;
+     this.formType = this.displayTitle;
     try {
       const response = await cornieClient().post(
-        "/api/v1/group",
+        "/api/v1/practice-form",
         this.payload
       );
       if (response.success) {
-          window.notify({ msg: "Group created", status: "success" });
-          this.$router.push('/dashboard/provider/settings/group')
+          window.notify({ msg: "Practice form created", status: "success" });
+          this.$router.push('/dashboard/provider/settings/practice-templates')
+      }else{
+         window.notify({ msg: response.message, status: "success" });
+          this.$router.push('/dashboard/provider/settings/practice-templates')
       }
     } catch (error) {
-      window.notify({ msg: "Group not created", status: "error" });
-      this.$router.push('/dashboard/provider/settings/group')
+      window.notify({ msg: error, status: "error" });
+      this.$router.push('/dashboard/provider/settings/practice-templates')
     }
   }
  
 
-  async updateGroup() {
-    const url = `/api/v1/group/${this.id}`;
+  async updatePracticeform() {
+    const url = `/api/v1/practice-form/${this.id}`;
     const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Group updated", status: "success" });
-        this.$router.push('/dashboard/provider/settings/group')
+        window.notify({ msg: "Practice form updated", status: "success" });
+        this.$router.push('/dashboard/provider/settings/practice-templates')
       }
     } catch (error) {
-       window.notify({ msg: "Group not updated", status: "error" });
-       this.$router.push('/dashboard/provider/settings/group')
+       window.notify({ msg: "Practice form not updated", status: "error" });
+       this.$router.push('/dashboard/provider/settings/practice-templates')
     }
   }
 
 
   async created() {
-    this.setGroup();
-     const data = await this.getDropdowns("group");
+    this.setPracticeform();
+     const data = await this.getDropdowns("practiceforms");
     this.dropdowns = data;
-    console.log("data");
-    console.log(data);
   }
 
 }
@@ -295,5 +302,11 @@ items = ['Active', 'Inactive'];
 <style>
 .outline-primary{
     border: 2px solid #211F45;
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+:focus-visible {
+    outline: none;
 }
 </style>

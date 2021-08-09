@@ -26,7 +26,7 @@
         "vue-select": "git+https://github.com/sagalbot/vue-select.git#feat/vue-3-compat",
         "vue-select-connorshea": "^3.12.1",
         "vue-sweetalert2": "^5.0.2",
-        "vuedraggable": "^4.0.3",
+        "vuedraggable": "^2.24.3",
         "vuex": "^4.0.1",
         "vuex-class": "^0.3.2",
         "vuex-module-decorators": "^1.0.1",
