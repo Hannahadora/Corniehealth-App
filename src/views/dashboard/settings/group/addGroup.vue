@@ -156,6 +156,18 @@
           </accordion-component>
           <accordion-component title="Member" v-model="openedT">
             <template v-slot:default>
+            <div class="col-span-full mb-5">
+             <!-- <div>
+                <div class="grid grid-cols-7 gap-2 col-span-full mb-4" v-for="(input, index) in groupmembers" :key="`-${index}`">
+                  <div>
+                    <p class="text-xs text-dark font-semibold">{{ input.name }}</p>
+                    <p class="text-xs text-gray font-light">{{ input.status }}</p>
+                  </div>
+                  <d-edit class="ml-20 cursor-pointer" @click="editGroupMember(input.groupId, index, groupmembers)"/>
+                  <c-delete @click="removeGroupMember(index, groupmembers)" class="cursor-pointer"/>
+                </div>
+              </div>-->
+            </div>
               <div class="w-full grid grid-cols-3 gap-5 p-5">
                 <cornie-select
                   :rules="required"
@@ -180,6 +192,9 @@
                 >
                 </cornie-select>
               </div>
+              <!-- <span>
+                  <div class="cursor-pointer text-danger mt-8 font-bold" @click="addGroupMember">Add</div>
+               </span>-->
             </template>
           </accordion-component>
         </div>
@@ -233,6 +248,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
+//import IGroup , { GroupMembers } from "@/types/IGroup";
 import IGroup from "@/types/IGroup";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
@@ -244,10 +260,16 @@ import DEdit from "@/components/icons/dedit.vue";
 import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import DatePicker from "@/components/datepicker.vue";
+import DatePicker from "@/components/daterangepicker.vue";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");
+
+// const emptyMember: GroupMembers = {
+//   name: "",
+//   type: "",
+// };
+
 @Options({
   components: {
     CornieInput,
@@ -292,9 +314,13 @@ export default class AddGroup extends Vue {
   exclude = "";
   period = "";
   memberPeriod = "";
+ // period: { start: "2011/12/15", end: "2017/12/19" };
+ // memberPeriod: { start: "2011/12/15", end: "2017/12/19" };
   memberStatus = "";
   memberEntity = "";
   aoption = "Active";
+  // groupmember = { ...emptyMember };
+  // groupmembers: GroupMembers[] = [];
   options = [
     { text: "Active", value: true },
     { text: "Inactive", value: false },
@@ -357,8 +383,20 @@ export default class AddGroup extends Vue {
   }
 
   //   async reset(){
-  //     this.participant = {...emptyParticipant};
+  //     this.groupmember = {...emptyMember};
   //   }
+  //  async addGroupMember() {
+  //     this.groupmembers.push({ ...this.groupmember });
+  //     window.notify({ msg: "Group Member added", status: "success" });
+  //     this.reset();
+  //   }
+  // async editGroupMember(id: string, index: number, fieldType: object) {
+  //   this.groupmember = this.groupmembers[index];
+  // }
+  // async removeGroupMember(id: string, index: number, fieldType: object) {
+  //   this.groupmembers.splice(index, 1);
+  //   window.notify({ msg: "Group Member deleted", status: "success" });
+  // }
   async setValue(value: string) {
     if (value == "Active") {
       this.status = true;
@@ -383,6 +421,7 @@ export default class AddGroup extends Vue {
       }
     } catch (error) {
       window.notify({ msg: "Group not created", status: "error" });
+      this.$router.push('/dashboard/provider/settings/group')
     }
   }
 
@@ -393,6 +432,7 @@ export default class AddGroup extends Vue {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Group updated", status: "success" });
+        this.$router.push('/dashboard/provider/settings/group')
       }
     } catch (error) {
       window.notify({ msg: "Group not updated", status: "error" });

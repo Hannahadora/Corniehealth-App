@@ -7,7 +7,9 @@ export async function fetchGroups() {
       "/api/v1/group"
     );
     if (response.success){
+      
       return response.data;
+
     } 
   } catch (error) {
     console.log(error);
