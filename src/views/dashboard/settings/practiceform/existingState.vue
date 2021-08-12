@@ -23,7 +23,7 @@
           </div>
         </span>
     </div>
-    <div class="w-full order-first mt-5"  v-for="(item, i) in sortFunc" :key="i">
+ <!--   <div class="w-full order-first mt-5"  v-for="(item, i) in sortFunc" :key="i">
       <div  class="h-11 w-full flex items-center justify-between px-3 border-2 border-0 rounded-t-xl bg-primary border-primary">
         <div class="font-semibold text-white uppercase">
          {{item.formTitle}}
@@ -57,7 +57,56 @@
             <p class="text-center">{{item.links}}</p>
         </div>
       </div>
-    </div>
+    </div>-->
+    <Table :headers="headers" :items="sortFunc" class="tableu rounded-xl mt-5">
+      <template v-slot:item="{ item }">
+        <span v-if="getKeyValue(item).key == 'action'">
+          <table-options>
+            <li
+              @click="$router.push(`/dashboard/provider/add-practice-form-template/${getKeyValue(item).value}`)"
+              class="
+                list-none
+                items-center
+                flex
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+                 my-1 -m-6 p-5 py-2
+              "
+            >
+              
+              <edit-icon class="mr-3" /> Edit
+            </li>
+            <li
+              @click="deleteItem(getKeyValue(item).value)"
+              class="
+                list-none
+                flex
+                 my-1 -m-6 p-5 py-2
+                items-center
+                text-xs
+                font-semibold
+                text-gray-700
+                hover:bg-gray-100
+                hover:text-gray-900
+                cursor-pointer
+              "
+            >
+              <delete-icon class="mr-3" /> Delete
+            </li>
+          </table-options>
+        </span>
+        <span v-else> {{ getKeyValue(item).value }} </span>
+      </template>
+    </Table>
+    <column-filter
+      :columns="rawHeaders"
+      v-model:preferred="preferredHeaders"
+      v-model:visible="showColumnFilter"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -76,7 +125,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IPracticeform from "@/types/IPracticeform";
+import IPracticeform,{createdBy, updatedBy} from "@/types/IPracticeform";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import WhiteeditIcon from "@/components/icons/whiteedit.vue";
@@ -132,6 +181,49 @@ export default class PracticeformExistingState extends Vue {
   @practiceform.Action
   deletePracticeform!: (id: string) => Promise<boolean>;
 
+  practionersNames = "";
+
+getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
+  rawHeaders = [
+    { title: "Form Name", value: "formTitle", show: true },
+    {
+      title: "Form Type",
+      value: "formType",
+      show: true,
+    },
+    {
+      title: "Created By",
+      value: "Created",
+      show: true,
+    },
+    {
+      title: "Last Modified By",
+      value: "status",
+      show: true,
+    },
+    {
+      title: "Links",
+      value: "kinks",
+      show: true,
+    },
+    {
+      title: "Display Title",
+      value: "displayTitle",
+      show: false,
+    },
+  ];
+
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(6, headers), { title: "", value: "action", image: true }];
+  }
+  
+
 
   get items() {
     const practiceforms = this.practiceforms.map((practiceform) => {
@@ -141,13 +233,28 @@ export default class PracticeformExistingState extends Vue {
        (practiceform as any).updatedAt = new Date(
          (practiceform as any).updatedAt 
        ).toLocaleDateString("en-US");
+        const practioner = this.stringifyPractioners(practiceform.createdBy);
         return {
         ...practiceform,
+          createdBy: practioner,
         };
     });
     if (!this.query) return practiceforms;
     return search.searchObjectArray(practiceforms, this.query);
   }
+
+ stringifyPractioners(practioners: createdBy[]) {
+    const [practioner, ...rest] = practioners;
+    if (!practioner) return "All Day";
+    return `${practioner.firstName} - ${practioner.lastName}`;
+  }
+   async fetchPractioners() {
+      const Practioners = cornieClient().get(
+        "/api/v1/practice-form/template-forms"
+      );
+      const response = await Promise.all([Practioners]);
+      this.practionersNames = response[0].data.createdBy;
+    }
 
  
   async deleteItem(id: string) {
@@ -164,6 +271,9 @@ export default class PracticeformExistingState extends Vue {
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
+      }
+      async created() {
+        this.fetchPractioners();
       }
     
 

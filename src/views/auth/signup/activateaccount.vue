@@ -105,6 +105,7 @@ export default class ActivateAccount extends Vue {
   confirmation = "";
 
   loading = false;
+  showText = false;
 
   @user.State
   cornieData!: any;
@@ -190,12 +191,13 @@ export default class ActivateAccount extends Vue {
         "/auth/account/activate/",
         this.payload
       );
-      if (!data.success) return alert(errMsg);
+      
+      if (!data.success) this.showText = true; return  window.notify({ msg: errMsg });
       store.commit("user/setLoginInfo", data);
       this.$router.replace("/dashboard");
       this.saveCornieData();
     } catch (error) {
-      alert(errMsg);
+       window.notify({ msg: errMsg });
     }
   }
 }

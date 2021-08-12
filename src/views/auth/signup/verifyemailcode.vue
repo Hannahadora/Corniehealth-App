@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full pb-5 border-b">
-    <form class="w-3/4">
-      <h2 class="text-sm">Enter verification code sent to {{ user.email }}</h2>
+  <div class="w-full pb-5 border-b justify-center">
+    <form>
+      <h2 class="text-sm mb-5">Enter verification code sent to {{ user.email }}</h2>
       <span class="mt-4 w-full flex">
         <multi-input
           :length="6"
@@ -10,6 +10,7 @@
         />
         <check-icon class="my-auto ml-3" v-if="verifiedSync" />
       </span>
+      <p class="mt-12 text-sm">Didn’t receive code? <span class="cursor-pointer text-danger"> Resend </span> ({{ countDown }}:00)</p>
     </form>
   </div>
 </template>
@@ -30,6 +31,9 @@ export default class VerifyEmailCode extends Vue {
   @Prop({ required: false, type: Object })
   user!: { id: string; email: string };
 
+ @Prop({ type: Function, default: "" })
+  next!: Function;
+
   @Prop({ required: false, type: String })
   code!: string;
 
@@ -42,6 +46,7 @@ export default class VerifyEmailCode extends Vue {
   @PropSync("verified", { required: true })
   verifiedSync!: boolean;
   codeLength = 6;
+  countDown = 10;
 
   status: "loading" | "success" | "error" | "default" = "default";
 
@@ -63,6 +68,16 @@ export default class VerifyEmailCode extends Vue {
     };
   }
 
+  countDownTimer(){
+    if(this.countDown > 0){
+      setTimeout(() => {
+        this.countDown -=1
+        this.countDownTimer()
+      }, 10000)
+    }
+  }
+ 
+
   async submit() {
     this.status = "loading";
     const errMsg = "Email not verified";
@@ -74,16 +89,20 @@ export default class VerifyEmailCode extends Vue {
       if (data.success) {
         this.verifiedSync = true;
         this.status = "success";
+        this.next();
       } else {
         this.status = "error";
-        alert(errMsg);
+         window.notify({ msg: errMsg });
         setTimeout(() => (this.status = "default"), 5000);
       }
     } catch (error) {
       this.status = "error";
-      alert(errMsg);
+       window.notify({ msg: errMsg });
       setTimeout(() => (this.status = "default"), 5000);
     }
+  }
+  async created(){
+    this.countDownTimer();
   }
 }
 </script>

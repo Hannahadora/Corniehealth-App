@@ -31,17 +31,14 @@
        <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
            DESCRIPTION: Kindly tell us about your medical history!
         </div>-->
-       <draggable v-model="questions"  v-for="(input, index) in questions" :key="index" :class="{'active':index === 0}" item-key="id" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
-           <template #item="{ element }">
+       <draggable v-model="questions"  v-for="(input, index) in questions"  :key="index"  item-key="id" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
+           <template #item="{ element, index }">
           <all-questions  :title="input.name" titledescription="Export to Habits" class="" >
                 <template v-slot:default>
                     <div class="border-2 border-gray-200 pb-14" >
                       <div>
                         <div class="w-full grid grid-cols-2 gap-4 p-5">
-                             <label>
-                              <cornie-input  label="Question"  placeholder="--Type question here--" class="mb-6 text-black col-span-2" v-model="questions[index].question" @input="ashowquestions(index,$event)"/>
-                               {{ element.title }}
-                              </label>
+                               <cornie-input  label="Question"  placeholder="--Type question here--" class="mb-6 text-black col-span-2" v-model="questions[index].question" @input="ashowquestions(index,$event)"/>
                               <cornie-select :rules="required" :items="['paragraph','radio-button','checkbox']"  @change="showOptionType(answerType)" v-model="questions[index].answerType" label="Answer Type" placeholder="Paragraph">
                               </cornie-select>
                               <cornie-input  label="Answer" v-model="questions[index].answerOptions"  v-if="questions[index].answerType === 'paragraph'" placeholder="--Placeholder--" class="mb-6 text-black col-span-2" />
@@ -70,6 +67,7 @@
                               <span class="cursor-pointer text-danger mt-5 mr-2 font-bold float-right" @click="removeQuestion(index)">Delete</span>
                         </div>
                       </div>
+                        {{ element.title }}
                     </div>
                 </template>
           </all-questions>
