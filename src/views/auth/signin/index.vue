@@ -39,8 +39,9 @@ const user = namespace("user");
 export default class BaseSignIn extends Vue {
   loggedIn = false;
 
-  @Prop({type: Boolean, default: "" })
+  @Prop({type: Boolean })
   showText!: boolean;
+
   @PropSync("user", { required: false })
   userSync!: CreatedUser;
   user = {} as CreatedUser;
