@@ -52,36 +52,36 @@
           <li class="cursor-pointer list-none items-center -mb-5 -m-2 p-5">
             <p class="text-danger uppercase text-sm font-semibold"> New (1)</p>
           </li>
-          <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class=" w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm"> Pending Approvals</p>
-             <p class="text-xs"> You have 5 pending approvals. Click to <br> view and take action.</p>
+             <p class="text-xs"> You have 5 pending approvals. Click to view and take action.</p>
             </div>
-             <p class="text-gray-300 text-xs float-right"> 8 Minutes Ago</p>
+             <p class="text-gray-300 text-xs flex-shrink-0"> 8 Minutes Ago</p>
           </li>
           <li class="cursor-pointer list-none items-center -mb-5 -m-2 p-5">
             <p class="text-gray-500 font-semibold text-sm uppercase"> Earlier</p>
           </li>
-          <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class="w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm"> User Login</p>
-             <p class="text-xs"> Logan Paul has accepted the invitations <br> and logged in successfully.</p>
+             <p class="text-xs"> Logan Paul has accepted the invitations and logged in successfully.</p>
             </div>
-             <p class="text-gray-300 text-xs float-right">12 hours Ago</p>
+             <p class="text-gray-300 text-xs flex-shrink-0">12 hours Ago</p>
           </li>
-          <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class="w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm">Subscription Notice</p>
-             <p class="text-xs"> Your subscription will expire 3rd July 2021 <br> and is set auto renew.</p>
+             <p class="text-xs"> Your subscription will expire 3rd July 2021 and is set auto renew.</p>
             </div>
-             <p class="text-gray-300 text-xs float-right">1 Day Ago</p>
+             <p class="text-gray-300 text-xs flex-shrink-0">1 Day Ago</p>
           </li>
-          <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class=" w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm">Update Your Contact Information</p>
-             <p class="text-xs"> You have not completed your contact <br> information. Click to continue...</p>
+             <p class="text-xs"> You have not completed your contact information. Click to continue...</p>
             </div>
-             <p class="text-gray-300 text-xs float-right">5 Days Ago</p>
+             <p class="text-gray-300 text-xs flex-shrink-0">5 Days Ago</p>
           </li>
           
         </ul>
@@ -112,16 +112,16 @@
             "
           />
           <span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="absolute -bottom-10 left-3.5" width="6" height="6" viewBox="0 0 6 6" fill="none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-8 left-8" width="6" height="6" viewBox="0 0 6 6" fill="none">
               <path d="M0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3Z" fill="#35BA83"/>
               <path d="M3 5C1.89543 5 1 4.10457 1 3H-1C-1 5.20914 0.790861 7 3 7V5ZM5 3C5 4.10457 4.10457 5 3 5V7C5.20914 7 7 5.20914 7 3H5ZM3 1C4.10457 1 5 1.89543 5 3H7C7 0.790861 5.20914 -1 3 -1V1ZM3 -1C0.790861 -1 -1 0.790861 -1 3H1C1 1.89543 1.89543 1 3 1V-1Z" fill="white"/>
               </svg>
           </span>
         </div>
       </span>
-      <div class="dropdown">
+      <div class="dropdown flex">
       <span class="font-medium ml-1">{{ name }}</span>
-      <span class="ml-1">
+      <span class="ml-1 mt-2">
         <chevron-down class="cursor-pointer"/>
         <ul  class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden">
             <li class="float-right mr-1">
@@ -146,12 +146,12 @@
               <p class="2xl text-center text-gray-600 font-bold">{{ user.email }}</p>
               <p class="2xl text-center text-yellow-400 font-bold">Surgeon</p>
             </li>
-            <li class="cursor-pointer list-none items-center -mb-4  -m-2 p-5">
+            <li class="cursor-pointer list-none items-center -mb-2  -m-2 p-5">
               <span class="text-gray-600 font-bold text-xs uppercase"> Domains</span>
             </li>
-            <li class="flex w-full">
+            <li class="flex w-full mb-3">
               <div class="w-full flex space-x-3">
-                <div class="h-12 w-12 flex-grow-0 flex-shrink-0 rounded-full overflow-hidden shadow">
+                <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
                   <img class="object-cover w-full h-full" src="@/assets/img/reddignton.png" />
                 </div>
                 <div class="w-full">
@@ -163,9 +163,9 @@
                 </div>
               </div>
             </li>
-            <li class="flex w-full">
+            <li class="flex w-full mb-3">
               <div class="w-full flex space-x-3">
-                <div class="h-12 w-12 flex-grow-0 flex-shrink-0 rounded-full overflow-hidden shadow">
+                <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
                   <img class="object-cover w-full h-full" src="@/assets/img/evercare.png" />
                 </div>
                 <div class="w-full">
@@ -177,9 +177,9 @@
                 </div>
               </div>
             </li>
-            <li class="flex w-full">
+            <li class="flex w-full mb-3">
               <div class="w-full flex space-x-3">
-                <div class="h-12 w-12 flex-grow-0 flex-shrink-0 rounded-full overflow-hidden shadow">
+                <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
                   <img class="object-cover w-full h-full" src="@/assets/img/nicholas.png" />
                 </div>
                 <div class="w-full">
@@ -191,56 +191,10 @@
                 </div>
               </div>
             </li>
-
-           <!-- <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
-              <div class="grid grid-cols-3">
-                <div >
-                <img src="@/assets/img/reddignton.png" class="object-cover object-center w-fullh-full visible group-hover:hidden"/>
-                </div>
-                <div class="relative right-9">
-                  <div class="">
-                    <h2 class="justify-start text-gray-600 text-xs">Reddington Hospitals 
-                      <span class="relative items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-green-300 bg-green-100 rounded-full">Current Domain</span>
-                    </h2>
-                    <a href="#" class="text-gray-300 text-xs">https://www.corniehealth/reddington</a>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
-              <div class="grid grid-cols-3">
-                <div >
-                <img src="@/assets/img/evercare.png" class="object-cover object-center w-fullh-full visible group-hover:hidden"/>
-                </div>
-                <div class="relative right-9">
-                  <div class="">
-                    <h2 class="justify-start text-gray-600 text-">Evercare Hospital Lekki 
-                      <span class="text-danger text-sm font-bold">Switch</span>
-                    </h2>
-                    <a href="#" class="text-gray-300 text-xs">https://www.corniehealth/evercare-lekki</a>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li class=" flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2 border-primary">
-              <div class="grid grid-cols-3">
-                <div >
-                <img src="@/assets/img/nicholas.png" class="object-cover object-center w-fullh-full visible group-hover:hidden"/>
-                </div>
-                <div class="relative right-9">
-                  <div class="">
-                    <h2 class="justify-start text-gray-600 text-xs">St. Nicholas Hospital
-                    </h2>
-                      <span class="text-danger text-sm font-bold">Switch</span>
-                  </div>
-                    <a href="#" class="text-gray-300 text-xs">https://www.corniehealth/st-nicholas-hospital</a>
-                </div>
-              </div>
-            </li>-->
-            <li class="flex w-full border-t border-primary">
+            <li class="flex w-full border-t mt-4 pt-4 mb-4 border-primary">
               <div class="w-full flex space-x-3">
-                  <p class="text-xs font-extrabold">Manage My Subscription</p>
-                  <span class="-right-7 relative cursor-pointer" @click="$router.push('/Login')">
+                  <p class="text-sm font-extrabold">Manage My Subscription</p>
+                  <span class=" relative left-40 flex-shrink-0 cursor-pointer" @click="logout">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
                     <path d="M11.08 13.09L13.67 10.5H4V8.5H13.67L11.08 5.91L12.5 4.5L17.5 9.5L12.5 14.5L11.08 13.09ZM16 0.5C16.5304 0.5 17.0391 0.710714 17.4142 1.08579C17.7893 1.46086 18 1.96957 18 2.5V7.17L16 5.17V2.5H2V16.5H16V13.83L18 11.83V16.5C18 17.0304 17.7893 17.5391 17.4142 17.9142C17.0391 18.2893 16.5304 18.5 16 18.5H2C1.46957 18.5 0.960859 18.2893 0.585786 17.9142C0.210714 17.5391 0 17.0304 0 16.5V2.5C0 1.39 0.89 0.5 2 0.5H16Z" fill="#6F6C93"/>
                     </svg>
@@ -257,7 +211,7 @@ import { Options, Vue } from "vue-class-component";
 import ArrowLeftIcon from "./icons/arrowleft.vue";
 import SettingsIcon from "./icons/settings.vue";
 import BellIcon from "./icons/bell.vue";
-import ChevronDown from "./icons/chevrondown.vue";
+import ChevronDown from "./icons/chevrondownprimary.vue";
 import { namespace } from "vuex-class";
 import User from "@/types/user";
 import OrgIcon from "@/components/icons/org.vue";
@@ -265,6 +219,8 @@ import ContactIcon from "@/components/icons/contactinfo.vue";
 import HierarchyIcon from "@/components/icons/hierarchy.vue";
 import PractitionerIcon from "@/components/icons/practitioner.vue";
 import ApprovalIcon from "@/components/icons/approval.vue";
+import { logout } from "@/plugins/auth";
+import store from "@/store";
 
 const account = namespace("user");
 @Options({
@@ -299,6 +255,10 @@ export default class NavBar extends Vue {
     let middleInitials = this.user.mname?.charAt(0)?.toUpperCase() || "";
     middleInitials = middleInitials ? `${middleInitials}.` : "";
     return `${lastName} ${firstInitials}. ${middleInitials}`;
+  }
+  async logout() {
+      await logout();
+      this.$router.push('/login');
   }
 }
 </script>

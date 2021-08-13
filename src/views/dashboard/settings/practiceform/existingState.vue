@@ -138,7 +138,6 @@ import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 const practiceform = namespace("practiceform");
-
 @Options({
   components: {
     Select,
@@ -174,7 +173,7 @@ export default class PracticeformExistingState extends Vue {
   showDatalist = true;
   showSelect = false;
   paymentId ="";
-
+  practioners = {} as createdBy;
   @practiceform.State
   practiceforms!: IPracticeform[];
 
@@ -194,7 +193,7 @@ getKeyValue = getTableKeyValue;
     },
     {
       title: "Created By",
-      value: "Created",
+      value: "createdBy",
       show: true,
     },
     {
@@ -233,27 +232,27 @@ getKeyValue = getTableKeyValue;
        (practiceform as any).updatedAt = new Date(
          (practiceform as any).updatedAt 
        ).toLocaleDateString("en-US");
-        const practioner = this.stringifyPractioners(practiceform.createdBy);
+       // const practioner = this.stringifyPractioners(practiceform.createdBy);
         return {
         ...practiceform,
-          createdBy: practioner,
+         // createdBy: practioner,
         };
     });
     if (!this.query) return practiceforms;
     return search.searchObjectArray(practiceforms, this.query);
   }
 
- stringifyPractioners(practioners: createdBy[]) {
-    const [practioner, ...rest] = practioners;
-    if (!practioner) return "All Day";
+ stringifyPractioners(practioners: createdBy) {
+    const practioner = practioners;
+    if (!practioner) return "Username";
     return `${practioner.firstName} - ${practioner.lastName}`;
+    console.log(practioner);
+    console.log("practioner");
   }
    async fetchPractioners() {
-      const Practioners = cornieClient().get(
-        "/api/v1/practice-form/template-forms"
-      );
-      const response = await Promise.all([Practioners]);
-      this.practionersNames = response[0].data.createdBy;
+     const response = await cornieClient().get("/api/v1/practitioner");
+      console.log(response);
+      return `${response.data.user.firstName} ${response.data.user.lastName}`;
     }
 
  
@@ -274,6 +273,7 @@ getKeyValue = getTableKeyValue;
       }
       async created() {
         this.fetchPractioners();
+        this.stringifyPractioners(this.practioners);
       }
     
 

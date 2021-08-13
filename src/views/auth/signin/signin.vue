@@ -59,9 +59,9 @@
           </div>
           <span class="flex item-center mb-3">
             <label class="inline-flex items-center mt-3">
-                <input type="checkbox" class="form-checkbox text-gray-200">
+                <input type="checkbox">
             </label>
-            <span class="mt-3 ml-3">Keep me logged in</span>
+            <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
           </span>
           <cornie-btn
             :loading="loading"

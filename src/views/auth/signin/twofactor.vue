@@ -8,7 +8,7 @@
         your profile account settings.
       </p>
     </div>
-    <div class="flex flex-col mt-8 w-3/4" v-if="requiresTwoFactor">
+    <div class="flex flex-col mt-8 w-full" v-if="requiresTwoFactor">
       <h3 class="font-bold text-primary text-lg">
        1 of 2: Enter your 2FA Verification Code
       </h3>

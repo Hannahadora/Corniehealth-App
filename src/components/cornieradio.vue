@@ -2,7 +2,7 @@
   <span class="flex items-center">
     <label class="radio-container">
       {{ label }}
-      <input v-bind="$attrs" type="checkbox" v-model="checked" />
+      <input v-bind="$attrs" type="radio" :name="id" :id="id" />
       <span class="checkmark"></span>
     </label>
   </span>
@@ -14,6 +14,8 @@ export default {
   props: {
     label: String,
     modelValue: String,
+    id: String,
+    name: String,
   },
   computed: {
     checked: {

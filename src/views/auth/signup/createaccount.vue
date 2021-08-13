@@ -49,17 +49,25 @@
               </div>
             </div>
           </div>
-          <p class="flex mt-2 mb-5">Choose your account type <info-icon class="ml-2 mt-1"/> </p>
+          <div class="cursor-pointer dropdown">
+          <p class="flex mt-2 mb-5">Choose your account type <info-icon class="ml-2 mt-1"/> 
+            <Tooltip class="text-white text-sm dropdown-menu" 
+            text="Account type is dependent of the type of services you want to receive/render. 
+                Patient account (Individual or Group), Provider account (Hospital, Laboratory, Pharmacy, Opticians, Dental or EMT) and Payer account
+                ">
+            </Tooltip>
+          </p>
+          </div>
           <div class="grid grid-cols-3 gap-4 mb-32">
             <div class="cursor-pointer">
               <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer" @mouseleave="isVisible = false" @keydown.enter="isVisible = !isVisible" :class="{'bg-danger-100': checked == true}" @click="checkValue">
                 <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked" @click="isVisible = true"/>
-                <ul  class="dropdown-menu p-2 bg-white rounded w-32 h-24 absolute text-gray-700 -mt-2 border-2" v-show="isVisible">
+                <ul  class="dropdown-menu bg-white rounded w-40 h-24 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible">
                     <li class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                      <span class="flex item-center"> <cornie-radio class="col-span-2" style="z-index:1"/> Individual </span>
+                      <span class="flex item-center"> <cornie-radio class="col-span-2" id="Individual" style="z-index:1"/> Individual </span>
                     </li>
                     <li class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio class="col-span-2"/> Group </div>
+                        <div class="flex item-center"> <cornie-radio class="col-span-2" id="group" /> Group </div>
                     </li>
                   </ul>
                 <input type="radio" class="hidden" id="patient" value="patient" v-model="accountType"/>
@@ -77,24 +85,24 @@
             <div class="cursor-pointer">
               <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer" @mouseleave="isVisible2 = false" @keydown.enter="isVisible2 = !isVisible2" :class="{'bg-danger-100': checked2 == true}" @click="checkValue2">
                 <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked2" @click="isVisible2 = true"/>
-                  <ul  class="dropdown-menu p-2 bg-white rounded w-50 h-80 absolute text-gray-700 -mt-2 border-2" v-show="isVisible2">
+                  <ul  class="dropdown-menu  bg-white rounded w-50 h-80 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible2">
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                      <span class="flex item-center"> <cornie-radio class="col-span-2 -mt-2 mb-3" style="z-index:1"/><p> Hospital</p> </span>
+                      <span class="flex item-center"> <cornie-radio id="hospital"  class="col-span-2 mb-3" style="z-index:1"/><p> Hospital</p> </span>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio class="col-span-2 mb-3"/> <p>Laboratory</p></div>
+                        <div class="flex"> <cornie-radio id="lab"  class="col-span-2 mb-3"/> <p>Laboratory</p></div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio class="col-span-2 mb-3"/> <p>Community Pharmacy</p> </div>
+                        <div class="flex"> <cornie-radio id="pharmacy"  class="col-span-2 mb-3"/> <p>Community Pharmacy</p> </div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio class="col-span-2 mb-3"/> <p>Opticians</p> </div>
+                        <div class="flex"> <cornie-radio id="optician"  class="col-span-2 mb-3"/> <p>Opticians</p> </div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio class="col-span-2 mb-3"/> <p>Dental</p> </div>
+                        <div class="flex"> <cornie-radio id="dental" class="col-span-2 mb-3"/> <p>Dental</p> </div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio class="col-span-2 mb-3"/> <p> EMT </p></div>
+                        <div class="flex"> <cornie-radio id="emt" class="col-span-2 mb-3"/> <p> EMT </p></div>
                     </li>
                   </ul>
                   <input type="radio" class="hidden" id="provider" value="provider" v-model="accountType"/>
@@ -287,6 +295,7 @@ import { Watch } from "vue-property-decorator";
 import { ErrorResponse } from "@/lib/http";
 import ActivateAccount from "./activateaccount.vue";
 import VerifyEmailCode from "./verifyemailcode.vue";
+import Tooltip from "@/components/tooltip.vue";
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -307,7 +316,8 @@ const user = namespace("user");
     ConditionalInput,
     QuantumIcon,
     CheckIcon,
-    InfoIcon
+    InfoIcon,
+    Tooltip
   },
 })
 export default class CreateAccount extends Vue {
@@ -365,13 +375,11 @@ code = "";
     next() {
       this.step = this.step + 1;
       this.width += this.width_percent;
-      console.log(this.step, this.width)
     }
 
     back() {
       this.step >= 0 && (this.step -= 1);
       this.width -= this.width_percent;
-      console.log(this.step, this.width_percent)
     }
   splitName() {
     const names = this.fullName.split(" ");
@@ -422,11 +430,13 @@ code = "";
         const errors = await error.response.json();
         let msg = "";
         errors.errors.forEach((error: any) => (msg = `${msg} ${error.msg}`));
+         this.back();
         window.notify({ msg, status: "error" });
       } else if (
         error instanceof ErrorResponse &&
         error.response.status == 400
       ) {
+         this.back();
         const response = await error.response.json();
         window.notify({ msg: response.message, status: "error" });
       } else {

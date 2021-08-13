@@ -56,7 +56,7 @@
               bg-white
               top-100
               z-40
-              w-full
+              w-custom
               lef-0
               rounded
               max-h-select
@@ -66,6 +66,13 @@
             "
           >
             <div class="flex flex-col w-full p-2">
+             <span class="mb-2 rounded-full">
+          <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
+            <template v-slot:prepend>
+              <search-icon />
+            </template>
+          </icon-input>
+          </span>
               <div
                 v-for="(item, i) in items"
                 :key="i"
@@ -109,10 +116,15 @@ import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import { string } from "yup";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "./icons/search.vue";
 
 @Options({
   components: {
     ChevronDownIcon,
+    IconInput,
+    SearchIcon
   },
 })
 export default class CornieSelect extends Vue {
@@ -173,4 +185,7 @@ export default class CornieSelect extends Vue {
 .max-h-select {
   max-height: 300px;
 }
+.w-custom{
+     width: 230px;
+ }
 </style>
