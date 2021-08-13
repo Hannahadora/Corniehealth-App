@@ -29,21 +29,6 @@
             <div
               class="flex flex-col mt-1 text-gray-500"
             >
-              <!-- <s-bar-link
-                :name="item"
-                :to="mapUrl(item.to)"
-                v-for="(item, index) in setting"
-                :key="index"
-              >
-                <template v-slot="{ active }">
-                  <keep-alive>
-                    <component
-                      :is="item.icon"
-                      :class="{ 'fill-current': active }"
-                    ></component>
-                  </keep-alive>
-                </template>
-              </s-bar-link> -->
             </div>
           </span>
         </div>
