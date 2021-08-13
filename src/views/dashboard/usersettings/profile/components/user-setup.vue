@@ -308,7 +308,7 @@
             <div class="w-full mb-12">
                 <div class="container-fluid my-8 flex justify-end items-center">
                     <corniebtn :loading="false">
-                        <router-link :to="{ name: 'Patient Experience Management' }" class="cursor-pointer focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
+                        <router-link to="" class="cursor-pointer focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
                             Cancel
                         </router-link>
                     </corniebtn>
@@ -331,6 +331,7 @@ import Button from '@/components/globals/corniebtn.vue';
 import CornieInput from '@/components/cornieinput.vue';
 import DatePicker from '@/components/datepicker.vue';
 import Avatar from '@/components/avatar.vue'
+import EmptyState from './empty-state.vue'
 
 @Options({
     components: {
@@ -339,6 +340,7 @@ import Avatar from '@/components/avatar.vue'
         DatePicker,
         Avatar,
         CornieInput,
+        EmptyState,
     }
 })
 

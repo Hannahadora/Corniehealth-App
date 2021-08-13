@@ -4,7 +4,7 @@
             <EmptyState />
         </div> -->
         <div class="container-fluid flex" v-if="true">
-            <div class="w-2/12">
+            <div class="" style="width: 25%">
                 <div class="container">
                     <!-- <div class="overflow-hidden bg-white rounded max-w-xs leading-normal">
                         <a href="#" class="block group hover:bg-blue p-4">
@@ -23,7 +23,7 @@
                     <UserNav />
                 </div>
             </div>
-            <div class="w-10/12">
+            <div class=""  style="width: 75%">
                 <router-view></router-view>
                 <!-- <div class="container-fluid">
                     <div class="w-full border-b-2 curved flex py-2">

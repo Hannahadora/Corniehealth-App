@@ -2,7 +2,9 @@
   <div class="mt-2 mb-5 rounded-lg bg-white w-full h-full max-h-full">
     <div class="w-full h-full max-h-full p-2">
       <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-        <div class="mt-3" v-for="(setting, key) in settings" :key="key">
+        <div class="mt-3 my-4" v-for="(setting, key) in settings" :key="key"
+          
+        >
           <span>
             <div
               class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
@@ -10,12 +12,12 @@
               <router-link
                 :to="setting.to"
                 exact-active-class="live-link"
-                :class="{ 'live-link': setting.to.includes('domain')}"
-                class="font-semibold my-4 cursor-pointer capitalize w-full text-sm text-gray-500"
+                :class="{ 'live-link': setting.to.includes('domain') && route.path.includes('domain')}"
+                class="font-semibold cursor-pointer capitalize w-full text-sm text-gray-500 "
               >
-                <span></span>
+                <span> </span>
                 <span class="flex justify-between">
-                    {{ setting.name }}
+                     {{ setting.name }}
                     <chevron-right-icon
                         class="cursor-pointer text-white-500"
                         style="color:white"
@@ -162,33 +164,23 @@ export default class Settings extends Vue {
   }
 
   get settings() {
-    // const hmo = {
-    //   "Users & Security": this.filter([
-    //     {
-    //       name: "Account Security",
-    //       to: "account-security",
-    //       icon: "security-icon",
-    //     },
-    //     { name: "Domains", to: "domains", icon: "domain-icon" },
-    //   ]),
-    // };
     return [
         {
           name: "Practitioner Profile",
-          to: "/dashboard/provider/user",
+          to: "/dashboard/provider/settings/user",
           icon: "security-icon",
         },
         {
           name: "Domains",
-          to: "/dashboard/provider/user/domain",
+          to: "/dashboard/provider/settings/user/domain",
           icon: "security-icon",
         },
         {
           name: "User Security",
-          to: "/dashboard/provider/user/security",
+          to: "/dashboard/providerr/settings/user/security",
           icon: "security-icon",
         },
-        { name: "Signature", to: "/dashboard/provider/user/signature", icon: "domain-icon" },
+        { name: "Signature", to: "/dashboard/provider/settings/user/signature", icon: "domain-icon" },
       ];
   }
 
