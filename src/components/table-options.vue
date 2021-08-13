@@ -37,7 +37,7 @@
             class="
               relative
               py-2
-              p-4
+              p-1
               bg-white
               border border-gray-200
               rounded-md

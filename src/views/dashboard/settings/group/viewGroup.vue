@@ -12,10 +12,10 @@
                     <label class="block uppercase mb-1 text-xs font-bold">State</label>
                     <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ state }}</div>
                 </span>
-                <span>
+              <!--  <span>
                     <label class="block uppercase mb-1 text-xs font-bold">Status</label>
                     <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ status }}</div>
-                </span>
+                </span>-->
                 <span>
                     <label class="block uppercase mb-1 text-xs font-bold">Type</label>
                     <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ type }}</div>
@@ -77,7 +77,7 @@
         </div>
         <span class="flex justify-end w-full">
         <cornie-btn
-        @click="$router.push('group')"
+        @click="$router.push('/dashboard/provider/settings/group')"
         type="button"
         class="
             bg-danger
@@ -119,7 +119,7 @@ import DEdit from "@/components/icons/dedit.vue";
 import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import DatePicker from "@/components/datepicker.vue";
+import DatePicker from "@/components/daterangepicker.vue";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");

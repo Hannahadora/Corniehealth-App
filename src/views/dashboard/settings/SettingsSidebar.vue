@@ -24,14 +24,15 @@
               >
                 {{ key }}
               </h2>
-              <chevron-right-icon
-                @click="open = -1"
+
+              <chevron-down-icon
                 v-if="open == i"
+                @click="open = -1"
                 class="cursor-pointer"
               />
-              <chevron-down-icon
-                v-else
+              <chevron-right-icon
                 @click="open = i"
+                v-else
                 class="cursor-pointer"
               />
             </div>

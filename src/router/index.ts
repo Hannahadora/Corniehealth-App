@@ -54,6 +54,13 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/group/viewGroup.vue"),
       },
       {
+        path: "add-practice-form-template/:id?",
+        props: true,
+        name: "Blank Form",
+        component: () =>
+          import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
@@ -217,6 +224,14 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/group/index.vue"),
           },
+
+          {
+            path: "practice-templates",
+            name: "Practice Forms/Templates",
+            component: () =>
+              import("@/views/dashboard/settings/practiceform/index.vue"),
+          },
+           
         ],
       },
       { 

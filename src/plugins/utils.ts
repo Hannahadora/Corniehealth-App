@@ -32,3 +32,25 @@ export function flatten(data: any) {
   });
   return result;
 }
+
+export function clickOutside(id: string, callBack: () => void) {
+  document.addEventListener("click", (e) => {
+    const select = document.getElementById(id);
+    let targetElement: any = e.target; // clicked element
+    do {
+      if (targetElement == select || targetElement.id?.includes(id)) {
+        return;
+      }
+      targetElement = (targetElement as any).parentNode;
+    } while (targetElement);
+    callBack();
+  });
+}
+
+export function createDate(days: number, months: number, years: number) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  date.setMonth(date.getMonth() + months);
+  date.setFullYear(date.getFullYear() + years);
+  return date;
+}
