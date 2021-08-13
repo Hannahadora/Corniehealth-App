@@ -224,7 +224,6 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/group/index.vue"),
           },
-
           {
             path: "practice-templates",
             name: "Practice Forms/Templates",
@@ -234,57 +233,6 @@ const routes: Array<RouteRecordRaw> = [
            
         ],
       },
-      { 
-        path: "schedules", 
-        props: true, 
-        name: "Patient Experience Management", 
-        component: () => import("@/views/dashboard/patientexp/index.vue"),
-      },
-      { 
-        path: "createshift/:id?", 
-        props: true, 
-        name: "New Shift", 
-        component: () => import("@/views/dashboard/patientexp/createshift.vue"), 
-      },
-      { 
-        path: "user", 
-        props: true, 
-        name: "Settings", 
-        component: () => import("@/views/dashboard/usersettings/profile/index.vue"),
-        children: [
-          { 
-            path: "", 
-            props: true, 
-            name: "Settings A", 
-            component: () => import("@/views/dashboard/usersettings/profile/components/user-setup.vue"), 
-          },
-          { 
-            path: "security", 
-            props: true, 
-            name: "Security", 
-            component: () => import("@/views/dashboard/usersettings/security/index.vue"), 
-          },
-          { 
-            path: "domain", 
-            props: true, 
-            name: "Domain", 
-            component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
-          },
-          { 
-            path: "domain/add", 
-            props: true, 
-            name: "Add a New Domain", 
-            component: () => import("@/views/dashboard/usersettings/domain/create-domain.vue"), 
-          },
-          { 
-            path: "signature", 
-            props: true, 
-            name: "Signature", 
-            component: () => import("@/views/dashboard/usersettings/signature/index.vue"), 
-          },
-        ]
-      },
-
     ],
   },
 ];
