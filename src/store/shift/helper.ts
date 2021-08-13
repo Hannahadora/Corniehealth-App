@@ -71,6 +71,36 @@ export async function deleteShift(id: string) {
   }
 }
 
+export async function destroyShift(id: string) {
+  try {
+    const response = await cornieClient().delete(`/api/v1/shifts/${id}`, {});
+
+    console.log(response, "shift delete");
+    
+    return response.success as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error deleting this shift",
+      status: "error",
+    });
+  }
+}
+
+export async function activateShift(id: string) {
+  try {
+    const response = await cornieClient().post(`/api/v1/shifts/activate/${id}`, {});
+
+    console.log(response, "shift activated");
+    
+    return response.success as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error activating this shift",
+      status: "error",
+    });
+  }
+}
+
 export async function createShift(shift: any) {
   try {
     const response = await cornieClient().post(`/api/v1/shifts`, shift);

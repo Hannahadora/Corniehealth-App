@@ -9,7 +9,7 @@
 
             <div class="w-full my-6 border">
                 <div class="container-fluid">
-                    <Accordion title="Shift Details" v-model="showDetails" class="">
+                    <Accordion title="Shift Details" v-model="showDetails" class="" :opened="true">
                         <div class="w-full px-4">
                             <div class="container-fluid py-6 flex justify-around">
                                 <div class="w-4/12">
@@ -130,17 +130,17 @@
 
         </div>
         <div class="w-full mb-12">
-            <div class="container-fluid mb-8 flex justify-end">
+            <div class="container-fluid mb-8 flex justify-end items-center">
                 <corniebtn :loading="false">
                     <router-link :to="{ name: 'Patient Experience Management' }" class="cursor-pointer focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
                     </router-link>
                 </corniebtn>
-                <corniebtn :loading="false">
+                <Button :loading="loading">
                     <a @click="saveShift"  style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save
+                        Save 
                     </a>
-                </corniebtn>
+                </Button>
             </div>
         </div>
     </div>
@@ -152,6 +152,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import { namespace } from 'vuex-class';
 import IHealthcare from '@/types/IHealthcare'
 import CustomDropdown from '@/components/custom-dropdown.vue'
+import Button from '@/components/globals/corniebtn.vue'
 
 const healthcare = namespace('healthcare');
 const shifts = namespace('shifts');
@@ -161,12 +162,14 @@ const shifts = namespace('shifts');
       Accordion,
       CornieInput,
       CustomDropdown,
+      Button
   },
 })
 export default class Shift extends Vue {
  showDetails = true;
  showBreaks = false;
  showTiming = false;
+ loading = false;
  shift: any = {
      healthcareServices: [ ]
  }
@@ -280,10 +283,10 @@ export default class Shift extends Vue {
  }
 
  selectBreakType(type: string) {
-     this.shift.breakType = type;
+    this.shift.breakType = type;
  }
 
- async saveShift() {     
+ async saveShift() {
      const body = {
          ...this.shift,
          id: this.$route.query.shiftId,
@@ -292,11 +295,26 @@ export default class Shift extends Vue {
          }).map((i: any) => i.text),
      }
      console.log(body, "body");
+     this.loading = true;
      if (!this.$route.query.shiftId) {
-         await this.createShift(body);
+         try {
+             await this.createShift(body);
+             this.$router.push({ name: 'Patient Experience Management'})
+         } catch (error) {
+             console.log(error);
+             
+         }
      } else {
-         await this.updateShift(body);
+         try {
+             this.loading = true;
+             await this.updateShift(body);
+             this.$router.push({ name: 'Patient Experience Management'})
+         } catch (error) {
+             console.log(error);
+             
+         }
      }
+     this.loading = false;
  }
 }
 </script>

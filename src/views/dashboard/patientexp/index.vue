@@ -129,6 +129,7 @@
                     Edit Schedule
                     </li>
                     <li
+                    v-if="isActive(getKeyValue(item).value)"
                     @click="remove(getKeyValue(item).value)"
                     class="
                         list-none
@@ -145,6 +146,43 @@
                     "
                     >
                     <delete-icon class="mr-3" /> Deactivate
+                    </li>
+                    <li
+                    v-if="!isActive(getKeyValue(item).value)"
+                    @click="activate(getKeyValue(item).value)"
+                    class="
+                        list-none
+                        flex
+                        my-1
+                        py-3
+                        items-center
+                        text-xs
+                        font-semibold
+                        text-gray-700
+                        hover:bg-gray-100
+                        hover:text-gray-900
+                        cursor-pointer
+                    "
+                    >
+                    <delete-icon class="mr-3" /> Activate
+                    </li>
+                    <li
+                    @click="destory(getKeyValue(item).value)"
+                    class="
+                        list-none
+                        flex
+                        my-1
+                        py-3
+                        items-center
+                        text-xs
+                        font-semibold
+                        text-gray-700
+                        hover:bg-gray-100
+                        hover:text-gray-900
+                        cursor-pointer
+                    "
+                    >
+                    <delete-icon class="mr-3" /> Delete
                     </li>
                 </table-options>
                 </span>
@@ -230,6 +268,12 @@ export default class PractitionerExistingState extends Vue {
   @shifts.Action
   deleteShift!: (id: string) => Promise<boolean>;
 
+  @shifts.Action
+  activateShift!: (id: string) => Promise<boolean>;
+
+  @shifts.Action
+  destroyShift!: (id: string) => Promise<boolean>;
+
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
@@ -260,26 +304,26 @@ export default class PractitionerExistingState extends Vue {
       value: "type",
       show: true,
     },
-    {
-      title: "Access Role",
-      value: "accessRole",
-      show: false,
-    },
-    {
-      title: "Gender",
-      value: "gender",
-      show: false,
-    },
+    // {
+    //   title: "Access Role",
+    //   value: "accessRole",
+    //   show: false,
+    // },
+    // {
+    //   title: "Gender",
+    //   value: "gender",
+    //   show: false,
+    // },
     {
       title: "Description",
       value: "description",
       show: false,
     },
-    {
-      title: "Physical Type",
-      value: "physicalType",
-      show: false,
-    },
+    // {
+    //   title: "Physical Type",
+    //   value: "physicalType",
+    //   show: false,
+    // },
   ];
 
   get headers() {
@@ -309,7 +353,8 @@ export default class PractitionerExistingState extends Vue {
 
   async remove(id: string) {
     const confirmed = await window.confirmAction({
-      message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
+      message: "Are you sure you want to deactivate this shift?",
+      // message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
     });
     if (!confirmed) return;
 
@@ -321,6 +366,44 @@ export default class PractitionerExistingState extends Vue {
         window.notify({ msg: "Shift could not deactivated", status: "error" });
         console.log(error)
     }
+  }
+
+  async activate(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "Are you sure you want to activate this shift?",
+    });
+    if (!confirmed) return;
+
+    try {
+        const response = await this.activateShift(id);
+        if (response) window.notify({ msg: "Shift activated", status: "success" });
+        this.getShifts()
+    } catch (error) {
+        window.notify({ msg: "Shift could not activated", status: "error" });
+        console.log(error)
+    }
+  }
+
+  async destory(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
+    });
+    if (!confirmed) return;
+
+    try {
+        const response = await this.destroyShift(id);
+        if (response) window.notify({ msg: "Shift deleted", status: "success" });
+        this.getShifts()
+    } catch (error) {
+        window.notify({ msg: "Shift could not deleted", status: "error" });
+        console.log(error)
+    }
+  }
+
+  isActive(id: string) {
+    const shift = this.shifts.find((i: any) => i.id === id);
+    if (!shift) return false;
+    return shift.status === 'active' ? true : false;
   }
 
   created() {

@@ -1,5 +1,5 @@
 import { StoreOptions } from "vuex";
-import { getShifts, getRoles, deleteShift, createShift, getOrg, transferRight, updateShift } from "./helper";
+import { getShifts, getRoles, deleteShift, createShift, getOrg, transferRight, updateShift, activateShift, destroyShift } from "./helper";
 
 interface RolesStore {
   privileges: any[],
@@ -64,8 +64,22 @@ export default {
     
     async deleteShift(ctx, id: string) {
       const deleted = await deleteShift(id);
-      console.log(!deleted, "boolean");
-      console.log(deleted, "deleted");
+      
+      if (!deleted) return false;
+      // ctx.commit("removeShift", id);
+      return true;
+    },
+    
+    async destroyShift(ctx, id: string) {
+      const deleted = await destroyShift(id);
+      
+      if (!deleted) return false;
+      ctx.commit("removeShift", id);
+      return true;
+    },
+    
+    async activateShift(ctx, id: string) {
+      const deleted = await activateShift(id);
       
       if (!deleted) return false;
       // ctx.commit("removeShift", id);
