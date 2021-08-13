@@ -10,7 +10,7 @@
         />
         <check-icon class="my-auto ml-3" v-if="verifiedSync" />
       </span>
-      <p class="mt-12 text-sm">Didn’t receive code? <span class="cursor-pointer text-danger"> Resend </span> ({{ countDown }}:00)</p>
+      <p class="mt-12 text-sm">Didn’t receive code? <span class="cursor-pointer text-danger" @click="resend"> Resend </span> ({{ countDown }}:00)</p>
     </form>
   </div>
 </template>
@@ -68,6 +68,12 @@ export default class VerifyEmailCode extends Vue {
     };
   }
 
+  get idUser(){
+    return {
+      userId: this.user.id,
+    };
+  }
+
   countDownTimer(){
     if(this.countDown > 0){
       setTimeout(() => {
@@ -77,6 +83,20 @@ export default class VerifyEmailCode extends Vue {
     }
   }
  
+ async resend() {
+    const errMsg = "Email verification code not sent";
+    try {
+      const data = await quantumClient().post("/auth/signup/resend-verification/",this.idUser);
+      if (data.success) {
+        this.countDown = 10;
+         window.notify({ msg: "Email verification code sent", status: "success" });
+      }else{
+         window.notify({ msg: errMsg  });
+      }
+    } catch (error) {
+       window.notify({ msg: error });
+    }
+  }
 
   async submit() {
     this.status = "loading";

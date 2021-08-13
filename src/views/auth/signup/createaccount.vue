@@ -60,14 +60,14 @@
           </div>
           <div class="grid grid-cols-3 gap-4 mb-32">
             <div class="cursor-pointer">
-              <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer" @mouseleave="isVisible = false" @keydown.enter="isVisible = !isVisible" :class="{'bg-danger-100': checked == true}" @click="checkValue">
-                <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked" @click="isVisible = true"/>
-                <ul  class="dropdown-menu bg-white rounded w-40 h-24 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible">
+              <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer" @mouseleave="isVisible = false" @keydown.enter="isVisible = !isVisible" :class="{'bg-danger-100 , dropdown': checked == true}" @click="checkValue">
+                <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked"/>
+                <ul  class="bg-white rounded w-40 h-24 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible">
                     <li class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                      <span class="flex item-center"> <cornie-radio class="col-span-2" id="Individual" style="z-index:1"/> Individual </span>
+                      <span class="flex item-center"> <cornie-radio class="col-span-2" name="patient" id="Individual" style="z-index:1"/> Individual </span>
                     </li>
                     <li class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex item-center"> <cornie-radio class="col-span-2" id="group" /> Group </div>
+                        <div class="flex item-center"> <cornie-radio class="col-span-2" name="patient" id="group" /> Group </div>
                     </li>
                   </ul>
                 <input type="radio" class="hidden" id="patient" value="patient" v-model="accountType"/>
@@ -83,26 +83,26 @@
               </div>
             </div>
             <div class="cursor-pointer">
-              <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer" @mouseleave="isVisible2 = false" @keydown.enter="isVisible2 = !isVisible2" :class="{'bg-danger-100': checked2 == true}" @click="checkValue2">
-                <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked2" @click="isVisible2 = true"/>
+              <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer"   @mouseleave="isVisible2 = false" @keydown.enter="isVisible2 = !isVisible2" :class="{'bg-danger-100': checked2 == true}" @click="checkValue2">
+                <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked2"/>
                   <ul  class="dropdown-menu  bg-white rounded w-50 h-80 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible2">
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                      <span class="flex item-center"> <cornie-radio id="hospital"  class="col-span-2 mb-3" style="z-index:1"/><p> Hospital</p> </span>
+                      <span class="flex item-center"> <cornie-radio name="provider" id="hospital"  class="col-span-2 mb-3" style="z-index:1"/><p> Hospital</p> </span>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio id="lab"  class="col-span-2 mb-3"/> <p>Laboratory</p></div>
+                        <div class="flex"> <cornie-radio id="lab" name="provider"  class="col-span-2 mb-3"/> <p>Laboratory</p></div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio id="pharmacy"  class="col-span-2 mb-3"/> <p>Community Pharmacy</p> </div>
+                        <div class="flex"> <cornie-radio id="pharmacy" name="provider" class="col-span-2 mb-3"/> <p>Community Pharmacy</p> </div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio id="optician"  class="col-span-2 mb-3"/> <p>Opticians</p> </div>
+                        <div class="flex"> <cornie-radio id="optician" name="provider"  class="col-span-2 mb-3"/> <p>Opticians</p> </div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio id="dental" class="col-span-2 mb-3"/> <p>Dental</p> </div>
+                        <div class="flex"> <cornie-radio id="dental" name="provider" class="col-span-2 mb-3"/> <p>Dental</p> </div>
                     </li>
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
-                        <div class="flex"> <cornie-radio id="emt" class="col-span-2 mb-3"/> <p> EMT </p></div>
+                        <div class="flex"> <cornie-radio id="emt" name="provider" class="col-span-2 mb-3"/> <p> EMT </p></div>
                     </li>
                   </ul>
                   <input type="radio" class="hidden" id="provider" value="provider" v-model="accountType"/>
@@ -202,75 +202,7 @@
             :code="code"
             :emailVerified="emailVerified"
           />
-       <!-- <cornie-btn class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2" type="submit" :loading="loading">
-            Continue
-          </cornie-btn>-->
       </div>
-     <!-- <div class="w-full grid grid-cols-2 gap-y-4 gap-x-3 mb-3">
-        <cornie-select
-          required
-          class="w-full"
-          :items="['Patient', 'Provider', 'HMO']"
-          label="Account Type"
-          v-model="accountType"
-        />
-        <cornie-input
-          :rules="requiredString"
-          v-model="fullName"
-          required
-          class="w-full"
-          label="Full Name"
-        />
-        <cornie-input
-          v-model="email"
-          :rules="emailRule"
-          class="w-full"
-          label="Email Address"
-        />
-        <phone-input
-          v-model:code="dialCode"
-          v-model="phone"
-          :rules="phoneRule"
-          class="w-full"
-          label="Phone"
-        />
-        <conditional-input
-          class="w-full"
-          :items="['NIN']"
-          label="Identity Reference"
-        />
-      </div>
-      <label for="promos" class="flex items-center">
-        <input id="promos" type="checkbox" />
-        <span class="ml-1 text-xs">
-          Receive relevant offers and promotions from Cornie Health
-        </span>
-      </label>
-      <label for="terms" class="mt-1 flex items-center">
-        <input required id="terms" type="checkbox" />
-        <span class="ml-1 text-xs">
-          By continuing to sign up, I agree to Cornie Healths Terms of Service
-        </span>
-      </label>
-      <cornie-btn
-        class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
-        type="submit"
-        :loading="loading"
-      >
-        Continue
-      </cornie-btn>
-      <span class="w-full text-center block">or Sign Up with</span>
-      <cornie-btn
-        class="font-semibold rounded-full bg-primary mt-2 w-full text-white p-2"
-      >
-        Quantum
-      </cornie-btn>
-      <span class="w-full flex text-sm mt-2 mb-2">
-        Already have an account?
-        <router-link class="ml-1 text-blue-500" to="/signin"
-          >Sign In</router-link
-        >
-      </span>-->
     </v-form>
   </div>
 </div>
@@ -395,12 +327,14 @@ code = "";
     };
   }
   checkValue(){
+    this.isVisible = true;
     this.checked = true;
     this.checked2 = false;
     this.checked3 = false;
     this.accountType = 'Patient';
   }
   checkValue2(){
+    this.isVisible2 = true;
     this.checked2 = true;
     this.checked = false;
     this.checked3 = false;
