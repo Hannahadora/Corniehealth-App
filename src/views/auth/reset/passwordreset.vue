@@ -39,15 +39,6 @@
           >Passwords do not match</span
         >
       </label>
-      <div class="mb-8">
-                <cornie-input
-                v-model="email"
-                required
-                placeholder="Enter email"
-                class="w-full"
-                label="Email"
-                />
-            </div>
             <!--<div class="mb-8 mt-5">
                 <cornie-select
                 class="w-full"
@@ -140,7 +131,6 @@ export default class SignUp extends Vue {
     return {
       previousPassword: this.previousPassword,
       newPassword: this.newPassword,
-      email: this.email,
     };
   }
 
