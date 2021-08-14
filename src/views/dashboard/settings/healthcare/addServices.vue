@@ -409,7 +409,7 @@ activeStates = ["active", "inactive"]
         console.log(response);
         this.identifier = response.data.identifier;
       } catch (error) {
-        alert("Could not fetch organization");
+        window.notify({ msg: "Could not fetch organization", status: "error" });
       }
     }
 

@@ -27,15 +27,15 @@
               }"
               @update:modelValue="handleChange"
             >
+            <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
+                  <template v-slot:prepend>
+                    <search-icon />
+                  </template>
+            </icon-input>
               <template v-slot:item="{ item }">
-                <span class="w-full flex items-center mb-3">
-                  <div class="flex w-full">
-                    <img class="mr-3 w-6 rounded-md" :src="item.flag" />
-                    <span class="text-sm font-semibold"> {{ item.name }}</span>
-                  </div>
-                  <div class="text-xs text-gray-400 flex-shrink-0 float-right">
-                  {{ item.dialCode }}
-                  </div>
+                <span class="flex items-center">
+                  {{ item.isoCode }}
+                  <img class="ml-1 w-4" :src="item.flag" />
                 </span>
               </template>
               <template v-slot:selected="{ item }">
@@ -68,8 +68,7 @@ import { Prop, PropSync } from "vue-property-decorator";
 import { countryCodes } from "@/plugins/countrycodes";
 import { Field } from "vee-validate";
 import { string } from "yup";
-import IconInput from "@/components/IconInput.vue";
-import CornieSelect from "./phoneselect.vue";
+import CornieSelect from "./cornieselect.vue";
 import CornieInput from "./cornieinput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 
@@ -83,7 +82,6 @@ const phoneRegex =
     CornieSelect,
     CornieInput,
     SearchIcon,
-    IconInput
   },
 })
 export default class PhoneInput extends Vue {

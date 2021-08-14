@@ -32,8 +32,22 @@ export default {
 .tooltip-box:hover .tooltip{
   opacity: 1;
 }
-
-.tooltip { 
+.tooltip{
+  color: #ffffff;
+    text-align: center;
+    padding: 23px;
+    border-radius: 8px;
+    width: 350px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -180px;
+    opacity: 0;
+    transition: opacity 1s;
+    position: absolute;
+    z-index: 1;
+    background-color: #211F45;
+}
+/*.tooltip { 
   color: #ffffff;
   text-align: center;
   padding: 5px 0;
@@ -51,7 +65,7 @@ export default {
   z-index: 1;
 
   background: #211F45;
-}
+}*/
 
 .text::after {
   content: " ";
