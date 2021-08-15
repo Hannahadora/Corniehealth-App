@@ -125,7 +125,8 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IPracticeform,{createdBy, updatedBy} from "@/types/IPracticeform";
+import IPracticeform from "@/types/IPracticeform";
+import IPractitioner from "@/types/IPractitioner";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import WhiteeditIcon from "@/components/icons/whiteedit.vue";
@@ -137,8 +138,11 @@ import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+
 const practiceform = namespace("practiceform");
+
 @Options({
+  name: 'PracticeformExistingState',
   components: {
     Select,
     ChevronDownIcon,
@@ -173,8 +177,7 @@ export default class PracticeformExistingState extends Vue {
   showDatalist = true;
   showSelect = false;
   paymentId ="";
-  practioners = {} as createdBy;
-  @practiceform.State
+@practiceform.State
   practiceforms!: IPracticeform[];
 
   @practiceform.Action
@@ -193,17 +196,17 @@ getKeyValue = getTableKeyValue;
     },
     {
       title: "Created By",
-      value: "dcreatedBy",
+      value: "createdBy",
       show: true,
     },
     {
       title: "Last Modified By",
-      value: "status",
+      value: "updatedBy",
       show: true,
     },
     {
       title: "Links",
-      value: "kinks",
+      value: "links",
       show: true,
     },
     {
@@ -232,28 +235,39 @@ getKeyValue = getTableKeyValue;
        (practiceform as any).updatedAt = new Date(
          (practiceform as any).updatedAt 
        ).toLocaleDateString("en-US");
-       // const practioner = this.stringifyPractioners(practiceform.createdBy);
+        const practioner = this.stringifyPractioners(practiceform.createdBy);
+        const updatedpractioner = this.stringifyUpdatedPractioners(practiceform.updatedBy);
         return {
         ...practiceform,
-         // createdBy: practioner,
+          createdBy: practioner,
+          updatedBy: updatedpractioner,
+          action: practiceform.id,
         };
     });
+    console.log(practiceforms);
     if (!this.query) return practiceforms;
     return search.searchObjectArray(practiceforms, this.query);
   }
 
- stringifyPractioners(practioners: createdBy) {
-    const practioner = practioners;
+ stringifyPractioners(createdBy: IPractitioner) {
+    const practioner = createdBy;
     if (!practioner) return "Username";
-    return `${practioner.firstName} - ${practioner.lastName}`;
-    console.log(practioner);
+    return `${practioner.firstName} ${practioner.lastName}`;
+    //console.log(practioner);
     console.log("practioner");
   }
-   async fetchPractioners() {
-     const response = await cornieClient().get("/api/v1/practitioner");
-      console.log(response);
-      return `${response.data.user.firstName} ${response.data.user.lastName}`;
-    }
+ stringifyUpdatedPractioners(updatedBy: IPractitioner) {
+    const practioner = updatedBy;
+    if (!practioner) return "Username";
+    return `${practioner.firstName} ${practioner.lastName}`;
+    //console.log(practioner);
+    console.log("practioner");
+  }
+  //  async fetchPractioners() {
+  //    const response = await cornieClient().get("/api/v1/practitioner");
+  //     console.log(response);
+  //     return `${response.data.user.firstName} ${response.data.user.lastName}`;
+  //   }
 
  
   async deleteItem(id: string) {
@@ -272,14 +286,13 @@ getKeyValue = getTableKeyValue;
         });
       }
       async created() {
-        this.fetchPractioners();
-        this.stringifyPractioners(this.practioners);
+       // this.fetchPractioners();
       }
     
 
 }
 </script>
-<style>
+<style scoped>
 .outline-primary{
     border: 2px solid #211F45;
 }
