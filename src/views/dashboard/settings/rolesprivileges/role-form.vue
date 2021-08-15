@@ -843,10 +843,10 @@ export default class RolesAndPrivileges extends Vue {
 </script>
 <style>
     .import_button {
-        border: 1px solid #211F45;
+        border: 1px solid #080056;
         box-sizing: border-box;
         border-radius: 124px;
-        color: #211F45;
+        color: #080056;
         font-weight: bold;
     }
 
@@ -869,7 +869,7 @@ export default class RolesAndPrivileges extends Vue {
     .box_1 {
         width: 24px;
         height: 24px;
-        background: #211F45;
+        background: #080056;
     }
 
     input[type=checkbox] {

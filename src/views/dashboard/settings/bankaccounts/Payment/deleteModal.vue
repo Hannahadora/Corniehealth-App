@@ -87,7 +87,7 @@ export default {
                   text: response.success,
                   icon: "success",
                   showCancelButton: false,
-                  confirmButtonColor: "#0A4269",
+                  confirmButtonColor: "#080056",
                   confirmButtonText: "Okay, Thanks"
                 });
         }
@@ -97,7 +97,7 @@ export default {
                   text: error,
                   icon: "error",
                   showCancelButton: false,
-                  confirmButtonColor: "#0A4269",
+                  confirmButtonColor: "#080056",
                   confirmButtonText: "Okay, Thanks"
                 });
       }

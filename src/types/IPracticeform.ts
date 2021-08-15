@@ -1,10 +1,10 @@
-import {IPractioner} from "./IPractioner";
+import IPractitioner from "./IPractitioner";
 
 export default interface IPracticeform{
     id?: string;
     organizationId: string;
-    createdBy:IPractioner;
-    updatedBy:IPractioner;
+    createdBy:IPractitioner;
+    updatedBy:IPractitioner;
     formType:string;
     links:[
         string

@@ -15,7 +15,7 @@
               <span class="mr-1">Create New Form </span>
               <chevron-down-icon class="text-white mb-2 stroke-current mt-1 ml-1"/>
             </button>
-            <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+            <ul class="dropdown-menu absolute hidden z-10 text-gray-700 pt-1">
               <li class="">
                    <Select v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></Select>
               </li>
@@ -23,41 +23,6 @@
           </div>
         </span>
     </div>
- <!--   <div class="w-full order-first mt-5"  v-for="(item, i) in sortFunc" :key="i">
-      <div  class="h-11 w-full flex items-center justify-between px-3 border-2 border-0 rounded-t-xl bg-primary border-primary">
-        <div class="font-semibold text-white uppercase">
-         {{item.formTitle}}
-        </div>
-        <span class="flex items-center">
-          <whiteedit-icon  class="cursor-pointer fill-current text-white"  @click="$router.push(`/dashboard/provider/add-practice-form-template/${item.id}`)"></whiteedit-icon>
-          <span class="mr-3 cursor-pointer" :class="{ 'fill-current text-white': expand }">
-            <slot name="misc" />
-          </span>
-          <whitedelete-icon  class="cursor-pointer stroke-current text-white"  @click="deleteItem(item.id)">
-          </whitedelete-icon>
-        </span>
-      </div>
-      <div class="border-2 border-gray-200">
-        <div class="w-full grid grid-cols-3 gap-1 p-5 -mb-5">
-            <h3 class="font-bold uppercase text-left">Created By</h3>
-            <p class="text-center">{{item.createdBy.firstName}}  {{item.createdBy.lastName}}</p>
-            <p class="text-right">{{item.createdAt}}</p>
-        </div>
-        <div class="w-full grid grid-cols-3 gap-0 p-5 -mb-5">
-            <h3 class="font-bold uppercase text-left">Last Modified By</h3>
-            <p class="text-center">{{item.updatedBy.firstName}}  {{item.updatedBy.lastName}}</p>
-            <p class="text-right">{{item.updatedAt}}</p>
-        </div>
-        <div class="w-full grid grid-cols-3 gap-0 p-5 -mb-5">
-            <h3 class="font-bold uppercase text-left">Form Type</h3>
-            <p class="text-center">{{item.formType}}</p>
-        </div>
-        <div class="w-full grid grid-cols-3 gap-0 -mb-5 p-5">
-            <h3 class="font-bold uppercase text-left">Links</h3>
-            <p class="text-center">{{item.links}}</p>
-        </div>
-      </div>
-    </div>-->
     <Table :headers="headers" :items="sortFunc" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
@@ -74,7 +39,7 @@
                 hover:bg-gray-100
                 hover:text-gray-900
                 cursor-pointer
-                 my-1 -m-6 p-5 py-2
+                 my-1 -m-2 p-5 py-2
               "
             >
               
@@ -85,7 +50,7 @@
               class="
                 list-none
                 flex
-                 my-1 -m-6 p-5 py-2
+                 my-1 -m-2 p-5 py-2
                 items-center
                 text-xs
                 font-semibold
@@ -244,7 +209,6 @@ getKeyValue = getTableKeyValue;
           action: practiceform.id,
         };
     });
-    console.log(practiceforms);
     if (!this.query) return practiceforms;
     return search.searchObjectArray(practiceforms, this.query);
   }
@@ -253,22 +217,12 @@ getKeyValue = getTableKeyValue;
     const practioner = createdBy;
     if (!practioner) return "Username";
     return `${practioner.firstName} ${practioner.lastName}`;
-    //console.log(practioner);
-    console.log("practioner");
   }
  stringifyUpdatedPractioners(updatedBy: IPractitioner) {
     const practioner = updatedBy;
     if (!practioner) return "Username";
     return `${practioner.firstName} ${practioner.lastName}`;
-    //console.log(practioner);
-    console.log("practioner");
   }
-  //  async fetchPractioners() {
-  //    const response = await cornieClient().get("/api/v1/practitioner");
-  //     console.log(response);
-  //     return `${response.data.user.firstName} ${response.data.user.lastName}`;
-  //   }
-
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -285,16 +239,13 @@ getKeyValue = getTableKeyValue;
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
-      async created() {
-       // this.fetchPractioners();
-      }
-    
+   
 
 }
 </script>
 <style scoped>
 .outline-primary{
-    border: 2px solid #211F45;
+    border: 2px solid #080056;
 }
 .dropdown:hover .dropdown-menu {
   display: block;

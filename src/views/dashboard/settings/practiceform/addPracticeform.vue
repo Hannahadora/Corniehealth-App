@@ -308,7 +308,7 @@ export default class AddPracticeform extends Vue {
 </script>
 <style>
 .outline-primary{
-    border: 2px solid #211F45;
+    border: 2px solid #080056;
 }
 .dropdown:hover .dropdown-menu {
   display: block;
