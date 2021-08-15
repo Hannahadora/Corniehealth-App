@@ -1,13 +1,8 @@
 <template>
-  <span>
+  <span class="block w-11/12">
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
-    <Field
-      :name="inputName"
-      v-slot="{ meta, handleChange, errorMessage }"
-      v-model="range"
-      v-bind="$attrs"
-    >
-      <div class="relative" style="z-index: 9000; width: 100%">
+    <Field :name="inputName" v-slot="{ meta, handleChange, errorMessage }">
+      <div class="relative" :id="inputName" style="width: 100%">
         <div @click="toggleDropdown">
           <button
             type="button"
@@ -48,6 +43,7 @@
             mt-2
             w-full
             rounded-md
+            z-50
             shadow-lg
             bg-white
             ring-1 ring-black ring-opacity-5
@@ -67,11 +63,6 @@
               v-model="range"
               is-range
               color="red"
-              :model-config="{
-                type: 'string',
-                mask: 'iso',
-                timeAdjust: '12:00:00',
-              }"
             >
             </DatePicker>
           </span>
@@ -88,11 +79,7 @@ import CalendarIcon from "@/components/icons/calendar.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { Field } from "vee-validate";
 import Period from "@/types/IPeriod";
-
-const defaultRange = {
-  start: new Date(Date.now()),
-  end: new Date(Date.now()),
-};
+import { clickOutside } from "@/plugins/utils";
 
 @Options({
   name: "DateRangePicker",
@@ -103,29 +90,13 @@ const defaultRange = {
   },
 })
 export default class DRangePicker extends Vue {
-  @Prop({ type: Object, default: { ...defaultRange } })
+  @Prop({ type: Object, default: { start: null, end: null } })
   modelValue!: Period;
 
-  get range() {
-    return this.modelValue;
-  }
-
-  set range(val: any) {
-    console.log("Val is ", val);
-    const start = new Date(val.start?.replaceAll("X", "")).toISOString();
-    const end = new Date(val.start?.replaceAll("X", "")).toISOString();
-    this.$emit("update:modelValue", {
-      start,
-      end,
-    });
-  }
+  @PropSync("modelValue")
+  range!: Period;
 
   datePickerVissible = false;
-
-  @Watch("range", { deep: true })
-  changed(): void {
-    this.datePickerVissible = false;
-  }
 
   toggleDropdown(): void {
     this.datePickerVissible = !this.datePickerVissible;
@@ -133,13 +104,11 @@ export default class DRangePicker extends Vue {
 
   get inputFieldText() {
     if (!this.range?.start) return `------ → -------`;
-    console.log(this.range);
     const end = this.range.end
-      ? new Date(this.range.end?.replaceAll("X", "")).toLocaleDateString()
+      ? new Date(this.range.end).toLocaleDateString("en-NG")
       : "";
-    return `${new Date(
-      this.range.start.replaceAll("X", "")
-    ).toLocaleDateString()} → ${end || ""}`;
+    const start = new Date(this.range.start).toLocaleDateString("en-NG") || "";
+    return `${start} → ${end}`;
   }
 
   @Prop({ type: String, default: "" })
@@ -151,6 +120,10 @@ export default class DRangePicker extends Vue {
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
+  }
+
+  mounted() {
+    clickOutside(this.inputName, () => (this.datePickerVissible = false));
   }
 }
 </script>

@@ -54,6 +54,13 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/group/viewGroup.vue"),
       },
       {
+        path: "add-practice-form-template/:id?",
+        props: true,
+        name: "Blank Form",
+        component: () =>
+          import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
@@ -213,6 +220,56 @@ const routes: Array<RouteRecordRaw> = [
             name: "Group",
             component: () =>
               import("@/views/dashboard/settings/group/index.vue"),
+          },
+          {
+            path: "practice-templates",
+            name: "Practice Forms/Templates",
+            component: () =>
+              import("@/views/dashboard/settings/practiceform/index.vue"),
+          },
+          { 
+            path: "user", 
+            props: true, 
+            name: "User Settings", 
+            component: () => import("@/views/dashboard/usersettings/profile/index.vue"),
+            children: [
+              { 
+                path: "", 
+                props: true, 
+                name: "User Setup", 
+                component: () => import("@/views/dashboard/usersettings/profile/components/empty-state.vue"), 
+              },
+              { 
+                path: "setup", 
+                props: true, 
+                name: "Setup", 
+                component: () => import("@/views/dashboard/usersettings/profile/components/user-setup.vue"), 
+              },
+              { 
+                path: "security", 
+                props: true, 
+                name: "Security", 
+                component: () => import("@/views/dashboard/usersettings/security/index.vue"), 
+              },
+              { 
+                path: "domain", 
+                props: true, 
+                name: "Domains", 
+                component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
+              },
+              { 
+                path: "domain/add", 
+                props: true, 
+                name: "Add a New Domain", 
+                component: () => import("@/views/dashboard/usersettings/domain/create-domain.vue"), 
+              },
+              { 
+                path: "signature", 
+                props: true, 
+                name: "Signature", 
+                component: () => import("@/views/dashboard/usersettings/signature/index.vue"), 
+              },
+            ]
           },
            
         ],

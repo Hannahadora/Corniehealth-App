@@ -80,3 +80,8 @@ export default class IconInput extends Vue {
   }
 }
 </script>
+<style scoped>
+.rounded-r-none{
+   border-radius: 9999px;
+ }
+</style>

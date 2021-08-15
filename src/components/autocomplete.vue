@@ -2,7 +2,7 @@
   <span class="relative">
     <cornie-input v-bind="$attrs" v-model="displayVal" />
     <div
-      :class="{ hidden: !showDatalist }"
+      :class="{ show: !showDatalist }"
       class="
         absolute
         flex flex-col

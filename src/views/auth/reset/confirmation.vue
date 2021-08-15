@@ -1,4 +1,5 @@
 <template>
+<div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
     <div class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg">
     <div class="m-12">
         <img src="@/assets/img/mail.png" class="w-40 mx-auto mt-5" />
@@ -8,6 +9,7 @@
         </p>
     </div>
     </div>
+</div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";

@@ -10,9 +10,9 @@
         <slot name="text" />
       </section>
       <section class="w-full h-full mt-2">
-        <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
+       <!-- <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
+        </div>-->
           <slot />
-        </div>
       </section>
     </div>
   </div>

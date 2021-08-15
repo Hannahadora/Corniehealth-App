@@ -28,9 +28,14 @@
               @update:modelValue="handleChange"
             >
               <template v-slot:item="{ item }">
-                <span class="flex items-center">
-                  {{ item.isoCode }}
-                  <img class="ml-1 w-4" :src="item.flag" />
+                <span class="w-full flex items-center mb-3">
+                  <div class="flex w-full">
+                    <img class="mr-3 w-6 rounded-md" :src="item.flag" />
+                    <span class="text-sm font-semibold"> {{ item.name }}</span>
+                  </div>
+                  <div class="text-xs text-gray-400 flex-shrink-0 float-right">
+                  {{ item.dialCode }}
+                  </div>
                 </span>
               </template>
               <template v-slot:selected="{ item }">
@@ -63,7 +68,10 @@ import { Prop, PropSync } from "vue-property-decorator";
 import { countryCodes } from "@/plugins/countrycodes";
 import { Field } from "vee-validate";
 import { string } from "yup";
-import CornieSelect from "./cornieselect.vue";
+import IconInput from "@/components/IconInput.vue";
+import CornieSelect from "./phoneselect.vue";
+import CornieInput from "./cornieinput.vue";
+import SearchIcon from "@/components/icons/search.vue";
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -73,6 +81,9 @@ const phoneRegex =
   components: {
     Field,
     CornieSelect,
+    CornieInput,
+    SearchIcon,
+    IconInput
   },
 })
 export default class PhoneInput extends Vue {
