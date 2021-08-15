@@ -37,7 +37,7 @@ export default class Collection extends Vue {
         "/api/v1/collection/myOrg/getMyOrgCollections"
       );
       if (response.success) this.collections = response.data || [];
-      else alert(response.message);
+      else alert(response.errors!.summary);
     } catch (error) {
       alert("failed to fetch collections");
     }

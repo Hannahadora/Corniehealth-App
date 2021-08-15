@@ -5,7 +5,8 @@
         icon-btn
       rounded-full
       overflow-hidden
-      shadow-inner
+      border-0 
+      outline-none
       flex
       justify-center
       items-center

@@ -1,106 +1,98 @@
 <template>
-  <div class="flex flex-col items-center w-11/12">
-    <div class="w-full flex flex-col items-center">
-      <div class="w-full">
-        <div class="flex flex-col items-center relative" :id="id">
-          <div class="w-full" @click="showDatalist = !showDatalist">
-            <label
-              v-if="label"
-              class="block uppercase mb-1 text-xs font-bold"
-              :for="`${id}-inputfield`"
-            >
-              {{ label }}
-            </label>
-            <div
-              v-bind="$attrs"
-              class="p-1 bg-white flex border border-gray-200 rounded-lg"
-            >
-              <span v-if="Boolean($slots.selected)">
-                <slot name="selected" :item="selectedItem" />
-              </span>
-              <input
-                v-else
-                placeholder=""
-                disabled
-                :value="displayVal"
-                class="
-                  bg-transparent
-                  p-1
-                  pl-2
-                  appearance-none
-                  outline-none
-                  w-full
-                  text-gray-800
-                "
-              />
+  <div class="w-full" :class="{relative: showDatalist}" :id="id" @click="showDatalist = !showDatalist" >
+    <label
+      v-if="label"
+      class="block uppercase text-xs mb-1 font-bold"
+      :for="`${id}-inputfield`"
+    >
+      {{ label }}
+      <span class="text-danger">
+        {{required? "*" : ""}}
+      </span>
+    </label>
+    <div
+      class="bg-white flex border border-gray-200 rounded-lg"
+      v-bind="$attrs"
+    >
+      <span v-if="Boolean($slots.selected)">
+        <slot name="selected" :item="selectedItem" />
+      </span>
+      <input
+        v-else
+        :placeholder="$attrs.placeholder || ''"
+        disabled
+        :value="displayVal"
+        class="
+          bg-transparent
+          p-2
+          appearance-none
+          outline-none
+          w-full
+          text-gray-800
+        "
+      />
 
-              <div
-                class="
-                  text-gray-300
-                  py-1
-                  pr-1
-                  flex
-                  items-center
-                  border-gray-200
-                "
-              >
-                <chevron-down-icon />
-              </div>
-            </div>
-          </div>
-          <div
-            :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              w-full
-              lef-0
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
-          >
-            <div class="flex flex-col w-full p-2">
-              <div
-                v-for="(item, i) in items"
-                :key="i"
-                @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
-              >
-                <template v-if="Boolean($slots.item)">
-                  <slot name="item" v-bind:item="item" />
-                </template>
-                <div
-                  v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                  "
-                >
-                  {{ item.display || item }}
-                </div>
-              </div>
-            </div>
-          </div>
+      <div
+        class="
+          text-gray-300
+          py-1
+          pr-3
+          flex
+          items-center
+          border-gray-200
+        "
+      >
+        <chevron-down-icon />
+      </div>
+    </div>
+  <div
+    :class="{ hidden: !showDatalist }"
+    class="
+      absolute
+      shadow
+      bg-white
+      top-100
+      z-50
+      w-full
+      lef-0
+      rounded
+      max-h-select
+      overflow-y-auto
+      mt-2
+    "
+  >
+    <div class="flex flex-col w-full p-2">
+      <div
+        v-for="(item, i) in items"
+        :key="i"
+        @click="selected(item)"
+        class="
+          cursor-pointer
+          w-full
+          border-gray-100
+          rounded-xl
+          hover:bg-white-cotton-ball
+        "
+      >
+        <template v-if="Boolean($slots.item)">
+          <slot name="item" v-bind:item="item" />
+        </template>
+        <div
+          v-else
+          class="
+            flex
+            w-full
+            items-center
+            p-2
+            pl-2
+            border-transparent border-l-2
+          "
+        >
+          {{ item.display || item }}
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <script lang="ts">
@@ -126,6 +118,10 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: String })
   label!: string;
+
+  @Prop({type: Boolean})
+  required!: boolean;
+
   showDatalist = false;
   id = "";
 

@@ -1,5 +1,5 @@
 <template>
-  <span class="w-11/12 block my-auto">
+  <span class="w-full block my-auto">
     <label class="block uppercase mb-1 text-xs font-bold">
       {{ label }}
     </label>
@@ -9,8 +9,8 @@
       :rules="customRules"
       v-model="valueSync"
     >
-      <span class="flex">
-        <span class="flex">
+      <span class="flex w-full">
+        <span class="">
           <field
             :name="`${inputName}-code`"
             v-slot="{ meta: codeMeta, handleChange, errorMessage: codeError }"
@@ -18,7 +18,7 @@
             v-model="codeSync"
           >
             <cornie-select
-              class="w-full rounded-r-none"
+              class="w-full h-full rounded-r-none"
               :items="codes"
               v-model="codeSync"
               :class="{
@@ -46,7 +46,7 @@
             'border-red-500': Boolean(codeError),
             'border-green-400': meta.valid && meta.touched,
           }"
-          class="rounded-r-lg border p-2 w-full focus:outline-none"
+          class="rounded-r-lg border p-2 flex-grow focus:outline-none"
           type="tel"
           v-bind="field"
         />

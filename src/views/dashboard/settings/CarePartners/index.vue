@@ -40,7 +40,7 @@
         <existing-state />
       </template>
     </div>
-    <cornie-dialog :visible="showAddCarePartners" center class="w-6/12">
+    <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
       <add-care-partners @close="showAddCarePartners = false"/>
     </cornie-dialog>
   </main>

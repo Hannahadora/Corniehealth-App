@@ -72,15 +72,6 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/CarePartners/index.vue"),
           },
           {
-            path: "add-care-partners/:id?",
-            props: true,
-            name: "Add a Care Partner",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/CarePartners/AddCarePartner.vue"
-              ),
-          },
-          {
             path: "account-security",
             name: "Account Security",
             component: () =>

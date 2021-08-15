@@ -1,20 +1,23 @@
 <template>
-  <card>
-    <card-title>
-      <span class="flex font-semibold text-xl text-primary py-2 font-extrabold">
-        New Care Partner
-      </span>
-      <span class="flex-grow" />
+  <card class="flex flex-col">
+    <card-title class="bg-primary">
       <icon-btn @click="close">
-        <close stroke="#211F45" />
+        <arrow-left stroke="#ffffff" />
       </icon-btn>
     </card-title>
-    <card-text class="flex mx-3 border-b-2 pb-6">
-      <cornie-menu>
+    <card-text class="mx-3 border-b-2 pb-6">
+      <p class="text-xl text-primary mb-1 font-extrabold">
+        New Care Partner
+      </p>
+      <p class="mb-4">
+        Select or manually input care partner details for invite
+      </p>
+      <cornie-menu class="flex-grow">
         <template #activator="{ on }">
           <icon-input
             class="border border-gray-600 rounded-full focus:outline-none"
             type="search"
+            width="w-full"
             placeholder="Search Care Partners"
             v-model="searchString"
             v-on="on"
@@ -39,53 +42,49 @@
         </card>
       </cornie-menu>
     </card-text>
-    <card-text>
-      <v-form @submit="submit">
-        <div class="w-full flex">
-          <div class="w-1/2 mx-4">
-            <cornie-input
-              label="organisation name"
-              class="my-6"
-              required
-              placeholder="--Enter--"
-              :rules="required"
-              v-model="name"
-            />
-            <cornie-input
-              label="address"
-              class="my-6"
-              placeholder="--Enter--"
-              v-model="address"
-            />
-            <phone-input
-              label="phone"
-              class="my-6"
-              placeholder="--Enter--"
-              :rules="required"
-              v-model="phoneNumber"
-              v-model:code="dialCode"
-            />
-          </div>
-          <div class="w-1/2 mx-4">
-            <cornie-select
-              label="organisation type"
-              class="my-6"
-              required
-              placeholder="--Select--"
-              :rules="required"
-              v-model="organisationType"
-              :items="organisationTypeOptions"
-            />
-            <cornie-input
-              label="email"
-              class="my-6"
-              required
-              placeholder="--Enter--"
-              :rules="required"
-              v-model="email"
-            />
-          </div>
+    <card-text class="flex flex-grow flex-col">
+      <v-form @submit="submit" class="flex flex-col flex-grow">
+        <cornie-input
+          label="organisation name"
+          class="my-6"
+          required
+          placeholder="--Enter--"
+          :rules="required"
+          v-model="name"
+        />
+        <div>
+          <cornie-select
+            label="organisation type"
+            required
+            placeholder="--Select--"
+            :rules="required"
+            v-model="organisationType"
+            :items="organisationTypeOptions"
+          />
         </div>
+        <cornie-input
+          label="address"
+          class="my-6"
+          placeholder="--Enter--"
+          v-model="address"
+        />
+        <phone-input
+          label="phone"
+          class="my-6"
+          placeholder="--Enter--"
+          :rules="required"
+          v-model="phoneNumber"
+          v-model:code="dialCode"
+        />
+        <cornie-input
+          label="email"
+          class="my-6"
+          required
+          placeholder="--Enter--"
+          :rules="required"
+          v-model="email"
+        />
+        <span class="flex-grow" />
         <span class="flex justify-end w-full mt-5">
           <button
             @click="close"
@@ -103,8 +102,7 @@
               focus:outline-none
               hover:bg-primary
               hover:text-white
-              border-primary
-              border-2
+              border-primary border-2
             "
           >
             Cancel
@@ -146,6 +144,7 @@ import CardText from "@/components/card-text.vue";
 import CardTitle from "@/components/card-title.vue";
 import IconBtn from "@/components/iconbtn.vue";
 import Close from "@/components/icons/close.vue";
+import ArrowLeft from "@/components/icons/arrowleft.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import CornieMenu from "@/components/CornieMenu.vue";
@@ -167,13 +166,14 @@ const dropdown = namespace("dropdown");
     CardTitle,
     Close,
     IconBtn,
+    ArrowLeft,
     IconInput,
     SearchIcon,
     CornieMenu,
   },
   emits: ["close"],
 })
-export default class AddCarePartners extends Vue implements ICarePartner {
+export default class AddCarePartners extends Vue {
   organisationType = "";
   name = "";
   phoneNumber = "";
@@ -237,14 +237,15 @@ export default class AddCarePartners extends Vue implements ICarePartner {
         email: this.email,
         phone: this.phone,
         address: this.address,
-      });
-    else var created = await this.create({
-      name: this.name,
-      organisationType: this.organisationType,
-      email: this.email,
-      phone: this.phone,
-      address: this.address,
-    });
+      } as ICarePartner);
+    else
+      var created = await this.create({
+        name: this.name,
+        organisationType: this.organisationType,
+        email: this.email,
+        phone: this.phone,
+        address: this.address,
+      } as ICarePartner);
     this.loading = false;
     if (!created)
       notify({ msg: "Failed to add care partner", status: "error" });

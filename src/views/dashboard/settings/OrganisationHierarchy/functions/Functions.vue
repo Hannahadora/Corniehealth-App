@@ -2,46 +2,51 @@
   <main class="p-6">
     <div class="flex justify-items-end">
       <span class="flex-grow"></span>
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          py-2
-          px-6
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="showNewFunctionDialog = true"
-      >
-        <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-        New Function
-      </button>
-      <button
-        @click="$router.back()"
-        class="
-          outline-primary
-          rounded-full
-          text-black
-          ml-2
-          py-2
-          px-6
-          focus:outline-none
-          outline
-          hover:bg-primary
-          hover:text-white
-        "
-      >
-        View Org. Structure
-      </button>
     </div>
     <empty-state
       heading="No function recorded"
-      subheading="Add new function"
       v-if="isEmpty"
     >
       <template #icon>
         <img src="@/assets/img/functions.svg" class="inline-block mr-2" />
+      </template>
+      <template #actions>
+        <div class="mt-2">
+          <button
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              py-2
+              px-6
+              focus:outline-none
+              hover:opacity-90
+            "
+            @click="showNewFunctionDialog = true"
+          >
+            <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
+            New Function
+          </button>
+          <button
+            @click="$router.back()"
+            class="
+              border-primary
+              border-2
+              rounded-full
+              text-black
+              ml-2
+              py-2
+              px-6
+              focus:outline-none
+              outline
+              hover:bg-primary
+              hover:text-white
+            "
+          >
+            View Org. Structure
+          </button>
+
+        </div>
       </template>
     </empty-state>
     <existing-state v-else />
@@ -63,14 +68,16 @@
               placeholder="--Enter--"
               v-model="functionName"
             />
+            <div class="mb-6">
+              <cornie-select
+                class="w-full"
+                label="Hierarchy"
+                placeholder="--Select--"
+                v-model="hierarchy"
+              />
+            </div>
             <cornie-select
-              class="w-full mb-6"
-              label="Hierarchy"
-              placeholder="--Select--"
-              v-model="hierarchy"
-            />
-            <cornie-select
-              class="w-full mb-6"
+              class="w-full"
               label="supervisory function"
               placeholder="--Select--"
               v-model="supervisoryFunction"
@@ -85,7 +92,8 @@
               <button
                 @click="showNewFunctionDialog = false"
                 class="
-                  outline-primary
+                  border-primary
+                  border-2
                   rounded-full
                   text-black
                   mr-2
@@ -109,7 +117,10 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="isEmpty = false; showNewFunctionDialog = false"
+                @click="
+                  isEmpty = false;
+                  showNewFunctionDialog = false;
+                "
               >
                 Create Function
               </button>
@@ -134,7 +145,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { string as yupString } from "yup";
-import ExistingState from "./ExistingState.vue"
+import ExistingState from "./ExistingState.vue";
 
 @Options({
   name: "Functions",
@@ -149,7 +160,7 @@ import ExistingState from "./ExistingState.vue"
     IconBtn,
     CornieSelect,
     CustomCheckbox,
-    ExistingState
+    ExistingState,
   },
 })
 export default class Functions extends Vue {
@@ -157,7 +168,7 @@ export default class Functions extends Vue {
 
   required = yupString().required();
 
-  isEmpty = true
+  isEmpty = true;
 }
 </script>
 

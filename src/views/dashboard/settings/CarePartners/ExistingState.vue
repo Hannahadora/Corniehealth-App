@@ -17,7 +17,7 @@
         Add a Care Partner
       </button>
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
+    <!-- <div class="flex w-full justify-between mt-5 items-center">
       <span class="flex items-center">
         <sort-icon class="mr-5" />
         <icon-input
@@ -36,8 +36,8 @@
         <table-refresh-icon class="mr-7" />
         <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+    </div> -->
+    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
@@ -63,20 +63,22 @@
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
-    </Table>
+    </Table> -->
+    <cornie-table />
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     />
-    <cornie-dialog :visible="showAddCarePartners" center class="w-6/12">
-      <add-care-partners @close="showAddCarePartners = false" />
+    <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
+      <add-care-partners @close="showAddCarePartners = false" class="h-full"/>
     </cornie-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
+// import Table from "@scelloo/cloudenly-ui/src/components/table";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -101,7 +103,8 @@ const CarePartnersStore = namespace("CarePartnersStore");
 
 @Options({
   components: {
-    Table,
+    // Table,
+    CornieTable,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
