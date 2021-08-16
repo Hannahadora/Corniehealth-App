@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid h-screen topest">
+    <div class="container-fluid h-screen topest" style="height: 100vh; overflow-y:scroll">
         <div class="w-full">
             <div class="w-full mb-8">
                 <div class="w-full border-b-2 curved flex py-2">
