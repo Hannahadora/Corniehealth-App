@@ -2,12 +2,12 @@
     <div class="container-fluid">
         <div class="container-fluid w-full flex items-center justify-between">
             <div class="border-b-2 w-11/12"></div>
-            <div class="bg-primary border text-white w-1/11 p-1 rounded-full flex items-center justify-center text-xl font-bold cursor-pointer" style="height:24px;width:24px">×</div>
+            <div class="bg-primary border text-white w-1/11 p-1 rounded-full flex items-center justify-center text-xl font-bold cursor-pointer" style="height:24px;width:24px" @click="closeSection">×</div>
         </div>
 
         <div class="container-fluid">
             <div class="w-full flex py-4 border-dashed-b-2 mb-4">
-                <ToggleCheck :uncheckedText="`   Disabled`" :checkedText="'Enabled'" />
+                <ToggleCheck :uncheckedText="`Disabled`" :checkedText="'Enabled'" style="margin-left: 1rem" />
             </div>
 
             <div class="w-full flex border-dashed-b-2 pb-4">
@@ -44,7 +44,9 @@ import CornieInput from '@/components/cornieinput.vue'
     }
 })
 export default class TwoFA extends Vue {
-    
+    closeSection() {
+        this.$emit('closesection', '2fa');
+    }
 }
 </script>
 

@@ -23,7 +23,7 @@
                     <UserNav />
                 </div>
             </div>
-            <div class=""  style="width: 75%">
+            <div class="border-l-2 px-2"  style="width: 75%">
                 <router-view></router-view>
                 <!-- <div class="container-fluid">
                     <div class="w-full border-b-2 curved flex py-2">
