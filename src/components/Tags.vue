@@ -30,7 +30,7 @@
   align-items: center;
   justify-content: center;
   padding: 8px;
-  background: #0a4269;
+  background: #080056;
   border-radius: 124px;
   border: none;
   margin: 0px 8px;

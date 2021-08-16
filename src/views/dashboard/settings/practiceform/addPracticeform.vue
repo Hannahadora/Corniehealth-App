@@ -31,7 +31,8 @@
        <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
            DESCRIPTION: Kindly tell us about your medical history!
         </div>-->
-       <draggable v-model="questions" v-for="(input, index) in questions"  :key="index"  item-key="id" group="people" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
+        
+       <draggable v-model="questions" item-key="id" group="people" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
            <template #item="{ element,index }">
               <all-questions  :title="element.name" titledescription="Export to Habits" class="" >
                     <template v-slot:default>
@@ -307,7 +308,7 @@ export default class AddPracticeform extends Vue {
 </script>
 <style>
 .outline-primary{
-    border: 2px solid #211F45;
+    border: 2px solid #080056;
 }
 .dropdown:hover .dropdown-menu {
   display: block;

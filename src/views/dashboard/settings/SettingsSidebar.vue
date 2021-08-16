@@ -84,7 +84,7 @@ import TemplatesIcon from "@/components/icons/templates.vue";
 import DevicesIcon from "@/components/icons/devices.vue";
 import PartnersIcon from "@/components/icons/partners.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 
 type INav = { name: string; to: string; icon: string };
 
