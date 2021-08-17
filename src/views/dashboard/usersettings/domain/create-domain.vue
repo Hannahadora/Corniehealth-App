@@ -28,6 +28,12 @@
         </div>
 
         <div class="w-full mt-6 mb-2 flex justify-end border-t-2 pt-8">
+            <Button :loading="false" class="focus:outline-none mr-3">
+                <span  class="text-gray-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                    Cancel
+                </span>
+            </Button>
+
             <Button :loading="false" class="focus:outline-none">
                 <span  style="background: #FE4D3C" class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                     Save

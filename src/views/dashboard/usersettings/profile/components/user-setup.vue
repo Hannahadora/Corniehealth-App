@@ -34,43 +34,45 @@
                                             <CornieInput label="Identifier" v-model="data.id"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="active state"  placeholder="--Enter--" />
+                                            <CornieSelect label="Active state" :items="states" v-model="data.activeState"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="Type"  placeholder="--Enter--" />
-                                        </div>
-                                    </div>
-
-                                    <div class="container-fluid py-3 flex justify-around">
-                                        <div class="w-4/12">
-                                            <CornieInput  label="name (first and last)"  placeholder="--Enter--" />
-                                        </div>
-                                        <div class="w-4/12">
-                                            <DatePicker label="Gender" style="width:max-width:100%"  placeholder="--Enter--" />
-                                        </div>
-                                        <div class="w-4/12">
-                                            <CornieInput label="Type"  placeholder="--Enter--" />
+                                            <CornieSelect label="Type" :items="types" v-model="data.type"  placeholder="--Enter--" />
                                         </div>
                                     </div>
 
                                     <div class="container-fluid py-3 flex justify-around">
                                         <div class="w-4/12">
-                                            <CornieInput  label="Identifier"  placeholder="--Enter--" />
+                                            <CornieInput  label="name (first and last)" v-model="data.name"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="active state"  placeholder="--Enter--" />
+                                            <CornieSelect label="Gender" :items="genders" v-model="data.gender" placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <PhoneInput label="Type"  placeholder="--Enter--" />
+                                            <phone-select label="Phone" v-model="data.phone" v-model:code="data.phoneCode"  placeholder="--Enter--" />
                                         </div>
                                     </div>
 
                                     <div class="container-fluid py-3 flex justify-around">
                                         <div class="w-4/12">
-                                            <CornieInput  label="Department"  placeholder="--Enter--" />
+                                            <CornieInput  label="Address (first and last)" v-model="data.address"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="access role"  placeholder="--Enter--" />
+                                            <DatePicker v-model="data.dateOfBirth" label="Date of birth" style="width:max-width:100%"  placeholder="--Enter--" />
+                                        </div>
+                                        <div class="w-4/12">
+                                            <CornieSelect label="Job Designation" :items="designations" v-model="data.jobDesignation" placeholder="--Enter--" />
+                                        </div>
+                                    </div>
+
+                                    <div class="container-fluid py-3 flex justify-around">
+                                        <div class="w-4/12">
+                                        <CornieSelect label="Department" :items="functions" v-model="data.department" placeholder="--Enter--" />
+                                            <!-- <CornieInput  label="Department"  placeholder="--Enter--" /> -->
+                                        </div>
+                                        <div class="w-4/12">
+                                        <CornieSelect label="Access role" :items="accessRoles" v-model="data.accessRole" placeholder="--Enter--" />
+                                            <!-- <CornieInput label="access role"  placeholder="--Enter--" /> -->
                                         </div>
                                         <div class="w-4/12">
                                         </div>
@@ -82,25 +84,29 @@
                                 <div class="w-full px-4">
                                     <div class="container-fluid py-3 flex justify-around">
                                         <div class="w-4/12">
-                                            <CornieInput  label="identifier"  placeholder="--Enter--" />
+                                            <CornieInput  label="identifier" v-model="data.qualificationIdentifier" placeholder="" :disabled="true" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="Code"   placeholder="--Enter--" />
+                                            <CornieSelect label="Code" :items="dropdown.Qualification" v-model="data.qualificationCode"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <DatePicker label="Period"   placeholder="--Enter--" />
+                                            <Period label="Period" v-model="data.period"  placeholder="--Enter--" />
                                         </div>
                                     </div>
 
                                     <div class="container-fluid py-3 flex justify-around">
                                         <div class="w-4/12">
-                                            <CornieInput label="Issuer"  placeholder="--Enter--" />
+                                            <CornieInput label="Issuer" v-model="data.qualificationIssuer" placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="Communication" placeholder="--Enter--" />
+                                            <cornie-select
+                                                :items="dropdown.CommunicationLanguage"
+                                                v-model="data.communicationLanguage"
+                                                label="Communication"
+                                            />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="LICENSE NUMBER" placeholder="--Enter--" />
+                                            <CornieInput label="LICENSE NUMBER" v-model="data.licenseNumber" placeholder="--Enter--" />
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +116,7 @@
                                 <div class="w-full px-4">
                                     <div class="container my-3">
                                         <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
+                                            <input type="checkbox" class="form-radio h-6 w-6" v-model="allChecked" @change="onAll"  name="schedule">
                                             <span class="ml-2">All days</span>
                                         </label>
                                     </div>
@@ -118,7 +124,7 @@
                                     <div class="container flex">
                                         <div class="w-2/12">
                                         </div>
-                                        <div class="w-2/12">
+                                        <div class="w-4/12">
                                             <div class="container flex">
                                                 <div class="w-6/12 mr-3">
                                                     <span class="font-bold uppercase text-sm">Start</span>
@@ -130,161 +136,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="container flex my-3">
+                                    <div class="container flex my-3" v-for="(day, index) in times" :key="index">
                                         <div class="w-2/12">
                                             <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Monday</span>
+                                                <input type="checkbox" v-model="day.selected" class="form-radio h-6 w-6"  name="schedule">
+                                                <span class="ml-2">{{ day.day }}</span>
                                             </label>
                                         </div>
-                                        <div class="w-2/12">
+                                        <div class="w-4/12">
                                             <div class="container flex">
                                                 <div class="w-6/12 mr-3">
                                                     <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
+                                                        <input type="time" v-model="day.openTime" class="w-full border rounded p-2" id="appt" name="appt" required>
                                                     </label>
                                                 </div>
                                                 <div class="w-6/12">
                                                     <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container flex my-3">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Tuesday</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-2/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container flex my-3">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Wednesday</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-2/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container flex my-3">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Thursday</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-2/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container flex my-3">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Friday</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-2/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container flex my-3">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Saturday</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-2/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container flex my-3">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">Sunday</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-2/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" class="w-full border rounded p-2" id="appt" name="appt" required>
+                                                        <input type="time" v-model="day.closeTime" class="w-full border rounded p-2" id="appt" name="appt" required>
                                                     </label>
                                                 </div>
                                             </div>
@@ -293,10 +161,10 @@
 
                                     <div class="container flex my-3">
                                         <div class="w-4/12">
-                                            <CornieInput label="availability exceptions"  placeholder="--Enter--" />
+                                            <CornieSelect label="availability exceptions" :items="['X-MAS', 'SALAH']" v-model="data.availabilityExceptions" placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <CornieInput label="consulation channel"  placeholder="--Enter--" />
+                                            <CornieSelect label="consulation channel" :items="dropdown.ConsultationChannel" v-model="data.consultationChannel" placeholder="--Enter--" />
                                         </div>
                                     </div>
                                 </div>
@@ -312,7 +180,7 @@
                             Cancel
                         </router-link>
                     </corniebtn>
-                    <Button :loading="false">
+                    <Button :loading="false" @click="setup">
                         <a  style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                             Save 
                         </a>
@@ -330,8 +198,20 @@ import Accordion from '@/components/accordion-component.vue';
 import Button from '@/components/globals/corniebtn.vue';
 import CornieInput from '@/components/cornieinput.vue';
 import DatePicker from '@/components/datepicker.vue';
+import Period from '@/components/daterangepicker.vue';
 import Avatar from '@/components/avatar.vue'
 import EmptyState from './empty-state.vue'
+import CornieSelect from '@/components/cornieselect.vue'
+import PhoneSelect from '@/components/phone-input.vue'
+import { cornieClient } from "@/plugins/http";
+import { namespace } from 'vuex-class';
+import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
+
+const roles = namespace('roles');
+const dropdown = namespace("dropdown");
+const userStore = namespace("user");
+const userSettingsStore = namespace("usersettings");
 
 @Options({
     components: {
@@ -341,13 +221,160 @@ import EmptyState from './empty-state.vue'
         Avatar,
         CornieInput,
         EmptyState,
+        CornieSelect,
+        PhoneSelect,
+        Period,
     }
 })
 
 export default class USerSetup extends Vue {
+    @roles.State
+    roles!: any;
+
+    @roles.Action
+    getRoles!: () => Promise<any>;
+
+    @dropdown.Action
+    getDropdowns!: (a: string) => Promise<IIndexableObject>;
+
+    @userStore.State
+    user!: User;
+
+    @userSettingsStore.Action
+    setUserUp!: (body: IPractitioner) => Promise<boolean>;
+
+    dropdown = {} as IIndexableObject;
+
     show = true;
     data: any = { }
+
+    types: string[] = [ 'Full Time (FT)', 'Part Time (PT)', 'AdHoc (AH)']
+
+    states: any[] = [
+        {code: 'active', display: 'Active'},
+        {code: 'inactive', display: 'Inctive'},
+    ]
+
+    genders: any[] = [
+        {code: 'male', display: 'Male'},
+        {code: 'female', display: 'Female'},
+        {code: 'other', display: 'Other'},
+    ]
+
+    designations: any[] = [ ]
+    levels: any[] = [ ]
+    functions: any[] = [ ]
+
+    times: any[] = [
+        { day: 'Monday', openTime: '', closeTime: '', selected: true },
+        { day: 'Tuesday', openTime: '', closeTime: '', selected: true },
+        { day: 'Wednesday', openTime: '', closeTime: '', selected: true },
+        { day: 'Thursday', openTime: '', closeTime: '', selected: true },
+        { day: 'Friday', openTime: '', closeTime: '', selected: true },
+        { day: 'Saturday', openTime: '', closeTime: '', selected: true },
+        { day: 'Sunday', openTime: '', closeTime: '', selected: true },
+    ]
+
+
+
     img = setup(() => useHandleImage());
+
+    async setDropdown() {
+        const data = await this.getDropdowns("practitioner");
+        this.dropdown = data;
+    }
+
+    onAll(e: any) {
+        if (e.target.checked) {
+            this.times = this.times.map(i => {
+                i.selected = true;
+                return i;
+            })
+        } else {
+            this.times = this.times.map(i => {
+                i.selected = false;
+                return i;
+            })
+        }
+    }
+
+    get allChecked() {
+        const index = this.times.findIndex(i => !i.selected);
+        return index >= 0 ? false : true;
+    }
+
+    async getLevels() {
+        try {
+            const { data: { levels } } = await cornieClient().get(`/api/v1/orgHierarchy/levels`);
+            this.levels = levels.map((i: any) => {
+                return { code: i.id, display: i.name }
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async getDesignations() {
+        try {
+            const { data: { designations } } = await cornieClient().get(`/api/v1/orgHierarchy/designation`);
+            this.designations = designations.map((i: any) => {
+                return { code: i.id, display: i.name }
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async getDepartments() {
+        try {
+            const { data: { functions } } = await cornieClient().get(`/api/v1/orgHierarchy/function`);            
+            this.functions = functions.map((i: any) => {
+                return { code: i.id, display: i.name }
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    get accessRoles() {
+        return this.roles.map((i: any) => {            
+            return { code: i.id, display: i.name };
+        })
+    }
+
+    async setup() {
+        const body = {
+            ...this.data,
+            id: this.user.id,
+            firstName: this.data.name ? this.data.name.split(' ')[0] : '',
+            lastName: this.data.name ? this.data.name.split(' ')[1] : '',
+            email: this.user.email,
+            phone: {
+                number: this.data.phone,
+                dialCode: this.data.phoneCode
+            },
+            hoursOfOperation: this.times,
+            dateOfBirth: this.data.dateOfBirth ? new Date(this.data.dateOfBirth).toISOString() : '',
+            organizationId: this.user.orgId,
+            image: this.img.url,
+        }        
+
+        try {
+            const res = await this.setUserUp(body);
+            console.log(res, "put res");
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async created() {
+        if (this.roles) await this.getRoles();
+                console.log(this.user, "user");
+                
+        this.getDesignations()
+        this.getLevels();
+        this.getDepartments();
+        this.setDropdown();        
+    }
 }
 </script>
 
