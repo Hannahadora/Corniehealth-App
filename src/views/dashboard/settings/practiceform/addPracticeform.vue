@@ -26,7 +26,7 @@
          </div>
          <div>
           <label class="relative top-9 ml-2 text-black">DESCRIPTION:</label>
-          <cornie-input class="w-full mb-6 pl-28 text-black" @input="DescriptionGet($event)" v-model="description"/>
+          <cornie-input class="w-full mb-6 pl-32 text-black" @input="DescriptionGet($event)" v-model="description"/>
         </div>
        <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
            DESCRIPTION: Kindly tell us about your medical history!
