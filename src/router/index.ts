@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
+import PatientExperienceManagement from "@/views/dashboard/patientexp/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -275,6 +276,36 @@ const routes: Array<RouteRecordRaw> = [
             ]
           },
            
+        ],
+      },
+    ],
+  },
+  {
+    path: "/Engagements/:type",
+    name: "Patient Experience Management",
+    component: Dashboard,
+    redirect: (to) => `${to.path}/engagements`.replace("//", "/"),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "engagements/",
+        name: "engagements",
+        component: PatientExperienceManagement,
+        redirect: (to) => `${to.path}/appointment`.replace("//", "/"),
+        children: [
+          {
+            path: "add-appointment/:id?",
+            props: true,
+            name: "Create Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
+          },
+          {
+            path: "appointment",
+            name: "Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/index.vue"),
+          },
         ],
       },
     ],

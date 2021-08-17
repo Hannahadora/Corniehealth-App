@@ -90,6 +90,13 @@ export default class SidebarLink extends Vue {
     if (!status) this.expand = false;
   }
 
+  @Prop({ type: Boolean, default: false })
+  opened!: boolean;
+
+  @Watch("opened")
+  toggled() {
+    this.expand = this.opened;
+  }
   get hasChild() {
     return this.children.length > 0;
   }
