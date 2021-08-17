@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-2 mb-5 rounded-lg bg-white w-full overflow-auto"
+   
   >
     <div class="p-3 w-full overflow-auto">
       <router-view />

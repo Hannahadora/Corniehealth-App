@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex justify-center">
+  <div class="h-full flex justify-centerb bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
     <div class="w-full">
     <span
         class="

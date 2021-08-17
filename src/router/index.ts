@@ -47,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
+      
       {
         path: "view-group/:id?",
         props: true,
@@ -147,6 +148,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "domains",
             name: "Domains",
+            props: true,
             component: () =>
               import("@/views/dashboard/settings/domain/index.vue"),
           },
@@ -259,12 +261,12 @@ const routes: Array<RouteRecordRaw> = [
             name: "Security", 
             component: () => import("@/views/dashboard/usersettings/security/index.vue"), 
           },
-          { 
-            path: "domain", 
-            props: true, 
-            name: "Domains", 
-            component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
-          },
+          // { 
+          //   path: "domain", 
+          //   props: true, 
+          //   name: "Domains", 
+          //   component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
+          // },
           { 
             path: "domain/add", 
             props: true, 
@@ -278,36 +280,6 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/dashboard/usersettings/signature/index.vue"), 
           },
         ]
-      },
-    ],
-  },
-  {
-    path: "/Engagements/:type",
-    name: "Patient Experience Management",
-    component: Dashboard,
-    redirect: (to) => `${to.path}/engagements`.replace("//", "/"),
-    meta: { requiresAuth: true },
-    children: [
-      {
-        path: "engagements/",
-        name: "engagements",
-        component: PatientExperienceManagement,
-        redirect: (to) => `${to.path}/appointment`.replace("//", "/"),
-        children: [
-          {
-            path: "add-appointment/:id?",
-            props: true,
-            name: "Create Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
-          },
-          {
-            path: "appointment",
-            name: "Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/index.vue"),
-          },
-        ],
       },
     ],
   },

@@ -1,4 +1,5 @@
 <template>
+<div>
 <div class="w-full flex flex-col justify-center items-center h-96">
     <img src="@/assets/img/appointment.svg" />
     <h3 class="text-center mt-5">There are no appointments on record!<br>
@@ -14,11 +15,12 @@ Schedule a new appointment by clicking on “Create Appointment” above</h3>
         focus:outline-none
         hover:opacity-90
       "
-       @click="$router.push('/patient-experience-management/provider/add-appointment')"
+       @click="$router.push('/dashboard/provider/engagements/add-appointment')"
     >
       Create Appointment
     </button>
   </div>
+</div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";

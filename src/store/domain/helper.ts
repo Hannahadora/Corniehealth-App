@@ -6,8 +6,10 @@ export async function fetchDomains() {
     const response = await cornieClient().get(
       "/api/v1/domain/myOrg/getMyOrgdomains"
     );
+    console.log(response);
     if (response.success){
       return response.data;
+     
     } 
   } catch (error) {
     console.log(error);

@@ -1,5 +1,5 @@
 <template>
-<div class="bg-white rounded overflow-auto max-h-96 p-5 mt-5">
+<div class="bg-white rounded overflow-auto max-h-screen p-5 mt-5">
   <cornie-input contenteditable="true" v-model="formTitle" :value="'Blank Form'" placholder="Blank Form" class="flex float-left border-none w-full font-semibold text-xl text-primary py-2 mx-auto" type="text" @input="display($event)"/>
    <form class="mt-5 w-full" @submit.prevent="submit" autocomplete="off">
       <div class="flex w-full mt-5 mb-5 items-center">
