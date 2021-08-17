@@ -20,7 +20,7 @@
               </span>
               <input
                 v-else
-                placeholder=""
+                placeholder="--Select--"
                 disabled
                 :value="displayVal"
                 class="
@@ -172,5 +172,11 @@ export default class CornieSelect extends Vue {
 }
 .max-h-select {
   max-height: 300px;
+}
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
+  font-style: italic;
 }
 </style>

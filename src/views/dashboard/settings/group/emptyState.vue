@@ -13,9 +13,9 @@
         focus:outline-none
         hover:opacity-90
       "
-       @click="$router.push('/dashboard/provider/add-group')"
+       @click="$router.push('/dashboard/provider/add-appointment')"
     >
-      Add a Group
+      Create Appointment
     </button>
   </div>
 </template>

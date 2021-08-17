@@ -23,19 +23,19 @@
             <span class="inline-flex justify-center"> <settings-icon class="mr-2 mt-0.5"/> Go to all settings</span>
           </cornie-btn>
         </li>
-        <li @click="$router.push('org-info')" class="cursor-pointer mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li @click="$router.push('org-info')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
           <span class="flex item-center"><org-icon/><p class="ml-2"> Organization Information</p></span>
         </li>
-        <li @click="$router.push('contact-info')" class="cursor-pointer mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li @click="$router.push('contact-info')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="flex"> <contact-icon/> <p class="ml-2">Contact Information</p></div>
         </li>
-        <li @click="$router.push('org-hierarchy')" class="cursor-pointer mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li @click="$router.push('org-hierarchy')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="flex"> <hierarchy-icon/> <p class="ml-2">Organization Hierarchy</p> </div>
         </li>
-        <li @click="$router.push('practitioners')" class="cursor-pointer mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li @click="$router.push('practitioners')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="flex"> <practitioner-icon/> <p class="ml-2">Practicioner</p> </div>
         </li>
-        <li class="cursor-pointer list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li class="list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="flex"> <approval-icon/> <p class="ml-2">Approval</p> </div>
         </li>
       </ul>
@@ -52,7 +52,7 @@
           <li class="cursor-pointer list-none items-center -mb-5 -m-2 p-5">
             <p class="text-danger uppercase text-sm font-semibold"> New (1)</p>
           </li>
-          <li class=" w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class=" w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm"> Pending Approvals</p>
              <p class="text-xs"> You have 5 pending approvals. Click to view and take action.</p>
@@ -62,21 +62,21 @@
           <li class="cursor-pointer list-none items-center -mb-5 -m-2 p-5">
             <p class="text-gray-500 font-semibold text-sm uppercase"> Earlier</p>
           </li>
-          <li class="w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class="w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm"> User Login</p>
              <p class="text-xs"> Logan Paul has accepted the invitations and logged in successfully.</p>
             </div>
              <p class="text-gray-300 text-xs flex-shrink-0">12 hours Ago</p>
           </li>
-          <li class="w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class="w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm">Subscription Notice</p>
              <p class="text-xs"> Your subscription will expire 3rd July 2021 and is set auto renew.</p>
             </div>
              <p class="text-gray-300 text-xs flex-shrink-0">1 Day Ago</p>
           </li>
-          <li class=" w-full flex cursor-pointer list-none cursor-pointer my-1 -m-2 p-5 py-2">
+          <li class=" w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="float-left">
              <p class="font-bold text-sm">Update Your Contact Information</p>
              <p class="text-xs"> You have not completed your contact information. Click to continue...</p>
@@ -129,7 +129,7 @@
             </li>
             <li class="list-none -mb-3 mt-2 -m-2 p-5 flex justify-center">
             <span class="w-10 h-10 relative justify-center">
-              <div class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer">
+              <div class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple cursor-pointer">
                 <img v-if="profilePhoto" :src="profilePhoto" class="object-cover object-center w-full h-full visible group-hover:hidden"/>
                 <img v-else src="@/assets/img/placeholder.png" class="object-cover object-center w-fullh-full visible group-hover:hidden"/>
                 <span>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
+import PatientExperienceManagement from "@/views/dashboard/patientexp/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -46,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
+      
       {
         path: "view-group/:id?",
         props: true,
@@ -146,6 +148,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "domains",
             name: "Domains",
+            props: true,
             component: () =>
               import("@/views/dashboard/settings/domain/index.vue"),
           },
@@ -258,12 +261,12 @@ const routes: Array<RouteRecordRaw> = [
             name: "Security", 
             component: () => import("@/views/dashboard/usersettings/security/index.vue"), 
           },
-          { 
-            path: "domain", 
-            props: true, 
-            name: "Domains", 
-            component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
-          },
+          // { 
+          //   path: "domain", 
+          //   props: true, 
+          //   name: "Domains", 
+          //   component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
+          // },
           { 
             path: "domain/add", 
             props: true, 

@@ -57,3 +57,11 @@ export default class DInput extends Vue {
   rules!: any;
 }
 </script>
+<style scoped>
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
+  font-style: italic;
+}
+</style>

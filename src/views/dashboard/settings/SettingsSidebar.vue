@@ -39,13 +39,13 @@
             <div
               class="flex flex-col mt-1 text-gray-500"
               :class="{ hidden: open != i }"
-            >
+                >
               <s-bar-link
                 :name="item.name"
                 :to="mapUrl(item.to)"
                 v-for="(item, index) in setting"
                 :key="index"
-              >
+                >
                 <template v-slot="{ active }">
                   <keep-alive>
                     <component
