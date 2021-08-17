@@ -24,7 +24,7 @@ module.exports = {
       danger: "#FE4D3C",
 
       accent: "#F0F4FE",
-      primary: "#080056"
+      primary: "#080056",
       warning: "#F7B538",
       success: "#35BA83",
       "fiery-rose": "#FF5964",

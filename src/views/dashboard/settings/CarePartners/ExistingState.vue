@@ -64,8 +64,7 @@
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table> -->
-    <cornie-table :columns="rawHeaders" v-model="items" />
-
+    <cornie-table />
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
@@ -137,27 +136,27 @@ export default class CarePartnersExistingState extends Vue {
   rawHeaders = [
     {
       title: "Organisation Name",
-      key: "name",
+      value: "name",
       show: true,
     },
     {
       title: "Organisation Type",
-      key: "organisationType",
+      value: "organisationType",
       show: true,
     },
     {
       title: "Address",
-      key: "address",
+      value: "address",
       show: true,
     },
     {
       title: "Email",
-      key: "email",
+      value: "email",
       show: true,
     },
     {
       title: "Phone",
-      key: "phone",
+      value: "phone",
       show: true,
     },
   ];
