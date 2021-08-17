@@ -1,37 +1,38 @@
 <template>
-  <div class="w-full" :class="{relative: showDatalist}" :id="id" @click="showDatalist = !showDatalist" >
-    <label
-      v-if="label"
-      class="block uppercase text-xs mb-1 font-bold"
-      :for="`${id}-inputfield`"
-    >
-      {{ label }}
-      <span class="text-danger">
-        {{required? "*" : ""}}
-      </span>
-    </label>
-    <div
-      class="bg-white flex border border-gray-200 rounded-lg"
-      v-bind="$attrs"
-    >
-      <span v-if="Boolean($slots.selected)">
-        <slot name="selected" :item="selectedItem" />
-      </span>
-      <input
-        v-else
-        :placeholder="$attrs.placeholder || ''"
-        disabled
-        :value="displayVal"
-        class="
-          bg-transparent
-          p-2
-          appearance-none
-          outline-none
-          w-full
-          text-gray-800
-        "
-      />
-
+  <div class="flex flex-col items-center w-11/12">
+    <div class="w-full flex flex-col items-center">
+      <div class="w-full">
+        <div class="flex flex-col items-center relative" :id="id">
+          <div class="w-full" @click="showDatalist = !showDatalist">
+            <label
+              v-if="label"
+              class="block uppercase mb-1 text-xs font-bold"
+              :for="`${id}-inputfield`"
+            >
+              {{ label }}
+            </label>
+            <div
+              v-bind="$attrs"
+              class="p-1 bg-white flex border border-gray-200 rounded-lg"
+            >
+              <span v-if="Boolean($slots.selected)">
+                <slot name="selected" :item="selectedItem" />
+              </span>
+              <input
+                v-else
+                placeholder="--Select--"
+                disabled
+                :value="displayVal"
+                class="
+                  bg-transparent
+                  p-1
+                  pl-2
+                  appearance-none
+                  outline-none
+                  w-full
+                  text-gray-800
+                "
+              />
       <div
         class="
           text-gray-300
@@ -168,5 +169,11 @@ export default class CornieSelect extends Vue {
 }
 .max-h-select {
   max-height: 300px;
+}
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
+  font-style: italic;
 }
 </style>

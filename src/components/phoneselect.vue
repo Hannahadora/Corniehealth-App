@@ -185,6 +185,6 @@ export default class CornieSelect extends Vue {
   max-height: 300px;
 }
 .w-custom{
-     width: 477px;
+     width: max-content;
  }
 </style>

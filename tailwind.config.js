@@ -22,8 +22,9 @@ module.exports = {
       current: "currentColor",
 
       danger: "#FE4D3C",
-      primary: "#211F45",
+
       accent: "#F0F4FE",
+      primary: "#080056"
       warning: "#F7B538",
       success: "#35BA83",
       "fiery-rose": "#FF5964",
@@ -262,20 +263,7 @@ module.exports = {
     },
     fontFamily: {
       sans: [
-        "ui-sans-serif",
-        "system-ui",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        '"Noto Sans"',
-        "sans-serif",
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-        '"Noto Color Emoji"',
+        'Inter', 'sans-serif'
       ],
       serif: [
         "ui-serif",

@@ -45,7 +45,7 @@ export default {
     transition: opacity 1s;
     position: absolute;
     z-index: 1;
-    background-color: #211F45;
+    background-color: #080056;
 }
 /*.tooltip { 
   color: #ffffff;
@@ -64,7 +64,7 @@ export default {
   position: absolute;
   z-index: 1;
 
-  background: #211F45;
+  background: #080056;
 }*/
 
 .text::after {

@@ -126,6 +126,7 @@ export default class CorniDashboardeSideBar extends Vue {
       { text: "Questionaires", to: "experience/questionaires" },
 
     ]},
+
     { name: "Clinical", to: "clinical", icon: "book-icon" },
     { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
     { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },

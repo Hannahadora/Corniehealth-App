@@ -7,19 +7,22 @@
         >
           <span>
             <div
-              class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
+              class="w-full justify-between flex items-center"
             >
               <router-link
                 :to="setting.to"
                 exact-active-class="live-link"
                 :class="{ 'live-link': setting.to.includes('domain') && route.path.includes('domain')}"
-                class="font-semibold cursor-pointer capitalize w-full text-sm text-gray-500 "
+                class="font-semibold cursor-pointer capitalize w-full flex text-sm text-gray-500 "
               >
-                <span> </span>
-                <span class="flex justify-between">
+                <span class="mr-2" v-if="key === 0"> <PractitionerIcon /></span>
+                <span class="mr-2" v-if="key === 1"> <DomainIcon /></span>
+                <span class="mr-2" v-if="key === 2"> <SecurityIcon /></span>
+                <span class="mr-2 w-1/12" v-if="key === 3"> <TemplatesIcon /></span>
+                <span class="flex justify-between w-11/12">
                      {{ setting.name }}
                     <chevron-right-icon
-                        class="cursor-pointer text-white-500"
+                        class="cursor-pointer text-white-500 ml-auto"
                         style="color:white"
                     />    
                 </span>
@@ -152,20 +155,20 @@ export default class Settings extends Vue {
     return [
         {
           name: "Practitioner Profile",
-          to: "/dashboard/provider/settings/user",
+          to: "/dashboard/provider/user",
           icon: "security-icon",
         },
         {
           name: "Domains",
-          to: "/dashboard/provider/settings/user/domain",
+          to: "/dashboard/provider/user/domain",
           icon: "security-icon",
         },
         {
           name: "User Security",
-          to: "/dashboard/providerr/settings/user/security",
+          to: "/dashboard/providerr/user/security",
           icon: "security-icon",
         },
-        { name: "Signature", to: "/dashboard/provider/settings/user/signature", icon: "domain-icon" },
+        { name: "Signature", to: "/dashboard/provider/user/signature", icon: "domain-icon" },
       ];
   }
 
@@ -184,7 +187,7 @@ export default class Settings extends Vue {
 </script>
 <style scoped>
     .live-link {
-        background: #211F45;
+        background: #080056;
         border-radius: 124px;
         color: white;
         padding: .8rem 1rem;

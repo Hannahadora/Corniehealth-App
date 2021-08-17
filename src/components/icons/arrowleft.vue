@@ -3,8 +3,8 @@
     :width="width"
     :height="height"
     viewBox="0 0 18 14"
-    :fill="fill"
-    :stroke="stroke"
+    fill="none"
+    stroke="#080056"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path

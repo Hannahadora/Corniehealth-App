@@ -257,6 +257,6 @@ items = ['Active', 'Inactive'];
 </script>
 <style>
 .outline-primary{
-    border: 2px solid #0A4269;
+    border: 2px solid #080056;
 }
 </style>

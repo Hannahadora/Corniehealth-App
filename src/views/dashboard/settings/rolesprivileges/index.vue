@@ -383,7 +383,7 @@ export default class RolesAndPrivileges extends Vue {
   }
 
   .dark_background {
-    background: #211F45;
+    background: #080056;
   }
 
   .card_shadow {
@@ -427,7 +427,7 @@ export default class RolesAndPrivileges extends Vue {
   }
 
   .close_btn_border {
-    border: 1px solid #211F45;
+    border: 1px solid #080056;
   }
 
   .steps_line-h {

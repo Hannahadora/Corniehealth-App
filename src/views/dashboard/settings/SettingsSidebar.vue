@@ -39,13 +39,13 @@
             <div
               class="flex flex-col mt-1 text-gray-500"
               :class="{ hidden: open != i }"
-            >
+                >
               <s-bar-link
                 :name="item.name"
                 :to="mapUrl(item.to)"
                 v-for="(item, index) in setting"
                 :key="index"
-              >
+                >
                 <template v-slot="{ active }">
                   <keep-alive>
                     <component
@@ -84,7 +84,7 @@ import TemplatesIcon from "@/components/icons/templates.vue";
 import DevicesIcon from "@/components/icons/devices.vue";
 import PartnersIcon from "@/components/icons/partners.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 
 type INav = { name: string; to: string; icon: string };
 

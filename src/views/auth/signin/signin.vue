@@ -21,7 +21,7 @@
         </div>
     </div>
   </div>
-  <div v-else class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
+  <div v-else class="h-full 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
     <div class="w-full h-44 block p-12">
       <form class="w-full" @submit.prevent="submit">
           <h2 class="font-bold text-2xl mb-5">Login to CornieHealth</h2>

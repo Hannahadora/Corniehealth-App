@@ -127,7 +127,7 @@ export default class BankAccountsExistingState extends Vue {
 </script>
 <style>
 table thead th {
-  background: #0a4269 !important;
+  background: #080056 !important;
 
   color: white !important;
 }

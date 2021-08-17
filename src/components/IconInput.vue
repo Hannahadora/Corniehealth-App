@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[width]"
-    class="relative text-gray-600 focus-within:text-gray-400"
+    class="relative text-gray-600 py-2 focus-within:text-gray-400"
   >
     <span
       class="absolute inset-y-0 left-0 flex items-center pl-2"
