@@ -1,7 +1,7 @@
 <template>
   <svg
-    width="18"
-    height="14"
+    :width="width"
+    :height="height"
     viewBox="0 0 18 14"
     fill="none"
     stroke="#080056"
@@ -17,7 +17,20 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator"
 
 @Options({})
-export default class ArrowLeftIcon extends Vue {}
+export default class ArrowLeftIcon extends Vue {
+  @Prop({ type: String, default: "18"})
+  width!: string
+
+  @Prop({ type: String, default: "14"})
+  height!: string
+
+  @Prop({ type: String, default: "none"})
+  fill!: string
+
+  @Prop({ type: String, default: "#0A4269"})
+  stroke!: string
+}
 </script>

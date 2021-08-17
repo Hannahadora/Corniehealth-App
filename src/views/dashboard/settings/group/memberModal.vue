@@ -200,7 +200,7 @@ export default class memberModal extends Vue {
           window.notify({ msg: "Member added", status: "success" });
             this.show = false;
         } else {
-         window.notify({ msg: response.message, status: "error" });
+         window.notify({ msg: response.errors!.summary, status: "error" });
             this.show = false;
         }
       } catch (error) {

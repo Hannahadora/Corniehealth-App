@@ -22,7 +22,9 @@ module.exports = {
       current: "currentColor",
 
       danger: "#FE4D3C",
-      primary: "#080056",
+
+      accent: "#F0F4FE",
+      primary: "#080056"
       warning: "#F7B538",
       success: "#35BA83",
       "fiery-rose": "#FF5964",

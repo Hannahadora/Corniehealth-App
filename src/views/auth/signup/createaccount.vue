@@ -361,18 +361,14 @@ code = "";
       }
     } catch (error) {
       if (error instanceof ErrorResponse && error.response.status == 422) {
-        const errors = await error.response.json();
-        let msg = "";
-        errors.errors.forEach((error: any) => (msg = `${msg} ${error.msg}`));
-         this.back();
-        window.notify({ msg, status: "error" });
+        window.notify({ msg: error.response.errors!.summary, status: "error" });
+        this.back();
       } else if (
         error instanceof ErrorResponse &&
         error.response.status == 400
       ) {
-         this.back();
-        const response = await error.response.json();
-        window.notify({ msg: response.message, status: "error" });
+        window.notify({ msg: error.response.errors!.summary, status: "error" });
+        this.back()
       } else {
         window.notify({ msg: errMsg });
       }

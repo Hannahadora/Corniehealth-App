@@ -176,10 +176,10 @@ export default class AddDomain extends Vue {
         this.checkdomainName
       );
       if (response.success == true) {
-        this.result = response.message;
+        this.result = response.errors!.summary
         console.log(response);
       } else {
-        this.result = response.message;
+        this.result = response.errors!.summary
       }
     } catch (error) {
       console.log(error);

@@ -33,12 +33,12 @@
       <div
         class="
           mt-5
+          flex-grow
           flex
-          h-3/4
+          flex-col
+
           items-center
           w-full
-          flex-col
-          justify-between
           text-white text-lg
           overflow-y-auto
         "
@@ -48,6 +48,7 @@
           :key="i"
           :to="link.to"
           :text="link.name"
+          :children="link.children"
           :hovered="hovered"
         >
           <keep-alive>
@@ -112,7 +113,20 @@ export default class CorniDashboardeSideBar extends Vue {
 
   providerLinks = [
     { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Engagements", to: "engagements", icon: "schedule-icon"},
+    { name: "Experience", to: "/experience/dashboard", icon: "schedule-icon", children: [
+      { text: "Dashboard", to: {name: "Patients Experience"} },
+      { text: "Patients", to: "experience/patients_registration" },
+      { text: "Schedules", to: "experience/schedules" },
+      { text: "Appointments", to: "experience/appointments" },
+      { text: "visits", to: "experience/visits" },
+      { text: "Requests", to: "experience/requests" },
+      { text: "Taks", to: "experience/tasks" },
+      { text: "Messaging", to: "experience/messages" },
+      { text: "Satisfaction & Ratings", to: "experience/ratings" },
+      { text: "Questionaires", to: "experience/questionaires" },
+
+    ]},
+
     { name: "Clinical", to: "clinical", icon: "book-icon" },
     { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
     { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },

@@ -63,25 +63,33 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       {
+        path: "experience/dashboard",
+        name: "Patients Experience",
+        component: () => import("@/views/dashboard/patientexp/index.vue"),
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/OrganisationHierarchy/index.vue")
+          },
+          {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/OrganisationHierarchy/index.vue")
+          },
+          {
             path: "care-partners",
             name: "Care Partners",
             component: () =>
               import("@/views/dashboard/settings/CarePartners/index.vue"),
-          },
-          {
-            path: "add-care-partners/:id?",
-            props: true,
-            name: "Add a Care Partner",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/CarePartners/AddCarePartner.vue"
-              ),
           },
           {
             path: "account-security",
@@ -117,12 +125,6 @@ const routes: Array<RouteRecordRaw> = [
               import(
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
-          },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import("@/views/dashboard/settings/org-hierarchy/index.vue"),
           },
           {
             path: "contact-info",
@@ -281,6 +283,11 @@ const routes: Array<RouteRecordRaw> = [
           },
         ]
       },
+      {
+        path: "org-heirarchy/new-designation",
+        name: "New Designation",
+        component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
+      }
     ],
   },
 ];
