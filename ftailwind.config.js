@@ -26,6 +26,7 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
       selected: "#F2F7FF",
+      accent: "#F0F4FE",
 
       danger: "#FE4D3C",
       primary: "#211F45",

@@ -38,7 +38,7 @@ export class JsonResponse {
 
   private constructor(response: Response, json: IndexableObject) {
     this.baseResponse = response;
-    this.data = json.data;
+    this.data = json.data || json;
     this.numberOfPages = json.numberOfPages;
     this.nextPage = json.nextPage;
     this.previousPage = json.previousPage;

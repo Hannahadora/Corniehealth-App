@@ -33,12 +33,12 @@
       <div
         class="
           mt-5
+          flex-grow
           flex
-          h-3/4
+          flex-col
+
           items-center
           w-full
-          flex-col
-          justify-between
           text-white text-lg
           overflow-y-auto
         "
@@ -113,16 +113,17 @@ export default class CorniDashboardeSideBar extends Vue {
 
   providerLinks = [
     { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Engagements", to: "", icon: "schedule-icon", children: [
-      { text: "Experience Dashboard", to: "engagemnets/experience" },
-      { text: "Patient Registration", to: "engagemnets/patients_registration" },
-      { text: "Schedules & Slots", to: "engagemnets/schedules" },
-      { text: "Appointments", to: "engagemnets/appointments" },
-      { text: "Requests", to: "engagemnets/requests" },
-      { text: "visits", to: "engagemnets/visits" },
-      { text: "Messages", to: "engagemnets/messages" },
-      { text: "Satisfaction & Ratings", to: "engagemnets/ratings" },
-      { text: "Questionaires", to: "engagemnets/questionaires" },
+    { name: "Experience", to: "/experience/dashboard", icon: "schedule-icon", children: [
+      { text: "Dashboard", to: {name: "Patients Experience"} },
+      { text: "Patients", to: "experience/patients_registration" },
+      { text: "Schedules", to: "experience/schedules" },
+      { text: "Appointments", to: "experience/appointments" },
+      { text: "visits", to: "experience/visits" },
+      { text: "Requests", to: "experience/requests" },
+      { text: "Taks", to: "experience/tasks" },
+      { text: "Messaging", to: "experience/messages" },
+      { text: "Satisfaction & Ratings", to: "experience/ratings" },
+      { text: "Questionaires", to: "experience/questionaires" },
 
     ]},
     { name: "Clinical", to: "clinical", icon: "book-icon" },

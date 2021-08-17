@@ -1,7 +1,7 @@
 <template>
   <div
     :id="id"
-    class="flex flex-col"
+    class="flex flex-col py-3"
     :class="{
       'w-5/6': hovered,
       'w-3/4 ': !hovered,
@@ -9,16 +9,20 @@
     }"
   >
     <div class="w-full flex justify-between items-center mx-auto">
-      <router-link
+      <component 
+        @click="hasChild? expand = true : null"
+        :is="!hasChild? 'router-link' : 'span'"
         :to="to"
-        active-class="py-1 px-2 rounded-2xl bg-danger"
+        active-class="py-1 rounded-2xl bg-danger"
         class="
           hover:bg-light-blue-600
           hover:opacity-50
           pa-2
+          px-2
           w-full
           flex
           items-center
+          cursor-pointer
         "
         :class="{ 'justify-center': !hovered }"
       >
@@ -26,7 +30,7 @@
         <span class="text-sm font-semibold whitespace-nowrap" v-if="hovered">
           {{ text }}
         </span>
-      </router-link>
+      </component>
       <chevron-right-icon
         @click="expand = true"
         :id="`svg-${id}`"

@@ -61,11 +61,22 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       {
+        path: "experience/dashboard",
+        name: "Patients Experience",
+        component: () => import("@/views/dashboard/patientexp/index.vue"),
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
+          {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/OrganisationHierarchy/index.vue")
+          },
           {
             path: "org-hierarchy",
             name: "Organization Hierarchy",
@@ -113,12 +124,6 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-          // },
           {
             path: "contact-info",
             name: "Contact Information",
