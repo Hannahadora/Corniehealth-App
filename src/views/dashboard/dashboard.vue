@@ -38,10 +38,10 @@ export default class Dashboard extends Vue {
 </script>
 <style>
 .mini-app {
-  grid-template-columns: 5% 95%;
+  grid-template-columns: 4% 95%;
 }
 .main-app {
-  grid-template-columns: 17% 82%;
+  grid-template-columns: 202px 82%;
 }
 .body-content {
   min-height: 91%;

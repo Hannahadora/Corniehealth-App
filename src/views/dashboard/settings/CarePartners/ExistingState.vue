@@ -64,15 +64,17 @@
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table> -->
-    <cornie-table :columns="rawHeaders" v-model="items" />
+    <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
+          <delete-icon />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
+      </template>
+    </cornie-table>
 
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
     <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
-      <add-care-partners @close="showAddCarePartners = false" class="h-full"/>
+      <add-care-partners @close="showAddCarePartners = false" class="h-full" />
     </cornie-dialog>
   </div>
 </template>
@@ -95,8 +97,9 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import ICarePartner from "@/types/ICarePartner";
-import CornieDialog from "@/components/Dialog.vue"
-import AddCarePartners from "./AddCarePartner.vue"
+import CardText from "@/components/card-text.vue";
+import CornieDialog from "@/components/Dialog.vue";
+import AddCarePartners from "./AddCarePartner.vue";
 import IEmail from "@/types/IEmail";
 import IPhone from "@/types/IPhone";
 
@@ -118,13 +121,14 @@ const CarePartnersStore = namespace("CarePartnersStore");
     ColumnFilter,
     TableOptions,
     CornieDialog,
-    AddCarePartners
+    AddCarePartners,
+    CardText,
   },
 })
 export default class CarePartnersExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-  showAddCarePartners = false
+  showAddCarePartners = false;
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];
@@ -177,7 +181,9 @@ export default class CarePartnersExistingState extends Vue {
         ...partner,
         action: partner.id,
         email: (partner.email as unknown as IEmail).address,
-        phone: (partner.phone as unknown as IPhone).dialCode || "+234" + (partner.phone as unknown as IPhone).number,
+        phone:
+          (partner.phone as unknown as IPhone).dialCode ||
+          "+234" + (partner.phone as unknown as IPhone).number,
       };
     });
     if (!this.query) return partners;
@@ -190,8 +196,8 @@ export default class CarePartnersExistingState extends Vue {
     });
     if (!confirmed) return;
     const partner = this.carePartners.find((element) => element.id == id);
-    if (partner && (await this.delete(partner))) alert("Care partner deleted");
-    else alert("Care partner not deleted");
+    if (partner && (await this.delete(partner))) notify({msg: "Care partner deleted", status: "success"});
+    else notify({msg: "Care partner not deleted", status: "error"});
   }
 }
 </script>

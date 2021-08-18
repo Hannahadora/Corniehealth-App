@@ -47,7 +47,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
-      
       {
         path: "view-group/:id?",
         props: true,
@@ -63,7 +62,7 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       {
-        path: "experience/dashboard",
+        path: "experience/",
         name: "Patients Experience",
         component: () => import("@/views/dashboard/patientexp/index.vue"),
       },

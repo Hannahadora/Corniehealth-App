@@ -11,7 +11,6 @@
         shadow-md
         fixed
         justify-center
-        px-3
         w-auto
       "
     >
@@ -113,8 +112,8 @@ export default class CorniDashboardeSideBar extends Vue {
 
   providerLinks = [
     { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Experience", to: "/experience/dashboard", icon: "schedule-icon", children: [
-      { text: "Dashboard", to: {name: "Patients Experience"} },
+    { name: "Experience", to: "experience", icon: "schedule-icon", children: [
+      { text: "Dashboard", to: { name: "Patients Experience"} },
       { text: "Patients", to: "experience/patients_registration" },
       { text: "Schedules", to: "experience/schedules" },
       { text: "Appointments", to: "experience/appointments" },
