@@ -282,7 +282,28 @@ const routes: Array<RouteRecordRaw> = [
         path: "org-heirarchy/new-designation",
         name: "New Designation",
         component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
-      }
+      },
+      {
+        path: "engagements/",
+        name: "engagements",
+        component: PatientExperienceManagement,
+        redirect: (to) => `${to.path}/appointment`.replace("//", "/"),
+        children: [
+          {
+            path: "add-appointment/:id?",
+            props: true,
+            name: "Create Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
+          },
+          {
+            path: "appointment",
+            name: "Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/index.vue"),
+          },
+        ],
+      },
     ],
   },
 ];

@@ -50,7 +50,7 @@
         <Overlay :show="showTransferComfirmModal">
             <Modal>
               <template v-slot:header>
-                <h3 class="text-lg flex justify-between leading-6 font-medium capitalize text-gray-900 mb-5 font-bold modal_titlee" id="modal-title">
+                <h3 class="text-lg flex justify-between leading-6 font-medium capitalize text-gray-900 mb-5 modal_titlee" id="modal-title">
                   <span>Transfer admin right</span>
                   <span @click="() => showTransferComfirmModal = false" class="lowercase pb-1 cursor-pointer font-normal bg-primary text-white flex items-center justify-center" style="width: 20px;height:20px;border-radius:50%">×</span>
 
@@ -90,7 +90,7 @@
       <ModalContent />
       <template v-slot:cancel>
         <Button :loading="false" >
-          <button @click="toggleModalVissibility" class="close_btn_border mr-3 text-gray-500 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+          <button @click="toggleModalVissibility" class="close_btn_border mr-3 text-gray-500 focus:outline-none font-bold py-3 px-8 rounded-full">
             Close
           </button>
         </Button>

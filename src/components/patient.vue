@@ -12,39 +12,65 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Practitioner</h2>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Patient</h2>
       </div>
       <div class="flex flex-col p-3">
         <p class="text-sm mt-2">
-          Select preferred provider
+          Select preferred patient
         </p>
          <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
             <template v-slot:prepend>
               <search-icon />
             </template>
         </icon-input>
-        <div class="my-2 border-2 w-full flex-col rounded-md flex" v-for="(item,index) in columnsProxy" :key="index">
+        <div class="my-2 border-2 w-full flex-col rounded-md flex">
             <span
-              class="items-center w-full flex justify-between"
+              class="items-center w-full flex space-x-2"
              >
-              <label class="flex items-center justify-between py-3 px-3">
-                <input
-                  v-model="columnsProxy[index].show"
-                  type="checkbox"
-                  @input="changed"
-                  class="bg-danger focus-within:bg-danger px-6 shadow"
-                />
-                <span class="block">
-                <span class="text-xs font-bold float-left pl-3">{{ item.firstName }} {{ item.lastName }}
-                        <br>
-                <span class="text-xs text-gray-300 font-bold">{{ item.jobDesignation }},{{ item.department }}</span>
-                </span>
-                </span>
+              <label class="my-5 p-3 border-gray-200 flex">
+                   <input
+                    type="checkbox"
+                    @input="changed"
+                    class="bg-danger focus-within:bg-danger px-6 shadow"
+                    />
               </label>
-              <div class="flex  mr-4 -ml-32">
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showAvailable">View Availability</p>
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showProfile">View Profile</p>
-              </div>
+                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
+            </span>
+            <span
+              class="items-center w-full flex space-x-2"
+             >
+              <label class="my-5 p-3 border-gray-200 flex">
+                   <input
+                    type="checkbox"
+                    @input="changed"
+                    class="bg-danger focus-within:bg-danger px-6 shadow"
+                    />
+              </label>
+                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
+            </span>
+            <span
+              class="items-center w-full flex space-x-2"
+             >
+              <label class="my-5 p-3 border-gray-200 flex">
+                   <input
+                    type="checkbox"
+                    @input="changed"
+                    class="bg-danger focus-within:bg-danger px-6 shadow"
+                    />
+              </label>
+                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
+            </span>
+            <span
+              class="items-center w-full flex space-x-2"
+             >
+              <label class="my-5 p-3 border-gray-200 flex">
+                   <input
+                    type="checkbox"
+                    @input="changed"
+                    class="bg-danger focus-within:bg-danger px-6 shadow"
+                    />
+              </label>
+                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
             </span>
         </div>
         <div class="flex justify-end w-full mt-auto">

@@ -127,7 +127,8 @@
             </accordion-component>
             <accordion-component title="Add Participants" v-model="openedR">
               <template v-slot:default>
-                <div class="p-5">
+                <div class="p-5"   v-for="(input, index) in practitioner" :key="index">
+
                   <span
                     class="
                       flex
@@ -146,16 +147,16 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full mt-4 p-5">
                     <div class="flex space-x-4">
-                        <avatar class="mr-2" />
+                         <avatar class="mr-2" :src="input[index].image" />
                      <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
                         <div>
-                            <p class="text-xs text-dark font-semibold">ghgh</p>
-                            <p class="text-xs text-gray font-light">hjhh</p>
+                            <p class="text-xs text-dark font-semibold">{{ input[index].firstName }} {{ input[index].lastName}}</p>
+                            <p class="text-xs text-gray font-light">{{ input[index].jobDesignation }} {{ input[index].department}}</p>
                       </div>
                     </div>
                     <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right" />
-                      <d-edit class="cursor-pointer float-right" />
+                      <c-delete class="ml-20 cursor-pointer float-right" @click="removePractitioner(index)"/>
+                      <d-edit class="cursor-pointer float-right"  @click="practitionerFilter = true" />
                     </div>
                   </div>
                 </div>
@@ -276,8 +277,13 @@
         </form>
             <practitioners-filter
                 :columns="practitioners"
-                v-model:preferred="preferredHeaders"
-                v-model:visible="participantFilter"
+                @update:preferred=" addPractitioner"
+                v-model:visible="practitionerFilter"
+            />
+             <patients-filter
+                :columns="patients"
+                @update:preferred=" addPatients"
+                v-model:visible="patientFilter"
             />
       </div>
     </div>
@@ -290,13 +296,14 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
-//import IGroup , { GroupMembers } from "@/types/IGroup";
+import Availability from "@/components/availability.vue";
 import IGroup from "@/types/IGroup";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
 import PractitionersFilter from "@/components/practitioner.vue";
+import PatientsFilter from "@/components/patient.vue";
 import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
@@ -307,16 +314,12 @@ import Avatar from "@/components/avatar.vue";
 const group = namespace("group");
 const dropdown = namespace("dropdown");
 
-// const emptyMember: GroupMembers = {
-//   name: "",
-//   type: "",
-// };
-
 @Options({
   components: {
     CornieInput,
     CornieSelect,
     PractitionersFilter,
+    Availability,
     Textarea,
     DEdit,
     CDelete,
@@ -326,6 +329,7 @@ const dropdown = namespace("dropdown");
     PhoneInput,
     DatePicker,
     AccordionComponent,
+    PatientsFilter,
   },
 })
 export default class AddGroup extends Vue {
@@ -359,9 +363,14 @@ export default class AddGroup extends Vue {
   memberPeriod = "";
 
 
-participantFilter = false;
+practitionerFilter = false;
+patientFilter = false;
+availableFilter = false;
   participantitem = "";
-  practitioners: any [] = [];
+    practitioner : any[] = [];
+  practitioners = Array();
+   availability : any[] = [];
+  availabilities = Array();
   preferredHeaders = [];
  items = ['Patient','Practitioner','Practitioner Role','Device',];
 
@@ -432,26 +441,28 @@ participantFilter = false;
     get selectedItem(){
         return this.participantitem
     }
-  //   async reset(){
-  //     this.groupmember = {...emptyMember};
-  //   }
-  //  async addGroupMember() {
-  //     this.groupmembers.push({ ...this.groupmember });
-  //     window.notify({ msg: "Group Member added", status: "success" });
-  //     this.reset();
-  //   }
-  // async editGroupMember(id: string, index: number, fieldType: object) {
-  //   this.groupmember = this.groupmembers[index];
-  // }
-  // async removeGroupMember(id: string, index: number, fieldType: object) {
-  //   this.groupmembers.splice(index, 1);
-  //   window.notify({ msg: "Group Member deleted", status: "success" });
-  // }
+    async  addPractitioner(value:object) {
+      this.practitioner.push({ ...this.practitioners});
+      this.practitionerFilter = false;
+   }
+     editPractioner(index:number) {
+        this.practitioner = this.practitioners[index]
+     }
+     removePractitioner(index:number) {
+         this.practitioner.splice(index, 1);
+     }
+     showAvailable(){
+         this.availableFilter = true;
+     }
+     async addPatients(value:object){
+         this.patientFilter = false;
+     }
   async setValue(value: string) {
     if(value == 'Practitioner'){
-        this.participantFilter = true;
-    }
-   
+        this.practitionerFilter = true;
+    }else if(value == 'Patient'){
+         this.patientFilter = true;
+    } 
   }
 
   async submit() {
@@ -493,7 +504,6 @@ participantFilter = false;
       );
       const response = await Promise.all([AllPractitioners]);
       this.practitioners = response[0].data;
-        console.log(response);
     
     }
   async created() {

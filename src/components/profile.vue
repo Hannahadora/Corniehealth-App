@@ -12,39 +12,32 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Practitioner</h2>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Profile </h2>
       </div>
-      <div class="flex flex-col p-3">
+      <div class="flex flex-col p-3 mb-7">
         <p class="text-sm mt-2">
-          Select preferred provider
+         View Dr. Daniel Arubuike available times this week
         </p>
-         <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-        </icon-input>
-        <div class="my-2 border-2 w-full flex-col rounded-md flex" v-for="(item,index) in columnsProxy" :key="index">
-            <span
-              class="items-center w-full flex justify-between"
-             >
-              <label class="flex items-center justify-between py-3 px-3">
-                <input
-                  v-model="columnsProxy[index].show"
-                  type="checkbox"
-                  @input="changed"
-                  class="bg-danger focus-within:bg-danger px-6 shadow"
-                />
-                <span class="block">
-                <span class="text-xs font-bold float-left pl-3">{{ item.firstName }} {{ item.lastName }}
-                        <br>
-                <span class="text-xs text-gray-300 font-bold">{{ item.jobDesignation }},{{ item.department }}</span>
-                </span>
-                </span>
-              </label>
-              <div class="flex  mr-4 -ml-32">
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showAvailable">View Availability</p>
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showProfile">View Profile</p>
-              </div>
+        <div class="my-5 border-2 p-3 border-gray-200 w-full flex-col flex">
+            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+              <p class="cursor-pointer float-left text-xs text-black">Provider ID</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">AD3547</p>
+            </span>
+            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+              <p class="cursor-pointer float-left text-xs text-black">Status</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">Active</p>
+            </span>
+            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+              <p class="cursor-pointer float-left text-xs text-black">Specialty</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">Pharmacologist</p>
+            </span>
+            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+              <p class="cursor-pointer float-left text-xs text-black">Total Patients Seen</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">520</p>
+            </span>
+            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+              <p class="cursor-pointer float-left text-xs text-black">Rating</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500"><star-rating :show-rating="false" v-model:rating="rating" :star-size="20" /></p>
             </span>
         </div>
         <div class="flex justify-end w-full mt-auto">
@@ -64,33 +57,11 @@
             "
             @click="show = false"
           >
-            Cancel
-          </button>
-          <button
-            @click="apply"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
-          >
-            Add
+            Close
           </button>
         </div>
       </div>
     </modal>
-       <availability
-            v-model:visible="availableFilter"
-        />
-        <profile
-            v-model:visible="profileFilter"
-        />
   </div>
 </template>
 <script>
@@ -99,11 +70,8 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
-import Availability from "@/components/availability.vue";
-import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
-
-
+import StarRating from 'vue-star-rating';
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
 export default {
@@ -113,10 +81,9 @@ export default {
     DragIcon,
     ArrowLeftIcon,
     Draggable,
-    Availability,
     IconInput,
     SearchIcon,
-    Profile
+    StarRating
   },
   props: {
     visible: {
@@ -134,19 +101,11 @@ export default {
       required: true,
       default: () => [],
     },
-    available: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    
   },
   data() {
     return {
       columnsProxy: [],
-      practitioners: [],
-      availableFilter: false,
-      profileFilter:false
+      rating: 4,
     };
   },
   watch: {
@@ -177,12 +136,6 @@ export default {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    showAvailable(){
-      this.availableFilter = true;
-    },
-    showProfile(){
-        this.profileFilter = true;
-    }
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);
