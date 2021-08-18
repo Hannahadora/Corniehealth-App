@@ -1,6 +1,6 @@
 <template>
   <div class="menu" @click="onMenuClick" >
-    <slot name="activator" :on="{ click, close }" />
+    <slot name="activator" :on="{ click }" />
     <card v-show="showMenu" class="menu-popup" :style="styles" ref="card">
       <slot />
     </card>
@@ -12,7 +12,7 @@ import { Options, Vue } from "vue-class-component";
 import CardText from "@/components/card-text.vue";
 import CardTitle from "@/components/card-title.vue";
 import Card from "@/components/card.vue";
-import { Prop, Ref } from "vue-property-decorator";
+import { Prop, PropSync, Ref, Watch } from "vue-property-decorator";
 
 @Options({
   name: "CornieMenu",
@@ -38,7 +38,11 @@ export default class Menu extends Vue {
   @Prop({ type: String, default: "auto" })
   bottom!: string;
 
-  showMenu = false
+  @PropSync("modelValue", { type: Boolean, default: false })
+  syncedModelValue!: boolean;
+
+  showMenu = false;
+
   closeHandler = () => this.close();
 
   get styles() {
@@ -51,10 +55,12 @@ export default class Menu extends Vue {
   }
 
   click(event: Event) {
-    event.stopPropagation();
-    if(!this.showMenu) document.body.addEventListener("click", this.closeHandler);
+    event.stopPropagation()
+    if(!this.showMenu) {
+      document.body.addEventListener("click", this.closeHandler);
+      this.showMenu = true;
+    }
     else this.close();
-    this.showMenu = true;
   }
 
   onMenuClick(event: Event) {
@@ -64,6 +70,11 @@ export default class Menu extends Vue {
   close() {
     this.showMenu = false;
     document.body.removeEventListener("click", this.closeHandler)
+  }
+
+  @Watch("showMenu")
+  onShowMenuChanged(newValue: boolean) {
+    this.syncedModelValue = newValue;
   }
 }
 </script>

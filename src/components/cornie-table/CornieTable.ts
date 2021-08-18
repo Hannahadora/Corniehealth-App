@@ -17,7 +17,15 @@ import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
+interface IPage {
+  data: any[];
+  numberOfPages: number;
+  previousPage: number;
+  nextPage: number;
+}
+
 type Sorter = (a: any, b: any) => number;
+type ItemLoader = (page: number) => Promise<IPage>;
 
 interface IColumn {
   title: string;
@@ -52,13 +60,25 @@ export default class CornieTable extends Vue {
   @Prop({ type: Function, default: (item: any, query: string) => true })
   filter!: (item: any, query: string) => boolean;
 
+  @PropSync("modelValue", { type: Array, default: [] })
+  itemProps!: any[];
+
+  @PropSync("loader", { type: Function })
+  loaderProp!: ItemLoader;
+
+  items: any[] = [];
   query = "";
   orderBy: Sorter = (a: any, b: any) => -1;
   selectedItems: any[] = [];
   selectedAll = false;
+  showColumnFilter = false;
+  preferredColumns: IColumn[] = [];
+
+  nextPage = 1;
+  numberOfPages = 0;
 
   get filteredItems() {
-    return this.syncedModelValue
+    return this.items
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
@@ -79,6 +99,13 @@ export default class CornieTable extends Vue {
     else this.selectedItems.push(item);
   }
 
+  async loadItems() {
+    const response = await this.loaderProp(this.nextPage);
+    this.nextPage = response.nextPage as number;
+    this.numberOfPages = response.numberOfPages as number;
+    this.items = response.data;
+  }
+
   @Watch("selectedAll")
   onSelectedAllChange(newValue: boolean) {
     this.selectedItems = [];
@@ -86,6 +113,9 @@ export default class CornieTable extends Vue {
       for (const item of this.filteredItems) this.selectedItems.push(item);
   }
 
-  @PropSync("modelValue", { type: Array, default: [] })
-  syncedModelValue!: any[];
+  mounted() {
+    this.preferredColumns = this.columns;
+    if (this.loaderProp != null) this.loadItems;
+    else this.items = this.itemProps;
+  }
 }
