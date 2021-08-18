@@ -266,7 +266,7 @@ const routes: Array<RouteRecordRaw> = [
           },
           { 
             path: "domain/add", 
-            props: true, 
+            props: true,
             name: "Add a New Domain", 
             component: () => import("@/views/dashboard/usersettings/domain/create-domain.vue"), 
           },
@@ -277,6 +277,22 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/dashboard/usersettings/signature/index.vue"), 
           },
         ]
+      },
+
+      {
+        path: "schedules",
+        props: true,
+        name: "Patient Experience Management.",
+        component: () =>
+          import("@/views/dashboard/schedules/index.vue"),
+      },
+
+      {
+        path: "schedules/new",
+        props: true,
+        name: "Patient Experience Management",
+        component: () =>
+          import("@/views/dashboard/schedules/create-schedule.vue"),
       },
     ],
   },
