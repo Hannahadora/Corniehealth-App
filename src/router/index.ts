@@ -2,7 +2,6 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
-import PatientExperienceManagement from "@/views/dashboard/patientexp/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -63,8 +62,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "experience/",
-        name: "Patients Experience",
+        name: "Patients Experience Management",
         component: () => import("@/views/dashboard/patientexp/index.vue"),
+        redirect: () => "dashboard",
+        children: [
+          {
+            path: "dashboard",
+            name: "Experience Dashboard",
+            component: () =>
+              import("@/views/dashboard/patientexp/dashboard/Index.vue"),
+          },
+          {
+            path: "patients",
+            name: "Patients",
+            component: () =>
+              import("@/views/dashboard/patientexp/patients/Index.vue"),
+          },
+        ],
       },
       {
         path: "settings/",

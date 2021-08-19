@@ -61,12 +61,11 @@ export default class CornieTable extends Vue {
   filter!: (item: any, query: string) => boolean;
 
   @PropSync("modelValue", { type: Array, default: [] })
-  itemProps!: any[];
+  items!: any[];
 
   @PropSync("loader", { type: Function })
   loaderProp!: ItemLoader;
 
-  items: any[] = [];
   query = "";
   orderBy: Sorter = (a: any, b: any) => -1;
   selectedItems: any[] = [];
@@ -115,7 +114,6 @@ export default class CornieTable extends Vue {
 
   mounted() {
     this.preferredColumns = this.columns;
-    if (this.loaderProp != null) this.loadItems;
-    else this.items = this.itemProps;
+    if (this.loaderProp != null) this.loadItems();
   }
 }

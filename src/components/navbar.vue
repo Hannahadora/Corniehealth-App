@@ -245,7 +245,7 @@ export default class NavBar extends Vue {
   user!: User;
 
   get profilePhoto() {
-    return this.user.photo;
+    return this.user?.photo;
   }
 
   get name() {
