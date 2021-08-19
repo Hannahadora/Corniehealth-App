@@ -1,17 +1,13 @@
 <template>
-  <div
-   
-  >
-    <div class="p-3 w-full overflow-auto">
-      <router-view />
-    </div>
+  <div class="p-3 w-full overflow-auto">
+    <router-view />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 @Options({
-  components: {
-  },
+  name: "PatientsExperience",
+  components: {},
 })
 export default class Settings extends Vue {}
 </script>

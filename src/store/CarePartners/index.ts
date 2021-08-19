@@ -17,7 +17,7 @@ export default <StoreOptions<CarePartnersStore>>{
     },
 
     set(state, partners: ICarePartner[]) {
-      state.carePartners = partners
+      state.carePartners = partners;
     },
 
     remove(state, partner: ICarePartner) {
@@ -31,16 +31,15 @@ export default <StoreOptions<CarePartnersStore>>{
     async create(context, payload: ICarePartner): Promise<boolean> {
       const partner = await CarePartnersClient.create(payload);
       if (partner.id != null) {
-        context.dispatch("get")
-        return true
+        context.dispatch("get");
+        return true;
       }
-      return false
+      return false;
     },
 
     async get(context): Promise<void> {
       const partners = await CarePartnersClient.get();
-      if (partners.length > 0)
-        context.commit("set", partners)
+      if (partners.length > 0) context.commit("set", partners);
     },
 
     async search(context, payload: { q: string }): Promise<ICarePartner[]> {
@@ -49,9 +48,8 @@ export default <StoreOptions<CarePartnersStore>>{
 
     async delete(context, payload: ICarePartner): Promise<boolean> {
       const deleted = await CarePartnersClient.delete(payload.id as string)
-      if (deleted)
-        context.dispatch("get")
-      return deleted
-    }
-  }
-}
+      if (deleted) context.dispatch("get");
+      return deleted;
+    },
+  },
+};

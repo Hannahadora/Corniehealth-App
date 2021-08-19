@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full overflow-auto h-screen">
     <span class="flex justify-end w-full">
       <button
         class="
@@ -52,7 +52,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IGroup from "@/types/IGroup";
+import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -60,7 +60,7 @@ import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
-const group = namespace("group");
+const appointment = namespace("appointment");
 
 @Options({
   components: {
@@ -93,39 +93,39 @@ export default class GroupExistingState extends Vue {
   showDeativateModal = false;
   paymentId ="";
 
-  @group.State
-  groups!: IGroup[];
+  @appointment.State
+  appointments!: IAppointment[];
 
-  @group.Action
-  deleteGroup!: (id: string) => Promise<boolean>;
+  @appointment.Action
+  deleteAppointment!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Name", value: "name", show: true },
+    { title: "Identifier", value: "serviceCategory", show: true },
     {
-      title: "Quantity",
-      value: "quantity",
+      title: "Patient",
+      value: "patients",
       show: true,
     },
     {
-      title: "Type",
-      value: "type",
+      title: "Appointment Type",
+      value: "appointmentType",
+      show: true,
+    },
+    {
+      title: "Participants",
+      value: "participants",
+      show: false,
+    },
+    {
+      title: "Slot",
+      value: "slot",
       show: true,
     },
     {
       title: "Status",
       value: "status",
-      show: false,
-    },
-    {
-      title: "Managing Entity",
-      value: "managingEntity",
-      show: true,
-    },
-    {
-      title: "Characteristics Code",
-      value: "characteristicsCode",
       show: false,
     },
     {
@@ -197,22 +197,22 @@ export default class GroupExistingState extends Vue {
 
 
   get items() {
-    const groups = this.groups.map((group) => {
-       (group as any).period = new Date(
-         (group as any).period 
+    const appointments = this.appointments.map((appointment) => {
+       (appointment as any).period = new Date(
+         (appointment as any).period 
        ).toLocaleDateString("en-US");
-       (group as any).memberPeriod = new Date(
-         (group as any).memberPeriod 
+       (appointment as any).memberPeriod = new Date(
+         (appointment as any).memberPeriod 
        ).toLocaleDateString("en-US");
 
        
         return {
-        ...group,
-         action: group.id,
+        ...appointment,
+         action: appointment.id,
         };
     });
-    if (!this.query) return groups;
-    return search.searchObjectArray(groups, this.query);
+    if (!this.query) return appointments;
+    return search.searchObjectArray(appointments, this.query);
   }
 
  
@@ -223,40 +223,17 @@ export default class GroupExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
+    if (await this.deleteAppointment(id)) window.notify({ msg: "Group deleted", status: "error" });
     else window.notify({ msg: "Group not deleted", status: "error" });
   }
    async displayMember(id: string) {
      console.log("Hello i m here");
-    const group = await this.groups.find((d) => d.id == id);
+    const group = await this.appointments.find((d) => d.id == id);
     this.showMemberModal = true;
     this.paymentId = id;
   }
-  async showDeactivateGroup(id: string) {
-    const payment = await this.groups.find((d) => d.id == id);
-    this.showDeativateModal = true;
-    this.paymentId = id;
-  }
-async activateGroup(id:string) {
-   const confirmed = await window.confirmAction({
-      message: "You are about to activate this Group",
-      title: "Activate Group"
-    });
-    if (!confirmed) {
-      return;
-    }else{
-        try {
-          const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
-          if (response.success) {
-            window.notify({ msg: "Group activated", status: "success" });
-          } 
-        } catch (error) {
-          window.notify({ msg: "Group not activated", status: "error" });
-          console.error(error);
-        }
-      }
-    }
-      get sortGroups (){
+ 
+      get sortAppointments (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });

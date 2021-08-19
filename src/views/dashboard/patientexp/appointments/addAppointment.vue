@@ -43,7 +43,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
+                    :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
                     v-model="appointmentType"
                     label="APPOINTMENT TYPE"
                     placeholder="--Select--"
@@ -133,7 +133,7 @@
                   class="p-5"
                   v-for="(input, index) in practitioner"
                   :key="index"
-                >
+                  >
                   <span
                     class="
                       flex
@@ -177,7 +177,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="p-5 hidden">
+                <div class="p-5"  v-for="(input, index) in device"
+                  :key="index">
                   <span
                     class="
                       flex
@@ -195,8 +196,36 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                     <div>
-                      <p class="text-xs text-dark font-semibold">ghgh</p>
-                      <p class="text-xs text-gray font-light">hjhh</p>
+                      <p class="text-xs text-dark font-semibold">{{input[index].deviceName.name}}</p>
+                      <p class="text-xs text-gray font-light">{{input[index].deviceName.nameType}}</p>
+                    </div>
+                    <div class="float-right">
+                      <c-delete class="ml-20 cursor-pointer float-right" />
+                      <d-edit class="cursor-pointer float-right" />
+                    </div>
+                  </div>
+                </div>
+                <div class="p-5"  v-for="(input, index) in role"
+                  :key="index">
+                  <span
+                    class="
+                      flex
+                      border-b-2 border-dashed
+                      w-full
+                      text-sm text-primary
+                      py-2
+                      mx-auto
+                      font-semibold
+                      col-span-full
+                      mb-2
+                    "
+                  >
+                    Practitioners Role
+                  </span>
+                  <div class="grid grid-cols-2 gap-2 col-span-full p-5">
+                    <div>
+                      <p class="text-xs text-dark font-semibold">{{input[index].name}}</p>
+                      <p class="text-xs text-gray font-light">{{input[index].description}}</p>
                     </div>
                     <div class="float-right">
                       <c-delete class="ml-20 cursor-pointer float-right" />
@@ -206,20 +235,19 @@
                 </div>
                 <div class="w-full grid grid-cols-3 gap-4 p-5">
                   <cornie-select
+                   :onChange="setValue"
                     class="required"
                     :rules="required"
-                    :items="['type']"
+                    :items="items"
                     v-model="member.type"
                     label="TYPE"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                   :onChange="setValue"
-                    class="required"
+                    class="required border-0 focus-within:outline-none"
                     :rules="required"
-                    :items="items"
-                    v-model="member.actor"
+                    :value="member.type"
                     label="actor"
                     placeholder="--Select--"
                   >
@@ -302,6 +330,16 @@
           @update:preferred="addPatients"
           v-model:visible="patientFilter"
         />
+        <devices-filter
+          :columns="devices"
+          @update:preferred="addDevices"
+          v-model:visible="deviceFilter"
+        />
+         <roles-filter
+          :columns="roles"
+          @update:preferred="addRoles"
+          v-model:visible="roleFilter"
+        />
       </div>
     </div>
   </div>
@@ -321,6 +359,8 @@ import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
 import PractitionersFilter from "@/components/practitioner.vue";
 import PatientsFilter from "@/components/patient.vue";
+import DevicesFilter from "@/components/device.vue";
+import RolesFilter from "@/components/roles.vue";
 import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
@@ -358,6 +398,8 @@ const emptyMember: Members = {
     DatePicker,
     AccordionComponent,
     PatientsFilter,
+    DevicesFilter,
+    RolesFilter,
   },
 })
 export default class AddAppointment extends Vue {
@@ -398,14 +440,20 @@ export default class AddAppointment extends Vue {
  member = { ...emptyMember }
  members: Members[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:'',end:''}}];
 
+  roleFilter = false;
+  deviceFilter = false;
   practitionerFilter = false;
   patientFilter = false;
   availableFilter = false;
   participantitem = "";
   practitioner: any[] = [];
   practitioners = Array();
+  device: any[] = [];
+  devices = Array();
   availability: any[] = [];
   availabilities = Array();
+  role: any[] = [];
+  roles = Array();
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
 
@@ -474,7 +522,7 @@ export default class AddAppointment extends Vue {
     return this.participantitem;
   }
   async addPractitioner(value: object) {
-    this.practitioner.push({ ...this.members });
+    this.practitioner.push({ ...this.practitioners });
     this.practitionerFilter = false;
   }
   editPractioner(index: number) {
@@ -489,13 +537,26 @@ export default class AddAppointment extends Vue {
   async addPatients(value: object) {
     this.patientFilter = false;
   }
+  async addDevices(){
+     this.device.push({ ...this.devices });
+    this.deviceFilter = false;
+  }
+  async addRoles(value: object){
+    this.role.push({ ...this.roles });
+    this.roleFilter = false;
+    console.log(value);
+  }
    get setValue() {
-    if (this.member.actor == "Practitioner") {
+    if (this.member.type == "Practitioner") {
       this.practitionerFilter = true;
-    } else if (this.member.actor == "Patient") {
+    } else if (this.member.type == "Patient") {
       this.patientFilter = true;
+    }else if(this.member.type == 'Device'){
+       this.deviceFilter = true;
+    }else if(this.member.type == 'Practitioner Role'){
+        this.roleFilter = true;
     }
-    return this.member.actor;
+    return this.member.type;
   }
 
   async submit() {
@@ -541,11 +602,24 @@ export default class AddAppointment extends Vue {
     const response = await Promise.all([AllPractitioners]);
     this.practitioners = response[0].data;
   }
+  async fetchDevices() {
+    const AllDevices = cornieClient().get("/api/v1/devices");
+    const response = await Promise.all([AllDevices]);
+    this.devices = response[0].data;
+  }
+  async fetchRoles() {
+    const AllRoles = cornieClient().get("/api/v1/roles");
+    const response = await Promise.all([AllRoles]);
+    this.roles = response[0].data;
+  }
   async created() {
     this.setAppointment();
     this.fetchPractitioners();
-    const data = await this.getDropdowns("appointment");
+    this.fetchDevices();
+    this.fetchRoles();
+    const data = await this.getDropdowns("availability");
     this.dropdowns = data;
+    console.log(data);
   }
 }
 </script>

@@ -2,7 +2,6 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
-import PatientExperienceManagement from "@/views/dashboard/patientexp/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -47,6 +46,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
+<<<<<<< HEAD
           {
             path: "experience/",
             props: true,
@@ -68,6 +68,8 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/patientexp/appointments/index.vue"),
           },    
         
+=======
+>>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
       {
         path: "view-group/:id?",
         props: true,
@@ -83,6 +85,35 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       {
+<<<<<<< HEAD
+=======
+        path: "experience/",
+        name: "Patients Experience Management",
+        component: () => import("@/views/dashboard/patientexp/index.vue"),
+        redirect: () => "dashboard",
+        children: [
+          {
+            path: "dashboard",
+            name: "Experience Dashboard",
+            component: () =>
+              import("@/views/dashboard/patientexp/dashboard/Index.vue"),
+          },
+          {
+            path: "patients",
+            name: "Patients",
+            component: () =>
+              import("@/views/dashboard/patientexp/patients/Index.vue"),
+          },
+          {
+            path: "new-patients",
+            name: "New Patient",
+            component: () =>
+              import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
+          },
+        ],
+      },
+      {
+>>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
         path: "settings/",
         name: "Settings",
         component: Settings,
@@ -92,9 +123,22 @@ const routes: Array<RouteRecordRaw> = [
             path: "org-hierarchy",
             name: "Organization Hierarchy",
             component: () =>
-              import("@/views/dashboard/settings/OrganisationHierarchy/index.vue")
+              import(
+                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+              ),
           },
           {
+<<<<<<< HEAD
+=======
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import(
+                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+              ),
+          },
+          {
+>>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
             path: "care-partners",
             name: "Care Partners",
             component: () =>
@@ -236,7 +280,9 @@ const routes: Array<RouteRecordRaw> = [
             props: true,
             name: "Roles Form",
             component: () =>
-              import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
+              import(
+                "@/views/dashboard/settings/rolesprivileges/role-form.vue"
+              ),
           },
           {
             path: "group",
@@ -250,57 +296,60 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/practiceform/index.vue"),
           },
-          
-           
         ],
       },
-      { 
-        path: "user", 
-        props: true, 
-        name: "User Settings", 
-        component: () => import("@/views/dashboard/usersettings/profile/index.vue"),
+      {
+        path: "user",
+        props: true,
+        name: "User Settings",
+        component: () =>
+          import("@/views/dashboard/usersettings/profile/index.vue"),
         children: [
-          { 
-            path: "", 
-            props: true, 
-            name: "User Setup", 
-            component: () => import("@/views/dashboard/usersettings/profile/components/empty-state.vue"), 
+          {
+            path: "",
+            props: true,
+            name: "User Setup",
+            component: () =>
+              import(
+                "@/views/dashboard/usersettings/profile/components/empty-state.vue"
+              ),
           },
-          { 
-            path: "setup", 
-            props: true, 
-            name: "Setup", 
-            component: () => import("@/views/dashboard/usersettings/profile/components/user-setup.vue"), 
+          {
+            path: "setup",
+            props: true,
+            name: "Setup",
+            component: () =>
+              import(
+                "@/views/dashboard/usersettings/profile/components/user-setup.vue"
+              ),
           },
-          { 
-            path: "security", 
-            props: true, 
-            name: "Security", 
-            component: () => import("@/views/dashboard/usersettings/security/index.vue"), 
+          {
+            path: "security",
+            props: true,
+            name: "Security",
+            component: () =>
+              import("@/views/dashboard/usersettings/security/index.vue"),
           },
-          // { 
-          //   path: "domain", 
-          //   props: true, 
-          //   name: "Domains", 
-          //   component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
-          // },
-          { 
-            path: "domain/add", 
-            props: true, 
-            name: "Add a New Domain", 
-            component: () => import("@/views/dashboard/usersettings/domain/create-domain.vue"), 
+          {
+            path: "domain/add",
+            props: true,
+            name: "Add a New Domain",
+            component: () =>
+              import("@/views/dashboard/usersettings/domain/create-domain.vue"),
           },
-          { 
-            path: "signature", 
-            props: true, 
-            name: "Signature", 
-            component: () => import("@/views/dashboard/usersettings/signature/index.vue"), 
+          {
+            path: "signature",
+            props: true,
+            name: "Signature",
+            component: () =>
+              import("@/views/dashboard/usersettings/signature/index.vue"),
           },
-        ]
+        ],
       },
       {
         path: "org-heirarchy/new-designation",
         name: "New Designation",
+<<<<<<< HEAD
         component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
       },
       // {
@@ -337,6 +386,13 @@ const routes: Array<RouteRecordRaw> = [
       //     },
       //   ]
       // }
+=======
+        component: () =>
+          import(
+            "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
+          ),
+      },
+>>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
     ],
   },
 ];
