@@ -12,10 +12,12 @@ Schedule a new appointment by clicking on “Create Appointment” above</h3>
         mt-5
         py-2
         px-3
+        pl-12
+        pr-12
         focus:outline-none
         hover:opacity-90
       "
-       @click="$router.push('/dashboard/provider/engagements/add-appointment')"
+       @click="$router.push('/dashboard/provider/experience/add-appointment')"
     >
       Create Appointment
     </button>

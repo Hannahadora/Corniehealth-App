@@ -14,6 +14,7 @@ import CareteamStore from "./careteam";
 import RolesStore from './roles'
 import GroupteamStore from "./group";
 import PracticeformStore from "./practiceform";
+import AppointmentStore from "./appointment";
 
 import UserSettingsStore from "./usersettings";
 
@@ -38,6 +39,7 @@ export default createStore({
 
     shifts: ShiftsStore,
     practiceform: PracticeformStore,
+    appointment: AppointmentStore,
 
     usersettings: UserSettingsStore,
   },

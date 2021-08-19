@@ -128,7 +128,7 @@ export default class Signin extends Vue {
     this.loading = true;
     try {
       const data = await quantumClient().post("/auth/login", this.payload);
-      store.commit("user/setLoginInfo", data);
+      store.commit("user/setLoginInfo", data.data);
       const cornieData = await fetchCornieData();
       store.commit("user/setCornieData", cornieData);
       this.$emit("logged-in");

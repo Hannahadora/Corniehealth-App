@@ -32,39 +32,39 @@
   </div>
 </template>
 <script lang="ts">
-import IGroup from "@/types/IGroup";
+import IAppointment from "@/types/IAppointment";
 import { Options, Vue } from "vue-class-component";
 import AppointmentEmptyState from "./emptyState.vue";
 import AppointmentExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const group = namespace("group");
+const appointment = namespace("appointment");
 
 @Options({
-  name: "GroupIndex",
+  name: "AppointmentIndex",
   components: {
     AppointmentEmptyState,
     AppointmentExistingState,
   },
 })
-export default class GroupIndex extends Vue {
-  addGroup = false;
-  GroupToUpdate = {} as IGroup;
+export default class AppointmentIndex extends Vue {
+  addAppointment = false;
+  AppointmentToUpdate = {} as IAppointment;
 
   get empty() {
-    return this.groups.length < 1;
+    return this.appointments.length < 1;
   }
 
- @group.State
-  groups!: IGroup[];
+ @appointment.State
+  appointments!: IAppointment[];
 
-  @group.Action
-  fetchGroups!: () => Promise<void>;
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
 
 
 created() {
-  this.fetchGroups()
-    if (this.groups.length < 1) this.fetchGroups();
+  this.fetchAppointments()
+    if (this.appointments.length < 1) this.fetchAppointments();
   }
 }
 </script>

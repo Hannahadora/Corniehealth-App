@@ -14,157 +14,31 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('/dashboard/provider/add-group')"
+         @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
-        Add a Group
+         Create Appointment
       </button>
       
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
-        >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="sortGroups" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="$router.push(`/dashboard/provider/view-group/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1 -m-6 p-5 py-2
-              "
-            >
-                <eye-icon class="mr-3" /> View
-            </li>
-            <li
-              @click="$router.push(`/dashboard/provider/add-group/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                 my-1 -m-6 p-5 py-2
-              "
-            >
-              
-              <edit-icon class="mr-3" /> Edit
-            </li>
-            <li
-              @click="displayMember(getKeyValue(item).value)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1 -m-6 p-5 py-2
-              "
-            >
-              
-              <span class="mr-3 text-2xl bold text-primary">+</span> Add member
-            </li>
-            <li
-             v-if="item.data.groupStatusDetails.active == true"
-              @click="showDeactivateGroup(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                 my-1 -m-6 p-5 py-2
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Deactivate
-            </li>
-            <li
-            v-if="item.data.groupStatusDetails.active == false"
-              @click="activateGroup(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                 my-1 -m-6 p-5 py-2
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Activate
-            </li>
-            <li
-              @click="deleteItem(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                 my-1 -m-6 p-5 py-2
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+   <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
+          <delete-icon />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table>
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
-       <member-modal v-model:visible="showMemberModal" :paymentId="paymentId"/>
-        <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
+    </cornie-table>
+
+    <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
+      <add-care-partners @close="showAddCarePartners = false" class="h-full" />
+    </cornie-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import CardText from "@/components/card-text.vue";
+import CornieDialog from "@/components/Dialog.vue";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -204,6 +78,9 @@ const group = namespace("group");
     DeleteIcon,
     EyeIcon,
     EditIcon,
+    CornieTable,
+    CardText,
+    CornieDialog
   },
   
 })

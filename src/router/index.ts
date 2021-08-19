@@ -47,7 +47,27 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
-      
+          {
+            path: "experience/",
+            props: true,
+            name: "Patients Experience Management",
+            component: () =>
+              import("@/views/dashboard/patientexp/index.vue"),
+          }, 
+          {
+            path: "experience/add-appointment/:id?",
+            props: true,
+            name: "Create Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
+          },
+          {
+            path: "experience/appointments",
+            name: "Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/index.vue"),
+          },    
+        
       {
         path: "view-group/:id?",
         props: true,
@@ -283,27 +303,40 @@ const routes: Array<RouteRecordRaw> = [
         name: "New Designation",
         component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
       },
-      {
-        path: "engagements/",
-        name: "engagements",
-        component: PatientExperienceManagement,
-        redirect: (to) => `${to.path}/appointment`.replace("//", "/"),
-        children: [
-          {
-            path: "add-appointment/:id?",
-            props: true,
-            name: "Create Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
-          },
-          {
-            path: "appointment",
-            name: "Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/index.vue"),
-          },
-        ],
-      },
+      // {
+      //   path: "engagements/",
+      //   name: "Engagements",
+      //   redirect: (to) => `${to.path}/experience/appointments`.replace("//", "/"),
+      //   children:[
+      //     {
+      //       path: "experience/appointments",
+      //       name: "Appointment",
+      //       component: () =>
+      //         import("@/views/dashboard/patientexp/appointments/index.vue"),
+      //     },
+      //     {
+      //       path: "experience",
+      //       props: true,
+      //       name: "Patients Experience",
+      //       component: PatientExperienceManagement,
+      //       children: [
+      //         {
+      //           path: "add-appointment/:id?",
+      //           props: true,
+      //           name: "Create Appointment",
+      //           component: () =>
+      //             import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
+      //         },
+      //         {
+      //           path: "experience/appointments",
+      //           name: "Appointment",
+      //           component: () =>
+      //             import("@/views/dashboard/patientexp/appointments/index.vue"),
+      //         },
+      //       ],
+      //     },
+      //   ]
+      // }
     ],
   },
 ];

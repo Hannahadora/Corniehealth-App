@@ -113,17 +113,17 @@ export default class CorniDashboardeSideBar extends Vue {
 
   providerLinks = [
     { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Engagements", to: "engagements", icon: "schedule-icon", children: [
-      { text: "Dashboard", to: {name: "Patients Experience"} },
-      { text: "Patients", to: "experience/patients_registration" },
-      { text: "Schedules", to: "experience/schedules" },
-      { text: "Appointments", to: "experience/appointments" },
-      { text: "visits", to: "experience/visits" },
-      { text: "Requests", to: "experience/requests" },
-      { text: "Taks", to: "experience/tasks" },
-      { text: "Messaging", to: "experience/messages" },
-      { text: "Satisfaction & Ratings", to: "experience/ratings" },
-      { text: "Questionaires", to: "experience/questionaires" },
+    { name: "Experience", to: "experience", icon: "schedule-icon", children: [
+      { text: "Dashboard", to: {name: "Patients Experience Management"} },
+      { text: "Patients", to: "/dashboard/experience/patients_registration" },
+      { text: "Schedules", to: "/dashboard/experience/schedules" },
+      { text: "Appointments", to: "/dashboard/experience/appointments" },
+      { text: "visits", to: "/dashboard/experience/visits" },
+      { text: "Requests", to: "/dashboard/experience/requests" },
+      { text: "Taks", to: "/dashboard/experience/tasks" },
+      { text: "Messaging", to: "/dashboard/experience/messages" },
+      { text: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },
+      { text: "Questionaires", to: "/dashboard/experience/questionaires" },
 
     ]},
     { name: "Clinical", to: "clinical", icon: "book-icon" },

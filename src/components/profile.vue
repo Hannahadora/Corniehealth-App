@@ -2,8 +2,7 @@
   <div class="overflow-y-auto bg-white">
     <modal
       :visible="visible"
-      style="height: 95%"
-      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
+      class="w-4/12 flex flex-col overflow-y-auto mr-2"
     >
       <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
         <span class="block pr-2 border-r-2">

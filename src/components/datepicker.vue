@@ -116,7 +116,7 @@ export default class DatePicker extends Vue {
 
   get customRules() {
     const defaultRule = date();
-    if (this.rules) return defaultRule.concat(this.rules);
+   // if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
 

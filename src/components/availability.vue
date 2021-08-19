@@ -2,8 +2,7 @@
   <div class="overflow-y-auto bg-white">
     <modal
       :visible="visible"
-      style="height: 95%"
-      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
+      class="w-4/12 flex flex-col overflow-y-auto  mr-2"
     >
       <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
         <span class="block pr-2 border-r-2">
@@ -19,15 +18,15 @@
          View Dr. Daniel Arubuike available times this week
         </p>
         <div class="my-5 border-2 p-3 border-gray-200 w-full flex-col flex">
-            <span class="items-center hover:bg-gray-100 mb-3 w-full flex justify-between">
+            <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Mon, 1st Feb</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">9AM - 6PM</p>
             </span>
-            <span class="items-center hover:bg-gray-100 mb-3 w-full flex justify-between">
+            <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Mon, 1st Feb</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">9AM - 6PM</p>
             </span>
-            <span class="items-center hover:bg-gray-100 mb-3 w-full flex justify-between">
+            <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Mon, 1st Feb</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">9AM - 6PM</p>
             </span>
