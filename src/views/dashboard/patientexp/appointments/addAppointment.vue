@@ -16,7 +16,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['category']"
+                    :items="dropdowns.serviceCategory"
                     v-model="serviceCategory"
                     label="service category"
                     placeholder="--Select--"
@@ -25,7 +25,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['type']"
+                    :items="dropdowns.serviceType"
                     v-model="serviceType"
                     label="service type"
                     placeholder="--Select--"
@@ -34,7 +34,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['special']"
+                    :items="dropdowns.specialty"
                     v-model="specialty"
                     label="specialty"
                     placeholder="--Select--"
@@ -131,7 +131,7 @@
               <template v-slot:default>
                 <div
                   class="p-5"
-                  v-for="(input, index) in practitioner"
+                  v-for="(input, index) in newPractitioners"
                   :key="index"
                   >
                   <span
@@ -152,16 +152,16 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full mt-4 p-5">
                     <div class="flex space-x-4">
-                      <avatar class="mr-2" :src="input[index].image" />
+                      <avatar class="mr-2" :src="input.image" />
                       <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
                       <div>
                         <p class="text-xs text-dark font-semibold">
-                          {{ input[index].firstName }}
-                          {{ input[index].lastName }}
+                          {{ input.firstName }}
+                          {{ input.lastName }}
                         </p>
                         <p class="text-xs text-gray font-light">
-                          {{ input[index].jobDesignation }}
-                          {{ input[index].department }}
+                          {{ input.jobDesignation }}
+                          {{ input.department }}
                         </p>
                       </div>
                     </div>
@@ -177,7 +177,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="p-5"  v-for="(input, index) in device"
+                <div class="p-5"  v-for="(input, index) in newDevices"
                   :key="index">
                   <span
                     class="
@@ -196,16 +196,16 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                     <div>
-                      <p class="text-xs text-dark font-semibold">{{input[index].deviceName.name}}</p>
-                      <p class="text-xs text-gray font-light">{{input[index].deviceName.nameType}}</p>
+                      <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
+                      <p class="text-xs text-gray font-light">{{input.deviceName.nameType}}</p>
                     </div>
                     <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right" />
-                      <d-edit class="cursor-pointer float-right" />
+                      <c-delete class="ml-20 cursor-pointer float-right"  @click="removeDevice(index)"/>
+                      <d-edit class="cursor-pointer float-right"  @click="deviceFilter = true"/>
                     </div>
                   </div>
                 </div>
-                <div class="p-5"  v-for="(input, index) in role"
+                <div class="p-5"  v-for="(input, index) in newRoles"
                   :key="index">
                   <span
                     class="
@@ -224,12 +224,12 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                     <div>
-                      <p class="text-xs text-dark font-semibold">{{input[index].name}}</p>
-                      <p class="text-xs text-gray font-light">{{input[index].description}}</p>
+                      <p class="text-xs text-dark font-semibold">{{input.name}}</p>
+                      <p class="text-xs text-gray font-light">{{input.description}}</p>
                     </div>
                     <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right" />
-                      <d-edit class="cursor-pointer float-right" />
+                      <c-delete class="ml-20 cursor-pointer float-right" @click="removeRole(index)"/>
+                      <d-edit class="cursor-pointer float-right" @click="roleFilter = true"/>
                     </div>
                   </div>
                 </div>
@@ -239,39 +239,37 @@
                     class="required"
                     :rules="required"
                     :items="items"
-                    v-model="member.type"
+                    v-model="type"
                     label="TYPE"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                  <cornie-select
-                    class="required border-0 focus-within:outline-none"
-                    :rules="required"
-                    :value="member.type"
-                    label="actor"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
+                  <div>
+                    <label class="block uppercase mb-1 text-xs font-bold">
+                      actor
+                    </label>
+                     <span class="text-gray-600 cursor-pointer text-xs">
+                      {{type || 'Actor'}}</span>
+                  </div>
                   <cornie-select
                     class="required"
                     :rules="required"
                     :items="['state']"
-                    v-model="member.required"
+                    v-model="participantDetail.required"
                     label="required"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <date-picker
                     label="period"
-                    v-model:end="member.period.end"
-                    v-model="member.period.start"
+                    v-model="participantDetail.period"
                     :rules="required"
                   />
                   <cornie-select
                     class="required"
                     :rules="required"
                     :items="['medium']"
-                    v-model="member.consultationMedium"
+                    v-model="participantDetail.consultationMedium"
                     label="consultation medium"
                     placeholder="--Select--"
                   >
@@ -321,7 +319,7 @@
           </div>
         </form>
         <practitioners-filter
-          :columns="practitioners"
+          :columns="practitioner"
           @update:preferred="addPractitioner"
           v-model:visible="practitionerFilter"
         />
@@ -331,12 +329,12 @@
           v-model:visible="patientFilter"
         />
         <devices-filter
-          :columns="devices"
+          :columns="device"
           @update:preferred="addDevices"
           v-model:visible="deviceFilter"
         />
          <roles-filter
-          :columns="roles"
+          :columns="role"
           @update:preferred="addRoles"
           v-model:visible="roleFilter"
         />
@@ -352,7 +350,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, {Members} from "@/types/IAppointment";
+import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -367,18 +365,17 @@ import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
 import SingleDatePicker from "@/components/datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
+import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
-const emptyMember: Members = {
-  appointmentId: "",
-  actor: "",
-  type: "",
-  period: { start: "2011/12/15", end: "2017/12/19" },
+const emptyParticipant: ParticipantDetail = {
+  period: {} as Period,
   required: "",
   consultationMedium: "",
+  
 };
 
 @Options({
@@ -419,6 +416,9 @@ export default class AddAppointment extends Vue {
   openedT = false;
 
 
+actor = "";
+  type = "";
+
   serviceCategory = "";
   locationId = null;
   deviceId = null;
@@ -436,9 +436,22 @@ export default class AddAppointment extends Vue {
   comments = "";
   patientInstruction = "";
   period = { start: "10/12/2011", end: "15/12/2019" };
+  participantDetail = {...emptyParticipant}
+  //participantDetail = {appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{ start: "10/12/2011", end: "15/12/2019" }};
+  // participantDetail: ParticipantDetail[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:"",end:""}}];
+  Practitioners = [];
+  Devices = [];
+  Patients = [
+    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  ];
+  roles = [];
+//member = { ...emptyMember }
+// members: Members[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:'',end:''}}];
 
- member = { ...emptyMember }
- members: Members[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:'',end:''}}];
+  newPractitioners =[];
+  newDevices = [];
+  newPatients =[];
+  newRoles = [];
 
   roleFilter = false;
   deviceFilter = false;
@@ -446,14 +459,16 @@ export default class AddAppointment extends Vue {
   patientFilter = false;
   availableFilter = false;
   participantitem = "";
-  practitioner: any[] = [];
-  practitioners = Array();
-  device: any[] = [];
-  devices = Array();
+
+  practitioner = [];
+  device  = [];
+  patient = [];
+  role = [];
+ 
   availability: any[] = [];
   availabilities = Array();
-  role: any[] = [];
-  roles = Array();
+ 
+
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
 
@@ -491,6 +506,10 @@ export default class AddAppointment extends Vue {
     this.comments = appointment.comments;
     this.patientInstruction = appointment.patientInstruction;
     this.period = appointment.period;
+    this.Practitioners = appointment.Practitioners;
+    this.Devices = appointment.Devices;
+    this.Patients = appointment.Patients;
+    this.participantDetail = appointment.participantDetail;
 
   }
   get payload() {
@@ -511,8 +530,11 @@ export default class AddAppointment extends Vue {
       duration: this.duration,
       comments: this.comments,
       patientInstruction: this.patientInstruction,
+      participantDetail: this.participantDetail,
       period: this.period,
-    
+      Practitioners: this.Practitioners,
+      Devices: this.Devices,
+      Patients: this.Patients,
     };
   }
   get allaction() {
@@ -521,42 +543,52 @@ export default class AddAppointment extends Vue {
   get selectedItem() {
     return this.participantitem;
   }
-  async addPractitioner(value: object) {
-    this.practitioner.push({ ...this.practitioners });
+  async addPractitioner(value: any,id:any) {
+    console.log(value);
+    //this.practitioner.push({ ...this.practitioners });
+    this.newPractitioners = value;
+    this.Practitioners = id;
     this.practitionerFilter = false;
   }
-  editPractioner(index: number) {
-    this.practitioner = this.practitioners[index];
-  }
   removePractitioner(index: number) {
-    this.practitioner.splice(index, 1);
+    this.newPractitioners.splice(index, 1);
+  }
+  removeRole(index: number){
+    this.newRoles.splice(index, 1);
+  }
+   removeDevice(index: number){
+    this.newDevices.splice(index, 1);
   }
   showAvailable() {
     this.availableFilter = true;
   }
-  async addPatients(value: object) {
+  async addPatients(value: any,id:any) {
+    this.newPatients = value;
+    this.Patients = id;
     this.patientFilter = false;
   }
-  async addDevices(){
-     this.device.push({ ...this.devices });
+  async addDevices(value:any, id:any){
+     this.newDevices = value;
+     this.Devices = id;
     this.deviceFilter = false;
   }
-  async addRoles(value: object){
-    this.role.push({ ...this.roles });
+  async addRoles(value: any,id:any){
+   // this.role.push(value);
+    this.newRoles = value;
+    this.roles = id;
     this.roleFilter = false;
-    console.log(value);
   }
    get setValue() {
-    if (this.member.type == "Practitioner") {
+    if (this.type == "Practitioner") {
       this.practitionerFilter = true;
-    } else if (this.member.type == "Patient") {
+    } else if (this.type == "Patient") {
       this.patientFilter = true;
-    }else if(this.member.type == 'Device'){
+    }else if(this.type == 'Device'){
        this.deviceFilter = true;
-    }else if(this.member.type == 'Practitioner Role'){
+    }else if(this.type == 'Practitioner Role'){
         this.roleFilter = true;
     }
-    return this.member.type;
+    return this.type;
   }
 
   async submit() {
@@ -568,15 +600,12 @@ export default class AddAppointment extends Vue {
   async createAppointment() {
     this.payload.period.start = new Date(this.period.start).toISOString();
     this.payload.period.end = new Date(this.period.end).toISOString();
+    this.actor = this.type
     try {
       const response = await cornieClient().post("/api/v1/appointment", this.payload);
-      this.member.appointmentId = response.data.id;
       if (response.success) {
-        const response = await cornieClient().post("/api/v1/appointment/participant",this.member);
-        if(response.success){
           window.notify({ msg: "Appointment created", status: "success" });
           this.$router.push("/dashboard/provider/experience/appointments");
-        }
       }
     } catch (error) {
       window.notify({ msg: "Appointment not created", status: "error" });
@@ -600,17 +629,17 @@ export default class AddAppointment extends Vue {
   async fetchPractitioners() {
     const AllPractitioners = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractitioners]);
-    this.practitioners = response[0].data;
+    this.practitioner = response[0].data;
   }
   async fetchDevices() {
     const AllDevices = cornieClient().get("/api/v1/devices");
     const response = await Promise.all([AllDevices]);
-    this.devices = response[0].data;
+    this.device = response[0].data;
   }
   async fetchRoles() {
     const AllRoles = cornieClient().get("/api/v1/roles");
     const response = await Promise.all([AllRoles]);
-    this.roles = response[0].data;
+    this.role = response[0].data;
   }
   async created() {
     this.setAppointment();

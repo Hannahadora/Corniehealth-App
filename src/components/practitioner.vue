@@ -29,9 +29,10 @@
              >
               <label class="flex items-center justify-between py-3 px-3">
                 <input
-                  v-model="columnsProxy[index].show"
+                  v-model="indexvalue" 
+                  :value="item"
+                  @input="changed(item.id)"
                   type="checkbox"
-                  @input="changed"
                   class="bg-danger focus-within:bg-danger px-6 shadow"
                 />
                 <span class="block">
@@ -144,7 +145,9 @@ export default {
   data() {
     return {
       columnsProxy: [],
+      indexvalue: [],
       practitioners: [],
+      valueid: [],
       availableFilter: false,
       profileFilter:false
     };
@@ -170,7 +173,7 @@ export default {
   },
   methods: {
     apply() {
-      this.$emit("update:preferred", copy([...this.columnsProxy]));
+      this.$emit("update:preferred", copy([...this.indexvalue]), this.valueid);
       this.show = false;
     },
     reset() {
@@ -182,10 +185,13 @@ export default {
     },
     showProfile(){
         this.profileFilter = true;
+    },
+    changed(index){
+      this.valueid.push(index);
     }
   },
   mounted() {
-    this.columnsProxy = copy([...this.columns]);
+    this.columnsProxy = copy([...this.indexvalue]);
   },
 };
 </script>

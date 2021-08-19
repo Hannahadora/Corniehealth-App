@@ -12,41 +12,20 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Practioners Roles</h2>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
       </div>
       <div class="flex flex-col p-3">
         <p class="text-sm mt-2">
-          Select preferred roles
+         Some subtext if necessary
         </p>
-         <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-        </icon-input>
         <div class="my-2 border-2 w-full flex-col rounded-md flex">
-          <div v-for="(item,index) in columnsProxy" :key="index">
-
-            <span
-              class="items-center w-full flex space-x-2"
-             >
-              <label class="my-5 p-3 border-gray-200 flex">
-                   <input
-                    v-model="indexvalue" :value="item"
-                    type="checkbox"
-                    @input="changed(item.id)"
-                    name="indexValue"
-                    class="bg-danger focus-within:bg-danger px-6 shadow"
-                    />
-              </label>
-                <span class="block">
-                   <span class="text-xs font-bold float-left pl-3">{{item.name}}
-                        <br>
-                   <span class="text-xs text-gray-300 font-bold">{{ item.description }}</span>
-                </span>
-                </span>
-            </span>
-          </div>
-  
+            <Textarea
+            label="Notes"
+            v-model="notes"
+            placeholder="--Enter--"
+            :rules="required"
+          />
+          <span></span>
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
@@ -81,7 +60,7 @@
               w-1/3
             "
           >
-            Add
+            Save
           </button>
         </div>
       </div>
@@ -103,7 +82,7 @@ import IconInput from "@/components/IconInput.vue";
 import Availability from "@/components/availability.vue";
 import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
-
+import Textarea from "@/components/textarea.vue";
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -112,6 +91,7 @@ export default {
   components: {
     Modal,
     DragIcon,
+    Textarea,
     ArrowLeftIcon,
     Draggable,
     Availability,
@@ -130,6 +110,11 @@ export default {
       required: true,
       default: () => [],
     },
+    appointmentId: {
+      type: Sting,
+      required: true,
+      default: () => [],
+    },
     preferred: {
       type: Array,
       required: true,
@@ -145,11 +130,14 @@ export default {
   data() {
     return {
       columnsProxy: [],
-      indexvalue: [],
-      valueid: [],
       practitioners: [],
+      notes:'',
       availableFilter: false,
-      profileFilter:false
+      profileFilter:false,
+      payload:{
+          notes:"",
+          appointmentId:""
+      }
     };
   },
   watch: {
@@ -173,19 +161,30 @@ export default {
   },
   methods: {
     apply() {
-      this.$emit("update:preferred", copy([...this.indexvalue]), this.valueid);
-      this.show = false;
+        try {
+        const response = await cornieClient().post("/api/v1/appointment/notes", this.payload);
+        if (response.success) {
+            window.notify({ msg: "Notes created", status: "success" });
+            this.$router.push("/dashboard/provider/experience/appointments");
+        }
+        } catch (error) {
+        window.notify({ msg: "Notes not created", status: "error" });
+        this.$router.push("/dashboard/provider/experience/appointments");
+        }
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    changed(index){
-      this.valueid.push(index);
+    showAvailable(){
+      this.availableFilter = true;
+    },
+    showProfile(){
+        this.profileFilter = true;
     }
   },
   mounted() {
-    this.columnsProxy = copy([...this.indexvalue]);
+    this.columnsProxy = copy([...this.columns]);
   },
 };
 </script>

@@ -31,8 +31,10 @@
              >
               <label class="my-5 p-3 border-gray-200 flex">
                    <input
+                    v-model="indexvalue" 
+                    :value="item"
+                    @input="changed(item.id)"
                     type="checkbox"
-                    @input="changed"
                     class="bg-danger focus-within:bg-danger px-6 shadow"
                     />
               </label>
@@ -144,6 +146,8 @@ export default {
     return {
       columnsProxy: [],
       practitioners: [],
+      indexvalue:[],
+      valueid:[],
       availableFilter: false,
       profileFilter:false
     };
@@ -169,16 +173,19 @@ export default {
   },
   methods: {
     apply() {
-      this.$emit("update:preferred", copy([...this.columnsProxy]));
+       this.$emit("update:preferred", copy([...this.indexvalue]), this.valueid);
       this.show = false;
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
+    changed(index){
+      this.valueid.push(index);
+    }
   },
   mounted() {
-    this.columnsProxy = copy([...this.columns]);
+    this.columnsProxy = copy([...this.indexvalue]);
   },
 };
 </script>

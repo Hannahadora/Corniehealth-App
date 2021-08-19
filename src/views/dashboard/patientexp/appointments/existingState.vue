@@ -20,11 +20,27 @@
       </button>
       
     </span>
-   <cornie-table :columns="rawHeaders" v-model="items">
+   <cornie-table :columns="rawHeaders" v-model="sortAppointments">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
-          <delete-icon />
-          <span class="ml-3 text-xs">Delete</span>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+          <newview-icon />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/provider/experience/add-appointment/${getKeyValue(item).value}`)">
+          <update-icon />
+          <span class="ml-3 text-xs">Update</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+          <checkin-icon />
+          <span class="ml-3 text-xs">Check-In</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+          <note-icon />
+          <span class="ml-3 text-xs">Make Notes</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+          <cancel-icon />
+          <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
     </cornie-table>
@@ -32,6 +48,11 @@
     <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
       <add-care-partners @close="showAddCarePartners = false" class="h-full" />
     </cornie-dialog>
+      <notes-add
+          :appointmentId="appointmentId"
+          @update:preferred="makeNotes"
+          v-model:visible="showNotes"
+        />
   </div>
 </template>
 <script lang="ts">
@@ -57,6 +78,11 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/close.vue";
+import CancelIcon from "@/components/icons/cancel.vue";
+import NoteIcon from "@/components/icons/notes.vue";
+import CheckinIcon from "@/components/icons/checkin.vue";
+import UpdateIcon from "@/components/icons/update.vue";
+import NewviewIcon from "@/components/icons/newview.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -65,7 +91,12 @@ const appointment = namespace("appointment");
 @Options({
   components: {
     Table,
+    CancelIcon,
     SortIcon,
+    CheckinIcon,
+    NewviewIcon,
+    UpdateIcon,
+    NoteIcon,
     ThreeDotIcon,
     SearchIcon,
     CloseIcon,
@@ -89,10 +120,8 @@ export default class GroupExistingState extends Vue {
   showModal = false;
   loading = false;
   query = "";
-  showMemberModal = false;
-  showDeativateModal = false;
-  paymentId ="";
-
+  showNotes = false;
+appointmentId="";
   @appointment.State
   appointments!: IAppointment[];
 
@@ -130,12 +159,12 @@ export default class GroupExistingState extends Vue {
     },
     {
       title: "Code",
-      value: "code",
+      value: "reasonCode",
       show: false,
     },
     {
-      title: "Value Range",
-      value: "valueRange",
+      title: "Reason Reference",
+      value: "reasonRef",
       show: false,
     },
     {
@@ -144,18 +173,18 @@ export default class GroupExistingState extends Vue {
       show: false,
     },
     {
-      title: "Value Boolean",
-      value: "valueBoolean",
+      title: "Priority",
+      value: "priority",
       show: false,
     },
     {
-      title: "Value Reference",
-      value: "valueRef",
+      title: "Description",
+      value: "description",
       show: false,
     },
     {
-      title: "Exclude",
-      value: "exclude",
+      title: "Consultation Medium",
+      value: "consultationMedium",
       show: false,
     },
     {
@@ -226,21 +255,18 @@ export default class GroupExistingState extends Vue {
     if (await this.deleteAppointment(id)) window.notify({ msg: "Group deleted", status: "error" });
     else window.notify({ msg: "Group not deleted", status: "error" });
   }
-   async displayMember(id: string) {
-     console.log("Hello i m here");
-    const group = await this.appointments.find((d) => d.id == id);
-    this.showMemberModal = true;
-    this.paymentId = id;
+  async makeNotes(id:string){
+    this.appointmentId = id;
+    this.showNotes = true;
   }
- 
       get sortAppointments (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
-     async created() {
-      console.log(this.items);
-    }
+    //  async created() {
+    //   console.log(this.items);
+    // }
 
 }
 </script>
