@@ -5,7 +5,7 @@
                 <div class="w-full px-3">
                     <h5 class="flex items-center py-3">
                         <span class="font-bold flex items-center"><ArrowLeft class="mr-3" /> <span class="text-gray-500">|</span></span>
-                        <span class="mx-3 font-semibold text-lg">Edit Slot</span>
+                        <span class="mx-3 font-semibold text-lg">{{ header ? header : 'Edit Slot' }}</span>
                     </h5>
                 </div>
                 <div class="w-full">
@@ -24,7 +24,7 @@ import ArrowLeft from '@/components/icons/arrowleft.vue'
 export default defineComponent({
     components: { Modal, ArrowLeft },
 
-    props: [ 'visible' ],
+    props: [ 'visible', 'header' ],
 
     setup () {
         

@@ -86,9 +86,11 @@ import DeleteIcon from '@/components/icons/delete.vue'
 import ChevronDown from '@/components/icons/chevrondownprimary.vue'
 import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
+import { Prop } from "vue-property-decorator";
 
 const healthcare = namespace('healthcare');
 const shifts = namespace('shifts');
+// const locationStore = namespace('location');
 
 @Options({
   components: {
@@ -113,6 +115,9 @@ export default class EditDetail extends Vue {
  shift: any = {
      healthcareServices: [ ]
  }
+
+ @Prop()
+ schedule!: any;
 
  @healthcare.State
  healthcares!: IHealthcare[];
@@ -168,6 +173,11 @@ export default class EditDetail extends Vue {
      return this.healthcares.map(i => {
          return { id: i.id, name: i.name };
      })
+ }
+
+ get scheduleData() {
+     if (!this.schedule) return { };
+     return this.schedule;
  }
 
 

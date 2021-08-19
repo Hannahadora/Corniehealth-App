@@ -18,6 +18,7 @@ import PracticeformStore from "./practiceform";
 import UserSettingsStore from "./usersettings";
 
 import ShiftsStore from './shift'
+import ScheduleStore from './schedules'
 
 export default createStore({
   modules: {
@@ -40,5 +41,6 @@ export default createStore({
     practiceform: PracticeformStore,
 
     usersettings: UserSettingsStore,
+    schedules: ScheduleStore,
   },
 } as StoreOptions<any>);

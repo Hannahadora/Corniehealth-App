@@ -4,16 +4,16 @@
             <div>
                 <div class="w-full">
                     <span class="flex items-center w-full">
-                    <icon-input
-                    :width="'w-full'"
-                    class="border border-gray-600 rounded-full focus:outline-none"
-                    type="search"
-                    v-model="search"
-                    >
-                    <template v-slot:prepend>
-                        <search-icon />
-                    </template>
-                    </icon-input>
+                        <icon-input
+                        :width="'w-full'"
+                        class="border border-gray-600 rounded-full focus:outline-none"
+                        type="search"
+                        v-model="search"
+                        >
+                        <template v-slot:prepend>
+                            <search-icon />
+                        </template>
+                        </icon-input>
                     </span>
                 </div>
                 <p class="text-base text-gray-500 my-3">
@@ -56,4 +56,14 @@
         </div>
     </div>
 </template>
+
+<script lang="ts">
+import { Vue } from "vue-class-component";
+
+
+export default class AllActors extends Vue {
+    search = '';
+}
+</script>
+
 

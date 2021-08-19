@@ -288,7 +288,7 @@ const routes: Array<RouteRecordRaw> = [
       },
 
       {
-        path: "schedules/new",
+        path: "schedules/new/:scheduleId?",
         props: true,
         name: "Patient Experience Management",
         component: () =>

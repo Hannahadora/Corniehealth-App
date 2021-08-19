@@ -62,7 +62,7 @@
             </Modal>
         </Overlay>
 
-        <side-modal :visible="false">
+        <side-modal :visible="showEditPane">
           <EditSchedule />
         </side-modal>
 
@@ -74,22 +74,22 @@
           <AdvancedFilter />
         </side-modal>
 
-        <side-modal :visible="false">
+        <side-modal :visible="showViewPane" :header="'View Schedule'">
           <div class="w-full my-3">
-            <ViewDetails />
+            <ViewDetails :schedule="selectedSchedule" />
           </div>
           <div class="w-full my-3">
-            <ViewPlan />
+            <ViewPlan :schedule="selectedSchedule" />
           </div>
           <div class="w-full my-3">
-            <ViewBreaks />
+            <ViewBreaks :schedule="selectedSchedule" />
           </div>
         </side-modal>
 
         <div class="w-full curved flex py-2 justify-end my-6">
             <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
                 <Button :loading="false">
-                    <router-link to="" style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                    <router-link :to="{ name: 'Patient Experience Management' }" style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         New Schedule
                     </router-link>
                 </Button>
@@ -121,7 +121,7 @@
                 <table-options>
                     <li
                     @click="
-                        $router.push({ name: 'New Shift', query: { shiftId: getKeyValue(item).value } })
+                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: getKeyValue(item).value} })
                     "
                     class="
                         list-none
@@ -184,7 +184,7 @@
                     </li>
                     <li
                     v-if="isActive(getKeyValue(item).value)"
-                    @click="remove(getKeyValue(item).value)"
+                    @click="deactivate(getKeyValue(item).value)"
                     class="
                         list-none
                         flex
@@ -285,6 +285,7 @@ import AllActors from './components/all-actors.vue'
 import AdvancedFilter from './components/advanced-filter.vue'
 
 const shifts = namespace("shifts");
+const schedulesStore = namespace("schedules");
 
 interface IRole {
     name: string,
@@ -328,8 +329,13 @@ export default class PractitionerExistingState extends Vue {
   showColumnFilter = false;
   show = false;
   query = "";
+  search = "";
 
   activeTab = 0;
+  showEditPane = false;
+  showViewPane = false;
+
+  selectedSchedule: any = { };
 
   @shifts.State
   shifts!: any[];
@@ -345,6 +351,21 @@ export default class PractitionerExistingState extends Vue {
 
   @shifts.Action
   destroyShift!: (id: string) => Promise<boolean>;
+
+  @schedulesStore.State
+  schedules!: any[];
+
+  @schedulesStore.Action
+  getSchedules!: () => Promise<void>;
+
+  @schedulesStore.Action
+  deleteSchedule!: (id: string) => Promise<boolean>;
+
+  @schedulesStore.Action
+  activateSchedule!: (id: string) => Promise<boolean>;
+
+  @schedulesStore.Action
+  deactivateSchedule!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -409,13 +430,15 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     // if (this.shifts.length === 0 ) return this.shifs;
-    const shifts = this.shifts.map((shift: any) => {
+    const shifts = this.schedules.map((i: any) => {
       return {
-        ...shift,
-        action: shift.id,
-        practitioners: shift.practitioners.length,
-        numberOfDays: shift.days.length,
-        status: shift.status
+        ...i,
+        action: i.id,
+        practitioners: i.practitioners.length,
+        numberOfDays: i.days.length,
+        status: i.status,
+        schedule: i.scheduleType,
+
       };
     });
     return shifts;
@@ -442,47 +465,71 @@ export default class PractitionerExistingState extends Vue {
 
   async activate(id: string) {
     const confirmed = await window.confirmAction({
-      message: "Are you sure you want to activate this shift?",
+      message: "Are you sure you want to activate this Schedule?",
     });
     if (!confirmed) return;
 
     try {
-        const response = await this.activateShift(id);
-        if (response) window.notify({ msg: "Shift activated", status: "success" });
-        this.getShifts()
+        const response = await this.activateSchedule(id);
+        if (response) window.notify({ msg: "Schedule activated", status: "success" });
     } catch (error) {
-        window.notify({ msg: "Shift could not activated", status: "error" });
+        window.notify({ msg: "Schedule could not activated", status: "error" });
+        console.log(error)
+    }
+  }
+
+  async deactivate(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "Are you sure you want to deactivate this Schedule?",
+    });
+    if (!confirmed) return;
+
+    try {
+        const response = await this.deactivateSchedule(id);
+        if (response) window.notify({ msg: "Schedule deactivated", status: "success" });
+    } catch (error) {
+        window.notify({ msg: "Schedule could not deactivated", status: "error" });
         console.log(error)
     }
   }
 
   async destory(id: string) {
     const confirmed = await window.confirmAction({
-      message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
+      message: "Are you sure you want to delete this schedule? This action cannot be undone.",
     });
     if (!confirmed) return;
 
     try {
-        const response = await this.destroyShift(id);
-        if (response) window.notify({ msg: "Shift deleted", status: "success" });
-        this.getShifts()
+        const deleted = await this.deleteSchedule(id);
+        if (deleted) {
+          notify({
+            msg: "Schedule deleted successfully",
+            status: "success",
+          });
+        }
     } catch (error) {
-        window.notify({ msg: "Shift could not deleted", status: "error" });
+        window.notify({ msg: "Schedule could not deleted", status: "error" });
         console.log(error)
     }
   }
 
+  viewSchedule(id: string) {
+    const schedule = this.schedules.find((i: any) => i.id === id);
+    if (schedule) this.selectedSchedule = schedule;
+    console.log(this.selectedSchedule);
+    this.showViewPane = true;
+  }
+
   isActive(id: string) {
-    const shift = this.shifts.find((i: any) => i.id === id);
-    if (!shift) return false;
-    return shift.status === 'active' ? true : false;
+    const schedule = this.schedules.find((i: any) => i.id === id);
+    if (!schedule) return false;
+    return schedule.status === 'active' ? true : false;
   }
 
   async created() {
-    // const confirmed = await window.confirmAction({
-    //   message: "Are you sure you want to deactivate this shift?",
-    //   // message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
-    // });
+    if (!this.schedules || this.schedules.length === 0) await this.getSchedules();
+    console.log(this.schedules, "schs");
+    
   }
 
 }

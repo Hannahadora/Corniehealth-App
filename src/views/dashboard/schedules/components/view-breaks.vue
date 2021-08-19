@@ -16,7 +16,7 @@
                     <div class="w-full flex mt-3 flex-wrap">
                         <div class="mr-6" v-for="(state, index) in activeStates" :key="index">
                             <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio h-4 w-4" @change="selectBreakType(state.code)" v-model="state.code" name="break" >
+                                <input type="radio" class="form-radio h-4 w-4" :value="state.code" v-model="scheduleData.status" >
                                 <span class="ml-2">{{ state.display }}</span>
                             </label>
                         </div>
@@ -82,6 +82,7 @@ import DeleteIcon from '@/components/icons/delete.vue'
 import ChevronDown from '@/components/icons/chevrondownprimary.vue'
 import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
+import { Prop } from "vue-property-decorator";
 
 const healthcare = namespace('healthcare');
 const shifts = namespace('shifts');
@@ -109,6 +110,9 @@ export default class EditDetail extends Vue {
  shift: any = {
      healthcareServices: [ ]
  }
+
+ @Prop()
+ schedule!: any;
 
  @healthcare.State
  healthcares!: IHealthcare[];
@@ -169,6 +173,11 @@ export default class EditDetail extends Vue {
      return this.healthcares.map(i => {
          return { id: i.id, name: i.name };
      })
+ }
+
+ get scheduleData() {
+     if (!this.schedule) return { };
+     return this.schedule;
  }
 
 

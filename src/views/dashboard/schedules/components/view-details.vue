@@ -16,28 +16,28 @@
 
                     <div class="container-fluid pb-3 pt-3">
                         <div class="w-12/12 my-2">
-                            <CustomDropdown v-model="data.location" :items="['Location', 'Area']" label="Location" placeholder="--Enter--" style="width: 100%"/>
+                            <CustomDropdown v-model="scheduleData.locationId" :items="allLocations" label="Location" placeholder="--Enter--" style="width: 100%"/>
                         </div>
                         <div class="w-12/12 my-2">
-                            <CornieInput label="Name" v-model="data.name"  placeholder="Enter" style="width: 100%" />
+                            <CornieInput label="Name" v-model="scheduleData.name"  placeholder="Enter" style="width: 100%" />
                         </div>
                         <div class="w-12/12 my-2">
 
-                            <CornieInput label="Description" v-model="data.description" class="w-95" placeholder="Enter" style="width: 100%" />
+                            <CornieInput label="Description" v-model="scheduleData.description" class="w-95" placeholder="Enter" style="width: 100%" />
                         </div>
                     </div>
 
                     <div class="container-fluid py-3">
                         <div class="w-full flex justify-between">
                             <div class="w-6/12">
-                                <CustomDropdown label="Service Category" class="w-95" v-model="data.serviceCategory" :items="['items']" placeholder="Enter" />
+                                <CustomDropdown label="Service Category" class="w-95" v-model="scheduleData.serviceCategory" :items="['items']" placeholder="Enter" />
                             </div>
                             <div class="w-6/12">
-                                <CustomDropdown label="Service Type" class="w-95" v-model="data.serviceType" :items="['items']" placeholder="Enter"  style="width: 100%" />
+                                <CustomDropdown label="Service Type" class="w-95" v-model="scheduleData.serviceType" :items="['items']" placeholder="Enter"  style="width: 100%" />
                             </div>
                         </div>
                         <div class="w-12/12 my-2">
-                            <CustomDropdown label="Specialty" class="w-95" v-model="data.specialty" :items="['items']" placeholder="Enter" style="width: 100%" />
+                            <CustomDropdown label="Specialty" class="w-95" v-model="scheduleData.specialty" :items="['items']" placeholder="Enter" style="width: 100%" />
                         </div>
                     </div>
 
@@ -87,9 +87,11 @@ import DeleteIcon from '@/components/icons/delete.vue'
 import ChevronDown from '@/components/icons/chevrondownprimary.vue'
 import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
+import { Prop } from "vue-property-decorator";
 
 const healthcare = namespace('healthcare');
 const shifts = namespace('shifts');
+const locationStore = namespace('location');
 
 @Options({
   components: {
@@ -115,6 +117,9 @@ export default class EditDetail extends Vue {
      healthcareServices: [ ]
  }
 
+ @Prop()
+ schedule!: any;
+
  @healthcare.State
  healthcares!: IHealthcare[];
 
@@ -132,6 +137,12 @@ export default class EditDetail extends Vue {
 
  @shifts.Action
  getShifts!: () => Promise<void>;
+
+ @locationStore.State
+ locations!: any;
+
+ @locationStore.Action
+ fetchLocations!: () => Promise<boolean>;
 
 
  timeZones = [
@@ -173,15 +184,34 @@ export default class EditDetail extends Vue {
      this.shift.timeZone = data;
  }
 
+ get scheduleData() {
+     if (!this.schedule) return { };
+     return this.schedule;
+ }
+
  get items() {
      return this.healthcares.map(i => {
          return { id: i.id, name: i.name };
      })
  }
 
+ get allLocations() {
+     if (!this.locations || this.locations.length === 0) return [ ]
+     return this.locations.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.name
+         }
+     })
+ }
+
 
  mounted() {
     if (this.shift.schedule) this.selectSchedule(this.shift.schedule);
+ }
+
+ async created() {
+     if (!this.locations || this.locations.length === 0) await this.fetchLocations();
  }
 
  selectShiftType(type: string) {
