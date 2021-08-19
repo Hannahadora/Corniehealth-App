@@ -46,7 +46,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
-<<<<<<< HEAD
           {
             path: "experience/",
             props: true,
@@ -68,8 +67,6 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/patientexp/appointments/index.vue"),
           },    
         
-=======
->>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
       {
         path: "view-group/:id?",
         props: true,
@@ -85,8 +82,6 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       {
-<<<<<<< HEAD
-=======
         path: "experience/",
         name: "Patients Experience Management",
         component: () => import("@/views/dashboard/patientexp/index.vue"),
@@ -113,7 +108,6 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
->>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
         path: "settings/",
         name: "Settings",
         component: Settings,
@@ -128,8 +122,6 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
-<<<<<<< HEAD
-=======
             path: "org-hierarchy",
             name: "Organization Hierarchy",
             component: () =>
@@ -138,7 +130,6 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
->>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
             path: "care-partners",
             name: "Care Partners",
             component: () =>
@@ -349,50 +340,11 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "org-heirarchy/new-designation",
         name: "New Designation",
-<<<<<<< HEAD
-        component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
-      },
-      // {
-      //   path: "engagements/",
-      //   name: "Engagements",
-      //   redirect: (to) => `${to.path}/experience/appointments`.replace("//", "/"),
-      //   children:[
-      //     {
-      //       path: "experience/appointments",
-      //       name: "Appointment",
-      //       component: () =>
-      //         import("@/views/dashboard/patientexp/appointments/index.vue"),
-      //     },
-      //     {
-      //       path: "experience",
-      //       props: true,
-      //       name: "Patients Experience",
-      //       component: PatientExperienceManagement,
-      //       children: [
-      //         {
-      //           path: "add-appointment/:id?",
-      //           props: true,
-      //           name: "Create Appointment",
-      //           component: () =>
-      //             import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
-      //         },
-      //         {
-      //           path: "experience/appointments",
-      //           name: "Appointment",
-      //           component: () =>
-      //             import("@/views/dashboard/patientexp/appointments/index.vue"),
-      //         },
-      //       ],
-      //     },
-      //   ]
-      // }
-=======
         component: () =>
           import(
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
       },
->>>>>>> 6a43c7baed94696bacb19f9df3a275bda8c9b8e0
     ],
   },
 ];
