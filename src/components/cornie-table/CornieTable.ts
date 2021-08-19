@@ -13,6 +13,7 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import IconBtn from "@/components/iconbtn.vue";
 import CornieMenu from "@/components/CornieMenu.vue";
+import Card from "@/components/card.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 
 import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -51,6 +52,7 @@ interface IColumn {
     IconBtn,
     CornieMenu,
     RefreshIcon,
+    Card
   },
 })
 export default class CornieTable extends Vue {

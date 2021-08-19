@@ -22,7 +22,8 @@
         <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
     </div>
-    <table class="w-full mt-3">
+    <card class="mt-3">
+    <table class="w-full" style="border-radius: 5px">
       <thead class="bg-accent p-4 text-primary">
         <th class="text-left p-2" width="1">
           <cornie-checkbox @click="selectAll" v-model="selectedAll" />
@@ -49,7 +50,7 @@
           <table-settings-icon class="text-primary" />
         </th>
       </thead>
-      <tr v-for="(row, index) in filteredItems" :key="index">
+      <tr v-for="(row, index) in filteredItems" :key="index" class="border-t-2 border-y-gray">
         <td class="p-2">
           <cornie-checkbox @click="select(row)" :checked="isSelected(row)" />
         </td>
@@ -77,6 +78,7 @@
         </td>
       </tr>
     </table>
+    </card>
     <column-filter
       :columns="columns"
       v-model:preferred="preferredColumns"
@@ -86,3 +88,8 @@
 </template>
 
 <script src="./CornieTable.ts"></script>
+
+<style scoped>
+table {
+}
+</style>

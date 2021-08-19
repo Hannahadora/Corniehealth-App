@@ -4,6 +4,7 @@
       class="
         flex flex-col
         py-4
+        px-1
         items-center
         min-h-screen
         h-screen
