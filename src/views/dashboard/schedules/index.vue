@@ -115,7 +115,7 @@
                 <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
             </span>
             </div>
-            <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5 primary-bg">
+            <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5 primary-bg">
             <template v-slot:item="{ item }">
                 <span v-if="getKeyValue(item).key == 'action'">
                 <table-options>
@@ -284,7 +284,49 @@
                 </span>
                 <span v-else> {{ getKeyValue(item).value }} </span>
             </template>
-            </Table>
+            </Table> -->
+            
+            <cornie-table :columns="rawHeaders" v-model="items">
+              <template #actions="{ item }">
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
+                  <eye-icon class="mr-3 mt-1" />
+                  <span class="ml-3 text-xs" @click="
+                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <edit-icon class="mr-3 mt-1" />
+                  <span class="ml-3 text-xs" @click="
+                        $router.push({ name: 'Patient Experience Management' })
+                    ">Create Schedule</span>
+                                      
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <delete-icon />
+                  <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Schedule</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <delete-icon />
+                  <span class="ml-3 text-xs"
+                    v-if="isActive(item.id)"
+                    @click="activate(item.id)"
+                  >Acivate</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <delete-icon />
+                  <span class="ml-3 text-xs"
+                    v-if="isActive(item.id)"
+                    @click="deactivate(item.id)"
+                  >Deacivate</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <delete-icon />
+                  <span class="ml-3 text-xs"
+                    @click="destory(item.id)"
+                  >Delete</span>
+                </div>
+              </template>
+            </cornie-table>
+            
             <column-filter
             :columns="rawHeaders"
             v-model:preferred="preferredHeaders"
