@@ -115,7 +115,7 @@
                 <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
             </span>
             </div>
-            <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5 primary-bg">
+            <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5 primary-bg">
             <template v-slot:item="{ item }">
                 <span v-if="getKeyValue(item).key == 'action'">
                 <table-options>
@@ -284,9 +284,9 @@
                 </span>
                 <span v-else> {{ getKeyValue(item).value }} </span>
             </template>
-            </Table> -->
+            </Table>
             
-            <cornie-table :columns="rawHeaders" v-model="items">
+            <!-- <cornie-table :columns="rawHeaders" v-model="items">
               <template #actions="{ item }">
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                   <eye-icon class="mr-3 mt-1" />
@@ -325,7 +325,7 @@
                   >Delete</span>
                 </div>
               </template>
-            </cornie-table>
+            </cornie-table> -->
             
             <column-filter
             :columns="rawHeaders"

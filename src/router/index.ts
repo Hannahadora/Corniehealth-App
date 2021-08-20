@@ -249,6 +249,7 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+
       { 
         path: "user", 
         props: true, 
@@ -297,7 +298,23 @@ const routes: Array<RouteRecordRaw> = [
         path: "org-heirarchy/new-designation",
         name: "New Designation",
         component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
-      }
+      },
+
+      {
+        path: "schedules",
+        props: true,
+        name: "Patient Experience Management.",
+        component: () =>
+          import("@/views/dashboard/schedules/index.vue"),
+      },
+
+      {
+        path: "schedules/new/:scheduleId?",
+        props: true,
+        name: "Patient Experience Management",
+        component: () =>
+          import("@/views/dashboard/schedules/create-schedule.vue"),
+      },
     ],
   },
 ];
