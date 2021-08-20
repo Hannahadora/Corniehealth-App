@@ -17,67 +17,21 @@
         Add a Care Partner
       </button>
     </span>
-    <!-- <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          placeholder="Search Table"
-          v-model="query"
-        >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div> -->
-    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="deletePartner(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+    <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
+          <delete-icon />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table> -->
-    <cornie-table />
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
+    </cornie-table>
     <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
-      <add-care-partners @close="showAddCarePartners = false" class="h-full"/>
+      <add-care-partners @close="showAddCarePartners = false" class="h-full" />
     </cornie-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-// import Table from "@scelloo/cloudenly-ui/src/components/table";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -94,8 +48,9 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import ICarePartner from "@/types/ICarePartner";
-import CornieDialog from "@/components/Dialog.vue"
-import AddCarePartners from "./AddCarePartner.vue"
+import CardText from "@/components/card-text.vue";
+import CornieDialog from "@/components/Dialog.vue";
+import AddCarePartners from "./AddCarePartner.vue";
 import IEmail from "@/types/IEmail";
 import IPhone from "@/types/IPhone";
 
@@ -103,7 +58,6 @@ const CarePartnersStore = namespace("CarePartnersStore");
 
 @Options({
   components: {
-    // Table,
     CornieTable,
     SortIcon,
     ThreeDotIcon,
@@ -117,13 +71,14 @@ const CarePartnersStore = namespace("CarePartnersStore");
     ColumnFilter,
     TableOptions,
     CornieDialog,
-    AddCarePartners
+    AddCarePartners,
+    CardText,
   },
 })
 export default class CarePartnersExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-  showAddCarePartners = false
+  showAddCarePartners = false;
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];
@@ -176,7 +131,9 @@ export default class CarePartnersExistingState extends Vue {
         ...partner,
         action: partner.id,
         email: (partner.email as unknown as IEmail).address,
-        phone: (partner.phone as unknown as IPhone).dialCode || "+234" + (partner.phone as unknown as IPhone).number,
+        phone:
+          (partner.phone as unknown as IPhone).dialCode ||
+          "+234" + (partner.phone as unknown as IPhone).number,
       };
     });
     if (!this.query) return partners;
@@ -189,8 +146,8 @@ export default class CarePartnersExistingState extends Vue {
     });
     if (!confirmed) return;
     const partner = this.carePartners.find((element) => element.id == id);
-    if (partner && (await this.delete(partner))) alert("Care partner deleted");
-    else alert("Care partner not deleted");
+    if (partner && (await this.delete(partner))) notify({msg: "Care partner deleted", status: "success"});
+    else notify({msg: "Care partner not deleted", status: "error"});
   }
 }
 </script>

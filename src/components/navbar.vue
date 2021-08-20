@@ -245,11 +245,11 @@ export default class NavBar extends Vue {
   user!: User;
 
   get profilePhoto() {
-    return this.user.photo;
+    return this.user?.photo;
   }
 
   get name() {
-    if (!this.user.id) return "";
+    if (!this.user?.id) return "";
     const lastName = this.user.lname;
     const firstInitials = this.user.fname.charAt(0).toUpperCase();
     let middleInitials = this.user.mname?.charAt(0)?.toUpperCase() || "";
