@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full">
-    <span class="flex w-full font-bold text-lg text-primary py-2 mx-auto">
+    <span class="flex w-full mt-3 font-bold text-lg text-primary py-2 mx-auto">
       Create Appointment
       <span class="text-danger text-xs mt-2 ml-2 font-normal"
         >(Items with asterisk are required for filling)</span
@@ -9,7 +9,7 @@
     <div>
       <div class="w-full h-screen overflow-auto">
         <form class="mt-5 w-full" @submit.prevent="submit">
-          <div class="mb-44 pb-96">
+          <div class="mb-44 pb-80">
             <accordion-component title="Appointment Details" v-model="opened">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
@@ -51,7 +51,7 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['state']"
+                    :items="['reason code']"
                     v-model="reasonCode"
                     label="REason code"
                     placeholder="--Select--"
@@ -59,7 +59,7 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['state']"
+                    :items="['reason reference']"
                     v-model="reasonRef"
                     label="reason reference"
                     placeholder="--Select--"
@@ -67,7 +67,7 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['state']"
+                    :items="['priority']"
                     v-model="priority"
                     label="priority"
                     placeholder="--Select--"
@@ -254,7 +254,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
+                    :items="['Required','Information Only', 'Optional']"
                     v-model="participantDetail.required"
                     label="required"
                     placeholder="--Select--"
@@ -268,7 +268,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['medium']"
+                    :items="['Out-Patient',' In-Patient',' Virtual','HomeCare']"
                     v-model="participantDetail.consultationMedium"
                     label="consultation medium"
                     placeholder="--Select--"
@@ -363,7 +363,7 @@ import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import SingleDatePicker from "@/components/datepicker.vue";
+import SingleDatePicker from "./datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
@@ -441,9 +441,7 @@ actor = "";
   // participantDetail: ParticipantDetail[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:"",end:""}}];
   Practitioners = [];
   Devices = [];
-  Patients = [
-    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-  ];
+  Patients = [];
   roles = [];
 //member = { ...emptyMember }
 // members: Members[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:'',end:''}}];
@@ -478,7 +476,7 @@ actor = "";
   ];
   required = string().required();
   dropdowns = {} as IIndexableObject;
-
+  dropdowns2 = {} as IIndexableObject;
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
@@ -513,7 +511,7 @@ actor = "";
 
   }
   get payload() {
-    return {
+    const payload =  {
       serviceCategory: this.serviceCategory,
       locationId: this.locationId,
       deviceId: this.deviceId,
@@ -532,10 +530,17 @@ actor = "";
       patientInstruction: this.patientInstruction,
       participantDetail: this.participantDetail,
       period: this.period,
-      Practitioners: this.Practitioners,
-      Devices: this.Devices,
-      Patients: this.Patients,
-    };
+    } as any
+    if(this.Devices.length > 0){
+      payload.Devices = this.Devices;
+    }
+    if(this.Patients.length > 0){
+      payload.Patients = this.Patients;
+    }
+    if(this.Practitioners.length > 0){
+      payload.Practitioners = this.Practitioners;
+    }
+    return payload
   }
   get allaction() {
     return this.id ? "Edit" : "Add a";
@@ -544,7 +549,6 @@ actor = "";
     return this.participantitem;
   }
   async addPractitioner(value: any,id:any) {
-    console.log(value);
     //this.practitioner.push({ ...this.practitioners });
     this.newPractitioners = value;
     this.Practitioners = id;
@@ -598,7 +602,8 @@ actor = "";
     this.loading = false;
   }
   async createAppointment() {
-    this.payload.period.start = new Date(this.period.start).toISOString();
+    //const period = this.period;
+   this.payload.period.start = new Date(this.period.start).toISOString();
     this.payload.period.end = new Date(this.period.end).toISOString();
     this.actor = this.type
     try {
@@ -608,8 +613,9 @@ actor = "";
           this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
+      console.log(error);
       window.notify({ msg: "Appointment not created", status: "error" });
-      this.$router.push("/dashboard/provider/experience/appointments");
+     // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
 
@@ -641,14 +647,22 @@ actor = "";
     const response = await Promise.all([AllRoles]);
     this.role = response[0].data;
   }
+   async fetchPatients() {
+    const AllPateints = cornieClient().get("/api/v1/patient");
+    const response = await Promise.all([AllPateints]);
+    this.patient = response[0].data;
+  }
   async created() {
     this.setAppointment();
     this.fetchPractitioners();
     this.fetchDevices();
     this.fetchRoles();
+    this.fetchPatients();
     const data = await this.getDropdowns("availability");
+    const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;
-    console.log(data);
+    this.dropdowns2 = data2;
+    console.log(data2);
   }
 }
 </script>

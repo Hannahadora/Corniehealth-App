@@ -18,7 +18,6 @@ export default {
     position: relative;
     width: auto;
     border-radius: 5px;
-    overflow: hidden
 }
 .card.flat {
   box-shadow: none !important

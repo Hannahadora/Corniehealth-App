@@ -43,7 +43,7 @@
                 </span>
               </label>
               <div class="flex  mr-4 -ml-32">
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showAvailable">View Availability</p>
+                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showAvailable(item.id)">View Availability</p>
                 <p class="cursor-pointer mr-2  text-xs text-danger" @click="showProfile">View Profile</p>
               </div>
             </span>
@@ -88,6 +88,7 @@
     </modal>
        <availability
             v-model:visible="availableFilter"
+            practitionerId: practitionerId
         />
         <profile
             v-model:visible="profileFilter"
@@ -149,7 +150,8 @@ export default {
       practitioners: [],
       valueid: [],
       availableFilter: false,
-      profileFilter:false
+      profileFilter:false,
+      practitionerId: ""
     };
   },
   watch: {
@@ -180,7 +182,8 @@ export default {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    showAvailable(){
+    showAvailable(id){
+      this.practitionerId = id;
       this.availableFilter = true;
     },
     showProfile(){

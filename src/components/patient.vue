@@ -24,6 +24,7 @@
             </template>
         </icon-input>
         <div class="my-2 border-2 w-full flex-col rounded-md flex">
+          <div v-for="(item,index) in columnsProxy" :key="index">
             <span
               class="items-center w-full flex space-x-2"
              >
@@ -34,44 +35,12 @@
                     class="bg-danger focus-within:bg-danger px-6 shadow"
                     />
               </label>
-                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
+                    <p class="text-sm font-extrabold">{{input.firstname}} {{input.lastName}}</p>
             </span>
-            <span
-              class="items-center w-full flex space-x-2"
-             >
-              <label class="my-3 p-3 border-gray-200 flex">
-                   <input
-                    type="checkbox"
-                    @input="changed"
-                    class="bg-danger focus-within:bg-danger px-6 shadow"
-                    />
-              </label>
-                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
-            </span>
-            <span
-              class="items-center w-full flex space-x-2"
-             >
-              <label class="my-3 p-3 border-gray-200 flex">
-                   <input
-                    type="checkbox"
-                    @input="changed"
-                    class="bg-danger focus-within:bg-danger px-6 shadow"
-                    />
-              </label>
-                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
-            </span>
-            <span
-              class="items-center w-full flex space-x-2"
-             >
-              <label class="my-3 p-3 border-gray-200 flex">
-                   <input
-                    type="checkbox"
-                    @input="changed"
-                    class="bg-danger focus-within:bg-danger px-6 shadow"
-                    />
-              </label>
-                    <p class="text-sm font-extrabold">Daniel Arubuike</p>
-            </span>
+          </div> 
+          <div class="w-full block" v-if="columnsProxy.length < 0">
+            <p class="text-center text-sm">No Patients on record </p>
+          </div>
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button

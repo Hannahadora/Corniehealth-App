@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full flex justify-centerb bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
-    <div class="w-full">
+  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
+    <div class="w-full pb-96">
     <span
         class="
           flex
@@ -18,7 +18,7 @@
       >
        Appointment
       </span>
-      <span class="w-full">
+      <span class="w-full h-screen overflow-auto">
           <appointment-empty-state
                 v-if="empty"
           />

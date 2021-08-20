@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full overflow-auto h-screen">
-    <span class="flex justify-end w-full">
+  <div class="w-full">
+    <span class="flex justify-end w-full mb-8">
       <button
         class="
           bg-danger
@@ -11,6 +11,7 @@
           pr-5
           pl-5
           px-3
+          mb-5
           focus:outline-none
           hover:opacity-90
         "
@@ -20,17 +21,17 @@
       </button>
       
     </span>
-   <cornie-table :columns="rawHeaders" v-model="sortAppointments">
+   <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
           <newview-icon />
           <span class="ml-3 text-xs">View</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/provider/experience/add-appointment/${getKeyValue(item).value}`)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
           <update-icon />
           <span class="ml-3 text-xs">Update</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
         </div>
@@ -43,15 +44,24 @@
           <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
+      <template #Participants="{ item }">
+        <div class="flex items-center">
+          <span class="text-xs">{{item.Participants}}</span>
+          <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+        </div>
+      </template>
     </cornie-table>
 
-    <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
-      <add-care-partners @close="showAddCarePartners = false" class="h-full" />
-    </cornie-dialog>
       <notes-add
           :appointmentId="appointmentId"
           @update:preferred="makeNotes"
           v-model:visible="showNotes"
+        />
+        <all-participants
+           :appointmentId="appointmentId"
+            :columns="singleParticipant"
+          @update:preferred="displayParticipants"
+          v-model:visible="showPartcipants"
         />
   </div>
 </template>
@@ -75,7 +85,7 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
+import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
@@ -83,6 +93,8 @@ import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
 import UpdateIcon from "@/components/icons/update.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
+import NotesAdd from "./notes.vue";
+import AllParticipants from "./participants.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -94,7 +106,9 @@ const appointment = namespace("appointment");
     CancelIcon,
     SortIcon,
     CheckinIcon,
+    NotesAdd,
     NewviewIcon,
+    AllParticipants,
     UpdateIcon,
     NoteIcon,
     ThreeDotIcon,
@@ -115,13 +129,15 @@ const appointment = namespace("appointment");
   },
   
 })
-export default class GroupExistingState extends Vue {
+export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
   showNotes = false;
 appointmentId="";
+showPartcipants= false;
+singleParticipant= [];
   @appointment.State
   appointments!: IAppointment[];
 
@@ -131,87 +147,64 @@ appointmentId="";
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", value: "serviceCategory", show: true },
+    { title: "Identifier", key: "keydisplay", show: true },
     {
       title: "Patient",
-      value: "patients",
-      show: true,
+      key: "patients",
+      show: false,
     },
     {
       title: "Appointment Type",
-      value: "appointmentType",
+      key: "appointmentType",
+      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
       show: true,
     },
     {
       title: "Participants",
-      value: "participants",
-      show: false,
-    },
-    {
-      title: "Slot",
-      value: "slot",
+      key: "Participants",
       show: true,
     },
     {
-      title: "Status",
-      value: "status",
+      title: "Slot",
+      key: "slot",
       show: false,
     },
     {
+      title: "Status",
+      key: "status",
+      show: true,
+    },
+    {
       title: "Code",
-      value: "reasonCode",
+      key: "reasonCode",
       show: false,
     },
     {
       title: "Reason Reference",
-      value: "reasonRef",
+      key: "reasonRef",
       show: false,
     },
     {
       title: "Period",
-      value: "period",
-      show: false,
+      key: "period",
+      show: true,
     },
     {
       title: "Priority",
-      value: "priority",
+      key: "priority",
       show: false,
     },
     {
       title: "Description",
-      value: "description",
+      key: "description",
       show: false,
     },
     {
       title: "Consultation Medium",
-      value: "consultationMedium",
+      kwy: "consultationMedium",
       show: false,
     },
-    {
-      title: "Member Period",
-      value: "memberPeriod",
-      show: false,
-    },
-    {
-      title: "Member Status",
-      value: "memberStatus",
-      show: false,
-    },
-    {
-      title: "Member Entity",
-      value: "memberEntity",
-      show: false,
-    },
-    {
-      title: "Value Quantity",
-      value: "valueQuantity",
-      show: false,
-    },
-    {
-      title: "Value Codeable Concept",
-      value: "valueCodeableConcept",
-      show: false,
-    },
+
   ];
 
   get headers() {
@@ -227,17 +220,16 @@ appointmentId="";
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
+      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
+        console.log(singleParticipantlength);
        (appointment as any).period = new Date(
          (appointment as any).period 
        ).toLocaleDateString("en-US");
-       (appointment as any).memberPeriod = new Date(
-         (appointment as any).memberPeriod 
-       ).toLocaleDateString("en-US");
-
-       
         return {
         ...appointment,
          action: appointment.id,
+         keydisplay: "XXXXXXX",
+         Participants: singleParticipantlength 
         };
     });
     if (!this.query) return appointments;
@@ -247,26 +239,41 @@ appointmentId="";
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this group",
-      title: "Delete Group"
+      message: "You are about to cancel this appointment",
+      title: "Cancel appointment"
     });
     if (!confirmed) return;
 
-    if (await this.deleteAppointment(id)) window.notify({ msg: "Group deleted", status: "error" });
-    else window.notify({ msg: "Group not deleted", status: "error" });
+    if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
+    else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
   async makeNotes(id:string){
     this.appointmentId = id;
     this.showNotes = true;
+  }
+  async displayParticipants(value:string){
+    this.appointmentId = value;
+    this.showPartcipants = true;
+     try {
+       const response = await cornieClient().get(
+          `/api/v1/appointment/${value}`
+        );
+        if (response.success) {
+        this.singleParticipant = response.data
+        }
+      } catch (error) {
+        this.loading = false;
+        console.error(error);
+      }
   }
       get sortAppointments (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
-    //  async created() {
-    //   console.log(this.items);
-    // }
+     async created() {
+      console.log(this.items);
+    }
 
 }
 </script>

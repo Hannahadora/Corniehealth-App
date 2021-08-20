@@ -30,6 +30,8 @@
               <p class="cursor-pointer float-left text-xs text-black">Mon, 1st Feb</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">9AM - 6PM</p>
             </span>
+         <!-- <div v-for="(item,index) in columnsProxy" :key="index">
+          </div>-->
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
@@ -62,6 +64,8 @@ import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
+import { string } from 'yup/lib/locale';
+import { cornieClient } from "@/plugins/http";
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -91,6 +95,9 @@ export default {
       required: true,
       default: () => [],
     },
+    practitionerId:{
+      type:String,
+    }
   },
   data() {
     return {
@@ -125,9 +132,24 @@ export default {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
+     async viewAvialaibilty() {
+      this.loading = true;
+      // try {
+      //   const response = await cornieClient().post(
+      //     `/api/v1/schedule/practitioner/${this.practitionerId}`
+      //   );
+      //   if (response.success) {
+      //   this.columnsProxy = response.data
+      //   }
+      // } catch (error) {
+      //   this.loading = false;
+      //   console.error(error);
+      // }
+    },
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);
+    this.viewAvialaibilty();
   },
 };
 </script>

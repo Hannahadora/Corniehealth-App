@@ -18,7 +18,7 @@
         <p class="text-sm mt-2">
          Some subtext if necessary
         </p>
-        <div class="my-2 border-2 w-full flex-col rounded-md flex">
+        <div class="my-2  w-full  flex">
             <Textarea
             label="Notes"
             v-model="notes"
@@ -46,8 +46,10 @@
           >
             Cancel
           </button>
-          <button
+          <cornie-btn
             @click="apply"
+            :loading="loading"
+            type="submit"
             class="
               bg-danger
               rounded-full
@@ -61,7 +63,7 @@
             "
           >
             Save
-          </button>
+          </cornie-btn>
         </div>
       </div>
     </modal>
@@ -83,6 +85,7 @@ import Availability from "@/components/availability.vue";
 import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import Textarea from "@/components/textarea.vue";
+import { cornieClient } from "@/plugins/http";
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -111,9 +114,7 @@ export default {
       default: () => [],
     },
     appointmentId: {
-      type: Sting,
-      required: true,
-      default: () => [],
+      type: String,
     },
     preferred: {
       type: Array,
@@ -131,13 +132,10 @@ export default {
     return {
       columnsProxy: [],
       practitioners: [],
+      loading: false,
       notes:'',
       availableFilter: false,
       profileFilter:false,
-      payload:{
-          notes:"",
-          appointmentId:""
-      }
     };
   },
   watch: {
@@ -160,14 +158,20 @@ export default {
     },
   },
   methods: {
-    apply() {
+   async apply() {
+     this.loading = true;
         try {
-        const response = await cornieClient().post("/api/v1/appointment/notes", this.payload);
+        const response = await cornieClient().post("/api/v1/appointment/notes", {text:this.notes, appointmentId:this.appointmentId});
         if (response.success) {
             window.notify({ msg: "Notes created", status: "success" });
+            this.loading = false;
+           this.show = false;
             this.$router.push("/dashboard/provider/experience/appointments");
         }
         } catch (error) {
+          this.loading = false;
+         this.show = false;
+          console.log(error);
         window.notify({ msg: "Notes not created", status: "error" });
         this.$router.push("/dashboard/provider/experience/appointments");
         }
