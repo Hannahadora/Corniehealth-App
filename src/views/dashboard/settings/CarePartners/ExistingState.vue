@@ -17,53 +17,6 @@
         Add a Care Partner
       </button>
     </span>
-    <!-- <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          placeholder="Search Table"
-          v-model="query"
-        >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div> -->
-    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="deletePartner(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
-      </template>
-    </Table> -->
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
@@ -72,7 +25,6 @@
         </div>
       </template>
     </cornie-table>
-
     <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
       <add-care-partners @close="showAddCarePartners = false" class="h-full" />
     </cornie-dialog>
@@ -80,7 +32,6 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-// import Table from "@scelloo/cloudenly-ui/src/components/table";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -107,7 +58,6 @@ const CarePartnersStore = namespace("CarePartnersStore");
 
 @Options({
   components: {
-    // Table,
     CornieTable,
     SortIcon,
     ThreeDotIcon,
