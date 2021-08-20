@@ -17,12 +17,13 @@ import { Prop, PropSync, Ref, Watch } from "vue-property-decorator";
 @Options({
   name: "CornieMenu",
   components: {
-    Card,
-    CardText,
-    CardTitle,
-  },
+      Card,
+      CardText,
+      CardTitle
+  }
 })
 export default class Menu extends Vue {
+
   @Prop({ type: Boolean, default: true })
   closeOnClick!: boolean;
 
@@ -63,13 +64,8 @@ export default class Menu extends Vue {
     else this.close();
   }
 
-  onMenuClick(event: Event) {
-    if (!this.closeOnClick) event.stopPropagation();
-  }
-
   close() {
     this.showMenu = false;
-    document.body.removeEventListener("click", this.closeHandler)
   }
 
   @Watch("showMenu")
@@ -82,14 +78,11 @@ export default class Menu extends Vue {
 <style scoped>
 .menu-popup {
   position: absolute;
-  z-index: 10;
+  width: 100%;
   max-height: 300px;
-  overflow-y: auto;
+  overflow-y: auto
 }
 .menu {
-  position: relative;
-}
-body {
   position: relative;
 }
 </style>

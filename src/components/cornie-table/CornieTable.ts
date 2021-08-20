@@ -1,4 +1,5 @@
 import { Options, Vue } from "vue-class-component";
+
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";

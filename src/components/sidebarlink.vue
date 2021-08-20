@@ -1,7 +1,7 @@
 <template>
   <div
     :id="id"
-    class="flex flex-col py-3"
+    class="flex flex-col"
     :class="{
       'w-5/6': hovered,
       'w-3/4 ': !hovered,
@@ -13,7 +13,7 @@
         @click="hasChild? expand = !expand : null"
         :is="!hasChild? 'router-link' : 'span'"
         :to="to"
-        active-class="py-1 rounded-2xl bg-danger"
+        active-class="py-1 px-2 rounded-2xl bg-danger"
         class="
           hover:bg-light-blue-600
           hover:opacity-50
@@ -21,7 +21,6 @@
           w-full
           flex
           items-center
-          cursor-pointer
         "
         :class="{ 'justify-center': !hovered, 'rounded-2xl py-1 bg-danger': active && (hasChild && !expand), 'px-2': hovered}"
       >

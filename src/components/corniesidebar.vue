@@ -33,12 +33,12 @@
       <div
         class="
           mt-5
-          flex-grow
           flex
-          flex-col
-
+          h-3/4
           items-center
           w-full
+          flex-col
+          justify-between
           text-white text-lg
           overflow-y-auto
         "
