@@ -31,10 +31,23 @@ export async function createSchedule(body: any) {
     const response = await cornieClient().post(`/api/v1/schedule`, body);
     console.log(response, "created schedlue");
     
-    return response.success as boolean;
+    return response.data as boolean;
   } catch (error) {
     notify({
       msg: "There was an error creating this schedule",
+      status: "error"
+    });
+  }
+}
+
+export async function updateSchedule(body: any, id: string) {
+  try {
+    const response = await cornieClient().put(`/api/v1/schedule/${id}`, body);
+    
+    return response.data as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error updating this schedule",
       status: "error"
     });
   }

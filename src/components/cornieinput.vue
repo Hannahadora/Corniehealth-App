@@ -6,21 +6,49 @@
     :rules="rules"
     v-model="valueSync"
   >
-    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
-    <input
-      autocomplete="off"
-      :class="{
-        'border-red-500': Boolean(errorMessage),
-        'border-green-400': meta.valid && meta.touched,
-      }"
-      class="rounded-lg border p-2 w-11/12 focus:outline-none"
-      v-bind="{ ...$attrs, ...field }"
-      :name="inputName"
-      v-model="valueSync"
-    />
-    <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-      errorMessage
-    }}</span>
+    <div v-bind="$attrs">
+      <label class="block uppercase mb-1 text-xs font-bold">
+        {{ label }}
+        <span class="text-danger ml-1" v-if="required"> * </span>
+      </label>
+      <div
+        class="flex rounded-lg border"
+        :class="{
+          'border-red-500': Boolean(errorMessage),
+          'border-green-400': meta.valid && meta.touched,
+        }"
+      >
+        <div
+          class="
+            border-r-2
+            rounded-lg
+            p-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-right-radius: 0; border-bottom-right-radius: 0"
+          v-if="$slots.prepend"
+        >
+          <slot name="prepend" />
+        </div>
+        <input
+          class="p-2 rounded-lg w-full focus:outline-none"
+          :style="{
+            'border-top-left-radius: 0; border-bottom-left-radius: 0':
+              $slots.prepend,
+          }"
+          v-bind="field"
+          :placeholder="$attrs.placeholder"
+          :name="inputName"
+          v-model="valueSync"
+        />
+      </div>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">{{
+        errorMessage
+      }}</span>
+    </div>
   </field>
 </template>
 <script lang="ts">
@@ -48,6 +76,9 @@ export default class DInput extends Vue {
   @Prop({ type: String })
   name!: string;
 
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
+
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
@@ -57,3 +88,11 @@ export default class DInput extends Vue {
   rules!: any;
 }
 </script>
+<style scoped>
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
+  font-style: italic;
+}
+</style>

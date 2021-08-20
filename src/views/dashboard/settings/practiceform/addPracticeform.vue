@@ -1,5 +1,5 @@
 <template>
-<div class="bg-white rounded overflow-auto max-h-96 p-5 mt-5">
+<div class="bg-white rounded overflow-auto max-h-screen p-5 mt-5">
   <cornie-input contenteditable="true" v-model="formTitle" :value="'Blank Form'" placholder="Blank Form" class="flex float-left border-none w-full font-semibold text-xl text-primary py-2 mx-auto" type="text" @input="display($event)"/>
    <form class="mt-5 w-full" @submit.prevent="submit" autocomplete="off">
       <div class="flex w-full mt-5 mb-5 items-center">
@@ -26,12 +26,13 @@
          </div>
          <div>
           <label class="relative top-9 ml-2 text-black">DESCRIPTION:</label>
-          <cornie-input class="w-full mb-6 pl-28 text-black" @input="DescriptionGet($event)" v-model="description"/>
+          <cornie-input class="w-full mb-6 pl-32 text-black" @input="DescriptionGet($event)" v-model="description"/>
         </div>
        <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
            DESCRIPTION: Kindly tell us about your medical history!
         </div>-->
-       <draggable v-model="questions" v-for="(input, index) in questions"  :key="index"  item-key="id" group="people" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
+        
+       <draggable v-model="questions" item-key="id" group="people" class="my-2 pb-32 border-0 w-full flex-col rounded-md flex">
            <template #item="{ element,index }">
               <all-questions  :title="element.name" titledescription="Export to Habits" class="" >
                     <template v-slot:default>
@@ -271,7 +272,7 @@ export default class AddPracticeform extends Vue {
           window.notify({ msg: "Practice form created", status: "success" });
           this.$router.push('/dashboard/provider/settings/practice-templates')
       }else{
-         window.notify({ msg: response.message, status: "error" });
+         window.notify({ msg: response.errors!.summary, status: "error" });
           this.$router.push('/dashboard/provider/settings/practice-templates')
       }
     } catch (error) {
@@ -307,7 +308,7 @@ export default class AddPracticeform extends Vue {
 </script>
 <style>
 .outline-primary{
-    border: 2px solid #211F45;
+    border: 2px solid #080056;
 }
 .dropdown:hover .dropdown-menu {
   display: block;

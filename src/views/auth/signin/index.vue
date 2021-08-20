@@ -1,7 +1,7 @@
 <template>
   <auth>
     <template v-slot:text>
-      <div v-if="cornieData.accountType && showText" :userCreated="userCreated"  :user="user" :showText="showText">
+      <div v-if="userCreated && showText" :userCreated="userCreated"  :user="user" :showText="showText">
         <h2 class="text-3xl font-bold mb-3 text-white">
           You’ve successfully created an account
         </h2>

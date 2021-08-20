@@ -3,17 +3,17 @@
       <div class="container-fluid bg-white p-4 sm:p-2 h-full">
         <div class="w-full border-b-2 curved flex py-2">
             <div class="container-fluid flex font-semibold text-xl py-2">
-                <h2>Availability</h2>
+                <h2>Schedules (Shifts | Availability | Slots)</h2>
             </div>
         </div>
 
-
+<!-- 
         <div class="w-full border-b-4 curved flex my-6">
             <div class="container-fluid flex font-semibold text-xl">
                 <a class="px-4 py-2 active-tab " :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }">Schedule</a>
                 <a class="px-4 py-2 active-tab " :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }">Slot</a>
             </div>
-        </div>
+        </div> -->
 
         <Modal1 :visible="false">
             <h1>Hello</h1>
@@ -62,19 +62,19 @@
             </Modal>
         </Overlay>
 
-        <side-modal :visible="showEditPane">
+        <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane">
           <EditSchedule />
         </side-modal>
 
-        <side-modal :visible="false">
-          <AllActors />
+        <side-modal :visible="showActorsPane" @closesidemodal="() => showActorsPane = false">
+          <AllActors :schedule="selectedSchedule" />
         </side-modal>
 
         <side-modal :visible="false">
           <AdvancedFilter />
         </side-modal>
 
-        <side-modal :visible="showViewPane" :header="'View Schedule'">
+        <side-modal :visible="showViewPane" :header="'View Stot'">
           <div class="w-full my-3">
             <ViewDetails :schedule="selectedSchedule" />
           </div>
@@ -142,6 +142,27 @@
                     </li>
                     <li
                     @click="
+                        viewSchedule(getKeyValue(item).value)
+                    "
+                    class="
+                        list-none
+                        items-center
+                        flex
+                        text-xs
+                        font-semibold
+                        text-gray-700
+                        hover:bg-gray-100
+                        hover:text-gray-900
+                        cursor-pointer
+                        my-1
+                        py-3
+                    "
+                    >
+                    <eye-icon class="mr-3 mt-1" />
+                    View Actors
+                    </li>
+                    <li
+                    @click="
                         $router.push({ name: 'New Shift' })
                     "
                     class="
@@ -163,7 +184,7 @@
                     </li>
                     <li
                     @click="
-                        $router.push({ name: 'New Shift', query: { shiftId: getKeyValue(item).value } })
+                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: getKeyValue(item).value } })
                     "
                     class="
                         list-none
@@ -181,6 +202,27 @@
                     >
                     <edit-icon class="mr-3 mt-1" />
                     Edit Schedule
+                    </li>
+                    <li
+                    @click="
+                        () => showEditPane = true
+                    "
+                    class="
+                        list-none
+                        items-center
+                        flex
+                        text-xs
+                        font-semibold
+                        text-gray-700
+                        hover:bg-gray-100
+                        hover:text-gray-900
+                        cursor-pointer
+                        my-1
+                        py-3
+                    "
+                    >
+                    <edit-icon class="mr-3 mt-1" />
+                    Edit Slot
                     </li>
                     <li
                     v-if="isActive(getKeyValue(item).value)"
@@ -334,6 +376,8 @@ export default class PractitionerExistingState extends Vue {
   activeTab = 0;
   showEditPane = false;
   showViewPane = false;
+  showAllActors = false;
+  showActorsPane = false;
 
   selectedSchedule: any = { };
 
@@ -378,8 +422,8 @@ export default class PractitionerExistingState extends Vue {
     { title: "No. of Days", value: "numberOfDays", show: true },
     { title: "Time Zone", value: "timeZone", show: true },
     {
-      title: "Schedule",
-      value: "schedule",
+      title: "TIming",
+      value: "timing",
       show: true,
     },
     {
@@ -392,11 +436,6 @@ export default class PractitionerExistingState extends Vue {
     //   value: "practitioners",
     //   show: true,
     // },
-    {
-      title: "Type",
-      value: "type",
-      show: true,
-    },
     // {
     //   title: "Access Role",
     //   value: "accessRole",
@@ -438,7 +477,7 @@ export default class PractitionerExistingState extends Vue {
         numberOfDays: i.days.length,
         status: i.status,
         schedule: i.scheduleType,
-
+        timing: `${i.startTime} - ${i.endTime}`
       };
     });
     return shifts;
@@ -517,13 +556,18 @@ export default class PractitionerExistingState extends Vue {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (schedule) this.selectedSchedule = schedule;
     console.log(this.selectedSchedule);
-    this.showViewPane = true;
+    this.showActorsPane = true;
+    // this.showViewPane = true;
   }
 
   isActive(id: string) {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (!schedule) return false;
     return schedule.status === 'active' ? true : false;
+  }
+
+  closeEditPane() {
+    this.showEditPane = false
   }
 
   async created() {

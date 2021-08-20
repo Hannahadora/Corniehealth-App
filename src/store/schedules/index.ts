@@ -1,5 +1,5 @@
 import { StoreOptions } from "vuex";
-import { deleteSchedule, createSchedule, getSchedules, activateSchedule, deactivateSchedule } from "./helper";
+import { deleteSchedule, createSchedule, getSchedules, activateSchedule, deactivateSchedule, updateSchedule } from "./helper";
 
 interface SchedulesStore {
   schedules: any[],
@@ -37,6 +37,13 @@ export default {
             if (index >= 0) state.schedules[index].status = 'inactive';
         }
     },
+
+    updateSchedule(state, sch) {
+        if (sch) {
+            const index = state.schedules.findIndex(i => i.id === sch.id);
+            if (index >= 0) state.schedules[index] = { ...sch };
+        }
+    },
   },
 
   actions: {
@@ -53,10 +60,17 @@ export default {
       return true;
     },
 
-    async createSchedule(ctx, shift: any) {
-      const deleted = await createSchedule(shift);
-      if (!deleted) return false;
-      // ctx.commit("removeRole", id);
+    async createSchedule(ctx, schedule: any) {
+      const sch = await createSchedule(schedule);
+      if (!sch) return false;
+      ctx.commit("addSchedule", sch);
+      return true;
+    },
+
+    async updateSchedule(ctx, schedule: any) {
+      const sch = await updateSchedule(schedule, schedule.id);
+      if (!sch) return false;
+      ctx.commit("updateSchedule", sch);
       return true;
     },
 

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import Settings from "@/views/dashboard/settings/index.vue";
+import PatientExperienceManagement from "@/views/dashboard/patientexp/index.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -46,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
+      
       {
         path: "view-group/:id?",
         props: true,
@@ -67,19 +69,16 @@ const routes: Array<RouteRecordRaw> = [
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
+            path: "org-hierarchy",
+            name: "Organization Hierarchy",
+            component: () =>
+              import("@/views/dashboard/settings/OrganisationHierarchy/index.vue")
+          },
+          {
             path: "care-partners",
             name: "Care Partners",
             component: () =>
               import("@/views/dashboard/settings/CarePartners/index.vue"),
-          },
-          {
-            path: "add-care-partners/:id?",
-            props: true,
-            name: "Add a Care Partner",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/CarePartners/AddCarePartner.vue"
-              ),
           },
           {
             path: "account-security",
@@ -116,12 +115,12 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-          },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
+          // },
           {
             path: "contact-info",
             name: "Contact Information",
@@ -146,6 +145,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "domains",
             name: "Domains",
+            props: true,
             component: () =>
               import("@/views/dashboard/settings/domain/index.vue"),
           },
@@ -232,6 +232,21 @@ const routes: Array<RouteRecordRaw> = [
           },
           
            
+          {
+            path: "schedules",
+            props: true,
+            name: "Patient Experience Management.",
+            component: () =>
+              import("@/views/dashboard/schedules/index.vue"),
+          },
+    
+          {
+            path: "schedules/new/:scheduleId?",
+            props: true,
+            name: "Patient Experience Management",
+            component: () =>
+              import("@/views/dashboard/schedules/create-schedule.vue"),
+          },
         ],
       },
       { 
@@ -258,12 +273,12 @@ const routes: Array<RouteRecordRaw> = [
             name: "Security", 
             component: () => import("@/views/dashboard/usersettings/security/index.vue"), 
           },
-          { 
-            path: "domain", 
-            props: true, 
-            name: "Domains", 
-            component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
-          },
+          // { 
+          //   path: "domain", 
+          //   props: true, 
+          //   name: "Domains", 
+          //   component: () => import("@/views/dashboard/usersettings/domain/index.vue"), 
+          // },
           { 
             path: "domain/add", 
             props: true,
@@ -278,22 +293,11 @@ const routes: Array<RouteRecordRaw> = [
           },
         ]
       },
-
       {
-        path: "schedules",
-        props: true,
-        name: "Patient Experience Management.",
-        component: () =>
-          import("@/views/dashboard/schedules/index.vue"),
-      },
-
-      {
-        path: "schedules/new/:scheduleId?",
-        props: true,
-        name: "Patient Experience Management",
-        component: () =>
-          import("@/views/dashboard/schedules/create-schedule.vue"),
-      },
+        path: "org-heirarchy/new-designation",
+        name: "New Designation",
+        component: () => import("@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue")
+      }
     ],
   },
 ];

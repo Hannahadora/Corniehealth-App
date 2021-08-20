@@ -27,23 +27,32 @@
                                     <CustomDropdown v-model="data.locationId" :items="allLocations" label="Location"  placeholder="--Enter--" />
                                 </div>
                                 <div class="w-4/12">
-                                    <CornieInput label="Name" v-model="data.name"  placeholder="Enter" />
+                                     <div class="w-full">
+                                        <div class="w-11/12">
+                                            <CornieInput label="Name" v-model="data.name"  placeholder="Enter" />
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 <div class="w-4/12">
-
-                                    <CornieInput label="Description" v-model="data.description" class="w-95" placeholder="Enter" />
+                                     <div class="w-full">
+                                        <div class="w-11/12">
+                                            <CornieInput label="Description" v-model="data.description" class="w-95" placeholder="Enter" />
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
 
                             <div class="container-fluid py-3 flex justify-around">
                                 <div class="w-4/12">
-                                    <CustomDropdown label="Service Category" class="w-95" v-model="data.serviceCategory" :items="['items']" placeholder="Enter" />
+                                    <CustomDropdown label="Service Category" class="w-95" v-model="data.serviceCategory" :items="categories" placeholder="Enter" />
                                 </div>
                                 <div class="w-4/12">
-                                    <CustomDropdown label="Service Type" class="w-95" v-model="data.serviceType" :items="['items']" placeholder="Enter" />
+                                    <CustomDropdown label="Service Type" class="w-95" v-model="data.serviceType" :items="serviceTypes" placeholder="Enter" />
                                 </div>
                                 <div class="w-4/12">
-                                    <CustomDropdown label="Specialty" class="w-95" v-model="data.specialty" :items="['items']" placeholder="Enter" />
+                                    <CustomDropdown label="Specialty" class="w-95" v-model="data.specialty" :items="specialties" placeholder="Enter" />
                                 </div>
                             </div>
 
@@ -111,35 +120,84 @@
 
                             <div class="container-fluid pb-3 pt-3 flex justify-around">
                                 <div class="w-4/12">
-                                    <CustomDropdown :items="['Location', 'Area']" label="Apply To"  placeholder="--Enter--" />
+                                    <MultiSelect :label="'Apply To'" >
+                                        <template #selected>
+                                            <span>
+                                                <span>{{ selectedDays }}</span>
+                                            </span>
+                                        </template>
+                                        <div style="max-height: 280px;overflow-y: scroll" class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                                            <div class="py-1" role="none">
+                                            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                                            <a class="text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                                                v-for="(day, index) in days" :key="index"
+                                            >
+                                                <span><input type="checkbox" class="h-4 w-4" name="" id="" :value="day" v-model="data.days"></span>
+                                                <span class="mx-2 text-lg">{{ day }}</span>
+                                            </a>
+                                            </div>
+                                        </div>
+                                    </MultiSelect>
                                 </div>
                                 <div class="w-4/12">
-                                    <DatePicker label="Start Date" v-model="data.startDate"  placeholder="" />
+                                    <!-- <DatePicker label="Start Date"  placeholder="" /> -->
+                                    <DateTimePicker :label="'Start date'">
+                                        <template #date>
+                                            <span><span>{{ new Date(data.startDate ?? Date.now()).toLocaleDateString()}}</span></span>
+                                        </template>
+                                        <template #time>
+                                            <span><span>{{ data.startTime }}</span></span>
+                                        </template>
+                                        <template #input>
+                                            <v-date-picker  v-model="data.startDate" style="position:relative;z-index:9000;width:100%"></v-date-picker>
+                                             <label
+                                                class="block uppercase my-1 text-xs font-bold"
+                                                :for="`${id}-inputfield`"
+                                                >
+                                                Time
+                                            </label>
+                                            <input v-model="data.startTime" type="time" class="w-full border rounded-md p-2">
+                                        </template>
+                                    </DateTimePicker>
                                 </div>
                                 <div class="w-4/12">
-
-                                    <label for="">
-                                        <span class="uppercase font-bold text-xs">Time</span>
-                                        <input type="time" v-model="data.startTime" class="w-full border rounded-lg p-2" id="appt" name="appt" required>
-                                    </label>
+                                    <DateTimePicker :label="'End date'">
+                                        <template #date>
+                                            <span>{{ new Date(data.endDate ?? Date.now()).toLocaleDateString()}}</span>
+                                        </template>
+                                        <template #time>
+                                            <span>{{ data.endTime }}</span>
+                                        </template>
+                                        <template #input>
+                                            <v-date-picker name="eeee" v-model="data.endDate" style="z-index:9000;width:100%"></v-date-picker>
+                                            <label
+                                                class="block uppercase my-1 text-xs font-bold"
+                                                :for="`${id}-inputfield`"
+                                                >
+                                                Time
+                                            </label>
+                                            <input v-model="data.endTime" type="time" class="w-full border rounded-md p-2">
+                                        </template>
+                                    </DateTimePicker>
                                 </div>
                             </div>
 
                             <div class="container-fluid pb-3 pt-3 flex justify-around dashed-bottom">
-                                <div class="w-4/12">
-                                     <DatePicker label="End Date" v-model="data.endDate"  placeholder="" />
-                                </div>
-                                <div class="w-4/12">
-                                    <label for="">
-                                        <span class="uppercase font-bold text-xs">Time</span>
-                                        <input type="time" v-model="data.endTime" class="w-full border rounded-lg p-2" id="appt" style="width: 95%" required>
-                                    </label>
-                                </div>
+                                
                                 <div class="w-4/12">
                                     <label for="">
                                         <span class="uppercase font-bold text-xs">SLot Size(Mins/Hrs)</span>
                                         <input type="time" v-model="data.slotSize" class="w-full border rounded-lg p-2" id="appt" name="appt" required>
                                     </label>
+                                </div>
+                                <div class="w-4/12">
+                                     <!-- <DatePicker label="End Date" v-model="data.endDate"  placeholder="" /> -->
+                                </div>
+                                <div class="w-4/12">
+                                    <!-- <label for="">
+                                        <span class="uppercase font-bold text-xs">Time</span>
+                                        <input type="time" v-model="data.endTime" class="w-full border rounded-lg p-2" id="appt" style="width: 95%" required>
+                                    </label> -->
                                 </div>
                             </div>
 
@@ -192,12 +250,13 @@
                                 <div class="w-4/12">
                                     <label for="" class="w-95">
                                         <span class="uppercase font-bold text-xs">Start Time</span>
-                                        <div class="w-10/12">
+                                        <div class="w-10/12 mx-auto">
                                             <input type="time" v-model="breakData.startTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
                                         </div>
                                     </label>
                                 </div>
                                 <div class="w-4/12">
+                                
                                     <label for="">
                                         <span class="uppercase font-bold text-xs">End Time</span>
                                         <div class="w-10/12">
@@ -214,7 +273,7 @@
                                     
                                 </div>
                                 <div class="w-4/12">
-                                    
+                                    <!-- <DateTimePicker /> -->
                                 </div>
                                 <div class="w-4/12">
                                     
@@ -232,7 +291,7 @@
                             </div>
 
                             <div class="w-full mb-12">
-                                <div class="container-fluid mb-8">
+                                <div class="container-fluid mb-8 border-t-2 pt-2">
                                     <div class="w-full flex">
                                         <div class="w-3/12">
                                             <span class="font-semibold">Break Type</span>
@@ -301,6 +360,7 @@
                 </Button>
                 <Button :loading="loading"
                     v-else
+                     @click="saveSchedule"
                 >
                     <a  style="background: #E1E3EA" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-gray-500 font-bold py-3 px-8 rounded-full">
                         Update
@@ -326,6 +386,10 @@ import IPractitioner from "@/types/IPractitioner";
 
 import SearchBox from './components/search-box.vue'
 import User from "@/types/user";
+import DateTimePicker from './components/datetime-picker.vue';
+import DateTimePick from './components/datetime-picker.vue';
+import MultiSelect from './components/apply-to.vue'
+import Templates from "@/components/icons/templates.vue";
 
 const healthcare = namespace('healthcare');
 const schedulesStore = namespace('schedules');
@@ -344,6 +408,10 @@ const locationStore = namespace("location");
       DatePicker,
       ToggleCheck,
       SearchBox,
+      DateTimePicker,
+      DateTimePick,
+      MultiSelect,
+    Templates,
   },
 })
 export default class Shift extends Vue {
@@ -361,6 +429,7 @@ export default class Shift extends Vue {
  shift: any = {
      healthcareServices: [ ]
  }
+
 
  removeActor(id: any) {
      if (this.$route.params.scheduleId) return false;
@@ -420,6 +489,9 @@ export default class Shift extends Vue {
   @schedulesStore.Action
   getSchedules!: () => Promise<void>;
 
+  @schedulesStore.Action
+  updateSchedule!: (body: any) => Promise<void>;
+
  timeZones = [
     'Africa/Lagos', 'Africa/Algiers', 'Europe/Amsterdam', 'Europe/Berlin', 'Europe/Rome', 'WAT: West Africa Time', 'WEST: Western European Summer Time', 'MET: Middle European Time', 'CET: Central European Time'
  ]
@@ -436,6 +508,20 @@ export default class Shift extends Vue {
      { display: 'Coffee', code: 'coffee'},
      { display: '1/2 Hours', code: '1/2 hours'},
      { display: 'Unpaid', code: 'unpaid'},
+ ]
+
+ specialties = [ 'Allergy and immunology', 'Diagnostic radiology', 'Anesthesiology', 'Dermatology', 'Emergency medicine', 'Pediatrics', 'Radiation oncology']
+ categories = [ 'Adoption', 'Aged Care', 'Allied Health', 'Alternative/Complementary Therapies', 'Child Care /Kindergarten', 'Child Development', 'Community Health Care']
+ serviceTypes = [ 'Aged Care Assessment', 'Friendly Visiting', 'Personal Alarms/Alerts', 'Acupuncture', 'Aromatherapy', 'Bowen Therapy']
+
+ days = [
+     'Monday',
+     'Tuesday',
+     'Wednesday',
+     'Thursday',
+     'Friday',
+     'Saturday',
+     'Sunday',
  ]
 
  toggleDetailsDisplay() {
@@ -463,6 +549,12 @@ export default class Shift extends Vue {
      return this.healthcares.map(i => {
          return { id: i.id, name: i.name };
      })
+ }
+
+ get selectedDays() {
+     if (!this.data.days) return "";
+     if (this.data.days.length <= 2) return this.data.days.join(", ");
+     return `${this.data.days[0]}, ${this.data.days[1]}, ...`
  }
 
  get allLocations() {
@@ -531,20 +623,30 @@ async created() {
  async saveSchedule() {
      const body = {
          ...this.data,
-         days: [ 'monday' ],
-         organizationId: this.user.orgId,
+         organizationId: this.data.organizationId ? this.data.organizationId : this.user.orgId,
          slotSize: 5,
-         practitioners: this.data.practitioners.map((i: any) => i.code)
+         practitioners: this.data.practitioners.map((i: any) => i.code),
+         id: this.$route.params.scheduleId,
+         startTime: this.data.startTime ? `${this.data.startTime.split(':')[0]}:${this.data.startTime.split(':')[1]}` : '',
+         endTime: this.data.endTime ? `${this.data.endTime.split(':')[0]}:${this.data.endTime.split(':')[1]}` : ''
      }
      console.log(body, "body");
      this.loading = true;
     try {
-        await this.createSchedule(body);
-        notify({
-            msg: "Schedule created successfully",
-            status: "success",
-        });
-        // this.$router.push({ name: 'Patient Experience Management'})
+        if (!this.$route.params.scheduleId) {
+            await this.createSchedule(body);
+            notify({
+                msg: "Schedule created successfully",
+                status: "success",
+            });
+        } else {
+            await this.updateSchedule(body);
+            notify({
+                msg: "Schedule created successfully",
+                status: "success",
+            });
+        }
+        this.$router.push('/dashboard/provider/settings/schedules')
     } catch (error) {
         console.log(error);
     }

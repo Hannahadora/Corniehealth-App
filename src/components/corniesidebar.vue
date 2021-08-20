@@ -48,6 +48,7 @@
           :key="i"
           :to="link.to"
           :text="link.name"
+          :children="link.children"
           :hovered="hovered"
         >
           <keep-alive>
@@ -112,7 +113,19 @@ export default class CorniDashboardeSideBar extends Vue {
 
   providerLinks = [
     { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Engagements", to: "engagements", icon: "schedule-icon" },
+    { name: "Engagements", to: "", icon: "schedule-icon", children: [
+      { text: "Experience Dashboard", to: "engagemnets/experience" },
+      { text: "Patient Registration", to: "engagemnets/patients_registration" },
+      { text: "Schedules & Slots", to: "engagemnets/schedules" },
+      { text: "Appointments", to: "engagemnets/appointments" },
+      { text: "Requests", to: "engagemnets/requests" },
+      { text: "visits", to: "engagemnets/visits" },
+      { text: "Messages", to: "engagemnets/messages" },
+      { text: "Satisfaction & Ratings", to: "engagemnets/ratings" },
+      { text: "Questionaires", to: "engagemnets/questionaires" },
+
+    ]},
+
     { name: "Clinical", to: "clinical", icon: "book-icon" },
     { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
     { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },

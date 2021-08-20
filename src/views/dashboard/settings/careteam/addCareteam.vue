@@ -447,6 +447,6 @@ export default class AddCareteam extends Vue {
 </script>
 <style>
 .outline-primary {
-  border: 2px solid #0a4269;
+  border: 2px solid #080056;
 }
 </style>

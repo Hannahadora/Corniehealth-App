@@ -5,7 +5,7 @@
     :class="{
       'w-5/6': hovered,
       'w-3/4 ': !hovered,
-      'bg-white rounded-lg bg-opacity-20 p-2': expand,
+      'bg-white rounded-lg bg-opacity-10 p-2': expand,
     }"
   >
     <div class="w-full flex justify-between items-center mx-auto">
@@ -41,13 +41,13 @@
     </div>
     <span
       v-if="expand && hasChild"
-      class="flex flex-col items-start pl-6 border-t-2 mt-2"
+      class="flex flex-col items-start pl-0 border-t-2 mt-2"
     >
       <router-link
         v-for="(child, i) in children"
         :key="i"
         :to="child.to"
-        class="text-sm font-light"
+        class="text-xs font-light py-2"
       >
         {{ child.text }}
       </router-link>
@@ -90,6 +90,13 @@ export default class SidebarLink extends Vue {
     if (!status) this.expand = false;
   }
 
+  @Prop({ type: Boolean, default: false })
+  opened!: boolean;
+
+  @Watch("opened")
+  toggled() {
+    this.expand = this.opened;
+  }
   get hasChild() {
     return this.children.length > 0;
   }

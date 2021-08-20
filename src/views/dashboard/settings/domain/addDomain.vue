@@ -176,10 +176,10 @@ export default class AddDomain extends Vue {
         this.checkdomainName
       );
       if (response.success == true) {
-        this.result = response.message;
+        this.result = response.errors!.summary
         console.log(response);
       } else {
-        this.result = response.message;
+        this.result = response.errors!.summary
       }
     } catch (error) {
       console.log(error);
@@ -219,6 +219,6 @@ export default class AddDomain extends Vue {
 </script>
 <style>
 .outline-primary {
-  border: 2px solid #0a4269;
+  border: 2px solid #080056;
 }
 </style>

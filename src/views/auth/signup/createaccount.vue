@@ -34,10 +34,10 @@
         <check-icon class="icon-check-mark3 bg-white rounded-full" v-if="width == 100"/>
       </div>
       <div class="grid grid-cols-4 gap-4 col-span-full ">
-      <p class="text-gray-500 text-xs text-gray-500 mb-2 font-bold" :class="{'text-gray-900' : width == 25}">Account Type</p>
-      <p class="text-gray-500 text-xs text-gray-500  mb-2 font-bold" :class="{'text-gray-900' : width == 50}">Personal Info</p>
-      <p class="text-gray-500 text-xs text-gray-500 mb-2 font-bold" :class="{'text-gray-900' : width == 75}">Email Verification</p>
-       <p class="text-gray-500 text-xs text-gray-500  mb-2 font-bold" :class="{'text-gray-900' : width == 100}">Password</p>
+      <p class="text-xs text-gray-500 mb-2 font-bold" :class="{'text-gray-900' : width == 25}">Account Type</p>
+      <p class="text-xs text-gray-500  mb-2 font-bold" :class="{'text-gray-900' : width == 50}">Personal Info</p>
+      <p class="text-xs text-gray-500 mb-2 font-bold" :class="{'text-gray-900' : width == 75}">Email Verification</p>
+       <p class="text-xs text-gray-500  mb-2 font-bold" :class="{'text-gray-900' : width == 100}">Password</p>
       </div>
       
       <div class="" v-if="step == 1">
@@ -361,18 +361,14 @@ code = "";
       }
     } catch (error) {
       if (error instanceof ErrorResponse && error.response.status == 422) {
-        const errors = await error.response.json();
-        let msg = "";
-        errors.errors.forEach((error: any) => (msg = `${msg} ${error.msg}`));
-         this.back();
-        window.notify({ msg, status: "error" });
+        window.notify({ msg: error.response.errors!.summary, status: "error" });
+        this.back();
       } else if (
         error instanceof ErrorResponse &&
         error.response.status == 400
       ) {
-         this.back();
-        const response = await error.response.json();
-        window.notify({ msg: response.message, status: "error" });
+        window.notify({ msg: error.response.errors!.summary, status: "error" });
+        this.back()
       } else {
         window.notify({ msg: errMsg });
       }
@@ -382,6 +378,10 @@ code = "";
 }
 </script>
 <style scoped>
+.text-xs {
+    font-size: 0.65rem;
+    line-height: 1rem;
+}
 .bg-gray-500{
   background-color: #8785AD;
 }

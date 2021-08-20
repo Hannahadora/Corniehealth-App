@@ -201,10 +201,10 @@ export default class memberModal extends Vue {
       );
       if (response.success) {
         this.loading = false;
-        window.notify({ msg: response.message, status: "success" });
+        window.notify({ msg: response.errors!.summary, status: "success" });
         this.show = false;
       } else {
-        window.notify({ msg: response.message, status: "error" });
+        window.notify({ msg: response.errors!.summary, status: "error" });
         this.show = false;
       }
     } catch (error) {

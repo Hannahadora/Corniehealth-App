@@ -19,7 +19,7 @@ select {
 }
 
  ::-webkit-scrollbar-thumb {
-    background-color: #211F45;
+    background-color: #080056;
     height: 0.5rem;
     outline: 1px solid slategrey;
 }
@@ -89,7 +89,7 @@ input[type="checkbox"]:after {
     background-position: center;
     border-radius: 3px;
     text-align: center;
-    border: 1px solid #211F45;
+    border: 1px solid #080056;
 }
 
 
@@ -117,5 +117,5 @@ input[type="checkbox"]:after {
 
 input[type="checkbox"]:checked:after {
     background-image: url("./assets/tick.svg");
-    background-color: #211F45;
+    background-color: #080056;
 }

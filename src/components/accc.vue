@@ -439,12 +439,12 @@ video {
 }
 .group:focus .group-focus\:text-white {
   --text-opacity: 1;
-  color: #0a4269;
-  color: #0a4269, var(--text-opacity);
+  color: #080056;
+  color: #080056, var(--text-opacity);
 }
 
 .group:focus .group-focus\:bg-blue {
-  background-color: #0a4269, 100%;
+  background-color: #080056, 100%;
 }
 
 .w-8 {
@@ -477,7 +477,7 @@ video {
   transition-duration: 0.5s;
 }
 .acc {
-  border: solid 1px #0a4269;
+  border: solid 1px #080056;
 }
 </style>
 

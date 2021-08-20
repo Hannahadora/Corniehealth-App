@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="w-full px-3">
                     <h5 class="flex items-center py-3">
-                        <span class="font-bold flex items-center"><ArrowLeft class="mr-3" /> <span class="text-gray-500">|</span></span>
+                        <span class="font-bold flex items-center cursor-pointer" @click="close"><ArrowLeft class="mr-3" /> <span class="text-gray-500">|</span></span>
                         <span class="mx-3 font-semibold text-lg">{{ header ? header : 'Edit Slot' }}</span>
                     </h5>
                 </div>
@@ -26,17 +26,22 @@ export default defineComponent({
 
     props: [ 'visible', 'header' ],
 
-    setup () {
+    setup (props, { emit }) {
         
+        const close = () => {
+            emit('closesidemodal')
+        }
 
-        return {}
+        return {
+            close,
+        }
     }
 })
 </script>
 
 <style scoped>
     .modal-con {
-        width: 400px;
+        width: 430px;
         height: 100vh;
         overflow: scroll;
         background: #fff;

@@ -187,7 +187,7 @@ export default class Settings extends Vue {
 </script>
 <style scoped>
     .live-link {
-        background: #211F45;
+        background: #080056;
         border-radius: 124px;
         color: white;
         padding: .8rem 1rem;

@@ -1,8 +1,10 @@
+import IPractitioner from "./IPractitioner";
+
 export default interface IPracticeform{
     id?: string;
     organizationId: string;
-    createdBy:createdBy[];
-    updatedBy:updatedBy[];
+    createdBy:IPractitioner;
+    updatedBy:IPractitioner;
     formType:string;
     links:[
         string
@@ -14,65 +16,6 @@ export default interface IPracticeform{
     questions:Question[];
 
   }
-
-  export interface HoursOfOperation {
-    day: string;
-    openTime: string;
-    closeTime: string;
-  }
-  export interface createdBy {
-      id?: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      activeState: string;
-      gender: string;
-      phone: {
-        number: string,
-        dialCode: string
-      };
-      address: string;
-      dateOfBirth: string;
-      image: string;
-      jobDesignation: string;
-      department: string;
-      accessRole: string;
-      qualificationIdentifier: string;
-      qualificationIssuer: string;
-      licenseNumber: string;
-      communicationLanguage: string;
-      availabilityExceptions: string;
-      consultationChannel: string;
-      hoursOfOperation: HoursOfOperation[];
-      organizationId: string;
-  }
-  export interface updatedBy {
-      id?: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      activeState: string;
-      gender: string;
-      phone: {
-        number: string,
-        dialCode: string
-      };
-      address: string;
-      dateOfBirth: string;
-      image: string;
-      jobDesignation: string;
-      department: string;
-      accessRole: string;
-      qualificationIdentifier: string;
-      qualificationIssuer: string;
-      licenseNumber: string;
-      communicationLanguage: string;
-      availabilityExceptions: string;
-      consultationChannel: string;
-      hoursOfOperation: HoursOfOperation[];
-      organizationId: string;
-  }
-
 export interface Question{
       id?: string;
       question:string;
