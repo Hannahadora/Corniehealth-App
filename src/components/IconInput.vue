@@ -20,8 +20,8 @@
       <input
         v-bind="{ ...$attrs, ...field }"
         v-model="valueSync"
-        @blur="$emit('blur')"
-        class="py-2 text-sm text-black rounded-md w-full focus:outline-none"
+         @blur="$emit('blur')"
+        class="py-1 text-sm text-black rounded-md w-full focus:outline-none"
         :class="{
           'pl-10': prepend,
           'pr-10': append,

@@ -1,0 +1,272 @@
+<template>
+  <div class="overflow-y-auto bg-white">
+    <modal
+      :visible="visible"
+      style="height: 95%"
+      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
+    >
+      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
+        <span class="block pr-2 border-r-2">
+          <arrow-left-icon
+            class="stroke-current text-primary cursor-pointer"
+            @click="show = false"
+          />
+        </span>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">All Participants</h2>
+      </div>
+      <div class="flex flex-col p-3">
+        <p class="text-sm mt-2">
+          All participants for this appointment
+        </p>
+        <div>
+            <div
+                  v-for="(input, index) in columnsProxy.Practitioners"
+                  :key="index"
+                  >
+                  <span
+                    class="
+                      flex
+                      border-b-2 border-dashed
+                      w-full
+                      text-sm text-primary
+                      py-2
+                      mx-auto
+                      font-semibold
+                      col-span-full
+                      mb-2
+                      mt-4
+                    "
+                  >
+                    Practitioner
+                  </span>
+                  <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
+                    <div class="flex space-x-4">
+                      <avatar class="mr-2" :src="input.image" />
+                      <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.firstName }}
+                          {{ input.lastName }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.jobDesignation }}
+                          {{ input.department }}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                        <p class="cursor-pointer mr-2  float-right text-xs text-danger">Accepted</p>
+                    </div>
+                  </div>
+            </div>
+
+            <div   v-for="(input, index) in columnsProxy.Devices"
+                  :key="index">
+                  <span
+                    class="
+                      flex
+                      border-b-2 border-dashed
+                      w-full
+                      text-sm text-primary
+                      py-2
+                      mx-auto
+                      font-semibold
+                      col-span-full
+                      mb-2
+                    "
+                  >
+                    Device
+                  </span>
+                  <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
+                    <div class="w-full">
+                      <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
+                      <p class="text-xs text-gray-500 font-meduim">{{input.deviceName.nameType}}</p>
+                    </div>
+                     <div>
+                        <p class="cursor-pointer mr-2  float-right text-xs text-danger">Accepted</p>
+                    </div>
+                  </div>
+            </div>
+              <div  v-for="(input, index) in columnsProxy.Roles"
+                :key="index">
+                <span
+                  class="
+                    flex
+                    border-b-2 border-dashed
+                    w-full
+                    text-sm text-primary
+                    py-2
+                    mx-auto
+                    font-semibold
+                    col-span-full
+                    mb-2
+                  "
+                >
+                  Practitioners Role
+                </span>
+                <div class="grid grid-cols-2 gap-2 col-span-full p-5">
+                  <div class="w-full">
+                    <p class="text-xs text-dark font-semibold">{{input.name}}</p>
+                    <p class="text-xs text-gray font-light">{{input.description}}</p>
+                  </div>
+                  <div>
+                      <p class="cursor-pointer mr-2  float-right text-xs text-danger">Accepted</p>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="flex justify-end w-full mt-auto">
+          <button
+          type="button"
+             @click="show = false"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </modal>
+       <availability
+            v-model:visible="availableFilter"
+        />
+        <profile
+            v-model:visible="profileFilter"
+        />
+  </div>
+</template>
+<script>
+import Modal from "@/components/practitionermodal.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import DragIcon from "@/components/icons/draggable.vue";
+import Draggable from "vuedraggable";
+import IconInput from "@/components/IconInput.vue";
+import Availability from "@/components/availability.vue";
+import Profile from "@/components/profile.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import Avatar from "@/components/avatar.vue";
+import { cornieClient } from "@/plugins/http";
+
+const copy = (original) => JSON.parse(JSON.stringify(original));
+
+export default {
+  name: "ParticipantFilter",
+  components: {
+    Modal,
+    DragIcon,
+    ArrowLeftIcon,
+    Draggable,
+    Availability,
+    IconInput,
+    SearchIcon,
+    Profile,
+    Avatar
+  },
+  props: {
+    visible: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    showPartcipants:{
+      type: Boolean,
+    },
+    columns: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    preferred: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    available: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+     appointmentId: {
+      type: String,
+    },
+    
+  },
+  data() {
+    return {
+      columnsProxy: [],
+      indexvalue: [],
+      practitioners: [],
+      valueid: [],
+      availableFilter: false,
+      profileFilter:false,
+      practitionerId: ""
+    };
+  },
+  watch: {
+    columns(val) {
+      this.columnsProxy = copy(val);
+    },
+    visible() {
+      const active = this.preferred.length > 0 ? this.preferred : this.columns;
+      this.columnsProxy = copy([...active]);
+    },
+  },
+  computed: {
+    show: {
+      get() {
+        return this.visible;
+      },
+      set(val) {
+        this.$emit("update:visible", val);
+      },
+    },
+  },
+  methods: {
+    apply() {
+      this.$emit("update:preferred", copy([...this.columnsProxy]));
+      this.show = false;
+  
+    },
+    reset() {
+      this.$emit("update:preferred", copy([...this.columns]));
+      this.show = false;
+      this.showPartcipants = false;
+    },
+    showAvailable(){
+      this.availableFilter = true;
+    },
+    showProfile(){
+        this.profileFilter = true;
+    },
+    changed(index){
+      this.valueid.push(index);
+    },
+     async viewAppointemnt() {
+      try {
+        const response = await cornieClient().get(
+          '/api/v1/appointment', this.appointmentId
+        );
+        if (response.success) {
+        this.columnsProxy = response.data
+        }
+      } catch (error) {
+        this.show = false;
+        console.error(error);
+      }
+    },
+  },
+  mounted() {
+    this.columnsProxy = copy([...this.columnsProxy]);
+    this.viewAppointemnt();
+  },
+};
+</script>

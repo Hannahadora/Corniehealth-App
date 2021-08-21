@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full flex justify-centerb bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
-    <div class="w-full">
+  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
+    <div class="w-full pb-96">
     <span
         class="
           flex
@@ -18,7 +18,7 @@
       >
        Appointment
       </span>
-      <span class="w-full">
+      <span class="w-full h-screen overflow-auto">
           <appointment-empty-state
                 v-if="empty"
           />
@@ -32,39 +32,39 @@
   </div>
 </template>
 <script lang="ts">
-import IGroup from "@/types/IGroup";
+import IAppointment from "@/types/IAppointment";
 import { Options, Vue } from "vue-class-component";
 import AppointmentEmptyState from "./emptyState.vue";
 import AppointmentExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const group = namespace("group");
+const appointment = namespace("appointment");
 
 @Options({
-  name: "GroupIndex",
+  name: "AppointmentIndex",
   components: {
     AppointmentEmptyState,
     AppointmentExistingState,
   },
 })
-export default class GroupIndex extends Vue {
-  addGroup = false;
-  GroupToUpdate = {} as IGroup;
+export default class AppointmentIndex extends Vue {
+  addAppointment = false;
+  AppointmentToUpdate = {} as IAppointment;
 
   get empty() {
-    return this.groups.length < 1;
+    return this.appointments.length < 1;
   }
 
- @group.State
-  groups!: IGroup[];
+ @appointment.State
+  appointments!: IAppointment[];
 
-  @group.Action
-  fetchGroups!: () => Promise<void>;
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
 
 
 created() {
-  this.fetchGroups()
-    if (this.groups.length < 1) this.fetchGroups();
+  this.fetchAppointments()
+    if (this.appointments.length < 1) this.fetchAppointments();
   }
 }
 </script>

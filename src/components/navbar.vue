@@ -35,7 +35,7 @@
         <li @click="$router.push('practitioners')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
             <div class="flex"> <practitioner-icon/> <p class="ml-2">Practicioner</p> </div>
         </li>
-        <li class="list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li class="cursor-pointer list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 my-1 -m-2 p-5 py-2">
             <div class="flex"> <approval-icon/> <p class="ml-2">Approval</p> </div>
         </li>
       </ul>
@@ -129,7 +129,7 @@
             </li>
             <li class="list-none -mb-3 mt-2 -m-2 p-5 flex justify-center">
             <span class="w-10 h-10 relative justify-center">
-              <div class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple cursor-pointer">
+              <div class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple  cursor-pointer">
                 <img v-if="profilePhoto" :src="profilePhoto" class="object-cover object-center w-full h-full visible group-hover:hidden"/>
                 <img v-else src="@/assets/img/placeholder.png" class="object-cover object-center w-fullh-full visible group-hover:hidden"/>
                 <span>
@@ -245,12 +245,11 @@ export default class NavBar extends Vue {
   user!: User;
 
   get profilePhoto() {
-    if (!this.user) return ''
-    return this.user.photo;
+    return this.user?.photo;
   }
 
   get name() {
-    if (!this.user || !this.user.id) return "";
+    if (!this.user?.id) return "";
     const lastName = this.user.lname;
     const firstInitials = this.user.fname.charAt(0).toUpperCase();
     let middleInitials = this.user.mname?.charAt(0)?.toUpperCase() || "";

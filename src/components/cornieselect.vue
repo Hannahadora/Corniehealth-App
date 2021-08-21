@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center w-11/12">
+  <div class="flex flex-col items-center w-11/12 mb-5">
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
@@ -10,6 +10,7 @@
               :for="`${id}-inputfield`"
             >
               {{ label }}
+               <span class="text-danger ml-1" v-if="required"> * </span>
             </label>
             <div
               v-bind="$attrs"
@@ -124,6 +125,9 @@ export default class CornieSelect extends Vue {
 
   @PropSync("modelValue")
   modelValueSync!: string;
+
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
 
   @Prop({ type: String })
   label!: string;

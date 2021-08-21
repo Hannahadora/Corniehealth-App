@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="flex justify-end w-full">
+    <span class="flex justify-end w-full mb-8">
       <button
         class="
           bg-danger
@@ -11,160 +11,65 @@
           pr-5
           pl-5
           px-3
+          mb-5
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push('/dashboard/provider/add-group')"
+         @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
-        Add a Group
+         Create Appointment
       </button>
       
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
-        >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="sortGroups" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="$router.push(`/dashboard/provider/view-group/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1 -m-6 p-5 py-2
-              "
-            >
-                <eye-icon class="mr-3" /> View
-            </li>
-            <li
-              @click="$router.push(`/dashboard/provider/add-group/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                 my-1 -m-6 p-5 py-2
-              "
-            >
-              
-              <edit-icon class="mr-3" /> Edit
-            </li>
-            <li
-              @click="displayMember(getKeyValue(item).value)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1 -m-6 p-5 py-2
-              "
-            >
-              
-              <span class="mr-3 text-2xl bold text-primary">+</span> Add member
-            </li>
-            <li
-             v-if="item.data.groupStatusDetails.active == true"
-              @click="showDeactivateGroup(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                 my-1 -m-6 p-5 py-2
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Deactivate
-            </li>
-            <li
-            v-if="item.data.groupStatusDetails.active == false"
-              @click="activateGroup(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                 my-1 -m-6 p-5 py-2
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Activate
-            </li>
-            <li
-              @click="deleteItem(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                 my-1 -m-6 p-5 py-2
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+   <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
+          <newview-icon />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
+          <update-icon />
+          <span class="ml-3 text-xs">Update</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <checkin-icon />
+          <span class="ml-3 text-xs">Check-In</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+          <note-icon />
+          <span class="ml-3 text-xs">Make Notes</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+          <cancel-icon />
+          <span class="ml-3 text-xs">Cancel</span>
+        </div>
       </template>
-    </Table>
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
-       <member-modal v-model:visible="showMemberModal" :paymentId="paymentId"/>
-        <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
+      <template #Participants="{ item }">
+        <div class="flex items-center">
+          <span class="text-xs">{{item.Participants}}</span>
+          <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+        </div>
+      </template>
+    </cornie-table>
+
+      <notes-add
+          :appointmentId="appointmentId"
+          @update:preferred="makeNotes"
+          v-model:visible="showNotes"
+        />
+        <all-participants
+           :appointmentId="appointmentId"
+            :columns="singleParticipant"
+          @update:preferred="displayParticipants"
+          v-model:visible="showPartcipants"
+        />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import CardText from "@/components/card-text.vue";
+import CornieDialog from "@/components/Dialog.vue";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -178,20 +83,34 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IGroup from "@/types/IGroup";
+import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
+import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/close.vue";
+import CancelIcon from "@/components/icons/cancel.vue";
+import NoteIcon from "@/components/icons/notes.vue";
+import CheckinIcon from "@/components/icons/checkin.vue";
+import UpdateIcon from "@/components/icons/update.vue";
+import NewviewIcon from "@/components/icons/newview.vue";
+import NotesAdd from "./notes.vue";
+import AllParticipants from "./participants.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
-const group = namespace("group");
+const appointment = namespace("appointment");
 
 @Options({
   components: {
     Table,
+    CancelIcon,
     SortIcon,
+    CheckinIcon,
+    NotesAdd,
+    NewviewIcon,
+    AllParticipants,
+    UpdateIcon,
+    NoteIcon,
     ThreeDotIcon,
     SearchIcon,
     CloseIcon,
@@ -204,108 +123,88 @@ const group = namespace("group");
     DeleteIcon,
     EyeIcon,
     EditIcon,
+    CornieTable,
+    CardText,
+    CornieDialog
   },
   
 })
-export default class GroupExistingState extends Vue {
+export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
-  showMemberModal = false;
-  showDeativateModal = false;
-  paymentId ="";
+  showNotes = false;
+appointmentId="";
+showPartcipants= false;
+singleParticipant= [];
+  @appointment.State
+  appointments!: IAppointment[];
 
-  @group.State
-  groups!: IGroup[];
-
-  @group.Action
-  deleteGroup!: (id: string) => Promise<boolean>;
+  @appointment.Action
+  deleteAppointment!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Name", value: "name", show: true },
+    { title: "Identifier", key: "keydisplay", show: true },
     {
-      title: "Quantity",
-      value: "quantity",
+      title: "Patient",
+      key: "patients",
+      show: false,
+    },
+    {
+      title: "Appointment Type",
+      key: "appointmentType",
+      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
       show: true,
     },
     {
-      title: "Type",
-      value: "type",
+      title: "Participants",
+      key: "Participants",
       show: true,
+    },
+    {
+      title: "Slot",
+      key: "slot",
+      show: false,
     },
     {
       title: "Status",
-      value: "status",
-      show: false,
-    },
-    {
-      title: "Managing Entity",
-      value: "managingEntity",
+      key: "status",
       show: true,
     },
     {
-      title: "Characteristics Code",
-      value: "characteristicsCode",
-      show: false,
-    },
-    {
       title: "Code",
-      value: "code",
+      key: "reasonCode",
       show: false,
     },
     {
-      title: "Value Range",
-      value: "valueRange",
+      title: "Reason Reference",
+      key: "reasonRef",
       show: false,
     },
     {
       title: "Period",
-      value: "period",
+      key: "period",
+      show: true,
+    },
+    {
+      title: "Priority",
+      key: "priority",
       show: false,
     },
     {
-      title: "Value Boolean",
-      value: "valueBoolean",
+      title: "Description",
+      key: "description",
       show: false,
     },
     {
-      title: "Value Reference",
-      value: "valueRef",
+      title: "Consultation Medium",
+      kwy: "consultationMedium",
       show: false,
     },
-    {
-      title: "Exclude",
-      value: "exclude",
-      show: false,
-    },
-    {
-      title: "Member Period",
-      value: "memberPeriod",
-      show: false,
-    },
-    {
-      title: "Member Status",
-      value: "memberStatus",
-      show: false,
-    },
-    {
-      title: "Member Entity",
-      value: "memberEntity",
-      show: false,
-    },
-    {
-      title: "Value Quantity",
-      value: "valueQuantity",
-      show: false,
-    },
-    {
-      title: "Value Codeable Concept",
-      value: "valueCodeableConcept",
-      show: false,
-    },
+
   ];
 
   get headers() {
@@ -320,66 +219,54 @@ export default class GroupExistingState extends Vue {
 
 
   get items() {
-    const groups = this.groups.map((group) => {
-       (group as any).period = new Date(
-         (group as any).period 
+    const appointments = this.appointments.map((appointment) => {
+      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
+        console.log(singleParticipantlength);
+       (appointment as any).period = new Date(
+         (appointment as any).period 
        ).toLocaleDateString("en-US");
-       (group as any).memberPeriod = new Date(
-         (group as any).memberPeriod 
-       ).toLocaleDateString("en-US");
-
-       
         return {
-        ...group,
-         action: group.id,
+        ...appointment,
+         action: appointment.id,
+         keydisplay: "XXXXXXX",
+         Participants: singleParticipantlength 
         };
     });
-    if (!this.query) return groups;
-    return search.searchObjectArray(groups, this.query);
+    if (!this.query) return appointments;
+    return search.searchObjectArray(appointments, this.query);
   }
 
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this group",
-      title: "Delete Group"
+      message: "You are about to cancel this appointment",
+      title: "Cancel appointment"
     });
     if (!confirmed) return;
 
-    if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
-    else window.notify({ msg: "Group not deleted", status: "error" });
+    if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
+    else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
-   async displayMember(id: string) {
-     console.log("Hello i m here");
-    const group = await this.groups.find((d) => d.id == id);
-    this.showMemberModal = true;
-    this.paymentId = id;
+  async makeNotes(id:string){
+    this.appointmentId = id;
+    this.showNotes = true;
   }
-  async showDeactivateGroup(id: string) {
-    const payment = await this.groups.find((d) => d.id == id);
-    this.showDeativateModal = true;
-    this.paymentId = id;
-  }
-async activateGroup(id:string) {
-   const confirmed = await window.confirmAction({
-      message: "You are about to activate this Group",
-      title: "Activate Group"
-    });
-    if (!confirmed) {
-      return;
-    }else{
-        try {
-          const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
-          if (response.success) {
-            window.notify({ msg: "Group activated", status: "success" });
-          } 
-        } catch (error) {
-          window.notify({ msg: "Group not activated", status: "error" });
-          console.error(error);
+  async displayParticipants(value:string){
+    this.appointmentId = value;
+    this.showPartcipants = true;
+     try {
+       const response = await cornieClient().get(
+          `/api/v1/appointment/${value}`
+        );
+        if (response.success) {
+        this.singleParticipant = response.data
         }
+      } catch (error) {
+        this.loading = false;
+        console.error(error);
       }
-    }
-      get sortGroups (){
+  }
+      get sortAppointments (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });

@@ -1,24 +1,23 @@
 <template>
   <div class="w-full h-full">
-    <span class="flex w-full font-bold text-lg text-primary py-2 mx-auto">
+    <span class="flex w-full mt-3 font-bold text-lg text-primary py-2 mx-auto">
       Create Appointment
       <span class="text-danger text-xs mt-2 ml-2 font-normal"
         >(Items with asterisk are required for filling)</span
       >
     </span>
     <div>
-      <div class="w-full h-screen">
+      <div class="w-full h-screen overflow-auto">
         <form class="mt-5 w-full" @submit.prevent="submit">
-          <div class="mb-44 pb-96">
+          <div class="mb-44 pb-80">
             <accordion-component title="Appointment Details" v-model="opened">
               <template v-slot:default>
-                <div class="w-full grid grid-cols-3 gap-5 mt-5">
+                <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="dropdowns.serviceCategory"
+                    v-model="serviceCategory"
                     label="service category"
                     placeholder="--Select--"
                   >
@@ -26,9 +25,8 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
                     label="service type"
                     placeholder="--Select--"
                   >
@@ -36,9 +34,8 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="dropdowns.specialty"
+                    v-model="specialty"
                     label="specialty"
                     placeholder="--Select--"
                   >
@@ -46,36 +43,32 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
+                    v-model="appointmentType"
                     label="APPOINTMENT TYPE"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="['reason code']"
+                    v-model="reasonCode"
                     label="REason code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="['reason reference']"
+                    v-model="reasonRef"
                     label="reason reference"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="['priority']"
+                    v-model="priority"
                     label="priority"
                     placeholder="--Select--"
                   >
@@ -83,51 +76,64 @@
                   <cornie-input
                     label="description"
                     placeholder="--Enter--"
-                    v-model="name"
+                    v-model="description"
                   />
                   <cornie-input
                     label="supporting information"
                     placeholder="--Enter--"
-                    v-model="name"
+                    v-model="supportingInfo"
                   />
-                  <cornie-input
-                    label="slot"
-                    placeholder="choose slot"
-                    v-model="code"
-                  />
-                  <date-picker
+                  <div>
+                    <label class="block uppercase mb-1 text-xs font-bold">
+                      slot
+                    </label>
+                     <span class="text-gray-600 cursor-pointer text-xs">
+                      Choose Slot</span>
+                  </div>
+                  <single-date-picker
                     label="start date"
-                    v-model="period"
+                    v-model="period.start"
                     :rules="required"
                   />
-                  <date-picker
+                  <single-date-picker
                     label="end date"
-                    v-model="period"
+                    v-model="period.end"
                     :rules="required"
                   />
                   <cornie-input
                     label="duration (minutes)"
                     placeholder="--Enter--"
-                    v-model="name"
+                    v-model="duration"
                   />
                   <cornie-input
                     class="required"
                     label="comments"
                     placeholder="--Enter--"
-                    v-model="name"
+                    v-model="comments"
                   />
                   <cornie-input
                     class="required"
                     label="patient’s instruction"
                     placeholder="--Enter--"
-                    v-model="name"
+                    v-model="patientInstruction"
                   />
+                  <div>
+                    <label class="block uppercase mb-1 text-xs font-bold">
+                      Based On
+                    </label>
+                    <span class="text-gray-600 cursor-pointer text-xs">
+                      Choose Request</span>
+                  </div>
                 </div>
               </template>
             </accordion-component>
             <accordion-component title="Add Participants" v-model="openedR">
               <template v-slot:default>
-                <div class="p-5">
+                <div
+                  class="p-5"
+                  v-for="(input, index) in newPractitioners"
+                  :key="index"
+                  >
                   <span
                     class="
                       flex
@@ -146,20 +152,33 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full mt-4 p-5">
                     <div class="flex space-x-4">
-                        <avatar class="mr-2" />
-                     <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
-                        <div>
-                            <p class="text-xs text-dark font-semibold">ghgh</p>
-                            <p class="text-xs text-gray font-light">hjhh</p>
+                      <avatar class="mr-2" :src="input.image" />
+                      <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
+                      <div>
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.firstName }}
+                          {{ input.lastName }}
+                        </p>
+                        <p class="text-xs text-gray font-light">
+                          {{ input.jobDesignation }}
+                          {{ input.department }}
+                        </p>
                       </div>
                     </div>
                     <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right" />
-                      <d-edit class="cursor-pointer float-right" />
+                      <c-delete
+                        class="ml-20 cursor-pointer float-right"
+                        @click="removePractitioner(index)"
+                      />
+                      <d-edit
+                        class="cursor-pointer float-right"
+                        @click="practitionerFilter = true"
+                      />
                     </div>
                   </div>
                 </div>
-                <div class="p-5">
+                <div class="p-5"  v-for="(input, index) in newDevices"
+                  :key="index">
                   <span
                     class="
                       flex
@@ -177,55 +196,80 @@
                   </span>
                   <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                     <div>
-                      <p class="text-xs text-dark font-semibold">ghgh</p>
-                      <p class="text-xs text-gray font-light">hjhh</p>
+                      <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
+                      <p class="text-xs text-gray font-light">{{input.deviceName.nameType}}</p>
                     </div>
                     <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right" />
-                      <d-edit class="cursor-pointer float-right" />
+                      <c-delete class="ml-20 cursor-pointer float-right"  @click="removeDevice(index)"/>
+                      <d-edit class="cursor-pointer float-right"  @click="deviceFilter = true"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-5"  v-for="(input, index) in newRoles"
+                  :key="index">
+                  <span
+                    class="
+                      flex
+                      border-b-2 border-dashed
+                      w-full
+                      text-sm text-primary
+                      py-2
+                      mx-auto
+                      font-semibold
+                      col-span-full
+                      mb-2
+                    "
+                  >
+                    Practitioners Role
+                  </span>
+                  <div class="grid grid-cols-2 gap-2 col-span-full p-5">
+                    <div>
+                      <p class="text-xs text-dark font-semibold">{{input.name}}</p>
+                      <p class="text-xs text-gray font-light">{{input.description}}</p>
+                    </div>
+                    <div class="float-right">
+                      <c-delete class="ml-20 cursor-pointer float-right" @click="removeRole(index)"/>
+                      <d-edit class="cursor-pointer float-right" @click="roleFilter = true"/>
                     </div>
                   </div>
                 </div>
                 <div class="w-full grid grid-cols-3 gap-4 p-5">
                   <cornie-select
-                   :onChange="setValue(participantitem)"
+                   :onChange="setValue"
                     class="required"
                     :rules="required"
                     :items="items"
-                    v-model="participantitem"
+                    v-model="type"
                     label="TYPE"
                     placeholder="--Select--"
                   >
                   </cornie-select>
+                  <div>
+                    <label class="block uppercase mb-1 text-xs font-bold">
+                      actor
+                    </label>
+                     <span class="text-gray-600 cursor-pointer text-xs">
+                      {{type || 'Actor'}}</span>
+                  </div>
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                    label="actor"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['state']"
-                    v-model="state"
+                    :items="['Required','Information Only', 'Optional']"
+                    v-model="participantDetail.required"
                     label="required"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <date-picker
                     label="period"
-                    v-model="period"
+                    v-model="participantDetail.period"
                     :rules="required"
                   />
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['state']"
-                    v-model="state"
-                 
+                    :items="['Out-Patient',' In-Patient',' Virtual','HomeCare']"
+                    v-model="participantDetail.consultationMedium"
                     label="consultation medium"
                     placeholder="--Select--"
                   >
@@ -235,7 +279,7 @@
             </accordion-component>
             <span class="flex justify-end w-full">
               <button
-                @click="$router.push('/dashboard/provider/settings/group')"
+                @click="$router.push('/dashboard/provider/experience/appointments')"
                 type="button"
                 class="
                   outline-primary
@@ -274,11 +318,26 @@
             </span>
           </div>
         </form>
-            <practitioners-filter
-                :columns="practitioners"
-                v-model:preferred="preferredHeaders"
-                v-model:visible="participantFilter"
-            />
+        <practitioners-filter
+          :columns="practitioner"
+          @update:preferred="addPractitioner"
+          v-model:visible="practitionerFilter"
+        />
+        <patients-filter
+          :columns="patients"
+          @update:preferred="addPatients"
+          v-model:visible="patientFilter"
+        />
+        <devices-filter
+          :columns="device"
+          @update:preferred="addDevices"
+          v-model:visible="deviceFilter"
+        />
+         <roles-filter
+          :columns="role"
+          @update:preferred="addRoles"
+          v-model:visible="roleFilter"
+        />
       </div>
     </div>
   </div>
@@ -290,33 +349,42 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
-//import IGroup , { GroupMembers } from "@/types/IGroup";
-import IGroup from "@/types/IGroup";
+import Availability from "@/components/availability.vue";
+import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
 import PractitionersFilter from "@/components/practitioner.vue";
+import PatientsFilter from "@/components/patient.vue";
+import DevicesFilter from "@/components/device.vue";
+import RolesFilter from "@/components/roles.vue";
 import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
+import SingleDatePicker from "./datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
+import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 
-const group = namespace("group");
+const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
-// const emptyMember: GroupMembers = {
-//   name: "",
-//   type: "",
-// };
+const emptyParticipant: ParticipantDetail = {
+  period: {} as Period,
+  required: "",
+  consultationMedium: "",
+  
+};
 
 @Options({
   components: {
     CornieInput,
     CornieSelect,
     PractitionersFilter,
+    SingleDatePicker,
+    Availability,
     Textarea,
     DEdit,
     CDelete,
@@ -326,181 +394,275 @@ const dropdown = namespace("dropdown");
     PhoneInput,
     DatePicker,
     AccordionComponent,
+    PatientsFilter,
+    DevicesFilter,
+    RolesFilter,
   },
 })
-export default class AddGroup extends Vue {
+export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @group.Action
-  getGroupById!: (id: string) => IGroup;
+  @appointment.Action
+  getAppointmentById!: (id: string) => IAppointment;
   loading = false;
   expand = false;
   isVisible = "";
+  startdate = "";
+  enddate = "";
   rule = true;
   opened = true;
   openedR = true;
   openedT = false;
-  state = "";
-  status = false;
+
+
+actor = "";
   type = "";
-  name = "";
-  code = "";
-  quantity = "";
-  managingEntity = "";
-  characteristicsCode = "";
-  valueCodeableConcept = "";
-  valueBoolean = "";
-  valueQuantity = "";
-  valueRange = "";
-  valueRef = "";
-  exclude = "";
-  period = "";
-  memberPeriod = "";
 
+  serviceCategory = "";
+  locationId = null;
+  deviceId = null;
+  serviceType = "";
+  specialty = "";
+  appointmentType = "";
+  reasonCode = "";
+  reasonRef = "";
+  priority = "";
+  description = "";
+  supportingInfo ="";
+  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+  basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+  duration = "";
+  comments = "";
+  patientInstruction = "";
+  period = { start: "10/12/2011", end: "15/12/2019" };
+  participantDetail = {...emptyParticipant}
+  //participantDetail = {appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{ start: "10/12/2011", end: "15/12/2019" }};
+  // participantDetail: ParticipantDetail[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:"",end:""}}];
+  Practitioners = [];
+  Devices = [];
+  Patients = [];
+  roles = [];
+//member = { ...emptyMember }
+// members: Members[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:'',end:''}}];
 
-participantFilter = false;
+  newPractitioners =[];
+  newDevices = [];
+  newPatients =[];
+  newRoles = [];
+
+  roleFilter = false;
+  deviceFilter = false;
+  practitionerFilter = false;
+  patientFilter = false;
+  availableFilter = false;
   participantitem = "";
-  practitioners: any [] = [];
-  preferredHeaders = [];
- items = ['Patient','Practitioner','Practitioner Role','Device',];
 
-  memberStatus = "";
-  memberEntity = "";
-  aoption = "Active";
-  // groupmember = { ...emptyMember };
-  // groupmembers: GroupMembers[] = [];
+  practitioner = [];
+  device  = [];
+  patient = [];
+  role = [];
+ 
+  availability: any[] = [];
+  availabilities = Array();
+ 
+
+  preferredHeaders = [];
+  items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
+
   options = [
     { text: "Active", value: true },
     { text: "Inactive", value: false },
   ];
   required = string().required();
   dropdowns = {} as IIndexableObject;
+  dropdowns2 = {} as IIndexableObject;
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
+
   @Watch("id")
   idChanged() {
-    this.setGroup();
+    this.setAppointment();
   }
-  async setGroup() {
-    const group = await this.getGroupById(this.id);
-    if (!group) return;
-    this.state = group.state;
-    this.status = group.status;
-    this.type = group.type;
-    this.name = group.name;
-    this.code = group.code;
-    this.quantity = group.quantity;
-    this.managingEntity = group.managingEntity;
-    this.characteristicsCode = group.characteristicsCode;
-    this.valueCodeableConcept = group.valueCodeableConcept;
-    this.valueBoolean = group.valueBoolean;
-    this.valueQuantity = group.valueQuantity;
-    this.valueRange = group.valueRange;
-    this.valueRef = group.valueRef;
-    this.exclude = group.exclude;
-    this.period = group.period;
-    this.memberPeriod = group.memberPeriod;
-    this.memberStatus = group.memberStatus;
-    this.memberEntity = group.memberEntity;
+  async setAppointment() {
+    const appointment = await this.getAppointmentById(this.id);
+    if (!appointment) return;
+    this.serviceCategory = appointment.serviceCategory;
+    this.locationId = appointment.locationId;
+    this.deviceId = appointment.deviceId;
+    this.serviceType = appointment.serviceType;
+    this.specialty = appointment.specialty;
+    this.supportingInfo = appointment.supportingInfo;
+    this.appointmentType = appointment.appointmentType;
+    this.reasonCode = appointment.reasonCode;
+    this.reasonRef = appointment.reasonRef;
+    this.priority = appointment.priority;
+    this.description = appointment.description;
+    this.slot = appointment.slot;
+    this.basedOn = appointment.basedOn;
+    this.duration = appointment.duration;
+    this.comments = appointment.comments;
+    this.patientInstruction = appointment.patientInstruction;
+    this.period = appointment.period;
+    this.Practitioners = appointment.Practitioners;
+    this.Devices = appointment.Devices;
+    this.Patients = appointment.Patients;
+    this.participantDetail = appointment.participantDetail;
+
   }
   get payload() {
-    return {
-      state: this.state,
-      status: this.status,
-      type: this.type,
-      name: this.name,
-      code: this.code,
-      quantity: this.quantity,
-      managingEntity: this.managingEntity,
-      characteristicsCode: this.characteristicsCode,
-      valueCodeableConcept: this.valueCodeableConcept,
-      valueBoolean: this.valueBoolean,
-      valueQuantity: this.valueQuantity,
-      valueRange: this.valueRange,
-      valueRef: this.valueRef,
-      exclude: this.exclude,
+    const payload =  {
+      serviceCategory: this.serviceCategory,
+      locationId: this.locationId,
+      deviceId: this.deviceId,
+      serviceType: this.serviceType,
+      specialty: this.specialty,
+      appointmentType: this.appointmentType,
+      reasonCode: this.reasonCode,
+      supportingInfo: this.supportingInfo,
+      reasonRef: this.reasonRef,
+      priority: this.priority,
+      description: this.description,
+      slot: this.slot,
+      basedOn: this.basedOn,
+      duration: this.duration,
+      comments: this.comments,
+      patientInstruction: this.patientInstruction,
+      participantDetail: this.participantDetail,
       period: this.period,
-      memberPeriod: this.memberPeriod,
-      memberStatus: this.memberStatus,
-      memberEntity: this.memberEntity,
-    };
+    } as any
+    if(this.Devices.length > 0){
+      payload.Devices = this.Devices;
+    }
+    if(this.Patients.length > 0){
+      payload.Patients = this.Patients;
+    }
+    if(this.Practitioners.length > 0){
+      payload.Practitioners = this.Practitioners;
+    }
+    return payload
   }
   get allaction() {
     return this.id ? "Edit" : "Add a";
   }
-    get selectedItem(){
-        return this.participantitem
+  get selectedItem() {
+    return this.participantitem;
+  }
+  async addPractitioner(value: any,id:any) {
+    //this.practitioner.push({ ...this.practitioners });
+    this.newPractitioners = value;
+    this.Practitioners = id;
+    this.practitionerFilter = false;
+  }
+  removePractitioner(index: number) {
+    this.newPractitioners.splice(index, 1);
+  }
+  removeRole(index: number){
+    this.newRoles.splice(index, 1);
+  }
+   removeDevice(index: number){
+    this.newDevices.splice(index, 1);
+  }
+  showAvailable() {
+    this.availableFilter = true;
+  }
+  async addPatients(value: any,id:any) {
+    this.newPatients = value;
+    this.Patients = id;
+    this.patientFilter = false;
+  }
+  async addDevices(value:any, id:any){
+     this.newDevices = value;
+     this.Devices = id;
+    this.deviceFilter = false;
+  }
+  async addRoles(value: any,id:any){
+   // this.role.push(value);
+    this.newRoles = value;
+    this.roles = id;
+    this.roleFilter = false;
+  }
+   get setValue() {
+    if (this.type == "Practitioner") {
+      this.practitionerFilter = true;
+    } else if (this.type == "Patient") {
+      this.patientFilter = true;
+    }else if(this.type == 'Device'){
+       this.deviceFilter = true;
+    }else if(this.type == 'Practitioner Role'){
+        this.roleFilter = true;
     }
-  //   async reset(){
-  //     this.groupmember = {...emptyMember};
-  //   }
-  //  async addGroupMember() {
-  //     this.groupmembers.push({ ...this.groupmember });
-  //     window.notify({ msg: "Group Member added", status: "success" });
-  //     this.reset();
-  //   }
-  // async editGroupMember(id: string, index: number, fieldType: object) {
-  //   this.groupmember = this.groupmembers[index];
-  // }
-  // async removeGroupMember(id: string, index: number, fieldType: object) {
-  //   this.groupmembers.splice(index, 1);
-  //   window.notify({ msg: "Group Member deleted", status: "success" });
-  // }
-  async setValue(value: string) {
-    if(value == 'Practitioner'){
-        this.participantFilter = true;
-    }
-   
+    return this.type;
   }
 
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateGroup();
-    else await this.createGroup();
+    if (this.id) await this.updateAppointment();
+    else await this.createAppointment();
     this.loading = false;
   }
-  async createGroup() {
-    // this.payload.period.start = new Date(this.payload.period.start).toISOString()
-    this.payload.period = new Date(this.payload.period).toISOString();
+  async createAppointment() {
+    //const period = this.period;
+   this.payload.period.start = new Date(this.period.start).toISOString();
+    this.payload.period.end = new Date(this.period.end).toISOString();
+    this.actor = this.type
     try {
-      const response = await cornieClient().post("/api/v1/group", this.payload);
+      const response = await cornieClient().post("/api/v1/appointment", this.payload);
       if (response.success) {
-        window.notify({ msg: "Group created", status: "success" });
+          window.notify({ msg: "Appointment created", status: "success" });
+          this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      window.notify({ msg: "Group not created", status: "error" });
-      this.$router.push("/dashboard/provider/settings/group");
+      console.log(error);
+      window.notify({ msg: "Appointment not created", status: "error" });
+     // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
 
-  async updateGroup() {
-    const url = `/api/v1/group/${this.id}`;
+  async updateAppointment() {
+    const url = `/api/v1/appointment/${this.id}`;
     const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Group updated", status: "success" });
-        this.$router.push("/dashboard/provider/settings/group");
+        window.notify({ msg: "Appointment updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      window.notify({ msg: "Group not updated", status: "error" });
+      window.notify({ msg: "Appointment not updated", status: "error" });
     }
   }
-   async fetchPractitioners() {
-        const AllPractitioners = cornieClient().get(
-        "/api/v1/practitioner"
-      );
-      const response = await Promise.all([AllPractitioners]);
-      this.practitioners = response[0].data;
-        console.log(response);
-    
-    }
+  async fetchPractitioners() {
+    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioners]);
+    this.practitioner = response[0].data;
+  }
+  async fetchDevices() {
+    const AllDevices = cornieClient().get("/api/v1/devices");
+    const response = await Promise.all([AllDevices]);
+    this.device = response[0].data;
+  }
+  async fetchRoles() {
+    const AllRoles = cornieClient().get("/api/v1/roles");
+    const response = await Promise.all([AllRoles]);
+    this.role = response[0].data;
+  }
+   async fetchPatients() {
+    const AllPateints = cornieClient().get("/api/v1/patient");
+    const response = await Promise.all([AllPateints]);
+    this.patient = response[0].data;
+  }
   async created() {
-    this.setGroup();
-     this.fetchPractitioners();
-    const data = await this.getDropdowns("group");
+    this.setAppointment();
+    this.fetchPractitioners();
+    this.fetchDevices();
+    this.fetchRoles();
+    this.fetchPatients();
+    const data = await this.getDropdowns("availability");
+    const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;
+    this.dropdowns2 = data2;
+    console.log(data2);
   }
 }
 </script>

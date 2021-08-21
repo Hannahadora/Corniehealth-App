@@ -25,23 +25,26 @@
         </icon-input>
         <div class="my-2 border-2 w-full flex-col rounded-md flex" v-for="(item,index) in columnsProxy" :key="index">
             <span
-              class="items-center hover:bg-gray-100 w-full flex justify-between"
+              class="items-center w-full flex justify-between"
              >
               <label class="flex items-center justify-between py-3 px-3">
                 <input
-                  v-model="columnsProxy[index].show"
+                  v-model="indexvalue" 
+                  :value="item"
+                  @input="changed(item.id)"
                   type="checkbox"
-                  @input="changed"
                   class="bg-danger focus-within:bg-danger px-6 shadow"
                 />
-                <span>
-                <span class="text-xs font-bold float-left pl-3">{{ item.firstName }} {{ item.lastName }}</span>
-                <span class="text-xs text-gray-300 font-bold float-left pl-3">{{ item.jobDesignation }},{{ item.department }}</span>
+                <span class="block">
+                <span class="text-xs font-bold float-left pl-3">{{ item.firstName }} {{ item.lastName }}
+                        <br>
+                <span class="text-xs text-gray-300 font-bold">{{ item.jobDesignation }},{{ item.department }}</span>
+                </span>
                 </span>
               </label>
-              <div class="flex  mr-4">
-                <p class="cursor-pointer mr-2 hover:shadow-lg text-xs text-danger">View Availability</p>
-                <p class="cursor-pointer mr-2 hover:shadow-lg text-xs text-danger">View Profile</p>
+              <div class="flex  mr-4 -ml-32">
+                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showAvailable(item.id)">View Availability</p>
+                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showProfile">View Profile</p>
               </div>
             </span>
         </div>
@@ -78,11 +81,18 @@
               w-1/3
             "
           >
-            Apply
+            Add
           </button>
         </div>
       </div>
     </modal>
+       <availability
+            v-model:visible="availableFilter"
+            practitionerId: practitionerId
+        />
+        <profile
+            v-model:visible="profileFilter"
+        />
   </div>
 </template>
 <script>
@@ -91,7 +101,10 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
+import Availability from "@/components/availability.vue";
+import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
+
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -102,8 +115,10 @@ export default {
     DragIcon,
     ArrowLeftIcon,
     Draggable,
+    Availability,
     IconInput,
-    SearchIcon
+    SearchIcon,
+    Profile
   },
   props: {
     visible: {
@@ -121,11 +136,22 @@ export default {
       required: true,
       default: () => [],
     },
+    available: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    
   },
   data() {
     return {
       columnsProxy: [],
+      indexvalue: [],
       practitioners: [],
+      valueid: [],
+      availableFilter: false,
+      profileFilter:false,
+      practitionerId: ""
     };
   },
   watch: {
@@ -149,16 +175,26 @@ export default {
   },
   methods: {
     apply() {
-      this.$emit("update:preferred", copy([...this.columnsProxy]));
+      this.$emit("update:preferred", copy([...this.indexvalue]), this.valueid);
       this.show = false;
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
+    showAvailable(id){
+      this.practitionerId = id;
+      this.availableFilter = true;
+    },
+    showProfile(){
+        this.profileFilter = true;
+    },
+    changed(index){
+      this.valueid.push(index);
+    }
   },
   mounted() {
-    this.columnsProxy = copy([...this.columns]);
+    this.columnsProxy = copy([...this.indexvalue]);
   },
 };
 </script>
