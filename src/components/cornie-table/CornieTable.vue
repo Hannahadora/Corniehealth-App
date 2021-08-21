@@ -18,7 +18,7 @@
       <span class="flex justify-between items-center">
         <dots-horizontal-icon class="mr-7" />
         <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
+        <refresh-icon class="mr-7" />
         <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
     </div>

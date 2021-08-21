@@ -91,27 +91,27 @@ export default class CarePartnersExistingState extends Vue {
   rawHeaders = [
     {
       title: "Organisation Name",
-      value: "name",
+      key: "name",
       show: true,
     },
     {
       title: "Organisation Type",
-      value: "organisationType",
+      key: "organisationType",
       show: true,
     },
     {
       title: "Address",
-      value: "address",
+      key: "address",
       show: true,
     },
     {
       title: "Email",
-      value: "email",
+      key: "email",
       show: true,
     },
     {
       title: "Phone",
-      value: "phone",
+      key: "phone",
       show: true,
     },
   ];

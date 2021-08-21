@@ -12,41 +12,20 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Practitioner</h2>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
       </div>
       <div class="flex flex-col p-3">
         <p class="text-sm mt-2">
-          Select preferred provider
+         Some subtext if necessary
         </p>
-         <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-        </icon-input>
-        <div class="my-2 border-2 w-full flex-col rounded-md flex" v-for="(item,index) in columnsProxy" :key="index">
-            <span
-              class="items-center w-full flex justify-between"
-             >
-              <label class="flex items-center justify-between py-3 px-3">
-                <input
-                  v-model="indexvalue" 
-                  :value="item"
-                  @input="changed(item.id)"
-                  type="checkbox"
-                  class="bg-danger focus-within:bg-danger px-6 shadow"
-                />
-                <span class="block">
-                <span class="text-xs font-bold float-left pl-3">{{ item.firstName }} {{ item.lastName }}
-                        <br>
-                <span class="text-xs text-gray-300 font-bold">{{ item.jobDesignation }},{{ item.department }}</span>
-                </span>
-                </span>
-              </label>
-              <div class="flex  mr-4 -ml-32">
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showAvailable(item.id)">View Availability</p>
-                <p class="cursor-pointer mr-2  text-xs text-danger" @click="showProfile">View Profile</p>
-              </div>
-            </span>
+        <div class="my-2  w-full  flex">
+            <Textarea
+            label="Notes"
+            v-model="notes"
+            placeholder="--Enter--"
+            :rules="required"
+          />
+          <span></span>
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
@@ -67,8 +46,10 @@
           >
             Cancel
           </button>
-          <button
+          <cornie-btn
             @click="apply"
+            :loading="loading"
+            type="submit"
             class="
               bg-danger
               rounded-full
@@ -81,14 +62,13 @@
               w-1/3
             "
           >
-            Add
-          </button>
+            Save
+          </cornie-btn>
         </div>
       </div>
     </modal>
        <availability
             v-model:visible="availableFilter"
-            practitionerId: practitionerId
         />
         <profile
             v-model:visible="profileFilter"
@@ -104,7 +84,8 @@ import IconInput from "@/components/IconInput.vue";
 import Availability from "@/components/availability.vue";
 import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
-
+import Textarea from "@/components/textarea.vue";
+import { cornieClient } from "@/plugins/http";
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -113,6 +94,7 @@ export default {
   components: {
     Modal,
     DragIcon,
+    Textarea,
     ArrowLeftIcon,
     Draggable,
     Availability,
@@ -131,6 +113,9 @@ export default {
       required: true,
       default: () => [],
     },
+    appointmentId: {
+      type: String,
+    },
     preferred: {
       type: Array,
       required: true,
@@ -146,12 +131,11 @@ export default {
   data() {
     return {
       columnsProxy: [],
-      indexvalue: [],
       practitioners: [],
-      valueid: [],
+      loading: false,
+      notes:'',
       availableFilter: false,
       profileFilter:false,
-      practitionerId: ""
     };
   },
   watch: {
@@ -174,27 +158,37 @@ export default {
     },
   },
   methods: {
-    apply() {
-      this.$emit("update:preferred", copy([...this.indexvalue]), this.valueid);
-      this.show = false;
+   async apply() {
+     this.loading = true;
+        try {
+        const response = await cornieClient().post("/api/v1/appointment/notes", {text:this.notes, appointmentId:this.appointmentId});
+        if (response.success) {
+            window.notify({ msg: "Notes created", status: "success" });
+            this.loading = false;
+           this.show = false;
+            this.$router.push("/dashboard/provider/experience/appointments");
+        }
+        } catch (error) {
+          this.loading = false;
+         this.show = false;
+          console.log(error);
+        window.notify({ msg: "Notes not created", status: "error" });
+        this.$router.push("/dashboard/provider/experience/appointments");
+        }
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    showAvailable(id){
-      this.practitionerId = id;
+    showAvailable(){
       this.availableFilter = true;
     },
     showProfile(){
         this.profileFilter = true;
-    },
-    changed(index){
-      this.valueid.push(index);
     }
   },
   mounted() {
-    this.columnsProxy = copy([...this.indexvalue]);
+    this.columnsProxy = copy([...this.columns]);
   },
 };
 </script>

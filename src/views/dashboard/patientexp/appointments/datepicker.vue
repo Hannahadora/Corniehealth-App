@@ -3,7 +3,6 @@
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
     <Field
       v-model="date"
-      :rules="customRules"
       :name="inputName"
       v-slot="{ meta, handleChange, errorMessage }"
     >

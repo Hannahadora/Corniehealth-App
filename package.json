@@ -26,6 +26,7 @@
         "vue-router": "^4.0.8",
         "vue-select": "git+https://github.com/sagalbot/vue-select.git#feat/vue-3-compat",
         "vue-select-connorshea": "^3.12.1",
+        "vue-star-rating": "^2.1.0",
         "vue-sweetalert2": "^5.0.2",
         "vuedraggable": "^4.0.3",
         "vuex": "^4.0.1",

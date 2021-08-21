@@ -1,9 +1,19 @@
 <template>
   <div class="menu" @click="onMenuClick" >
     <slot name="activator" :on="{ click }" />
-    <card v-show="showMenu" class="menu-popup" :style="styles" ref="card">
+      <div class="absolute pt-2 z-10 -left-44">
+    <card v-show="showMenu" class="  relative
+              py-2
+              p-1
+              bg-white
+              border border-gray-200
+              rounded-md
+              block
+              w-56
+              shadow-xl"  ref="card">
       <slot />
     </card>
+      </div>
   </div>
 </template>
 
@@ -23,7 +33,6 @@ import { Prop, PropSync, Ref, Watch } from "vue-property-decorator";
   }
 })
 export default class Menu extends Vue {
-
   @Prop({ type: Boolean, default: true })
   closeOnClick!: boolean;
 
@@ -78,7 +87,6 @@ export default class Menu extends Vue {
 <style scoped>
 .menu-popup {
   position: absolute;
-  width: 100%;
   max-height: 300px;
   overflow-y: auto
 }

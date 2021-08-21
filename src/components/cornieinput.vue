@@ -5,6 +5,7 @@
     v-slot="{ errorMessage, meta, field }"
     :rules="rules"
     v-model="valueSync"
+    class="mb-5"
   >
     <div v-bind="$attrs">
       <label class="block uppercase mb-1 text-xs font-bold">

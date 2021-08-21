@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center w-11/12">
+  <div class="flex flex-col items-center w-11/12 mb-5">
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
@@ -10,6 +10,7 @@
               :for="`${id}-inputfield`"
             >
               {{ label }}
+               <span class="text-danger ml-1" v-if="required"> * </span>
             </label>
             <div
               v-bind="$attrs"
@@ -20,7 +21,7 @@
               </span>
               <input
                 v-else
-                placeholder="--Select--"
+                placeholder="--select--"
                 disabled
                 :value="displayVal"
                 class="
@@ -33,67 +34,74 @@
                   text-gray-800
                 "
               />
-      <div
-        class="
-          text-gray-300
-          py-1
-          pr-3
-          flex
-          items-center
-          border-gray-200
-        "
-      >
-        <chevron-down-icon />
-      </div>
-    </div>
-  <div
-    :class="{ hidden: !showDatalist }"
-    class="
-      absolute
-      shadow
-      bg-white
-      top-100
-      z-50
-      w-full
-      lef-0
-      rounded
-      max-h-select
-      overflow-y-auto
-      mt-2
-    "
-  >
-    <div class="flex flex-col w-full p-2">
-      <div
-        v-for="(item, i) in items"
-        :key="i"
-        @click="selected(item)"
-        class="
-          cursor-pointer
-          w-full
-          border-gray-100
-          rounded-xl
-          hover:bg-white-cotton-ball
-        "
-      >
-        <template v-if="Boolean($slots.item)">
-          <slot name="item" v-bind:item="item" />
-        </template>
-        <div
-          v-else
-          class="
-            flex
-            w-full
-            items-center
-            p-2
-            pl-2
-            border-transparent border-l-2
-          "
-        >
-          {{ item.display || item }}
+
+              <div
+                class="
+                  text-gray-300
+                  py-1
+                  pr-1
+                  flex
+                  items-center
+                  border-gray-200
+                "
+              >
+                <chevron-down-icon />
+              </div>
+            </div>
+          </div>
+          <div
+            :class="{ hidden: !showDatalist }"
+            class="
+              absolute
+              shadow
+              bg-white
+              top-100
+              z-40
+              w-full
+              lef-0
+              rounded
+              max-h-select
+              overflow-y-auto
+              mt-2
+              svelte-5uyqqj
+            "
+          >
+            <div class="flex flex-col w-full p-2">
+              <div
+                v-for="(item, i) in items"
+                :key="i"
+                @click="selected(item)"
+                class="
+                  cursor-pointer
+                  w-full
+                  border-gray-100
+                  rounded-xl
+                  hover:bg-white-cotton-ball
+                "
+              >
+                <template v-if="Boolean($slots.item)">
+                  <slot name="item" v-bind:item="item" />
+                </template>
+                <div
+                  v-else
+                  class="
+                    flex
+                    w-full
+                    items-center
+                    p-2
+                    pl-2
+                    border-transparent border-l-2
+                    relative
+                  "
+                >
+                  {{ item.display || item }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 <script lang="ts">
@@ -118,12 +126,11 @@ export default class CornieSelect extends Vue {
   @PropSync("modelValue")
   modelValueSync!: string;
 
-  @Prop({ type: String })
-  label!: string;
-
-  @Prop({type: Boolean})
+  @Prop({ type: Boolean, default: false })
   required!: boolean;
 
+  @Prop({ type: String })
+  label!: string;
   showDatalist = false;
   id = "";
 

@@ -44,7 +44,7 @@
         "
       >
         <sidebar-link
-          v-for="(link, i) in links"
+            v-for="(link, i) in links"
           :key="i"
           :to="link.to"
           :text="link.name"
@@ -125,16 +125,15 @@ export default class CorniDashboardeSideBar extends Vue {
     { name: "Experience", to: "experience", icon: "patient-icon", children: [
       { name: "Dashboard", to: { name: "Experience Dashboard"} },
       { name: "Patients", to: { name: "Patients" } },
-      { name: "Schedules", to: "experience/schedules" },
-      { name: "Appointments", to: "experience/appointments" },
-      { name: "visits", to: "experience/visits" },
-      { name: "Requests", to: "experience/requests" },
-      { name: "Taks", to: "experience/tasks" },
-      { name: "Messaging", to: "experience/messages" },
-      { name: "Satisfaction & Ratings", to: "experience/ratings" },
-      { name: "Questionaires", to: "experience/questionaires" },
+      { name: "Schedules", to: "/dashboard/experience/schedules" },
+      { name: "Appointments", to: "/dashboard/experience/appointments" },
+      { name: "visits", to: "/dashboard/experience/visits" },
+      { name: "Requests", to: "/dashboard/experience/requests" },
+      { name: "Taks", to: "/dashboard/experience/tasks" },
+      { name: "Messaging", to: "/dashboard/experience/messages" },
+      { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },
+      { name: "Questionaires", to: "/dashboard/experience/questionaires" },
     ]},
-
     { name: "Clinical", to: "clinical", icon: "book-icon" },
     { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
     { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },
