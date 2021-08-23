@@ -51,7 +51,7 @@
             'border-red-500': Boolean(codeError),
             'border-green-400': meta.valid && meta.touched,
           }"
-          class="rounded-r-lg border p-2 flex-grow focus:outline-none"
+          class="rounded-r-lg border p-2 flex-grow w-full focus:outline-none"
           type="tel"
           v-bind="field"
         />

@@ -46,27 +46,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
-          {
-            path: "experience/",
-            props: true,
-            name: "Patients Experience Management",
-            component: () =>
-              import("@/views/dashboard/patientexp/index.vue"),
-          }, 
-          {
-            path: "experience/add-appointment/:id?",
-            props: true,
-            name: "Create Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
-          },
-          {
-            path: "experience/appointments",
-            name: "Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/index.vue"),
-          },    
-        
       {
         path: "view-group/:id?",
         props: true,
@@ -105,6 +84,31 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
           },
+          {
+            path: "add-appointment/:id?",
+            props: true,
+            name: "Create Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
+          },
+          {
+            path: "appointments",
+            name: "Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/index.vue"),
+          },
+          {
+            path: "appointment-response",
+            name: "Appointment Response",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/response.vue"),
+          },  
+          {
+            path: "add-response/:id?",
+            name: "Respond",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/addResponse.vue"),
+          },    
         ],
       },
       {

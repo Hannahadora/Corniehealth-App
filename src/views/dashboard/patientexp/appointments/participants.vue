@@ -55,7 +55,7 @@
                       </div>
                     </div>
                     <div>
-                        <p class="cursor-pointer mr-2  float-right text-xs text-danger">Accepted</p>
+                        <p class=" mr-2  float-right text-xs text-danger">Accepted</p>
                     </div>
                   </div>
             </div>
@@ -78,12 +78,15 @@
                     Device
                   </span>
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
-                    <div class="w-full">
-                      <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
-                      <p class="text-xs text-gray-500 font-meduim">{{input.deviceName.nameType}}</p>
-                    </div>
+                     <div class="flex space-x-4">
+                      <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                        <div class="w-full">
+                          <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
+                          <p class="text-xs text-gray-500 font-meduim">{{input.deviceName.nameType}}</p>
+                        </div>
+                     </div>
                      <div>
-                        <p class="cursor-pointer mr-2  float-right text-xs text-danger">Accepted</p>
+                        <p class="mr-2  float-right text-xs text-danger">Accepted</p>
                     </div>
                   </div>
             </div>
@@ -105,12 +108,45 @@
                   Practitioners Role
                 </span>
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
-                  <div class="w-full">
-                    <p class="text-xs text-dark font-semibold">{{input.name}}</p>
-                    <p class="text-xs text-gray font-light">{{input.description}}</p>
-                  </div>
+                   <div class="flex space-x-4">
+                      <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                        <div class="w-full">
+                          <p class="text-xs text-dark font-semibold">{{input.name}}</p>
+                          <p class="text-xs text-gray font-light">{{input.description}}</p>
+                        </div>
+                   </div>
                   <div>
-                      <p class="cursor-pointer mr-2  float-right text-xs text-danger">Accepted</p>
+                      <p class="mr-2  float-right text-xs text-danger">Accepted</p>
+                  </div>
+                </div>
+              </div>
+               <div  v-for="(input, index) in columnsProxy.Patients"
+                :key="index">
+                <span
+                  class="
+                    flex
+                    border-b-2 border-dashed
+                    w-full
+                    text-sm text-primary
+                    py-2
+                    mx-auto
+                    font-semibold
+                    col-span-full
+                    mb-2
+                  "
+                >
+                  Patients
+                </span>
+                <div class="grid grid-cols-2 gap-2 col-span-full p-5">
+                   <div class="flex space-x-4">
+                      <avatar class="mr-2" :src="input.profilePhoto" />
+                        <div class="w-full">
+                          <p class="text-xs text-dark font-semibold"> {{ input.firstName }}
+                          {{ input.lastName }}</p>
+                        </div>
+                   </div>
+                  <div>
+                      <p class="mr-2  float-right text-xs text-danger">Accepted</p>
                   </div>
                 </div>
               </div>
@@ -217,7 +253,8 @@ export default {
     },
     visible() {
       const active = this.preferred.length > 0 ? this.preferred : this.columns;
-      this.columnsProxy = copy([...active]);
+      //this.columnsProxy = copy([...active]);
+        
     },
   },
   computed: {

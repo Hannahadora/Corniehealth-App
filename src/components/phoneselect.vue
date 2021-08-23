@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center w-11/12">
-    <div class="w-full flex flex-col items-center">
+    <div class="w-full] flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
           <div class="w-full" @click="showDatalist = !showDatalist">
@@ -49,18 +49,18 @@
             </div>
           </div>
           <div
-            :class="{ hidden: !showDatalist }"
+            :class="{ hidden: !showDatalist}"
             class="
               absolute
               shadow
               bg-white
               top-100
               z-40
-              w-custom
               left-0
-              rounded
+              rounded  
               max-h-select
               overflow-y-auto
+              mt-2
               svelte-5uyqqj
             "
           >
@@ -78,7 +78,7 @@
                 @click="selected(item)"
                 class="
                   cursor-pointer
-                  w-full
+                  w-auto
                   border-gray-100
                   rounded-xl
                   hover:bg-white-cotton-ball
@@ -133,6 +133,7 @@ export default class CornieSelect extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
+
   @PropSync("modelValue")
   modelValueSync!: string;
 
@@ -185,6 +186,6 @@ export default class CornieSelect extends Vue {
   max-height: 300px;
 }
 .w-custom{
-     width: max-content;
+     width: auto;
  }
 </style>

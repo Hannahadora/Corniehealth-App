@@ -1,69 +1,85 @@
 <template>
-  <div class="w-full">
-    <span class="flex justify-end w-full mb-8">
-      <button
+  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
+    <div class="w-full p-2 pb-96">
+        <span
         class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
+          flex
+          flex-col
+          w-full
+          justify-center
+          border-b-2
+          font-bold
+          mb-10
+          text-xl text-primary
           py-2
-          pr-5
-          pl-5
-          px-3
-          mb-5
-          focus:outline-none
-          hover:opacity-90
+       
         "
-         @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
-         Create Appointment
-      </button>
-      
-    </span>
-   <cornie-table :columns="rawHeaders" v-model="items">
-      <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
-          <newview-icon />
-          <span class="ml-3 text-xs">View</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <update-icon class="text-yellow-300 fill-current" />
-          <span class="ml-3 text-xs">Update</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/appointment-response`)">
-          <checkin-icon />
-          <span class="ml-3 text-xs">Check-In</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-          <note-icon />
-          <span class="ml-3 text-xs">Make Notes</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-          <cancel-icon />
-          <span class="ml-3 text-xs">Cancel</span>
-        </div>
-      </template>
-      <template #Participants="{ item }">
-        <div class="flex items-center">
-          <span class="text-xs">{{item.Participants}}</span>
-          <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
-        </div>
-      </template>
-    </cornie-table>
-
-      <notes-add
-          :appointmentId="appointmentId"
-          @update:preferred="makeNotes"
-          v-model:visible="showNotes"
-        />
-        <all-participants
-           :appointmentId="appointmentId"
-            :columns="singleParticipant"
-          @update:preferred="displayParticipants"
-          v-model:visible="showPartcipants"
-        />
-  </div>
+       Appointment Response
+      </span>
+        <span class="w-full h-screen overflow-auto">
+            <div class="w-full flex justify-between space-x-2 mb-14">
+                <div>
+                    <p class="text-2xl text-black mb-5 font-bold">Good Morning,</p>
+                    <p class="text-lg text-black font-medium mb-14">Dr. Joseph</p>
+                    <p class="text-xs text-black">
+                        Today is Monday, June 24
+                    </p>
+                </div>
+                <div class="w-8/12">
+                  <response-chart/>
+                </div>
+            </div>
+            <div class="w-full h-screen">
+                 <cornie-table :columns="rawHeaders" v-model="items">
+                <template #actions="{ item }">
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
+                    <newview-icon />
+                    <span class="ml-3 text-xs">View</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <update-icon  class="text-yellow-300 fill-current" />
+                    <span class="ml-3 text-xs">Update</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"   @click="$router.push('/dashboard/provider/experience/add-response')">
+                    <checkin-icon />
+                    <span class="ml-3 text-xs">Start Visit</span>
+                    </div>
+                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/provider/experience/add-appointment`)">
+                    <update-icon class="text-green-300 fill-current" />
+                    <span class="ml-3 text-xs">New Appointment</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+                    <note-icon />
+                    <span class="ml-3 text-xs">Make Notes</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                    <cancel-icon />
+                    <span class="ml-3 text-xs">Cancel</span>
+                    </div>
+                </template>
+                <template #Participants="{ item }">
+                    <div class="flex items-center">
+                    <span class="text-xs">{{item.Participants}}</span>
+                    <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+                    </div>
+                </template>
+                </cornie-table>
+                <notes-add
+                    :appointmentId="appointmentId"
+                    @update:preferred="makeNotes"
+                    v-model:visible="showNotes"
+                    />
+                    <all-participants
+                    :appointmentId="appointmentId"
+                        :columns="singleParticipant"
+                    @update:preferred="displayParticipants"
+                    v-model:visible="showPartcipants"
+                    />
+            </div>
+        </span>
+    </div>
+    </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -97,12 +113,14 @@ import NotesAdd from "./notes.vue";
 import AllParticipants from "./participants.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import ResponseChart from "./ResponseChart.vue"
 
 const appointment = namespace("appointment");
 
 @Options({
   components: {
     Table,
+    ResponseChart,
     CancelIcon,
     SortIcon,
     CheckinIcon,
@@ -138,6 +156,8 @@ export default class AppointmentExistingState extends Vue {
 appointmentId="";
 showPartcipants= false;
 singleParticipant= [];
+
+
   @appointment.State
   appointments!: IAppointment[];
 
@@ -251,9 +271,6 @@ singleParticipant= [];
     this.appointmentId = id;
     this.showNotes = true;
   }
-  closeModal(){
-    this.showPartcipants = false;
-  }
   async displayParticipants(value:string){
     this.appointmentId = value;
     this.showPartcipants = true;
@@ -276,6 +293,7 @@ singleParticipant= [];
       }
      async created() {
       console.log(this.items);
+
     }
 
 }

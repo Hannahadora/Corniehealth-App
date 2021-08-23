@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
-    <div class="w-full pb-96">
+    <div class="w-full p-2 pb-96">
     <span
         class="
           flex
@@ -8,12 +8,10 @@
           w-full
           justify-center
           border-b-2
-          font-semibold
+          font-bold
+          mb-10
           text-xl text-primary
-          py-4
-          px-4
-          p-4
-       
+          py-2
         "
       >
        Appointment
