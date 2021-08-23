@@ -69,7 +69,7 @@ import { countryCodes } from "@/plugins/countrycodes";
 import { Field } from "vee-validate";
 import { string } from "yup";
 import CornieSelect from "./cornieselect.vue";
-import CornieInput from "./cornieinput.vue";
+import CornieInput from "./CornieInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 
 const phoneRegex =

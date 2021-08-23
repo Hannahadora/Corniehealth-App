@@ -11,9 +11,9 @@ import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
 import FilterByIcon from "@/components/icons/FilterByIcon.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
-import IconBtn from "@/components/iconbtn.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieMenu from "@/components/CornieMenu.vue";
-import Card from "@/components/card.vue";
+import Card from "@/components/cornie-card/CornieCard.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 
 import { Prop, PropSync, Watch } from "vue-property-decorator";

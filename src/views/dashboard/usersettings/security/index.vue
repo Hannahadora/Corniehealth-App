@@ -119,7 +119,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import Icon from '@/views/dashboard/settings/rolesprivileges/components/icon.vue'
-import CornieInput from '@/components/cornieinput.vue'
+import CornieInput from '@/components/CornieInput.vue'
 import TwoFA from './components/two-fa.vue'
 import SecurityQuestions from './components/security-questions.vue'
 import Tooltip from '@/components/tooltip.vue'

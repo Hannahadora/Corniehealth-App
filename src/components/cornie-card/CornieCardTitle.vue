@@ -1,5 +1,5 @@
 <template>
-  <div class="card-title p-3 flex">
+  <div class="card-title p-3 flex items-center">
       <slot />
   </div>
 </template>

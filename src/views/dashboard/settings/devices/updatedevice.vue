@@ -262,7 +262,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import DatePicker from "./datepicker.vue";
 import IDevice from "@/types/IDevice";

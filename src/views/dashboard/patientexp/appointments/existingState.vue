@@ -182,7 +182,7 @@ import IGroup from "@/types/IGroup";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 

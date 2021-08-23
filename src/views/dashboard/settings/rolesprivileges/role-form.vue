@@ -755,7 +755,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CornieInput from '@/components/cornieinput.vue'
+import CornieInput from '@/components/CornieInput.vue'
 import Button from '@/components/globals/corniebtn.vue'
 import Accordion from '@/components/accordion-component.vue'
 import Checkbox from '@/components/custom-checkbox.vue';

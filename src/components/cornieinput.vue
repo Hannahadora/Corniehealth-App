@@ -8,7 +8,9 @@
   >
     <div v-bind="$attrs">
       <label class="block uppercase mb-1 text-xs font-bold">
-        {{ label }}
+        <slot name="label">
+          {{ label }}
+        </slot>
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
@@ -33,17 +35,63 @@
         >
           <slot name="prepend" />
         </div>
+        <div
+          class="
+            rounded-lg
+            pl-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-right-radius: 0; border-bottom-right-radius: 0"
+          v-if="$slots['prepend-inner']"
+        >
+          <slot name="prepend-inner" />
+        </div>
         <input
           class="p-2 rounded-lg w-full focus:outline-none"
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
               $slots.prepend,
+            'border-top-right-radius: 0; border-bottom-right-radius: 0':
+              $slots.append,
           }"
           v-bind="field"
           :placeholder="$attrs.placeholder"
           :name="inputName"
+          :readonly="readonly"
           v-model="valueSync"
         />
+        <div
+          class="
+            rounded-lg
+            pr-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+          v-if="$slots['append-inner']"
+        >
+          <slot name="append-inner" />
+        </div>
+        <div
+          class="
+            border-l-2
+            rounded-lg
+            pr-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+          v-if="$slots.append"
+        >
+          <slot name="append" />
+        </div>
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">{{
         errorMessage
@@ -63,7 +111,7 @@ import { Field } from "vee-validate";
     Field,
   },
 })
-export default class DInput extends Vue {
+export default class CornieInput extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
@@ -79,6 +127,9 @@ export default class DInput extends Vue {
   @Prop({ type: Boolean, default: false })
   required!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  readonly!: boolean;
+
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
@@ -90,9 +141,8 @@ export default class DInput extends Vue {
 </script>
 <style scoped>
 ::placeholder {
-  font-size: 0.8em;
+  font-size: 1em;
   font-weight: 300;
   color: #667499;
-  font-style: italic;
 }
 </style>

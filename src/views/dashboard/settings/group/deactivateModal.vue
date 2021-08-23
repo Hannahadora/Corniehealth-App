@@ -142,13 +142,13 @@
 import Modal from "@/components/modal.vue";
 import Textarea from "@/components/textarea.vue";
 import { Prop, PropSync } from "vue-property-decorator";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import { string } from "yup";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { cornieClient } from "@/plugins/http";
 import DatePicker from "@/components/daterangepicker.vue";
 import { Options, Vue } from "vue-class-component";

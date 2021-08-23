@@ -2,7 +2,7 @@
   <card class="flex flex-col">
     <card-title class="bg-primary">
       <icon-btn @click="close">
-        <arrow-left stroke="#ffffff" />
+        <arrow-left />
       </icon-btn>
     </card-title>
     <card-text class="mx-3 border-b-2 pb-6">
@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import DomainInput from "@/components/domain-input.vue";
@@ -139,11 +139,11 @@ import { string as yupString } from "yup";
 import ICarePartner from "@/types/ICarePartner";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import Card from "@/components/card.vue";
-import CardText from "@/components/card-text.vue";
-import CardTitle from "@/components/card-title.vue";
-import IconBtn from "@/components/iconbtn.vue";
-import Close from "@/components/icons/close.vue";
+import Card from "@/components/cornie-card/CornieCard.vue";
+import CardText from "@/components/cornie-card/CornieCardText.vue";
+import CardTitle from "@/components/cornie-card/CornieCardTitle.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
+import Close from "@/components/icons/CloseIcon.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";

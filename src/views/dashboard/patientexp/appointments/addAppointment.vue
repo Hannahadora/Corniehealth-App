@@ -286,7 +286,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";

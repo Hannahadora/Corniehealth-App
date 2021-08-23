@@ -79,7 +79,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import MultiInput from "@/components/multi-input.vue";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import CheckIcon from "@/components/icons/check.vue";
 import store from "@/store";
 import { quantumClient } from "@/plugins/http";
