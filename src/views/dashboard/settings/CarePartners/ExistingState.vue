@@ -25,7 +25,6 @@
         </div>
       </template>
     </cornie-table>
-
     <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
       <add-care-partners @close="showAddCarePartners = false" class="h-full" />
     </cornie-dialog>

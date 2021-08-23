@@ -29,7 +29,7 @@ async function fetchUserData() {
       quantumResponse,
       cornieResponse,
     ]);
-    return { quantum: quantum.data, cornie };
+    return { quantum, cornie };
   } catch (error) {
     console.log("error");
   }

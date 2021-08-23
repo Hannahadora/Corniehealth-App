@@ -128,6 +128,7 @@ import IconInput from "@/components/IconInput.vue";
 import TableSettingIcon from "@/components/icons/tablesetting.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
 import extraModal from "./extraModal.vue";
+import { Prop } from "vue-property-decorator";
 import IPayment from "@/types/IPayment";
 import search from "@/plugins/search";
 import DetailsMenu from "@/components/menu.vue";
@@ -136,7 +137,9 @@ import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import DeleteModal from "./deleteModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
+import { cornieClient } from "@/plugins/http";
 import ShowComfirm from "@/components/confirm.vue";
+import Swal from "sweetalert2";
 import { namespace } from "vuex-class";
 
 const payment = namespace("payment");
