@@ -10,7 +10,7 @@
       <div class="w-full h-screen overflow-auto">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
-            <accordion-component title="Appointment Details" v-model="opened">
+            <accordion-component title="Request Details" v-model="opened">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
@@ -18,7 +18,7 @@
                     :rules="required"
                     :items="dropdowns.serviceCategory"
                     v-model="serviceCategory"
-                    label="service category"
+                    label="status reason"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -27,7 +27,7 @@
                     :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
-                    label="service type"
+                    label="intent"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -36,7 +36,7 @@
                     :rules="required"
                     :items="dropdowns.specialty"
                     v-model="specialty"
-                    label="specialty"
+                    label="category"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -45,7 +45,7 @@
                     :rules="required"
                     :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
                     v-model="appointmentType"
-                    label="APPOINTMENT TYPE"
+                    label="priority"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -53,7 +53,7 @@
                     :rules="required"
                     :items="['reason code']"
                     v-model="reasonCode"
-                    label="REason code"
+                    label="boolean"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -61,221 +61,64 @@
                     :rules="required"
                     :items="['reason reference']"
                     v-model="reasonRef"
-                    label="reason reference"
+                    label="reported boolean"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                </div>
+              </template>
+            </accordion-component>
+            <accordion-component title="Medication" v-model="openedR">
+              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                  <cornie-select
+                    :items="dropdowns.serviceCategory"
+                    v-model="serviceCategory"
+                    label="medication code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="medication reference"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    class="required"
                     :rules="required"
-                    :items="['priority']"
-                    v-model="priority"
+                    :items="dropdowns.specialty"
+                    v-model="specialty"
+                    label="category"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    class="required"
+                    :rules="required"
+                    :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
+                    v-model="appointmentType"
                     label="priority"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                  <cornie-input
-                    label="description"
-                    placeholder="--Enter--"
-                    v-model="description"
-                  />
-                  <cornie-input
-                    label="supporting information"
-                    placeholder="--Enter--"
-                    v-model="supportingInfo"
-                  />
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      slot
-                    </label>
-                     <span class="text-gray-600 cursor-pointer text-xs">
-                      Choose Slot</span>
-                  </div>
-                  <single-date-picker
-                    label="start date"
-                    v-model="period.start"
-                    :rules="required"
-                  />
-                  <single-date-picker
-                    label="end date"
-                    v-model="period.end"
-                    :rules="required"
-                  />
-                  <cornie-input
-                    label="duration (minutes)"
-                    placeholder="--Enter--"
-                    v-model="duration"
-                  />
-                  <cornie-input
-                    class="required"
-                    label="comments"
-                    placeholder="--Enter--"
-                    v-model="comments"
-                  />
-                  <cornie-input
-                    class="required"
-                    label="patient’s instruction"
-                    placeholder="--Enter--"
-                    v-model="patientInstruction"
-                  />
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      Based On
-                    </label>
-                    <span class="text-gray-600 cursor-pointer text-xs">
-                      Choose Request</span>
-                  </div>
-                </div>
-              </template>
-            </accordion-component>
-            <accordion-component title="Add Participants" v-model="openedR">
-              <template v-slot:default>
-                <div
-                  class="p-5"
-                  v-for="(input, index) in newPractitioners"
-                  :key="index"
-                  >
-                  <span
-                    class="
-                      flex
-                      border-b-2 border-dashed
-                      w-full
-                      text-sm text-primary
-                      py-2
-                      mx-auto
-                      font-semibold
-                      col-span-full
-                      mb-2
-                      mt-4
-                    "
-                  >
-                    Practitioner
-                  </span>
-                  <div class="grid grid-cols-2 gap-2 col-span-full mt-4 p-5">
-                    <div class="flex space-x-4">
-                      <avatar class="mr-2" :src="input.image" />
-                      <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
-                      <div>
-                        <p class="text-xs text-dark font-semibold">
-                          {{ input.firstName }}
-                          {{ input.lastName }}
-                        </p>
-                        <p class="text-xs text-gray font-light">
-                          {{ input.jobDesignation }}
-                          {{ input.department }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="float-right">
-                      <c-delete
-                        class="ml-20 cursor-pointer float-right"
-                        @click="removePractitioner(index)"
-                      />
-                      <d-edit
-                        class="cursor-pointer float-right"
-                        @click="practitionerFilter = true"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="p-5"  v-for="(input, index) in newDevices"
-                  :key="index">
-                  <span
-                    class="
-                      flex
-                      border-b-2 border-dashed
-                      w-full
-                      text-sm text-primary
-                      py-2
-                      mx-auto
-                      font-semibold
-                      col-span-full
-                      mb-2
-                    "
-                  >
-                    Device
-                  </span>
-                  <div class="grid grid-cols-2 gap-2 col-span-full p-5">
-                    <div>
-                      <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
-                      <p class="text-xs text-gray font-light">{{input.deviceName.nameType}}</p>
-                    </div>
-                    <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right"  @click="removeDevice(index)"/>
-                      <d-edit class="cursor-pointer float-right"  @click="deviceFilter = true"/>
-                    </div>
-                  </div>
-                </div>
-                <div class="p-5"  v-for="(input, index) in newRoles"
-                  :key="index">
-                  <span
-                    class="
-                      flex
-                      border-b-2 border-dashed
-                      w-full
-                      text-sm text-primary
-                      py-2
-                      mx-auto
-                      font-semibold
-                      col-span-full
-                      mb-2
-                    "
-                  >
-                    Practitioners Role
-                  </span>
-                  <div class="grid grid-cols-2 gap-2 col-span-full p-5">
-                    <div>
-                      <p class="text-xs text-dark font-semibold">{{input.name}}</p>
-                      <p class="text-xs text-gray font-light">{{input.description}}</p>
-                    </div>
-                    <div class="float-right">
-                      <c-delete class="ml-20 cursor-pointer float-right" @click="removeRole(index)"/>
-                      <d-edit class="cursor-pointer float-right" @click="roleFilter = true"/>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-full grid grid-cols-3 gap-4 p-5">
                   <cornie-select
-                   :onChange="setValue"
-                    class="required"
                     :rules="required"
-                    :items="items"
-                    v-model="type"
-                    label="TYPE"
+                    :items="['reason code']"
+                    v-model="reasonCode"
+                    label="boolean"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      actor
-                    </label>
-                     <span class="text-gray-600 cursor-pointer text-xs">
-                      {{type || 'Actor'}}</span>
-                  </div>
                   <cornie-select
-                    class="required"
                     :rules="required"
-                    :items="['Required','Information Only', 'Optional']"
-                    v-model="participantDetail.required"
-                    label="required"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <date-picker
-                    label="period"
-                    v-model="participantDetail.period"
-                    :rules="required"
-                  />
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Out-Patient',' In-Patient',' Virtual','HomeCare']"
-                    v-model="participantDetail.consultationMedium"
-                    label="consultation medium"
+                    :items="['reason reference']"
+                    v-model="reasonRef"
+                    label="reported boolean"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                 </div>
-              </template>
             </accordion-component>
             <span class="flex justify-end w-full">
               <button
