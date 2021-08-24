@@ -108,7 +108,19 @@ const routes: Array<RouteRecordRaw> = [
             name: "Respond",
             component: () =>
               import("@/views/dashboard/patientexp/appointments/addResponse.vue"),
-          },    
+          }, 
+          {
+            path: "requests",
+            name: "Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/index.vue"),
+          },  
+          {
+            path: "add-request/:id?",
+            name: "New Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/addRequests.vue"),
+          },   
         ],
       },
       {

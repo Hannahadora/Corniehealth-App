@@ -40,7 +40,7 @@
                     Practitioner
                   </span>
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
-                    <div class="flex space-x-4">
+                    <div class="dflex space-x-4">
                       <div class="w-10 h-10">
                       <avatar class="mr-2" :src="input.image" />
                       </div>
@@ -80,8 +80,10 @@
                     Device
                   </span>
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
-                     <div class="flex space-x-4">
-                      <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                     <div class="dflex space-x-4">
+                       <div class="w-10 h-10">
+                        <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                       </div>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
                           <p class="text-xs text-gray-500 font-meduim">{{input.deviceName.nameType}}</p>
@@ -110,8 +112,10 @@
                   Practitioners Role
                 </span>
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
-                   <div class="flex space-x-4">
+                   <div class="dflex space-x-4">
+                     <div class="w-10 h-10">
                       <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                     </div>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold">{{input.name}}</p>
                           <p class="text-xs text-gray font-light">{{input.description}}</p>
@@ -140,9 +144,11 @@
                   Patients
                 </span>
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
-                   <div class="flex space-x-4">
+                   <div class="dflex space-x-4">
+                     <div class="w-10 h-10">
                       <avatar class="mr-2" :src="input.profilePhoto" v-if="input.profilePhoto" />
                       <avatar class="mr-2" v-else src="@/assets/img/placeholder.png"/>
+                     </div>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold"> {{ input.firstName }}
                           {{ input.lastName }}</p>
@@ -310,3 +316,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.dflex{
+      display: -webkit-box;
+}
+</style>

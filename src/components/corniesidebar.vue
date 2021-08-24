@@ -128,7 +128,7 @@ export default class CorniDashboardeSideBar extends Vue {
       { name: "Schedules", to: "/dashboard/experience/schedules" },
       { name: "Appointments", to: {name: "Appointment"}},
       { name: "visits", to: "/dashboard/experience/visits" },
-      { name: "Requests", to: "/dashboard/experience/requests" },
+      { name: "Requests", to: { name: "Requests" }  },
       { name: "Taks", to: "/dashboard/experience/tasks" },
       { name: "Messaging", to: "/dashboard/experience/messages" },
       { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },

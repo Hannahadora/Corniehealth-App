@@ -58,6 +58,7 @@
               z-40
               left-0
               rounded  
+              w-custom
               max-h-select
               overflow-y-auto
               mt-2
@@ -186,6 +187,6 @@ export default class CornieSelect extends Vue {
   max-height: 300px;
 }
 .w-custom{
-     width: auto;
+    width: max-content;
  }
 </style>
