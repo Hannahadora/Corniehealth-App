@@ -22,4 +22,5 @@ export interface Question{
       name:string;
       answerType:string;
       answerOptions:string[];
+      validation: {};
 }

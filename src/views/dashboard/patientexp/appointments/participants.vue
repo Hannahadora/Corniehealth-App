@@ -41,7 +41,9 @@
                   </span>
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
                     <div class="flex space-x-4">
+                      <div class="w-10 h-10">
                       <avatar class="mr-2" :src="input.image" />
+                      </div>
                       <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
@@ -139,7 +141,8 @@
                 </span>
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                    <div class="flex space-x-4">
-                      <avatar class="mr-2" :src="input.profilePhoto" />
+                      <avatar class="mr-2" :src="input.profilePhoto" v-if="input.profilePhoto" />
+                      <avatar class="mr-2" v-else src="@/assets/img/placeholder.png"/>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold"> {{ input.firstName }}
                           {{ input.lastName }}</p>

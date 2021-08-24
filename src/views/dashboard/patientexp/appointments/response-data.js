@@ -19,7 +19,7 @@ export const planetChartData = {
           borderSkipped: false,
         },
         {
-          label: "Appointments",
+          label: "Fulfilled",
           data: [450,660,971, 400, 420, 792, 250, 650],
           backgroundColor: "rgba(194, 199, 214, 1)",
           borderColor: "#C2C7D6",
@@ -45,11 +45,16 @@ export const planetChartData = {
             bodyAlign: 'center',
             padding: 30,
             position:'average',
+            yAlign: 'bottom',
         },
         legend: {
           position: 'bottom',
           labels: {
             usePointStyle: true,
+            color: "#000",
+            boxWidth: 5,
+            boxHeight: 14,
+
           },
           font: {
             size: 14
@@ -58,8 +63,6 @@ export const planetChartData = {
           title:{
               color: '#000',
           },
-          boxWidth: 10,
-          boxHeight: 14,
         },
         title: {
           display: true,

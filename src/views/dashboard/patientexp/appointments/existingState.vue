@@ -23,7 +23,7 @@
     </span>
    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.id}`)">
           <newview-icon />
           <span class="ml-3 text-xs">View</span>
         </div>

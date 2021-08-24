@@ -12,93 +12,16 @@
      Respond
     </span>
     <div>
-      <div class="w-full h-screen border-2 overflow-auto">
-        <form class="mt-5 w-full" @submit.prevent="submit">
-          <div class="mb-44 pb-80 p-5">
-            <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                <cornie-input
+      <div class="w-full h-screen overflow-auto">
+        <form class="mt-2 w-full" @submit.prevent="submit">
+          <div class="pb-80">
+            <div class="w-full border-2 mb-32 grid grid-cols-3 gap-5 p-5 pb-5">
+                  <cornie-input
                     label="Appointment"
-                    placeholder="--Enter--"
+                    placeholder="--Autoloaded--"
                     v-model="supportingInfo"
                   />
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="service category"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="service type"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.specialty"
-                    v-model="specialty"
-                    label="specialty"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
-                    v-model="appointmentType"
-                    label="APPOINTMENT TYPE"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :rules="required"
-                    :items="['reason code']"
-                    v-model="reasonCode"
-                    label="REason code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :rules="required"
-                    :items="['reason reference']"
-                    v-model="reasonRef"
-                    label="reason reference"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :rules="required"
-                    :items="['priority']"
-                    v-model="priority"
-                    label="priority"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-input
-                    label="description"
-                    placeholder="--Enter--"
-                    v-model="description"
-                  />
-                  <cornie-input
-                    label="supporting information"
-                    placeholder="--Enter--"
-                    v-model="supportingInfo"
-                  />
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      slot
-                    </label>
-                     <span class="text-gray-600 cursor-pointer text-xs">
-                      Choose Slot</span>
-                  </div>
-                  <single-date-picker
+                   <single-date-picker
                     label="start date"
                     v-model="period.start"
                     :rules="required"
@@ -108,31 +31,36 @@
                     v-model="period.end"
                     :rules="required"
                   />
-                  <cornie-input
-                    label="duration (minutes)"
-                    placeholder="--Enter--"
-                    v-model="duration"
-                  />
+                  <cornie-select
+                    :items="dropdowns.serviceCategory"
+                    v-model="serviceCategory"
+                    label="PARTICIPANT TYPE"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="ACTOR"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    class="required"
+                    :rules="required"
+                    :items="dropdowns.specialty"
+                    v-model="specialty"
+                    label="Status"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
                   <cornie-input
                     class="required"
                     label="comments"
                     placeholder="--Enter--"
                     v-model="comments"
                   />
-                  <cornie-input
-                    class="required"
-                    label="patient’s instruction"
-                    placeholder="--Enter--"
-                    v-model="patientInstruction"
-                  />
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      Based On
-                    </label>
-                    <span class="text-gray-600 cursor-pointer text-xs">
-                      Choose Request</span>
-                  </div>
-                </div>
+            </div> 
             <span class="flex justify-end w-full">
               <button
                 @click="$router.push('/dashboard/provider/experience/appointments')"

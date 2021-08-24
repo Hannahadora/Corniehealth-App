@@ -16,7 +16,7 @@
       >
        Appointment
       </span>
-      <span class="w-full h-screen overflow-auto">
+      <span class="w-full">
           <appointment-empty-state
                 v-if="empty"
           />

@@ -1,5 +1,5 @@
 <template>
-  <span class="w-20 h-15 relative">
+  <span class="w-10 h-10 relative">
     <div
       class="
         w-full
