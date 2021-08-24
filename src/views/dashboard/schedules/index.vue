@@ -1,23 +1,26 @@
 <template>
-  <div class="w-full my-2 h-full overflow-y-auto">
-      <div class="container-fluid bg-white p-4 sm:p-2 h-full">
-        <div class="w-full border-b-2 curved flex py-2">
+  <div class="w-full my-2 h-screen">
+      <div class="container-fluid bg-white sm:p-6 h-full">
+        <div class="w-full border-b-2 curved flex py-2 mt-4">
             <div class="container-fluid flex font-semibold text-xl py-2">
-                <h2>Schedules (Shifts | Availability | Slots)</h2>
+                <h2>Schedules & Slots</h2>
             </div>
         </div>
 
-<!-- 
-        <div class="w-full border-b-4 curved flex my-6">
-            <div class="container-fluid flex font-semibold text-xl">
-                <a class="px-4 py-2 active-tab " :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }">Schedule</a>
-                <a class="px-4 py-2 active-tab " :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }">Slot</a>
-            </div>
-        </div> -->
 
-        <Modal1 :visible="false">
-            <h1>Hello</h1>
-        </Modal1>
+        <div class="w-full border-b-4 curved flex my-8">
+            <div class="container-fluid flex font-semibold text-xl">
+                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
+                  @click="() => activeTab = 0"
+                >Schedule</a>
+                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
+                  @click="() => activeTab = 1"
+                >Availability</a>
+                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 2, 'text-gray-500': activeTab !== 2 }"
+                  @click="() => activeTab = 2"
+                >Fixed Slot</a>
+            </div>
+        </div>
 
         <Overlay :show="show">
             <Modal :bigger="true">
@@ -62,30 +65,6 @@
             </Modal>
         </Overlay>
 
-        <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane">
-          <EditSchedule />
-        </side-modal>
-
-        <side-modal :visible="showActorsPane" @closesidemodal="() => showActorsPane = false">
-          <AllActors :schedule="selectedSchedule" />
-        </side-modal>
-
-        <side-modal :visible="false">
-          <AdvancedFilter />
-        </side-modal>
-
-        <side-modal :visible="showViewPane" :header="'View Stot'">
-          <div class="w-full my-3">
-            <ViewDetails :schedule="selectedSchedule" />
-          </div>
-          <div class="w-full my-3">
-            <ViewPlan :schedule="selectedSchedule" />
-          </div>
-          <div class="w-full my-3">
-            <ViewBreaks :schedule="selectedSchedule" />
-          </div>
-        </side-modal>
-
         <div class="w-full curved flex py-2 justify-end my-6">
             <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
                 <Button :loading="false">
@@ -95,226 +74,55 @@
                 </Button>
             </div>
         </div>
-          <div class="w-full pb-7">
-            <div class="flex w-full justify-between mt-5 items-center">
-            <span class="flex items-center">
-                <sort-icon class="mr-5" />
-                <icon-input
-                class="border border-gray-600 rounded-full focus:outline-none"
-                type="search"
-                v-model="query"
-                >
-                <template v-slot:prepend>
-                    <search-icon />
-                </template>
-                </icon-input>
-            </span>
-            <span class="flex justify-between items-center">
-                <print-icon class="mr-7" />
-                <table-refresh-icon class="mr-7" />
-                <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-            </span>
-            </div>
-            <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5 primary-bg">
-            <template v-slot:item="{ item }">
-                <span v-if="getKeyValue(item).key == 'action'">
-                <table-options>
-                    <li
-                    @click="
-                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: getKeyValue(item).value} })
-                    "
-                    class="
-                        list-none
-                        items-center
-                        flex
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                        my-1
-                        py-3
-                    "
-                    >
-                    <eye-icon class="mr-3 mt-1" />
-                    View
-                    </li>
-                    <li
-                    @click="
-                        viewSchedule(getKeyValue(item).value)
-                    "
-                    class="
-                        list-none
-                        items-center
-                        flex
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                        my-1
-                        py-3
-                    "
-                    >
-                    <eye-icon class="mr-3 mt-1" />
-                    View Actors
-                    </li>
-                    <li
-                    @click="
-                        $router.push({ name: 'New Shift' })
-                    "
-                    class="
-                        list-none
-                        items-center
-                        flex
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                        my-1
-                        py-3
-                    "
-                    >
-                    <edit-icon class="mr-3 mt-1" />
-                    Create Schedule
-                    </li>
-                    <li
-                    @click="
-                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: getKeyValue(item).value } })
-                    "
-                    class="
-                        list-none
-                        items-center
-                        flex
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                        my-1
-                        py-3
-                    "
-                    >
-                    <edit-icon class="mr-3 mt-1" />
-                    Edit Schedule
-                    </li>
-                    <li
-                    @click="
-                        () => showEditPane = true
-                    "
-                    class="
-                        list-none
-                        items-center
-                        flex
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                        my-1
-                        py-3
-                    "
-                    >
-                    <edit-icon class="mr-3 mt-1" />
-                    Edit Slot
-                    </li>
-                    <li
-                    v-if="isActive(getKeyValue(item).value)"
-                    @click="deactivate(getKeyValue(item).value)"
-                    class="
-                        list-none
-                        flex
-                        my-1
-                        py-3
-                        items-center
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                    "
-                    >
-                    <delete-icon class="mr-3" /> Deactivate
-                    </li>
-                    <li
-                    v-if="!isActive(getKeyValue(item).value)"
-                    @click="activate(getKeyValue(item).value)"
-                    class="
-                        list-none
-                        flex
-                        my-1
-                        py-3
-                        items-center
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                    "
-                    >
-                    <delete-icon class="mr-3" /> Activate
-                    </li>
-                    <li
-                    @click="destory(getKeyValue(item).value)"
-                    class="
-                        list-none
-                        flex
-                        my-1
-                        py-3
-                        items-center
-                        text-xs
-                        font-semibold
-                        text-gray-700
-                        hover:bg-gray-100
-                        hover:text-gray-900
-                        cursor-pointer
-                    "
-                    >
-                    <delete-icon class="mr-3" /> Delete
-                    </li>
-                </table-options>
-                </span>
-                <span v-else> {{ getKeyValue(item).value }} </span>
-            </template>
-            </Table>
-            
-            <!-- <cornie-table :columns="rawHeaders" v-model="items">
+          <div class="w-full pb-7 mb-8">
+             <cornie-table :columns="headers" v-model="items">
+              
+              <template #name="{ item }">
+                <p>{{ item.name }}</p>
+              </template>
+              <template #days="{ item }">
+                <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
+              </template>
+              <template #status="{ item }">
+                <div class="container">
+                  <span class="p-2 px-3 rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
+                </div>
+              </template>
+              <template #practitioners="{ item }">
+                <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                  <span class="p-2 px-3 rounded-full">
+                    <Actors :items="item.practitioners" />
+                  </span>
+                </div>
+              </template>
+
               <template #actions="{ item }">
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                   <eye-icon class="mr-3 mt-1" />
                   <span class="ml-3 text-xs" @click="
-                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View</span>
+                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <edit-icon class="mr-3 mt-1" />
-                  <span class="ml-3 text-xs" @click="
-                        $router.push({ name: 'Patient Experience Management' })
-                    ">Create Schedule</span>
-                                      
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <delete-icon />
+                  <EditIcon />
                   <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Schedule</span>
                 </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="addActor(item.id)">
+                  <AddIcon class="mr-3 mt-1" />
+                  <span class="ml-3 text-xs" >Add Actor/Practitioner</span>
+                </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <delete-icon />
+                  <EditIcon />
+                  <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Slot</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="!isActive(item.id)">
+                  <EditIcon />
                   <span class="ml-3 text-xs"
-                    v-if="isActive(item.id)"
                     @click="activate(item.id)"
                   >Acivate</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <delete-icon />
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="isActive(item.id)">
+                  <DeactivateIcon />
                   <span class="ml-3 text-xs"
-                    v-if="isActive(item.id)"
                     @click="deactivate(item.id)"
                   >Deacivate</span>
                 </div>
@@ -325,20 +133,51 @@
                   >Delete</span>
                 </div>
               </template>
-            </cornie-table> -->
+            </cornie-table>
             
             <column-filter
             :columns="rawHeaders"
             v-model:preferred="preferredHeaders"
             v-model:visible="showColumnFilter"
             />
+             <side-modal :visible="showActorsPane" :header="'All Actors'" @closesidemodal="() => showActorsPane = false">
+              <AllActors :schedule="selectedSchedule" />
+            </side-modal>
+
+            <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane">
+              <EditSchedule  />
+            </side-modal>
+
+            <side-modal :visible="showAddActorsPane" :header="'Add Actor/Practitioner'" @closesidemodal="() => showAddActorsPane = false">
+              <AddActors :schedule="selectedSchedule" :actors="allPractitioners" @actoradded="actorAdded" @close="() =>  showAddActorsPane = false" />
+            </side-modal>
+
+            <side-modal :visible="false">
+              <AdvancedFilter />
+            </side-modal>
+
+            <side-modal :visible="showViewPane" :header="'View Stot'">
+              <div class="w-full my-3">
+                <ViewDetails :schedule="selectedSchedule" />
+              </div>
+              <div class="w-full my-3">
+                <ViewPlan :schedule="selectedSchedule" />
+              </div>
+              <div class="w-full my-3">
+                <ViewBreaks :schedule="selectedSchedule" />
+              </div>
+            </side-modal>
+        </div>
+
+        <div style="height: 50px">
+
         </div>
       </div>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
+// import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -354,6 +193,8 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from '@/components/icons/edit.vue'
+import AddIcon from '@/components/icons/add.vue'
+import DeactivateIcon from '@/components/icons/deactivate.vue'
 import Button from '@/components/globals/corniebtn.vue'
 import Modal1 from "@/components/modal.vue";
 
@@ -367,23 +208,30 @@ import ViewPlan from './components/view-planning.vue'
 import ViewBreaks from './components/view-breaks.vue'
 import AllActors from './components/all-actors.vue'
 import AdvancedFilter from './components/advanced-filter.vue'
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import Actors from './components/actors.vue'
+import AddActors from './components/add-actor.vue'
+import IPractitioner from "@/types/IPractitioner";
 
 const shifts = namespace("shifts");
 const schedulesStore = namespace("schedules");
+const contacts = namespace('practitioner');
+
 
 interface IRole {
-    name: string,
-    description: string,
-    isDefault: boolean,
-    isSuperAdmin: boolean,
-    id: string,
-    createdAt: Date,
-    updatedAt: Date,
+  name: string,
+  description: string,
+  isDefault: boolean,
+  isSuperAdmin: boolean,
+  id: string,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 @Options({
   components: {
-    Table,
+    // Table,
+    AddActors,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
@@ -407,6 +255,10 @@ interface IRole {
     ViewBreaks,
     AllActors,
     AdvancedFilter,
+    CornieTable,
+    Actors,
+    AddIcon,
+    DeactivateIcon,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -420,11 +272,18 @@ export default class PractitionerExistingState extends Vue {
   showViewPane = false;
   showAllActors = false;
   showActorsPane = false;
+  showAddActorsPane = false;
 
   selectedSchedule: any = { };
 
   @shifts.State
   shifts!: any[];
+
+  @contacts.State
+  practitioners!: IPractitioner[];
+
+  @contacts.Action
+  fetchPractitioners!:() => Promise<boolean>;
 
   @shifts.Action
   getShifts!: () => Promise<void>;
@@ -457,48 +316,53 @@ export default class PractitionerExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Name",
-      value: "name",
+      title: "Name | Identifier",
+      key: "name",
       show: true,
     },
-    { title: "No. of Days", value: "numberOfDays", show: true },
-    { title: "Time Zone", value: "timeZone", show: true },
     {
-      title: "TIming",
-      value: "timing",
+      title: "Description",
+      key: "description",
+      show: true,
+    },
+    {
+      title: "Specialty",
+      key: "specialty",
+      show: true,
+    },
+    { title: "Days", key: "days", show: true },
+    {
+      title: "Timing",
+      key: "timing",
+      show: true,
+    },
+    {
+      title: "Actors",
+      key: "practitioners",
       show: true,
     },
     {
       title: "Status",
-      value: "status",
-      show: false,
+      key: "status",
+      show: true,
     },
-    // {
-    //   title: "Members",
-    //   value: "practitioners",
-    //   show: true,
-    // },
-    // {
-    //   title: "Access Role",
-    //   value: "accessRole",
-    //   show: false,
-    // },
-    // {
-    //   title: "Gender",
-    //   value: "gender",
-    //   show: false,
-    // },
-    {
-      title: "Description",
-      value: "description",
-      show: false,
-    },
-    // {
-    //   title: "Physical Type",
-    //   value: "physicalType",
-    //   show: false,
-    // },
+    
   ];
+
+  get allPractitioners() {
+    if (!this.practitioners || this.practitioners.length === 0) return [ ];
+    return this.practitioners
+    .filter(i => this.selectedSchedule && this.selectedSchedule.id && this.selectedSchedule.practitioners.findIndex((j: any) => j.id === i.id) < 0)
+    .map(i => {
+      console.log(i, "i");
+      
+      return {
+        code: i.id,
+        display: `${i.firstName} ${i.lastName}`,
+        image: i.image
+      }
+    })
+  }
 
   get headers() {
     const preferred =
@@ -506,7 +370,7 @@ export default class PractitionerExistingState extends Vue {
         ? this.preferredHeaders
         : this.rawHeaders;
     const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
+    return [...first(4, headers), { title: "", key: "action", image: true }];
   }
 
   get items() {
@@ -515,8 +379,6 @@ export default class PractitionerExistingState extends Vue {
       return {
         ...i,
         action: i.id,
-        practitioners: i.practitioners.length,
-        numberOfDays: i.days.length,
         status: i.status,
         schedule: i.scheduleType,
         timing: `${i.startTime} - ${i.endTime}`
@@ -525,6 +387,11 @@ export default class PractitionerExistingState extends Vue {
     return shifts;
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);
+  }
+
+  actorAdded(actor: any) {
+    const index = this.schedules.findIndex(i => i.id === actor.scheduleId);
+    this.schedules[index].practitioners.unshift(actor)
   }
 
   async remove(id: string) {
@@ -602,6 +469,14 @@ export default class PractitionerExistingState extends Vue {
     // this.showViewPane = true;
   }
 
+  addActor(id: string) {
+    const schedule = this.schedules.find((i: any) => i.id === id);
+    if (schedule) this.selectedSchedule = schedule;
+    console.log(schedule, "selected");
+    
+    this.showAddActorsPane = true;
+  }
+
   isActive(id: string) {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (!schedule) return false;
@@ -614,6 +489,7 @@ export default class PractitionerExistingState extends Vue {
 
   async created() {
     if (!this.schedules || this.schedules.length === 0) await this.getSchedules();
+    if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
     console.log(this.schedules, "schs");
     
   }
@@ -629,5 +505,27 @@ export default class PractitionerExistingState extends Vue {
 
     .active-color {
         border-color: #FE4D3C;
+    }
+
+    .status-active {
+      background: #F3FCF8;
+      color: #35BA83;
+      
+    }
+
+    .status-inactive {
+      background: #FFF1F0;
+      color: #FE4D3C;
+    }
+
+    .border-b-4 {
+      border-bottom: 4px solid #F0F4FE;
+    }
+
+    .h-screen {
+      height: 100vh;
+      overflow: scroll;
+      padding-bottom: 40px;
+      padding-bottom: 24px;
     }
 </style>

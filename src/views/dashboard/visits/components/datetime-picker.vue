@@ -9,7 +9,7 @@
                     >
                     {{ label }}
                 </label>
-                <p class="border rounded-md w-full p-2 flex justify-between" @click="showSelectArea">
+                <p class="border rounded-md w-full p-2 flex justify-between">
                     <span class="flex"><span><DateIcon class="pr-4" /></span><slot name="date" /></span>
                     <span><slot name="time" /></span>
                 </p>
@@ -22,7 +22,7 @@
                                     Cancel
                                 </a>
                             </corniebtn>
-                            <Button 
+                            <Button
                             class="text-white-500"
                             >
                                 <a @click="() => show = false" style="background: #FE4D3C" class="text-white hover:bg-blue-700 cursor-pointer focus:outline-none  font-bold py-2 px-4 rounded-full">

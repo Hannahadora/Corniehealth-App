@@ -13,7 +13,7 @@
                 <div class="container-fluid w-full py-2 flex justify-between items-center">
                     <div class="w-8/12">
                         <h2 class="mb-2 font-semibold text-lg">Password</h2>
-                        <p><span>The same password strength are enforced for all users across the app.</span> <a class="text-blue-500 uppercase">View Policy</a></p>
+                        <p><span>The same password strength are enforced for all users across the app.</span> <a class="text-blue-500 uppercase font-semibold text-xs">View Policy</a></p>
                     </div>
                     <div class="w-4/12 flex justify-end">
                         <Button :loading="false" class="focus:outline-none" @click="togglePasswordSection" v-if="!willUpdatePassword">
@@ -33,18 +33,26 @@
                     <div class="container-fluid">
                         <div class="w-full my-3">
                             <div class="w-6/12">
-                                <CornieInput label="Current Password" :rules="required" type="password" v-model="data.previousPassword" placeholder="Enter Password" />
+                                <div class="w-full">
+                                    <div class="w-11/12">
+                                        <CornieInput label="Current Password" :rules="required" type="password" v-model="data.previousPassword" placeholder="Enter Password" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="w-full flex">
                             <div class="w-6/12 my-3">
-                                <CornieInput label="New Password" :rules="password" type="password" name="newPassword" v-model="data.newPassword"  placeholder="New Password" />
-                                <div class="w-full flex justify-between" style="width: 90%" v-if="checkPassword">
-                                    <p class="underbar w-2/12 border" :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
-                                    <p class="underbar bg-red-500 w-2/12 border" :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
-                                    <p class="underbar bg-green-500 w-2/12 border"  :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
-                                    <p class="underbar bg-green-500 w-2/12 border" :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
-                                    <p class="underbar bg-green-500 w-2/12 border"  :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
+                                <div class="w-full">
+                                    <div class="w-11/12">
+                                        <CornieInput label="New Password" :rules="password" type="password" name="newPassword" v-model="data.newPassword"  placeholder="New Password" />
+                                        <div class="w-full flex justify-between" style="width: 90%" v-if="checkPassword">
+                                            <p class="underbar w-2/12 border" :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
+                                            <p class="underbar bg-red-500 w-2/12 border" :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
+                                            <p class="underbar bg-green-500 w-2/12 border"  :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
+                                            <p class="underbar bg-green-500 w-2/12 border" :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
+                                            <p class="underbar bg-green-500 w-2/12 border"  :class="{ 'underbar-green': data.newPassword && data.newPassword.length >= 6 }"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="w-6/12 my-3">
@@ -71,9 +79,9 @@
                     <div class="w-9/12">
                         <h2 class=" font-semibold text-lg mb-2">Two Factor Authentication</h2>
                         <p class="flex">Two factor authentication enforced for all users within your domain. <span class="ml-3">
-                            <Tooltip :text="'This is a test'">
+                            <!-- <Tooltip :text="'This is a test'"> -->
                                 <Icon :type="2" />
-                            </Tooltip>
+                            <!-- </Tooltip> -->
                         </span></p>
                     </div>
                     <div class="w-3/12 flex justify-end">
@@ -111,6 +119,10 @@
             <div class="w-full mt-3 password-section" :class="{ 'update-questions border-b-2 pb-6': willUpdateQuestions }">
                 <SecurityQuestions @closesection="closeSection" />
             </div>
+        </div>
+
+        <div class="w-full" style="height: 100px">
+
         </div>
 
     </div>
@@ -218,6 +230,7 @@ export default  class UserSecurity extends Vue {
 <style scoped>
     .topest {
         overflow-x: scroll;
+        height: 100vh
     }
     /* Hide scrollbar for Chrome, Safari and Opera */
     .topest::-webkit-scrollbar {
@@ -242,13 +255,13 @@ export default  class UserSecurity extends Vue {
     }
 
     .update-2fa {
-        height: 303px;
+        height: 315px;
         overflow-y: hidden;
         transition: all .5s ease-in-out;
     }
 
     .update-questions {
-        height: 470px;
+        height: 480px;
         overflow-y: hidden;
         transition: all .5s ease-in-out;
     }

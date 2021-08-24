@@ -1,5 +1,5 @@
 import { StoreOptions } from "vuex";
-import { deleteSchedule, createSchedule, getSchedules, activateSchedule, deactivateSchedule, updateSchedule } from "./helper";
+import { deleteSchedule, createSchedule, getSchedules, activateSchedule, deactivateSchedule, updateSchedule, removePractitioner, addPractitioner } from "./helper";
 
 interface SchedulesStore {
   schedules: any[],
@@ -28,6 +28,13 @@ export default {
         if (id) {
             const index = state.schedules.findIndex(i => i.id === id);
             if (index >= 0) state.schedules[index].status = 'active';
+        }
+    },
+
+    removePractitioner(state, data) {
+        if (data) {
+            const index = state.schedules.findIndex(i => i.id === data.scheduleId);
+            if (index >= 0) state.schedules[index].practitioners = state.schedules[index].practitioners.filter((i: any) => data.removedPractitioners.find((j: any) => j.id === i.id) < 0);
         }
     },
 
@@ -78,6 +85,21 @@ export default {
       const activated = await activateSchedule(id);
       if (!activated) return false;
       ctx.commit("activateSchedule", id);
+      return true;
+    },
+
+    async removePractitioner(ctx, reqData: any) {
+      const removed = await removePractitioner(reqData.body, reqData.id);
+      if (!removed) return false;
+      ctx.commit("removePractitioner", { scheduleId: reqData.id, removedPractitioners: reqData.body });
+      return true;
+    },
+
+    async addPractitioner(ctx, reqData: any) {
+      const removed = await addPractitioner(reqData.body, reqData.id);
+      
+      if (!removed) return false;
+      ctx.commit("addPractitioner", { scheduleId: reqData.id, removedPractitioners: reqData.body });
       return true;
     },
 

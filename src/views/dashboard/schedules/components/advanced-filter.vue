@@ -58,6 +58,7 @@ import SearchIcon from "@/components/icons/search.vue";
     }
 })
 export default class AdvancedFilter extends Vue {
+    search = ''
     filterOptions: any = [
         {
             name: 'Filter by practitioner',

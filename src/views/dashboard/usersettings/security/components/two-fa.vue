@@ -12,9 +12,13 @@
 
             <div class="w-full flex border-dashed-b-2 pb-4">
                 <div class="w-8/12 my-3">
-                    <p class="m-0">Enter the one time password sent to you email: <span class="text-blue-500">random@email.com</span></p>
-                    <CornieInput label="" placeholder="Enter OTP" /> <br>
-                    <a class="cursor-pointer text-red-500 uppercase font-semibold py-2">Send Code</a>
+                    <div class="w-full">
+                        <div class="w-11/12">
+                            <p class="m-0">Enter the one time password sent to you email: <span class="text-blue-500">random@email.com</span></p>
+                            <CornieInput label="" placeholder="Enter OTP" /> <br>
+                            <a class="cursor-pointer text-red-500 uppercase font-semibold py-2">Send Code</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="w-4/12 my-3 mt-5">
                     <CornieInput label="Confirm Password"  placeholder="" />

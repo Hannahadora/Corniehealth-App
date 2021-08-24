@@ -66,6 +66,33 @@ export async function activateSchedule(id: any) {
   }
 }
 
+export async function removePractitioner(body: any, id: any) {
+  try {
+    const response = await cornieClient().post(`/api/v1/schedule/remove-practitioners/${id}`, body);
+    console.log(response, "RESPONSE");
+    
+    return response.success as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error removing this actor",
+      status: "error",
+    });
+  }
+}
+
+export async function addPractitioner(body: any, id: any) {
+  try {
+    const response = await cornieClient().post(`/api/v1/schedule/add-practitioners/${id}`, body);
+    
+    return response.success as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error adding this actor",
+      status: "error",
+    });
+  }
+}
+
 export async function deactivateSchedule(id: any) {
   try {
     const response = await cornieClient().post(`/api/v1/schedule/deactivate/${id}`, { });

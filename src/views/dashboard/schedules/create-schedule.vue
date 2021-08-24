@@ -10,7 +10,7 @@
             <div class="w-full my-6">
                 <div class="container-fluid">
                     <div title="Shift Details" class="bg-white shadow-xl rounded-lg">
-                        <div class="w-full px-4 details-area " :class="{ 'details-area-full': showDetails}">
+                        <div class="w-full px-4 details-area " :class="{ 'details-area-full': showDetails, 'details-area-fuller': showSelectArea }">
                             <div class="w-full curved py-2"  :class="{ 'border-b-2': showDetails }">
                                 <h2 class="flex justify-between w-full font-bold items-center">
                                     <span>Schedule Details</span>
@@ -57,40 +57,119 @@
                             </div>
 
                             <div class="container-fluid my-4">
-                                <p class="text-sm font-normal">Select Actor for this schedule</p>
+                                <p class="text-sm font-normal font-bold uppercase flex items-center cursor-pointer" style="color: #FE4D3C" @click="toggleSelectDisplay"><span class="mr-3">Select Actor(s) for this schedule </span><AddIcon /></p>
                             </div>
 
                             <div class="container-fluid my-3">
-                                <div class="w-6/12 mb-3">
-                                <SearchBox :items="actors" v-model="data.actor" >
-                                    <template #item="data">
-                                        <p class="my-2 flex justify-between">
-                                            <span>{{ data.item.display }}</span>
-                                            <span @click="actorSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
-                                        </p>
-                                    </template>
-                                </SearchBox>
-                                    <!-- <input type="text" class="p-2 rounded-full border focus:outline-none w-full" placeholder="search"> -->
-                                </div>
-
-                                <div class="w-6/12 border-t-2 py-3">
-                                    <div class="w-full flex items-center" v-for="(actor, index) in data.practitioners" :key="index">
-                                        <div class="w-1/12">
-                                            <div class="w-full">
-                                                <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
-                                                <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
-                                            </div>
-                                        </div>
-                                        <div class="w-10/12 px-5">
-                                            <p class="flex flex-col">
-                                                <span>{{ actor.display }}</span>
-                                                <span class="text-xs">{{ actor.job }}</span>
-                                            </p>
-                                        </div>
-                                        <div class="w-1/12">
-                                            <span @click="removeActor(actor.code)"><DeleteIcon /></span>
+                                <div class="w-full flex" v-if="showSelectArea">
+                                    <div class="w-4/12 mb-3">
+                                        <div class="w-11/12 mx-auto">
+                                            <SearchBox :items="actors" >
+                                                <template #item="data">
+                                                    <p class="my-2 flex justify-between">
+                                                        <span>{{ data.item.display }}</span>
+                                                        <span @click="actorSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
+                                                    </p>
+                                                </template>
+                                            </SearchBox>
                                         </div>
                                     </div>
+                                    <div class="w-4/12 mb-3">
+                                        <div class="w-11/12 mx-auto">
+                                            <SearchBox :items="allDevices">
+                                                <template #item="data">
+                                                    <p class="my-2 flex justify-between">
+                                                        <span>{{ data.item.display }}</span>
+                                                        <span @click="deviceSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
+                                                    </p>
+                                                </template>
+                                            </SearchBox>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="w-4/12 mb-3">
+                                        <div class="w-11/12 mx-auto">
+                                            <SearchBox :items="allHealthcares">
+                                                <template #item="data">
+                                                    <p class="my-2 flex justify-between">
+                                                        <span>{{ data.item.display }}</span>
+                                                        <span @click="actorSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
+                                                    </p>
+                                                </template>
+                                            </SearchBox>
+                                        </div>
+                                    </div> -->
+                                </div>
+
+                                <div class="w-full flex">
+                                    <div class="w-4/12 py-3">
+                                        <div class="w-11/12 mx-auto">
+                                            <p class="text-sm font-normal font-bold uppercase flex items-center cursor-pointer py-2" style="border-bottom: 1px dashed #C2C7D6" >
+                                                <span class="mr-3">Practioners </span></p>
+                                            <div class="w-full flex items-center" v-for="(actor, index) in data.practitioners" :key="index">
+                                                <div class="w-1/12">
+                                                    <div class="w-full">
+                                                        <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
+                                                        <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
+                                                    </div>
+                                                </div>
+                                                <div class="w-10/12 px-5">
+                                                    <p class="flex flex-col">
+                                                        <span>{{ actor.display }}</span>
+                                                        <span class="text-xs">{{ actor.job }}</span>
+                                                    </p>
+                                                </div>
+                                                <div class="w-1/12">
+                                                    <span @click="removeActor(actor.code)"><DeleteIcon /></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="w-4/12 py-3">
+                                        <div class="w-11/12 mx-auto">
+                                        <p class="text-sm font-normal font-bold uppercase flex items-center cursor-pointer py-2" style="border-bottom: 1px dashed #C2C7D6" >
+                                            <span class="mr-3">Devices </span></p>
+                                            <div class="w-full flex items-center" v-for="(actor, index) in data.devices" :key="index">
+                                                <div class="w-1/12">
+                                                    <div class="w-full">
+                                                        <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
+                                                        <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
+                                                    </div>
+                                                </div>
+                                                <div class="w-10/12 px-5">
+                                                    <p class="flex flex-col">
+                                                        <span>{{ actor.display }}</span>
+                                                        <span class="text-xs">{{ actor.job }}</span>
+                                                    </p>
+                                                </div>
+                                                <div class="w-1/12">
+                                                    <span @click="removeActor(actor.code)"><DeleteIcon /></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="w-4/12 py-3">
+                                        <div class="w-11/12 mx-auto pt-2" style="border-top: 1px dashed #C2C7D6">
+                                            <div class="w-full flex items-center" v-for="(actor, index) in data.practitioners" :key="index">
+                                                <div class="w-1/12">
+                                                    <div class="w-full">
+                                                        <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
+                                                        <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
+                                                    </div>
+                                                </div>
+                                                <div class="w-10/12 px-5">
+                                                    <p class="flex flex-col">
+                                                        <span>{{ actor.display }}</span>
+                                                        <span class="text-xs">{{ actor.job }}</span>
+                                                    </p>
+                                                </div>
+                                                <div class="w-1/12">
+                                                    <span @click="removeActor(actor.code)"><DeleteIcon /></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -152,7 +231,6 @@
                                             <v-date-picker  v-model="data.startDate" style="position:relative;z-index:9000;width:100%"></v-date-picker>
                                              <label
                                                 class="block uppercase my-1 text-xs font-bold"
-                                                :for="`${id}-inputfield`"
                                                 >
                                                 Time
                                             </label>
@@ -172,7 +250,6 @@
                                             <v-date-picker name="eeee" v-model="data.endDate" style="z-index:9000;width:100%"></v-date-picker>
                                             <label
                                                 class="block uppercase my-1 text-xs font-bold"
-                                                :for="`${id}-inputfield`"
                                                 >
                                                 Time
                                             </label>
@@ -390,12 +467,15 @@ import DateTimePicker from './components/datetime-picker.vue';
 import DateTimePick from './components/datetime-picker.vue';
 import MultiSelect from './components/apply-to.vue'
 import Templates from "@/components/icons/templates.vue";
+import AddIcon from '@/components/icons/add.vue'
+import IDevice from "@/types/IDevice";
 
 const healthcare = namespace('healthcare');
 const schedulesStore = namespace('schedules');
 const contacts = namespace('practitioner');
 const userStore = namespace("user");
 const locationStore = namespace("location");
+const devices = namespace("device");
 
 @Options({
   components: {
@@ -412,6 +492,7 @@ const locationStore = namespace("location");
       DateTimePick,
       MultiSelect,
     Templates,
+    AddIcon,
   },
 })
 export default class Shift extends Vue {
@@ -419,11 +500,14 @@ export default class Shift extends Vue {
  showBreaks = false;
  showPlanning = false;
  loading = false;
+ showSelectArea = false;
 
     data: any = { 
         days: [ ],
         practitioners: [ ],
-        breaks: [ ]
+        breaks: [ ],
+        healthcares: [ ],
+        devices: [ ],
     }
 
  shift: any = {
@@ -439,6 +523,12 @@ export default class Shift extends Vue {
  actorSelected(actor: any) {
      if (this.data.practitioners.findIndex((i: any) => i.code === actor.code) < 0) {
          this.data.practitioners.push(actor);
+     }
+ }
+
+ deviceSelected(device: any) {
+     if (this.data.devices.findIndex((i: any) => i.code === device.code) < 0) {
+         this.data.devices.push(device);
      }
  }
 
@@ -465,6 +555,12 @@ export default class Shift extends Vue {
  @contacts.Action
  fetchPractitioners!: () => Promise<void>;
 
+ @devices.State
+ devices!: IDevice[];
+
+ @contacts.Action
+ fetchDevices!: () => Promise<void>;
+
  @healthcare.State
  healthcares!: IHealthcare[];
 
@@ -490,7 +586,7 @@ export default class Shift extends Vue {
   getSchedules!: () => Promise<void>;
 
   @schedulesStore.Action
-  updateSchedule!: (body: any) => Promise<void>;
+  updateSchedule!: (body: any) => Promise<boolean>;
 
  timeZones = [
     'Africa/Lagos', 'Africa/Algiers', 'Europe/Amsterdam', 'Europe/Berlin', 'Europe/Rome', 'WAT: West Africa Time', 'WEST: Western European Summer Time', 'MET: Middle European Time', 'CET: Central European Time'
@@ -536,6 +632,10 @@ export default class Shift extends Vue {
      this.showPlanning = !this.showPlanning;
  }
 
+ toggleSelectDisplay() {
+     this.showSelectArea = !this.showSelectArea;
+ }
+
 
  healthServiceSelected(data: any) {
      this.shift.healthcareServices.push(data);
@@ -579,13 +679,33 @@ export default class Shift extends Vue {
      })
  }
 
+ get allDevices() {
+     if (!this.devices || this.devices.length === 0) return [ ];
+     return this.devices.map(i => {
+         return {
+             code: i.id,
+             display: i.deviceName
+         }
+     })
+ }
+
+ get allHealthcares() {
+     if (!this.healthcares || this.healthcares.length === 0) return [ ];
+     return this.healthcares.map(i => {
+         return {
+             code: i.id,
+             display: i.name
+         }
+     })
+ }
+
 
 async created() {
     if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
     if (!this.locations || this.locations.length === 0) await this.fetchLocations();
     if (!this.schedules || this.schedules.length === 0) await this.getSchedules();
-    console.log(this.locations, "locations");
-    console.log(this.practitioners, "prea");
+    if (!this.healthcares || this.healthcares.length === 0) await this.fetchHealthcares();
+    if (!this.devices || this.devices.length === 0) await this.fetchDevices();
     if (this.$route.params.scheduleId) {
         const targetSchedule = this.schedules.find((i: any) => i.id === this.$route.params.scheduleId);
         this.data = {
@@ -626,6 +746,7 @@ async created() {
          organizationId: this.data.organizationId ? this.data.organizationId : this.user.orgId,
          slotSize: 5,
          practitioners: this.data.practitioners.map((i: any) => i.code),
+         devices: this.data.devices.map((i: any) => i.code),
          id: this.$route.params.scheduleId,
          startTime: this.data.startTime ? `${this.data.startTime.split(':')[0]}:${this.data.startTime.split(':')[1]}` : '',
          endTime: this.data.endTime ? `${this.data.endTime.split(':')[0]}:${this.data.endTime.split(':')[1]}` : ''
@@ -634,19 +755,52 @@ async created() {
      this.loading = true;
     try {
         if (!this.$route.params.scheduleId) {
-            await this.createSchedule(body);
-            notify({
-                msg: "Schedule created successfully",
-                status: "success",
-            });
+            try {
+                const created = await this.createSchedule(body);
+                console.log(created, "CREATED");
+                
+                if (created) {
+                    notify({
+                        msg: "Schedule created successfully",
+                        status: "success",
+                    });
+                    this.$router.push('/dashboard/provider/schedules')
+                } else {
+                    notify({
+                        msg: "Schedule creation failed",
+                        status: "error",
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                notify({
+                    msg: "Schedule creation failed",
+                    status: "error",
+                });
+            }
         } else {
-            await this.updateSchedule(body);
-            notify({
-                msg: "Schedule created successfully",
-                status: "success",
-            });
+            try {
+                const updated = await this.updateSchedule(body);
+                if (updated) {
+                    notify({
+                        msg: "Schedule updated successfully",
+                        status: "success",
+                    });
+                    this.$router.push('/dashboard/provider/schedules')
+                } else {
+                    notify({
+                        msg: "Schedule update failed",
+                        status: "error",
+                    });
+                }
+            } catch (error) {
+                notify({
+                    msg: "Schedule update failed",
+                    status: "error",
+                });
+            }
         }
-        this.$router.push('/dashboard/provider/settings/schedules')
+        
     } catch (error) {
         console.log(error);
     }
@@ -716,5 +870,22 @@ async created() {
         background: #E1E3EA;
         color: gray;
         font-weight: 500;
+    }
+
+    .select-area {
+        height: 0;
+        transition: all .4s ease-in-out;
+        overflow: hidden;
+    }
+
+    .select-area-full {
+        height: 70px;
+        transition: all .4s ease-in-out;
+    }
+
+    .details-area-fuller {
+        height: 600px;
+        transition: all .5s ease-in-out;
+
     }
 </style>
