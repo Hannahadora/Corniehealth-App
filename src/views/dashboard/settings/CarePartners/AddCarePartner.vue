@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import DomainInput from "@/components/domain-input.vue";

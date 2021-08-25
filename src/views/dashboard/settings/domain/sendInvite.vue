@@ -68,7 +68,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import DomainInput from "@/components/domain-input.vue";
 import MultiInput from "@/components/multi-input.vue";

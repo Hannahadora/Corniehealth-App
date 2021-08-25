@@ -29,7 +29,7 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { DatePicker as VDatePicker } from "v-calendar";
-import CornieInput from "./CornieInput.vue";
+import CornieInput from "./cornieinput.vue";
 import CornieMenu from "./CornieMenu.vue";
 import CalendarIcon from "./icons/calendar.vue";
 

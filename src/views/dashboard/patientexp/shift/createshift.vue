@@ -148,7 +148,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Accordion from "@/components/accordion-component.vue";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import { namespace } from 'vuex-class';
 import IHealthcare from '@/types/IHealthcare'
 import CustomDropdown from '@/components/custom-dropdown.vue'

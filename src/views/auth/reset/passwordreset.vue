@@ -99,7 +99,7 @@ import PasswordInput from "@/components/PasswordInput.vue";
 import EllipseIcon from "@/components/icons/ellipse.vue";
 import TickIcon from "@/components/icons/tick.vue";
 import MultiInput from "@/components/multi-input.vue";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 
 type CreatedUser = { id: string; email: string };

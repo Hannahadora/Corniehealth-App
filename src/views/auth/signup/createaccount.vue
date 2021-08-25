@@ -211,9 +211,9 @@
 import { quantumClient } from "@/plugins/http";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import CornieRadio from "@/components/CornieRadio.vue";
+import CornieRadio from "@/components/cornieradio.vue";
 import QuantumIcon from "@/components/icons/quantum.vue";
 import CheckIcon from "@/components/icons/authcheck.vue";
 import InfoIcon from "@/components/icons/ainfo.vue";

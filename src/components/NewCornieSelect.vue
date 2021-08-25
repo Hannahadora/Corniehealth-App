@@ -35,7 +35,7 @@
 import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import CornieMenu from "./CornieMenu.vue";
-import CornieInput from "./CornieInput.vue";
+import CornieInput from "./cornieinput.vue";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import CornieCard from "./cornie-card/index";
 

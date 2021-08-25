@@ -197,7 +197,7 @@
 <script>
 import { cornieClient } from "@/plugins/http";
 import Avatar from "@/components/avatar.vue";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import PhoneInput from "@/components/phone-input.vue";

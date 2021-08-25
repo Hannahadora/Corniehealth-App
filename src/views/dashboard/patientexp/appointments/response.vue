@@ -84,8 +84,8 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import CardText from "@/components/card-text.vue";
-import CornieDialog from "@/components/Dialog.vue";
+//import CardText from "@/components/card-text.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -103,7 +103,7 @@ import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import CloseIcon from "@/components/icons/close.vue";
+//import CloseIcon from "@/components/icons/close.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
@@ -131,7 +131,7 @@ const appointment = namespace("appointment");
     NoteIcon,
     ThreeDotIcon,
     SearchIcon,
-    CloseIcon,
+   // CloseIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -142,7 +142,7 @@ const appointment = namespace("appointment");
     EyeIcon,
     EditIcon,
     CornieTable,
-    CardText,
+   // CardText,
     CornieDialog
   },
   

@@ -123,7 +123,7 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "add-request-reffer/:id?",
-            name: "New Requests",
+            name: "New Reffer",
             component: () =>
               import("@/views/dashboard/patientexp/requests/addRefferRequests.vue"),
           },   

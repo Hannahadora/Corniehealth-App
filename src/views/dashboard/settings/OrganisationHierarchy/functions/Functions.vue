@@ -141,7 +141,7 @@ import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CardTitle from "@/components/cornie-card/CornieCardTitle.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { string as yupString } from "yup";

@@ -142,7 +142,7 @@
 <script lang="ts">
 import Modal from "@/components/modal.vue";
 import { Prop, PropSync } from "vue-property-decorator";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DeleteIcon from "@/components/icons/delete.vue";

@@ -55,7 +55,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import { Prop, Watch } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";

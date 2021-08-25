@@ -267,8 +267,8 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-component.vue";
-import CornieInput from "@/components/CornieInput.vue";
-import CornieRadio from "@/components/CornieRadio.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import IPracticeform, { Question } from "@/types/IPracticeform";

@@ -127,7 +127,7 @@ import CornieDialog from "@/components/CornieDialog.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CornieSpacer from "@/components/CornieSpacer.vue";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieTooltip from "@/components/CornieTooltip.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import InformationIcon from "@/components/icons/InformationIcon.vue";

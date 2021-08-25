@@ -179,7 +179,7 @@
 </template>
 <script lang="ts">
 import { Options, setup, Vue } from "vue-class-component";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import OperationHours from "@/components/new-operation-hours.vue";

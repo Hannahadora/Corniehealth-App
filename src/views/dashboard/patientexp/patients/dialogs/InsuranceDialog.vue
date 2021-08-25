@@ -44,7 +44,7 @@ import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/NewCornieSelect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";

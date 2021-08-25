@@ -86,31 +86,31 @@ export default class CarePartnersExistingState extends Vue {
     {
       title: "Organisation Name",
       key: "name",
-      orderBy: (a: ICarePartner, b: ICarePartner) => a.name < b.name ? -1 : 1,
+   //   orderBy: (a: ICarePartner, b: ICarePartner) => a.name < b.name ? -1 : 1,
       show: true
     },
     {
       title: "Organisation Type",
       key: "organisationType",
-      orderBy: (a: ICarePartner, b: ICarePartner) => a.organisationType < b.organisationType ? -1 : 1,
+   //   orderBy: (a: ICarePartner, b: ICarePartner) => a.organisationType < b.organisationType ? -1 : 1,
       show: true
     },
     {
       title: "Address",
       key: "address",
-      orderBy: (a: ICarePartner, b: ICarePartner) => (a.address as string) < (b.address as string) ? -1 : 1,
+     // orderBy: (a: ICarePartner, b: ICarePartner) => (a.address as string) < (b.address as string) ? -1 : 1,
       show: true
     },
     {
       title: "Email",
       key: "email",
-      orderBy: (a: ICarePartner, b: ICarePartner) => a.email < b.email ? -1 : 1,
+   //   orderBy: (a: ICarePartner, b: ICarePartner) => a.email < b.email ? -1 : 1,
       show: true
     },
     {
       title: "Phone",
       key: "phone",
-      orderBy: (a: ICarePartner, b: ICarePartner) => (a.phone as string) < (b.phone as string) ? -1 : 1,
+   //   orderBy: (a: ICarePartner, b: ICarePartner) => (a.phone as string) < (b.phone as string) ? -1 : 1,
       show: true
     },
   ];

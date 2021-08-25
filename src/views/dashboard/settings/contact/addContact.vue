@@ -137,7 +137,7 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import Avatar from "@/components/avatar.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import IContact from "@/types/IContact";

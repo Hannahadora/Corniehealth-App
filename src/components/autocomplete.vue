@@ -35,7 +35,7 @@ import search from "@/plugins/search";
 import { nextTick } from "@vue/runtime-core";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CornieInput from "./CornieInput.vue";
+import CornieInput from "./cornieinput.vue";
 @Options({
   inheritAttrs: false,
   components: {

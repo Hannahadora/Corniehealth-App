@@ -196,7 +196,7 @@ import { Options, setup, Vue } from "vue-class-component";
 import { useHandleImage } from "@/composables/useHandleImage";
 import Accordion from '@/components/accordion-component.vue';
 import Button from '@/components/globals/corniebtn.vue';
-import CornieInput from '@/components/CornieInput.vue';
+import CornieInput from '@/components/cornieinput.vue';
 import DatePicker from '@/components/datepicker.vue';
 import Period from '@/components/daterangepicker.vue';
 import Avatar from '@/components/avatar.vue'

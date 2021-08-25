@@ -228,7 +228,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import CornieInput from "@/components/CornieInput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Modal from "@/components/modal.vue";
 import PhoneInput from "@/components/phone-input.vue";

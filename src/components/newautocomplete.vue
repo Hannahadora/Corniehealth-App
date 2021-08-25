@@ -40,7 +40,7 @@ import { nextTick } from "@vue/runtime-core";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import IconInput from "@/components/IconInput.vue";
-import CornieInput from "./CornieInput.vue";
+import CornieInput from "./cornieinput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 @Options({
   inheritAttrs: false,
