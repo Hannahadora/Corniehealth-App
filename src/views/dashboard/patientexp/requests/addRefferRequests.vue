@@ -14,29 +14,23 @@
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
-                    class="required"
-                    :rules="required"
                     :items="dropdowns.serviceCategory"
                     v-model="serviceCategory"
-                    label="status reason"
+                    label="activity definition"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                    class="required"
-                    :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
-                    label="intent"
+                    label="based on"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                    class="required"
-                    :rules="required"
                     :items="dropdowns.specialty"
                     v-model="specialty"
-                    label="category"
+                    label="replaces"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -45,7 +39,7 @@
                     :rules="required"
                     :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
                     v-model="appointmentType"
-                    label="priority"
+                    label="intent"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -54,7 +48,7 @@
                     :rules="required"
                     :items="['reason code']"
                     v-model="reasonCode"
-                    label="do not perform"
+                    label="category"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -62,7 +56,15 @@
                     :rules="required"
                     :items="['reason reference']"
                     v-model="reasonRef"
-                    label="reason for prohibition?"
+                    label="priority"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                   <cornie-select
+                    :rules="required"
+                    :items="['reason reference']"
+                    v-model="reasonRef"
+                    label="do not perform"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -71,15 +73,6 @@
             </accordion-component>
             <accordion-component title="Request Info" v-model="openedR">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="recorder"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
                   <cornie-select
                    class="required"
                     :rules="required"
@@ -134,51 +127,23 @@
                   >
                   </cornie-select>
                   <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="reason reference"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="definition"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="based on"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="supporting information"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-             <accordion-component title="Medication" v-model="openedS">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
                     :items="dropdowns.serviceCategory"
                     v-model="serviceCategory"
-                    label="medication code"
+                    label="order detail"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="precondition?"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                    <cornie-select
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="precondition code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -187,7 +152,7 @@
                     :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
-                    label="medication reference"
+                    label="reason code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -196,131 +161,39 @@
                     :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
-                    label="course of therapy type"
+                    label="request reference"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                     <cornie-input
+                    label="supporting info"
+                    placeholder="--Enter--"
+                    />
+                  <cornie-select
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="specimen"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                   class="required"
-                    :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
-                    label="dosage instruction"
+                    label="body site"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                   <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="initial fill"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                   <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                   <cornie-numinput
                     label="quantity"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                   <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="duration"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
+                    type="number"
+                    placeholder="--Enter--"
+                    />
+                  <div>
+                      <range-slider />
+                  </div>
                 </div>
             </accordion-component>
-             <accordion-component title="Refill Info" v-model="openedS">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="dispense interval"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="number of repeats allowed"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="quantity"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="expected supply duration"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="expected supply duration"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-             <accordion-component title="Substitution Allowed" v-model="openedS">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="Code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="reason"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-             <accordion-component title="Dispenser" v-model="openedS">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="dispenser"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-             <accordion-component title="Medication Administration" v-model="openedS">
+             <accordion-component title="Performer" v-model="openedS">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
                     class="required"
@@ -332,22 +205,20 @@
                   >
                   </cornie-select>
                   <cornie-select
+                   class="required"
+                    :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
                     label="performer"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                </div>
-            </accordion-component>
-             <accordion-component title="Fufillment" v-model="openedS">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
-                    class="required"
+                   class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="non-safety cap request"
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="location code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -356,52 +227,18 @@
                     :rules="required"
                     :items="dropdowns.serviceType"
                     v-model="serviceType"
-                    label="affix label?"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="fulfillment option"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="priority shipping"
+                    label="location"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                 </div>
             </accordion-component>
-              <accordion-component title="Substitution" v-model="openedS">
+             <accordion-component title="Forms" v-model="openedS">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
                     :items="dropdowns.serviceCategory"
                     v-model="serviceCategory"
-                    label="priority prescription"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="detected issue"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="event history"
+                    label="Link Forms"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -448,26 +285,6 @@
             </span>
           </div>
         </form>
-        <practitioners-filter
-          :columns="practitioner"
-          @update:preferred="addPractitioner"
-          v-model:visible="practitionerFilter"
-        />
-        <patients-filter
-          :columns="patients"
-          @update:preferred="addPatients"
-          v-model:visible="patientFilter"
-        />
-        <devices-filter
-          :columns="device"
-          @update:preferred="addDevices"
-          v-model:visible="deviceFilter"
-        />
-         <roles-filter
-          :columns="role"
-          @update:preferred="addRoles"
-          v-model:visible="roleFilter"
-        />
       </div>
     </div>
   </div>
@@ -476,6 +293,7 @@
 import { Options, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import CornieNuminput from "@/components/cornienuminput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -494,6 +312,7 @@ import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
 import SingleDatePicker from "@/components/datepicker.vue";
+import RangeSlider from "@/components/range.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
@@ -512,6 +331,7 @@ const emptyParticipant: ParticipantDetail = {
   components: {
     CornieInput,
     CornieSelect,
+    CornieNuminput,
     PractitionersFilter,
     SingleDatePicker,
     Availability,
@@ -519,6 +339,7 @@ const emptyParticipant: ParticipantDetail = {
     DEdit,
     CDelete,
     Avatar,
+    RangeSlider,
     CAdd,
     AddIcon,
     PhoneInput,
@@ -809,4 +630,11 @@ actor = "";
   color: #fe4d3c;
   margin-left: 5px;
 }
+input[type=range]::-webkit-slider-thumb {
+	pointer-events: all;
+	width: 24px;
+	height: 24px;
+	-webkit-appearance: none;
+}
+
 </style>

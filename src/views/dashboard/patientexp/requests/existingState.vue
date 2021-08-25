@@ -25,24 +25,28 @@
    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.id}`)">
-          <newview-icon />
+          <newview-icon  class="text-yellow-500 fill-current"/>
           <span class="ml-3 text-xs">View</span>
         </div>
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <update-icon class="text-yellow-300 fill-current" />
+          <update-icon />
           <span class="ml-3 text-xs">Update</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/appointment-response`)">
-          <checkin-icon />
-          <span class="ml-3 text-xs">Check-In</span>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <plus-icon class="text-primary fill-current"/>
+          <span class="ml-3 text-xs">Add Appointment</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <plus-icon class="text-green-500 fill-current"/>
+          <span class="ml-3 text-xs">Add Task</span>
         </div>
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-          <note-icon />
+          <note-icon class="text-purple-700 fill-current"/>
           <span class="ml-3 text-xs">Make Notes</span>
         </div>
         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-          <cancel-icon />
-          <span class="ml-3 text-xs">Cancel</span>
+          <message-icon class="text-blue-700 fill-current"/>
+          <span class="ml-3 text-xs">Message</span>
         </div>
       </template>
       <template #Participants="{ item }">
@@ -92,8 +96,10 @@ import CloseIcon from "@/components/icons/close.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
-import UpdateIcon from "@/components/icons/update.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
+import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -109,8 +115,10 @@ const appointment = namespace("appointment");
     UpdateIcon,
     NoteIcon,
     ThreeDotIcon,
+    PlusIcon,
     SearchIcon,
     CloseIcon,
+    MessageIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,

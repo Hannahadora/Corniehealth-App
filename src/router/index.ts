@@ -120,6 +120,12 @@ const routes: Array<RouteRecordRaw> = [
             name: "New Requests",
             component: () =>
               import("@/views/dashboard/patientexp/requests/addRequests.vue"),
+          },
+          {
+            path: "add-request-reffer/:id?",
+            name: "New Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/addRefferRequests.vue"),
           },   
         ],
       },
