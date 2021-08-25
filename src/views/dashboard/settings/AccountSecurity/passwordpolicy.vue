@@ -31,7 +31,7 @@
 </template>
 <script>
 import Modal from "@/components/modal.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 
 export default {
   name: "PasswordPolicy",

@@ -108,7 +108,7 @@
 <script>
 import ListBoxes from "@/components/ListBoxes.vue";
 import ToogleCheck from "@/components/ToogleCheck.vue";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import NotificationIcon from "@/components/icons/notification.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
 import CornieSelect from "@/components/cornieselect.vue";

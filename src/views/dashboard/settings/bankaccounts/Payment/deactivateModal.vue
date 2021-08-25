@@ -139,11 +139,11 @@
 <script>
 import Modal from "@/components/modal.vue";
 import DText from "./dtext.vue";
-import CornieInput from "@/components/cornieinput.vue";
+import CornieInput from "@/components/CornieInput.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { cornieClient } from "@/plugins/http";
 
 export default {

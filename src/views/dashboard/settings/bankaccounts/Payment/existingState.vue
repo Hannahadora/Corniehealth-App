@@ -134,7 +134,7 @@ import search from "@/plugins/search";
 import DetailsMenu from "@/components/menu.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import DeleteModal from "./deleteModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
 import { cornieClient } from "@/plugins/http";

@@ -17,7 +17,7 @@
         Add a Care Partner
       </button>
     </span>
-    <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="headers" v-model="items">
       <template #actions="{ item }">
         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
           <delete-icon />
@@ -41,15 +41,13 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import ICarePartner from "@/types/ICarePartner";
-import CardText from "@/components/card-text.vue";
-import CornieDialog from "@/components/Dialog.vue";
+import CardText from "@/components/cornie-card/CornieCardText.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
 import AddCarePartners from "./AddCarePartner.vue";
 import IEmail from "@/types/IEmail";
 import IPhone from "@/types/IPhone";
@@ -76,8 +74,6 @@ const CarePartnersStore = namespace("CarePartnersStore");
   },
 })
 export default class CarePartnersExistingState extends Vue {
-  showColumnFilter = false;
-  query = "";
   showAddCarePartners = false;
 
   @CarePartnersStore.State
@@ -86,47 +82,41 @@ export default class CarePartnersExistingState extends Vue {
   @CarePartnersStore.Action
   delete!: (partner: ICarePartner) => Promise<boolean>;
 
-  getKeyValue = getTableKeyValue;
-  preferredHeaders = [];
-  rawHeaders = [
+  headers = [
     {
       title: "Organisation Name",
       key: "name",
-      show: true,
+      orderBy: (a: ICarePartner, b: ICarePartner) => a.name < b.name ? -1 : 1,
+      show: true
     },
     {
       title: "Organisation Type",
       key: "organisationType",
-      show: true,
+      orderBy: (a: ICarePartner, b: ICarePartner) => a.organisationType < b.organisationType ? -1 : 1,
+      show: true
     },
     {
       title: "Address",
       key: "address",
-      show: true,
+      orderBy: (a: ICarePartner, b: ICarePartner) => (a.address as string) < (b.address as string) ? -1 : 1,
+      show: true
     },
     {
       title: "Email",
       key: "email",
-      show: true,
+      orderBy: (a: ICarePartner, b: ICarePartner) => a.email < b.email ? -1 : 1,
+      show: true
     },
     {
       title: "Phone",
       key: "phone",
-      show: true,
+      orderBy: (a: ICarePartner, b: ICarePartner) => (a.phone as string) < (b.phone as string) ? -1 : 1,
+      show: true
     },
   ];
 
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
-  }
-
   get items() {
-    const partners = this.carePartners.map((partner) => {
+    return this.carePartners.map((partner) => {
       return {
         ...partner,
         action: partner.id,
@@ -136,8 +126,6 @@ export default class CarePartnersExistingState extends Vue {
           "+234" + (partner.phone as unknown as IPhone).number,
       };
     });
-    if (!this.query) return partners;
-    return search.searchObjectArray(partners, this.query);
   }
 
   async deletePartner(id: string) {

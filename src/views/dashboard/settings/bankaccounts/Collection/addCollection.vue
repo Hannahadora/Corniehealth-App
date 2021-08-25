@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import DInput from "@/components/cornieinput.vue";
+import DInput from "@/components/CornieInput.vue";
 import DSelect from "@/components/cornieselect.vue";
 import { cornieClient } from "@/plugins/http";
 
