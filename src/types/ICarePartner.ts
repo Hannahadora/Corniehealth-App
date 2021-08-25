@@ -1,12 +1,12 @@
-import IEmail from "./IEmail"
-import IPhone from "./IPhone"
+import IEmail from "./IEmail";
+import IPhone from "./IPhone";
 
 export default interface ICarePartner {
   id?: string;
   name: string;
   organisationType: string;
   email: string | IEmail;
-  phone?: IPhone;
+  phone?: IPhone | string;
   address?: string;
   alias?: string;
   incorporationType?: string;

@@ -19,9 +19,9 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CardText from "@/components/card-text.vue";
-import CardTitle from "@/components/card-title.vue";
-import Card from "@/components/card.vue";
+import CardText from "@/components/cornie-card/CornieCardText.vue";
+import CardTitle from "@/components/cornie-card/CornieCardTitle.vue";
+import Card from "@/components/cornie-card/CornieCard.vue";
 import { Prop, PropSync, Ref, Watch } from "vue-property-decorator";
 
 @Options({

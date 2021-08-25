@@ -9,7 +9,7 @@
 </template>
 <script>
 export default {
-  name: "CornieCheckbox",
+  name: "cornie-checkbox",
   inheritAttrs: false,
   props: {
     label: String,

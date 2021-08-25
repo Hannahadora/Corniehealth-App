@@ -13,7 +13,7 @@
     >
       {{ allaction }} Group
     </span>
-    <div class="w-full h-screen">
+    <div class="w-full h-screen overflow-auto">
       <form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-44">
           <accordion-component title="Basic info" v-model="opened">
@@ -22,7 +22,6 @@
                 <cornie-input
                   label="Identifier"
                   placeholder="XXXX"
-                  class="bg-gray-200"
                   disabled
                 />
                 <cornie-select

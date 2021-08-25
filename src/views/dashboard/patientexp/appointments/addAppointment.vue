@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full">
     <span class="flex w-full mt-3 font-bold text-lg text-primary py-2 mx-auto">
-      Create Appointment
+      {{allaction}} Appointment
       <span class="text-danger text-xs mt-2 ml-2 font-normal"
         >(Items with asterisk are required for filling)</span
       >
@@ -403,6 +403,7 @@ export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+
   @appointment.Action
   getAppointmentById!: (id: string) => IAppointment;
   loading = false;
@@ -509,6 +510,7 @@ actor = "";
     this.Patients = appointment.Patients;
     this.participantDetail = appointment.participantDetail;
 
+  console.log(appointment);
   }
   get payload() {
     const payload =  {
@@ -543,7 +545,7 @@ actor = "";
     return payload
   }
   get allaction() {
-    return this.id ? "Edit" : "Add a";
+    return this.id ? "Edit" : "Create";
   }
   get selectedItem() {
     return this.participantitem;
@@ -662,7 +664,6 @@ actor = "";
     const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;
     this.dropdowns2 = data2;
-    console.log(data2);
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div
     class="
       inline-block
-        icon-btn
+      icon-btn
       rounded-full
       overflow-hidden
       border-0 

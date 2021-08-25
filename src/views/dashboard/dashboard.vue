@@ -12,7 +12,7 @@
     </div>
     <div class="h-full flex flex-col w-auto">
       <nav-bar class="" />
-      <div class="pr-4 pl-6 pt-2 flex flex-col flex-grow body-content bg-gray-100">
+      <div class="pr-4 pl-6 pt-2 flex flex-col body-content bg-gray-100">
         <bread-crumbs class="" />
         <router-view class="flex-grow" />
       </div>
@@ -47,7 +47,6 @@ export default class Dashboard extends Vue {
   grid-template-columns: 202px calc(100% - 202px);
 }
 .body-content {
-  min-height: 91%;
-  height: 91%;
+  height: 94vh;
 }
 </style>

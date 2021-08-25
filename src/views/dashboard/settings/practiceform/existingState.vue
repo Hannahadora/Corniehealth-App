@@ -100,7 +100,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import WhitedeleteIcon from "@/components/icons/whitedelete.vue";
 import Select from "@/components/newautocomplete.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 

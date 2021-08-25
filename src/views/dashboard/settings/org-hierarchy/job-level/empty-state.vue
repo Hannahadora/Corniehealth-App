@@ -26,7 +26,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import EmptyState from "@/components/EmptyState.vue";
+import EmptyState from "@/components/CornieEmptyState.vue";
 import AddIcon from "@/components/icons/add.vue";
 
 @Options({
