@@ -46,26 +46,26 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
-          {
-            path: "experience/",
-            props: true,
-            name: "Patients Experience Management",
-            component: () =>
-              import("@/views/dashboard/patientexp/index.vue"),
-          }, 
-          {
-            path: "experience/add-appointment/:id?",
-            props: true,
-            name: "Create Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
-          },
-          {
-            path: "experience/appointments",
-            name: "Appointment",
-            component: () =>
-              import("@/views/dashboard/patientexp/appointments/index.vue"),
-          },    
+      {
+        path: "experience/",
+        props: true,
+        name: "Patients Experience Management",
+        component: () =>
+          import("@/views/dashboard/patientexp/index.vue"),
+      }, 
+      {
+        path: "experience/add-appointment/:id?",
+        props: true,
+        name: "Create Appointment",
+        component: () =>
+          import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
+      },
+      {
+        path: "experience/appointments",
+        name: "Appointment",
+        component: () =>
+          import("@/views/dashboard/patientexp/appointments/index.vue"),
+      },    
         
       {
         path: "view-group/:id?",
@@ -104,6 +104,12 @@ const routes: Array<RouteRecordRaw> = [
             name: "New Patient",
             component: () =>
               import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
+          },
+          {
+            path: "visits",
+            name: "Patient Visits",
+            component: () =>
+              import("@/views/dashboard/visits/index.vue"),
           },
         ],
       },
@@ -289,6 +295,7 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+
       {
         path: "user",
         props: true,
@@ -329,6 +336,13 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/usersettings/domain/create-domain.vue"),
           },
           {
+            path: "domains",
+            props: true,
+            name: "User Domains",
+            component: () =>
+              import("@/views/dashboard/usersettings/domain/index.vue"),
+          },
+          {
             path: "signature",
             props: true,
             name: "Signature",
@@ -344,6 +358,20 @@ const routes: Array<RouteRecordRaw> = [
           import(
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
+      },
+      {
+        path: "schedules",
+        props: true,
+        name: "Patient Experience Management.",
+        component: () =>
+          import("@/views/dashboard/schedules/index.vue"),
+      },
+      {
+        path: "schedules/new/:scheduleId?",
+        props: true,
+        name: "Patient Experience Management",
+        component: () =>
+          import("@/views/dashboard/schedules/create-schedule.vue"),
       },
     ],
   },

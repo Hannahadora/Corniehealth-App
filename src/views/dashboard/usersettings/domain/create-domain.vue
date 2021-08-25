@@ -14,7 +14,7 @@
                     <div class="w-5/12">
                         <CornieInput label="Organization or domain Name"  placeholder="--Enter--" />
                     </div>
-                    <div class="w-5/12">
+                    <div class="w-5/12 ml-3">
                         <CornieInput label="email address"  placeholder="--Enter--" />
                     </div>
                 </div>
@@ -29,9 +29,9 @@
 
         <div class="w-full mt-6 mb-2 flex justify-end border-t-2 pt-8">
             <Button :loading="false" class="focus:outline-none mr-3">
-                <span  class="text-gray-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                <router-link :to="{ name: 'User Domains' }" class="text-gray-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                     Cancel
-                </span>
+                </router-link>
             </Button>
 
             <Button :loading="false" class="focus:outline-none">

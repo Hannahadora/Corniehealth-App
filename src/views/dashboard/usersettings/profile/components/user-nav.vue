@@ -22,8 +22,7 @@
                 <span class="flex justify-between w-11/12">
                      {{ setting.name }}
                     <chevron-right-icon
-                        class="cursor-pointer text-white-500 ml-auto"
-                        style="color:white"
+                        class="cursor-pointer text-white-500 ml-auto white stroke-current"
                     />    
                 </span>
               </router-link>
@@ -160,7 +159,7 @@ export default class Settings extends Vue {
         },
         {
           name: "Domains",
-          to: "/dashboard/provider/user/domain",
+          to: "/dashboard/provider/user/domains",
           icon: "security-icon",
         },
         {
