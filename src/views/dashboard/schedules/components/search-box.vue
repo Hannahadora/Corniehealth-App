@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center w-11/12 mb-5">
+  <div class="flex flex-col items-center w-11/12">
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
@@ -10,16 +10,14 @@
               :for="`${id}-inputfield`"
             >
               {{ label }}
-               <span class="text-danger ml-1" v-if="required"> * </span>
             </label>
             <div
               v-bind="$attrs"
-              class="p-1 bg-white flex border border-gray-200 rounded-lg"
             >
               <span v-if="Boolean($slots.selected)">
                 <slot name="selected" :item="selectedItem" />
               </span>
-              <input
+              <!-- <input
                 v-else
                 placeholder=""
                 disabled
@@ -33,7 +31,21 @@
                   w-full
                   text-gray-800
                 "
-              />
+              /> -->
+              <div class="w-full">
+                  <span class="flex items-center w-full">
+                    <icon-input
+                    :width="'w-full'"
+                    class="border border-gray-600 rounded-full focus:outline-none"
+                    type="search"
+                    v-model="search"
+                    >
+                    <template v-slot:prepend>
+                        <search-icon />
+                    </template>
+                    </icon-input>
+                </span>
+              </div>
 
               <div
                 class="
@@ -44,6 +56,7 @@
                   items-center
                   border-gray-200
                 "
+                style="position:absolute;right:1rem;top:1rem"
               >
                 <chevron-down-icon />
               </div>
@@ -68,7 +81,7 @@
           >
             <div class="flex flex-col w-full p-2">
               <div
-                v-for="(item, i) in items"
+                v-for="(item, i) in filteredItems"
                 :key="i"
                 @click="selected(item)"
                 class="
@@ -109,11 +122,15 @@ import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
-import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
 
 @Options({
   components: {
     ChevronDownIcon,
+    IconInput,
+    SearchIcon,
   },
 })
 export default class CornieSelect extends Vue {
@@ -123,16 +140,24 @@ export default class CornieSelect extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
+  @Prop({ type: String, default: "" })
+  searchProp!: string;
+
   @PropSync("modelValue")
   modelValueSync!: string;
-
-  @Prop({ type: Boolean, default: false })
-  required!: boolean;
 
   @Prop({ type: String })
   label!: string;
   showDatalist = false;
   id = "";
+
+  search = '';
+  
+
+  get filteredItems() {
+      if (!this.search) return this.items;
+      return this.items.filter(i => i.display && i.display.toLowerCase().includes(this.search))
+  }
 
   get displayVal() {
     if (!this.modelValue || this.items.length < 1) return;

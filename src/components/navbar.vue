@@ -143,7 +143,7 @@
             </li>
             <li class="justify-content border-b border-primary pb-5">
               <p class="3xl text-center font-extrabold">{{ name }}</p>
-              <p class="2xl text-center text-gray-600 font-bold">{{ user.email }}</p>
+              <p class="2xl text-center text-gray-600 font-bold">{{ user ? user.email : '' }}</p>
               <p class="2xl text-center text-yellow-400 font-bold">Surgeon</p>
             </li>
             <li class="cursor-pointer list-none items-center -mb-2  -m-2 p-5">
