@@ -1,12 +1,12 @@
 <template>
   <div class="tooltip-box">
     <slot />
-    <div
-      class="tooltip flex flex-col"
-    >
-      <span
-        class="text"
-      >{{ text }}</span>
+    <div class="tooltip flex flex-col">
+      <slot name="tooltip">
+        <span class="text">
+          {{ text }}
+        </span>
+      </slot>
       <slot name="buttons" />
     </div>
   </div>
@@ -14,26 +14,40 @@
 
 <script>
 export default {
-  props: { 
+  props: {
     text: {
       type: String,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
 
 <style scoped>
-.tooltip-box { 
+.tooltip-box {
   position: relative;
   display: inline-block;
 }
 
-.tooltip-box:hover .tooltip{
+.tooltip-box:hover .tooltip {
   opacity: 1;
 }
-
-.tooltip { 
+.tooltip {
+  color: #ffffff;
+  text-align: center;
+  padding: 23px;
+  border-radius: 8px;
+  width: 350px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -180px;
+  opacity: 0;
+  transition: opacity 1s;
+  position: absolute;
+  z-index: 1;
+  background-color: #080056;
+}
+/*.tooltip { 
   color: #ffffff;
   text-align: center;
   padding: 5px 0;
@@ -50,8 +64,8 @@ export default {
   position: absolute;
   z-index: 1;
 
-  background: #211F45;
-}
+  background: #080056;
+}*/
 
 .text::after {
   content: " ";

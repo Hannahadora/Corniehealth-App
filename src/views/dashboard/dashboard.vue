@@ -10,11 +10,11 @@
     >
       <cornie-side-bar />
     </div>
-    <div class="h-full w-auto">
+    <div class="h-full flex flex-col w-auto">
       <nav-bar class="" />
       <div class="pr-4 pl-6 pt-2 flex flex-col body-content bg-gray-100">
         <bread-crumbs class="" />
-        <router-view class="" />
+        <router-view class="flex-grow" />
       </div>
     </div>
   </main>
@@ -37,14 +37,16 @@ export default class Dashboard extends Vue {
 }
 </script>
 <style>
+.app {
+  transition: .4s grid-template-columns ease-out;
+}
 .mini-app {
-  grid-template-columns: 5% 95%;
+  grid-template-columns: 3% 97%;
 }
 .main-app {
-  grid-template-columns: 17% 82%;
+  grid-template-columns: 202px calc(100% - 202px);
 }
 .body-content {
-  min-height: 91%;
-  height: 91%;
+  height: 94vh;
 }
 </style>

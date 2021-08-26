@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
         outline: {
-          primary: '2px solid #0A4269',
+          primary: '2px solid #080056',
         }
       },
     screens: {
@@ -28,7 +28,7 @@ module.exports = {
       selected: "#F2F7FF",
 
       danger: "#EC0868",
-      primary: "#0A4269",
+      primary: "#080056",
       warning: "#F7B538",
       success: "#35BA83",
 

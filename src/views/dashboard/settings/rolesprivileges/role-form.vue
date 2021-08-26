@@ -27,7 +27,7 @@
             </div>
             <div class="w-1/12"></div>
             <div class="w-4/12">
-                <cornie-input :label="'Role Name'" v-model="role.description" class="w-full" style="width: 100%" placeholder="--Enter--" />
+                <cornie-input :label="'Description'" v-model="role.description" class="w-full" style="width: 100%" placeholder="--Enter--" />
             </div>
         </div>
 
@@ -38,12 +38,12 @@
         </div>
 
         <div class="w-full flex items-center py-2 mt-5">
-            <div class="w-9/12">
+            <div class="w-8/12">
                 <p>
                     Grant access to modules and define privileges within said modules for this role. Any user assigned this role will be able to access the defined modules and will be restricted to whatever privileges you have granted within the accessed modules.
                 </p>
             </div>
-            <div class="w-3/12 flex justify-end">
+            <div class="w-4/12 flex justify-end">
                 <Button @click="toggleSideBar" class="import_button px-8 py-2 ">
                     <span class="flex items-center">
                         <Icon :type="3" />
@@ -54,132 +54,614 @@
         </div>
 
         <div class="w-full mt-5">
-            <Accordion>
-                <template v-slot:title>
-                    <p class="flex justify-between"><span>Analytics </span></p>
-                </template>
-                <template v-slot:default>
-                    <div class="container my-3 p-3">
-                        <span class="flex items-center">
-                            <ToggleCheck />
-                            <span class="ml-2 font-semibold">Allow access to this module</span>
-                        </span>
-                    </div>
-
-                    <div class="w-full px-3">
-                        <div class="container flex justify-between flex-auto">
-                            <div class="w-full flex items-center">
-                                <div class="border-b-2 w-full"></div>
-                            </div>
-                            <div class="w-3/12 flex justify-end">
-                                <span class="flex ">
-                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
-                                    <span class="ml-2">Access All Privileges</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="container">
-                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
-                    </div>
-                    <div class="w-full px-3">
-                        <div class="container border rounded-md flex mb-2 py-3">
-                            <div class="w-4/12">
-                                <div class="container p-3">
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                </div>
-                            </div>
-                            <div class="w-4/12">
-                                <div class="container side_border p-3" id="sideBorder">
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                </div>
-                            </div>
-                            <div class="w-4/12">
-                                <div class="container p-3">
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </Accordion>
-            <Accordion>
-                <template v-slot:title>
-                    <p class="flex justify-between"><span>Billing and Payments </span></p>
-                </template>
-                <template v-slot:default>
-                    <div class="container my-3 p-3">
-                        <span class="flex items-center">
-                            <ToggleCheck />
-                            <span class="ml-2 font-semibold">Allow access to this module</span>
-                        </span>
-                    </div>
-
-                    <div class="w-full px-3">
-                        <div class="container flex justify-between flex-auto">
-                            <div class="w-full flex items-center">
-                                <div class="border-b-2 w-full"></div>
-                            </div>
-                            <div class="w-3/12 flex justify-end">
-                                <span class="flex ">
-                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
-                                    <span class="ml-2">Access All Privileges</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="container">
-                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
-                    </div>
-                    <div class="w-full px-3">
-                        <div class="container border rounded-md flex mb-2 py-3">
-                            <div class="w-4/12">
-                                <div class="container p-3">
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                </div>
-                            </div>
-                            <div class="w-4/12">
-                                <div class="container side_border p-3" id="sideBorder">
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                </div>
-                            </div>
-                            <div class="w-4/12">
-                                <div class="container p-3">
-                                    <Checkbox :label="'Create shift shedules'" />
-                                    <Checkbox :label="'Create shift shedules'" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </Accordion>
-            <Accordion>
+            <Accordion title="Accounting" v-model="showAccounting">
                 <template v-slot:title>
                     <p class="flex justify-between"><span>Accounting </span></p>
                 </template>
                 <template v-slot:default>
                     <div class="container my-3 p-3">
                         <span class="flex items-center">
-                            <ToggleCheck />
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Analytics" v-model="showAnalytics">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Analytics </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Billing and Payments" v-model="showBilling">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Certificates" v-model="showCertificates">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span> </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Clinical" v-model="showClinicals">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Diagnostics" v-model="showDiagnostics">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Engagements" v-model="showEngagements">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="In-Patients" v-model="showPatients">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Medications" v-model="showMedications">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Referrals" v-model="showReferrals">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
+                            <span class="ml-2 font-semibold">Allow access to this module</span>
+                        </span>
+                    </div>
+
+                    <div class="w-full px-3">
+                        <div class="container flex justify-between flex-auto">
+                            <div class="w-full flex items-center">
+                                <div class="border-b-2 w-full"></div>
+                            </div>
+                            <div class="w-3/12 flex justify-end">
+                                <span class="flex ">
+                                    <div class="box_1 flex justify-center"><span class="text-white font-bold">—</span></div>
+                                    <span class="ml-2">Access All Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <h2 class="p-3 modal_subheader mt-3">Privileges</h2>
+                    </div>
+                    <div class="w-full px-3">
+                        <div class="container border rounded-md flex mb-2 py-3">
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container side_border p-3" id="sideBorder">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                            <div class="w-4/12">
+                                <div class="container p-3">
+                                    <Checkbox :label="'Create shift shedules'" />
+                                    <Checkbox :label="'Create shift shedules'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </Accordion>
+
+            <Accordion title="Suppoort" v-model="showSupport">
+                <template v-slot:title>
+                    <p class="flex justify-between"><span>Billing and Payments </span></p>
+                </template>
+                <template v-slot:default>
+                    <div class="container my-3 p-3">
+                        <span class="flex items-center">
+                            <ToggleCheck :checkedText="''" :uncheckedText="''" />
                             <span class="ml-2 font-semibold">Allow access to this module</span>
                         </span>
                     </div>
@@ -285,6 +767,7 @@ import Icon from './components/icon.vue'
 import SideModal from '@/components/modal-right.vue'
 // import ModalContent from './components/import-privileges.vue'
 import { namespace } from 'vuex-class';
+import modules from './util/role-modules'
 
 const roles = namespace('roles');
 
@@ -309,6 +792,18 @@ export default class RolesAndPrivileges extends Vue {
 
     sideBarShown = false;
 
+    showAccounting = true;
+    showAnalytics = false;
+    showBilling = false;
+    showCertificates = false;
+    showClinicals = false;
+    showDiagnostics = false;
+    showEngagements = false;
+    showPatients = false;
+    showMedications = false;
+    showReferrals = false;
+    showSupport = false;
+
 
     @roles.State
     org!: any;
@@ -327,7 +822,7 @@ export default class RolesAndPrivileges extends Vue {
     }
 
     async created() {
-        console.log(this.org, "ord");
+        console.log(modules, 'modules');
         
         await this.getOrg();
     }
@@ -348,10 +843,10 @@ export default class RolesAndPrivileges extends Vue {
 </script>
 <style>
     .import_button {
-        border: 1px solid #211F45;
+        border: 1px solid #080056;
         box-sizing: border-box;
         border-radius: 124px;
-        color: #211F45;
+        color: #080056;
         font-weight: bold;
     }
 
@@ -374,7 +869,19 @@ export default class RolesAndPrivileges extends Vue {
     .box_1 {
         width: 24px;
         height: 24px;
-        background: #211F45;
+        background: #080056;
+    }
+
+    input[type=checkbox] {
+        background: #9e9dad !important;
+    }
+
+    input[type="checkbox"]:checked {
+        background: yellow !important;
+    }
+
+    input[type="checkbox"]:checked .slider {
+        background: yellow !important;
     }
 
     /* .bordered {

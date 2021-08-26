@@ -4,7 +4,7 @@
     :to="to"
     class="text-sm p-2 mb-1 font-semibold flex items-center text-semibold"
   >
-    <span class="mr-2">
+    <span class="mr-2 flex">
       <slot name="default" :active="active" />
     </span>
     <span class="capitalize">{{ name }}</span>

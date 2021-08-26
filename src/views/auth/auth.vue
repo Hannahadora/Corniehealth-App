@@ -10,9 +10,9 @@
         <slot name="text" />
       </section>
       <section class="w-full h-full mt-2">
-        <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
+       <!-- <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
+        </div>-->
           <slot />
-        </div>
       </section>
     </div>
   </div>
@@ -24,11 +24,23 @@ import { Options, Vue } from "vue-class-component";
 export default class Auth extends Vue {}
 </script>
 <style scoped>
+::-webkit-scrollbar-thumb {
+    background-color: #080056;
+    height: 0.5rem;
+    display: none;
+    outline: 1px solid slategrey;
+}
+::-webkit-scrollbar-track {
+    box-shadow: none;
+    width: 0.75rem;
+}
+
+
 .auth {
   background-color: unset;
     min-width: 100vw;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     background-image: none;
     background-repeat: no-repeat;
     background-size: 50%;
@@ -42,7 +54,7 @@ export default class Auth extends Vue {}
   background-color: unset;
     min-width: 100vw;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     background-image: none;
     background-repeat: no-repeat;
     background-size: 50%;
@@ -57,7 +69,7 @@ export default class Auth extends Vue {}
     background-color: #e5e5e5;
     min-width: 100vw;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     background-image: url("../../assets/img/bg.png");
     background-repeat: no-repeat;
     background-size: 50%;
@@ -72,7 +84,7 @@ export default class Auth extends Vue {}
     background-color: #e5e5e5;
     min-width: 100vw;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     background-image: url("../../assets/img/bg.png");
     background-repeat: no-repeat;
     background-size: 50%;
@@ -87,7 +99,7 @@ export default class Auth extends Vue {}
   background-color: #e5e5e5;
   min-width: 100vw;
   min-height: 100vh;
-  overflow: hidden;
+  overflow: auto;
   background-image: url("../../assets/img/bg.png");
   background-repeat: no-repeat;
   background-size: 50%;
@@ -102,7 +114,7 @@ export default class Auth extends Vue {}
     background-color: #e5e5e5;
     min-width: 100vw;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     background-image: url("../../assets/img/bg.png");
     background-repeat: no-repeat;
     background-size: 50%;

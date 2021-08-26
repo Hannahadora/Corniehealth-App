@@ -79,11 +79,7 @@
           </span>
           <div class="col-span-full mb-5">
             <div>
-              <div
-                class="grid grid-cols-7 gap-2 col-span-full mb-4"
-                v-for="(input, index) in participants"
-                :key="`-${index}`"
-              >
+              <div class="grid grid-cols-7 gap-2 col-span-full mb-4" v-for="(input, index) in participants" :key="`-${index}`">
                 <p class="text-xs text-dark font-semibold">{{ input.name }}</p>
                 <p class="text-xs text-dark font-semibold">{{ input.role }}</p>
                 <p class="text-xs text-dark font-semibold">
@@ -451,6 +447,6 @@ export default class AddCareteam extends Vue {
 </script>
 <style>
 .outline-primary {
-  border: 2px solid #0a4269;
+  border: 2px solid #080056;
 }
 </style>

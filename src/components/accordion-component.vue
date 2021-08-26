@@ -4,7 +4,7 @@
       class="h-11 w-full flex items-center justify-between px-3 border-2"
       :class="{
         'border-0 bg-primary border-primary': expand,
-        'rounded-t-xl': first && expand,
+        'rounded-t-xl': expand,
       }"
     >
       <div class="font-semibold" :class="{ 'text-white': expand }">
@@ -36,7 +36,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Prop, Watch } from "vue-property-decorator";
+import { Prop, Watch ,PropSync} from "vue-property-decorator";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "./icons/chevrondown.vue";
 
@@ -54,14 +54,20 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: Boolean, default: false })
   first!: boolean;
 
-  expand = false;
+ // expand = false;
 
-  @Prop({ type: Boolean, default: false })
-  opened!: boolean;
+  @Prop({ type: Boolean, default: "" })
+  modelValue!: boolean;
+
+  @PropSync("modelValue")
+  expand!: boolean;
+
+  // @Prop({ type: Boolean, default: false })
+  // opened!: boolean;
 
   @Watch("opened")
   toggled() {
-    this.expand = this.opened;
+    this.expand
   }
   @Prop({ type: String, default: "" })
   titledescription!: string;

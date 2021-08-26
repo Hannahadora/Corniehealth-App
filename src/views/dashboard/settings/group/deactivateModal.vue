@@ -148,9 +148,9 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import { string } from "yup";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { cornieClient } from "@/plugins/http";
-import DatePicker from "@/components/datepicker.vue";
+import DatePicker from "@/components/daterangepicker.vue";
 import { Options, Vue } from "vue-class-component";
 
 @Options({
@@ -201,10 +201,10 @@ export default class memberModal extends Vue {
       );
       if (response.success) {
         this.loading = false;
-        window.notify({ msg: response.message, status: "success" });
+        window.notify({ msg: response.errors!.summary, status: "success" });
         this.show = false;
       } else {
-        window.notify({ msg: response.message, status: "error" });
+        window.notify({ msg: response.errors!.summary, status: "error" });
         this.show = false;
       }
     } catch (error) {

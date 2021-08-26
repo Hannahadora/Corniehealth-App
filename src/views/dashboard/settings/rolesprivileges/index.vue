@@ -14,14 +14,16 @@
         <Overlay :show="show">
             <Modal>
               <template v-slot:header>
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-5 capitalize modal_titlee cursor-pointer" id="modal-title">
-                    Transfer admin rights
+                <h3 class="text-xl flex justify-between leading-6 font-medium text-gray-900 mb-5 capitalize modal_titlee cursor-pointer" id="modal-title">
+                    <span>Transfer admin rights</span>
+                    <span @click="toggleModal" class="lowercase pb-1 cursor-pointer font-normal bg-primary text-white flex items-center justify-center" style="width: 20px;height:20px;border-radius:50%">×</span>
                 </h3>
               </template>
 
               <template v-slot:body>
-                <p class="text-sm text-gray-500">
-                    Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.
+                <p class="text-base text-gray-500">
+                  This action transfers the account ownership and all associated privileges to the selected user. 
+                  Are you sure you wish to proceed?
                 </p>
               </template>
               <template v-slot:buttons>
@@ -48,15 +50,18 @@
         <Overlay :show="showTransferComfirmModal">
             <Modal>
               <template v-slot:header>
-                <h3 class="text-lg leading-6 font-medium capitalize text-gray-900 mb-5 font-bold modal_titlee" id="modal-title">
-                    Transfer admin rights
+                <h3 class="text-lg flex justify-between leading-6 font-medium capitalize text-gray-900 mb-5 modal_titlee" id="modal-title">
+                  <span>Transfer admin right</span>
+                  <span @click="() => showTransferComfirmModal = false" class="lowercase pb-1 cursor-pointer font-normal bg-primary text-white flex items-center justify-center" style="width: 20px;height:20px;border-radius:50%">×</span>
+
                 </h3>
               </template>
 
               <template v-slot:body>
                 <div class="w-full">
                   <div class="container">
-                    <Dropdown v-model="transferToContact" :items="allContacts" :optionLabel="'name'" :isContact="true" :placeholder="'--Select--'" />
+                    <custom-dropdown @item-selected="itemSelected" :items="allContacts" :optionLabel="'name'" :label="'Select User/Practicioner'" />
+                    <!-- <Dropdown v-model="transferToContact" :label="'Select User/Practicioner'" :items="allContacts" :optionLabel="'name'" :isContact="true" :placeholder="'--Select--'" /> -->
                   </div>
                 </div>
               </template>
@@ -68,8 +73,8 @@
                       </button>
                     </Button>
                     <Button @click="() => showTransferComfirmModal = false">
-                      <button type="button" class="mt-3 w-full inline-flex justify-center px-4 py-2 text-base text-white-700 font-bold hover:bg-gray-50 focus:outline-none focus:none sm:mt-0 sm:ml-3 sm:w-auto">
-                      No
+                      <button type="button" class="mt-3 w-full inline-flex justify-center px-4 py-2 text-base text-white-700 font-semibold hover:bg-gray-50 focus:outline-none focus:none sm:mt-0 sm:ml-3 sm:w-auto">
+                      Cancel
                       </button>
                     </Button>
                 </div>
@@ -78,14 +83,14 @@
         </Overlay>
       <!-- </div>
     </div> -->
-    
+
     <UserDetails @toggle-rights-modal="toggleModal" :user="user" />
     
     <SideModal :show="showModal" @close-modal="toggleModalVissibility">
       <ModalContent />
       <template v-slot:cancel>
         <Button :loading="false" >
-          <button @click="toggleModalVissibility" class="close_btn_border mr-3 text-gray-500 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+          <button @click="toggleModalVissibility" class="close_btn_border mr-3 text-gray-500 focus:outline-none font-bold py-3 px-8 rounded-full">
             Close
           </button>
         </Button>
@@ -143,6 +148,8 @@ import DTable from './components/DTable.vue'
 import SupportIcon from '@/components/icons/support.vue'
 import Icon from './components/icon.vue'
 
+import CustomDropdown from '@/components/custom-dropdown.vue'
+
 const roles = namespace('roles');
 const userStore = namespace('user');
 const contacts = namespace('practitioner');
@@ -161,6 +168,7 @@ interface IRole {
 
 @Options({
   components: {
+    CustomDropdown,
     Icon,
     UserDetails,
     Button,
@@ -184,6 +192,7 @@ export default class RolesAndPrivileges extends Vue {
   x = "";
   getKeyValue = getTableKeyValue;
   showColumnFilter = false;
+
   transfering = false;
   preferredHeaders = [];
   rawHeaders = [
@@ -255,17 +264,6 @@ export default class RolesAndPrivileges extends Vue {
     return search.searchObjectArray(roles, this.query);
   }
 
-  // async remove(id: string) {
-  //   const confirmed = await window.confirmAction({
-  //     message: "You are about to delete this practitioner",
-  //   });
-  //   if (!confirmed) return;
-
-  //   if (await this.deletePractitioner(id))
-  //     window.notify({ msg: "Practitioner deleted", status: "success" });
-  //   else window.notify({ msg: "Practitioner not deleted", status: "error" });
-  //   window.notify({ msg: "Practitioner not deleted", status: "error" });
-  // }
 
   @roles.Action
   getPractitioner!: () => Promise<any>
@@ -305,7 +303,6 @@ export default class RolesAndPrivileges extends Vue {
     ), "contacts");
     
       this.show = !this.show;
-      console.log(this.x, "xxxxx");
       
   }
 
@@ -320,6 +317,12 @@ export default class RolesAndPrivileges extends Vue {
 
  cancelTransfer() {
    this.showTransferComfirmModal = false;
+ }
+
+ itemSelected(item: any) {
+   this.transferToContact = item;
+   console.log(item, "item");
+   
  }
 
  get allContacts() {
@@ -354,7 +357,7 @@ export default class RolesAndPrivileges extends Vue {
    this.user.role = this.roles.find((i: any) => i.isSuperAdmin);
    console.log(this.user, "user");
    this.fetchPractitioners()
-    .then(res => {
+    .then((res: any) => {
       console.log(res, "pres");
       
     })
@@ -380,7 +383,7 @@ export default class RolesAndPrivileges extends Vue {
   }
 
   .dark_background {
-    background: #211F45;
+    background: #080056;
   }
 
   .card_shadow {
@@ -424,7 +427,7 @@ export default class RolesAndPrivileges extends Vue {
   }
 
   .close_btn_border {
-    border: 1px solid #211F45;
+    border: 1px solid #080056;
   }
 
   .steps_line-h {

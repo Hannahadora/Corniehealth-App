@@ -11,7 +11,7 @@
       bottom-0
       w-full
       h-full
-      bg-gray-500 bg-opacity-50
+      bg-black bg-opacity-50
     "
   >
     <div

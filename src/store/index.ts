@@ -13,6 +13,13 @@ import HealthcareStore from "./healthcare";
 import CareteamStore from "./careteam";
 import RolesStore from './roles'
 import GroupteamStore from "./group";
+import PracticeformStore from "./practiceform";
+import AppointmentStore from "./appointment";
+
+import UserSettingsStore from "./usersettings";
+
+import ShiftsStore from './shift'
+import ScheduleStore from './schedules'
 
 export default createStore({
   modules: {
@@ -30,5 +37,12 @@ export default createStore({
     careteam: CareteamStore,
     roles: RolesStore,
     group: GroupteamStore,
+
+    shifts: ShiftsStore,
+    practiceform: PracticeformStore,
+    appointment: AppointmentStore,
+
+    usersettings: UserSettingsStore,
+    schedules: ScheduleStore,
   },
 } as StoreOptions<any>);

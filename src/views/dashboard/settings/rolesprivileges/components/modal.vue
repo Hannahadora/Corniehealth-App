@@ -1,5 +1,6 @@
 <template>
-    <div class="inline-block align-bottom bg-white shadow-xl rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-96 sm:w-ful">
+    <div class="inline-block align-bottom bg-white shadow-xl rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg smaller sm:w-ful bigger" :class="{ bigger: 'bigger' }">
+    <!-- <div class="inline-block align-bottom bg-white shadow-xl rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-96 sm:w-ful"> -->
         <div class="bg-white pt-4 pb-4 sm:px-3 sm:pb-4">
             <div class="sm:flex sm:items-start">
                 <!-- <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -32,5 +33,12 @@ export default class RolesAndPrivileges extends Vue {
 }
 </script>
 <style>
-    
+    .smaller {
+        width: 24rem;
+    }
+
+    .bigger {
+        width: 40rem;
+        max-height: 400px !important;
+    }
 </style>

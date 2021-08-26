@@ -39,7 +39,7 @@
         <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
     </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+    <Table :headers="headers" :items="sortGroups" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
@@ -184,7 +184,7 @@ import MemberModal from "./memberModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -331,16 +331,17 @@ export default class GroupExistingState extends Vue {
        (group as any).memberPeriod = new Date(
          (group as any).memberPeriod 
        ).toLocaleDateString("en-US");
-       console.log(group);
+
+       
         return {
         ...group,
          action: group.id,
         };
     });
-    
     if (!this.query) return groups;
     return search.searchObjectArray(groups, this.query);
   }
+
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -382,30 +383,19 @@ async activateGroup(id:string) {
         }
       }
     }
-//  async activateGroup(id:string) {
-//    const confirmed = await window.confirmAction({
-//       message: "You are about to activate this group",
-//       title: "Activate group"
-//     });
-//     if (!confirmed) {
-//       return;
-//     }else{
-//         try {
-//           const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
-//           if (response.success) {
-//             window.notify({ msg: "Group activated", status: "success" });
-//           } 
-//         } catch (error) {
-//           window.notify({ msg: "Group not activated", status: "error" });
-//           console.error(error);
-//         }
-//       }
-//     }
+      get sortGroups (){
+        return this.items.slice().sort(function(a, b){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
+     async created() {
+      console.log(this.items);
+    }
 
 }
 </script>
 <style>
 .outline-primary{
-    border: 2px solid #0A4269;
+    border: 2px solid #080056;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[width]"
-    class="relative text-gray-600 focus-within:text-gray-400"
+    class="relative text-gray-600 py-2 focus-within:text-gray-400"
   >
     <span
       class="absolute inset-y-0 left-0 flex items-center pl-2"
@@ -20,7 +20,8 @@
       <input
         v-bind="{ ...$attrs, ...field }"
         v-model="valueSync"
-        class="py-2 text-sm text-black rounded-md w-full focus:outline-none"
+         @blur="$emit('blur')"
+        class="py-1 text-sm text-black rounded-md w-full focus:outline-none"
         :class="{
           'pl-10': prepend,
           'pr-10': append,
@@ -79,3 +80,8 @@ export default class IconInput extends Vue {
   }
 }
 </script>
+<style scoped>
+.rounded-r-none{
+   border-radius: 9999px;
+ }
+</style>

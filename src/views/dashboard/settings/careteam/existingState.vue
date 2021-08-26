@@ -147,7 +147,7 @@ import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import ICareteam from "@/types/ICareteam";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
@@ -295,6 +295,6 @@ export default class CareteamExistingState extends Vue {
 </script>
 <style>
 .outline-primary{
-    border: 2px solid #0A4269;
+    border: 2px solid #080056;
 }
 </style>

@@ -147,7 +147,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/close.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { cornieClient } from "@/plugins/http";
 import { Options, Vue } from "vue-class-component";
 
@@ -200,7 +200,7 @@ export default class memberModal extends Vue {
           window.notify({ msg: "Member added", status: "success" });
             this.show = false;
         } else {
-         window.notify({ msg: response.message, status: "error" });
+         window.notify({ msg: response.errors!.summary, status: "error" });
             this.show = false;
         }
       } catch (error) {

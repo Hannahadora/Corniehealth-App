@@ -5,21 +5,99 @@
     v-slot="{ errorMessage, meta, field }"
     :rules="rules"
     v-model="valueSync"
+    class="mb-5"
   >
-    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
-    <input
-      :class="{
-        'border-red-500': Boolean(errorMessage),
-        'border-green-400': meta.valid && meta.touched,
-      }"
-      class="rounded-lg border p-2 w-11/12 focus:outline-none"
-      v-bind="{ ...$attrs, ...field }"
-      :name="inputName"
-      v-model="valueSync"
-    />
-    <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-      errorMessage
-    }}</span>
+    <div v-bind="$attrs">
+      <label class="block uppercase mb-1 text-xs font-bold">
+        <slot name="label">
+          {{ label }}
+        </slot>
+        <span class="text-danger ml-1" v-if="required"> * </span>
+      </label>
+      <div
+        class="flex rounded-lg border"
+        :class="{
+          'border-red-500': Boolean(errorMessage),
+          'border-green-400': meta.valid && meta.touched,
+        }"
+      >
+        <div
+          class="
+            border-r-2
+            rounded-lg
+            p-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-right-radius: 0; border-bottom-right-radius: 0"
+          v-if="$slots.prepend"
+        >
+          <slot name="prepend" />
+        </div>
+        <div
+          class="
+            rounded-lg
+            pl-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-right-radius: 0; border-bottom-right-radius: 0"
+          v-if="$slots['prepend-inner']"
+        >
+          <slot name="prepend-inner" />
+        </div>
+        <input
+          class="p-2 rounded-lg w-full focus:outline-none"
+          :style="{
+            'border-top-left-radius: 0; border-bottom-left-radius: 0':
+              $slots.prepend,
+            'border-top-right-radius: 0; border-bottom-right-radius: 0':
+              $slots.append,
+          }"
+          v-bind="field"
+          :placeholder="$attrs.placeholder"
+          :name="inputName"
+          :readonly="readonly"
+          v-model="valueSync"
+        />
+        <div
+          class="
+            rounded-lg
+            pr-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+          v-if="$slots['append-inner']"
+        >
+          <slot name="append-inner" />
+        </div>
+        <div
+          class="
+            border-l-2
+            rounded-lg
+            pr-2
+            bg-white
+            flex
+            items-center
+            justify-center
+          "
+          style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+          v-if="$slots.append"
+        >
+          <slot name="append" />
+        </div>
+      </div>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">{{
+        errorMessage
+      }}</span>
+    </div>
   </field>
 </template>
 <script lang="ts">
@@ -34,7 +112,7 @@ import { Field } from "vee-validate";
     Field,
   },
 })
-export default class DInput extends Vue {
+export default class CornieInput extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
@@ -47,6 +125,12 @@ export default class DInput extends Vue {
   @Prop({ type: String })
   name!: string;
 
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  readonly!: boolean;
+
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
@@ -56,3 +140,10 @@ export default class DInput extends Vue {
   rules!: any;
 }
 </script>
+<style scoped>
+::placeholder {
+  font-size: 1em;
+  font-weight: 300;
+  color: #667499;
+}
+</style>
