@@ -20,6 +20,7 @@ import UserSettingsStore from "./usersettings";
 
 import ShiftsStore from './shift'
 import ScheduleStore from './schedules'
+import VisitsStore from './visits'
 
 export default createStore({
   modules: {
@@ -44,5 +45,6 @@ export default createStore({
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,
+    visits: VisitsStore,
   },
 } as StoreOptions<any>);

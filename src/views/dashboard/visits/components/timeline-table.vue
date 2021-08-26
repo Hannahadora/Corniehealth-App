@@ -51,7 +51,7 @@
                     <span class="flex items-center w-full border rounded-md py-2">
                         <span><CalendarIcon /></span>
                         <span class="flex items-center justify-between w-full px-1">
-                            <span class="">{{ data.date.toLocaleDateString() }}</span>
+                            <span class="">{{ data.date ? data.date.toLocaleDateString() : '' }}</span>
                             <span>{{ data.time }}</span>
                         </span>
                     </span>
@@ -63,6 +63,9 @@
                             Time
                             <input type="time" name="" class="p-3 border rounded-md w-full" id="" v-model="data.time">
                         </label>
+                    </div>
+                    <div class="w-full flex justify-end">
+                        <a class="font-semibold text-primary text-sm">Cancel</a>
                     </div>
                 </div>
             </div>

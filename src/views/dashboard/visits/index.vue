@@ -1,6 +1,9 @@
 <template>
   <div class="w-full my-2 h-screen">
-      <div class="container-fluid bg-white sm:p-6 h-full">
+      <div class="containr-fluid" v-if="dummyData && dummyData.length === 0">
+        <EmptyState />
+      </div>
+      <div v-else class="container-fluid bg-white sm:p-6 h-full">
         <div class="w-full border-b-2 curved flex py-2 mt-4">
             <div class="container-fluid flex font-semibold text-xl py-2">
                 <h2>Active Visits</h2>
@@ -12,34 +15,71 @@
              <div class="w-full curved flex py-2 justify-end my-6">
                 <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
                     <Button :loading="false">
-                        <router-link :to="{ name: 'Patient Experience Management' }" style="background: #FE4D3C" class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-full">
+                        <router-link :to="{ name: 'Appointment' }" style="background: #FE4D3C" class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-full">
                             Go To Appointments 
                         </router-link>
                     </Button>
                 </div>
             </div>
 
-            <div class="w-full">
+            <div class="w-full" v-if="false">
                 <TimeLine />
             </div>
 
             <div class="w-full pb-7 mb-8">
-                <cornie-table :columns="headers" v-model="items">
+                <cornie-table :columns="rawHeaders" v-model="dummyData">
+                
+                <template #appointmentType-header="{  }">
+                    <p class="cursor-pointer md" style="font-weight: 600" @click="() => selectType = !selectType">Appointment Type</p>
+                    <div class="absolute md" v-if="selectType">
+                      <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div class="py-1 md" role="none">
+                        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                        <a class="md text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                            v-for="(day, index) in types" :key="index"
+                        >
+                            <span><input type="checkbox" class="h-4 w-4 md" name="" id="" :value="day"></span>
+                            <span class="mx-2 text-xs md">{{ day }}</span>
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                </template>
+                
+                <template #status-header="{  }">
+                    <p class="cursor-pointer md" style="font-weight: 600" @click="() => filterStatus = !filterStatus">Participant Status</p>
+                    <div class="absolute md" v-if="filterStatus">
+                      <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div class="py-1 md" role="none">
+                        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                        <a class="md text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                            v-for="(day, index) in statuses" :key="index"
+                        >
+                            <span><input type="checkbox" class="h-4 w-4 md" name="" id="" :value="day"></span>
+                            <span class="mx-2 text-xs md">{{ day }}</span>
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                </template>
                 
                 <template #name="{ item }">
-                    <p>{{ item.name }}</p>
+                    <p>{{ item ? '' : '' }}XXXXXX</p>
+                </template>
+                <template #patient="{ item }">
+                    <p>{{ item.patient }}</p>
                 </template>
                 <template #days="{ item }">
                     <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
                 </template>
                 <template #status="{ item }">
                     <div class="container">
-                    <span class="p-2 px-3 rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
+                    <span class="rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
                     </div>
                 </template>
                 <template #practitioners="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span class="p-2 px-3 rounded-full">
+                    <span class="rounded-full">
                         <Actors :items="item.practitioners" />
                     </span>
                     </div>
@@ -49,37 +89,24 @@
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <eye-icon class="mr-3 mt-1" />
                     <span class="ml-3 text-xs" @click="
-                            $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
+                            $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <ArrowRight />
+                    <span class="ml-3 text-xs" @click="() => showCheckin = true">Check-in</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <EncounterIcon class="mr-3 mt-1" />
+                    <span class="ml-3 text-xs" >Start Encounter</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <EditIcon />
-                    <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Schedule</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="addActor(item.id)">
-                    <AddIcon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" >Add Actor/Practitioner</span>
+                    <span class="ml-3 text-xs">Add Vitals</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <EditIcon />
-                    <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Slot</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="!isActive(item.id)">
-                    <EditIcon />
+                    <ArrowRight />
                     <span class="ml-3 text-xs"
-                        @click="activate(item.id)"
-                    >Acivate</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="isActive(item.id)">
-                    <DeactivateIcon />
-                    <span class="ml-3 text-xs"
-                        @click="deactivate(item.id)"
-                    >Deacivate</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <delete-icon />
-                    <span class="ml-3 text-xs"
-                        @click="destory(item.id)"
-                    >Delete</span>
+                    >Refer Patient</span>
                     </div>
                 </template>
                 </cornie-table>
@@ -93,13 +120,14 @@
                     <CheckOut />
                 </side-modal>
 
-                <side-modal :visible="false" :header="'Check-In'" @closesidemodal="closeEditPane">
+                <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
                 <!-- <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane"> -->
                     <CheckIn  />
                 </side-modal>
 
-                <side-modal :visible="showAddActorsPane" :header="'Add Actor/Practitioner'" @closesidemodal="() => showAddActorsPane = false">
-                <AddActors :schedule="selectedSchedule" :actors="allPractitioners" @actoradded="actorAdded" @close="() =>  showAddActorsPane = false" />
+                <side-modal :visible="showCheckNoapp" :header="'Check-In'" @closesidemodal="() => showCheckNoapp = false">
+                <!-- <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane"> -->
+                    <CheckinNoapp  />
                 </side-modal>
 
                 <side-modal :visible="false">
@@ -117,6 +145,69 @@
                     <ViewBreaks :schedule="selectedSchedule" />
                 </div>
                 </side-modal>
+
+                <modal :visible="false">
+                  <template #title>
+                    <p class="flex items-center justify-between px-2" style="width: 440px">
+                      <span class="font-bold text-danger p-2 text-xl">Mike Dean</span> 
+                      <span class="bg-danger">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 4C0 1.79086 1.79086 0 4 0H20C22.2091 0 24 1.79086 24 4V20C24 22.2091 22.2091 24 20 24H4C1.79086 24 0 22.2091 0 20V4Z" fill="white"/>
+                        <path d="M12 2C17.53 2 22 6.47 22 12C22 17.53 17.53 22 12 22C6.47 22 2 17.53 2 12C2 6.47 6.47 2 12 2ZM15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z" fill="#FF0000"/>
+                        </svg>
+                      </span>
+                    </p>
+                  </template>
+                  <div class="w-4/12 px-4" style="width: 440px">
+                    <div class="w-full flex">
+                      <div class="w-6/12">
+                        <div class="w-full">
+                          <div class="w-11/12">
+                            <div class="w-full py-2">
+                              <span class="font-semibold text-primary">MRN No:</span> 
+                              <span class="ml-2">XXXXXX</span> 
+                            </div>
+                            <div class="w-full py-2">
+                              <span class="font-semibold text-primary">D.O.B:</span> 
+                              <span class="ml-2">12 April, 1989</span> 
+                            </div>
+                            <div class="w-full py-2">
+                              <span class="font-semibold text-primary">Policy Expiry:</span> 
+                              <span class="ml-2">XXXXXX</span> 
+                            </div>
+                            <div class="w-full py-2">
+                              <span class="font-semibold text-primary">Policy No:</span> 
+                              <span class="ml-2">XXXXXX</span> 
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="w-6/12">
+                        <div class="w-full">
+                          <div class="w-11/12">
+                            <div class="py-2 w-full">
+                              <span class="font-semibold text-primary">Gender:</span> 
+                              <span class="ml-2">Male</span> 
+                            </div>
+                            <div class="py-2 w-full">
+                              <span class="font-semibold text-primary">Profile Type</span> 
+                              <span class="ml-2">XXXX</span> 
+                            </div>
+                            <div class="py-2w-full">
+                              <span class="font-semibold text-primary">Payor</span> 
+                              <span class="ml-2">XXXXXX</span> 
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w-full pt-3 pb-6">
+                      <p class="text-center font-normal text-large text-primary">View Policy Coverage</p>
+                    </div>
+                  </div>
+
+                </modal>
+
             </div>
 
             <div style="height: 50px">
@@ -129,8 +220,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-import EmptyState from './empty-state.vue'
-
+import Actors from '../schedules/components/actors.vue'
 // import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -140,7 +230,6 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-// import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
@@ -154,25 +243,23 @@ import Button from '@/components/globals/corniebtn.vue'
 import SideModal from '../schedules/components/side-modal.vue';
 import CheckIn from './components/checkin.vue'
 import CheckOut from './components/checkout.vue'
-// import ViewDetails from './components/view-details.vue'
-// import ViewPlan from './components/view-planning.vue'
-// import ViewBreaks from './components/view-breaks.vue'
-// import AllActors from './components/all-actors.vue'
-// import AdvancedFilter from './components/advanced-filter.vue'
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-// import Actors from './components/actors.vue'
-// import AddActors from './components/add-actor.vue'
-import IPractitioner from "@/types/IPractitioner";
 import TimeLine from './components/timeline-table.vue'
+import Modal from '@/components/modal.vue';
+import Close from '@/components/icons/close.vue'
+import CheckinNoapp from './components/checkin-noappointment.vue'
+import ArrowRight from '@/components/icons/arrow-right.vue'
+import EncounterIcon from '@/components/icons/encounter.vue'
+import MultiSelect from '../schedules/components/apply-to.vue'
 
-const shifts = namespace("shifts");
-const schedulesStore = namespace("schedules");
-const contacts = namespace('practitioner');
+import EmptyState from './empty-state.vue'
+
+const visitsStore = namespace("visits");
 
 @Options({
   components: {
-    // Table,
-    // AddActors,
+    MultiSelect,
+    Close,
     TimeLine,
     SortIcon,
     ThreeDotIcon,
@@ -189,15 +276,16 @@ const contacts = namespace('practitioner');
     Button,
     SideModal,
     CheckIn,
-    // ViewDetails,
-    // ViewPlan,
-    // ViewBreaks,
-    // AdvancedFilter,
     CornieTable,
     AddIcon,
     DeactivateIcon,
     EmptyState,
     CheckOut,
+    Modal,
+    Actors,
+    CheckinNoapp,
+    ArrowRight,
+    EncounterIcon,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -212,44 +300,18 @@ export default class PractitionerExistingState extends Vue {
   showAllActors = false;
   showActorsPane = false;
   showAddActorsPane = false;
+  showCheckin = false;
+  showCheckNoapp = false;
+  selectType = false;
+  filterStatus = false;
 
   selectedSchedule: any = { };
 
-  @shifts.State
-  shifts!: any[];
+  @visitsStore.State
+  visits!: any[];
 
-  @contacts.State
-  practitioners!: IPractitioner[];
-
-  @contacts.Action
-  fetchPractitioners!:() => Promise<boolean>;
-
-  @shifts.Action
-  getShifts!: () => Promise<void>;
-
-  @shifts.Action
-  deleteShift!: (id: string) => Promise<boolean>;
-
-  @shifts.Action
-  activateShift!: (id: string) => Promise<boolean>;
-
-  @shifts.Action
-  destroyShift!: (id: string) => Promise<boolean>;
-
-  @schedulesStore.State
-  schedules!: any[];
-
-  @schedulesStore.Action
-  getSchedules!: () => Promise<void>;
-
-  @schedulesStore.Action
-  deleteSchedule!: (id: string) => Promise<boolean>;
-
-  @schedulesStore.Action
-  activateSchedule!: (id: string) => Promise<boolean>;
-
-  @schedulesStore.Action
-  deactivateSchedule!: (id: string) => Promise<boolean>;
+  @visitsStore.Action
+  getVisits!: () => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -261,47 +323,44 @@ export default class PractitionerExistingState extends Vue {
     },
     {
       title: "Patient",
-      key: "description",
+      key: "patient",
       show: true,
     },
     {
       title: "Appointment Type",
-      key: "specialty",
+      key: "appointmentType",
       show: true,
     },
-    { title: "Slot", key: "days", show: true },
+    { title: "Slot", key: "slot", show: true },
     {
       title: "Practitioner",
-      key: "timing",
-      show: true,
-    },
-    {
-      title: "Participant Status",
       key: "practitioners",
       show: true,
     },
     {
-      title: "Location",
+      title: "Participant Status",
       key: "status",
+      show: true,
+    },
+    {
+      title: "Location",
+      key: "location",
       show: true,
     },
     
   ];
 
-  get allPractitioners() {
-    if (!this.practitioners || this.practitioners.length === 0) return [ ];
-    return this.practitioners
-    .filter(i => this.selectedSchedule && this.selectedSchedule.id && this.selectedSchedule.practitioners.findIndex((j: any) => j.id === i.id) < 0)
-    .map(i => {
-      console.log(i, "i");
-      
-      return {
-        code: i.id,
-        display: `${i.firstName} ${i.lastName}`,
-        image: i.image
-      }
-    })
-  }
+  types = ['All', 'Emergency', 'Walk In', 'Follow Up', 'Routine']
+  statuses = ['All', 'Completed', 'Queue', 'In Progress']
+
+
+  dummyData = [
+    { id: 1, patient: 'Patient', appointmentType:'Type', slot: '1pm -2pm', practitioners: [{ firstName: 'Firstname', lastName: 'Lastname'}], status: 'inactive', location: 'Market' },
+    { id: 2, patient: 'Patient', appointmentType:'Type', slot: '1pm -2pm', practitioners: [{ firstName: 'Firstname', lastName: 'Lastname'}], status: 'active', location: 'Market' },
+    { id: 3, patient: 'Patient', appointmentType:'Type', slot: '1pm -2pm', practitioners: [{ firstName: 'Firstname', lastName: 'Lastname'}], status: 'inactive', location: 'Market' },
+    { id: 4, patient: 'Patient', appointmentType:'Type', slot: '1pm -2pm', practitioners: [{ firstName: 'Firstname', lastName: 'Lastname'}], status: 'active', location: 'Market' },
+  ]
+
 
   get headers() {
     const preferred =
@@ -314,7 +373,7 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     // if (this.shifts.length === 0 ) return this.shifs;
-    const shifts = this.schedules.map((i: any) => {
+    const shifts = this.visits.map((i: any) => {
       return {
         ...i,
         action: i.id,
@@ -328,109 +387,61 @@ export default class PractitionerExistingState extends Vue {
     // return search.searchObjectArray(shifts, this.query);
   }
 
-  actorAdded(actor: any) {
-    const index = this.schedules.findIndex(i => i.id === actor.scheduleId);
-    this.schedules[index].practitioners.unshift(actor)
-  }
+  // async remove(id: string) {
+  //   const confirmed = await window.confirmAction({
+  //     message: "Are you sure you want to deactivate this shift?",
+  //     // message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
+  //   });
+  //   if (!confirmed) return;
 
-  async remove(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to deactivate this shift?",
-      // message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
-    });
-    if (!confirmed) return;
+  //   try {
+  //       const response = await this.deleteShift(id);
+  //       if (response) window.notify({ msg: "Shift eactivated", status: "success" });
+  //       this.getShifts()
+  //   } catch (error) {
+  //       window.notify({ msg: "Shift could not deactivated", status: "error" });
+  //       console.log(error)
+  //   }
+  // }
 
-    try {
-        const response = await this.deleteShift(id);
-        if (response) window.notify({ msg: "Shift eactivated", status: "success" });
-        this.getShifts()
-    } catch (error) {
-        window.notify({ msg: "Shift could not deactivated", status: "error" });
-        console.log(error)
-    }
-  }
+  // async activate(id: string) {
+  //   const confirmed = await window.confirmAction({
+  //     message: "Are you sure you want to activate this Schedule?",
+  //   });
+  //   if (!confirmed) return;
 
-  async activate(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to activate this Schedule?",
-    });
-    if (!confirmed) return;
+  //   try {
+  //       const response = await this.activateSchedule(id);
+  //       if (response) window.notify({ msg: "Schedule activated", status: "success" });
+  //   } catch (error) {
+  //       window.notify({ msg: "Schedule could not activated", status: "error" });
+  //       console.log(error)
+  //   }
+  // }
 
-    try {
-        const response = await this.activateSchedule(id);
-        if (response) window.notify({ msg: "Schedule activated", status: "success" });
-    } catch (error) {
-        window.notify({ msg: "Schedule could not activated", status: "error" });
-        console.log(error)
-    }
-  }
-
-  async deactivate(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to deactivate this Schedule?",
-    });
-    if (!confirmed) return;
-
-    try {
-        const response = await this.deactivateSchedule(id);
-        if (response) window.notify({ msg: "Schedule deactivated", status: "success" });
-    } catch (error) {
-        window.notify({ msg: "Schedule could not deactivated", status: "error" });
-        console.log(error)
-    }
-  }
-
-  async destory(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to delete this schedule? This action cannot be undone.",
-    });
-    if (!confirmed) return;
-
-    try {
-        const deleted = await this.deleteSchedule(id);
-        if (deleted) {
-          notify({
-            msg: "Schedule deleted successfully",
-            status: "success",
-          });
-        }
-    } catch (error) {
-        window.notify({ msg: "Schedule could not deleted", status: "error" });
-        console.log(error)
-    }
-  }
 
   viewSchedule(id: string) {
-    const schedule = this.schedules.find((i: any) => i.id === id);
-    if (schedule) this.selectedSchedule = schedule;
-    console.log(this.selectedSchedule);
-    this.showActorsPane = true;
+    // const schedule = this.schedules.find((i: any) => i.id === id);
+    // if (schedule) this.selectedSchedule = schedule;
+    // console.log(this.selectedSchedule);
+    // this.showActorsPane = true;
     // this.showViewPane = true;
   }
 
-  addActor(id: string) {
-    const schedule = this.schedules.find((i: any) => i.id === id);
-    if (schedule) this.selectedSchedule = schedule;
-    console.log(schedule, "selected");
-    
-    this.showAddActorsPane = true;
-  }
-
-  isActive(id: string) {
-    const schedule = this.schedules.find((i: any) => i.id === id);
-    if (!schedule) return false;
-    return schedule.status === 'active' ? true : false;
-  }
 
   closeEditPane() {
     this.showEditPane = false
   }
 
   async created() {
-    if (!this.schedules || this.schedules.length === 0) await this.getSchedules();
-    if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
-    console.log(this.schedules, "schs");
-    
+    if (!this.visits || this.visits.length === 0) await this.getVisits();
+    console.log(this.visits, "visits");
+    window.addEventListener('click', (e: any) => {
+      if (!e.target.classList.contains('md')) {
+        this.selectType = false;
+        this.filterStatus = false;
+      }
+    })
   }
 
 }

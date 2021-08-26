@@ -2,7 +2,7 @@
     <div class="w-full mb-8">
         <div class="w-full border-b-2 curved flex py-2">
             <div class="container-fluid flex font-semibold text-xl py-2">
-                <h2>Visits</h2>
+                <h2>New Visits</h2>
             </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
     <!-- <img src="@/assets/img/empty-domain.svg" /> -->
     <VisitIcon />
     <h3 class="text-center mt-5">There are no visits on record!</h3>
-    <h3 class="text-center">Schedule a new appointment by clicking on “Appointment Register” above</h3>
+    <h3 class="text-center">Schedule a new appointment by clicking on Create Appointment below</h3>
     <button
       class="
         bg-danger
