@@ -16,7 +16,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
+                    :items="['Status Reasom Code']"
                     v-model="serviceCategory"
                     label="status reason"
                     placeholder="--Select--"
@@ -25,7 +25,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
                     v-model="serviceType"
                     label="intent"
                     placeholder="--Select--"
@@ -34,7 +34,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.specialty"
+                    :items="['']"
                     v-model="specialty"
                     label="category"
                     placeholder="--Select--"
@@ -43,7 +43,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
+                    :items="['outine','urgent','asap','stat']"
                     v-model="appointmentType"
                     label="priority"
                     placeholder="--Select--"
@@ -83,7 +83,7 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['Practitioner','PractitionerRole','Organization','Patient','RelatedPerson','Device']"
                     v-model="serviceType"
                     label="requester"
                     placeholder="--Select--"
@@ -105,7 +105,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
+                    :items="['Patient','Group']"
                     v-model="serviceCategory"
                     label="subject"
                     placeholder="--Select--"
@@ -114,7 +114,7 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['Coverage','Claim Response']"
                     v-model="serviceType"
                     label="insurance"
                     placeholder="--Select--"
@@ -127,7 +127,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
+                    :items="['Condition','Problem','Diagnosis Code']"
                     v-model="serviceCategory"
                     label="reason code"
                     placeholder="--Select--"
@@ -136,7 +136,7 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['Condition','Observation']"
                     v-model="serviceType"
                     label="reason reference"
                     placeholder="--Select--"
@@ -154,7 +154,7 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['CarePlan','MedicationRequest','ServiceRequest','ImmunizationRecommendation']"
                     v-model="serviceType"
                     label="based on"
                     placeholder="--Select--"
@@ -194,7 +194,7 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['Continuous','Acute','Seasonal']"
                     v-model="serviceType"
                     label="course of therapy type"
                     placeholder="--Select--"
@@ -230,7 +230,7 @@
                    <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
+                    :items="['Days',' Weeks','Months']"
                     v-model="serviceType"
                     label="duration"
                     placeholder="--Select--"
@@ -312,7 +312,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
+                    :items="['Organisation','Care Partner']"
                     v-model="serviceCategory"
                     label="dispenser"
                     placeholder="--Select--"
@@ -332,7 +332,7 @@
                   >
                   </cornie-select>
                   <cornie-select
-                    :items="dropdowns.serviceType"
+                    :items="['Practitioner','PractitionerRole','Organization','Patient','RelatedPerson','Device','CareTeam']"
                     v-model="serviceType"
                     label="performer"
                     placeholder="--Select--"
@@ -345,7 +345,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
+                    :items="['Pick-up','Ship to Patient Address','Ship to Hospital Address']"
                     v-model="serviceCategory"
                     label="non-safety cap request"
                     placeholder="--Select--"

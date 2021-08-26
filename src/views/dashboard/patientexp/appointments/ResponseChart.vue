@@ -1,8 +1,7 @@
 <template>
   <div>
-    <select class="border-none float-right" placeholder="june24,2021" name="date" id="date">
-      <option value="date">Today</option>
-    </select>
+    <cornie-select class="border-none float-right w-32" placeholder="june24,2021" v-model="date" :items="['Today']">
+          </cornie-select>
     <canvas ref="responsechart"></canvas>
   </div>
 </template>
@@ -19,7 +18,8 @@ export default {
   },
   data() {
     return {
-      ResponseData: ResponseData
+      ResponseData: ResponseData,
+      date:""
     }
   },
   mounted() {

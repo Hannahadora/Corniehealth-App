@@ -3,12 +3,11 @@
     <form  @submit.prevent="submit">
         <div class="mt-5 pb-76 mb-44 bg-white w-full h-full shadow-md p-4 rounded" >
             <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Status</a></li>    
+                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Basic Info</a></li>    
                 <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Participants</a></li>
                 <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Background Info</a></li>
-                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(4)"  :class="{'active' :  selected === 4  }" :aria-selected="selected === 4">Medication</a></li>
-                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(5)"  :class="{'active' :  selected === 5  }" :aria-selected="selected === 5">Health Conditions</a></li>
-                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(6)"  :class="{'active' :  selected === 6  }" :aria-selected="selected === 6">Other Info</a></li>
+                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(4)"  :class="{'active' :  selected === 4  }" :aria-selected="selected === 4">Activity</a></li>
+                <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(6)"  :class="{'active' :  selected === 6  }" :aria-selected="selected === 5">Other Info</a></li>
             </ul>    
             <div class="tab-content">
                 <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Status">      
@@ -17,11 +16,22 @@
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabstatus = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                 <div>
-                    <div class="w-full flex space-x-4 mb-3">
-                        <cornie-radio label="Pick-Up"  class="text-xs" name="request" id="pickup" @update:modelValue="changeChecked"/>
-                        <cornie-radio label="Ship to Patient Address"  name="request" id="patientadress" checked @update:modelValue="changeChecked"/>
-                        <cornie-radio label="Ship to Home Address"  name="request" id="homeaddress" @update:modelValue="changeChecked"/>
+                    <div class="w-full mb-5">
+                        <p class="text-sm relative top-14 w-full text-black uppercase font-bold">Preffered Consultation Medium</p>
+                        <div class="w-full flex space-x-4 mb-3">
+                            <cornie-radio label="In-Person"  class="text-xs" name="request" id="pickup" @update:modelValue="changeChecked"/>
+                            <cornie-radio label="Virtual"  name="request" id="patientadress" checked @update:modelValue="changeChecked"/>
+                            <cornie-radio label="Home Care"  name="request" id="homeaddress" @update:modelValue="changeChecked"/>
+                        </div>
                     </div>
+                    <div class="w-full">
+                        <p class="text-sm relative w-full text-black uppercase font-bold">specimen collection</p>
+                        <div class="w-full flex space-x-4  mb-3">
+                            <cornie-radio label="Walk-In"  class="text-xs" name="request" id="pickup" @update:modelValue="changeChecked"/>
+                            <cornie-radio label="At-Home"  name="request" id="patientadress" checked @update:modelValue="changeChecked"/>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-3 gap-4 mt-5">
                         <div>
                             <cornie-select
@@ -377,7 +387,7 @@
                             mt-5
                         "
                         >
-                    Dispenser
+                    Performer
                     </span>
                     <div class="grid grid-cols-3 gap-4 mt-5"> 
                         <div>
@@ -418,6 +428,17 @@
                             </span>
                         </div>
 
+                        <div>
+                        <cornie-input
+                            v-if="tabparticipants"
+                            label="location code"
+                            placeholder="--Enter--"
+                            />
+                            <span  v-else>
+                                <label class="block uppercase mb-1 text-xs font-bold">location code</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            </span>
+                        </div>
                         <div>
                         <cornie-input
                             v-if="tabparticipants"
@@ -464,17 +485,6 @@
                         <div>
                         <cornie-input
                             v-if="tabbg"
-                            label="encounter"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">encounter</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                        <cornie-input
-                            v-if="tabbg"
                             label="priority"
                             placeholder="--Enter--"
                             />
@@ -486,11 +496,22 @@
                         <div>
                         <cornie-input
                             v-if="tabbg"
-                            label="reason ref"
+                            label="precondition code"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">reason ref</label>
+                                <label class="block uppercase mb-1 text-xs font-bold">precondition code</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            </span>
+                        </div>
+                        <div>
+                        <cornie-input
+                            v-if="tabbg"
+                            label="reason reference"
+                            placeholder="--Enter--"
+                            />
+                            <span  v-else>
+                                <label class="block uppercase mb-1 text-xs font-bold">reason reference</label>
                                 <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                             </span>
                         </div>
@@ -519,11 +540,33 @@
                         <div>
                         <cornie-input
                             v-if="tabbg"
-                            label="performer"
+                            label="replaces"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">performer</label>
+                                <label class="block uppercase mb-1 text-xs font-bold">replaces</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            </span>
+                        </div>
+                        <div>
+                        <cornie-input
+                            v-if="tabbg"
+                            label="do not perform"
+                            placeholder="--Enter--"
+                            />
+                            <span  v-else>
+                                <label class="block uppercase mb-1 text-xs font-bold">do not perform</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            </span>
+                        </div>
+                        <div>
+                        <cornie-input
+                            v-if="tabbg"
+                            label="activity definition"
+                            placeholder="--Enter--"
+                            />
+                            <span  v-else>
+                                <label class="block uppercase mb-1 text-xs font-bold">activity definition</label>
                                 <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                             </span>
                         </div>
@@ -539,13 +582,35 @@
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                            <cornie-input
                             v-if="tabbg"
-                            label="do not perform"
+                            label="encounter"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">do not perform</label>
+                                <label class="block uppercase mb-1 text-xs font-bold">encounter</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            </span>
+                        </div>
+                        <div>
+                            <cornie-input
+                            v-if="tabbg"
+                            label="precondition"
+                            placeholder="--Enter--"
+                            />
+                            <span  v-else>
+                                <label class="block uppercase mb-1 text-xs font-bold">precondition</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            </span>
+                        </div>
+                        <div>
+                            <cornie-input
+                            v-if="tabbg"
+                            label="supporting info"
+                            placeholder="--Enter--"
+                            />
+                            <span  v-else>
+                                <label class="block uppercase mb-1 text-xs font-bold">supporting info</label>
                                 <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                             </span>
                         </div>
