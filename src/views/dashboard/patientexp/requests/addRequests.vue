@@ -1,13 +1,13 @@
 <template>
   <div class="w-full">
     <span class="flex w-full mt-3 font-bold text-lg text-primary py-2 mx-auto">
-      {{allaction}} Requests
+     New Requests
       <span class="text-danger text-xs mt-2 ml-2 font-normal"
         >(Items with asterisk are required for filling)</span
       >
     </span>
     <div>
-      <div class="w-full h-screen overflow-auto">
+      <div class="w-full h-screen">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
             <accordion-component title="Basic Info" v-model="opened">

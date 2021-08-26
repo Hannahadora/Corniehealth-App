@@ -48,7 +48,7 @@ export default {
 .minnumber{
     position: relative;
     top: 25px;
-    left: 100px;
+    left: -100px;
 }
 .maxnumber{
     position: relative;

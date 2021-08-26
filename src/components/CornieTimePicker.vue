@@ -5,21 +5,18 @@
         readonly
         v-bind="$attrs"
         v-on="on"
-        placeholder="_ _ /_ _ /_ _ _ _"
+        placeholder="00:00"
         v-model="date"
       >
-        <template #prepend-inner>
-          <calendar-icon />
-        </template>
       </cornie-input>
     </template>
     <v-date-picker
       v-model="date"
-      mode="date"
+      mode="time"
       color="red"
       :model-config="{
         type: 'string',
-        mask: 'DD/MM/YYYY',
+        mask: '00:00',
       }"
       style="width: 100%"
     />

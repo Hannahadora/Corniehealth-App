@@ -1,62 +1,134 @@
 <template>
-  <div class="w-full">
-    <span class="flex justify-end w-full mb-8">
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          pr-5
-          pl-5
-          px-3
-          mb-5
-          font-semibold
-          focus:outline-none
-          hover:opacity-90
-        "
-         @click="$router.push('/dashboard/provider/experience/add-request')"
-      >
-         New Requests
-      </button>
-      
-    </span>
-   <cornie-table :columns="rawHeaders" v-model="items">
-      <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.id}`)">
-          <newview-icon  class="text-yellow-500 fill-current"/>
-          <span class="ml-3 text-xs">View</span>
+  <div class="w-full pb-80">
+    <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Medications</a></li>    
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Diagnostics</a></li>
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Referrals</a></li>
+    <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(4)"  :class="{'active' :  selected === 4  }" :aria-selected="selected === 4">Other Requests</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="medications">   
+          <span class="flex justify-end w-full mb-8">
+            <button
+              class="
+                bg-danger
+                rounded-full
+                text-white
+                mt-5
+                py-2
+                pr-5
+                pl-5
+                px-3
+                mb-5
+                font-semibold
+                focus:outline-none
+                hover:opacity-90
+              "
+              @click="$router.push('/dashboard/provider/experience/add-request')"
+            >
+              New Requests
+            </button>
+            
+          </span>
+          <cornie-table :columns="rawHeaders" v-model="items">
+              <template #actions="{ item }">
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
+                  <newview-icon  class="text-yellow-500 fill-current"/>
+                  <span class="ml-3 text-xs">View</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <update-icon />
+                  <span class="ml-3 text-xs">Update</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <plus-icon class="text-primary fill-current"/>
+                  <span class="ml-3 text-xs">Add Appointment</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <plus-icon class="text-green-500 fill-current"/>
+                  <span class="ml-3 text-xs">Add Task</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+                  <note-icon class="text-purple-700 fill-current"/>
+                  <span class="ml-3 text-xs">Make Notes</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                  <message-icon class="text-blue-700 fill-current"/>
+                  <span class="ml-3 text-xs">Message</span>
+                </div>
+              </template>
+              <template #Participants="{ item }">
+                <div class="flex items-center">
+                  <span class="text-xs">{{item.Participants}}</span>
+                  <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+                </div>
+              </template>
+          </cornie-table>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <update-icon />
-          <span class="ml-3 text-xs">Update</span>
+        <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
+          <span class="flex justify-end w-full mb-8">
+            <button
+              class="
+                bg-danger
+                rounded-full
+                text-white
+                mt-5
+                py-2
+                pr-5
+                pl-5
+                px-3
+                mb-5
+                font-semibold
+                focus:outline-none
+                hover:opacity-90
+              "
+              @click="$router.push('/dashboard/provider/experience/add-request-reffer')"
+            >
+              New Requests
+            </button>
+            
+          </span>
+          <cornie-table :columns="rawHeaders" v-model="items">
+              <template #actions="{ item }">
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
+                  <newview-icon  class="text-yellow-500 fill-current"/>
+                  <span class="ml-3 text-xs">View</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <update-icon />
+                  <span class="ml-3 text-xs">Update</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <plus-icon class="text-primary fill-current"/>
+                  <span class="ml-3 text-xs">Add Appointment</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <plus-icon class="text-green-500 fill-current"/>
+                  <span class="ml-3 text-xs">Add Task</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+                  <note-icon class="text-purple-700 fill-current"/>
+                  <span class="ml-3 text-xs">Make Notes</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                  <message-icon class="text-blue-700 fill-current"/>
+                  <span class="ml-3 text-xs">Message</span>
+                </div>
+              </template>
+              <template #Participants="{ item }">
+                <div class="flex items-center">
+                  <span class="text-xs">{{item.Participants}}</span>
+                  <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+                </div>
+              </template>
+          </cornie-table>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <plus-icon class="text-primary fill-current"/>
-          <span class="ml-3 text-xs">Add Appointment</span>
+        <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="referrals">
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <plus-icon class="text-green-500 fill-current"/>
-          <span class="ml-3 text-xs">Add Task</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-          <note-icon class="text-purple-700 fill-current"/>
-          <span class="ml-3 text-xs">Make Notes</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-          <message-icon class="text-blue-700 fill-current"/>
-          <span class="ml-3 text-xs">Message</span>
-        </div>
-      </template>
-      <template #Participants="{ item }">
-        <div class="flex items-center">
-          <span class="text-xs">{{item.Participants}}</span>
-          <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
-        </div>
-      </template>
-    </cornie-table>
+        <div class="tab-pane" v-if="selected == 4"  :class="{'active' :  selected === 4  }" id="requests">
 
+        </div>
+    </div>
       <notes-add
           :appointmentId="appointmentId"
           @update:preferred="makeNotes"
@@ -139,6 +211,7 @@ export default class AppointmentExistingState extends Vue {
   showModal = false;
   loading = false;
   query = "";
+  selected = 1;
   showNotes = false;
 appointmentId="";
 showPartcipants= false;
@@ -241,6 +314,9 @@ singleParticipant= [];
     return search.searchObjectArray(appointments, this.query);
   }
 
+ select(i:number) {
+      this.selected = i;
+    }
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({

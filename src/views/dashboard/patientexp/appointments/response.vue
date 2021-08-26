@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
+  <div class="flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
     <div class="w-full p-2 pb-96">
         <span
         class="
@@ -17,11 +17,11 @@
       >
        Appointment Response
       </span>
-        <span class="w-full h-screen overflow-auto">
+        <span class="w-full">
             <div class="w-full flex justify-between space-x-2 mb-14">
                 <div>
                     <p class="text-2xl text-black mb-5 font-bold">Good Morning,</p>
-                    <p class="text-lg text-black font-medium mb-14">Dr. Joseph</p>
+                    <p class="text-lg text-black font-medium mb-20">Dr. Joseph</p>
                     <p class="text-xs text-black">
                         Today is Monday, June 24
                     </p>
