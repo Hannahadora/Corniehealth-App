@@ -52,7 +52,7 @@ interface IColumn {
     IconBtn,
     CornieMenu,
     RefreshIcon,
-    Card
+    Card,
   },
 })
 export default class CornieTable extends Vue {
@@ -65,10 +65,14 @@ export default class CornieTable extends Vue {
   @PropSync("modelValue", { type: Array, default: [] })
   items!: any[];
 
+  @Prop({ type: Boolean, default: true })
+  check!: boolean;
+
   @PropSync("loader", { type: Function })
   loaderProp!: ItemLoader;
 
   query = "";
+
   orderBy: Sorter = (a: any, b: any) => -1;
   selectedItems: any[] = [];
   selectedAll = false;
