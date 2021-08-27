@@ -3,7 +3,7 @@
         <div class="container-fluid">
 
             <div class="w-full flex items-center">
-                <div class="w-6/12">
+                <div class="w-4/12">
                     <div class="w-11/12">
                         <label class="block uppercase mb-1 text-xs font-bold">
                             Time
@@ -11,10 +11,10 @@
                         </label>
                     </div>
                 </div>
-                <div class="w-6/12 flex">
-                    <div class="container flex justify-end">
+                <div class="w-8/12 flex">
+                    <div class="container">
                         <div class="w-12/12">
-                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="data.date" />
+                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100% !important" width="100%" v-model="data.date" />
                         </div>
                     </div>
                 </div>
@@ -26,12 +26,13 @@
                         <span class="uppercase font-semibold">Physician</span>
                         <span class="uppercase  text-danger">assign to physician</span>
                     </span>
-                    <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.time">
+                    <!-- <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.time"> -->
+                    <CornieSelect :items="actors" v-model="data.practitioner" style="width: 100%" />
                 </label>
             </div>
 
             <div class="w-full my-4" style="border-bottom: 1px dashed #C2C7D6;">
-                <CornieSelect :items="[1, 2, 3]" :label="'Room'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="rooms" :label="'Room'" v-model="data.room" style="width: 100%" />
             </div>
 
             <div class="w-full mb-4 mt-8">
@@ -53,11 +54,9 @@
                             </div>
                             <div class="w-full flex justify-between">
                                 <span>
-                                    <span class="cursor-pointer text-success font-light text-xs">Visitors</span>
+                                    <span class="cursor-pointer text-success font-light text-xs">APPOINTMENT TIME 10:00 AM</span>
                                     <span class="mx-1 font-light text-gray-500">|</span>
-                                    <span class="cursor-pointer text-gray-400 font-light text-xs">Queue No: 232222</span>
-                                    <span class="mx-1 font-light text-gray-500">|</span>
-                                    <span class="cursor-pointer text-gray-400 font-light text-xs">10:08 AM</span>
+                                    <span class="cursor-pointer text-gray-400 font-light text-xs uppercase text-success">Queue No: #02</span>
                                 </span>
                                 <span class="cursor-pointer text-danger font-light text-xs cursor-pointer font-semibold">Queue</span>
                             </div>
@@ -76,11 +75,9 @@
                             </div>
                             <div class="w-full flex justify-between">
                                 <span>
-                                    <span class="cursor-pointer text-success font-light text-xs">Visitors</span>
+                                    <span class="cursor-pointer text-success font-light text-xs">APPOINTMENT TIME 10:00 AM</span>
                                     <span class="mx-1 font-light text-gray-500">|</span>
-                                    <span class="cursor-pointer text-gray-400 font-light text-xs">Queue No: 232222</span>
-                                    <span class="mx-1 font-light text-gray-500">|</span>
-                                    <span class="cursor-pointer text-gray-400 font-light text-xs">10:08 AM</span>
+                                    <span class="cursor-pointer text-gray-400 font-light text-xs uppercase text-success">Queue No: #03</span>
                                 </span>
                                 <span class="cursor-pointer text-danger font-light text-xs cursor-pointer font-semibold">Queue</span>
                             </div>
@@ -121,9 +118,11 @@ import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
+import ILocation from "@/types/ILocation";
 
 const healthcare = namespace('healthcare');
-const shifts = namespace('shifts');
+const locationsStore = namespace('location');
+const practitionersStore = namespace('practitioner');
 
 @Options({
   components: {
@@ -144,6 +143,18 @@ export default class CheckIn extends Vue {
  showBreaks = false;
  showPlanning = false;
  loading = false;
+
+ @locationsStore.State
+ locations!: ILocation[];
+
+ @locationsStore.Action
+ fetchLocations!: () => Promise<void>;
+
+ @practitionersStore.State
+ practitioners!: ILocation[];
+
+ @practitionersStore.Action
+ fetchPractitioners!: () => Promise<void>;
 
     data: any = { }
 
@@ -182,6 +193,26 @@ export default class CheckIn extends Vue {
      { display: 'Sunday', code: false }
  ]
 
+ get rooms() {
+     if (!this.locations || this.locations.length === 0) return [ ];
+     return this.locations.map(i => {
+         return { code: i.id, display: i.name };
+     })
+ }
+
+ get actors() {
+     if (!this.practitioners || this.practitioners.length === 0) return [ ];
+     return this.practitioners.map((i: any) => {
+         return { code: i.id, display: i.firstName + i.lastName };
+     })
+ }
+
+    async created() {
+        if (!this.locations || this.locations.length === 0) await this.fetchLocations();
+        if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
+        console.log(this.practitioners, "locs");
+        
+    }
 
 }
 </script>

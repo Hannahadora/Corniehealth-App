@@ -1,5 +1,5 @@
 <template>
-    <div class="conatainer-fluid">
+    <div class="conatainer-fluid h-screen mt-6 bg-white p-4">
         <div class="w-full flex items-center">
             <p class="mb-4 mr-4">View Timeline</p>
             <CornieSelect v-model="data.type" :items="[1, 2, 3]" style="width: 150px" />

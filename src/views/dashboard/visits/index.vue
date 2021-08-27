@@ -100,13 +100,18 @@
                     <span class="ml-3 text-xs" >Start Encounter</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <EditIcon />
-                    <span class="ml-3 text-xs">Add Vitals</span>
+                      <EditIcon />
+                      <span class="ml-3 text-xs">Add Vitals</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <ArrowRight />
-                    <span class="ml-3 text-xs"
-                    >Refer Patient</span>
+                      <ArrowRight />
+                      <span class="ml-3 text-xs"
+                      >Refer Patient</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="() => showCheckout = true">
+                      <CheckoutIcon />
+                      <span class="ml-3 text-xs"
+                      >Check-out</span>
                     </div>
                 </template>
                 </cornie-table>
@@ -116,7 +121,7 @@
                 v-model:preferred="preferredHeaders"
                 v-model:visible="showColumnFilter"
                 />
-                <side-modal :visible="false" :header="'Check-Out'" @closesidemodal="() => showActorsPane = false">
+                <side-modal :visible="showCheckout" :header="'Check-Out'" @closesidemodal="() => showCheckout = false">
                     <CheckOut />
                 </side-modal>
 
@@ -145,6 +150,47 @@
                     <ViewBreaks :schedule="selectedSchedule" />
                 </div>
                 </side-modal>
+
+                <modal :visible="true">
+                  <template #title>
+                    <p class="flex items-center justify-between px-2" style="width: 440px">
+                      <span class="font-lignt text-primary p-2 text-xl">Timeline</span> 
+                      <span class="text-danger cursor-pointer">
+                        See all
+                      </span>
+                    </p>
+                  </template>
+                  <div class="w-4/12 px-4" style="width: 440px">
+                    <div class="w-full">
+                      <div class="w-full">
+                        <p class="font-weight-light">Check In</p>
+                        <p class="font-weight-light italic text-xs text-gray-400">April 10, 2020. 8:00 AM</p>
+                        <p class="font-weight-light text-lg" style="color: #114FF5">Open</p>
+                        <p class="font-weight-light text-xs text-gray-400 italic ">Check Out: 8:20 AM</p>
+                      </div>
+                      <div class="w-full my-2" style="height: 50px;border-left: 1px dashed #878E99;">
+
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                  <div class="w-4/12 px-4 my-2" style="width: 440px">
+                    <div class="w-full">
+                      <div class="w-full">
+                        <p class="font-weight-light textlf">Add Vitals</p>
+                        <p class="font-weight-light italic text-xs text-gray-400">April 10, 2020. 8:00 AM</p>
+                        <p class="font-weight-light text-lg" style="color: #114FF5">Open</p>
+                        <p class="font-weight-light text-xs text-gray-400 italic ">Check Out: 8:20 AM</p>
+                      </div>
+                      <div class="w-full" style="height: 50px;border-left: 1px dashed #878E99;">
+
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                </modal>
 
                 <modal :visible="false">
                   <template #title>
@@ -251,10 +297,12 @@ import CheckinNoapp from './components/checkin-noappointment.vue'
 import ArrowRight from '@/components/icons/arrow-right.vue'
 import EncounterIcon from '@/components/icons/encounter.vue'
 import MultiSelect from '../schedules/components/apply-to.vue'
+import CheckoutIcon from '@/components/icons/checkout.vue'
 
 import EmptyState from './empty-state.vue'
 
 const visitsStore = namespace("visits");
+const appointment = namespace("appointment");
 
 @Options({
   components: {
@@ -286,6 +334,7 @@ const visitsStore = namespace("visits");
     CheckinNoapp,
     ArrowRight,
     EncounterIcon,
+    CheckoutIcon,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -304,6 +353,7 @@ export default class PractitionerExistingState extends Vue {
   showCheckNoapp = false;
   selectType = false;
   filterStatus = false;
+  showCheckout = false;
 
   selectedSchedule: any = { };
 
@@ -311,7 +361,22 @@ export default class PractitionerExistingState extends Vue {
   visits!: any[];
 
   @visitsStore.Action
-  getVisits!: () => Promise<boolean>;
+  getVisits!: () => Promise<void>;
+
+  @visitsStore.Action
+  createSlot!: (body: any) => Promise<any>;
+
+  @visitsStore.Action
+  schedulesByPractitioner!: () => Promise<any>;
+
+  @visitsStore.Action
+  checkin!: (body: any) => Promise<any>;
+
+  @appointment.State
+  appointments!: any[];
+
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -352,6 +417,7 @@ export default class PractitionerExistingState extends Vue {
 
   types = ['All', 'Emergency', 'Walk In', 'Follow Up', 'Routine']
   statuses = ['All', 'Completed', 'Queue', 'In Progress']
+  availableSlots: any = [ ]
 
 
   dummyData = [
@@ -434,6 +500,9 @@ export default class PractitionerExistingState extends Vue {
   }
 
   async created() {
+    if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
+    console.log(this.appointments, "appos");
+    
     if (!this.visits || this.visits.length === 0) await this.getVisits();
     console.log(this.visits, "visits");
     window.addEventListener('click', (e: any) => {
@@ -441,6 +510,99 @@ export default class PractitionerExistingState extends Vue {
         this.selectType = false;
         this.filterStatus = false;
       }
+    })
+
+    let body = {
+      "scheduleId": "f74e7d51-e022-4c2d-a9e8-891c06904f10",
+      "startTime": "01:40",
+      "endTime": "00:10",
+      "description": "string",
+      "status": "active",
+      "active": true,
+      "capacity": 0,
+      "hasWaitList": true,
+      "comments": "string",
+      "repeat": {
+        "year": 0,
+        "month": 0,
+        "week": 0,
+        "everyDayOfSchedule": true
+      }
+    }
+    let pat = {
+      "mrn": "string",
+      "firstname": "string1",
+      "middlename": "string2",
+      "lastname": "string3",
+      "dateOfBirth": "2021-08-26",
+      "gender": "male",
+      "maritalStatus": "string",
+      "multipleBirths": false,
+      "multipleBirthInteger": 0,
+      "guarantor": {
+        firstname: "emergency-contact",
+        lastname: "emergency-contact"
+      },
+      "accountType": "individual",
+      "vip": true,
+      "emergencyContacts": [
+        {firstname: "emergency-contact",
+        lastname: "emergency-contact"}
+      ],
+    }
+    let req = {
+      "appointmentId": "2600b457-6ee5-452b-b85a-a134be1a9ca4",
+      // "orgId": "0eb0c710-665a-449c-ab27-42014d25c676",
+      "patient": "520af5c1-1a8d-4f6b-a6d4-498148d8b249",
+      "type": "Follow-up",
+      "status": "active",
+      "roomId": "d25cc910-0830-40cf-a0c8-7c303f381b29",
+      // "checkInTime": "01:26",
+      // "checkOutTime": "01:30",
+      "notes": "true",
+      "slotId": "6f72aece-ddb2-4908-aedb-cb1b961e814f",
+      // practitioners: [ "87e846a3-bac0-43b9-a4db-0b2605426c42" ],
+      // startTime: "00:25"
+    }
+
+    this.createSlot(pat).then((res: any) => {
+      console.log(res, "SLOTSERR");
+      
+    })
+    .catch((err: any) => {
+      console.log(err, "PATERR");
+      
+    })
+
+    this.checkin(req).then((res: any) => {
+      console.log(res, "VISIT");
+      
+    })
+
+
+    this.schedulesByPractitioner().then((res: any) => {
+      console.log(res, "KKKK");
+      
+      const allSlots: any = [ ]
+      res.forEach((i: any) => {
+        if (i.slots && i.slots.length > 0) {
+          i.slots.forEach((j: any) => {
+            allSlots.push(j);
+          });
+        }
+      });
+
+      this.availableSlots = allSlots.map((i: any) => {
+        return {
+          code: i.id,
+          display: `${i.startTime} - ${i.endTime}, ${new Date(i.startDate).toLocaleDateString()}`
+        }
+      })
+      
+    })
+    .catch((err: any) => {
+      console.log(err, "ERR");
+      
     })
   }
 

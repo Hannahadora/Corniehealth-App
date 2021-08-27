@@ -3,7 +3,7 @@
         <div class="container-fluid">
 
             <div class="w-full flex items-center">
-                <div class="w-6/12">
+                <div class="w-4/12">
                     <div class="w-11/12">
                         <label class="block uppercase mb-1 text-xs font-bold">
                             <span class="mb-2">Time</span>
@@ -11,8 +11,8 @@
                         </label>
                     </div>
                 </div>
-                <div class="w-6/12 flex">
-                    <div class="container flex justify-end">
+                <div class="w-8/12 flex">
+                    <div class="container">
                         <div class="w-12/12">
                             <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="data.date" />
                         </div>
@@ -46,12 +46,12 @@
                         <span class="uppercase font-semibold">Total Bill</span>
                         <span class="uppercase  text-success">paid</span>
                     </span>
-                    <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.time">
+                    <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.paidBill">
                 </label>
             </div>
 
             <div class="w-full my-4">
-                <CornieSelect :items="[1, 2, 3]" :label="'Room'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="rooms" :label="'Room'" v-model="data.room" style="width: 100%" />
             </div>
 
             <div class="w-full my-4">
@@ -90,9 +90,10 @@ import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
+import ILocation from "@/types/ILocation";
 
 const healthcare = namespace('healthcare');
-const shifts = namespace('shifts');
+const locationsStore = namespace('location');
 
 @Options({
   components: {
@@ -114,7 +115,13 @@ export default class CheckIn extends Vue {
  showPlanning = false;
  loading = false;
 
-    data: any = { }
+  @locationsStore.State
+ locations!: ILocation[];
+
+ @locationsStore.Action
+ fetchLocations!: () => Promise<void>;
+
+    data: any = { paidBill: '72,630' }
 
  activeStates: any = [
      { display: 'Yes', value: 'yes' },
@@ -150,7 +157,20 @@ export default class CheckIn extends Vue {
      { display: 'Saturday', code: false },
      { display: 'Sunday', code: false }
  ]
+    
+     get rooms() {
+        if (!this.locations || this.locations.length === 0) return [ ];
+        return this.locations.map(i => {
+            return { code: i.id, display: i.name };
+        })
+    }
 
+
+    async created() {
+        if (!this.locations || this.locations.length === 0) await this.fetchLocations();
+        console.log(this.locations, "LLLL");
+        
+    }
 
 }
 </script>

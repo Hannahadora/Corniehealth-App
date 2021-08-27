@@ -1,5 +1,5 @@
 import { StoreOptions } from "vuex";
-import { createSchedule, getVisits } from "./helper";
+import { createSlot, getVisits, schedulesByPractitioner, checkin } from "./helper";
 
 interface SchedulesStore {
   visits: any[],
@@ -30,11 +30,23 @@ export default {
       ctx.commit("setVisits", visits);
     },
 
-    async createSchedule(ctx, schedule: any) {
-      const sch = await createSchedule(schedule);
-      if (!sch) return false;
+    async schedulesByPractitioner(ctx) {
+      const slots = await schedulesByPractitioner();
+      return slots;
+    },
+
+    async createSlot(ctx, schedule: any) {
+      const sch = await createSlot(schedule);
+      if (!sch) return { };
       ctx.commit("addSchedule", sch);
-      return true;
+      return sch;
+    },
+
+    async checkin(ctx, schedule: any) {
+      const sch = await checkin(schedule);
+      if (!sch) return { };
+      ctx.commit("addSchedule", sch);
+      return sch;
     },
   },
 } as StoreOptions<SchedulesStore>
