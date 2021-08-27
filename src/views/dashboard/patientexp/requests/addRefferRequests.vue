@@ -184,13 +184,42 @@
                   >
                   </cornie-select>
                    <cornie-numinput
-                    label="quantity"
-                    type="number"
+                        label="quantity"
+                        type="number"
+                        placeholder="--Enter--"
+                        />
+                    <div>
+                     <label class="block uppercase mb-1 text-xs font-bold">Ratio</label>
+                        <div class="flex  h-12 border-gray-100 rounded-lg w-full  border-2">
+                            <input contenteditable="true" class="w-10 ml-20 outline-none  focus-within:outline-none" type="text" value="2">
+                            <span class="relative left-14 top-2">:</span>
+                        <input contenteditable="true" type="text" class="ml-32 w-10 outline-none focus-within:outline-none" value="2">
+                        </div>
+                    </div>
+                  <div>
+                    <range-slider />
+                  </div>
+                   <cornie-date-picker
+                        class="w-full"
+                        label="occurence DATE"
+                    />
+                     <cornie-date-picker
+                        class="w-full"
+                        label="occurence Period"
+                    />
+                      <cornie-time-picker
+                        class="w-full"
+                        placeholder="00:00"
+                        label="occurence timing"
+                    />
+                      <cornie-input
+                    label="note"
                     placeholder="--Enter--"
                     />
-                  <div>
-                      <range-slider />
-                  </div>
+                      <cornie-input
+                    label="patient instructions"
+                    placeholder="--Enter--"
+                    />
                 </div>
             </accordion-component>
              <accordion-component title="Performer" v-model="openedS">
@@ -314,6 +343,8 @@ import AddIcon from "@/components/icons/add.vue";
 import SingleDatePicker from "@/components/datepicker.vue";
 import RangeSlider from "@/components/range.vue";
 import DatePicker from "@/components/daterangepicker.vue";
+import CornieDatePicker from "@/components/CornieDatePicker.vue";
+import CornieTimePicker from "@/components/CornieTimePicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 
@@ -332,7 +363,9 @@ const emptyParticipant: ParticipantDetail = {
     CornieInput,
     CornieSelect,
     CornieNuminput,
+    CornieDatePicker,
     PractitionersFilter,
+    CornieTimePicker,
     SingleDatePicker,
     Availability,
     Textarea,

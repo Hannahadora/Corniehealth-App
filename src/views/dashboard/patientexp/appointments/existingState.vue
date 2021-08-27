@@ -27,11 +27,11 @@
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-response`)">
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/appointment-response`)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
         </div>
