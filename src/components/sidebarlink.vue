@@ -9,9 +9,9 @@
     }"
   >
     <div class="w-full flex justify-between items-center mx-auto">
-      <component 
-        @click="hasChild? expand = !expand : null"
-        :is="!hasChild? 'router-link' : 'span'"
+      <component
+        @click="hasChild ? (expand = !expand) : null"
+        :is="!hasChild ? 'router-link' : 'span'"
         :to="to"
         active-class="py-1 px-2 rounded-2xl bg-danger"
         class="
@@ -19,10 +19,15 @@
           hover:opacity-50
           pa-2
           w-full
+          cursor-pointer
           flex
           items-center
         "
-        :class="{ 'justify-center': !hovered, 'rounded-2xl py-1 bg-danger': active && (hasChild && !expand), 'px-2': hovered}"
+        :class="{
+          'justify-center': !hovered,
+          'rounded-2xl py-1 bg-danger': active && hasChild && !expand,
+          'px-2': hovered,
+        }"
       >
         <span class="" :class="{ 'mr-2': hovered }"><slot></slot></span>
         <span class="text-sm font-semibold whitespace-nowrap" v-if="hovered">
@@ -64,6 +69,7 @@ import { Prop, Watch } from "vue-property-decorator";
 import ChevronRightIcon from "./icons/chevronright.vue";
 import ChevronDownIcon from "./icons/chevrondown.vue";
 import CornieSpacer from "./CornieSpacer.vue";
+import { clickOutside } from "@/plugins/utils";
 
 type Child = { text: string; to: string };
 
@@ -71,7 +77,7 @@ type Child = { text: string; to: string };
   components: {
     ChevronRightIcon,
     ChevronDownIcon,
-    CornieSpacer
+    CornieSpacer,
   },
 })
 export default class SidebarLink extends Vue {
@@ -115,21 +121,7 @@ export default class SidebarLink extends Vue {
     return currentRoute.startsWith(this.$router.resolve(this.to).path);
   }
   mounted() {
-    document.addEventListener("click", (e) => {
-      const sidebarlink = document.getElementById(this.id);
-      let targetElement: any = e.target; // clicked element
-
-      do {
-        if (
-          targetElement == sidebarlink ||
-          targetElement.id?.includes(this.id)
-        ) {
-          return;
-        }
-        targetElement = (targetElement as any).parentNode;
-      } while (targetElement);
-      this.expand = false;
-    });
+    clickOutside(this.id, () => (this.expand = false));
   }
   created() {
     const slug = String(Math.random());
