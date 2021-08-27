@@ -53,11 +53,13 @@
                 v-model="type"
                 label="Type"
               />
-              <phone-input
-                v-model="phone"
-                :rules="required"
-                label="Phone Number"
-              />
+              <div class="block w-11/12">
+                <phone-input
+                  v-model="phone"
+                  :rules="required"
+                  label="Phone Number"
+                />
+              </div>
               <cornie-input
                 :rules="required"
                 v-model="email"
@@ -189,7 +191,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/operation-hours.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";

@@ -141,7 +141,7 @@
             <button
               @click="revertChanges"
               class="
-                border border-blue-800
+                border border-primary
                 mr-8
                 rounded-3xl
                 px-6
@@ -171,7 +171,7 @@
                 text-white
                 appearance-none
                 border-none
-                bg-pink-600
+                bg-danger
                 rounded-3xl
                 placeholder-gray-400
                 focus:outline-none
@@ -301,7 +301,7 @@ export default {
         this.orgInfo = response.data || {};
         this.setOrgInfo(response.data);
       } catch (error) {
-        alert("Could not fetch organization");
+        window.notify({ msg: "Could not fetch organization", status: "error" });
       }
     },
     setOrgInfo(data) {

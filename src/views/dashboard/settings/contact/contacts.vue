@@ -7,8 +7,12 @@
         v-for="(contacts, key, i) in titles"
         :key="key"
       >
-        <template v-slot:misc>
-          <add-icon class="cursor-pointer" @click="addNew(key)" />
+        <template v-slot:misc="{ expanded }">
+          <add-icon
+            :class="{ 'text-white': expanded }"
+            class="text-primary cursor-pointer fill-current"
+            @click="addNew(key)"
+          />
         </template>
         <div class="w-full border p-2 flex flex-wrap">
           <contact-card

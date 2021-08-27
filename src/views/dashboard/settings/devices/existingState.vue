@@ -30,52 +30,29 @@
         Add a New Device
       </button>
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="updateDevice(item.id)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <table-option @click="updateDevice(item.data.id)">
-              <eye-icon class="mr-3 mt-1" />
-              View & Edit
-            </table-option>
-            <table-option @click="removeDevice(item.data.id)">
-              <delete-icon class="mr-3" />
-              Delete Device
-            </table-option>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <eye-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="removeDevice(item.id)"
+        >
+          <delete-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table>
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
+    </cornie-table>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
@@ -96,7 +73,7 @@ import { namespace } from "vuex-class";
 const device = namespace("device");
 @Options({
   components: {
-    Table,
+    CornieTable,
     SortIcon,
     TableOptions,
     SearchIcon,
@@ -114,65 +91,54 @@ export default class DeviceExistingState extends Vue {
   @Prop({ type: Array, default: [] })
   devices!: IDevice[];
 
-  query = "";
-  preferredHeaders = [];
   rawHeaders = [
     {
       title: "Identifier",
-      value: "id",
+      key: "id",
       show: true,
     },
-    { title: "Device Type", value: "name", show: true },
-    { title: "Manufacture Date", value: "manufacturerDate", show: true },
+    { title: "Device Type", key: "name", show: true },
+    { title: "Manufacture Date", key: "manufacturerDate", show: true },
     {
       title: "Expiration Date",
-      value: "expirationDate",
+      key: "expirationDate",
       filter: true,
       show: true,
     },
     {
       title: "Name Type",
-      value: "nameType",
+      key: "nameType",
       show: false,
     },
     {
       title: "Status",
-      value: "status",
+      key: "status",
       show: false,
     },
     {
       title: "Status Reason",
-      value: "statusReason",
+      key: "statusReason",
       show: false,
     },
     {
       title: "System Type",
-      value: "systemType",
+      key: "systemType",
       show: false,
     },
     {
       title: "Issuer",
-      value: "issuer",
+      key: "issuer",
       show: false,
     },
     {
       title: "Jurisdiction",
-      value: "id",
+      key: "id",
       show: false,
     },
   ];
 
   @device.Action
   deleteDevice!: (id: string) => Promise<boolean>;
-
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
-  }
 
   get items() {
     const devices = this.devices.map((device) => {
@@ -190,8 +156,7 @@ export default class DeviceExistingState extends Vue {
       flattened.action = flattened.id;
       return flattened;
     });
-    if (!this.query) return devices;
-    return search.searchObjectArray(devices, this.query);
+    return devices;
   }
 
   showColumnFilter = false;
@@ -213,17 +178,6 @@ export default class DeviceExistingState extends Vue {
     } else {
       window.notify({ msg: "Device not deleted", status: "error" });
     }
-  }
-
-  getKeyValue(item: any) {
-    const { data, index, ...rest } = item;
-    const key = Object.values(rest)[0] as string;
-    const value = data[key];
-    return {
-      key,
-      value,
-      index,
-    };
   }
 }
 </script>

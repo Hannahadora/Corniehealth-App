@@ -7,7 +7,7 @@
     v-model="valueSync"
     class="mb-5"
   >
-    <div v-bind="$attrs">
+    <div v-bind="$attrs" class="w-11/12">
       <label class="block uppercase mb-1 text-xs font-bold">
         <slot name="label">
           {{ label }}
@@ -37,14 +37,7 @@
           <slot name="prepend" />
         </div>
         <div
-          class="
-            rounded-lg
-            pl-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="rounded-lg pl-2 bg-white flex items-center justify-center"
           style="border-top-right-radius: 0; border-bottom-right-radius: 0"
           v-if="$slots['prepend-inner']"
         >
@@ -65,14 +58,7 @@
           v-model="valueSync"
         />
         <div
-          class="
-            rounded-lg
-            pr-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="rounded-lg pr-2 bg-white flex items-center justify-center"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0"
           v-if="$slots['append-inner']"
         >

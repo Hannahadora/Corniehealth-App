@@ -35,12 +35,14 @@
         <d-select v-model="type" label="Type" />
       </span>
       <span class="grid grid-cols-2">
-        <phone-input
-          v-model:code="dialCode"
-          v-model="phone"
-          required
-          label="Phone"
-        />
+        <div class="block w-11/12">
+          <phone-input
+            v-model:code="dialCode"
+            v-model="phone"
+            required
+            label="Phone"
+          />
+        </div>
         <d-input v-model="email" required label="Email" />
       </span>
       <span class="grid grid-cols-2">
