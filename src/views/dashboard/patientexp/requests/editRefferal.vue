@@ -1058,7 +1058,7 @@ actor = "";
   duration = "";
   comments = "";
   patientInstruction = "";
-  period = { start: "10/12/2011", end: "15/12/2019" };
+  period = {} as Period;
   participantDetail = {...emptyParticipant}
   
   Practitioners = [];
@@ -1320,7 +1320,7 @@ actor = "";
   async createAppointment() {
     //const period = this.period;
    this.payload.period.start = new Date(this.period.start).toISOString();
-    this.payload.period.end = new Date(this.period.end).toISOString();
+   // this.payload.period.end = new Date(this.period.end).toISOString();
     this.actor = this.type
     try {
       const response = await cornieClient().post("/api/v1/appointment", this.payload);

@@ -1,10 +1,10 @@
 <template>
-  <div class="menu" @click="onMenuClick" >
+  <div class="menu py-2" @click="onMenuClick" >
     <slot name="activator" :on="{ click }" />
       <div>
-    <card v-show="showMenu" class="  relative
-              py-2
+    <card v-show="showMenu" class="relative
               p-1
+              z-10
               bg-white
               border border-gray-200
               rounded-md

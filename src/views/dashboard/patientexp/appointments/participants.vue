@@ -150,8 +150,8 @@
                       <avatar class="mr-2" v-else src="@/assets/img/placeholder.png"/>
                      </div>
                         <div class="w-full">
-                          <p class="text-xs text-dark font-semibold"> {{ input.firstName }}
-                          {{ input.lastName }}</p>
+                          <p class="text-xs text-dark font-semibold"> {{ input.firstname }}
+                          {{ input.lastname }}</p>
                         </div>
                    </div>
                   <div>

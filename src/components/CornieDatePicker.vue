@@ -3,6 +3,7 @@
     <template #activator="{ on }">
       <cornie-input
         readonly
+        class="py-2"
         v-bind="$attrs"
         v-on="on"
         placeholder="_ _ /_ _ /_ _ _ _"
@@ -16,6 +17,7 @@
     <v-date-picker
       v-model="date"
       mode="date"
+      class="py-2"
       color="red"
       :model-config="{
         type: 'string',
