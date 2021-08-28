@@ -1,6 +1,6 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full">
+    <span class="flex justify-end w-full mb-3">
       <button
         class="
           bg-danger
@@ -17,81 +17,28 @@
         New Location
       </button>
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="$router.push(`add-location/${item.id}`)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="$router.push(`add-location/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1
-                py-3
-              "
-            >
-              <eye-icon class="mr-3 mt-1" />
-              View & Edit
-            </li>
-            <li
-              @click="deleteLoc(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete Location
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <eye-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteLoc(item.id)"
+        >
+          <delete-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table>
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
+    </cornie-table>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -101,18 +48,19 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
+import { getTableKeyValue } from "@/plugins/utils";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
+import EyeIcon from "@/components/icons/newview.vue";
 
 const location = namespace("location");
 
 @Options({
   components: {
-    Table,
+    CornieTable,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
@@ -137,55 +85,46 @@ export default class LocationExistingState extends Vue {
   deleteLocation!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
-  preferredHeaders = [];
+
   rawHeaders = [
     {
       title: "Location Name",
-      value: "name",
+      key: "name",
       show: true,
     },
-    { title: "Address", value: "address", show: true },
-    { title: "Country", value: "country", show: true },
+    { title: "Address", key: "address", show: true },
+    { title: "Country", key: "country", show: true },
     {
       title: "State",
-      value: "state",
+      key: "state",
       show: true,
     },
     {
       title: "Hours of operation",
-      value: "hoursOfOperation",
+      key: "hoursOfOperation",
       show: false,
     },
     {
       title: "Operational Status",
-      value: "operationalStatus",
+      key: "operationalStatus",
       show: false,
     },
     {
       title: "Alias",
-      value: "alias",
+      key: "alias",
       show: false,
     },
     {
       title: "Description",
-      value: "description",
+      key: "description",
       show: false,
     },
     {
       title: "Physical Type",
-      value: "physicalType",
+      key: "physicalType",
       show: false,
     },
   ];
-
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
-  }
 
   get items() {
     const locations = this.locations.map((location) => {
@@ -205,7 +144,7 @@ export default class LocationExistingState extends Vue {
     if (!opHour) return "All Day";
     return `${opHour.openTime} - ${opHour.closeTime}`;
   }
-  
+
   async deleteLoc(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this location",
