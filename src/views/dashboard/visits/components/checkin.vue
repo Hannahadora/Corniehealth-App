@@ -96,7 +96,7 @@
                         Cancel
                     </router-link>
                 </corniebtn>
-                <Button :loading="loading">
+                <Button :loading="loading" @click="setSession">
                     <a style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         Save 
                     </a>
@@ -119,8 +119,9 @@ import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
 import ILocation from "@/types/ILocation";
+import { Prop } from "vue-property-decorator";
 
-const healthcare = namespace('healthcare');
+const visitsStore = namespace('visits');
 const locationsStore = namespace('location');
 const practitionersStore = namespace('practitioner');
 
@@ -144,6 +145,12 @@ export default class CheckIn extends Vue {
  showPlanning = false;
  loading = false;
 
+ @Prop()
+ item!: any;
+
+ @visitsStore.Action
+ checkin!: (id: string) => Promise<boolean>;
+
  @locationsStore.State
  locations!: ILocation[];
 
@@ -155,6 +162,14 @@ export default class CheckIn extends Vue {
 
  @practitionersStore.Action
  fetchPractitioners!: () => Promise<void>;
+
+ async setSession() {
+     this.loading = true;
+    const response = await this.checkin(this.item.id);
+    this.loading = false;
+    if (response) window.notify({ msg: "Checked In", status: "success" });
+    this.$emit('close')
+}
 
     data: any = { }
 

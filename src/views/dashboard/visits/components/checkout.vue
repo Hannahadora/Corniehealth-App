@@ -7,14 +7,14 @@
                     <div class="w-11/12">
                         <label class="block uppercase mb-1 text-xs font-bold">
                             <span class="mb-2">Time</span>
-                            <input type="time" name="" class="p-3 mt-2 border rounded-md w-full" id="" v-model="data.time">
+                            <input type="time" name="" class="p-3 mt-2 border rounded-md w-full" id="" v-model="item.checkInTime">
                         </label>
                     </div>
                 </div>
                 <div class="w-8/12 flex">
                     <div class="container">
                         <div class="w-12/12">
-                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="data.date" />
+                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="item.startDate" />
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                         Cancel
                     </router-link>
                 </corniebtn>
-                <Button :loading="loading">
+                <Button :loading="loading" @click="endSession">
                     <a style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         Save 
                     </a>
@@ -91,8 +91,9 @@ import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
 import ILocation from "@/types/ILocation";
+import { Prop } from "vue-property-decorator";
 
-const healthcare = namespace('healthcare');
+const visitsStore = namespace('visits');
 const locationsStore = namespace('location');
 
 @Options({
@@ -115,11 +116,17 @@ export default class CheckIn extends Vue {
  showPlanning = false;
  loading = false;
 
+ @Prop()
+ item!: any;
+
   @locationsStore.State
  locations!: ILocation[];
 
  @locationsStore.Action
  fetchLocations!: () => Promise<void>;
+
+ @visitsStore.Action
+ checkout!: (id: string) => Promise<boolean>;
 
     data: any = { paidBill: '72,630' }
 
@@ -163,6 +170,18 @@ export default class CheckIn extends Vue {
         return this.locations.map(i => {
             return { code: i.id, display: i.name };
         })
+    }
+
+    get updates() {
+        if (!this.item) return { };
+        this.data.checkInTime = this.item.checkInTime;
+        this.data.room = { code: this.item.room ? this.item.roomId : '', display: this.item.room ? this.item.room.name : ''};
+    }
+
+    async endSession() {
+        const response = await this.checkout(this.item.id);
+        if (response) window.notify({ msg: "Checked Out", status: "success" });
+        this.$emit('close')
     }
 
 
