@@ -9,7 +9,7 @@
           mb-10
           text-xl text-primary
           py-2">
-     Respond
+    Edit Response
     </span>
     <div>
       <div class="w-full">
@@ -24,13 +24,13 @@
                    <single-date-picker
                     label="start date"
                     class="py-2"
-                    v-model="setDate.start"
+                    v-model="period.start"
                     :rules="required"
                   />
                   <single-date-picker
                     label="end date"
                       class="py-2"
-                    v-model="setDate.end"
+                    v-model="period.end"
                     :rules="required"
                   />
                   <cornie-select
@@ -48,7 +48,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['Cancelled','Confirmed']"
+                    :items="['Confirmed', 'Canceled']"
                     v-model="status"
                     label="Status"
                     placeholder="--Select--"
@@ -104,7 +104,6 @@
         </form>
       </div>
     </div>
-   
   </div>
 </template>
 <script lang="ts">
@@ -196,7 +195,7 @@ appointmentId = "";
   duration = "";
   comment = "";
   patientInstruction = "";
-  period = {} as Period;
+    period = {} as Period;
   participantDetail = {...emptyParticipant}
   Practitioners = [];
   Devices = [];
@@ -218,6 +217,7 @@ appointmentId = "";
   device  = [];
   patient = [];
   role = [];
+ allresponse: any[] = [];
   availability: any[] = [];
   availabilities = Array();
  
@@ -232,7 +232,6 @@ appointmentId = "";
   required = string().required();
   dropdowns = {} as IIndexableObject;
   dropdowns2 = {} as IIndexableObject;
-
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
@@ -277,24 +276,27 @@ appointmentId = "";
     return payload
   }
  
+
+ 
   async submit() {
     this.loading = true;
-    this.createAppointmentResponse();
+    this.updateAppointmentResponse();
+    // if (this.id) await this.updateAppointmentResponse();
+    // else await this.createAppointmentResponse();
     this.loading = false;
   }
-  async createAppointmentResponse() {
 
-    this.appointmentId = this.id;
+  async updateAppointmentResponse() {
+    const url = `/api/v1/appointment/editAppointmentReponse/${this.id}`;
+    const payload = { ...this.payload };
     try {
-      const response = await cornieClient().post("/api/v1/appointment/addAppointmentReponse", this.payload);
+      const response = await cornieClient().put(url, payload);
       if (response.success) {
-          window.notify({ msg: "Appointment Response created", status: "success" });
-          this.$router.push(`/dashboard/provider/experience/responses/${this.id}`);
+        window.notify({ msg: "Appointment response updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/responses");
       }
     } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment Response not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
+      window.notify({ msg: "Appointment response not updated", status: "error" });
     }
   }
 
@@ -311,6 +313,10 @@ appointmentId = "";
   async created() {
    // this.setDate();
     this.setAppointmentResponse();
+    const data = await this.getDropdowns("availability");
+    const data2 = await this.getDropdowns("practitioner");
+    this.dropdowns = data;
+    this.dropdowns2 = data2;
   }
 }
 </script>

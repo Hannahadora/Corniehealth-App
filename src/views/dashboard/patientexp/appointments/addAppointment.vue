@@ -7,7 +7,7 @@
       >
     </span>
     <div>
-      <div class="w-full h-screen overflow-auto">
+      <div class="w-full">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
             <accordion-component title="Appointment Details" v-model="opened">
@@ -67,7 +67,7 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['priority']"
+                    :items="['routine','urgent','asap','stat']"
                     v-model="priority"
                     label="priority"
                     placeholder="--Select--"
@@ -233,6 +233,34 @@
                     </div>
                   </div>
                 </div>
+                 <div class="p-5"  v-for="(input, index) in newPatients"
+                  :key="index">
+                  <span
+                    class="
+                      flex
+                      border-b-2 border-dashed
+                      w-full
+                      text-sm text-primary
+                      py-2
+                      mx-auto
+                      font-semibold
+                      col-span-full
+                      mb-2
+                    "
+                  >
+                    Pateints
+                  </span>
+                  <div class="grid grid-cols-2 gap-2 col-span-full p-5">
+                    <div>
+                      <p class="text-xs text-dark font-semibold">{{input.firstname}} {{input.lastname}}</p>
+                      <p class="text-xs text-gray font-light">{{input.accountType}}</p>
+                    </div>
+                    <div class="float-right">
+                      <c-delete class="ml-20 cursor-pointer float-right" @click="removePatient(index)"/>
+                      <d-edit class="cursor-pointer float-right" @click="patientFilter = true"/>
+                    </div>
+                  </div>
+                </div>
                 <div class="w-full grid grid-cols-3 gap-4 p-5">
                   <cornie-select
                    :onChange="setValue"
@@ -324,7 +352,7 @@
           v-model:visible="practitionerFilter"
         />
         <patients-filter
-          :columns="patients"
+          :columns="patient"
           @update:preferred="addPatients"
           v-model:visible="patientFilter"
         />
@@ -363,7 +391,7 @@ import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import SingleDatePicker from "./datepicker.vue";
+import SingleDatePicker from "@/components/datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
@@ -436,17 +464,12 @@ actor = "";
   duration = "";
   comments = "";
   patientInstruction = "";
-  period = { start: "10/12/2011", end: "15/12/2019" };
+  period = {} as Period;
   participantDetail = {...emptyParticipant}
-  //participantDetail = {appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{ start: "10/12/2011", end: "15/12/2019" }};
-  // participantDetail: ParticipantDetail[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:"",end:""}}];
   Practitioners = [];
   Devices = [];
   Patients = [];
   roles = [];
-//member = { ...emptyMember }
-// members: Members[] = [{appointmentId:"",actor:"",type:"", required:"",consultationMedium:"",period:{start:'',end:''}}];
-
   newPractitioners =[];
   newDevices = [];
   newPatients =[];
@@ -510,7 +533,6 @@ actor = "";
     this.Patients = appointment.Patients;
     this.participantDetail = appointment.participantDetail;
 
-  console.log(appointment);
   }
   get payload() {
     const payload =  {
@@ -525,20 +547,21 @@ actor = "";
       reasonRef: this.reasonRef,
       priority: this.priority,
       description: this.description,
-      slot: this.slot,
+   //   slot: this.slot,
       basedOn: this.basedOn,
       duration: this.duration,
       comments: this.comments,
       patientInstruction: this.patientInstruction,
       participantDetail: this.participantDetail,
       period: this.period,
+      Patients: this.Patients,
     } as any
     if(this.Devices.length > 0){
       payload.Devices = this.Devices;
     }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
+    // if(this.Patients.length > 0){
+    //   payload.Patients = this.Patients;
+    // }
     if(this.Practitioners.length > 0){
       payload.Practitioners = this.Practitioners;
     }
@@ -561,6 +584,9 @@ actor = "";
   }
   removeRole(index: number){
     this.newRoles.splice(index, 1);
+  }
+  removePatient(index: number){
+    this.newPatients.splice(index, 1);
   }
    removeDevice(index: number){
     this.newDevices.splice(index, 1);
@@ -605,9 +631,9 @@ actor = "";
   }
   async createAppointment() {
     //const period = this.period;
-   this.payload.period.start = new Date(this.period.start).toISOString();
-    this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
+  this.payload.period.end = new Date(this.payload.period.end).toISOString();
+  this.payload.period.start = new Date(this.payload.period.start).toISOString();
+    this.type = this.actor;
     try {
       const response = await cornieClient().post("/api/v1/appointment", this.payload);
       if (response.success) {
@@ -652,6 +678,8 @@ actor = "";
    async fetchPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
+    console.log("response");
+    console.log( response[0].data);
     this.patient = response[0].data;
   }
   async created() {

@@ -27,7 +27,7 @@
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-response`)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-response/${item.id}`)">
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
@@ -50,6 +50,11 @@
           <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
         </div>
       </template>
+       <template #Patients="{ item }">
+        <div class="flex items-center">
+          <span class="text-xs cursor-pointer"  @click="displayPatients(item.id)">Darlington Onyemere</span>
+        </div>
+      </template>
     </cornie-table>
 
       <notes-add
@@ -63,6 +68,8 @@
           @update:preferred="displayParticipants"
           v-model:visible="showPartcipants"
         />
+        <patient-details   v-model:visible="showPatientModal"
+      :patients="patient"/>
   </div>
 </template>
 <script lang="ts">
@@ -95,6 +102,7 @@ import UpdateIcon from "@/components/icons/update.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import NotesAdd from "./notes.vue";
 import AllParticipants from "./participants.vue";
+import PatientDetails from "./policy.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -107,6 +115,7 @@ const appointment = namespace("appointment");
     SortIcon,
     CheckinIcon,
     NotesAdd,
+    PatientDetails,
     NewviewIcon,
     AllParticipants,
     UpdateIcon,
@@ -133,6 +142,9 @@ export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
+  patientName = "";
+  patient = [];
+  showPatientModal= false;
   query = "";
   showNotes = false;
 appointmentId="";
@@ -150,13 +162,12 @@ singleParticipant= [];
     { title: "Identifier", key: "keydisplay", show: true },
     {
       title: "Patient",
-      key: "patients",
-      show: false,
+      key: "Patients",
+      show: true,
     },
     {
       title: "Appointment Type",
       key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
       show: true,
     },
     {
@@ -186,8 +197,8 @@ singleParticipant= [];
     },
     {
       title: "Period",
-      key: "period",
-      show: true,
+      key: "newperiod",
+      show: false,
     },
     {
       title: "Priority",
@@ -220,22 +231,28 @@ singleParticipant= [];
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
-        console.log(singleParticipantlength);
+      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
        (appointment as any).period = new Date(
          (appointment as any).period 
+       ).toLocaleDateString("en-US");
+     const start=   (appointment as any).participantDetail.period.start = new Date(
+         (appointment as any).participantDetail.period.start 
+       ).toLocaleDateString("en-US");
+       const end = (appointment as any).participantDetail.period.end = new Date(
+         (appointment as any).participantDetail.period.end 
        ).toLocaleDateString("en-US");
         return {
         ...appointment,
          action: appointment.id,
          keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
+         newperiod: start +'-'+ end ,
+         Participants: singleParticipantlength,
         };
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
   }
-
+ 
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -246,6 +263,9 @@ singleParticipant= [];
 
     if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
     else window.notify({ msg: "Appointment not canceled", status: "error" });
+  }
+  async displayPatients(){
+    this.showPatientModal = true;
   }
   async makeNotes(id:string){
     this.appointmentId = id;
@@ -274,8 +294,13 @@ singleParticipant= [];
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
+       async fetchPatients() {
+        const AllPateints = cornieClient().get("/api/v1/patient");
+        const response = await Promise.all([AllPateints]);
+        this.patient = response[0].data;
+      }
      async created() {
-      console.log(this.items);
+      this.fetchPatients();
     }
 
 }
