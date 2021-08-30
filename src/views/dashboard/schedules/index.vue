@@ -20,243 +20,245 @@
                   @click="() => activeTab = 2"
                 >Fixed Slot</a>
             </div>
-        </div>
+          </div>
 
-        <Overlay :show="show">
-            <Modal :bigger="true">
-              <template v-slot:header>
-                <h3 class="text-xl flex justify-between leading-6 font-medium text-gray-900 mb-5 capitalize modal_titlee cursor-pointer" id="modal-title">
-                    <span>Night Shift_DT</span>
-                    <span @click="() => show = false" class="lowercase pb-1 cursor-pointer font-normal bg-primary text-white flex items-center justify-center" style="width: 20px;height:20px;border-radius:50%">×</span>
-                </h3>
-              </template>
+          <div class="w-full">
+            <Overlay :show="show">
+              <Modal :bigger="true">
+                <template v-slot:header>
+                  <h3 class="text-xl flex justify-between leading-6 font-medium text-gray-900 mb-5 capitalize modal_titlee cursor-pointer" id="modal-title">
+                      <span>Night Shift_DT</span>
+                      <span @click="() => show = false" class="lowercase pb-1 cursor-pointer font-normal bg-primary text-white flex items-center justify-center" style="width: 20px;height:20px;border-radius:50%">×</span>
+                  </h3>
+                </template>
 
-              <template v-slot:body>
-                <div class="w-full">
-                  <span class="flex items-center w-full">
-                    <icon-input
-                    :width="'w-full'"
-                    class="border border-gray-600 rounded-full focus:outline-none"
-                    type="search"
-                    v-model="search"
-                    >
-                    <template v-slot:prepend>
-                        <search-icon />
-                    </template>
-                    </icon-input>
-                  </span>
-                </div>
-                <p class="text-base text-gray-500 my-3">
-                  Practitioners assigned to this shift
-                </p>
-                <div class="w-full">
-                  <div class="container flex flex-col" style="max-height: 400px;overflow-y:scroll">
-                    <div class="w-full flex items-center">
-                      <div class="w-2/12">
-                        <img src="https://via.placeholder.com/30x30" class="rounded-full border" alt="Image">
-                      </div>
-                      <div class="w-10/12 ml-3">
-                        <span class="text-base text-gray-500">W. E Somebod</span>
+                <template v-slot:body>
+                  <div class="w-full">
+                    <span class="flex items-center w-full">
+                      <icon-input
+                      :width="'w-full'"
+                      class="border border-gray-600 rounded-full focus:outline-none"
+                      type="search"
+                      v-model="search"
+                      >
+                      <template v-slot:prepend>
+                          <search-icon />
+                      </template>
+                      </icon-input>
+                    </span>
+                  </div>
+                  <p class="text-base text-gray-500 my-3">
+                    Practitioners assigned to this shift
+                  </p>
+                  <div class="w-full">
+                    <div class="container flex flex-col" style="max-height: 400px;overflow-y:scroll">
+                      <div class="w-full flex items-center">
+                        <div class="w-2/12">
+                          <img src="https://via.placeholder.com/30x30" class="rounded-full border" alt="Image">
+                        </div>
+                        <div class="w-10/12 ml-3">
+                          <span class="text-base text-gray-500">W. E Somebod</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </template>
-            </Modal>
-        </Overlay>
+                </template>
+              </Modal>
+          </Overlay>
 
-        <div class="w-full curved flex py-2 justify-end my-6">
-            <div class=".w-full flex font-semibold text-lg py-2 justify-end pb-4">
-                <Button :loading="false">
-                    <router-link :to="{ name: 'Patient Experience Management' }" style="background: #FE4D3C" class="text-lg bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        New Schedule
-                    </router-link>
-                </Button>
-            </div>
-        </div>
-          <div class="w-full pb-7 mb-8">
-             <cornie-table :columns="headers" v-model="items" v-if="activeTab === 0 || activeTab === 2">
-              
-              <template #name="{ item }">
-                <p>{{ item.name }}</p>
-              </template>
-              <template #days="{ item }">
-                <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
-              </template>
-              <template #status="{ item }">
-                <div class="container">
-                  <span class="p-2 px-3 rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
-                </div>
-              </template>
-              <template #practitioners="{ item }">
-                <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                  <span class="p-2 px-3 rounded-full">
-                    <Actors :items="item.practitioners" />
-                  </span>
-                </div>
-              </template>
-
-              <template #actions="{ item }">
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                  <eye-icon class="mr-3 mt-1" />
-                  <span class="ml-3 text-xs" @click="
-                        $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <EditIcon />
-                  <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Schedule</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="addActor(item.id)">
-                  <AddIcon class="mr-3 mt-1" />
-                  <span class="ml-3 text-xs" >Add Actor/Practitioner</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <EditIcon />
-                  <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Slot</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="!isActive(item.id)">
-                  <EditIcon />
-                  <span class="ml-3 text-xs"
-                    @click="activate(item.id)"
-                  >Acivate</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="isActive(item.id)">
-                  <DeactivateIcon />
-                  <span class="ml-3 text-xs"
-                    @click="deactivate(item.id)"
-                  >Deacivate</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <delete-icon />
-                  <span class="ml-3 text-xs"
-                    @click="destory(item.id)"
-                  >Delete</span>
-                </div>
-              </template>
-            </cornie-table>
-
-            <!-- Test Availability -->
-             <div class="w-full" v-if="activeTab === 1">
-                <cornie-table :columns="availabilityHeaders" v-model="items">
+          <div class="w-full curved flex py-2 justify-end my-6">
+              <div class=".w-full flex font-semibold text-lg py-2 justify-end pb-4">
+                  <Button :loading="false">
+                      <router-link :to="{ name: 'Patient Experience Management' }" style="background: #FE4D3C" class="text-lg bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                          New Schedule
+                      </router-link>
+                  </Button>
+              </div>
+          </div>
+            <div class="w-full pb-7 mb-8">
+              <cornie-table :columns="headers" v-model="items" v-if="activeTab === 0 || activeTab === 2">
                 
-                <template #time="{ item }">
-                  <p class="text-xs">{{ item.startTime }} - {{ item.endTime }}</p>
+                <template #name="{ item }">
+                  <p>{{ item.name }}</p>
                 </template>
-                <template #0="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[0])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
+                <template #days="{ item }">
+                  <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
+                </template>
+                <template #status="{ item }">
+                  <div class="container">
+                    <span class="p-2 px-3 rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
                   </div>
                 </template>
-                <template #1="{ item }">
+                <template #practitioners="{ item }">
                   <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[1])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
+                    <span class="p-2 px-3 rounded-full">
+                      <Actors :items="item.practitioners" />
+                    </span>
                   </div>
                 </template>
-                <template #2="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[2])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
-                  </div>
-                </template>
-                <template #3="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[3])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
-                  </div>
-                </template>
-                <template #4="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[4])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
-                  </div>
-                </template>
-                <template #5="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[5])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
-                  </div>
-                </template>
-                <template #6="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[6])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
-                  </div>
-                </template>
-                <template #7="{ item }">
-                  <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span v-if="theSameDate(item.startDate, availabilityDates[7])">
-                    <Actors :items="item.practitioners" />
-                  </span> 
-                  <span v-else>
-                    --
-                  </span>
-                  </div>
-                </template>
-            </cornie-table>
-             </div>
-            
-            <column-filter
-            :columns="rawHeaders"
-            v-model:preferred="preferredHeaders"
-            v-model:visible="showColumnFilter"
-            />
-             <side-modal :visible="showActorsPane" :header="'All Actors'" @closesidemodal="() => showActorsPane = false">
-              <AllActors :schedule="selectedSchedule" />
-            </side-modal>
 
-            <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane">
-              <EditSchedule  />
-            </side-modal>
+                <template #actions="{ item }">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
+                    <eye-icon class="mr-3 mt-1" />
+                    <span class="ml-3 text-xs" @click="
+                          $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
+                  </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <EditIcon />
+                    <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Schedule</span>
+                  </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="addActor(item.id)">
+                    <AddIcon class="mr-3 mt-1" />
+                    <span class="ml-3 text-xs" >Add Actor/Practitioner</span>
+                  </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <EditIcon />
+                    <span class="ml-3 text-xs" @click="$router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">Edit Slot</span>
+                  </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="!isActive(item.id)">
+                    <EditIcon />
+                    <span class="ml-3 text-xs"
+                      @click="activate(item.id)"
+                    >Acivate</span>
+                  </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="isActive(item.id)">
+                    <DeactivateIcon />
+                    <span class="ml-3 text-xs"
+                      @click="deactivate(item.id)"
+                    >Deacivate</span>
+                  </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <delete-icon />
+                    <span class="ml-3 text-xs"
+                      @click="destory(item.id)"
+                    >Delete</span>
+                  </div>
+                </template>
+              </cornie-table>
 
-            <side-modal :visible="showAddActorsPane" :header="'Add Actor/Practitioner'" @closesidemodal="() => showAddActorsPane = false">
-              <AddActors :schedule="selectedSchedule" :actors="allPractitioners" @actoradded="actorAdded" @close="() =>  showAddActorsPane = false" />
-            </side-modal>
-
-            <side-modal :visible="false">
-              <AdvancedFilter />
-            </side-modal>
-
-            <side-modal :visible="showViewPane" :header="'View Stot'">
-              <div class="w-full my-3">
-                <ViewDetails :schedule="selectedSchedule" />
+              <!-- Test Availability -->
+              <div class="w-full" v-if="activeTab === 1">
+                  <cornie-table :columns="availabilityHeaders" v-model="items">
+                  
+                  <template #time="{ item }">
+                    <p class="text-xs">{{ item.startTime }} - {{ item.endTime }}</p>
+                  </template>
+                  <template #0="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[0])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #1="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[1])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #2="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[2])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #3="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[3])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #4="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[4])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #5="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[5])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #6="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[6])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+                  <template #7="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="theSameDate(item.startDate, availabilityDates[7])">
+                      <Actors :items="item.practitioners" />
+                    </span> 
+                    <span v-else>
+                      --
+                    </span>
+                    </div>
+                  </template>
+              </cornie-table>
               </div>
-              <div class="w-full my-3">
-                <ViewPlan :schedule="selectedSchedule" />
-              </div>
-              <div class="w-full my-3">
-                <ViewBreaks :schedule="selectedSchedule" />
-              </div>
-            </side-modal>
+              
+              <column-filter
+              :columns="rawHeaders"
+              v-model:preferred="preferredHeaders"
+              v-model:visible="showColumnFilter"
+              />
+              <side-modal :visible="showActorsPane" :header="'All Actors'" @closesidemodal="() => showActorsPane = false">
+                <AllActors :schedule="selectedSchedule" />
+              </side-modal>
+
+              <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane">
+                <EditSchedule  />
+              </side-modal>
+
+              <side-modal :visible="showAddActorsPane" :header="'Add Actor/Practitioner'" @closesidemodal="() => showAddActorsPane = false">
+                <AddActors :schedule="selectedSchedule" :actors="allPractitioners" @actoradded="actorAdded" @close="() =>  showAddActorsPane = false" />
+              </side-modal>
+
+              <side-modal :visible="false">
+                <AdvancedFilter />
+              </side-modal>
+
+              <side-modal :visible="showViewPane" :header="'View Stot'">
+                <div class="w-full my-3">
+                  <ViewDetails :schedule="selectedSchedule" />
+                </div>
+                <div class="w-full my-3">
+                  <ViewPlan :schedule="selectedSchedule" />
+                </div>
+                <div class="w-full my-3">
+                  <ViewBreaks :schedule="selectedSchedule" />
+                </div>
+              </side-modal>
+          </div>
         </div>
 
         <div style="height: 50px">

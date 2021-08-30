@@ -53,9 +53,6 @@
                 <TimeLine />
             </div>
 
-            {{ filterByStatus}}
-            {{ filterByType}}
-
             <div class="w-full pb-7 mb-8">
                 <cornie-table :columns="rawHeaders" v-model="items">
                 
@@ -132,12 +129,12 @@
                     <span class="ml-3 text-xs" >Start Encounter</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.slotId)">
-                      <CheckoutIcon />
+                      <CancelIcon />
                       <span class="ml-3 text-xs"
-                      >Cancel</span>
+                      >Cancel Visit</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <EditIcon />
+                      <AddIcon />
                       <span class="ml-3 text-xs">Add Vitals</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
@@ -145,10 +142,30 @@
                       <span class="ml-3 text-xs"
                       >Refer Patient</span>
                     </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <ManageBillIcon />
+                      <span class="ml-3 text-xs"
+                      >Manage Bill</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <AddIcon />
+                      <span class="ml-3 text-xs"
+                      >Admit Patient</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="markAsNoShow(item.id)">
+                      <NoshowIcon />
+                      <span class="ml-3 text-xs"
+                      >No Show</span>
+                    </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id)">
                       <CheckoutIcon />
                       <span class="ml-3 text-xs"
                       >Check-out</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id)">
+                      <UpdateIcon />
+                      <span class="ml-3 text-xs"
+                      >Update Status</span>
                     </div>
                 </template>
                 </cornie-table>
@@ -351,6 +368,10 @@ import MultiSelect from '../schedules/components/apply-to.vue'
 import CheckoutIcon from '@/components/icons/checkout.vue'
 
 import EmptyState from './empty-state.vue'
+import CancelIcon from './components/cancel.vue'
+import UpdateIcon from './components/update.vue'
+import NoshowIcon from './components/no-show.vue'
+import ManageBillIcon from './components/manage-bill.vue'
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
@@ -358,6 +379,7 @@ const appointment = namespace("appointment");
 @Options({
   components: {
     MultiSelect,
+    CancelIcon,
     Close,
     TimeLine,
     SortIcon,
@@ -386,6 +408,9 @@ const appointment = namespace("appointment");
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
+    UpdateIcon,
+    NoshowIcon,
+    ManageBillIcon,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -565,6 +590,12 @@ export default class PractitionerExistingState extends Vue {
     await this.cancel(id).then((res: any) => {
         window.notify({ msg: "Visit Started", status: "success" });
     })
+  }
+
+  async markAsNoShow(id: string) {
+    // await this.cancel(id).then((res: any) => {
+    //     window.notify({ msg: "Visit Started", status: "success" });
+    // })
   }
 
   // async remove(id: string) {
