@@ -99,12 +99,12 @@
                   </div>
                   <single-date-picker
                     label="start date"
-                    v-model="period"
+                    v-model="period.start"
                     :rules="required"
                   />
                   <single-date-picker
                     label="end date"
-                    v-model="period.end"
+                   v-model="period.end"
                     :rules="required"
                   />
                   <cornie-input
@@ -387,7 +387,7 @@ import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import SingleDatePicker from "@/components/CornieDatePicker.vue";
+import SingleDatePicker from "@/components/datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import PlusIcon from "@/components/icons/plus.vue";
@@ -670,8 +670,8 @@ actorTypeValue = "";
   async createAppointment() {
     //const period = this.period;
    // console.log(this.payload.period);
-   this.payload.period = new Date(this.payload.period).toISOString();
-  this.payload.period.start = new Date(this.payload.period.start).toISOString();
+  // this.payload.period = new Date(this.payload.period).toISOString();
+  //this.payload.period.start = new Date(this.payload.period.start).toISOString();
     this.type = this.actor;
     try {
       const response = await cornieClient().post(
