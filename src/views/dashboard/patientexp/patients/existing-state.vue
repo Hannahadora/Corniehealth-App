@@ -33,7 +33,10 @@
           <cornie-btn class="text-primary border border-primary m-5">
             Export Register
           </cornie-btn>
-          <cornie-btn class="bg-danger text-white m-5">
+          <cornie-btn
+            @click="registerNew = true"
+            class="bg-danger text-white m-5"
+          >
             Register New
           </cornie-btn>
         </span>
@@ -77,6 +80,7 @@
         </table-action>
       </template>
     </cornie-table>
+    <registration-dialog v-model="registerNew" />
   </div>
 </template>
 <script lang="ts">
@@ -94,12 +98,14 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
+import RegistrationDialog from "./registration-dialog.vue";
 
 const patients = namespace("patients");
 @Options({
   name: "PatientExistingState",
   components: {
     CornieCard,
+    RegistrationDialog,
     TableAction,
     SettingsIcon,
     EditIcon,
@@ -119,6 +125,7 @@ export default class ExistingState extends Vue {
   @patients.Action
   deletePatient!: (id: string) => Promise<boolean>;
 
+  registerNew = false;
   headers = [
     {
       title: "Name",
@@ -187,7 +194,7 @@ export default class ExistingState extends Vue {
   async removePatient(id: string) {
     const confirmed = await window.confirmAction({
       message: `Are you sure you want to delete this patient?
-       Removing patient from your register means patient 
+       Removing patient from your register means patient
       will no longer be associated with this provider`,
       title: "Remove Patient",
     });
