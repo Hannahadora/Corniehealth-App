@@ -18,6 +18,8 @@ import AppointmentStore from "./appointment";
 
 import UserSettingsStore from "./usersettings";
 
+
+import VisitsStore from './visits'
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
 import PatientStore from "./patient";
@@ -45,6 +47,7 @@ export default createStore({
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,
+    visits: VisitsStore,
     patients: PatientStore,
   },
 } as StoreOptions<any>);

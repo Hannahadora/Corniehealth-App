@@ -175,6 +175,26 @@ const routes: Array<RouteRecordRaw> = [
             name: "Patient Visits",
             component: () => import("@/views/dashboard/visits/index.vue"),
           },
+          {
+            path: "visits/timeline",
+            name: "Patient Visits Timeline",
+            component: () =>
+              import("@/views/dashboard/visits/components/timeline-table.vue"),
+          },
+          {
+            path: "schedules",
+            props: true,
+            name: "Patient Experience Management.",
+            component: () =>
+              import("@/views/dashboard/schedules/index.vue"),
+          },
+          {
+            path: "schedules/new/:scheduleId?",
+            props: true,
+            name: "Patient Experience Management",
+            component: () =>
+              import("@/views/dashboard/schedules/create-schedule.vue"),
+          },
         ],
       },
       {
@@ -423,19 +443,20 @@ const routes: Array<RouteRecordRaw> = [
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
       },
-      {
-        path: "schedules",
-        props: true,
-        name: "Patient Experience Management.",
-        component: () => import("@/views/dashboard/schedules/index.vue"),
-      },
-      {
-        path: "schedules/new/:scheduleId?",
-        props: true,
-        name: "Patient Experience Management",
-        component: () =>
-          import("@/views/dashboard/schedules/create-schedule.vue"),
-      },
+      // {
+      //   path: "schedules",
+      //   props: true,
+      //   name: "Patient Experience Management.",
+      //   component: () =>
+      //     import("@/views/dashboard/schedules/index.vue"),
+      // },
+      // {
+      //   path: "schedules/new/:scheduleId?",
+      //   props: true,
+      //   name: "Patient Experience Management",
+      //   component: () =>
+      //     import("@/views/dashboard/schedules/create-schedule.vue"),
+      // },
     ],
   },
 ];

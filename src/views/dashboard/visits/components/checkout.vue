@@ -3,18 +3,18 @@
         <div class="container-fluid">
 
             <div class="w-full flex items-center">
-                <div class="w-6/12">
+                <div class="w-4/12">
                     <div class="w-11/12">
                         <label class="block uppercase mb-1 text-xs font-bold">
                             <span class="mb-2">Time</span>
-                            <input type="time" name="" class="p-3 mt-2 border rounded-md w-full" id="" v-model="data.time">
+                            <input type="time" name="" class="p-3 mt-2 border rounded-md w-full" id="" v-model="item.checkInTime">
                         </label>
                     </div>
                 </div>
-                <div class="w-6/12 flex">
-                    <div class="container flex justify-end">
+                <div class="w-8/12 flex">
+                    <div class="container">
                         <div class="w-12/12">
-                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="data.date" />
+                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="item.startDate" />
                         </div>
                     </div>
                 </div>
@@ -46,12 +46,12 @@
                         <span class="uppercase font-semibold">Total Bill</span>
                         <span class="uppercase  text-success">paid</span>
                     </span>
-                    <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.time">
+                    <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.paidBill">
                 </label>
             </div>
 
             <div class="w-full my-4">
-                <CornieSelect :items="[1, 2, 3]" :label="'Room'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="rooms" :label="'Room'" v-model="data.room" style="width: 100%" />
             </div>
 
             <div class="w-full my-4">
@@ -63,12 +63,12 @@
         
         <div class="w-full mb-3 mt-14">
             <div class="container-fluid flex justify-end items-center">
-                <corniebtn :loading="false">
+                <corniebtn >
                     <router-link to="" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
                     </router-link>
                 </corniebtn>
-                <Button :loading="loading">
+                <Button :loading="loading" @click="endSession">
                     <a style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         Save 
                     </a>
@@ -90,9 +90,11 @@ import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
+import ILocation from "@/types/ILocation";
+import { Prop } from "vue-property-decorator";
 
-const healthcare = namespace('healthcare');
-const shifts = namespace('shifts');
+const visitsStore = namespace('visits');
+const locationsStore = namespace('location');
 
 @Options({
   components: {
@@ -114,7 +116,19 @@ export default class CheckIn extends Vue {
  showPlanning = false;
  loading = false;
 
-    data: any = { }
+ @Prop()
+ item!: any;
+
+  @locationsStore.State
+ locations!: ILocation[];
+
+ @locationsStore.Action
+ fetchLocations!: () => Promise<void>;
+
+ @visitsStore.Action
+ checkout!: (id: string) => Promise<boolean>;
+
+    data: any = { paidBill: '72,630' }
 
  activeStates: any = [
      { display: 'Yes', value: 'yes' },
@@ -150,7 +164,34 @@ export default class CheckIn extends Vue {
      { display: 'Saturday', code: false },
      { display: 'Sunday', code: false }
  ]
+    
+     get rooms() {
+        if (!this.locations || this.locations.length === 0) return [ ];
+        return this.locations.map(i => {
+            return { code: i.id, display: i.name };
+        })
+    }
 
+    get updates() {
+        if (!this.item) return { };
+        this.data.checkInTime = this.item.checkInTime;
+        this.data.room = { code: this.item.room ? this.item.roomId : '', display: this.item.room ? this.item.room.name : ''};
+    }
+
+    async endSession() {
+        this.loading = true;
+        const response = await this.checkout(this.item.id);
+        this.loading = false;
+        if (response) window.notify({ msg: "Checked Out", status: "success" });
+        this.$emit('close')
+    }
+
+
+    async created() {
+        if (!this.locations || this.locations.length === 0) await this.fetchLocations();
+        console.log(this.locations, "LLLL");
+        
+    }
 
 }
 </script>

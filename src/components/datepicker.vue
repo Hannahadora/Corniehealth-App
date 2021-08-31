@@ -42,6 +42,7 @@
           role="menu"
           aria-orientation="vertical"
           tabindex="-1"
+          style="z-index: 999"
         >
           <v-date-picker
             @update:modelValue="handleChange"
