@@ -356,7 +356,7 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
-import CornieTimePicker from "@/components/cornietimepicker.vue";
+//import TimePicker from "@/components/cornietimepicker.vue";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
@@ -374,7 +374,7 @@ const emptyParticipant: ParticipantDetail = {
     CornieNuminput,
     CornieDatePicker,
     PractitionersFilter,
-    CornieTimePicker,
+  //  TimePicker,
     SingleDatePicker,
     Availability,
     Textarea,
