@@ -18,12 +18,12 @@
      <div class="dropdown">
       <settings-icon class="cursor-pointer" />  
       <ul  class="dropdown-menu p-2 bg-white rounded-md w-80 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden">
-        <li class="border-b border-primary cursor-pointer mb-3" @click="$router.push('/dashboard/provider/user')">
+        <li class="border-b border-primary cursor-pointer mb-3" @click="$router.push('/dashboard/provider/settings/org-info')">
           <cornie-btn class="font-semibold rounded-full mb-5 border-primary border-2 pl-4 pr-4 p-1 hover:bg-primary hover:text-white mt-2 w-full text-primary">
-            <span class="inline-flex justify-center"> <settings-icon class="mr-2 mt-0.5"/> Go to all settings</span>
+            <span class="inline-flex justify-center"> <settings-icon class="mr-2 mt-0.5" @click="$router.push('/dashboard/provider/user')"/> Go to all settings</span>
           </cornie-btn>
         </li>
-        <li @click="$router.push('org-info')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
+        <li @click="$router.push('/dashboard/provider/settings/org-info')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
           <span class="flex item-center"><org-icon/><p class="ml-2"> Organization Information</p></span>
         </li>
         <li @click="$router.push('contact-info')" class="mb-3 list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
@@ -125,7 +125,7 @@
         <chevron-down class="cursor-pointer"/>
         <ul  class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden">
             <li class="float-right mr-1">
-              <settings-icon class="mt-0.5 justify-end cursor-pointer" @click="$router.push('org-info')"/>
+              <settings-icon class="mt-0.5 justify-end cursor-pointer"  @click="$router.push('/dashboard/provider/user')"/>
             </li>
             <li class="list-none -mb-3 mt-2 -m-2 p-5 flex justify-center">
             <span class="w-10 h-10 relative justify-center">

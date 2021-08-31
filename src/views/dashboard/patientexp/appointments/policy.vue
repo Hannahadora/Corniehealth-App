@@ -53,9 +53,9 @@
               <div class="sm:flex sm:items-end">
                 <div class="mt-3 text-center sm:mt-0 sm:text-left">
                   <div class="grid grid-cols-2 gap-4 mt-10">
-                   <p class="text-sm text-primary font-bold">MRN No: <span class="text-black font-medium">XXXXX</span></p> 
-                  <p class="text-sm text-primary font-bold">Gender: <span class="text-black font-medium">XXXXX</span></p> 
-                  <p class="text-sm text-primary font-bold">D.O.B: <span class="text-black font-medium">XXXXX</span></p> 
+                   <p class="text-sm text-primary font-bold">MRN No: <span class="text-black font-medium">{{MRN}}</span></p> 
+                  <p class="text-sm text-primary font-bold">Gender: <span class="text-black font-medium">Male</span></p> 
+                  <p class="text-sm text-primary font-bold">D.O.B: <span class="text-black font-medium">D.O.B: 12 April, 1989</span></p> 
                   <p class="text-sm text-primary font-bold">Profile Type: <span class="text-black font-medium">XXXXX</span></p> 
                   <p class="text-sm text-primary font-bold">Policy Expiry: <span class="text-black font-medium">XXXXX</span></p> 
                   <p class="text-sm text-primary font-bold">Payer: <span class="text-black font-medium">XXXXX</span></p> 
@@ -68,7 +68,7 @@
                     class="items-start absolute top-5 bottom-8 text-lg leading-6 text-danger font-medium"
                     id="modal-title"
                   >
-               {{patients.firstname}} {{patients.lastname}}
+                Darlington Onyemere {{patients.firstname}} {{patients.lastname}}
                   </h3>
                 <close-icon
                   class="items-end absolute right-5 bottom-8 top-5 cursor-pointer"
@@ -113,6 +113,9 @@ export default {
     patients: {
       type: Array,
     },
+    MRN:{
+      type: String,
+    }
   },
   data() {
     return {

@@ -1,6 +1,10 @@
 import Period from "./IPeriod";
 import Phone from "./IPhone";
 
+export default interface IPeriod {
+  contact: Contact;
+}
+
 export interface Contact {
   id?: string;
   type: "work" | "home";

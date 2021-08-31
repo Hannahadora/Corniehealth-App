@@ -122,6 +122,7 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
 const appointment = namespace("appointment");
+const visitsStore = namespace("visits");
 
 @Options({
   components: {
@@ -158,17 +159,29 @@ export default class AppointmentExistingState extends Vue {
   loading = false;
   patientName = "";
   patient = [];
+  filterByType: any = [ ]
+  filterByStatus: any = [ ]
+
   showPatientModal = false;
   query = "";
   showNotes = false;
+  filterStatus = false;
   appointmentId = "";
   showPartcipants = false;
   singleParticipant = [];
+
+  statuses = ['All', 'Completed', 'Queue', 'In-Progress'] 
+  types = ['All', 'Emergency', 'Walk-In', 'Follow-Up', 'Routine']
+  
   @appointment.State
   appointments!: IAppointment[];
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
+
+  @visitsStore.State
+  patients!: any[];
+
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -231,6 +244,18 @@ export default class AppointmentExistingState extends Vue {
     },
   ];
 
+  getAppointment(id: string) {
+    const pt = this.appointments.find((i: any) => i.id === id);
+    
+    return pt ? pt : { };
+  }
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    
+    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+  }
+  
+
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -239,6 +264,38 @@ export default class AppointmentExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
+
+  // get items() {
+  //   if (!this.appointments || this.appointments.length === 0 ) return [];
+  //   const filtered = this.appointments.filter((i: any) => {
+  //     if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
+  //       return i;
+  //     } else {
+  //       if (this.filterByStatus.includes('All') || this.filterByType.includes('All')) return true;
+  //     //  const indexInTypes = this.filterByType.findIndex((j: any) => j.toLowerCase() === this.getAppointment(i.appointmentId).appointmentType.toLowerCase());
+  //       const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
+
+  //     //  if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
+  //     }
+
+  //   })
+
+  //   const appointments = filtered.map((i: any) => {
+  //     return {
+  //       ...i,
+  //       action: i.id,
+  //       patient: this.getPatientName(i.patientId),
+  //       location: i.room.name,
+  //       status: i.status,
+  //       slot: ` `,
+  //       // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
+  //       practitioners: this.getActors(i.appointmentId)
+  //     };
+  //   });
+  //   return appointments;
+  //   // if (!this.query) return shifts;
+  //   // return search.searchObjectArray(shifts, this.query);
+  // }
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
