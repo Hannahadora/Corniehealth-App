@@ -2,7 +2,7 @@ import ObjectSet from "@/lib/objectset";
 import { updateModelField } from "@/plugins/utils";
 import { IPatient } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { fetchPatients } from "./helper";
+import { deletePatient, fetchPatients } from "./helper";
 
 interface PatientState {
   patients: IPatient[];
@@ -22,6 +22,9 @@ export default {
       const patientSet = new ObjectSet([...state.patients, patient], "id");
       state.patients = [...patientSet];
     },
+    deletePatient(state, id: string) {
+      state.patients = state.patients.filter((p) => p.id != id);
+    },
   },
   actions: {
     updatePatientField(ctx, { id, field, data }: any) {
@@ -33,6 +36,11 @@ export default {
     async fetchPatients(ctx) {
       const patients = await fetchPatients();
       ctx.commit("addPatients", patients);
+    },
+    async deletePatient(ctx, id: string) {
+      const deleted = await deletePatient(id);
+      if (deleted) ctx.commit("removePatient", id);
+      return deleted;
     },
   },
 } as StoreOptions<PatientState>;

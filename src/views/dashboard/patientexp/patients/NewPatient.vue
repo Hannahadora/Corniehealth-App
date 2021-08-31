@@ -493,6 +493,7 @@ export default class NewPatient extends Vue {
     } catch (error) {
       window.notify({ msg: "Failed to add patient", status: "error" });
     }
+    this.$router.back()
   }
 
   async updatePatient() {

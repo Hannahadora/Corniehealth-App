@@ -9,3 +9,12 @@ export async function fetchPatients() {
   }
   return [];
 }
+
+export async function deletePatient(id: string): Promise<boolean> {
+  try {
+    const response = await cornieClient().delete(`/api/v1/patient/${id}`);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

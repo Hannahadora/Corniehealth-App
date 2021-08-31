@@ -57,11 +57,17 @@
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View patient details</span>
         </table-action>
-        <table-action>
+        <table-action
+          @click="
+            $router.push(
+              `/dashboard/provider/experience/edit-patient/${item.id}`
+            )
+          "
+        >
           <edit-icon class="text-primary fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </table-action>
-        <table-action>
+        <table-action @click="removePatient(item.id)">
           <cancel-icon class="text-red-500 fill-current" />
           <span class="ml-3 text-xs">Remove Patient</span>
         </table-action>
@@ -109,6 +115,9 @@ const patients = namespace("patients");
 export default class ExistingState extends Vue {
   @patients.State
   patients!: IPatient[];
+
+  @patients.Action
+  deletePatient!: (id: string) => Promise<boolean>;
 
   headers = [
     {
@@ -173,6 +182,19 @@ export default class ExistingState extends Vue {
   }
   printMRN(mrn?: string) {
     return `XXXXX${mrn?.substr(31)}`;
+  }
+
+  async removePatient(id: string) {
+    const confirmed = await window.confirmAction({
+      message: `Are you sure you want to delete this patient?
+       Removing patient from your register means patient 
+      will no longer be associated with this provider`,
+      title: "Remove Patient",
+    });
+    if (!confirmed) return;
+    const deleted = await this.deletePatient(id);
+    if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
+    else window.notify({ msg: "Patient not deleted", status: "error" });
   }
 }
 </script>
