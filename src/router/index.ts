@@ -154,6 +154,12 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/visits/index.vue"),
           },
+          {
+            path: "visits/timeline",
+            name: "Patient Visits Timeline",
+            component: () =>
+              import("@/views/dashboard/visits/components/timeline-table.vue"),
+          },
         ],
       },
       {
