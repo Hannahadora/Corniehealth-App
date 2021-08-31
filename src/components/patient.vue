@@ -29,18 +29,17 @@
               class="items-center w-full flex space-x-2"
              >
               <label class="my-3 p-3 border-gray-200 flex">
-                   <input
+                    <input
+                    v-model="indexvalue" 
+                    :value="item"
+                    @input="changed(item.id)"
                     type="checkbox"
-                    @input="changed"
                     class="bg-danger focus-within:bg-danger px-6 shadow"
-                    />
+                  />
               </label>
-                    <p class="text-sm font-extrabold">{{input.firstname}} {{input.lastName}}</p>
+                    <p class="text-sm font-extrabold">{{item.firstname}} {{item.lastname}}</p>
             </span>
           </div> 
-          <div class="w-full block" v-if="columnsProxy.length < 0">
-            <p class="text-center text-sm">No Patients on record </p>
-          </div>
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
@@ -139,7 +138,8 @@ export default {
   data() {
     return {
       columnsProxy: [],
-      practitioners: [],
+       indexvalue: [],
+      valueid: [],
       availableFilter: false,
       profileFilter:false
     };
@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     apply() {
-      this.$emit("update:preferred", copy([...this.columnsProxy]));
+      this.$emit("update:preferred", copy([...this.indexvalue]), this.valueid);
       this.show = false;
     },
     reset() {
@@ -177,10 +177,13 @@ export default {
     },
     showProfile(){
         this.profileFilter = true;
+    },
+    changed(index){
+      this.valueid.push(index);
     }
   },
   mounted() {
-    this.columnsProxy = copy([...this.columns]);
+    this.columnsProxy = copy([...this.indexvalue]);
   },
 };
 </script>

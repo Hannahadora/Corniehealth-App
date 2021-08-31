@@ -1,6 +1,6 @@
 <template>
-  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
-    <div class="w-full p-2 pb-96">
+  <div class="flex justify-center  bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
+    <div class="w-full">
     <span
         class="
           flex
@@ -16,7 +16,7 @@
       >
        Requests
       </span>
-      <span class="w-full">
+      <span class="w-full h-screen">
           <requests-empty-state
                 v-if="empty"
           />

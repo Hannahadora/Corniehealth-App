@@ -132,7 +132,7 @@ export default class CornieInput extends Vue {
 </script>
 <style scoped>
 ::placeholder {
-  font-size: 1em;
+  font-size: 0.8em;
   font-weight: 300;
   color: #667499;
 }

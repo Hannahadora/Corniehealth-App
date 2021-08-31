@@ -18,14 +18,14 @@ export default interface IAppointment {
   duration: string;
   comments: string;
   patientInstruction: string;
-  period: {
-    start: string;
-    end: string;
-  };
+  period: Period;
   participantDetail: ParticipantDetail;
   Practitioners: [];
   Devices: [];
   Patients: [];
+  appointmentId: string;
+  comment: string;
+  status: string;
 }
 export interface ParticipantDetail {
   required: string;

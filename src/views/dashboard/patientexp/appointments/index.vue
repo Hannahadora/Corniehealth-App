@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
+  <div class="flex justify-center pb-76 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
     <div class="w-full p-2 pb-96">
     <span
         class="
@@ -35,7 +35,7 @@ import { Options, Vue } from "vue-class-component";
 import AppointmentEmptyState from "./emptyState.vue";
 import AppointmentExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
-
+import Response from './response.vue';
 const appointment = namespace("appointment");
 
 @Options({
@@ -43,6 +43,7 @@ const appointment = namespace("appointment");
   components: {
     AppointmentEmptyState,
     AppointmentExistingState,
+    Response,
   },
 })
 export default class AppointmentIndex extends Vue {

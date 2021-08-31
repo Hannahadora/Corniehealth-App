@@ -1,43 +1,52 @@
 <template>
-  <div class="h-screen flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto">
+  <div class="flex justify-center pb-96 bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
     <div class="w-full p-2 pb-96">
-        <span
-        class="
-          flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2
-       
-        "
-      >
-       Appointment Response
-      </span>
-        <span class="w-full h-screen overflow-auto">
-            <div class="w-full flex justify-between space-x-2 mb-14">
-                <div>
-                    <p class="text-2xl text-black mb-5 font-bold">Good Morning,</p>
-                    <p class="text-lg text-black font-medium mb-14">Dr. Joseph</p>
-                    <p class="text-xs text-black">
-                        Today is Monday, June 24
-                    </p>
-                </div>
-                <div class="w-8/12">
-                  <response-chart/>
-                </div>
+      <div class="w-full   py-2 flex justify-between space-x-2 pb-3 border-b-2">
+        <span class="font-bold text-lg text-primary">Appointment Response</span>
+        <span class="float-right text-sm text-black font-medium">Good Morning, Dr. Joseph</span>
+      </div>
+        <span class="w-full">
+            <div class="w-full mt-5 mb-8">
+             <!-- <div class="dropdown  inline-block relative border-none float-right w-32">
+                <p class="cursor-pointer">Today</p>
+               <ul class="dropdown-menu absolute
+              shadow
+              bg-white
+              top-100
+              z-40
+              w-44
+              p-3
+              hidden
+              right-10
+              rounded
+              max-h-select
+              overflow-y-auto
+              px-1 py-5
+              mt-2
+              svelte-5uyqqj">
+                  <li class="cursor-pointer mb-3 px-6 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                    <span>Today</span>
+                  </li>
+                  <li class="cursor-pointer mb-3 px-6 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                    <span>A week Ago</span>
+                  </li>
+                  <li class="cursor-pointer mb-3  px-6 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                    <span>This year</span>
+                  </li>
+                </ul>
+              </div>-->
+                <cornie-select class="border-none float-right w-32" @change="onChange($event)" v-model="date" :items="['Today','A week Ago','This year']">
+              </cornie-select>
+                <response-chart v-if="loaded" :chartData="chartdata" :chartLabels="chartLabels"/>
             </div>
             <div class="w-full h-screen">
                  <cornie-table :columns="rawHeaders" v-model="items">
                 <template #actions="{ item }">
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.index}`)">
-                    <newview-icon />
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-response/${item.id}`)">
+                    <newview-icon class="text-yellow-500 fill-current"/>
                     <span class="ml-3 text-xs">View</span>
                     </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push('/dashboard/provider/experience/add-response')">
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/provider/experience/edit-response/${item.id}`)">
                     <update-icon  class="text-yellow-300 fill-current" />
                     <span class="ml-3 text-xs">Update</span>
                     </div>
@@ -50,7 +59,7 @@
                     <span class="ml-3 text-xs">New Appointment</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                    <note-icon />
+                    <note-icon class="text-danger fill-current"/>
                     <span class="ml-3 text-xs">Make Notes</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
@@ -64,6 +73,11 @@
                     <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
                     </div>
                 </template>
+                 <template #Patients="{ item }">
+                  <div class="flex items-center">
+                    <span class="text-xs cursor-pointer"  @click="displayPatients(item.id)">Darlington Onyemere</span>
+                  </div>
+                </template>
                 </cornie-table>
                 <notes-add
                     :appointmentId="appointmentId"
@@ -76,6 +90,8 @@
                     @update:preferred="displayParticipants"
                     v-model:visible="showPartcipants"
                     />
+                      <patient-details   v-model:visible="showPatientModal"
+      :patients="patient"/>
             </div>
         </span>
     </div>
@@ -87,6 +103,7 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 //import CardText from "@/components/card-text.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
+import CornieSelect from "@/components/cornieselect.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -101,6 +118,7 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
+import PatientDetails from "./policy.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 //import CloseIcon from "@/components/icons/close.vue";
@@ -114,13 +132,15 @@ import AllParticipants from "./participants.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import ResponseChart from "./ResponseChart.vue"
-
+import moment from 'moment'
 const appointment = namespace("appointment");
 
 @Options({
   components: {
     Table,
     ResponseChart,
+    CornieSelect,
+    PatientDetails,
     CancelIcon,
     SortIcon,
     CheckinIcon,
@@ -148,15 +168,24 @@ const appointment = namespace("appointment");
   
 })
 export default class AppointmentExistingState extends Vue {
+   @Prop({ type: String, default: "" })
+  id!: string;
   showColumnFilter = false;
   showModal = false;
+  patient=[];
   loading = false;
+  loaded = false;
   query = "";
   showNotes = false;
+  showPatientModal= false;
 appointmentId="";
+ date = "";
 showPartcipants= false;
 singleParticipant= [];
 
+  chartdata = [];
+  chartLabels=[];
+  chartFullfilled=[];
 
   @appointment.State
   appointments!: IAppointment[];
@@ -164,19 +193,21 @@ singleParticipant= [];
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
 
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
+
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     { title: "Identifier", key: "keydisplay", show: true },
     {
       title: "Patient",
-      key: "patients",
-      show: false,
+      key: "Patients",
+      show: true,
     },
     {
       title: "Appointment Type",
       key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
       show: true,
     },
     {
@@ -190,7 +221,7 @@ singleParticipant= [];
       show: false,
     },
     {
-      title: "Status",
+      title: "Participant Status",
       key: "status",
       show: true,
     },
@@ -206,8 +237,8 @@ singleParticipant= [];
     },
     {
       title: "Period",
-      key: "period",
-      show: true,
+      key: "newperiod",
+      show: false,
     },
     {
       title: "Priority",
@@ -236,27 +267,34 @@ singleParticipant= [];
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
   
-
+appointmentsResponse = [];
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
-        console.log(singleParticipantlength);
-       (appointment as any).period = new Date(
-         (appointment as any).period 
+     // const responses = appointment.
+      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
+      (appointment as any).period = new Date((appointment as any).peroid).toLocaleDateString("en-US");
+       const start=   (appointment as any).participantDetail.period.start = new Date(
+         (appointment as any).participantDetail.period.start 
+       ).toLocaleDateString("en-US");
+       const end = (appointment as any).participantDetail.period.end = new Date(
+         (appointment as any).participantDetail.period.end 
        ).toLocaleDateString("en-US");
         return {
         ...appointment,
          action: appointment.id,
          keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
+          newperiod: start +'-'+ end ,
+         Participants: singleParticipantlength, 
         };
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
   }
 
- 
+  onChange(event:any){
+        console.log(event.target.value);
+    }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to cancel this appointment",
@@ -286,14 +324,37 @@ singleParticipant= [];
         console.error(error);
       }
   }
+  async singleResponse(){
+    const aResponse = cornieClient().get(`/api/v1/appointment/response/getByAppointmentId/${this.id}`);
+    const response = await Promise.all([aResponse]);
+    this.loaded = true;
+       const values = response[0].data.map(function (e:any) {
+         return e.createdAt;
+      });
+      console.log( values );
+      let results = values.map((date : any)=> moment(date).format('dddd,DD'));
+       this.chartdata = results;
+        const count =   response[0].data.map((e : any)=> e.status.length)
+        this.chartLabels = count;
+   
+  }
+  async displayPatients(){
+    this.showPatientModal = true;
+  }
+  async fetchPatients() {
+        const AllPateints = cornieClient().get("/api/v1/patient");
+        const response = await Promise.all([AllPateints]);
+        this.patient = response[0].data;
+      }
       get sortAppointments (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
      async created() {
-      console.log(this.items);
-
+      this.fetchAppointments();
+      this.singleResponse();
+      this.fetchPatients();
     }
 
 }
@@ -301,5 +362,10 @@ singleParticipant= [];
 <style>
 .outline-primary{
     border: 2px solid #080056;
+}
+.dropdown:focus-within .dropdown:hover .dropdown-menu {
+  visibility: visible;
+  opacity: 1;
+  display: block;
 }
 </style>

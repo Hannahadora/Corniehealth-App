@@ -43,6 +43,10 @@ export default {
         await ctx.dispatch("fetchAppointments");
       return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
+    async getAppointmentResponseById(ctx, id: string) {
+      if (ctx.state.appointments.length < 1) await ctx.dispatch("fetchAppointments");
+      return ctx.state.appointments.find((appointment) => appointment.id == id);
+    },
     async deleteAppointment(ctx, id: string) {
       const deleted = await deleteAppointment(id);
       if (!deleted) return false;

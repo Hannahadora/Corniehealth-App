@@ -31,14 +31,14 @@
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="$router.push(`/dashboard/experience/add-response/${item.id}`)"
+        >
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`/dashboard/experience/appointment-response`)"
-        >
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
         </div>
@@ -66,6 +66,13 @@
           />
         </div>
       </template>
+      <template #Patients="{ item }">
+        <div class="flex items-center">
+          <span class="text-xs cursor-pointer" @click="displayPatients(item.id)"
+            >Darlington Onyemere</span
+          >
+        </div>
+      </template>
     </cornie-table>
 
     <notes-add
@@ -79,6 +86,7 @@
       @update:preferred="displayParticipants"
       v-model:visible="showPartcipants"
     />
+    <patient-details v-model:visible="showPatientModal" :patients="patient" />
   </div>
 </template>
 <script lang="ts">
@@ -109,6 +117,7 @@ import UpdateIcon from "@/components/icons/update.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import NotesAdd from "./notes.vue";
 import AllParticipants from "./participants.vue";
+import PatientDetails from "./policy.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -121,6 +130,7 @@ const appointment = namespace("appointment");
     SortIcon,
     CheckinIcon,
     NotesAdd,
+    PatientDetails,
     NewviewIcon,
     AllParticipants,
     UpdateIcon,
@@ -146,6 +156,9 @@ export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
+  patientName = "";
+  patient = [];
+  showPatientModal = false;
   query = "";
   showNotes = false;
   appointmentId = "";
@@ -163,14 +176,12 @@ export default class AppointmentExistingState extends Vue {
     { title: "Identifier", key: "keydisplay", show: true },
     {
       title: "Patient",
-      key: "patients",
-      show: false,
+      key: "Patients",
+      show: true,
     },
     {
       title: "Appointment Type",
       key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) =>
-        a.appointmentType < b.appointmentType ? -1 : 1,
       show: true,
     },
     {
@@ -200,8 +211,8 @@ export default class AppointmentExistingState extends Vue {
     },
     {
       title: "Period",
-      key: "period",
-      show: true,
+      key: "newperiod",
+      show: false,
     },
     {
       title: "Priority",
@@ -235,14 +246,21 @@ export default class AppointmentExistingState extends Vue {
         appointment.Practitioners.length +
         appointment.Devices.length +
         appointment.Patients.length;
-      console.log(singleParticipantlength);
       (appointment as any).period = new Date(
         (appointment as any).period
       ).toLocaleDateString("en-US");
+      const start = ((appointment as any).participantDetail.period.start =
+        new Date(
+          (appointment as any).participantDetail.period.start
+        ).toLocaleDateString("en-US"));
+      const end = ((appointment as any).participantDetail.period.end = new Date(
+        (appointment as any).participantDetail.period.end
+      ).toLocaleDateString("en-US"));
       return {
         ...appointment,
         action: appointment.id,
         keydisplay: "XXXXXXX",
+        newperiod: start + "-" + end,
         Participants: singleParticipantlength,
       };
     });
@@ -261,6 +279,9 @@ export default class AppointmentExistingState extends Vue {
       window.notify({ msg: "Appointment canceled", status: "success" });
     else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
+  async displayPatients() {
+    this.showPatientModal = true;
+  }
   async makeNotes(id: string) {
     this.appointmentId = id;
     this.showNotes = true;
@@ -276,9 +297,8 @@ export default class AppointmentExistingState extends Vue {
       if (response.success) {
         this.singleParticipant = response.data;
       }
-    } catch (error) {
-      this.loading = false;
-      console.error(error);
+    } catch (e) {
+      console.log(e);
     }
   }
   get sortAppointments() {

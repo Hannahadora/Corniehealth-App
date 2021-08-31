@@ -12,7 +12,6 @@ export async function fetchAppointments() {
   }
   return [] as IAppointment[];
 }
-
 export async function deleteAppointment(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/appointment/${id}`);
