@@ -63,7 +63,7 @@
         
         <div class="w-full mb-3 mt-14">
             <div class="container-fluid flex justify-end items-center">
-                <corniebtn :loading="false">
+                <corniebtn >
                     <router-link to="" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
                     </router-link>
@@ -179,7 +179,9 @@ export default class CheckIn extends Vue {
     }
 
     async endSession() {
+        this.loading = true;
         const response = await this.checkout(this.item.id);
+        this.loading = false;
         if (response) window.notify({ msg: "Checked Out", status: "success" });
         this.$emit('close')
     }

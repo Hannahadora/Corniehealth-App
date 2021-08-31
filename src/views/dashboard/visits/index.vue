@@ -117,7 +117,7 @@
 
                 <template #actions="{ item }">
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <eye-icon class="mr-3 mt-1" />
+                    <eye-icon class="mt-1" />
                     <span class="ml-3 text-xs" @click="showTimeline(item.id)">View timeline</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
@@ -128,7 +128,7 @@
                     <EncounterIcon class="mr-3 mt-1"  />
                     <span class="ml-3 text-xs" >Start Encounter</span>
                     </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.slotId)">
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
                       <CancelIcon />
                       <span class="ml-3 text-xs"
                       >Cancel Visit</span>
@@ -496,7 +496,7 @@ export default class PractitionerExistingState extends Vue {
       key: "appointmentType",
       show: true,
     },
-    { title: "Slot", key: "slot", show: true },
+    { title: "Slot", key: "slot", show: false },
     {
       title: "Practitioner",
       key: "practitioners",
@@ -547,7 +547,8 @@ export default class PractitionerExistingState extends Vue {
         patient: this.getPatientName(i.patientId),
         location: i.room.name,
         status: i.status,
-        slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
+        slot: ` `,
+        // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
         practitioners: this.getActors(i.appointmentId)
       };
     });
@@ -587,9 +588,12 @@ export default class PractitionerExistingState extends Vue {
   }
 
   async destroy(id: string) {
-    await this.cancel(id).then((res: any) => {
-        window.notify({ msg: "Visit Started", status: "success" });
-    })
+    const cancelled = await this.cancel(id);
+    console.log(cancelled ,"cancelled");
+    
+    if (cancelled) {
+      window.notify({ msg: "Visit Cancelled", status: "success" });
+    }
   }
 
   async markAsNoShow(id: string) {

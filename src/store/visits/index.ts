@@ -21,13 +21,6 @@ export default {
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [ ...pts ];
     },
-
-    // updateSchedule(state, sch) {
-    //     if (sch) {
-    //         const index = state.schedules.findIndex(i => i.id === sch.id);
-    //         if (index >= 0) state.schedules[index] = { ...sch };
-    //     }
-    // },
   },
 
   actions: {
@@ -55,28 +48,28 @@ export default {
 
     async checkin(ctx, schedule: any) {
       const sch = await checkin(schedule);
-      if (!sch) return { };
+      if (!sch) return false;
       // ctx.commit("addSchedule", sch);
       return sch;
     },
 
     async checkout(ctx, id: string) {
       const sch = await checkout(id);
-      if (!sch) return { };
+      if (!sch) return false;
       // ctx.commit("addSchedule", sch);
       return sch;
     },
 
     async startEncounter(ctx, id: string) {
       const sch = await startEncounter(id);
-      if (!sch) return { };
+      if (!sch) return false;
       // ctx.commit("addSchedule", sch);
       return sch;
     },
 
     async cancel(ctx, id: string) {
       const sch = await cancel(id);
-      if (!sch) return { };
+      if (!sch) return false;
       // ctx.commit("addSchedule", sch);
       return sch;
     },
