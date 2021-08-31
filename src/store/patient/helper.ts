@@ -12,8 +12,11 @@ export async function fetchPatients() {
 
 export async function deletePatient(id: string): Promise<boolean> {
   try {
-    const response = await cornieClient().delete(`/api/v1/patient/${id}`);
-    return true;
+    const response = await cornieClient().post(
+      `/api/v1/patient/dissociate/${id}`,
+      {}
+    );
+    return response.success;
   } catch (error) {
     return false;
   }
