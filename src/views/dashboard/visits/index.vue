@@ -466,6 +466,9 @@ export default class PractitionerExistingState extends Vue {
   @visitsStore.Action
   cancel!: (id: string) => Promise<boolean>;
 
+  @visitsStore.Action
+  noShow!: (id: string) => Promise<boolean>;
+
   @appointment.State
   appointments!: any[];
 
@@ -596,9 +599,10 @@ export default class PractitionerExistingState extends Vue {
   }
 
   async markAsNoShow(id: string) {
-    // await this.cancel(id).then((res: any) => {
-    //     window.notify({ msg: "Visit Started", status: "success" });
-    // })
+    const marked = await this.noShow(id);
+    if (marked) {
+      window.notify({ msg: "Visit marked as no-show", status: "success" });
+    }
   }
 
   // async remove(id: string) {

@@ -97,15 +97,14 @@ export async function cancel(id: any) {
   }
 }
 
-export async function noShow(body: any) {
+export async function noShow(id: string) {
   try {
-    const response = await cornieClient().post(`/api/v1/visit/no-show`, body);
-    console.log(response, "visit cancel");
+    const response = await cornieClient().post(`/api/v1/visit/no-show/${id}`, { });
     
     return response.data as boolean;
   } catch (error) {
     notify({
-      msg: "There was an error canceling this visit",
+      msg: "There was an error marking this visit as no-show",
       status: "error"
     });
   }
