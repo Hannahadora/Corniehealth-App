@@ -256,6 +256,7 @@ export default {
       availableFilter: false,
       profileFilter:false,
       practitionerId: "",
+      img: setup(() => useHandleImage()),
     };
   },
   watch: {
@@ -269,9 +270,6 @@ export default {
     },
   },
   computed: {
-    getImage(){
-      return img = setup(() => useHandleImage());
-    },
     show: {
       get() {
         return this.visible;
