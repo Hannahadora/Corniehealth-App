@@ -1,5 +1,5 @@
 import { StoreOptions } from "vuex";
-import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel } from "./helper";
+import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel, noShow } from "./helper";
 
 interface SchedulesStore {
   visits: any[],
@@ -69,6 +69,13 @@ export default {
 
     async cancel(ctx, id: string) {
       const sch = await cancel(id);
+      if (!sch) return false;
+      // ctx.commit("addSchedule", sch);
+      return sch;
+    },
+
+    async noShow(ctx, id: string) {
+      const sch = await noShow(id);
       if (!sch) return false;
       // ctx.commit("addSchedule", sch);
       return sch;
