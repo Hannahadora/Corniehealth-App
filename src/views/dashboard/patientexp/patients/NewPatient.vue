@@ -1,13 +1,16 @@
 <template>
   <div class="h-full w-full flex-grow" style="overflow: auto">
     <h1 class="text-primary text-lg capitalize font-extrabold mb-4">
-      New Patient
+      {{ title }}
     </h1>
     <cornie-card class="my-5 mr-4">
       <cornie-card-title>
         <h1 class="text-lg font-extrabold">Patient Information</h1>
         <cornie-spacer />
-        <completed-icon class="mr-2" />
+        <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
+          Edit
+        </span>
+        <completed-icon v-else class="mr-2" />
         <icon-btn @click="togglePatientInformation">
           <chevron-down-icon v-if="showPatientInformation" />
           <chevron-right-icon v-else />
@@ -15,8 +18,8 @@
       </cornie-card-title>
 
       <!-- Patient Information -->
-      <cornie-card-text v-if="showPatientInformation" class="">
-        <v-form @submit="register">
+      <cornie-card-text :class="{ hidden: !showPatientInformation }">
+        <v-form @submit="saveBasic" ref="basic">
           <div
             class="
               flex
@@ -27,114 +30,122 @@
               pt-5
             "
           >
-            <cornie-avatar-field v-model="image" />
-            <custom-checkbox label="Mark as VIP" v-model="vip"/>
+            <cornie-avatar-field v-model="image" :readonly="viewOnly" />
+            <custom-checkbox
+              label="Mark as VIP"
+              :readonly="viewOnly"
+              v-model="vip"
+            />
           </div>
-          <div class="flex w-full mt-10">
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="First Name"
-                placeholder="Enter"
-                v-model="firstName"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="Middle Name"
-                placeholder="Enter"
-                v-model="lastName"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="Surname"
-                placeholder="Enter"
-                v-model="surname"
-              />
-            </div>
+          <div class="w-full mt-4 grid grid-cols-3 gap-5">
+            <cornie-input
+              class="w-full"
+              label="First Name"
+              placeholder="Enter"
+              :rules="requiredRule"
+              v-model="firstName"
+              :readonly="viewOnly"
+            />
+
+            <cornie-input
+              class="w-full"
+              label="Middle Name"
+              placeholder="Enter"
+              v-model="middleName"
+              :readonly="viewOnly"
+            />
+
+            <cornie-input
+              class="w-full"
+              label="Surname"
+              placeholder="Enter"
+              v-model="lastName"
+              :rules="requiredRule"
+              :readonly="viewOnly"
+            />
+
+            <date-picker
+              class="w-full"
+              label="Date of Birth"
+              placeholder="Enter"
+              :rules="dobRule"
+              v-model="dateOfBirth"
+              :readonly="viewOnly"
+            />
+
+            <cornie-select
+              class="w-full"
+              label="Multiple Birth"
+              placeholder="Select One"
+              :items="multipleBirthOptions"
+              v-model="multipleBirth"
+              :readonly="viewOnly"
+            />
+            <cornie-input
+              class="w-full"
+              placeholder="Enter"
+              v-model="multipleBirthInteger"
+              type="number"
+              :rules="numericRule"
+              :readonly="viewOnly"
+            >
+              <template #label> Multiple Birth Integer (1 - 10) </template>
+            </cornie-input>
+            <cornie-select
+              class="w-full"
+              label="Gender"
+              :rules="requiredRule"
+              placeholder="Select One"
+              :items="genderOptions"
+              v-model="gender"
+              :readonly="viewOnly"
+            />
+
+            <cornie-select
+              class="w-full"
+              placeholder="Select One"
+              :items="['Single', 'Divorced', 'Widowed', 'Married']"
+              v-model="maritalStatus"
+              :rules="requiredRule"
+              :readonly="viewOnly"
+            >
+              <template #label> Marital status </template>
+            </cornie-select>
+
+            <cornie-input
+              :readonly="viewOnly"
+              class="w-full"
+              placeholder="Enter"
+              label="Identity No"
+              v-model="idNumber"
+              :rules="requiredRule"
+            >
+              <template #prepend class="-0">
+                <cornie-menu class="cursor-pointer">
+                  <template #activator="{ on }">
+                    <div v-on="on" class="flex items-center">
+                      <span class="mr-3"> {{ idType }}</span>
+                      <chevron-down-icon />
+                    </div>
+                  </template>
+                  <div
+                    class="m-1 p-2"
+                    :class="{ 'bg-gray-100': idOption == idType }"
+                    v-for="(idOption, index) in idOptions"
+                    :key="index"
+                    @click="selectId(idOption)"
+                  >
+                    {{ idOption }}
+                  </div>
+                </cornie-menu>
+              </template>
+            </cornie-input>
           </div>
-          <div class="flex w-full mt-10">
-            <div class="w-4/12 px-4">
-              <cornie-date-picker
-                class="w-full"
-                label="Date of Birth"
-                placeholder="Enter"
-                v-model="dateOfBirth"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-select
-                class="w-full"
-                label="Multiple Birth"
-                placeholder="Select One"
-                :items="multipleBirthOptions"
-                v-model="multipleBirth"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input class="w-full" placeholder="Enter">
-                <template #label> Multiple Birth Integer (1 - 10) </template>
-              </cornie-input>
-            </div>
-          </div>
-          <div class="flex w-full mt-10">
-            <div class="w-4/12 px-4">
-              <cornie-select
-                class="w-full"
-                label="Gender"
-                placeholder="Select One"
-                :items="genderOptions"
-                v-model="gender"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-select
-                class="w-full"
-                placeholder="Select One"
-                :items="multipleBirthOptions"
-                v-model="multipleBirth"
-              >
-                <template #label> Marital status </template>
-              </cornie-select>
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                placeholder="Enter"
-                label="Identity No"
-                v-model="idNumber"
-              >
-                <template #prepend class="-0">
-                  <cornie-menu>
-                    <template #activator="{ on }">
-                      <div v-on="on" class="flex items-center">
-                        <span class="mr-3"> {{ idType }}</span>
-                        <chevron-down-icon />
-                      </div>
-                    </template>
-                    <cornie-card>
-                      <div
-                        class="m-1 p-2"
-                        :class="{ 'bg-gray-100': idOption == idType }"
-                        v-for="(idOption, index) in idOptions"
-                        :key="index"
-                        @click="selectId(idOption)"
-                      >
-                        {{ idOption }}
-                      </div>
-                    </cornie-card>
-                  </cornie-menu>
-                </template>
-              </cornie-input>
-            </div>
-          </div>
-          <div class="flex justify-end m-5">
+          <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
               loading-color="white"
               type="submit"
+              :loading="loading"
               class="bg-success text-white px-10 py-1"
             >
               Save
@@ -148,93 +159,20 @@
       <cornie-card-title>
         <h1 class="text-lg font-extrabold">Contact Info</h1>
         <cornie-spacer />
-        <completed-icon class="mr-2" />
+        <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable"
+          >Edit</span
+        >
+        <completed-icon v-else class="mr-2" />
         <icon-btn @click="toggleContactInfo">
           <chevron-down-icon v-if="showContactInfo" />
           <chevron-right-icon v-else />
         </icon-btn>
       </cornie-card-title>
-      <cornie-card-text v-if="showContactInfo" class="">
-        <v-form>
-          <div
-            class="
-              flex
-              justify-start
-              items-center
-              px-4
-              border-t-2 border-gray
-              pt-5
-            "
-          >
-            <cornie-radio
-              label="Work"
-              class="mr-3"
-              v-model="contactType"
-              value="work"
-              checked
-            />
-            <cornie-radio label="Home" v-model="contactType" value="home" />
-          </div>
-          <div class="flex w-full mt-10">
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="Address 1"
-                placeholder="Enter"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="Address 2"
-                placeholder="Enter"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="Country"
-                placeholder="Enter"
-              />
-            </div>
-          </div>
-          <div class="flex w-full mt-10">
-            <div class="w-4/12 px-4">
-              <cornie-input class="w-full" label="State" placeholder="Enter" />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input
-                class="w-full"
-                label="Post Code"
-                placeholder="Enter"
-              />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input class="w-full" label="City" placeholder="Enter" />
-            </div>
-          </div>
-          <div class="flex w-full mt-10">
-            <div class="w-4/12 px-4">
-              <phone-input label="Phone" />
-            </div>
-            <div class="w-4/12 px-4">
-              <cornie-input class="w-full" label="Email" placeholder="Enter" />
-            </div>
-          </div>
-          <div class="flex justify-end m-5">
-            <cornie-btn
-              loading-color="white"
-              type="submit"
-              class="bg-success text-white px-10 py-1"
-            >
-              Save
-            </cornie-btn>
-          </div>
-          <div class="text-danger ml-2" @click="addContactInfo">
-            Add Another
-          </div>
-        </v-form>
-      </cornie-card-text>
+      <contact-info
+        :patient="patient"
+        v-model="contacts"
+        :class="{ hidden: !showContactInfo }"
+      />
     </cornie-card>
 
     <cornie-card class="my-5 mr-4">
@@ -256,7 +194,11 @@
             v-for="(optionalItem, index) in optionalItems"
             :key="index"
           >
-            <cornie-card height="150px" @click="optionalItem.click" class="cursor-pointer hover:bg-gray-50">
+            <cornie-card
+              height="150px"
+              @click="optionalItem.click"
+              class="cursor-pointer hover:bg-gray-50"
+            >
               <cornie-card-text class="h-full">
                 <div class="flex h-full items-center">
                   <component :is="optionalItem.icon" class="mx-4" />
@@ -284,13 +226,18 @@
         </div>
       </cornie-card-text>
     </cornie-card>
-    <div class="flex justify-end">
+    <div class="flex justify-end" v-if="!viewOnly">
       <cornie-btn
+        @click="$router.back()"
         class="text-primary border-2 border-primary m-5 mx-2 px-12"
       >
         Cancel
       </cornie-btn>
-      <cornie-btn class="bg-danger text-white m-5 px-10" @click="registerPatient">
+      <cornie-btn
+        class="bg-danger text-white m-5 px-10"
+        @click="submit"
+        :loading="loading"
+      >
         Register New
       </cornie-btn>
     </div>
@@ -303,7 +250,6 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Ref } from "vue-property-decorator";
 import CornieCard from "@/components/cornie-card/index";
 import CornieSpacer from "@/components/CornieSpacer.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
@@ -312,12 +258,10 @@ import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import CornieInput from "@/components/cornieinput.vue";
-import CornieDatePicker from "@/components/CornieDatePicker.vue";
-import CornieSelect from "@/components/NewCornieSelect.vue";
+import DatePicker from "@/components/datepicker.vue";
+import CornieSelect from "@/components/cornieselect.vue";
 import CornieMenu from "@/components/CornieMenu.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import PhoneInput from "@/components/phone-input.vue";
 import CompletedIcon from "@/components/icons/CompletedIcon.vue";
 import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
 import AddIcon from "@/components/icons/add.vue";
@@ -328,29 +272,37 @@ import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
 import UrlIcon from "@/components/icons/UrlIcon.vue";
 import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
 import DemographicIcon from "@/components/icons/DemographicIcon.vue";
+import { Field } from "vee-validate";
 
 import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
 import GuarantorDialog from "./dialogs/GuarantorDialog.vue";
 import InsuranceDialog from "./dialogs/InsuranceDialog.vue";
 import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
+import ContactInfo from "./contact-information.vue";
+import { string, number, date, array } from "yup";
+import { Prop, Ref } from "vue-property-decorator";
+import { cornieClient } from "@/plugins/http";
+import { IPatient } from "@/types/IPatient";
+import { namespace } from "vuex-class";
 
+const patients = namespace("patients");
 @Options({
   name: "new-patient",
   components: {
     ...CornieCard,
     CornieSpacer,
+    ContactInfo,
     ChevronRightIcon,
     ChevronDownIcon,
     IconBtn,
     CornieAvatarField,
     CustomCheckbox,
     CornieInput,
-    CornieDatePicker,
+    Field,
+    DatePicker,
     CornieSelect,
     CornieMenu,
     CornieBtn,
-    CornieRadio,
-    PhoneInput,
     CompletedIcon,
     EmergencyIcon,
     AddIcon,
@@ -365,54 +317,102 @@ import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
     EmergencyContactDialog,
     GuarantorDialog,
     InsuranceDialog,
-    ProvidersDialog
+    ProvidersDialog,
   },
 })
 export default class NewPatient extends Vue {
   showPatientInformation = true;
   showContactInfo = true;
   showOptionalInformation = false;
-  idOptions = ["NIN", "MRN"];
-  genderOptions = ["Male", "Female"];
-  multipleBirthOptions = [];
+  idOptions = ["NIN", "BVN"];
+  genderOptions = [
+    { code: "male", display: "Male" },
+    { code: "female", display: "Female" },
+    { code: "other", display: "Other" },
+  ];
+  multipleBirthOptions = [
+    { code: true, display: "Yes" },
+    { code: false, display: "No" },
+  ];
 
-  multipleBirth = "";
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+  @patients.State
+  patients!: IPatient[];
+
+  loading = false;
+
+  vip = false;
+  multipleBirth = false;
+  multipleBirthInteger = 0;
   gender = "";
   idType = "NIN";
   firstName = "";
+  middleName = "";
   lastName = "";
-  surname = "";
   dateOfBirth = "";
   image = "";
+  idNumber = "";
+  contacts = [];
+  maritalStatus = "";
 
   showEmergencyContactDialog = false;
   showGuarantorDialog = false;
   showInsuranceDialog = false;
   showProvidersDialog = false;
+  showPractitionersDialog = false;
+  showDemographicsDialog = false;
 
+  requiredRule = string().required();
+  numericRule = number();
+  dobRule = date().max(
+    new Date(),
+    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+  );
+
+  requiredArray = array().min(1);
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  patient!: IPatient;
+
+  @Ref("basic")
+  basicInfo!: any;
+  get title() {
+    if (this.viewOnly) return "View Patient";
+    return this.patient ? "Edit Patient" : "New Patient";
+  }
+  get viewOnly() {
+    return this.$route.path.includes("view");
+  }
+
+  markEditable() {
+    this.$router.push(`/dashboard/provider/experience/edit-patient/${this.id}`);
+  }
   optionalItems = [
     {
       name: "Emergency Contact",
       icon: "emergency-icon",
-      click: () => this.showEmergencyContactDialog = true,
+      click: () => (this.showEmergencyContactDialog = true),
       number: 0,
     },
     {
       name: "Add Guarantor",
       icon: "guarantor-icon",
-      click: () => this.showGuarantorDialog = true,
+      click: () => (this.showGuarantorDialog = true),
       number: 0,
     },
     {
       name: "Insurance",
       icon: "insurance-icon",
-      click: () => this.showInsuranceDialog = true,
+      click: () => (this.showInsuranceDialog = true),
       number: 0,
     },
     {
       name: "Providers",
       icon: "medicine-icon",
-      click: () => this.showProvidersDialog = true,
+      click: () => (this.showProvidersDialog = true),
       number: 0,
     },
     {
@@ -435,11 +435,6 @@ export default class NewPatient extends Vue {
     },
   ];
 
-  contactType = "work";
-
-  @Ref()
-  patientsRegistrationForm!: HTMLFormElement
-
   togglePatientInformation() {
     this.showPatientInformation = !this.showPatientInformation;
   }
@@ -452,20 +447,95 @@ export default class NewPatient extends Vue {
     this.showOptionalInformation = !this.showOptionalInformation;
   }
 
-  addContactInfo() {}
+  async submit() {
+    const report = await (this.$refs.basic as any).validate();
+    if (!report.valid) return;
+    this.loading = true;
+    if (this.id) await this.updatePatient();
+    else await this.registerPatient();
+    this.loading = false;
+  }
 
-  register(event: Event) {
-    event.preventDefault();
-    if(this.patientsRegistrationForm.validate()) {
+  get payload() {
+    const basicInfo = {
+      firstname: this.firstName,
+      lastname: this.lastName,
+      middlename: this.middleName,
+      multipleBirth: this.multipleBirth,
+      multipleBirthInteger: this.multipleBirthInteger,
+      gender: this.gender.toLowerCase(),
+      maritalStatus: this.maritalStatus,
+      vip: this.vip,
+      dateOfBirth: this.dateOfBirth,
+      identityNos: [{ type: this.idType, number: this.idNumber }],
+      profilePhoto: this.image,
+      accountType: "individual",
+    };
+    const others = {
+      contactInfo: this.contacts,
+    };
+    if (this.id) return basicInfo;
+    return { ...basicInfo, ...others };
+  }
 
+  async registerPatient() {
+    if (this.contacts.length < 1)
+      return window.notify({
+        msg: "At least one contact information is needed to proceed",
+        status: "error",
+      });
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/patient",
+        this.payload
+      );
+      console.log("Response ", response.data);
+    } catch (error) {
+      window.notify({ msg: "Failed to add patient", status: "error" });
     }
   }
 
+  async updatePatient() {
+    console.log("Updating");
+  }
+
+  async saveBasic() {
+    if (this.id) {
+      this.loading = true;
+      await this.updatePatient();
+      this.loading = false;
+    } else {
+      this.showPatientInformation = false;
+    }
+  }
   selectId(idOption: string) {
     this.idType = idOption;
   }
+  hydrate() {
+    const patient = this.patients.find((p) => p.id == this.id);
+    if (!patient) return;
+    this.patient = patient;
+    this.firstName = patient.firstname;
+    this.lastName = patient.lastname;
+    this.middleName = patient.middlename || "";
+    this.multipleBirth = patient.multipleBirths || false;
+    this.multipleBirthInteger = patient.multipleBirthInteger || 0;
+    this.gender = patient.gender || "";
+    this.maritalStatus = patient.maritalStatus || "";
+    this.vip = patient.vip || false;
+    this.dateOfBirth = patient.dateOfBirth || "";
+    const identityNos = patient.identityNos || [];
+    const [identity, ...rest] = identityNos;
+    if (identity) {
+      this.idType = identity.type;
+      this.idNumber = identity.number;
+    }
+    this.image = patient.profilePhoto || "";
+  }
+
+  async created() {
+    if (!this.patients.length) await this.fetchPatients();
+    if (this.id) this.hydrate();
+  }
 }
 </script>
-
-<style>
-</style>

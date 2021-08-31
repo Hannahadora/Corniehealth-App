@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IGroup from "@/types/IGroup";
 import { StoreOptions } from "vuex";
-import { deleteGroup,fetchGroups } from "./helper";
+import { deleteGroup, fetchGroups } from "./helper";
 
 interface GroupState {
   groups: IGroup[];
@@ -17,10 +17,7 @@ export default {
       state.groups = [...groups];
     },
     updateGroups(state, groups: IGroup[]) {
-      const groupSet = new ObjectSet(
-        [...state.groups, ...groups],
-        "id"
-      );
+      const groupSet = new ObjectSet([...state.groups, ...groups], "id");
       state.groups = [...groupSet];
     },
     deleteGroup(state, id: string) {

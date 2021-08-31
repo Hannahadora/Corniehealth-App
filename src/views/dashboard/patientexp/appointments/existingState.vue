@@ -15,54 +15,70 @@
           focus:outline-none
           hover:opacity-90
         "
-         @click="$router.push('/dashboard/provider/experience/add-appointment')"
+        @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
-         Create Appointment
+        Create Appointment
       </button>
-      
     </span>
-   <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.id}`)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="
+            $router.push(`/dashboard/experience/add-appointment/${item.id}`)
+          "
+        >
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/appointment-response`)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="$router.push(`/dashboard/experience/appointment-response`)"
+        >
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-          <note-icon class="text-green-300 fill-current"/>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="makeNotes(item.id)"
+        >
+          <note-icon class="text-green-300 fill-current" />
           <span class="ml-3 text-xs">Make Notes</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
           <cancel-icon />
           <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
       <template #Participants="{ item }">
         <div class="flex items-center">
-          <span class="text-xs">{{item.Participants}}</span>
-          <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+          <span class="text-xs">{{ item.Participants }}</span>
+          <eye-icon
+            class="cursor-pointer ml-3"
+            @click="displayParticipants(item.id)"
+          />
         </div>
       </template>
     </cornie-table>
 
-      <notes-add
-          :appointmentId="appointmentId"
-          @update:preferred="makeNotes"
-          v-model:visible="showNotes"
-        />
-        <all-participants
-           :appointmentId="appointmentId"
-            :columns="singleParticipant"
-          @update:preferred="displayParticipants"
-          v-model:visible="showPartcipants"
-        />
+    <notes-add
+      :appointmentId="appointmentId"
+      @update:preferred="makeNotes"
+      v-model:visible="showNotes"
+    />
+    <all-participants
+      :appointmentId="appointmentId"
+      :columns="singleParticipant"
+      @update:preferred="displayParticipants"
+      v-model:visible="showPartcipants"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -82,12 +98,10 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
 import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-//import CloseIcon from "@/components/icons/close.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
@@ -124,10 +138,9 @@ const appointment = namespace("appointment");
     EyeIcon,
     EditIcon,
     CornieTable,
-   // CardText,
-    CornieDialog
+    // CardText,
+    CornieDialog,
   },
-  
 })
 export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
@@ -135,9 +148,9 @@ export default class AppointmentExistingState extends Vue {
   loading = false;
   query = "";
   showNotes = false;
-appointmentId="";
-showPartcipants= false;
-singleParticipant= [];
+  appointmentId = "";
+  showPartcipants = false;
+  singleParticipant = [];
   @appointment.State
   appointments!: IAppointment[];
 
@@ -156,7 +169,8 @@ singleParticipant= [];
     {
       title: "Appointment Type",
       key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
+      orderBy: (a: IAppointment, b: IAppointment) =>
+        a.appointmentType < b.appointmentType ? -1 : 1,
       show: true,
     },
     {
@@ -204,7 +218,6 @@ singleParticipant= [];
       kwy: "consultationMedium",
       show: false,
     },
-
   ];
 
   get headers() {
@@ -215,73 +228,71 @@ singleParticipant= [];
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
-
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
-        console.log(singleParticipantlength);
-       (appointment as any).period = new Date(
-         (appointment as any).period 
-       ).toLocaleDateString("en-US");
-        return {
+      const singleParticipantlength =
+        appointment.Practitioners.length +
+        appointment.Devices.length +
+        appointment.Patients.length;
+      console.log(singleParticipantlength);
+      (appointment as any).period = new Date(
+        (appointment as any).period
+      ).toLocaleDateString("en-US");
+      return {
         ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
-        };
+        action: appointment.id,
+        keydisplay: "XXXXXXX",
+        Participants: singleParticipantlength,
+      };
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
   }
 
- 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to cancel this appointment",
-      title: "Cancel appointment"
+      title: "Cancel appointment",
     });
     if (!confirmed) return;
 
-    if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
+    if (await this.deleteAppointment(id))
+      window.notify({ msg: "Appointment canceled", status: "success" });
     else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
-  async makeNotes(id:string){
+  async makeNotes(id: string) {
     this.appointmentId = id;
     this.showNotes = true;
   }
-  closeModal(){
+  closeModal() {
     this.showPartcipants = false;
   }
-  async displayParticipants(value:string){
+  async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
-     try {
-       const response = await cornieClient().get(
-          `/api/v1/appointment/${value}`
-        );
-        if (response.success) {
-        this.singleParticipant = response.data
-        }
-      } catch (error) {
-        this.loading = false;
-        console.error(error);
+    try {
+      const response = await cornieClient().get(`/api/v1/appointment/${value}`);
+      if (response.success) {
+        this.singleParticipant = response.data;
       }
-  }
-      get sortAppointments (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-     async created() {
-      console.log(this.items);
+    } catch (error) {
+      this.loading = false;
+      console.error(error);
     }
-
+  }
+  get sortAppointments() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async created() {
+    console.log(this.items);
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

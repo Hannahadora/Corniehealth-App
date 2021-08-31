@@ -19,6 +19,7 @@
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
+          ...errorClasses,
         }"
       >
         <div
@@ -116,6 +117,9 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
+
+  @Prop({ type: Object, default: {} })
+  errorClasses!: Object;
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

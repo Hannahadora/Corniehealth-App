@@ -1,10 +1,10 @@
 import ObjectSet from "@/lib/objectset";
 import IAppointment from "@/types/IAppointment";
 import { StoreOptions } from "vuex";
-import { deleteAppointment,fetchAppointments } from "./helper";
+import { deleteAppointment, fetchAppointments } from "./helper";
 
 interface AppointmentState {
-    appointments: IAppointment[];
+  appointments: IAppointment[];
 }
 
 export default {
@@ -24,7 +24,9 @@ export default {
       state.appointments = [...appointmentSet];
     },
     deleteAppointment(state, id: string) {
-      const index = state.appointments.findIndex((appointment) => appointment.id == id);
+      const index = state.appointments.findIndex(
+        (appointment) => appointment.id == id
+      );
       if (index < 0) return;
       const appointments = [...state.appointments];
       appointments.splice(index, 1);
@@ -37,7 +39,8 @@ export default {
       ctx.commit("setAppointments", appointments);
     },
     async getAppointmentById(ctx, id: string) {
-      if (ctx.state.appointments.length < 1) await ctx.dispatch("fetchAppointments");
+      if (ctx.state.appointments.length < 1)
+        await ctx.dispatch("fetchAppointments");
       return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async deleteAppointment(ctx, id: string) {

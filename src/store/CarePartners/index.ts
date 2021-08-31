@@ -3,17 +3,17 @@ import { StoreOptions } from "vuex";
 import CarePartnersClient from "./helper";
 
 interface CarePartnersStore {
-  carePartners: ICarePartner[]
+  carePartners: ICarePartner[];
 }
 export default <StoreOptions<CarePartnersStore>>{
   namespaced: true,
   state: {
-    carePartners: []
+    carePartners: [],
   },
 
   mutations: {
     add(state, partner: ICarePartner) {
-      state.carePartners.push(partner)
+      state.carePartners.push(partner);
     },
 
     set(state, partners: ICarePartner[]) {
@@ -24,7 +24,7 @@ export default <StoreOptions<CarePartnersStore>>{
       state.carePartners = state.carePartners.filter(
         (element) => element.identifier != partner.identifier
       );
-    }
+    },
   },
 
   actions: {
@@ -47,7 +47,7 @@ export default <StoreOptions<CarePartnersStore>>{
     },
 
     async delete(context, payload: ICarePartner): Promise<boolean> {
-      const deleted = await CarePartnersClient.delete(payload.id as string)
+      const deleted = await CarePartnersClient.delete(payload.id as string);
       if (deleted) context.dispatch("get");
       return deleted;
     },

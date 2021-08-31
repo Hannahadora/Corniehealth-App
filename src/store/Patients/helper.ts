@@ -1,55 +1,11 @@
 import { cornieClient } from "@/plugins/http";
-import IPatient from "@/types/IPatient";
 
-export default abstract class CarePartnersClient {
-  static async create(carePartner: ICarePartner): Promise<ICarePartner> {
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/care-partners/",
-        carePartner
-      );
-      if (response.success) return response.data as ICarePartner;
-      return {} as ICarePartner;
-    } catch (error) {
-      console.log(error);
-      return {} as ICarePartner;
-    }
+export async function fetchPatients() {
+  try {
+    const response = await cornieClient().get("/api/v1/patient");
+    return response.data;
+  } catch (error) {
+    window.notify({ msg: "Failed to get patients", status: "error" });
   }
-
-  static async get(): Promise<ICarePartner[]> {
-    try {
-      const response = await cornieClient().get("/api/v1/care-partners/");
-      if (response.success) return response.data as ICarePartner[];
-      return [];
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  }
-
-  static async search(payload: { q: string }): Promise<ICarePartner[]> {
-    try {
-      const response = await cornieClient().get(
-        "/api/v1/care-partners/search",
-        payload
-      );
-      if (response.success) return response.data as ICarePartner[];
-      return [];
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  }
-
-  static async delete(id: string): Promise<boolean> {
-    try {
-      const response = await cornieClient().delete(
-        `/api/v1/care-partners/${id}`
-      );
-      return response.success;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
+  return [];
 }

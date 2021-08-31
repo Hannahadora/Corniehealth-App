@@ -7,10 +7,9 @@ export async function fetchDomains() {
       "/api/v1/domain/myOrg/getMyOrgdomains"
     );
     console.log(response);
-    if (response.success){
+    if (response.success) {
       return response.data;
-     
-    } 
+    }
   } catch (error) {
     console.log(error);
   }
