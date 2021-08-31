@@ -59,13 +59,13 @@
                     :rules="required"
                     :items="['reason code']"
                     v-model="reasonCode"
-                    label="REason code"
+                    label="Reason code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['reason reference']"
+                    :items="['Refferal','Condition','Procedure','Observation','Immunization', 'Recommendation']"
                     v-model="reasonRef"
                     label="reason reference"
                     placeholder="--Select--"
