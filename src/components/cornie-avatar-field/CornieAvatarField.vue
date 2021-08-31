@@ -11,7 +11,11 @@
       @change="img.onChange"
       hidden
     />
-    <label for="file" class="text-pink-600 font-bold cursor-pointer">
+    <label
+      v-if="!readonly"
+      for="file"
+      class="text-pink-600 font-bold cursor-pointer"
+    >
       Upload Image
     </label>
   </div>

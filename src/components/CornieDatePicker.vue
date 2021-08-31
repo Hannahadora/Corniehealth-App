@@ -50,5 +50,4 @@ export default class CornieDatePicker extends Vue {
 }
 </script>
 
-<style>
-</style>
+<style></style>

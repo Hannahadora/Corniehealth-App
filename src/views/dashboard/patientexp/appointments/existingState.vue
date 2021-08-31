@@ -15,61 +15,78 @@
           focus:outline-none
           hover:opacity-90
         "
-         @click="$router.push('/dashboard/provider/experience/add-appointment')"
+        @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
-         Create Appointment
+        Create Appointment
       </button>
-      
     </span>
-   <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-appointment/${item.id}`)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="
+            $router.push(`/dashboard/experience/add-appointment/${item.id}`)
+          "
+        >
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-response/${item.id}`)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="$router.push(`/dashboard/experience/add-response/${item.id}`)"
+        >
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-          <note-icon class="text-green-300 fill-current"/>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="makeNotes(item.id)"
+        >
+          <note-icon class="text-green-300 fill-current" />
           <span class="ml-3 text-xs">Make Notes</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
           <cancel-icon />
           <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
       <template #Participants="{ item }">
         <div class="flex items-center">
-          <span class="text-xs">{{item.Participants}}</span>
-          <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+          <span class="text-xs">{{ item.Participants }}</span>
+          <eye-icon
+            class="cursor-pointer ml-3"
+            @click="displayParticipants(item.id)"
+          />
         </div>
       </template>
-       <template #Patients="{ item }">
+      <template #Patients="{ item }">
         <div class="flex items-center">
-          <span class="text-xs cursor-pointer"  @click="displayPatients(item.id)">Darlington Onyemere</span>
+          <span class="text-xs cursor-pointer" @click="displayPatients(item.id)"
+            >Darlington Onyemere</span
+          >
         </div>
       </template>
     </cornie-table>
 
-      <notes-add
-          :appointmentId="appointmentId"
-          @update:preferred="makeNotes"
-          v-model:visible="showNotes"
-        />
-        <all-participants
-           :appointmentId="appointmentId"
-            :columns="singleParticipant"
-          @update:preferred="displayParticipants"
-          v-model:visible="showPartcipants"
-        />
-        <patient-details   v-model:visible="showPatientModal"
-      :patients="patient"/>
+    <notes-add
+      :appointmentId="appointmentId"
+      @update:preferred="makeNotes"
+      v-model:visible="showNotes"
+    />
+    <all-participants
+      :appointmentId="appointmentId"
+      :columns="singleParticipant"
+      @update:preferred="displayParticipants"
+      v-model:visible="showPartcipants"
+    />
+    <patient-details v-model:visible="showPatientModal" :patients="patient" />
   </div>
 </template>
 <script lang="ts">
@@ -89,12 +106,10 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
 import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-//import CloseIcon from "@/components/icons/close.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
@@ -133,10 +148,9 @@ const appointment = namespace("appointment");
     EyeIcon,
     EditIcon,
     CornieTable,
-   // CardText,
-    CornieDialog
+    // CardText,
+    CornieDialog,
   },
-  
 })
 export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
@@ -144,12 +158,12 @@ export default class AppointmentExistingState extends Vue {
   loading = false;
   patientName = "";
   patient = [];
-  showPatientModal= false;
+  showPatientModal = false;
   query = "";
   showNotes = false;
-appointmentId="";
-showPartcipants= false;
-singleParticipant= [];
+  appointmentId = "";
+  showPartcipants = false;
+  singleParticipant = [];
   @appointment.State
   appointments!: IAppointment[];
 
@@ -215,7 +229,6 @@ singleParticipant= [];
       kwy: "consultationMedium",
       show: false,
     },
-
   ];
 
   get headers() {
@@ -226,87 +239,80 @@ singleParticipant= [];
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
-
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
-       (appointment as any).period = new Date(
-         (appointment as any).period 
-       ).toLocaleDateString("en-US");
-     const start=   (appointment as any).participantDetail.period.start = new Date(
-         (appointment as any).participantDetail.period.start 
-       ).toLocaleDateString("en-US");
-       const end = (appointment as any).participantDetail.period.end = new Date(
-         (appointment as any).participantDetail.period.end 
-       ).toLocaleDateString("en-US");
-        return {
+      const singleParticipantlength =
+        appointment.Practitioners.length +
+        appointment.Devices.length +
+        appointment.Patients.length;
+      (appointment as any).period = new Date(
+        (appointment as any).period
+      ).toLocaleDateString("en-US");
+      const start = ((appointment as any).participantDetail.period.start =
+        new Date(
+          (appointment as any).participantDetail.period.start
+        ).toLocaleDateString("en-US"));
+      const end = ((appointment as any).participantDetail.period.end = new Date(
+        (appointment as any).participantDetail.period.end
+      ).toLocaleDateString("en-US"));
+      return {
         ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-         newperiod: start +'-'+ end ,
-         Participants: singleParticipantlength,
-        };
+        action: appointment.id,
+        keydisplay: "XXXXXXX",
+        newperiod: start + "-" + end,
+        Participants: singleParticipantlength,
+      };
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
   }
- 
- 
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to cancel this appointment",
-      title: "Cancel appointment"
+      title: "Cancel appointment",
     });
     if (!confirmed) return;
 
-    if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
+    if (await this.deleteAppointment(id))
+      window.notify({ msg: "Appointment canceled", status: "success" });
     else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
-  async displayPatients(){
+  async displayPatients() {
     this.showPatientModal = true;
   }
-  async makeNotes(id:string){
+  async makeNotes(id: string) {
     this.appointmentId = id;
     this.showNotes = true;
   }
-  closeModal(){
+  closeModal() {
     this.showPartcipants = false;
   }
-  async displayParticipants(value:string){
+  async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
-     try {
-       const response = await cornieClient().get(
-          `/api/v1/appointment/${value}`
-        );
-        if (response.success) {
-        this.singleParticipant = response.data
-        }
-      } catch (error) {
-        this.loading = false;
-        console.error(error);
+    try {
+      const response = await cornieClient().get(`/api/v1/appointment/${value}`);
+      if (response.success) {
+        this.singleParticipant = response.data;
       }
-  }
-      get sortAppointments (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-       async fetchPatients() {
-        const AllPateints = cornieClient().get("/api/v1/patient");
-        const response = await Promise.all([AllPateints]);
-        this.patient = response[0].data;
-      }
-     async created() {
-      this.fetchPatients();
+    } catch (e) {
+      console.log(e);
     }
-
+  }
+  get sortAppointments() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async created() {
+    console.log(this.items);
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import ICareteam from "@/types/ICareteam";
 import { StoreOptions } from "vuex";
-import { fetchCareteams, deleteCareteam} from "./helper";
+import { fetchCareteams, deleteCareteam } from "./helper";
 
 interface CareteamState {
   careteams: ICareteam[];
@@ -17,7 +17,10 @@ export default {
       state.careteams = [...careteams];
     },
     updateCareteams(state, careteams: ICareteam[]) {
-      const careteamSet = new ObjectSet([...state.careteams, ...careteams], "id");
+      const careteamSet = new ObjectSet(
+        [...state.careteams, ...careteams],
+        "id"
+      );
       state.careteams = [...careteamSet];
     },
     deleteCareteam(state, id: string) {

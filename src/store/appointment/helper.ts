@@ -3,14 +3,10 @@ import IAppointment from "@/types/IAppointment";
 
 export async function fetchAppointments() {
   try {
-    const response = await cornieClient().get(
-      "/api/v1/appointment"
-    );
-    if (response.success){
-      
+    const response = await cornieClient().get("/api/v1/appointment");
+    if (response.success) {
       return response.data;
-
-    } 
+    }
   } catch (error) {
     console.log(error);
   }
