@@ -99,7 +99,7 @@
                   </div>
                   <single-date-picker
                     label="start date"
-                    v-model="period.start"
+                    v-model="period"
                     :rules="required"
                   />
                   <single-date-picker
@@ -387,7 +387,7 @@ import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import SingleDatePicker from "@/components/datepicker.vue";
+import SingleDatePicker from "@/components/CornieDatePicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import PlusIcon from "@/components/icons/plus.vue";
@@ -491,7 +491,7 @@ actorTypeValue = "";
   valuePatient = "";
   valueRole = "";
   valueDevice = "";
-
+  
   practitioner = [];
   device = [];
   patient = [];
@@ -568,9 +568,9 @@ actorTypeValue = "";
     if (this.Devices.length > 0) {
       payload.Devices = this.Devices;
     }
-    // if(this.Patients.length > 0){
-    //   payload.Patients = this.Patients;
-    // }
+    if(this.Patients.length > 0){
+      payload.Patients = this.Patients;
+    }
     if (this.Practitioners.length > 0) {
       payload.Practitioners = this.Practitioners;
     }
@@ -669,10 +669,9 @@ actorTypeValue = "";
   }
   async createAppointment() {
     //const period = this.period;
-    this.payload.period.end = new Date(this.payload.period.end).toISOString();
-    this.payload.period.start = new Date(
-      this.payload.period.start
-    ).toISOString();
+   // console.log(this.payload.period);
+   this.payload.period = new Date(this.payload.period).toISOString();
+  this.payload.period.start = new Date(this.payload.period.start).toISOString();
     this.type = this.actor;
     try {
       const response = await cornieClient().post(

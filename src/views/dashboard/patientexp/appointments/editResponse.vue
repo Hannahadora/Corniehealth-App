@@ -156,7 +156,7 @@ const emptyParticipant: ParticipantDetail = {
     AccordionComponent,
   },
 })
-export default class AddAppointment extends Vue {
+export default class EditResponse extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -280,13 +280,6 @@ appointmentId = "";
  
   async submit() {
     this.loading = true;
-    this.updateAppointmentResponse();
-    // if (this.id) await this.updateAppointmentResponse();
-    // else await this.createAppointmentResponse();
-    this.loading = false;
-  }
-
-  async updateAppointmentResponse() {
     const url = `/api/v1/appointment/editAppointmentReponse/${this.id}`;
     const payload = { ...this.payload };
     try {
@@ -295,7 +288,9 @@ appointmentId = "";
         window.notify({ msg: "Appointment response updated", status: "success" });
         this.$router.push("/dashboard/provider/experience/responses");
       }
+      this.loading = false;
     } catch (error) {
+      this.loading = false;
       window.notify({ msg: "Appointment response not updated", status: "error" });
     }
   }

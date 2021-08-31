@@ -32,8 +32,11 @@
 import { Vue, Options } from "vue-class-component";
 import { DatePicker as VDatePicker } from "v-calendar";
 import CornieInput from "./cornieinput.vue";
+import { clickOutside, createDate } from "@/plugins/utils";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieMenu from "./newcorniemenu.vue";
 import CalendarIcon from "./icons/calendar.vue";
+import Period from "@/types/IPeriod";
 
 @Options({
   name: "cornie-date-picker",
@@ -46,7 +49,11 @@ import CalendarIcon from "./icons/calendar.vue";
   },
 })
 export default class CornieDatePicker extends Vue {
-  date = "";
+ @Prop({type: String, default:  { start: null, end: null }})
+  modelValue!: String;
+
+  @PropSync("modelValue")
+  date!: String;
 }
 </script>
 

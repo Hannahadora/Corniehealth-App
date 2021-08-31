@@ -264,6 +264,15 @@ export default class AppointmentExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
+async  fetchPatients() {
+  try {
+    const response = await cornieClient().get(`/api/v1/patient/`);
+    console.log(response.data);
+  } catch (error) {
+    window.notify({ msg: "Failed to get patients", status: "error" });
+  }
+  return [];
+}
 
   // get items() {
   //   if (!this.appointments || this.appointments.length === 0 ) return [];

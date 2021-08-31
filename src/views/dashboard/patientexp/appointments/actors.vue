@@ -5,7 +5,7 @@
       style="height: 95%"
       class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
     >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
+      <div class="flex w-full overflow-y-auto rounded-t-lg p-3">
         <span class="block pr-2 border-r-2">
           <arrow-left-icon
             class="stroke-current text-primary cursor-pointer"
@@ -18,25 +18,30 @@
         <p class="text-sm mb-4 mt-2">
          Add Actor(s) to this appointment
         </p>
-        <div class="grid grid-cols-2">
-            <cornie-select
-            :onChange="setValue"
-            :items="['Patient','Practitioner','Practitioner Role','Device']"
-            v-model="type"
-            class="rounded-lg"
-            placeholder="--Select--"
-            >
-            </cornie-select>
-            <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-                <template v-slot:prepend>
-                <search-icon class="mb-4"/>
-                </template>
-            </icon-input>
+        <div class="grid grid-cols-2 gap-4 w-full">
+            <div>
+                <cornie-select
+                :onChange="setValue"
+                :items="['Patient','Practitioner','Practitioner Role','Device']"
+                v-model="type"
+                class="rounded-full"
+                placeholder="--Select--"
+                >
+                </cornie-select>
+            </div>
+            <div class="relative bottom-2">
+                <icon-input autocomplete="off" class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
+                    <template v-slot:prepend>
+                    <search-icon/>
+                    </template>
+                </icon-input>
+            </div>
         </div>
+        <p class="text-xs">{{indexvalue.length}} Selected</p>
         <div>
             <div class="bg-gray-100" v-if="practitionerFilter">
                 <div v-for="(input, index) in practitioners" :key="index">
-                    <div class="grid grid-cols-4 w-full gap-4 col-span-full mt-2 p-5">
+                    <div class="grid grid-cols-4 w-full gap-4 col-span-full mt-2 p-3">
                         <div class="dflex space-x-4">
                             <div class="w-10 h-10">
                             <avatar class="mr-2" v-if="input.image" :src="input.image" />
@@ -67,7 +72,7 @@
             </div>
             <div v-if="deviceFilter">
                 <div v-for="(input, index) in devices" :key="index">
-                    <div class="grid grid-cols-4 w-full justify-between gap-2 col-span-full mt-2 p-5">
+                    <div class="grid grid-cols-4 w-full justify-between gap-2 col-span-full mt-2 p-3">
                         <div class="dflex space-x-4">
                             <div class="w-10 h-10">
                                 <avatar class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden" :src="img.placeholder"  />
@@ -91,7 +96,7 @@
             </div>
             <div v-if="roleFilter">
                 <div v-for="(input, index) in roles"  :key="index">
-                    <div class="grid grid-cols-4 gap-4 w-full col-span-full p-5">
+                    <div class="grid grid-cols-4 gap-4 w-full col-span-full p-3">
                     <div class="dflex space-x-4">
                         <div class="w-10 h-10">
                         <avatar class="mr-2" :src="img.placeholder"  />
@@ -115,7 +120,7 @@
             </div>
             <div v-if="patientFilter">
                 <div v-for="(input, index) in patients" :key="index">
-                    <div class="grid grid-cols-4 gap-2 w-full col-span-full p-5">
+                    <div class="grid grid-cols-4 gap-2 w-full col-span-full p-3">
                     <div class="dflex space-x-4">
                         <div class="w-10 h-10">
                         <avatar class="mr-2"  :src="img.placeholder" />
@@ -408,7 +413,7 @@ export default {
       columnsProxy: [],
       indexvalue: [],
       valueid: [],
-      type:'Practitioner',
+      type:'Patient',
       availableFilter: false,
       profileFilter:false,
       practitionerFilter:true,
