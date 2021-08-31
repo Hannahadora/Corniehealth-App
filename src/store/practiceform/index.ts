@@ -1,7 +1,12 @@
 import ObjectSet from "@/lib/objectset";
 import IPracticeform from "@/types/IPracticeform";
 import { StoreOptions } from "vuex";
-import { deletePracticeform,fetchPracticeforms, fetchPracticeformsQuestions,fetchPracticeformsTemplates } from "./helper";
+import {
+  deletePracticeform,
+  fetchPracticeforms,
+  fetchPracticeformsQuestions,
+  fetchPracticeformsTemplates,
+} from "./helper";
 
 interface PracticeformState {
   practiceforms: IPracticeform[];
@@ -34,7 +39,9 @@ export default {
       state.practiceforms = [...practiceformSet];
     },
     deletePracticeform(state, id: string) {
-      const index = state.practiceforms.findIndex((practiceform) => practiceform.id == id);
+      const index = state.practiceforms.findIndex(
+        (practiceform) => practiceform.id == id
+      );
       if (index < 0) return;
       const practiceforms = [...state.practiceforms];
       practiceforms.splice(index, 1);
@@ -55,8 +62,11 @@ export default {
       ctx.commit("setPracticeformsTemplates", practiceformstemplates);
     },
     async getPracticeformById(ctx, id: string) {
-      if (ctx.state.practiceforms.length < 1) await ctx.dispatch("fetchPracticeforms");
-      return ctx.state.practiceforms.find((practiceform) => practiceform.id == id);
+      if (ctx.state.practiceforms.length < 1)
+        await ctx.dispatch("fetchPracticeforms");
+      return ctx.state.practiceforms.find(
+        (practiceform) => practiceform.id == id
+      );
     },
     async deletePracticeform(ctx, id: string) {
       const deleted = await deletePracticeform(id);

@@ -1,21 +1,26 @@
 import { StoreOptions } from "vuex";
-import { setUserUp, getDormains, changePassword, postSignature } from "./helper";
+import {
+  setUserUp,
+  getDormains,
+  changePassword,
+  postSignature,
+} from "./helper";
 
 interface UserSetup {
-  practitioner: any,
-  domains: any[],
+  practitioner: any;
+  domains: any[];
 }
 
 export default {
   namespaced: true,
   state: {
-    practitioner: { },
-    domains: [ ],
+    practitioner: {},
+    domains: [],
   },
 
   mutations: {
     setDomains(state, domains) {
-      if (domains) state.domains = [ ...domains ];
+      if (domains) state.domains = [...domains];
     },
   },
 
@@ -45,4 +50,4 @@ export default {
       return true;
     },
   },
-} as StoreOptions<UserSetup>
+} as StoreOptions<UserSetup>;

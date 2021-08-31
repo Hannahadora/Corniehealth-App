@@ -15,11 +15,12 @@ export default defineComponent({
   },
   props: {
     modelValue: { type: String, default: "" },
+    readonly: { type: Boolean, default: false },
   },
   watch: {
     "img.url"(newValue: string) {
       this.$emit("update:modelValue", newValue);
-    }
+    },
   },
   mounted() {
     this.img.url = this.modelValue;

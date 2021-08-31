@@ -6,9 +6,9 @@ export async function fetchHealthcares() {
     const response = await cornieClient().get(
       "/api/v1/HealthCareService/myOrg/getMyOrgHealthCareServices"
     );
-    if (response.success){
+    if (response.success) {
       return response.data;
-    } 
+    }
   } catch (error) {
     console.log(error);
   }
@@ -16,7 +16,9 @@ export async function fetchHealthcares() {
 }
 export async function deleteHealthcare(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/healthCareService/${id}`);
+    const response = await cornieClient().delete(
+      `/api/v1/healthCareService/${id}`
+    );
     if (response.success) {
       return true;
     }

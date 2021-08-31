@@ -3,12 +3,10 @@ import IPracticeform from "@/types/IPracticeform";
 
 export async function fetchPracticeforms() {
   try {
-    const response = await cornieClient().get(
-      "/api/v1/practice-form"
-    );
-    if (response.success){
+    const response = await cornieClient().get("/api/v1/practice-form");
+    if (response.success) {
       return response.data;
-    } 
+    }
   } catch (error) {
     console.log(error);
   }
@@ -19,9 +17,9 @@ export async function fetchPracticeformsTemplates() {
     const response = await cornieClient().get(
       "/api/v1/practice-form/template-forms"
     );
-    if (response.success){
+    if (response.success) {
       return response.data;
-    } 
+    }
   } catch (error) {
     console.log(error);
   }
@@ -32,9 +30,9 @@ export async function fetchPracticeformsQuestions() {
     const response = await cornieClient().get(
       "/api/v1/practice-form/template-questions"
     );
-    if (response.success){
+    if (response.success) {
       return response.data;
-    } 
+    }
   } catch (error) {
     console.log(error);
   }

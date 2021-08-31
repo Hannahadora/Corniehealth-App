@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <span class="flex w-full mt-3 font-bold text-lg text-primary py-2 mx-auto">
-      {{allaction}} Requests
+      {{ allaction }} Requests
       <span class="text-danger text-xs mt-2 ml-2 font-normal"
         >(Items with asterisk are required for filling)</span
       >
@@ -37,7 +37,13 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['Check-Up','Follow-Up','Emergency','Routine','Walk-In' ]"
+                    :items="[
+                      'Check-Up',
+                      'Follow-Up',
+                      'Emergency',
+                      'Routine',
+                      'Walk-In',
+                    ]"
                     v-model="appointmentType"
                     label="intent"
                     placeholder="--Select--"
@@ -60,7 +66,7 @@
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                   <cornie-select
+                  <cornie-select
                     :rules="required"
                     :items="['reason reference']"
                     v-model="reasonRef"
@@ -73,209 +79,213 @@
             </accordion-component>
             <accordion-component title="Request Info" v-model="openedR">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="requester"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.specialty"
-                    v-model="specialty"
-                    label="encounter"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="requester"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.specialty"
+                  v-model="specialty"
+                  label="encounter"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+              </div>
             </accordion-component>
-             <accordion-component title="Subject" v-model="openedS">
+            <accordion-component title="Subject" v-model="openedS">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="subject"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="insurance"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceCategory"
+                  v-model="serviceCategory"
+                  label="subject"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="insurance"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+              </div>
             </accordion-component>
-             <accordion-component title="Request" v-model="openedS">
+            <accordion-component title="Request" v-model="openedS">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="reason code"
-                    placeholder="--Select--"
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceCategory"
+                  v-model="serviceCategory"
+                  label="reason code"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :items="dropdowns.serviceCategory"
+                  v-model="serviceCategory"
+                  label="order detail"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="precondition?"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="precondition code"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="reason code"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="request reference"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-input label="supporting info" placeholder="--Enter--" />
+                <cornie-select
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="specimen"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="body site"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-numinput
+                  label="quantity"
+                  type="number"
+                  placeholder="--Enter--"
+                />
+                <div>
+                  <label class="block uppercase mb-1 text-xs font-bold"
+                    >Ratio</label
                   >
-                  </cornie-select>
-                  <cornie-select
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="order detail"
-                    placeholder="--Select--"
+                  <div
+                    class="flex h-12 border-gray-100 rounded-lg w-full border-2"
                   >
-                  </cornie-select>
-                  <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="precondition?"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                    <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="precondition code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="reason code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="request reference"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                     <cornie-input
-                    label="supporting info"
-                    placeholder="--Enter--"
+                    <input
+                      contenteditable="true"
+                      class="w-10 ml-20 outline-none focus-within:outline-none"
+                      type="text"
+                      value="2"
                     />
-                  <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="specimen"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="body site"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                   <cornie-numinput
-                        label="quantity"
-                        type="number"
-                        placeholder="--Enter--"
-                        />
-                    <div>
-                     <label class="block uppercase mb-1 text-xs font-bold">Ratio</label>
-                        <div class="flex  h-12 border-gray-100 rounded-lg w-full  border-2">
-                            <input contenteditable="true" class="w-10 ml-20 outline-none  focus-within:outline-none" type="text" value="2">
-                            <span class="relative left-14 top-2">:</span>
-                        <input contenteditable="true" type="text" class="ml-32 w-10 outline-none focus-within:outline-none" value="2">
-                        </div>
-                    </div>
-                  <div>
-                    <range-slider />
+                    <span class="relative left-14 top-2">:</span>
+                    <input
+                      contenteditable="true"
+                      type="text"
+                      class="ml-32 w-10 outline-none focus-within:outline-none"
+                      value="2"
+                    />
                   </div>
-                   <cornie-date-picker
-                        class="w-full"
-                        label="occurence DATE"
-                    />
-                     <cornie-date-picker
-                        class="w-full"
-                        label="occurence Period"
-                    />
-                      <cornie-time-picker
-                        class="w-full"
-                        placeholder="00:00"
-                        label="occurence timing"
-                    />
-                      <cornie-input
-                    label="note"
-                    placeholder="--Enter--"
-                    />
-                      <cornie-input
-                    label="patient instructions"
-                    placeholder="--Enter--"
-                    />
                 </div>
+                <div>
+                  <range-slider />
+                </div>
+                <cornie-date-picker class="w-full" label="occurence DATE" />
+                <cornie-date-picker class="w-full" label="occurence Period" />
+                <cornie-time-picker
+                  class="w-full"
+                  placeholder="00:00"
+                  label="occurence timing"
+                />
+                <cornie-input label="note" placeholder="--Enter--" />
+                <cornie-input
+                  label="patient instructions"
+                  placeholder="--Enter--"
+                />
+              </div>
             </accordion-component>
-             <accordion-component title="Performer" v-model="openedS">
+            <accordion-component title="Performer" v-model="openedS">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="performer type"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="performer"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="location code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="location"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceCategory"
+                  v-model="serviceCategory"
+                  label="performer type"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="performer"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="location code"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="serviceType"
+                  label="location"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+              </div>
             </accordion-component>
-             <accordion-component title="Forms" v-model="openedS">
+            <accordion-component title="Forms" v-model="openedS">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="Link Forms"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
+                <cornie-select
+                  :items="dropdowns.serviceCategory"
+                  v-model="serviceCategory"
+                  label="Link Forms"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+              </div>
             </accordion-component>
             <span class="flex justify-end w-full">
               <button
-                @click="$router.push('/dashboard/provider/experience/appointments')"
+                @click="
+                  $router.push('/dashboard/provider/experience/appointments')
+                "
                 type="button"
                 class="
                   outline-primary
@@ -327,7 +337,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
+import IAppointment, { ParticipantDetail } from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -344,9 +354,10 @@ import SingleDatePicker from "@/components/datepicker.vue";
 import RangeSlider from "@/components/range.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
-import CornieTimePicker from "@/components/cornietimepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
+
+import CornieTimePicker from "@/components/CornieTimePicker.vue";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
@@ -355,7 +366,6 @@ const emptyParticipant: ParticipantDetail = {
   period: {} as Period,
   required: "",
   consultationMedium: "",
-  
 };
 
 @Options({
@@ -387,7 +397,6 @@ export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-
   @appointment.Action
   getAppointmentById!: (id: string) => IAppointment;
   loading = false;
@@ -400,8 +409,7 @@ export default class AddAppointment extends Vue {
   openedR = true;
   openedS = true;
 
-
-actor = "";
+  actor = "";
   type = "";
 
   serviceCategory = "";
@@ -414,23 +422,23 @@ actor = "";
   reasonRef = "";
   priority = "";
   description = "";
-  supportingInfo ="";
+  supportingInfo = "";
   slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   duration = "";
   comments = "";
   patientInstruction = "";
   period = {} as Period;
-  participantDetail = {...emptyParticipant}
-  
+  participantDetail = { ...emptyParticipant };
+
   Practitioners = [];
   Devices = [];
   Patients = [];
   roles = [];
 
-  newPractitioners =[];
+  newPractitioners = [];
   newDevices = [];
-  newPatients =[];
+  newPatients = [];
   newRoles = [];
 
   roleFilter = false;
@@ -441,13 +449,12 @@ actor = "";
   participantitem = "";
 
   practitioner = [];
-  device  = [];
+  device = [];
   patient = [];
   role = [];
- 
+
   availability: any[] = [];
   availabilities = Array();
- 
 
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
@@ -491,10 +498,10 @@ actor = "";
     this.Patients = appointment.Patients;
     this.participantDetail = appointment.participantDetail;
 
-  console.log(appointment);
+    console.log(appointment);
   }
   get payload() {
-    const payload =  {
+    const payload = {
       serviceCategory: this.serviceCategory,
       locationId: this.locationId,
       deviceId: this.deviceId,
@@ -513,17 +520,17 @@ actor = "";
       patientInstruction: this.patientInstruction,
       participantDetail: this.participantDetail,
       period: this.period,
-    } as any
-    if(this.Devices.length > 0){
+    } as any;
+    if (this.Devices.length > 0) {
       payload.Devices = this.Devices;
     }
-    if(this.Patients.length > 0){
+    if (this.Patients.length > 0) {
       payload.Patients = this.Patients;
     }
-    if(this.Practitioners.length > 0){
+    if (this.Practitioners.length > 0) {
       payload.Practitioners = this.Practitioners;
     }
-    return payload
+    return payload;
   }
   get allaction() {
     return this.id ? "Edit" : "New";
@@ -531,7 +538,7 @@ actor = "";
   get selectedItem() {
     return this.participantitem;
   }
-  async addPractitioner(value: any,id:any) {
+  async addPractitioner(value: any, id: any) {
     //this.practitioner.push({ ...this.practitioners });
     this.newPractitioners = value;
     this.Practitioners = id;
@@ -540,40 +547,40 @@ actor = "";
   removePractitioner(index: number) {
     this.newPractitioners.splice(index, 1);
   }
-  removeRole(index: number){
+  removeRole(index: number) {
     this.newRoles.splice(index, 1);
   }
-   removeDevice(index: number){
+  removeDevice(index: number) {
     this.newDevices.splice(index, 1);
   }
   showAvailable() {
     this.availableFilter = true;
   }
-  async addPatients(value: any,id:any) {
+  async addPatients(value: any, id: any) {
     this.newPatients = value;
     this.Patients = id;
     this.patientFilter = false;
   }
-  async addDevices(value:any, id:any){
-     this.newDevices = value;
-     this.Devices = id;
+  async addDevices(value: any, id: any) {
+    this.newDevices = value;
+    this.Devices = id;
     this.deviceFilter = false;
   }
-  async addRoles(value: any,id:any){
-   // this.role.push(value);
+  async addRoles(value: any, id: any) {
+    // this.role.push(value);
     this.newRoles = value;
     this.roles = id;
     this.roleFilter = false;
   }
-   get setValue() {
+  get setValue() {
     if (this.type == "Practitioner") {
       this.practitionerFilter = true;
     } else if (this.type == "Patient") {
       this.patientFilter = true;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
-    }else if(this.type == 'Practitioner Role'){
-        this.roleFilter = true;
+    } else if (this.type == "Device") {
+      this.deviceFilter = true;
+    } else if (this.type == "Practitioner Role") {
+      this.roleFilter = true;
     }
     return this.type;
   }
@@ -586,19 +593,22 @@ actor = "";
   }
   async createAppointment() {
     //const period = this.period;
-   this.payload.period.start = new Date(this.period.start).toISOString();
+    this.payload.period.start = new Date(this.period.start).toISOString();
     //this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
+    this.actor = this.type;
     try {
-      const response = await cornieClient().post("/api/v1/appointment", this.payload);
+      const response = await cornieClient().post(
+        "/api/v1/appointment",
+        this.payload
+      );
       if (response.success) {
-          window.notify({ msg: "Appointment created", status: "success" });
-          this.$router.push("/dashboard/provider/experience/appointments");
+        window.notify({ msg: "Appointment created", status: "success" });
+        this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
       console.log(error);
       window.notify({ msg: "Appointment not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
+      // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
 
@@ -630,7 +640,7 @@ actor = "";
     const response = await Promise.all([AllRoles]);
     this.role = response[0].data;
   }
-   async fetchPatients() {
+  async fetchPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patient = response[0].data;
@@ -663,11 +673,10 @@ actor = "";
   color: #fe4d3c;
   margin-left: 5px;
 }
-input[type=range]::-webkit-slider-thumb {
-	pointer-events: all;
-	width: 24px;
-	height: 24px;
-	-webkit-appearance: none;
+input[type="range"]::-webkit-slider-thumb {
+  pointer-events: all;
+  width: 24px;
+  height: 24px;
+  -webkit-appearance: none;
 }
-
 </style>

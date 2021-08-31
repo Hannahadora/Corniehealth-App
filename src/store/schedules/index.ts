@@ -1,8 +1,17 @@
 import { StoreOptions } from "vuex";
-import { deleteSchedule, createSchedule, getSchedules, activateSchedule, deactivateSchedule, updateSchedule, removePractitioner, addPractitioner } from "./helper";
+import {
+  deleteSchedule,
+  createSchedule,
+  getSchedules,
+  activateSchedule,
+  deactivateSchedule,
+  updateSchedule,
+  removePractitioner,
+  addPractitioner,
+} from "./helper";
 
 interface SchedulesStore {
-  schedules: any[],
+  schedules: any[];
 }
 
 export default {
@@ -11,45 +20,52 @@ export default {
     schedules: [],
   },
   mutations: {
-
     setSchedules(state, schs) {
-      if (schs) state.schedules = [ ...schs ];
+      if (schs) state.schedules = [...schs];
     },
 
     addSchedule(state, sch) {
-        if (sch) state.schedules.unshift(sch);
+      if (sch) state.schedules.unshift(sch);
     },
 
     removeSchedule(state, id) {
-        if (id) state.schedules = state.schedules.filter(i => i.id !== id);
+      if (id) state.schedules = state.schedules.filter((i) => i.id !== id);
     },
 
     activateSchedule(state, id) {
-        if (id) {
-            const index = state.schedules.findIndex(i => i.id === id);
-            if (index >= 0) state.schedules[index].status = 'active';
-        }
+      if (id) {
+        const index = state.schedules.findIndex((i) => i.id === id);
+        if (index >= 0) state.schedules[index].status = "active";
+      }
     },
 
     removePractitioner(state, data) {
-        if (data) {
-            const index = state.schedules.findIndex(i => i.id === data.scheduleId);
-            if (index >= 0) state.schedules[index].practitioners = state.schedules[index].practitioners.filter((i: any) => data.removedPractitioners.find((j: any) => j.id === i.id) < 0);
-        }
+      if (data) {
+        const index = state.schedules.findIndex(
+          (i) => i.id === data.scheduleId
+        );
+        if (index >= 0)
+          state.schedules[index].practitioners = state.schedules[
+            index
+          ].practitioners.filter(
+            (i: any) =>
+              data.removedPractitioners.find((j: any) => j.id === i.id) < 0
+          );
+      }
     },
 
     deactivateSchedule(state, id) {
-        if (id) {
-            const index = state.schedules.findIndex(i => i.id === id);
-            if (index >= 0) state.schedules[index].status = 'inactive';
-        }
+      if (id) {
+        const index = state.schedules.findIndex((i) => i.id === id);
+        if (index >= 0) state.schedules[index].status = "inactive";
+      }
     },
 
     updateSchedule(state, sch) {
-        if (sch) {
-            const index = state.schedules.findIndex(i => i.id === sch.id);
-            if (index >= 0) state.schedules[index] = { ...sch };
-        }
+      if (sch) {
+        const index = state.schedules.findIndex((i) => i.id === sch.id);
+        if (index >= 0) state.schedules[index] = { ...sch };
+      }
     },
   },
 
@@ -58,10 +74,10 @@ export default {
       const schs = await getSchedules();
       ctx.commit("setSchedules", schs);
     },
-    
+
     async deleteSchedule(ctx, id: string) {
       const deleted = await deleteSchedule(id);
-      
+
       if (!deleted) return false;
       ctx.commit("removeSchedule", id);
       return true;
@@ -91,15 +107,21 @@ export default {
     async removePractitioner(ctx, reqData: any) {
       const removed = await removePractitioner(reqData.body, reqData.id);
       if (!removed) return false;
-      ctx.commit("removePractitioner", { scheduleId: reqData.id, removedPractitioners: reqData.body });
+      ctx.commit("removePractitioner", {
+        scheduleId: reqData.id,
+        removedPractitioners: reqData.body,
+      });
       return true;
     },
 
     async addPractitioner(ctx, reqData: any) {
       const removed = await addPractitioner(reqData.body, reqData.id);
-      
+
       if (!removed) return false;
-      ctx.commit("addPractitioner", { scheduleId: reqData.id, removedPractitioners: reqData.body });
+      ctx.commit("addPractitioner", {
+        scheduleId: reqData.id,
+        removedPractitioners: reqData.body,
+      });
       return true;
     },
 
@@ -110,4 +132,4 @@ export default {
       return true;
     },
   },
-} as StoreOptions<SchedulesStore>
+} as StoreOptions<SchedulesStore>;
