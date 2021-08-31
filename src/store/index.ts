@@ -20,7 +20,7 @@ import UserSettingsStore from "./usersettings";
 
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
-import PatientStore from "./patients";
+import PatientStore from "./patient";
 
 export default createStore({
   modules: {
