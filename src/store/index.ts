@@ -18,15 +18,11 @@ import AppointmentStore from "./appointment";
 
 import UserSettingsStore from "./usersettings";
 
-<<<<<<< HEAD
-import ShiftsStore from './shift'
-import ScheduleStore from './schedules'
+
 import VisitsStore from './visits'
-=======
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
 import PatientStore from "./patient";
->>>>>>> main
 
 export default createStore({
   modules: {
@@ -51,10 +47,7 @@ export default createStore({
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,
-<<<<<<< HEAD
     visits: VisitsStore,
-=======
     patients: PatientStore,
->>>>>>> main
   },
 } as StoreOptions<any>);
