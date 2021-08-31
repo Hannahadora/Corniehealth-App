@@ -98,17 +98,47 @@ export default class RegisterExisting extends Vue {
       const response = await cornieClient().get("/api/v1/patient/search", {
         query: this.patientQuery,
       });
-      const patients = response.data;
-      this.addPatients(patients);
-      window.notify({
-        msg: "Patient added to your practice",
-        status: "success",
-      });
+      const patients = response.data as IPatient[];
+      if (!patients.length)
+        window.notify({ msg: "Patient not found", status: "error" });
       this.show = false;
+      const [patient, ..._] = patients;
+      if (patient.belongsToPractice) return;
+      await this.addToPractice(patient);
+      this.addPatients([patient]);
     } catch (error) {
       window.notify({ msg: "Patient not found", status: "error" });
     }
     this.loading = false;
+  }
+
+  async addToPractice(patient: IPatient) {
+    const confirmed = await window.confirmAction({
+      message: `You are only authorized to access 
+                patients data for the purpose of providing care. 
+                Please note that this activity is monitored and 
+                logged for data security purposes`,
+      title: "Confirmation",
+    });
+    if (!confirmed) return;
+    const added = this.execAdd(patient.id!!);
+    if (!added)
+      return window.notify({
+        msg: "Patient not added to your organization",
+        status: "error",
+      });
+    window.notify({
+      msg: "Patient added to your organization",
+      status: "success",
+    });
+  }
+  async execAdd(patientId: string): Promise<boolean> {
+    try {
+      await cornieClient().post(`/api/v1/patient/associate/${patientId}`, {});
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
 </script>

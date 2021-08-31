@@ -39,7 +39,7 @@ export default {
     },
     async deletePatient(ctx, id: string) {
       const deleted = await deletePatient(id);
-      if (deleted) ctx.commit("removePatient", id);
+      if (deleted) ctx.commit("deletePatient", id);
       return deleted;
     },
   },

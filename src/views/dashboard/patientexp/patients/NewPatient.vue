@@ -284,6 +284,7 @@ import { Prop, Ref } from "vue-property-decorator";
 import { cornieClient } from "@/plugins/http";
 import { IPatient } from "@/types/IPatient";
 import { namespace } from "vuex-class";
+import patient from "@/store/patient";
 
 const patients = namespace("patients");
 @Options({
@@ -377,6 +378,9 @@ export default class NewPatient extends Vue {
 
   patient!: IPatient;
 
+  @patients.Mutation
+  updatePatient!: (patient: IPatient) => void;
+
   @Ref("basic")
   basicInfo!: any;
   get title() {
@@ -451,7 +455,7 @@ export default class NewPatient extends Vue {
     const report = await (this.$refs.basic as any).validate();
     if (!report.valid) return;
     this.loading = true;
-    if (this.id) await this.updatePatient();
+    if (this.id) await this.updateData();
     else await this.registerPatient();
     this.loading = false;
   }
@@ -471,6 +475,10 @@ export default class NewPatient extends Vue {
       profilePhoto: this.image,
       accountType: "individual",
     };
+    if (this.id) {
+      (basicInfo.identityNos[0] as any).patientId = this.id;
+      (basicInfo.identityNos[0] as any).id = this.patient.identityNos!![0].id;
+    }
     const others = {
       contactInfo: this.contacts,
     };
@@ -493,17 +501,27 @@ export default class NewPatient extends Vue {
     } catch (error) {
       window.notify({ msg: "Failed to add patient", status: "error" });
     }
-    this.$router.back()
+    this.$router.back();
   }
 
-  async updatePatient() {
-    console.log("Updating");
+  async updateData() {
+    try {
+      const response = await cornieClient().patch(
+        `/api/v1/patient/${this.id}`,
+        this.payload
+      );
+      const patient = response.data;
+      this.updatePatient(patient);
+      window.notify({ msg: "Patient Updated", status: "success" });
+    } catch (e) {
+      window.notify({ msg: "Failed to update patient", status: "error" });
+    }
   }
 
   async saveBasic() {
     if (this.id) {
       this.loading = true;
-      await this.updatePatient();
+      await this.updateData();
       this.loading = false;
     } else {
       this.showPatientInformation = false;
