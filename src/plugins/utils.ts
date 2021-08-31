@@ -1,3 +1,5 @@
+import ObjectSet from "@/lib/objectset";
+
 export const first = (num: number, vals: any[]) => {
   const res = [];
   for (let index = 0; index < vals.length; index++) {
@@ -53,4 +55,11 @@ export function createDate(days: number, months: number, years: number) {
   date.setMonth(date.getMonth() + months);
   date.setFullYear(date.getFullYear() + years);
   return date;
+}
+
+export function updateModelField(model: any, field: string, data: any[]) {
+  const fieldData = model[field];
+  const fieldSet = new ObjectSet([...fieldData, ...data], "id");
+  model[field] = [...fieldSet];
+  return model;
 }

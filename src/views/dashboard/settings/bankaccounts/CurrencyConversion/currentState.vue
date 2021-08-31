@@ -14,10 +14,10 @@
           flex
           mr-6
         "
-        @click="  showDefaultCurrencyModal  = true"
+        @click="showDefaultCurrencyModal = true"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-        Set  Default Currecncy
+        Set Default Currecncy
       </button>
       <button
         class="
@@ -31,10 +31,10 @@
           hover:opacity-90
           flex
         "
-        @click="showNewExchangeRateModal  = true"
+        @click="showNewExchangeRateModal = true"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>
-        New  Exchange Rate
+        New Exchange Rate
       </button>
     </span>
     <div class="flex w-full justify-between mt-5 items-center">
@@ -57,13 +57,13 @@
     <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon  />
+          <three-dot-icon />
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
       </template>
     </Table>
-     <default-currency v-model:visible="showDefaultCurrencyModal"/>
-    <new-exchange-rate  v-model:visible="showNewExchangeRateModal"  />
+    <default-currency v-model:visible="showDefaultCurrencyModal" />
+    <new-exchange-rate v-model:visible="showNewExchangeRateModal" />
   </div>
 </template>
 <script lang="ts">
@@ -77,8 +77,8 @@ import IconInput from "@/components/IconInput.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
 import { Prop } from "vue-property-decorator";
 import ICurrency from "@/types/ICurrency";
-import NewExchangeRate from "./newExchangeRate.vue"
-import defaultCurrency from "./defaultCurrency.vue"
+import NewExchangeRate from "./newExchangeRate.vue";
+import defaultCurrency from "./defaultCurrency.vue";
 import search from "@/plugins/search";
 
 @Options({
@@ -91,19 +91,17 @@ import search from "@/plugins/search";
     IconInput,
     BankAddIcon,
     NewExchangeRate,
-    defaultCurrency
+    defaultCurrency,
   },
 })
 export default class currentState extends Vue {
-
-  
- @Prop({ type: Array, default: [] })
+  @Prop({ type: Array, default: [] })
   currencies!: ICurrency[];
 
   query = "";
 
-  showNewExchangeRateModal  = false;
-  showDefaultCurrencyModal = false
+  showNewExchangeRateModal = false;
+  showDefaultCurrencyModal = false;
 
   headers = [
     {
@@ -111,40 +109,32 @@ export default class currentState extends Vue {
       value: "currency",
     },
     { title: "CONVERSION", value: "conversion" },
-   
+
     {
       title: "EXCHANGE RATE",
       value: "exchangeRate",
     },
-     { title: "CREATED", value: "createdAt" }
+    { title: "CREATED", value: "createdAt" },
     // Displaying Icon in the header - <table-setting-icon/>
-  
   ];
-  
-  
-  
 
-
-    get header() {
+  get header() {
     return [...this.headers, { title: "", value: "action", image: true }];
   }
 
- 
+  get items() {
+    const currencies = this.currencies.map((currency) => {
+      (currency as any).createdAt = new Date(
+        (currency as any).createdAt
+      ).toLocaleDateString("en-US");
 
-   get items() {
-     const currencies = this.currencies.map((currency) => {
-       (currency as any).createdAt = new Date(
-         (currency as any).createdAt 
-       ).toLocaleDateString("en-US");
-
-       return currency
-     })
-      return currencies
-    if(!this.query){
+      return currency;
+    });
     return currencies;
-    }
-    else{
-       return search.searchObjectArray(currencies, this.query);
+    if (!this.query) {
+      return currencies;
+    } else {
+      return search.searchObjectArray(currencies, this.query);
     }
   }
 
@@ -160,32 +150,3 @@ export default class currentState extends Vue {
   }
 }
 </script>
-
-<style>
-table thead th {
-  background: #080056 !important;
-
-  color: white !important;
-}
-table thead th:first-child {
-  border-top-left-radius: 0.4rem 0.4rem !important;
-}
-table thead th:last-child {
-  border-top-right-radius: 0.4rem 0.4rem !important;
-}
-table thead tr th {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
-}
-
-table tbody td {
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
-}
-table tbody tr {
-  border: 1px solid #b8c3de;
-}
-table tbody tr:nth-child(even) {
-  background-color: white !important;
-}
-</style>

@@ -10,7 +10,7 @@
     <div :class="{invisible: loading}" class="px-5 py-2 flex items-center justify-center w-full h-full">
       <slot />
     </div>
-    <div v-if="loading" class="absolute w-full h-full flex items-center justify-center" >
+    <div v-if="loading" class="absolute w-full h-full flex items-center justify-center" style="top: 0; left: 0; right: 0; bottom: 0;" >
       <cornie-circular-progress :color="loadingColor"/>
     </div>
   </button>

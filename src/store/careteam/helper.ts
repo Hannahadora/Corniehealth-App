@@ -3,9 +3,7 @@ import ICareteam from "@/types/ICareteam";
 
 export async function fetchCareteams() {
   try {
-    const response = await cornieClient().get(
-      "/api/v1/care-teams/"
-    );
+    const response = await cornieClient().get("/api/v1/care-teams/");
     return response.data as ICareteam[];
   } catch (error) {
     notify({ msg: "There was an error fetching care teams", status: "error" });
@@ -24,4 +22,3 @@ export async function deleteCareteam(id: string) {
     });
   }
 }
-

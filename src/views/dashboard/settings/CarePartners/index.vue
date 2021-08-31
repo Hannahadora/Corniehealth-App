@@ -48,12 +48,12 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import EmptyState from "@/components/EmptyState.vue";
+import EmptyState from "@/components/CornieEmptyState.vue";
 import { namespace } from "vuex-class"
 import ICarePartner from "@/types/ICarePartner";
 import ExistingState from "./ExistingState.vue"
 import AddCarePartners from "./AddCarePartner.vue"
-import CornieDialog from "@/components/Dialog.vue"
+import CornieDialog from "@/components/CornieDialog.vue"
 
 const CarePartnersStore = namespace("CarePartnersStore")
 

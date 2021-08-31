@@ -1,5 +1,5 @@
 <template>
-  <span class="block w-11/12">
+  <span class="block w-full">
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
     <Field
       v-model="date"
@@ -8,36 +8,20 @@
       v-slot="{ meta, handleChange, errorMessage }"
     >
       <div class="relative" style="width: 100%" :id="inputName">
-        <div @click="toggleDropdown">
-          <button
-            type="button"
-            class="
-              flex
-              items-center
-              w-full
-              rounded-md
-              border border-gray-300
-              shadow-sm
-              px-2
-              z-50
-              py-1
-              bg-white
-              text-sm
-              font-medium
-              text-gray-700
-              hover:bg-gray-50
-              focus:outline-none
-            "
-            aria-expanded="true"
-            aria-haspopup="true"
-            :class="{
+        <div @click="toggleDropdown" class="block w-full">
+          <cornie-input
+            class="w-full"
+            readonly
+            :errorClasses="{
               'border-red-500': Boolean(errorMessage),
               'border-green-400': Boolean(meta.valid),
             }"
+            v-model="inputFieldText"
           >
-            <CalendarIcon />
-            <span class="ml-2.5">{{ inputFieldText }}</span>
-          </button>
+            <template #prepend-inner>
+              <calendar-icon />
+            </template>
+          </cornie-input>
         </div>
         <div
           v-if="visible"
@@ -50,6 +34,7 @@
             rounded-md
             shadow-lg
             bg-white
+            z-20
             ring-1 ring-black ring-opacity-5
             divide-y divide-gray-100
             focus:outline-none
@@ -66,7 +51,7 @@
             color="red"
             :model-config="{
               type: 'string',
-              mask: 'DD/MM/YYYY',
+              mask: 'YYYY-MM-DD',
             }"
             style="width: 100%"
           />
@@ -86,12 +71,15 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { Field } from "vee-validate";
 import { clickOutside, createDate } from "@/plugins/utils";
 import { date } from "yup";
+import CornieInput from "./cornieinput.vue";
+
 @Options({
   name: "DatePicker",
   inheritAttrs: false,
   components: {
     VDatePicker,
     CalendarIcon,
+    CornieInput,
     Field,
   },
 })
@@ -117,7 +105,7 @@ export default class DatePicker extends Vue {
 
   get customRules() {
     const defaultRule = date();
-   // if (this.rules) return defaultRule.concat(this.rules);
+    if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
 
@@ -127,7 +115,8 @@ export default class DatePicker extends Vue {
   }
 
   get inputFieldText() {
-    return this.date || "dd/mm/yyyy";
+    if (!this.date) return "dd/mm/yyyy";
+    return new Date(this.date).toLocaleDateString("en-NG");
   }
 
   @Prop({ type: String, default: "" })

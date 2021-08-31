@@ -3,14 +3,17 @@
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
-          <div class="w-full" @click="showDatalist = !showDatalist">
+          <div class="w-full" @click="toggle">
             <label
-              v-if="label"
+              v-if="label || $slots.label"
               class="block uppercase mb-1 text-xs font-bold"
               :for="`${id}-inputfield`"
             >
-              {{ label }}
-               <span class="text-danger ml-1" v-if="required"> * </span>
+              <slot name="label" v-if="$slots.label" />
+              <template v-else>
+                {{ label }}
+              </template>
+              <span class="text-danger ml-1" v-if="required"> * </span>
             </label>
             <div
               v-bind="$attrs"
@@ -21,13 +24,13 @@
               </span>
               <input
                 v-else
-                placeholder=""
+                placeholder="--Select--"
                 disabled
                 :value="displayVal"
                 class="
-                  bg-transparent
                   p-1
                   pl-2
+                  bg-transparent
                   appearance-none
                   outline-none
                   w-full
@@ -129,6 +132,9 @@ export default class CornieSelect extends Vue {
   @Prop({ type: Boolean, default: false })
   required!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  readonly!: boolean;
+
   @Prop({ type: String })
   label!: string;
   showDatalist = false;
@@ -146,6 +152,11 @@ export default class CornieSelect extends Vue {
       (item) => item.code == this.modelValue || item == this.modelValue
     );
     return selected;
+  }
+
+  toggle() {
+    if (this.readonly) return;
+    this.showDatalist = !this.showDatalist;
   }
 
   selected(item: any) {
@@ -176,5 +187,10 @@ export default class CornieSelect extends Vue {
 }
 .max-h-select {
   max-height: 300px;
+}
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
 }
 </style>

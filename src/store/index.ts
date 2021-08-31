@@ -7,20 +7,26 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
-import CarePartnersStore from "./CarePartners"
+import CarePartnersStore from "./CarePartners";
 import practitioner from "./practitioner";
 import HealthcareStore from "./healthcare";
 import CareteamStore from "./careteam";
-import RolesStore from './roles'
+import RolesStore from "./roles";
 import GroupteamStore from "./group";
 import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
 
 import UserSettingsStore from "./usersettings";
 
+<<<<<<< HEAD
 import ShiftsStore from './shift'
 import ScheduleStore from './schedules'
 import VisitsStore from './visits'
+=======
+import ShiftsStore from "./shift";
+import ScheduleStore from "./schedules";
+import PatientStore from "./patient";
+>>>>>>> main
 
 export default createStore({
   modules: {
@@ -31,7 +37,7 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
-    
+
     CarePartnersStore,
     practitioner: practitioner,
     healthcare: HealthcareStore,
@@ -45,6 +51,10 @@ export default createStore({
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,
+<<<<<<< HEAD
     visits: VisitsStore,
+=======
+    patients: PatientStore,
+>>>>>>> main
   },
 } as StoreOptions<any>);

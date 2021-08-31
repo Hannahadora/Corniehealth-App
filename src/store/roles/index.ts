@@ -1,26 +1,33 @@
 // import ObjectSet from "@/lib/objectset";
 // import ICareteam from "@/types/ICareteam";
 import { StoreOptions } from "vuex";
-import { getPractitioner, getRoles, deleteRole, createRole, getOrg, transferRight, fetchPractitioners } from "./helper";
+import {
+  getPractitioner,
+  getRoles,
+  deleteRole,
+  createRole,
+  getOrg,
+  transferRight,
+  fetchPractitioners,
+} from "./helper";
 
 interface RolesStore {
-  privileges: any[],
-  roles: any[],
-  org: any,
-  practitioners: [],
+  privileges: any[];
+  roles: any[];
+  org: any;
+  practitioners: [];
 }
 
 export default {
   namespaced: true,
   state: {
     privileges: [],
-    roles: [ ],
-    org: { },
+    roles: [],
+    org: {},
     practitioners: [],
   },
   mutations: {
     setPrivileges(state, privileges) {
-        
       if (privileges) state.privileges = [...privileges];
     },
 
@@ -38,8 +45,8 @@ export default {
 
     removeRole(state, roleId) {
       if (roleId) {
-        const roles = state.roles.filter(i => i.id !== roleId);
-        state.roles = [ ...roles ];
+        const roles = state.roles.filter((i) => i.id !== roleId);
+        state.roles = [...roles];
       }
     },
   },
@@ -58,7 +65,7 @@ export default {
     async getRoles(ctx) {
       const roles = await getRoles();
       console.log(roles, "roles");
-      
+
       ctx.commit("setRoles", roles);
     },
     // async getCareteamById(ctx, id: string) {
@@ -69,7 +76,7 @@ export default {
       const deleted = await deleteRole(id);
       console.log(!deleted, "boolean");
       console.log(deleted, "deleted");
-      
+
       if (!deleted) return false;
       ctx.commit("removeRole", id);
       return true;
@@ -95,4 +102,4 @@ export default {
       return practitioners;
     },
   },
-} as StoreOptions<RolesStore>
+} as StoreOptions<RolesStore>;

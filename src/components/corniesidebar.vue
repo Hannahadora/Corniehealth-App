@@ -44,7 +44,7 @@
         "
       >
         <sidebar-link
-            v-for="(link, i) in links"
+          v-for="(link, i) in links"
           :key="i"
           :to="link.to"
           :text="link.name"
@@ -89,14 +89,14 @@ import WalletIcon from "./icons/wallet.vue";
 import ChartIcon from "./icons/chart.vue";
 import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
-import PatientIcon from "./icons/PatientIcon.vue"
+import PatientIcon from "./icons/PatientIcon.vue";
 import SidebarLink from "./sidebarlink.vue";
 
 interface ISidebarLink {
   name: string;
   to: string | { name: string };
   icon?: string;
-  children?: ISidebarLink[] 
+  children?: ISidebarLink[];
 }
 
 @Options({
@@ -122,18 +122,23 @@ export default class CorniDashboardeSideBar extends Vue {
 
   providerLinks: ISidebarLink[] = [
     { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Experience", to: "experience", icon: "patient-icon", children: [
-      { name: "Dashboard", to: { name: "Experience Dashboard"} },
-      { name: "Patients", to: { name: "Patients" } },
-      { name: "Schedules", to: "/dashboard/experience/schedules" },
-      { name: "Appointments", to: "/dashboard/experience/appointments" },
-      { name: "visits", to: "/dashboard/experience/visits" },
-      { name: "Requests", to: "/dashboard/experience/requests" },
-      { name: "Taks", to: "/dashboard/experience/tasks" },
-      { name: "Messaging", to: "/dashboard/experience/messages" },
-      { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },
-      { name: "Questionaires", to: "/dashboard/experience/questionaires" },
-    ]},
+    {
+      name: "Experience",
+      to: "experience",
+      icon: "patient-icon",
+      children: [
+        { name: "Dashboard", to: { name: "Experience Dashboard" } },
+        { name: "Patients", to: { name: "Patients" } },
+        { name: "Schedules", to: "/dashboard/experience/schedules" },
+        { name: "Appointments", to: { name: "Appointment" } },
+        { name: "visits", to: "/dashboard/experience/visits" },
+        { name: "Requests", to: { name: "Requests" } },
+        { name: "Taks", to: "/dashboard/experience/tasks" },
+        { name: "Messaging", to: "/dashboard/experience/messages" },
+        { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },
+        { name: "Questionaires", to: "/dashboard/experience/questionaires" },
+      ],
+    },
     { name: "Clinical", to: "clinical", icon: "book-icon" },
     { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
     { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },
@@ -154,7 +159,7 @@ export default class CorniDashboardeSideBar extends Vue {
     { name: "Analytics", to: "analytics", icon: "chart-icon" },
     { name: "Approvals", to: "analytics", icon: "chart-icon" },
   ];
-  
+
   get accType() {
     return this.$route.params.type as string;
   }

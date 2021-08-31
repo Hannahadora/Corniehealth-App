@@ -159,9 +159,9 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import Card from "@/components/card.vue";
-import CardText from "@/components/card-text.vue";
-import CardTitle from "@/components/card-title.vue";
+import Card from "@/components/cornie-card/CornieCard.vue";
+import CardText from "@/components/cornie-card/CornieCardText.vue";
+import CardTitle from "@/components/cornie-card/CornieCardTitle.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";

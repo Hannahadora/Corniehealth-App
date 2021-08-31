@@ -2,66 +2,62 @@ import { cornieClient } from "@/plugins/http";
 
 export async function getPractitioner() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/practitioner"
-    );
+    const response = await cornieClient().get("/api/v1/practitioner");
     return response.data;
   } catch (error) {
-    notify({ msg: "There was an error fetching practictioner's data", status: "error" });
+    notify({
+      msg: "There was an error fetching practictioner's data",
+      status: "error",
+    });
   }
-  return { };
+  return {};
 }
 
 export async function getRoles() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/roles/"
-    );
-      console.log(response.data, "roles");
-      
+    const response = await cornieClient().get("/api/v1/roles/");
+    console.log(response.data, "roles");
+
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error fetching roles", status: "error" });
   }
-  return { };
+  return {};
 }
 
 export async function getOrg() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/organization/myOrg/get"
-    );
-      console.log(response.data, "ORG");
-      
+    const response = await cornieClient().get("/api/v1/organization/myOrg/get");
+    console.log(response.data, "ORG");
+
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error fetching roles", status: "error" });
   }
-  return { };
+  return {};
 }
 
 export async function getShifts() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1//shifts"
-    );
-      console.log(response.data, "SHifst");
-      
+    const response = await cornieClient().get("/api/v1//shifts");
+    console.log(response.data, "SHifst");
+
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error fetching shifts", status: "error" });
   }
-  return { };
+  return {};
 }
-
-
 
 export async function deleteShift(id: string) {
   try {
-    const response = await cornieClient().post(`/api/v1/shifts/deactivate/${id}`, {});
+    const response = await cornieClient().post(
+      `/api/v1/shifts/deactivate/${id}`,
+      {}
+    );
 
     console.log(response, "shift delete");
-    
+
     return response.success as boolean;
   } catch (error) {
     notify({
@@ -76,7 +72,7 @@ export async function destroyShift(id: string) {
     const response = await cornieClient().delete(`/api/v1/shifts/${id}`, {});
 
     console.log(response, "shift delete");
-    
+
     return response.success as boolean;
   } catch (error) {
     notify({
@@ -88,10 +84,13 @@ export async function destroyShift(id: string) {
 
 export async function activateShift(id: string) {
   try {
-    const response = await cornieClient().post(`/api/v1/shifts/activate/${id}`, {});
+    const response = await cornieClient().post(
+      `/api/v1/shifts/activate/${id}`,
+      {}
+    );
 
     console.log(response, "shift activated");
-    
+
     return response.success as boolean;
   } catch (error) {
     notify({
@@ -135,7 +134,10 @@ export async function updateShift(shift: any, id: string) {
 
 export async function transferRight(body: any) {
   try {
-    const response = await cornieClient().post(`/api/v1/roles/transfer-admin/`, body);
+    const response = await cornieClient().post(
+      `/api/v1/roles/transfer-admin/`,
+      body
+    );
     console.log(response, "transfer");
     notify({
       msg: "Right transfered successfully",
@@ -149,4 +151,3 @@ export async function transferRight(body: any) {
     });
   }
 }
-

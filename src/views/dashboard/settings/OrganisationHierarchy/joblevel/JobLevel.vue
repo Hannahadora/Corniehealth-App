@@ -142,13 +142,13 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import EmptyState from "@/components/EmptyState.vue";
-import CornieDialog from "@/components/Dialog.vue";
-import Card from "@/components/card.vue";
-import CardText from "@/components/card-text.vue";
-import CardTitle from "@/components/card-title.vue";
+import EmptyState from "@/components/CornieEmptyState.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import Card from "@/components/cornie-card/CornieCard.vue";
+import CardText from "@/components/cornie-card/CornieCardText.vue";
+import CardTitle from "@/components/cornie-card/CornieCardTitle.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
-import IconBtn from "@/components/iconbtn.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";

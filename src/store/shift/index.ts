@@ -1,26 +1,35 @@
 import { StoreOptions } from "vuex";
-import { getShifts, getRoles, deleteShift, createShift, getOrg, transferRight, updateShift, activateShift, destroyShift } from "./helper";
+import {
+  getShifts,
+  getRoles,
+  deleteShift,
+  createShift,
+  getOrg,
+  transferRight,
+  updateShift,
+  activateShift,
+  destroyShift,
+} from "./helper";
 
 interface RolesStore {
-  privileges: any[],
-  roles: any[],
-  org: any,
-  practitioners: [],
-  shifts: any[ ],
+  privileges: any[];
+  roles: any[];
+  org: any;
+  practitioners: [];
+  shifts: any[];
 }
 
 export default {
   namespaced: true,
   state: {
     privileges: [],
-    roles: [ ],
-    org: { },
+    roles: [],
+    org: {},
     practitioners: [],
-    shifts: [ ],
+    shifts: [],
   },
   mutations: {
     setShifts(state, shifts) {
-        
       if (shifts) state.shifts = [...shifts];
     },
 
@@ -38,8 +47,8 @@ export default {
 
     removeShift(state, shiftId) {
       if (shiftId) {
-        const roles = state.shifts.filter(i => i.id !== shiftId);
-        state.roles = [ ...roles ];
+        const roles = state.shifts.filter((i) => i.id !== shiftId);
+        state.roles = [...roles];
       }
     },
   },
@@ -58,29 +67,29 @@ export default {
     async getRoles(ctx) {
       const roles = await getRoles();
       console.log(roles, "roles");
-      
+
       ctx.commit("setRoles", roles);
     },
-    
+
     async deleteShift(ctx, id: string) {
       const deleted = await deleteShift(id);
-      
+
       if (!deleted) return false;
       // ctx.commit("removeShift", id);
       return true;
     },
-    
+
     async destroyShift(ctx, id: string) {
       const deleted = await destroyShift(id);
-      
+
       if (!deleted) return false;
       ctx.commit("removeShift", id);
       return true;
     },
-    
+
     async activateShift(ctx, id: string) {
       const deleted = await activateShift(id);
-      
+
       if (!deleted) return false;
       // ctx.commit("removeShift", id);
       return true;
@@ -107,4 +116,4 @@ export default {
       return true;
     },
   },
-} as StoreOptions<RolesStore>
+} as StoreOptions<RolesStore>;

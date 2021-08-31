@@ -47,27 +47,6 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/group/addGroup.vue"),
       },
       {
-        path: "experience/",
-        props: true,
-        name: "Patients Experience Management",
-        component: () =>
-          import("@/views/dashboard/patientexp/index.vue"),
-      }, 
-      {
-        path: "experience/add-appointment/:id?",
-        props: true,
-        name: "Create Appointment",
-        component: () =>
-          import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
-      },
-      {
-        path: "experience/appointments",
-        name: "Appointment",
-        component: () =>
-          import("@/views/dashboard/patientexp/appointments/index.vue"),
-      },    
-        
-      {
         path: "view-group/:id?",
         props: true,
         name: "View Group Details",
@@ -106,10 +85,95 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
           },
           {
+            path: "view-patient/:id",
+            name: "View Patient",
+            props: true,
+            component: () =>
+              import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
+          },
+          {
+            path: "edit-patient/:id",
+            name: "Edit Patient",
+            props: true,
+            component: () =>
+              import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
+          },
+          {
+            path: "add-appointment/:id?",
+            props: true,
+            name: "Create Appointment",
+            component: () =>
+              import(
+                "@/views/dashboard/patientexp/appointments/addAppointment.vue"
+              ),
+          },
+          {
+            path: "appointments",
+            name: "Appointment",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/index.vue"),
+          },
+          {
+            path: "responses/:id?",
+            props: true,
+            name: "Appointment Response",
+            component: () =>
+              import("@/views/dashboard/patientexp/appointments/response.vue"),
+          },
+          {
+            path: "add-response/:id?",
+            name: "Respond",
+            props: true,
+            component: () =>
+              import(
+                "@/views/dashboard/patientexp/appointments/addResponse.vue"
+              ),
+          },
+          {
+            path: "edit-response/:id?",
+            name: "Edit Respone",
+            props: true,
+            component: () =>
+              import(
+                "@/views/dashboard/patientexp/appointments/editResponse.vue"
+              ),
+          },
+          {
+            path: "requests",
+            name: "Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/index.vue"),
+          },
+          {
+            path: "add-request/:id?",
+            name: "New Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/addRequests.vue"),
+          },
+          {
+            path: "edit-request/:id?",
+            name: "View Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/editRequests.vue"),
+          },
+          {
+            path: "edit-refferal/:id?",
+            name: "View Request Diagonistic",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/editRefferal.vue"),
+          },
+          {
+            path: "add-request-reffer/:id?",
+            name: "New Reffer",
+            component: () =>
+              import(
+                "@/views/dashboard/patientexp/requests/addRefferRequests.vue"
+              ),
+          },
+          {
             path: "visits",
             name: "Patient Visits",
-            component: () =>
-              import("@/views/dashboard/visits/index.vue"),
+            component: () => import("@/views/dashboard/visits/index.vue"),
           },
           {
             path: "visits/timeline",

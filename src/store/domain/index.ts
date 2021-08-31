@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IDomain from "@/types/IDomain";
 import { StoreOptions } from "vuex";
-import { deleteDomain,fetchDomains } from "./helper";
+import { deleteDomain, fetchDomains } from "./helper";
 
 interface DomainState {
   domains: IDomain[];
@@ -17,10 +17,7 @@ export default {
       state.domains = [...domains];
     },
     updateDomains(state, domains: IDomain[]) {
-      const domainSet = new ObjectSet(
-        [...state.domains, ...domains],
-        "id"
-      );
+      const domainSet = new ObjectSet([...state.domains, ...domains], "id");
       state.domains = [...domainSet];
     },
     deleteDomain(state, id: string) {

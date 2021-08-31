@@ -17,10 +17,7 @@ export default {
       state.payments = [...payments];
     },
     updatePayments(state, payments: IPayment[]) {
-      const paymentSet = new ObjectSet(
-        [...state.payments, ...payments],
-        "id"
-      );
+      const paymentSet = new ObjectSet([...state.payments, ...payments], "id");
       state.payments = [...paymentSet];
     },
     deletePayment(state, id: string) {

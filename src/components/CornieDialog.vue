@@ -28,8 +28,6 @@ import { Options, Vue } from "vue-class-component";
   name: "Dialog"
 })
 export default class Modal extends Vue {
-  @Prop({ type: Boolean, required: true, default: false })
-  visible!: boolean;
 
   @Prop({type: Boolean, default: false})
   center!: boolean
@@ -40,7 +38,7 @@ export default class Modal extends Vue {
   @Prop({type: Boolean, default: false})
   left!: boolean
 
-  @PropSync("visible", { type: Boolean, required: true, default: false })
+  @PropSync("modelValue", { type: Boolean, required: true, default: false })
   show!: boolean;
   
   get classes() {

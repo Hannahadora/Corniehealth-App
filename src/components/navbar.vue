@@ -18,7 +18,7 @@
      <div class="dropdown">
       <settings-icon class="cursor-pointer" />  
       <ul  class="dropdown-menu p-2 bg-white rounded-md w-80 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden">
-        <li class="border-b border-primary cursor-pointer mb-3" @click="$router.push('org-info')">
+        <li class="border-b border-primary cursor-pointer mb-3" @click="$router.push('/dashboard/provider/user')">
           <cornie-btn class="font-semibold rounded-full mb-5 border-primary border-2 pl-4 pr-4 p-1 hover:bg-primary hover:text-white mt-2 w-full text-primary">
             <span class="inline-flex justify-center"> <settings-icon class="mr-2 mt-0.5"/> Go to all settings</span>
           </cornie-btn>
