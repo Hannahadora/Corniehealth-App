@@ -14,65 +14,57 @@
             pl-2
           "
         >
-          Insurance
+          Demographics Data
         </span>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <p class="text-sm mb-5">Fill the form below to add Insurance.</p>
-        <v-form ref="form">
-          <cornie-input
-            label="Type"
-            class="mb-5"
-            placeholder="Enter"
-            v-model="type"
-          />
+        <p class="text-sm mb-5">
+          Fill the form below to add demographics information.
+        </p>
+        <v-form @submit="save" ref="form">
           <cornie-select
-            label="Group"
+            label="Language"
             class="mb-5"
             placeholder="Select One"
-            :items="['one', 'two']"
-            v-model="group"
+            :items="['English', 'Igbo', 'Yoruba', 'Hausa', 'French', 'Edo']"
+            v-model="primaryLanguage"
           />
-          <cornie-input
-            label="Payer"
+
+          <cornie-select
+            label="Secondary Language"
             class="mb-5"
-            placeholder="Enter"
-            v-model="payer"
+            placeholder="Select One"
+            :items="['English', 'Igbo', 'Yoruba', 'Hausa', 'French', 'Edo']"
+            v-model="secondaryLanguage"
           />
-          <cornie-input
-            label="plan"
+          <cornie-select
+            label="Race"
             class="mb-5"
-            placeholder="Enter"
-            v-model="plan"
+            placeholder="Select One"
+            :items="['Black', 'White', 'Latino', 'Asian']"
+            v-model="race"
           />
-          <cornie-input
-            label="policy No."
+
+          <cornie-select
+            label="Select Preferred Contact Channel"
             class="mb-5"
-            placeholder="Enter"
-            v-model="policyNo"
+            placeholder="Select One"
+            :items="['Text', 'Call', 'Email', 'Post']"
+            v-model="preferredContactChannel"
           />
-          <cornie-date-picker
-            label="Policy Expiry"
+          <cornie-select
+            label="Ethnicity"
             class="mb-5"
-            v-model="policyExpiry"
+            placeholder="Select One"
+            :items="['European', 'African']"
+            v-model="primaryEthnicity"
           />
-          <cornie-input
-            label="Deductible/Co-pay AMT"
+          <cornie-select
+            label="Secondary Ethnicity"
             class="mb-5"
-            placeholder="Enter"
-            v-model="deductible"
-          />
-          <cornie-input
-            label="Main Policy Holder"
-            class="mb-5"
-            placeholder="Enter"
-            v-model="mainPolicyHolder"
-          />
-          <cornie-input
-            label="Group Policy No."
-            class="mb-5"
-            placeholder="Enter"
-            v-model="groupPolicyNo"
+            placeholder="Select One"
+            :items="['European', 'African']"
+            v-model="secondaryEthnicity"
           />
         </v-form>
       </cornie-card-text>
@@ -85,8 +77,9 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-            :loading="loading"
             @click="save"
+            :loading="loading"
+            type="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -98,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -109,16 +102,19 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/datepicker.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import { Insurance, IPatient } from "@/types/IPatient";
+import PeriodPicker from "@/components/daterangepicker.vue";
+
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import { Demographics, IPatient } from "@/types/IPatient";
 
 const patients = namespace("patients");
 
 @Options({
-  name: "guarantor-dialog",
+  name: "DemographicsDialog",
   components: {
     ...CornieCard,
+    PeriodPicker,
     CornieIconBtn,
     ArrowLeftIcon,
     CornieDialog,
@@ -129,7 +125,8 @@ const patients = namespace("patients");
     CornieBtn,
   },
 })
-export default class EmergencyDontactDialog extends Vue {
+export default class DemographicsDialog extends Vue {
+  loading = false;
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -137,57 +134,44 @@ export default class EmergencyDontactDialog extends Vue {
   patient!: IPatient;
 
   @Prop({ type: Object })
-  insurances!: Insurance[];
+  demographics!: Demographics;
 
-  @PropSync("insurances")
-  insuranceSync!: Insurance[];
-
-  @patients.Action
-  updatePatientField!: (data: {
-    id: string;
-    field: string;
-    data: any[];
-  }) => void;
-
-  type = "";
-  group = "";
-  payer = "";
-  plan = "";
-  policyNo = "";
-  deductible = "";
-  mainPolicyHolder = "";
-  groupPolicyNo = "";
-  loading = false;
-  policyExpiry = "";
+  @PropSync("demographics")
+  demographicsSync!: Demographics;
 
   currentId = "";
+  primaryLanguage = "";
+  secondaryLanguage = "";
+  race = "";
+  patientId = "";
+  preferredContactChannel = "";
+  primaryEthnicity = "";
+  secondaryEthnicity = "";
+
+  @patients.Mutation
+  updatePatient!: (patient: IPatient) => void;
 
   get payload() {
     const payload = {
-      type: this.type,
-      group: this.group,
-      payer: this.payer,
-      plan: this.plan,
-      policyNo: this.policyNo,
-      deductible: this.deductible,
-      mainPolicyHolder: this.mainPolicyHolder,
-      groupPolicyNo: this.groupPolicyNo,
-    } as Insurance;
+      primaryLanguage: this.primaryLanguage,
+      secondaryLanguage: this.secondaryLanguage,
+      preferredContactChannel: this.preferredContactChannel,
+      primaryEthnicity: this.primaryEthnicity,
+      secondaryEthnicity: this.secondaryEthnicity,
+      race: this.race,
+    } as Demographics;
     if (this.patient?.id) payload.patientId = this.patient.id;
     if (this.currentId) payload.id = this.currentId;
     return payload;
   }
+
   async save() {
     const report = await (this.$refs.form as any).validate();
     if (!report.valid) return;
     this.loading = true;
     if (this.patient) await this.submit();
-    else this.batch();
+    else this.demographicsSync = this.payload;
     this.loading = false;
-  }
-
-  batch() {
-    this.insuranceSync = [...this.insuranceSync, this.payload];
   }
 
   async submit() {
@@ -197,51 +181,45 @@ export default class EmergencyDontactDialog extends Vue {
       if (this.currentId) result = await this.update();
       else result = await this.createNew();
       window.notify({
-        msg: `Insurance ${action} successfully`,
+        msg: `Demographics ${action} successfully`,
         status: "success",
       });
     } catch (error) {
-      window.notify({ msg: `Insurance not ${action}`, status: "error" });
+      window.notify({ msg: `Demographics not ${action}`, status: "error" });
     }
     if (result) this.updatePatient(result);
   }
 
-  updatePatient(data: any) {
-    this.updatePatientField({
-      id: this.patient.id!!,
-      field: "insurances",
-      data: [data],
-    });
+  updatePatientData(data: Demographics) {
+    const patient = this.patient;
+    patient.demographicsData = data;
+    this.updatePatient(patient);
   }
 
   async createNew() {
     const response = await cornieClient().post(
-      "/api/v1/patient/insurance",
+      "/api/v1/patient/demographics",
       this.payload
     );
     return response.data;
   }
   async update() {
     const response = await cornieClient().put(
-      `/api/v1/patient/insurance/${this.currentId}`,
+      `/api/v1/patient/demographics/${this.currentId}`,
       this.payload
     );
     return response.data;
   }
   hydrate() {
-    const insurances = this.patient.insurances;
-    if (!insurances || !insurances.length) return;
-    const [insurance, ..._] = insurances;
-    if (!insurance) return;
-    this.type = insurance.type || "";
-    this.group = insurance.group || "";
-    this.payer = insurance.payer || "";
-    this.plan = insurance.plan || "";
-    this.policyNo = insurance.policyNo || "";
-    this.policyExpiry = (insurance.policyExpiry as string) || "";
-    this.mainPolicyHolder = insurance.mainPolicyHolder || "";
-    this.deductible = insurance.deductible || "";
-    this.currentId = insurance.id || "";
+    const data = this.patient.demographicsData;
+    if (!data) return;
+    this.primaryLanguage = data.primaryLanguage;
+    this.secondaryLanguage = data.secondaryLanguage || "";
+    this.race = data.race || "";
+    this.preferredContactChannel = data.preferredContactChannel || "";
+    this.primaryEthnicity = data.primaryEthnicity || "";
+    this.secondaryEthnicity = data.secondaryEthnicity || "";
+    this.currentId = data.id!!;
   }
 
   @Watch("patient")
@@ -254,5 +232,3 @@ export default class EmergencyDontactDialog extends Vue {
   }
 }
 </script>
-
-<style></style>

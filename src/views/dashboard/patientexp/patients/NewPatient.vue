@@ -241,10 +241,31 @@
         Register New
       </cornie-btn>
     </div>
-    <emergency-contact-dialog v-model="showEmergencyContactDialog" />
-    <guarantor-dialog v-model="showGuarantorDialog" />
-    <insurance-dialog v-model="showInsuranceDialog" />
-    <providers-dialog v-model="showProvidersDialog" />
+    <emergency-contact-dialog
+      :patient="patient"
+      v-model="showEmergencyContactDialog"
+    />
+    <guarantor-dialog
+      :patient="patient"
+      v-model:guarantor="guarantor"
+      v-model="showGuarantorDialog"
+    />
+    <insurance-dialog
+      :patient="patient"
+      v-model:insurances="insurances"
+      v-model="showInsuranceDialog"
+    />
+    <providers-dialog
+      :patient="patient"
+      v-model:labs="labs"
+      v-model:pharmacies="pharmacies"
+      v-model="showProvidersDialog"
+    />
+    <demographics-dialog
+      :patient="patient"
+      v-model:demographics="demographics"
+      v-model="showDemographicsDialog"
+    />
   </div>
 </template>
 
@@ -282,11 +303,12 @@ import ContactInfo from "./contact-information.vue";
 import { string, number, date, array } from "yup";
 import { Prop, Ref } from "vue-property-decorator";
 import { cornieClient } from "@/plugins/http";
-import { IPatient } from "@/types/IPatient";
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { namespace } from "vuex-class";
-import patient from "@/store/patient";
+import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
 
 const patients = namespace("patients");
+
 @Options({
   name: "new-patient",
   components: {
@@ -303,6 +325,7 @@ const patients = namespace("patients");
     DatePicker,
     CornieSelect,
     CornieMenu,
+    DemographicsDialog,
     CornieBtn,
     CompletedIcon,
     EmergencyIcon,
@@ -338,6 +361,7 @@ export default class NewPatient extends Vue {
 
   @patients.Action
   fetchPatients!: () => Promise<void>;
+
   @patients.State
   patients!: IPatient[];
 
@@ -354,7 +378,15 @@ export default class NewPatient extends Vue {
   dateOfBirth = "";
   image = "";
   idNumber = "";
+
   contacts = [];
+  emergencyContacts = [];
+  guarantor!: Guarantor;
+  insurances = [];
+  labs = [];
+  pharmacies = [];
+  demographics!: Demographics;
+
   maritalStatus = "";
 
   showEmergencyContactDialog = false;
@@ -394,50 +426,55 @@ export default class NewPatient extends Vue {
   markEditable() {
     this.$router.push(`/dashboard/provider/experience/edit-patient/${this.id}`);
   }
-  optionalItems = [
-    {
-      name: "Emergency Contact",
-      icon: "emergency-icon",
-      click: () => (this.showEmergencyContactDialog = true),
-      number: 0,
-    },
-    {
-      name: "Add Guarantor",
-      icon: "guarantor-icon",
-      click: () => (this.showGuarantorDialog = true),
-      number: 0,
-    },
-    {
-      name: "Insurance",
-      icon: "insurance-icon",
-      click: () => (this.showInsuranceDialog = true),
-      number: 0,
-    },
-    {
-      name: "Providers",
-      icon: "medicine-icon",
-      click: () => (this.showProvidersDialog = true),
-      number: 0,
-    },
-    {
-      name: "General Practitioners",
-      icon: "medical-team-icon",
-      click: () => null,
-      number: 0,
-    },
-    {
-      name: "Demographic Data",
-      icon: "demographic-icon",
-      click: () => null,
-      number: 0,
-    },
-    {
-      name: "Links",
-      icon: "url-icon",
-      click: () => null,
-      number: 0,
-    },
-  ];
+
+  get providerLength() {
+    const labLen = this.patient?.preferredLabs?.length || this.labs.length;
+    const pharmLen =
+      this.patient?.preferredPharmacies?.length || this.pharmacies.length;
+    return labLen + pharmLen;
+  }
+  get optionalItems() {
+    return [
+      {
+        name: "Emergency Contact",
+        icon: "emergency-icon",
+        click: () => (this.showEmergencyContactDialog = true),
+        number:
+          this.patient?.emergencyContacts?.length ||
+          this.emergencyContacts.length,
+      },
+      {
+        name: "Add Guarantor",
+        icon: "guarantor-icon",
+        click: () => (this.showGuarantorDialog = true),
+        number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
+      },
+      {
+        name: "Insurance",
+        icon: "insurance-icon",
+        click: () => (this.showInsuranceDialog = true),
+        number: this.patient?.insurances?.length || this.insurances.length,
+      },
+      {
+        name: "Providers",
+        icon: "medicine-icon",
+        click: () => (this.showProvidersDialog = true),
+        number: this.providerLength,
+      },
+      {
+        name: "General Practitioners",
+        icon: "medical-team-icon",
+        click: () => null,
+        number: 0,
+      },
+      {
+        name: "Demographic Data",
+        icon: "demographic-icon",
+        click: () => (this.showDemographicsDialog = true),
+        number: this.patient?.demographicsData ? 1 : this.demographics ? 1 : 0,
+      },
+    ];
+  }
 
   togglePatientInformation() {
     this.showPatientInformation = !this.showPatientInformation;
@@ -481,6 +518,9 @@ export default class NewPatient extends Vue {
     }
     const others = {
       contactInfo: this.contacts,
+      emergencyContacts: this.emergencyContacts,
+      preferredLabs: this.labs,
+      preferredPharmacies: this.pharmacies,
     };
     if (this.id) return basicInfo;
     return { ...basicInfo, ...others };
