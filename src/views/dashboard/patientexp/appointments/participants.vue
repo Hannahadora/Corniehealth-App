@@ -42,9 +42,9 @@
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
-                      <avatar class="mr-2" :src="input.image" />
+                        <avatar class="mr-2" v-if="input.image" :src="input.image" />
+                         <avatar class="mr-2" v-else :src="img.placeholder" />
                       </div>
-                      <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
                           {{ input.firstName }}
@@ -62,7 +62,7 @@
                   </div>
             </div>
 
-            <div   v-for="(input, index) in columnsProxy.Devices"
+            <div v-for="(input, index) in columnsProxy.Devices"
                   :key="index">
                   <span
                     class="
@@ -82,7 +82,7 @@
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
                      <div class="dflex space-x-4">
                        <div class="w-10 h-10">
-                        <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                        <avatar class="mr-2" :src="img.placeholder" />
                        </div>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
@@ -114,7 +114,7 @@
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                    <div class="dflex space-x-4">
                      <div class="w-10 h-10">
-                      <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                      <avatar class="mr-2" :src="img.placeholder" />
                      </div>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold">{{input.name}}</p>
@@ -146,8 +146,8 @@
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                    <div class="dflex space-x-4">
                      <div class="w-10 h-10">
-                      <avatar class="mr-2" :src="input.profilePhoto" v-if="input.profilePhoto" />
-                      <avatar class="mr-2" v-else src="@/assets/img/placeholder.png"/>
+                     <!-- <avatar class="mr-2" :src="input.profilePhoto" v-if="input.profilePhoto" />-->
+                      <avatar class="mr-2"  :src="img.placeholder"/>
                      </div>
                         <div class="w-full">
                           <p class="text-xs text-dark font-semibold"> {{ input.firstname }}
@@ -200,6 +200,8 @@ import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import Avatar from "@/components/avatar.vue";
 import { cornieClient } from "@/plugins/http";
+import { setup} from "vue-class-component";
+import { useHandleImage } from "@/composables/useHandleImage";
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -253,7 +255,8 @@ export default {
       valueid: [],
       availableFilter: false,
       profileFilter:false,
-      practitionerId: ""
+      practitionerId: "",
+      img: setup(() => useHandleImage()),
     };
   },
   watch: {

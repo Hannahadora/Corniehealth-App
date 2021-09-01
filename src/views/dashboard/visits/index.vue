@@ -114,7 +114,6 @@
                     </span>
                     </div>
                 </template>
-
                 <template #actions="{ item }">
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <eye-icon class="mt-1" />
@@ -360,7 +359,7 @@ import CheckOut from './components/checkout.vue'
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import TimeLine from './components/timeline-table.vue'
 import Modal from '@/components/modal.vue';
-import Close from '@/components/icons/close.vue'
+//import Close from '@/components/icons/close.vue'
 import CheckinNoapp from './components/checkin-noappointment.vue'
 import ArrowRight from '@/components/icons/arrow-right.vue'
 import EncounterIcon from '@/components/icons/encounter.vue'
@@ -380,7 +379,7 @@ const appointment = namespace("appointment");
   components: {
     MultiSelect,
     CancelIcon,
-    Close,
+    //Close,
     TimeLine,
     SortIcon,
     ThreeDotIcon,

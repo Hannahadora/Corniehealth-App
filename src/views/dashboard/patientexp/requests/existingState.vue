@@ -32,9 +32,13 @@
           </span>
           <cornie-table :columns="rawHeaders" v-model="items">
               <template #actions="{ item }">
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
-                  <newview-icon  class="text-yellow-500 fill-current"/>
+                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
+                  <newview-icon  class="text-blue-700 fill-current"/>
                   <span class="ml-3 text-xs">View</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
+                  <newview-icon  class="text-blue-700 fill-current"/>
+                  <span class="ml-3 text-xs">View & Edit</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                   <update-icon />
@@ -45,16 +49,12 @@
                   <span class="ml-3 text-xs">Add Appointment</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-green-500 fill-current"/>
+                  <plus-icon class="text-red-500 fill-current"/>
                   <span class="ml-3 text-xs">Add Task</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                  <note-icon class="text-purple-700 fill-current"/>
-                  <span class="ml-3 text-xs">Make Notes</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                  <message-icon class="text-blue-700 fill-current"/>
-                  <span class="ml-3 text-xs">Message</span>
+                  <note-icon class="text-green-600 fill-current"/>
+                  <span class="ml-3 text-xs">Add Notes</span>
                 </div>
               </template>
               <template #Participants="{ item }">
@@ -89,10 +89,14 @@
             
           </span>
           <cornie-table :columns="rawHeaders" v-model="items">
-              <template #actions="{ item }">
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-refferal/${item.id}`)">
-                  <newview-icon  class="text-yellow-500 fill-current"/>
+               <template #actions="{ item }">
+                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-refferal/${item.id}`)">
+                  <newview-icon  class="text-blue-700 fill-current"/>
                   <span class="ml-3 text-xs">View</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-refferal/${item.id}`)">
+                  <newview-icon  class="text-blue-700 fill-current"/>
+                  <span class="ml-3 text-xs">View & Edit</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                   <update-icon />
@@ -103,16 +107,12 @@
                   <span class="ml-3 text-xs">Add Appointment</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-green-500 fill-current"/>
+                  <plus-icon class="text-red-500 fill-current"/>
                   <span class="ml-3 text-xs">Add Task</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                  <note-icon class="text-purple-700 fill-current"/>
-                  <span class="ml-3 text-xs">Make Notes</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                  <message-icon class="text-blue-700 fill-current"/>
-                  <span class="ml-3 text-xs">Message</span>
+                  <note-icon class="text-green-600 fill-current"/>
+                  <span class="ml-3 text-xs">Add Notes</span>
                 </div>
               </template>
               <template #Participants="{ item }">
