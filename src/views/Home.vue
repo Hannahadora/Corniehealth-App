@@ -2,9 +2,7 @@
   <div class="home">
     <nav class="top-0 absolute z-50 w-full flex bg-light-blue flex-wrap items-center justify-between px-2 py-3">
       <div  class="container px-4 mx-auto flex flex-wrap items-center justify-between">
-        <div
-          class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start"
-          >
+        <div class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
           <svg width="172" height="56" viewBox="0 0 272 56" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M10.0622 21.9307H31.8431V17.5685H10.0622C4.54025 17.5685 0 22.1836 0 27.9367V28.0631C0 33.753 4.4789 38.4313 10.0622 38.4313H15.8909V36.7876V34.0691H10.0622C6.87173 34.0691 4.23348 31.4138 4.23348 28.0631V27.9367C4.29483 24.6492 6.87173 21.9307 10.0622 21.9307Z" fill="#F7B538"/>
           <path d="M45.9377 17.5685H40.109V21.9307H45.9377C49.1282 21.9307 51.7664 24.586 51.7664 27.9367V28.0631C51.7664 31.3506 49.1895 34.0691 45.9377 34.0691H24.1567V36.7876V38.4313H45.9377C51.4596 38.4313 55.9999 33.8162 55.9999 28.0631V27.9367C55.9999 22.2469 51.4596 17.5685 45.9377 17.5685Z" fill="#3454D1"/>
@@ -28,13 +26,14 @@
                 <p class="mt-5 mb-5 text-sm text-black">
                   Our goal is to connect and simplify healthcare operations for providers and streamline access for patients through human-centered technology. We aim to break down health service silos, support ecosystem providers to collaborate, share, and manage data at scale, and drive towards better care outcomes and patient experience.
                 </p>
-                 <button
+                 <a
+                        href="#stay_informed"
                       class="bg-danger text-white pl-16 pr-16 active:bg-gray-700 text-sm font-medium px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                       type="button"
                       style="transition: all 0.15s ease 0s;"
                     >
                       Stay Informed
-                    </button>
+                    </a>
               </div>
             </div>
           </div>
@@ -84,7 +83,7 @@
             </div>
             <div class="w-full md:w-5/12 ml-auto mr-auto px-4">
               <div class="mt-5 lg:mt-0 md:mt-0">
-                <div class="bg-red-100 text-danger  rounded w-10/12 py-0 px-2">
+                <div class="bg-red-100 text-danger  rounded w-6/12 py-0 px-2">
                 <span class="font-bold uppercase text-vs">patient group:individuals, Families, Groups</span>
               </div>
                 <h3 class="text-3xl mb-2 mt-3 font-bold text-primary leading-normal">
@@ -246,7 +245,7 @@
         </div>
       </section>
       <section class="pt-20 bg-white pb-20 w-full">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-4" id="stay_informed">
           <div class="flex flex-wrap justify-center text-center mb-7" data-aos="fade-up">
             <div class="w-full lg:w-6/12 px-4">
               <h2 class="text-2xl font-bold text-primary">Sign up to learn more about what we do</h2>
