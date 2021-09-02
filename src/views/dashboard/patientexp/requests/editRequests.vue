@@ -622,12 +622,12 @@
                                     </span>
                                     <p class="text-sm text-black">Aspirin</p>
                                 </div>
-                            <div class="p-2">
-                                <span v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Codeine</p>
-                            </div>
+                                <div class="p-2">
+                                    <span v-if="tabhealth">
+                                        <deleteorange-icon class="float-right" />
+                                        </span>
+                                    <p class="text-sm text-black">Codeine</p>
+                                </div>
                             </div>
                             <div class="border-r-2">
                                 <div class="mb-8 p-2">
@@ -636,12 +636,12 @@
                                     </span>
                                     <p class="text-sm text-black">Penicillin</p>
                                 </div>
-                            <div class="p-2">
-                                <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Aspirin</p>
-                            </div>
+                                <div class="p-2">
+                                    <span   v-if="tabhealth">
+                                        <deleteorange-icon class="float-right" />
+                                        </span>
+                                    <p class="text-sm text-black">Aspirin</p>
+                                </div>
                             </div>
                             <div>
                                 <div class="mb-8 p-2">
@@ -650,12 +650,12 @@
                                     </span>
                                     <p class="text-sm text-black">Codeine</p>
                                 </div>
-                            <div class="p-2">
-                                <span v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Penicillin</p>
-                            </div>
+                                <div class="p-2">
+                                    <span v-if="tabhealth">
+                                        <deleteorange-icon class="float-right" />
+                                        </span>
+                                    <p class="text-sm text-black">Penicillin</p>
+                                </div>
                             </div>     
                         </div>
                         <div class="float-right flex space-x-4 mt-3 text-sm text-primary font-semibold"><plus-icon class="mt-1 mr-2 text-primary fill-current"/> Add Another</div>

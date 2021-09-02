@@ -218,7 +218,7 @@
                 </div>
                 <cornie-date-picker class="w-full" label="occurence DATE" />
                 <cornie-date-picker class="w-full" label="occurence Period" />
-                <cornie-time-picker
+                <time-picker
                   class="w-full"
                   placeholder="00:00"
                   label="occurence timing"
@@ -356,8 +356,7 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
-
-import CornieTimePicker from "@/components/CornieTimePicker.vue";
+import TimePicker from "@/components/Timepicker.vue";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
@@ -375,7 +374,7 @@ const emptyParticipant: ParticipantDetail = {
     CornieNuminput,
     CornieDatePicker,
     PractitionersFilter,
-    CornieTimePicker,
+    TimePicker,
     SingleDatePicker,
     Availability,
     Textarea,

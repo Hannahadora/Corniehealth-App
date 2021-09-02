@@ -42,6 +42,7 @@
           role="menu"
           aria-orientation="vertical"
           tabindex="-1"
+          style="z-index: 999"
         >
           <v-date-picker
             @update:modelValue="handleChange"
@@ -104,7 +105,7 @@ export default class DatePicker extends Vue {
 
   get customRules() {
     const defaultRule = date();
-    if (this.rules) return defaultRule.concat(this.rules);
+    if (!this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
 

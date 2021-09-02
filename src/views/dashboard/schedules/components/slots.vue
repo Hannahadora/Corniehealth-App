@@ -1,88 +1,7 @@
 <template>
-  <div class="w-full my-2 h-screen">
-      <div class="container-fluid bg-white sm:p-6 h-full">
-        <div class="w-full border-b-2 curved flex py-2 mt-4">
-            <div class="container-fluid flex font-semibold text-xl py-2">
-                <h2>Schedules & Slots</h2>
-            </div>
-        </div>
-
-
-
-
-        <div class="w-full border-b-4 curved flex my-8">
-            <div class="container-fluid flex font-semibold text-xl">
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
-                  @click="() => activeTab = 0"
-                >Schedule</a>
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
-                  @click="() => activeTab = 1"
-                >Availability</a>
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 2, 'text-gray-500': activeTab !== 2 }"
-                  @click="() => activeTab = 2"
-                >Fixed Slot</a>
-            </div>
-          </div>
-
-        <div class="w-full" v-if="activeTab === 2">
-          <Slots />
-        </div>
-
-          <div class="w-full">
-            <Overlay :show="show">
-              <Modal :bigger="true">
-                <template v-slot:header>
-                  <h3 class="text-xl flex justify-between leading-6 font-medium text-gray-900 mb-5 capitalize modal_titlee cursor-pointer" id="modal-title">
-                      <span>Night Shift_DT</span>
-                      <span @click="() => show = false" class="lowercase pb-1 cursor-pointer font-normal bg-primary text-white flex items-center justify-center" style="width: 20px;height:20px;border-radius:50%">×</span>
-                  </h3>
-                </template>
-
-                <template v-slot:body>
-                  <div class="w-full">
-                    <span class="flex items-center w-full">
-                      <icon-input
-                      :width="'w-full'"
-                      class="border border-gray-600 rounded-full focus:outline-none"
-                      type="search"
-                      v-model="search"
-                      >
-                      <template v-slot:prepend>
-                          <search-icon />
-                      </template>
-                      </icon-input>
-                    </span>
-                  </div>
-                  <p class="text-base text-gray-500 my-3">
-                    Practitioners assigned to this shift
-                  </p>
-                  <div class="w-full">
-                    <div class="container flex flex-col" style="max-height: 400px;overflow-y:scroll">
-                      <div class="w-full flex items-center">
-                        <div class="w-2/12">
-                          <img src="https://via.placeholder.com/30x30" class="rounded-full border" alt="Image">
-                        </div>
-                        <div class="w-10/12 ml-3">
-                          <span class="text-base text-gray-500">W. E Somebod</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-              </Modal>
-          </Overlay>
-
-          <div class="w-full curved flex py-2 justify-end my-6">
-              <div class=".w-full flex font-semibold text-lg py-2 justify-end pb-4">
-                  <Button :loading="false">
-                      <router-link :to="{ name: 'Patient Experience Management' }" style="background: #FE4D3C" class="text-lg bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                          New Schedule
-                      </router-link>
-                  </Button>
-              </div>
-          </div>
-            <div class="w-full pb-7 mb-8">
-              <cornie-table :columns="headers" v-model="items" v-if="activeTab === 0">
+    <div class="container-fluid">
+        <div class="w-full pb-7 mb-8">
+              <cornie-table :columns="headers" v-model="items" v-if="activeTab === 0 || activeTab === 2">
                 
                 <template #name="{ item }">
                   <p>{{ item.name }}</p>
@@ -267,14 +186,9 @@
           
           
           </div>
-        </div>
-
-        <div style="height: 50px">
-
-        </div>
-      </div>
-  </div>
+    </div>
 </template>
+
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 // import Table from "@scelloo/cloudenly-ui/src/components/table";
@@ -298,31 +212,39 @@ import DeactivateIcon from '@/components/icons/deactivate.vue'
 import Button from '@/components/globals/corniebtn.vue'
 import Modal1 from "@/components/modal.vue";
 
-import Overlay from '../settings/rolesprivileges/components/overlay.vue'
-import Modal from '../settings/rolesprivileges/components/modal.vue'
+import Overlay from '../../settings/rolesprivileges/components/overlay.vue'
+import Modal from '../../settings/rolesprivileges/components/modal.vue'
 
-import SideModal from './components/side-modal.vue';
-import EditSchedule from './components/edit-schedule.vue'
-import ViewDetails from './components/view-details.vue'
-import ViewPlan from './components/view-planning.vue'
-import ViewBreaks from './components/view-breaks.vue'
-import AllActors from './components/all-actors.vue'
-import AdvancedFilter from './components/advanced-filter.vue'
+import SideModal from './side-modal.vue';
+import EditSchedule from './edit-schedule.vue'
+import ViewDetails from './view-details.vue'
+import ViewPlan from './view-planning.vue'
+import ViewBreaks from './view-breaks.vue'
+import AllActors from './all-actors.vue'
+import AdvancedFilter from './advanced-filter.vue'
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import Actors from './components/actors.vue'
-import AddActors from './components/add-actor.vue'
+import Actors from './actors.vue'
+import AddActors from './add-actor.vue'
 import IPractitioner from "@/types/IPractitioner";
-
-import Slots from './components/slots.vue'
 
 const shifts = namespace("shifts");
 const schedulesStore = namespace("schedules");
 const contacts = namespace('practitioner');
 
+
+interface IRole {
+  name: string,
+  description: string,
+  isDefault: boolean,
+  isSuperAdmin: boolean,
+  id: string,
+  createdAt: Date,
+  updatedAt: Date,
+}
+
 @Options({
   components: {
     // Table,
-    Slots,
     AddActors,
     SortIcon,
     ThreeDotIcon,
@@ -353,7 +275,7 @@ const contacts = namespace('practitioner');
     DeactivateIcon,
   },
 })
-export default class PractitionerExistingState extends Vue {
+export default class SlotsComponent extends Vue {
   showColumnFilter = false;
   show = false;
   query = "";
@@ -419,47 +341,17 @@ export default class PractitionerExistingState extends Vue {
       show: true,
     },
     {
-      title: "Specialty",
-      key: "specialty",
-      show: true,
-    },
-    { title: "Days", key: "days", show: true },
-    {
-      title: "Timing",
-      key: "timing",
+      title: "Date",
+      key: "date",
       show: true,
     },
     {
-      title: "Actors",
-      key: "practitioners",
+      title: "Time",
+      key: "time",
       show: true,
     },
     {
-      title: "Status",
-      key: "status",
-      show: true,
-    },
-    
-  ];
-  testHeaders = [
-    {
-      title: "Name | Identifier",
-      key: "name",
-      show: true,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: true,
-    },
-    {
-      title: "Specialty",
-      key: "specialty",
-      show: true,
-    },
-    { title: "Days", key: "days", show: true },
-    {
-      title: "Timing",
+      title: "Booking Cutoff",
       key: "timing",
       show: true,
     },
@@ -553,7 +445,8 @@ export default class PractitionerExistingState extends Vue {
         action: i.id,
         status: i.status,
         schedule: i.scheduleType,
-        timing: `${i.startTime} - ${i.endTime}`
+        time: `${i.days.join(', ')} | ${i.startTime} - ${i.endTime}`,
+        date: `${new Date(i.startDate).toDateString().substring(4, 10) } - ${new Date(i.endDate).toDateString().substring(4, 10) }`
       };
     });
     return shifts;
@@ -668,36 +561,3 @@ export default class PractitionerExistingState extends Vue {
 
 }
 </script>
-
-<style scoped>
-    .active-tab {
-        border-bottom-width: 4px;
-        margin-bottom: -0.22rem;
-    }
-
-    .active-color {
-        border-color: #FE4D3C;
-    }
-
-    .status-active {
-      background: #F3FCF8;
-      color: #35BA83;
-      
-    }
-
-    .status-inactive {
-      background: #FFF1F0;
-      color: #FE4D3C;
-    }
-
-    .border-b-4 {
-      border-bottom: 4px solid #F0F4FE;
-    }
-
-    .h-screen {
-      height: 100vh;
-      overflow: scroll;
-      padding-bottom: 40px;
-      padding-bottom: 24px;
-    }
-</style>
