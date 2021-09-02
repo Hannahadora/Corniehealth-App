@@ -57,7 +57,10 @@
 
         <cornie-card class="mt-auto">
           <cornie-card-text class="flex justify-end">
-            <cornie-btn class="text-white bg-danger px-6 rounded-xl">
+            <cornie-btn
+              @click="show = false"
+              class="text-white bg-danger px-6 rounded-xl"
+            >
               Close
             </cornie-btn>
           </cornie-card-text>

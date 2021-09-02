@@ -36,9 +36,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: (to) => `${to.path}/settings`.replace("//", "/"),
+    redirect: (to) => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
+      {
+        path: "home",
+        name: "Experience Dashboard",
+        component: () =>
+          import("@/views/dashboard/patientexp/dashboard/Index.vue"),
+      },
       {
         path: "add-group/:id?",
         props: true,
@@ -66,12 +72,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboard/patientexp/index.vue"),
         redirect: () => "dashboard",
         children: [
-          {
-            path: "dashboard",
-            name: "Experience Dashboard",
-            component: () =>
-              import("@/views/dashboard/patientexp/dashboard/Index.vue"),
-          },
           {
             path: "patients",
             name: "Patients",
