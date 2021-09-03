@@ -787,7 +787,6 @@ const roles = namespace('roles');
 })
 export default class RolesAndPrivileges extends Vue {
     hello() {
-        alert('hi')
     }
 
     sideBarShown = false;

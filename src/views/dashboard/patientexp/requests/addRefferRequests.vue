@@ -7,10 +7,10 @@
       >
     </span>
     <div>
-      <div class="w-full h-screen overflow-auto">
+      <div class="w-full h-screen">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
-            <accordion-component title="Basic Info" v-model="opened">
+            <accordion-component title="Basic Info" v-model="opened" :opened="false">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
@@ -59,6 +59,7 @@
                   >
                   </cornie-select>
                   <cornie-select
+                     class="required"
                     :rules="required"
                     :items="['reason reference']"
                     v-model="reasonRef"
@@ -67,6 +68,7 @@
                   >
                   </cornie-select>
                   <cornie-select
+                     class="required"
                     :rules="required"
                     :items="['reason reference']"
                     v-model="reasonRef"
@@ -77,7 +79,8 @@
                 </div>
               </template>
             </accordion-component>
-            <accordion-component title="Request Info" v-model="openedR">
+
+            <accordion-component title="Request Info" v-model="opened" :opened="false">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                 <cornie-select
                   class="required"
@@ -99,7 +102,7 @@
                 </cornie-select>
               </div>
             </accordion-component>
-            <accordion-component title="Subject" v-model="openedS">
+            <accordion-component title="Subject" v-model="opened" :opened="false">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                 <cornie-select
                   class="required"
@@ -115,13 +118,14 @@
                   :rules="required"
                   :items="dropdowns.serviceType"
                   v-model="serviceType"
-                  label="insurance"
+                  label="payment option"
                   placeholder="--Select--"
                 >
                 </cornie-select>
               </div>
             </accordion-component>
-            <accordion-component title="Request" v-model="openedS">
+
+            <accordion-component title="Request">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                 <cornie-select
                   class="required"
@@ -230,7 +234,7 @@
                 />
               </div>
             </accordion-component>
-            <accordion-component title="Performer" v-model="openedS">
+            <accordion-component title="Performer">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                 <cornie-select
                   class="required"
@@ -270,7 +274,7 @@
                 </cornie-select>
               </div>
             </accordion-component>
-            <accordion-component title="Forms" v-model="openedS">
+            <accordion-component title="Forms">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                 <cornie-select
                   :items="dropdowns.serviceCategory"

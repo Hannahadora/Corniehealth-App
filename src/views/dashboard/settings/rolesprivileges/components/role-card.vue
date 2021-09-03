@@ -42,7 +42,6 @@ export default class RolesAndPrivileges extends Vue {
     deleteRole!: (id: string) => any;
 
     removeRole(id: string) {
-        alert('deleting')
         this.deleteRole(id)
     }
 

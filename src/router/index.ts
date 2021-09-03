@@ -147,6 +147,18 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
+            path: "tasks",
+            name: "Tasks",
+            component: () =>
+              import("@/views/dashboard/patientexp/tasks/index.vue"),
+          },
+          {
+            path: "add-task/:id?",
+            name: "New Task",
+            component: () =>
+              import("@/views/dashboard/patientexp/tasks/addTasks.vue"),
+          },
+          {
             path: "requests",
             name: "Requests",
             component: () =>
@@ -160,9 +172,21 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "edit-request/:id?",
-            name: "View Requests",
+            name: "View & Edit Requests",
             component: () =>
               import("@/views/dashboard/patientexp/requests/editRequests.vue"),
+          },
+          {
+            path: "view-request/:id?",
+            name: "View Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/viewRequests.vue"),
+          },
+          {
+            path: "view-refferal/:id?",
+            name: "View Refferal",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/viewRefferal.vue"),
           },
           {
             path: "edit-refferal/:id?",
@@ -202,6 +226,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/schedules/create-schedule.vue"),
           },
+          
         ],
       },
       {

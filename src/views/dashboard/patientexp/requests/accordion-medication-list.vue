@@ -1,14 +1,14 @@
 <template>
-<div class="bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-full">
+<div class="shadow-md -mb-5 p-3 w-full h-auto">
   <div class="w-full">
     <div
       class="h-11 w-full border-b-2 flex items-center justify-between"
       :class="{
-        'bg-white': expand,
+        'bg-gray-50': expand,
         'rounded-t-xl': first && expand,
       }"
     >
-      <div class="font-bold text-base mb-1" :class="{ 'text-black': expand }">
+      <div class="font-semibold uppercase text-sm mb-1" :class="{ 'text-primary': expand }">
         {{ title }}
       </div>
       <span class="flex items-center">
@@ -21,14 +21,14 @@
         <chevron-down-icon
           class="cursor-pointer stroke-current"
           :class="{ 'text-primary': expand }"
-          @click="hide"
+          @click="expand = false"
           v-if="expand"
         />
         <chevron-right-icon
           class="cursor-pointer stroke-current"
           :class="{ 'text-primary': expand }"
           v-else
-          @click="expanded"
+          @click="expand = true"
         />
       </span>
     </div>
@@ -40,7 +40,7 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 
 @Options({
   name: "AccordionItem",
@@ -56,27 +56,16 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: Boolean, default: false })
   first!: boolean;
 
- @Prop({ type: Boolean, default: false })
-  modelValue!: boolean;
+  expand = false;
 
-  expand = true;
+  @Prop({ type: Boolean, default: false })
+  opened!: boolean;
 
-  
- expanded() {
-    this.expand = true;
-    this.$emit("update:modelValue", true);
+  @Watch("opened")
+  toggled() {
+    this.expand = this.opened;
   }
-
-  hide() {
-    this.expand = false;
-    this.$emit("update:modelValue", false);
-  }
-
   @Prop({ type: String, default: "" })
   titledescription!: string;
-
-  created() {
-    this.expand = Boolean(this.modelValue);
-  }
 }
 </script>
