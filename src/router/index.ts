@@ -70,13 +70,21 @@ const routes: Array<RouteRecordRaw> = [
         path: "experience/",
         name: "Patients Experience Management",
         component: () => import("@/views/dashboard/patientexp/index.vue"),
-        redirect: () => "dashboard",
+        redirect: () => "patients",
         children: [
           {
             path: "patients",
             name: "Patients",
             component: () =>
               import("@/views/dashboard/patientexp/patients/Index.vue"),
+          },
+          {
+            path: "settings",
+            name: "Patient Experience Settings",
+            component: () =>
+              import(
+                "@/views/dashboard/patientexp/patients/settings/index.vue"
+              ),
           },
           {
             path: "new-patients",
@@ -185,8 +193,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "schedules",
             props: true,
             name: "Patient Experience Management.",
-            component: () =>
-              import("@/views/dashboard/schedules/index.vue"),
+            component: () => import("@/views/dashboard/schedules/index.vue"),
           },
           {
             path: "schedules/new/:scheduleId?",

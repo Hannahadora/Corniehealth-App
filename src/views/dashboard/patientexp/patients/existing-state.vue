@@ -75,7 +75,9 @@
           <cancel-icon class="text-red-500 fill-current" />
           <span class="ml-3 text-xs">Remove Patient</span>
         </table-action>
-        <table-action>
+        <table-action
+          @click="$router.push('/dashboard/provider/experience/settings')"
+        >
           <settings-icon class="text-red-500 fill-current" />
           <span class="ml-3 text-xs">Patient Settings</span>
         </table-action>
