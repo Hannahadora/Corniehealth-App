@@ -12,138 +12,227 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Add Actor(s)</h2>
+        <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Add Actor(s)</h2>
       </div>
       <div class="flex flex-col p-3">
-        <p class="text-sm mb-4 mt-2">
-         Add Actor(s) to this appointment
-        </p>
+        <p class="text-sm mb-4 mt-2">Add Actor(s) to this appointment</p>
         <div class="grid grid-cols-2 gap-4 w-full">
-            <div>
-                <cornie-select
-                :onChange="setValue"
-                :items="['Patient','Practitioner','Practitioner Role','Device']"
-                v-model="type"
-                class="rounded-full"
-                placeholder="--Select--"
-                >
-                </cornie-select>
-            </div>
-            <div class="relative bottom-2">
-                <icon-input autocomplete="off" class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-                    <template v-slot:prepend>
-                    <search-icon/>
-                    </template>
-                </icon-input>
-            </div>
+          <div>
+            <cornie-select
+              :onChange="setValue"
+              :items="[
+                'Patient',
+                'Practitioner',
+                'Practitioner Role',
+                'Device',
+              ]"
+              v-model="type"
+              class="rounded-full"
+              placeholder="--Select--"
+            >
+            </cornie-select>
+          </div>
+          <div class="relative bottom-2">
+            <icon-input
+              autocomplete="off"
+              class="
+                border border-gray-200
+                h-10
+                w-full
+                rounded-full
+                focus:outline-none
+              "
+              type="search"
+              placeholder="Search"
+              v-bind="$attrs"
+              v-model="displayVal"
+            >
+              <template v-slot:prepend>
+                <search-icon />
+              </template>
+            </icon-input>
+          </div>
         </div>
-        <p class="text-xs">{{indexvalue.length}} Selected</p>
+        <p class="text-xs">{{ indexvalue.length }} Selected</p>
         <div>
-            <div class="bg-gray-100" v-if="practitionerFilter">
-                <div v-for="(input, index) in practitioners" :key="index">
-                    <div class="grid grid-cols-4 w-full gap-4 col-span-full mt-2 p-3">
-                        <div class="dflex space-x-4">
-                            <div class="w-10 h-10">
-                            <avatar class="mr-2" v-if="input.image" :src="input.image" />
-                             <avatar class="mr-2" v-else :src="img.placeholder" />
-                            </div>
-                            <div class="w-full">
-                                <p class="text-xs text-dark font-semibold">
-                                {{ input.firstName }}
-                                {{ input.lastName }}
-                                </p>
-                                <p class="text-xs text-gray-500 font-meduim">
-                                {{ input.jobDesignation }}
-                                {{ input.department }}
-                                </p>
-                            </div>
-                        </div>
-                         <p class="cursor-pointer ml-16 text-xs text-danger" @click="showAvailable(input.id)">View Availability</p>
-                            <p class="cursor-pointer ml-16 text-xs text-danger" @click="showProfile">View Profile</p>
-                             <input
-                            v-model="indexvalue" 
-                            :value="input"
-                            @input="changed(input.id)"
-                            type="checkbox"
-                            class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
-                            />
-                    </div>
-                </div>
-            </div>
-            <div v-if="deviceFilter">
-                <div v-for="(input, index) in devices" :key="index">
-                    <div class="grid grid-cols-4 w-full justify-between gap-2 col-span-full mt-2 p-3">
-                        <div class="dflex space-x-4">
-                            <div class="w-10 h-10">
-                                <avatar class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden" :src="img.placeholder"  />
-                            </div>
-                            <div class="w-full">
-                            <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
-                            <p class="text-xs text-gray-500 font-meduim">{{input.deviceName.nameType}}</p>
-                            </div>
-                        </div>
-                            <p class="cursor-pointer ml-16 text-xs text-danger" @click="showAvailable(input.id)">View Availability</p>
-                            <p class="cursor-pointer ml-16 text-xs text-danger" @click="showProfile">View Profile</p>
-                             <input
-                            v-model="indexvalue" 
-                            :value="input"
-                            @input="changed(input.id)"
-                            type="checkbox"
-                            class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
-                            />          
-                    </div>
-                </div>
-            </div>
-            <div v-if="roleFilter">
-                <div v-for="(input, index) in roles"  :key="index">
-                    <div class="grid grid-cols-4 gap-4 w-full col-span-full p-3">
-                    <div class="dflex space-x-4">
-                        <div class="w-10 h-10">
-                        <avatar class="mr-2" :src="img.placeholder"  />
-                        </div>
-                            <div class="w-full">
-                            <p class="text-xs text-dark font-semibold">{{input.name}}</p>
-                            <p class="text-xs text-gray font-light">{{input.description}}</p>
-                            </div>
-                    </div>
-                    <p class="cursor-pointer ml-16 text-xs text-danger" @click="showAvailable(input.id)">View Availability</p>
-                    <p class="cursor-pointer ml-16 text-xs text-danger" @click="showProfile">View Profile</p>
-                        <input
-                    v-model="indexvalue" 
-                    :value="input"
-                    @input="changed(input.id)"
-                    type="checkbox"
-                    class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+          <div class="bg-gray-100" v-if="practitionerFilter">
+            <div v-for="(input, index) in practitioners" :key="index">
+              <div class="grid grid-cols-4 w-full gap-4 col-span-full mt-2 p-3">
+                <div class="dflex space-x-4">
+                  <div class="w-10 h-10">
+                    <avatar
+                      class="mr-2"
+                      v-if="input.image"
+                      :src="input.image"
                     />
-                    </div>
+                    <avatar class="mr-2" v-else src="@assets/img/placeholder.png" />
+                  </div>
+                  <div class="w-full">
+                    <p class="text-xs text-dark font-semibold">
+                      {{ input.firstName }}
+                      {{ input.lastName }}
+                    </p>
+                    <p class="text-xs text-gray-500 font-meduim">
+                      {{ input.jobDesignation }}
+                      {{ input.department }}
+                    </p>
+                  </div>
                 </div>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showAvailable(input.id)"
+                >
+                  View Availability
+                </p>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showProfile"
+                >
+                  View Profile
+                </p>
+                <input
+                  v-model="indexvalue"
+                  :value="input"
+                  @input="changed(input.id)"
+                  type="checkbox"
+                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                />
+              </div>
             </div>
-            <div v-if="patientFilter">
-                <div v-for="(input, index) in patients" :key="index">
-                    <div class="grid grid-cols-4 gap-2 w-full col-span-full p-3">
-                    <div class="dflex space-x-4">
-                        <div class="w-10 h-10">
-                        <avatar class="mr-2"  :src="img.placeholder" />
-                        </div>
-                            <div class="w-full">
-                            <p class="text-xs text-dark font-semibold"> {{ input.firstname }}
-                            {{ input.lastname }}</p>
-                            </div>
-                    </div>
-                     <p class="cursor-pointer ml-16 text-xs text-danger" @click="showAvailable(input.id)">View Availability</p>
-                            <p class="cursor-pointer ml-16 text-xs text-danger" @click="showProfile">View Profile</p>
-                             <input
-                            v-model="indexvalue" 
-                            :value="input"
-                            @input="changed(input.id)"
-                            type="checkbox"
-                            class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
-                            />
-                    </div>
+          </div>
+          <div v-if="deviceFilter">
+            <div v-for="(input, index) in devices" :key="index">
+              <div
+                class="
+                  grid grid-cols-4
+                  w-full
+                  justify-between
+                  gap-2
+                  col-span-full
+                  mt-2
+                  p-3
+                "
+              >
+                <div class="dflex space-x-4">
+                  <div class="w-10 h-10">
+                    <avatar
+                      class="
+                        mr-2
+                        object-cover object-center
+                        w-full
+                        h-full
+                        visible
+                        group-hover:hidden
+                      "
+                      :src="img.placeholder"
+                    />
+                  </div>
+                  <div class="w-full">
+                    <p class="text-xs text-dark font-semibold">
+                      {{ input.deviceName.name }}
+                    </p>
+                    <p class="text-xs text-gray-500 font-meduim">
+                      {{ input.deviceName.nameType }}
+                    </p>
+                  </div>
                 </div>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showAvailable(input.id)"
+                >
+                  View Availability
+                </p>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showProfile"
+                >
+                  View Profile
+                </p>
+                <input
+                  v-model="indexvalue"
+                  :value="input"
+                  @input="changed(input.id)"
+                  type="checkbox"
+                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                />
+              </div>
             </div>
+          </div>
+          <div v-if="roleFilter">
+            <div v-for="(input, index) in roles" :key="index">
+              <div class="grid grid-cols-4 gap-4 w-full col-span-full p-3">
+                <div class="dflex space-x-4">
+                  <div class="w-10 h-10">
+                    <avatar class="mr-2" :src="img.placeholder" />
+                  </div>
+                  <div class="w-full">
+                    <p class="text-xs text-dark font-semibold">
+                      {{ input.name }}
+                    </p>
+                    <p class="text-xs text-gray font-light">
+                      {{ input.description }}
+                    </p>
+                  </div>
+                </div>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showAvailable(input.id)"
+                >
+                  View Availability
+                </p>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showProfile"
+                >
+                  View Profile
+                </p>
+                <input
+                  v-model="indexvalue"
+                  :value="input"
+                  @input="changed(input.id)"
+                  type="checkbox"
+                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                />
+              </div>
+            </div>
+          </div>
+          <div v-if="patientFilter">
+            <div v-for="(input, index) in patients" :key="index">
+              <div class="grid grid-cols-4 gap-2 w-full col-span-full p-3">
+                <div class="dflex space-x-4">
+                  <div class="w-10 h-10">
+                    <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                  </div>
+                  <div class="w-full">
+                    <p class="text-xs text-dark font-semibold">
+                      {{ input.firstname }} {{ input.lastname }}
+                    </p>
+                  </div>
+                </div>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showAvailable(input.id)"
+                >
+                  View Availability
+                </p>
+                <p
+                  class="cursor-pointer ml-16 text-xs text-danger"
+                  @click="showProfile"
+                >
+                  View Profile
+                </p>
+                <input
+                  v-model="indexvalue"
+                  :value="input"
+                  @input="changed(input.id)"
+                  type="checkbox"
+                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-     <!--   <div class="flex justify-end w-full mt-auto">
+        <!--   <div class="flex justify-end w-full mt-auto">
             <button
             class="
               rounded-full
@@ -180,158 +269,153 @@
           </button>
         </div>-->
         <div class="flex justify-end w-full mt-auto" v-if="practitionerFilter">
-                    <button
-                        class="
-                        rounded-full
-                        mt-5
-                        py-2
-                        px-3
-                        border border-primary
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        mr-2
-                        text-primary
-                        font-semibold
-                        "
-                        @click="show = false"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        @click="apply('Practitioner')"
-                        class="
-                        bg-danger
-                        rounded-full
-                        text-white
-                        mt-5
-                        py-2
-                        px-3
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        "
-                    >
-                        Add
-                    </button>
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Practitioner')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
         </div>
         <div class="flex justify-end w-full mt-auto" v-if="deviceFilter">
-                    <button
-                        class="
-                        rounded-full
-                        mt-5
-                        py-2
-                        px-3
-                        border border-primary
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        mr-2
-                        text-primary
-                        font-semibold
-                        "
-                        @click="show = false"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        @click="apply('Device')"
-                        class="
-                        bg-danger
-                        rounded-full
-                        text-white
-                        mt-5
-                        py-2
-                        px-3
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        "
-                    >
-                        Add
-                    </button>
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Device')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
         </div>
         <div class="flex justify-end w-full mt-auto" v-if="roleFilter">
-                    <button
-                        class="
-                        rounded-full
-                        mt-5
-                        py-2
-                        px-3
-                        border border-primary
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        mr-2
-                        text-primary
-                        font-semibold
-                        "
-                        @click="show = false"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        @click="apply('Role')"
-                        class="
-                        bg-danger
-                        rounded-full
-                        text-white
-                        mt-5
-                        py-2
-                        px-3
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        "
-                    >
-                        Add
-                    </button>
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Role')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
         </div>
         <div class="flex justify-end w-full mt-auto" v-if="patientFilter">
-                    <button
-                        class="
-                        rounded-full
-                        mt-5
-                        py-2
-                        px-3
-                        border border-primary
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        mr-2
-                        text-primary
-                        font-semibold
-                        "
-                        @click="show = false"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        @click="apply('Patient')"
-                        class="
-                        bg-danger
-                        rounded-full
-                        text-white
-                        mt-5
-                        py-2
-                        px-3
-                        focus:outline-none
-                        hover:opacity-90
-                        w-1/3
-                        "
-                    >
-                        Add
-                    </button>
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Patient')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
         </div>
-
       </div>
     </modal>
-       <availability
-            v-model:visible="availableFilter"
-        />
-        <profile
-            v-model:visible="profileFilter"
-        />
+    <availability v-model:visible="availableFilter" />
+    <profile v-model:visible="profileFilter" />
   </div>
 </template>
 <script>
@@ -421,7 +505,6 @@ export default {
       patientFilter:false,
       roleFilter:false,
       practitionerId: "",
-    img: setup(() => useHandleImage()),
     };
   },
   watch: {
@@ -435,6 +518,7 @@ export default {
     },
   },
   computed: {
+   
     show: {
       get() {
         return this.visible;
@@ -512,7 +596,7 @@ export default {
 };
 </script>
 <style scoped>
-.dflex{
-      display: -webkit-box;
+.dflex {
+  display: -webkit-box;
 }
 </style>
