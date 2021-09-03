@@ -21,13 +21,14 @@
           justify-center
           border-b-2
           font-bold
-          mb-10
+          mb-5
           text-xl text-primary
           py-2
         "
       >
         Patients
       </span>
+      <registration-chart class="w-full" />
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full mb-5">
           <cornie-btn class="text-primary border border-primary m-5">
@@ -74,7 +75,9 @@
           <cancel-icon class="text-red-500 fill-current" />
           <span class="ml-3 text-xs">Remove Patient</span>
         </table-action>
-        <table-action>
+        <table-action
+          @click="$router.push('/dashboard/provider/experience/settings')"
+        >
           <settings-icon class="text-red-500 fill-current" />
           <span class="ml-3 text-xs">Patient Settings</span>
         </table-action>
@@ -99,12 +102,14 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import RegistrationDialog from "./registration-dialog.vue";
+import RegistrationChart from "./registration-chart.vue";
 
 const patients = namespace("patients");
 @Options({
   name: "PatientExistingState",
   components: {
     CornieCard,
+    RegistrationChart,
     RegistrationDialog,
     TableAction,
     SettingsIcon,

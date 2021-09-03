@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Home,
-    redirect: "/dashboard",
+    // redirect: "/dashboard",
   },
   {
     path: "/signup",
@@ -36,9 +36,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: (to) => `${to.path}/settings`.replace("//", "/"),
+    redirect: (to) => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
+      {
+        path: "home",
+        name: "Experience Dashboard",
+        component: () =>
+          import("@/views/dashboard/patientexp/dashboard/Index.vue"),
+      },
       {
         path: "add-group/:id?",
         props: true,
@@ -64,19 +70,21 @@ const routes: Array<RouteRecordRaw> = [
         path: "experience/",
         name: "Patients Experience Management",
         component: () => import("@/views/dashboard/patientexp/index.vue"),
-        redirect: () => "dashboard",
+        redirect: () => "patients",
         children: [
-          {
-            path: "dashboard",
-            name: "Experience Dashboard",
-            component: () =>
-              import("@/views/dashboard/patientexp/dashboard/Index.vue"),
-          },
           {
             path: "patients",
             name: "Patients",
             component: () =>
               import("@/views/dashboard/patientexp/patients/Index.vue"),
+          },
+          {
+            path: "settings",
+            name: "Patient Experience Settings",
+            component: () =>
+              import(
+                "@/views/dashboard/patientexp/patients/settings/index.vue"
+              ),
           },
           {
             path: "new-patients",
@@ -139,6 +147,18 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
+            path: "tasks",
+            name: "Tasks",
+            component: () =>
+              import("@/views/dashboard/patientexp/tasks/index.vue"),
+          },
+          {
+            path: "add-task/:id?",
+            name: "New Task",
+            component: () =>
+              import("@/views/dashboard/patientexp/tasks/addTasks.vue"),
+          },
+          {
             path: "requests",
             name: "Requests",
             component: () =>
@@ -152,9 +172,21 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "edit-request/:id?",
-            name: "View Requests",
+            name: "View & Edit Requests",
             component: () =>
               import("@/views/dashboard/patientexp/requests/editRequests.vue"),
+          },
+          {
+            path: "view-request/:id?",
+            name: "View Requests",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/viewRequests.vue"),
+          },
+          {
+            path: "view-refferal/:id?",
+            name: "View Refferal",
+            component: () =>
+              import("@/views/dashboard/patientexp/requests/viewRefferal.vue"),
           },
           {
             path: "edit-refferal/:id?",
@@ -185,8 +217,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "schedules",
             props: true,
             name: "Patient Experience Management.",
-            component: () =>
-              import("@/views/dashboard/schedules/index.vue"),
+            component: () => import("@/views/dashboard/schedules/index.vue"),
           },
           {
             path: "schedules/new/:scheduleId?",
@@ -195,6 +226,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/schedules/create-schedule.vue"),
           },
+          
         ],
       },
       {

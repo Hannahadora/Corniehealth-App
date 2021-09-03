@@ -121,19 +121,18 @@ export default class CorniDashboardeSideBar extends Vue {
   hovered = false;
 
   providerLinks: ISidebarLink[] = [
-    { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
+    { name: "Dashboard", to: "home", icon: "dashboard-icon" },
     {
       name: "Experience",
       to: "experience",
       icon: "patient-icon",
       children: [
-        { name: "Dashboard", to: { name: "Experience Dashboard" } },
         { name: "Patients", to: { name: "Patients" } },
         { name: "Schedules", to: "/dashboard/experience/schedules" },
         { name: "Appointments", to: { name: "Appointment" } },
         { name: "visits", to: "/dashboard/experience/visits" },
         { name: "Requests", to: { name: "Requests" } },
-        { name: "Taks", to: "/dashboard/experience/tasks" },
+        { name: "Taks", to: { name: "Tasks" } },
         { name: "Messaging", to: "/dashboard/experience/messages" },
         { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },
         { name: "Questionaires", to: "/dashboard/experience/questionaires" },

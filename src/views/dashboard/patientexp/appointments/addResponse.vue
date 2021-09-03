@@ -157,7 +157,7 @@ const emptyParticipant: ParticipantDetail = {
     AccordionComponent,
   },
 })
-export default class AddAppointment extends Vue {
+export default class AddResponse extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -236,38 +236,7 @@ appointmentId = "";
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  @Watch("id")
-  idChanged() {
-    this.setAppointmentResponse();
-  }
-
-  async setAppointmentResponse() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comment = appointment.comment;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-     this.status = appointment.status;
-     this.appointmentId = appointment.appointmentId;
-    this.participantDetail = appointment.participantDetail;
-  }
+  
   get payload() {
     const payload =  {
       status: this.status,
@@ -277,21 +246,20 @@ appointmentId = "";
     return payload
   }
  
+ 
   async submit() {
-    this.loading = true;
-    this.createAppointmentResponse();
-    this.loading = false;
-  }
-  async createAppointmentResponse() {
-
+  this.loading = true;
     this.appointmentId = this.id;
     try {
       const response = await cornieClient().post("/api/v1/appointment/addAppointmentReponse", this.payload);
       if (response.success) {
           window.notify({ msg: "Appointment Response created", status: "success" });
-          this.$router.push(`/dashboard/provider/experience/responses/${this.id}`);
+         this.$router.push(`/dashboard/provider/experience/responses/${this.id}`);
+        
       }
+       this.loading = false;
     } catch (error) {
+       this.loading = false;
       console.log(error);
       window.notify({ msg: "Appointment Response not created", status: "error" });
      // this.$router.push("/dashboard/provider/experience/appointments");
@@ -310,7 +278,6 @@ appointmentId = "";
 
   async created() {
    // this.setDate();
-    this.setAppointmentResponse();
   }
 }
 </script>
