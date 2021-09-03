@@ -264,7 +264,7 @@
                                 <div class="w-4/12">
                                     <label for="">
                                         <span class="uppercase font-bold text-xs">SLot Size(Mins/Hrs)</span>
-                                        <input type="time" v-model="data.slotSize" class="w-full border rounded-lg p-2" id="appt" name="appt" required>
+                                        <input type="number" v-model="data.slotSize" class="w-full border rounded-lg p-2" id="appt" name="appt" required>
                                     </label>
                                 </div>
                                 <div class="w-4/12">
@@ -744,9 +744,9 @@ async created() {
      const body = {
          ...this.data,
          organizationId: this.data.organizationId ? this.data.organizationId : this.user.orgId,
-         slotSize: 5,
          practitioners: this.data.practitioners.map((i: any) => i.code),
          devices: this.data.devices.map((i: any) => i.code),
+         slotSize: +this.data.slotSize,
          id: this.$route.params.scheduleId,
          startTime: this.data.startTime ? `${this.data.startTime.split(':')[0]}:${this.data.startTime.split(':')[1]}` : '',
          endTime: this.data.endTime ? `${this.data.endTime.split(':')[0]}:${this.data.endTime.split(':')[1]}` : ''
@@ -764,7 +764,7 @@ async created() {
                         msg: "Schedule created successfully",
                         status: "success",
                     });
-                    this.$router.push('/dashboard/provider/schedules')
+                    this.$router.push('/dashboard/provider/experience/schedules')
                 } else {
                     notify({
                         msg: "Schedule creation failed",
@@ -786,7 +786,7 @@ async created() {
                         msg: "Schedule updated successfully",
                         status: "success",
                     });
-                    this.$router.push('/dashboard/provider/schedules')
+                    this.$router.push('/dashboard/provider/experience/schedules')
                 } else {
                     notify({
                         msg: "Schedule update failed",

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full my-2 h-screen">
-      <div class="containr-fluid" v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0">
+      <div class="containr-fluid" v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0 && !selectedStatus">
         <EmptyState />
       </div>
       <div v-else class="container-fluid bg-white sm:p-6 h-full">
@@ -17,24 +17,32 @@
                   @click="() => selectedStatus = 0"
                 >
                     <span class="flex flex-col uppercase">
-                      <span class="text-danger font-normal text-sm">Queued</span>
-                      <span class="text-danger font-semibold">23</span>
+                      <span class="text-primary font-normal text-sm">All Visits</span>
+                      <span class="text-primary font-semibold">{{ visits.length }}</span>
                     </span>
                 </div>
-                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg mx-4 cursor-pointer" :class="{'light-grey-bg': selectedStatus === 1}"
+                <div class=".w-full shadow-md w-2/12 p-4 mx-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 1}"
                   @click="() => selectedStatus = 1"
                 >
                     <span class="flex flex-col uppercase">
-                      <span class="text-danger font-normal text-sm text-primary">In-Progress</span>
-                      <span class="text-danger font-semibold text-primary">23</span>
+                      <span class="text-danger font-normal text-sm">Queued</span>
+                      <span class="text-danger font-semibold">{{ visits.filter((i) => i.status === "queue").length }}</span>
                     </span>
                 </div>
-                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 2}"
+                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg mx-4 cursor-pointer" :class="{'light-grey-bg': selectedStatus === 2}"
                   @click="() => selectedStatus = 2"
                 >
                     <span class="flex flex-col uppercase">
+                      <span class="text-warning font-normal text-sm">In-Progress</span>
+                      <span class="text-warning font-semibold ">{{ visits.filter((i) => i.status === "in-progress").length }}</span>
+                    </span>
+                </div>
+                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 3}"
+                  @click="() => selectedStatus = 3"
+                >
+                    <span class="flex flex-col uppercase">
                       <span class="text-danger font-normal text-sm text-success">Completed</span>
-                      <span class="text-danger font-semibold text-success">23</span>
+                      <span class="text-danger font-semibold text-success">{{ visits.filter((i) => i.status !== "in-progress" && i.status !== "queue").length }}</span>
                     </span>
                 </div>
             </div>
@@ -91,10 +99,10 @@
                 </template>
                 
                 <template #name="{ item }">
-                    <p>{{ item ? '' : '' }}XXXXXX</p>
+                    <p>{{ getAppointment(item.appointmentId).specialty }}</p>
                 </template>
                 <template #patient="{ item }">
-                    <p class="cursor-pointer" @click="showPatientDetails(item.id)">{{ item.patient }}</p>
+                    <p class="cursor-pointer" @click="showPatientDetails(item.patientId)">{{ item.patient }}</p>
                 </template>
                 <template #days="{ item }">
                     <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
@@ -176,17 +184,16 @@
                 v-model:visible="showColumnFilter"
                 />
                 <side-modal :visible="showCheckout" :header="'Check-Out'" @closesidemodal="() => showCheckout = false">
-                    <CheckOut :item="selectedVisit" @close="() => showCheckout = false" />
+                    <CheckOut :item="currentVisit" @close="() => showCheckout = false" />
                 </side-modal>
 
                 <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
-                <!-- <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane"> -->
-                    <CheckIn :item="selectedVisit" @close="() => showCheckin = false"  />
+                    <CheckIn :item="appointments[0]" @close="() => showCheckin = false"  />
                 </side-modal>
 
                 <side-modal :visible="showCheckNoapp" :header="'Check-In'" @closesidemodal="() => showCheckNoapp = false">
                 <!-- <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane"> -->
-                    <CheckinNoapp  />
+                    <CheckinNoapp :item="appointments[0]"  />
                 </side-modal>
 
                 <side-modal :visible="false">
@@ -207,7 +214,7 @@
 
                 <modal :visible="timeLineVissible">
                   <template #title>
-                    <p class="md flex items-center justify-between px-2" style="width: 440px">
+                    <p class="md flex items-center justify-between px2" style="width: 440px">
                       <span class="md font-lignt text-primary p-2 text-xl">Timeline</span> 
                       <span class="md text-danger cursor-pointer">
                         <router-link class="md" :to="{ name: 'Patient Visits Timeline', query: { visit: selectedVisit.id }}">
@@ -216,54 +223,15 @@
                       </span>
                     </p>
                   </template>
-                  <div class="w-full" style="max-height: 90vh;overflow-y:scroll">
-                    <div class="md w-4/12 px-4" style="width: 440px" v-for="(item, index) in selectedVisit.timelines" :key="index">
-                      <div class="md w-full">
-                        <div class="md w-full">
-                          <p class="md font-weight-light">{{ item.action }}</p>
-                          <p class="md font-weight-light italic text-xs text-gray-400">{{ new Date(item.createdAt).toDateString()}}</p>
-                          <p class="md font-weight-light text-lg" style="color: #114FF5">Open</p>
-                          <p class="md font-weight-light text-xs text-gray-400 italic ">Check Out: {{ new Date(item.checkOutTime).toLocaleDateString()}}</p>
-                        </div>
-                        <div class="md w-full my-2" style="height: 50px;border-left: 1px dashed #878E99;" v-if="index !== selectedVisit.timelines.length - 1">
-
-                        </div>
-                        
-                      </div>
-                    </div>
-
-                    <div class="w-full pb-5">
-                    <div class="container flex justify-end">
-                      <a @click="() => timeLineVissible = false" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
-                          Close
-                      </a>
-                    </div>
-                  </div>
-                  </div>
-
-                  
-
-                  <!-- <div class="w-4/12 px-4 my-2" style="width: 440px">
-                    <div class="w-full">
-                      <div class="w-full">
-                        <p class="font-weight-light textlf">Add Vitals</p>
-                        <p class="font-weight-light italic text-xs text-gray-400">April 10, 2020. 8:00 AM</p>
-                        <p class="font-weight-light text-lg" style="color: #114FF5">Open</p>
-                        <p class="font-weight-light text-xs text-gray-400 italic ">Check Out: 8:20 AM</p>
-                      </div>
-                      <div class="w-full" style="height: 50px;border-left: 1px dashed #878E99;">
-
-                      </div>
-                      
-                    </div>
-                  </div> -->
+                  <ActionLog :timeline="selectedVisit.timelines" @closetimeline="() => timeLineVissible = false" />
+                 
 
                 </modal>
 
                 <modal :visible="viewDetails">
                   <template #title>
                     <p class="flex items-center justify-between px-2" style="width: 440px">
-                      <span class="font-bold text-danger p-2 text-xl">{{ getPatientName(selectedVisit.patientId)}}</span> 
+                      <span class="font-bold text-danger p-2 text-xl">{{ getPatientName(selectedPatient.id)}}</span> 
                       <span class="bg-danger cursor-pointer" @click="() => viewDetails = false">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 4C0 1.79086 1.79086 0 4 0H20C22.2091 0 24 1.79086 24 4V20C24 22.2091 22.2091 24 20 24H4C1.79086 24 0 22.2091 0 20V4Z" fill="white"/>
@@ -279,11 +247,11 @@
                           <div class="w-11/12">
                             <div class="w-full py-2">
                               <span class="font-semibold text-primary">MRN No:</span> 
-                              <span class="ml-2">XXXXXX</span> 
+                              <span class="ml-2">{{ selectedPatientData.mrn }}</span> 
                             </div>
                             <div class="w-full py-2">
                               <span class="font-semibold text-primary">D.O.B:</span> 
-                              <span class="ml-2">12 April, 1989</span> 
+                              <span class="ml-2">{{ selectedPatientData.dob }}</span> 
                             </div>
                             <div class="w-full py-2">
                               <span class="font-semibold text-primary">Policy Expiry:</span> 
@@ -301,7 +269,7 @@
                           <div class="w-11/12">
                             <div class="py-2 w-full">
                               <span class="font-semibold text-primary">Gender:</span> 
-                              <span class="ml-2">Male</span> 
+                              <span class="ml-2">{{ selectedPatientData.gender }}</span> 
                             </div>
                             <div class="py-2 w-full">
                               <span class="font-semibold text-primary">Profile Type</span> 
@@ -372,12 +340,14 @@ import CancelIcon from './components/cancel.vue'
 import UpdateIcon from './components/update.vue'
 import NoshowIcon from './components/no-show.vue'
 import ManageBillIcon from './components/manage-bill.vue'
+import ActionLog from './components/timeline-component.vue'
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
 
 @Options({
   components: {
+    ActionLog,
     MultiSelect,
     CancelIcon,
     Close,
@@ -422,6 +392,8 @@ export default class PractitionerExistingState extends Vue {
   selectedStatus = 0;
   filterByType: any = [ ]
   filterByStatus: any = [ ]
+  completedStatus: any = [  ]
+  currentVisitId = '';
 
   activeTab = 0;
   showEditPane = false;
@@ -439,6 +411,8 @@ export default class PractitionerExistingState extends Vue {
 
   selectedSchedule: any = { };
   selectedVisit : any = { };
+  selectedPatient : any = { };
+  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
 
   @visitsStore.State
   visits!: any[];
@@ -459,7 +433,7 @@ export default class PractitionerExistingState extends Vue {
   schedulesByPractitioner!: () => Promise<any>;
 
   @visitsStore.Action
-  checkin!: (id: string) => Promise<boolean>;
+  checkin!: (body: any) => Promise<boolean>;
 
   @visitsStore.Action
   startEncounter!: (id: string) => Promise<boolean>;
@@ -479,11 +453,11 @@ export default class PractitionerExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    {
-      title: "Location",
-      key: "location",
-      show: true,
-    },
+    // {
+    //   title: "Location",
+    //   key: "location",
+    //   show: true,
+    // },
     {
       title: "Specialty",
       key: "name",
@@ -518,6 +492,10 @@ export default class PractitionerExistingState extends Vue {
   statuses = ['All', 'Completed', 'Queue', 'In-Progress']
   availableSlots: any = [ ]
 
+  get currentVisit() {
+    if (!this.currentVisitId) return { }
+    return this.visits.find((i: any) => i.id === this.currentVisitId);
+  }
 
   get headers() {
     const preferred =
@@ -540,10 +518,18 @@ export default class PractitionerExistingState extends Vue {
 
         if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
       }
-
     })
 
     const visits = filtered.map((i: any) => {
+      if (i.status === "cancelled" || i.status === "no-show") {
+        i.completedStatus = "Completed";
+      } else if (i.status === "queue") {
+        i.completedStatus = "Queue";
+      } else {
+        i.completedStatus = "In-Progress";
+      }
+      console.log(i, "I");
+      
       return {
         ...i,
         action: i.id,
@@ -555,6 +541,9 @@ export default class PractitionerExistingState extends Vue {
         practitioners: this.getActors(i.appointmentId)
       };
     });
+    if (this.selectedStatus === 1) return visits.filter((i: any) => i.completedStatus === "Queue");
+    if (this.selectedStatus === 2) return visits.filter((i) => i.status === "in-progress");
+    if (this.selectedStatus === 3) return visits.filter((i) => i.status !== "in-progress" && i.status !== "queue");
     return visits;
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);
@@ -562,6 +551,7 @@ export default class PractitionerExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
+    console.log(pt, id);
     
     return pt ? `${pt.firstname} ${pt.lastname}` : '';
   }
@@ -570,6 +560,12 @@ export default class PractitionerExistingState extends Vue {
     const pt = this.visits.find((i: any) => i.id === id);
     console.log(pt, "PTTT");
     this.selectedVisit = pt ? pt : { };
+  }
+
+  setSelectedPatient(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    console.log(pt, "PTTTPPPP");
+    this.selectedPatient = pt ? pt : { };
   }
 
   getActors(id: string) {
@@ -603,6 +599,18 @@ export default class PractitionerExistingState extends Vue {
     const marked = await this.noShow(id);
     if (marked) {
       window.notify({ msg: "Visit marked as no-show", status: "success" });
+    }
+  }
+
+  get selectedPatientData() {
+    if (!this.selectedPatient || !this.selectedPatient.id) return { };
+    const data = this.selectedPatient;
+    console.log(data, "DATAA");
+    
+    return {
+      gender: data.gender,
+      dob: `${new Date(data.dateOfBirth).getDate()} ${this.months[new Date(data.dateOfBirth).getMonth()]}, ${new Date(data.dateOfBirth).getFullYear()}`,
+      mrn: data.mrn
     }
   }
 
@@ -649,11 +657,12 @@ export default class PractitionerExistingState extends Vue {
 
   showCheckoutPane(id: string) {
     this.setSelectedVisit(id)
+    this.currentVisitId = id;
     this.showCheckout = true;
   }
 
   showPatientDetails(id: string) {
-    this.setSelectedVisit(id)
+    this.setSelectedPatient(id)
     this.viewDetails = true;
   }
 
@@ -674,7 +683,7 @@ export default class PractitionerExistingState extends Vue {
 
   async created() {
     if (!this.patients || this.patients.length === 0) await this.getPatients();
-    console.log(this.patients, "appos");
+    console.log(this.patients, "patients");
     if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
     console.log(this.appointments, "appos");
     
@@ -818,6 +827,23 @@ export default class PractitionerExistingState extends Vue {
       overflow: scroll;
       padding-bottom: 40px;
       padding-bottom: 24px;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .h-screen::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .h-screen {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+
+    .file-picker {
+        width: 0;
+        height: 0;
+        overflow: hidden;
     }
 
     .light-grey-bg {
