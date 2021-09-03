@@ -2,6 +2,10 @@
     <div class="w-full p-4 overflow-y-scroll h-scrren">
         <div class="container-fluid">
 
+            <div class="w-full">
+                <PatientDetails :id="appointmentPatients.length > 0 ? appointmentPatients[0].code : ''" />
+            </div>
+
             <div class="w-full flex items-center">
                 <div class="w-4/12">
                     <div class="w-11/12">
@@ -24,83 +28,88 @@
                 <label class="block uppercase mb-1 text-xs font-bold">
                     <span class="flex justify-between">
                         <span class="uppercase font-semibold">Physician</span>
-                        <span class="uppercase  text-danger">assign to physician</span>
+                        <span class="uppercase  text-danger">reassign to physician</span>
                     </span>
                     <!-- <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.time"> -->
-                    <CornieSelect :items="actors" v-model="data.practitioner" style="width: 100%" />
+                    <!-- <CornieSelect :items="actors" v-model="data.practitioner" @change="selectPractitioner" style="width: 100%" /> -->
+                    <span>
+                        <MultiSelect :fullWidth="true">
+                        <template #selected>
+                            <span>
+                                <span>{{ selectedPractitioners }}</span>
+                            </span>
+                        </template>
+                        <div style="max-height: 350px;overflow-y: scroll;z-index:99999" class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                            <div class="py-1 px-1" role="none">
+                                <div class="w-full flex relative items-center my-2" v-for="(actor, index) in allActors" :key="index">
+                                    <div class="w-1/12">
+                                        <input type="checkbox" :checked="selectedActors.findIndex(i => i.code === actor.code) >= 0" name="" @click="selectPractitioner(actor, index)" id="">
+                                    </div>
+                                    <div class="w-5/12" @click="selectPractitioner(actor, index)">
+                                        <p class="capitalize font-semibold text-sm">{{ actor.display }}</p>
+                                        <span class="capitalize text-gray-400 font-normal text-xs">{{ actor.type}}</span>
+                                    </div>
+                                    <div class="w-6/12 flex justify-between ml-1">
+                                        <span class="text-danger text-xs font-semibold capitalize">View Avaliability</span>
+                                        <span class="text-danger text-xs font-semibold capitalize">View Profile</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </MultiSelect>
+                    </span>
                 </label>
             </div>
 
             <div class="w-full my-4" style="border-bottom: 1px dashed #C2C7D6;">
-                <CornieSelect :items="rooms" :label="'Room'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="rooms" :label="'Room'" v-model="checkinData.roomId" style="width: 100%" />
+            </div>
+
+            <div class="w-full my-4">
+                <CornieSelect :items="allPatients" :label="'Patient'" v-model="checkinData.patientId" style="width: 100%" />
+            </div>
+
+            <div class="w-full my-4">
+                <CornieSelect :items="slots" :label="'Slot'" v-model="checkinData.slotId" style="width: 100%;font-size:13px" />
             </div>
 
             <div class="w-full mb-4 mt-8">
-                <TextArea :label="'Notes'" v-model="data.notes" style="width: 100%" />
+                <TextArea :label="'Notes'" v-model="checkinData.notes" style="width: 100%" />
             </div>
 
             <div class="w-full">
                 <div class="container-fluid">
                     <p class="font-semibold font-normall text-sm">All patients for visit</p>
                 </div>
-                <div class="container-fluid my-5 border-b-2 pb-2">
-                    <div class="w-full flex items-center">
-                        <div class="w-1/12 rounded-full">
-                            <img src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image">
-                        </div>
-                        <div class="w-11/12 ml-2">
-                            <div class="w-full">
-                                <p class="font-semibold text-sm mb-0">Damorola David</p>
-                            </div>
-                            <div class="w-full flex justify-between">
-                                <span>
-                                    <span class="cursor-pointer text-success font-light text-xs">APPOINTMENT TIME 10:00 AM</span>
-                                    <span class="mx-1 font-light text-gray-500">|</span>
-                                    <span class="cursor-pointer text-gray-400 font-light text-xs uppercase text-success">Queue No: #02</span>
-                                </span>
-                                <span class="cursor-pointer text-danger font-light text-xs cursor-pointer font-semibold">Queue</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container-fluid my-5 pb-2">
-                    <div class="w-full flex items-center">
-                        <div class="w-1/12 rounded-full">
-                            <img src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image">
-                        </div>
-                        <div class="w-11/12 ml-2">
-                            <div class="w-full">
-                                <p class="font-semibold text-sm mb-0">Damorola David</p>
-                            </div>
-                            <div class="w-full flex justify-between">
-                                <span>
-                                    <span class="cursor-pointer text-success font-light text-xs">APPOINTMENT TIME 10:00 AM</span>
-                                    <span class="mx-1 font-light text-gray-500">|</span>
-                                    <span class="cursor-pointer text-gray-400 font-light text-xs uppercase text-success">Queue No: #03</span>
-                                </span>
-                                <span class="cursor-pointer text-danger font-light text-xs cursor-pointer font-semibold">Queue</span>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div class="container-fluid my-5 pb-2" v-for="(patient, index) in appointmentPatients" :key="index">
+                    <Visitor :id="patient.id" />
                 </div>
             </div>
 
 
         </div>
-        
         <div class="w-full mb-3 mt-8">
             <div class="container-fluid flex justify-end items-center">
-                <corniebtn :loading="false">
-                    <router-link to="" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
+                <corniebtn>
+                    <router-link to="" style="border: 1px solid #080056;" class="cursor-pointer bg-white focus:outline-none text-primary border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
                     </router-link>
                 </corniebtn>
-                <Button :loading="loading" @click="setSession">
-                    <a style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
+                    <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         Save 
                     </a>
-                </Button>
+                    <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
+                </button> -->
+                <SplitButton>
+                    <template #main>
+                        <span @click="setSession" >Check-In</span>
+                    </template>
+                    <template #dropdown>
+                        <span><ChevronDown class="stroke-current white dd" /></span>
+                    </template>
+                </SplitButton>
             </div>
         </div>
     </div>
@@ -119,7 +128,13 @@ import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
 import ILocation from "@/types/ILocation";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
+import SplitButton from '@/components/split-button.vue'
+import PatientDetails from './patient-details.vue'
+import slotService from '../helper/slot-service'
+import MultiSelect from '../../schedules/components/apply-to.vue'
+import IPractitioner from "@/types/IPractitioner";
+import Visitor from './visitor.vue'
 
 const visitsStore = namespace('visits');
 const locationsStore = namespace('location');
@@ -127,6 +142,8 @@ const practitionersStore = namespace('practitioner');
 
 @Options({
   components: {
+      SplitButton,
+      Visitor,
       Accordion,
       CornieInput,
       CustomDropdown,
@@ -137,6 +154,8 @@ const practitionersStore = namespace('practitioner');
       ToggleCheck,
       CornieSelect,
       TextArea,
+      PatientDetails,
+      MultiSelect,
   },
 })
 export default class CheckIn extends Vue {
@@ -144,34 +163,57 @@ export default class CheckIn extends Vue {
  showBreaks = false;
  showPlanning = false;
  loading = false;
+ selectedActors: any = [ ]
 
  @Prop()
  item!: any;
 
+ availableSlots: any = [ ]
+ checkinData: any = {
+    "appointmentId": this.item.id,
+    "patientId": "",
+    "type": this.item.appointmentType,
+    "status": "in-progress",
+    "roomId": "",
+    "notes": "",
+    "slotId": "",
+}
+
  @visitsStore.Action
- checkin!: (id: string) => Promise<boolean>;
+ checkin!: (body: any) => Promise<boolean>;
 
  @locationsStore.State
  locations!: ILocation[];
+
+ @visitsStore.Action
+ getPatients!: () => Promise<void>;
+
+ @visitsStore.State
+ patients!: any[];
+
+ @visitsStore.Action
+ schedulesByPractitioner!: (id: string) => Promise<any>;
 
  @locationsStore.Action
  fetchLocations!: () => Promise<void>;
 
  @practitionersStore.State
- practitioners!: ILocation[];
+ practitioners!: IPractitioner[];
 
  @practitionersStore.Action
  fetchPractitioners!: () => Promise<void>;
 
  async setSession() {
      this.loading = true;
-    const response = await this.checkin(this.item.id);
+    const response = await this.checkin(this.checkinData);
+    console.log(response, "Checked in");
+    
     this.loading = false;
     if (response) window.notify({ msg: "Checked In", status: "success" });
     this.$emit('close')
 }
 
-    data: any = { }
+    data: any = { date: new Date(Date.now()), time: new Date(Date.now()).toTimeString() }
 
  activeStates: any = [
      { display: 'Yes', value: 'yes' },
@@ -222,11 +264,97 @@ export default class CheckIn extends Vue {
      })
  }
 
+ get allActors() {
+    if (!this.practitioners || this.practitioners.length === 0) return [ ];
+    return this.practitioners.map(i => {
+        return { code: i.id, display: `${i.firstName} ${i.lastName }`, type: i.type };
+    })
+ }
+
+ get selectedPractitioners() {
+     if (!this.selectedActors || this.selectedActors.length === 0) return 'Select';
+     let str = this.selectedActors[0].display;
+     if (this.selectedActors.length > 1) return `${str}...`;
+     return str;
+ }
+
+ get allPatients() {
+     if (!this.patients || this.patients.length === 0) return [ ];
+     return this.patients.map((i: any) => {
+         return {
+             code: i.id,
+             display: `${i.firstname} ${i.lastname}`
+         }
+     })
+ }
+
+ get appointmentPatients() {
+     if (!this.item.Patients || this.item.Patients.length === 0) return [ ];
+     if (this.item.Patients.length > 2) return this.item.Patients.slice(0, 2)
+     return this.item.Patients.map((i: any) => {
+         return {
+             code: i.id,
+             display: `${i.firstname} ${i.lastname}`
+         }
+     })
+ }
+
+ get slots() {
+     if (!this.availableSlots || this.availableSlots.length === 0) return [ ];
+     return this.availableSlots.map((i: any) => {
+         return { code: `${i.start} - ${i.end}`, display: `${i.start} - ${i.end}` }
+     })
+ }
+
+  selectPractitioner(actor: any, index: number) {
+     if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
+        this.getSlots(actor.code);
+        this.selectedActors.push(actor)
+     } else {
+         this.selectedActors.splice(index, 1);
+     }
+ }
+
+
+ getSlots(id: string) {
+     this.schedulesByPractitioner(id).then(res => {
+         this.availableSlots = slotService.getAvailableSlots(res)
+     })
+ }
+ 
+
+ @Watch('item', { immediate: true, deep: true })
+ onGetSlots() {
+     console.log(this.item, "MMMM");
+     
+    //  if (!this.item || !this.item.Practioners || this.item.Practioners.length === 0) return;
+     this.schedulesByPractitioner(this.item.Practitioners[0].id).then(res => {
+         console.log(res, "RESSSSS");
+         
+         this.availableSlots = slotService.getAvailableSlots(res)
+     })
+     .catch(err => {
+         console.log(err)
+     })
+ }
+
+
+
     async created() {
         if (!this.locations || this.locations.length === 0) await this.fetchLocations();
+        if (!this.patients || this.patients.length === 0) await this.getPatients();
         if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
-        console.log(this.practitioners, "locs");
+        console.log(this.practitioners, "pracs");
+        console.log(this.patients, "pats");
+
+        // this.checkin(req).then((res: any) => {
+        //   console.log(res, "VISIT");
+        // })
+        // .catch((err: any) => {
+        //   console.log(err);
         
+        // });
+    
     }
 
 }

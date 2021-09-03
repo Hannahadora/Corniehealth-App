@@ -13,10 +13,10 @@ export async function getVisits() {
   return { };
 }
 
-export async function schedulesByPractitioner() {
+export async function schedulesByPractitioner(id: string) {
   try {
     const response = await cornieClient().get(
-        "/api/v1/schedule/practitioner/87e846a3-bac0-43b9-a4db-0b2605426c42"
+        `/api/v1/schedule/practitioner/${id}`
     );
         
     return response.data;
@@ -31,7 +31,7 @@ export async function getPatients() {
     const response = await cornieClient().get(
         "/api/v1/patient"
     );
-        
+      
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error fetching slots", status: "error" });
@@ -54,12 +54,12 @@ export async function createSlot(body: any) {
   }
 }
 
-export async function checkin(id: string) {
+export async function checkin(body: any) {
   try {
-    const response = await cornieClient().post(`/api/v1/visit/check-in/${id}`, { });
+    const response = await cornieClient().post(`/api/v1/visit/check-in`, body);
     console.log(response, "visit checkin");
     
-    return response.data as boolean;
+    return response.data;
   } catch (error) {
     notify({
       msg: "There was an error checking in this visit",

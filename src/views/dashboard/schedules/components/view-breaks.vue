@@ -157,7 +157,6 @@ export default class EditDetail extends Vue {
  ]
 
  toggleBreaksDisplay() {
-      alert('hi')
      this.showBreaks = !this.showBreaks;
  }
 

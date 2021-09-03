@@ -13,8 +13,8 @@ export default {
     appointments: [],
   },
   mutations: {
-    setAppointments(state, appointments: IAppointment[]) {
-      state.appointments = [...appointments];
+    setAppointments(state, appointments: any) {      
+      state.appointments = [...appointments.result];
     },
     updateAppointments(state, appointments: IAppointment[]) {
       const appointmentSet = new ObjectSet(

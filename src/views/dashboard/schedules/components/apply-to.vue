@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <!-- This example requires Tailwind CSS v2.0+ -->
-        <div class="w-11/12 relative inline-block text-left">
+        <div class="relative inline-block text-left" :class="{ 'w-11/12': !fullWidth, 'w-12/12': fullWidth, 'w-full': fullWidth, }">
                 <label
                     v-if="label"
                     class="block uppercase mb-1 text-xs font-bold"
@@ -46,6 +46,9 @@ export default class ApplyTo extends Vue {
 
     @Prop({ type: String, default: '' })
     id!: string;
+
+    @Prop({ type: Boolean, default: false })
+    fullWidth!: boolean;
 
     showSelectArea() {
         this.show = !this.show;

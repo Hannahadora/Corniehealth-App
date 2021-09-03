@@ -2,6 +2,9 @@
     <div class="w-full p-4 overflow-y-scroll h-scrren">
         <div class="container-fluid">
 
+            <div class="w-full">
+                <PatientDetail :id="item.patientId" />
+            </div>
             <div class="w-full flex items-center">
                 <div class="w-4/12">
                     <div class="w-11/12">
@@ -14,25 +17,15 @@
                 <div class="w-8/12 flex">
                     <div class="container">
                         <div class="w-12/12">
-                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="item.startDate" />
+                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="data.date" />
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="w-full my-5 image_area p-2">
-                <div class="container">
-                    <div class="w-full flex items-center">
-                        <div class="w-1/12 rounded-full">
-                            <img src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image">
-                        </div>
-                        <div class="w-11/12 rounded-full ml-2">
-                            <p class="font-semibold text-sm mb-0">Dr David</p>
-                        </div>
-                    </div>
-                    <div class="w-full mt-2">
-                        <p class="text-sm mb-0">Attending / Discharging Physician</p>
-                    </div>
+                <div class="container" v-for="(actor, index) in appment ? appment.Practitioners : [ ]" :key="index">
+                    <ActorView :id="actor.id" />
                 </div>
             </div>
 
@@ -51,7 +44,7 @@
             </div>
 
             <div class="w-full my-4">
-                <CornieSelect :items="rooms" :label="'Room'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="rooms" :label="'Room'" v-model="checkoutData.roomId" style="width: 100%" />
             </div>
 
             <div class="w-full my-4">
@@ -60,19 +53,28 @@
 
 
         </div>
-        
-        <div class="w-full mb-3 mt-14">
+
+        <div class="w-full mb-3 mt-8">
             <div class="container-fluid flex justify-end items-center">
-                <corniebtn >
-                    <router-link to="" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
+                <corniebtn>
+                    <router-link to="" style="border: 1px solid #080056;" class="cursor-pointer bg-white focus:outline-none text-primary border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
                     </router-link>
                 </corniebtn>
-                <Button :loading="loading" @click="endSession">
-                    <a style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
+                    <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         Save 
                     </a>
-                </Button>
+                    <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
+                </button> -->
+                <SplitButton>
+                    <template #main>
+                        <span @click="endSession" >Check-Out</span>
+                    </template>
+                    <template #dropdown>
+                        <span><ChevronDown class="stroke-current white dd" /></span>
+                    </template>
+                </SplitButton>
             </div>
         </div>
     </div>
@@ -91,13 +93,20 @@ import ToggleCheck from '@/components/ToogleCheck.vue'
 import CornieSelect from '@/components/cornieselect.vue'
 import TextArea from '@/components/textarea.vue'
 import ILocation from "@/types/ILocation";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
+import PatientDetail from './patient-details.vue'
+import SplitButton from '@/components/split-button.vue'
+import ActorView from './practitioner.vue'
 
 const visitsStore = namespace('visits');
 const locationsStore = namespace('location');
+const appointment = namespace("appointment");
+
 
 @Options({
   components: {
+      ActorView,
+      SplitButton,
       Accordion,
       CornieInput,
       CustomDropdown,
@@ -108,6 +117,7 @@ const locationsStore = namespace('location');
       ToggleCheck,
       CornieSelect,
       TextArea,
+      PatientDetail,
   },
 })
 export default class CheckIn extends Vue {
@@ -115,6 +125,12 @@ export default class CheckIn extends Vue {
  showBreaks = false;
  showPlanning = false;
  loading = false;
+
+  @appointment.State
+  appointments!: any[];
+
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
 
  @Prop()
  item!: any;
@@ -128,7 +144,8 @@ export default class CheckIn extends Vue {
  @visitsStore.Action
  checkout!: (id: string) => Promise<boolean>;
 
-    data: any = { paidBill: '72,630' }
+    data: any = { paidBill: '72,630', roomId: "", date: new Date(Date.now()) }
+    checkoutData: any = { paidBill: '72,630', roomId: this.item.roomId }
 
  activeStates: any = [
      { display: 'Yes', value: 'yes' },
@@ -164,12 +181,25 @@ export default class CheckIn extends Vue {
      { display: 'Saturday', code: false },
      { display: 'Sunday', code: false }
  ]
+
+ @Watch('item', { immediate: true, deep: true })
+ onGetSlots() {
+    const room = this.rooms.find((i: any) => i.code === this.item.roomId);
+    this.checkoutData.roomId = room ? room.code : '';
+    console.log(room, "room");
+    
+ }
     
      get rooms() {
         if (!this.locations || this.locations.length === 0) return [ ];
         return this.locations.map(i => {
             return { code: i.id, display: i.name };
         })
+    }
+
+    get appment() {
+        if (!this.appointments || this.appointments.length === 0) return { };
+        return this.appointments.find((i: any) => i.id === this.item.appointmentId);
     }
 
     get updates() {
@@ -189,7 +219,8 @@ export default class CheckIn extends Vue {
 
     async created() {
         if (!this.locations || this.locations.length === 0) await this.fetchLocations();
-        console.log(this.locations, "LLLL");
+        if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
+        console.log(this.appointments, "WWWW");
         
     }
 
