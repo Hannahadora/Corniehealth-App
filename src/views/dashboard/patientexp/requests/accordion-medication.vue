@@ -2,9 +2,9 @@
 <div class="bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-full">
   <div class="w-full">
     <div
-      class="h-11 w-full border-b-2 flex items-center justify-between"
+      class="h-11 w-full flex items-center justify-between"
       :class="{
-        'bg-white': expand,
+        'bg-white border-b-2': expand,
         'rounded-t-xl': first && expand,
       }"
     >
@@ -18,17 +18,10 @@
         >
           <slot name="misc" />
         </span>
-        <chevron-down-icon
-          class="cursor-pointer stroke-current"
+        <plus-icon
+          class="text-primary cursor-pointer fill-current"
           :class="{ 'text-primary': expand }"
-          @click="hide"
-          v-if="expand"
-        />
-        <chevron-right-icon
-          class="cursor-pointer stroke-current"
-          :class="{ 'text-primary': expand }"
-          v-else
-          @click="expanded"
+          @click="showMedication"
         />
       </span>
     </div>
@@ -40,13 +33,13 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import PlusIcon from "@/components/icons/plus.vue";
 
 @Options({
   name: "AccordionItem",
   components: {
     ChevronRightIcon,
-    ChevronDownIcon,
+    PlusIcon,
   },
 })
 export default class AccordionComponent extends Vue {
@@ -56,27 +49,20 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: Boolean, default: false })
   first!: boolean;
 
- @Prop({ type: Boolean, default: false })
-  modelValue!: boolean;
+  expand = false;
 
-  expand = true;
+  @Prop({ type: Boolean, default: false })
+  opened!: boolean;
 
-  
- expanded() {
-    this.expand = true;
-    this.$emit("update:modelValue", true);
+  @Watch("opened")
+  toggled() {
+    this.expand = this.opened;
   }
-
-  hide() {
-    this.expand = false;
-    this.$emit("update:modelValue", false);
-  }
-
   @Prop({ type: String, default: "" })
   titledescription!: string;
 
-  created() {
-    this.expand = Boolean(this.modelValue);
+  showMedication(){
+       this.$emit("show");
   }
 }
 </script>

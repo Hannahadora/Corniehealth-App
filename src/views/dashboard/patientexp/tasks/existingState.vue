@@ -1,14 +1,34 @@
 <template>
   <div class="w-full pb-80">
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Medications</a></li>    
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Diagnostics</a></li>
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Referrals</a></li>
-    <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(4)"  :class="{'active' :  selected === 4  }" :aria-selected="selected === 4">Other Requests</a></li>
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Upcoming</a></li>    
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Active</a></li>
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">History</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="medications">   
           <span class="flex justify-end w-full mb-8">
+              <button
+                  @click="$router.push('/dashboard/provider/experience/schedules')"
+                  type="button"
+                  class="
+                  outline-primary
+                  rounded-full
+                  text-black
+                 mt-5
+                    py-2
+                    pr-12
+                    pl-12
+                    px-3
+                    mr-4
+                    mb-5
+                  focus:outline-none
+                  hover:bg-primary
+                  hover:text-white
+                  "
+              >
+                  My Slots
+              </button>
             <button
               class="
                 bg-danger
@@ -16,8 +36,8 @@
                 text-white
                 mt-5
                 py-2
-                pr-5
-                pl-5
+                pr-12
+                pl-12
                 px-3
                 mb-5
                 font-semibold
@@ -33,12 +53,8 @@
           <cornie-table :columns="rawHeaders" v-model="items">
               <template #actions="{ item }">
                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/view-request/${item.id}`)">
-                  <newview-icon  class="text-blue-700 fill-current"/>
+                  <newview-icon  class="text-yellow-500 fill-current"/>
                   <span class="ml-3 text-xs">View</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
-                  <newview-icon  class="text-blue-700 fill-current"/>
-                  <span class="ml-3 text-xs">View & Edit</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                   <update-icon />
@@ -48,13 +64,13 @@
                   <plus-icon class="text-primary fill-current"/>
                   <span class="ml-3 text-xs">Add Appointment</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-red-500 fill-current"/>
-                  <span class="ml-3 text-xs">Add Task</span>
-                </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                  <note-icon class="text-green-600 fill-current"/>
-                  <span class="ml-3 text-xs">Add Notes</span>
+                    <note-icon class="text-green-300 fill-current" />
+                    <span class="ml-3 text-xs">Make Notes</span>
+                </div>
+                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                    <danger-icon/>
+                    <span class="ml-3 text-xs">Cancel</span>
                 </div>
               </template>
               <template #Participants="{ item }">
@@ -166,6 +182,7 @@ import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import DangerIcon from "@/components/icons/danger.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
@@ -187,6 +204,7 @@ const appointment = namespace("appointment");
     UpdateIcon,
     NoteIcon,
     ThreeDotIcon,
+    DangerIcon,
     PlusIcon,
     SearchIcon,
   //  CloseIcon,

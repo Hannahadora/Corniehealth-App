@@ -53,7 +53,7 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <cancel-icon />
+          <cancel-icon/>
           <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
@@ -186,7 +186,7 @@ export default class AppointmentExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", key: "keydisplay", show: true },
+    { title: "Identifier", key: "id", show: true },
     {
       title: "Patient",
       key: "Patients",
