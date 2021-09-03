@@ -43,50 +43,52 @@
         </span>
       </span>
     </div>
-    <cornie-table v-model="items" :columns="headers">
-      <template #name="{ item }">
-        <div class="flex items-center">
-          <avatar class="w-5 h-5" :src="item.photo" />
-          <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
-        </div>
-      </template>
-      <template #actions="{ item }">
-        <table-action
-          @click="
-            $router.push(
-              `/dashboard/provider/experience/view-patient/${item.id}`
-            )
-          "
-        >
-          <newview-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">View patient details</span>
-        </table-action>
-        <table-action
-          @click="
-            $router.push(
-              `/dashboard/provider/experience/edit-patient/${item.id}`
-            )
-          "
-        >
-          <edit-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </table-action>
-        <table-action @click="removePatient(item.id)">
-          <cancel-icon class="text-red-500 fill-current" />
-          <span class="ml-3 text-xs">Remove Patient</span>
-        </table-action>
-        <table-action
-          @click="$router.push('/dashboard/provider/experience/settings')"
-        >
-          <settings-icon class="text-red-500 fill-current" />
-          <span class="ml-3 text-xs">Patient Settings</span>
-        </table-action>
-        <table-action>
-          <checkin-icon />
-          <span class="ml-3 text-xs">Check-In</span>
-        </table-action>
-      </template>
-    </cornie-table>
+    <div class="p-2">
+      <cornie-table v-model="items" :columns="headers">
+        <template #name="{ item }">
+          <div class="flex items-center">
+            <avatar class="w-5 h-5" :src="item.photo" />
+            <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
+          </div>
+        </template>
+        <template #actions="{ item }">
+          <table-action
+            @click="
+              $router.push(
+                `/dashboard/provider/experience/view-patient/${item.id}`
+              )
+            "
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View patient details</span>
+          </table-action>
+          <table-action
+            @click="
+              $router.push(
+                `/dashboard/provider/experience/edit-patient/${item.id}`
+              )
+            "
+          >
+            <edit-icon class="text-primary fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </table-action>
+          <table-action @click="removePatient(item.id)">
+            <cancel-icon class="text-red-500 fill-current" />
+            <span class="ml-3 text-xs">Remove Patient</span>
+          </table-action>
+          <table-action
+            @click="$router.push('/dashboard/provider/experience/settings')"
+          >
+            <settings-icon class="text-red-500 fill-current" />
+            <span class="ml-3 text-xs">Patient Settings</span>
+          </table-action>
+          <table-action>
+            <checkin-icon />
+            <span class="ml-3 text-xs">Check-In</span>
+          </table-action>
+        </template>
+      </cornie-table>
+    </div>
     <registration-dialog v-model="registerNew" />
   </div>
 </template>
