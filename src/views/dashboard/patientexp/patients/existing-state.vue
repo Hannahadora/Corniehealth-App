@@ -81,6 +81,10 @@
           <settings-icon class="text-red-500 fill-current" />
           <span class="ml-3 text-xs">Patient Settings</span>
         </table-action>
+        <table-action>
+          <checkin-icon />
+          <span class="ml-3 text-xs">Check-In</span>
+        </table-action>
       </template>
     </cornie-table>
     <registration-dialog v-model="registerNew" />
@@ -103,12 +107,16 @@ import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import RegistrationDialog from "./registration-dialog.vue";
 import RegistrationChart from "./registration-chart.vue";
+import CheckinIcon from "@/components/icons/checkin.vue";
+import CheckIn from "@/views/dashboard/visits/components/checkin-noappointment.vue";
 
 const patients = namespace("patients");
 @Options({
   name: "PatientExistingState",
   components: {
     CornieCard,
+    CheckIn,
+    CheckinIcon,
     RegistrationChart,
     RegistrationDialog,
     TableAction,
