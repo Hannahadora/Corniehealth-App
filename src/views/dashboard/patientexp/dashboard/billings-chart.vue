@@ -6,18 +6,18 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ChartCard from "./chart-card.vue";
-import { Chart, DoughnutController } from "chart.js";
+import { Chart } from "chart.js";
 import { CustomDoughnutController } from "@/plugins/chart";
 
 Chart.register(CustomDoughnutController);
 
 @Options({
-  name: "AppointmentChart",
+  name: "BillingsChart",
   components: {
     ChartCard,
   },
 })
-export default class AppointmentChart extends Vue {
+export default class BillingsChart extends Vue {
   chart!: Chart;
   mounted() {
     this.mountChart();
@@ -25,12 +25,12 @@ export default class AppointmentChart extends Vue {
 
   mountChart() {
     const data = {
-      labels: ["Referrals", "Confirmed", "Follow Ups", "New Patients"],
+      labels: ["New billing", "Old bill"],
       datasets: [
         {
           label: "Dataset 1",
-          backgroundColor: ["#F7B538", "#541388", "#35BA83", "#114FF5"],
-          data: [2, 5, 12, 14],
+          backgroundColor: ["#541388", "#F0F4FE"],
+          data: [80, 20],
         },
       ],
     };
@@ -40,20 +40,21 @@ export default class AppointmentChart extends Vue {
       type: "derivedDoughnut",
       data,
       options: {
+        cutout: 90,
         elements: {
           center: {
-            text: "80 Patients appointments",
+            text: "N800, 000",
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
-            minFontSize: 17,
+            minFontSize: 20,
             lineHeight: 25,
           },
         },
         responsive: true,
         plugins: {
           legend: {
-            position: "right",
+            position: "bottom",
             labels: {
               boxWidth: 10,
               boxHeight: 10,
