@@ -10,7 +10,6 @@
           <span class="font-extrabold"> 10mins </span>
         </template>
       </rating-bar>
-
       <rating-bar
         :percent="30"
         color="warning"

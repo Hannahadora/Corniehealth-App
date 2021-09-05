@@ -139,5 +139,3 @@ export default class RegistrationChart extends Vue {
   }
 }
 </script>
-
-function groupData() { throw new Error("Function not implemented."); }
