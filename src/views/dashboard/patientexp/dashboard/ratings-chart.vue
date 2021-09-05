@@ -1,6 +1,10 @@
 <template>
-  <chart-card height="439px" title="Billings and Payments">
-    <canvas ref="chart"></canvas>
+  <chart-card height="439px" title="Rating">
+    <div class="w-full grid grid-cols-3">
+      <span class="block p-7">
+        <canvas id="rating-chart"></canvas>
+      </span>
+    </div>
   </chart-card>
 </template>
 <script lang="ts">
@@ -12,12 +16,12 @@ import { CustomDoughnutController } from "@/plugins/chart";
 Chart.register(CustomDoughnutController);
 
 @Options({
-  name: "BillingsChart",
+  name: "RatingChart",
   components: {
     ChartCard,
   },
 })
-export default class BillingsChart extends Vue {
+export default class RatingChart extends Vue {
   chart!: Chart;
   mounted() {
     this.mountChart();
@@ -25,25 +29,25 @@ export default class BillingsChart extends Vue {
 
   mountChart() {
     const data = {
-      labels: ["New billing", "Old bill"],
+      labels: ["Positive", "Others"],
       datasets: [
         {
-          label: "Dataset 1",
-          backgroundColor: ["#541388", "#F0F4FE"],
-          data: [80, 20],
+          backgroundColor: ["#35BA83", "#F0F4FE"],
+          data: [4, 1],
         },
       ],
     };
-    const ctx: any = this.$refs.chart;
+    const ctx: any = document.getElementById("rating-chart");
+    ctx.height = 150;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "derivedDoughnut",
       data,
       options: {
-        cutout: 90,
+        cutout: "70%",
         elements: {
           center: {
-            text: "N800, 000",
+            text: "4.1/5 Average",
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
@@ -54,13 +58,7 @@ export default class BillingsChart extends Vue {
         responsive: true,
         plugins: {
           legend: {
-            position: "bottom",
-            labels: {
-              boxWidth: 10,
-              boxHeight: 10,
-              pointStyle: "circle",
-              usePointStyle: true,
-            },
+            display: false,
           },
           title: {
             display: false,
@@ -71,3 +69,8 @@ export default class BillingsChart extends Vue {
   }
 }
 </script>
+<style scoped>
+.rating-grid {
+  grid-template-columns: 40% 55%;
+}
+</style>
