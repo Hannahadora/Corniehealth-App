@@ -13,18 +13,6 @@ interface ConfirmSetup {
   title?: string;
 }
 
-interface INotify {
-  msg: string;
-  status?: "success" | "error" | "info";
-  title?: string;
-}
-declare function notify(data: INotify): void;
-declare function confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
-
-declare module "@scelloo/cloudenly-ui/*";
-declare module "v-calendar";
-declare module "vue-select-connorshea";
-
 import { ChartTypeRegistry } from "chart.js";
 
 declare module "chart.js" {
@@ -49,4 +37,16 @@ declare global {
     confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
     notify(data: INotify): void;
   }
+
+  interface INotify {
+    msg: string;
+    status?: "success" | "error" | "info";
+    title?: string;
+  }
+  declare function notify(data: INotify): void;
+  declare function confirmAction(setUp?: ConfirmSetup): Promise<boolean>;
+
+  declare module "@scelloo/cloudenly-ui/*";
+  declare module "v-calendar";
+  declare module "vue-select-connorshea";
 }
