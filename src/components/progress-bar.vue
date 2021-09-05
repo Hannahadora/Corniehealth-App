@@ -5,7 +5,7 @@
   >
     <div
       :class="[color]"
-      class="text-xs leading-none rounded-r-xl rounded-l-xl py-1"
+      class="text-xs leading-none rounded-r-xl rounded-l-xl py-1.5"
       :style="{ width }"
     ></div>
   </div>
