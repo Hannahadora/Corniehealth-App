@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="439px" title="Billings and Payments">
+  <chart-card height="439px" title="Referral">
     <canvas ref="chart"></canvas>
   </chart-card>
 </template>
@@ -12,12 +12,12 @@ import { CustomDoughnutController } from "@/plugins/chart";
 Chart.register(CustomDoughnutController);
 
 @Options({
-  name: "BillingsChart",
+  name: "ReferralChart",
   components: {
     ChartCard,
   },
 })
-export default class BillingsChart extends Vue {
+export default class ReferralChart extends Vue {
   chart!: Chart;
   mounted() {
     this.mountChart();
@@ -25,12 +25,12 @@ export default class BillingsChart extends Vue {
 
   mountChart() {
     const data = {
-      labels: ["New billing", "Old bill"],
+      labels: ["Incoming", "Outgoing"],
       datasets: [
         {
           label: "Dataset 1",
-          backgroundColor: ["#541388", "#F0F4FE"],
-          data: [80, 20],
+          backgroundColor: ["#F0F4FE", "#00D5E0"],
+          data: [4, 12],
         },
       ],
     };
@@ -43,7 +43,7 @@ export default class BillingsChart extends Vue {
         cutout: 90,
         elements: {
           center: {
-            text: "N800, 000",
+            text: "18 REFERRALS",
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,

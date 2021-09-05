@@ -37,10 +37,12 @@
       <visits-chart />
       <billings-chart />
       <medication-chart />
-      <chart-card height="330px" title="Diagnostics" />
-      <chart-card height="330px" title="Referral" />
+      <chart-card height="439px" title="Diagnostics" />
+      <referral-chart />
     </div>
-    <chart-card title="Ratings" height="330px" />
+    <span class="w-full grid">
+      <rating-chart />
+    </span>
     <div class="w-full grid grid-cols-2 gap-x-4">
       <chart-card title="Resource Efficiency" height="330px" />
       <chart-card title="Messages" height="330px" />
@@ -57,16 +59,20 @@ import AppointmentChart from "./appointment-chart.vue";
 import VisitsChart from "./visits-chart.vue";
 import BillingsChart from "./billings-chart.vue";
 import MedicationChart from "./medication-chart.vue";
+import ReferralChart from "./referral-chart.vue";
+import RatingChart from "./ratings-chart.vue";
 
 @Options({
   name: "DashboardHome",
   components: {
     RegistrationChart,
     VisitsChart,
+    ReferralChart,
     ChartCard,
     AppointmentChart,
     BillingsChart,
     MedicationChart,
+    RatingChart,
   },
 })
 export default class DashboardHome extends Vue {}
