@@ -44,7 +44,7 @@
       <rating-chart />
     </span>
     <div class="w-full grid grid-cols-2 gap-x-4">
-      <chart-card title="Resource Efficiency" height="330px" />
+      <resource-chart />
       <chart-card title="Messages" height="330px" />
     </div>
     <chart-card title="Questionnaires" height="250px" />
@@ -61,6 +61,7 @@ import BillingsChart from "./billings-chart.vue";
 import MedicationChart from "./medication-chart.vue";
 import ReferralChart from "./referral-chart.vue";
 import RatingChart from "./ratings-chart.vue";
+import ResourceChart from "./resource-chart.vue";
 
 @Options({
   name: "DashboardHome",
@@ -73,6 +74,7 @@ import RatingChart from "./ratings-chart.vue";
     BillingsChart,
     MedicationChart,
     RatingChart,
+    ResourceChart,
   },
 })
 export default class DashboardHome extends Vue {}

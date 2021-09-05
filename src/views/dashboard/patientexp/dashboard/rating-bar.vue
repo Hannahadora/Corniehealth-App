@@ -7,7 +7,8 @@
           {{ subtitle }}
         </span>
       </span>
-      <span :class="[`text-${color}`]">{{ percent }}%</span>
+      <slot name="label" v-if="$slots.label" />
+      <span :class="[`text-${color}`]" v-else>{{ percent }}%</span>
     </span>
     <progress-bar :width="`${percent}%`" :color="`bg-${color}`" />
   </div>
