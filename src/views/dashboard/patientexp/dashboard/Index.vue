@@ -43,12 +43,12 @@
     <span class="w-full grid">
       <rating-chart />
     </span>
-    <div class="w-full grid grid-cols-2 gap-x-4">
+    <div class="w-full grid gap-x-3" style="grid-template-columns: 64% 35%">
       <resource-chart />
-      <chart-card title="Messages" height="330px" />
+      <messages-chart />
     </div>
     <chart-card title="Questionnaires" height="250px" />
-    <chart-card title="InPatient" class="mt-4" height="270px" />
+    <InpatientChart />
   </div>
 </template>
 <script lang="ts">
@@ -62,13 +62,17 @@ import MedicationChart from "./medication-chart.vue";
 import ReferralChart from "./referral-chart.vue";
 import RatingChart from "./ratings-chart.vue";
 import ResourceChart from "./resource-chart.vue";
+import MessagesChart from "./messages-chart.vue";
+import InpatientChart from "./inpatient-chart.vue";
 
 @Options({
   name: "DashboardHome",
   components: {
     RegistrationChart,
     VisitsChart,
+    MessagesChart,
     ReferralChart,
+    InpatientChart,
     ChartCard,
     AppointmentChart,
     BillingsChart,
