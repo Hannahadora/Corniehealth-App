@@ -34,9 +34,9 @@
     </div>
     <div class="w-full grid grid-cols-3 gap-4">
       <appointment-chart />
-      <chart-card height="330px" title="Active Visits" />
-      <chart-card height="330px" title="Billings & Payments" />
-      <chart-card height="330px" title="Medication" />
+      <visits-chart />
+      <billings-chart />
+      <medication-chart />
       <chart-card height="330px" title="Diagnostics" />
       <chart-card height="330px" title="Referral" />
     </div>
@@ -54,13 +54,19 @@ import { Options, Vue } from "vue-class-component";
 import RegistrationChart from "@/views/dashboard/patientexp/patients/registration-chart.vue";
 import ChartCard from "./chart-card.vue";
 import AppointmentChart from "./appointment-chart.vue";
+import VisitsChart from "./visits-chart.vue";
+import BillingsChart from "./billings-chart.vue";
+import MedicationChart from "./medication-chart.vue";
 
 @Options({
   name: "DashboardHome",
   components: {
     RegistrationChart,
+    VisitsChart,
     ChartCard,
     AppointmentChart,
+    BillingsChart,
+    MedicationChart,
   },
 })
 export default class DashboardHome extends Vue {}
