@@ -48,12 +48,12 @@
                 <cornie-table :columns="rawHeaders" v-model="items">
                 
                 <template #appointmentType-header="{  }">
-                    <p class="cursor-pointer md" style="font-weight: 600" @click="() => selectType = !selectType">Appointment Type</p>
+                    <span class="cursor-pointer md text-xs uppercase"  @click="() => selectType = !selectType">Appointment Type</span>
                     <div class="absolute md" v-if="selectType">
                       <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                         <div class="py-1 md" role="none">
                         <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a class="md text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                        <a class="md text-gray-700  px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
                             v-for="(day, index) in types" :key="index"
                         >
                             <span><input type="checkbox" class="h-4 w-4 md" name="" v-model="filterByType" id="" :value="day"></span>
@@ -65,7 +65,7 @@
                 </template>
                 
                 <template #status-header="{  }">
-                    <p class="cursor-pointer md" style="font-weight: 600" @click="() => filterStatus = !filterStatus">Participant Status</p>
+                    <p class="cursor-pointer md text-xs uppercase" @click="() => filterStatus = !filterStatus">Participant Status</p>
                     <div class="absolute md" v-if="filterStatus">
                       <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                         <div class="py-1 md" role="none">
@@ -81,14 +81,14 @@
                     </div>
                 </template>
                 
-                <template #Patients="{ item }">
-                    <p class="cursor-pointer" @click="showPatientDetails(item.patientId)">{{ item.patient }}</p>
+                <template #patient="{ item }">
+                    <p class="cursor-pointer" @click="showPatientDetails(onePatientId)">{{ item.patient }}</p>
                 </template>
                 <template #days="{ item }">
                     <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
                 </template>
                 <template #appointmentType="{ item }">
-                    <p>{{ item.appointmentId ? getAppointment(item.id).appointmentType : '' }}</p>
+                    <span  class="text-xs">{{ item.id ? getAppointment(item.id).appointmentType : '' }}</span>
                 </template>
                 <template #status="{ item }">
                     <div class="container">
@@ -103,13 +103,6 @@
                         @click="displayParticipants(item.id)"
                     />
                     
-                    </div>
-                </template>
-                <template #practitioners="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                    <span class="rounded-full">
-                        <Actors :items="item.practitioners" />
-                    </span>
                     </div>
                 </template>
                  <template #actions="{ item }">
@@ -147,7 +140,7 @@
                         <cancel-icon/>
                         <span class="ml-3 text-xs">Cancel</span>
                         </div>
-                    </template>
+                </template>
                 </cornie-table>
                 
                 <column-filter
@@ -155,44 +148,24 @@
                 v-model:preferred="preferredHeaders"
                 v-model:visible="showColumnFilter"
                 />
-                <side-modal :visible="showViewPane" :header="'View Stot'">
-                <div class="w-full my-3">
-                    <ViewDetails :schedule="selectedSchedule" />
-                </div>
-                <div class="w-full my-3">
-                    <ViewPlan :schedule="selectedSchedule" />
-                </div>
-                <div class="w-full my-3">
-                    <ViewBreaks :schedule="selectedSchedule" />
-                </div>
-                </side-modal>
-
-                <modal :visible="timeLineVissible">
-                  <template #title>
-                    <p class="md flex items-center justify-between px2" style="width: 440px">
-                      <span class="md font-lignt text-primary p-2 text-xl">Timeline</span> 
-                      <span class="md text-danger cursor-pointer">
-                        <router-link class="md" :to="{ name: 'Patient Visits Timeline', query: { visit: selectedVisit.id }}">
-                          See all
-                        </router-link>
-                      </span>
-                    </p>
-                  </template>
-                  <ActionLog :timeline="selectedVisit.timelines" @closetimeline="() => timeLineVissible = false" />
-                 
-
-                </modal>
-
+           
                 <modal :visible="viewDetails">
                   <template #title>
                     <p class="flex items-center justify-between px-2" style="width: 440px">
                       <span class="font-bold text-danger p-2 text-xl">{{ getPatientName(selectedPatient.id)}}</span> 
-                      <span class="bg-danger cursor-pointer" @click="() => viewDetails = false">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 4C0 1.79086 1.79086 0 4 0H20C22.2091 0 24 1.79086 24 4V20C24 22.2091 22.2091 24 20 24H4C1.79086 24 0 22.2091 0 20V4Z" fill="white"/>
-                        <path d="M12 2C17.53 2 22 6.47 22 12C22 17.53 17.53 22 12 22C6.47 22 2 17.53 2 12C2 6.47 6.47 2 12 2ZM15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z" fill="#FF0000"/>
+                        <svg
+                            class="cursor-pointer" @click="() => viewDetails = false"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                            d="M10 0C15.53 0 20 4.47 20 10C20 15.53 15.53 20 10 20C4.47 20 0 15.53 0 10C0 4.47 4.47 0 10 0ZM13.59 5L10 8.59L6.41 5L5 6.41L8.59 10L5 13.59L6.41 15L10 11.41L13.59 15L15 13.59L11.41 10L15 6.41L13.59 5Z"
+                            fill="#FF0000"
+                            />
                         </svg>
-                      </span>
                     </p>
                   </template>
                   <div class="w-4/12 px-4" style="width: 440px">
@@ -201,20 +174,20 @@
                         <div class="w-full">
                           <div class="w-11/12">
                             <div class="w-full py-2">
-                              <span class="font-semibold text-primary">MRN No:</span> 
-                              <span class="ml-2">{{ selectedPatientData.mrn }}</span> 
+                              <span class="font-semibold text-sm text-primary">MRN No:</span> 
+                              <span class="ml-2 text-xs">{{ selectedPatientData.mrn }}</span> 
                             </div>
                             <div class="w-full py-2">
-                              <span class="font-semibold text-primary">D.O.B:</span> 
-                              <span class="ml-2">{{ selectedPatientData.dob }}</span> 
+                              <span class="font-semibold text-sm text-primary">D.O.B:</span> 
+                              <span class="ml-2 text-xs">{{ selectedPatientData.dob }}</span> 
                             </div>
                             <div class="w-full py-2">
-                              <span class="font-semibold text-primary">Policy Expiry:</span> 
-                              <span class="ml-2">XXXXXX</span> 
+                              <span class="font-semibold text-sm text-primary">Policy Expiry:</span> 
+                              <span class="ml-2 text-xs">XXXXXX</span> 
                             </div>
                             <div class="w-full py-2">
-                              <span class="font-semibold text-primary">Policy No:</span> 
-                              <span class="ml-2">XXXXXX</span> 
+                              <span class="font-semibold text-sm text-primary">Policy No:</span> 
+                              <span class="ml-2 text-xs">XXXXXX</span> 
                             </div>
                           </div>
                         </div>
@@ -223,16 +196,16 @@
                         <div class="w-full">
                           <div class="w-11/12">
                             <div class="py-2 w-full">
-                              <span class="font-semibold text-primary">Gender:</span> 
-                              <span class="ml-2">{{ selectedPatientData.gender }}</span> 
+                              <span class="font-semibold text-sm text-primary">Gender:</span> 
+                              <span class="ml-2 text-xs">{{ selectedPatientData.gender }}</span> 
                             </div>
                             <div class="py-2 w-full">
-                              <span class="font-semibold text-primary">Profile Type</span> 
-                              <span class="ml-2">XXXX</span> 
+                              <span class="font-semibold text-sm text-primary">Profile Type</span> 
+                              <span class="ml-2 text-xs">XXXX</span> 
                             </div>
                             <div class="py-2w-full">
                               <span class="font-semibold text-primary">Payor</span> 
-                              <span class="ml-2">XXXXXX</span> 
+                              <span class="ml-2 text-xs">XXXXXX</span> 
                             </div>
                           </div>
                         </div>
@@ -241,7 +214,7 @@
                     <div class="w-full pt-3 pb-6">
                       <p class="text-center font-normal text-large text-primary">View Policy Coverage</p>
                     </div>
-                  </div>-->
+                  </div>
 
                 </modal>
                 <all-participants
@@ -344,6 +317,7 @@ showPartcipants = false;
   filterByStatus: any = [ ]
   completedStatus: any = [  ]
   currentVisitId = '';
+  onePatientId= "";
 
   activeTab = 0;
   showEditPane = false;
@@ -397,7 +371,7 @@ singleParticipant = [];
     { title: "Identifier", key: "id", show: true },
     {
       title: "Patient",
-      key: "Patients",
+      key: "patient",
       show: true,
     },
     {
@@ -494,14 +468,19 @@ singleParticipant = [];
       } else {
         i.completedStatus = "In-Progress";
       }
+     
      const singleParticipantlength =
         i.Practitioners.length +
         i.Devices.length +
         i.Patients.length;
+        const pateintId = i.Patients.map((patient:any) =>{
+            this.onePatientId =  patient.id;
+       
+      });
       return {
         ...i,
         action: i.id,
-        Patients: this.getPatientName(i.patientId),
+        patient: this.getPatientName(this.onePatientId),
         status: i.status,
         slot: ` `,
         Participants: singleParticipantlength,
@@ -542,19 +521,13 @@ async displayParticipants(value: string) {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    
     return pt ? `${pt.firstname} ${pt.lastname}` : '';
-  }
-
-  setSelectedVisit(id: string) {
-    const pt = this.appointments.find((i: any) => i.id === id);
-    this.selectedVisit = pt ? pt : { };
   }
 
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
     console.log("fkjdjf");
-     console.log(pt);
+     console.log(id);
     this.selectedPatient = pt ? pt : { };
   }
 
@@ -576,8 +549,6 @@ async displayParticipants(value: string) {
   get selectedPatientData() {
     if (!this.selectedPatient || !this.selectedPatient.id) return { };
     const data = this.selectedPatient;
-      console.log("data");
-     console.log(data);
     return {
       gender: data.gender,
       dob: `${new Date(data.dateOfBirth).getDate()} ${this.months[new Date(data.dateOfBirth).getMonth()]}, ${new Date(data.dateOfBirth).getFullYear()}`,
@@ -585,79 +556,22 @@ async displayParticipants(value: string) {
     }
   }
 
-
- 
-
   showPatientDetails(id: string) {
     this.setSelectedPatient(id)
     this.viewDetails = true;
   }
 
 
-
   async created() {
     if (!this.patients || this.patients.length === 0) await this.getPatients();
     if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
-    // if (!this.appointments || this.appointments.length === 0) await this.getVisits();
-    // window.addEventListener('click', (e: any) => {
-    //   if (!e.target.classList.contains('md')) {
-    //     this.selectType = false;
-    //     this.filterStatus = false;
-    //   }
-    // })
-
-    let body = {
-      "scheduleId": "f74e7d51-e022-4c2d-a9e8-891c06904f10",
-      "startTime": "01:40",
-      "endTime": "00:10",
-      "description": "string",
-      "status": "active",
-      "active": true,
-      "capacity": 0,
-      "hasWaitList": true,
-      "comments": "string",
-      "repeat": {
-        "year": 0,
-        "month": 0,
-        "week": 0,
-        "everyDayOfSchedule": true
+    if (!this.appointments || this.appointments.length === 0) await this.getPatients();
+    window.addEventListener('click', (e: any) => {
+      if (!e.target.classList.contains('md')) {
+        this.selectType = false;
+        this.filterStatus = false;
       }
-    }
-    let pat = {
-      "mrn": "string",
-      "firstname": "string1",
-      "middlename": "string2",
-      "lastname": "string3",
-      "dateOfBirth": "2021-08-26",
-      "gender": "male",
-      "maritalStatus": "string",
-      "multipleBirths": false,
-      "multipleBirthInteger": 0,
-      "guarantor": {
-        firstname: "emergency-contact",
-        lastname: "emergency-contact"
-      },
-      "accountType": "individual",
-      "vip": true,
-      "emergencyContacts": [
-        {firstname: "emergency-contact",
-        lastname: "emergency-contact"}
-      ],
-    }
-    let req = {
-      "appointmentId": "2600b457-6ee5-452b-b85a-a134be1a9ca4",
-      // "orgId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      "patientId": "257f5ae3-df56-427f-8327-bc8f4019a4ad",
-      "type": "Follow-up",
-      "status": "active",
-      "roomId": "d25cc910-0830-40cf-a0c8-7c303f381b29",
-      // "checkInTime": "01:26",
-      // "checkOutTime": "01:30",
-      "notes": "true",
-      "slotId": "6f72aece-ddb2-4908-aedb-cb1b961e814f",
-      // practitioners: [ "87e846a3-bac0-43b9-a4db-0b2605426c42" ],
-      // startTime: "00:25"
-    }
+    })
 
 
   }
@@ -717,4 +631,39 @@ async displayParticipants(value: string) {
     .light-grey-bg {
       background: #F0F4FE;
     }
+    /* Large checkboxes */
+
+input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+}
+
+input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+}
+
+input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+}
+
+input[type="checkbox"].md:checked:after {
+   background-image: url("../../../../assets/tick.svg");
+    background-color: #FE4D3C;
+}
+input[type="checkbox"].md:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #FE4D3C;
+}
 </style>
