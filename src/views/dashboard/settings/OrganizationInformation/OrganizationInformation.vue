@@ -132,8 +132,14 @@
             class="w-full"
             label="Email Address"
             v-model="EmailAddress"
+            :rules="emailRule"
           />
-          <cornie-input class="w-full" label="Website" v-model="Website" />
+          <cornie-input
+            class="w-full"
+            :rules="urlRule"
+            label="Website"
+            v-model="Website"
+          />
         </div>
 
         <div class="my-8 flex justify-end">
@@ -202,6 +208,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import PhoneInput from "@/components/phone-input.vue";
 import { reactive } from "@vue/reactivity";
+import { string } from "yup";
 
 export default {
   name: "OrganizationInformation",
@@ -237,6 +244,8 @@ export default {
       incTypes: [],
       loading: false,
       OrgInfo: {},
+      urlRule: string().url(),
+      emailRule: string().email().required(),
     };
   },
   computed: {
@@ -252,6 +261,7 @@ export default {
         incorporationType: this.IncorporationType,
         website: this.Website,
         incorporationStatus: this.IncorporationStatus,
+        email: this.EmailAddress
       };
     },
   },
