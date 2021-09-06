@@ -1,5 +1,5 @@
 <template>
-  <span class="w-full block my-auto">
+  <span class="w-full block">
     <label class="block uppercase mb-1 text-xs font-bold">
       {{ label }}
     </label>
@@ -34,7 +34,7 @@
                     <span class="text-sm font-semibold"> {{ item.name }}</span>
                   </div>
                   <div class="text-xs text-gray-400 flex-shrink-0 float-right">
-                  {{ item.dialCode }}
+                    {{ item.dialCode }}
                   </div>
                 </span>
               </template>
@@ -48,7 +48,7 @@
         </span>
         <input
           :class="{
-            'border-red-500': Boolean(codeError),
+            'border-red-500': Boolean(errorMessage),
             'border-green-400': meta.valid && meta.touched,
           }"
           class="rounded-r-lg border p-2 flex-grow w-full focus:outline-none"
@@ -83,7 +83,7 @@ const phoneRegex =
     CornieSelect,
     CornieInput,
     SearchIcon,
-    IconInput
+    IconInput,
   },
 })
 export default class PhoneInput extends Vue {
