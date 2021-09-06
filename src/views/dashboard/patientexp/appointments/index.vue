@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full my-2 h-screen">
-      <div class="container-fluid bg-white" v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0 && !selectedStatus">
+  <div class="w-full my-2">
+      <div class="container-fluid " v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0 && !selectedStatus">
         <EmptyState />
       </div>
-      <div v-else class="container-fluid bg-white sm:p-6 h-scrren">
+      <div v-else class="container-fluid bg-white sm:p-6">
        <span
         class="
           flex
@@ -430,11 +430,6 @@ singleParticipant = [];
   statuses = ['All', 'Completed', 'Queue', 'In-Progress']
   availableSlots: any = [ ]
 
-  get currentVisit() {
-    if (!this.currentVisitId) return { }
-    return this.appointments.find((i: any) => i.id === this.currentVisitId);
-  }
-
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -453,9 +448,6 @@ singleParticipant = [];
           if (this.filterByStatus.includes('All') || this.filterByType.includes('All')) return true;
         const indexInTypes = this.filterByType.findIndex((j: any) => j.toLowerCase() === this.getAppointment(i.id).appointmentType.toLowerCase());
         const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
-          console.log("appointments");
-          console.log(i.id);
-
         if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
       }
     })
@@ -473,6 +465,7 @@ singleParticipant = [];
         i.Practitioners.length +
         i.Devices.length +
         i.Patients.length;
+        
         const pateintId = i.Patients.map((patient:any) =>{
             this.onePatientId =  patient.id;
        
