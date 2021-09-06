@@ -56,9 +56,9 @@
             style="width: 100%"
           />
         </div>
-        <span v-if="errorMessage" class="text-red-400 text-xs">{{
-          errorMessage
-        }}</span>
+        <span v-if="errorMessage" class="text-red-400 text-xs">
+          {{ errorMessage }}
+        </span>
       </div>
     </Field>
   </span>
@@ -105,7 +105,7 @@ export default class DatePicker extends Vue {
 
   get customRules() {
     const defaultRule = date();
-    if (!this.rules) return defaultRule.concat(this.rules);
+    if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
 
