@@ -471,7 +471,7 @@ actorTypeValue = "";
   participantDetail = { ...emptyParticipant };
   Practitioners = [];
   Devices = [];
-  Patients = [];
+  Patients: any[] = [];
   roles = [];
 
   newPractitioners  = [];

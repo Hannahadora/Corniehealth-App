@@ -22,13 +22,24 @@ export default interface IAppointment {
   participantDetail: ParticipantDetail;
   Practitioners: [];
   Devices: [];
-  Patients: [];
+  Patients: Patients[];
   appointmentId: string;
   comment: string;
   status: string;
 }
+export interface Patients {
+  id: string;
+  firstname: string,
+  lastname: string,
+  gender: string,
+  dateOfBirth: string,
+  accountType: string,
+  mrn: string,
+}
+
 export interface ParticipantDetail {
   required: string;
   consultationMedium: string;
   period: Period;
 }
+

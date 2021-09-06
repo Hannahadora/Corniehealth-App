@@ -436,7 +436,7 @@ export default class AddAppointment extends Vue {
 
   Practitioners = [];
   Devices = [];
-  Patients = [];
+  Patients: any[] = [];
   roles = [];
 
   newPractitioners = [];

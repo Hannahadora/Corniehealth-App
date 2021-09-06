@@ -23,3 +23,15 @@ export async function deleteAppointment(id: string) {
   }
   return false;
 }
+export async function getPatients() {
+  try {
+    const response = await cornieClient().get(
+        "/api/v1/patient"
+    );
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching slots", status: "error" });
+  }
+  return { };
+}
+
