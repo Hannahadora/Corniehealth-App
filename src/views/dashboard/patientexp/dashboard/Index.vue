@@ -47,7 +47,7 @@
       <resource-chart />
       <messages-chart />
     </div>
-    <chart-card title="Questionnaires" height="250px" />
+    <questionnaire-chart />
     <InpatientChart />
   </div>
 </template>
@@ -64,6 +64,7 @@ import RatingChart from "./ratings-chart.vue";
 import ResourceChart from "./resource-chart.vue";
 import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
+import QuestionnaireChart from "./questionnaire-chart.vue";
 
 @Options({
   name: "DashboardHome",
@@ -79,6 +80,7 @@ import InpatientChart from "./inpatient-chart.vue";
     MedicationChart,
     RatingChart,
     ResourceChart,
+    QuestionnaireChart,
   },
 })
 export default class DashboardHome extends Vue {}
