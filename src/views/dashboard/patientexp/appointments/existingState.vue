@@ -64,14 +64,12 @@
             class="cursor-pointer ml-3"
             @click="displayParticipants(item.id)"
           />
+          
         </div>
       </template>
       <template #Patients="{ item }">
-        <div class="flex items-center">
-          <span class="text-xs cursor-pointer" @click="displayPatients(item.id)"
-            >Darlington Onyemere</span
-          >
-        </div>
+      <span class="text-xs cursor-pointer" @click="displayPatients(item.id)"
+            >{{item.patientName}}</span>
       </template>
     </cornie-table>
 
@@ -86,7 +84,8 @@
       @update:preferred="displayParticipants"
       v-model:visible="showPartcipants"
     />
-    <patient-details v-model:visible="showPatientModal" :patients="patient" />
+  <!--  <patient-details v-model:visible="showPatientModal" :patients="allpatient" />-->
+    
   </div>
 </template>
 <script lang="ts">
@@ -158,7 +157,7 @@ export default class AppointmentExistingState extends Vue {
   showModal = false;
   loading = false;
   patientName = "";
-  patient = [];
+  allpatient: any = [ ]
   filterByType: any = [ ]
   filterByStatus: any = [ ]
 
@@ -249,12 +248,6 @@ export default class AppointmentExistingState extends Vue {
     
     return pt ? pt : { };
   }
-  getPatientName(id: string) {
-    const pt = this.patients.find((i: any) => i.id === id);
-    
-    return pt ? `${pt.firstname} ${pt.lastname}` : '';
-  }
-  
 
   get headers() {
     const preferred =
@@ -267,47 +260,27 @@ export default class AppointmentExistingState extends Vue {
 async  fetchPatients() {
   try {
     const response = await cornieClient().get(`/api/v1/patient/`);
-    console.log(response.data);
   } catch (error) {
     window.notify({ msg: "Failed to get patients", status: "error" });
   }
   return [];
 }
 
-  // get items() {
-  //   if (!this.appointments || this.appointments.length === 0 ) return [];
-  //   const filtered = this.appointments.filter((i: any) => {
-  //     if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
-  //       return i;
-  //     } else {
-  //       if (this.filterByStatus.includes('All') || this.filterByType.includes('All')) return true;
-  //     //  const indexInTypes = this.filterByType.findIndex((j: any) => j.toLowerCase() === this.getAppointment(i.appointmentId).appointmentType.toLowerCase());
-  //       const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
-
-  //     //  if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
-  //     }
-
-  //   })
-
-  //   const appointments = filtered.map((i: any) => {
-  //     return {
-  //       ...i,
-  //       action: i.id,
-  //       patient: this.getPatientName(i.patientId),
-  //       location: i.room.name,
-  //       status: i.status,
-  //       slot: ` `,
-  //       // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
-  //       practitioners: this.getActors(i.appointmentId)
-  //     };
-  //   });
-  //   return appointments;
-  //   // if (!this.query) return shifts;
-  //   // return search.searchObjectArray(shifts, this.query);
-  // }
-
+  
   get items() {
     const appointments = this.appointments.map((appointment) => {
+ 
+        const allthispatients = appointment.Patients;
+        this.allpatient = allthispatients;
+        console.log("allthispatients");
+        console.log(allthispatients);
+      const pateintId = appointment.Patients.map((patient) =>{
+        this.patientName =  patient.firstname +' '+ patient.lastname
+        return{
+         patient
+        }
+      });
+      this.allpatient = pateintId;
       const singleParticipantlength =
         appointment.Practitioners.length +
         appointment.Devices.length +
@@ -324,8 +297,11 @@ async  fetchPatients() {
       ).toLocaleDateString("en-US"));
       return {
         ...appointment,
+        patientName: this.patientName,
+        allpatient: pateintId,
         action: appointment.id,
         keydisplay: "XXXXXXX",
+        pateintId,
         newperiod: start + "-" + end,
         Participants: singleParticipantlength,
       };
@@ -373,7 +349,7 @@ async  fetchPatients() {
     });
   }
   async created() {
-    console.log(this.items);
+   
   }
 }
 </script>

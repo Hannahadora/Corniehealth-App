@@ -462,7 +462,7 @@ actorTypeValue = "";
   priority = "";
   description = "";
   supportingInfo = "";
-  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+  slot = "153ee88d-cc6a-4e1f-ac62-8456e0c7782d";
   basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   duration = "";
   comments = "";
@@ -471,7 +471,7 @@ actorTypeValue = "";
   participantDetail = { ...emptyParticipant };
   Practitioners = [];
   Devices = [];
-  Patients = [];
+  Patients: any[] = [];
   roles = [];
 
   newPractitioners  = [];
@@ -556,7 +556,7 @@ actorTypeValue = "";
       reasonRef: this.reasonRef,
       priority: this.priority,
       description: this.description,
-      //   slot: this.slot,
+       slot: this.slot,
       basedOn: this.basedOn,
       duration: this.duration,
       comments: this.comments,
