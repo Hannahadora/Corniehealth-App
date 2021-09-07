@@ -63,3 +63,11 @@ export function updateModelField(model: any, field: string, data: any[]) {
   model[field] = [...fieldSet];
   return model;
 }
+
+export function getCoordinates(address: string) {
+  const query = new URLSearchParams();
+  query.set("query", address);
+  query.set("limit", "1");
+  query.set("output", "json");
+  query.set("access_key", "");
+}

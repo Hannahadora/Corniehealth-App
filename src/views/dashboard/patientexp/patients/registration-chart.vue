@@ -32,7 +32,7 @@ import DropDown from "@/components/drop-down.vue";
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
 import { groupData } from "./chart-filter";
-import { Watch } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 
 @Options({
   name: "RegistrationChart",
@@ -47,6 +47,9 @@ export default class RegistrationChart extends Vue {
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   chart!: Chart;
+
+  @Prop({ type: Number, default: 70 })
+  height!: number;
 
   get chartData() {
     const data = groupData(this.raw, this.order);
@@ -79,7 +82,7 @@ export default class RegistrationChart extends Vue {
 
   mountChart() {
     const ctx: any = this.$refs.registration_chart;
-    ctx.height = 50;
+    ctx.height = this.height;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
