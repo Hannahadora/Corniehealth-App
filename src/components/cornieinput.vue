@@ -12,7 +12,7 @@
         <slot name="label">
           {{ label }}
         </slot>
-         <span class="ml-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+         <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div

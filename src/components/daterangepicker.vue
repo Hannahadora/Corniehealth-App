@@ -2,7 +2,7 @@
   <span class="block w-11/12">
     <label class="flex uppercase mb-2 text-xs font-bold">
       {{ label }}
-        <span class="ml-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+        <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
     </label>
     <Field :name="inputName" v-slot="{ meta, handleChange, errorMessage }">
       <div class="relative" :id="inputName" style="width: 100%">

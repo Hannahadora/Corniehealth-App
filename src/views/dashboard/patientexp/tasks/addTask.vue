@@ -163,8 +163,116 @@
                 </div>
               </template>
             </accordion-component>
-              
-            
+            <accordion-component title="Optional Field" v-model="opened" :opened="true">
+              <template v-slot:default>
+                <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                  <cornie-input label="based on" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="part of" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="reason code" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="reason reference" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                   <cornie-input label="note" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                   <cornie-input label="focus" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="encounter" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <div class="block">
+                      <label class="flex uppercase mb-2 text-xs font-bold">
+                        Repitition
+                        <span class="ml-1"><question-icon/></span>
+                    </label>
+                    <div  class="w-full flex space-x-4 mb-3">
+                      <cornie-radio label="Days"  class="text-xs" name="request" id="pickup" />
+                      <cornie-radio label="Week"  name="request" id="patientadress" checked/>
+                      <cornie-radio label="Month"  name="request" id="homeaddress"/>
+                       <cornie-radio label="Years"  name="request" id="homeaddress"/>
+                    </div>
+                  </div>
+                </div>
+                  <span class="
+                                flex
+                                border-b-2
+                                border-dark-100
+                                w-full
+                                text-sm text-primary
+                                py-2
+                                mx-auto
+                                font-bold
+                                col-span-full
+                                mb-4
+                                mt-5
+                            "
+                            >
+                            Input
+                  </span>
+                  <div  class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                      <cornie-input label="type" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="value" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  </div>                 
+                    <span class="
+                                flex
+                                border-b-2
+                                border-dark-100
+                                w-full
+                                text-sm text-primary
+                                py-2
+                                mx-auto
+                                font-bold
+                                col-span-full
+                                mb-4
+                                mt-5
+                            "
+                            >
+                            Output
+                  </span>
+                  <div  class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                      <cornie-input label="type" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="value" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  </div>
+               
+              </template>
+            </accordion-component>
             <span class="flex justify-end w-full">
               <button
                 @click="$router.push('/dashboard/provider/experience/appointments')"
@@ -215,6 +323,7 @@
 import { Options, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -258,6 +367,7 @@ const emptyParticipant: ParticipantDetail = {
     SingleDatePicker,
     Availability,
     QuestionIcon,
+    CornieRadio,
     Textarea,
     DEdit,
     CDelete,

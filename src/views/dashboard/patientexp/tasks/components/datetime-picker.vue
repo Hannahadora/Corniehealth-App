@@ -8,11 +8,11 @@
                     :for="`${id}-inputfield`"
                     >
                     {{ label }}
-                      <span class="ml-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+                      <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
                 </label>
                 <p class="border rounded-md w-full p-2 flex justify-between" @click="showSelectArea">
                     <span class="flex"><span><DateIcon class="pr-4 w-8 h-8" /></span><slot name="date" /></span>
-                    <span><slot name="time" /></span>
+                    <span class="mt-1"><slot name="time" /></span>
                 </p>
                 <div class="w-full" style="position: relative">
                     <div class="" v-if="show" style="position:absolute; width:100% ">
