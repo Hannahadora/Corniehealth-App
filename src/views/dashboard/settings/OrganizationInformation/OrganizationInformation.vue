@@ -20,12 +20,14 @@
           Upload Image</label
         >
       </div>
-      <form @submit.prevent="submitForm">
+
+      <v-form @submit="submitForm">
         <div class="grid grid-cols-2 gap-x-5 gap-y-4 mt-10">
           <cornie-input
             label="Organization Name"
             class="w-full"
             v-model="OrganizationName"
+            :rules="requiredRule"
           />
           <div>
             <label
@@ -93,12 +95,14 @@
             label="Organization Type"
             class="w-full"
             v-model="OrganizationType"
+            :rules="requiredRule"
           />
           <cornie-select
             :items="provProfiles"
             label="Provider Profile"
             class="w-full"
             v-model="ProviderProfile"
+            :rules="requiredRule"
           />
           <cornie-input
             v-model="ReferenceOrganization"
@@ -110,16 +114,19 @@
             label="Incorporation Status"
             class="w-full"
             v-model="IncorporationStatus"
+            :rules="requiredRule"
           />
           <cornie-input
             v-model="RegistrationNumber"
             class="w-full"
             label="Registration Number"
+            :rules="requiredRule"
           />
           <cornie-select
             :items="incTypes"
             class="w-full"
             label="Incorporation Type"
+            :rules="requiredRule"
             v-model="IncorporationType"
           />
           <phone-input
@@ -127,6 +134,7 @@
             label="Phone Number"
             v-model:code="DialCode"
             v-model="PhoneNumber"
+            :rules="requiredRule"
           />
           <cornie-input
             class="w-full"
@@ -195,7 +203,7 @@
             </cornie-btn>
           </span>
         </div>
-      </form>
+      </v-form>
     </section>
   </main>
 </template>
@@ -209,6 +217,7 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import PhoneInput from "@/components/phone-input.vue";
 import { reactive } from "@vue/reactivity";
 import { string } from "yup";
+import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 
 export default {
   name: "OrganizationInformation",
@@ -217,6 +226,7 @@ export default {
     CornieInput,
     CornieSelect,
     PhoneInput,
+    AvatarField,
   },
   setup() {
     const { url, placeholder, onChange } = useHandleImage();
@@ -246,6 +256,8 @@ export default {
       OrgInfo: {},
       urlRule: string().url(),
       emailRule: string().email().required(),
+      requiredRule: string().required(),
+      image: "",
     };
   },
   computed: {
@@ -261,7 +273,7 @@ export default {
         incorporationType: this.IncorporationType,
         website: this.Website,
         incorporationStatus: this.IncorporationStatus,
-        email: this.EmailAddress
+        email: this.EmailAddress,
       };
     },
   },
@@ -279,9 +291,12 @@ export default {
       this.loading = true;
       try {
         await cornieClient().post("/api/v1/organization", this.payload);
-        alert("Organization updated Sucessfully");
+        window.notify({
+          msg: "Organization updated Sucessfully",
+          status: "success",
+        });
       } catch (error) {
-        console.log(error);
+        window.notify({ msg: "Organization not updated", status: "error" });
       }
       this.loading = false;
     },
