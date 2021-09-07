@@ -1,6 +1,9 @@
 <template>
   <span class="block w-11/12">
-    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
+    <label class="flex uppercase mb-2 text-xs font-bold">
+      {{ label }}
+        <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+    </label>
     <Field :name="inputName" v-slot="{ meta, handleChange, errorMessage }">
       <div class="relative" :id="inputName" style="width: 100%">
         <div @click="toggleDropdown">
@@ -14,6 +17,7 @@
               border border-gray-300
               shadow-sm
               p-1
+              py-2
               bg-white
               text-sm
               font-medium
@@ -116,6 +120,10 @@ export default class DRangePicker extends Vue {
 
   @Prop({ type: String, default: "" })
   label: any;
+
+  @Prop({ type: String, default: "" })
+  labelicon: any;
+
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

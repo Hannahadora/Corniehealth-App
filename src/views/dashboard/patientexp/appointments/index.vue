@@ -42,8 +42,6 @@
         Create Appointment
       </button>
     </span>
-
-
             <div class="w-full pb-7 mb-8">
                 <cornie-table :columns="rawHeaders" v-model="items">
                 
@@ -70,7 +68,7 @@
                       <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                         <div class="py-1 md" role="none">
                         <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a class="md text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                        <a class="md text-gray-700  px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
                             v-for="(day, index) in statuses" :key="index"
                         >
                             <span><input type="checkbox" class="h-4 w-4 md" name="" id="" v-model="filterByStatus" :value="day"></span>
@@ -465,7 +463,7 @@ singleParticipant = [];
         i.Practitioners.length +
         i.Devices.length +
         i.Patients.length;
-        
+
         const pateintId = i.Patients.map((patient:any) =>{
             this.onePatientId =  patient.id;
        
