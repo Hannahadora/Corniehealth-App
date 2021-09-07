@@ -44,9 +44,9 @@
                 focus:outline-none
                 hover:opacity-90
               "
-              @click="$router.push('/dashboard/provider/experience/add-request')"
+              @click="$router.push('/dashboard/provider/experience/add-task')"
             >
-              New Requests
+              New Task
             </button>
             
           </span>
@@ -61,12 +61,20 @@
                   <span class="ml-3 text-xs">Update</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-primary fill-current"/>
+                  <timeline-icon />
+                  <span class="ml-3 text-xs">View Timeline</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <plus-icon class="text-green-400 fill-current"/>
                   <span class="ml-3 text-xs">Add Appointment</span>
                 </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                    <note-icon class="text-green-300 fill-current" />
+                    <note-icon class="text-yellow-600 fill-current" />
                     <span class="ml-3 text-xs">Make Notes</span>
+                </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+                    <message-icon class="text-green-500 fill-current" />
+                    <span class="ml-3 text-xs">Messages</span>
                 </div>
                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
                     <danger-icon/>
@@ -82,62 +90,7 @@
           </cornie-table>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
-          <span class="flex justify-end w-full mb-8">
-            <button
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                mt-5
-                py-2
-                pr-5
-                pl-5
-                px-3
-                mb-5
-                font-semibold
-                focus:outline-none
-                hover:opacity-90
-              "
-              @click="$router.push('/dashboard/provider/experience/add-request-reffer')"
-            >
-              New Requests
-            </button>
-            
-          </span>
-          <cornie-table :columns="rawHeaders" v-model="items">
-               <template #actions="{ item }">
-                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/view-refferal/${item.id}`)">
-                  <newview-icon  class="text-yellow-500 fill-current"/>
-                  <span class="ml-3 text-xs">View</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-refferal/${item.id}`)">
-                  <newview-icon  class="text-yellow-500 fill-current"/>
-                  <span class="ml-3 text-xs">View & Edit</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <update-icon />
-                  <span class="ml-3 text-xs">Update</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-primary fill-current"/>
-                  <span class="ml-3 text-xs">Add Appointment</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-red-500 fill-current"/>
-                  <span class="ml-3 text-xs">Add Task</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                  <note-icon class="text-green-600 fill-current"/>
-                  <span class="ml-3 text-xs">Add Notes</span>
-                </div>
-              </template>
-              <template #Participants="{ item }">
-                <div class="flex items-center">
-                  <span class="text-xs">{{item.Participants}}</span>
-                  <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
-                </div>
-              </template>
-          </cornie-table>
+        
         </div>
         <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="referrals">
         </div>
@@ -182,6 +135,7 @@ import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import TimelineIcon from "@/components/icons/timeline.vue";
 import DangerIcon from "@/components/icons/danger.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
@@ -202,6 +156,7 @@ const appointment = namespace("appointment");
     CheckinIcon,
     NewviewIcon,
     UpdateIcon,
+    TimelineIcon,
     NoteIcon,
     ThreeDotIcon,
     DangerIcon,

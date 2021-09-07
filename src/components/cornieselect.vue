@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block uppercase mb-1 text-xs font-bold"
+              class="flex uppercase mb-1 text-xs font-bold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -14,6 +14,7 @@
                 {{ label }}
               </template>
               <span class="text-danger ml-1" v-if="required"> * </span>
+              <span class="ml-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
             </label>
             <div
               v-bind="$attrs"
@@ -137,6 +138,10 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: String })
   label!: string;
+
+  @Prop({ type: String, default: "" })
+  labelicon!: string;
+
   showDatalist = false;
   id = "";
 

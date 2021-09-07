@@ -8,10 +8,11 @@
     class="mb-5"
   >
     <div v-bind="$attrs" class="w-11/12">
-      <label class="block uppercase mb-1 text-xs font-bold">
+      <label class="flex uppercase mb-1 text-xs font-bold">
         <slot name="label">
           {{ label }}
         </slot>
+         <span class="ml-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
@@ -108,6 +109,9 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: String, default: "" })
   label!: string;
+
+  @Prop({ type: String, default: "" })
+  labelicon!: string;
 
   @Prop({ type: String })
   name!: string;
