@@ -1,23 +1,24 @@
 <template>
   <cornie-card-text>
-    <v-form @submit="save">
+    <v-form @submit="save" ref="contact">
       <div
         class="flex justify-start items-center px-4 border-t-2 border-gray pt-5"
       >
         <cornie-radio
           label="Work"
-          class="mr-3"
           v-model="type"
           value="work"
           checked
           :readonly="readonly"
         />
-        <cornie-radio
-          label="Home"
-          v-model="type"
-          value="home"
-          :readonly="readonly"
-        />
+        <span class="flex items-center ml-2">
+          <cornie-radio
+            label="Home"
+            v-model="type"
+            value="home"
+            :readonly="readonly"
+          />
+        </span>
       </div>
       <div class="w-full grid grid-cols-3 gap-5 mt-4">
         <cornie-input
@@ -28,20 +29,14 @@
           :rules="requiredString"
           :readonly="readonly"
         />
-        <cornie-input
-          class="w-full"
-          v-model="secondaryAddress"
-          label="Address 2"
-          placeholder="Enter"
-          :readonly="readonly"
-        />
-        <cornie-input
+        <auto-complete
           class="w-full"
           v-model="country"
           label="Country"
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
+          :items="countries"
         />
         <cornie-input
           class="w-full"
@@ -113,13 +108,16 @@ import PhoneInput from "@/components/phone-input.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import ObjectSet from "@/lib/objectset";
 import CornieBtn from "@/components/CornieBtn.vue";
+import AutoComplete from "@/components/autocomplete.vue";
 
 import { string } from "yup";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import { getCountries } from "@/plugins/nation-states";
 
 const patients = namespace("patients");
 
+const countries = getCountries();
 @Options({
   name: "PatientContact",
   components: {
@@ -127,6 +125,7 @@ const patients = namespace("patients");
     CornieRadio,
     PhoneInput,
     CornieInput,
+    AutoComplete,
     CornieBtn,
   },
 })
@@ -140,7 +139,7 @@ export default class PatientContact extends Vue {
   @Prop({ type: Object })
   patient!: IPatient;
 
-  type = "work";
+  type = "";
 
   primaryAddress = "";
   secondaryAddress = "";
@@ -153,6 +152,7 @@ export default class PatientContact extends Vue {
   email = "";
   contactId = "";
 
+  countries = countries;
   loading = false;
   requiredString = string().required();
   requiredEmail = string().email().required();

@@ -1,3 +1,9 @@
+import { countryCodes } from "./countrycodes";
+
+export function getCountries() {
+  return countryCodes.map((c) => c.name);
+}
+
 const nigerianStates = [
   "Abia",
   "Adamawa",
@@ -39,8 +45,4 @@ const nigerianStates = [
 ];
 export function getStates() {
   return nigerianStates;
-}
-
-export function getCountries() {
-  return ["Nigeria"];
 }

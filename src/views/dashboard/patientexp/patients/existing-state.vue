@@ -28,7 +28,7 @@
       >
         Patients
       </span>
-      <registration-chart class="w-full" />
+      <registration-chart class="w-full" :height="100" />
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full mb-5">
           <cornie-btn class="text-primary border border-primary m-5">
