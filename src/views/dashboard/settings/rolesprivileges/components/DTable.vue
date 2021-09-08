@@ -1,6 +1,6 @@
 <template>
   <div class="w-full pb-7">
-    <div class="flex w-full justify-between mt-5 items-center">
+    <!-- <div class="flex w-full justify-between mt-5 items-center">
       <span class="flex items-center">
         <sort-icon class="mr-5" />
         <icon-input
@@ -18,9 +18,42 @@
         <table-refresh-icon class="mr-7" />
         <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
       </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+    </div> -->
+    <Table :columns="rawHeaders" v-model="items" class="tableu rounded-xl mt-5">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3  pr-12cursor-pointer"
+           @click="
+              $router.push(`addroles/${item.id}`)
+            "
+        >
+          <eye-icon class="mr-1 mt-1" />
+          <span class="text-xs"
+          >View</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 pr-9 cursor-pointer"
+          @click="
+            $router.push(`addroles/${getKeyValue(item).value}`)
+          "
+        >
+          <edit-icon class="mr-2 1mt-1" />
+          <span class="text-xs"
+          >Edit</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 pr-12 cursor-pointer" @click="remove(item.value)">
+          <delete-icon class="mr-2" />
+          <span class="text-xs"
+          >Delete</span>
+        </div>
+      </template>
+      <!-- <template #name="{ item }">
+          <span class="rounded-full">
+              {{ item }}
+          </span>
+      </template> -->
+    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5"> -->
+      <!-- <template #actions="{ item }">
       <template v-slot:item="{ item }">
+        <span>
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
             <li
@@ -86,7 +119,7 @@
           </table-options>
         </span>
         <span v-else> {{ getKeyValue(item).value }} </span>
-      </template>
+      </template> -->
     </Table>
     <column-filter
       :columns="rawHeaders"
@@ -97,7 +130,8 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
+// import Table from "@scelloo/cloudenly-ui/src/components/table";
+import Table from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -163,44 +197,39 @@ export default class PractitionerExistingState extends Vue {
   rawHeaders = [
     {
       title: "Name",
-      value: "name",
+      key: "name",
       show: true,
     },
-    { title: "Description", value: "description", show: true },
-    { title: "Members", value: "members", show: true },
+    { title: "Description", key: "description", show: true },
+    { title: "Members", key: "members", show: true },
     {
       title: "Date Created",
-      value: "createdAt",
+      key: "createdAt",
       show: true,
     },
     {
       title: "Date Updated",
-      value: "updatedAt",
+      key: "updatedAt",
       show: true,
     },
     {
       title: "Address",
-      value: "address",
+      key: "address",
       show: false,
     },
     {
       title: "Access Role",
-      value: "accessRole",
-      show: false,
-    },
-    {
-      title: "Gender",
-      value: "gender",
+      key: "accessRole",
       show: false,
     },
     {
       title: "Description",
-      value: "description",
+      key: "description",
       show: false,
     },
     {
       title: "Physical Type",
-      value: "physicalType",
+      key: "physicalType",
       show: false,
     },
   ];
