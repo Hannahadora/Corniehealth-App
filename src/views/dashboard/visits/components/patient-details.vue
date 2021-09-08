@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full mb-5 border-b-2">
+    <div class="w-full mb-5 border-b-2" v-if="patient">
         <div class="w-full">
             <div class="container-fluid pb-2">
                 <div class="w-full flex items-center" >

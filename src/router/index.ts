@@ -224,6 +224,13 @@ const routes: Array<RouteRecordRaw> = [
             props: true,
             name: "Patient Experience Management",
             component: () =>
+              import("@/views/dashboard/schedules/edit-slot.vue"),
+          },
+          {
+            path: "schedules/editslot/:scheduleId?",
+            props: true,
+            name: "Patient Experience - Edit Slot",
+            component: () =>
               import("@/views/dashboard/schedules/create-schedule.vue"),
           },
           

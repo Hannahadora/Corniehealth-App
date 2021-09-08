@@ -41,16 +41,17 @@ export async function getPatients() {
 
 export async function createSlot(body: any) {
   try {
-    const response = await cornieClient().post(`/api/v1/patient`, body);
-    // const response = await cornieClient().post(`/api/v1/schedule/slot`, body);
+    const response = await cornieClient().post(`/api/v1/schedule/slot`, body);
     console.log(response, "slot schedlue");
     
     return response.data as boolean;
   } catch (error) {
-    notify({
-      msg: "There was an error creating this slot",
-      status: "error"
-    });
+    console.log(error);
+    
+    // notify({
+    //   msg: "There was an error creating this slot",
+    //   status: "error"
+    // });
   }
 }
 

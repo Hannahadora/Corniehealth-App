@@ -51,7 +51,7 @@ export default {
     async createSlot(ctx, schedule: any) {
       const sch = await createSlot(schedule);
       if (!sch) return { };
-      ctx.commit("addSchedule", sch);
+      // ctx.commit("addSchedule", sch);
       return sch;
     },
 

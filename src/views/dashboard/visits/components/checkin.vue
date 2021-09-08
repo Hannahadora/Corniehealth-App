@@ -65,12 +65,12 @@
                 <CornieSelect :items="rooms" :label="'Room'" v-model="checkinData.roomId" style="width: 100%" />
             </div>
 
-            <div class="w-full my-4">
+            <!-- <div class="w-full my-4">
                 <CornieSelect :items="allPatients" :label="'Patient'" v-model="checkinData.patientId" style="width: 100%" />
-            </div>
+            </div> -->
 
             <div class="w-full my-4">
-                <CornieSelect :items="slots" :label="'Slot'" v-model="checkinData.slotId" style="width: 100%;font-size:13px" />
+                <CornieSelect :items="slots" :label="'Slot'" v-model="checkinData.time" style="width: 100%;font-size:13px" />
             </div>
 
             <div class="w-full mb-4 mt-8">
@@ -139,6 +139,7 @@ import Visitor from './visitor.vue'
 const visitsStore = namespace('visits');
 const locationsStore = namespace('location');
 const practitionersStore = namespace('practitioner');
+const appointment = namespace("appointment");
 
 @Options({
   components: {
@@ -164,6 +165,7 @@ export default class CheckIn extends Vue {
  showPlanning = false;
  loading = false;
  selectedActors: any = [ ]
+ schedules: any = [ ]
 
  @Prop()
  item!: any;
@@ -171,13 +173,20 @@ export default class CheckIn extends Vue {
  availableSlots: any = [ ]
  checkinData: any = {
     "appointmentId": this.item.id,
-    "patientId": "",
+    "patientId": this.patientId,
     "type": this.item.appointmentType,
-    "status": "in-progress",
+    "status": "In-progress",
     "roomId": "",
     "notes": "",
     "slotId": "",
 }
+
+
+@appointment.State
+appointments!: any[];
+
+@appointment.Action
+fetchAppointments!: () => Promise<void>;
 
  @visitsStore.Action
  checkin!: (body: any) => Promise<boolean>;
@@ -203,17 +212,45 @@ export default class CheckIn extends Vue {
  @practitionersStore.Action
  fetchPractitioners!: () => Promise<void>;
 
+
+  @visitsStore.Action
+  createSlot!: (body: any) => Promise<any>;
+
  async setSession() {
+     let body = {
+      "scheduleId": this.checkinData.scheduleId,
+    //   "startTime": this.checkinData.time.split("-")[0].trim().split(",")[1].trim().substring(0, 5),
+    //   "endTime": this.checkinData.time.split("-")[1].trim().split(",")[1].trim().substring(0, 5),
+    //   "description": "string",
+    startTime: "07:10",
+    endTime: "07:40",
+      "status": "active",
+      "active": true,
+    //   "capacity": 0,
+    //   "hasWaitList": true,
+    //   "comments": "string",
+      "repeat": {
+        "year": 0,
+        "month": 0,
+        "week": 0,
+        "everyDayOfSchedule": true
+      }
+    }
+
+    const createdSlot = await this.createSlot(body);
+    console.log(createdSlot, "createdSlot");
+    
+    this.checkinData.slotId = createdSlot.id;
+
      this.loading = true;
     const response = await this.checkin(this.checkinData);
-    console.log(response, "Checked in");
     
     this.loading = false;
     if (response) window.notify({ msg: "Checked In", status: "success" });
     this.$emit('close')
 }
 
-    data: any = { date: new Date(Date.now()), time: new Date(Date.now()).toTimeString() }
+data: any = { date: new Date(Date.now()), time: new Date(Date.now()).toTimeString() }
 
  activeStates: any = [
      { display: 'Yes', value: 'yes' },
@@ -264,6 +301,13 @@ export default class CheckIn extends Vue {
      })
  }
 
+get actorsInAppointment() {
+    if (!this.item || !this.item.appointmentId) return [ ];
+    const apmt =  this.appointments.find((i: any) => i.id === this.item.appointmentId);
+    
+    return apmt ? apmt.Practitioners : [ ];
+}
+
  get allActors() {
     if (!this.practitioners || this.practitioners.length === 0) return [ ];
     return this.practitioners.map(i => {
@@ -286,6 +330,16 @@ export default class CheckIn extends Vue {
              display: `${i.firstname} ${i.lastname}`
          }
      })
+ }
+
+ get scheduleId() {
+     if (!this.schedules || this.schedules.length === 0) return 0;
+     return this.schedules[0].id
+ }
+
+ get patientId() {
+     if (!this.item || !this.item.patientId) return 0;
+     return this.item.patientId
  }
 
  get appointmentPatients() {
@@ -326,12 +380,11 @@ export default class CheckIn extends Vue {
  @Watch('item', { immediate: true, deep: true })
  onGetSlots() {
      console.log(this.item, "MMMM");
-     
-    //  if (!this.item || !this.item.Practioners || this.item.Practioners.length === 0) return;
+     if (!this.item || !this.item.Practioners) return;
      this.schedulesByPractitioner(this.item.Practitioners[0].id).then(res => {
-         console.log(res, "RESSSSS");
+         this.schedules = res;
          
-         this.availableSlots = slotService.getAvailableSlots(res)
+         this.availableSlots = slotService.getAvailableSlots([ res[0] ])
      })
      .catch(err => {
          console.log(err)
@@ -343,6 +396,7 @@ export default class CheckIn extends Vue {
     async created() {
         if (!this.locations || this.locations.length === 0) await this.fetchLocations();
         if (!this.patients || this.patients.length === 0) await this.getPatients();
+        if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
         if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
         console.log(this.practitioners, "pracs");
         console.log(this.patients, "pats");

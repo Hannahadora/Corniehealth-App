@@ -21,20 +21,20 @@
                       <span class="text-primary font-semibold">{{ visits.length }}</span>
                     </span>
                 </div>
-                <div class=".w-full shadow-md w-2/12 p-4 mx-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 1}"
+                <!-- <div class=".w-full shadow-md w-2/12 p-4 mx-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 1}"
                   @click="() => selectedStatus = 1"
                 >
                     <span class="flex flex-col uppercase">
                       <span class="text-danger font-normal text-sm">Queued</span>
                       <span class="text-danger font-semibold">{{ visits.filter((i) => i.status === "queue").length }}</span>
                     </span>
-                </div>
+                </div> -->
                 <div class=".w-full shadow-md w-2/12 p-4 rounded-lg mx-4 cursor-pointer" :class="{'light-grey-bg': selectedStatus === 2}"
                   @click="() => selectedStatus = 2"
                 >
                     <span class="flex flex-col uppercase">
                       <span class="text-warning font-normal text-sm">In-Progress</span>
-                      <span class="text-warning font-semibold ">{{ visits.filter((i) => i.status === "in-progress").length }}</span>
+                      <span class="text-warning font-semibold ">{{ visits.filter((i) => i.status === "in-progress" || i.status === "active").length }}</span>
                     </span>
                 </div>
                 <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 3}"
@@ -42,7 +42,7 @@
                 >
                     <span class="flex flex-col uppercase">
                       <span class="text-danger font-normal text-sm text-success">Completed</span>
-                      <span class="text-danger font-semibold text-success">{{ visits.filter((i) => i.status !== "in-progress" && i.status !== "queue").length }}</span>
+                      <span class="text-danger font-semibold text-success">{{ visits.filter((i) => i.status !== "in-progress" && i.status !== "queue" && i.status !== "active").length }}</span>
                     </span>
                 </div>
             </div>
@@ -127,10 +127,10 @@
                     <eye-icon class="mt-1" />
                     <span class="ml-3 text-xs" @click="showTimeline(item.id)">View timeline</span>
                     </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                    <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <ArrowRight />
                     <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
-                    </div>
+                    </div> -->
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="start(item.id)">
                     <EncounterIcon class="mr-3 mt-1"  />
                     <span class="ml-3 text-xs" >Start Encounter</span>
@@ -191,8 +191,7 @@
                 </side-modal>
 
                 <side-modal :visible="showCheckNoapp" :header="'Check-In'" @closesidemodal="() => showCheckNoapp = false">
-                <!-- <side-modal :visible="showEditPane" :header="'Edit Slot'" @closesidemodal="closeEditPane"> -->
-                    <CheckinNoapp :item="appointments[0]"  />
+                    <CheckinNoapp :patientId="patients[0].id" :item="appointments[0]"  @close="() => showCheckNoapp = false" />
                 </side-modal>
 
                 <side-modal :visible="false">
@@ -216,13 +215,13 @@
                     <p class="md flex items-center justify-between px2" style="width: 440px">
                       <span class="md font-lignt text-primary p-2 text-xl">Timeline</span> 
                       <span class="md text-danger cursor-pointer">
-                        <router-link class="md" :to="{ name: 'Patient Visits Timeline', query: { visit: selectedVisit.id }}">
+                        <a class="md">
                           See all
-                        </router-link>
+                        </a>
                       </span>
                     </p>
                   </template>
-                  <ActionLog :timeline="selectedVisit.timelines" @closetimeline="() => timeLineVissible = false" />
+                  <ActionLog :timeline="selectedVisit.timelines" :appointmentId="currentVisit.appointmentId" @closetimeline="() => timeLineVissible = false" />
                  
 
                 </modal>
@@ -241,7 +240,7 @@
                   </template>
                   <div class="w-4/12 px-4" style="width: 440px">
                     <div class="w-full flex">
-                      <div class="w-6/12">
+                      <div class="w-7/12">
                         <div class="w-full">
                           <div class="w-11/12">
                             <div class="w-full py-2">
@@ -263,7 +262,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="w-6/12">
+                      <div class="w-5/12">
                         <div class="w-full">
                           <div class="w-11/12">
                             <div class="py-2 w-full">
@@ -271,11 +270,11 @@
                               <span class="ml-2">{{ selectedPatientData.gender }}</span> 
                             </div>
                             <div class="py-2 w-full">
-                              <span class="font-semibold text-primary">Profile Type</span> 
+                              <span class="font-semibold text-primary">Profile Type:</span> 
                               <span class="ml-2">XXXX</span> 
                             </div>
                             <div class="py-2w-full">
-                              <span class="font-semibold text-primary">Payor</span> 
+                              <span class="font-semibold text-primary">Payor:</span> 
                               <span class="ml-2">XXXXXX</span> 
                             </div>
                           </div>
@@ -394,6 +393,7 @@ export default class PractitionerExistingState extends Vue {
   completedStatus: any = [  ]
   currentVisitId = '';
 
+
   activeTab = 0;
   showEditPane = false;
   showViewPane = false;
@@ -452,11 +452,11 @@ export default class PractitionerExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    // {
-    //   title: "Location",
-    //   key: "location",
-    //   show: true,
-    // },
+    {
+      title: "Identifier",
+      key: "id",
+      show: true,
+    },
     {
       title: "Specialty",
       key: "name",
@@ -472,7 +472,7 @@ export default class PractitionerExistingState extends Vue {
       key: "appointmentType",
       show: true,
     },
-    { title: "Slot", key: "slot", show: false },
+    { title: "Slot", key: "slot", show: true },
     {
       title: "Practitioner",
       key: "practitioners",
@@ -527,22 +527,21 @@ export default class PractitionerExistingState extends Vue {
       } else {
         i.completedStatus = "In-Progress";
       }
-      console.log(i, "I");
       
       return {
         ...i,
         action: i.id,
         patient: this.getPatientName(i.patientId),
-        location: i.room.name,
+        location: i.room ? i.room.name : "",
         status: i.status,
-        slot: ` `,
+        slot: `10:00 - 13:00`,
         // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
         practitioners: this.getActors(i.appointmentId)
       };
     });
     if (this.selectedStatus === 1) return visits.filter((i: any) => i.completedStatus === "Queue");
-    if (this.selectedStatus === 2) return visits.filter((i) => i.status === "in-progress");
-    if (this.selectedStatus === 3) return visits.filter((i) => i.status !== "in-progress" && i.status !== "queue");
+    if (this.selectedStatus === 2) return visits.filter((i) => i.status === "in-progress" ||  i.status === "active");
+    if (this.selectedStatus === 3) return visits.filter((i) => i.status !== "in-progress" && i.status !== "queue" && i.status !== "active");
     return visits;
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);
@@ -604,7 +603,6 @@ export default class PractitionerExistingState extends Vue {
   get selectedPatientData() {
     if (!this.selectedPatient || !this.selectedPatient.id) return { };
     const data = this.selectedPatient;
-    console.log(data, "DATAA");
     
     return {
       gender: data.gender,
@@ -612,38 +610,6 @@ export default class PractitionerExistingState extends Vue {
       mrn: data.mrn
     }
   }
-
-  // async remove(id: string) {
-  //   const confirmed = await window.confirmAction({
-  //     message: "Are you sure you want to deactivate this shift?",
-  //     // message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
-  //   });
-  //   if (!confirmed) return;
-
-  //   try {
-  //       const response = await this.deleteShift(id);
-  //       if (response) window.notify({ msg: "Shift eactivated", status: "success" });
-  //       this.getShifts()
-  //   } catch (error) {
-  //       window.notify({ msg: "Shift could not deactivated", status: "error" });
-  //       console.log(error)
-  //   }
-  // }
-
-  // async activate(id: string) {
-  //   const confirmed = await window.confirmAction({
-  //     message: "Are you sure you want to activate this Schedule?",
-  //   });
-  //   if (!confirmed) return;
-
-  //   try {
-  //       const response = await this.activateSchedule(id);
-  //       if (response) window.notify({ msg: "Schedule activated", status: "success" });
-  //   } catch (error) {
-  //       window.notify({ msg: "Schedule could not activated", status: "error" });
-  //       console.log(error)
-  //   }
-  // }
 
 
   viewSchedule(id: string) {
@@ -667,6 +633,7 @@ export default class PractitionerExistingState extends Vue {
 
   showTimeline(id: string) {
     this.setSelectedVisit(id)
+     this.currentVisitId = id;
     this.timeLineVissible = true;
   }
 
@@ -682,7 +649,6 @@ export default class PractitionerExistingState extends Vue {
 
   async created() {
     if (!this.patients || this.patients.length === 0) await this.getPatients();
-    console.log(this.patients, "patients");
     if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
     console.log(this.appointments, "appos");
     
@@ -694,103 +660,7 @@ export default class PractitionerExistingState extends Vue {
         this.filterStatus = false;
       }
     })
-
-    let body = {
-      "scheduleId": "f74e7d51-e022-4c2d-a9e8-891c06904f10",
-      "startTime": "01:40",
-      "endTime": "00:10",
-      "description": "string",
-      "status": "active",
-      "active": true,
-      "capacity": 0,
-      "hasWaitList": true,
-      "comments": "string",
-      "repeat": {
-        "year": 0,
-        "month": 0,
-        "week": 0,
-        "everyDayOfSchedule": true
-      }
-    }
-    let pat = {
-      "mrn": "string",
-      "firstname": "string1",
-      "middlename": "string2",
-      "lastname": "string3",
-      "dateOfBirth": "2021-08-26",
-      "gender": "male",
-      "maritalStatus": "string",
-      "multipleBirths": false,
-      "multipleBirthInteger": 0,
-      "guarantor": {
-        firstname: "emergency-contact",
-        lastname: "emergency-contact"
-      },
-      "accountType": "individual",
-      "vip": true,
-      "emergencyContacts": [
-        {firstname: "emergency-contact",
-        lastname: "emergency-contact"}
-      ],
-    }
-    let req = {
-      "appointmentId": "2600b457-6ee5-452b-b85a-a134be1a9ca4",
-      // "orgId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      "patientId": "257f5ae3-df56-427f-8327-bc8f4019a4ad",
-      "type": "Follow-up",
-      "status": "active",
-      "roomId": "d25cc910-0830-40cf-a0c8-7c303f381b29",
-      // "checkInTime": "01:26",
-      // "checkOutTime": "01:30",
-      "notes": "true",
-      "slotId": "6f72aece-ddb2-4908-aedb-cb1b961e814f",
-      // practitioners: [ "87e846a3-bac0-43b9-a4db-0b2605426c42" ],
-      // startTime: "00:25"
-    }
-
-    // this.createSlot(pat).then((res: any) => {
-    //   console.log(res, "SLOTSERR");
-      
-    // })
-    // .catch((err: any) => {
-    //   console.log(err, "PATERR");
-      
-    // })
-
-    // this.checkin(req).then((res: any) => {
-    //   console.log(res, "VISIT");
-      
-    // })
-    // .catch((err: any) => {
-    //   console.log(err);
-      
-    // });
-
-
-    // this.schedulesByPractitioner().then((res: any) => {
-    //   console.log(res, "KKKK");
-      
-    //   const allSlots: any = [ ]
-    //   res.forEach((i: any) => {
-    //     if (i.slots && i.slots.length > 0) {
-    //       i.slots.forEach((j: any) => {
-    //         allSlots.push(j);
-    //       });
-    //     }
-    //   });
-
-    //   this.availableSlots = allSlots.map((i: any) => {
-    //     return {
-    //       code: i.id,
-    //       display: `${i.startTime} - ${i.endTime}, ${new Date(i.startDate).toLocaleDateString()}`
-    //     }
-    //   })
-      
-    // })
-    // .catch((err: any) => {
-    //   console.log(err, "ERR");
-      
-    // })
+    this.showCheckNoapp = true
   }
 
 }

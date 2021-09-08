@@ -6,22 +6,22 @@
                 <div class="w-6/12">
                     <div class="w-11/12">
                         <label class="block uppercase mb-1 text-xs font-bold">
-                            Time
-                            <input type="time" name="" class="p-3 border rounded-md w-full" id="" v-model="data.time">
+                            Time 
+                            <input type="time" name="" class="p-3 border rounded-md w-full" id="" v-model="checkinData.time">
                         </label>
                     </div>
                 </div>
                 <div class="w-6/12 flex">
                     <div class="container flex justify-end">
                         <div class="w-12/12">
-                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="data.date" />
+                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100%" v-model="date" />
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="w-full my-4">
-                <CornieSelect :items="['Follow Up', 'Routine', 'Walk In', 'Check Up', 'Emergency']" :label="'Type'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="['Follow Up', 'Routine', 'Walk In', 'Check Up', 'Emergency']" :label="'Type'" v-model="checkinData.type" style="width: 100%" />
             </div>
 
             <div class="w-full my-5">
@@ -59,15 +59,15 @@
             </div>
 
             <div class="w-full my-4">
-                <CornieSelect :items="slots" :label="'Slot'" v-model="data.room" style="width: 100%;font-size:13px" />
+                <CornieSelect :items="slots" :label="'Slot'" v-model="checkinData.slot" style="width: 100%;font-size:13px" />
             </div>
 
             <div class="w-full my-4">
-                <CornieSelect :items="rooms" :label="'Room'" v-model="data.room" style="width: 100%" />
+                <CornieSelect :items="rooms" :label="'Room'" v-model="checkinData.room" style="width: 100%" />
             </div>
 
             <div class="w-full mb-4 mt-8">
-                <TextArea :label="'Notes'" v-model="data.notes" style="width: 100%" />
+                <TextArea :label="'Notes'" v-model="checkinData.notes" style="width: 100%" />
             </div>
 
             <div class="w-full">
@@ -75,7 +75,7 @@
                     <p class="font-semibold font-normall text-sm">All patients for visit</p>
                 </div>
                 <div class="container-fluid my-5 border-b-2 pb-2">
-                    <div class="w-full flex items-center">
+                    <div class="w-full flex items-center" v-for="(patient, index) in []" :key="index">
                         <div class="w-1/12 rounded-full">
                             <img src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image">
                         </div>
@@ -100,12 +100,12 @@
         
         <div class="w-full mb-3 mt-8">
             <div class="container-fluid flex justify-end items-center">
-                <corniebtn :loading="false">
-                    <router-link to="" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
+                <corniebtn>
+                    <a @click="() => $emit('close')" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
-                    </router-link>
+                    </a>
                 </corniebtn>
-                <Button :loading="loading">
+                <Button :loading="loading" @click="setSession">
                     <a style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                         Check-in 
                     </a>
@@ -156,7 +156,7 @@ const locationsStore = namespace('location');
 export default class CheckIn extends Vue {
 
 @Prop()
-item!: any;
+patientId!: any;
 
  @locationsStore.Action
  fetchLocations!: () => Promise<void>;
@@ -173,10 +173,17 @@ item!: any;
  @visitsStore.Action
   schedulesByPractitioner!: (id: string) => Promise<any>;
 
+  @visitsStore.Action
+  checkin!: (body: any) => Promise<any>;
+
+  @visitsStore.Action
+  createSlot!: (body: any) => Promise<any>;
+
  showDetails = true;
  showBreaks = false;
  showPlanning = false;
  loading = false;
+ date = new Date();
 
     data: any = { }
     selectedActors: any[] = [ ]
@@ -217,6 +224,9 @@ item!: any;
      { display: 'Sunday', code: false }
  ]
 
+   checkinData: any = { time: new Date().toTimeString().substring(0, 5) }
+
+
  selectPractitioner(actor: any, index: number) {
      if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
         this.getSlots(actor.code);
@@ -226,10 +236,61 @@ item!: any;
      }
  }
 
+ refreshSlots() {
+     if (this.selectedActors.length > 0) {
+         this.getSlots(this.selectedActors[0].id);
+     }
+ }
+
  getSlots(id: string) {
-     this.schedulesByPractitioner(id).then(res => {
-         this.availableSlots = slotService.getAvailableSlots(res)
-     })
+    this.schedulesByPractitioner(id).then(res => {  
+              
+        const todaySlots = res.filter((i: any) => slotService.matchDates(this.visitDate.toString(), i.startDate))        
+        this.checkinData.scheduleId = todaySlots.length > 0 ? todaySlots[0].id : '';
+        
+        this.availableSlots = slotService.getAvailableSlots(todaySlots)
+    })
+ }
+
+ async setSession() {
+     let body = {
+      "scheduleId": this.checkinData.scheduleId,
+        startTime: this.checkinData.slot.split('-')[0].trim(),
+        endTime: this.checkinData.slot.split('-')[1].trim(),
+      "status": "active",
+      "active": true,
+    }
+
+    
+    
+    try {
+        this.loading = true;
+        const slot = await this.createSlot(body);
+        this.loading = false;
+        if (slot && slot.id) {
+            const checkedIn = await this.checkin({
+                "patientId": this.patientId,
+                "type": this.checkinData.type,
+                "status": "In-progress",
+                "roomId": this.checkinData.room,
+                "notes": this.checkinData.notes,
+                "slotId": slot.id,
+                // "practitioners": this.selectedActors.map(i => i.id)
+            });
+            
+            if (checkedIn && checkedIn) {
+                window.notify({ msg: "Patient Check-in", status: "success" });
+                this.$emit("close")
+            } else {
+                window.notify({ msg: "Patient check-in failed", status: "error" });
+            }
+            
+        } else {
+            window.notify({ msg: "Error checking-in patient", status: "error" });
+        }
+    } catch (error) {
+        this.loading = false;
+    }
  }
 
  get selectedPractitioners() {
@@ -259,15 +320,19 @@ item!: any;
          return {
              code: `${i.start} - ${i.end}`,
              display: `${i.start} - ${i.end}`,
-             
          }
      })
+ }
+
+ get visitDate() {
+     if (!this.date) return new Date(Date.now());
+     const x =  new Date(`${new Date(this.date).toISOString()}`)
+     return x;
  }
 
  async created() {
      if (!this.locations || this.locations.length === 0) await this.fetchLocations();
      if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
-    
  }
 
 
