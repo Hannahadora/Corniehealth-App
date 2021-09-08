@@ -2,7 +2,12 @@
   <span class="flex items-center">
     <label class="radio-container">
       {{ label }}
-      <input v-bind="$attrs" type="radio" v-model="checked" />
+      <input
+        @change="$emit('change')"
+        v-bind="$attrs"
+        type="radio"
+        v-model="checked"
+      />
       <span class="checkmark"></span>
     </label>
   </span>
@@ -39,7 +44,7 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-    font-size: 14px;
+  font-size: 14px;
 }
 
 /* Hide the browser's default radio button */
@@ -51,35 +56,35 @@ export default {
 
 /* Create a custom radio button */
 .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    border: 2px solid #C2C7D6;
-    height: 25px;
-    width: 25px;
-    background-color: #fff;
-    border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 2px solid #c2c7d6;
+  height: 25px;
+  width: 25px;
+  background-color: #fff;
+  border-radius: 50%;
 }
 .checkmark::before {
-   content: "";
-    position: absolute;
-      top: 2px;
-    left: 2px;
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    background: #C2C7D6;
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #c2c7d6;
 }
 
 /* On mouse-over, add a grey background color */
 .radio-container:hover input ~ .checkmark {
-  background-color: #C2C7D6;
+  background-color: #c2c7d6;
 }
 
 /* When the radio button is checked, add a blue background */
 .radio-container input:checked ~ .checkmark {
   background-color: white;
-  border: 2px solid #C2C7D6;
+  border: 2px solid #c2c7d6;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -96,11 +101,11 @@ export default {
 
 /* Style the indicator (dot/circle) */
 .radio-container .checkmark:after {
-    top: 2px;
-    left: 2px;
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    background: #FE4D3C;
+  top: 2px;
+  left: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #fe4d3c;
 }
 </style>

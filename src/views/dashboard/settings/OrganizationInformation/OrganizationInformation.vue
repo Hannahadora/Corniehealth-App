@@ -218,6 +218,7 @@ import PhoneInput from "@/components/phone-input.vue";
 import { reactive } from "@vue/reactivity";
 import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "OrganizationInformation",
@@ -261,6 +262,9 @@ export default {
     };
   },
   computed: {
+    ...mapState("organization", {
+      organizationInfo: (state) => state.organizationInfo,
+    }),
     payload() {
       return {
         name: this.OrganizationName,
@@ -287,6 +291,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("organization", ["fetchOrgInfo"]),
     async submitForm() {
       this.loading = true;
       try {
