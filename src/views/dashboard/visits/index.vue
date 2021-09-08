@@ -660,7 +660,6 @@ export default class PractitionerExistingState extends Vue {
         this.filterStatus = false;
       }
     })
-    this.showCheckNoapp = true
   }
 
 }
