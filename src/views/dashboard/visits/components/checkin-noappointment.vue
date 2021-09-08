@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full p-4 overflow-y-scroll h-scrren">
+    <div class="w-full p-4 overflow-y-scroll h-screen">
         <div class="container-fluid">
 
             <div class="w-full flex items-center">

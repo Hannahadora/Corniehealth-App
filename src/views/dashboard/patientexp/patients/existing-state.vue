@@ -82,13 +82,14 @@
             <settings-icon class="text-red-500 fill-current" />
             <span class="ml-3 text-xs">Patient Settings</span>
           </table-action>
-          <table-action>
+          <table-action @click="checkIn(item)">
             <checkin-icon />
             <span class="ml-3 text-xs">Check-In</span>
           </table-action>
         </template>
       </cornie-table>
     </div>
+    <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
     <registration-dialog v-model="registerNew" />
   </div>
 </template>
@@ -110,14 +111,14 @@ import TableAction from "@/components/table-action.vue";
 import RegistrationDialog from "./registration-dialog.vue";
 import RegistrationChart from "./registration-chart.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
-import CheckIn from "@/views/dashboard/visits/components/checkin-noappointment.vue";
+import CheckInDialog from "./dialogs/checkin-dialog.vue";
 
 const patients = namespace("patients");
 @Options({
   name: "PatientExistingState",
   components: {
     CornieCard,
-    CheckIn,
+    CheckInDialog,
     CheckinIcon,
     RegistrationChart,
     RegistrationDialog,
@@ -140,6 +141,8 @@ export default class ExistingState extends Vue {
   @patients.Action
   deletePatient!: (id: string) => Promise<boolean>;
 
+  checkInPatient!: IPatient;
+  checkingIn = false;
   registerNew = false;
   headers = [
     {
@@ -187,6 +190,10 @@ export default class ExistingState extends Vue {
     }));
   }
 
+  checkIn(patient: IPatient) {
+    this.checkInPatient = patient;
+    this.checkingIn = true;
+  }
   printPhone(patient: IPatient) {
     if (!patient.contactInfo) return "N/A";
     const phone = patient.contactInfo[0].phone;
