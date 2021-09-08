@@ -1,4 +1,5 @@
 import ObjectSet from "@/lib/objectset";
+import search from "@/plugins/search";
 import IPractitioner from "@/types/IPractitioner";
 import { StoreOptions } from "vuex";
 import { deletePractitioner, fetchPractitioners } from "./helper";
@@ -47,6 +48,12 @@ export default {
       const deleted = await deletePractitioner(id);
       if (deleted) ctx.commit("deletePractitioner", id);
       return deleted;
+    },
+    async searchPractitioners(ctx, query: string) {
+      if (!ctx.state.practitioners.length)
+        await ctx.dispatch("fetchPractitioners");
+      const practitioners = ctx.state.practitioners;
+      return search.searchObjectArray(practitioners, query);
     },
   },
 } as StoreOptions<PractitionerState>;

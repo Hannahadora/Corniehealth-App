@@ -10,7 +10,7 @@
         <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
           Edit
         </span>
-        <completed-icon v-else class="mr-2" />
+        <completed-icon v-if="!viewOnly && basicCompleted" class="mr-2" />
         <icon-btn @click="togglePatientInformation">
           <chevron-down-icon v-if="showPatientInformation" />
           <chevron-right-icon v-else />
@@ -159,10 +159,15 @@
       <cornie-card-title>
         <h1 class="text-lg font-extrabold">Contact Info</h1>
         <cornie-spacer />
-        <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable"
-          >Edit</span
-        >
-        <completed-icon v-else class="mr-2" />
+        <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
+          Edit
+        </span>
+        <completed-icon
+          @completed="contactsCompleted = true"
+          v-if="!viewOnly && contactsCompleted"
+          class="mr-2"
+        />
+
         <icon-btn @click="toggleContactInfo">
           <chevron-down-icon v-if="showContactInfo" />
           <chevron-right-icon v-else />
@@ -266,6 +271,12 @@
       v-model:demographics="demographics"
       v-model="showDemographicsDialog"
     />
+
+    <practitioners-dialog
+      :patient="patient"
+      v-model="showPractitionersDialog"
+      v-model:practitioners="practitioners"
+    />
   </div>
 </template>
 
@@ -299,6 +310,8 @@ import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
 import GuarantorDialog from "./dialogs/GuarantorDialog.vue";
 import InsuranceDialog from "./dialogs/InsuranceDialog.vue";
 import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
+import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
+
 import ContactInfo from "./contact-information.vue";
 import { string, number, date, array } from "yup";
 import { Prop, Ref } from "vue-property-decorator";
@@ -318,6 +331,7 @@ const patients = namespace("patients");
     ChevronRightIcon,
     ChevronDownIcon,
     IconBtn,
+    PractitionersDialog,
     CornieAvatarField,
     CustomCheckbox,
     CornieInput,
@@ -386,6 +400,7 @@ export default class NewPatient extends Vue {
   labs = [];
   pharmacies = [];
   demographics!: Demographics;
+  practitioners = [];
 
   maritalStatus = "";
 
@@ -395,6 +410,8 @@ export default class NewPatient extends Vue {
   showProvidersDialog = false;
   showPractitionersDialog = false;
   showDemographicsDialog = false;
+
+  contactsCompleted = false;
 
   requiredRule = string().required();
   numericRule = number();
@@ -415,10 +432,14 @@ export default class NewPatient extends Vue {
 
   @Ref("basic")
   basicInfo!: any;
+
+  basicCompleted = false;
+
   get title() {
     if (this.viewOnly) return "View Patient";
     return this.patient ? "Edit Patient" : "New Patient";
   }
+
   get viewOnly() {
     return this.$route.path.includes("view");
   }
@@ -464,8 +485,10 @@ export default class NewPatient extends Vue {
       {
         name: "General Practitioners",
         icon: "medical-team-icon",
-        click: () => null,
-        number: 0,
+        click: () => (this.showPractitionersDialog = true),
+        number:
+          this.patient?.generalPractitioners?.length ||
+          this.practitioners.length,
       },
       {
         name: "Demographic Data",
@@ -565,11 +588,14 @@ export default class NewPatient extends Vue {
       this.loading = false;
     } else {
       this.showPatientInformation = false;
+      this.basicCompleted = false;
     }
   }
+
   selectId(idOption: string) {
     this.idType = idOption;
   }
+
   hydrate() {
     const patient = this.patients.find((p) => p.id == this.id);
     if (!patient) return;
