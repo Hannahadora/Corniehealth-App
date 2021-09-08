@@ -1,28 +1,26 @@
 <template>
   <div class="w-full">
     <span class="flex w-full mt-3 -mb-2 font-bold text-lg text-primary py-2 mx-auto">
-     New Requests
+     New Task
     </span>
-      <p class="text-danger text-xs font-normal">(Items with asterisk are required for filling)</p>
     <div>
       <div class="w-full h-screen">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
-            <accordion-component title="Request Info" v-model="opened" :opened="false">
+            <accordion-component title="Required Field" v-model="opened" :opened="false">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                  <cornie-input label="activity definition" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="desciption" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
                   <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Status Reasom Code']"
-                    v-model="serviceCategory"
-                    label="status reason"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
                     :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
                     v-model="serviceType"
                     label="intent"
@@ -30,254 +28,251 @@
                   >
                   </cornie-select>
                   <cornie-select
-                    class="required"
-                    :rules="required"
                     :items="['']"
                     v-model="specialty"
-                    label="category"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['routine','urgent','asap','stat']"
-                    v-model="appointmentType"
                     label="priority"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['reason code']"
-                    v-model="reasonCode"
-                    label="do not perform"
+                    :items="['routine','urgent','asap','stat']"
+                    v-model="appointmentType"
+                    label="status"
                     placeholder="--Select--"
                   >
                   </cornie-select>
+                  <cornie-input label="status reason" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                   <cornie-input label="business status" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
                   <cornie-select
-                    :rules="required"
-                    :items="['reason reference']"
-                    v-model="reasonRef"
-                    label="reason for prohibition?"
+                    :items="['reason code']"
+                    v-model="reasonCode"
+                    label="code"
                     placeholder="--Select--"
                   >
+                   <template v-slot:labelicon>
+                        <question-icon/>
+                    </template>  
+                  </cornie-select>
+                   <cornie-input label="for" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                   <cornie-input label="business status" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <date-picker label="excecution period">
+                       <template v-slot:labelicon>
+                        <question-icon/>
+                    </template>  
+                  </date-picker>
+                  <cornie-select
+                    :items="['reason reference']"
+                    v-model="reasonRef"
+                    label="performer type"
+                    placeholder="--Select--"
+                  >
+                  <template v-slot:labelicon>
+                        <question-icon/>
+                    </template>  
+                  </cornie-select>
+                   <cornie-select
+                    :items="['reason reference']"
+                    v-model="reasonRef"
+                    label="owner"
+                    placeholder="--Select--"
+                  >
+                  <template v-slot:labelicon>
+                        <question-icon/>
+                    </template>  
+                  </cornie-select>
+                  <cornie-select
+                    :items="['reason reference']"
+                    v-model="reasonRef"
+                    label="location"
+                    placeholder="--Select--"
+                  >
+                  <template v-slot:labelicon>
+                        <question-icon/>
+                    </template>  
+                  </cornie-select>
+                  <div>
+                      <DateTimePicker :label="'start DATE & Time'">
+                           <template v-slot:labelicon>
+                            <question-icon/>
+                        </template>  
+                          <template #date>
+                              <span><span>{{ new Date(data.startDate ?? Date.now()).toLocaleDateString()}}</span></span>
+                          </template>
+                          <template #time>
+                              <span><span>{{ data.startTime }}</span></span>
+                          </template>
+                          <template #input>
+                              <v-date-picker  v-model="data.startDate" style="position:relative;z-index:9000;width:100%"></v-date-picker>
+                                <label
+                                  class="block uppercase my-1 text-xs font-bold"
+                                  >
+                                  Time
+                              </label>
+                              <input v-model="data.startTime" type="time" class="w-full border rounded-md p-2">
+                          </template>
+                      </DateTimePicker>
+                  </div>
+                  <div>
+                      <DateTimePicker :label="'end DATE & Time'">
+                           <template v-slot:labelicon>
+                          <question-icon/>
+                      </template>  
+                          <template #date>
+                              <span>{{ new Date(data.endDate ?? Date.now()).toLocaleDateString()}}</span>
+                          </template>
+                          <template #time>
+                              <span>{{ data.endTime }}</span>
+                          </template>
+                          <template #input>
+                              <v-date-picker name="eeee" v-model="data.endDate" style="z-index:9000;width:100%"></v-date-picker>
+                              <label
+                                  class="block uppercase my-1 text-xs font-bold"
+                                  >
+                                  Time
+                              </label>
+                              <input v-model="data.endTime" type="time" class="w-full border rounded-md p-2">
+                          </template>
+                      </DateTimePicker>
+                  </div>
+                  <cornie-select
+                    :items="['reason reference']"
+                    v-model="reasonRef"
+                    label="recipient"
+                    placeholder="--Select--"
+                  >
+                  <template v-slot:labelicon>
+                        <question-icon/>
+                    </template>  
                   </cornie-select>
                 </div>
               </template>
             </accordion-component>
-            <accordion-component title="Request Details" v-model="opened" :opened="false">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="recorder"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="['Practitioner','PractitionerRole','Organization','Patient','RelatedPerson','Device']"
-                    v-model="serviceType"
-                    label="requester"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.specialty"
-                    v-model="specialty"
-                    label="encounter"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Condition','Problem','Diagnosis Code']"
-                    v-model="serviceCategory"
-                    label="reason code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="['Condition','Observation']"
-                    v-model="serviceType"
-                    label="reason reference"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="definition"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="['CarePlan','MedicationRequest','ServiceRequest','ImmunizationRecommendation']"
-                    v-model="serviceType"
-                    label="based on"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="supporting information"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-             <accordion-component title="Subject" expand="true" v-model="opened" :opened="false">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Patient','Group']"
-                    v-model="serviceCategory"
-                    label="subject"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="['Coverage','Claim Response']"
-                    v-model="serviceType"
-                    label="payment option"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-             <medication-accordion title="Medication"  class="coursor-pointer" @show="showMedication">
-            
-            </medication-accordion>
-             <accordion-component title="Performer">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Organisation','Care Partner']"
-                    v-model="serviceCategory"
-                    label="dispenser type"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                   <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Organisation','Care Partner']"
-                    v-model="serviceCategory"
-                    label="dispenser"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-            <accordion-component title="Medication Administration">
+            <accordion-component title="Optional Field" v-model="opened" :opened="true">
+              <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="performer type"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :items="['Practitioner','PractitionerRole','Organization','Patient','RelatedPerson','Device','CareTeam']"
-                    v-model="serviceType"
-                    label="performer"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
+                  <cornie-input label="based on" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="part of" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="reason code" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="reason reference" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                   <cornie-input label="note" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                   <cornie-input label="focus" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="encounter" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <div class="block">
+                      <label class="flex uppercase mb-2 text-xs font-bold">
+                        Repitition
+                        <span class="ml-1"><question-icon/></span>
+                    </label>
+                    <div  class="w-full flex space-x-4 mb-3">
+                      <cornie-radio label="Days"  class="text-xs" name="request" id="pickup" />
+                      <cornie-radio label="Week"  name="request" id="patientadress" checked/>
+                      <cornie-radio label="Month"  name="request" id="homeaddress"/>
+                       <cornie-radio label="Years"  name="request" id="homeaddress"/>
+                    </div>
+                  </div>
                 </div>
+                  <span class="
+                                flex
+                                border-b-2
+                                border-dark-100
+                                w-full
+                                text-sm text-primary
+                                py-2
+                                mx-auto
+                                font-bold
+                                col-span-full
+                                mb-4
+                                mt-5
+                            "
+                            >
+                            Input
+                  </span>
+                  <div  class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                      <cornie-input label="type" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="value" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  </div>                 
+                    <span class="
+                                flex
+                                border-b-2
+                                border-dark-100
+                                w-full
+                                text-sm text-primary
+                                py-2
+                                mx-auto
+                                font-bold
+                                col-span-full
+                                mb-4
+                                mt-5
+                            "
+                            >
+                            Output
+                  </span>
+                  <div  class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                      <cornie-input label="type" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  <cornie-input label="value" placeholder="--Enter--" v-model="description">
+                    <template v-slot:labelicon>
+                        <info-icon class="text-primary fill-current"/>
+                    </template>  
+                  </cornie-input>
+                  </div>
+               
+              </template>
             </accordion-component>
-             <accordion-component title="Fufillment">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Pick-up','Ship to Patient Address','Ship to Hospital Address']"
-                    v-model="serviceCategory"
-                    label="non-safety cap request"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="affix label?"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="fulfillment option"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="priority shipping"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>
-            <accordion-component title="History">
-              <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="prior prescription"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="detected issue"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="event history"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-            </accordion-component>          
-            
             <span class="flex justify-end w-full">
               <button
                 @click="$router.push('/dashboard/provider/experience/appointments')"
@@ -319,30 +314,7 @@
             </span>
           </div>
         </form>
-        <medication-modal   
-        :columns="practitioner"
-          @update:preferred="showMedication"
-          v-model:visible="showMedicationModal"/>
-        <practitioners-filter
-          :columns="practitioner"
-          @update:preferred="addPractitioner"
-          v-model:visible="practitionerFilter"
-        />
-        <patients-filter
-          :columns="patients"
-          @update:preferred="addPatients"
-          v-model:visible="patientFilter"
-        />
-        <devices-filter
-          :columns="device"
-          @update:preferred="addDevices"
-          v-model:visible="deviceFilter"
-        />
-         <roles-filter
-          :columns="role"
-          @update:preferred="addRoles"
-          v-model:visible="roleFilter"
-        />
+      
       </div>
     </div>
   </div>
@@ -350,8 +322,8 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
-import MedicationAccordion from "./accordion-medication.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -369,11 +341,13 @@ import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import QuestionIcon from "@/components/icons/question.vue";
 import SingleDatePicker from "@/components/datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
-import MedicationModal from "./medication.vue";
+import DateTimePicker from './components/datetime-picker.vue';
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
@@ -390,16 +364,18 @@ const emptyParticipant: ParticipantDetail = {
     CornieInput,
     CornieSelect,
     PractitionersFilter,
-    MedicationAccordion,
     SingleDatePicker,
     Availability,
+    QuestionIcon,
+    CornieRadio,
     Textarea,
     DEdit,
     CDelete,
-    MedicationModal,
+    DateTimePicker,
     Avatar,
     CAdd,
     AddIcon,
+    InfoIcon,
     PhoneInput,
     DatePicker,
     AccordionComponent,
@@ -408,7 +384,7 @@ const emptyParticipant: ParticipantDetail = {
     RolesFilter,
   },
 })
-export default class AddAppointment extends Vue {
+export default class AddTask extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -426,6 +402,14 @@ export default class AddAppointment extends Vue {
   openedS = true;
   openedM = false;
   showMedicationModal = false;
+
+  data: any = { 
+        days: [ ],
+        practitioners: [ ],
+        breaks: [ ],
+        healthcares: [ ],
+        devices: [ ],
+    }
 
 actor = "";
   type = "";

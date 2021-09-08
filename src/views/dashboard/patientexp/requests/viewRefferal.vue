@@ -1,8 +1,63 @@
 <template>
   <div class="w-full">
     <form  @submit.prevent="submit">
+           <div class="mb-8">
+            <span class="flex justify-end w-full">
+                <button
+                    @click="$router.push('/dashboard/provider/experience/appointments')"
+                    type="button"
+                    class="
+                    outline-primary
+                    rounded-full
+                    text-primary
+                    mt-5
+                    mr-3
+                    flex
+                    py-2
+                    pr-10
+                    pl-10
+                    px-3
+                    focus:outline-none
+                    hover:bg-primary
+                    hover:text-white
+                    "
+                >
+                <share-icon class="mr-3"/>
+                    Share
+                </button>
+                 <cornie-btn
+                :loading="loading"
+                type="submit"
+                class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  mt-5
+                  pr-14
+                  pl-14
+                  focus:outline-none
+                  hover:opacity-90
+                "
+              >
+                Print
+              </cornie-btn>
+            </span>
+       </div>
+       <p class="text-primary mt-5 mb-8 font-bold">View Request</p>
         <div class="mt-5 pb-76 mb-44 bg-white w-full h-full shadow-md p-4 rounded" >  
-            <div class="tab-content">      
+            <div class="mt-3"> 
+              <div class="flex space-x-8">
+                <avatar class="mr-2 w-16 h-16" :src="img.placeholder" />
+                <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
+                <div>
+                  <p class="text-lg mb-3 text-primary font-bold">
+                    CornieHealth
+                  </p>
+                  <p class="text-sm text-gray font-medium">
+                    Lagos, Nigeria
+                  </p>
+                </div>
+              </div>     
                     <div>
                         <span
                             class="
@@ -19,40 +74,86 @@
                                 mt-5
                             "
                             >
-                            Basic Info
+                            Request Info
                         </span>
-                        <div>
-                        <p class="text-sm w-full text-black uppercase font-bold">Preffered Consultation Medium</p>
-                          <div class="w-full mt-1 mb-5">
-                                <div class="w-full flex space-x-4 mb-3">
-                                    <cornie-radio label="In-Person"  class="text-xs" name="request" id="pickup" @update:modelValue="changeChecked"/>
-                                    <cornie-radio label="Virtual"  name="request" id="patientadress" checked @update:modelValue="changeChecked"/>
-                                    <cornie-radio label="Home Care"  name="request" id="homeaddress" @update:modelValue="changeChecked"/>
-                                </div>
-                            </div>
+                        <div class="w-full flex space-x-2">
+                             <input
+                             checked
+                              type="checkbox"
+                              class="bg-danger focus-within:bg-danger px-6 shadow"
+                            />
+                            <p class="text-xs mt-1">Virtual</p>
                         </div>
-                            <div class="w-full mb-5 mt-5">
-                                <p class="text-sm relative w-full text-black uppercase font-bold">specimen collection</p>
-                                <div class="w-full flex space-x-4  mb-3">
-                                    <cornie-radio label="Walk-In"  class="text-xs" name="request" id="pickup" @update:modelValue="changeChecked"/>
-                                    <cornie-radio label="At-Home"  name="request" id="patientadress" checked @update:modelValue="changeChecked"/>
-                                </div>
-                            </div>
                         <div class="grid grid-cols-3 gap-4 mt-5">
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">status</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Status</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
                             </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">requisition id</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Requisition ID</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
                             </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">authored on</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Authored On</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Priority</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Precondition Code</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Reason Reference</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Category</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Intent</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Replaces</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Do Not Perform</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Activity Definition</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Based On</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Encounter</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Precondition</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Reason Code</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
+                            </div>
+                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                <label class="block text-gray-500 mb-1 text-xs font-light">Supporting Info</label>
+                                <div class="text-sm text-black">{{ basedOn }}</div>
                             </div>
                         </div>
                     </div>
+
                       <div>
                         <span
                             class="
@@ -69,237 +170,112 @@
                                 mt-5
                             "
                             >
-                            Patient Info
+                            Participants
                         </span>
-                        <div class="w-full flex space-x-4 mb-3">
-                            <cornie-radio label="Out-Patient"  class="text-xs" name="participant" id="outpatient"/>
-                            <cornie-radio label="In-Patient"  name="participant" id="inpatient" checked/>
+                        <div class="w-full flex space-x-2">
+                             <input
+                             checked
+                              type="checkbox"
+                              class="bg-danger focus-within:bg-danger px-6 shadow"
+                            />
+                            <p class="text-xs mt-1">In-Patient</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-4 mt-5">
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">patient name</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">MRN Number</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">gender</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">Age</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">Address</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">Email</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">Mobile</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                        </div>
-                    </div>
-                     <div>
-                        <span
-                            class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-lg text-dark
-                                py-2
-                                mx-auto
-                                font-semibold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                        Payment Info
-                        </span>
-                        <div class="grid grid-cols-3 gap-4 mt-5">
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">wallet</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">card on file</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">cash</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">payer</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">policy number</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">policy expiry</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">total outstanding</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <span
-                            class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-lg text-dark
-                                py-2
-                                mx-auto
-                                font-semibold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                        Requester
-                        </span>
-                        <div class="grid grid-cols-3 gap-4 mt-5">
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">practitioner name</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">practitioner id</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">facility name</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">address</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">email</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">mobile</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div>
-                        <span
-                            class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-lg text-dark
-                                py-2
-                                mx-auto
-                                font-semibold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                        Performer
-                        </span>
-                        <div class="grid grid-cols-3 gap-4 mt-5"> 
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">performer type</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">corniehealth id</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
+                        <div class="grid grid-cols-4 gap-4 mt-8">
+                            <div class="bg-white shadow-md p-3">
+                                <p class="text-lg text-primary font-bold">Patient</p>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Patient Name:</p>
+                                  <p class="text-sm font-bold text-primary">James Dean</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">MRN Number::</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Gender:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Age:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Address:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Email:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Mobile:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Payment Option:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
 
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">address</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+
                             </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">email</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            <div class="bg-white shadow-md p-3">
+                                <p class="text-lg text-primary font-bold">Requester</p>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Practitioner Name:</p>
+                                  <p class="text-sm font-bold text-primary">James Dean</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Practitioner ID:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Facility Name:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Address:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Email:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Mobile:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">mobile</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                            <div class="bg-white shadow-md p-3">
+                                <p class="text-lg text-primary font-bold">Performer</p>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Performer Type:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Performer</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Corniehealth ID:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Address:</p>
+                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Email:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5">
+                                  <p class="text-sm text-gray-400 font-light">Mobile:</p>
+                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                </div>
                             </div>
+                         
                         </div>
                     </div>
-                     <div>
-                        <div class="grid grid-cols-3 gap-4 mt-5">
-                            <span
-                                class="
-                                    flex
-                                    border-b-2
-                                    border-dark-100
-                                    w-full
-                                    text-lg text-dark
-                                    py-2
-                                    mx-auto
-                                    font-semibold
-                                    col-span-full
-                                    mb-4
-                                    mt-5
-                                "
-                                >
-                                Background Info
-                            </span>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">encounter</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">priority</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">reason ref</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">reason code</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">intent</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                    <label class="block uppercase mb-1 text-xs font-bold">based on</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                            <div>
-                                    <label class="block uppercase mb-1 text-xs font-bold">do not perform</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </div>
-                        </div>
-                    </div>
+                   
                     <div class="mt-10">
                          <span
                             class="
@@ -316,7 +292,7 @@
                                 mt-5
                             "
                             >
-                        Activity
+                        Medication
                         </span>
                         <cornie-table :columns="rawHeaders" v-model="items">
                             <template #actions="{ item }">
@@ -353,8 +329,8 @@
                             </template>
                         </cornie-table>
                     </div> 
-
-                    <div class="w-full grid grid-cols-3 gap-4">
+    
+                    <div>
                         <span
                             class="
                                 flex
@@ -372,71 +348,35 @@
                             >
                         Other Info
                         </span> 
-                        <div>
-                            <label class="block uppercase mb-1 text-xs font-bold">comments</label>
-                            <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                        </div>
-                        <div>
-                            <label class="block uppercase mb-1 text-xs font-bold">link form</label>
-                            <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                        </div>
-                        <div>
-                            <label class="block uppercase mb-1 text-xs font-bold">history</label>
-                            <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                        </div>
-                        <div>
-                            <label class="block uppercase mb-1 text-xs font-bold">patient instruction</label>
-                            <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                        </div>
+                     
+                      <div class="w-full grid grid-cols-3 gap-4">
+                        <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                  <label class="block text-gray-500 mb-1 text-xs font-light">Comments</label>
+                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                          </div>
+                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                  <label class="block text-gray-500 mb-1 text-xs font-light">Link Form</label>
+                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                          </div>
+                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                  <label class="block text-gray-500 mb-1 text-xs font-light">History </label>
+                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                          </div>
+                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                                  <label class="block text-gray-500 mb-1 text-xs font-light">Patient Instruction</label>
+                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                          </div>
+                      </div>
                     </div>
+                  
             </div>
         </div>
-       <div class="-mt-44 mb-20">
-            <span class="flex justify-end w-full">
-                <button
-                    @click="$router.push('/dashboard/provider/experience/appointments')"
-                    type="button"
-                    class="
-                    outline-primary
-                    rounded-full
-                    text-black
-                    mt-5
-                    mr-3
-                    py-2
-                    pr-14
-                    pl-14
-                    px-3
-                    focus:outline-none
-                    hover:bg-primary
-                    hover:text-white
-                    "
-                >
-                    Close
-                </button>
-                 <cornie-btn
-                :loading="loading"
-                type="submit"
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  pr-14
-                  pl-14
-                  focus:outline-none
-                  hover:opacity-90
-                "
-              >
-                Print
-              </cornie-btn>
-            </span>
-       </div>
-       
+  
     </form>
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -463,6 +403,7 @@ import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
 import EditIcon from "@/components/icons/orangeedit.vue";
+import ShareIcon from "@/components/icons/share.vue";
 import SaveIcon from "@/components/icons/save.vue";
 import SingleDatePicker from "@/components/datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
@@ -489,10 +430,7 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-
-
-
-
+import { useHandleImage } from "@/composables/useHandleImage";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
@@ -534,6 +472,7 @@ const emptyParticipant: ParticipantDetail = {
     SortIcon,
     CheckinIcon,
     NewviewIcon,
+    ShareIcon,
     UpdateIcon,
     NoteIcon,
     ThreeDotIcon,
@@ -579,7 +518,7 @@ export default class AddAppointment extends Vue {
  tabmed = false;
  tabhealth= false;
  tabother = false;
-
+ img = setup(() => useHandleImage());
 
 actor = "";
   type = "";
@@ -605,7 +544,7 @@ actor = "";
   
   Practitioners = [];
   Devices = [];
-  Patients = [];
+  Patients: any[] = [];
   roles = [];
 
   newPractitioners =[];
@@ -941,5 +880,40 @@ actor = "";
   content: "*";
   color: #fe4d3c;
   margin-left: 5px;
+}
+/* Large checkboxes */
+
+input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+}
+
+input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+}
+
+input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+}
+
+input[type="checkbox"]:checked:after {
+   background-image: url("../../../../assets/tick.svg");
+    background-color: #FE4D3C;
+}
+input[type="checkbox"]:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #FE4D3C;
 }
 </style>

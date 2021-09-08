@@ -8,7 +8,7 @@
       leave-class="translate-y-0 opacity-100"
       leave-to-class="-translate-y-3 opacity-0"
     >
-      <div v-show="isVisible" class="absolute pt-2 z-10 -left-7">
+      <div v-show="isVisible" class="absolute pt-2 mt-2 z-10 -left-16">
         <div
           class="
             relative

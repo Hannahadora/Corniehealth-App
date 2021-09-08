@@ -56,9 +56,9 @@
             style="width: 100%"
           />
         </div>
-        <span v-if="errorMessage" class="text-red-400 text-xs">{{
-          errorMessage
-        }}</span>
+        <span v-if="errorMessage" class="text-red-400 text-xs">
+          {{ errorMessage }}
+        </span>
       </div>
     </Field>
   </span>

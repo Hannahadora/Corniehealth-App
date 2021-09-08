@@ -1122,7 +1122,7 @@ actor = "";
   
   Practitioners = [];
   Devices = [];
-  Patients = [];
+  Patients: any[] = [];
   roles = [];
 
   newPractitioners =[];

@@ -226,8 +226,9 @@ export default class AddPractitioner extends Vue {
 
   dobValidator = date().max(
     createDate(0, 0, -16),
-    "Practitioner must be at least 16yrs"
+    "Practitioner must be at least 16yrs."
   );
+
   qualificationCode = "";
   name = "";
   email = "";

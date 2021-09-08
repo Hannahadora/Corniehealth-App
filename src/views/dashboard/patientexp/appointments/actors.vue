@@ -201,7 +201,7 @@
               <div class="grid grid-cols-4 gap-2 w-full col-span-full p-3">
                 <div class="dflex space-x-4">
                   <div class="w-10 h-10">
-                    <avatar class="mr-2" src="@/assets/img/placeholder.png" />
+                    <avatar class="mr-2" src="../../../../assets/img/placeholder.png" />
                   </div>
                   <div class="w-full">
                     <p class="text-xs text-dark font-semibold">
@@ -431,6 +431,7 @@ import SearchIcon from "@/components/icons/search.vue";
 import Avatar from "@/components/avatar.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieSelect from "@/components/cornieselect.vue";
+import CornieCheckbox from "@/components/corniecheckbox.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -440,6 +441,7 @@ export default {
     Modal,
     DragIcon,
     CornieSelect,
+    CornieCheckbox,
     ArrowLeftIcon,
     Draggable,
     Availability,
@@ -598,5 +600,40 @@ export default {
 <style scoped>
 .dflex {
   display: -webkit-box;
+}
+/* Large checkboxes */
+
+input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+}
+
+input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+}
+
+input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+}
+
+input[type="checkbox"]:checked:after {
+   background-image: url("../../../../assets/tick.svg");
+    background-color: #FE4D3C;
+}
+input[type="checkbox"]:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #FE4D3C;
 }
 </style>

@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block uppercase mb-1 text-xs font-bold"
+              class="flex uppercase mb-1 text-xs font-bold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -14,43 +14,59 @@
                 {{ label }}
               </template>
               <span class="text-danger ml-1" v-if="required"> * </span>
+              <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
             </label>
-            <div
-              v-bind="$attrs"
-              class="p-1 bg-white flex border border-gray-200 rounded-lg"
+            <field
+              v-slot="{ errorMessage, meta, handleChange }"
+              :rules="rules"
+              v-model="modelValueSync"
+              :name="inputName"
             >
-              <span v-if="Boolean($slots.selected)">
-                <slot name="selected" :item="selectedItem" />
-              </span>
-              <input
-                v-else
-                placeholder="--Select--"
-                disabled
-                :value="displayVal"
-                class="
-                  p-1
-                  pl-2
-                  bg-transparent
-                  appearance-none
-                  outline-none
-                  w-full
-                  text-gray-800
-                "
-              />
-
               <div
-                class="
-                  text-gray-300
-                  py-1
-                  pr-1
-                  flex
-                  items-center
-                  border-gray-200
-                "
+                v-bind="$attrs"
+                :class="{
+                  'border-red-500': Boolean(errorMessage),
+                  'border-green-400': meta.valid && meta.touched,
+                }"
+                class="p-1 bg-white flex border border-gray-200 rounded-lg"
               >
-                <chevron-down-icon />
+                <span v-if="Boolean($slots.selected)">
+                  <slot name="selected" :item="selectedItem" />
+                </span>
+                <input
+                  v-else
+                  placeholder="--Select--"
+                  disabled
+                  :value="displayVal"
+                  class="
+                    p-1
+                    pl-2
+                    bg-transparent
+                    appearance-none
+                    outline-none
+                    w-full
+                    text-gray-800
+                  "
+                  @change="handleChange"
+                />
+
+                <div
+                  class="
+                    text-gray-300
+                    py-1
+                    pr-1
+                    flex
+                    items-center
+                    border-gray-200
+                  "
+                >
+                  <chevron-down-icon />
+                </div>
               </div>
-            </div>
+              <span v-if="errorMessage" class="text-xs text-red-500 block">
+                {{ errorMessage }}
+              </span>
+            </field>
           </div>
           <div
             :class="{ hidden: !showDatalist }"
@@ -113,15 +129,20 @@ import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import { Field } from "vee-validate";
 
 @Options({
   components: {
     ChevronDownIcon,
+    Field,
   },
 })
 export default class CornieSelect extends Vue {
   @Prop({ type: Array, default: [] })
   items!: any[];
+
+  @Prop({ type: Object })
+  rules!: any;
 
   @Prop({ type: String, default: "" })
   modelValue!: string;
@@ -137,6 +158,10 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: String })
   label!: string;
+
+  @Prop({ type: String, default: "" })
+  labelicon!: string;
+
   showDatalist = false;
   id = "";
 
@@ -165,7 +190,10 @@ export default class CornieSelect extends Vue {
       this.modelValueSync = item.code || item;
     });
   }
-
+  get inputName() {
+    const id = Math.random().toString(36).substring(2, 9);
+    return `select-${id}`;
+  }
   mounted() {
     clickOutside(this.id, () => {
       this.showDatalist = false;
