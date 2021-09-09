@@ -60,7 +60,9 @@ export default class RegistrationChart extends Vue {
 
   async fetchData() {
     try {
-      const response = await cornieClient().get("api/v1/patient/stats");
+      const response = await cornieClient().get(
+        "api/v1/patient/analytics/stats"
+      );
       this.raw = response.data;
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
