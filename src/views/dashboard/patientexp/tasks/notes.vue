@@ -1,55 +1,32 @@
 <template>
-  <div class="overflow-y-auto">
+  <div class="overflow-y-auto bg-white">
     <modal
       :visible="visible"
       style="height: 95%"
       class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
     >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-2">
-        <span class="block pr-2 border-r-2 mt-2">
+      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
+        <span class="block pr-2 border-r-2">
           <arrow-left-icon
             class="stroke-current text-primary cursor-pointer"
             @click="show = false"
           />
         </span>
-        <h2 class="font-bold text-primary mt-2 ml-3">Table Columns</h2>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
       </div>
       <div class="flex flex-col p-3">
-        <p class="text-xs mt-2">
-          Choose headings to display on table, and the order you wish to display
-          these columns.
+        <p class="text-sm mt-2">
+         Some subtext if necessary
         </p>
-        <div class="flex justify-end mb-4">
-
-        <svg  @click="reset" class=" text-xs mt-2 float-right cursor-pointer justify-end" width="21" height="9" viewBox="0 0 21 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10.5 1C7.85 1 5.45 1.99 3.6 3.6L0 0V9H9L5.38 5.38C6.77 4.22 8.54 3.5 10.5 3.5C14.04 3.5 17.05 5.81 18.1 9L20.47 8.22C19.08 4.03 15.15 1 10.5 1Z" fill="#080056"/>
-        </svg>
+        <div class="my-2  w-full  flex">
+            <Textarea
+            label="Notes"
+            v-model="notes"
+            placeholder="--Enter--"
+            :rules="required"
+          />
+          <span></span>
         </div>
-        <draggable
-          v-model="columnsProxy"
-          item-key="id"
-          class="my-2 border-2 w-full flex-col rounded-md flex"
-        >
-          <template #item="{ element, index }">
-            <span
-              class="items-center hover:bg-gray-100 w-full flex justify-between"
-            >
-              <label class="flex py-3 px-3">
-                 <drag-icon class="cursor-pointer mr-2 mt-1 hover:shadow-lg" />
-                <input
-                  v-model="columnsProxy[index].show"
-                  type="checkbox"
-                  @input="changed"
-                  class="bg-primary focus-within:bg-danger px-6 shadow"
-                />
-                <span class="text-sm text-black">{{ element.title }}</span>
-              </label>
-              <eye-icon class="cursor-pointer mr-2 hover:shadow-lg"  @click="changed" v-model="columnsProxy[index].show"/>
-            </span>
-          </template>
-        </draggable>
-        <span class="border-2 border-dashed"></span>
-     
         <div class="flex justify-end w-full mt-auto">
           <button
             class="
@@ -69,8 +46,10 @@
           >
             Cancel
           </button>
-          <button
+          <cornie-btn
             @click="apply"
+            :loading="loading"
+            type="submit"
             class="
               bg-danger
               rounded-full
@@ -83,30 +62,45 @@
               w-1/3
             "
           >
-            Apply
-          </button>
+            Save
+          </cornie-btn>
         </div>
       </div>
     </modal>
+       <availability
+            v-model:visible="availableFilter"
+        />
+        <profile
+            v-model:visible="profileFilter"
+        />
   </div>
 </template>
 <script>
-import Modal from "@/components/modal.vue";
+import Modal from "@/components/practitionermodal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DragIcon from "@/components/icons/draggable.vue";
-import eyeIcon from "@/components/icons/yelloweye.vue";
 import Draggable from "vuedraggable";
+import IconInput from "@/components/IconInput.vue";
+import Availability from "@/components/availability.vue";
+import Profile from "@/components/profile.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import Textarea from "@/components/textarea.vue";
+import { cornieClient } from "@/plugins/http";
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
 export default {
-  name: "ColumnFilter",
+  name: "ParticipantFilter",
   components: {
     Modal,
-    eyeIcon,
     DragIcon,
+    Textarea,
     ArrowLeftIcon,
     Draggable,
+    Availability,
+    IconInput,
+    SearchIcon,
+    Profile
   },
   props: {
     visible: {
@@ -119,15 +113,29 @@ export default {
       required: true,
       default: () => [],
     },
+    taskId: {
+      type: String,
+    },
     preferred: {
       type: Array,
       required: true,
       default: () => [],
     },
+    available: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    
   },
   data() {
     return {
       columnsProxy: [],
+      practitioners: [],
+      loading: false,
+      notes:'',
+      availableFilter: false,
+      profileFilter:false,
     };
   },
   watch: {
@@ -150,14 +158,34 @@ export default {
     },
   },
   methods: {
-    apply() {
-      this.$emit("update:preferred", copy([...this.columnsProxy]));
-      this.show = false;
+   async apply() {
+     this.loading = true;
+        try {
+        const response = await cornieClient().post("/api/v1/task/notes", {text:this.notes, taskId:this.taskId});
+        if (response.success) {
+            window.notify({ msg: "Notes created", status: "success" });
+            this.loading = false;
+           this.show = false;
+            this.$router.push("/dashboard/provider/experience/tasks");
+        }
+        } catch (error) {
+          this.loading = false;
+         this.show = false;
+          console.log(error);
+        window.notify({ msg: "Notes not created", status: "error" });
+        this.$router.push("/dashboard/provider/experience/tasks");
+        }
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
+    showAvailable(){
+      this.availableFilter = true;
+    },
+    showProfile(){
+        this.profileFilter = true;
+    }
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);
