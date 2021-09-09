@@ -77,7 +77,9 @@
             <span class="ml-3 text-xs">Remove Patient</span>
           </table-action>
           <table-action
-            @click="$router.push('/dashboard/provider/experience/settings')"
+            @click="
+              $router.push(`/dashboard/provider/experience/settings/${item.id}`)
+            "
           >
             <settings-icon class="text-red-500 fill-current" />
             <span class="ml-3 text-xs">Patient Settings</span>

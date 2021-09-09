@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full relative">
     <icon-input
       autocomplete="off"
       type="search"
@@ -12,11 +12,10 @@
       </template>
     </icon-input>
     <div
-      :class="{ hidden: !show }"
+      :class="[{ hidden: !show }, background]"
       class="
         absolute
         shadow
-        bg-white
         top-100
         z-40
         w-full
@@ -85,6 +84,9 @@ export default class SearchInput extends Vue {
 
   @Prop({ type: Array, default: [] })
   results!: any[];
+
+  @Prop({ type: String, default: "bg-white" })
+  background!: string;
 
   show = false;
 
