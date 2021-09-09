@@ -511,8 +511,6 @@ async displayParticipants(value: string) {
 
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    console.log("fkjdjf");
-     console.log(id);
     this.selectedPatient = pt ? pt : { };
   }
 
@@ -524,8 +522,6 @@ async displayParticipants(value: string) {
 
   getAppointment(id: string) {
     const pt = this.appointments.find((i: any) => i.id === id);
-      console.log("pt ptp pt");
-     console.log(pt);
     return pt ? pt : { };
   }
 
