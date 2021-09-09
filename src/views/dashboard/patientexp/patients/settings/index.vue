@@ -160,6 +160,7 @@ export default class PatientSetting extends Vue {
 
   get items() {
     return this.practitioners.map((p) => ({
+      ...p,
       name: this.printPractitioner(p),
       specialty: p.department,
       phone: p.phone?.number || "",
@@ -225,6 +226,10 @@ export default class PatientSetting extends Vue {
         [revoked.id]
       );
       this.practitioners = this.practitioners.filter((p) => p.id != revoked.id);
+      window.notify({
+        msg: "Access revoked",
+        status: "success",
+      });
     } catch (error) {
       window.notify({
         msg: "There  was an error please try again",
@@ -254,6 +259,10 @@ export default class PatientSetting extends Vue {
         "id"
       );
       this.practitioners = [...practitionersSet];
+      window.notify({
+        msg: "Access granted",
+        status: "success",
+      });
     } catch (error) {
       window.notify({
         msg: "There  was an error please try again",
