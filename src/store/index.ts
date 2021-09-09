@@ -15,7 +15,7 @@ import RolesStore from "./roles";
 import GroupteamStore from "./group";
 import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
-
+import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
 
 import OrgStore from "./organization";
@@ -51,5 +51,6 @@ export default createStore({
     visits: VisitsStore,
     patients: PatientStore,
     organization: OrgStore,
+    task: TaskStore,
   },
 } as StoreOptions<any>);

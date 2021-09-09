@@ -104,11 +104,10 @@
             <div v-for="(input, index) in devices" :key="index">
               <div
                 class="
-                  grid grid-cols-4
+                  grid grid-cols-2
                   w-full
                   justify-between
-                  gap-2
-                  col-span-full
+                  gap-4
                   mt-2
                   p-3
                 "
@@ -124,7 +123,7 @@
                         visible
                         group-hover:hidden
                       "
-                      :src="img.placeholder"
+                      src="@/assets/img/placeholder.png"
                     />
                   </div>
                   <div class="w-full">
@@ -136,34 +135,22 @@
                     </p>
                   </div>
                 </div>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showAvailable(input.id)"
-                >
-                  View Availability
-                </p>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showProfile"
-                >
-                  View Profile
-                </p>
                 <input
                   v-model="indexvalue"
                   :value="input"
                   @input="changed(input.id)"
                   type="checkbox"
-                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                  class="bg-danger ml-32  focus-within:bg-danger px-6 shadow"
                 />
               </div>
             </div>
           </div>
           <div v-if="roleFilter">
             <div v-for="(input, index) in roles" :key="index">
-              <div class="grid grid-cols-4 gap-4 w-full col-span-full p-3">
+              <div class="grid grid-cols-2 gap-4 w-full col-span-full p-3">
                 <div class="dflex space-x-4">
                   <div class="w-10 h-10">
-                    <avatar class="mr-2" :src="img.placeholder" />
+                    <avatar class="mr-2" :src="'@/assets/img/placeholder.png'" />
                   </div>
                   <div class="w-full">
                     <p class="text-xs text-dark font-semibold">
@@ -174,31 +161,19 @@
                     </p>
                   </div>
                 </div>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showAvailable(input.id)"
-                >
-                  View Availability
-                </p>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showProfile"
-                >
-                  View Profile
-                </p>
                 <input
                   v-model="indexvalue"
                   :value="input"
                   @input="changed(input.id)"
                   type="checkbox"
-                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                  class="bg-danger ml-32 focus-within:bg-danger px-6 shadow"
                 />
               </div>
             </div>
           </div>
           <div v-if="patientFilter">
             <div v-for="(input, index) in patients" :key="index">
-              <div class="grid grid-cols-4 gap-2 w-full col-span-full p-3">
+              <div class="grid grid-cols-2 gap-2 w-full col-span-full p-3">
                 <div class="dflex space-x-4">
                   <div class="w-10 h-10">
                     <avatar class="mr-2" src="../../../../assets/img/placeholder.png" />
@@ -209,25 +184,13 @@
                     </p>
                   </div>
                 </div>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showAvailable(input.id)"
-                >
-                  View Availability
-                </p>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showProfile"
-                >
-                  View Profile
-                </p>
-                <input
-                  v-model="indexvalue"
-                  :value="input"
-                  @input="changed(input.id)"
-                  type="checkbox"
-                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
-                />
+                   <input
+                      v-model="indexvalue"
+                      :value="input"
+                      @input="changed(input.id)"
+                      type="checkbox"
+                      class="bg-danger ml-32 focus-within:bg-danger px-6 shadow"
+                    />
               </div>
             </div>
           </div>
@@ -414,7 +377,7 @@
         </div>
       </div>
     </modal>
-    <availability v-model:visible="availableFilter" />
+    <availability v-model:visible="availableFilter" :practitionerId="singleId"/>
     <profile v-model:visible="profileFilter" />
   </div>
 </template>
@@ -436,7 +399,7 @@ import { useHandleImage } from "@/composables/useHandleImage";
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
 export default {
-  name: "ParticipantFilter",
+  name: "actors",
   components: {
     Modal,
     DragIcon,
@@ -500,6 +463,7 @@ export default {
       indexvalue: [],
       valueid: [],
       type:'Patient',
+      singleId:"",
       availableFilter: false,
       profileFilter:false,
       practitionerFilter:true,
@@ -575,6 +539,9 @@ export default {
         this.profileFilter = true;
     },
     changed(index){
+      if(this.setValue == 'Practitioner'){
+          this.singleId = index;
+      }
       this.valueid.push(index);
     },
      async viewAppointemnt() {

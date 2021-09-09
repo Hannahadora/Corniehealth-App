@@ -156,6 +156,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "add-task/:id?",
             name: "New Task",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/tasks/addTask.vue"),
           },

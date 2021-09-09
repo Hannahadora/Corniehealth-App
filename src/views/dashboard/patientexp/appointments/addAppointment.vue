@@ -668,10 +668,6 @@ actorTypeValue = "";
     this.loading = false;
   }
   async createAppointment() {
-    //const period = this.period;
-   // console.log(this.payload.period);
-  // this.payload.period = new Date(this.payload.period).toISOString();
-  //this.payload.period.start = new Date(this.payload.period.start).toISOString();
     this.actor = this.type;
     try {
       const response = await cornieClient().post(

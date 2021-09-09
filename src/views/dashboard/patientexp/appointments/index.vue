@@ -340,12 +340,6 @@ singleParticipant = [];
  @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
 
-  @visitsStore.State
-  visits!: any[];
-
-  @visitsStore.Action
-  getVisits!: () => Promise<void>;
-
   @appointment.State
   patients!: any[];
 

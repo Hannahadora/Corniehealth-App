@@ -48,7 +48,7 @@
                   focus:outline-none
                   hover:opacity-90
                   "
-                  @click="$router.push('/dashboard/provider/experience/add-requests')"
+                  @click="$router.push('/dashboard/provider/experience/add-task')"
               >
                   New Tasks
               </button>
