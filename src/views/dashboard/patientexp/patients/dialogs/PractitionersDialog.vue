@@ -172,13 +172,12 @@ export default class PractitionersDialog extends Vue {
   @organization.Action
   fetchOrgInfo!: () => Promise<void>;
 
-  query = "";
-
   loading = false;
 
   @practitioners.Action
   searchPractitioners!: (q: string) => Promise<IPractitioner[]>;
 
+  query = "";
   results: Result[] = [];
 
   @Watch("query")
@@ -228,7 +227,7 @@ export default class PractitionersDialog extends Vue {
     this.loading = false;
   }
 
-  pushContact() {
+  pushPractitioners() {
     const practitionerSet = new ObjectSet(
       [...this.practitonersSync, this.practitioner],
       "id"
@@ -237,7 +236,7 @@ export default class PractitionersDialog extends Vue {
   }
 
   addToBatch() {
-    this.pushContact();
+    this.pushPractitioners();
     window.notify({ msg: "Practitioner added", status: "success" });
   }
 
@@ -293,10 +292,33 @@ export default class PractitionersDialog extends Vue {
     });
   }
 
-  toggleDefault(item: Practitioner) {
-    console.log("toggling");
+  async toggleDefault(practitioner: Practitioner) {
+    const { id } = practitioner;
+    if (!this.patient) return;
+    try {
+      await cornieClient().patch(
+        `/api/v1/patient/practitioner/set-default/${this.patient.id}/${id}`,
+        {}
+      );
+      this.updateDefaultPractitioner(practitioner);
+      window.notify({ msg: "Practitioner made default", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Practitioner not made default", status: "error" });
+    }
   }
 
+  updateDefaultPractitioner(practitioner: Practitioner) {
+    let practitioners = this.patient.generalPractitioners;
+    practitioners = practitioners!!.map((p) => {
+      if (p.id != practitioner.id) return { ...p, default: false };
+      return { ...p, default: true };
+    });
+    this.updatePatientField({
+      id: this.patient.id!!,
+      field: "generalPractitioners",
+      data: practitioners,
+    });
+  }
   created() {
     if (!this.organizationInfo) this.fetchOrgInfo();
   }
