@@ -44,7 +44,11 @@
       </span>
     </div>
     <div class="p-2">
-      <cornie-table v-model="items" :columns="headers">
+      <cornie-table
+        v-model="items"
+        :columns="headers"
+        @filter="filterAdvanced = true"
+      >
         <template #name="{ item }">
           <div class="flex items-center">
             <avatar class="w-5 h-5" :src="item.photo" />
@@ -93,6 +97,7 @@
     </div>
     <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
     <registration-dialog v-model="registerNew" />
+    <advanced-filter v-model="filterAdvanced" />
   </div>
 </template>
 <script lang="ts">
@@ -114,6 +119,7 @@ import RegistrationDialog from "./registration-dialog.vue";
 import RegistrationChart from "./registration-chart.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
 import CheckInDialog from "./dialogs/checkin-dialog.vue";
+import AdvancedFilter from "./dialogs/advanced-filter.vue";
 
 const patients = namespace("patients");
 @Options({
@@ -134,6 +140,7 @@ const patients = namespace("patients");
     CornieCardText,
     CornieBtn,
     CornieTable,
+    AdvancedFilter,
   },
 })
 export default class ExistingState extends Vue {
@@ -143,6 +150,7 @@ export default class ExistingState extends Vue {
   @patients.Action
   deletePatient!: (id: string) => Promise<boolean>;
 
+  filterAdvanced = false;
   checkInPatient!: IPatient;
   checkingIn = false;
   registerNew = false;

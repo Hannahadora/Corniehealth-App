@@ -19,7 +19,7 @@
         <dots-horizontal-icon class="mr-7" />
         <print-icon class="mr-7" />
         <refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
+        <filter-icon class="cursor-pointer" @click="$emit('filter')" />
       </span>
     </div>
     <card class="mt-3">
@@ -47,7 +47,10 @@
             </th>
           </template>
           <th class="text-left p-2" width="1">
-            <table-settings-icon class="text-primary" />
+            <table-settings-icon
+              class="text-primary cursor-pointer"
+              @click="showColumnFilter = true"
+            />
           </th>
         </thead>
         <tr
