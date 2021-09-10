@@ -19,7 +19,11 @@
         <d-select v-model="id" label="Location Identifier" disabled />
       </span>
       <span class="grid grid-cols-2">
-        <d-select v-model="locationStatus" label="Location Status" />
+        <d-select
+          v-model="locationStatus"
+          :items="['active', 'inactive']"
+          label="Location Status"
+        />
         <d-select
           v-model="operationalStatus"
           label="Operational Status"

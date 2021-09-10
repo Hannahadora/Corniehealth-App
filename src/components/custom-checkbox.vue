@@ -17,8 +17,10 @@
       v-bind="{ ...$attrs, ...field }"
       :name="inputName"
       v-model="valueSync"
+      @change="$emit('change', $event.target.checked)"
       type="checkbox"
-    /> <span class="ml-2">{{ label }}</span>
+    />
+    <span class="ml-2">{{ label }}</span>
     <span v-if="errorMessage" class="text-xs text-red-500 block">{{
       errorMessage
     }}</span>
@@ -61,5 +63,10 @@ export default class CustomSelect extends Vue {
 </script>
 
 <style scoped>
-   
+input[type="checkbox"]:after {
+  border: 1px solid #c4bdbd !important;
+}
+input[type="checkbox"]:checked:after {
+  background-color: #ff0000 !important;
+}
 </style>

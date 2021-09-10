@@ -12,6 +12,7 @@
       </template>
     </icon-input>
     <div
+      v-if="results.length"
       :class="[{ hidden: !show }, background]"
       class="
         absolute
