@@ -79,7 +79,8 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/patientexp/patients/Index.vue"),
           },
           {
-            path: "settings",
+            path: "settings/:id",
+            props: true,
             name: "Patient Experience Settings",
             component: () =>
               import(
@@ -155,6 +156,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "add-task/:id?",
             name: "New Task",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/tasks/addTask.vue"),
           },
@@ -233,7 +235,6 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/schedules/edit-slot.vue"),
           },
-          
         ],
       },
       {

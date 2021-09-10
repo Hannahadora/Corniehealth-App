@@ -1,296 +1,420 @@
 <template>
   <div class="w-full">
-    <span class="flex w-full mt-3 -mb-2 font-bold text-lg text-primary py-2 mx-auto">
-     New Task
+    <span
+      class="flex w-full mt-3 -mb-2 font-bold text-lg text-primary py-2 mx-auto"
+    >
+      {{allaction}} Task
     </span>
     <div>
       <div class="w-full h-screen">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
-            <accordion-component title="Required Field" v-model="opened" :opened="false">
+            <accordion-component
+              title="Required Field"
+              v-model="opened"
+              :opened="false"
+            >
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-input label="activity definition" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="activity definition"
+                    placeholder="--Enter--"
+                    v-model="activityDefinition"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="desciption" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="description"
+                    placeholder="--Enter--"
+                    v-model="description"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
                   <cornie-select
-                    :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
-                    v-model="serviceType"
+                    :items="[
+                      'Proposal',
+                      'Plan',
+                      'Order',
+                      'Original-order',
+                      'Reflex-order',
+                      'Filler-order',
+                      'Instance-order',
+                      'Option',
+                    ]"
+                    v-model="intent"
                     label="intent"
                     placeholder="--Select--"
-                  >
-                  </cornie-select>
+                  ></cornie-select>
                   <cornie-select
-                    :items="['']"
-                    v-model="specialty"
+                    :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
+                    v-model="priority"
                     label="priority"
                     placeholder="--Select--"
-                  >
-                  </cornie-select>
+                  ></cornie-select>
                   <cornie-select
-                    :items="['routine','urgent','asap','stat']"
-                    v-model="appointmentType"
+                    :items="[
+                      'Draft',
+                      'Requested',
+                      'Received',
+                      'Accepted',
+                      'Rejected',
+                      'Ready',
+                      'Cancelled',
+                      'In Progress',
+                      'On Hold',
+                      'Failed',
+                      'Completed',
+                      'Entered in Error',
+                    ]"
+                    v-model="status"
                     label="status"
                     placeholder="--Select--"
+                  ></cornie-select>
+                  <cornie-input
+                    label="status reason"
+                    placeholder="--Enter--"
+                    v-model="statusReason"
                   >
-                  </cornie-select>
-                  <cornie-input label="status reason" placeholder="--Enter--" v-model="description">
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
-                  </cornie-input>
-                   <cornie-input label="business status" placeholder="--Enter--" v-model="description">
-                    <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
                   <cornie-select
-                    :items="['reason code']"
-                    v-model="reasonCode"
+                    :items="[
+                      'Activate/approve the focal resource',
+                      'Fulfill the focal request',
+                      'Mark the focal resource as no longer active',
+                      'Replace the focal resource with the input resource',
+                      'Change the focal resource',
+                      'Suspend the focal resource',
+                      'Re-activate the focal resource',
+                    ]"
+                    v-model="code"
                     label="code"
                     placeholder="--Select--"
                   >
-                   <template v-slot:labelicon>
-                        <question-icon/>
-                    </template>  
+                    <template v-slot:labelicon>
+                      <question-icon />
+                    </template>
                   </cornie-select>
-                   <cornie-input label="for" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="for"
+                    placeholder="--Enter--"
+                    v-model="forType"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                   <cornie-input label="business status" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="business status"
+                    placeholder="--Enter--"
+                    v-model="businessStatus"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <date-picker label="excecution period">
-                       <template v-slot:labelicon>
-                        <question-icon/>
-                    </template>  
+                  <date-picker
+                    label="excecution period"
+                    v-model="excecutionPeriod"
+                  >
+                    <template v-slot:labelicon>
+                      <question-icon />
+                    </template>
                   </date-picker>
                   <cornie-select
-                    :items="['reason reference']"
-                    v-model="reasonRef"
+                    :items="['Specialized surgeon','Obstetrician','Cardiologist','Gerodontist','Thoracic surgeon','Urologist','Orthodontist','Sanitarian',]"
+                    v-model="performerType"
                     label="performer type"
                     placeholder="--Select--"
                   >
-                  <template v-slot:labelicon>
-                        <question-icon/>
-                    </template>  
-                  </cornie-select>
-                   <cornie-select
-                    :items="['reason reference']"
-                    v-model="reasonRef"
-                    label="owner"
-                    placeholder="--Select--"
-                  >
-                  <template v-slot:labelicon>
-                        <question-icon/>
-                    </template>  
-                  </cornie-select>
-                  <cornie-select
-                    :items="['reason reference']"
-                    v-model="reasonRef"
-                    label="location"
-                    placeholder="--Select--"
-                  >
-                  <template v-slot:labelicon>
-                        <question-icon/>
-                    </template>  
+                    <template v-slot:labelicon>
+                      <question-icon />
+                    </template>
                   </cornie-select>
                   <div>
-                      <DateTimePicker :label="'start DATE & Time'">
-                           <template v-slot:labelicon>
-                            <question-icon/>
-                        </template>  
-                          <template #date>
-                              <span><span>{{ new Date(data.startDate ?? Date.now()).toLocaleDateString()}}</span></span>
-                          </template>
-                          <template #time>
-                              <span><span>{{ data.startTime }}</span></span>
-                          </template>
-                          <template #input>
-                              <v-date-picker  v-model="data.startDate" style="position:relative;z-index:9000;width:100%"></v-date-picker>
-                                <label
-                                  class="block uppercase my-1 text-xs font-bold"
-                                  >
-                                  Time
-                              </label>
-                              <input v-model="data.startTime" type="time" class="w-full border rounded-md p-2">
-                          </template>
-                      </DateTimePicker>
+                    <label
+                      for="owner"
+                      class="uppercase flex mb-1 text-xs font-semibold"
+                    >
+                      owner
+                      <question-icon class="ml-1"/>
+                    </label>
+                    <input
+                      class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      disabled
+                      :value="orgName"
+                    />
                   </div>
                   <div>
-                      <DateTimePicker :label="'end DATE & Time'">
-                           <template v-slot:labelicon>
-                          <question-icon/>
-                      </template>  
-                          <template #date>
-                              <span>{{ new Date(data.endDate ?? Date.now()).toLocaleDateString()}}</span>
-                          </template>
-                          <template #time>
-                              <span>{{ data.endTime }}</span>
-                          </template>
-                          <template #input>
-                              <v-date-picker name="eeee" v-model="data.endDate" style="z-index:9000;width:100%"></v-date-picker>
-                              <label
-                                  class="block uppercase my-1 text-xs font-bold"
-                                  >
-                                  Time
-                              </label>
-                              <input v-model="data.endTime" type="time" class="w-full border rounded-md p-2">
-                          </template>
-                      </DateTimePicker>
+                    <label
+                      for="location"
+                      class="uppercase flex mb-1 text-xs font-semibold"
+                    >
+                      location   <question-icon class="ml-1"/>
+                    </label>
+                    <input
+                      class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      disabled
+                      :value="locationInfo.address"
+                    />
+                  </div>
+
+                  <div>
+                    <DateTimePicker :label="'start DATE & Time'">
+                      <template v-slot:labelicon>
+                        <question-icon />
+                      </template>
+                      <template #date>
+                        <span>
+                          <span>
+                            {{
+                              new Date(
+                                data.startDate ?? Date.now(),
+                              ).toLocaleDateString()
+                            }}
+                          </span>
+                        </span>
+                      </template>
+                      <template #time>
+                        <span>
+                          <span>{{ data.startTime }}</span>
+                        </span>
+                      </template>
+                      <template #input>
+                        <v-date-picker
+                          v-model="data.startDate"
+                          style="
+                            position: relative;
+                            z-index: 9000;
+                            width: 100%;
+                          "
+                        ></v-date-picker>
+                        <label class="block uppercase my-1 text-xs font-bold">
+                          Time
+                        </label>
+                        <input
+                          v-model="data.startTime"
+                          type="time"
+                          class="w-full border rounded-md p-2"
+                        />
+                      </template>
+                    </DateTimePicker>
+                  </div>
+                  <div>
+                    <DateTimePicker :label="'end DATE & Time'">
+                      <template v-slot:labelicon>
+                        <question-icon />
+                      </template>
+                      <template #date>
+                        <span>
+                          {{
+                            new Date(
+                              data.endDate ?? Date.now(),
+                            ).toLocaleDateString()
+                          }}
+                        </span>
+                      </template>
+                      <template #time>
+                        <span>{{ data.endTime }}</span>
+                      </template>
+                      <template #input>
+                        <v-date-picker
+                          name="eeee"
+                          v-model="data.endDate"
+                          style="z-index: 9000; width: 100%;"
+                        ></v-date-picker>
+                        <label class="block uppercase my-1 text-xs font-bold">
+                          Time
+                        </label>
+                        <input
+                          v-model="data.endTime"
+                          type="time"
+                          class="w-full border rounded-md p-2"
+                        />
+                      </template>
+                    </DateTimePicker>
                   </div>
                   <cornie-select
                     :items="['reason reference']"
-                    v-model="reasonRef"
+                    v-model="recipient"
                     label="recipient"
                     placeholder="--Select--"
                   >
-                  <template v-slot:labelicon>
-                        <question-icon/>
-                    </template>  
+                    <template v-slot:labelicon>
+                      <question-icon />
+                    </template>
                   </cornie-select>
                 </div>
               </template>
             </accordion-component>
-            <accordion-component title="Optional Field" v-model="opened" :opened="true">
+            <accordion-component title="Optional Field">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-input label="based on" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="based on"
+                    placeholder="--Enter--"
+                    v-model="basedOn"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="part of" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="part of"
+                    placeholder="--Enter--"
+                    v-model="partOf"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="reason code" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="reason code"
+                    placeholder="--Enter--"
+                    v-model="reasonCode"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="reason reference" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="reason reference"
+                    placeholder="--Enter--"
+                    v-model="reasonReference"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                   <cornie-input label="note" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="note"
+                    placeholder="--Enter--"
+                    v-model="note"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                   <cornie-input label="focus" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="focus"
+                    placeholder="--Enter--"
+                    v-model="focus"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="encounter" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="encounter"
+                    placeholder="--Enter--"
+                    v-model="encounter"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
                   <div class="block">
-                      <label class="flex uppercase mb-2 text-xs font-bold">
-                        Repitition
-                        <span class="ml-1"><question-icon/></span>
+                    <label class="flex uppercase mb-2 text-xs font-bold">
+                      Repitition
+                      <span class="ml-1"><question-icon /></span>
                     </label>
-                    <div  class="w-full flex space-x-4 mb-3">
-                      <cornie-radio label="Days"  class="text-xs" name="request" id="pickup" />
-                      <cornie-radio label="Week"  name="request" id="patientadress" checked/>
-                      <cornie-radio label="Month"  name="request" id="homeaddress"/>
-                       <cornie-radio label="Years"  name="request" id="homeaddress"/>
+                    <div class="w-full flex space-x-4 mb-3">
+                      <cornie-radio
+                        v-bind:value="'Days'"
+                        label="Days"
+                        class="text-xs"
+                        name="request"
+                        id="pickup"
+                        v-model="repitition"
+                      />
+                      <cornie-radio
+                        v-bind:value="'Week'"
+                        label="Week"
+                        name="request"
+                        id="patientadress"
+                        checked
+                        v-model="repitition"
+                      />
+                      <cornie-radio
+                        v-bind:value="'Month'"
+                        label="Month"
+                        name="request"
+                        id="homeaddress"
+                        v-model="repitition"
+                      />
+                      <cornie-radio
+                        v-bind:value="'Years'"
+                        label="Years"
+                        name="request"
+                        id="homeaddress"
+                        v-model="repitition"
+                      />
                     </div>
                   </div>
                 </div>
-                  <span class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-sm text-primary
-                                py-2
-                                mx-auto
-                                font-bold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                            Input
-                  </span>
-                  <div  class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                      <cornie-input label="type" placeholder="--Enter--" v-model="description">
+                <span
+                  class="flex border-b-2 border-dark-100 w-full text-sm text-primary py-2 mx-auto font-bold col-span-full mb-4 mt-5"
+                >
+                  Input
+                </span>
+                <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                  <cornie-input
+                    label="type"
+                    placeholder="--Enter--"
+                    v-model="inputType"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="value" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="value"
+                    placeholder="--Enter--"
+                    v-model="inputValue"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  </div>                 
-                    <span class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-sm text-primary
-                                py-2
-                                mx-auto
-                                font-bold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                            Output
-                  </span>
-                  <div  class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                      <cornie-input label="type" placeholder="--Enter--" v-model="description">
+                </div>
+                <span
+                  class="flex border-b-2 border-dark-100 w-full text-sm text-primary py-2 mx-auto font-bold col-span-full mb-4 mt-5"
+                >
+                  Output
+                </span>
+                <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                  <cornie-input
+                    label="type"
+                    placeholder="--Enter--"
+                    v-model="outputType"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  <cornie-input label="value" placeholder="--Enter--" v-model="description">
+                  <cornie-input
+                    label="value"
+                    placeholder="--Enter--"
+                    v-model="outputValue"
+                  >
                     <template v-slot:labelicon>
-                        <info-icon class="text-primary fill-current"/>
-                    </template>  
+                      <info-icon class="text-primary fill-current" />
+                    </template>
                   </cornie-input>
-                  </div>
-               
+                </div>
               </template>
             </accordion-component>
             <span class="flex justify-end w-full">
               <button
-                @click="$router.push('/dashboard/provider/experience/appointments')"
+                @click="$router.push('/dashboard/provider/experience/tasks')"
                 type="button"
-                class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                "
+                class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
               >
                 Cancel
               </button>
@@ -298,66 +422,55 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  pr-14
-                  pl-14
-                  focus:outline-none
-                  hover:opacity-90
-                "
+                class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
               >
-                Save
+                {{newaction}} Task
               </cornie-btn>
             </span>
           </div>
         </form>
-      
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import AccordionComponent from "@/components/accordion-extended-component.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import Textarea from "@/components/textarea.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import Availability from "@/components/availability.vue";
-import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import { string } from "yup";
-import { Prop, Watch } from "vue-property-decorator";
-import PractitionersFilter from "@/components/practitioner.vue";
-import PatientsFilter from "@/components/patient.vue";
-import DevicesFilter from "@/components/device.vue";
-import RolesFilter from "@/components/roles.vue";
-import DEdit from "@/components/icons/aedit.vue";
-import CDelete from "@/components/icons/adelete.vue";
-import CAdd from "@/components/icons/cadd.vue";
-import AddIcon from "@/components/icons/add.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import QuestionIcon from "@/components/icons/question.vue";
-import SingleDatePicker from "@/components/datepicker.vue";
-import DatePicker from "@/components/daterangepicker.vue";
-import Period from "@/types/IPeriod";
-import Avatar from "@/components/avatar.vue";
-import DateTimePicker from './components/datetime-picker.vue';
+import { Options, Vue } from 'vue-class-component'
+import AccordionComponent from '@/components/accordion-extended-component.vue'
+import CornieInput from '@/components/cornieinput.vue'
+import CornieRadio from '@/components/cornieradio.vue'
+import CornieSelect from '@/components/cornieselect.vue'
+import Textarea from '@/components/textarea.vue'
+import PhoneInput from '@/components/phone-input.vue'
+import Availability from '@/components/availability.vue'
+import ITask from '@/types/ITask'
+import { cornieClient } from '@/plugins/http'
+import { namespace } from 'vuex-class'
+import { string } from 'yup'
+import { Prop, Watch } from 'vue-property-decorator'
+import PractitionersFilter from '@/components/practitioner.vue'
+import PatientsFilter from '@/components/patient.vue'
+import DevicesFilter from '@/components/device.vue'
+import RolesFilter from '@/components/roles.vue'
+import DEdit from '@/components/icons/aedit.vue'
+import CDelete from '@/components/icons/adelete.vue'
+import CAdd from '@/components/icons/cadd.vue'
+import AddIcon from '@/components/icons/add.vue'
+import InfoIcon from '@/components/icons/info.vue'
+import QuestionIcon from '@/components/icons/question.vue'
+import SingleDatePicker from '@/components/datepicker.vue'
+import DatePicker from '@/components/daterangepicker.vue'
+import Period from '@/types/IPeriod'
+import Avatar from '@/components/avatar.vue'
+import DateTimePicker from './components/datetime-picker.vue'
+import { IOrganization } from "@/types/IOrganization";
+import  ILocation  from "@/types/ILocation";
+import moment from 'moment'
 
-const appointment = namespace("appointment");
-const dropdown = namespace("dropdown");
 
-const emptyParticipant: ParticipantDetail = {
-  period: {} as Period,
-  required: "",
-  consultationMedium: "",
-  
-};
+const task = namespace('task')
+const organization = namespace('organization')
+const location = namespace('location')
+const dropdown = namespace('dropdown')
 
 @Options({
   components: {
@@ -385,278 +498,242 @@ const emptyParticipant: ParticipantDetail = {
   },
 })
 export default class AddTask extends Vue {
-  @Prop({ type: String, default: "" })
-  id!: string;
+  @Prop({ type: String, default: '' })
+  id!: string
 
+  @task.Action
+  getTaskById!: (id: string) => ITask
 
-  @appointment.Action
-  getAppointmentById!: (id: string) => IAppointment;
-  loading = false;
-  expand = false;
-  isVisible = "";
-  startdate = "";
-  enddate = "";
-  rule = true;
-  opened = true;
-  openedR = true;
-  openedS = true;
-  openedM = false;
-  showMedicationModal = false;
+  loading = false
+  expand = false
+  isVisible = ''
+  status = ''
+  startdate = ''
+  enddate = ''
+  rule = true
+  opened = true
+  openedR = true
+  openedS = true
+  openedM = false
+  showMedicationModal = false
+orgName = "";
+orgAddress = "";
+locationInfo = [];
+  data: any = {
+    days: [],
+    practitioners: [],
+    breaks: [],
+    healthcares: [],
+    devices: [],
+  }
 
-  data: any = { 
-        days: [ ],
-        practitioners: [ ],
-        breaks: [ ],
-        healthcares: [ ],
-        devices: [ ],
-    }
+  activityDefinition = ''
+  description = ''
+  intent = ''
+  priority = ''
+  statusReason = ''
+  businessStatus = ''
+  code = ''
+  for = ''
+  forType = ''
+  performerType = ''
+  owner = ''
+  location = ''
+  startDateTime = ''
+  endDateTime = ''
+  recipient = ''
+  excecutionPeriod = {} as Period
+  basedOn = ''
+  partOf = ''
+  reasonCode = ''
+  reasonReference = ''
+  note = ''
+  focus = ''
+  encounter = ''
+  repitition = ''
+  inputType = ''
+  inputValue = ''
+  outputType = ''
+  outputValue = ''
 
-actor = "";
-  type = "";
-
-  serviceCategory = "";
-  locationId = null;
-  deviceId = null;
-  serviceType = "";
-  specialty = "";
-  appointmentType = "";
-  reasonCode = "";
-  reasonRef = "";
-  priority = "";
-  description = "";
-  supportingInfo ="";
-  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  duration = "";
-  comments = "";
-  patientInstruction = "";
-    period = {} as Period;
-  participantDetail = {...emptyParticipant}
-  
-  Practitioners = [];
-  Devices = [];
-  Patients: any[] = [];
-  roles = [];
-
-  newPractitioners =[];
-  newDevices = [];
-  newPatients =[];
-  newRoles = [];
-
-  roleFilter = false;
-  deviceFilter = false;
-  practitionerFilter = false;
-  patientFilter = false;
-  availableFilter = false;
-  participantitem = "";
-
-  practitioner = [];
-  device  = [];
-  patient = [];
-  role = [];
- 
-  availability: any[] = [];
-  availabilities = Array();
- 
-
-  preferredHeaders = [];
-  items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
+  items = ['Patient', 'Practitioner', 'Practitioner Role', 'Device']
 
   options = [
-    { text: "Active", value: true },
-    { text: "Inactive", value: false },
-  ];
-  required = string().required();
-  dropdowns = {} as IIndexableObject;
-  dropdowns2 = {} as IIndexableObject;
+    { text: 'Active', value: true },
+    { text: 'Inactive', value: false },
+  ]
+
+  required = string().required()
+  dropdowns = {} as IIndexableObject
+  dropdowns2 = {} as IIndexableObject
+
   @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+  getDropdowns!: (a: string) => Promise<IIndexableObject>
 
-  @Watch("id")
+  @location.State
+  locations!: ILocation[];
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+   @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  @Watch('id')
   idChanged() {
-    this.setAppointment();
+    this.setTask()
   }
-  async setAppointment() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comments = appointment.comments;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
 
+  async setTask() {
+    const task = await this.getTaskById(this.id)
+    if (!task) return
+    this.activityDefinition = task.activityDefinition
+    this.description = task.description
+    this.intent = task.intent
+    this.priority = task.priority
+    this.statusReason = task.statusReason
+    this.businessStatus = task.businessStatus
+    this.code = task.code
+    this.for = task.for
+    this.performerType = task.performerType
+    this.owner = task.owner
+    this.location = task.location
+    this.startDateTime = task.startDateTime
+    this.endDateTime = task.endDateTime
+    this.recipient = task.recipient
+    this.excecutionPeriod = task.excecutionPeriod
+    this.basedOn = task.basedOn
+    this.partOf = task.partOf
+    this.reasonCode = task.reasonCode
+    this.reasonReference = task.reasonReference
+    this.note = task.note
+    this.focus = task.focus
+    this.status = task.status
+    this.encounter = task.encounter
+    this.repitition = task.repitition
+    this.inputType = task.inputType
+    this.inputValue = task.inputValue
+    this.outputType = task.outputType
+    this.outputValue = task.outputValue
   }
   get payload() {
-    const payload =  {
-      serviceCategory: this.serviceCategory,
-      locationId: this.locationId,
-      deviceId: this.deviceId,
-      serviceType: this.serviceType,
-      specialty: this.specialty,
-      appointmentType: this.appointmentType,
-      reasonCode: this.reasonCode,
-      supportingInfo: this.supportingInfo,
-      reasonRef: this.reasonRef,
-      priority: this.priority,
+    return {
+      activityDefinition: this.activityDefinition,
       description: this.description,
-      slot: this.slot,
+      intent: this.intent,
+      priority: this.priority,
+      statusReason: this.statusReason,
+      businessStatus: this.businessStatus,
+      code: this.code,
+       status: this.status,
+      for: this.for,
+      performerType: this.performerType,
+      owner: this.owner,
+      location: this.location,
+      startDateTime: this.startDateTime,
+      endDateTime: this.endDateTime,
+      recipient: this.recipient,
+      excecutionPeriod: this.excecutionPeriod,
       basedOn: this.basedOn,
-      duration: this.duration,
-      comments: this.comments,
-      patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
-      period: this.period,
-    } as any
-    if(this.Devices.length > 0){
-      payload.Devices = this.Devices;
+      partOf: this.partOf,
+      reasonCode: this.reasonCode,
+      reasonReference: this.reasonReference,
+      note: this.note,
+      focus: this.focus,
+      encounter: this.encounter,
+      repitition: this.repitition,
+      inputType: this.inputType,
+      inputValue: this.inputValue,
+      outputType: this.outputType,
+      outputValue: this.outputValue,
     }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
-    if(this.Practitioners.length > 0){
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload
   }
   get allaction() {
-    return this.id ? "Edit" : "New";
-  }
-  get selectedItem() {
-    return this.participantitem;
-  }
-  async showMedication(){
-    this.showMedicationModal = true;
-  }
-  async addPractitioner(value: any,id:any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.Practitioners = id;
-    this.practitionerFilter = false;
-  }
-  removePractitioner(index: number) {
-    this.newPractitioners.splice(index, 1);
-  }
-  removeRole(index: number){
-    this.newRoles.splice(index, 1);
-  }
-   removeDevice(index: number){
-    this.newDevices.splice(index, 1);
-  }
-  showAvailable() {
-    this.availableFilter = true;
-  }
-  async addPatients(value: any,id:any) {
-    this.newPatients = value;
-    this.Patients = id;
-    this.patientFilter = false;
-  }
-  async addDevices(value:any, id:any){
-     this.newDevices = value;
-     this.Devices = id;
-    this.deviceFilter = false;
-  }
-  async addRoles(value: any,id:any){
-   // this.role.push(value);
-    this.newRoles = value;
-    this.roles = id;
-    this.roleFilter = false;
-  }
-   get setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
-    }else if(this.type == 'Practitioner Role'){
-        this.roleFilter = true;
-    }
-    return this.type;
+    return this.id ? 'Edit' : 'New'
   }
 
+ get newaction() {
+    return this.id ? 'Update' : 'Create'
+  }
   async submit() {
-    this.loading = true;
-    if (this.id) await this.updateAppointment();
-    else await this.createAppointment();
-    this.loading = false;
+    this.loading = true
+    if (this.id) await this.updateTask()
+    else await this.createTask()
+    this.loading = false
   }
-  async createAppointment() {
-    //const period = this.period;
-   this.payload.period.start = new Date(this.period.start).toISOString();
-   // this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
+  async createTask() {
+    moment(this.data.startTime).format("YYYY-MM-DD HH:mm Z");
+     moment( this.data.endTime).format("YYYY-MM-DD HH:mm Z");
+     this.data.startDate = new Date(this.data.startDate).toISOString();
+    this.data.endDate = new Date(this.data.endDate).toISOString();
+    this.startDateTime = this.data.startDate;
+    this.endDateTime = this.data.endDate;
+    //const newstart = new Date(this.startDateTime).toISOString().substr(0,10);
+    //const newend = new Date(this.endDateTime).toISOString().substr(0,10);
+    // const newstart = new Date(this.startDateTime).toISOString().split('T')[0];
+    // const newend = new Date(this.endDateTime).toISOString().split('T')[0];
+    const body = {
+      ...this.payload,
+      for: this.forType,
+      location: this.orgAddress,
+      owner: this.organizationInfo.name,
+      startDateTime:this.startDateTime,
+      endDateTime: this.endDateTime ,
+    }
+    this.payload.excecutionPeriod.start
+    // this.payload.for = this.forType;
     try {
-      const response = await cornieClient().post("/api/v1/appointment", this.payload);
+      const response = await cornieClient().post('/api/v1/task', body)
       if (response.success) {
-          window.notify({ msg: "Appointment created", status: "success" });
-          this.$router.push("/dashboard/provider/experience/appointments");
+        window.notify({ msg: 'Task created', status: 'success' })
+        this.$router.push('/dashboard/provider/experience/tasks')
       }
     } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
+      console.log(error)
+      window.notify({ msg: 'Task not created', status: 'error' })
+      // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
 
-  async updateAppointment() {
-    const url = `/api/v1/appointment/${this.id}`;
-    const payload = { ...this.payload };
+  async updateTask() {
+    const url = `/api/v1/task/${this.id}`
+    const payload = { ...this.payload }
     try {
-      const response = await cornieClient().put(url, payload);
+      const response = await cornieClient().put(url, payload)
       if (response.success) {
-        window.notify({ msg: "Appointment updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
+        window.notify({ msg: 'Task updated', status: 'success' })
+        this.$router.push('/dashboard/provider/experience/tasks')
       }
     } catch (error) {
-      window.notify({ msg: "Appointment not updated", status: "error" });
+      window.notify({ msg: 'Task not updated', status: 'error' })
     }
   }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
+  
+  async setOrg(){
+     this.orgName = this.organizationInfo.name;
+    //this.orgAddress = this.organizationInfo.identifier;
+
   }
-  async fetchDevices() {
-    const AllDevices = cornieClient().get("/api/v1/devices");
-    const response = await Promise.all([AllDevices]);
-    this.device = response[0].data;
+   async getLocations() {
+    const AllLocations = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+    const response = await Promise.all([AllLocations]);
+    console.log(response);
+    this.locationInfo = response[0].data[0];
+    this.orgAddress = response[0].data[0].id;
   }
-  async fetchRoles() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
-  }
-   async fetchPatients() {
-    const AllPateints = cornieClient().get("/api/v1/patient");
-    const response = await Promise.all([AllPateints]);
-    this.patient = response[0].data;
-  }
+
   async created() {
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
-    this.fetchPatients();
-    const data = await this.getDropdowns("availability");
-    const data2 = await this.getDropdowns("practitioner");
+    this.getLocations();
+    if (!this.locations) await this.fetchLocations();
+    if (!this.organizationInfo) await this.fetchOrgInfo();
+    this.setOrg();
+    this.setTask();
+    const data = await this.getDropdowns('tasks')
     this.dropdowns = data;
-    this.dropdowns2 = data2;
+    console.log(data);
   }
 }
 </script>
@@ -671,8 +748,9 @@ actor = "";
   border: 2px solid #080056;
 }
 .required label::after {
-  content: "*";
+  content: '*';
   color: #fe4d3c;
   margin-left: 5px;
 }
+
 </style>

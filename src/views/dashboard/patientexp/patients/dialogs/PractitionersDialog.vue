@@ -19,33 +19,34 @@
           </span>
         </cornie-card-title>
         <div class="px-2">
-          <icon-input
-            autocomplete="off"
-            type="search"
-            placeholder="Search by practitioner name"
-            class="rounded-full w-full border-2 focus:outline-none"
-          >
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-          </icon-input>
+          <search-input
+            v-model="query"
+            :results="results"
+            @selected="selected"
+          />
+
           <v-form class="mt-4 w-full" @submit="submit">
-            <cornie-input
-              label="Practice Assigned Provider"
-              class="my-2 rounded-none w-full"
-              v-model="providerPractice"
-            />
-            <cornie-input
-              label="Email Address"
-              v-model="email"
-              :rules="requiredEmail"
-              class="my-2 rounded-none w-full"
-            />
-            <cornie-input
-              label="Reference Organization"
-              class="my-2 rounded-none w-full"
-              v-model="referenceOrganization"
-            />
+            <div class="w-full grid grid-cols-1 gap-y-3">
+              <cornie-input
+                label="Practice Assigned Provider"
+                class="rounded-none w-full"
+                v-model="practice"
+                :readonly="true"
+              />
+              <cornie-input
+                label="Email Address"
+                v-model="email"
+                :rules="requiredEmail"
+                class="rounded-none w-full"
+                :readonly="true"
+              />
+              <cornie-input
+                label="Reference Organization"
+                class="rounded-none w-full"
+                v-model="referenceOrganizationName"
+                :readonly="true"
+              />
+            </div>
             <span class="flex justify-end">
               <cornie-btn
                 @click="show = false"
@@ -63,16 +64,15 @@
           </v-form>
         </div>
         <hr class="mx-2 h-2 my-4" />
-        <div class="px-2">
+        <div class="px-2" v-if="items.length">
           <h2 class="uppercase font-semibold text-xs">
             SELECT DEFAULT PRACTITIONER
           </h2>
           <div class="flex items-center" v-for="(item, i) in items" :key="i">
-            <input
+            <cornie-radio
+              name="default"
+              :modelValue="item.default"
               @change="toggleDefault(item)"
-              v-model="item.default"
-              type="checkbox"
-              class=""
             />
             <div class="flex flex-col ml-3">
               <span> {{ item.name }} </span>
@@ -92,7 +92,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
@@ -112,13 +112,28 @@ import { cornieClient } from "@/plugins/http";
 import { string } from "yup";
 import { namespace } from "vuex-class";
 import IPractitioner from "@/types/IPractitioner";
+import SearchInput from "@/components/search-input.vue";
+import { IOrganization } from "@/types/IOrganization";
+import CornieRadio from "@/components/cornieradio.vue";
+import ObjectSet from "@/lib/objectset";
 
 const patients = namespace("patients");
+const practitioners = namespace("practitioner");
+const organization = namespace("organization");
+
+interface Result extends IPractitioner {
+  display: string;
+}
+
+interface GeneralPractitioner extends IPractitioner {
+  default?: boolean;
+}
 
 @Options({
   name: "PractitionersDialog",
   components: {
     ...CornieCard,
+    SearchInput,
     SearchIcon,
     TestTubeIcon,
     CornieIconBtn,
@@ -132,6 +147,7 @@ const patients = namespace("patients");
     CornieDatePicker,
     CornieBtn,
     PillIcon,
+    CornieRadio,
   },
 })
 export default class PractitionersDialog extends Vue {
@@ -144,30 +160,167 @@ export default class PractitionersDialog extends Vue {
   @Prop({ type: Object })
   patient!: IPatient;
 
+  @Prop({ type: Array, default: [] })
+  practitoners!: GeneralPractitioner[];
+
+  @PropSync("practitioners")
+  practitonersSync!: GeneralPractitioner[];
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  loading = false;
+
+  @practitioners.Action
+  searchPractitioners!: (q: string) => Promise<IPractitioner[]>;
+
+  query = "";
+  results: Result[] = [];
+
+  @Watch("query")
+  async search(query: string) {
+    if (!query) return (this.results = []);
+    const practitioners = await this.searchPractitioners(query);
+    this.results = practitioners.map((p) => ({
+      ...p,
+      display: this.printPractitioner(p),
+    }));
+  }
+
+  printPractitioner(practitioner: IPractitioner) {
+    return `${practitioner.jobDesignation} ${practitioner.firstName} ${practitioner.lastName}`;
+  }
+
+  email = "";
+  practice = "";
+  referenceOrganization = "";
+  referenceOrganizationName = "";
   practitioner!: IPractitioner;
 
+  @patients.Action
+  updatePatientField!: (data: {
+    id: string;
+    field: string;
+    data: any[];
+  }) => void;
+
+  async selected(practitioner: IPractitioner) {
+    this.email = practitioner.email;
+    this.practice = practitioner.department;
+    this.referenceOrganization = practitioner.organizationId;
+    this.referenceOrganizationName = this.organizationInfo.name;
+  }
+
   get items() {
-    return [];
+    const genPractitioners = this.patient.generalPractitioners || [];
+    if (genPractitioners.length < 1) this.practitonersSync;
+    return genPractitioners;
   }
 
-  get email() {
-    return "";
+  async save() {
+    this.loading = true;
+    if (this.patient) await this.submit();
+    else this.addToBatch();
+    this.loading = false;
   }
 
-  get practice() {
-    return "";
+  pushPractitioners() {
+    const practitionerSet = new ObjectSet(
+      [...this.practitonersSync, this.practitioner],
+      "id"
+    );
+    this.practitonersSync = [...practitionerSet];
   }
 
-  get referenceOrganization() {
-    return "";
+  addToBatch() {
+    this.pushPractitioners();
+    window.notify({ msg: "Practitioner added", status: "success" });
   }
 
-  remove(item: Practitioner, index: number) {
-    console.log("removing");
+  async submit() {
+    try {
+      await cornieClient().post("/api/v1/patient/practitioner", {
+        practitioner: this.practitioner.id,
+      });
+      window.notify({
+        msg: `Practitioner added `,
+        status: "success",
+      });
+    } catch (error) {
+      console.log(error);
+      window.notify({ msg: `Practitioner not added`, status: "error" });
+    }
   }
 
-  toggleDefault(item: Practitioner) {
-    console.log("toggling");
+  async remove(item: Practitioner, index: number) {
+    if (item.id) await this.removeRemote(item);
+    else this.removeLocal(index);
+  }
+
+  async removeLocal(index: number) {
+    this.practitonersSync = this.practitonersSync.filter(
+      (value, i) => i != index
+    );
+  }
+
+  async removeRemote(item: Practitioner) {
+    try {
+      await cornieClient().delete(`/api/v1/patient/practitioner/${item.id}`);
+      this.deletePractitioner(item.id!!);
+      window.notify({
+        msg: "Practitioner deleted from patient",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({
+        msg: "Practitioner not deleted from patient",
+        status: "error",
+      });
+    }
+  }
+
+  deletePractitioner(id: string) {
+    let practitioners = this.patient.generalPractitioners || [];
+    practitioners = practitioners.filter((p) => p.id == id);
+    this.updatePatientField({
+      id: this.patient.id!!,
+      field: "generalPractitioners",
+      data: practitioners,
+    });
+  }
+
+  async toggleDefault(practitioner: Practitioner) {
+    const { id } = practitioner;
+    if (!this.patient) return;
+    try {
+      await cornieClient().patch(
+        `/api/v1/patient/practitioner/set-default/${this.patient.id}/${id}`,
+        {}
+      );
+      this.updateDefaultPractitioner(practitioner);
+      window.notify({ msg: "Practitioner made default", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Practitioner not made default", status: "error" });
+    }
+  }
+
+  updateDefaultPractitioner(practitioner: Practitioner) {
+    let practitioners = this.patient.generalPractitioners;
+    practitioners = practitioners!!.map((p) => {
+      if (p.id != practitioner.id) return { ...p, default: false };
+      return { ...p, default: true };
+    });
+    this.updatePatientField({
+      id: this.patient.id!!,
+      field: "generalPractitioners",
+      data: practitioners,
+    });
+  }
+  created() {
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

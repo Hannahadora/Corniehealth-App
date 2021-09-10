@@ -17,10 +17,19 @@
         <p class="text-sm mt-2">
          View Dr. Daniel Arubuike available times this week
         </p>
-        <div class="my-5 border-2 p-3 border-gray-200 w-full flex-col flex">
+        <div class="my-5 border-2 p-3 border-gray-200 w-full flex-col flex" v-for="(input, index) in available" :key="index">
             <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Mon, 1st Feb</p>
-              <p class="cursor-pointer float-right text-xs text-gray-500">9AM - 6PM</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">
+                 <span>{{
+                            new Date(
+                              input.startDate ?? Date.now()
+                            ).toLocaleDateString()
+                          }}
+                  </span>
+                
+                
+                 - 6PM</p>
             </span>
             <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Mon, 1st Feb</p>
@@ -70,7 +79,7 @@ import { cornieClient } from "@/plugins/http";
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
 export default {
-  name: "ParticipantFilter",
+  name: "avialiability",
   components: {
     Modal,
     DragIcon,
@@ -97,11 +106,14 @@ export default {
     },
     practitionerId:{
       type:String,
+       required: true,
+      default: "",
     }
   },
   data() {
     return {
       columnsProxy: [],
+      available:[]
     };
   },
   watch: {
@@ -114,6 +126,16 @@ export default {
     },
   },
   computed: {
+     async viewAvialaibilty() {
+       console.log("this.practitionerId");
+         console.log(this.practitionerId);
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      console.log("response");
+        console.log(response);
+      this.available = response[0].data;
+      return response[0].data
+    },  
     show: {
       get() {
         return this.visible;
@@ -133,23 +155,20 @@ export default {
       this.show = false;
     },
      async viewAvialaibilty() {
-      this.loading = true;
-      // try {
-      //   const response = await cornieClient().post(
-      //     `/api/v1/schedule/practitioner/${this.practitionerId}`
-      //   );
-      //   if (response.success) {
-      //   this.columnsProxy = response.data
-      //   }
-      // } catch (error) {
-      //   this.loading = false;
-      //   console.error(error);
-      // }
+       console.log("this.practitionerId");
+         console.log(this.practitionerId);
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      console.log("response");
+        console.log(response);
+      this.available = response[0].data;
     },
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);
-    this.viewAvialaibilty();
   },
+  created(){
+  // this.viewAvialaibilty();
+  }
 };
 </script>

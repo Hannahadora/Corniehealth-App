@@ -225,6 +225,7 @@ export default class PatientContact extends Vue {
   }
 
   async save() {
+    this.$emit("completed");
     this.loading = true;
     if (this.patient) await this.submit();
     else this.addToBatch();
@@ -266,6 +267,7 @@ export default class PatientContact extends Vue {
       data: [data],
     });
   }
+
   async updateContact() {
     const response = await cornieClient().put(
       `/api/v1/patient/contact/${this.contactId}`,

@@ -27,7 +27,7 @@
           py-2
         "
       >
-        Daniel Johnson (Patient Settings)
+        {{ patientName }} (Patient Settings)
       </span>
       <h3 class="font-bold text-base">Data Access</h3>
       <div class="block mb-4">
@@ -47,17 +47,30 @@
             </div>
           </tooltip>
         </span>
-        <span class="block w-1/3">
-          <icon-input
-            autocomplete="off"
-            type="search"
-            placeholder="Search"
-            class="rounded-full w-full border-2 focus:outline-none"
+        <span class="block w-5/12">
+          <search-input
+            v-model="query"
+            background="bg-gray-300"
+            :results="results"
+            @selected="selected"
           >
-            <template v-slot:prepend>
-              <search-icon />
+            <template #item="{ item }">
+              <div class="w-full flex items-center justify-between">
+                <div class="flex items-center">
+                  <avatar :src="item.image" />
+                  <div class="flex ml-1 flex-col">
+                    <span class="font-semibold text-sm">Dr Ajayi Charles</span>
+                    <span class="text-xs font-semibold text-gray-500">
+                      Paediatrics
+                    </span>
+                  </div>
+                </div>
+                <span class="text-danger font-semibold text-sm">
+                  Grant Access
+                </span>
+              </div>
             </template>
-          </icon-input>
+          </search-input>
         </span>
       </div>
       <cornie-table v-model="items" :columns="headers">
@@ -67,7 +80,7 @@
             <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
           </div>
         </template>
-        <template #actions>
+        <template #actions="{ item }">
           <table-action>
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
@@ -76,7 +89,7 @@
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs">Privileges</span>
           </table-action>
-          <table-action>
+          <table-action @click="revoke(item)">
             <cancel-icon class="text-red-500 fill-current" />
             <span class="ml-3 text-xs">Revoke access</span>
           </table-action>
@@ -97,6 +110,18 @@ import Avatar from "@/components/avatar.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import { Prop, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { IPatient, Practitioner } from "@/types/IPatient";
+import { cornieClient } from "@/plugins/http";
+
+import SearchInput from "@/components/search-input.vue";
+import IPractitioner from "@/types/IPractitioner";
+import practitioner from "@/store/practitioner";
+import ObjectSet from "@/lib/objectset";
+
+const practitioners = namespace("practitioner");
+const patients = namespace("patients");
 
 @Options({
   name: "PatientSettings",
@@ -111,9 +136,19 @@ import CancelIcon from "@/components/icons/cancel.vue";
     SearchIcon,
     CornieTable,
     TableAction,
+    SearchInput,
   },
 })
 export default class PatientSetting extends Vue {
+  @Prop({ type: String })
+  id!: string;
+
+  @patients.Action
+  findPatient!: (id: string) => Promise<IPatient>;
+
+  patient = {} as IPatient;
+
+  practitioners: IPractitioner[] = [];
   headers = [
     { title: "Name", key: "name", show: true },
     { title: "Specialty", key: "specialty", show: true },
@@ -122,16 +157,123 @@ export default class PatientSetting extends Vue {
     { title: "Email", key: "email", show: true },
     { title: "Status", key: "status", show: true },
   ];
-  items = [
-    {
-      name: "Dr. Daniel Johnson",
-      specialty: "Gynaecology",
-      location: "Reddington Hospital VI",
-      phone: "08033214321",
-      status: "Ok",
-      email: "me@gmail.com",
-      photo: require("@/assets/img/avatar.png"),
-    },
-  ];
+
+  get items() {
+    return this.practitioners.map((p) => ({
+      ...p,
+      name: this.printPractitioner(p),
+      specialty: p.department,
+      phone: p.phone?.number || "",
+      email: p.email,
+      photo: p.image,
+      status: p.activeState,
+      location: p.address,
+    }));
+  }
+
+  @practitioners.Action
+  searchPractitioners!: (q: string) => Promise<IPractitioner[]>;
+
+  query = "";
+
+  results: any[] = [];
+
+  get patientName() {
+    if (!this.patient?.id) return "";
+    return `${this.patient.firstname} ${this.patient.lastname}`;
+  }
+
+  @Watch("query")
+  async search(query: string) {
+    if (!query) return (this.results = []);
+    const practitioners = await this.searchPractitioners(query);
+    this.results = practitioners.map((p) => ({
+      ...p,
+      display: this.printPractitioner(p),
+    }));
+  }
+
+  printPractitioner(practitioner: IPractitioner) {
+    return `${practitioner.jobDesignation} ${practitioner.firstName} ${practitioner.lastName}`;
+  }
+
+  async fetchPractitioners() {
+    try {
+      const response = await cornieClient().get(
+        `/api/v1/patient/authorized/practitioners/${this.id}`
+      );
+      this.practitioners = response.data;
+    } catch (error) {
+      window.notify({ msg: "Couldn't fetch practitioners", status: "error" });
+    }
+  }
+
+  async revoke(practitioner: IPractitioner) {
+    const confirmed = await window.confirmAction({
+      title: "Revoke access",
+      message: `You are about to revoke ${this.printPractitioner(
+        practitioner
+      )}'s access to this patient's data, are you sure?`,
+    });
+    if (!confirmed) return;
+    this.commitRevoke(practitioner);
+  }
+
+  async commitRevoke(revoked: IPractitioner) {
+    try {
+      await cornieClient().post(
+        `/api/v1/patient/unauthorize/practitioner/${this.id}`,
+        [revoked.id]
+      );
+      this.practitioners = this.practitioners.filter((p) => p.id != revoked.id);
+      window.notify({
+        msg: "Access revoked",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({
+        msg: "There  was an error please try again",
+        status: "error",
+      });
+    }
+  }
+  async selected(practitioner: IPractitioner) {
+    const confirmed = await window.confirmAction({
+      title: "Grant access",
+      message: `You are about to grant ${this.printPractitioner(
+        practitioner
+      )} access to this patient's data, are you sure?`,
+    });
+    if (!confirmed) return;
+    await this.commitSelection(practitioner);
+  }
+
+  async commitSelection(selected: IPractitioner) {
+    try {
+      await cornieClient().post(
+        `/api/v1/patient/authorize/practitioner/${this.id}`,
+        [selected.id]
+      );
+      const practitionersSet = new ObjectSet(
+        [...this.practitioners, selected],
+        "id"
+      );
+      this.practitioners = [...practitionersSet];
+      window.notify({
+        msg: "Access granted",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({
+        msg: "There  was an error please try again",
+        status: "error",
+      });
+    }
+  }
+  async created() {
+    this.fetchPractitioners();
+    this.patient = await this.findPatient(this.id);
+    this.patientName;
+  }
 }
 </script>

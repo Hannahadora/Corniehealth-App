@@ -15,11 +15,12 @@ import RolesStore from "./roles";
 import GroupteamStore from "./group";
 import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
-
+import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
 
+import OrgStore from "./organization";
 
-import VisitsStore from './visits'
+import VisitsStore from "./visits";
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
 import PatientStore from "./patient";
@@ -49,5 +50,7 @@ export default createStore({
     schedules: ScheduleStore,
     visits: VisitsStore,
     patients: PatientStore,
+    organization: OrgStore,
+    task: TaskStore,
   },
 } as StoreOptions<any>);

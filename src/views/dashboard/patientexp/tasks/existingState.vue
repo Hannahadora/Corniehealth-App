@@ -52,11 +52,11 @@
           </span>
           <cornie-table :columns="rawHeaders" v-model="items">
               <template #actions="{ item }">
-                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/view-request/${item.id}`)">
+                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
                   <newview-icon  class="text-yellow-500 fill-current"/>
                   <span class="ml-3 text-xs">View</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
                   <update-icon />
                   <span class="ml-3 text-xs">Update</span>
                 </div>
@@ -64,7 +64,7 @@
                   <timeline-icon />
                   <span class="ml-3 text-xs">View Timeline</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
                   <plus-icon class="text-green-400 fill-current"/>
                   <span class="ml-3 text-xs">Add Appointment</span>
                 </div>
@@ -72,7 +72,7 @@
                     <note-icon class="text-yellow-600 fill-current" />
                     <span class="ml-3 text-xs">Make Notes</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <message-icon class="text-green-500 fill-current" />
                     <span class="ml-3 text-xs">Messages</span>
                 </div>
@@ -81,11 +81,15 @@
                     <span class="ml-3 text-xs">Cancel</span>
                 </div>
               </template>
-              <template #Participants="{ item }">
+              <template #excecutionPeriod="{ item }">
                 <div class="flex items-center">
-                  <span class="text-xs">{{item.Participants}}</span>
-                  <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+                  <span>{{item.excecutionPeriod.start}} - {{item.excecutionPeriod.end}} </span>
                 </div>
+              </template>
+              <template #status="{ item }">
+                  <div class="container">
+                    <span class="p-2 px-3 rounded-full" :class="{ 'status-inactive': item.status === 'Cancelled', 'status-inactive': item.status === 'Stopped', 'status-inactive': item.status === 'Failed', 'status-inactive': item.status === 'Entered in Error','status-inactive': item.status === 'Rejected', 'status-accepted': item.status === 'Accepted','status-accepted': item.status === 'Received','status-accepted': item.status === 'Ready','status-accepted': item.status === 'Completed','status-warning': item.status === 'Draft','status-warning': item.status === 'In Progress','status-warning': item.status === 'On Hold', 'status-accepted': item.status === 'Requested', }">{{ item.status }}</span>
+                  </div>
               </template>
           </cornie-table>
         </div>
@@ -98,17 +102,11 @@
 
         </div>
     </div>
-      <notes-add
-          :appointmentId="appointmentId"
-          @update:preferred="makeNotes"
-          v-model:visible="showNotes"
-        />
-        <all-participants
-           :appointmentId="appointmentId"
-            :columns="singleParticipant"
-          @update:preferred="displayParticipants"
-          v-model:visible="showPartcipants"
-        />
+    <notes-add
+      :taskId="taskId"
+      @update:preferred="makeNotes"
+      v-model:visible="showNotes"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -129,11 +127,11 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IAppointment from "@/types/IAppointment";
+import ITask from "@/types/ITask";
+import NotesAdd from "./notes.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-//import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import TimelineIcon from "@/components/icons/timeline.vue";
 import DangerIcon from "@/components/icons/danger.vue";
@@ -144,9 +142,8 @@ import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
 
-const appointment = namespace("appointment");
+const task = namespace("task");
 
 @Options({
   components: {
@@ -162,6 +159,7 @@ const appointment = namespace("appointment");
     DangerIcon,
     PlusIcon,
     SearchIcon,
+    NotesAdd,
   //  CloseIcon,
     MessageIcon,
     PrintIcon,
@@ -179,66 +177,70 @@ const appointment = namespace("appointment");
   },
   
 })
-export default class AppointmentExistingState extends Vue {
+export default class TaskExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
   selected = 1;
   showNotes = false;
-appointmentId="";
-showPartcipants= false;
-singleParticipant= [];
-  @appointment.State
-  appointments!: IAppointment[];
+  taskId="";
 
-  @appointment.Action
-  deleteAppointment!: (id: string) => Promise<boolean>;
+
+  @task.State
+  tasks!: ITask[];
+
+  @task.Action
+  deleteTask!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", key: "keydisplay", show: true },
+    { title: "Date", key: "createdAt", show: true },
     {
-      title: "Patient",
-      key: "patients",
-      show: false,
-    },
-    {
-      title: "Appointment Type",
-      key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
+      title: "identifier | Group identifier",
+      key: "id",
       show: true,
     },
     {
-      title: "Participants",
-      key: "Participants",
+      title: "code | priority",
+      key: "priority",
       show: true,
     },
     {
-      title: "Slot",
-      key: "slot",
-      show: false,
+      title: "intent | subject",
+      key: "intent",
+      show: true,
+    },
+     {
+      title: "Recipient",
+      key: "recipient",
+      show: true,
     },
     {
-      title: "Status",
+      title: "owner(s)",
+      key: "owner",
+      show: true,
+    },
+     {
+      title: "status | business status",
       key: "status",
       show: true,
     },
     {
       title: "Code",
-      key: "reasonCode",
+      key: "code",
       show: false,
     },
     {
       title: "Reason Reference",
-      key: "reasonRef",
+      key: "reasonReference",
       show: false,
     },
     {
       title: "Period",
-      key: "period",
-      show: true,
+      key: "excecutionPeriod",
+      show: false,
     },
     {
       title: "Priority",
@@ -251,8 +253,43 @@ singleParticipant= [];
       show: false,
     },
     {
-      title: "Consultation Medium",
-      kwy: "consultationMedium",
+      title: "Note",
+      kwy: "note",
+      show: false,
+    },
+     {
+      title: "Focus",
+      kwy: "focus",
+      show: false,
+    },
+     {
+      title: "Encounter",
+      kwy: "encounter",
+      show: false,
+    },
+     {
+      title: "Repitition",
+      kwy: "repitition",
+      show: false,
+    },
+     {
+      title: "Input Type",
+      kwy: "inputType",
+      show: false,
+    },
+     {
+      title: "Input Value",
+      kwy: "inputValue",
+      show: false,
+    },
+     {
+      title: "Output Type",
+      kwy: "outputType",
+      show: false,
+    },
+     {
+      title: "Output Value",
+      kwy: "outputValue",
       show: false,
     },
 
@@ -270,59 +307,46 @@ singleParticipant= [];
 
 
   get items() {
-    const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
-       (appointment as any).period = new Date(
-         (appointment as any).period 
+    const tasks = this.tasks.map((task) => {
+       (task as any).excecutionPeriod.start = new Date(
+         (task as any).excecutionPeriod.start 
+       ).toLocaleDateString("en-US");
+         (task as any).excecutionPeriod.end = new Date(
+         (task as any).excecutionPeriod.end 
+       ).toLocaleDateString("en-US");
+         (task as any).createdAt= new Date(
+         (task as any).createdAt
        ).toLocaleDateString("en-US");
         return {
-        ...appointment,
-         action: appointment.id,
+        ...task,
+         action: task.id,
          keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
         };
     });
-    if (!this.query) return appointments;
-    return search.searchObjectArray(appointments, this.query);
+    if (!this.query) return tasks;
+    return search.searchObjectArray(tasks, this.query);
   }
-
+ async makeNotes(id: string) {
+    this.taskId = id;
+    this.showNotes = true;
+  }
  select(i:number) {
       this.selected = i;
     }
  
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to cancel this appointment",
-      title: "Cancel appointment"
+      message: "You are about to delete this task",
+      title: "Delete task"
     });
     if (!confirmed) return;
 
-    if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
-    else window.notify({ msg: "Appointment not canceled", status: "error" });
+    if (await this.deleteTask(id)) window.notify({ msg: "Task deleted", status: "success" });
+    else window.notify({ msg: "Task not deleted", status: "error" });
   }
-  async makeNotes(id:string){
-    this.appointmentId = id;
-    this.showNotes = true;
-  }
-  closeModal(){
-    this.showPartcipants = false;
-  }
-  async displayParticipants(value:string){
-    this.appointmentId = value;
-    this.showPartcipants = true;
-     try {
-       const response = await cornieClient().get(
-          `/api/v1/appointment/${value}`
-        );
-        if (response.success) {
-        this.singleParticipant = response.data
-        }
-      } catch (error) {
-        this.loading = false;
-        console.error(error);
-      }
-  }
-      get sortAppointments (){
+ 
+ 
+      get sortTasks (){
         return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
@@ -335,5 +359,18 @@ singleParticipant= [];
 <style>
 .outline-primary{
     border: 2px solid #080056;
+}
+.status-accepted {
+      background: #F3FCF8;
+      color: #35BA83;
+      
+  }
+.status-inactive {
+      background: #FFF1F0;
+      color: #FE4D3C;
+}
+.status-warning{
+  background: #FEFAF0;
+  color: #F7B538;
 }
 </style>

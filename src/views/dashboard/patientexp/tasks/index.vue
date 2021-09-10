@@ -30,13 +30,13 @@
   </div>
 </template>
 <script lang="ts">
-import IAppointment from "@/types/IAppointment";
+import ITask from "@/types/ITask";
 import { Options, Vue } from "vue-class-component";
 import TasksEmptyState from "./emptyState.vue";
 import TasksExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const appointment = namespace("appointment");
+const task = namespace("task");
 
 @Options({
   name: "TasksIndex",
@@ -46,23 +46,23 @@ const appointment = namespace("appointment");
   },
 })
 export default class TasksIndex extends Vue {
-  addAppointment = false;
-  AppointmentToUpdate = {} as IAppointment;
+  addTask = false;
+  TaskToUpdate = {} as ITask;
 
   get empty() {
-    return this.appointments.length < 1;
+    return this.tasks.length < 1;
   }
 
- @appointment.State
-  appointments!: IAppointment[];
+ @task.State
+  tasks!: ITask[];
 
-  @appointment.Action
-  fetchAppointments!: () => Promise<void>;
+  @task.Action
+  fetchTasks!: () => Promise<void>;
 
 
 created() {
-  this.fetchAppointments()
-    if (this.appointments.length < 1) this.fetchAppointments();
+  this.fetchTasks()
+    if (this.tasks.length < 1) this.fetchTasks();
   }
 }
 </script>
