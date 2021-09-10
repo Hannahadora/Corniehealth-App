@@ -743,6 +743,7 @@ async created() {
  async saveSchedule() {
      const body = {
          ...this.data,
+         startDate: this.data.startDate,
          organizationId: this.data.organizationId ? this.data.organizationId : this.user.orgId,
          practitioners: this.data.practitioners.map((i: any) => i.code),
          devices: this.data.devices.map((i: any) => i.code),

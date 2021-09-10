@@ -2,7 +2,7 @@
     <div class="w-full p-4 overflow-y-scroll h-scrren">
         <div class="container-fluid">
 
-            <div class="w-full">
+            <div class="w-full" v-if="item.Patients && item.Patients.length > 0">
                 <PatientDetails :id="appointmentPatients.length > 0 ? appointmentPatients[0].code : ''" />
             </div>
 
@@ -18,7 +18,7 @@
                 <div class="w-8/12 flex">
                     <div class="container">
                         <div class="w-12/12">
-                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100% !important" width="100%" v-model="data.date" />
+                            <DatePicker color="red" class="w-full" :label="'Date'" style="width: 100% !important" width="100%" v-model="date" />
                         </div>
                     </div>
                 </div>
@@ -43,9 +43,9 @@
                             <div class="py-1 px-1" role="none">
                                 <div class="w-full flex relative items-center my-2" v-for="(actor, index) in allActors" :key="index">
                                     <div class="w-1/12">
-                                        <input type="checkbox" :checked="selectedActors.findIndex(i => i.code === actor.code) >= 0" name="" @click="selectPractitioner(actor, index)" id="">
+                                        <input type="checkbox" :checked="selectedActors.findIndex(i => i.code === actor.code) >= 0" name="" @click="selectPractitioner(actor)" id="">
                                     </div>
-                                    <div class="w-5/12" @click="selectPractitioner(actor, index)">
+                                    <div class="w-5/12" @click="selectPractitioner(actor)">
                                         <p class="capitalize font-semibold text-sm">{{ actor.display }}</p>
                                         <span class="capitalize text-gray-400 font-normal text-xs">{{ actor.type}}</span>
                                     </div>
@@ -70,7 +70,7 @@
             </div> -->
 
             <div class="w-full my-4">
-                <CornieSelect :items="slots" :label="'Slot'" v-model="checkinData.time" style="width: 100%;font-size:13px" />
+                <CornieSelect :items="slots" :label="'Slot'" v-model="checkinData.slot" style="width: 100%;font-size:13px" />
             </div>
 
             <div class="w-full mb-4 mt-8">
@@ -174,7 +174,7 @@ export default class CheckIn extends Vue {
  checkinData: any = {
     "appointmentId": this.item.id,
     "patientId": this.patientId,
-    "type": this.item.appointmentType,
+    // "type": this.item.appointmentType,
     "status": "In-progress",
     "roomId": "",
     "notes": "",
@@ -216,42 +216,54 @@ fetchAppointments!: () => Promise<void>;
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
 
- async setSession() {
+async setSession() {
+    
      let body = {
       "scheduleId": this.checkinData.scheduleId,
-    //   "startTime": this.checkinData.time.split("-")[0].trim().split(",")[1].trim().substring(0, 5),
-    //   "endTime": this.checkinData.time.split("-")[1].trim().split(",")[1].trim().substring(0, 5),
-    //   "description": "string",
-    startTime: "07:10",
-    endTime: "07:40",
+        startTime: this.checkinData.slot.split('-')[0].trim(),
+        endTime: this.checkinData.slot.split('-')[1].trim(),
       "status": "active",
       "active": true,
-    //   "capacity": 0,
-    //   "hasWaitList": true,
-    //   "comments": "string",
-      "repeat": {
-        "year": 0,
-        "month": 0,
-        "week": 0,
-        "everyDayOfSchedule": true
-      }
     }
 
-    const createdSlot = await this.createSlot(body);
-    console.log(createdSlot, "createdSlot");
     
-    this.checkinData.slotId = createdSlot.id;
-
-     this.loading = true;
-    const response = await this.checkin(this.checkinData);
+    console.log(body, "BODY");
     
-    this.loading = false;
-    if (response) window.notify({ msg: "Checked In", status: "success" });
-    this.$emit('close')
-}
+    try {
+        this.loading = true;
+        const slot = await this.createSlot(body);
+        this.loading = false;
+        if (slot && slot.id) {
+            const checkedIn = await this.checkin({
+                "patientId": this.item.Patients && this.item.Patients.length > 0 ? this.item.Patients[0].id : "",
+                 "appointmentId": this.item?.id,
+                // "type": this.checkinData.type,
+                "status": "In-progress",
+                "roomId": this.checkinData.roomId,
+                "notes": this.checkinData.notes,
+                "slotId": slot.id,
+                // "practitioners": this.selectedActors.map(i => i.id)
+            });
+            
+            if (checkedIn && checkedIn) {
+                window.notify({ msg: "Patient Check-in", status: "success" });
+                this.$emit("close")
+            } else {
+                window.notify({ msg: "Patient check-in failed", status: "error" });
+            }
+            
+        } else {
+            window.notify({ msg: "Error checking-in patient", status: "error" });
+        }
+    } catch (error) {
+        this.loading = false;
+        console.log(error.response, "ERROR");
+        
+    }
+ }
 
-data: any = { date: new Date(Date.now()), time: new Date(Date.now()).toTimeString() }
-
+data: any = { date: new Date(Date.now()), time: new Date().toTimeString().substring(0, 5) }
+date = new Date();
  activeStates: any = [
      { display: 'Yes', value: 'yes' },
      { display: 'No', value: 'no' },
@@ -338,8 +350,8 @@ get actorsInAppointment() {
  }
 
  get patientId() {
-     if (!this.item || !this.item.patientId) return 0;
-     return this.item.patientId
+     if (!this.item || !this.item.Practitioners || this.item.Practitioners.length === 0) return 0;
+     return this.item.Practitioners[0].id
  }
 
  get appointmentPatients() {
@@ -360,35 +372,44 @@ get actorsInAppointment() {
      })
  }
 
-  selectPractitioner(actor: any, index: number) {
+  selectPractitioner(actor: any) {
      if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
         this.getSlots(actor.code);
         this.selectedActors.push(actor)
      } else {
-         this.selectedActors.splice(index, 1);
+         this.selectedActors = this.selectedActors.filter((i: any) => i.code !== actor.code)
      }
  }
 
-
  getSlots(id: string) {
-     this.schedulesByPractitioner(id).then(res => {
-         this.availableSlots = slotService.getAvailableSlots(res)
-     })
+     this.availableSlots = [ ]
+    this.schedulesByPractitioner(id).then(res => {        
+        if (!res || res.length == 0) return ;
+        const todaySlots = res.filter((i: any) => slotService.matchDates(this.visitDate.toString(), i.startDate))        
+        this.checkinData.scheduleId = todaySlots.length > 0 ? todaySlots[0].id : '';
+        const firstSchedule = todaySlots.length > 0 ? todaySlots[0] : { };
+        this.availableSlots = slotService.getAvailableSlots([ firstSchedule ])
+    })
+ }
+
+get visitDate() {
+    if (!this.date) return new Date(Date.now());
+    const x =  new Date(`${new Date(this.date).toISOString()}`)
+    return x;
  }
  
 
  @Watch('item', { immediate: true, deep: true })
  onGetSlots() {
      console.log(this.item, "MMMM");
-     if (!this.item || !this.item.Practioners) return;
-     this.schedulesByPractitioner(this.item.Practitioners[0].id).then(res => {
-         this.schedules = res;
-         
-         this.availableSlots = slotService.getAvailableSlots([ res[0] ])
-     })
-     .catch(err => {
-         console.log(err)
-     })
+     
+     if (!this.item || !this.item.Practitioners || this.item.Practitioners.length === 0) return;
+     if (this.patientId) this.getSlots(this.patientId)
+ }
+
+ @Watch('date', { immediate: true, deep: true })
+ refreshSlots() {
+     if (this.patientId) this.getSlots(this.patientId)
  }
 
 
@@ -400,6 +421,7 @@ get actorsInAppointment() {
         if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
         console.log(this.practitioners, "pracs");
         console.log(this.patients, "pats");
+        
 
         // this.checkin(req).then((res: any) => {
         //   console.log(res, "VISIT");

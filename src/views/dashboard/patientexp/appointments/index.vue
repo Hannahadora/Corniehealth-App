@@ -120,7 +120,7 @@
                         <update-icon class="text-yellow-300 fill-current" />
                         <span class="ml-3 text-xs">Update</span>
                         </div>
-                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinPane(item.id)">
                         <checkin-icon />
                         <span class="ml-3 text-xs">Check-In</span>
                         </div>
@@ -221,6 +221,10 @@
                     @update:preferred="displayParticipants"
                     v-model:visible="showPartcipants"
                     />
+
+                  <SideModal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
+                    <Checkin :item="appment"  @close="() => showCheckin = false" />
+                  </SideModal>
             </div>
 
             <div style="height: 400px">
@@ -263,6 +267,8 @@ import Modal from '@/components/modal.vue';
 import ArrowRight from '@/components/icons/arrow-right.vue'
 import EncounterIcon from '@/components/icons/encounter.vue'
 import CheckoutIcon from '@/components/icons/checkout.vue'
+import Checkin from "../../visits/components/checkin.vue"
+import SideModal from "../../schedules/components/side-modal.vue"
 
 import EmptyState from './emptyState.vue'
 
@@ -300,6 +306,8 @@ const appointment = namespace("appointment");
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
+    SideModal,
+    Checkin
   },
 })
 export default class AppoitmentExistingState extends Vue {
@@ -437,6 +445,12 @@ singleParticipant = [];
     return [...first(4, headers), { title: "", key: "action", image: true }];
   }
 
+   get appment() {
+    if (!this.currentAppId) return { };
+    const pt = this.appointments.find((i: any) => i.id === this.currentAppId)
+    return pt ? pt : { }
+  }
+
   get items() {
     if (!this.appointments || this.appointments.length === 0 ) return [];
     const filtered = this.appointments.filter((i: any) => {
@@ -486,6 +500,14 @@ singleParticipant = [];
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);
   }
+
+  currentAppId = "";
+  showCheckinPane(id: string) {
+    this.currentAppId  = id;
+    this.showCheckin = true;
+  }
+
+
 async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
