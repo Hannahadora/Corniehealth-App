@@ -24,9 +24,10 @@
                 label="Location Name"
               />
               <cornie-input :modelValue="id" label="Location Identifier" />
-              <cornie-input
+              <cornie-select
                 :rules="required"
                 v-model="locationStatus"
+                :items="['active', 'inactive']"
                 label="Location Status"
               />
               <cornie-select
