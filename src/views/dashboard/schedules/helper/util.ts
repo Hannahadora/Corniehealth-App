@@ -1,9 +1,3 @@
-// const minutesFromTimeString = (time: string): number => {
-//     const hours = +time.split(':')[0]
-//     const minutes = +time.split(':')[1]
-//     return (hours * 60) + minutes;
-// }
-
 export default {
     getSlots() {
         const start = new Date(new Date(`${new Date().toLocaleDateString()} 06:00`));

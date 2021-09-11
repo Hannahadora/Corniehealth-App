@@ -295,7 +295,7 @@ patientId!: any;
 
  get selectedPractitioners() {
      if (!this.selectedActors || this.selectedActors.length === 0) return 'Select';
-     let str = this.selectedActors[0].display;
+     const str = this.selectedActors[0].display;
      if (this.selectedActors.length > 1) return `${str}...`;
      return str;
  }

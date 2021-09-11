@@ -253,7 +253,7 @@ async setSession() {
             }
             
         } else {
-            window.notify({ msg: "Error checking-in patient", status: "error" });
+            window.notify({ msg: "Error checking patient in", status: "error" });
         }
     } catch (error) {
         this.loading = false;

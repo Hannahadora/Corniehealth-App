@@ -80,6 +80,7 @@
                   </Button>
               </div>
           </div>
+          
             <div class="w-full pb-7 mb-8">
               <cornie-table :columns="headers" v-model="items" v-if="activeTab === 0">
                 
@@ -142,202 +143,7 @@
               </cornie-table>
               <!-- Test Availability -->
               <div class="w-full" v-if="activeTab === 1">
-                  <cornie-table :columns="availabilityHeaders" v-model="availabilityItems">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <eye-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="goToCreateSlot(item.id)">Create slot</span>
-                  </div>
-                  
-                </template>
-
-                  <template #time="{ item }">
-
-                    <!-- <p class="text-xs">{{ new Date(item.startTime).toTimeString().substring(0, 5) }} - {{ new Date(item.endTime).toTimeString().substring(0, 5)}}</p> -->
-                    <p class="text-xs">{{ item }}</p>
-                  </template>
-                  <template #0="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[0], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[0], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[0], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[0], item.split('-')[1].trim())
-                        )" />
-                    </span> 
-                    <span class=" 16" v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #1="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[1], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[1], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[1], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[1], item.split('-')[1].trim())
-                        )" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #2="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[2], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[2], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[2], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[2], item.split('-')[1].trim())
-                        )" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #3="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[3], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[3], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[3], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[3], item.split('-')[1].trim())
-                        )" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #4="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[4], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[4], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[4], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[4], item.split('-')[1].trim())
-                        )" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #5="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[5], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[5], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[5], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[5], item.split('-')[1].trim())
-                        )" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <!-- <template #1="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                                            {{ getActorsForSchedule(constructDate(availabilityDates[0], item.split('-')[0].trim()), constructDate(availabilityDates[1], item.split('-')[1].trim())) }} jdjdj
-
-                      <span v-if="theSameDate(item.startDate, availabilityDates[1])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                      {{ getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[1]) }}
-                    </span>
-                    </div>
-                  </template>
-                  <template #3="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                                            {{ getActorsForSchedule(constructDate(availabilityDates[0], item.split('-')[0].trim()), constructDate(availabilityDates[2], item.split('-')[1].trim())) }} jdjdj
-
-                      <span v-if="theSameDate(item.startDate, availabilityDates[2])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                      {{ getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[2]) }}
-                    </span>
-                    </div>
-                  </template>
-                  <template #3="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                                            {{ getActorsForSchedule(constructDate(availabilityDates[3], item.split('-')[0].trim()), constructDate(availabilityDates[0], item.split('-')[1].trim())) }} jdjdj
-
-                    {{ getActorsForSchedule(constructDate(availabilityDates[0], item.split('-')[0].trim()), constructDate(availabilityDates[0], item.split('-')[1].trim())) }} jdjdj
-                      <span v-if="theSameDate(item.startDate, availabilityDates[3])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                      {{ getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[3]) }}
-                    </span>
-                    </div>
-                  </template>
-                  <template #4="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                                            {{ getActorsForSchedule(constructDate(availabilityDates[0], item.split('-')[0].trim()), constructDate(availabilityDates[4], item.split('-')[1].trim())) }} jdjdj
-
-                      <span v-if="theSameDate(item.startDate, availabilityDates[4])">
-                      <Actors :items="getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[4]) " />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #5="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[5])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                      {{ getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[5]) }}
-                    </span>
-                    </div>
-                  </template>
-                  <template #6="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[6])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                      {{ getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[5]) }}
-                    </span>
-                    </div>
-                  </template>
-                  <template #7="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[7])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                      {{ getPractitioners(new Date(item.startTime).toTimeString().substring(0, 5), availabilityDates[5]) }}
-                    </span>
-                    </div>
-                  </template> -->
-              </cornie-table>
+                  <AvailabilityList :items="availabilityItems" :schedules="schedules" />
               </div>
               
               <column-filter
@@ -425,6 +231,7 @@ import Slots from './components/slots.vue'
 import utilservice from './helper/util'
 import dateHelper from './helper/date-helper'
 import edit from './edit-slot.vue'
+import AvailabilityList from './components/availability.vue'
 
 
 const shifts = namespace("shifts");
@@ -464,6 +271,7 @@ const contacts = namespace('practitioner');
     Actors,
     AddIcon,
     DeactivateIcon,
+    AvailabilityList,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -590,34 +398,7 @@ export default class PractitionerExistingState extends Vue {
   ];
 
   goToCreateSlot(id: string) {
-    
-  }
-
-  get availabilityHeaders() {
-    if (!this.availabilityDates) return [ ];
-    let arr =  this.availabilityDates.map((i: any, index: number) => {
-      return {
-        title: i,
-        key: index.toString(),
-        show: true
-        // show: index > 4 ? false : true
-      }
-    })
-    arr.unshift({ title: 'Time', key: 'time', show: true});
-    return arr;
-  }
-
-  getActorsForSchedule(startDate: string | Date, endDate: string | Date) {
-    return dateHelper.getPractitionersForSlot(this.schedules, startDate, endDate);
-  }
-
-  get availabilityDates() {
-    let arr = [ ];
-    for (let i = 1; i <= 7; i++) {
-      let sunday = new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() + 6) % 6))
-      arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
-    }
-    return arr;
+    this.$router.push({ name: 'Patient Experience - Edit Slot'})
   }
 
   get availabilityItems() {
@@ -625,68 +406,6 @@ export default class PractitionerExistingState extends Vue {
     console.log(utilservice.slots(), "ALL SLOTS");
     
     return utilservice.slots();
-    // return utilservice.getSlots().map(i => {
-    //   return {
-    //     startTime: i.start,
-    //     endTime: i.end,
-    //     timing: new Date(i.start),
-    //     practitioners: dateHelper.getPractitionersForSlot(this.schedules, new Date(i.start), new Date(i.end))
-    //   }
-    // })
-
-    
-    // return this.schedules.map((i: any) => {
-      
-    //   return {
-    //     time: `${i.startTime } - ${i.endtime}`,
-    //     practitioners: i.practitioners,
-    //     0: '',
-    //     1: '',
-    //     2: '',
-    //     3: '',
-    //     4: '',
-    //     5: '',
-    //     6: '',
-    //   }
-    // })
-  }
-
-  constructDate(date: string, time: string) {
-    return dateHelper.constructDateFromDateAndTime(date, time);
-  }
-
-  getPractitioners(time: any, date: any) {
-    // const fullDate = new Date(new Date(`${new Date(date).toLocaleDateString()} ${time}`));
-    // console.log(fullDate, "Fulldate");
-    
-    // const practioners = this.schedules.filter(i => {
-    //   const scheduleStart = new Date(new Date(`${new Date(i.startDate).toLocaleDateString()} ${i.startTime}`));
-    //   console.log(scheduleStart, "sstart");
-      
-    //   const scheduleEnd = new Date(new Date(`${new Date(i.endDate).toLocaleDateString()} ${i.endTime}`));
-    //   console.log(scheduleEnd, "sesnd");
-    //   return scheduleStart >= fullDate && scheduleEnd <= fullDate;
-    // })
-    const arr: any = [ ];
-    // practioners.forEach(i => {
-    //   if (i.practitioners) {
-    //     i.practitioners.forEach((j: any) => {
-    //       if (arr.findIndex((m: any) => m.id === j.id) < 0) arr.push(j);
-    //     });
-    //   }
-    // })
-
-    return arr;
-  }
-
-  isWithinRange(slot: any, day: string, time: string) {
-    return utilservice.isWithinRange(slot, new Date(new Date(`${new Date(day).toLocaleDateString()} ${time}`)).toISOString());
-  }
-
-  theSameDate(date: string, header: string) {
-    return new Date(date).getFullYear() === new Date(header).getFullYear() &&
-          new Date(date).getDate() === new Date(header).getDate() &&
-          new Date(date).getMonth() === new Date(header).getMonth();
   }
 
   get allPractitioners() {
@@ -702,29 +421,6 @@ export default class PractitionerExistingState extends Vue {
         image: i.image
       }
     })
-  }
-
-  get bookedSlots() {
-    const slots: any = [ ]
-    this.schedules.forEach(i => {
-      if (i.slots && i.slots.length > 0) {
-        i.slots.forEach((j: any) => {
-          slots.push({
-            startTime: new Date(new Date(`${new Date(i.startDate).toLocaleDateString()} ${j.startTime}`)),
-            endTime: new Date(new Date(`${new Date(i.endDate).toLocaleDateString()} ${j.endTime}`)),
-            0: '',
-            1: '',
-            2: '',
-            3: '',
-            4: '',
-            5: '',
-            6: '',
-          })
-        });
-      }
-    })
-    console.log(slots, "LOOP SLOTS");
-    return slots;
   }
 
   get headers() {
@@ -889,4 +585,16 @@ export default class PractitionerExistingState extends Vue {
       padding-bottom: 40px;
       padding-bottom: 24px;
     }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .h-screen::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .h-screen {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+
 </style>
