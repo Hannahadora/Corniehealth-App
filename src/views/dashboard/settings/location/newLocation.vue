@@ -68,8 +68,8 @@
         Position
       </span>
       <span class="grid grid-cols-2">
-        <d-input v-model="longitude" label="Longitude" />
-        <d-input v-model="latitude" label="Latitude" />
+        <d-input :readonly="true" :modelValue="longitude" label="Longitude" />
+        <d-input :readonly="true" :modelValue="latitude" label="Latitude" />
       </span>
       <span class="grid grid-cols-2">
         <d-input v-model="altitude" label="Altitude" />
@@ -128,6 +128,7 @@
 import DInput from "@/components/cornieinput.vue";
 import DSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
+import { getCoordinates } from "@/plugins/utils";
 
 import { cornieClient } from "@/plugins/http";
 
@@ -159,6 +160,10 @@ export default {
     };
   },
   computed: {
+    coordinatesCB() {
+      const address = `${this.address}, ${this.state} ${this.country}`;
+      return () => getCoordinates(address);
+    },
     payload() {
       return {
         name: this.name,
@@ -189,7 +194,13 @@ export default {
       console.log(error);
     }
   },
-
+  Watch: {
+    coordinatesCB(cb) {
+      const data = await cb();
+      this.longitude = data.longitude;
+      this.latitude = data.latitude;
+    },
+  },
   methods: {
     async submit() {
       try {

@@ -100,8 +100,16 @@
               Position
             </span>
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
-              <cornie-input v-model="longitude" label="Longitude" />
-              <cornie-input v-model="latitude" label="Latitude" />
+              <cornie-input
+                :readonly="true"
+                :modelValue="longitude"
+                label="Longitude"
+              />
+              <cornie-input
+                :readonly="true"
+                :modelValue="latitude"
+                label="Latitude"
+              />
               <cornie-input v-model="altitude" label="Altitude" />
               <cornie-select
                 :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
@@ -198,6 +206,7 @@ import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
+import { getCoordinates } from "@/plugins/utils";
 
 const dropdown = namespace("dropdown");
 const location = namespace("location");
@@ -252,6 +261,18 @@ export default class AddLocation extends Vue {
   @Watch("id")
   idChanged() {
     this.setLocation();
+  }
+
+  get coordinatesCB() {
+    const address = `${this.address}, ${this.state} ${this.country}`;
+    return () => getCoordinates(address);
+  }
+
+  @Watch("coordinatesCB")
+  async coordinatesFetched(cb: () => Promise<any>) {
+    const data = await cb();
+    this.longitude = data.longitude;
+    this.latitude = data.latitude;
   }
 
   async setLocation() {
