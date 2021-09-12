@@ -32,7 +32,12 @@
         v-model="filters.gender"
         :items="genderOptions"
       />
-      <date-filter class="mb-3" title="Filter D.O.B" />
+      <date-filter
+        v-model:start="filters.dob.start"
+        v-model:end="filters.dob.stop"
+        class="mb-3"
+        title="Filter D.O.B"
+      />
       <filter-box
         class="mb-3"
         v-model="filters.accountType"
@@ -95,6 +100,7 @@ import {
   Practitioner,
   Provider,
 } from "@/types/IPatient";
+import { dateBetween } from "@/plugins/utils";
 
 @Options({
   name: "PatientAdvancedFilter",
@@ -226,9 +232,16 @@ export default class AdvancedFilter extends Vue {
       );
       return genderSet.has(p.gender?.toLowerCase() || "");
     });
+    patients = patients.filter((p) =>
+      this.filterDOB(this.filters.dob, p.dateOfBirth)
+    );
     this.patientSync = patients;
   }
 
+  filterDOB({ start, stop }: { start: string; stop: string }, date?: string) {
+    if (!date) return false;
+    return dateBetween(date, start, stop);
+  }
   filterByArrayProp(
     patients: IPatient[],
     keys: string[],

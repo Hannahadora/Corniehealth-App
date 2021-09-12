@@ -71,3 +71,13 @@ export function getCoordinates(address: string) {
   query.set("output", "json");
   query.set("access_key", "");
 }
+
+export function dateBetween(dateStr: string, start: string, end: string) {
+  const date = new Date(dateStr).getTime();
+  const startDate = new Date(start).getTime();
+  const endDate = new Date(end).getTime();
+  if (start && end) return date > startDate && date < endDate;
+  if (start) return date > startDate;
+  if (end) return date < endDate;
+  return false;
+}
