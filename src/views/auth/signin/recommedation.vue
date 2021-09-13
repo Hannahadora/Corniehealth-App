@@ -14,11 +14,11 @@
     <div class="block w-full justify-self-end mt-auto">
       <div class="w-full flex flex-col items-end text-white">
         <cornie-btn
-          @click="twoFactor = true" class="bg-danger rounded-full p-3 w-full mb-3">
+          @click="twoFactor = true" class="bg-danger rounded-full py-1 px-3 w-full mb-3">
           Set up
         </cornie-btn>
         <cornie-btn
-          @click="$router.replace('/dashboard')" class="mb-12 border-primary border-2 hover:bg-primary hover:text-white text-primary mt-2 rounded-full p-3 w-full">
+          @click="$router.replace('/dashboard')" class="mb-12 border-primary py-1 px-3 border-2 hover:bg-primary hover:text-white text-primary mt-2 rounded-full p-3 w-full">
           Skip
         </cornie-btn>
       </div>
