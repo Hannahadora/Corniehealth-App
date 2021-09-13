@@ -216,50 +216,50 @@ fetchAppointments!: () => Promise<void>;
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
 
-async setSession() {
-    
-     let body = {
-      "scheduleId": this.checkinData.scheduleId,
-        startTime: this.checkinData.slot.split('-')[0].trim(),
-        endTime: this.checkinData.slot.split('-')[1].trim(),
-      "status": "active",
-      "active": true,
-    }
 
-    
-    console.log(body, "BODY");
-    
+  async checkinPatient(slotId: string) {
     try {
         this.loading = true;
-        const slot = await this.createSlot(body);
+        const checkedIn = await this.checkin({
+            "patientId": this.item.Patients && this.item.Patients.length > 0 ? this.item.Patients[0].id : "",
+            "appointmentId": this.item?.id,
+            "status": "In-progress",
+            "roomId": this.checkinData.roomId,
+            "notes": this.checkinData.notes,
+            "slotId": slotId,
+        });
         this.loading = false;
-        if (slot && slot.id) {
-            const checkedIn = await this.checkin({
-                "patientId": this.item.Patients && this.item.Patients.length > 0 ? this.item.Patients[0].id : "",
-                 "appointmentId": this.item?.id,
-                // "type": this.checkinData.type,
-                "status": "In-progress",
-                "roomId": this.checkinData.roomId,
-                "notes": this.checkinData.notes,
-                "slotId": slot.id,
-                // "practitioners": this.selectedActors.map(i => i.id)
-            });
-            
-            if (checkedIn && checkedIn) {
-                window.notify({ msg: "Patient Check-in", status: "success" });
-                this.$emit("close")
-            } else {
-                window.notify({ msg: "Patient check-in failed", status: "error" });
-            }
-            
+        
+        if (checkedIn && checkedIn) {
+            window.notify({ msg: "Patient Check-in", status: "success" });
+            this.$emit("close")
         } else {
-            window.notify({ msg: "Error checking patient in", status: "error" });
+            window.notify({ msg: "Patient check-in failed", status: "error" });
         }
     } catch (error) {
         this.loading = false;
-        console.log(error.response, "ERROR");
-        
+        console.log(error);
     }
+  }
+
+async setSession() {
+    let createdSlot;
+    if (!this.checkinData?.slot?.id) {
+        const { slot } = this.checkinData;
+        const { startTime, endTime } = slot;
+        
+        createdSlot = await this.createSlot({
+            "scheduleId": this.checkinData?.slot.scheduleId,
+            startTime: new Date(startTime).toTimeString().substring(0, 5),
+            endTime: new Date(endTime).toTimeString().substring(0, 5),
+            "status": "active",
+            "active": true,
+        })
+
+        if (createdSlot?.id) await this.checkinPatient(createdSlot.id);
+    }
+
+    if (this.checkinData?.slot.id) await this.checkinPatient(createdSlot.id);
  }
 
 data: any = { date: new Date(Date.now()), time: new Date().toTimeString().substring(0, 5) }
@@ -368,7 +368,13 @@ get actorsInAppointment() {
  get slots() {
      if (!this.availableSlots || this.availableSlots.length === 0) return [ ];
      return this.availableSlots.map((i: any) => {
-         return { code: `${i.start} - ${i.end}`, display: `${i.start} - ${i.end}` }
+         const startTime = i.id ? i.startTime.substring(0, 5) : new Date(i.startTime).toTimeString().substring(0, 5);
+         const endTime = i.id ? i.endTime.substring(0, 5) : new Date(i.endTime).toTimeString().substring(0, 5);
+        return { 
+            code: i,
+            // code: `${i.scheduleId}_${i.id ? i.id : ''}`,
+            display: `${startTime} - ${endTime}`
+        }
      })
  }
 
@@ -377,7 +383,7 @@ get actorsInAppointment() {
         this.getSlots(actor.code);
         this.selectedActors.push(actor)
      } else {
-         this.selectedActors = this.selectedActors.filter((i: any) => i.code !== actor.code)
+        this.selectedActors = this.selectedActors.filter((i: any) => i.code !== actor.code)
      }
  }
 
@@ -385,10 +391,13 @@ get actorsInAppointment() {
      this.availableSlots = [ ]
     this.schedulesByPractitioner(id).then(res => {        
         if (!res || res.length == 0) return ;
-        const todaySlots = res.filter((i: any) => slotService.matchDates(this.visitDate.toString(), i.startDate))        
-        this.checkinData.scheduleId = todaySlots.length > 0 ? todaySlots[0].id : '';
-        const firstSchedule = todaySlots.length > 0 ? todaySlots[0] : { };
-        this.availableSlots = slotService.getAvailableSlots([ firstSchedule ])
+
+        console.log(slotService.slots(res, this.date), "NEW SLOTS");
+        this.availableSlots = slotService.slots(res, this.date)
+        // const todaySlots = res.filter((i: any) => slotService.matchDates(this.visitDate.toString(), i.startDate))        
+        // this.checkinData.scheduleId = todaySlots.length > 0 ? todaySlots[0].id : '';
+        // const firstSchedule = todaySlots.length > 0 ? todaySlots[0] : { };
+        // this.availableSlots = slotService.getAvailableSlots([ firstSchedule ])
     })
  }
 
@@ -408,7 +417,7 @@ get visitDate() {
  }
 
  @Watch('date', { immediate: true, deep: true })
- refreshSlots() {
+ refreshSlots() {     
      if (this.patientId) this.getSlots(this.patientId)
  }
 

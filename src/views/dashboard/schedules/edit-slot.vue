@@ -14,20 +14,24 @@
 
                             <div class="container-fluid pb-3 pt-3 flex justify-around">
                                 <div class="w-4/12">
-                                    <cornie-input v-model="data.locationId" label="Schedule"  placeholder="--Enter--" />
+                                    <cornie-input v-model="slotData.scheduleId" label="Schedule"  placeholder="--Enter--" />
                                 </div>
                                 <div class="w-4/12">
                                      <div class="w-full">
                                         <div class="w-11/12">
-                                            <CornieInput label="Start date" v-model="data.name"  placeholder="Enter" />
+                                            <date-picker label="Start date" v-model="slotData.startDate"  placeholder="Enter" />
                                         </div>
                                     </div>
-                                    
                                 </div>
                                 <div class="w-4/12">
                                      <div class="w-full">
                                         <div class="w-11/12">
-                                            <CornieInput label="time" v-model="data.description" class="w-95" placeholder="Enter" />
+                                            <label for="" class="w-95">
+                                                <span class="uppercase font-bold text-xs">Start Time</span>
+                                                <div class="w-12/12 mx-auto">
+                                                    <input type="time" v-model="slotData.startTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
+                                                </div>
+                                            </label>
                                         </div>
                                     </div>
                                     
@@ -36,13 +40,22 @@
 
                             <div class="container-fluid py-3 flex justify-around">
                                 <div class="w-4/12">
-                                    <cornie-input label="Stop date" class="w-95" v-model="data.serviceCategory"  placeholder="Enter" />
+                                    <div class="w-11/12">
+                                        <date-picker label="Stop date" v-model="slotData.endDate"  placeholder="Enter" />
+                                    </div>
                                 </div>
                                 <div class="w-4/12">
-                                    <cornie-input label="time" class="w-95" v-model="data.serviceType" placeholder="Enter" />
+                                    <div class="w-11/12">
+                                        <label for="" class="w-95">
+                                            <span class="uppercase font-bold text-xs">Stop Time</span>
+                                            <div class="w-12/12 mx-auto">
+                                                <input type="time" v-model="slotData.endTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="w-4/12">
-                                    <cornie-input label="time" class="w-95" v-model="data.specialty"  placeholder="Enter" />
+                                    <cornie-input label="Description" class="w-95" v-model="data.serviceType" placeholder="Enter" />
                                 </div>
                             </div>
 
@@ -60,7 +73,26 @@
 
                             <div class="container-fluid py-4 border-l-none" style="border-top: 1px dashed #C2C7D6; border-bottom: 1px dashed #C2C7D6">
                                 <div class="w-full flex flex-wrap">
-                                    <div class="w-4/12">
+                                    <div class="w-4/12" v-for="(participant, index) in participants" :key="index">
+                                        <div class="w-11/12 mx-auto">
+                                            <div class="w-full flex relative items-center border-r-2">
+                                                <div class="w-10/12 flex">
+                                                    <div class="w-2/12">
+                                                        <img v-if="participant.image" :src="participant.image" class="rounded-full border" alt="Image">
+                                                        <img v-else src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
+                                                    </div>
+                                                    <div class="w-9/12 ml-3">
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">{{ participant.firstName }} {{ participant.lastName }}</p>
+                                                        <span class="capitalize text-gray-400 font-normal text-xs">{{ participant.jobDesignation }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="w-2/12">
+                                                    <input type="checkbox"  name="" id="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="w-4/12">
                                         <div class="w-11/12 mx-auto">
                                             <div class="w-full flex relative items-center border-r-2">
                                                 <div class="w-10/12 flex">
@@ -77,27 +109,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-4/12">
-                                        <div class="w-11/12 mx-auto">
-                                            <div class="w-full flex relative items-center border-r-2">
-                                                <div class="w-10/12 flex">
-                                                    <div class="w-2/12">
-                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
-                                                    </div>
-                                                    <div class="w-9/12 ml-3">
-                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
-                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
-                                                    </div>
-                                                </div>
-                                                <div class="w-2/12">
-                                                    <input type="checkbox"  name="" id="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="w-4/12">
+                                    <!-- <div class="w-4/12">
                                         <div class="w-11/12 mx-auto">
                                             <div class="w-full flex relative items-center border-r-2">
                                                 <div class="w-10/12 flex">
@@ -114,8 +128,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-4/12">
+                                    </div> -->
+                                    <!-- <div class="w-4/12">
                                         <div class="w-11/12 mx-auto">
                                             <div class="w-full flex relative items-center border-r-2">
                                                 <div class="w-10/12 flex">
@@ -132,7 +146,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
 
@@ -209,6 +223,7 @@ import IDevice from "@/types/IDevice";
 import SideModal from './components/side-modal.vue';
 import AddActors from './components/select-actor.vue'
 import InfoIcon from '@/components/icons/info.vue'
+import ISchedule from "@/types/ISchedule";
 
 const healthcare = namespace('healthcare');
 const schedulesStore = namespace('schedules');
@@ -253,6 +268,10 @@ export default class Shift extends Vue {
         healthcares: [ ],
         devices: [ ],
     }
+
+    slotData: any = {
+
+    };
 
     occurrence: any = [
         "Do not repeat", "Every day schedule", "Every week", "Every month", "Every year", "Forever", "Custom", 
@@ -350,10 +369,28 @@ export default class Shift extends Vue {
      { display: 'Monthly', code: 'monthly'}
  ]
 
+ get participants() {
+     const schedule = this.schedules.find(schedule => schedule.id === this.slotData?.scheduleId);
+     const scheduleParticipants = schedule?.practitioners;
+     if (this.slotData?.practitioners) scheduleParticipants.push(...this.slotData.practitioners);
+     return scheduleParticipants;
+ }
+
 
 async created() {
-    if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
+    const { startTime, endTime, scheduleId } = this.$route.query;
+    
+    this.slotData.startDate = new Date(startTime ? startTime.toString() : '')
+    this.slotData.startTime = new Date(startTime ? startTime.toString() : '').toTimeString().substring(0, 5)
 
+    this.slotData.endDate= new Date(endTime ? endTime.toString() : '')
+    this.slotData.endTime = new Date(endTime ? endTime.toString() : '').toTimeString().substring(0, 5)
+
+    this.slotData.scheduleId = scheduleId;
+    
+    if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
+    if (this.schedules?.length === 0) await this.getSchedules();
+    
     
 }
 

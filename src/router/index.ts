@@ -231,7 +231,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "schedules/editslot/:scheduleId?",
             props: true,
-            name: "Patient Experience - Edit Slot",
+            name: "Edit Slot",
             component: () =>
               import("@/views/dashboard/schedules/edit-slot.vue"),
           },

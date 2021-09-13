@@ -1,11 +1,12 @@
 <template>
     <div class="container">
         <div class="w-full">
-                  <cornie-table :columns="availabilityHeaders" v-model="items" @filter="showFilterPane">
-                <template #actions="{ item }">
+              <div class="container-fluid" v-if="filterOptions.byPractitioners?.length <= 0">
+                <cornie-table :columns="availabilityHeaders" v-model="items" @filter="showFilterPane">
+                <template #actions="{ }">
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <add-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="goToCreateSlot(item.id)">Create slot</span>
+                    <span class="ml-3 text-xs" @click="goToCreateSlot()">Create slot</span>
                   </div>
                   
                 </template>
@@ -15,102 +16,161 @@
                   </template>
                   <template #0="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[0], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[0], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[0], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[0], item.split('-')[1].trim())
-                        )" />
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[0]).length > 0">
+                      <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[0])" />
                     </span> 
                     <span class=" 16" v-else>
-                      --
+                      -- 
                     </span>
                     </div>
                   </template>
                   <template #1="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[1], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[1], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[1], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[1], item.split('-')[1].trim())
-                        )" />
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1]).length > 0">
+                      <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1])" />
                     </span> 
-                    <span v-else>
-                      --
+                    <span class=" 16" v-else>
+                      -- 
                     </span>
                     </div>
                   </template>
                   <template #2="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[2], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[2], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[2], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[2], item.split('-')[1].trim())
-                        )" />
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[2]).length > 0">
+                      <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[2])" />
                     </span> 
-                    <span v-else>
-                      --
+                    <span class=" 16" v-else>
+                      -- 
                     </span>
                     </div>
                   </template>
                   <template #3="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[3], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[3], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[3], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[3], item.split('-')[1].trim())
-                        )" />
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[3]).length > 0">
+                      <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[3])" />
                     </span> 
-                    <span v-else>
-                      --
+                    <span class=" 16" v-else>
+                      -- 
                     </span>
                     </div>
                   </template>
                   <template #4="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[4], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[4], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[4], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[4], item.split('-')[1].trim())
-                        )" />
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[4]).length > 0">
+                      <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[4])" />
                     </span> 
-                    <span v-else>
-                      --
+                    <span class=" 16" v-else>
+                      -- 
                     </span>
                     </div>
                   </template>
                   <template #5="{ item }">
                     <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="getActorsForSchedule(
-                          constructDate(availabilityDates[5], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[5], item.split('-')[1].trim())
-                        ).length > 0">
-                      <Actors :items="getActorsForSchedule(
-                          constructDate(availabilityDates[5], item.split('-')[0].trim()),
-                          constructDate(availabilityDates[5], item.split('-')[1].trim())
-                        )" />
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[5]).length > 0">
+                      <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[5])" />
                     </span> 
-                    <span v-else>
-                      --
+                    <span class=" 16" v-else>
+                      -- 
                     </span>
                     </div>
                   </template>
                   
               </cornie-table>
+              </div>
+
+              <div class="container-fluid" v-else>
+                <cornie-table :columns="availabilityHeaders" v-model="items" @filter="showFilterPane">
+                <template #actions="{  }">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
+                    <add-icon class="mr-3 mt-1" />
+                    <span class="ml-3 text-xs" @click="goToCreateSlot">Create slot</span>
+                  </div>
+                  
+                </template>
+
+                  <template #time="{ item }">
+                    <p class="text-xs">{{ item }}</p>
+                  </template>
+                  <template #0="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[0]).length > 0">
+                        <div class="book-bg py-4" 
+                          :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[0])}_${item}_${availabilityDates[0]}`}"
+                           @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[0]), item, availabilityDates[0] )"></div>
+                      <!-- <Actors :items="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[0])" /> -->
+                    </span> 
+                    <span class=" 16" v-else>
+                      -- 
+                    </span>
+                    </div>
+                  </template>
+                  <template #1="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1]).length > 0">
+                      <div class="book-bg py-4" 
+                          :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1])}_${item}_${availabilityDates[1]}`}"
+                           @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1]), item, availabilityDates[1] )"></div>
+                    </span> 
+                    <span class=" 16" v-else>
+                      -- 
+                    </span>
+                    </div>
+                  </template>
+                  <template #2="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[2]).length > 0">
+                      <div class="book-bg py-4" 
+                          :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[2])}_${item}_${availabilityDates[2]}`}"
+                           @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[2]), item, availabilityDates[2] )"></div>
+                    </span> 
+                    <span class=" 16" v-else>
+                      -- 
+                    </span>
+                    </div>
+                  </template>
+                  <template #3="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[3]).length > 0">
+                      <div class="book-bg py-4" 
+                          :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[3])}_${item}_${availabilityDates[3]}`}"
+                           @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[3]), item, availabilityDates[3] )"></div>
+                    </span> 
+                    <span class=" 16" v-else>
+                      -- 
+                    </span>
+                    </div>
+                  </template>
+                  <template #4="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[4]).length > 0">
+                      <div class="book-bg py-4" 
+                          :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[4])}_${item}_${availabilityDates[4]}`}"
+                           @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[4]), item, availabilityDates[4] )"></div>
+                    </span> 
+                    <span class=" 16" v-else>
+                      -- 
+                    </span>
+                    </div>
+                  </template>
+                  <template #5="{ item }">
+                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                      <span v-if="getPnersForSchedule(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[5]).length > 0">
+                      <div class="book-bg py-4" 
+                          :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[5])}_${item}_${availabilityDates[5]}`}"
+                           @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[5]), item, availabilityDates[5] )"></div>
+                    </span> 
+                    <span class=" 16" v-else>
+                      -- 
+                    </span>
+                    </div>
+                  </template>
+                  
+              </cornie-table>
+              </div>
+
+              <side-modal :visible="showFilter" @closesidemodal="() => showFilter = false">
+                <advanced-filter @applyfilter="applyFilter" />
+              </side-modal>
               </div>
     </div>
 </template>
@@ -123,7 +183,9 @@ import Actors from './actors.vue'
 import { Options, Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-
+import slotService from '../../visits/helper/slot-service';
+import AdvancedFilter from './advanced-filter.vue'
+import SideModal from '../components/side-modal.vue';
 
 
 @Options({
@@ -131,13 +193,20 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
     AddIcon,
     Actors,
     CornieTable,
+    SideModal,
+    AdvancedFilter,
   },
 })
-export default class CornieInput extends Vue {
+export default class Availability extends Vue {
   @Prop({ type: Object })
   items!: any;
   @Prop({ type: Object })
   schedules!: any;
+
+  showFilter = false;
+  filterOptions: any = { }
+  selectedSlots: string[] = [];
+  selectedSlot: any = { }
 
   get availabilityDates() {
     let arr = [ ];
@@ -168,13 +237,64 @@ export default class CornieInput extends Vue {
     return dateHelper.constructDateFromDateAndTime(date, time);
   }
 
+  getPnersForSchedule(startTime: string, endTime: string, date: Date | string) {
+    return slotService.getAvailablePractitioners(this.schedules, startTime, endTime, date);
+  }
+
   getActorsForSchedule(startDate: string | Date, endDate: string | Date) {
     return dateHelper.getPractitionersForSlot(this.schedules, startDate, endDate);
   }
 
+  getScheduleIdForSlot(startTime: string, endTime: string, date: Date | string) {
+    return slotService.getScheduleIdForSlot(this.schedules, startTime, endTime, date)
+  }
+
+  selectSlot(scheduleId: string, slotTime: any, date: string) {
+    this.selectedSlot = {
+      startTime: slotService.constructDate(date, slotTime.split(' - ')[0]),
+      endTime: slotService.constructDate(date, slotTime.split(' - ')[1]),
+      scheduleId,
+      id: `${scheduleId}_${slotTime}_${date}`
+    }
+    // if (scheduleId) {
+    //   const index = this.selectedSlots.findIndex(id => id === `${scheduleId}_${slot}`)
+    //   if (index < 0) {
+    //     this.selectedSlots.push(`${scheduleId}_${slot}`);
+    //   } else {
+    //     this.selectedSlots.splice(index, 1)
+    //   }
+    // }
+    console.log(this.selectedSlot, "SL");
+    
+  }
+
+  applyFilter(filterOpions: any) {
+    console.log(filterOpions, "FILTER OPTIONS");
+    this.showFilter = false;
+    this.showFilter = false;
+    this.filterOptions = filterOpions;
+  }
+
+  viewSchedule(id: string) {
+
+  }
+
+  goToCreateSlot() {
+    this.$router.push({ name: 'Edit Slot', query: { scheduleId: this.selectedSlot.scheduleId, startTime: this.selectedSlot.startTime,  endTime: this.selectedSlot.endTime, } })
+  }
+
   showFilterPane() {
-    alert("Hello")
+    this.showFilter = true;
   }
 }
 </script>
 
+<style scoped>
+.book-bg {
+  background-color: #FFF0F1 !important;
+}
+
+.selected {
+  background-color: lightgreen !important;
+}
+</style>
