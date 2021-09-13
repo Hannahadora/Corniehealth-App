@@ -18,10 +18,10 @@
       :class="{ hidden: !show }"
     >
       <span class="w-2/5 block">
-        <date-picker label="FROM" />
+        <date-picker :left="true" v-model="startSync" label="FROM" />
       </span>
       <span class="w-2/5 block">
-        <date-picker label="TO" />
+        <date-picker :right="true" v-model="endSync" label="TO" />
       </span>
     </div>
   </div>
@@ -47,11 +47,17 @@ export default class DateFilter extends Vue {
   @Prop({ type: String, default: "" })
   title!: string;
 
-  @Prop({ type: Object, default: [] })
-  selected!: { from: string; to: string };
+  @Prop({ type: String, default: "" })
+  start!: string;
 
-  @PropSync("selected")
-  selectedSync!: { from: string; to: string };
+  @PropSync("start")
+  startSync!: string;
+
+  @Prop({ type: String, default: "" })
+  end!: string;
+
+  @PropSync("end")
+  endSync!: string;
 
   @Prop({ type: Boolean, default: false })
   opened!: boolean;

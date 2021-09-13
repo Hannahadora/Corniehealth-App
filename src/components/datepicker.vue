@@ -25,10 +25,10 @@
         </div>
         <div
           v-if="visible"
+          :class="{ 'right-0 min-w-max': right, 'left-0 min-w-max': left }"
           class="
             origin-top-right
             absolute
-            right-0
             mt-2
             w-full
             rounded-md
@@ -96,6 +96,12 @@ export default class DatePicker extends Vue {
 
   @Prop({ type: Object })
   rules!: any;
+
+  @Prop({ type: Boolean, default: false })
+  left!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  right!: boolean;
 
   visible = false;
 

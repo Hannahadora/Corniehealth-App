@@ -64,10 +64,24 @@ export function updateModelField(model: any, field: string, data: any[]) {
   return model;
 }
 
-export function getCoordinates(address: string) {
+export async function getCoordinates(address: string) {
   const query = new URLSearchParams();
   query.set("query", address);
   query.set("limit", "1");
   query.set("output", "json");
-  query.set("access_key", "");
+  query.set("access_key", "3e1333d988d21294663d2939f778ee07");
+  const url = `http://api.positionstack.com/v1/forward?${query.toString()}`;
+  const res = await fetch(url);
+  const resData = await res.json();
+  return resData.data[0];
+}
+
+export function dateBetween(dateStr: string, start: string, end: string) {
+  const date = new Date(dateStr).getTime();
+  const startDate = new Date(start).getTime();
+  const endDate = new Date(end).getTime();
+  if (start && end) return date > startDate && date < endDate;
+  if (start) return date > startDate;
+  if (end) return date < endDate;
+  return false;
 }

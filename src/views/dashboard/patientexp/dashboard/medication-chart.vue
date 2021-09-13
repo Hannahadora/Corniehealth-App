@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="439px" title="Appointments">
+  <chart-card height="439px" title="Medication">
     <canvas ref="chart"></canvas>
   </chart-card>
 </template>

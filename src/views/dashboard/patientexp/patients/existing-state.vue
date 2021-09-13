@@ -97,12 +97,16 @@
     </div>
     <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
     <registration-dialog v-model="registerNew" />
-    <advanced-filter v-model="filterAdvanced" />
+    <advanced-filter
+      v-model:filtered="filteredPatients"
+      v-model="filterAdvanced"
+      :patients="patients"
+    />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CornieCard from "@/components/cornie-card/CornieCard.vue";
+import CornieCard from "@/components/cornie-card";
 import CornieCardTitle from "@/components/cornie-card/CornieCardTitle.vue";
 import CornieCardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -125,7 +129,7 @@ const patients = namespace("patients");
 @Options({
   name: "PatientExistingState",
   components: {
-    CornieCard,
+    ...CornieCard,
     CheckInDialog,
     CheckinIcon,
     RegistrationChart,
@@ -151,9 +155,11 @@ export default class ExistingState extends Vue {
   deletePatient!: (id: string) => Promise<boolean>;
 
   filterAdvanced = false;
+  filteredPatients: IPatient[] = [];
   checkInPatient!: IPatient;
   checkingIn = false;
   registerNew = false;
+
   headers = [
     {
       title: "Name",
@@ -188,7 +194,8 @@ export default class ExistingState extends Vue {
   ];
 
   get items() {
-    return this.patients.map((patient) => ({
+    const patients = this.filteredPatients;
+    return patients.map((patient) => ({
       name: `${patient.firstname} ${patient.lastname}`,
       dob: this.printDOB(patient.dateOfBirth),
       email: this.printEmail(patient),
