@@ -15,24 +15,24 @@
       </div>
       <div class="flex flex-col p-3 mb-7">
         <p class="text-sm mt-2">
-         View Dr. Daniel Arubuike available times this week
+         View {{name}} profile
         </p>
         <div class="my-5 border-2 p-3 border-gray-200 w-full flex-col flex">
             <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Provider ID</p>
-              <p class="cursor-pointer float-right text-xs text-gray-500">AD3547</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">{{profileId}}</p>
             </span>
             <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Status</p>
-              <p class="cursor-pointer float-right text-xs text-gray-500">Active</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">{{activeState}}</p>
             </span>
             <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Specialty</p>
-              <p class="cursor-pointer float-right text-xs text-gray-500">Pharmacologist</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">{{type}}</p>
             </span>
             <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Total Patients Seen</p>
-              <p class="cursor-pointer float-right text-xs text-gray-500">520</p>
+              <p class="cursor-pointer float-right text-xs text-gray-500">0</p>
             </span>
             <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Rating</p>
@@ -72,6 +72,7 @@ import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import StarRating from 'vue-star-rating';
 const copy = (original) => JSON.parse(JSON.stringify(original));
+import { cornieClient } from "@/plugins/http";
 
 export default {
   name: "ParticipantFilter",
@@ -100,11 +101,37 @@ export default {
       required: true,
       default: () => [],
     },
+    profile:{
+       type: Array,
+      required: true,
+      default: () => [],
+    },
+      name:{
+        type:String,
+        required: true,
+        default: "",
+    },
+    profileId:{
+      type:String,
+       required: true,
+      default: "",
+    },
+     activeState:{
+      type:String,
+       required: true,
+      default: "",
+    },
+     type:{
+      type:String,
+       required: true,
+      default: "",
+    },
   },
   data() {
     return {
       columnsProxy: [],
       rating: 4,
+      practitionerprofile:[]
     };
   },
   watch: {
@@ -116,7 +143,7 @@ export default {
       this.columnsProxy = copy([...active]);
     },
   },
-  computed: {
+  computed: { 
     show: {
       get() {
         return this.visible;
@@ -127,6 +154,12 @@ export default {
     },
   },
   methods: {
+     async viewProfile() {
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.profileId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      this.practitionerprofile = response[0].data;
+      return response[0].data
+    }, 
     apply() {
       this.$emit("update:preferred", copy([...this.columnsProxy]));
       this.show = false;
@@ -137,7 +170,11 @@ export default {
     },
   },
   mounted() {
+      this.viewProfile();
     this.columnsProxy = copy([...this.columns]);
   },
+  created(){
+    this.viewProfile();
+  }
 };
 </script>

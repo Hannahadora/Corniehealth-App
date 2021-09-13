@@ -54,50 +54,55 @@
           </div>
         </div>
         <div>
-          <div class="bg-gray-100" v-if="practitionerFilter">
-            <div v-for="(input, index) in practitioners" :key="index">
-              <div class="grid grid-cols-4 w-full gap-4 col-span-full mt-2 p-3">
-                <div class="dflex space-x-4">
-                  <div class="w-10 h-10">
-                    <avatar
-                      class="mr-2"
-                      v-if="input.image"
-                      :src="input.image"
-                    />
-                    <avatar class="mr-2" v-else src="@assets/img/placeholder.png" />
+          <div class="bg-gray-100">
+            <div  v-if="practitionerFilter">
+              <div v-for="(input, index) in practitioners" :key="index">
+                <div class="flex justify-between space-x-7 w-full mt-2 p-3">
+                  <div class="w-full dflex space-x-4">
+                    <div class="w-10 h-10">
+                      <avatar
+                        class="mr-2"
+                        v-if="input.image"
+                        :src="input.image"
+                      />
+                      <avatar class="mr-2" v-else src="@assets/img/placeholder.png" />
+                    </div>
+                    <div class="w-full">
+                      <p class="text-xs text-dark font-semibold">
+                        {{ input.firstName }}
+                        {{ input.lastName }}
+                      </p>
+                      <p class="text-xs text-gray-500 font-meduim">
+                        {{ input.jobDesignation }}
+                        {{ input.department }}
+                      </p>
+                    </div>
                   </div>
-                  <div class="w-full">
-                    <p class="text-xs text-dark font-semibold">
-                      {{ input.firstName }}
-                      {{ input.lastName }}
-                    </p>
-                    <p class="text-xs text-gray-500 font-meduim">
-                      {{ input.jobDesignation }}
-                      {{ input.department }}
-                    </p>
-                  </div>
+                  <p
+                    class="cursor-pointer  text-xs text-danger"
+                    @click="showAvailable(input.id,input.firstName,input.lastName)"
+                  >
+                    View Availability
+                  </p>
+                  <p
+                    class="cursor-pointer  text-xs text-danger"
+                    @click="showProfile(input.id,input.firstName,input.lastName,input.type,input.activeState)"
+                  >
+                    View Profile
+                  </p>
+                  <cornie-radio
+                    v-model="indexvalue"
+                    :value="input"
+                    @input="changed(input.id)"
+                    name="practioner"
+                    class="bg-danger  focus-within:bg-danger px-6 shadow"/>
                 </div>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showAvailable(input.id)"
-                >
-                  View Availability
-                </p>
-                <p
-                  class="cursor-pointer ml-16 text-xs text-danger"
-                  @click="showProfile"
-                >
-                  View Profile
-                </p>
-                <cornie-radio
-                  v-model="indexvalue"
-                  :value="input"
-                  @input="changed(input.id)"
-                  name="practioner"
-                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"/>
               </div>
             </div>
           </div>
+           <div v-if="practitionerFilter.length < 0">
+              <span class="text-center py-3 px-5">No Practitioner. Please select a slot.</span>
+            </div>
           <div class="bg-gray-100" v-if="deviceFilter">
             <div v-for="(input, index) in devices" :key="index">
               <div
@@ -420,8 +425,8 @@
         </div>
       </div>
     </modal>
-    <availability v-model:visible="availableFilter" :practitionerId="singleId"/>
-    <profile v-model:visible="profileFilter" />
+    <availability v-model:visible="availableFilter" :name="practitionername" :practitionerId="singleId" :availability="practitioners"/>
+    <profile v-model:visible="profileFilter" :profile="practitioners" :name="practitionername" :activeState="activeState" :type="practitionerType" :profileId="singleId" />
   </div>
 </template>
 <script>
@@ -514,12 +519,15 @@ export default {
           period:"",
           required:""
       },
+      activeState:"",
+      practitionerType:"",
       columnsProxy: [],
       indexvalue: [],
       valueid: [],
       type:'Patient',
       singleId:"",
       availableFilter: false,
+      practitionername:"",
       profileFilter:false,
       practitionerFilter:true,
       deviceFilter:false,
@@ -587,11 +595,18 @@ export default {
       this.show = false;
       this.showPartcipants = false;
     },
-    showAvailable(){
+    showAvailable(value,firstname,lastname){
+      this.singleId = value;
       this.availableFilter = true;
+      this.practitionername = firstname +' '+ lastname
     },
-    showProfile(){
-        this.profileFilter = true;
+    showProfile(value,firstname,lastname,type,state){
+      this.singleId = value;
+      this.profileFilter = true;
+      this.practitionername = firstname +' '+ lastname;
+      this.practitionerType = type;
+      this.activeState = state;
+
     },
      select(i) {
       this.selected = i;

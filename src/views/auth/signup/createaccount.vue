@@ -357,11 +357,12 @@ code = "";
         this.setCornieData({ accountType: this.accountType });
         this.next();
       } else {
-        window.notify({ msg: errMsg });
+        window.notify({ msg: data.data.errors.message, status: "error" });
+          this.back();
       }
     } catch (error) {
       if (error instanceof ErrorResponse && error.response.status == 422) {
-        window.notify({ msg: error.response.errors!.summary, status: "error" });
+        window.notify({ msg: error.message, status: "error" });
         this.back();
       } else if (
         error instanceof ErrorResponse &&
@@ -421,7 +422,7 @@ code = "";
     display: block;
     height: 1.4em;
     margin: 0 auto -0.6em;
-   left: -20em;
+   left: -22em;
     right: 0;
     position: absolute;
     width: 1.4em;

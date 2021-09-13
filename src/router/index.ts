@@ -238,6 +238,20 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
+        path: "clinical/",
+        name: "Clinical",
+        component: () => import("@/views/dashboard/ehr/index.vue"),
+        redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
+        children: [
+          {
+            path: "health-trend",
+            name: "Health Trend",
+            component: () =>
+              import("@/views/dashboard/ehr/healthtrend/index.vue"),
+          },
+        ],
+      },
+      {
         path: "settings/",
         name: "Settings",
         component: Settings,
