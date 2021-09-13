@@ -1,7 +1,7 @@
 <template>
  
-  <div class="h-4/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!login">
-    <div class="w-full h-44 block p-12">
+  <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!login">
+    <div class="w-full block p-12">
       <div>
               <h2 class="font-bold text-2xl mb-5">Welcome Back</h2>
               <p class="text-black mb-10">Login to your corniehealth account</p>
@@ -9,8 +9,8 @@
               Continue with  Email
               </cornie-btn>
               <span class="w-full text-center block my-1">or</span>
-              <cornie-btn class="font-semibold rounded-full mb-5 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2">
-                <span class="inline-flex justify-center mt-1"><quantum-icon class="mr-2 pt-1"/></span>Quantum
+              <cornie-btn class="font-semibold rounded-full mb-5 py-1 px-3 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2">
+                <span class="inline-flex justify-center pb-1"><quantum-icon class="mr-2 pt-1"/></span>Quantum
               </cornie-btn>
               <span class="w-full flex text-sm mt-2">
                 Don't have an account?
