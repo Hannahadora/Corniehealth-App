@@ -139,7 +139,7 @@ export default class PatientContact extends Vue {
   @Prop({ type: Object })
   patient!: IPatient;
 
-  type = "";
+  type = "home";
 
   primaryAddress = "";
   secondaryAddress = "";
@@ -180,7 +180,6 @@ export default class PatientContact extends Vue {
   get payload() {
     const payload = {
       primaryAddress: this.primaryAddress,
-      secondaryAddress: this.secondaryAddress,
       country: this.country,
       state: this.state,
       postalCode: this.postCode,
@@ -196,7 +195,6 @@ export default class PatientContact extends Vue {
 
   reset() {
     this.primaryAddress = "";
-    this.secondaryAddress = "";
     this.country = "";
     this.state = "";
     this.postCode = "";
