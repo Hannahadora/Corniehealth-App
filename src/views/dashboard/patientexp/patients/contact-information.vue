@@ -8,7 +8,6 @@
           label="Work"
           v-model="type"
           value="work"
-          checked
           :readonly="readonly"
         />
         <span class="flex items-center ml-2">
@@ -24,7 +23,7 @@
         <cornie-input
           class="w-full"
           v-model="primaryAddress"
-          label="Address 1"
+          label="Address"
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"

@@ -33,6 +33,7 @@
           v-for="(item, i) in results"
           :key="i"
           @click="select(item)"
+          :class="[hoverColor]"
           class="
             cursor-pointer
             w-full
@@ -88,6 +89,10 @@ export default class SearchInput extends Vue {
 
   @Prop({ type: String, default: "bg-white" })
   background!: string;
+
+  get hoverColor() {
+    return this.background == "bg-white" ? "hover:bg-white-cotton-ball" : "";
+  }
 
   show = false;
 
