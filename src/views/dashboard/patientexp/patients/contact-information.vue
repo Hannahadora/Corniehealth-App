@@ -8,7 +8,6 @@
           label="Work"
           v-model="type"
           value="work"
-          checked
           :readonly="readonly"
         />
         <span class="flex items-center ml-2">
