@@ -38,19 +38,19 @@
       </label>
 
       <div class="block mt-2 mb-2">
-        <h4 class="font-bold">Password Requirements:</h4>
+        <h6 class="font-semibold text-sm mb-3">Password Requirements:</h6>
         <ul class="text-xs text-gray-500">
           <li class="mb-1 flex items-center">
-            <tick-icon v-if="oneUpperCase" class="mr-1" /> least 1 Upper Case
+           least 1 Upper Case
           </li>
           <li class="mb-1 flex items-center">
-            <tick-icon v-if="oneLowerCase" class="mr-1" /> At least 1 Lower Case
+           At least 1 Lower Case
           </li>
           <li class="mb-1 flex items-center">
-            <tick-icon v-if="oneNumber" class="mr-1" /> At least 1 Number
+           At least 1 Number
           </li>
           <li class="mb-1 flex items-center">
-            <tick-icon v-if="oneSymbol" class="mr-1" /> At least 1 Special
+             At least 1 Special
             Character/Symbol
           </li>
           <li class="mb-1 flex items-center">

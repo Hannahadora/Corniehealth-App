@@ -241,7 +241,9 @@
                     </DateTimePicker>
                   </div>
                   <cornie-select
-                    :items="['reason reference']"
+                  v-for="item in recipientDropdown"
+                  :key= item
+                  :items="[item.firstName + item.lastName]"
                     v-model="recipient"
                     label="recipient"
                     placeholder="--Select--"
@@ -526,6 +528,7 @@ locationInfo = [];
     healthcares: [],
     devices: [],
   }
+  recipientDropdown = "";
 
   activityDefinition = ''
   description = ''
@@ -699,8 +702,13 @@ locationInfo = [];
   }
 
   async updateTask() {
+  this.payload.excecutionPeriod.start = new Date(this.payload.excecutionPeriod.start).toISOString();
+   
     const url = `/api/v1/task/${this.id}`
-    const payload = { ...this.payload }
+    const payload = {
+       ...this.payload,
+        excecutionPeriod: this.payload.excecutionPeriod.start
+      }
     try {
       const response = await cornieClient().put(url, payload)
       if (response.success) {
@@ -724,11 +732,18 @@ locationInfo = [];
     this.locationInfo = response[0].data[0];
     this.orgAddress = response[0].data[0].id;
   }
+  async getPractitioners() {
+    const AllPractice = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractice]);
+    console.log(response);
+    this.recipientDropdown = response[0].data;
+  }
 
   async created() {
     this.getLocations();
     if (!this.locations) await this.fetchLocations();
     if (!this.organizationInfo) await this.fetchOrgInfo();
+    this.getPractitioners();
     this.setOrg();
     this.setTask();
     const data = await this.getDropdowns('tasks')

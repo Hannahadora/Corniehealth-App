@@ -5,7 +5,7 @@
       style="height: 95%"
       class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
     >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
+      <div class="flex w-full overflow-y-auto h-full rounded-t-lg p-5">
         <span class="block pr-2 border-r-2">
           <arrow-left-icon
             class="stroke-current text-primary cursor-pointer"
@@ -27,6 +27,14 @@
           />
           <span></span>
         </div>
+        <span class="text-danger"  @click="apply">Add</span>
+        <div class="w-full flex space-x-4">
+            <note-icon/>
+            <div>
+              <span class="text-gray-600">8-Sep-2021</span>
+              <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis egestas at sociis sodales nunc metus, commodo, viverra sit. Bibendum sagittis neque blandit varius.</p>
+            </div>
+        </div>
         <div class="flex justify-end w-full mt-auto">
           <button
             class="
@@ -46,7 +54,7 @@
           >
             Cancel
           </button>
-          <cornie-btn
+         <!-- <cornie-btn
             @click="apply"
             :loading="loading"
             type="submit"
@@ -63,22 +71,24 @@
             "
           >
             Save
-          </cornie-btn>
+          </cornie-btn>-->
         </div>
       </div>
     </modal>
-       <availability
-            v-model:visible="availableFilter"
-        />
-        <profile
-            v-model:visible="profileFilter"
-        />
+    <availability
+        v-model:visible="availableFilter"
+    />
+    <profile
+        v-model:visible="profileFilter"
+    />
+
   </div>
 </template>
 <script>
 import Modal from "@/components/practitionermodal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DragIcon from "@/components/icons/draggable.vue";
+import NoteIcon from "@/components/icons/graynote.vue";
 import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
 import Availability from "@/components/availability.vue";
@@ -86,6 +96,7 @@ import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import Textarea from "@/components/textarea.vue";
 import { cornieClient } from "@/plugins/http";
+
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -100,7 +111,8 @@ export default {
     Availability,
     IconInput,
     SearchIcon,
-    Profile
+    Profile,
+    NoteIcon,
   },
   props: {
     visible: {
@@ -176,6 +188,7 @@ export default {
         this.$router.push("/dashboard/provider/experience/appointments");
         }
     },
+   
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;

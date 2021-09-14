@@ -86,7 +86,7 @@
               placeholder="Enter"
               v-model="multipleBirthInteger"
               type="number"
-              :rules="numericRule"
+              :rules="multipleBirthRule"
               :readonly="viewOnly"
             >
               <template #label> Multiple Birth Integer (1 - 10) </template>
@@ -419,6 +419,7 @@ export default class NewPatient extends Vue {
     new Date(),
     `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
   );
+  multipleBirthRule = number().min(0).max(10);
 
   requiredArray = array().min(1);
 
