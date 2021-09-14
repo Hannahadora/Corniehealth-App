@@ -93,7 +93,7 @@
                     <label class="block uppercase mb-1 text-xs font-bold">
                       slot
                     </label>
-                    <span class="text-gray-600 cursor-pointer text-xs">
+                    <span class="text-gray-600 cursor-pointer text-xs" @click="showSlots">
                       Choose Slot</span
                     >
                   </div>
@@ -249,46 +249,7 @@
                     </div>
                   </div>          
                 </div>
-                <div class="w-full grid grid-cols-3 gap-4 p-5">
-                  <cornie-select
-                    :onChange="setValue"
-                    class="required"
-                    :rules="required"
-                    :items="items"
-                    v-model="type"
-                    label="TYPE"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Required', 'Information Only', 'Optional']"
-                    v-model="participantDetail.required"
-                    label="required"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <date-picker
-                    label="period"
-                    v-model="participantDetail.period"
-                    :rules="required"
-                  />
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="[
-                      'Out-Patient',
-                      ' In-Patient',
-                      ' Virtual',
-                      'HomeCare',
-                    ]"
-                    v-model="participantDetail.consultationMedium"
-                    label="consultation medium"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
+            
               </template>
             </accordion-component>
             <span class="flex justify-end w-full">
@@ -342,6 +303,10 @@
           @update:preferred="displayParticipants"
           v-model:visible="showActors"
         />
+        <all-slots  
+        :columns="availableSlots"
+          @update:preferred="showSlots"
+          v-model:visible="displaySlots"/>
     <!--    <practitioners-filter
           :columns="practitioner"
           @update:preferred="addPractitioner"
@@ -393,6 +358,7 @@ import Period from "@/types/IPeriod";
 import PlusIcon from "@/components/icons/plus.vue";
 import Avatar from "@/components/avatar.vue";
 import AllActors from "./actors.vue";
+import AllSlots from "./slots.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 
@@ -418,6 +384,7 @@ const emptyParticipant: ParticipantDetail = {
     Textarea,
     DEdit,
     CDelete,
+    AllSlots,
     Avatar,
     CAdd,
     AddIcon,
@@ -446,7 +413,8 @@ actorTypeValue = "";
   opened = true;
   openedR = true;
   openedT = false;
-
+  displaySlots = false;
+  availableSlots = [];
   actor = "";
   type = "";
  img = setup(() => useHandleImage());
@@ -462,7 +430,7 @@ actorTypeValue = "";
   priority = "";
   description = "";
   supportingInfo = "";
-  slot = "153ee88d-cc6a-4e1f-ac62-8456e0c7782d";
+  slot = "";
   basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   duration = "";
   comments = "";
@@ -588,6 +556,14 @@ actorTypeValue = "";
     this.Practitioners = id;
     this.practitionerFilter = false;
   }
+  async showSlots(slots: any){
+    this.displaySlots = true;
+    this.period.start = slots.startDate;
+    this.period.end = slots.endDate;
+    this.duration = slots.startTime +'-'+ slots.endTime;
+    this.slot = slots.id;
+    this.practitioner = slots.practitioners;
+  }
   async displayParticipants(value: any, id: any, typevalue: string) {
     // this.newPractitioners .push({ ...this.practitioners });
     //  this.newActors = value;
@@ -698,11 +674,17 @@ actorTypeValue = "";
       window.notify({ msg: "Appointment not updated", status: "error" });
     }
   }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
+    async getLocations() {
+        const AllSchedules = cornieClient().get("/api/v1/schedule");
+        const response = await Promise.all([AllSchedules]);
+        console.log(response);
+        this.availableSlots = response[0].data;
   }
+  // async fetchPractitioners() {
+  //   const AllPractitioners = cornieClient().get("/api/v1/practitioner");
+  //   const response = await Promise.all([AllPractitioners]);
+  //   this.practitioner = response[0].data;
+  // }
   async fetchDevices() {
     const AllDevices = cornieClient().get("/api/v1/devices");
     const response = await Promise.all([AllDevices]);
@@ -720,7 +702,8 @@ actorTypeValue = "";
   }
   async created() {
     this.setAppointment();
-    this.fetchPractitioners();
+  //  this.fetchPractitioners();
+    this.getLocations();
     this.fetchDevices();
     this.fetchRoles();
     this.fetchPatients();

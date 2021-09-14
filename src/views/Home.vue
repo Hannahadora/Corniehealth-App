@@ -117,7 +117,7 @@
                     text-sm
                     font-medium
                     px-5
-                    py-3
+                    py-2
                     rounded-full
                     shadow
                     hover:shadow-lg  
@@ -204,7 +204,7 @@
                   and patient experience.
                 </p>
                 <a
-                  href="#stay_informed"
+                  href="#stayInformed"
                   class="
                     bg-danger
                     text-white
@@ -765,8 +765,8 @@
           </div>
         </div>
       </section>
-      <section class="pt-20 bg-white pb-20 w-full">
-        <div class="container mx-auto px-4" id="stay_informed">
+      <section class="pt-20 bg-white pb-20 w-full" id="stayInformed">
+        <div class="container mx-auto px-4">
           <div
             class="flex flex-wrap justify-center text-center mb-7"
             data-aos="fade-up"

@@ -59,7 +59,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  border: 2px solid #c2c7d6;
+  border: 1px solid #c2c7d6;
   height: 25px;
   width: 25px;
   background-color: #fff;
@@ -73,18 +73,18 @@ export default {
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  background: #c2c7d6;
+  background: #fff;
 }
 
 /* On mouse-over, add a grey background color */
 .radio-container:hover input ~ .checkmark {
-  background-color: #c2c7d6;
+  background-color: #fff;
 }
 
 /* When the radio button is checked, add a blue background */
 .radio-container input:checked ~ .checkmark {
   background-color: white;
-  border: 2px solid #c2c7d6;
+  border: 1px solid #c2c7d6;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -101,11 +101,11 @@ export default {
 
 /* Style the indicator (dot/circle) */
 .radio-container .checkmark:after {
-  top: 2px;
-  left: 2px;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  background: #fe4d3c;
+      top: 3px;
+    left: 3px;
+    width: 17.5px;
+    height: 17.5px;
+    border-radius: 50%;
+    background: #fe4d3c;
 }
 </style>

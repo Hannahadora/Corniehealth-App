@@ -1,6 +1,6 @@
 <template>
-<div class="h-4/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!createaccount">
-    <div class="w-full h-44 block p-12">
+<div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!createaccount">
+    <div class="w-full block p-12">
       <div>
               <h2 class="font-bold text-2xl mb-5">Join Corniehealth</h2>
               <p class="text-black mb-10">Create a corniehealth account</p>
@@ -8,8 +8,8 @@
                Sign up with  Email
               </cornie-btn>
               <span class="w-full text-center block my-1">or</span>
-              <cornie-btn class="font-semibold rounded-full mb-5 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2">
-                <span class="inline-flex justify-center mt-1"><quantum-icon class="mr-2 pt-1"/></span>Quantum
+              <cornie-btn class="font-semibold rounded-full mb-5 border-primary border-2 py-1 px-3 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2">
+                <span class="inline-flex justify-center pb-1"><quantum-icon class="mr-2 pt-1"/></span>Quantum
               </cornie-btn>
               <span class="w-full flex text-sm mt-2">
                 Already have an account?
@@ -322,8 +322,8 @@ code = "";
   }
   setUser(payload: any) {
     this.userSync = {
-      id: payload.userId,
-      email: payload.email,
+      id: payload.data.userId,
+      email: payload.data.email,
     };
   }
   checkValue(){
@@ -353,15 +353,17 @@ code = "";
     try {
       const data = await quantumClient().post("/auth/signup/", this.payload);
       if (data.success) {
+        console.log(data);
         this.setUser(data);
         this.setCornieData({ accountType: this.accountType });
         this.next();
       } else {
-        window.notify({ msg: errMsg });
+        window.notify({ msg: errMsg, status: "error" });
+          this.back();
       }
     } catch (error) {
       if (error instanceof ErrorResponse && error.response.status == 422) {
-        window.notify({ msg: error.response.errors!.summary, status: "error" });
+        window.notify({ msg: error.response.data.errors[0].msg, status: "error" });
         this.back();
       } else if (
         error instanceof ErrorResponse &&
@@ -421,7 +423,7 @@ code = "";
     display: block;
     height: 1.4em;
     margin: 0 auto -0.6em;
-   left: -20em;
+   left: -22em;
     right: 0;
     position: absolute;
     width: 1.4em;
@@ -466,7 +468,7 @@ code = "";
     display: block;
     height: 1.4em;
     margin: 0 auto -0.6em;
-    left: 40em;
+    left: 42em;
     right: 0;
     position: absolute;
     width: 1.4em;
