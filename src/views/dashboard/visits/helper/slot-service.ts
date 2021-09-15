@@ -1,3 +1,6 @@
+import IPractitioner from "@/types/IPractitioner";
+import ISchedule, { Slot } from "@/types/ISchedule";
+
 const minutesFromTimeString = (time: string): number => {
     const hours = +time.split(':')[0]
     const minutes = +time.split(':')[1]
@@ -10,6 +13,75 @@ const compareTime = (time: string, date: string) => {
     const sum = (hours * 60) + minutes;    
 
     return new Date(date).setMinutes( new Date(date).getMinutes() + sum);
+}
+
+const filterByDate = (schedules: ISchedule[], date: string | Date) => {
+    return schedules.filter(schedule => {
+        return new Date(schedule.startDate).getDate() === new Date(date).getDate() &&
+            new Date(schedule.startDate).getMonth() === new Date(date).getMonth() &&
+            new Date(schedule.startDate).getFullYear() === new Date(date).getFullYear()
+    })
+}
+
+const filterBySlotTime = (schedules: ISchedule[], slotStartTime: string, slotEndTime: string, date: string | Date) => {    
+    return schedules.filter(schedule => {
+        const { startTime, startDate, endTime, endDate } = schedule;        
+        return constructDate(date, slotStartTime) >= constructDate(startDate, startTime) && constructDate(date, slotEndTime) <= constructDate(endDate, endTime)
+    })
+}
+
+const constructDate = (date: Date | string | number, time: string) => {
+    return time ? new Date(`${new Date(date).toDateString()}, ${time}`) : new Date(date)
+}
+
+const extractSlotsFromSchedules = (schedules: ISchedule[]) => {
+    const slots: any[] = [ ]
+    schedules.forEach(schedule => {
+        const { slots: slts } = schedule;
+        if (slts?.length > 0) {
+            slots.push(...slts.map(slot => {
+                return { ...slot, scheduleId: schedule.id }
+            }));
+        } else {
+            slots.push(...generateSlots(schedule).map(slot => {
+                return { ...slot, scheduleId: schedule.id}
+            }));
+        }
+    });
+    return slots;
+}
+
+const extractPractitionersFromSchedules = (schedules: ISchedule[]) => {
+    const practitioners: IPractitioner[] = [ ]
+    schedules.forEach(schedule => {
+        practitioners.push(...schedule.practitioners)
+    });
+    return practitioners;
+}
+
+const generateSlots = (schedule: ISchedule) => {
+    const slots = [ ]
+    const { startDate, startTime, endDate, endTime } = schedule;
+    const limit = constructDate(endDate, endTime)
+    let begin = constructDate(startDate, startTime);      
+
+    let pastEndTime = false;
+    let count = 0;
+    while(!pastEndTime) {
+        const slotEnd = constructDate(new Date(begin).setMinutes(60 + (count * 5)), "")
+        if (slotEnd < limit) {
+            const slot: any = {
+                endTime: new Date(slotEnd),
+                startTime: new Date(begin.setMinutes(5 * count)),
+            }
+            count = count + 1;
+            slots.push(slot);
+            begin = constructDate(slotEnd, "");
+        } else {
+            pastEndTime = true;
+        }
+    }
+    return slots;
 }
 
 
@@ -65,5 +137,38 @@ export default {
         const result = new Date(date1).getDay() === new Date(date2).getDay() && new Date(date1).getMonth() === new Date(date2).getMonth() && new Date(date1).getFullYear() === new Date(date2).getFullYear()
         return result;
         
-    }
+    },
+
+    slots(schedules: ISchedule[], date: string | Date) {
+        const availableSlots: any[] = [ ]
+        const schedulesForDate = filterByDate(schedules, date);
+        const scheduleSlots = extractSlotsFromSchedules(schedulesForDate);
+        
+        if (scheduleSlots?.length > 0) return scheduleSlots; 
+        schedulesForDate.forEach(schedule => {
+            availableSlots.push(...generateSlots(schedule));
+        });
+        
+        return availableSlots;
+    },
+
+    getAvailablePractitioners(schedules: ISchedule[], startTime: string, endTime: string, date: string | Date) {
+        const schedulesForDate = filterByDate(schedules, date);
+        
+        const schedulesForTime = filterBySlotTime(schedulesForDate, startTime, endTime, date);        
+
+        const practitioners = extractPractitionersFromSchedules(schedulesForTime);
+        
+        return practitioners;
+    },
+
+    getScheduleIdForSlot(schedules: ISchedule[], startTime: string, endTime: string, date: string | Date) {
+        const schedulesForDate = filterByDate(schedules, date);
+        
+        const schedulesForTime = filterBySlotTime(schedulesForDate, startTime, endTime, date);
+        if (schedulesForTime?.length > 0) return schedulesForTime[0].id;
+        return '';
+    },
+
+    constructDate
 }

@@ -1,5 +1,6 @@
 <template>
     <div class="container-fluid flex">
+        <!-- {{ items }} -->
         <span v-for="(actor, index) in items" :key="index">
             <div class="image-con rounded-full border flex items-center justify-center" v-if="actor.image">
                 <img :src="actor.image" class="rounded-full" style="width: 100%;height:100%" :alt="actor.name">

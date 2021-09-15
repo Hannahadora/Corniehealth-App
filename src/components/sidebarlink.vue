@@ -3,7 +3,7 @@
     :id="id"
     class="flex flex-col"
     :class="{
-      'w-5/6': hovered,
+      'w-5/6 py-3': hovered,
       'w-3/4 ': !hovered,
       'bg-white rounded-lg bg-opacity-10 p-2': expand,
     }"

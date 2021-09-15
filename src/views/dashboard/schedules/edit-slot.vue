@@ -3,41 +3,35 @@
         <div class="container-fluid">
             <div class="w-full border-b-2 curved flex py-2 bg-white px-4">
                 <div class="container-fluid flex font-semibold text-xl py-2">
-                    <h2>Create Shift</h2>
+                    <h2>Edit Slot</h2>
                 </div>
             </div>
 
             <div class="w-full my-6">
                 <div class="container-fluid">
                     <div title="Shift Details" class="bg-white shadow-xl rounded-lg">
-                        <div class="w-full px-4 details-area " :class="{ 'details-area-full': showDetails, 'details-area-fuller': showSelectArea }">
-                            <div class="w-full curved py-2"  :class="{ 'border-b-2': showDetails }">
-                                <h2 class="flex justify-between w-full font-bold items-center">
-                                    <span>Schedule Details</span>
-                                    <span @click="toggleDetailsDisplay" class="cursor-pointer"><ChevronDown /></span>
-                                </h2>
-                            </div>
-
-                            <div class="container-fluid mt-3">
-                                <p class="text-sm font-normal">All field should be filled</p>
-                            </div>
+                        <div class="w-full px-4">
 
                             <div class="container-fluid pb-3 pt-3 flex justify-around">
                                 <div class="w-4/12">
-                                    <CustomDropdown v-model="data.locationId" :items="allLocations" label="Location"  placeholder="--Enter--" />
+                                    <cornie-input v-model="slotData.scheduleId" label="Schedule"  placeholder="--Enter--" />
                                 </div>
                                 <div class="w-4/12">
                                      <div class="w-full">
                                         <div class="w-11/12">
-                                            <CornieInput label="Name" v-model="data.name"  placeholder="Enter" />
+                                            <date-picker label="Start date" v-model="slotData.startDate"  placeholder="Enter" />
                                         </div>
                                     </div>
-                                    
                                 </div>
                                 <div class="w-4/12">
                                      <div class="w-full">
                                         <div class="w-11/12">
-                                            <CornieInput label="Description" v-model="data.description" class="w-95" placeholder="Enter" />
+                                            <label for="" class="w-95">
+                                                <span class="uppercase font-bold text-xs">Start Time</span>
+                                                <div class="w-12/12 mx-auto">
+                                                    <input type="time" v-model="slotData.startTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
+                                                </div>
+                                            </label>
                                         </div>
                                     </div>
                                     
@@ -46,405 +40,162 @@
 
                             <div class="container-fluid py-3 flex justify-around">
                                 <div class="w-4/12">
-                                    <CustomDropdown label="Service Category" class="w-95" v-model="data.serviceCategory" :items="categories" placeholder="Enter" />
+                                    <div class="w-11/12">
+                                        <date-picker label="Stop date" v-model="slotData.endDate"  placeholder="Enter" />
+                                    </div>
                                 </div>
                                 <div class="w-4/12">
-                                    <CustomDropdown label="Service Type" class="w-95" v-model="data.serviceType" :items="serviceTypes" placeholder="Enter" />
+                                    <div class="w-11/12">
+                                        <label for="" class="w-95">
+                                            <span class="uppercase font-bold text-xs">Stop Time</span>
+                                            <div class="w-12/12 mx-auto">
+                                                <input type="time" v-model="slotData.endTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="w-4/12">
-                                    <CustomDropdown label="Specialty" class="w-95" v-model="data.specialty" :items="specialties" placeholder="Enter" />
+                                    <cornie-input label="Description" class="w-95" v-model="data.serviceType" placeholder="Enter" />
                                 </div>
                             </div>
 
                             <div class="container-fluid my-4">
-                                <p class="text-sm font-normal font-bold uppercase flex items-center cursor-pointer" style="color: #FE4D3C" @click="toggleSelectDisplay"><span class="mr-3">Select Actor(s) for this schedule </span><AddIcon /></p>
-                            </div>
-
-                            <div class="container-fluid my-3">
-                                <div class="w-full flex" v-if="showSelectArea">
-                                    <div class="w-4/12 mb-3">
-                                        <div class="w-11/12 mx-auto">
-                                            <SearchBox :items="actors" >
-                                                <template #item="data">
-                                                    <p class="my-2 flex justify-between">
-                                                        <span>{{ data.item.display }}</span>
-                                                        <span @click="actorSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
-                                                    </p>
-                                                </template>
-                                            </SearchBox>
-                                        </div>
-                                    </div>
-                                    <div class="w-4/12 mb-3">
-                                        <div class="w-11/12 mx-auto">
-                                            <SearchBox :items="allDevices">
-                                                <template #item="data">
-                                                    <p class="my-2 flex justify-between">
-                                                        <span>{{ data.item.display }}</span>
-                                                        <span @click="deviceSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
-                                                    </p>
-                                                </template>
-                                            </SearchBox>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="w-4/12 mb-3">
-                                        <div class="w-11/12 mx-auto">
-                                            <SearchBox :items="allHealthcares">
-                                                <template #item="data">
-                                                    <p class="my-2 flex justify-between">
-                                                        <span>{{ data.item.display }}</span>
-                                                        <span @click="actorSelected(data.item)" class="text-danger font-semibold text-lg cursor-pointer">Add</span>
-                                                    </p>
-                                                </template>
-                                            </SearchBox>
-                                        </div>
-                                    </div> -->
-                                </div>
-
-                                <div class="w-full flex">
-                                    <div class="w-4/12 py-3">
-                                        <div class="w-11/12 mx-auto">
-                                            <p class="text-sm font-normal font-bold uppercase flex items-center cursor-pointer py-2" style="border-bottom: 1px dashed #C2C7D6" >
-                                                <span class="mr-3">Practioners </span></p>
-                                            <div class="w-full flex items-center" v-for="(actor, index) in data.practitioners" :key="index">
-                                                <div class="w-1/12">
-                                                    <div class="w-full">
-                                                        <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
-                                                        <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
-                                                    </div>
-                                                </div>
-                                                <div class="w-10/12 px-5">
-                                                    <p class="flex flex-col">
-                                                        <span>{{ actor.display }}</span>
-                                                        <span class="text-xs">{{ actor.job }}</span>
-                                                    </p>
-                                                </div>
-                                                <div class="w-1/12">
-                                                    <span @click="removeActor(actor.code)"><DeleteIcon /></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="w-4/12 py-3">
-                                        <div class="w-11/12 mx-auto">
-                                        <p class="text-sm font-normal font-bold uppercase flex items-center cursor-pointer py-2" style="border-bottom: 1px dashed #C2C7D6" >
-                                            <span class="mr-3">Devices </span></p>
-                                            <div class="w-full flex items-center" v-for="(actor, index) in data.devices" :key="index">
-                                                <div class="w-1/12">
-                                                    <div class="w-full">
-                                                        <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
-                                                        <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
-                                                    </div>
-                                                </div>
-                                                <div class="w-10/12 px-5">
-                                                    <p class="flex flex-col">
-                                                        <span>{{ actor.display }}</span>
-                                                        <span class="text-xs">{{ actor.job }}</span>
-                                                    </p>
-                                                </div>
-                                                <div class="w-1/12">
-                                                    <span @click="removeActor(actor.code)"><DeleteIcon /></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- <div class="w-4/12 py-3">
-                                        <div class="w-11/12 mx-auto pt-2" style="border-top: 1px dashed #C2C7D6">
-                                            <div class="w-full flex items-center" v-for="(actor, index) in data.practitioners" :key="index">
-                                                <div class="w-1/12">
-                                                    <div class="w-full">
-                                                        <img v-if="actor.image" :src="actor.image" class="rounded-full border" alt="Image"  style="max-width: 50px; max-height:50px">
-                                                        <img v-else src="https://via.placeholder.com/75x75" class="rounded-full border" alt="Image" style="max-width: 50px; max-height:50px">
-                                                    </div>
-                                                </div>
-                                                <div class="w-10/12 px-5">
-                                                    <p class="flex flex-col">
-                                                        <span>{{ actor.display }}</span>
-                                                        <span class="text-xs">{{ actor.job }}</span>
-                                                    </p>
-                                                </div>
-                                                <div class="w-1/12">
-                                                    <span @click="removeActor(actor.code)"><DeleteIcon /></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div title="Shift Timing" class="my-6 bg-white shadow-xl rounded-lg">
-                        <div class="w-full px-4 planning-area" :class="{ 'planning-area-full': showPlanning }">
-                            <div class="w-full curved p-2"  :class="{ 'border-b-2 py-3': showPlanning }">
-                                <h2 class="flex justify-between w-full font-bold items-center">
-                                    <span>Planing Horizon</span>
-                                    <span @click="togglePlanningDisplay" class="cursor-pointer"><ChevronDown /></span>
-                                </h2>
-                            </div>
-
-                            <div class="container-fluid py-3">
-                                <label for="" class="text-danger">Schedule type</label>
-
-                                <div class="w-full flex mt-2">
-                                    <div class="mr-6" v-for="(type, index) in schedulesTypes" :key="index">
-                                        <label class="inline-flex items-center">
-                                            <input type="radio" class="form-radio h-6 w-6" :value="type.code" v-model="data.scheduleType">
-                                            <span class="ml-2">{{ type.display }}</span>
-                                        </label>
-                                    </div>
-                                </div>        
-                            </div>
-
-                            <div class="container-fluid pb-3 pt-3 flex justify-around">
-                                <div class="w-4/12">
-                                    <MultiSelect :label="'Apply To'" >
-                                        <template #selected>
-                                            <span>
-                                                <span>{{ selectedDays }}</span>
-                                            </span>
-                                        </template>
-                                        <div style="max-height: 280px;overflow-y: scroll" class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                                            <div class="py-1" role="none">
-                                            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                                            <a class="text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
-                                                v-for="(day, index) in days" :key="index"
-                                            >
-                                                <span><input type="checkbox" class="h-4 w-4" name="" id="" :value="day" v-model="data.days"></span>
-                                                <span class="mx-2 text-lg">{{ day }}</span>
-                                            </a>
-                                            </div>
-                                        </div>
-                                    </MultiSelect>
-                                </div>
-                                <div class="w-4/12">
-                                    <!-- <DatePicker label="Start Date"  placeholder="" /> -->
-                                    <DateTimePicker :label="'Start date'">
-                                        <template #date>
-                                            <span><span>{{ new Date(data.startDate ?? Date.now()).toLocaleDateString()}}</span></span>
-                                        </template>
-                                        <template #time>
-                                            <span><span>{{ data.startTime }}</span></span>
-                                        </template>
-                                        <template #input>
-                                            <v-date-picker  v-model="data.startDate" style="position:relative;z-index:9000;width:100%"></v-date-picker>
-                                             <label
-                                                class="block uppercase my-1 text-xs font-bold"
-                                                >
-                                                Time
-                                            </label>
-                                            <input v-model="data.startTime" type="time" class="w-full border rounded-md p-2">
-                                        </template>
-                                    </DateTimePicker>
-                                </div>
-                                <div class="w-4/12">
-                                    <DateTimePicker :label="'End date'">
-                                        <template #date>
-                                            <span>{{ new Date(data.endDate ?? Date.now()).toLocaleDateString()}}</span>
-                                        </template>
-                                        <template #time>
-                                            <span>{{ data.endTime }}</span>
-                                        </template>
-                                        <template #input>
-                                            <v-date-picker name="eeee" v-model="data.endDate" style="z-index:9000;width:100%"></v-date-picker>
-                                            <label
-                                                class="block uppercase my-1 text-xs font-bold"
-                                                >
-                                                Time
-                                            </label>
-                                            <input v-model="data.endTime" type="time" class="w-full border rounded-md p-2">
-                                        </template>
-                                    </DateTimePicker>
-                                </div>
-                            </div>
-
-                            <div class="container-fluid pb-3 pt-3 flex justify-around dashed-bottom">
-                                
-                                <div class="w-4/12">
-                                    <label for="">
-                                        <span class="uppercase font-bold text-xs">SLot Size(Mins/Hrs)</span>
-                                        <input type="number" v-model="data.slotSize" class="w-full border rounded-lg p-2" id="appt" name="appt" required>
-                                    </label>
-                                </div>
-                                <div class="w-4/12">
-                                     <!-- <DatePicker label="End Date" v-model="data.endDate"  placeholder="" /> -->
-                                </div>
-                                <div class="w-4/12">
-                                    <!-- <label for="">
-                                        <span class="uppercase font-bold text-xs">Time</span>
-                                        <input type="time" v-model="data.endTime" class="w-full border rounded-lg p-2" id="appt" style="width: 95%" required>
-                                    </label> -->
-                                </div>
-                            </div>
-
-                            <div class="container-fluid pb-3 pt-3 flex justify-around">
-                                <div class="w-4/12">
-                                     <CornieInput label="Comment" v-model="data.comments"  placeholder="Enter" />
-                                </div>
-                                <div class="w-4/12">
-                                   
-                                </div>
-                                <div class="w-4/12">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div title="Shift Breaks" class="mt-6 bg-white shadow-xl rounded-lg">
-                        <div class="w-full px-4 breaks-area" :class="{ 'breaks-area-full': showBreaks }">
-                             <div class="w-full curved py-2 my-2" :class="{ 'border-b-2 py-3': showBreaks }">
-                                <h2 class="flex w-full justify-between items-center">
-                                    <span>
-                                        <span class="font-bold">Add Breaks</span>
-                                        <span class="primary-text mx-3 text-xs">(This section is optional and can be added if desired)</span>
+                                <p class="">
+                                    <span class="flex items-center justify-between">
+                                        <span class="mr-3 text-sm font-normal font-bold flex items-center uppercase cursor-pointer"  @click="showAddActor" style="color: #FE4D3C">add participant(s) to this slot <span class="ml-2"><AddIcon /></span> </span>
+                                        <span class="flex items-center">
+                                            <span class="flex items-center">Status: <span class="ml-2"><info-icon/></span></span>
+                                            <span><toggle-check :uncheckedText="'Private'" :checkedText="'Public'" /></span>
+                                        </span>
                                     </span>
-                                    <span @click="toggleBreaksDisplay" class="cursor-pointer"><ChevronDown /></span>
-                                </h2>
-                            </div>
-                            
-                            <div class="container-fluid py-4">
-                                <p class="flex justify-between items-center">
-                                    <label for="">Break type</label>
-                                    <ToggleCheck :checkedText="'Active'" v-model="breakData.status" :uncheckedText="'Inactive'" />
                                 </p>
-
-                                <div class="w-full flex mt-3">
-                                    <div class="mr-6" v-for="(type, index) in breakTypes" :key="index">
-                                        <label class="inline-flex items-center">
-                                            <input type="radio" class="form-radio h-6 w-6" :value="type.code" v-model="breakData.type" name="break" >
-                                            <span class="ml-2">{{ type.display }}</span>
-                                        </label>
-                                    </div>
-                                </div>                                
                             </div>
 
-                            <div class="container-fluid pb-3 pt-3 flex justify-around">
-                                <div class="w-4/12">
-                                    <CornieInput v-model="breakData.description" label="Description"  placeholder="--Enter--" />
-                                </div>
-                                <div class="w-4/12">
-                                    <label for="" class="w-95">
-                                        <span class="uppercase font-bold text-xs">Start Time</span>
-                                        <div class="w-10/12 mx-auto">
-                                            <input type="time" v-model="breakData.startTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
+                            <div class="container-fluid py-4 border-l-none" style="border-top: 1px dashed #C2C7D6; border-bottom: 1px dashed #C2C7D6">
+                                <div class="w-full flex flex-wrap">
+                                    <div class="w-4/12" v-for="(participant, index) in participants" :key="index">
+                                        <div class="w-11/12 mx-auto">
+                                            <div class="w-full flex relative items-center border-r-2">
+                                                <div class="w-10/12 flex">
+                                                    <div class="w-2/12">
+                                                        <img v-if="participant.image" :src="participant.image" class="rounded-full border" alt="Image">
+                                                        <img v-else src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
+                                                    </div>
+                                                    <div class="w-9/12 ml-3">
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">{{ participant.firstName }} {{ participant.lastName }}</p>
+                                                        <span class="capitalize text-gray-400 font-normal text-xs">{{ participant.jobDesignation }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="w-2/12">
+                                                    <input type="checkbox"  name="" id="">
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <!-- <div class="w-4/12">
+                                        <div class="w-11/12 mx-auto">
+                                            <div class="w-full flex relative items-center border-r-2">
+                                                <div class="w-10/12 flex">
+                                                    <div class="w-2/12">
+                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
+                                                    </div>
+                                                    <div class="w-9/12 ml-3">
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
+                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
+                                                    </div>
+                                                </div>
+                                                <div class="w-2/12">
+                                                    <input type="checkbox"  name="" id="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+                                    <!-- <div class="w-4/12">
+                                        <div class="w-11/12 mx-auto">
+                                            <div class="w-full flex relative items-center border-r-2">
+                                                <div class="w-10/12 flex">
+                                                    <div class="w-2/12">
+                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
+                                                    </div>
+                                                    <div class="w-9/12 ml-3">
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
+                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
+                                                    </div>
+                                                </div>
+                                                <div class="w-2/12">
+                                                    <input type="checkbox"  name="" id="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="w-4/12">
+                                        <div class="w-11/12 mx-auto">
+                                            <div class="w-full flex relative items-center border-r-2">
+                                                <div class="w-10/12 flex">
+                                                    <div class="w-2/12">
+                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
+                                                    </div>
+                                                    <div class="w-10/12 ml-3">
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
+                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
+                                                    </div>
+                                                </div>
+                                                <div class="w-2/12">
+                                                    <input type="checkbox"  name="" id="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <p class="text-sm my-5">How often do you want this slot to occur?  <span class="text-gray-400">(optional)</span></p>
+
+                            <div class="w-full flex mt-3">
+                                <div class="mr-6" v-for="(type, index) in occurrence" :key="index">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio h-4 w-4" :value="type" v-model="breakData.type" name="break" >
+                                        <span class="ml-2 text-base">{{ type }}</span>
                                     </label>
                                 </div>
-                                <div class="w-4/12">
-                                
-                                    <label for="">
-                                        <span class="uppercase font-bold text-xs">End Time</span>
-                                        <div class="w-10/12">
-                                            <input type="time" v-model="breakData.endTime" class="w-full border rounded-lg p-2 w-95" required>
-                                        </div>
-                                        
-                                    </label>
-                                </div>
-                            </div>
+                            </div> 
 
-                            <div class="container-fluid pb-3 pt-3 flex justify-around">
-                                <div class="w-4/12">
-                                    <CornieInput v-model="breakData.duration" label="duration (MINUTES)"  placeholder="" :disable="true" />
-                                    
-                                </div>
-                                <div class="w-4/12">
-                                    <!-- <DateTimePicker /> -->
-                                </div>
-                                <div class="w-4/12">
-                                    
-                                </div>
-                            </div>
-
-                            <div class="w-full mb-4">
-                                <div class="container-fluid mb-8 flex justify-end items-center">
-                                    <Button>
-                                        <a @click="addBreak"  style="background: #35BA83" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                                            Save 
-                                        </a>
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <div class="w-full mb-12">
-                                <div class="container-fluid mb-8 border-t-2 pt-2">
-                                    <div class="w-full flex">
-                                        <div class="w-3/12">
-                                            <span class="font-semibold">Break Type</span>
-                                        </div>
-                                        <div class="w-3/12">
-                                            <span class="font-semibold">Description</span>
-                                        </div>
-                                        <div class="w-3/12">
-                                            <span class="font-semibold">Start Time</span>
-                                        </div>
-                                        <div class="w-3/12">
-                                            <span class="font-semibold">End Time</span>
-                                        </div>
+                            <div class="w-full my-5">
+                                <div class="container-fluid flex items-center">
+                                    <div class="w-4/12">
+                                        <custom-dropdown :label="'Status'" :items="[1, 2, 3, 4]" />
                                     </div>
-
-                                    <div class="w-full flex" v-for="(item, index) in data.breaks" :key="index">
-                                        <div class="w-3/12">
-                                            <span class="text-sm text-gray-500">{{ item.type }}</span>
-                                        </div>
-                                        <div class="w-3/12">
-                                            <span class="text-sm text-gray-500">{{ item.description }}</span>
-                                        </div>
-                                        <div class="w-3/12">
-                                            <span class="text-sm text-gray-500">{{ item.startTime }}</span>
-                                        </div>
-                                        <div class="w-3/12">
-                                            <p class="flex justify-between">
-                                                <span class="text-sm text-gray-500"> {{ item.endTime}}</span>
-                                                <span @click="removeBreak(index)"><DeleteIcon :fill="'red'" style="color:red" /></span>
-                                            </p>
-                                        </div>
+                                    <div class="w-4/12 -mt-5">
+                                        <cornie-input :label="'Comment'" />
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="w-full pb-8 flex flex justify-end">
+                                <corniebtn class="bg-gray-300 p-2 rounded-full px-8 mx-4">
+                                    <span class="font-semibold text-gray-500">Cancel</span>
+                                </corniebtn>
+
+                                <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4">
+                                    <span class="text-white font-semibold">Save</span>
+                                </corniebtn>
+                            </div>
+
+
+                            <side-modal :visible="addActorPane" @closesidemodal="() => addActorPane = false">
+                                <add-actors />
+                            </side-modal>
+
                         </div>
                     </div>
+
                 </div>
             </div>
 
         </div>
-        <div class="w-full mb-12">
-            <div class="container-fluid">
-                <label for="" class="flex items-center mb-3">
-                    <input type="checkbox" name="" id="">
-                    <span class="mx-3">Send email to scheduled actors.</span>
-                </label>
-                <label for="" class="flex items-center">
-                    <input type="checkbox" name="" id="">
-                    <span class="mx-3">Break Email reminders to practitioners.</span>
-                </label>
-            </div>
-        </div>
-        <div class="w-full mb-12">
-            <div class="container-fluid mb-8 flex justify-end items-center">
-                <corniebtn :loading="false">
-                    <router-link :to="{ name: 'Patient Experience Management.' }" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
-                        Cancel
-                    </router-link>
-                </corniebtn>
-                <Button :loading="loading"
-                    v-if="!$route.params.scheduleId"
-                >
-                    <a @click="saveSchedule"  style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save
-                    </a>
-                </Button>
-                <Button :loading="loading"
-                    v-else
-                     @click="saveSchedule"
-                >
-                    <a  style="background: #E1E3EA" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-gray-500 font-bold py-3 px-8 rounded-full">
-                        Update
-                    </a>
-                </Button>
-            </div>
-        </div>
+
+        
     </div>
 </template>
 <script lang="ts">
@@ -469,6 +220,10 @@ import MultiSelect from './components/apply-to.vue'
 import Templates from "@/components/icons/templates.vue";
 import AddIcon from '@/components/icons/add.vue'
 import IDevice from "@/types/IDevice";
+import SideModal from './components/side-modal.vue';
+import AddActors from './components/select-actor.vue'
+import InfoIcon from '@/components/icons/info.vue'
+import ISchedule from "@/types/ISchedule";
 
 const healthcare = namespace('healthcare');
 const schedulesStore = namespace('schedules');
@@ -493,6 +248,9 @@ const devices = namespace("device");
       MultiSelect,
     Templates,
     AddIcon,
+    SideModal,
+    AddActors,
+    InfoIcon,
   },
 })
 export default class Shift extends Vue {
@@ -501,6 +259,7 @@ export default class Shift extends Vue {
  showPlanning = false;
  loading = false;
  showSelectArea = false;
+ addActorPane = false;
 
     data: any = { 
         days: [ ],
@@ -509,6 +268,14 @@ export default class Shift extends Vue {
         healthcares: [ ],
         devices: [ ],
     }
+
+    slotData: any = {
+
+    };
+
+    occurrence: any = [
+        "Do not repeat", "Every day schedule", "Every week", "Every month", "Every year", "Forever", "Custom", 
+    ]
 
  shift: any = {
      healthcareServices: [ ]
@@ -547,6 +314,10 @@ export default class Shift extends Vue {
 
  removeBreak(index: number) {
      this.data.breaks.splice(index, 1);
+ }
+
+ showAddActor() {
+     this.addActorPane = true;
  }
 
  @contacts.State
@@ -598,214 +369,31 @@ export default class Shift extends Vue {
      { display: 'Monthly', code: 'monthly'}
  ]
 
- breakTypes = [
-     { display: 'Breakfast', code: 'breakfast'},
-     { display: 'Lunch', code: 'lunch'},
-     { display: 'Coffee', code: 'coffee'},
-     { display: '1/2 Hours', code: '1/2 hours'},
-     { display: 'Unpaid', code: 'unpaid'},
- ]
-
- specialties = [ 'Allergy and immunology', 'Diagnostic radiology', 'Anesthesiology', 'Dermatology', 'Emergency medicine', 'Pediatrics', 'Radiation oncology']
- categories = [ 'Adoption', 'Aged Care', 'Allied Health', 'Alternative/Complementary Therapies', 'Child Care /Kindergarten', 'Child Development', 'Community Health Care']
- serviceTypes = [ 'Aged Care Assessment', 'Friendly Visiting', 'Personal Alarms/Alerts', 'Acupuncture', 'Aromatherapy', 'Bowen Therapy']
-
- days = [
-     'Monday',
-     'Tuesday',
-     'Wednesday',
-     'Thursday',
-     'Friday',
-     'Saturday',
-     'Sunday',
- ]
-
- toggleDetailsDisplay() {
-     this.showDetails = !this.showDetails;
- }
-
- toggleBreaksDisplay() {
-     this.showBreaks = !this.showBreaks;
- }
-
- togglePlanningDisplay() {
-     this.showPlanning = !this.showPlanning;
- }
-
- toggleSelectDisplay() {
-     this.showSelectArea = !this.showSelectArea;
- }
-
-
- healthServiceSelected(data: any) {
-     this.shift.healthcareServices.push(data);
- }
-
- zoneSelected(data: any) {
-     this.shift.timeZone = data;
- }
-
- get items() {
-     return this.healthcares.map(i => {
-         return { id: i.id, name: i.name };
-     })
- }
-
- get selectedDays() {
-     if (!this.data.days) return "";
-     if (this.data.days.length <= 2) return this.data.days.join(", ");
-     return `${this.data.days[0]}, ${this.data.days[1]}, ...`
- }
-
- get allLocations() {
-     if (!this.locations || this.locations.length === 0) return [ ];
-     return this.locations.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.name
-         }
-     })
- }
-
- get actors() {
-     if (!this.practitioners || this.practitioners.length === 0) return [ ];
-     return this.practitioners.map(i => {
-         return {
-             code: i.id,
-             display: `${i.firstName} ${i.lastName}`,
-             job: i.jobDesignation,
-             image: i.image
-         }
-     })
- }
-
- get allDevices() {
-     if (!this.devices || this.devices.length === 0) return [ ];
-     return this.devices.map(i => {
-         return {
-             code: i.id,
-             display: i.deviceName
-         }
-     })
- }
-
- get allHealthcares() {
-     if (!this.healthcares || this.healthcares.length === 0) return [ ];
-     return this.healthcares.map(i => {
-         return {
-             code: i.id,
-             display: i.name
-         }
-     })
+ get participants() {
+     const schedule = this.schedules.find(schedule => schedule.id === this.slotData?.scheduleId);
+     const scheduleParticipants = schedule?.practitioners;
+     if (this.slotData?.practitioners) scheduleParticipants.push(...this.slotData.practitioners);
+     return scheduleParticipants;
  }
 
 
 async created() {
+    const { startTime, endTime, scheduleId } = this.$route.query;
+    
+    this.slotData.startDate = new Date(startTime ? startTime.toString() : '')
+    this.slotData.startTime = new Date(startTime ? startTime.toString() : '').toTimeString().substring(0, 5)
+
+    this.slotData.endDate= new Date(endTime ? endTime.toString() : '')
+    this.slotData.endTime = new Date(endTime ? endTime.toString() : '').toTimeString().substring(0, 5)
+
+    this.slotData.scheduleId = scheduleId;
+    
     if (!this.practitioners || this.practitioners.length === 0) await this.fetchPractitioners();
-    if (!this.locations || this.locations.length === 0) await this.fetchLocations();
-    if (!this.schedules || this.schedules.length === 0) await this.getSchedules();
-    if (!this.healthcares || this.healthcares.length === 0) await this.fetchHealthcares();
-    if (!this.devices || this.devices.length === 0) await this.fetchDevices();
-    if (this.$route.params.scheduleId) {
-        const targetSchedule = this.schedules.find((i: any) => i.id === this.$route.params.scheduleId);
-        this.data = {
-            ...targetSchedule,
-            practitioners: targetSchedule.practitioners.map((i: any)=> {
-                return {
-                    code: i.id, display: `${i.firstName} ${i.lastName}`, job: i.jobDesignation, image: i.image
-                }
-            })
-        }
-    }
+    if (this.schedules?.length === 0) await this.getSchedules();
+    
     
 }
 
- selectShiftType(type: string) {
-     this.shift.type = type;
- }
-
- selectSchedule(type: string) {
-    this.schedules = this.schedules.map((i: any) => {
-        if (i.actual === type) {
-            i.value = true;
-            this.shift.schedule = type;            
-        } else {
-            i.value = false;
-        }
-        return i;
-    })
- }
-
- selectBreakType(type: string) {
-    this.shift.breakType = type;
- }
-
- async saveSchedule() {
-     const body = {
-         ...this.data,
-         organizationId: this.data.organizationId ? this.data.organizationId : this.user.orgId,
-         practitioners: this.data.practitioners.map((i: any) => i.code),
-         devices: this.data.devices.map((i: any) => i.code),
-         slotSize: +this.data.slotSize,
-         id: this.$route.params.scheduleId,
-         startTime: this.data.startTime ? `${this.data.startTime.split(':')[0]}:${this.data.startTime.split(':')[1]}` : '',
-         endTime: this.data.endTime ? `${this.data.endTime.split(':')[0]}:${this.data.endTime.split(':')[1]}` : ''
-     }
-     console.log(body, "body");
-     this.loading = true;
-    try {
-        if (!this.$route.params.scheduleId) {
-            try {
-                const created = await this.createSchedule(body);
-                console.log(created, "CREATED");
-                
-                if (created) {
-                    notify({
-                        msg: "Schedule created successfully",
-                        status: "success",
-                    });
-                    this.$router.push('/dashboard/provider/experience/schedules')
-                } else {
-                    notify({
-                        msg: "Schedule creation failed",
-                        status: "error",
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-                notify({
-                    msg: "Schedule creation failed",
-                    status: "error",
-                });
-            }
-        } else {
-            try {
-                const updated = await this.updateSchedule(body);
-                if (updated) {
-                    notify({
-                        msg: "Schedule updated successfully",
-                        status: "success",
-                    });
-                    this.$router.push('/dashboard/provider/experience/schedules')
-                } else {
-                    notify({
-                        msg: "Schedule update failed",
-                        status: "error",
-                    });
-                }
-            } catch (error) {
-                notify({
-                    msg: "Schedule update failed",
-                    status: "error",
-                });
-            }
-        }
-        
-    } catch (error) {
-        console.log(error);
-    }
-     this.loading = false;
- }
 }
 </script>
 <style>

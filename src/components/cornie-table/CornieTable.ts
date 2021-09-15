@@ -73,7 +73,7 @@ export default class CornieTable extends Vue {
 
   query = "";
 
-  orderBy: Sorter = (a: any, b: any) => -1;
+  orderBy: Sorter = (a: any, b: any) => 1;
   selectedItems: any[] = [];
   selectedAll = false;
   showColumnFilter = false;
