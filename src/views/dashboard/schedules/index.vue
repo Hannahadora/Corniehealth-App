@@ -9,18 +9,18 @@
 
 
         <div class="w-full border-b-4 curved flex my-8">
-            <div class="container-fluid flex font-semibold text-xl">
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
-                  @click="() => activeTab = 0"
-                >Schedule</a>
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
-                  @click="() => activeTab = 1"
-                >Availability</a>
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 2, 'text-gray-500': activeTab !== 2 }"
-                  @click="() => activeTab = 2"
-                >Fixed Slot</a>
-            </div>
+          <div class="container-fluid flex font-semibold text-xl">
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
+                @click="() => activeTab = 0"
+              >Schedule</a>
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
+                @click="() => activeTab = 1"
+              >Availability</a>
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 2, 'text-gray-500': activeTab !== 2 }"
+                @click="() => activeTab = 2"
+              >Fixed Slot</a>
           </div>
+        </div>
           
 
         <div class="w-full" v-if="activeTab === 2">

@@ -50,6 +50,7 @@
           :text="link.name"
           :children="link.children"
           :hovered="hovered"
+          :hasSubsection="link.hasSubsection"
         >
           <keep-alive>
             <component :is="link.icon"></component>
@@ -96,6 +97,7 @@ interface ISidebarLink {
   name: string;
   to: string | { name: string };
   icon?: string;
+  hasSubsection: boolean;
   children?: ISidebarLink[];
 }
 
@@ -121,42 +123,43 @@ export default class CorniDashboardeSideBar extends Vue {
   hovered = false;
 
   providerLinks: ISidebarLink[] = [
-    { name: "Dashboard", to: "home", icon: "dashboard-icon" },
+    { name: "Dashboard", to: "home", icon: "dashboard-icon", hasSubsection: false, },
     {
       name: "Experience",
       to: "experience",
       icon: "patient-icon",
+      hasSubsection: true,
       children: [
-        { name: "Patients", to: { name: "Patients" } },
-        { name: "Schedules", to: "/dashboard/experience/schedules" },
-        { name: "Appointments", to: { name: "Appointment" } },
-        { name: "Visits", to: "/dashboard/experience/visits" },
-        { name: "Requests", to: { name: "Requests" } },
-        { name: "Tasks", to: { name: "Tasks" } },
-        { name: "Messaging", to: "/dashboard/experience/messages" },
-        { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings" },
-        { name: "Questionaires", to: "/dashboard/experience/questionaires" },
+        { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
+        { name: "Schedules", to: "/dashboard/experience/schedules", hasSubsection: false },
+        { name: "Appointments", to: { name: "Appointment" }, hasSubsection: false },
+        { name: "Visits", to: "/dashboard/experience/visits", hasSubsection: false },
+        { name: "Requests", to: { name: "Requests" }, hasSubsection: false },
+        { name: "Tasks", to: { name: "Tasks" }, hasSubsection: false },
+        { name: "Messaging", to: "/dashboard/experience/messages", hasSubsection: false },
+        { name: "Satisfaction & Ratings", to: "/dashboard/experience/ratings", hasSubsection: false },
+        { name: "Questionaires", to: "/dashboard/experience/questionaires", hasSubsection: false },
       ],
     },
-    { name: "Clinical", to:  { name: "Clinical" }, icon: "book-icon" },
-    { name: "In-Patient", to: "in-patient", icon: "clinic-icon" },
-    { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon" },
-    { name: "Medications", to: "medications", icon: "pill-icon" },
-    { name: "Certificates", to: "certificates", icon: "medal-icon" },
-    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon" },
-    { name: "Accounting", to: "accounting", icon: "wallet-icon" },
-    { name: "Analytics", to: "analytics", icon: "chart-icon" },
-    { name: "Referrals", to: "refs", icon: "refer-icon" },
+    { name: "Clinical", to:  { name: "Clinical" }, icon: "book-icon", hasSubsection: false },
+    { name: "In-Patient", to: "in-patient", icon: "clinic-icon", hasSubsection: false },
+    { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon", hasSubsection: false },
+    { name: "Medications", to: "medications", icon: "pill-icon", hasSubsection: false },
+    { name: "Certificates", to: "certificates", icon: "medal-icon", hasSubsection: false },
+    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon", hasSubsection: false },
+    { name: "Accounting", to: "accounting", icon: "wallet-icon", hasSubsection: false },
+    { name: "Analytics", to: "analytics", icon: "chart-icon", hasSubsection: false },
+    { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
   ];
 
   hmoLinks: ISidebarLink[] = [
-    { name: "Dashboard", to: "settings", icon: "dashboard-icon" },
-    { name: "Experience", to: "experience", icon: "refer-icon" },
-    { name: "Health Plans", to: "health-plans", icon: "book-icon" },
-    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon" },
-    { name: "Accounting", to: "accounting", icon: "wallet-icon" },
-    { name: "Analytics", to: "analytics", icon: "chart-icon" },
-    { name: "Approvals", to: "analytics", icon: "chart-icon" },
+    { name: "Dashboard", to: "settings", icon: "dashboard-icon", hasSubsection: false },
+    { name: "Experience", to: "experience", icon: "refer-icon", hasSubsection: false },
+    { name: "Health Plans", to: "health-plans", icon: "book-icon", hasSubsection: false },
+    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon", hasSubsection: false },
+    { name: "Accounting", to: "accounting", icon: "wallet-icon", hasSubsection: false },
+    { name: "Analytics", to: "analytics", icon: "chart-icon", hasSubsection: false},
+    { name: "Approvals", to: "analytics", icon: "chart-icon", hasSubsection: false },
   ];
 
   get accType() {
