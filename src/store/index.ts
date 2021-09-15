@@ -24,6 +24,7 @@ import VisitsStore from "./visits";
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
 import PatientStore from "./patient";
+import RequestStore from "./request";
 
 export default createStore({
   modules: {
@@ -45,6 +46,7 @@ export default createStore({
     shifts: ShiftsStore,
     practiceform: PracticeformStore,
     appointment: AppointmentStore,
+    request: RequestStore,
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,

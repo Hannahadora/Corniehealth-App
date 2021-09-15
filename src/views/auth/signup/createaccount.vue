@@ -353,7 +353,6 @@ code = "";
     try {
       const data = await quantumClient().post("/auth/signup/", this.payload);
       if (data.success) {
-        console.log(data);
         this.setUser(data);
         this.setCornieData({ accountType: this.accountType });
         this.next();

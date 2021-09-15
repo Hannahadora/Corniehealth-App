@@ -46,7 +46,8 @@
         type="submit"
         :loading="loading"
         class="
-          p-3
+          py-1
+          px-3
           w-full
           bg-danger
           text-white
@@ -61,7 +62,8 @@
       @click="$router.push('/signup')"
         type="button"
         class="
-          p-3
+          py-1
+          px-3
           w-full
           bg-gray-600
           text-white
