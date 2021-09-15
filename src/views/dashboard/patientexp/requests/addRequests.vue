@@ -15,7 +15,7 @@
                     class="required"
                     :rules="required"
                     :items="['Status Reasom Code']"
-                    v-model="serviceCategory"
+                    v-model="requestModel.requestInfo.statusReason"
                     label="status reason"
                     placeholder="--Select--"
                   >
@@ -24,7 +24,7 @@
                     class="required"
                     :rules="required"
                     :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
-                    v-model="serviceType"
+                    v-model="requestModel.requestInfo.intent"
                     label="intent"
                     placeholder="--Select--"
                   >
@@ -32,8 +32,8 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['']"
-                    v-model="specialty"
+                    :items="['category']"
+                    v-model="requestModel.requestInfo.category"
                     label="category"
                     placeholder="--Select--"
                   >
@@ -42,7 +42,7 @@
                     class="required"
                     :rules="required"
                     :items="['routine','urgent','asap','stat']"
-                    v-model="appointmentType"
+                    v-model="requestModel.requestInfo.priority"
                     label="priority"
                     placeholder="--Select--"
                   >
@@ -51,7 +51,7 @@
                     class="required"
                     :rules="required"
                     :items="['reason code']"
-                    v-model="reasonCode"
+                    v-model="requestModel.requestInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
                   >
@@ -59,8 +59,8 @@
                   <cornie-select
                     :rules="required"
                     :items="['reason reference']"
-                    v-model="reasonRef"
-                    label="reason for prohibition?"
+                    v-model="requestModel.requestInfo.reasonForProhibition"
+                    label="reason for prohibition"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -72,17 +72,20 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
+                    :items="['recorder']"
+                    v-model="requestModel.requestDetails.recorder"
                     label="recorder"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                   class="required"
+                   class="required cursor-pointer"
                     :rules="required"
-                    :items="['Practitioner','PractitionerRole','Organization','Patient','RelatedPerson','Device']"
-                    v-model="serviceType"
+                     v-for="item in patient"
+                    @click="updateRequester(item.id)"
+                    :key="item.id"
+                    :items="[item.firstname +' '+ item.lastname]"
+                    v-model="requestModel.requestDetails.requester"
                     label="requester"
                     placeholder="--Select--"
                   >
@@ -90,8 +93,8 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.specialty"
-                    v-model="specialty"
+                    :items="['Encounter']"
+                    v-model="requestModel.requestDetails.encounter"
                     label="encounter"
                     placeholder="--Select--"
                   >
@@ -100,7 +103,7 @@
                     class="required"
                     :rules="required"
                     :items="['Condition','Problem','Diagnosis Code']"
-                    v-model="serviceCategory"
+                    v-model="requestModel.requestDetails.reasonCode"
                     label="reason code"
                     placeholder="--Select--"
                   >
@@ -109,7 +112,7 @@
                    class="required"
                     :rules="required"
                     :items="['Condition','Observation']"
-                    v-model="serviceType"
+                    v-model="requestModel.requestDetails.reasonReference"
                     label="reason reference"
                     placeholder="--Select--"
                   >
@@ -117,8 +120,8 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    :items="['definition']"
+                    v-model="requestModel.requestDetails.definition"
                     label="definition"
                     placeholder="--Select--"
                   >
@@ -127,7 +130,7 @@
                    class="required"
                     :rules="required"
                     :items="['CarePlan','MedicationRequest','ServiceRequest','ImmunizationRecommendation']"
-                    v-model="serviceType"
+                    v-model="requestModel.requestDetails.basedOn"
                     label="based on"
                     placeholder="--Select--"
                   >
@@ -135,8 +138,8 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    :items="['information']"
+                    v-model="requestModel.requestDetails.supportingInformation"
                     label="supporting information"
                     placeholder="--Select--"
                   >
@@ -146,19 +149,20 @@
              <accordion-component title="Subject" expand="true" v-model="opened" :opened="false">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Patient','Group']"
-                    v-model="serviceCategory"
+                    class="required cursor-pointer"
+                    v-for="item in patient"
+                    @click="updateSubject(item.id)"
+                    :key="item.id"
+                    :items="[item.firstname +' '+ item.lastname]"
+                    v-model="requestModel.subject.subject"
                     label="subject"
-                    placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                    class="required"
                     :rules="required"
                     :items="['Coverage','Claim Response']"
-                    v-model="serviceType"
+                    v-model="requestModel.subject.paymentOption"
                     label="payment option"
                     placeholder="--Select--"
                   >
@@ -174,16 +178,18 @@
                     class="required"
                     :rules="required"
                     :items="['Organisation','Care Partner']"
-                    v-model="serviceCategory"
+                    v-model="requestModel.performer.dispenserType"
                     label="dispenser type"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                    <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Organisation','Care Partner']"
-                    v-model="serviceCategory"
+                    class="required cursor-pointer"
+                    v-for="item in practitioner"
+                    @change="updatePractice(item.id)"
+                    :key="item.id"
+                    :items="[item.firstName +' '+ item.lastName]"
+                    v-model="requestModel.performer.dispenser"
                     label="dispenser"
                     placeholder="--Select--"
                   >
@@ -195,15 +201,18 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
+                    :items="['service']"
+                    v-model="requestModel.medicationAdministration.performerType"
                     label="performer type"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
-                    :items="['Practitioner','PractitionerRole','Organization','Patient','RelatedPerson','Device','CareTeam']"
-                    v-model="serviceType"
+                    v-for="item in practitioner"
+                    @click="updatePerformer(item.id)"
+                    :key="item.id"
+                    :items="[item.firstName +' '+ item.lastName]"
+                    v-model="requestModel.medicationAdministration.performer"
                     label="performer"
                     placeholder="--Select--"
                   >
@@ -216,7 +225,7 @@
                     class="required"
                     :rules="required"
                     :items="['Pick-up','Ship to Patient Address','Ship to Hospital Address']"
-                    v-model="serviceCategory"
+                    v-model="requestModel.fufillment.nonSafetyCapRequest"
                     label="non-safety cap request"
                     placeholder="--Select--"
                   >
@@ -224,17 +233,17 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="affix label?"
+                    :items="['service type']"
+                    v-model="requestModel.fufillment.affixLabel"
+                    label="affix label"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    :items="['option']"
+                    v-model="requestModel.fufillment.fulfillmentOption"
                     label="fulfillment option"
                     placeholder="--Select--"
                   >
@@ -242,8 +251,8 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    :items="['shipping']"
+                    v-model="requestModel.fufillment.priorityShipping"
                     label="priority shipping"
                     placeholder="--Select--"
                   >
@@ -254,14 +263,14 @@
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
                     :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
+                    v-model="requestModel.history.priorPrescription"
                     label="prior prescription"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    v-model="requestModel.history.detectedIssue"
                     label="detected issue"
                     placeholder="--Select--"
                   >
@@ -270,7 +279,7 @@
                    class="required"
                     :rules="required"
                     :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    v-model="requestModel.history.eventHistory"
                     label="event history"
                     placeholder="--Select--"
                   >
@@ -280,7 +289,7 @@
             
             <span class="flex justify-end w-full">
               <button
-                @click="$router.push('/dashboard/provider/experience/appointments')"
+                @click="$router.push('/dashboard/provider/experience/requests')"
                 type="button"
                 class="
                   outline-primary
@@ -323,26 +332,6 @@
         :columns="practitioner"
           @update:preferred="showMedication"
           v-model:visible="showMedicationModal"/>
-        <practitioners-filter
-          :columns="practitioner"
-          @update:preferred="addPractitioner"
-          v-model:visible="practitionerFilter"
-        />
-        <patients-filter
-          :columns="patients"
-          @update:preferred="addPatients"
-          v-model:visible="patientFilter"
-        />
-        <devices-filter
-          :columns="device"
-          @update:preferred="addDevices"
-          v-model:visible="deviceFilter"
-        />
-         <roles-filter
-          :columns="role"
-          @update:preferred="addRoles"
-          v-model:visible="roleFilter"
-        />
       </div>
     </div>
   </div>
@@ -356,7 +345,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
+import IRequest from "@/types/IRequest";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -375,15 +364,22 @@ import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import MedicationModal from "./medication.vue";
 
-const appointment = namespace("appointment");
+const request = namespace("request");
 const dropdown = namespace("dropdown");
 
-const emptyParticipant: ParticipantDetail = {
-  period: {} as Period,
-  required: "",
-  consultationMedium: "",
-  
+const emptyRequest: IRequest = {
+  requestInfo: {},
+  requestDetails: {},
+  subject: {},
+  performer: {},
+  medicationAdministration: {},
+  fufillment: {},
+  history: {},
+  medications: [],
+
+
 };
+
 
 @Options({
   components: {
@@ -408,13 +404,26 @@ const emptyParticipant: ParticipantDetail = {
     RolesFilter,
   },
 })
-export default class AddAppointment extends Vue {
-  @Prop({ type: String, default: "" })
-  id!: string;
+export default class AddRequest extends Vue {
+  // @Prop({ type: String, default: "" })
+  // id!: string;
 
+  @Prop({ type: Object, required: false, default: { ...emptyRequest} })
+  request!: IRequest;
 
-  @appointment.Action
-  getAppointmentById!: (id: string) => IAppointment;
+  requestModel = {} as IRequest;
+
+  @request.Action
+  getRequestById!: (id: string) => IRequest;
+
+  @Watch("request")
+  requestUpdated(request: IRequest) {
+    this.requestModel = JSON.parse(JSON.stringify({ ...request }));
+  }
+
+  @request.Mutation
+  setRequests!: any;
+
   loading = false;
   expand = false;
   isVisible = "";
@@ -427,53 +436,24 @@ export default class AddAppointment extends Vue {
   openedM = false;
   showMedicationModal = false;
 
-actor = "";
-  type = "";
 
-  serviceCategory = "";
-  locationId = null;
-  deviceId = null;
-  serviceType = "";
-  specialty = "";
-  appointmentType = "";
-  reasonCode = "";
-  reasonRef = "";
-  priority = "";
-  description = "";
-  supportingInfo ="";
-  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  duration = "";
-  comments = "";
-  patientInstruction = "";
-    period = {} as Period;
-  participantDetail = {...emptyParticipant}
-  
-  Practitioners = [];
-  Devices = [];
-  Patients: any[] = [];
-  roles = [];
+  patient=[];
+  practitioner=[];
 
-  newPractitioners =[];
-  newDevices = [];
-  newPatients =[];
-  newRoles = [];
+dispenser="";
+  // requestInfo = {};
+  // requestDetails = {};
+  // subject = {};
+  // performer = {};
+  // medicationAdministration = {};
+  // fufillment= {};
+  // history ={};
+  // medications ={};
 
-  roleFilter = false;
-  deviceFilter = false;
-  practitionerFilter = false;
-  patientFilter = false;
-  availableFilter = false;
-  participantitem = "";
-
-  practitioner = [];
-  device  = [];
-  patient = [];
-  role = [];
- 
-  availability: any[] = [];
-  availabilities = Array();
- 
+ @Watch("requestModel")
+  updatePractice(value:string){
+     this.payload.performer.dispenser = value;
+  }
 
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
@@ -482,193 +462,128 @@ actor = "";
     { text: "Active", value: true },
     { text: "Inactive", value: false },
   ];
+
   required = string().required();
   dropdowns = {} as IIndexableObject;
   dropdowns2 = {} as IIndexableObject;
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  @Watch("id")
-  idChanged() {
-    this.setAppointment();
+  get isUpdate() {
+    return Boolean(this.request.id);
   }
-  async setAppointment() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comments = appointment.comments;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
 
+  // @Watch("id")
+  // idChanged() {
+  //   this.setRequest();
+  // }
+  async setRequest() {
+     this.requestModel = JSON.parse(JSON.stringify({ ...this.request }));
+    // let manDate = this.deviceModel.udiCarrier.manufacturerDate;
+    // let expDate = this.deviceModel.udiCarrier.expirationDate;
+    // if (manDate) {
+    //   manDate = new Date(manDate).toLocaleDateString("en-US");
+    // }
+    // if (expDate) expDate = new Date(expDate).toLocaleDateString("en-US");
   }
   get payload() {
-    const payload =  {
-      serviceCategory: this.serviceCategory,
-      locationId: this.locationId,
-      deviceId: this.deviceId,
-      serviceType: this.serviceType,
-      specialty: this.specialty,
-      appointmentType: this.appointmentType,
-      reasonCode: this.reasonCode,
-      supportingInfo: this.supportingInfo,
-      reasonRef: this.reasonRef,
-      priority: this.priority,
-      description: this.description,
-      slot: this.slot,
-      basedOn: this.basedOn,
-      duration: this.duration,
-      comments: this.comments,
-      patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
-      period: this.period,
-    } as any
-    if(this.Devices.length > 0){
-      payload.Devices = this.Devices;
-    }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
-    if(this.Practitioners.length > 0){
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload
+     const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
+   // const medication = model.medications.medicationDetails as any;
+    // if (medication.duration)
+    //   medication.duration = new Date(
+    //     medication.duration
+    //   ).toISOString();
+    //   if (medication.dispenseInterval)
+    //   medication.dispenseInterval = new Date(
+    //     medication.dispenseInterval
+    //   ).toISOString();
+    return model;
+
+    // return  {
+    //   requestInfo: this.requestInfo,
+    //   requestDetails: this.requestDetails,
+    //   subject: this.subject,
+    //   performer: this.performer,
+    //   medicationAdministration: this.medicationAdministration,
+    //   fufillment: this.fufillment,
+    //   history: this.history,
+    //   medications: this.medications,
+    // } 
   }
   get allaction() {
-    return this.id ? "Edit" : "New";
+    return this.isUpdate ? "Edit" : "New";
   }
-  get selectedItem() {
-    return this.participantitem;
-  }
-  async showMedication(){
+ async updateSubject(value:string){
+   console.log("value");
+   console.log(value);
+    this.payload.subject.subject = value;
+ }
+ async updateRequester(value:string){
+    this.payload.requestDetails.requester = value;
+ }
+//  async updatePractice(value:string){
+//    this.payload.performer.dispenser = value;
+//  }
+ async updatePerformer(value:string){
+   this.payload.medicationAdministration.performer = value;
+ }
+  async showMedication(value:any){
+    console.log(value);
+    this.requestModel.medications = value;
     this.showMedicationModal = true;
-  }
-  async addPractitioner(value: any,id:any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.Practitioners = id;
-    this.practitionerFilter = false;
-  }
-  removePractitioner(index: number) {
-    this.newPractitioners.splice(index, 1);
-  }
-  removeRole(index: number){
-    this.newRoles.splice(index, 1);
-  }
-   removeDevice(index: number){
-    this.newDevices.splice(index, 1);
-  }
-  showAvailable() {
-    this.availableFilter = true;
-  }
-  async addPatients(value: any,id:any) {
-    this.newPatients = value;
-    this.Patients = id;
-    this.patientFilter = false;
-  }
-  async addDevices(value:any, id:any){
-     this.newDevices = value;
-     this.Devices = id;
-    this.deviceFilter = false;
-  }
-  async addRoles(value: any,id:any){
-   // this.role.push(value);
-    this.newRoles = value;
-    this.roles = id;
-    this.roleFilter = false;
-  }
-   get setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
-    }else if(this.type == 'Practitioner Role'){
-        this.roleFilter = true;
-    }
-    return this.type;
   }
 
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateAppointment();
-    else await this.createAppointment();
+    if (this.isUpdate) await this.updateRequest();
+    else await this.createRequest();
     this.loading = false;
   }
-  async createAppointment() {
+  async createRequest() {
     //const period = this.period;
-   this.payload.period.start = new Date(this.period.start).toISOString();
-   // this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
     try {
-      const response = await cornieClient().post("/api/v1/appointment", this.payload);
+      const response = await cornieClient().post("/api/v1/requests", this.payload);
       if (response.success) {
-          window.notify({ msg: "Appointment created", status: "success" });
-          this.$router.push("/dashboard/provider/experience/appointments");
+          this.setRequests([response.data]);
+          window.notify({ msg: response.data.message, status: "success" });
+          this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
       console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
+      window.notify({ msg: error, status: "error" });
     }
   }
 
-  async updateAppointment() {
-    const url = `/api/v1/appointment/${this.id}`;
+  async updateRequest() {
+     const id = this.request.id;
+    const url = `/api/v1/requests/${id}`;
     const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Appointment updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
+          this.setRequests([response.data]);
+        window.notify({ msg: response.data.message, status: "success" });
+        this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: "Appointment not updated", status: "error" });
+      window.notify({ msg: error, status: "error" });
     }
   }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
-  }
-  async fetchDevices() {
-    const AllDevices = cornieClient().get("/api/v1/devices");
-    const response = await Promise.all([AllDevices]);
-    this.device = response[0].data;
-  }
-  async fetchRoles() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
-  }
-   async fetchPatients() {
+  async fetchPateints() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patient = response[0].data;
   }
+ async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+
   async created() {
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
-    this.fetchPatients();
+    this.setRequest();
+    this.fetchPateints();
+    this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;

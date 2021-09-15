@@ -1,8 +1,8 @@
 <template>
-<div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
-   <div class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg">
+<div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
+   <div class="w-80 lg:w-full xl:w-full md:w-full block p-4 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg">
         <form class="m-8" @submit.prevent="submit">
-            <h2 class="font-bold text-gray-900 mb-16 text-3xl">
+            <h2 class="font-bold text-gray-900 mb-16 text-2xl">
             Reset Password
             </h2><label for="password">
         <span class="block uppercase mb-1 text-xs font-bold">Previous Password</span>
@@ -10,7 +10,7 @@
           v-model="previousPassword"
           required
           id="password"
-          class="border rounded"
+          class="border rounded py-2"
         />
         <span class="flex w-2/3 justify-between items-center">
           <span class="text-xs text-gray-500">Password Strength</span>
@@ -32,7 +32,7 @@
           id="confirm"
           required
           v-model="newPassword"
-          class="border rounded"
+          class="border rounded py-2"
           :class="{ 'border-red-500': confirmation != password }"
         />
         <span v-if="confirmation != password" class="text-xs text-red-500"
@@ -82,7 +82,7 @@
         </ul>
       </div>
             <div class="flex items-center justify-between">
-            <cornie-btn :loading="loading" class="font-semibold rounded-full  bg-danger mt-3 w-full text-white p-2" type="submit">
+            <cornie-btn :loading="loading" class="font-semibold rounded-full py-1 px-3  bg-danger mt-3 w-full text-white p-2" type="submit">
                 Submit
             </cornie-btn>
             </div>
@@ -101,8 +101,9 @@ import TickIcon from "@/components/icons/tick.vue";
 import MultiInput from "@/components/multi-input.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
+import store from "@/store";
+import { namespace } from "vuex-class";
 
-type CreatedUser = { id: string; email: string };
 
 @Options({
   components: {
@@ -115,11 +116,7 @@ type CreatedUser = { id: string; email: string };
   },
 })
 export default class SignUp extends Vue {
-@PropSync("user", { required: false })
-  userSync!: CreatedUser;
 
-  @Prop({ required: false })
-  user!: CreatedUser;
   code = "";
 
   domain = "";
@@ -134,22 +131,11 @@ export default class SignUp extends Vue {
     };
   }
 
- setUser(payload: any) {
-    this.userSync = {
-      id: payload.userId,
-      email: payload.email
-    };
-  }
 
 
   userCreated = false;
   emailVerified = false;
   loading = false;
-
-  @Watch("user", { deep: true })
-  userChanged(user: CreatedUser) {
-    if (user.id) this.userCreated = true;
-  }
 
  get valid() {
     return this.passedReqs >= 5;
@@ -215,13 +201,20 @@ export default class SignUp extends Vue {
     try {
       const data = await quantumClient().post("/auth/change-password/", this.payload);
        this.loading = false;
-      if (!data.success) {
-         window.notify({ msg: errMsg });
+      if (data.success) {
+          window.notify({ msg: "Password updated", status: "success" });
+      }else{
+          window.notify({ msg: errMsg, status: "error" });
       }
-      this.setUser(data);
+   //   this.setUser(data);
     } catch (error) {
-       window.notify({ msg: error });
+       window.notify({ msg: error.response.data.msg });
+         this.loading = false;
     }
+  }
+
+  async created(){
+    this.payload;
   }
 
 }

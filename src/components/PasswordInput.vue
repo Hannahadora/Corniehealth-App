@@ -1,5 +1,5 @@
 <template>
-  <icon-input :type="visible ? 'text' : 'password'">
+  <icon-input :type="visible ? 'text' : 'password'" class="py-2 px-3">
     <template v-slot:append>
       <span @click="visible = !visible">
         <open-eye-icon />

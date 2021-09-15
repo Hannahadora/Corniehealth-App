@@ -18,7 +18,7 @@ Make a new service reques by clicking on “New Request” above</h3>
         focus:outline-none
         hover:opacity-90
       "
-       @click="$router.push('/dashboard/provider/experience/add-requests')"
+       @click="$router.push('/dashboard/provider/experience/add-request')"
     >
      New Requests
     </button>
