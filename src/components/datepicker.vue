@@ -1,6 +1,6 @@
 <template>
   <span class="block w-full">
-    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
+    <label class="block uppercase mb-0.5 text-xs font-bold">{{ label }}</label>
     <Field
       v-model="date"
       :rules="customRules"
@@ -111,7 +111,7 @@ export default class DatePicker extends Vue {
 
   get customRules() {
     const defaultRule = date();
-    if (!this.rules) return defaultRule.concat(this.rules);
+    if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
 
