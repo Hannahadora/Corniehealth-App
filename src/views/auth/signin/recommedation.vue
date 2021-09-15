@@ -3,7 +3,7 @@
 <two-factor v-if="twoFactor" />
  <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-else>
   <div class="w-full h-full flex flex-col p-12">
-    <h2 class="font-bold text-3xl">Welcome Back</h2>
+    <h2 class="font-bold text-3xl">Welcome Back!</h2>
     <div class="flex flex-col mt-10">
       <h3 class="font-bold text-danger text-xl">2FA Required</h3>
       <p class="block mt-4 mb-5">
@@ -14,7 +14,7 @@
     <div class="block w-full justify-self-end mt-auto">
       <div class="w-full flex flex-col items-end text-white">
         <cornie-btn
-          @click="twoFactor = true" class="bg-danger rounded-full py-1 px-3 w-full mb-3">
+         @click="$router.push('/dashboard/providerr/user/security')" class="bg-danger rounded-full py-1 px-3 w-full mb-3">
           Set up
         </cornie-btn>
         <cornie-btn

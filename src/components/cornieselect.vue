@@ -35,7 +35,7 @@
                 </span>
                 <input
                   v-else
-                  placeholder="--Select--"
+                  placeholder="Select"
                   disabled
                   :value="displayVal"
                   class="
@@ -127,7 +127,7 @@
 import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync,Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
 

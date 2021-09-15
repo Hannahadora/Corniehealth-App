@@ -3,7 +3,7 @@
   <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!login">
     <div class="w-full block p-12">
       <div>
-              <h2 class="font-bold text-2xl mb-5">Welcome Back</h2>
+              <h2 class="font-bold text-2xl mb-5">Welcome Back!</h2>
               <p class="text-black mb-10">Login to your corniehealth account</p>
               <cornie-btn @click="login = true" class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2" type="button">
               Continue with  Email
@@ -49,12 +49,8 @@
                 v-model="password"
                 class="border rounded"
               />
-              <router-link
-                to="/reset/password"
-                class="text-xs text-right mt-1 text-gray-400"
-              >
-                Forgot Password?
-              </router-link>
+               
+            <span class="text-right text-gray-400 mb-2 text-xs cursor-pointer" @click="$router.push('/reset/password')"> Forgot Password?</span>
             </label>
           </div>
           <span class="flex item-center mb-3">
@@ -65,7 +61,7 @@
           </span>
           <cornie-btn
             :loading="loading"
-            class="font-semibold rounded-full bg-danger mt-3 mb-5 w-full text-white p-2"
+            class="font-semibold rounded-full bg-danger mt-3 mb-5 w-full text-white py-1 px-3"
             type="submit"
             >
             Login
@@ -111,6 +107,7 @@ export default class Signin extends Vue {
   domainName = "";
   loading = false;
   login = false;
+  
   get payload() {
     return {
       email: this.email,
@@ -122,6 +119,11 @@ export default class Signin extends Vue {
     this.login = true;
   }
 
+  get userId() {
+    return {
+      userId: store.state.user.user.id,
+    };
+  }
   requiredRule = string().required();
   emailRule = string().email();
   async submit() {
@@ -136,6 +138,10 @@ export default class Signin extends Vue {
       window.notify({ msg: "Username or password incorrect", status: "error" });
     }
     this.loading = false;
+  }
+
+   async created(){
+    this.userId;
   }
 }
 </script>
