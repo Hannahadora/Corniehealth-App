@@ -1,11 +1,11 @@
 <template>
   <div
-    class="mt-2 mb-5 rounded-lg settings bg-white w-full overflow-hidden"
+    class="mt-2 mb-5  rounded-lg settings"
   >
-    <div class="w-full h-full p-3 border-r-2 overflow-hidden">
-      <clinical-sidebar class="overflow-hidden" />
+    <div class="w-full p-3 h-screen max-h-full">
+      <clinical-sidebar  class="pb-56"/>
     </div>
-    <div class="p-3 w-full overflow-auto">
+    <div class="p-3 w-full  overflow-auto h-screen pb-72 max-h-full">
       <router-view />
     </div>
   </div>

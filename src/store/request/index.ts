@@ -1,20 +1,26 @@
 import ObjectSet from "@/lib/objectset";
 import IRequest from "@/types/IRequest";
 import { StoreOptions } from "vuex";
-import { deleteRequest, fetchRequests } from "./helper";
+import { deleteRequest, fetchRequests,getPatients } from "./helper";
 
 interface RequestState {
   requests: IRequest[];
+  patients: any[],
 }
 
 export default {
   namespaced: true,
   state: {
     requests: [],
+    patients: [],
   },
   mutations: {
-    setRequests(state, requests: IRequest[]) {
-      state.requests = [...requests];
+    updatedRequests(state, requests: IRequest[]) {
+      const requestSet = new ObjectSet([...state.requests, ...requests], "id");
+      state.requests = [...requestSet];
+    },
+    setPatients(state, pts) {
+      if (pts && pts.length > 0) state.patients = [ ...pts ];
     },
     updateRequests(state, requests: IRequest[]) {
       const requestSet = new ObjectSet([...state.requests, ...requests], "id");
@@ -31,7 +37,11 @@ export default {
   actions: {
     async fetchRequests(ctx) {
       const requests = await fetchRequests();
-      ctx.commit("setRequests", requests);
+      ctx.commit("updatedRequests", requests);
+    },
+    async getPatients(ctx) {
+      const pts = await getPatients();      
+      ctx.commit("setPatients", pts);
     },
     async getRequestById(ctx, id: string) {
       if (ctx.state.requests.length < 1) await ctx.dispatch("fetchRequests");

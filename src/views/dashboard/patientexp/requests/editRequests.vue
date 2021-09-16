@@ -11,7 +11,7 @@
             <div class="tab-content">
                 <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Requests Info">      
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabstatus"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabstatus" @click="updateRequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabstatus = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                 <div>
@@ -25,15 +25,14 @@
                             <cornie-select
                             v-if="tabstatus"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            :items="['Try another treatment first','Prescription requires clarification','Drug level too high','Drug level too high','Admission to hospital','Lab interference issues','Patient not available','Parent is pregnant/breast feeding','Allergy','Drug interacts with another drug','Duplicate therapy','Suspected intolerance','Patient scheduled for surgery','Waiting for old drug to wash out']"
+                            v-model="requestModel.requestInfo.statusReason"
                             label="status"
-                            placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">status</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{requestModel.requestInfo.statusReason}}</div>
                             </span>
                         </div>
                         <div>
@@ -62,88 +61,102 @@
                             <cornie-input
                             v-if="tabstatus"
                             label="encounter"
+                            v-model="requestModel.requestDetails.encounter"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">encounter</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{  requestModel.requestDetails.encounter }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-input
                             v-if="tabstatus"
                             label="priority"
+                             v-model="requestModel.requestInfo.priority"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">priority</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.requestInfo.priority }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-input
                             v-if="tabstatus"
                             label="reason ref"
+                             v-model="requestModel.requestDetails.reasonReference"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">reason ref</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.requestDetails.reasonReference }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-input
                             v-if="tabstatus"
                             label="reason code"
+                            v-model="requestModel.requestDetails.reasonCode"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">reason code</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.requestDetails.reasonCode }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-input
                             v-if="tabstatus"
                             label="intent"
+                            v-model="requestModel.requestInfo.intent"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">intent</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{  requestModel.requestInfo.intent }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
-                            v-if="tabstatus"
-                            label="performer"
-                            placeholder="--Enter--"
-                            />
+                            <div v-if="tabstatus">
+                            <cornie-select
+                                v-for="item in practitioner"
+                                @change="updatePerformer(item.id)"
+                                :key="item.id"
+                                :items="[item.firstName +' '+ item.lastName]"
+                                v-model="requestModel.medicationAdministration.performer"
+                                label="performer"
+                                placeholder="--Select--"
+                            >
+                            </cornie-select>
+                            </div>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.medicationAdministration.performer  }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-input
                             v-if="tabstatus"
                             label="based on"
+                            v-model="requestModel.requestDetails.basedOn"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">based on</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.requestDetails.basedOn }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-input
                             v-if="tabstatus"
                             label="do not perform"
+                            v-model="requestModel.requestInfo.doNotPerform"
                             placeholder="--Enter--"
                             />
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">do not perform</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.requestInfo.doNotPerform }}</div>
                             </span>
                         </div>
                     </div>
@@ -151,7 +164,7 @@
                 </div>
                 <div class="tab-pane" v-if="selected == 2" :class="{'active' :  selected === 2  }" id="Participants">
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabparticipants"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabparticipants" @click="updateRequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabparticipants = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                     <div>
@@ -203,7 +216,7 @@
                                 <cornie-select
                                 v-if="tabparticipants"
                                 class="mt-0"
-                                :items="dropdowns.serviceCategory"
+                                :items="['Test']"
                                 v-model="serviceCategory"
                                 label="gender"
                                 placeholder="--Select--"
@@ -294,11 +307,12 @@
                             <cornie-input
                                 v-if="tabparticipants"
                                 label="practitioner id"
+                                 v-model="requestModel.medicationAdministration.performer"
                                 placeholder="--Enter--"
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">practitioner id</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.medicationAdministration.performer }}</div>
                                 </span>
                             </div>
                             <div>
@@ -368,37 +382,39 @@
                             <cornie-input
                                 v-if="tabparticipants"
                                 label="performer type"
+                                v-model="requestModel.medicationAdministration.performerType"
                                 placeholder="--Enter--"
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">performer type</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.medicationAdministration.performerType }}</div>
                                 </span>
                             </div>
                             <div>
                                 <cornie-select
                                 v-if="tabparticipants"
                                 class="mt-0"
-                                :items="dropdowns.serviceCategory"
-                                v-model="serviceCategory"
+                                :items="['Test']"
+                                v-model="requestModel.medicationAdministration.performer"
                                 label="performer"
                                 placeholder="--Select--"
                                 >
                                 </cornie-select>
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.medicationAdministration.performer }}</div>
                                 </span>
                             </div>
                             <div>
                             <cornie-input
                                 v-if="tabparticipants"
                                 label="corniehealth id"
+                                v-model="requestModel.userId"
                                 placeholder="--Enter--"
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">corniehealth id</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.userId }}</div>
                                 </span>
                             </div>
 
@@ -458,26 +474,31 @@
                             <cornie-input
                                 v-if="tabparticipants"
                                 label="dispenser type"
+                                v-model="requestModel.performer.dispenserType"
                                 placeholder="--Enter--"
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">dispenser type</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.performer.dispenserType }}</div>
                                 </span>
                             </div>
                             <div>
+                                <div  v-if="tabparticipants">
                                 <cornie-select
-                                v-if="tabparticipants"
                                 class="mt-0"
-                                :items="dropdowns.serviceCategory"
-                                v-model="serviceCategory"
+                                 v-for="item in practitioner"
+                                @change="updatePractice(item.id)"
+                                :key="item.id"
+                                :items="[item.firstName +' '+ item.lastName]"
+                                v-model="requestModel.performer.dispenser"
                                 label="dispenser"
                                 placeholder="--Select--"
                                 >
                                 </cornie-select>
+                                </div>
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">dispenser</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.performer.dispenser }}</div>
                                 </span>
                             </div>
                         </div>
@@ -514,18 +535,12 @@
                                 <span class="ml-3 text-xs">Message</span>
                                 </div>
                             </template>
-                            <template #Participants="{ item }">
-                                <div class="flex items-center">
-                                <span class="text-xs">{{item.Participants}}</span>
-                                <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
-                                </div>
-                            </template>
                         </cornie-table>
                     </div>
                 </div>      
                 <div class="tab-pane pb-20" v-if="selected == 4" :class="{'active' :  selected === 4  }" id="Other Info">
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabhealth"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabhealth" @click="updateRequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabhealth = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div>
                     <div>
@@ -665,68 +680,67 @@
                             <cornie-select
                             v-if="tabhealth"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            :items="['Test']"
+                            v-model="requestModel.fufillment.affixLabel"
                             label="affix label?"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">affix label?</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.fufillment.affixLabel }}</div>
                             </span>
                         </div>
                         <div>
                             <cornie-select
                             v-if="tabhealth"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            :items="['Test']"
+                            v-model="requestModel.fufillment.nonSafetyCapRequest"
                             label="Substitution permitted?"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">Substitution permitted?</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.fufillment.nonSafetyCapRequest }}</div>
                             </span>
                         </div>
                         <div>
                         <cornie-select
                             v-if="tabhealth"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            :items="['Test']"
+                            v-model="requestModel.fufillment.nonSafetyCapRequest"
                             label="non-safety cap request?"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">non-safety cap request?</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.fufillment.nonSafetyCapRequest }}</div>
                             </span>
                         </div>
                         <div>
                             <cornie-select
                             v-if="tabhealth"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            :items="['Test']"
+                            v-model="requestModel.fufillment.priorityShipping"
                             label="priority shipping?"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">priority shipping?</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.fufillment.priorityShipping }}</div>
                             </span>
                         </div>
                     </div>
                 </div>
-
                 <div class="tab-pane" v-if="selected == 5" :class="{'active' :  selected === 5  }" id="Background info">
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabbg"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabbg" @click="updateRequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabbg = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                     <div class="w-full">
@@ -855,7 +869,7 @@
                             <cornie-select
                             v-if="tabstatus"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
+                            :items="['Test']"
                             v-model="serviceCategory"
                             label="card on file"
                             placeholder="--Select--"
@@ -926,7 +940,7 @@
                 </div> 
                 <div class="tab-pane" v-if="selected == 6" :class="{'active' :  selected === 6  }" id="Health">
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabother"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabother" @click="updateRequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabother = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                     <div class="w-full">
@@ -935,7 +949,7 @@
                             <cornie-select
                             v-if="tabother"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
+                            :items="['Test']"
                             v-model="serviceCategory"
                             label="affix label?"
                             placeholder="--Select--"
@@ -950,7 +964,7 @@
                             <cornie-select
                             v-if="tabother"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
+                            :items="['Test']"
                             v-model="serviceCategory"
                             label="Substitution permitted?"
                             placeholder="--Select--"
@@ -965,7 +979,7 @@
                         <cornie-select
                             v-if="tabother"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
+                            :items="['Test']"
                             v-model="serviceCategory"
                             label="non-safety cap request?"
                             placeholder="--Select--"
@@ -980,7 +994,7 @@
                             <cornie-select
                             v-if="tabother"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
+                            :items="['Test']"
                             v-model="serviceCategory"
                             label="priority shipping?"
                             placeholder="--Select--"
@@ -999,7 +1013,7 @@
        <div class="-mt-44 mb-20">
             <span class="flex justify-end w-full">
                 <button
-                    @click="$router.push('/dashboard/provider/experience/appointments')"
+                    @click="$router.push('/dashboard/provider/experience/requests')"
                     type="button"
                     class="
                     outline-primary
@@ -1019,8 +1033,7 @@
                     Close
                 </button>
             </span>
-       </div>
-       
+       </div>     
     </form>
   </div>
 </template>
@@ -1036,10 +1049,9 @@ import CornieDialog from "@/components/CornieDialog.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
+import IRequest from "@/types/IRequest";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
-import { first } from "@/plugins/utils";
 import { string } from "yup";
 import search from "@/plugins/search";
 import { Prop, Watch } from "vue-property-decorator";
@@ -1070,6 +1082,7 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
+import { first, getTableKeyValue } from "@/plugins/utils";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
@@ -1079,20 +1092,19 @@ import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 
+const request = namespace("request");
+const emptyRequest: IRequest = {
+  requestInfo: {},
+  requestDetails: {},
+  subject: {},
+  performer: {},
+  medicationAdministration: {},
+  fufillment: {},
+  history: {},
+  medications: Array(),
 
 
-
-
-const appointment = namespace("appointment");
-const dropdown = namespace("dropdown");
-
-const emptyParticipant: ParticipantDetail = {
-  period: {} as Period,
-  required: "",
-  consultationMedium: "",
-  
 };
-
 @Options({
   components: {
     CornieInput,
@@ -1140,27 +1152,41 @@ const emptyParticipant: ParticipantDetail = {
   },
 })
 export default class AddAppointment extends Vue {
-  @Prop({ type: String, default: "" })
+ @Prop({ type: String, default: "" })
   id!: string;
 
+//   @Prop({ type: Object, required: false, default: { ...emptyRequest} })
+//   request!: IRequest;
 
-  @appointment.Action
-  getAppointmentById!: (id: string) => IAppointment;
+  requestModel = {...emptyRequest} as IRequest;
 
-@appointment.State
-  appointments!: IAppointment[];
+  @request.Action
+  getRequestById!: (id: string) => IRequest;
+  @request.State
+  requests!: any[];
+
+//   @Watch("request")
+//   requestUpdated(request: IRequest) {
+//     this.requestModel = JSON.parse(JSON.stringify({ ...request }));
+//   }
+
+
+  @request.Mutation
+  updatedRequests!: any;
 
   loading = false;
   expand = false;
-  selected = 1;
   isVisible = "";
   startdate = "";
+   selected = 1;
   enddate = "";
   rule = true;
   opened = true;
   openedR = true;
   openedS = true;
-  checked= false;
+  openedM = false;
+    query = "";
+  showMedicationModal = false;
  tabstatus = false;
  tabsubject = false;
  tabparticipants = false;
@@ -1170,132 +1196,109 @@ export default class AddAppointment extends Vue {
  tabother = false;
 
 
-actor = "";
-  type = "";
 
-  serviceCategory = "";
-  locationId = null;
-  deviceId = null;
-  serviceType = "";
-  specialty = "";
-  appointmentType = "";
-  reasonCode = "";
-  reasonRef = "";
-  priority = "";
-  description = "";
-  supportingInfo ="";
-  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  basedOn = "xxxxxx";
-  duration = "";
-  comments = "";
-  patientInstruction = "";
-  period = {} as Period;
-  participantDetail = {...emptyParticipant}
-  
-  Practitioners = [];
-  Devices = [];
-  Patients: any[] = [];
-  roles = [];
+  patient=[];
+  practitioner=[];
 
-  newPractitioners =[];
-  newDevices = [];
-  newPatients =[];
-  newRoles = [];
+dispenser="";
+subject="";
+requester="";
+performer="";
 
-  roleFilter = false;
-  deviceFilter = false;
-  practitionerFilter = false;
-  patientFilter = false;
-  availableFilter = false;
-  participantitem = "";
-
-  practitioner = [];
-  device  = [];
-  patient = [];
-  role = [];
- 
-  availability: any[] = [];
-  availabilities = Array();
- 
-
- 
+basedOn = "xxxxxx";
 
   options = [
     { text: "Active", value: true },
     { text: "Inactive", value: false },
   ];
+
   required = string().required();
-  dropdowns = {} as IIndexableObject;
-  dropdowns2 = {} as IIndexableObject;
-  @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+ 
+
+  get isUpdate() {
+    return Boolean(this.id);
+  }
 
   @Watch("id")
   idChanged() {
-    this.setAppointment();
+    this.setRequest();
   }
-   query = "";
-
+  
+  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", key: "keydisplay", show: true },
+    { title: "medication code", key: "code", show: true },
     {
-      title: "Patient",
-      key: "patients",
-      show: false,
-    },
-    {
-      title: "Appointment Type",
-      key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
+      title: "Medication Name",
+      key: "name",
       show: true,
     },
     {
-      title: "Participants",
-      key: "Participants",
+      title: "strength",
+      key: "strength",
       show: true,
     },
     {
-      title: "Slot",
-      key: "slot",
-      show: false,
-    },
-    {
-      title: "Status",
-      key: "status",
+      title: "Quantity",
+      key: "quantity",
       show: true,
     },
     {
-      title: "Code",
-      key: "reasonCode",
-      show: false,
+      title: "dosage (daily)",
+      key: "dosage",
+      show: true,
     },
     {
-      title: "Reason Reference",
-      key: "reasonRef",
-      show: false,
+      title: "duration",
+      key: "duration",
+      show: true,
     },
     {
-      title: "Period",
+      title: "course of therapy",
+      key: "course",
+      show: true,
+    },
+     {
+      title: "substitution?",
+      key: "substitution",
+      show: false,
+    },
+     {
+      title: "reason code",
+      key: "reasoncode",
+      show: false,
+    },
+     {
+      title: "refill?",
+      key: "refill",
+      show: false,
+    },
+     {
+      title: "dispense interval",
+      key: "interval",
+      show: false,
+    },
+     {
+      title: "validity period",
       key: "period",
-      show: true,
-    },
-    {
-      title: "Priority",
-      key: "priority",
       show: false,
     },
-    {
-      title: "Description",
-      key: "description",
+     {
+      title: "no of refill",
+      key: "refillno",
       show: false,
     },
-    {
-      title: "Consultation Medium",
-      kwy: "consultationMedium",
+     {
+      title: "quantity",
+      key: "qunatity",
       show: false,
     },
-
+     {
+      title: "supply duration",
+      key: "duration",
+      show: false,
+    },
+   
   ];
 
   get headers() {
@@ -1306,213 +1309,157 @@ actor = "";
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
 
 
   get items() {
-    const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
-        console.log(singleParticipantlength);
-       (appointment as any).period = new Date(
-         (appointment as any).period 
+    const requests = this.requests[0].Medications.map((request:any) => {
+       (request as any).createdAt = new Date(
+         (request as any).createdAt 
+       ).toLocaleDateString("en-US");
+        (request as any).medicationDetails.duration.start = new Date(
+         (request as any).medicationDetails.duration.start 
+       ).toLocaleDateString("en-US");
+        (request as any).medicationDetails.duration.end = new Date(
+         (request as any).medicationDetails.duration.end 
        ).toLocaleDateString("en-US");
         return {
-        ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
+        ...request,
+        code:request.medicationDetails.medicationCode,
+        name: request.medicationDetails.medicationReference,
+        strength: "xxxxxx",
+        quantity: request.medicationDetails.quantity,
+        course: request.medicationDetails.courseOfTherapyType,
+        reasoncode: request.substitutionAllowed.code,
+        interval: request.refillInfo.dispenseInterval,
+        period: request.medicationDetails.createdAt,
+        refillno: request.refillInfo.quantity,
+        duration:request.medicationDetails.duration.start +'-'+ request.medicationDetails.duration.end,
+        dosage:request.medicationDetails.dosageInstruction,
+
+
+
+        //  action: request.id,
+        //  keydisplay: "XXXXXXX",
+        //  Participants: singleParticipantlength 
         };
     });
-    if (!this.query) return appointments;
-    return search.searchObjectArray(appointments, this.query);
+    if (!this.query) return requests;
+    return search.searchObjectArray(requests, this.query);
   }
 
-  async setAppointment() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comments = appointment.comments;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
-
+  async setRequest() {
+    const request = await this.getRequestById(this.id)
+    if (!request) return
+    this.requestModel =  ({...request}) ;
+    this.requestModel.medications = request.medications;
   }
   get payload() {
-    const payload =  {
-      serviceCategory: this.serviceCategory,
-      locationId: this.locationId,
-      deviceId: this.deviceId,
-      serviceType: this.serviceType,
-      specialty: this.specialty,
-      appointmentType: this.appointmentType,
-      reasonCode: this.reasonCode,
-      supportingInfo: this.supportingInfo,
-      reasonRef: this.reasonRef,
-      priority: this.priority,
-      description: this.description,
-      slot: this.slot,
-      basedOn: this.basedOn,
-      duration: this.duration,
-      comments: this.comments,
-      patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
-      period: this.period,
-    } as any
-    if(this.Devices.length > 0){
-      payload.Devices = this.Devices;
-    }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
-    if(this.Practitioners.length > 0){
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload
+     const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
+   // const medication = model.medications.medicationDetails as any;
+    // if (medication.duration)
+    //   medication.duration = new Date(
+    //     medication.duration
+    //   ).toISOString();
+    //   if (medication.dispenseInterval)
+    //   medication.dispenseInterval = new Date(
+    //     medication.dispenseInterval
+    //   ).toISOString();
+    return model;
+
+    // return  {
+    //   requestInfo: this.requestInfo,
+    //   requestDetails: this.requestDetails,
+    //   subject: this.subject,
+    //   performer: this.performer,
+    //   medicationAdministration: this.medicationAdministration,
+    //   fufillment: this.fufillment,
+    //   history: this.history,
+    //   medications: this.medications,
+    // } 
   }
+    select(i:number) {
+      this.selected = i;
+    }
   get allaction() {
     return this.id ? "Edit" : "New";
   }
- 
-  get selectedItem() {
-    return this.participantitem;
-  }
-   select(i:number) {
-      this.selected = i;
-    }
-  async addPractitioner(value: any,id:any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.Practitioners = id;
-    this.practitionerFilter = false;
-  }
-  removePractitioner(index: number) {
-    this.newPractitioners.splice(index, 1);
-  }
-  removeRole(index: number){
-    this.newRoles.splice(index, 1);
-  }
-   removeDevice(index: number){
-    this.newDevices.splice(index, 1);
-  }
-  showAvailable() {
-    this.availableFilter = true;
-  }
-  async addPatients(value: any,id:any) {
-    this.newPatients = value;
-    this.Patients = id;
-    this.patientFilter = false;
-  }
-  async addDevices(value:any, id:any){
-     this.newDevices = value;
-     this.Devices = id;
-    this.deviceFilter = false;
-  }
-  async addRoles(value: any,id:any){
-   // this.role.push(value);
-    this.newRoles = value;
-    this.roles = id;
-    this.roleFilter = false;
-  }
-   get setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
-    }else if(this.type == 'Practitioner Role'){
-        this.roleFilter = true;
-    }
-    return this.type;
+ async updateSubject(value:string){
+    this.subject = value;
+ }
+ async updateRequester(value:string){
+    this.requester = value;
+ }
+ async updatePractice(value:string){
+   this.dispenser = value;
+ }
+ async updatePerformer(value:string){
+   this.performer = value;
+ }
+  async showMedication(value:any){
+    this.requestModel.medications = value;
+    this.showMedicationModal = true;
   }
 
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateAppointment();
-    else await this.createAppointment();
+   await this.updateRequest();
     this.loading = false;
   }
-  async createAppointment() {
-    //const period = this.period;
-   //this.payload.period.start = new Date(this.period).toISOString();
-    //this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
-    try {
-      const response = await cornieClient().post("/api/v1/appointment", this.payload);
-      if (response.success) {
-          window.notify({ msg: "Appointment created", status: "success" });
-          this.$router.push("/dashboard/provider/experience/appointments");
-      }
-    } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
-    }
-  }
-    changeChecked(valueitem:string){
-        this.checked = true
-        console.log("value");
-         console.log(valueitem);
-    }
-  async updateAppointment() {
-    const url = `/api/v1/appointment/${this.id}`;
+//    async update() {
+//     const id = this.id;
+//     try {
+//       const response = await cornieClient().put(
+//         `/api/v1/requests/${id}`,
+//         this.payload
+//       );
+//       if (response.success) {
+//           this.updatedRequests([response.data]);
+//        window.notify({ msg: "Request Updated", status: "success" });
+//         this.$router.push("/dashboard/provider/experience/requests");
+    
+//       }
+//     } catch (error) {
+//       window.notify({
+//         msg: "Request Not updated",
+//         status: "error",
+//       });
+//     }
+//   }
+
+  async updateRequest() {
+    //  this.payload.subject.subject = this.subject;
+    // this.payload.requestDetails.requester = this.requester;
+     this.payload.medicationAdministration.performer = this.performer;
+     this.payload.performer.dispenser = this.dispenser;
+     const id = this.id;
+    const url = `/api/v1/requests/${id}`;
     const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Appointment updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
+          this.updatedRequests([response.data]);
+        window.notify({ msg: "Request Updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: "Appointment not updated", status: "error" });
+      window.notify({ msg: error, status: "error" });
     }
   }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
-  }
-  async fetchDevices() {
-    const AllDevices = cornieClient().get("/api/v1/devices");
-    const response = await Promise.all([AllDevices]);
-    this.device = response[0].data;
-  }
-  async fetchRoles() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
-  }
-   async fetchPatients() {
+  async fetchPateints() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patient = response[0].data;
   }
+ async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+
   async created() {
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
-    this.fetchPatients();
-    const data = await this.getDropdowns("availability");
-    const data2 = await this.getDropdowns("practitioner");
-    this.dropdowns = data;
-    this.dropdowns2 = data2;
+     this.setRequest();
+    this.fetchPateints();
+    this.fetchPractitioner();
   }
 }
 </script>

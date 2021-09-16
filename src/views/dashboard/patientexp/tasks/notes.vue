@@ -67,12 +67,7 @@
         </div>
       </div>
     </modal>
-       <availability
-            v-model:visible="availableFilter"
-        />
-        <profile
-            v-model:visible="profileFilter"
-        />
+  
   </div>
 </template>
 <script>
