@@ -1,5 +1,5 @@
 <template>
-  <span class="w-full block">
+  <span class="w-11/12 block">
     <label class="block uppercase mb-1 text-xs font-bold">
       {{ label }}
     </label>
