@@ -35,3 +35,14 @@ export async function getPatients() {
   }
   return { };
 }
+export async function getPractitioners() {
+  try {
+    const response = await cornieClient().get(
+        "/api/v1/practitioner"
+    );
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching practitoners", status: "error" });
+  }
+  return { };
+}

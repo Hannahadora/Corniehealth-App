@@ -750,9 +750,12 @@ export default class AddRequest extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-
+get Medications(){
+      return this.requests.map((c) => c.Medications[0]);
+    }
   get items() {
-    const requests = this.requests[0].Medications.map((request:any) => {
+
+    const requests = this.Medications.map((request) => {
        (request as any).createdAt = new Date(
          (request as any).createdAt 
        ).toLocaleDateString("en-US");

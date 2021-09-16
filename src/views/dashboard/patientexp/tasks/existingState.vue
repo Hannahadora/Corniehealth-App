@@ -372,9 +372,9 @@
         </div>
     </div>
     <notes-add
+    :tasknotes="tasknotes"
       :taskId="taskId"
-      @update:preferred="makeNotes"
-      v-model:visible="showNotes"
+        v-model="showNotes"
     />
   </div>
 </template>
@@ -411,6 +411,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
 
 const task = namespace("task");
 
@@ -454,6 +455,7 @@ export default class TaskExistingState extends Vue {
   selected = 1;
   showNotes = false;
   taskId="";
+  tasknotes=[];
 
 
   @task.State
@@ -598,6 +600,7 @@ export default class TaskExistingState extends Vue {
  async makeNotes(id: string) {
     this.taskId = id;
     this.showNotes = true;
+    this.fetchNotes();
   }
  select(i:number) {
       this.selected = i;
@@ -628,8 +631,16 @@ export default class TaskExistingState extends Vue {
      const history =  this.items.filter((c) => new Date(c.endDateTime).toLocaleDateString() > new Date().toLocaleDateString() );
       return history
     }
+    async fetchNotes() {
+    const id = this.taskId;
+      const AllNotes = cornieClient().get(`/api/v1/task/getNotesByTaskId/${id}`);
+      const response = await Promise.all([AllNotes]);
+      this.tasknotes = response[0].data;
+    }
+ 
      async created() {
        this.History;
+        this.fetchNotes();
     }
 
 }

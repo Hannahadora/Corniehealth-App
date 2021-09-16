@@ -132,7 +132,7 @@
                             </div>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.medicationAdministration.performer  }}</div>
+                                <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ performername  }}</div>
                             </span>
                         </div>
                         <div>
@@ -198,7 +198,7 @@
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">patient name</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ patientName }}</div>
                                 </span>
                             </div>
                             <div>
@@ -300,7 +300,7 @@
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">practitioner name</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ performername }}</div>
                                 </span>
                             </div>
                             <div>
@@ -402,7 +402,7 @@
                                 </cornie-select>
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.medicationAdministration.performer }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ performername }}</div>
                                 </span>
                             </div>
                             <div>
@@ -498,7 +498,7 @@
                                 </div>
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">dispenser</label>
-                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ requestModel.performer.dispenser }}</div>
+                                    <div class="bg-gray-50 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ dispenserName }}</div>
                                 </span>
                             </div>
                         </div>
@@ -1173,6 +1173,17 @@ export default class AddAppointment extends Vue {
 
   @request.Mutation
   updatedRequests!: any;
+@request.State
+  patients!: any[];
+
+  @request.State
+  practitioners!: any[];
+
+  @request.Action
+  getPatients!: () => Promise<void>;
+
+  @request.Action
+  getPractitioners!: () => Promise<void>;
 
   loading = false;
   expand = false;
@@ -1195,8 +1206,9 @@ export default class AddAppointment extends Vue {
  tabhealth= false;
  tabother = false;
 
-
-
+  performername = "";
+  patientName = "";
+dispenserName ="";
   patient=[];
   practitioner=[];
 
@@ -1347,6 +1359,27 @@ basedOn = "xxxxxx";
     return search.searchObjectArray(requests, this.query);
   }
 
+  get PatientName() {
+       const id = this.requestModel.subject.subject;
+    const pt = this.patients.find((i: any) => i.id === id);
+    this.patientName = `${pt.firstname} ${pt.lastname}`;
+    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+  }
+
+    get PractitionerName(){
+     const id = this.requestModel.medicationAdministration.performer; 
+    const pt = this.practitioners.find((i: any) => i.id === id);
+        this.performername = `${pt.firstName} ${pt.lastName}`;
+        return pt ? `${pt.firstName} ${pt.lastName}` : '';
+    }
+     get NewDispenserName(){
+     const id = this.requestModel.performer.dispenser; 
+    const pt = this.practitioners.find((i: any) => i.id === id);
+        this.dispenserName = `${pt.firstName} ${pt.lastName}`;
+        return pt ? `${pt.firstName} ${pt.lastName}` : '';
+    }
+
+
   async setRequest() {
     const request = await this.getRequestById(this.id)
     if (!request) return
@@ -1427,13 +1460,13 @@ basedOn = "xxxxxx";
 //   }
 
   async updateRequest() {
-    //  this.payload.subject.subject = this.subject;
-    // this.payload.requestDetails.requester = this.requester;
-     this.payload.medicationAdministration.performer = this.performer;
-     this.payload.performer.dispenser = this.dispenser;
+     this.payload.subject.subject = this.subject;
+     this.payload.requestDetails.requester = this.requester;
+      this.payload.medicationAdministration.performer = this.performer;
+      this.payload.performer.dispenser = this.dispenser;
      const id = this.id;
     const url = `/api/v1/requests/${id}`;
-    const payload = { ...this.payload };
+    const payload = this.payload ;
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
@@ -1460,6 +1493,8 @@ basedOn = "xxxxxx";
      this.setRequest();
     this.fetchPateints();
     this.fetchPractitioner();
+    this.getPractitioners();
+    this.getPatients();
   }
 }
 </script>

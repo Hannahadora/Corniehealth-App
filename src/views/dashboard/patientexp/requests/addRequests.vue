@@ -331,7 +331,7 @@
         <medication-modal   
         :columns="practitioner"
           @update:preferred="showMedication"
-          v-model:visible="showMedicationModal"/>
+          v-model="showMedicationModal"/>
       </div>
     </div>
   </div>

@@ -20,14 +20,24 @@
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Some subtext if necessary.</p>
         <v-form ref="form">
-              <div class="my-2  w-full  flex">
+          <div class="my-2  w-full ">
             <Textarea
-            label="Notes"
+            class="w-full text-xs"
             v-model="notes"
-            placeholder="--Enter--"
+            placeholder="Text Area"
             :rules="required"
           />
           <span></span>
+        </div>
+         <span class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"  @click="save">Add</span>
+        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in requestnotes" :key="index">
+            <div>
+              <note-icon class="mt-3"/>
+            </div>
+            <div>
+              <span class="text-gray-400 text-xs">{{ new Date(item.createdAt).toDateString()}}</span>
+              <p class="text-gray-400 text-xs">{{item.text}}</p>
+            </div>
         </div>
         </v-form>
       </cornie-card-text>
@@ -35,16 +45,9 @@
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="save"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Save
+            Close
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -66,7 +69,7 @@ import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/datepicker.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import { Insurance, IPatient } from "@/types/IPatient";
-
+import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
 
 
@@ -75,6 +78,7 @@ import { cornieClient } from "@/plugins/http";
   components: {
     ...CornieCard,
     CornieIconBtn,
+    NoteIcon,
     ArrowLeftIcon,
     CornieDialog,
     Textarea,
@@ -85,18 +89,22 @@ import { cornieClient } from "@/plugins/http";
     CornieBtn,
   },
 })
-export default class EmergencyDontactDialog extends Vue {
+export default class Notes extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
- @Prop({ type: String, default: "" })
-  taskId!: string;
+ @Prop({ type: String, default: '' })
+  requestId!: string;
+
+@Prop({ type: Array, default: () => [] })
+  requestnotes!: any[];
 
 loading=  false;
 notes='';
 availableFilter= false;
 profileFilter=false;
-
+tasknote=[];
+newtasknotes=[];
  
   async save() {
       this.loading = true;
@@ -110,16 +118,23 @@ profileFilter=false;
   }
 
   async createNew() {
-    const response = await cornieClient().post(
-      "/api/v1/task/notes",
-       {text:this.notes, taskId:this.taskId}
-    );
-    return response.data;
+      try {
+        const response = await cornieClient().post("/api/v1/requests/notes", {text:this.notes, requestId:this.requestId});
+        if (response.success) {
+            window.notify({ msg: "Notes created", status: "success" });
+            this.loading = false;
+        }
+        } catch (error) {
+          this.loading = false;
+         this.show = false;
+          console.log(error);
+        window.notify({ msg: "Notes not created", status: "error" });
+        this.$router.push("/dashboard/provider/experience/requests");
+        }
   }
 
- 
-  created() {
-   
+  async created() {
+      this.requestnotes
   }
 }
 </script>

@@ -99,16 +99,16 @@
                                 </div>
                             </template>
                             <template #patient="{ item }">
-                                <p class="cursor-pointer" @click="showPatientDetails(onePatientId)">{{ item.patient }}</p>
+                                <p class="cursor-pointer" @click="showPatientDetails(onePatientId)">{{ item.patientsubject }}</p>
                             </template>
                              <template #requester="{ item }">
-                                <p class="cursor-pointer">{{ item.requestDetails.requester }}</p>
+                                <p class="cursor-pointer">{{ item.patientrequester }}</p>
                             </template>
                              <template #dispenser="{ item }">
-                                <p class="cursor-pointer">{{ item.performer.dispenser }}</p>
+                                <p class="cursor-pointer">{{ item.practitionerdispenser }}</p>
                             </template>
                             <template #performer="{ item }">
-                                <p class="cursor-pointer">{{ item.medicationAdministration.performer }}</p>
+                                <p class="cursor-pointer">{{ item.practitionerperformer }}</p>
                             </template>
                         </cornie-table>
                     </div>
@@ -184,7 +184,8 @@
         </div>
       </div>
        <notes-add
-          :taskId="taskId"
+       :requestnotes="requestnotes"
+          :requestId="requestId"
       v-model="showNotes"
     />
   </div>
@@ -306,7 +307,7 @@ showPartcipants = false;
   showCheckout = false;
   timeLineVissible = false;
   viewDetails = false;
-
+requestnotes=[];
   selectedSchedule: any = { };
 singleParticipant = [];
   selectedVisit : any = { };
@@ -321,8 +322,14 @@ singleParticipant = [];
   @request.State
   patients!: any[];
 
+  @request.State
+  practitioners!: any[];
+
   @request.Action
   getPatients!: () => Promise<void>;
+
+  @request.Action
+  getPractitioners!: () => Promise<void>;
 
   select(i:number) {
       this.selected = i;
@@ -408,7 +415,10 @@ getKeyValue = getTableKeyValue;
       return {
         ...i,
         action: i.id,
-        patient: this.getPatientName(i.subject.subject),
+        patientsubject: this.getPatientName(i.subject.subject),
+        patientrequester: this.getPatientName(i.requestDetails.requester),
+        practitionerdispenser: this.getPractitionerName(i.performer.dispenser),
+        practitionerperformer: this.getPractitionerName(i.medicationAdministration.performer),
         status: i.status,
         // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
       };
@@ -422,8 +432,9 @@ getKeyValue = getTableKeyValue;
     // return search.searchObjectArray(shifts, this.query);
   }
  async makeNotes(id: string) {
-    this.taskId = id;
+    this.requestId = id;
     this.showNotes = true;
+    this.fetchNotes();
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -441,7 +452,10 @@ getKeyValue = getTableKeyValue;
     const pt = this.patients.find((i: any) => i.id === id);
     return pt ? `${pt.firstname} ${pt.lastname}` : '';
   }
-
+getPractitionerName(id: string){
+   const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : '';
+}
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
     this.selectedPatient = pt ? pt : { };
@@ -468,8 +482,17 @@ getKeyValue = getTableKeyValue;
     this.setSelectedPatient(id)
     this.viewDetails = true;
   }
+   async fetchNotes() {
+    const id = this.requestId;
+      const AllNotes = cornieClient().get(`/api/v1/requests/getNotesByRequestId/${id}`);
+      const response = await Promise.all([AllNotes]);
+      this.requestnotes = response[0].data;
+    }
 
   async created() {
+    this.fetchNotes();
+   this.getPractitioners();
+ // if (!this.practitioners || this.practitioners.length === 0) await this.getPractitioners();
     if (!this.patients || this.patients.length === 0) await this.getPatients();
     if (!this.requests || this.requests.length === 0) await this.fetchRequests();
     if (!this.requests || this.requests.length === 0) await this.getPatients();
