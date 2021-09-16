@@ -8,26 +8,25 @@
         </div>
 
 
-
-
         <div class="w-full border-b-4 curved flex my-8">
-            <div class="container-fluid flex font-semibold text-xl">
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
-                  @click="() => activeTab = 0"
-                >Schedule</a>
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
-                  @click="() => activeTab = 1"
-                >Availability</a>
-                <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 2, 'text-gray-500': activeTab !== 2 }"
-                  @click="() => activeTab = 2"
-                >Fixed Slot</a>
-            </div>
+          <div class="container-fluid flex font-semibold text-xl">
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
+                @click="() => activeTab = 0"
+              >Schedule</a>
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
+                @click="() => activeTab = 1"
+              >Availability</a>
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 2, 'text-gray-500': activeTab !== 2 }"
+                @click="() => activeTab = 2"
+              >Fixed Slot</a>
           </div>
+        </div>
+          
 
         <div class="w-full" v-if="activeTab === 2">
           <Slots />
         </div>
-
+          
           <div class="w-full">
             <Overlay :show="show">
               <Modal :bigger="true">
@@ -72,15 +71,16 @@
               </Modal>
           </Overlay>
 
-          <div class="w-full curved flex py-2 justify-end my-6">
+          <div class="w-full curved flex py-2 justify-end my-6" v-if="activeTab === 0">
               <div class=".w-full flex font-semibold text-lg py-2 justify-end pb-4">
                   <Button :loading="false">
-                      <router-link :to="{ name: 'Patient Experience Management' }" style="background: #FE4D3C" class="text-lg bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
+                      <router-link :to="{ name: 'Patient Experience - New Schedule' }" style="background: #FE4D3C" class="text-lg bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                           New Schedule
                       </router-link>
                   </Button>
               </div>
           </div>
+          
             <div class="w-full pb-7 mb-8">
               <cornie-table :columns="headers" v-model="items" v-if="activeTab === 0">
                 
@@ -107,7 +107,7 @@
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <eye-icon class="mr-3 mt-1" />
                     <span class="ml-3 text-xs" @click="
-                          $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
+                      $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
                   </div>
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <EditIcon />
@@ -141,95 +141,9 @@
                   </div>
                 </template>
               </cornie-table>
-
               <!-- Test Availability -->
               <div class="w-full" v-if="activeTab === 1">
-                  <cornie-table :columns="availabilityHeaders" v-model="items">
-                  
-                  <template #time="{ item }">
-                    <p class="text-xs">{{ item.startTime }} - {{ item.endTime }}</p>
-                  </template>
-                  <template #0="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[0])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #1="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[1])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #2="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[2])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #3="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[3])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #4="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[4])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #5="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[5])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #6="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[6])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-                  <template #7="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
-                      <span v-if="theSameDate(item.startDate, availabilityDates[7])">
-                      <Actors :items="item.practitioners" />
-                    </span> 
-                    <span v-else>
-                      --
-                    </span>
-                    </div>
-                  </template>
-              </cornie-table>
+                  <AvailabilityList :items="availabilityItems" :schedules="schedules" />
               </div>
               
               <column-filter
@@ -314,6 +228,11 @@ import AddActors from './components/add-actor.vue'
 import IPractitioner from "@/types/IPractitioner";
 
 import Slots from './components/slots.vue'
+import utilservice from './helper/util'
+import dateHelper from './helper/date-helper'
+import edit from './edit-slot.vue'
+import AvailabilityList from './components/availability.vue'
+
 
 const shifts = namespace("shifts");
 const schedulesStore = namespace("schedules");
@@ -322,6 +241,7 @@ const contacts = namespace('practitioner');
 @Options({
   components: {
     // Table,
+    edit,
     Slots,
     AddActors,
     SortIcon,
@@ -351,6 +271,7 @@ const contacts = namespace('practitioner');
     Actors,
     AddIcon,
     DeactivateIcon,
+    AvailabilityList,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -430,7 +351,7 @@ export default class PractitionerExistingState extends Vue {
       show: true,
     },
     {
-      title: "Actors",
+      title: "Participants",
       key: "practitioners",
       show: true,
     },
@@ -476,49 +397,15 @@ export default class PractitionerExistingState extends Vue {
     
   ];
 
-  get availabilityHeaders() {
-    if (!this.availabilityDates) return [ ];
-    let arr =  this.availabilityDates.map((i: any, index: number) => {
-      return {
-        title: i,
-        key: index.toString(),
-        show: index > 4 ? false : true
-      }
-    })
-    arr.unshift({ title: 'Time', key: 'time', show: true});
-    return arr;
-  }
-
-  get availabilityDates() {
-    let arr = [ ];
-    for (let i = 1; i <= 7; i++) {
-      let sunday = new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() + 6) % 6))
-      arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
-    }
-    return arr;
+  goToCreateSlot(id: string) {
+    this.$router.push({ name: 'Patient Experience - Edit Slot'})
   }
 
   get availabilityItems() {
     if (!this.schedules) return [ ]
-    return this.schedules.map((i: any) => {
-      return {
-        time: `${i.startTime } - ${i.endtime}`,
-        practitioners: i.practitioners,
-        0: '',
-        1: '',
-        2: '',
-        3: '',
-        4: '',
-        5: '',
-        6: '',
-      }
-    })
-  }
-
-  theSameDate(date: string, header: string) {
-    return new Date(date).getFullYear() === new Date(header).getFullYear() &&
-          new Date(date).getDate() === new Date(header).getDate() &&
-          new Date(date).getMonth() === new Date(header).getMonth();
+    console.log(utilservice.slots(), "ALL SLOTS");
+    
+    return utilservice.slots();
   }
 
   get allPractitioners() {
@@ -557,8 +444,7 @@ export default class PractitionerExistingState extends Vue {
       };
     });
     return shifts;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
+    
   }
 
   actorAdded(actor: any) {
@@ -569,7 +455,6 @@ export default class PractitionerExistingState extends Vue {
   async remove(id: string) {
     const confirmed = await window.confirmAction({
       message: "Are you sure you want to deactivate this shift?",
-      // message: "Are you sure you want to deactivate this shift? This action cannot be undone.",
     });
     if (!confirmed) return;
 
@@ -700,4 +585,16 @@ export default class PractitionerExistingState extends Vue {
       padding-bottom: 40px;
       padding-bottom: 24px;
     }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .h-screen::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .h-screen {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+
 </style>

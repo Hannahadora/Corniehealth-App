@@ -32,14 +32,14 @@
         </div>
         <div class="flex items-center hover:bg-gray-100 p-3 pr-9 cursor-pointer"
           @click="
-            $router.push(`addroles/${getKeyValue(item).value}`)
+            $router.push(`addroles/${item.id}`)
           "
         >
           <edit-icon class="mr-2 1mt-1" />
           <span class="text-xs"
           >Edit</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 pr-12 cursor-pointer" @click="remove(item.value)">
+        <div class="flex items-center hover:bg-gray-100 p-3 pr-12 cursor-pointer" @click="remove(item.id)">
           <delete-icon class="mr-2" />
           <span class="text-xs"
           >Delete</span>

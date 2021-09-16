@@ -38,9 +38,9 @@
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinPane(item.id)">
           <checkin-icon />
-          <span class="ml-3 text-xs">Check-In</span>
+          <span class="ml-3 text-xs">Check-In </span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -64,12 +64,14 @@
             class="cursor-pointer ml-3"
             @click="displayParticipants(item.id)"
           />
-          
         </div>
       </template>
       <template #Patients="{ item }">
-      <span class="text-xs cursor-pointer" @click="displayPatients(item.id)"
-            >{{item.patientName}}</span>
+        <div class="flex items-center">
+          <span class="text-xs cursor-pointer" @click="displayPatients(item.id)"
+            >Darlington Onyemere</span
+          >
+        </div>
       </template>
     </cornie-table>
 
@@ -78,14 +80,16 @@
       @update:preferred="makeNotes"
       v-model:visible="showNotes"
     />
+    <SideModal :visible="true" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
+      <Checkin :item="appment" />
+    </SideModal>
     <all-participants
       :appointmentId="appointmentId"
       :columns="singleParticipant"
       @update:preferred="displayParticipants"
       v-model:visible="showPartcipants"
     />
-  <!--  <patient-details v-model:visible="showPatientModal" :patients="allpatient" />-->
-    
+    <patient-details v-model:visible="showPatientModal" :patients="patient" />
   </div>
 </template>
 <script lang="ts">
@@ -119,6 +123,8 @@ import AllParticipants from "./participants.vue";
 import PatientDetails from "./policy.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import Checkin from "../../visits/components/checkin.vue"
+import SideModal from "../../schedules/components/side-modal.vue"
 
 const appointment = namespace("appointment");
 const visitsStore = namespace("visits");
@@ -126,6 +132,8 @@ const visitsStore = namespace("visits");
 @Options({
   components: {
     Table,
+    SideModal,
+    Checkin,
     CancelIcon,
     SortIcon,
     CheckinIcon,
@@ -157,7 +165,7 @@ export default class AppointmentExistingState extends Vue {
   showModal = false;
   loading = false;
   patientName = "";
-  allpatient: any = [ ]
+  patient = [];
   filterByType: any = [ ]
   filterByStatus: any = [ ]
 
@@ -168,6 +176,7 @@ export default class AppointmentExistingState extends Vue {
   appointmentId = "";
   showPartcipants = false;
   singleParticipant = [];
+  showCheckin = false;
 
   statuses = ['All', 'Completed', 'Queue', 'In-Progress'] 
   types = ['All', 'Emergency', 'Walk-In', 'Follow-Up', 'Routine']
@@ -242,12 +251,30 @@ export default class AppointmentExistingState extends Vue {
       show: false,
     },
   ];
+  currentAppId = "";
+  showCheckinPane(id: string) {
+    alert("cliked")
+    this.currentAppId  = id;
+    this.showCheckin = true;
+  }
+
+  get appment() {
+    if (!this.currentAppId) return { };
+    const pt = this.appointments.find((i: any) => i.id === this.currentAppId)
+    return pt ? pt : { }
+  }
 
   getAppointment(id: string) {
     const pt = this.appointments.find((i: any) => i.id === id);
     
     return pt ? pt : { };
   }
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    
+    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+  }
+  
 
   get headers() {
     const preferred =
@@ -260,27 +287,47 @@ export default class AppointmentExistingState extends Vue {
 async  fetchPatients() {
   try {
     const response = await cornieClient().get(`/api/v1/patient/`);
+    console.log(response.data);
   } catch (error) {
     window.notify({ msg: "Failed to get patients", status: "error" });
   }
   return [];
 }
 
-  
+  // get items() {
+  //   if (!this.appointments || this.appointments.length === 0 ) return [];
+  //   const filtered = this.appointments.filter((i: any) => {
+  //     if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
+  //       return i;
+  //     } else {
+  //       if (this.filterByStatus.includes('All') || this.filterByType.includes('All')) return true;
+  //     //  const indexInTypes = this.filterByType.findIndex((j: any) => j.toLowerCase() === this.getAppointment(i.appointmentId).appointmentType.toLowerCase());
+  //       const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
+
+  //     //  if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
+  //     }
+
+  //   })
+
+  //   const appointments = filtered.map((i: any) => {
+  //     return {
+  //       ...i,
+  //       action: i.id,
+  //       patient: this.getPatientName(i.patientId),
+  //       location: i.room.name,
+  //       status: i.status,
+  //       slot: ` `,
+  //       // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
+  //       practitioners: this.getActors(i.appointmentId)
+  //     };
+  //   });
+  //   return appointments;
+  //   // if (!this.query) return shifts;
+  //   // return search.searchObjectArray(shifts, this.query);
+  // }
+
   get items() {
     const appointments = this.appointments.map((appointment) => {
- 
-        const allthispatients = appointment.Patients;
-        this.allpatient = allthispatients;
-        console.log("allthispatients");
-        console.log(allthispatients);
-      const pateintId = appointment.Patients.map((patient) =>{
-        this.patientName =  patient.firstname +' '+ patient.lastname
-        return{
-         patient
-        }
-      });
-      this.allpatient = pateintId;
       const singleParticipantlength =
         appointment.Practitioners.length +
         appointment.Devices.length +
@@ -297,11 +344,8 @@ async  fetchPatients() {
       ).toLocaleDateString("en-US"));
       return {
         ...appointment,
-        patientName: this.patientName,
-        allpatient: pateintId,
         action: appointment.id,
         keydisplay: "XXXXXXX",
-        pateintId,
         newperiod: start + "-" + end,
         Participants: singleParticipantlength,
       };
@@ -349,7 +393,7 @@ async  fetchPatients() {
     });
   }
   async created() {
-   
+    console.log(this.items);
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="container-fluid">
-            <div class="w-11/12">
+            <div class="w-11/12" :class="width">
                 <label
                     v-if="label"
                     class="block uppercase mb-1 text-xs font-bold"
@@ -9,8 +9,8 @@
                     >
                     {{ label }}
                 </label>
-                <p class="border rounded-md w-full p-2 flex justify-between" @click="showSelectArea">
-                    <span class="flex"><span><DateIcon class="pr-4" /></span><slot name="date" /></span>
+                <p class="border rounded-md w-full py-2 px-1 flex justify-between" @click="showSelectArea">
+                    <span class=" flex items-center"><span><DateIcon class="pr-" /></span><slot name="date" /></span>
                     <span><slot name="time" /></span>
                 </p>
                 <div class="w-full" style="position: relative">
@@ -53,6 +53,9 @@ export default class DateTimePicker extends Vue {
 
     @Prop({ type: String, default: '' })
     label!: string;
+
+    @Prop({ type: String, default: '' })
+    width!: string;
 
     @Prop({ type: String, default: '' })
     id!: string;

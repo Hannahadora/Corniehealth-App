@@ -6,6 +6,9 @@
                 <template #name="{ item }">
                   <p>{{ item.name }}</p>
                 </template>
+                <template #time="{ item }">
+                  <p>{{ item.name }}</p>
+                </template>
                 <template #days="{ item }">
                   <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
                 </template>
@@ -356,7 +359,7 @@ export default class SlotsComponent extends Vue {
       show: true,
     },
     {
-      title: "Actors",
+      title: "Participants",
       key: "practitioners",
       show: true,
     },
@@ -439,19 +442,17 @@ export default class SlotsComponent extends Vue {
 
   get items() {
     // if (this.shifts.length === 0 ) return this.shifs;
-    const shifts = this.schedules.map((i: any) => {
-      return {
-        ...i,
-        action: i.id,
-        status: i.status,
-        schedule: i.scheduleType,
-        time: `${i.days.join(', ')} | ${i.startTime} - ${i.endTime}`,
-        date: `${new Date(i.startDate).toDateString().substring(4, 10) } - ${new Date(i.endDate).toDateString().substring(4, 10) }`
-      };
-    });
-    return shifts;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
+    // const shifts = this.schedules.map((i: any) => {
+    //   return {
+    //     ...i,
+    //     action: i.id,
+    //     status: i.status,
+    //     schedule: i.scheduleType,
+    //     time: `${i.days.join(', ')} | ${i.startTime} - ${i.endTime}`,
+    //     date: `${new Date(i.startDate).toDateString().substring(4, 10) } - ${new Date(i.endDate).toDateString().substring(4, 10) }`
+    //   };
+    // });
+    return [];
   }
 
   actorAdded(actor: any) {

@@ -24,7 +24,7 @@
         hover:opacity-90
         font-semibold
       "
-       @click="$router.push({ name: 'Add a New Domain' })"
+       @click="$router.push({ name: 'Create Appointment' })"
     >
       Create Appointment
     </button>
