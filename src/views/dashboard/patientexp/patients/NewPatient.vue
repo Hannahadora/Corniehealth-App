@@ -561,7 +561,8 @@ export default class NewPatient extends Vue {
         "/api/v1/patient",
         this.payload
       );
-      console.log("Response ", response.data);
+      const patient = response.data;
+      this.updatePatient(patient);
     } catch (error) {
       window.notify({ msg: "Failed to add patient", status: "error" });
     }
