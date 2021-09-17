@@ -225,26 +225,25 @@ singleParticipant= [];
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", key: "keydisplay", show: true },
+    { title: "Date Requested", key: "createdAt", show: true },
     {
-      title: "Patient",
-      key: "patients",
+      title: "Subject",
+      key: "subject",
       show: false,
     },
     {
-      title: "Appointment Type",
-      key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
+      title: "Requester",
+      key: "requester",
       show: true,
     },
     {
-      title: "Participants",
-      key: "Participants",
+      title: "Dispenser",
+      key: "dispenser",
       show: true,
     },
     {
-      title: "Slot",
-      key: "slot",
+      title: "Performer",
+      key: "performer",
       show: false,
     },
     {
@@ -253,36 +252,11 @@ singleParticipant= [];
       show: true,
     },
     {
-      title: "Code",
-      key: "reasonCode",
-      show: false,
-    },
-    {
-      title: "Reason Reference",
-      key: "reasonRef",
-      show: false,
-    },
-    {
-      title: "Period",
-      key: "period",
-      show: true,
-    },
-    {
-      title: "Priority",
-      key: "priority",
-      show: false,
-    },
-    {
       title: "Description",
       key: "description",
       show: false,
     },
-    {
-      title: "Consultation Medium",
-      kwy: "consultationMedium",
-      show: false,
-    },
-
+   
   ];
 
   get headers() {
@@ -293,14 +267,13 @@ singleParticipant= [];
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
 
 
   get items() {
     const appointments = this.appointments.map((appointment) => {
       const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
-       (appointment as any).period = new Date(
-         (appointment as any).period 
+       (appointment as any).createdAt = new Date(
+         (appointment as any).createdAt 
        ).toLocaleDateString("en-US");
         return {
         ...appointment,

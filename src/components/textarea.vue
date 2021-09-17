@@ -8,10 +8,9 @@
   >
     <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
      <textarea
-    rows="4"
+    rows="10"
     cols="50"
     maxlength="255"
-    v-on:keyup="limiter(this, 140)"
       :class="{
         'border-red-500': Boolean(errorMessage),
         'border-green-400': meta.valid && meta.touched,

@@ -2,7 +2,7 @@
 <div class="shadow-md -mb-5 p-3 w-full h-auto">
   <div class="w-full">
     <div
-      class="h-11 w-full border-b-2 flex items-center justify-between"
+      class="h-11 w-full  flex items-center justify-between"
       :class="{
         'bg-gray-50': expand,
         'rounded-t-xl': first && expand,
