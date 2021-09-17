@@ -30,7 +30,7 @@ export async function getPatients() {
     );
     return response.data;
   } catch (error) {
-    notify({ msg: "There was an error fetching slots", status: "error" });
+    notify({ msg: "There was an error fetching patients", status: "error" });
   }
   return { };
 }

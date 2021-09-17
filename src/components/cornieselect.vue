@@ -194,6 +194,25 @@ export default class CornieSelect extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return `select-${id}`;
   }
+  
+ @Watch("items")
+  update(){
+     this.$emit("change")
+     
+  }
+  
+//    @Watch("modelValue")
+// updateSubject(){
+//      this.$emit("changesubject")
+//   }
+//    @Watch("modelValue")
+//   updateRequester(){
+//      this.$emit("changerequest")
+//   }
+//   updatePerformer(){
+//      this.$emit("changeperformer")
+//   }
+
   mounted() {
     clickOutside(this.id, () => {
       this.showDatalist = false;

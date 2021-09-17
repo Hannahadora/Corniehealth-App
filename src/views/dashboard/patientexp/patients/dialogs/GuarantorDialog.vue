@@ -33,11 +33,10 @@
             :items="genderOptions"
             v-model="gender"
           />
-          <cornie-select
+          <cornie-input
             label="Relationship"
             class="mb-5"
-            placeholder="Select One"
-            :items="relationshipOptions"
+            placeholder="Enter"
             v-model="relationship"
           />
           <cornie-input
@@ -101,12 +100,11 @@
             v-model="postcode"
           />
           <div class="flex items-end">
-            <cornie-date-picker
+            <period-picker
               label="Period (from - to)"
               class="mr-1"
-              v-model="fromDate"
+              v-model="period"
             />
-            <cornie-date-picker label=" " v-model="toDate" />
           </div>
         </v-form>
       </cornie-card-text>
@@ -139,7 +137,7 @@ import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/NewCornieSelect.vue";
+import CornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -147,6 +145,7 @@ import { Guarantor, IPatient, RelatedPerson } from "@/types/IPatient";
 import Period from "@/types/IPeriod";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import PeriodPicker from "@/components/daterangepicker.vue";
 
 const patients = namespace("patients");
 
@@ -159,6 +158,7 @@ const patients = namespace("patients");
     CornieDialog,
     CornieInput,
     CornieSelect,
+    PeriodPicker,
     CorniePhoneInput,
     CornieDatePicker,
     CornieBtn,

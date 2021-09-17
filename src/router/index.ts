@@ -169,24 +169,28 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "add-request/:id?",
             name: "New Requests",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/requests/addRequests.vue"),
           },
           {
             path: "edit-request/:id?",
             name: "View & Edit Requests",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/requests/editRequests.vue"),
           },
           {
             path: "view-request/:id?",
             name: "View Requests",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/requests/viewRequests.vue"),
           },
           {
             path: "view-refferal/:id?",
             name: "View Refferal",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/requests/viewRefferal.vue"),
           },
@@ -239,7 +243,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "clinical/",
-        name: "Clinical",
+        name: "Patient EHR",
         component: () => import("@/views/dashboard/ehr/index.vue"),
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
         children: [

@@ -1,21 +1,26 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
-    <cornie-card height="100%" class="flex flex-col">
-      <cornie-card-title>
-        <cornie-icon-btn @click="show = false">
-          <arrow-left-icon />
-        </cornie-icon-btn>
+  <div class="overflow-y-auto bg-white">
+    <modal
+      :visible="visible"
+      style="height: 95%"
+      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2 bg-transparent"
+    >
+      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
+        <span class="block pr-2 border-r-2">
+          <arrow-left-icon
+            class="stroke-current text-primary cursor-pointer"
+            @click="show = false"
+          />
+        </span>
           <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Medication</h2>
-      </cornie-card-title>
-      <cornie-card-text class="flex-grow scrollable">
-        <v-form ref="form">
-         <span class="text-danger text-xs p-3 uppercase float-right font-semibold mb-4">{{medications.length}} added</span>
+      </div>
+      <span class="text-danger text-xs p-3 uppercase float-right font-semibold mb-4">{{newmedications.length}} added</span>
        <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Medication Details" v-model="openedS">
                <div class="w-full mt-5 pb-5">
                   <cornie-select
                   class="w-full"
                   :items="['code']"
-                  v-model="medication.medicationDetails.medicationCode"
+                  v-model="medications.medicationDetails.medicationCode"
                   label="medication code"
                   placeholder="--Select--"
                   >
@@ -24,7 +29,7 @@
                    class="w-full"
                     :items="['reason']"
                     label="medication reference"
-                    v-model="medication.medicationDetails.medicationReference"
+                    v-model="medications.medicationDetails.medicationReference"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -32,7 +37,7 @@
                    class="required w-full"
                     :rules="required"
                     :items="['Continuous','Acute','Seasonal']"
-                    v-model="medication.medicationDetails.courseOfTherapyType"
+                    v-model="medications.medicationDetails.courseOfTherapyType"
                     label="course of therapy type"
                     placeholder="--Select--"
                   >
@@ -41,7 +46,7 @@
                    class="required w-full"
                     :rules="required"
                     :items="['reason']"
-                    v-model="medication.medicationDetails.dosageInstruction"
+                    v-model="medications.medicationDetails.dosageInstruction"
                     label="dosage instruction"
                     placeholder="--Select--"
                   >
@@ -51,7 +56,7 @@
                     :rules="required"
                     :items="['reason']"
                     label="initial fill"
-                    v-model="medication.medicationDetails.initialFill"
+                    v-model="medications.medicationDetails.initialFill"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -60,23 +65,23 @@
                     :rules="required"
                     :items="[0,2,4]"
                     label="quantity"
-                    v-model="medication.medicationDetails.quantity"
+                    v-model="medications.medicationDetails.quantity"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                  <date-picker  placeholder="autofill" label="Duration" v-model="medication.medicationDetails.duration"  class="mb-5 w-full"/>
+                  <date-picker  placeholder="autofill" label="Duration" v-model="medications.medicationDetails.duration"  class="mb-5 w-full"/>
                 </div>
         </accordion-component>
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Refill Info" v-model="openedS">
               <div class="w-full mt-5 pb-5">
-                <date-picker  placeholder="autofill" v-model="medication.refillInfo.dispenseInterval" label="dispense interval"  class="w-full mb-5 required"
+                <date-picker  placeholder="autofill" v-model="medications.refillInfo.dispenseInterval" label="dispense interval"  class="w-full mb-5 required"
                     :rules="required"/>
 
                   <cornie-select
                    class="required w-full"
                     :rules="required"
                     :items="[7,9,9]"
-                    v-model="medication.refillInfo.numberOfRepeatsAllowed"
+                    v-model="medications.refillInfo.numberOfRepeatsAllowed"
                     label="number of repeats allowed"
                     placeholder="--Select--"
                   >
@@ -85,7 +90,7 @@
                    class="required w-full"
                     :rules="required"
                     :items="[8,5,8]"
-                    v-model="medication.refillInfo.quantity"
+                    v-model="medications.refillInfo.quantity"
                     label="quantity"
                     placeholder="--Select--"
                   >
@@ -94,7 +99,7 @@
                    class="required w-full"
                     :rules="required"
                     :items="[5,3,9]"
-                    v-model="medication.refillInfo.expectedSupplyDuration"
+                    v-model="medications.refillInfo.expectedSupplyDuration"
                     label="expected supply duration"
                     placeholder="--Select--"
                   >
@@ -108,7 +113,7 @@
                     :rules="required"
                     :items="['reason']"
                     label="Code"
-                    v-model="medication.substitutionAllowed.code"
+                    v-model="medications.substitutionAllowed.code"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -116,7 +121,7 @@
                    class="w-full"
                     :items="['reason']"
                     label="reason"
-                     v-model="medication.substitutionAllowed.reason"
+                     v-model="medications.substitutionAllowed.reason"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -124,7 +129,7 @@
         </accordion-component>
        <span class="text-danger text-xs p-3 uppercase float-right font-semibold mt-4 cursor-pointer" @click="addMedication">Add</span>
 
-      <div v-for="(input, index) in medications" :key="`-${index}`">
+      <div v-for="(input, index) in newmedications" :key="`-${index}`">
         <div class="mt-16 mb-4">   
           <div class="grid grid-cols-2 p-3">
             <p class="text-sm font-semibold text-black">{{input.medicationDetails.medicationCode}}</p>
@@ -135,59 +140,113 @@
           </div>
         </div>
       </div>
-        </v-form>
-      </cornie-card-text>
-      <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>
-    </cornie-card>
-  </cornie-dialog>
+        <div class="flex justify-end w-full mt-auto">
+            <button
+              class="
+                rounded-full
+                mt-5
+                py-2
+                px-3
+                border border-primary
+                focus:outline-none
+                hover:opacity-90
+                w-1/3
+                mr-2
+                text-primary
+                font-semibold
+              "
+              @click="show = false"
+            >
+              Cancel
+            </button>
+            <button
+              @click="apply"
+              class="
+                bg-danger
+                rounded-full
+                text-white
+                mt-5
+                py-2
+                px-3
+                focus:outline-none
+                hover:opacity-90
+                w-1/3
+              "
+            >
+              Save
+            </button>
+        </div>
+    </modal>
+     
+  </div>
 </template>
-
-<script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CornieCard from "@/components/cornie-card";
-import Textarea from "@/components/textarea.vue";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
+<script>
+import Modal from "@/components/practitionermodal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CorniePhoneInput from "@/components/phone-input.vue";
-import CornieDatePicker from "@/components/datepicker.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import { Insurance, IPatient } from "@/types/IPatient";
-import NoteIcon from "@/components/icons/graynote.vue";
-import { cornieClient } from "@/plugins/http";
+import DragIcon from "@/components/icons/draggable.vue";
+import Draggable from "vuedraggable";
 import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "./accordion-medication-list.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import { duration } from 'moment';
-import IRequest ,{ Medications } from "@/types/IRequest";
 
+const copy = (original) => JSON.parse(JSON.stringify(original));
 
-
-const emptyMedication: Medications = {
-     medicationDetails:{
+export default {
+  name: "ParticipantFilter",
+  components: {
+    Modal,
+    DragIcon,
+    CornieInput,
+    CornieSelect,
+    DEdit,
+    AccordionComponent,
+    DatePicker,
+    ArrowLeftIcon,
+    Draggable,
+    CDelete,
+    IconInput,
+    SearchIcon,
+  },
+  props: {
+    visible: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    columns: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    preferred: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    available: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    
+  },
+  data() {
+    return {
+      columnsProxy: [],
+      indexvalue: [],
+      valueid: [],
+      availableFilter: false,
+      openedS: false,
+      newmedications:[],
+      medications: {
+       medicationDetails:{
           medicationCode: "",
           medicationReference: "",
           courseOfTherapyType: "",
@@ -206,73 +265,70 @@ const emptyMedication: Medications = {
               code: "",
               reason: "",
           },
-};
-
-@Options({
-  name: "notes",
-  components: {
-    ...CornieCard,
-    CornieIconBtn,
-    NoteIcon,
-    ArrowLeftIcon,
-    DatePicker,
-    DEdit,
-    CDelete,
-    CornieDialog,
-    SearchIcon,
-    AccordionComponent,
-    IconInput,
-    Textarea,
-    CornieInput,
-    CornieSelect,
-    CorniePhoneInput,
-    CornieDatePicker,
-    CornieBtn,
+      },
+      medication: [],
+    };
   },
-})
-export default class Medication extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
-
-  @Prop({ type: Array,  default: () => [] })
-  available!: object;
-
- @Prop({ type: String, default: '' })
-  taskId!: string;
-
-
-
-loading=  false;
-notes='';
-availableFilter= false;
-profileFilter=false;
-tasknotes=[];
- newmedications=[];
- // medication =[];
-
- medication = { ...emptyMedication };
-   medications: Medications[] = [];
-
+  watch: {
+    columns(val) {
+      this.columnsProxy = copy(val);
+    },
+    visible() {
+      const active = this.preferred.length > 0 ? this.preferred : this.columns;
+      this.columnsProxy = copy([...active]);
+    },
+  },
+  computed: {
+    show: {
+      get() {
+        return this.visible;
+      },
+      set(val) {
+        this.$emit("update:visible", val);
+      },
+    },
+  },
+  methods: {
+ 
     addMedication(){
-      this.medications.push({ ...this.medication });
-      window.notify({ msg: "Medication Added", status: "success" });
-    }
-    editMedication(id:string,index:number){
+      this.newmedications.push({ ...this.medications });
+    //   window.notify({ msg: "Group Member added", status: "success" });
+     // this.reset();
+    },
+    editMedication(id,index){
       this.medication = this.medications[index];
-    }
-    removeMedication(id:string,index:number){
+    },
+    removeMedication(id,index){
       this.medications.splice(index, 1);
-    }
+    },
     apply() {
-      this.$emit("update:preferred",  [...this.medications]);
-       window.notify({ msg: "Medication Added", status: "success" });
+      //this.newmedications.medicationDetails.duration.start = new Date(this.newmedications.medicationDetails.duration.start).toISOString();
+      //  this.newmedications.medicationDetails.duration.end = new Date(this.newmedications.medicationDetails.duration.end).toISOString();
+      //this.newmedications.medicationDetails.dispenseInterval = new Date(this.newmedications.medicationDetails.dispenseInterval).toISOString();
+      this.$emit("update:preferred",  [...this.newmedications]);
       this.show = false;
+    },
+    reset() {
+      this.$emit("update:preferred", copy([...this.columns]));
+      this.show = false;
+    },
+    showAvailable(){
+      this.availableFilter = true;
+    },
+    showProfile(){
+        this.profileFilter = true;
+    },
+    changed(index){
+      this.valueid.push(index);
     }
- 
-  created() {
- 
-  }
-}
+  },
+  mounted() {
+    this.columnsProxy = copy([...this.indexvalue]);
+  },
+};
 </script>
-
-<style></style>
+<style scoped>
+.bg-gray-50{
+  background: #ffffff !important;
+}
+</style>

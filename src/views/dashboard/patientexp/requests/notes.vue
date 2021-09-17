@@ -30,7 +30,7 @@
           <span></span>
         </div>
          <span class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"  @click="save">Add</span>
-        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in tasknotes" :key="index">
+        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in requestnotes" :key="index">
             <div>
               <note-icon class="mt-3"/>
             </div>
@@ -94,10 +94,10 @@ export default class Notes extends Vue {
   show!: boolean;
 
  @Prop({ type: String, default: '' })
-  taskId!: string;
+  requestId!: string;
 
 @Prop({ type: Array, default: () => [] })
-  tasknotes!: any[];
+  requestnotes!: any[];
 
 loading=  false;
 notes='';
@@ -117,30 +117,24 @@ newtasknotes=[];
     await this.createNew();
   }
 
-   addNote(){
-      this.tasknotes.push(...this.tasknote);
-    }
-
   async createNew() {
       try {
-        const response = await cornieClient().post("/api/v1/task/notes", {text:this.notes, taskId:this.taskId});
+        const response = await cornieClient().post("/api/v1/requests/notes", {text:this.notes, requestId:this.requestId});
         if (response.success) {
             window.notify({ msg: "Notes created", status: "success" });
             this.loading = false;
-           //this.show = false;
-           // this.$router.push("/dashboard/provider/experience/tasks");
         }
         } catch (error) {
           this.loading = false;
          this.show = false;
           console.log(error);
         window.notify({ msg: "Notes not created", status: "error" });
-        this.$router.push("/dashboard/provider/experience/tasks");
+        this.$router.push("/dashboard/provider/experience/requests");
         }
   }
 
   async created() {
-  this.tasknotes;
+      this.requestnotes
   }
 }
 </script>

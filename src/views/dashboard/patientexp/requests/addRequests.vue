@@ -14,7 +14,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['Status Reasom Code']"
+                    :items="['Try another treatment first','Prescription requires clarification','Drug level too high','Drug level too high','Admission to hospital','Lab interference issues','Patient not available','Parent is pregnant/breast feeding','Allergy','Drug interacts with another drug','Duplicate therapy','Suspected intolerance','Patient scheduled for surgery','Waiting for old drug to wash out']"
                     v-model="requestModel.requestInfo.statusReason"
                     label="status reason"
                     placeholder="--Select--"
@@ -32,7 +32,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['category']"
+                    :items="['Inpatient','Outpatient','Community','Discharge']"
                     v-model="requestModel.requestInfo.category"
                     label="category"
                     placeholder="--Select--"
@@ -41,7 +41,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['routine','urgent','asap','stat']"
+                    :items="['Routine','Urgent','ASAP','STAT']"
                     v-model="requestModel.requestInfo.priority"
                     label="priority"
                     placeholder="--Select--"
@@ -79,10 +79,10 @@
                   >
                   </cornie-select>
                   <cornie-select
-                   class="required cursor-pointer"
+                   class="required"
                     :rules="required"
                      v-for="item in patient"
-                    @click="updateRequester(item.id)"
+                    @change="updateRequester(item.id)"
                     :key="item.id"
                     :items="[item.firstname +' '+ item.lastname]"
                     v-model="requestModel.requestDetails.requester"
@@ -149,9 +149,9 @@
              <accordion-component title="Subject" expand="true" v-model="opened" :opened="false">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
-                    class="required cursor-pointer"
+                    class="required"
                     v-for="item in patient"
-                    @click="updateSubject(item.id)"
+                    @change="updateSubject(item.id)"
                     :key="item.id"
                     :items="[item.firstname +' '+ item.lastname]"
                     v-model="requestModel.subject.subject"
@@ -209,7 +209,7 @@
                   </cornie-select>
                   <cornie-select
                     v-for="item in practitioner"
-                    @click="updatePerformer(item.id)"
+                    @change="updatePerformer(item.id)"
                     :key="item.id"
                     :items="[item.firstName +' '+ item.lastName]"
                     v-model="requestModel.medicationAdministration.performer"
@@ -331,7 +331,7 @@
         <medication-modal   
         :columns="practitioner"
           @update:preferred="showMedication"
-          v-model:visible="showMedicationModal"/>
+          v-model="showMedicationModal"/>
       </div>
     </div>
   </div>
@@ -375,7 +375,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: [],
+  medications: Array(),
 
 
 };
@@ -405,8 +405,8 @@ const emptyRequest: IRequest = {
   },
 })
 export default class AddRequest extends Vue {
-  // @Prop({ type: String, default: "" })
-  // id!: string;
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @Prop({ type: Object, required: false, default: { ...emptyRequest} })
   request!: IRequest;
@@ -422,7 +422,7 @@ export default class AddRequest extends Vue {
   }
 
   @request.Mutation
-  setRequests!: any;
+  updatedRequests!: any;
 
   loading = false;
   expand = false;
@@ -441,19 +441,10 @@ export default class AddRequest extends Vue {
   practitioner=[];
 
 dispenser="";
-  // requestInfo = {};
-  // requestDetails = {};
-  // subject = {};
-  // performer = {};
-  // medicationAdministration = {};
-  // fufillment= {};
-  // history ={};
-  // medications ={};
+subject="";
+requester="";
+performer="";
 
- @Watch("requestModel")
-  updatePractice(value:string){
-     this.payload.performer.dispenser = value;
-  }
 
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
@@ -470,7 +461,7 @@ dispenser="";
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
   get isUpdate() {
-    return Boolean(this.request.id);
+    return Boolean(this.id);
   }
 
   // @Watch("id")
@@ -479,12 +470,6 @@ dispenser="";
   // }
   async setRequest() {
      this.requestModel = JSON.parse(JSON.stringify({ ...this.request }));
-    // let manDate = this.deviceModel.udiCarrier.manufacturerDate;
-    // let expDate = this.deviceModel.udiCarrier.expirationDate;
-    // if (manDate) {
-    //   manDate = new Date(manDate).toLocaleDateString("en-US");
-    // }
-    // if (expDate) expDate = new Date(expDate).toLocaleDateString("en-US");
   }
   get payload() {
      const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
@@ -511,41 +496,41 @@ dispenser="";
     // } 
   }
   get allaction() {
-    return this.isUpdate ? "Edit" : "New";
+    return this.id ? "Edit" : "New";
   }
  async updateSubject(value:string){
-   console.log("value");
-   console.log(value);
-    this.payload.subject.subject = value;
+    this.subject = value;
  }
  async updateRequester(value:string){
-    this.payload.requestDetails.requester = value;
+    this.requester = value;
  }
-//  async updatePractice(value:string){
-//    this.payload.performer.dispenser = value;
-//  }
+ async updatePractice(value:string){
+   this.dispenser = value;
+ }
  async updatePerformer(value:string){
-   this.payload.medicationAdministration.performer = value;
+   this.performer = value;
  }
   async showMedication(value:any){
-    console.log(value);
     this.requestModel.medications = value;
     this.showMedicationModal = true;
   }
 
   async submit() {
     this.loading = true;
-    if (this.isUpdate) await this.updateRequest();
-    else await this.createRequest();
+      await this.createRequest();
     this.loading = false;
   }
   async createRequest() {
     //const period = this.period;
+    this.payload.subject.subject = this.subject;
+    this.payload.requestDetails.requester = this.requester;
+    this.payload.medicationAdministration.performer = this.performer;
+    this.payload.performer.dispenser = this.dispenser;
     try {
       const response = await cornieClient().post("/api/v1/requests", this.payload);
       if (response.success) {
-          this.setRequests([response.data]);
-          window.notify({ msg: response.data.message, status: "success" });
+          this.updatedRequests([response.data]);
+          window.notify({ msg: "Request Created", status: "success" });
           this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
@@ -555,13 +540,17 @@ dispenser="";
   }
 
   async updateRequest() {
+     this.payload.subject.subject = this.subject;
+    this.payload.requestDetails.requester = this.requester;
+    this.payload.medicationAdministration.performer = this.performer;
+    this.payload.performer.dispenser = this.dispenser;
      const id = this.request.id;
     const url = `/api/v1/requests/${id}`;
     const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-          this.setRequests([response.data]);
+          this.updatedRequests([response.data]);
         window.notify({ msg: response.data.message, status: "success" });
         this.$router.push("/dashboard/provider/experience/requests");
       }

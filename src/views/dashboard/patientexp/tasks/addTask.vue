@@ -702,12 +702,9 @@ locationInfo = [];
   }
 
   async updateTask() {
-  this.payload.excecutionPeriod.start = new Date(this.payload.excecutionPeriod.start).toISOString();
-   
     const url = `/api/v1/task/${this.id}`
     const payload = {
        ...this.payload,
-        excecutionPeriod: this.payload.excecutionPeriod.start
       }
     try {
       const response = await cornieClient().put(url, payload)
@@ -728,14 +725,12 @@ locationInfo = [];
    async getLocations() {
     const AllLocations = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
     const response = await Promise.all([AllLocations]);
-    console.log(response);
     this.locationInfo = response[0].data[0];
     this.orgAddress = response[0].data[0].id;
   }
   async getPractitioners() {
     const AllPractice = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractice]);
-    console.log(response);
     this.recipientDropdown = response[0].data;
   }
 
@@ -748,7 +743,6 @@ locationInfo = [];
     this.setTask();
     const data = await this.getDropdowns('tasks')
     this.dropdowns = data;
-    console.log(data);
   }
 }
 </script>

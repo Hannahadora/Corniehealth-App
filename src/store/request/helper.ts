@@ -24,3 +24,25 @@ export async function deleteRequest(id: string) {
   }
   return false;
 }
+export async function getPatients() {
+  try {
+    const response = await cornieClient().get(
+        "/api/v1/patient"
+    );
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching patients", status: "error" });
+  }
+  return { };
+}
+export async function getPractitioners() {
+  try {
+    const response = await cornieClient().get(
+        "/api/v1/practitioner"
+    );
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching practitoners", status: "error" });
+  }
+  return { };
+}
