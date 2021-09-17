@@ -1,0 +1,20 @@
+<template>
+  <svg
+    width="14"
+    height="22"
+    viewBox="0 0 14 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9 11.5V9.5L7 10.5L5 9.5V11.5L3 12.5L5 13.5V15.5L7 14.5L9 15.5V13.5L11 12.5L9 11.5ZM9 0.5H2C1.46957 0.5 0.960859 0.710714 0.585786 1.08579C0.210714 1.46086 0 1.96957 0 2.5V16.5C0 17.0304 0.210714 17.5391 0.585786 17.9142C0.960859 18.2893 1.46957 18.5 2 18.5H3V16.5H2V2.5H8V6.5H12V16.5H11V18.5H12C12.5304 18.5 13.0391 18.2893 13.4142 17.9142C13.7893 17.5391 14 17.0304 14 16.5V5.5L9 0.5ZM9 11.5V9.5L7 10.5L5 9.5V11.5L3 12.5L5 13.5V15.5L7 14.5L9 15.5V13.5L11 12.5L9 11.5ZM5 21.5L7 20.5L9 21.5V16.5H5V21.5ZM9 11.5V9.5L7 10.5L5 9.5V11.5L3 12.5L5 13.5V15.5L7 14.5L9 15.5V13.5L11 12.5L9 11.5Z"
+      fill="#F2F7FF"
+    />
+  </svg>
+</template>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+
+@Options({})
+export default class MedalIcon extends Vue {}
+</script>

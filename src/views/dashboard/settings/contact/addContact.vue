@@ -1,0 +1,288 @@
+<template>
+  <div class="overflow-y-auto">
+    <modal :visible="visible" class="mx-14 h-3/4 w-4/12 p-0 overflow-y-auto">
+      <div
+        class="flex bg-primary w-full h-3/4 overflow-y-auto rounded-t-lg p-2"
+      >
+        <span class="block pr-2 border-r-2">
+          <arrow-left-icon
+            class="stroke-current text-white cursor-pointer"
+            @click="show = false"
+          />
+        </span>
+      </div>
+      <div class="w-full p-3">
+        <h2 class="text-primary font-bold text-xl" v-if="isUpdate">
+          Update Contact
+        </h2>
+        <h2 class="text-primary font-bold text-xl" v-else>Add Contact</h2>
+        <small class="block" v-if="isUpdate">update contact...</small>
+        <small class="block" v-else>Add a new contact...</small>
+        <span class="flex items-center mt-3">
+          <avatar class="mr-2" v-if="img.url" :src="img.url" />
+          <avatar class="mr-2" v-else :src="img.placeholder" />
+          <input
+            type="file"
+            accept="image/*"
+            name="image"
+            id="file"
+            @change="img.onChange"
+            hidden
+          />
+          <label for="file" class="text-pink-600 font-bold cursor-pointer">
+            Upload
+          </label>
+        </span>
+        <v-form @submit="submit">
+          <div class="mt-2 grid grid-cols-2 p-1 gap-y-2">
+            <cornie-input
+              :rules="requiredRule"
+              label="First Name"
+              v-model="fname"
+            />
+            <cornie-input
+              :rules="requiredRule"
+              label="Last Name"
+              v-model="lname"
+            />
+            <cornie-input
+              :rules="requiredRule"
+              label="Purpose"
+              :modelValue="purpose"
+            />
+            <cornie-select
+              label="Gender"
+              v-model="gender"
+              :rules="requiredRule"
+              :items="['Male', 'Female', 'Unspecified']"
+            />
+            <cornie-input
+              :rules="requiredRule"
+              label="Email Address"
+              v-model="email"
+            />
+            <phone-input
+              v-model:code="code"
+              :rules="requiredRule"
+              label="Phone Number"
+              v-model="phone"
+              class="w-full"
+            />
+            <cornie-select
+              :rules="requiredRule"
+              label="Country"
+              v-model="country"
+              :items="['Nigeria']"
+            />
+            <cornie-select
+              :rules="requiredRule"
+              label="State"
+              v-model="state"
+              :items="states"
+            />
+            <cornie-input :rules="requiredRule" label="City" v-model="city" />
+            <cornie-input
+              :rules="requiredRule"
+              label="Address"
+              v-model="address"
+            />
+          </div>
+          <div class="flex justify-end w-full mt-4 mb-3">
+            <button
+              class="
+                rounded-full
+                mt-5
+                py-2
+                px-3
+                border border-primary
+                focus:outline-none
+                hover:opacity-90
+                w-1/3
+                mr-2
+                text-primary
+                font-semibold
+              "
+              @click="show = false"
+            >
+              Cancel
+            </button>
+            <cornie-btn
+              :loading="loading"
+              type="submit"
+              class="
+                bg-danger
+                rounded-full
+                text-white
+                mt-5
+                py-2
+                px-3
+                focus:outline-none
+                hover:opacity-90
+                w-1/3
+              "
+            >
+              Save
+            </cornie-btn>
+          </div>
+        </v-form>
+      </div>
+    </modal>
+  </div>
+</template>
+
+<script lang="ts">
+import { Options, Vue, setup } from "vue-class-component";
+import Modal from "@/components/modal.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import Avatar from "@/components/avatar.vue";
+import { useHandleImage } from "@/composables/useHandleImage";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import IContact from "@/types/IContact";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import { getStates } from "@/plugins/nation-states";
+import { string } from "yup";
+const contact = namespace("contact");
+
+@Options({
+  components: {
+    ArrowLeftIcon,
+    Modal,
+    Avatar,
+    CornieSelect,
+    CornieInput,
+    PhoneInput,
+  },
+})
+export default class AddContact extends Vue {
+  img = setup(() => useHandleImage());
+  @Prop({ type: Boolean, default: false })
+  visible!: Boolean;
+
+  @PropSync("visible")
+  show!: Boolean;
+
+  @Prop({ type: String, required: true })
+  purpose!: string;
+
+  @Prop({ type: Object, required: false, default: null })
+  contact!: IContact;
+
+  code = "+234";
+
+  @contact.Mutation
+  updateContacts!: (contacts: IContact[]) => void;
+
+  loading = false;
+
+  requiredRule = string().required();
+
+  fname = "";
+  lname = "";
+  gender = "";
+  email = "";
+  phone = "";
+  country = "";
+  state = "";
+  city = "";
+  address = "";
+
+  get states() {
+    return getStates();
+  }
+  @Watch("visible")
+  unsetContacts(val: boolean) {
+    if (val) return;
+    this.fname = "";
+    this.lname = "";
+    this.gender = "";
+    this.email = "";
+    this.phone = "";
+    this.country = "";
+    this.state = "";
+    this.city = "";
+    this.address = "";
+    this.img.url = "";
+  }
+  setContact() {
+    if (!this.contact) return;
+    const contact = this.contact;
+    this.fname = contact.fname;
+    this.lname = contact.lname;
+    this.gender = contact.gender;
+    this.email = contact.email;
+    this.phone = contact.phone;
+    this.country = contact.country;
+    this.state = contact.state;
+    this.city = contact.city;
+    this.address = contact.address;
+    this.img.url = contact.image;
+  }
+
+  @Watch("contact")
+  contactChanged() {
+    this.setContact();
+  }
+
+  get isUpdate() {
+    return Boolean(this.contact?.id);
+  }
+
+  get id() {
+    return this.contact.id;
+  }
+  async submit() {
+    this.loading = true;
+    this.isUpdate ? await this.update() : await this.create();
+    this.loading = false;
+  }
+
+  async create() {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/contacts",
+        this.payload
+      );
+      if (response.success) this.updateContacts([response.data]);
+      notify({ msg: "Contact Created", status: "success" });
+    } catch (error) {
+      notify({ msg: "Contact not Created", status: "error" });
+    }
+  }
+
+  async update() {
+    try {
+      const response = await cornieClient().put(
+        `/api/v1/contacts/${this.id}`,
+        this.payload
+      );
+      if (response.success) this.updateContacts([response.data]);
+      notify({ msg: "Contact Updated", status: "success" });
+    } catch (error) {
+      notify({ msg: "Contact not updated", status: "error" });
+    }
+  }
+  get payload() {
+    return {
+      fname: this.fname,
+      lname: this.lname,
+      purpose: this.purpose,
+      gender: this.gender,
+      image: this.img.url,
+      country: this.country,
+      state: this.state,
+      city: this.city,
+      phone: this.phone,
+      email: this.email,
+      address: this.address,
+    };
+  }
+
+  mounted() {
+    this.setContact();
+  }
+}
+</script>
