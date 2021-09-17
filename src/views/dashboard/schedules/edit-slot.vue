@@ -71,7 +71,7 @@
                                 </p>
                             </div>
 
-                            <div class="container-fluid py-4 border-l-none" style="border-top: 1px dashed #C2C7D6; border-bottom: 1px dashed #C2C7D6">
+                            <div v-if="participants.length > 0" class="container-fluid py-4 border-l-none" style="border-top: 1px dashed #C2C7D6; border-bottom: 1px dashed #C2C7D6">
                                 <div class="w-full flex flex-wrap">
                                     <div class="w-4/12" v-for="(participant, index) in participants" :key="index">
                                         <div class="w-11/12 mx-auto">
@@ -82,7 +82,7 @@
                                                         <img v-else src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
                                                     </div>
                                                     <div class="w-9/12 ml-3">
-                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">{{ participant.firstName }} {{ participant.lastName }}</p>
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">{{ participant.name  }}</p>
                                                         <span class="capitalize text-gray-400 font-normal text-xs">{{ participant.jobDesignation }}</span>
                                                     </div>
                                                 </div>
@@ -184,7 +184,7 @@
 
 
                             <side-modal :visible="addActorPane" @closesidemodal="() => addActorPane = false">
-                                <add-actors />
+                                <add-actors @participants="participantsAdded"  @closesidemodal="() => addActorPane = false" />
                             </side-modal>
 
                         </div>
@@ -221,7 +221,7 @@ import Templates from "@/components/icons/templates.vue";
 import AddIcon from '@/components/icons/add.vue'
 import IDevice from "@/types/IDevice";
 import SideModal from './components/side-modal.vue';
-import AddActors from './components/select-actor.vue'
+import AddActors, { IParticipantType } from './components/add-participant.vue'
 import InfoIcon from '@/components/icons/info.vue'
 import ISchedule from "@/types/ISchedule";
 
@@ -371,9 +371,27 @@ export default class Shift extends Vue {
 
  get participants() {
      const schedule = this.schedules.find(schedule => schedule.id === this.slotData?.scheduleId);
-     const scheduleParticipants = schedule?.practitioners;
+     const scheduleParticipants = [];
+    //  const scheduleParticipants = schedule?.practitioners;
      if (this.slotData?.practitioners) scheduleParticipants.push(...this.slotData.practitioners);
      return scheduleParticipants;
+ }
+
+ participantsAdded(data: any) {
+     
+     if (data?.participants) {        
+        if (this.slotData?.practitioners) {
+            data.participants.forEach((participant: any) => {
+                if (this.slotData.practitioners.findIndex((practitioner: any) => practitioner.code === participant.code) < 0) {
+                    this.slotData.practitioners.push(participant)
+                }
+            });
+        } else {
+            this.slotData.practitioners = data.participants;
+        }
+    }
+    this.addActorPane = false;
+    
  }
 
 

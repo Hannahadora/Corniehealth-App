@@ -30,12 +30,19 @@
       </span>
       <registration-chart class="w-full" :height="100" />
       <span class="w-full bg-danger">
-        <span class="flex justify-end w-full mb-5">
+        <span class="flex justify-end w-full m4-5">
           <cornie-btn
             @click="registerNew = true"
+            class="text-primary m-5"
+            style="border: 1px solid #080056;"
+          >
+            Create New
+          </cornie-btn>
+          <cornie-btn
+            @click="addToExisting = true"
             class="bg-danger text-white m-5"
           >
-            Register New
+            Add to existing
           </cornie-btn>
         </span>
       </span>
@@ -52,45 +59,54 @@
             <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
           </div>
         </template>
-        <template #actions="{ item }">
+        <template #actions="{  }">
           <table-action
-            @click="
-              $router.push(
-                `/dashboard/provider/experience/view-patient/${item.id}`
-              )
-            "
+            
           >
             <newview-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">View patient details</span>
+            <span class="ml-3 text-xs pr-4">View</span>
           </table-action>
           <table-action
-            @click="
-              $router.push(
-                `/dashboard/provider/experience/edit-patient/${item.id}`
-              )
-            "
           >
             <edit-icon class="text-primary fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
-          </table-action>
-          <table-action >
-            <cancel-icon class="text-red-500 fill-current" />
-            <span class="ml-3 text-xs">Remove Patient</span>
+            <span class="ml-3 text-xs pr-4">Edit</span>
           </table-action>
           <table-action
-            @click="
-              $router.push(`/dashboard/provider/experience/settings/${item.id}`)
-            "
+            
           >
-            <settings-icon class="text-red-500 fill-current" />
-            <span class="ml-3 text-xs">Patient Settings</span>
-          </table-action>
-          <table-action>
-            <checkin-icon />
-            <span class="ml-3 text-xs">Check-In</span>
+            <share-icon class="text-red-500 fill-current" />
+            <span class="ml-3 text-xs pr-4">Share</span>
           </table-action>
         </template>
       </cornie-table>
+
+      <modal :visible="addToExisting">
+      <template #title>
+        <div class="w-full">
+          <div class="container p-6 content-con" style="min-width: 450px">
+            <p class="text-primary text-2xl font-semibold pb-3">Add to existing care team</p>
+            <span style="color:#667499" class="text-secondary text-base">Search a care team	</span>
+
+            <div class="w-full py-6">
+              <cornie-input :placehode="'Search'" style="width: 100%;border-radius:50%" placeholder="Enter">
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </cornie-input>
+            </div>
+            <div class="w-full flex flex justify-end">
+                <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
+                    <span class="font-semibold" @click="addToExisting = false">Cancel</span>
+                </corniebtn>
+
+                <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4">
+                    <span class="text-white font-semibold">Add</span>
+                </corniebtn>
+            </div>
+          </div>
+        </div>
+      </template>
+    </modal>
       
       <side-modal :visible="registerNew" @closesidemodal="() => registerNew = false" :header="'New Care Team'">
         <CareTeamForm />
@@ -114,6 +130,10 @@ import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import CareTeamForm from './components/careteam-form.vue';
+import Modal from "@/components/modal.vue";
+import CornieInput from '@/components/cornieinput.vue'
+import SearchIcon from "@/components/icons/search.vue"
+import ShareIcon from "@/components/icons/share.vue"
 
 @Options({
   name: "EHRCareTeam",
@@ -131,11 +151,16 @@ import CareTeamForm from './components/careteam-form.vue';
     CornieTable,
     SideModal,
     CareTeamForm,
+    Modal,
+    CornieInput,
+    SearchIcon,
+    ShareIcon,
   },
 })
 
 export default class EHRCareTeam extends Vue {
   registerNew = false;
+  addToExisting = false;
 
   headers = [
     {

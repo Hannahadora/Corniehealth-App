@@ -252,7 +252,7 @@
             </div>
             
             <div class="w-full pb-8 flex flex justify-end">
-                <corniebtn class="bg-gray-300 p-2 rounded-full px-8 mx-4">
+                <corniebtn class="p-2 rounded-full px-8 mx-4" style="border: 1px solid #080056;">
                     <span class="font-semibold text-gray-500">Cancel</span>
                 </corniebtn>
 

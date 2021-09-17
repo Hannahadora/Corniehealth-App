@@ -51,7 +51,7 @@
       >
         <template #name="{ item }">
           <div class="flex items-center">
-            <avatar class="w-5 h-5" :src="item.photo" />
+            <avatar class="w-5 h-5" :src="item.profilePhoto" />
             <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
           </div>
         </template>
@@ -102,7 +102,7 @@
       v-model="filterAdvanced"
       :patients="patients"
     />
-    <modal :visible="false">
+    <modal :visible="showAuthModal">
       <template #title>
         <div class="w-full">
           <div class="container p-6 content-con">
@@ -113,12 +113,12 @@
               <cornie-input :label="'Access Code'" style="width: 100%" placeholder="Enter" />
             </div>
             <div class="w-full flex flex justify-end">
-                <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4">
+                <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
                     <span class="font-semibold">Cancel</span>
                 </corniebtn>
 
-                <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4">
-                    <span class="text-white font-semibold">Save</span>
+                <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="text-white font-semibold" @click="authenticate">Save</span>
                 </corniebtn>
             </div>
           </div>
@@ -126,7 +126,7 @@
       </template>
     </modal>
 
-    <modal :visible="false">
+    <modal :visible="showSearchModal">
       <template #title>
         <div class="w-full">
           <div class="container p-6 content-con">
@@ -134,20 +134,27 @@
             <span style="color:#667499" class="text-secondary text-base">Search a patient to continue	</span>
 
             <div class="w-full py-4">
-              <search-input placehoder="Ssearch by patient name, mrn" />
+              <search-input class="p-2" :placehoder="'Search by patient name, mrn, email, unique ID'" />
             </div>
             <div class="w-full pt-2 pb-8">
-              <button class="bg-red-500 p-2 rounded-full w-full">
+              <button class="bg-red-500 p-2 rounded-full w-full cursor-pointer" @click="() => showSearchModal = false">
                 <span class="text-white font-semibold">Search</span>
               </button>
             </div>
+
+            <div class="w-full flex justify-around items-center mb-5" >
+              <div class="w-5/12" style="border-bottom: 1px dashed #C2C7D6;"></div>
+              <div class="w-1/12"><span>Or</span></div>
+              <div class="w-5/12" style="border-bottom: 1px dashed #C2C7D6;"></div>
+            </div>
+
             <div class="w-full flex flex justify-around">
-                <corniebtn class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4">
-                    <span class="font-semibold text-white">View all patients</span>
+                <corniebtn class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="font-semibold text-white" @click="() => showSearchModal = false">View all patients</span>
                 </corniebtn>
 
-                <corniebtn class="bg-white primary-border p-2 rounded-full px-8 mx-4">
-                    <span class="text-primary-500 font-semibold ">Go to active visits</span>
+                <corniebtn class="bg-white primary-border p-2 rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="text-primary-500 font-semibold " @click="viewActiveVisits">Go to active visits</span>
                 </corniebtn>
             </div>
           </div>
@@ -210,6 +217,9 @@ export default class ExistingState extends Vue {
   patients!: IPatient[];
 
   @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+  @patients.Action
   deletePatient!: (id: string) => Promise<boolean>;
 
   filterAdvanced = false;
@@ -217,6 +227,8 @@ export default class ExistingState extends Vue {
   checkInPatient!: IPatient;
   checkingIn = false;
   registerNew = false;
+  showAuthModal = false;
+  showSearchModal = false;
   activeTab = 0;
 
   headers = [
@@ -237,7 +249,7 @@ export default class ExistingState extends Vue {
     },
     {
       title: "D.O.B",
-      key: "dob",
+      key: "dateOfBirth",
       show: true,
     },
     {
@@ -253,17 +265,27 @@ export default class ExistingState extends Vue {
   ];
 
   get items() {
-    const patients = this.filteredPatients;
-    return patients.map((patient) => ({
-      name: `${patient.firstname} ${patient.lastname}`,
-      dob: this.printDOB(patient.dateOfBirth),
-      email: this.printEmail(patient),
-      phone: this.printPhone(patient),
-      mrn: this.printMRN(patient.mrn),
-      gender: patient.gender,
-      photo: patient.profilePhoto,
-      id: patient.id,
-    }));
+    return this.patients.map(patient => {
+      // console.log(, "contact info");
+      const contact = patient?.contactInfo?.find(contact => contact.phone?.number);
+      return {
+        ...patient,
+        name: `${patient.firstname} ${patient.lastname}`,
+        phone: `${ contact?.phone?.dialCode}${contact?.phone?.number}`,
+        email: contact?.email
+      }
+    });
+  }
+
+  viewActiveVisits() {
+    this.showSearchModal = false;
+    this.activeTab = 1;
+  
+  }
+
+  authenticate() {
+    this.showAuthModal = false;
+    this.showSearchModal = true;
   }
 
   checkIn(patient: IPatient) {
@@ -300,6 +322,11 @@ export default class ExistingState extends Vue {
     const deleted = await this.deletePatient(id);
     if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
     else window.notify({ msg: "Patient not deleted", status: "error" });
+  }
+
+  async created() {
+    this.showAuthModal = true;
+    await this.fetchPatients();
   }
 }
 </script>
