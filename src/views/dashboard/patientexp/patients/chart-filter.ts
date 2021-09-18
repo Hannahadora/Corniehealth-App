@@ -100,7 +100,7 @@ function weekToDay(data: DateStat[]) {
 }
 
 function yearToDay(data: DateStat[]) {
-  return getChartData(data, Months, (d) => d.getMonth());
+  return getChartData(data, Months, (d) => d.getMonth() + 1);
 }
 
 function monthToDay(data: DateStat[]) {
