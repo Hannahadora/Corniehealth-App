@@ -122,10 +122,10 @@
                   </cornie-select>
                 </div>
         </accordion-component>
-       <span class="text-danger text-xs p-3 uppercase float-right font-semibold mt-4 cursor-pointer" @click="addMedication">Add</span>
+       <span class="text-danger text-xs p-3 uppercase float-right font-semibold  cursor-pointer" @click="addMedication">Add</span>
 
-      <div v-for="(input, index) in medications" :key="`-${index}`">
-        <div class="mt-16 mb-4">   
+      <div v-for="(input, index) in updatedmedications" :key="`-${index}`">
+        <div class="mt-10 mb-1">   
           <div class="grid grid-cols-2 p-3">
             <p class="text-sm font-semibold text-black">{{input.medicationDetails.medicationCode}}</p>
             <div class="w-full flex flex-wrap float-right justify-between">
@@ -184,9 +184,8 @@ import Period from "@/types/IPeriod";
 import { duration } from 'moment';
 import IRequest ,{ Medications } from "@/types/IRequest";
 
-
-
 const emptyMedication: Medications = {
+   // requestId: "",
      medicationDetails:{
           medicationCode: "",
           medicationReference: "",
@@ -241,34 +240,58 @@ export default class Medication extends Vue {
   taskId!: string;
 
  @Prop({ type: String, default: '' })
-  requesId!: string;
+  requestId!: string;
 
 loading=  false;
 notes='';
 availableFilter= false;
 profileFilter=false;
-tasknotes=[];
+updatedmedications=[];
  newmedications=[];
  // medication =[];
 
  medication = { ...emptyMedication };
    medications: Medications[] = [];
-
+  async apply() {
+    this.loading = true
+   await this.editMedication();
+    this.loading = false
+  }
+  // async setRequest() {
+  //    this.medication = JSON.parse(JSON.stringify({ ...this.request }));
+  // }
+   get payload() {
+     const model = JSON.parse(JSON.stringify({ ...this.medications }));
+    return model;
+  }
     addMedication(){
       this.medications.push({ ...this.medication });
       window.notify({ msg: "Medication Added", status: "success" });
     }
-    editMedication(id:string,index:number){
-      this.medication = this.medications[index];
-    }
     removeMedication(id:string,index:number){
       this.medications.splice(index, 1);
     }
-    apply() {
-      this.$emit("update:preferred",  [...this.medications]);
-       window.notify({ msg: "Medication Added", status: "success" });
-      this.show = false;
+    async fetchMedication() {
+    const id = this.requestId;
+      const AllNotes = cornieClient().get(`/api/v1/requests/medications/${id}`);
+      const response = await Promise.all([AllNotes]);
+      this.updatedmedications = response[0].data;
     }
+
+async editMedication() {
+    const id = this.requestId;
+    const url = `/api/v1/requests/medications/${id}`;
+    const payload = this.payload ;
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Medication Updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/requests");
+      }
+    } catch (error) {
+      window.notify({ msg: error, status: "error" });
+    }
+  }
  
   created() {
  

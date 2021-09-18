@@ -151,8 +151,8 @@ input[type="checkbox"]:checked:after {
 }
 .nav-tabs .nav-link {
     border-radius: 2px;
-    border: 1px solid #F0F4FE;
-    background: #F0F4FE;
+    border: 1px solid #fff;
+    background: #fff;
     color: #667499;
     font-size: 13px;
     padding: 0.2rem 1rem 0.2rem 1rem;

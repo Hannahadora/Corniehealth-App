@@ -146,8 +146,6 @@ export default {
       this.show = false;
     },
      async viewAvialaibilty() {
-       console.log("this.practitionerId");
-         console.log(this.practitionerId);
       const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
       const response = await Promise.all([SinglePractitioner]);
       console.log("response");
@@ -156,11 +154,11 @@ export default {
     },
   },
   mounted() {
-     this.viewAvialaibilty();
+     //this.viewAvialaibilty();
     this.columnsProxy = copy([...this.columns]);
   },
   created(){
-   this.viewAvialaibilty();
+   //this.viewAvialaibilty();
   }
 };
 </script>

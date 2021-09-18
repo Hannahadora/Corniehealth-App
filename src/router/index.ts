@@ -188,21 +188,23 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/patientexp/requests/viewRequests.vue"),
           },
           {
-            path: "view-refferal/:id?",
-            name: "View Refferal",
+            path: "view-other-request/:id?",
+            name: "View Other Requests",
             props: true,
             component: () =>
               import("@/views/dashboard/patientexp/requests/viewRefferal.vue"),
           },
           {
-            path: "edit-refferal/:id?",
-            name: "View Request Diagonistic",
+            path: "edit-other-request/:id?",
+            name: "Edit Other Request",
+            props: true,
             component: () =>
               import("@/views/dashboard/patientexp/requests/editRefferal.vue"),
           },
           {
-            path: "add-request-reffer/:id?",
-            name: "New Reffer",
+            path: "add-other-requests/:id?",
+            name: "New Other Requests",
+            props: true,
             component: () =>
               import(
                 "@/views/dashboard/patientexp/requests/addRefferRequests.vue"
