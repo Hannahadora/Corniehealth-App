@@ -19,19 +19,7 @@
         <small class="block" v-if="isUpdate">update contact...</small>
         <small class="block" v-else>Add a new contact...</small>
         <span class="flex items-center mt-3">
-          <avatar class="mr-2" v-if="img.url" :src="img.url" />
-          <avatar class="mr-2" v-else :src="img.placeholder" />
-          <input
-            type="file"
-            accept="image/*"
-            name="image"
-            id="file"
-            @change="img.onChange"
-            hidden
-          />
-          <label for="file" class="text-pink-600 font-bold cursor-pointer">
-            Upload
-          </label>
+          <cornie-avatar-field v-model="image" />
         </span>
         <v-form @submit="submit">
           <div class="mt-2 grid grid-cols-2 p-1 gap-y-2">
@@ -135,8 +123,6 @@ import { Options, Vue, setup } from "vue-class-component";
 import Modal from "@/components/modal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import Avatar from "@/components/avatar.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -145,20 +131,22 @@ import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { getStates } from "@/plugins/nation-states";
 import { string } from "yup";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+
 const contact = namespace("contact");
 
 @Options({
+  name: "AddContactInfo",
   components: {
     ArrowLeftIcon,
     Modal,
-    Avatar,
     CornieSelect,
     CornieInput,
     PhoneInput,
+    CornieAvatarField,
   },
 })
 export default class AddContact extends Vue {
-  img = setup(() => useHandleImage());
   @Prop({ type: Boolean, default: false })
   visible!: Boolean;
 
@@ -189,13 +177,21 @@ export default class AddContact extends Vue {
   state = "";
   city = "";
   address = "";
+  image = "";
+
+  @Watch("image")
+  imageChanged(val: string) {
+    console.log("Value for image", val);
+  }
 
   get states() {
     return getStates();
   }
+
   @Watch("visible")
   unsetContacts(val: boolean) {
-    if (val) return;
+    if (val) return this.setContact();
+    console.log("Unsetting");
     this.fname = "";
     this.lname = "";
     this.gender = "";
@@ -205,8 +201,9 @@ export default class AddContact extends Vue {
     this.state = "";
     this.city = "";
     this.address = "";
-    this.img.url = "";
+    this.image = "";
   }
+
   setContact() {
     if (!this.contact) return;
     const contact = this.contact;
@@ -219,12 +216,7 @@ export default class AddContact extends Vue {
     this.state = contact.state;
     this.city = contact.city;
     this.address = contact.address;
-    this.img.url = contact.image;
-  }
-
-  @Watch("contact")
-  contactChanged() {
-    this.setContact();
+    this.image = contact.image;
   }
 
   get isUpdate() {
@@ -232,8 +224,9 @@ export default class AddContact extends Vue {
   }
 
   get id() {
-    return this.contact.id;
+    return this.contact?.id;
   }
+
   async submit() {
     this.loading = true;
     this.isUpdate ? await this.update() : await this.create();
@@ -271,7 +264,7 @@ export default class AddContact extends Vue {
       lname: this.lname,
       purpose: this.purpose,
       gender: this.gender,
-      image: this.img.url,
+      image: this.image,
       country: this.country,
       state: this.state,
       city: this.city,

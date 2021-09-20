@@ -1,6 +1,5 @@
 import Avatar from "@/components/avatar.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
-import { reactive } from "@vue/reactivity";
 import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
@@ -9,20 +8,21 @@ export default defineComponent({
     Avatar,
   },
   emits: ["update:modelValue"],
-  setup() {
-    const { url, placeholder, onChange } = useHandleImage();
-    return { img: reactive({ url, placeholder, onChange }) };
+  setup(props) {
+    console.log("Prop changed");
+    const { url, placeholder, onChange } = useHandleImage(props.modelValue);
+    return { url, placeholder, onChange };
   },
   props: {
     modelValue: { type: String, default: "" },
     readonly: { type: Boolean, default: false },
   },
   watch: {
-    "img.url"(newValue: string) {
+    url(newValue: string) {
       this.$emit("update:modelValue", newValue);
     },
   },
   mounted() {
-    this.img.url = this.modelValue;
+    this.url = this.modelValue;
   },
 });

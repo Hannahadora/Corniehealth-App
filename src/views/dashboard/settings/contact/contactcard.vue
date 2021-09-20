@@ -42,9 +42,11 @@
       <delete-icon @click="removeContact" class="text-danger fill-current" />
     </div>
     <add-contact
+      v-if="editingContact"
       v-model:visible="editingContact"
       :purpose="contact.purpose"
       :contact="contact"
+      key="category"
     />
   </div>
 </template>
