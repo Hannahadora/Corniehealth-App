@@ -166,11 +166,6 @@ export default class EmergencyDontactDialog extends Vue {
   @Prop({ type: Object })
   patient!: IPatient;
 
-  providers: Provider[] = [];
-
-  @Watch("providers")
-  providersUpdated() {}
-
   add(key: string) {
     this.provider = key;
     this.showProviderPicker = true;
