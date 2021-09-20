@@ -57,6 +57,7 @@
               </cornie-btn>
               <cornie-btn
                 type="submit"
+                :loading="loading"
                 class="text-white bg-danger px-6 rounded-xl"
               >
                 Save
@@ -73,7 +74,8 @@
             <input
               @change="toggleDefault(item)"
               v-model="item.default"
-              type="checkbox"
+              type="radio"
+              :name="type"
               class=""
             />
             <div class="flex flex-col ml-3">
@@ -148,13 +150,13 @@ export default class RegisterProvider extends Vue {
   @Prop({ type: Array, default: [] })
   labs!: Provider[];
 
-  @PropSync("providers")
+  @PropSync("labs")
   labsSync!: Provider[];
 
   @Prop({ type: Array, default: [] })
   pharmacies!: Provider[];
 
-  @PropSync("providers")
+  @PropSync("pharmacies")
   pharmaciesSync!: Provider[];
 
   @Prop({ type: String })
@@ -163,6 +165,7 @@ export default class RegisterProvider extends Vue {
   @patients.Action
   deleteProvider!: (provider: Provider) => Promise<boolean>;
 
+  loading = false;
   name = "";
   email = "";
   referenceOrganization = "";
@@ -196,11 +199,13 @@ export default class RegisterProvider extends Vue {
   }
 
   async save() {
+    this.loading = true;
     if (this.patientId) await this.submit();
     else {
       this.sync(this.payload);
     }
     this.reset();
+    this.loading = false;
   }
 
   sync(data: Provider) {
@@ -217,6 +222,7 @@ export default class RegisterProvider extends Vue {
       this.sync(response.data);
       window.notify({ msg: "Provider Added", status: "success" });
     } catch (error) {
+      throw error;
       window.notify({ msg: "Provider Not Added", status: "error" });
     }
   }

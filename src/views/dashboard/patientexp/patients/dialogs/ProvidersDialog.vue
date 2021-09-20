@@ -67,7 +67,8 @@
         </cornie-card>
       </cornie-card>
       <register-provider
-        v-model:providers="tempProviders"
+        v-model:labs="labsSync"
+        v-model:pharmacies="pharmaciesSync"
         :patientId="patient?.id || ''"
         :title="provider"
         v-model="showProviderPicker"
