@@ -222,7 +222,6 @@ export default class RegisterProvider extends Vue {
       this.sync(response.data);
       window.notify({ msg: "Provider Added", status: "success" });
     } catch (error) {
-      throw error;
       window.notify({ msg: "Provider Not Added", status: "error" });
     }
   }
