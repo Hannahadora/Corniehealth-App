@@ -2,7 +2,6 @@ import ObjectSet from "@/lib/objectset";
 import { updateModelField } from "@/plugins/utils";
 import { IPatient, Provider } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { getPatients } from "../appointment/helper";
 import { deletePatient, deleteProvider, fetchPatients } from "./helper";
 
 interface PatientState {

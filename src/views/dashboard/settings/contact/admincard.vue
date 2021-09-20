@@ -45,10 +45,11 @@
     </button>
 
     <add-contact
-      v-if="contact.id"
+      v-if="contact.id && editingContact"
       v-model:visible="editingContact"
       :purpose="contact.purpose"
       :contact="contact"
+      key="admin"
     />
   </div>
 </template>
