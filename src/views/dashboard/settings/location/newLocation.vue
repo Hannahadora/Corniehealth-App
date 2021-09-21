@@ -197,8 +197,8 @@ export default {
   Watch: {
     coordinatesCB(cb) {
       const data = await cb();
-      this.longitude = data.longitude;
-      this.latitude = data.latitude;
+      this.longitude = String(data.longitude);
+      this.latitude = String(data.latitude);
     },
   },
   methods: {
