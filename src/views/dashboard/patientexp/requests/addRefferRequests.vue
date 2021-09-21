@@ -440,10 +440,6 @@ requesterobject ="";
   openedR = true;
   openedS = true;
 
-  
-
-
-
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
 
@@ -522,6 +518,7 @@ get allRequester() {
           this.updatedOtherrequests([response.data]);
           window.notify({ msg: "Other Request Created", status: "success" });
           this.$router.push("/dashboard/provider/experience/requests");
+          //this.selected = 1;
       }
     } catch (error) {
       console.log(error);

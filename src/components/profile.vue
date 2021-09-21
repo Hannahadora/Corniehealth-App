@@ -174,7 +174,7 @@ export default {
     this.columnsProxy = copy([...this.columns]);
   },
   created(){
-    //this.viewProfile();
+    this.viewProfile();
   }
 };
 </script>

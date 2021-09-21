@@ -255,6 +255,12 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
           },
+          {
+            path: "allergy",
+            name: "Allergy & Intolerance",
+            component: () =>
+              import("@/views/dashboard/ehr/allergy/index.vue"),
+          },
         ],
       },
       {

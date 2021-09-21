@@ -72,24 +72,26 @@
                           </p>
                         </div>
                       </div>
-                      <p
-                        class="cursor-pointer  text-xs text-danger"
-                        @click="showAvailable(input.id,input.firstName,input.lastName)"
-                      >
-                        View Availability
-                      </p>
-                      <p
-                        class="cursor-pointer  text-xs text-danger"
-                        @click="showProfile(input.id,input.firstName,input.lastName,input.type,input.activeState)"
-                      >
-                        View Profile
-                      </p>
+                  
+                        <p
+                          class="cursor-pointer pl-12 w-full text-xs text-danger"
+                          @click="showAvailable(input.id,input.firstName,input.lastName)"
+                        >
+                          View Availability
+                        </p>
+                        <p
+                          class="cursor-pointer  w-full text-xs text-danger"
+                          @click="showProfile(input.id,input.firstName,input.lastName,input.type,input.activeState)"
+                        >
+                          View Profile
+                        </p>
+                     
                       <cornie-radio
                         v-model="newindexvaluepractitioner"
                         :value="input"
                         @input="changed(input.id)"
                         name="practioner"
-                        class="bg-danger  focus-within:bg-danger px-6 shadow"/>
+                        class="bg-danger mb-5  focus-within:bg-danger px-6 shadow"/>
                     </div>
                     <div class="w-full p-3" v-if="singleId == input.id">
                       <cornie-select
