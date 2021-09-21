@@ -81,10 +81,7 @@
                   <cornie-select
                    class="required"
                     :rules="required"
-                     v-for="item in patient"
-                    @change="updateRequester(item.id)"
-                    :key="item.id"
-                    :items="[item.firstname +' '+ item.lastname]"
+                    :items="allRequester"
                     v-model="requestModel.requestDetails.requester"
                     label="requester"
                     placeholder="--Select--"
@@ -150,10 +147,7 @@
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
                     class="required"
-                    v-for="item in patient"
-                    @change="updateSubject(item.id)"
-                    :key="item.id"
-                    :items="[item.firstname +' '+ item.lastname]"
+                    :items="allRequester"
                     v-model="requestModel.subject.subject"
                     label="subject"
                   >
@@ -185,10 +179,7 @@
                   </cornie-select>
                    <cornie-select
                     class="required cursor-pointer"
-                    v-for="item in practitioner"
-                    @change="updatePractice(item.id)"
-                    :key="item.id"
-                    :items="[item.firstName +' '+ item.lastName]"
+                    :items="allPerformer"
                     v-model="requestModel.performer.dispenser"
                     label="dispenser"
                     placeholder="--Select--"
@@ -208,10 +199,7 @@
                   >
                   </cornie-select>
                   <cornie-select
-                    v-for="item in practitioner"
-                    @change="updatePerformer(item.id)"
-                    :key="item.id"
-                    :items="[item.firstName +' '+ item.lastName]"
+                    :items="allPerformer"
                     v-model="requestModel.medicationAdministration.performer"
                     label="performer"
                     placeholder="--Select--"
@@ -464,10 +452,6 @@ performer="";
     return Boolean(this.id);
   }
 
-  // @Watch("id")
-  // idChanged() {
-  //   this.setRequest();
-  // }
   async setRequest() {
      this.requestModel = JSON.parse(JSON.stringify({ ...this.request }));
   }
@@ -483,32 +467,27 @@ performer="";
     //     medication.dispenseInterval
     //   ).toISOString();
     return model;
-
-    // return  {
-    //   requestInfo: this.requestInfo,
-    //   requestDetails: this.requestDetails,
-    //   subject: this.subject,
-    //   performer: this.performer,
-    //   medicationAdministration: this.medicationAdministration,
-    //   fufillment: this.fufillment,
-    //   history: this.history,
-    //   medications: this.medications,
-    // } 
   }
   get allaction() {
     return this.id ? "Edit" : "New";
   }
- async updateSubject(value:string){
-    this.subject = value;
+get allPerformer() {
+     if (!this.practitioner || this.practitioner.length === 0) return [ ];
+     return this.practitioner.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstName +' '+ i.lastName,
+         }
+     })
  }
- async updateRequester(value:string){
-    this.requester = value;
- }
- async updatePractice(value:string){
-   this.dispenser = value;
- }
- async updatePerformer(value:string){
-   this.performer = value;
+ get allRequester() {
+     if (!this.patient || this.patient.length === 0) return [ ];
+     return this.patient.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstname +' '+ i.lastname,
+         }
+     })
  }
   async showMedication(value:any){
     this.requestModel.medications = value;
@@ -522,10 +501,7 @@ performer="";
   }
   async createRequest() {
     //const period = this.period;
-    this.payload.subject.subject = this.subject;
-    this.payload.requestDetails.requester = this.requester;
-    this.payload.medicationAdministration.performer = this.performer;
-    this.payload.performer.dispenser = this.dispenser;
+    
     try {
       const response = await cornieClient().post("/api/v1/requests", this.payload);
       if (response.success) {

@@ -14,27 +14,32 @@
           <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Availability </h2>
       </div>
       <div class="flex flex-col p-3 mb-7">
-        <p class="text-sm mt-2">
-         View {{name}} available times this week
-        </p>
-        <div class="my-5 border-2 p-3 border-gray-200 w-full  flex-col flex">
-            <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between" v-for="(input, index) in available" :key="index">
-              <p class="cursor-pointer float-left text-xs text-black">
-                {{
-                            new Date(
-                              input.startDate
-                            ).toLocaleDateString("en-US", options)
-                          }}
-              </p>
-              <p class="cursor-pointer float-right text-xs text-gray-500">
-                 <span>{{ input.startTime }}
-                  </span>
-                
-                
-                 - {{ input.endTime }}</p>
-            </span>
-         <!-- <div v-for="(item,index) in columnsProxy" :key="index">
-          </div>-->
+        <div v-if="available.length === 0">
+          <span>Practioner Availability is fetching...</span>
+        </div>
+        <div v-else>
+          <p class="text-sm mt-2">
+          View {{name}} available times this week
+          </p>
+          <div class="my-5 border-2 p-3 border-gray-200 w-full  flex-col flex">
+              <span class="items-center hover:bg-gray-100 mb-4 w-full flex justify-between" v-for="(input, index) in available" :key="index">
+                <p class="cursor-pointer float-left text-xs text-black">
+                  {{
+                              new Date(
+                                input.startDate
+                              ).toLocaleDateString("en-US", options)
+                            }}
+                </p>
+                <p class="cursor-pointer float-right text-xs text-gray-500">
+                  <span>{{ input.startTime }}
+                    </span>
+                  
+                  
+                  - {{ input.endTime }}</p>
+              </span>
+          <!-- <div v-for="(item,index) in columnsProxy" :key="index">
+            </div>-->
+          </div>
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
@@ -118,6 +123,12 @@ export default {
     };
   },
   watch: {
+    async viewAvialaibilty() {
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      this.available = response[0].data;
+      return this.available;
+    },
     columns(val) {
       this.columnsProxy = copy(val);
     },
@@ -146,12 +157,8 @@ export default {
       this.show = false;
     },
      async viewAvialaibilty() {
-       console.log("this.practitionerId");
-         console.log(this.practitionerId);
       const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
       const response = await Promise.all([SinglePractitioner]);
-      console.log("response");
-        console.log(response);
       this.available = response[0].data;
     },
   },

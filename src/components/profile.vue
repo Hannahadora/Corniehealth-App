@@ -170,7 +170,7 @@ export default {
     },
   },
   mounted() {
-      this.viewProfile();
+      //this.viewProfile();
     this.columnsProxy = copy([...this.columns]);
   },
   created(){
