@@ -575,8 +575,6 @@ profileFilter=false;
     if (this.id) await this.updateAllergy()
     else await this.createAllergy()
     this.loading = false
-      //  window.notify({ msg: "Medication Added", status: "success" });
-      // this.show = false;
     }
   async setAllergy() {
     const allergy = await this.getAllergyById(this.id)
