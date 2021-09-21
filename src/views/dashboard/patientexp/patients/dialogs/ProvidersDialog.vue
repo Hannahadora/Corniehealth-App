@@ -26,7 +26,9 @@
                 <span class="text-primary font-extrabold pl-2 block">
                   Preferred Pharmacy
                 </span>
-                <span class="text-gray-300 text-xs block"> 0 Added </span>
+                <span class="text-gray-300 text-xs block">
+                  {{ pharmCount }} Added
+                </span>
               </div>
               <cornie-btn
                 @click="add('Pharmacy')"
@@ -43,7 +45,9 @@
                 <span class="text-primary font-extrabold pl-2 block">
                   Preferred Laboratories
                 </span>
-                <span class="text-gray-300 text-xs block"> 0 Added </span>
+                <span class="text-gray-300 text-xs block">
+                  {{ labCount }} Added
+                </span>
               </div>
               <cornie-btn
                 @click="add('Laboratory')"
@@ -69,7 +73,7 @@
       <register-provider
         v-model:labs="labsSync"
         v-model:pharmacies="pharmaciesSync"
-        :patientId="patient?.id || ''"
+        :patient="patient"
         :title="provider"
         v-model="showProviderPicker"
       />
@@ -133,39 +137,22 @@ export default class EmergencyDontactDialog extends Vue {
   @PropSync("pharmacies")
   pharmaciesSync!: Provider[];
 
-  @patients.Action
-  updatePatientField!: (data: {
-    id: string;
-    field: string;
-    data: any[];
-  }) => void;
-
-  @Watch("labs")
-  labsUpdated() {
-    if (!this.patient?.id) return;
-    this.updatePatientField({
-      id: this.patient.id,
-      field: "preferredLabs",
-      data: this.labs,
-    });
-  }
-
-  @Watch("pharmacies")
-  pharmsUpdated() {
-    if (!this.patient?.id) return;
-    this.updatePatientField({
-      id: this.patient.id,
-      field: "preferredPharmacies",
-      data: this.pharmacies,
-    });
-  }
-
   provider = "";
   showProviderPicker = false;
 
   @Prop({ type: Object })
   patient!: IPatient;
 
+  get labCount() {
+    const labs = this.patient?.preferredLabs || this.labsSync || [];
+    return labs.length;
+  }
+
+  get pharmCount() {
+    const pharms =
+      this.patient?.preferredPharmacies || this.pharmaciesSync || [];
+    return pharms.length;
+  }
   add(key: string) {
     this.provider = key;
     this.showProviderPicker = true;

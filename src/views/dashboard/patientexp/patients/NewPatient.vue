@@ -426,8 +426,6 @@ export default class NewPatient extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  patient!: IPatient;
-
   @patients.Mutation
   updatePatient!: (patient: IPatient) => void;
 
@@ -538,7 +536,7 @@ export default class NewPatient extends Vue {
     };
     if (this.id) {
       (basicInfo.identityNos[0] as any).patientId = this.id;
-      (basicInfo.identityNos[0] as any).id = this.patient.identityNos!![0].id;
+      (basicInfo.identityNos[0] as any).id = this.patient!!.identityNos!![0].id;
     }
     const others = {
       contactInfo: this.contacts,
@@ -598,10 +596,12 @@ export default class NewPatient extends Vue {
     this.idType = idOption;
   }
 
+  get patient() {
+    return this.patients.find((p) => p.id == this.id);
+  }
   hydrate() {
-    const patient = this.patients.find((p) => p.id == this.id);
+    const patient = this.patient;
     if (!patient) return;
-    this.patient = patient;
     this.firstName = patient.firstname;
     this.lastName = patient.lastname;
     this.middleName = patient.middlename || "";

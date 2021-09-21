@@ -55,9 +55,9 @@ export default {
       if (deleted) ctx.commit("deletePatient", id);
       return deleted;
     },
-    async deleteProvider(ctx, { type, id }: Provider) {
-      const deleted = await deleteProvider(id!!);
-      if (deleted) ctx.commit("deleteProvider", { type, id });
+    async deleteProvider(ctx, { type, id, patientId }: Provider) {
+      const deleted = await deleteProvider(patientId, id!!);
+      if (deleted) ctx.commit("deleteProvider", { type, id, patientId });
       return deleted;
     },
     async findPatient(ctx, id: string) {
