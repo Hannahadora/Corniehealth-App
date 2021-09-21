@@ -110,7 +110,11 @@
                 :modelValue="latitude"
                 label="Latitude"
               />
-              <cornie-input v-model="altitude" label="Altitude" />
+              <cornie-input
+                :readonly="true"
+                v-model="altitude"
+                label="Altitude"
+              />
               <cornie-select
                 :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
                 v-model="managingOrg"
@@ -243,7 +247,7 @@ export default class AddLocation extends Vue {
   physicalType = "";
   latitude = "";
   longitude = "";
-  altitude = "";
+  altitude = "321";
   managingOrg = "";
   partOf = "";
   availabilityExceptions = "";
@@ -271,8 +275,8 @@ export default class AddLocation extends Vue {
   @Watch("coordinatesCB")
   async coordinatesFetched(cb: () => Promise<any>) {
     const data = await cb();
-    this.longitude = data.longitude;
-    this.latitude = data.latitude;
+    this.longitude = String(data.longitude);
+    this.latitude = String(data.latitude);
   }
 
   async setLocation() {
