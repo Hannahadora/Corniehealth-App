@@ -253,6 +253,11 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
           },
+          { path: "condition",
+            name: "Condition/Problem",
+            component: () =>
+              import("@/views/dashboard/ehr/condition/index.vue"),
+          },
         ],
       },
       {
