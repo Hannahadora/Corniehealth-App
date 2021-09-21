@@ -23,10 +23,13 @@ export async function deletePatient(id: string): Promise<boolean> {
   }
 }
 
-export async function deleteProvider(id: string): Promise<boolean> {
+export async function deleteProvider(
+  patientId: string,
+  providerId: string
+): Promise<boolean> {
   try {
     const response = await cornieClient().delete(
-      `/api/v1/patient/provider/${id}`
+      `/api/v1/patient/provider/${patientId}/${providerId}`
     );
     return response.success;
   } catch (error) {
