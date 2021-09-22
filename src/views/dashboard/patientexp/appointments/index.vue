@@ -43,7 +43,7 @@
       </button>
     </span>
             <div class="w-full pb-7 mb-8">
-                <cornie-table :columns="rawHeaders" v-model="items">
+             <cornie-table :columns="rawHeaders" v-model="items">
                 
                 <template #appointmentType-header="{  }">
                     <span class="cursor-pointer md text-xs uppercase"  @click="() => selectType = !selectType">Appointment Type</span>

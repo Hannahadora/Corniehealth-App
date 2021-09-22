@@ -1,6 +1,6 @@
 <template>
   <main>
-      <div class="mb-5  w-full ">
+      <div class="mb-5 p-3 border-l-none -mt-6 w-full ">
         <span
             class="
             flex

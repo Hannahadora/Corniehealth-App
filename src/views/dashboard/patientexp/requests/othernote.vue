@@ -1,7 +1,6 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-      
       <cornie-card-title>
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
@@ -18,7 +17,6 @@
           Make Notes
         </span>
       </cornie-card-title>
-
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Some subtext if necessary.</p>
         <v-form ref="form">
@@ -32,7 +30,7 @@
           <span></span>
         </div>
          <span class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"  @click="save">Add</span>
-        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in requestnotes" :key="index">
+        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in otherrequestnotes" :key="index">
             <div>
               <note-icon class="mt-3"/>
             </div>
@@ -43,7 +41,6 @@
         </div>
         </v-form>
       </cornie-card-text>
-
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
@@ -54,7 +51,6 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
-
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -101,7 +97,7 @@ export default class Notes extends Vue {
   requestId!: string;
 
 @Prop({ type: Array, default: () => [] })
-  requestnotes!: any[];
+  otherrequestnotes!: any[];
 
 loading=  false;
 notes='';
@@ -123,7 +119,7 @@ newtasknotes=[];
 
   async createNew() {
       try {
-        const response = await cornieClient().post("/api/v1/requests/notes", {text:this.notes, requestId:this.requestId});
+        const response = await cornieClient().post("/api/v1/other-requests/notes", {text:this.notes, requestId:this.requestId});
         if (response.success) {
             window.notify({ msg: "Notes created", status: "success" });
             this.loading = false;
@@ -138,7 +134,7 @@ newtasknotes=[];
   }
 
   async created() {
-      this.requestnotes
+      this.otherrequestnotes
   }
 }
 </script>

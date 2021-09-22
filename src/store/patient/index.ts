@@ -2,7 +2,6 @@ import ObjectSet from "@/lib/objectset";
 import { updateModelField } from "@/plugins/utils";
 import { IPatient, Provider } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { getPatients } from "../appointment/helper";
 import { deletePatient, deleteProvider, fetchPatients } from "./helper";
 
 interface PatientState {
@@ -56,9 +55,9 @@ export default {
       if (deleted) ctx.commit("deletePatient", id);
       return deleted;
     },
-    async deleteProvider(ctx, { type, id }: Provider) {
-      const deleted = await deleteProvider(id!!);
-      if (deleted) ctx.commit("deleteProvider", { type, id });
+    async deleteProvider(ctx, { type, id, patientId }: Provider) {
+      const deleted = await deleteProvider(patientId, id!!);
+      if (deleted) ctx.commit("deleteProvider", { type, id, patientId });
       return deleted;
     },
     async findPatient(ctx, id: string) {

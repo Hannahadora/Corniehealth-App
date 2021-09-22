@@ -20,15 +20,33 @@ export default interface IAppointment {
   patientInstruction: string;
   period: Period;
   participantDetail: ParticipantDetail;
-  Practitioners: [];
-  Devices: [];
+  Practitioners: Practitioners[];
+  Devices: Devices[];
   Patients: Patients[];
   appointmentId: string;
   comment: string;
   status: string;
 }
+export interface Practitioners{
+  id: string;
+  type: string,
+  required: boolean,
+  consultationMedium: string,
+  period: Period;
+}
+export interface Devices{
+  id: string;
+  type: string,
+  required: boolean,
+  consultationMedium: string,
+  period: Period;
+}
 export interface Patients {
   id: string;
+  type: string,
+  required: boolean,
+  consultationMedium: string,
+  period: Period;
   firstname: string,
   lastname: string,
   gender: string,

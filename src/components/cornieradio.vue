@@ -3,7 +3,7 @@
     <label class="radio-container">
       {{ label }}
       <input
-        @change="$emit('change')"
+        @change="$emit('change', e)"
         v-bind="$attrs"
         type="radio"
         v-model="checked"
@@ -101,11 +101,11 @@ export default {
 
 /* Style the indicator (dot/circle) */
 .radio-container .checkmark:after {
-      top: 3px;
-    left: 3px;
-    width: 17.5px;
-    height: 17.5px;
-    border-radius: 50%;
-    background: #fe4d3c;
+  top: 3px;
+  left: 3px;
+  width: 17.5px;
+  height: 17.5px;
+  border-radius: 50%;
+  background: #fe4d3c;
 }
 </style>

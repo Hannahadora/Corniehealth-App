@@ -15,21 +15,21 @@
                 <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                   <cornie-select
                     :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
+                    v-model="otherrequestModel.basicInfo.activityDefinition"
                     label="activity definition"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :items="dropdowns.serviceType"
-                    v-model="serviceType"
+                    v-model="otherrequestModel.basicInfo.basedOn"
                     label="based on"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     :items="dropdowns.specialty"
-                    v-model="specialty"
+                     v-model="otherrequestModel.basicInfo.replaces"
                     label="replaces"
                     placeholder="--Select--"
                   >
@@ -37,14 +37,8 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="[
-                      'Check-Up',
-                      'Follow-Up',
-                      'Emergency',
-                      'Routine',
-                      'Walk-In',
-                    ]"
-                    v-model="appointmentType"
+                   :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
+                     v-model="otherrequestModel.basicInfo.intent"
                     label="intent"
                     placeholder="--Select--"
                   >
@@ -52,8 +46,8 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['reason code']"
-                    v-model="reasonCode"
+                    :items="['Inpatient','Outpatient','Community','Discharge']"
+                    v-model="otherrequestModel.basicInfo.category"
                     label="category"
                     placeholder="--Select--"
                   >
@@ -61,8 +55,8 @@
                   <cornie-select
                      class="required"
                     :rules="required"
-                    :items="['reason reference']"
-                    v-model="reasonRef"
+                    :items="['Routine','Urgent','ASAP','STAT']"
+                      v-model="otherrequestModel.basicInfo.priority"
                     label="priority"
                     placeholder="--Select--"
                   >
@@ -71,7 +65,7 @@
                      class="required"
                     :rules="required"
                     :items="['reason reference']"
-                    v-model="reasonRef"
+                     v-model="otherrequestModel.basicInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
                   >
@@ -85,17 +79,16 @@
                 <cornie-select
                   class="required"
                   :rules="required"
-                  :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                  :items="allRequester"
+                  v-model="otherrequestModel.requestInfo.requester"
                   label="requester"
-                  placeholder="--Select--"
                 >
                 </cornie-select>
                 <cornie-select
                   class="required"
                   :rules="required"
                   :items="dropdowns.specialty"
-                  v-model="specialty"
+                    v-model="otherrequestModel.requestInfo.encounter"
                   label="encounter"
                   placeholder="--Select--"
                 >
@@ -107,17 +100,16 @@
                 <cornie-select
                   class="required"
                   :rules="required"
-                  :items="dropdowns.serviceCategory"
-                  v-model="serviceCategory"
+                  :items="allRequester"
+                  v-model="otherrequestModel.subject.subject"
                   label="subject"
-                  placeholder="--Select--"
                 >
                 </cornie-select>
                 <cornie-select
                   class="required"
                   :rules="required"
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                   v-model="otherrequestModel.subject.paymentOption"
                   label="payment option"
                   placeholder="--Select--"
                 >
@@ -131,28 +123,28 @@
                   class="required"
                   :rules="required"
                   :items="dropdowns.serviceCategory"
-                  v-model="serviceCategory"
+                   v-model="otherrequestModel.request.requestCode"
                   label="reason code"
                   placeholder="--Select--"
                 >
                 </cornie-select>
                 <cornie-select
                   :items="dropdowns.serviceCategory"
-                  v-model="serviceCategory"
+                   v-model="otherrequestModel.request.orderDetail"
                   label="order detail"
                   placeholder="--Select--"
                 >
                 </cornie-select>
                 <cornie-select
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                  v-model="otherrequestModel.request.preCondition"
                   label="precondition?"
                   placeholder="--Select--"
                 >
                 </cornie-select>
                 <cornie-select
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                  v-model="otherrequestModel.request.preconditionCode"
                   label="precondition code"
                   placeholder="--Select--"
                 >
@@ -161,7 +153,7 @@
                   class="required"
                   :rules="required"
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                   v-model="otherrequestModel.request.reasonCode"
                   label="reason code"
                   placeholder="--Select--"
                 >
@@ -170,22 +162,22 @@
                   class="required"
                   :rules="required"
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                  v-model="otherrequestModel.request.requestReference"
                   label="request reference"
                   placeholder="--Select--"
                 >
                 </cornie-select>
-                <cornie-input label="supporting info" placeholder="--Enter--" />
+                <cornie-input label="supporting info"   v-model="otherrequestModel.request.supportingInfo" placeholder="--Enter--" />
                 <cornie-select
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                   v-model="otherrequestModel.request.specimen"
                   label="specimen"
                   placeholder="--Select--"
                 >
                 </cornie-select>
                 <cornie-select
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                   v-model="otherrequestModel.request.bodySite"
                   label="body site"
                   placeholder="--Select--"
                 >
@@ -193,6 +185,7 @@
                 <cornie-numinput
                   label="quantity"
                   type="number"
+                  v-model="otherrequestModel.request.quantity"
                   placeholder="--Enter--"
                 />
                 <div>
@@ -206,31 +199,36 @@
                       contenteditable="true"
                       class="w-10 ml-20 outline-none focus-within:outline-none"
                       type="text"
-                      value="2"
+                      :v-model="otherrequestModel.request.ratio"
                     />
                     <span class="relative left-14 top-2">:</span>
                     <input
                       contenteditable="true"
                       type="text"
+                      :value="otherrequestModel.request.ratio"
                       class="ml-32 w-10 outline-none focus-within:outline-none"
-                      value="2"
                     />
                   </div>
                 </div>
                 <div>
-                  <range-slider />
+                  <range-slider   v-model="otherrequestModel.request.range"/>
                 </div>
-                <cornie-date-picker class="w-full" label="occurence DATE" />
-                <cornie-date-picker class="w-full" label="occurence Period" />
-                <time-picker
-                  class="w-full"
-                  placeholder="00:00"
-                  label="occurence timing"
-                />
-                <cornie-input label="note" placeholder="--Enter--" />
+                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full -mt-3" label="occurence DATE" />
+                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full" label="occurence Period" />
+                <div class="w-full">
+                    <label for="" class="w-full">
+                        <span class="uppercase font-bold text-xs">occurence timing</span>
+                        <div class="w-full mx-auto">
+                            <input type="time" v-model="otherrequestModel.request.occurenceTiming" class="w-full border rounded-lg p-2 w-95" id="appt" required>
+                        </div>
+                    </label>
+                </div>
+                
+                <cornie-input label="note" placeholder="--Enter--"  v-model="otherrequestModel.request.note"/>
                 <cornie-input
                   label="patient instructions"
                   placeholder="--Enter--"
+                  v-model="otherrequestModel.request.patientInstructions"
                 />
               </div>
             </accordion-component>
@@ -240,7 +238,7 @@
                   class="required"
                   :rules="required"
                   :items="dropdowns.serviceCategory"
-                  v-model="serviceCategory"
+                   v-model="otherrequestModel.performer.performerType"
                   label="performer type"
                   placeholder="--Select--"
                 >
@@ -248,8 +246,8 @@
                 <cornie-select
                   class="required"
                   :rules="required"
-                  :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                  :items="allPerformer"
+                  v-model="otherrequestModel.performer.performer"
                   label="performer"
                   placeholder="--Select--"
                 >
@@ -258,7 +256,7 @@
                   class="required"
                   :rules="required"
                   :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                   v-model="otherrequestModel.performer.locationCode"
                   label="location code"
                   placeholder="--Select--"
                 >
@@ -266,8 +264,8 @@
                 <cornie-select
                   class="required"
                   :rules="required"
-                  :items="dropdowns.serviceType"
-                  v-model="serviceType"
+                    :items="allLocation"
+                    v-model="otherrequestModel.performer.location"
                   label="location"
                   placeholder="--Select--"
                 >
@@ -277,8 +275,8 @@
             <accordion-component title="Forms">
               <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
                 <cornie-select
-                  :items="dropdowns.serviceCategory"
-                  v-model="serviceCategory"
+                  :items="allForms"
+                  v-model="otherrequestModel.forms.linkForms"
                   label="Link Forms"
                   placeholder="--Select--"
                 >
@@ -341,7 +339,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, { ParticipantDetail } from "@/types/IAppointment";
+import IOtherrequest from "@/types/IOtherrequest";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -358,25 +356,30 @@ import SingleDatePicker from "@/components/datepicker.vue";
 import RangeSlider from "@/components/range.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
+import CornieDateRangePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import TimePicker from "@/components/Timepicker.vue";
+import patient from "@/store/patient";
 
-const appointment = namespace("appointment");
+const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
 
-const emptyParticipant: ParticipantDetail = {
-  period: {} as Period,
-  required: "",
-  consultationMedium: "",
+const emptyOtherrequest: IOtherrequest = {
+  basicInfo: {},
+  requestInfo: {},
+  subject: {},
+  performer: {},
+  forms: {},
+  request: {},
 };
-
 @Options({
   components: {
     CornieInput,
     CornieSelect,
     CornieNuminput,
     CornieDatePicker,
+    CornieDateRangePicker,
     PractitionersFilter,
     TimePicker,
     SingleDatePicker,
@@ -400,8 +403,33 @@ export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @appointment.Action
-  getAppointmentById!: (id: string) => IAppointment;
+  @Prop({ type: Object, required: false, default: { ...emptyOtherrequest} })
+  otherrequest!: IOtherrequest;
+
+  otherrequestModel = {} as IOtherrequest;
+
+  @otherrequest.Action
+  getOtherrequestById!: (id: string) => IOtherrequest;
+
+  @Watch("otherrequest")
+  requestUpdated(request: IOtherrequest) {
+    this.otherrequestModel = JSON.parse(JSON.stringify({ ...otherrequest }));
+  }
+
+  @otherrequest.Mutation
+  updatedOtherrequests!: any;
+
+
+  patient=[];
+  practitioner=[];
+practiceform=[];
+location=[];
+
+subject="";
+requester="";
+performer="";
+requesterobject ="";
+
   loading = false;
   expand = false;
   isVisible = "";
@@ -411,53 +439,6 @@ export default class AddAppointment extends Vue {
   opened = true;
   openedR = true;
   openedS = true;
-
-  actor = "";
-  type = "";
-
-  serviceCategory = "";
-  locationId = null;
-  deviceId = null;
-  serviceType = "";
-  specialty = "";
-  appointmentType = "";
-  reasonCode = "";
-  reasonRef = "";
-  priority = "";
-  description = "";
-  supportingInfo = "";
-  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  duration = "";
-  comments = "";
-  patientInstruction = "";
-  period = {} as Period;
-  participantDetail = { ...emptyParticipant };
-
-  Practitioners = [];
-  Devices = [];
-  Patients: any[] = [];
-  roles = [];
-
-  newPractitioners = [];
-  newDevices = [];
-  newPatients = [];
-  newRoles = [];
-
-  roleFilter = false;
-  deviceFilter = false;
-  practitionerFilter = false;
-  patientFilter = false;
-  availableFilter = false;
-  participantitem = "";
-
-  practitioner = [];
-  device = [];
-  patient = [];
-  role = [];
-
-  availability: any[] = [];
-  availabilities = Array();
 
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
@@ -472,188 +453,106 @@ export default class AddAppointment extends Vue {
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  @Watch("id")
-  idChanged() {
-    this.setAppointment();
+    get isUpdate() {
+    return Boolean(this.id);
   }
-  async setAppointment() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comments = appointment.comments;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
 
-    console.log(appointment);
+  async setRequest() {
+     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.otherrequest }));
   }
   get payload() {
-    const payload = {
-      serviceCategory: this.serviceCategory,
-      locationId: this.locationId,
-      deviceId: this.deviceId,
-      serviceType: this.serviceType,
-      specialty: this.specialty,
-      appointmentType: this.appointmentType,
-      reasonCode: this.reasonCode,
-      supportingInfo: this.supportingInfo,
-      reasonRef: this.reasonRef,
-      priority: this.priority,
-      description: this.description,
-      slot: this.slot,
-      basedOn: this.basedOn,
-      duration: this.duration,
-      comments: this.comments,
-      patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
-      period: this.period,
-    } as any;
-    if (this.Devices.length > 0) {
-      payload.Devices = this.Devices;
-    }
-    if (this.Patients.length > 0) {
-      payload.Patients = this.Patients;
-    }
-    if (this.Practitioners.length > 0) {
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload;
-  }
-  get allaction() {
-    return this.id ? "Edit" : "New";
-  }
-  get selectedItem() {
-    return this.participantitem;
-  }
-  async addPractitioner(value: any, id: any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.Practitioners = id;
-    this.practitionerFilter = false;
-  }
-  removePractitioner(index: number) {
-    this.newPractitioners.splice(index, 1);
-  }
-  removeRole(index: number) {
-    this.newRoles.splice(index, 1);
-  }
-  removeDevice(index: number) {
-    this.newDevices.splice(index, 1);
-  }
-  showAvailable() {
-    this.availableFilter = true;
-  }
-  async addPatients(value: any, id: any) {
-    this.newPatients = value;
-    this.Patients = id;
-    this.patientFilter = false;
-  }
-  async addDevices(value: any, id: any) {
-    this.newDevices = value;
-    this.Devices = id;
-    this.deviceFilter = false;
-  }
-  async addRoles(value: any, id: any) {
-    // this.role.push(value);
-    this.newRoles = value;
-    this.roles = id;
-    this.roleFilter = false;
-  }
-  get setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-    } else if (this.type == "Device") {
-      this.deviceFilter = true;
-    } else if (this.type == "Practitioner Role") {
-      this.roleFilter = true;
-    }
-    return this.type;
+     const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
+    return model;
   }
 
+ get allaction() {
+    return this.id ? "Edit" : "New";
+  }
+ 
+get allRequester() {
+     if (!this.patient || this.patient.length === 0) return [ ];
+     return this.patient.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstname +' '+ i.lastname,
+         }
+     })
+ }
+ get allForms(){
+    if (!this.practiceform || this.practiceform.length === 0) return [ ];
+     return this.practiceform.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.formTitle,
+         }
+     })
+ }
+ get allLocation() {
+     if (!this.location || this.location.length === 0) return [ ];
+     return this.location.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.name,
+         }
+     })
+ }
+ get allPerformer() {
+     if (!this.practitioner || this.practitioner.length === 0) return [ ];
+     return this.practitioner.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstName +' '+ i.lastName,
+         }
+     })
+ }
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateAppointment();
-    else await this.createAppointment();
+      await this.createOtherrequest();
     this.loading = false;
   }
-  async createAppointment() {
-    //const period = this.period;
-    this.payload.period.start = new Date(this.period.start).toISOString();
-    //this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type;
+  async createOtherrequest() {
+    this.payload.request.occurenceDate = new Date(this.payload.request.occurenceDate).toISOString();
     try {
-      const response = await cornieClient().post(
-        "/api/v1/appointment",
-        this.payload
-      );
+      const response = await cornieClient().post("/api/v1/other-requests", this.payload);
       if (response.success) {
-        window.notify({ msg: "Appointment created", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
+          this.updatedOtherrequests([response.data]);
+          window.notify({ msg: "Other Request Created", status: "success" });
+          this.$router.push("/dashboard/provider/experience/requests");
+          //this.selected = 1;
       }
     } catch (error) {
       console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
-      // this.$router.push("/dashboard/provider/experience/appointments");
+      window.notify({ msg: error, status: "error" });
     }
   }
 
-  async updateAppointment() {
-    const url = `/api/v1/appointment/${this.id}`;
-    const payload = { ...this.payload };
-    try {
-      const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Appointment updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
-      }
-    } catch (error) {
-      window.notify({ msg: "Appointment not updated", status: "error" });
-    }
-  }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
-  }
-  async fetchDevices() {
-    const AllDevices = cornieClient().get("/api/v1/devices");
-    const response = await Promise.all([AllDevices]);
-    this.device = response[0].data;
-  }
-  async fetchRoles() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
-  }
-  async fetchPatients() {
+  async fetchPateints() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patient = response[0].data;
   }
+ async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+  async fetchLocation() {
+    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+    const response = await Promise.all([AllLocation]);
+    this.location = response[0].data;
+  }
+  async fetchPracticeForms() {
+    const AllForms = cornieClient().get("/api/v1/practice-form");
+    const response = await Promise.all([AllForms]);
+    this.practiceform = response[0].data;
+  }
+
   async created() {
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
-    this.fetchPatients();
+    this.setRequest();
+     this.fetchPateints();
+    this.fetchPractitioner();
+    this.fetchLocation();
+    this.fetchPracticeForms();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;
