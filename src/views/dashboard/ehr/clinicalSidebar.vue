@@ -1,6 +1,6 @@
 <template>
 <div class="h-screen w-full overflow-auto max-h-full">
-  <div class="rounded-lg bg-white shadow-md w-full">
+  <div class="rounded-lg bg-white shadow-md w-full heigh">
       <div class="flex -mb-12 justify-center">
         <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="localSrc" />
       </div>
@@ -204,4 +204,8 @@ export default class Settings extends Vue {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+.heigh {
+  min-height: 30px;
+}
+</style>
