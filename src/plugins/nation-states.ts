@@ -1,4 +1,5 @@
 import { countryCodes } from "./countrycodes";
+import localStore from "./localstore";
 
 export function getCountries() {
   return countryCodes.map((c) => c.name);
@@ -43,6 +44,23 @@ const nigerianStates = [
   "Yobe",
   "Zamfara",
 ];
-export function getStates() {
-  return nigerianStates;
+
+let countryMap: any;
+
+async function fetchCountries() {
+  let countries: any;
+  if (localStore.has("countryMap")) {
+    const rawData = localStore.get("countryMap");
+    countries = JSON.parse(rawData);
+  } else {
+    const response = await fetch("/country-state.json");
+    countries = await response.json();
+    localStore.put("countryMap", countries, 7);
+  }
+  return countries;
+}
+
+export async function getStates(country: string = "nigeria") {
+  if (!countryMap) countryMap = await fetchCountries();
+  return countryMap[country];
 }

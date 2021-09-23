@@ -362,7 +362,6 @@ export default class AddLocation extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        console.log(response.data);
         alert("Location updated");
       }
     } catch (error) {
