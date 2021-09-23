@@ -1,3 +1,4 @@
+import Period from "./IPeriod";
 export default interface IGroup {
   id?: string;
   state: string;
@@ -14,7 +15,7 @@ export default interface IGroup {
   valueRange: string;
   valueRef: string;
   exclude: string;
-  period: string;
+  period: Period;
   memberPeriod: string;
   memberStatus: string;
   memberEntity: string;
