@@ -17,7 +17,8 @@
         </span>
         <div class="w-full h-full">
             <div class="w-full grid grid-cols-2 gap-4">
-                <blood-chart/>
+              <!-- <registration-chart class="w-full" /> -->
+                <blood-chart class="w-full h-full"/>
                 <blood-chart title="Weight"/>
             </div>
             <div class="w-full grid grid-cols-3 gap-4">
@@ -43,6 +44,18 @@ import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue"
 import { mapActions, mapState } from "vuex";
 import BloodChart from "./bloodChart.vue";
 
+import RegistrationChart from "./registration-chart.vue";
+import ChartCard from "./chart-card.vue";
+import AppointmentChart from "./appointment-chart.vue";
+import VisitsChart from "./visits-chart.vue";
+import BillingsChart from "./billings-chart.vue";
+import MedicationChart from "./medication-chart.vue";
+import ReferralChart from "./referral-chart.vue";
+// import ResourceChart from "./resource-chart.vue";
+import MessagesChart from "./messages-chart.vue";
+import InpatientChart from "./inpatient-chart.vue";
+import QuestionnaireChart from "./questionnaire-chart.vue";
+
 export default {
   name: "HealthIndex",
   components: {
@@ -51,7 +64,9 @@ export default {
     CornieSelect,
     PhoneInput,
     AvatarField,
-    BloodChart
+    BloodChart,
+
+    RegistrationChart
   },
   setup() {
     const { url, placeholder, onChange } = useHandleImage();
