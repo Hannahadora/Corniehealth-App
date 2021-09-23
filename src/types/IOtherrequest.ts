@@ -39,7 +39,7 @@ import Period from "./IPeriod";
     bodySite?: string;
     quantity?: string;
     ratio?: string;
-    range?: string;
+    range:  [number,number],
     occurenceDate?:string,
     occurencePeriod?: Period;
     occurenceTiming?: string;

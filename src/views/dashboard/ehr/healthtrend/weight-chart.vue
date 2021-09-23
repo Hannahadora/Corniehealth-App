@@ -1,6 +1,6 @@
 <template>
-  <chart-card height="313px" title="Blood Pressure">
-    <p class="text-primary font-bold text-sm -mt-5 mb-3">120/90 <span class="font-light">mmHgz</span></p>
+  <chart-card height="313px" title="Weight">
+     <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
     <canvas ref="chart"></canvas>
   </chart-card>
 </template>
@@ -15,7 +15,7 @@ import Chart from "chart.js/auto";
     ChartCard,
   },
 })
-export default class BloodChart extends Vue {
+export default class WeightChart extends Vue {
   chart!: Chart;
 
   mounted() {
@@ -31,24 +31,18 @@ export default class BloodChart extends Vue {
       data: {
         labels: ["01-Jan", "02-Jan", "03-Jan", "11:00", "04-Jan"],
         datasets: [
-          {
-            label: "Upper band",
-            data: [0, 50, 50, 48, 220, 180],
-            borderColor: "rgba(17, 79, 245, 1)",
-            borderWidth: 1.5,
-            tension: 0.3,
-              pointRadius: 0,
-                 backgroundColor:"rgba(17, 79, 245, 1)"
-          },
-          {
-            
-            label: "Lower band",
-            data: [45, 0, 50, 200, 150, 200],
-            borderColor: "rgba(254, 77, 60, 1)",
-            borderWidth: 1.5,
-            tension: 0.3,
-              pointRadius: 0,
-               backgroundColor:"rgba(254, 77, 60, 1)"
+          {  
+             fill: {
+                target: 'origin',
+                above: 'rgb(219 248 230)',   // Area will be red above the origin
+                below: 'rgb(12 104 47)'    // And blue below the origin
+              },
+            data: [50, 100, 20, 55, 220, 100],
+            borderColor: "rgba(53, 186, 131, 1)",
+            borderWidth: 1,
+            tension: 0,
+            pointRadius: 0,
+            backgroundColor: ""
           },
         ],
       },
@@ -62,22 +56,14 @@ export default class BloodChart extends Vue {
           },
           y: {
             grid: {
-              display: false,
+              display: true,
             },
           },
         },
         plugins: {
-          legend: {
-            position: "bottom",
-            align: "start",
-            labels: {
-              boxWidth: 7,
-              boxHeight: 7,
-               pointStyle: "circle",
-              usePointStyle: true,
-              
-            },
-          },
+         legend: {
+        display: false
+    },
           tooltip: {
             titleAlign: "center",
             titleMarginBottom: 9,

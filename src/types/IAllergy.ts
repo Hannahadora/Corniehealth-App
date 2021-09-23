@@ -15,7 +15,7 @@ export interface OnSet{
     onsetDateTime: string,
     onsetAge: string,
     onsetPeriod: Period;
-    onsetRange: string,
+    onsetRange: [number,number],
     onsetString: string,
     recordedDate: string,
     recorder: string,
