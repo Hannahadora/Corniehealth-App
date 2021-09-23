@@ -21,6 +21,8 @@
                 <weight-chart title="Weight"/>
             </div>
             <div class="w-full grid grid-cols-3 gap-4">
+                    <appointment-chart />
+
                 <medication-card/>
                     <medication-card/>
                     <medication-card/>
@@ -68,7 +70,8 @@ export default {
     AvatarField,
     BloodChart,
     WeightChart,
-    MedicationCard
+    MedicationCard,
+    AppointmentChart
   },
   setup() {
     const { url, placeholder, onChange } = useHandleImage();
