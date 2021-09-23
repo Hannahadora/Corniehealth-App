@@ -213,7 +213,7 @@ input[type="checkbox"]:checked:after {
 .switch {
     position: relative;
     display: inline-block;
-    width: 84px;
+    width: 74px;
     height: 39px;
     transform: scale(0.5);
 }
@@ -239,7 +239,7 @@ input[type="checkbox"]:checked:after {
 .slider:before {
     position: absolute;
     content: "";
-    height: 34px;
+    height: 37px;
     width: 43px;
     left: 4px;
     bottom: 2px;
@@ -248,11 +248,11 @@ input[type="checkbox"]:checked:after {
 }
 
 input:checked+.slider {
-    background-color: #FE4D3C;
+    background-color: #F0F4FE;
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px #FE4D3C;
+    box-shadow: 0 0 1px #F0F4FE;
 }
 
 input:checked+.slider:before {

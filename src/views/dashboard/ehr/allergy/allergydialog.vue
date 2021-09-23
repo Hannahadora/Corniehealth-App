@@ -13,14 +13,14 @@
                <div class="w-full mt-5 pb-5">
                   <cornie-select
                   class="w-full"
-                  :items="['code']"
+                  :items="['Active','Inactive','Resolved']"
                   v-model="clinicalStatus"
                   label="clinical status"
                   >
                   </cornie-select>
                   <cornie-select
                    class="w-full"
-                    :items="['reason']"
+                    :items="['Unconfirmed','Presumed','Confirmed','Refuted','Entered in Error']"
                     label="verification status"
                     v-model="verificationStatus"
                     placeholder="--Select--"
@@ -29,7 +29,7 @@
                   <cornie-select
                    class="required w-full"
                     :rules="required"
-                    :items="['Continuous','Acute','Seasonal']"
+                    :items="['Allergy','Intolerance']"
                     v-model="type"
                     label="type"
                     placeholder="--Select--"
@@ -38,7 +38,7 @@
                   <cornie-select
                    class="required w-full"
                     :rules="required"
-                    :items="['reason']"
+                    :items="['Food','Medication','Environment','Biologic',]"
                     v-model="category"
                     label="category"
                     placeholder="--Select--"
@@ -47,7 +47,7 @@
                    <cornie-select
                    class="required w-full"
                     :rules="required"
-                    :items="['reason']"
+                    :items="['Low Risk','High Risk','Unable to Assess Risk',]"
                     label="criticality"
                     v-model="criticality"
                     placeholder="--Select--"
@@ -56,7 +56,7 @@
                    <cornie-select
                    class="required w-full"
                     :rules="required"
-                    :items="['code']"
+                    :items="['Hemoglobin Okaloosa','Ornithine racemase','Ferrocyanide salt','Berberine','Heptachlor','Coumachlor','Hemoglobin Nagoya','Nitrilase','	Free protein S','Guanosine']"
                     label="code"
                     v-model="code"
                     placeholder="--Select--"
@@ -138,7 +138,7 @@
                               </DateTimePicker>
                   </div>
                   <cornie-input label="onset age" class="mb-2 w-full"  v-model="onSet.onsetAge" />
-                  <div class="mb-2">
+                  <div class="mb-5">
                     <span class="uppercase text-danger mt-4 font-bold text-xs">onset Period</span>
                     <div class="w-full">
                         <div class="w-full mt-3">
@@ -218,22 +218,24 @@
                         </div>
                     </div>
                   </div>
-                    <div class="mb-2">
-                       <span class="uppercase font-bold text-xs mb-2">onset range</span>
-                       <div class="flex p-3 space-x-2 mt-4 justify-between w-full">
+                    <div class="mb-4">
+                       <span class="uppercase font-bold text-xs">onset range</span>
+                       <div class="flex p-3 space-x-2 justify-between w-full">
                          <div class="float-left w-full pr-5">
                            <div>
-                              <p class="relative top-4 right-4">0</p><Slider v-model="value"  :format="format" showTooltip="drag"/><p class="float-right relative bottom-4 -mr-7">100</p>
+                              <p class="relative top-4 right-4">0</p>
+                              <Slider v-model="onSet.onsetRange"  :format="format" showTooltip="drag"/>
+                              <p class="float-right relative bottom-4 -mr-7">100</p>
                            </div>
                          </div>
-                        <div class="border-2 text-xs h-10 p-2 w-16 mt-1 float-right rounded border-danger">
-                            {{format}}
-                        </div>
+                          <div class="border-2 text-xs h-10 p-2 w-16 mt-1 float-right rounded border-danger">
+                              {{format}}
+                          </div>
                        </div>
                     </div>
-                   <cornie-input label="onset string" class="mb-2 w-full"   v-model="onSet.onsetString" />
-                   <div>
-                      <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">recorded date
+                   <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
+                   <div class="mb-5">
+                      <label for="ecounter" class="flex uppercase text-xs font-bold">recorded date
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                     </label>
                       <date-picker  placeholder="autofill" v-model="onSet.recordedDate" class="w-full mb-5 required"
@@ -244,7 +246,13 @@
                       <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">recorder
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
-                      <cornie-input class="w-full"  v-model="onSet.recorder" /> 
+                      <!-- <cornie-input class="w-full"  v-model="onSet.recorder" disabled/>  -->
+                       
+                       <input
+                      class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      disabled
+                      :value="onSet.recorder"
+                    />
                    </div>
                     <div class="flex">
                         <p class="lbl mt-2 flex uppercase mb-1 text-xs font-bold">add asserter</p>
@@ -252,6 +260,7 @@
                           <input
                             name="category"
                             type="checkbox"
+                            @input="selected"
                             v-model="switchshow"
                             value="2"
                           />
@@ -262,7 +271,12 @@
                        <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">asserter
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
-                      <cornie-input class="mb-2 w-full" />
+                      <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
+                       <input
+                      class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      disabled
+                      :value="asserterName"
+                    />
                     </div>
                      <div class="mb-3">
                        <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">last occurence
@@ -319,19 +333,19 @@
                   <cornie-select
                     class="required w-full mb-2"
                     :rules="required"
-                    :items="['reason']"
+                    :items="['Hemoglobin Okaloosa','	Ferrocyanide salt','Berberine','Blood group antigen IH','Heptachlor','Coumachlor','	Codeine phosphate','Arsenic-76','Enzyme variant','Fibrinogen San Juan','Acylcarnitine hydrolase','Immunoglobulin pentamer','Carminic acid','Vegetable textile fiber','Nitrilase','Free protein S','Guanosine','Hemoglobin Jianghua','	2-oxoglutarate synthase','Oil of calamus','	Coal tar extract','Lytic antibody','Urethan','Carbamate kinase']"
                     label="substance"
                     v-model="reaction.substance"
                   >
                   </cornie-select>
                   <cornie-select
                    class="w-full mb-2"
-                    :items="['reason']"
+                    :items="['Clinical finding','Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','Spontaneous abortion with laceration of cervix','Homoiothermia','Decreased hair growth','Chronic pharyngitis','Normal peripheral vision','Superficial foreign body of scrotum without major open wound but with infection','Abnormal bladder continence','	Gonococcal meningitis','Severe manic bipolar I disorder without psychotic features','	Accident-prone']"
                     label="manifestation"
                     v-model="reaction.manifestation"
                   >
                   </cornie-select>
-                  <cornie-input label="description" class="mb-2 w-full"   v-model="reaction.description" />
+                  <cornie-input label="description" class="mb-5 w-full"   v-model="reaction.description" />
                    <div class="mb-3">
                        <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">ONSET
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
@@ -402,7 +416,7 @@
                      <cornie-select
                       class="required w-full mb-2"
                       :rules="required"
-                      :items="['reason']"
+                      :items="['Route of administration values','Topical route','Otic route','Intra-articular route','Per vagina','Oral route','Subcutaneous route','Per rectum','Intraluminal route','Sublingual route','Intraperitoneal route','Transdermal route','Nasal route','Intravenous route','Buccal route','Ophthalmic route','Intra-arterial route','Intramedullary route','Intrauterine route','Intrathecal route','Intramuscular route','Urethral route','Gastrostomy route','Jejunostomy route','Nasogastric route','Dental use','Endocervical use','Endosinusial use','Endotracheopulmonary use','Extra-amniotic use','Gastroenteral use','Gingival use','Intraamniotic use','Intrabursal use','Intracardiac use','Intracavernous use','Intracervical route','Intracoronary use','Intradermal use']"
                       label="Exposure Route"
                       v-model="reaction.exposureRoute"
                     >
@@ -466,27 +480,29 @@ import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
-import DatePicker from "@/components/CornieDatePicker.vue";
+import DatePicker from "./components/datepicker.vue";
 import Period from "@/types/IPeriod";
-import { duration } from 'moment';
+import { IPatient, Practitioner, Provider } from "@/types/IPatient";
+import { IOrganization } from "@/types/IOrganization";
 import IAllergy ,{ OnSet,Reaction } from "@/types/IAllergy";
- import Slider from '@vueform/slider'
+ import Slider from '@vueform/slider';
+ import IPractitioner from "@/types/IPractitioner";
 import '@vueform/slider/themes/default.css';
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 
 const allergy = namespace('allergy')
-
+const organization = namespace("organization");
 
 const emptyOnSet: OnSet = {
           onsetDateTime: "",
           onsetAge: "",
           onsetPeriod: {} as Period,
-          onsetRange: "20",
+          onsetRange: [20,50],
           onsetString: "",
           recordedDate: "",
         recorder: "",
-         asserter: "87e846a3-bac0-43b9-a4db-0b2605426c42",
+         asserter: "",
           lastOccurence: "",
            note: ""
 };
@@ -540,13 +556,23 @@ export default class Medication extends Vue {
   @Prop({ type: Array,  default: () => [] })
   available!: object;
 
- @Prop({ type: String, default: '' })
-  taskId!: string;
 
- @Prop({ type: String, default: '' })
-  requesId!: string;
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
 
 
+ @allergy.State
+  practitioners!: any[];
+
+
+  @allergy.Action
+  getPractitioners!: () => Promise<void>;
+
+practitioner!: IPractitioner;
+asserterName = "";
 clinicalStatus= "";
 verificationStatus = "";
 type = "";
@@ -561,7 +587,7 @@ value=  [20, 40];
     days: [],
   }
 get format() {
-        return `${this.value}`
+        return `${this.onSet.onsetRange}`
   }
 
 loading=  false;
@@ -575,8 +601,6 @@ profileFilter=false;
     if (this.id) await this.updateAllergy()
     else await this.createAllergy()
     this.loading = false
-      //  window.notify({ msg: "Medication Added", status: "success" });
-      // this.show = false;
     }
   async setAllergy() {
     const allergy = await this.getAllergyById(this.id)
@@ -605,26 +629,42 @@ profileFilter=false;
     }
   }
  get allaction() {
-    return this.id ? 'New' : 'Edit'
+    return this.id ? 'Edit' : 'New'
   }
 
  get newaction() {
-    return this.id ? 'Save' : 'Update'
+    return this.id ? 'Update' : 'Save'
+  }
+   async selected() {
+     const orgId = this.organizationInfo.id;
+    this.getPractitionerName(orgId);
+  }
+  getPractitionerName(id: string){
+   const pt = this.practitioners.find((i: any) => i.organizationId === id);
+   this.onSet.asserter = pt.id
+    this.onSet.recorder =  `${pt.firstName} ${pt.lastName}`;
+    this.asserterName =  `${pt.firstName} ${pt.lastName}`;
+    return pt ? `${pt.firstName} ${pt.lastName}` : '';
+  }
+   done() {
+    this.$emit("allergy-added");
   }
 
  async createAllergy() {
+   this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
     this.payload.onSet.onsetDateTime = new Date(this.data.onsetDate).toISOString();
     this.payload.onSet.onsetPeriod.start = new Date(this.data.startDate).toISOString();
      this.payload.onSet.onsetPeriod.end = new Date(this.data.endDate).toISOString();
       this.payload.onSet.lastOccurence = new Date(this.data.occurenceDate).toISOString();
      this.payload.reaction.onset = new Date(this.data.reactionDate).toISOString();
-     this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
 
     try {
       const response = await cornieClient().post('/api/v1/allergy', this.payload)
       if (response.success) {
         window.notify({ msg: 'Allergy created', status: 'success' })
-        this.$router.push('/dashboard/provider/clinical/allergy')
+        this.$router.push('/dashboard/provider/clinical/allergy');
+        //this.done();
+        this.$forceUpdate();
         this.show = false;
       }
     } catch (error) {
@@ -652,6 +692,8 @@ profileFilter=false;
   }
   created() {
       this.setAllergy();
+      this.getPractitioners();
+      if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

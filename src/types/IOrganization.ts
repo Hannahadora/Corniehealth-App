@@ -1,5 +1,5 @@
 export interface IOrganization {
-  id?: string;
+  id: string;
   name: string;
   image: string;
   alias: string;

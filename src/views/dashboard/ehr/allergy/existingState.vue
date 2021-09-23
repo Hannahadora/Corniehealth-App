@@ -17,7 +17,7 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="showAllergy"
+                @click="showAllergy('false')"
               >
                 New Allergy
               </button>
@@ -37,7 +37,7 @@
                       <edit-icon class="text-purple-600 fill-current" />
                       <span class="ml-3 text-xs">Edit</span>
                   </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
                       <share-icon class="text-blue-500 fill-current" />
                       <span class="ml-3 text-xs">Share</span>
                   </div>
@@ -50,11 +50,21 @@
                 </template>
             </cornie-table>
     </div>
-     <allergy-modal  
+    
+      <allergy-modal 
+       v-if="allergyId == 'false'"
+        :columns="practitioner"
+          @update:preferred="showAllergy"
+          v-model="showAllergyModal"/>
+
+     <allergy-modal
+     v-else 
      :id="allergyId" 
         :columns="practitioner"
           @update:preferred="showAllergy"
           v-model="showAllergyModal"/>
+
+        
   </div>
 </template>
 <script lang="ts">
@@ -136,9 +146,11 @@ export default class AllergyExistingState extends Vue {
   allergyId="";
   tasknotes=[];
 
-
-  @allergy.State
+  @Prop({ type: Array, default: [] })
   allergys!: IAllergy[];
+
+  // @allergy.State
+  // allergys!: IAllergy[];
 
   @allergy.State
   practitioners!: any[];
@@ -289,6 +301,7 @@ getPractitionerName(id: string){
 }
   async showAllergy(value:string){
       this.showAllergyModal = true;
+      //this.stopEvent = true;
       this.allergyId = value;
   }
 
@@ -311,6 +324,7 @@ getPractitionerName(id: string){
    
      async created() {
           this.getPractitioners();
+          this.sortAllergys;
     }
 
 }

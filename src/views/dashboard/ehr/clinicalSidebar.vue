@@ -109,7 +109,7 @@ import eyeIcon from "@/components/icons/yelloweye.vue";
 type INav = { name: string; to: string; icon: string };
 
 @Options({
-  name: "SettingsSidebar",
+  name: "ClinicalSidebar",
   components: {
     SBarLink,
     ApprovalIcon,
@@ -176,20 +176,7 @@ export default class Settings extends Vue {
     const provider = {
       Organization: this.filter(this.organization)
     };
-    const hmo = {
-      Organization: this.filter(this.organization),
-      "Users & Security": this.filter([
-        {
-          name: "Account Security",
-          to: "account-security",
-          icon: "security-icon",
-        },
-        { name: "Domains", to: "domains", icon: "domain-icon" },
-      ]),
-    };
-
-    const type = this.$route.params.type as string;
-    if (type.toLowerCase() == "hmo") return hmo;
+   
     return provider;
   }
 

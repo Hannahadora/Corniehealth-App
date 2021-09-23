@@ -21,7 +21,8 @@
                 v-if="empty"
           />
           <allergys-existing-state
-        
+        :allergy-added="allergyAdded"
+        :allergys="allergys"
           v-else
 
           />
@@ -47,6 +48,7 @@ const allergy = namespace("allergy");
 })
 export default class AllergysIndex extends Vue {
   addAllergy = false;
+  show=false;
   TaskToUpdate = {} as IAllergy;
 
   get empty() {
@@ -60,8 +62,15 @@ export default class AllergysIndex extends Vue {
   fetchAllergys!: () => Promise<void>;
 
 
+  deviceAdded() {
+    this.show = false;
+  }
+
+mounted(){
+  this.fetchAllergys();
+}
+
 created() {
-  this.fetchAllergys()
     if (this.allergys.length < 1) this.fetchAllergys();
   }
 }

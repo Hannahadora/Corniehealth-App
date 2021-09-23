@@ -672,8 +672,7 @@ actorTypeValue = "";
         this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
