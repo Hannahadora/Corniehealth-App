@@ -15,7 +15,7 @@
   >
     <div class="w-full p-2">
       <span
-        class="flex w-full justify-between border-b-2 mb-5 text-xs text-gray-400 py-2"
+        class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2"
       >
         <span class="font-medium text-xs">{{ title }}</span>
         <div class="flex items-center">

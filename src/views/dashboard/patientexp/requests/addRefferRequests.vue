@@ -361,6 +361,7 @@ import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import TimePicker from "@/components/Timepicker.vue";
 import patient from "@/store/patient";
+import Slider from '@vueform/slider';
 
 const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
@@ -371,7 +372,9 @@ const emptyOtherrequest: IOtherrequest = {
   subject: {},
   performer: {},
   forms: {},
-  request: {},
+  request: {
+    range: [20,50]
+  },
 };
 @Options({
   components: {
@@ -397,6 +400,7 @@ const emptyOtherrequest: IOtherrequest = {
     PatientsFilter,
     DevicesFilter,
     RolesFilter,
+    Slider,
   },
 })
 export default class AddAppointment extends Vue {
@@ -463,6 +467,9 @@ requesterobject ="";
   get payload() {
      const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
     return model;
+  }
+get format() {
+        return `${this.otherrequestModel.request.range}`
   }
 
  get allaction() {
@@ -580,5 +587,26 @@ input[type="range"]::-webkit-slider-thumb {
   width: 24px;
   height: 24px;
   -webkit-appearance: none;
+}
+
+.slider-connect {
+    background: #fe4d3c;
+    cursor: pointer;
+}
+
+.slider-tooltip {
+    position: absolute;
+    display: block;
+    font-size: var(--slider-tooltip-font-size, .875rem);
+    line-height: var(--slider-tooltip-line-height, 1.25rem);
+    font-weight: var(--slider-tooltip-font-weight, 600);
+    white-space: nowrap;
+    padding: var(--slider-tooltip-py, 2px) var(--slider-tooltip-px, 6px);
+    min-width: var(--slider-tooltip-min-width, 20px);
+    text-align: center;
+    color: var(--slider-tooltip-color, #fff);
+    border-radius: var(--slider-tooltip-radius, 5px);
+    border: 1px solid #fe4d3c;
+    background: #fe4d3c;
 }
 </style>
