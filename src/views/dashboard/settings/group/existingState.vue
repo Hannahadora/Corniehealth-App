@@ -20,26 +20,53 @@
       </button>
       
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+    <cornie-table :columns="rawHeaders" v-model="sortGroups">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+           @click="$router.push(`/dashboard/provider/view-group/${item.id}`)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="sortGroups" class="tableu rounded-xl mt-5">
+          <newview-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+           @click="$router.push(`/dashboard/provider/add-group/${item.id}`)"
+        >
+          <edit-icon class="mr-3" /> 
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="displayMember(item.id)">
+          <span class="mr-3 text-2xl bold text-primary">+</span>
+          <span class="ml-3 text-xs">Add Memeber </span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          v-if="item.data.groupStatusDetails.active == true"
+              @click="showDeactivateGroup(item.id)"
+        >
+           <close-icon class="mr-3" />
+          <span class="ml-3 text-xs">Deactivate</span>
+        </div>
+         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          v-if="item.data.groupStatusDetails.active == false"
+              @click="activateGroup(getKeyValue(item).value)"
+        >
+           <close-icon class="mr-3" />
+          <span class="ml-3 text-xs">Activate</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <cancel-icon/>
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
+      </template>
+    </cornie-table>
+    
+    <!-- <Table :headers="headers" :items="sortGroups" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
@@ -158,7 +185,7 @@
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
-    />
+    /> -->
        <member-modal v-model:visible="showMemberModal" :paymentId="paymentId"/>
         <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
   </div>
@@ -179,6 +206,7 @@ import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import IGroup from "@/types/IGroup";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import MemberModal from "./memberModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
@@ -187,6 +215,7 @@ import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import CancelIcon from "@/components/icons/cancel.vue";
 
 const group = namespace("group");
 
@@ -195,10 +224,12 @@ const group = namespace("group");
     Table,
     SortIcon,
     ThreeDotIcon,
+    CancelIcon,
     SearchIcon,
     CloseIcon,
     PrintIcon,
     TableRefreshIcon,
+    CornieTable,
     FilterIcon,
     IconInput,
     ColumnFilter,
@@ -229,60 +260,60 @@ export default class GroupExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Name", value: "name", show: true },
+    { title: "Name", key: "name", show: true },
     {
       title: "Quantity",
-      value: "quantity",
+      key: "quantity",
       show: true,
     },
     {
       title: "Type",
-      value: "type",
+      key: "type",
       show: true,
     },
     {
       title: "Status",
-      value: "status",
+      key: "status",
       show: false,
     },
     {
       title: "Managing Entity",
-      value: "managingEntity",
+      key: "managingEntity",
       show: true,
     },
     {
       title: "Characteristics Code",
-      value: "characteristicsCode",
+      key: "characteristicsCode",
       show: false,
     },
     {
       title: "Code",
-      value: "code",
+      key: "code",
       show: false,
     },
     {
       title: "Value Range",
-      value: "valueRange",
+      key: "valueRange",
       show: false,
     },
     {
       title: "Period",
-      value: "period",
+      key: "period",
       show: false,
     },
     {
       title: "Value Boolean",
-      value: "valueBoolean",
+      key: "valueBoolean",
       show: false,
     },
     {
       title: "Value Reference",
-      value: "valueRef",
+      key: "valueRef",
       show: false,
     },
     {
       title: "Exclude",
-      value: "exclude",
+      key: "exclude",
       show: false,
     },
     {
@@ -292,22 +323,22 @@ export default class GroupExistingState extends Vue {
     },
     {
       title: "Member Status",
-      value: "memberStatus",
+      key: "memberStatus",
       show: false,
     },
     {
       title: "Member Entity",
-      value: "memberEntity",
+      key: "memberEntity",
       show: false,
     },
     {
       title: "Value Quantity",
-      value: "valueQuantity",
+      key: "valueQuantity",
       show: false,
     },
     {
       title: "Value Codeable Concept",
-      value: "valueCodeableConcept",
+      key: "valueCodeableConcept",
       show: false,
     },
   ];
