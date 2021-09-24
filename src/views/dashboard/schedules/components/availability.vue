@@ -1,7 +1,8 @@
 <template>
     <div class="container">
         <div class="w-full">
-              <div class="container-fluid" v-if="filterOptions.byPractitioners?.length <= 0">
+              <div class="container-fluid" v-if="!seletedPractitioner?.id">
+              <!-- <div class="container-fluid" v-if="filterOptions.byPractitioners?.length === 0"> -->
                 <cornie-table :columns="availabilityHeaders" v-model="items" @filter="showFilterPane">
                 <template #actions="{ }">
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
@@ -80,12 +81,16 @@
 
               <div class="container-fluid" v-else>
                 <cornie-table :columns="availabilityHeaders" v-model="items" @filter="showFilterPane">
+                  <template #topleft>
+                    <span><selected-practitioner :item="seletedPractitioner" /></span>
+                    <span class="mx-3" v-if="false"><selected-location :item="allLocations[0]" :items="allLocations" @changed="locaionChanged" /></span>
+                    <span class="mx-3" v-if="false"><selected-location :item="allDevices[0]" :items="allDevices" @changed="locaionChanged" /></span>
+                  </template>
                 <template #actions="{  }">
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <add-icon class="mr-3 mt-1" />
                     <span class="ml-3 text-xs" @click="goToCreateSlot">Create slot</span>
                   </div>
-                  
                 </template>
 
                   <template #time="{ item }">
@@ -110,7 +115,7 @@
                       <div class="book-bg py-4" 
                           :class="{'selected': selectedSlot.id === `${getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1])}_${item}_${availabilityDates[1]}`}"
                            @click="selectSlot(getScheduleIdForSlot(item.split('-')[0].trim(), item.split('-')[1].trim(), availabilityDates[1]), item, availabilityDates[1] )"></div>
-                    </span> 
+                    </span>
                     <span class=" 16" v-else>
                       -- 
                     </span>
@@ -186,7 +191,19 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import slotService from '../../visits/helper/slot-service';
 import AdvancedFilter from './advanced-filter.vue'
 import SideModal from '../components/side-modal.vue';
+import CornieSelect from "@/components/cornieselect.vue"
+import { namespace } from 'vuex-class';
+import { Practitioner } from '@/types/IPatient';
+import SelectedPractitioner from "./selected-practitioner.vue"
+import SelectedLocation, { IItem } from "./selected-location.vue"
+import ILocation from '@/types/ILocation';
+import IDevice from '@/types/IDevice';
+import ISchedule from '@/types/ISchedule';
 
+const practitionersStore = namespace('practitioner')
+const locationsStore = namespace('location')
+const devicesStore = namespace('devices')
+const visitsStore = namespace('visits')
 
 @Options({
   components: {
@@ -195,18 +212,52 @@ import SideModal from '../components/side-modal.vue';
     CornieTable,
     SideModal,
     AdvancedFilter,
+    CornieSelect,
+    SelectedPractitioner,
+    SelectedLocation,
   },
 })
+
 export default class Availability extends Vue {
   @Prop({ type: Object })
   items!: any;
   @Prop({ type: Object })
   schedules!: any;
 
+  @practitionersStore.Action
+  fetchPractitioners!: () => Promise<void>;
+
+  @practitionersStore.State
+  practitioners!: Practitioner[];
+
+  @locationsStore.Action
+  fetchLocations!: () => Promise<void>;
+
+  @locationsStore.State
+  locations!: ILocation[];
+
+  @visitsStore.Action
+  schedulesByPractitioner!: (id: string) => Promise<ISchedule[]>;
+
+  @locationsStore.Action
+  fetchDevices!: () => Promise<void>;
+
+  @devicesStore.State
+  devices!: IDevice[];
+
   showFilter = false;
   filterOptions: any = { }
-  selectedSlots: string[] = [];
+  selectedSlots: string[] = [ ];
   selectedSlot: any = { }
+
+  filteredSlots: any = [ ];
+
+  get seletedPractitioner() {
+    if (!this.filterOptions || !this.filterOptions.byPractitioners) return { }
+    const practitioner = this.practitioners.find(practitioner => practitioner.id === this.filterOptions?.byPractitioners[0]);
+    if (!practitioner) return { };
+    return practitioner;
+  }
 
   get availabilityDates() {
     let arr = [ ];
@@ -217,6 +268,27 @@ export default class Availability extends Vue {
     }
     
     return arr;
+  }
+
+  get filteredItems() {
+    if (!this.items) return [ ];
+    return this.items.map((timeSlot: string) => {
+      return
+    })
+  }
+
+  get allLocations() {
+    if (!this.locations) return [ ];
+    return this.locations.map(location => {
+      return { code: location.id, display: location.name }
+    })
+  }
+
+  get allDevices() {
+    if (!this.devices) return [ ];
+    return this.devices.map(device => {
+      return { code: device.id, display: location.hostname }
+    })
   }
 
   get availabilityHeaders() {
@@ -231,6 +303,10 @@ export default class Availability extends Vue {
     })
     arr.unshift({ title: 'Time', key: 'time', show: true});
     return arr;
+  }
+
+  locaionChanged(newLocation: ILocation) {
+    this.locations.unshift(newLocation)
   }
 
   constructDate(date: string, time: string) {
@@ -268,11 +344,26 @@ export default class Availability extends Vue {
     
   }
 
-  applyFilter(filterOpions: any) {
+  get availableSlots() {
+    if (this.filteredSlots?.length === 0) return [ ];
+    return this.filteredSlots;
+  }
+
+  isSlotTime(slotTime: string, date: string | Date) {
+    return slotService.isSlotTime(this.availableSlots, slotTime, date);
+  }
+
+  async applyFilter(filterOpions: any) {
     console.log(filterOpions, "FILTER OPTIONS");
     this.showFilter = false;
     this.showFilter = false;
     this.filterOptions = filterOpions;
+    const loadedSchedules: any = await this.schedulesByPractitioner(filterOpions.byPractitioners[0]);
+    
+    const response: any = await slotService.getPractitionersSlots(filterOpions.byPractitioners[0]);
+    console.log(response, "RESPONSE");
+    
+    this.filteredSlots = response?.data;
   }
 
   viewSchedule(id: string) {
@@ -285,6 +376,12 @@ export default class Availability extends Vue {
 
   showFilterPane() {
     this.showFilter = true;
+  }
+
+  async created() {
+    if (!this.practitioners) await this.fetchPractitioners();
+    if (!this.locations) await this.fetchLocations();
+    if (!this.devices) await this.fetchDevices();
   }
 }
 </script>

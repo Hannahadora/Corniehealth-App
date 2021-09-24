@@ -143,7 +143,11 @@
               </cornie-table>
               <!-- Test Availability -->
               <div class="w-full" v-if="activeTab === 1">
-                  <AvailabilityList :items="availabilityItems" :schedules="schedules" />
+                  <AvailabilityList 
+                    @filterbypractitioner="filterByPractitioner"
+                    :items="availabilityItems" 
+                    :schedules="schedules"
+                 />
               </div>
               
               <column-filter
@@ -399,6 +403,10 @@ export default class PractitionerExistingState extends Vue {
 
   goToCreateSlot(id: string) {
     this.$router.push({ name: 'Patient Experience - Edit Slot'})
+  }
+
+  filterByPractitioner(practitionerId: string) {
+    // this.
   }
 
   get availabilityItems() {

@@ -16,7 +16,7 @@
             </label>
           </div>
         </div>
-        <div class="w-6/12 flex">
+        <div class="w-6/12 flex -mt-3">
           <div class="container flex justify-end">
             <div class="w-12/12">
               <DatePicker
