@@ -127,9 +127,7 @@
           </table-action>
           <table-action
             @click="
-              $router.push(
-                `/dashboard/provider/experience/view-patient/${item.id}`
-              )
+              goToEHR(item.id)
             "
           >
             <newview-icon class="text-yellow-500 fill-current" />
@@ -234,7 +232,7 @@
 
             <div class="w-full flex flex justify-around">
                 <corniebtn class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
-                    <span class="font-semibold text-white" @click="() => showSearchModal = false">View all patients</span>
+                    <span class="font-semibold text-white" @click="closeAndViewAll">View all patients</span>
                 </corniebtn>
 
                 <corniebtn class="bg-white primary-border p-2 rounded-full px-8 mx-4 cursor-pointer">
@@ -314,6 +312,12 @@ export default class ExistingState extends Vue {
   @userStore.State
   user!: User;
 
+  @userStore.State
+  practitionerAuthenticated!: User;
+
+  @userStore.Action
+  updatePractitionerAuthStatus!: () => Promise<void>;
+
   password = "";
 
   filterAdvanced = false;
@@ -386,8 +390,12 @@ export default class ExistingState extends Vue {
   }
 
   goToEHR(patientId: string) {
-    this.showAuthModal = true;
-    this.patientId = patientId;
+    if (!this.practitionerAuthenticated) {
+      this.patientId = patientId;
+      this.showAuthModal = true;
+    } else {
+      this.$router.push({ name: 'Health Trend', params: { patientId }})
+    }
   }
 
   viewActiveVisits() {
@@ -418,6 +426,11 @@ export default class ExistingState extends Vue {
     return `XXXXX${mrn?.substr(31)}`;
   }
 
+  closeAndViewAll() {
+    this.showSearchModal = false;
+    this.activeTab = 0;
+  }
+
   async removePatient(id: string) {
     const confirmed = await window.confirmAction({
       message: `Are you sure you want to delete this patient?
@@ -439,6 +452,9 @@ export default class ExistingState extends Vue {
       this.loading = false;
       if (verified) {
         this.showAuthModal = false;
+        alert("hello")
+        this.updatePractitionerAuthStatus();
+        alert("hhhh")
         if (!this.patientId) {
           this.showSearchModal = true;
         } else {
@@ -470,7 +486,7 @@ export default class ExistingState extends Vue {
   }
 
   async created() {
-    this.showAuthModal = true;
+    if (!this.practitionerAuthenticated) this.showAuthModal = true;
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();
     this.visits?.map((visit: any) => {
@@ -488,7 +504,7 @@ export default class ExistingState extends Vue {
         data.phone = `${ contact?.phone?.dialCode}${contact?.phone?.number}`,
         data.email = contact?.email
       }
-      console.log(this.activeVisits, "ACTIVE");
+      console.log(activeVisits, "ACTIVE");
       
       return patient?.id ? patient : visit;
     })

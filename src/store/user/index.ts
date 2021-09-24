@@ -10,6 +10,7 @@ interface UserState {
   requiresSecurityQuestion: boolean;
   authTime?: Date;
   cornieData: { accountType: string };
+  practitionerAuthenticated: boolean;
 }
 export default {
   namespaced: true,
@@ -21,6 +22,7 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
+    practitionerAuthenticated: false
   },
   getters: {},
   mutations: {
@@ -32,6 +34,7 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
+
     setLoginInfo(state, payload) {
       state.user = payload.user;
 
@@ -43,6 +46,17 @@ export default {
       state.requiresSecurityQuestion = payload.requiresSecurityQuestion;
       state.authToken = payload.token;
     },
+
+    updatePractitionerAuthStatus(state, payload) {
+      state.practitionerAuthenticated = payload;
+    }
   },
-  actions: {},
+  actions: {
+    async updatePractitionerAuthStatus({ commit }) {
+      commit("updatePractitionerAuthStatus", true);
+      setTimeout(() => {
+        commit("updatePractitionerAuthStatus", false);
+      }, 600000)
+    }
+  },
 } as StoreOptions<UserState>;
