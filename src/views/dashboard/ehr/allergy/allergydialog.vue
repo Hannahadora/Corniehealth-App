@@ -11,37 +11,37 @@
         <v-form ref="form">
        <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" v-model="openedS">
                <div class="w-full mt-5 pb-5">
-                  <cornie-select
+                  <main-cornie-select
                   class="w-full"
                   :items="['Active','Inactive','Resolved']"
                   v-model="clinicalStatus"
                   label="clinical status"
                   >
-                  </cornie-select>
+                  </main-cornie-select>
                   <cornie-select
                    class="w-full"
                     :items="['Unconfirmed','Presumed','Confirmed','Refuted','Entered in Error']"
                     label="verification status"
                     v-model="verificationStatus"
-                    placeholder="--Select--"
+                    placeholder="Select"
                   >
                   </cornie-select>
-                  <cornie-select
+                  <main-cornie-select
                    class="required w-full"
                     :rules="required"
                     :items="['Allergy','Intolerance']"
                     v-model="type"
                     label="type"
-                    placeholder="--Select--"
+                    placeholder="Select"
                   >
-                  </cornie-select>
+                  </main-cornie-select>
                   <cornie-select
                    class="required w-full"
                     :rules="required"
                     :items="['Food','Medication','Environment','Biologic',]"
                     v-model="category"
                     label="category"
-                    placeholder="--Select--"
+                   placeholder="Select"
                   >
                   </cornie-select>
                    <cornie-select
@@ -50,7 +50,7 @@
                     :items="['Low Risk','High Risk','Unable to Assess Risk',]"
                     label="criticality"
                     v-model="criticality"
-                    placeholder="--Select--"
+                   placeholder="Select"
                   >
                   </cornie-select>
                    <cornie-select
@@ -59,11 +59,11 @@
                     :items="['Hemoglobin Okaloosa','Ornithine racemase','Ferrocyanide salt','Berberine','Heptachlor','Coumachlor','Hemoglobin Nagoya','Nitrilase','	Free protein S','Guanosine']"
                     label="code"
                     v-model="code"
-                    placeholder="--Select--"
+                   placeholder="Select"
                   >
                   </cornie-select>
                 <div>
-                    <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">encounter
+                    <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">encounter
                       <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                     </label>
                       <div class="w-full flex space-x-4 mb-3">
@@ -96,7 +96,7 @@
         </accordion-component>
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="OnSet" v-model="openedS">
               <div class="w-full mt-5 pb-5">
-                 <div class="w-full mb-2">
+                 <div class="w-full mb-5">
                      <DateTimePicker :label="'Onset date/time'" class="z-10 w-full">
                                 <template v-slot:labelicon>
                                   <question-icon />
@@ -137,11 +137,11 @@
                                 </template>
                               </DateTimePicker>
                   </div>
-                  <cornie-input label="onset age" class="mb-2 w-full"  v-model="onSet.onsetAge" />
+                  <cornie-input label="onset age" class="mb-5 w-full"  v-model="onSet.onsetAge" />
                   <div class="mb-5">
                     <span class="uppercase text-danger mt-4 font-bold text-xs">onset Period</span>
                     <div class="w-full">
-                        <div class="w-full mt-3">
+                        <div class="w-full mt-5">
                              <DateTimePicker :label="'start DATE & Time'" class="z-10 w-full">
                                 <template v-slot:labelicon>
                                   <question-icon />
@@ -182,7 +182,7 @@
                                 </template>
                               </DateTimePicker>
                         </div>
-                        <div class="w-full mt-3">
+                        <div class="w-full mt-5">
                              <DateTimePicker :label="'end DATE & Time'" class="w-full">
                               <template v-slot:labelicon>
                                 <question-icon />
@@ -219,7 +219,7 @@
                     </div>
                   </div>
                     <div class="mb-4">
-                       <span class="uppercase font-bold text-xs">onset range</span>
+                       <span class="uppercase font-bold text-black text-xs">onset range</span>
                        <div class="flex p-3 space-x-2 justify-between w-full">
                          <div class="float-left w-full pr-5">
                            <div>
@@ -235,7 +235,7 @@
                     </div>
                    <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
                    <div class="mb-5">
-                      <label for="ecounter" class="flex uppercase text-xs font-bold">recorded date
+                      <label for="ecounter" class="flex uppercase text-black text-xs font-bold">recorded date
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                     </label>
                       <date-picker  placeholder="autofill" v-model="onSet.recordedDate" class="w-full mb-5 required"
@@ -243,7 +243,7 @@
                       </date-picker>
                    </div>
                    <div class="mb-3">
-                      <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">recorder
+                      <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">recorder
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
                       <!-- <cornie-input class="w-full"  v-model="onSet.recorder" disabled/>  -->
@@ -255,7 +255,7 @@
                     />
                    </div>
                     <div class="flex">
-                        <p class="lbl mt-2 flex uppercase mb-1 text-xs font-bold">add asserter</p>
+                        <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">add asserter</p>
                         <label class="switch">
                           <input
                             name="category"
@@ -268,7 +268,7 @@
                         </label>
                     </div>
                     <div class="mb-3">
-                       <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">asserter
+                       <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">asserter
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
                       <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
@@ -279,7 +279,7 @@
                     />
                     </div>
                      <div class="mb-3">
-                       <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">last occurence
+                       <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">last occurence
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
                        <DateTimePicker class="w-full">
@@ -316,7 +316,7 @@
                             </DateTimePicker>
                     </div>
                     <div>
-                       <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">Note</label>
+                       <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Note</label>
                         <div class="my-2  w-full">
                               <Textarea
                               class="w-full text-xs"
@@ -346,8 +346,8 @@
                   >
                   </cornie-select>
                   <cornie-input label="description" class="mb-5 w-full"   v-model="reaction.description" />
-                   <div class="mb-3">
-                       <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">ONSET
+                   <div class="mb-5">
+                       <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">ONSET
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
                        <DateTimePicker class="w-full">
@@ -384,7 +384,7 @@
                             </DateTimePicker>
                     </div>
                   <div class="mb-2">
-                    <label for="SEVERITY" class="flex uppercase mb-1 text-xs font-bold">SEVERITY
+                    <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold">SEVERITY
                       <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                     </label>
                       <div class="w-full mb-3">
@@ -422,7 +422,7 @@
                     >
                     </cornie-select>
                      <div>
-                       <label for="ecounter" class="flex uppercase mb-1 text-xs font-bold">Note</label>
+                       <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Note</label>
                         <div class="my-2  w-full">
                               <Textarea
                               class="w-full text-xs"
@@ -469,7 +469,8 @@ import CornieRadio from '@/components/cornieradio.vue'
 import CornieDialog from "@/components/CornieDialog.vue";
 import InfoIcon from '@/components/icons/info.vue'
 import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
+import CornieSelect from "@/components/autocomplete.vue";
+import MainCornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import NoteIcon from "@/components/icons/graynote.vue";
@@ -540,7 +541,8 @@ const emptyReaction: Reaction = {
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    Slider
+    Slider,
+    MainCornieSelect
   },
 })
 export default class Medication extends Vue {
@@ -570,6 +572,11 @@ export default class Medication extends Vue {
 
   @allergy.Action
   getPractitioners!: () => Promise<void>;
+
+@Watch('id')
+  idChanged() {
+    this.setAllergy()
+  }
 
 practitioner!: IPractitioner;
 asserterName = "";
@@ -648,6 +655,7 @@ profileFilter=false;
   }
    done() {
     this.$emit("allergy-added");
+    this.show = false;
   }
 
  async createAllergy() {
@@ -662,10 +670,8 @@ profileFilter=false;
       const response = await cornieClient().post('/api/v1/allergy', this.payload)
       if (response.success) {
         window.notify({ msg: 'Allergy created', status: 'success' })
-        this.$router.push('/dashboard/provider/clinical/allergy');
-        //this.done();
-        this.$forceUpdate();
-        this.show = false;
+        this.done();
+        // this.show = false;
       }
     } catch (error) {
       console.log(error)

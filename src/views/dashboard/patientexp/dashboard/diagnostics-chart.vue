@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="439px" title="Medication">
+  <chart-card height="439px" title="Diagnostic">
     <canvas ref="chart"></canvas>
   </chart-card>
 </template>
@@ -66,11 +66,11 @@ rawDataCanceled= 0;
     this.chart = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: ["Active Request", "Unfulfilled request", "Total Request"],
+        labels: ["Community pharm", "Internal pharmcy", "laboratory"],
         datasets: [
           {
-            data: [this.rawDataActive,this.rawDataCanceled, this.rawDatatotalRequest],
-            backgroundColor: ["#F7B538", "#35BA83", "#114FF5"],
+            data: [30,20,40],
+            backgroundColor: ["#114FF5", "#35BA83", "#541388"],
           },
         ],
       },
