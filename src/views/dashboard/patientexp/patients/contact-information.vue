@@ -37,10 +37,11 @@
           :readonly="readonly"
           :items="countries"
         />
-        <cornie-input
+        <auto-complete
           class="w-full"
           v-model="state"
           label="State"
+          :items="states"
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
@@ -112,7 +113,7 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { string } from "yup";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import { getCountries } from "@/plugins/nation-states";
+import { getCountries, getStates } from "@/plugins/nation-states";
 
 const patients = namespace("patients");
 
@@ -151,7 +152,15 @@ export default class PatientContact extends Vue {
   email = "";
   contactId = "";
 
+  states = [] as any;
   countries = countries;
+
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
+  }
+
   loading = false;
   requiredString = string().required();
   requiredEmail = string().email().required();

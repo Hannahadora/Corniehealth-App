@@ -48,18 +48,23 @@
             placeholder="Enter"
             v-model="mailingAddress"
           />
-          <cornie-input
+
+          <auto-complete
             label="Country"
             class="mb-5"
             placeholder="Enter"
             v-model="country"
+            :items="countries"
           />
-          <cornie-input
+
+          <auto-complete
             label="State"
             class="mb-5"
             placeholder="Enter"
             v-model="state"
+            :items="states"
           />
+
           <cornie-input
             label="City"
             class="mb-5"
@@ -154,6 +159,9 @@ import ObjectSet from "@/lib/objectset";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import Period from "@/types/IPeriod";
+import AutoComplete from "@/components/autocomplete.vue";
+import { getCountries, getStates } from "@/plugins/nation-states";
+const countries = getCountries();
 
 const patients = namespace("patients");
 
@@ -161,6 +169,7 @@ const patients = namespace("patients");
   name: "emergency-contact-dialog",
   components: {
     ...CornieCard,
+    AutoComplete,
     PeriodPicker,
     CornieIconBtn,
     ArrowLeftIcon,
@@ -217,6 +226,15 @@ export default class EmergencyDontactDialog extends Vue {
 
   loading = false;
   currentId = "";
+
+  states = [] as any;
+  countries = countries;
+
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
+  }
 
   @patients.Action
   updatePatientField!: (data: {
