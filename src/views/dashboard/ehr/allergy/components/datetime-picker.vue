@@ -4,7 +4,7 @@
             <div class="w-full">
                 <label
                     v-if="label"
-                    class="flex uppercase mb-1 text-xs font-bold"
+                    class="flex uppercase mb-1 text-black text-xs font-bold"
                     :for="`${id}-inputfield`"
                     >
                     {{ label }}
