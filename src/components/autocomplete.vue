@@ -181,7 +181,10 @@ export default class AutoComplete extends Vue {
     if (typeof item === "string" || item instanceof String)
       return item.includes(this.query);
     const { code, display }: { code: string; display: string } = item;
-    return `${code}`.includes(this.query) || `${display}`.includes(this.query);
+    return (
+      `${code}`.toLowerCase().includes(this.query) ||
+      `${display}`.toLowerCase().includes(this.query)
+    );
   }
 
   showDatalist = false;
