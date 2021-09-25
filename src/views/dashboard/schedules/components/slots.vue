@@ -10,7 +10,7 @@
                   </div>
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <edit-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="() => $router.push({ name: 'Edit Slot', query: { slotId: item.id } })">Update </span>
+                    <span class="ml-3 text-xs" @click="() => $router.push({ name: 'Edit Slot', query: { slotId: item.id, scheduleId: item.scheduleId, startTime: new Date(`${item.date}, ${item.time?.split(' - ')[0]}`),  endTime: new Date(`${item.date}, ${item.time?.split(' - ')[1]}`) } })">Update </span>
                   </div>
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <share-icon class="mr-3 mt-1" />
@@ -135,6 +135,12 @@ export default class Availability extends Vue {
     console.log(slots, "SLLLTS");
     return slots;
     
+  }
+
+  constructDate(slot: any) {
+    console.log(slot, "SLLOT");
+    
+    return new Date(`${slot.startDate}, ${slot.startTime}`);
   }
 
   async removeSlot(id: string) {

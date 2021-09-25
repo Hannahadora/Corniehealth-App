@@ -62,7 +62,7 @@
             "
           >
             <newview-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Goto EHR</span>
+            <span class="ml-3 text-xs">ViewChart</span>
           </table-action>
           <table-action
             @click="
@@ -123,7 +123,7 @@
             "
           >
             <newview-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Goto EHR</span>
+            <span class="ml-3 text-xs">View Chart</span>
           </table-action>
           <table-action
             @click="

@@ -159,7 +159,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="w-2/12">
-                                                    <input type="checkbox"  name="" id="">
+                                                    <delete-icon class="cursor-pointer" @click="removeActor(participant.id)" />
                                                 </div>
                                             </div>
                                         </div>
@@ -305,8 +305,8 @@ export default class Shift extends Vue {
 
 
  removeActor(id: any) {
-     if (this.$route.params.scheduleId) return false;
-     this.data.practitioners = this.data.practitioners.filter((i: any)=> i.code !== id);
+    //  if (this.$route.params.scheduleId) return false;
+    this.slotData.practitioners = this.slotData.practitioners.filter((i: any)=> i.id !== id);
  }
 
  actorSelected(actor: any) {
