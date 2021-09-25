@@ -107,7 +107,7 @@
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <eye-icon class="mr-3 mt-1" />
                     <span class="ml-3 text-xs" @click="
-                      $router.push({ name: 'Patient Experience Management', params: { scheduleId: item.id} })">View Details</span>
+                      $router.push({ name: 'Patient Experience - New Schedule', params: { scheduleId: item.id} })">View Details</span>
                   </div>
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <EditIcon />
@@ -143,7 +143,11 @@
               </cornie-table>
               <!-- Test Availability -->
               <div class="w-full" v-if="activeTab === 1">
-                  <AvailabilityList :items="availabilityItems" :schedules="schedules" />
+                  <AvailabilityList 
+                    @filterbypractitioner="filterByPractitioner"
+                    :items="availabilityItems" 
+                    :schedules="schedules"
+                 />
               </div>
               
               <column-filter
@@ -399,6 +403,10 @@ export default class PractitionerExistingState extends Vue {
 
   goToCreateSlot(id: string) {
     this.$router.push({ name: 'Patient Experience - Edit Slot'})
+  }
+
+  filterByPractitioner(practitionerId: string) {
+    // this.
   }
 
   get availabilityItems() {

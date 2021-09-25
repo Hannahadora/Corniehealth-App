@@ -2,7 +2,7 @@
     <div class="w-full p-4 overflow-y-scroll h-scrren">
         <div class="container-fluid">
 
-            <div class="w-full" v-if="item.Patients && item.Patients.length > 0">
+            <div class="w-full" v-if="item?.Patients && item?.Patients?.length > 0">
                 <PatientDetails :id="appointmentPatients.length > 0 ? appointmentPatients[0].code : ''" />
             </div>
 
@@ -172,7 +172,7 @@ export default class CheckIn extends Vue {
 
  availableSlots: any = [ ]
  checkinData: any = {
-    "appointmentId": this.item.id,
+    "appointmentId": this.item?.id,
     "patientId": this.patientId,
     // "type": this.item.appointmentType,
     "status": "In-progress",
@@ -221,7 +221,7 @@ fetchAppointments!: () => Promise<void>;
     try {
         this.loading = true;
         const checkedIn = await this.checkin({
-            "patientId": this.item.Patients && this.item.Patients.length > 0 ? this.item.Patients[0].id : "",
+            "patientId": this.item?.Patients && this.item?.Patients?.length > 0 ? this.item?.Patients[0]?.id : "",
             "appointmentId": this.item?.id,
             "status": "In-progress",
             "roomId": this.checkinData.roomId,
@@ -314,8 +314,8 @@ date = new Date();
  }
 
 get actorsInAppointment() {
-    if (!this.item || !this.item.appointmentId) return [ ];
-    const apmt =  this.appointments.find((i: any) => i.id === this.item.appointmentId);
+    if (!this.item || !this.item?.appointmentId) return [ ];
+    const apmt =  this.appointments.find((i: any) => i.id === this.item?.appointmentId);
     
     return apmt ? apmt.Practitioners : [ ];
 }
@@ -355,9 +355,9 @@ get actorsInAppointment() {
  }
 
  get appointmentPatients() {
-     if (!this.item.Patients || this.item.Patients.length === 0) return [ ];
-     if (this.item.Patients.length > 2) return this.item.Patients.slice(0, 2)
-     return this.item.Patients.map((i: any) => {
+     if (!this.item?.Patients || this.item?.Patients.length === 0) return [ ];
+     if (this.item?.Patients.length > 2) return this.item?.Patients.slice(0, 2)
+     return this.item?.Patients.map((i: any) => {
          return {
              code: i.id,
              display: `${i.firstname} ${i.lastname}`
@@ -392,12 +392,7 @@ get actorsInAppointment() {
     this.schedulesByPractitioner(id).then(res => {        
         if (!res || res.length == 0) return ;
 
-        console.log(slotService.slots(res, this.date), "NEW SLOTS");
         this.availableSlots = slotService.slots(res, this.date)
-        // const todaySlots = res.filter((i: any) => slotService.matchDates(this.visitDate.toString(), i.startDate))        
-        // this.checkinData.scheduleId = todaySlots.length > 0 ? todaySlots[0].id : '';
-        // const firstSchedule = todaySlots.length > 0 ? todaySlots[0] : { };
-        // this.availableSlots = slotService.getAvailableSlots([ firstSchedule ])
     })
  }
 
@@ -409,9 +404,7 @@ get visitDate() {
  
 
  @Watch('item', { immediate: true, deep: true })
- onGetSlots() {
-     console.log(this.item, "MMMM");
-     
+ onGetSlots() {     
      if (!this.item || !this.item.Practitioners || this.item.Practitioners.length === 0) return;
      if (this.patientId) this.getSlots(this.patientId)
  }

@@ -9,6 +9,7 @@ export default interface ICareteam {
     start: string;
     end: string;
   };
+  communication: Communication[];
   participants: Participants[];
 }
 
@@ -31,4 +32,16 @@ export interface Participants {
   email: string;
   careTeamId?: string;
   notes: string;
+}
+
+export interface Communication {
+  id: string,
+  careTeamId: string,
+  system: string,
+  value: string,
+  use: string,
+  startDate: string,
+  endDate: string,
+  startTime: string,
+  endTime: string
 }

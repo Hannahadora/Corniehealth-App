@@ -8,6 +8,7 @@ import {
   updateSchedule,
   removePractitioner,
   addPractitioner,
+  deleteSlot,
 } from "./helper";
 
 interface SchedulesStore {
@@ -87,6 +88,12 @@ export default {
       const sch = await createSchedule(schedule);
       if (!sch) return false;
       ctx.commit("addSchedule", sch);
+      return true;
+    },
+
+    async deleteSlot(ctx, id: string) {
+      const deleted = await deleteSlot(id);
+      if (!deleted) return false;
       return true;
     },
 

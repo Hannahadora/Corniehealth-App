@@ -40,7 +40,7 @@ export default class Telecom extends Vue {
     }
 
     .show-details {
-        height: 800px;
+        height: 990px;
         transition: all .4s ease-in-out;
         overflow: hidden;
     }
