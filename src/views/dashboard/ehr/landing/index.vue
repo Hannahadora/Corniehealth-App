@@ -452,9 +452,7 @@ export default class ExistingState extends Vue {
       this.loading = false;
       if (verified) {
         this.showAuthModal = false;
-        alert("hello")
         this.updatePractitionerAuthStatus();
-        alert("hhhh")
         if (!this.patientId) {
           this.showSearchModal = true;
         } else {
