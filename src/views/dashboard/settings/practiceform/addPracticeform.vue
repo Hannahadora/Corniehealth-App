@@ -347,7 +347,7 @@ export default class AddPracticeform extends Vue {
   displayTitle = "Blank Form";
   description = "Kindly tell us about your medical history!";
   question = "Type question here";
-  name = "Others";
+
   answerType = "paragraph";
   answerOptions = [] as any;
 

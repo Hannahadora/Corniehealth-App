@@ -24,7 +24,12 @@
         </div>
       </accordion-item>
     </accordion>
-    <add-contact v-model:visible="addContact" :purpose="purpose" />
+    <add-contact
+      v-model:visible="addContact"
+      key="contacts"
+      :purpose="purpose"
+      v-if="addContact"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -58,9 +63,11 @@ export default class Contacts extends Vue {
   fetchContacts!: () => Promise<void>;
 
   purpose = "";
+
   getChildren(purpose: string) {
     return this.contacts.filter((contact) => contact.purpose == purpose);
   }
+
   get titles() {
     return {
       Billings: this.getChildren("Billings"),

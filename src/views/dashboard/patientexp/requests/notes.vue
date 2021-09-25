@@ -1,6 +1,7 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
+      
       <cornie-card-title>
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
@@ -17,6 +18,7 @@
           Make Notes
         </span>
       </cornie-card-title>
+
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Some subtext if necessary.</p>
         <v-form ref="form">
@@ -41,6 +43,7 @@
         </div>
         </v-form>
       </cornie-card-text>
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
@@ -51,6 +54,7 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
+
     </cornie-card>
   </cornie-dialog>
 </template>

@@ -19,16 +19,7 @@
           </span>
         </cornie-card-title>
         <div class="px-2">
-          <icon-input
-            autocomplete="off"
-            type="search"
-            placeholder="Search"
-            class="rounded-full w-full border-2 focus:outline-none"
-          >
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-          </icon-input>
+          <provider-search @selected="selected" :type="type" />
           <v-form class="mt-4 w-full" @submit="submit">
             <cornie-input
               :label="`${title} Name`"
@@ -57,6 +48,7 @@
               </cornie-btn>
               <cornie-btn
                 type="submit"
+                :loading="loading"
                 class="text-white bg-danger px-6 rounded-xl"
               >
                 Save
@@ -70,10 +62,11 @@
             SELECT DEFAULT {{ title }}
           </h2>
           <div class="flex items-center" v-for="(item, i) in items" :key="i">
-            <input
+            <cornie-radio
               @change="toggleDefault(item)"
               v-model="item.default"
-              type="checkbox"
+              type="radio"
+              :name="type"
               class=""
             />
             <div class="flex flex-col ml-3">
@@ -106,13 +99,13 @@ import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PillIcon from "@/components/icons/PillIcon.vue";
 import TestTubeIcon from "@/components/icons/test-tube.vue";
-import IconInput from "@/components/IconInput.vue";
-import SearchIcon from "@/components/icons/search.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import { IPatient, Provider } from "@/types/IPatient";
 import { cornieClient } from "@/plugins/http";
 import { string } from "yup";
 import { namespace } from "vuex-class";
+import CornieRadio from "@/components/cornieradio.vue";
+import ProviderSearch from "./provider-search.vue";
 
 const patients = namespace("patients");
 
@@ -120,14 +113,14 @@ const patients = namespace("patients");
   name: "RegisterProvider",
   components: {
     ...CornieCard,
-    SearchIcon,
+    ProviderSearch,
     TestTubeIcon,
     CornieIconBtn,
-    IconInput,
     ArrowLeftIcon,
     DeleteIcon,
     CornieDialog,
     CornieInput,
+    CornieRadio,
     CornieSelect,
     CorniePhoneInput,
     CornieDatePicker,
@@ -148,21 +141,41 @@ export default class RegisterProvider extends Vue {
   @Prop({ type: Array, default: [] })
   labs!: Provider[];
 
-  @PropSync("providers")
+  @PropSync("labs")
   labsSync!: Provider[];
 
   @Prop({ type: Array, default: [] })
   pharmacies!: Provider[];
 
-  @PropSync("providers")
+  @PropSync("pharmacies")
   pharmaciesSync!: Provider[];
 
-  @Prop({ type: String })
-  patientId!: string;
+  @Prop({ type: Object })
+  patient!: IPatient;
 
   @patients.Action
   deleteProvider!: (provider: Provider) => Promise<boolean>;
 
+  @patients.Action
+  updatePatientField!: (data: {
+    id: string;
+    field: string;
+    data: any[];
+  }) => void;
+
+  get patientId() {
+    return this.patient?.id;
+  }
+
+  selected(item: Provider) {
+    this.name = item.name;
+    this.email = item.email;
+    this.referenceOrganization = item.referenceOrganization || "";
+    this.id = item.id!!;
+  }
+
+  id = "";
+  loading = false;
   name = "";
   email = "";
   referenceOrganization = "";
@@ -174,8 +187,32 @@ export default class RegisterProvider extends Vue {
     return this.title.toLowerCase().includes("lab") ? "lab" : "pharmacy";
   }
 
-  items() {
-    return this.type == "lab" ? this.labsSync : this.pharmaciesSync;
+  get preferredLabs() {
+    if (!this.patientId) return this.labsSync;
+    return this.patient.preferredLabs;
+  }
+
+  get pharms() {
+    return this.patientId
+      ? this.patient.preferredPharmacies
+      : this.patient.preferredPharmacies;
+  }
+
+  addProviders(providers: Provider[]) {
+    const key = this.type == "lab" ? "preferredLabs" : "preferredPharmacies";
+    this.updatePatientField({
+      id: this.patient.id!!,
+      field: key,
+      data: providers,
+    });
+  }
+
+  get items() {
+    const items = this.type == "lab" ? this.preferredLabs : this.pharms;
+    return items?.map((item) => ({
+      ...item,
+      default: (item as any).patient_provider?.default || false,
+    }));
   }
 
   get payload() {
@@ -187,8 +224,10 @@ export default class RegisterProvider extends Vue {
       type: this.type,
     } as Provider;
     if (this.patientId) payload.patientId = this.patientId;
+    if (this.id) payload.id = this.id;
     return payload;
   }
+
   reset() {
     this.email = "";
     this.name = "";
@@ -204,11 +243,19 @@ export default class RegisterProvider extends Vue {
   }
 
   sync(data: Provider) {
+    if (this.patientId) return this.storeSync(data);
     if (this.type == "lab") this.labsSync = [...this.labsSync, data];
     else this.pharmaciesSync = [...this.pharmaciesSync, data];
   }
 
+  storeSync(data: Provider) {
+    let providers: Provider[];
+    if (this.type == "lab") providers = [...this.labsSync, data];
+    else providers = this.pharmaciesSync = [...this.pharmaciesSync, data];
+    this.addProviders(providers);
+  }
   async submit() {
+    this.loading = true;
     try {
       const response = await cornieClient().post(
         "/api/v1/patient/provider",
@@ -219,20 +266,33 @@ export default class RegisterProvider extends Vue {
     } catch (error) {
       window.notify({ msg: "Provider Not Added", status: "error" });
     }
+    this.loading = false;
   }
 
   async toggleDefault(item: Provider) {
-    const payload = { ...item, type: this.type };
     try {
-      const response = await cornieClient().put(
-        `/api/v1/patient/provider/${item.id}`,
-        payload
+      await cornieClient().put(
+        `/api/v1/patient/provider/default/${this.patientId}/${item.id}`,
+        {}
       );
-      this.sync(response.data);
+      this.updateDefault(item);
       window.notify({ msg: "Provider now made default", status: "success" });
     } catch (error) {
       window.notify({ msg: "Provider Not made default", status: "error" });
     }
+  }
+
+  updateDefault(item: Provider) {
+    let providers = this.items!!;
+    providers = providers.map((p) => {
+      let isDefault = false;
+      if (p.id == item.id) isDefault = true;
+      return {
+        ...p,
+        default: isDefault,
+      };
+    });
+    this.addProviders(providers);
   }
 
   excise(index: number) {
@@ -248,7 +308,10 @@ export default class RegisterProvider extends Vue {
     if (!this.patientId) {
       return this.excise(index);
     }
-    const removed = await this.deleteProvider(provider);
+    const removed = await this.deleteProvider({
+      ...provider,
+      patientId: this.patientId,
+    });
     if (removed) window.notify({ msg: "Provider Removed", status: "success" });
     else window.notify({ msg: "Provider not removed", status: "error" });
   }

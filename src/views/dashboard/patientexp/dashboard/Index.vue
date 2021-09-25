@@ -37,7 +37,8 @@
       <visits-chart />
       <billings-chart />
       <medication-chart />
-      <chart-card height="439px" title="Diagnostics" />
+       <diagnostics-chart />
+      <!-- <chart-card height="439px" title="Diagnostics" /> -->
       <referral-chart />
     </div>
     <span class="w-full grid">
@@ -59,6 +60,7 @@ import AppointmentChart from "./appointment-chart.vue";
 import VisitsChart from "./visits-chart.vue";
 import BillingsChart from "./billings-chart.vue";
 import MedicationChart from "./medication-chart.vue";
+import DiagnosticsChart from "./diagnostics-chart.vue";
 import ReferralChart from "./referral-chart.vue";
 import RatingChart from "./ratings-chart.vue";
 import ResourceChart from "./resource-chart.vue";
@@ -75,6 +77,7 @@ import QuestionnaireChart from "./questionnaire-chart.vue";
     ReferralChart,
     InpatientChart,
     ChartCard,
+    DiagnosticsChart,
     AppointmentChart,
     BillingsChart,
     MedicationChart,

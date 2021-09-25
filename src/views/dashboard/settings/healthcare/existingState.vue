@@ -9,6 +9,8 @@
           mt-5
           py-2
           px-3
+          pl-10
+          pr-10
           focus:outline-none
           hover:opacity-90
         "
@@ -17,26 +19,26 @@
         Add New
       </button>
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+      <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+             @click="$router.push(`add-health-service/${item.id}`)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+          <edit-icon class="mr-3 text-yellow-300 fill-current" /> 
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <delete-icon/>
+          <span class="ml-3 text-xs">Delete Healthcare</span>
+        </div>
+      </template>
+    </cornie-table>
+    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
@@ -86,7 +88,7 @@
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
-    />
+    /> -->
   </div>
 </template>
 <script lang="ts">
@@ -107,6 +109,8 @@ import IHealthcare from "@/types/IHealthcare";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+
 
 
 const healthcare = namespace("healthcare");
@@ -121,6 +125,7 @@ const healthcare = namespace("healthcare");
     FilterIcon,
     IconInput,
     DeleteIcon,
+    CornieTable,
     EyeIcon,
     ColumnFilter,
     TableOptions,
@@ -145,53 +150,53 @@ export default class HealthcareExistingState extends Vue {
     rawHeaders = [
     {
       title: "Name",
-      value: "name",
+      key: "name",
       show: true,
     },
     
     {
       title: "Location",
-      value: "address",
+      key: "address",
       show: true,
     },
     {
       title: "Communication",
-      value: "communication",
+      key: "communication",
       show: false,
     },
     {
       title: "Phone",
-      value: "phone",
+      key: "phone",
       show: false,
     },
     {
       title: "Provison Code",
-      value: "provisionCode",
+      key: "provisionCode",
       show: true,
     },
       {
       title: "Type",
-      value: "type",
+      key: "type",
       show: true,
     },
     {
       title: "Comment",
-      value: "comment",
+      key: "comment",
       show: false,
     },
      {
       title: "Programs",
-      value: "programs",
+      key: "programs",
       show: false,
     },
      {
       title: "Specialty",
-      value: "specialty",
+      key: "specialty",
       show: false,
     },
      {
       title: "Category",
-      value: "category",
+      key: "category",
       show: false,
     },
    

@@ -176,8 +176,8 @@
                   placeholder="--Select--"
                 >
                 </cornie-select>
-                <date-picker
-                  label="Period"
+                <single-date-picker
+                  label="Member Period"
                   v-model="memberPeriod"
                   placeholder="--Enter--"
                   :rules="required"
@@ -197,7 +197,7 @@
             </template>
           </accordion-component>
         </div>
-        <span class="flex justify-end w-full">
+        <span class="flex justify-end w-full pb-96">
           <button
             @click="$router.push('/dashboard/provider/settings/group')"
             type="button"
@@ -260,6 +260,8 @@ import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
 import DatePicker from "@/components/daterangepicker.vue";
+import SingleDatePicker from "./datepicker.vue";
+import Period from "@/types/IPeriod";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");
@@ -275,6 +277,7 @@ const dropdown = namespace("dropdown");
     CornieSelect,
     OrgSelect,
     ColumnFilter,
+    SingleDatePicker,
     Textarea,
     DEdit,
     CDelete,
@@ -311,7 +314,7 @@ export default class AddGroup extends Vue {
   valueRange = "";
   valueRef = "";
   exclude = "";
-  period = "";
+  period = {} as Period;
   memberPeriod = "";
  // period: { start: "2011/12/15", end: "2017/12/19" };
  // memberPeriod: { start: "2011/12/15", end: "2017/12/19" };
@@ -411,16 +414,16 @@ export default class AddGroup extends Vue {
     this.loading = false;
   }
   async createGroup() {
-    // this.payload.period.start = new Date(this.payload.period.start).toISOString()
-    this.payload.period = new Date(this.payload.period).toISOString();
+     this.payload.memberPeriod = new Date(this.payload.memberPeriod).toISOString()
     try {
       const response = await cornieClient().post("/api/v1/group", this.payload);
       if (response.success) {
         window.notify({ msg: "Group created", status: "success" });
+        this.$router.push('/dashboard/provider/settings/group')
       }
     } catch (error) {
       window.notify({ msg: "Group not created", status: "error" });
-      this.$router.push('/dashboard/provider/settings/group')
+      //this.$router.push('/dashboard/provider/settings/group')
     }
   }
 

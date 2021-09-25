@@ -23,7 +23,26 @@
           </div>
         </span>
     </div>
-    <Table :headers="headers" :items="sortFunc" class="tableu rounded-xl mt-5">
+     <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$router.push(`/dashboard/provider/add-practice-form-template/${item.id}`)"
+        >
+          <edit-icon class="mr-3 text-yellow-300 fill-current" /> 
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <delete-icon/>
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
+      </template>
+    </cornie-table>
+    <!-- <Table :headers="headers" :items="sortFunc" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
@@ -71,7 +90,7 @@
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
-    />
+    /> -->
   </div>
 </template>
 <script lang="ts">
@@ -102,6 +121,7 @@ import Select from "@/components/newautocomplete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { cornieClient } from "@/plugins/http";
 
 const practiceform = namespace("practiceform");
@@ -118,6 +138,7 @@ const practiceform = namespace("practiceform");
     SearchIcon,
     CloseIcon,
     PrintIcon,
+    CornieTable,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
@@ -153,30 +174,30 @@ export default class PracticeformExistingState extends Vue {
 getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Form Name", value: "formTitle", show: true },
+    { title: "Form Name", key: "formTitle", show: true },
     {
       title: "Form Type",
-      value: "formType",
+      key: "formType",
       show: true,
     },
     {
       title: "Created By",
-      value: "createdBy",
+      key: "createdBy",
       show: true,
     },
     {
       title: "Last Modified By",
-      value: "updatedBy",
+      key: "updatedBy",
       show: true,
     },
     {
       title: "Links",
-      value: "links",
+      key: "links",
       show: true,
     },
     {
       title: "Display Title",
-      value: "displayTitle",
+      key: "displayTitle",
       show: false,
     },
   ];

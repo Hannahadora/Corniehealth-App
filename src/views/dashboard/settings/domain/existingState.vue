@@ -41,26 +41,24 @@
       </button>
       
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+   <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$router.push(`add-domain/${item.id}`)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
+           <span class="mr-3 text-2xl bold text-primary">+</span> Rename
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <delete-icon/>
+          <span class="ml-3 text-xs">Remove</span>
+        </div>
+      </template>
+    </cornie-table>
+    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
       <template v-slot:item="{ item }">
         <span v-if="getKeyValue(item).key == 'action'">
           <table-options>
@@ -110,7 +108,7 @@
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
-    />
+    /> -->
    <!-- <show-confrim  v-model:visible="showModal"  yes="Proceed" no="Cancel" title="Delete Domain" message="Are you sure you want to remove this domain? This action cannot be undone."/>-->
   </div>
 </template>
@@ -133,6 +131,7 @@ import IDomain from "@/types/IDomain";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 
 
 const domain = namespace("domain");
@@ -150,7 +149,8 @@ const domain = namespace("domain");
     ColumnFilter,
     TableOptions,
     DeleteIcon,
-    EyeIcon
+    EyeIcon,
+    CornieTable
   },
   
 })
@@ -169,21 +169,21 @@ export default class DomainExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Organizatin Name", value: "orgName", show: true },
-    { title: "Domain Name", value: "domainName", show: true },
+    { title: "Organizatin Name", key: "orgName", show: true },
+    { title: "Domain Name", key: "domainName", show: true },
     {
       title: "Role",
-      value: "roleForDomain",
+      key: "roleForDomain",
       show: true,
     },
     {
       title: "Date Created",
-      value: "createdAt",
+      key: "createdAt",
       show: false,
     },
     {
       title: "Organization ID",
-      value: "organizationId",
+      key: "organizationId",
       show: false,
     },
   ];

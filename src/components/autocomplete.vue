@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block uppercase mb-1 text-xs font-bold"
+              class="block uppercase mb-1 text-black text-xs font-bold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -34,7 +34,7 @@
                 </span>
                 <input
                   v-else
-                  placeholder="--Select--"
+                  placeholder="Select"
                   disabled
                   :value="displayVal"
                   class="
@@ -181,7 +181,10 @@ export default class AutoComplete extends Vue {
     if (typeof item === "string" || item instanceof String)
       return item.includes(this.query);
     const { code, display }: { code: string; display: string } = item;
-    return `${code}`.includes(this.query) || `${display}`.includes(this.query);
+    return (
+      `${code}`.toLowerCase().includes(this.query) ||
+      `${display}`.toLowerCase().includes(this.query)
+    );
   }
 
   showDatalist = false;

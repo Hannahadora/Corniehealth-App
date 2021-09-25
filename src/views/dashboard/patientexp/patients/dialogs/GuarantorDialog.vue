@@ -45,17 +45,19 @@
             placeholder="Enter"
             v-model="mailingAddress"
           />
-          <cornie-input
+          <auto-complete
+            :items="countries"
             label="Country"
             class="mb-5"
             placeholder="Enter"
             v-model="country"
           />
-          <cornie-input
+          <auto-complete
             label="State"
             class="mb-5"
             placeholder="Enter"
             v-model="state"
+            :items="states"
           />
           <cornie-input
             label="City"
@@ -146,6 +148,9 @@ import Period from "@/types/IPeriod";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import PeriodPicker from "@/components/daterangepicker.vue";
+import AutoComplete from "@/components/autocomplete.vue";
+import { getCountries, getStates } from "@/plugins/nation-states";
+const countries = getCountries();
 
 const patients = namespace("patients");
 
@@ -154,6 +159,7 @@ const patients = namespace("patients");
   components: {
     ...CornieCard,
     CornieIconBtn,
+    AutoComplete,
     ArrowLeftIcon,
     CornieDialog,
     CornieInput,
@@ -199,6 +205,15 @@ export default class EmergencyDontactDialog extends Vue {
     { code: "female", display: "Female" },
     { code: "other", display: "Other" },
   ];
+
+  states = [] as any;
+  countries = countries;
+
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
+  }
 
   relationshipOptions = [
     "Father",

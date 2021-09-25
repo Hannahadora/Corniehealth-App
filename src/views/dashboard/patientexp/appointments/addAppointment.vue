@@ -227,7 +227,7 @@
                       <div class="border-r-2" v-for="(input, index) in newPatients" :key="index">
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
-                            <avatar class="mr-2" v-if="input.image" :src="input.image" />
+                            <avatar class="mr-2" v-if="input.profilePhoto" :src="input.profilePhoto" />
                             <avatar class="mr-2" v-else :src="img.placeholder" />
                             <div>
                               <p class="text-xs text-dark font-semibold">
@@ -339,7 +339,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, { ParticipantDetail } from "@/types/IAppointment";
+import IAppointment, { ParticipantDetail, Practitioners, Patients, Devices } from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -365,6 +365,38 @@ import { useHandleImage } from "@/composables/useHandleImage";
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
+const emptyPractitioners: Practitioners = {
+  id: "",
+  type: "",
+  required: false,
+  consultationMedium: "",
+  period : {} as Period,
+
+
+};
+const emptyPatients: Patients = {
+  id: "",
+  type: "",
+  required: false,
+  consultationMedium: "",
+  period : {} as Period,
+  firstname: "",
+  lastname: "",
+  gender: "",
+  dateOfBirth: "",
+  accountType: "",
+  mrn: "",
+
+};
+const emptyDevices: Devices = {
+    id: "",
+  type: "",
+  required: false,
+  consultationMedium: "",
+  period : {} as Period,
+
+
+};
 const emptyParticipant: ParticipantDetail = {
   period: {} as Period,
   required: "",
@@ -437,9 +469,9 @@ actorTypeValue = "";
   patientInstruction = "";
   period = {} as Period;
   participantDetail = { ...emptyParticipant };
-  Practitioners = [];
-  Devices = [];
-  Patients: any[] = [];
+  practitioners: Practitioners[] = [];
+  devices: Devices[] = [];
+  patients: Patients[] = [];
   roles = [];
 
   newPractitioners  = [];
@@ -506,13 +538,12 @@ actorTypeValue = "";
     this.comments = appointment.comments;
     this.patientInstruction = appointment.patientInstruction;
     this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
+    this.practitioners = appointment.Practitioners;
+    this.devices = appointment.Devices;
+    this.patients = appointment.Patients;
   }
   get payload() {
-    const payload = {
+    return {
       serviceCategory: this.serviceCategory,
       locationId: this.locationId,
       deviceId: this.deviceId,
@@ -529,20 +560,12 @@ actorTypeValue = "";
       duration: this.duration,
       comments: this.comments,
       patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
+      Devices: this.devices,
       period: this.period,
-      Patients: this.Patients,
-    } as any;
-    if (this.Devices.length > 0) {
-      payload.Devices = this.Devices;
-    }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
-    if (this.Practitioners.length > 0) {
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload;
+      Patients: this.patients,
+      Practitioners:this.practitioners
+    } 
+  
   }
   get allaction() {
     return this.id ? "Edit" : "Create";
@@ -553,7 +576,7 @@ actorTypeValue = "";
   async addPractitioner(value: any, id: any) {
     //this.practitioner.push({ ...this.practitioners });
     this.newPractitioners = value;
-    this.Practitioners = id;
+    this.practitioners = id;
     this.practitionerFilter = false;
   }
   async showSlots(slots: any){
@@ -564,33 +587,27 @@ actorTypeValue = "";
     this.slot = slots.id;
     this.practitioner = slots.practitioners;
   }
-  async displayParticipants(value: any, id: any, typevalue: string) {
+  async displayParticipants(valueforpractitioner:any,valueforpatient:any,valuefordevice:any,typevalue: string,incomingpractioner:any,incomingpatient:any,incomingdevice:any) {
     // this.newPractitioners .push({ ...this.practitioners });
     //  this.newActors = value;
       this.showActors = true;
       
     if (typevalue == "Practitioner") {
-     this.newPractitioners = value;
+     this.newPractitioners = valueforpractitioner;
      this.valuePractioner = typevalue;
     // this.newPractitioner.push(...value);
-      this.Practitioners = id;
+      this.practitioners = incomingpractioner;
     } 
     if (typevalue == "Patient") {
-     this.newPatients = value;
+     this.newPatients = valueforpatient;
      this.valuePatient = typevalue;
      // this.newPatient.push(...value);
-      this.Patients = id;
-    } 
-     if (typevalue == "Role") {
-     this.newRoles = value;
-     this.valueRole = typevalue;
-     // this.newRole.push({ ...this.newRoles});
-      this.roles = id;
+      this.patients = incomingpatient;
     } 
      if (typevalue == "Device") {
        this.valueDevice = typevalue;
-      this.newDevices = value;
-      this.Devices = id;
+      this.newDevices = valuefordevice;
+      this.devices = incomingdevice;
     }
   }
   removePractitioner(index: number) {
@@ -610,12 +627,12 @@ actorTypeValue = "";
   }
   async addPatients(value: any, id: any) {
     this.newPatients = value;
-    this.Patients = id;
+    this.patients = id;
     this.patientFilter = false;
   }
   async addDevices(value: any, id: any) {
     this.newDevices = value;
-    this.Devices = id;
+    this.devices = id;
     this.deviceFilter = false;
   }
   async addRoles(value: any, id: any) {
@@ -655,8 +672,7 @@ actorTypeValue = "";
         this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
@@ -702,7 +718,7 @@ actorTypeValue = "";
   }
   async created() {
     this.setAppointment();
-  //  this.fetchPractitioners();
+    //this.fetchPractitioners();
     this.getLocations();
     this.fetchDevices();
     this.fetchRoles();

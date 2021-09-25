@@ -1,6 +1,6 @@
 <template>
   <main>
-      <div class="mb-5  w-full ">
+      <div class="mb-5 p-3 border-l-none -mt-6 w-full ">
         <span
             class="
             flex
@@ -18,12 +18,12 @@
         <div class="w-full h-full">
             <div class="w-full grid grid-cols-2 gap-4">
                 <blood-chart/>
-                <blood-chart title="Weight"/>
+                <weight-chart title="Weight"/>
             </div>
             <div class="w-full grid grid-cols-3 gap-4">
-                <blood-chart/>
-                    <blood-chart/>
-                    <blood-chart/>
+                <medication-card/>
+                    <medication-card/>
+                    <medication-card/>
             </div>
         </div>
       </div>
@@ -42,6 +42,9 @@ import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { mapActions, mapState } from "vuex";
 import BloodChart from "./bloodChart.vue";
+import WeightChart from "./weight-chart.vue";
+import MedicationCard from "./medicationCard.vue";
+
 
 export default {
   name: "HealthIndex",
@@ -51,7 +54,9 @@ export default {
     CornieSelect,
     PhoneInput,
     AvatarField,
-    BloodChart
+    BloodChart,
+    WeightChart,
+    MedicationCard
   },
   setup() {
     const { url, placeholder, onChange } = useHandleImage();

@@ -166,19 +166,19 @@
                                   <p class="text-lg text-primary font-bold">Patient</p>
                                   <div class="flex space-x-4 mt-5">
                                     <p class="text-sm text-gray-400 font-light">Patient Name:</p>
-                                    <p class="text-sm font-bold text-primary">James Dean</p>
+                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.name }}</p>
                                   </div>
                                   <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">MRN Number::</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                    <p class="text-sm text-gray-400 font-light">MRN Number:</p>
+                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.mrn }}</p>
                                   </div>
                                   <div class="flex space-x-4 mt-5">
                                     <p class="text-sm text-gray-400 font-light">Gender:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.gender }}</p>
                                   </div>
                                   <div class="flex space-x-4 mt-5">
                                     <p class="text-sm text-gray-400 font-light">Age:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.dob }}</p>
                                   </div>
                                   <div class="flex space-x-4 mt-5">
                                     <p class="text-sm text-gray-400 font-light">Address:</p>
@@ -203,7 +203,7 @@
                                   <p class="text-lg text-primary font-bold">Requester</p>
                                   <div class="flex space-x-4 mt-5">
                                     <p class="text-sm text-gray-400 font-light">Practitioner Name:</p>
-                                    <p class="text-sm font-bold text-primary">James Dean</p>
+                                    <p class="text-sm font-bold text-primary">{{ selectedPractionerData.name }}</p>
                                   </div>
                                   <div class="flex space-x-4 mt-5">
                                     <p class="text-sm text-gray-400 font-light">Practitioner ID:</p>
@@ -591,7 +591,7 @@ const emptyRequest: IRequest = {
     EyeIcon,
   },
 })
-export default class AddRequest extends Vue {
+export default class ViewRequest extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -661,8 +661,14 @@ export default class AddRequest extends Vue {
   patientFilter = false;
   availableFilter = false;
   participantitem = "";
+selectedPatient : any = { };
+selectedPractitioner: any = { };
+  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
 
-  patient = [];
+  patients=[];
+  practitioners=[];
+patientName="";
+performername="";
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -780,7 +786,6 @@ get Medications(){
         dosage:request.medicationDetails.dosageInstruction,
 
 
-
         //  action: request.id,
         //  keydisplay: "XXXXXXX",
         //  Participants: singleParticipantlength 
@@ -789,7 +794,35 @@ get Medications(){
     if (!this.query) return requests;
     return search.searchObjectArray(requests, this.query);
   }
+ get PatientName() {
+    const id = this.requestModel.subject.subject;
+    const pt = this.patients.find((i: any) => i.id === id);
+    this.selectedPatient = pt ? pt : { };
 
+    return pt;
+  }
+  get PractitionerName(){
+     const id = this.requestModel.medicationAdministration.performer; 
+    const pt = this.practitioners.find((i: any) => i.id === id);
+        this.selectedPractitioner = pt ? pt : { };
+         return pt;
+  }
+ get selectedPatientData() {
+    const data = this.selectedPatient;
+    return {
+      gender: data.gender,
+      name:data.firstname +' '+ data.lastname,
+      dob: Math.floor(( Date.now() - new Date(data.dateOfBirth).getTime()) / 3.15576e+10),
+      mrn: data.mrn,
+    }
+  }
+  get selectedPractionerData() {
+    const data = this.selectedPractitioner;
+    return {
+      name:data.firstName +' '+ data.lastName,
+      
+    }
+  }
 
   @Watch("id")
   idChanged() {
@@ -801,24 +834,6 @@ get Medications(){
       window.print();
     }
 
-    async share(){
-      //const btn = document.querySelector('button');
-      const resultPara = document.querySelector('.printMe');
-
-     const shareData = {
-        title: 'MDN',
-        text: 'Learn web development on MDN!',
-        url: 'https://developer.mozilla.org'
-      }
-
-      // Share must be triggered by "user activation"
-        try {
-          await navigator.share(shareData)
-          window.notify({ msg: "Request Succesffully sahred", status: "success" });
-        } catch(err) {
-         window.notify({ msg: err, status: "error" });
-        }
-    }
   async setRequest() {
     const request = await this.getRequestById(this.id)
     if (!request) return
@@ -829,11 +844,17 @@ get Medications(){
    async fetchPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
-    this.patient = response[0].data;
+    this.patients = response[0].data;
+  }
+   async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioners = response[0].data;
   }
   async created() {
       this.setRequest();
     this.fetchPatients();
+    this.fetchPractitioner();
   }
 }
 </script>

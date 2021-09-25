@@ -204,6 +204,12 @@
           />
       </div>
     </v-form>
+  <span class="w-full flex text-sm mt-2 pb-5">
+                Already have an account?
+                <router-link class="ml-1 text-danger" to="/login">
+                  Login
+                </router-link>
+              </span>
   </div>
 </div>
 </template>

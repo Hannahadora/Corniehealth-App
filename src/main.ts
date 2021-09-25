@@ -11,7 +11,6 @@ import "primevue/resources/primevue.min.css"; //core css
 import "primeicons/primeicons.css";
 import VCalendar from "v-calendar";
 
-
 const app = createApp(App).use(router).use(store).use(VCalendar, {});
 // const app = createApp(App).use(router).use(store).use(PrimeVue).use(VCalendar, {});
 

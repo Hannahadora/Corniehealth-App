@@ -240,7 +240,8 @@ export default class Medication extends Vue {
  @Prop({ type: String, default: '' })
   taskId!: string;
 
-
+ @Prop({ type: String, default: '' })
+  requesId!: string;
 
 loading=  false;
 notes='';
