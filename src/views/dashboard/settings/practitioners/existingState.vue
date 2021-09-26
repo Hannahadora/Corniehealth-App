@@ -137,6 +137,7 @@ export default class PractitionerExistingState extends Vue {
         ...practitioner,
         action: practitioner.id,
         hoursOfOperation: opHours,
+        name: `${practitioner.firstName} ${practitioner.lastName}`,
       };
     });
     if (!this.query) return practitioners;
@@ -154,11 +155,9 @@ export default class PractitionerExistingState extends Vue {
       message: "You are about to delete this practitioner",
     });
     if (!confirmed) return;
-
     if (await this.deletePractitioner(id))
       window.notify({ msg: "Practitioner deleted", status: "success" });
     else window.notify({ msg: "Practitioner not deleted", status: "error" });
-    window.notify({ msg: "Practitioner not deleted", status: "error" });
   }
 }
 </script>
