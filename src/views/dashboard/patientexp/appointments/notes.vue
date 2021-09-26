@@ -1,20 +1,15 @@
 <template>
-  <div class="overflow-y-auto bg-white">
-    <modal
-      :visible="visible"
-      style="height: 95%"
-      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
-    >
-      <div class="flex w-full overflow-y-auto h-full rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
-      </div>
-      <div class="flex flex-col p-3">
+     <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+
+      <cornie-card-title>
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+           <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
+      </cornie-card-title>
+
+        <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mt-2">
          Some subtext if necessary
         </p>
@@ -35,6 +30,9 @@
               <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis egestas at sociis sodales nunc metus, commodo, viverra sit. Bibendum sagittis neque blandit varius.</p>
             </div>
         </div>
+        </cornie-card-text>
+          <cornie-card>
+        <cornie-card-text class="flex justify-end">
         <div class="flex justify-end w-full mt-auto">
           <button
             class="
@@ -73,19 +71,20 @@
             Save
           </cornie-btn>-->
         </div>
-      </div>
-    </modal>
-    <availability
-        v-model:visible="availableFilter"
-    />
-    <profile
-        v-model:visible="profileFilter"
-    />
+        </cornie-card-text>
+          </cornie-card>
+     
+    
+    </cornie-card>
+  </cornie-dialog>
 
-  </div>
+ 
 </template>
 <script>
 import Modal from "@/components/practitionermodal.vue";
+import CornieCard from "@/components/cornie-card";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import NoteIcon from "@/components/icons/graynote.vue";
@@ -103,6 +102,9 @@ const copy = (original) => JSON.parse(JSON.stringify(original));
 export default {
   name: "ParticipantFilter",
   components: {
+    ...CornieCard,
+    CornieDialog,
+    CornieIconBtn,
     Modal,
     DragIcon,
     Textarea,

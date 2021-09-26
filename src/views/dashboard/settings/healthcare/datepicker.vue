@@ -1,54 +1,143 @@
 <template>
-  <span>
-    <label class="block uppercase mb-1 text-xs font-semibold">{{
-      label
-    }}</label>
-    <icon-input
-      type="date"
-      width="w-11/12"
-      class="rounded-lg border pl-12 p-2 focus:outline-none"
-      v-model="valueSync"
+  <span class="block w-full">
+    <label class="block uppercase mb-0.5 text-xs font-bold">{{ label }}</label>
+    <Field
+      v-model="date"
+      :rules="customRules"
+      :name="inputName"
+      v-slot="{ meta, handleChange, errorMessage }"
     >
-      <template v-slot:prepend> <calendar-icon class="" /> </template>
-    </icon-input>
+      <div class="relative" style="width: 100%" :id="inputName">
+        <div @click="toggleDropdown" class="block w-full">
+          <cornie-input
+            class="w-full"
+            readonly
+            :errorClasses="{
+              'border-red-500': Boolean(errorMessage),
+              'border-green-400': Boolean(meta.valid),
+            }"
+            v-model="inputFieldText"
+          >
+            <template #prepend-inner>
+              <calendar-icon />
+            </template>
+          </cornie-input>
+        </div>
+        <div
+          v-if="visible"
+          :class="{ 'right-0 min-w-max': right, 'left-0 min-w-max': left }"
+          class="
+            origin-top-right
+            absolute
+            mt-2
+            w-full
+            rounded-md
+            shadow-lg
+            bg-white
+            z-20
+            ring-1 ring-black ring-opacity-5
+            divide-y divide-gray-100
+            focus:outline-none
+          "
+          role="menu"
+          aria-orientation="vertical"
+          tabindex="-1"
+          style="z-index: 999"
+        >
+          <v-date-picker
+            @update:modelValue="handleChange"
+            v-model="date"
+            mode="date"
+            color="red"
+            :model-config="{
+              type: 'string',
+              mask: 'YYYY-MM-DD',
+            }"
+            style="width: 100%"
+          />
+        </div>
+        <span v-if="errorMessage" class="text-red-400 text-xs">
+          {{ errorMessage }}
+        </span>
+      </div>
+    </Field>
   </span>
 </template>
 <script lang="ts">
+import { DatePicker as VDatePicker } from "v-calendar";
 import { Options, Vue } from "vue-class-component";
-import IconInput from "@/components/IconInput.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { Field } from "vee-validate";
+import { clickOutside, createDate } from "@/plugins/utils";
+import { date } from "yup";
+import CornieInput from "@/components/cornieinput.vue";
 
 @Options({
+  name: "DatePicker",
+  inheritAttrs: false,
   components: {
-    IconInput,
+    VDatePicker,
     CalendarIcon,
+    CornieInput,
+    Field,
   },
 })
 export default class DatePicker extends Vue {
-  @Prop({ type: String, default: "" })
+  @Prop({
+    required: false,
+    type: String,
+    default: new Date(Date.now()).toLocaleDateString("en-NG"),
+  })
   modelValue!: string;
 
   @PropSync("modelValue")
-  valueSync!: string;
+  date!: string;
 
-  @Prop({ type: Array, default: [] })
-  items!: any;
+  @Prop({ type: Object })
+  rules!: any;
+
+  @Prop({ type: Boolean, default: false })
+  left!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  right!: boolean;
+
+  visible = false;
+
+  toggleDropdown(): void {
+    this.visible = !this.visible;
+  }
+
+  get customRules() {
+    const defaultRule = date();
+    if (!this.rules) return defaultRule.concat(this.rules);
+    return defaultRule;
+  }
+
+  @Watch("date")
+  changed() {
+    this.visible = false;
+  }
+
+  get inputFieldText() {
+    if (!this.date) return "dd/mm/yyyy";
+    return new Date(this.date).toLocaleDateString("en-NG");
+  }
 
   @Prop({ type: String, default: "" })
-  label!: string;
+  name: any;
+
+  @Prop({ type: String, default: "" })
+  label: any;
+
+  get inputName() {
+    const id = Math.random().toString(36).substring(2, 9);
+    return this.name || `input-${id}`;
+  }
+
+  mounted() {
+    clickOutside(this.inputName, () => (this.visible = false));
+  }
 }
 </script>
-<style>
-input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: auto;
-  height: auto;
-  color: transparent;
-  background: transparent;
-}
-</style>

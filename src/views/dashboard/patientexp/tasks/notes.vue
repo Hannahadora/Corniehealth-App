@@ -1,172 +1,134 @@
 <template>
-  <div class="overflow-y-auto bg-white">
-    <modal
-      :visible="visible"
-      style="height: 95%"
-      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
-    >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title>
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+        <span
+          class="
+            text-primary
+            font-extrabold
+            text-lg
+            border-l-2 border-gray-100
+            pl-2
+          "
+        >
+          Make Notes
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
-      </div>
-      <div class="flex flex-col p-3">
-        <p class="text-sm mt-2">
-         Some subtext if necessary
-        </p>
-        <div class="my-2  w-full  flex">
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+        <p class="text-sm mb-5">Some subtext if necessary.</p>
+        <v-form ref="form">
+          <div class="my-2  w-full ">
             <Textarea
-            label="Notes"
+            class="w-full text-xs"
             v-model="notes"
-            placeholder="--Enter--"
+            placeholder="Text Area"
             :rules="required"
           />
           <span></span>
         </div>
-        <div class="flex justify-end w-full mt-auto">
-          <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <cornie-btn
-            @click="apply"
-            :loading="loading"
-            type="submit"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
-          >
-            Save
-          </cornie-btn>
+         <span class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"  @click="save">Add</span>
+        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in tasknotes" :key="index">
+            <div>
+              <note-icon class="mt-3"/>
+            </div>
+            <div>
+              <span class="text-gray-400 text-xs">{{ new Date(item.createdAt).toDateString()}}</span>
+              <p class="text-gray-400 text-xs">{{item.text}}</p>
+            </div>
         </div>
-      </div>
-    </modal>
-       <availability
-            v-model:visible="availableFilter"
-        />
-        <profile
-            v-model:visible="profileFilter"
-        />
-  </div>
+        </v-form>
+      </cornie-card-text>
+      <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Close
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card>
+    </cornie-card>
+  </cornie-dialog>
 </template>
-<script>
-import Modal from "@/components/practitionermodal.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import DragIcon from "@/components/icons/draggable.vue";
-import Draggable from "vuedraggable";
-import IconInput from "@/components/IconInput.vue";
-import Availability from "@/components/availability.vue";
-import Profile from "@/components/profile.vue";
-import SearchIcon from "@/components/icons/search.vue";
+
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CorniePhoneInput from "@/components/phone-input.vue";
+import CornieDatePicker from "@/components/datepicker.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import { Insurance, IPatient } from "@/types/IPatient";
+import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
 
-const copy = (original) => JSON.parse(JSON.stringify(original));
 
-export default {
-  name: "ParticipantFilter",
+@Options({
+  name: "notes",
   components: {
-    Modal,
-    DragIcon,
-    Textarea,
+    ...CornieCard,
+    CornieIconBtn,
+    NoteIcon,
     ArrowLeftIcon,
-    Draggable,
-    Availability,
-    IconInput,
-    SearchIcon,
-    Profile
+    CornieDialog,
+    Textarea,
+    CornieInput,
+    CornieSelect,
+    CorniePhoneInput,
+    CornieDatePicker,
+    CornieBtn,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    columns: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    taskId: {
-      type: String,
-    },
-    preferred: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    available: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    
-  },
-  data() {
-    return {
-      columnsProxy: [],
-      practitioners: [],
-      loading: false,
-      notes:'',
-      availableFilter: false,
-      profileFilter:false,
-    };
-  },
-  watch: {
-    columns(val) {
-      this.columnsProxy = copy(val);
-    },
-    visible() {
-      const active = this.preferred.length > 0 ? this.preferred : this.columns;
-      this.columnsProxy = copy([...active]);
-    },
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
-  methods: {
-   async apply() {
-     this.loading = true;
-        try {
+})
+export default class Notes extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+ @Prop({ type: String, default: '' })
+  taskId!: string;
+
+@Prop({ type: Array, default: () => [] })
+  tasknotes!: any[];
+
+loading=  false;
+notes='';
+availableFilter= false;
+profileFilter=false;
+tasknote=[];
+newtasknotes=[];
+ 
+  async save() {
+      this.loading = true;
+    await this.submit();
+    this.loading = false;
+  }
+
+ 
+  async submit() {
+    await this.createNew();
+  }
+
+   addNote(){
+      this.tasknotes.push(...this.tasknote);
+    }
+
+  async createNew() {
+      try {
         const response = await cornieClient().post("/api/v1/task/notes", {text:this.notes, taskId:this.taskId});
         if (response.success) {
             window.notify({ msg: "Notes created", status: "success" });
             this.loading = false;
-           this.show = false;
-            this.$router.push("/dashboard/provider/experience/tasks");
+           //this.show = false;
+           // this.$router.push("/dashboard/provider/experience/tasks");
         }
         } catch (error) {
           this.loading = false;
@@ -175,20 +137,12 @@ export default {
         window.notify({ msg: "Notes not created", status: "error" });
         this.$router.push("/dashboard/provider/experience/tasks");
         }
-    },
-    reset() {
-      this.$emit("update:preferred", copy([...this.columns]));
-      this.show = false;
-    },
-    showAvailable(){
-      this.availableFilter = true;
-    },
-    showProfile(){
-        this.profileFilter = true;
-    }
-  },
-  mounted() {
-    this.columnsProxy = copy([...this.columns]);
-  },
-};
+  }
+
+  async created() {
+  this.tasknotes;
+  }
+}
 </script>
+
+<style></style>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="flex">
+      <slot name="topleft">
       <span class="flex items-center">
         <sort-icon class="mr-5" />
         <icon-input
@@ -14,6 +15,7 @@
           </template>
         </icon-input>
       </span>
+      </slot>
       <cornie-spacer />
       <span class="flex justify-between items-center">
         <dots-horizontal-icon class="mr-7" />

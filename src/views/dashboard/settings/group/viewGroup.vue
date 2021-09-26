@@ -120,6 +120,7 @@ import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
 import DatePicker from "@/components/daterangepicker.vue";
+import Period from "@/types/IPeriod";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");
@@ -170,7 +171,7 @@ export default class AddGroup extends Vue {
   valueRange = "";
   valueRef = "";
   exclude = "";
-  period = "";
+  period = {} as Period;
   memberPeriod = "";
   memberStatus = "";
   memberEntity = "";

@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="flex uppercase mb-1 text-xs font-bold"
+              class="flex uppercase mb-1 text-black text-xs font-bold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -194,6 +194,25 @@ export default class CornieSelect extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return `select-${id}`;
   }
+  
+ @Watch("items")
+  update(){
+     this.$emit("change")
+     
+  }
+  
+//    @Watch("modelValue")
+// updateSubject(){
+//      this.$emit("changesubject")
+//   }
+//    @Watch("modelValue")
+//   updateRequester(){
+//      this.$emit("changerequest")
+//   }
+//   updatePerformer(){
+//      this.$emit("changeperformer")
+//   }
+
   mounted() {
     clickOutside(this.id, () => {
       this.showDatalist = false;

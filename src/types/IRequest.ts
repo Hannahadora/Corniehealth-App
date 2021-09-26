@@ -41,7 +41,7 @@ import Period from "./IPeriod";
     detectedIssue?: string;
     eventHistory?: string;
   }
-  interface Medications {
+ export interface Medications {
     medicationDetails:{
         medicationCode?: string;
         medicationReference?: string;

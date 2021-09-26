@@ -17,7 +17,7 @@
       <span
         class="flex w-full justify-between border-b-2 mb-5 text-primary py-2"
       >
-        <span class="font-bold text-xl">{{ title }}</span>
+        <span class="font-bold text-sm">{{ title }}</span>
         <div class="flex items-center">
           <span class="mx-2">{{ order }}</span>
           <chevron-down-icon

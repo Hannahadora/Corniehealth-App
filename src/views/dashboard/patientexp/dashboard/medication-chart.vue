@@ -7,6 +7,10 @@
 import { Options, Vue } from "vue-class-component";
 import ChartCard from "./chart-card.vue";
 import { Chart } from "chart.js";
+import { cornieClient } from "@/plugins/http";
+import IStat from "@/types/IStat";
+import { groupData } from "./chart/chart-filter";
+import { Prop, Watch } from "vue-property-decorator";
 
 @Options({
   name: "MedicationChart",
@@ -16,6 +20,42 @@ import { Chart } from "chart.js";
 })
 export default class MedicationChart extends Vue {
   chart!: Chart;
+
+ order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
+
+   get chartData() {
+    //const data = groupData(this.raw, this.order);
+     const data = this.rawDataActive
+     const data2 = this.rawDatatotalRequest
+     const data3 = this.rawDataCanceled
+    return {data,data2,data3};
+  }
+
+  raw: IStat[] = [];
+rawDataActive= 0;
+rawDatatotalRequest= 0;
+rawDataCanceled= 0;
+
+  async fetchData() {
+    try {
+      const response = await cornieClient().get(
+        "api/v1/requests/getStats/count"
+      );
+      console.log(response.data)
+      const rawActive = response.data.Active;
+      this.rawDataActive = rawActive;
+      this.rawDatatotalRequest = response.data.totalRequest;
+      this.rawDataCanceled= response.data.Cancelled;
+      this.chartData; //this line just  gets the vuejs reactivity system to refresh
+    } catch (error) {
+      window.notify({ msg: "Failed to fetch chart data", status: "error" });
+    }
+  }
+   
+ @Watch("chartData")
+  chartUpdated() {
+    this.mountChart();
+  }
   mounted() {
     this.mountChart();
   }
@@ -26,10 +66,10 @@ export default class MedicationChart extends Vue {
     this.chart = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: ["Community Pharm", "Unfulfilled request", "Internal Pharm"],
+        labels: ["Active Request", "Unfulfilled request", "Total Request"],
         datasets: [
           {
-            data: [68, 16, 16],
+            data: [this.rawDataActive,this.rawDataCanceled, this.rawDatatotalRequest],
             backgroundColor: ["#F7B538", "#35BA83", "#114FF5"],
           },
         ],
@@ -52,6 +92,9 @@ export default class MedicationChart extends Vue {
         },
       },
     });
+  }
+  created() {
+    this.fetchData();
   }
 }
 </script>

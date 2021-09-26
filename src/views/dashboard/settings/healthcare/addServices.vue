@@ -176,7 +176,6 @@
             />
            
               <cornie-input
-                :rules="required"
                 v-model="availabilityExceptions"
                 label="availability exceptions"
               />
@@ -233,7 +232,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Modal from "@/components/modal.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Avatar from "@/components/avatar.vue";
-import OperationHours from "@/components/operation-hours.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
 import IHealthcare, { HoursOfOperation }  from "@/types/IHealthcare";
 import { useHandleImage } from "@/composables/useHandleImage";
 import { cornieClient } from "@/plugins/http";
@@ -384,9 +383,10 @@ activeStates = ["active", "inactive"]
       );
       if (response.success) {
           window.notify({ msg: "Healthcare service  added", status: "success" });
+            this.$router.push('/dashboard/provider/settings/health-services')
       }
     } catch (error) {
-      window.notify({ msg: "Health care service  not added", status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
   async updateHealthcare() {
@@ -395,10 +395,11 @@ activeStates = ["active", "inactive"]
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
+        this.$router.push('/dashboard/provider/settings/health-services')
         window.notify({ msg: "Health care service updated", status: "success" });
       }
     } catch (error) {
-       window.notify({ msg: "Health care servcie not updated", status: "error" });
+       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
   async fetchOrgInfo() {

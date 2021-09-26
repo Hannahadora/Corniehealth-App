@@ -114,7 +114,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
+import IAppointment, { ParticipantDetail, Practitioners, Patients, Devices }   from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -132,6 +132,38 @@ import moment from 'moment'
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
+const emptyPractitioners: Practitioners = {
+  id: "",
+  type: "",
+  required: false,
+  consultationMedium: "",
+  period : {} as Period,
+
+
+};
+const emptyPatients: Patients = {
+  id: "",
+  type: "",
+  required: false,
+  consultationMedium: "",
+  period : {} as Period,
+  firstname: "",
+  lastname: "",
+  gender: "",
+  dateOfBirth: "",
+  accountType: "",
+  mrn: "",
+
+};
+const emptyDevices: Devices = {
+    id: "",
+  type: "",
+  required: false,
+  consultationMedium: "",
+  period : {} as Period,
+
+
+};
 const emptyParticipant: ParticipantDetail = {
   period: {} as Period,
   required: "",
@@ -197,9 +229,9 @@ appointmentId = "";
   patientInstruction = "";
     period = {} as Period;
   participantDetail = {...emptyParticipant}
-  Practitioners = [];
-  Devices = [];
-  Patients: any[] = [];
+  practitioners: Practitioners[] = [];
+  devices: Devices[] = [];
+  patients: Patients[] = [];
   roles = [];
   newPractitioners =[];
   newDevices = [];
@@ -260,9 +292,9 @@ appointmentId = "";
     this.comment = appointment.comment;
     this.patientInstruction = appointment.patientInstruction;
     this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
+    this.practitioners = appointment.Practitioners;
+    this.devices = appointment.Devices;
+    this.patients = appointment.Patients;
      this.status = appointment.status;
      this.appointmentId = appointment.appointmentId;
     this.participantDetail = appointment.participantDetail;

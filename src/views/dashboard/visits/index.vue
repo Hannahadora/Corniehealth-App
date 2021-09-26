@@ -21,20 +21,12 @@
                       <span class="text-primary font-semibold">{{ visits.length }}</span>
                     </span>
                 </div>
-                <!-- <div class=".w-full shadow-md w-2/12 p-4 mx-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 1}"
-                  @click="() => selectedStatus = 1"
-                >
-                    <span class="flex flex-col uppercase">
-                      <span class="text-danger font-normal text-sm">Queued</span>
-                      <span class="text-danger font-semibold">{{ visits.filter((i) => i.status === "queue").length }}</span>
-                    </span>
-                </div> -->
                 <div class=".w-full shadow-md w-2/12 p-4 rounded-lg mx-4 cursor-pointer" :class="{'light-grey-bg': selectedStatus === 2}"
                   @click="() => selectedStatus = 2"
                 >
                     <span class="flex flex-col uppercase">
                       <span class="text-warning font-normal text-sm">In-Progress</span>
-                      <span class="text-warning font-semibold ">{{ visits.filter((i) => i.status === "in-progress" || i.status === "active").length }}</span>
+                      <span class="text-warning font-semibold ">{{ visits.filter((i) => i.status?.toLowerCase() === "in-progress" || i.status?.toLowerCase() === "active").length }}</span>
                     </span>
                 </div>
                 <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 3}"
@@ -42,7 +34,7 @@
                 >
                     <span class="flex flex-col uppercase">
                       <span class="text-danger font-normal text-sm text-success">Completed</span>
-                      <span class="text-danger font-semibold text-success">{{ visits.filter((i) => i.status !== "in-progress" && i.status !== "queue" && i.status !== "active").length }}</span>
+                      <span class="text-danger font-semibold text-success">{{ visits.filter((i) => i.status?.toLowerCase() !== "in-progress" && i.status?.toLowerCase() !== "queue" && i.status?.toLowerCase() !== "active").length }}</span>
                     </span>
                 </div>
             </div>
@@ -186,12 +178,12 @@
                     <CheckOut :item="currentVisit" @close="() => showCheckout = false" />
                 </side-modal>
 
-                <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
+                <!-- <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
                     <CheckIn :item="appointments[0]" @close="() => showCheckin = false"  />
-                </side-modal>
+                </side-modal> -->
 
                 <side-modal :visible="showCheckNoapp" :header="'Check-In'" @closesidemodal="() => showCheckNoapp = false">
-                    <CheckinNoapp :patientId="patients[0].id" :item="appointments[0]"  @close="() => showCheckNoapp = false" />
+                    <CheckinNoapp :patientId="patients[0]?.id" :item="appointments[0]"  @close="() => showCheckNoapp = false" />
                 </side-modal>
 
                 <side-modal :visible="false">
@@ -540,8 +532,8 @@ export default class PractitionerExistingState extends Vue {
       };
     });
     if (this.selectedStatus === 1) return visits.filter((i: any) => i.completedStatus === "Queue");
-    if (this.selectedStatus === 2) return visits.filter((i) => i.status === "in-progress" ||  i.status === "active");
-    if (this.selectedStatus === 3) return visits.filter((i) => i.status !== "in-progress" && i.status !== "queue" && i.status !== "active");
+    if (this.selectedStatus === 2) return visits.filter((i) => i.status?.toLowerCase() === "in-progress" ||  i.status?.toLowerCase() === "active");
+    if (this.selectedStatus === 3) return visits.filter((i) => i.status?.toLowerCase() !== "in-progress" && i.status?.toLowerCase() !== "queue" && i.status?.toLowerCase() !== "active");
     return visits;
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);

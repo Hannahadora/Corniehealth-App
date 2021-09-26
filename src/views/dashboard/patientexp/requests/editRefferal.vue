@@ -11,7 +11,7 @@
             <div class="tab-content">
                 <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Request">      
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabstatus"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabstatus" @click="updateOtherrequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabstatus = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                 <div>
@@ -69,167 +69,141 @@
                             </span>
                         </div>
                         <div>
-                            <cornie-input
-                            v-if="tabstatus"
-                            label="priority"
-                            placeholder="--Enter--"
-                            />
+                             <cornie-select
+                              v-if="tabstatus"
+                                class="required"
+                                :rules="required"
+                                :items="['Routine','Urgent','ASAP','STAT']"
+                                v-model="otherrequestModel.basicInfo.priority"
+                                label="priority"
+                                placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">priority</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.basicInfo.priority }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
-                            v-if="tabstatus"
+                            <cornie-select
+                             v-if="tabstatus"
+                            :items="dropdowns.serviceType"
+                            v-model="otherrequestModel.request.preconditionCode"
                             label="precondition code"
-                            placeholder="--Enter--"
-                            />
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">precondition code</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.request.preconditionCode }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
-                            v-if="tabstatus"
-                            label="reason reference"
-                            placeholder="--Enter--"
-                            />
+                            <cornie-select
+                             v-if="tabstatus"
+                  class="required"
+                  :rules="required"
+                  :items="dropdowns.serviceType"
+                  v-model="otherrequestModel.request.requestReference"
+                  label="request reference"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">reason reference</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.request.requestReference }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                         <cornie-select
                             v-if="tabstatus"
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model="otherrequestModel.request.reasonCode"
                             label="reason code"
-                            placeholder="--Enter--"
-                            />
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">reason code</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.request.reasonCode }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
-                            v-if="tabstatus"
+                             <cornie-select
+                              v-if="tabstatus"
                             label="intent"
-                            placeholder="--Enter--"
-                            />
+                            class="required"
+                            :rules="required"
+                            :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
+                            v-model="otherrequestModel.basicInfo.intent"
+                            placeholder="--Select--"
+                        >
+                        </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">intent</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.basicInfo.intent }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                             <cornie-select
                             v-if="tabstatus"
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model=" otherrequestModel.basicInfo.replaces"
                             label="replaces"
-                            placeholder="--Enter--"
-                            />
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">replaces</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.basicInfo.replaces }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+            
+                             <cornie-select
                             v-if="tabstatus"
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model="otherrequestModel.basicInfo.doNotPerform"
                             label="do not perform"
-                            placeholder="--Enter--"
-                            />
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">do not perform</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.basicInfo.doNotPerform }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                          <cornie-select
                             v-if="tabstatus"
-                            label="activity definition"
-                            placeholder="--Enter--"
-                            />
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model="otherrequestModel.basicInfo.activityDefinition"
+                           label="activity definition"
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">activity definition</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.basicInfo.activityDefinition }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                             <cornie-select
                             v-if="tabstatus"
-                            label="based on"
-                            placeholder="--Enter--"
-                            />
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model="otherrequestModel.basicInfo.basedOn"
+                           label="based on"
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">based on</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                            <cornie-input
-                            v-if="tabstatus"
-                            label="encounter"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">encounter</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                            <cornie-input
-                            v-if="tabstatus"
-                            label="precondition"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">precondition</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                            <cornie-input
-                            v-if="tabstatus"
-                            label="supporting info"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">supporting info</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <span
-                        class="
-                            flex
-                            border-b-2
-                            border-dark-100
-                            w-full
-                            text-lg text-dark
-                            py-2
-                            mx-auto
-                            font-semibold
-                            col-span-full
-                            mb-4
-                            mt-5
-                        "
-                        >
-                    Payment Info
-                    </span>
-                    <div class="grid grid-cols-3 gap-4 mt-5">
-                        <div>
-                        <cornie-input
-                            v-if="tabstatus"
-                            label="wallet"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">wallet</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.basicInfo.basedOn }}</div>
                             </span>
                         </div>
                         <div>
@@ -237,69 +211,44 @@
                             v-if="tabstatus"
                             class="mt-0"
                             :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
-                            label="card on file"
+                            v-model="otherrequestModel.requestInfo.encounter"
+                           label="encounter"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">card on file</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <label class="block uppercase mb-1 text-xs font-bold">encounter</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.requestInfo.encounter }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                             <cornie-select
                             v-if="tabstatus"
-                            label="cash"
-                            placeholder="--Enter--"
-                            />
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model="otherrequestModel.request.preCondition"
+                           label="precondition"
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">cash</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <label class="block uppercase mb-1 text-xs font-bold">precondition</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.request.preCondition }}</div>
                             </span>
                         </div>
                         <div>
-                        <cornie-input
+                             <cornie-select
                             v-if="tabstatus"
-                            label="payer"
-                            placeholder="--Enter--"
-                            />
+                            class="mt-0"
+                            :items="dropdowns.serviceCategory"
+                            v-model="otherrequestModel.request.supportingInfo"
+                           label="supporting info"
+                            placeholder="--Select--"
+                            >
+                            </cornie-select>
                             <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">payer</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                        <cornie-input
-                            v-if="tabstatus"
-                            label="policy number"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">policy number</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                        <cornie-input
-                            v-if="tabstatus"
-                            label="policy expiry"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">policy expiry</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                            <cornie-input
-                            v-if="tabstatus"
-                            label="total outstanding"
-                            placeholder="--Enter--"
-                            />
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">total outstanding</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <label class="block uppercase mb-1 text-xs font-bold">supporting info</label>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.request.supportingInfo }}</div>
                             </span>
                         </div>
                     </div>
@@ -307,7 +256,7 @@
                 </div>
                 <div class="tab-pane" v-if="selected == 2" :class="{'active' :  selected === 1  }" id="Participants">
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabparticipants"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabparticipants" @click="updateOtherrequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabparticipants = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                       <div>
@@ -334,82 +283,43 @@
                         </div>
                         <div class="grid grid-cols-3 gap-4 mt-5">
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="patient name"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">patient name</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPatientData.name }}</div>
                                 </span>
                             </div>
                             <div>
-                                <cornie-input
-                                v-if="tabparticipants"
-                                label="MRN Number"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span >
                                     <label class="block uppercase mb-1 text-xs font-bold">MRN Number</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPatientData.mrn }}</div>
                                 </span>
                             </div>
                             <div>
-                                <cornie-select
-                                v-if="tabparticipants"
-                                class="mt-0"
-                                :items="dropdowns.serviceCategory"
-                                v-model="serviceCategory"
-                                label="gender"
-                                placeholder="--Select--"
-                                >
-                                </cornie-select>
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">gender</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPatientData.gender }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="Age"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">Age</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPatientData.dob }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="Address"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span >
                                     <label class="block uppercase mb-1 text-xs font-bold">Address</label>
                                     <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="Email"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">Email</label>
                                     <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="Mobile"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">Mobile</label>
                                     <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                                 </span>
@@ -436,67 +346,37 @@
                         </span>
                         <div class="grid grid-cols-3 gap-4 mt-5">
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="practitioner name"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">practitioner name</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPractionerData.name }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="practitioner id"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">practitioner id</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPractionerData.id }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="facility name"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">facility name</label>
                                     <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="address"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">address</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPractionerData.address }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="email"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">email</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ selectedPractionerData.email }}</div>
                                 </span>
                             </div>
                             <div>
-                            <cornie-input
-                                v-if="tabparticipants"
-                                label="mobile"
-                                placeholder="--Enter--"
-                                />
-                                <span  v-else>
+                                <span>
                                     <label class="block uppercase mb-1 text-xs font-bold">mobile</label>
                                     <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
                                 </span>
@@ -528,14 +408,14 @@
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">performer type</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.performer.performerType }}</div>
                                 </span>
                             </div>
                             <div>
                                 <cornie-select
                                 v-if="tabparticipants"
                                 class="mt-0"
-                                :items="dropdowns.serviceCategory"
+                                :items="allPerformer"
                                 v-model="serviceCategory"
                                 label="performer"
                                 placeholder="--Select--"
@@ -543,7 +423,7 @@
                                 </cornie-select>
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">performer</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.performer.performer }}</div>
                                 </span>
                             </div>
                             <div>
@@ -554,7 +434,7 @@
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">corniehealth id</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.userId }}</div>
                                 </span>
                             </div>
 
@@ -566,7 +446,7 @@
                                 />
                                 <span  v-else>
                                     <label class="block uppercase mb-1 text-xs font-bold">location code</label>
-                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                    <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.performer.locationCode }}</div>
                                 </span>
                             </div>
                             <div>
@@ -645,7 +525,7 @@
                 </div>
                 <div class="tab-pane" v-if="selected == 4" :class="{'active' :  selected === 4  }" id="Other info">
                     <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabbg"><save-icon/> <span class="text-sm">Save</span></div>
+                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabbg" @click="updateOtherrequest"><save-icon/> <span class="text-sm">Save</span></div>
                         <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabbg = true"><edit-icon/> <span class="text-sm">Edit</span></div>
                     </div> 
                     <div class="w-full">
@@ -655,29 +535,29 @@
                             v-if="tabbg"
                             class="mt-0"
                             :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            v-model="otherrequestModel.request.note"
                             label="comments"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">comments</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ otherrequestModel.request.note }}</div>
                             </span>
                         </div>
                         <div>
                             <cornie-select
                             v-if="tabbg"
                             class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            :items="allForms"
+                            v-model="otherrequestModel.forms.linkForms"
                             label="link form"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">link form</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{  otherrequestModel.forms.linkForms }}</div>
                             </span>
                         </div>
                          <div>
@@ -700,228 +580,21 @@
                             v-if="tabbg"
                             class="mt-0"
                             :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
+                            v-model="otherrequestModel.request.patientInstructions"
                             label="patient instruction"
                             placeholder="--Select--"
                             >
                             </cornie-select>
                             <span  v-else>
                                 <label class="block uppercase mb-1 text-xs font-bold">patient instruction</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
+                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{  otherrequestModel.request.patientInstructions }}</div>
                             </span>
                         </div>
                     </div>
                 </div>
                 </div>
                
-                <div class="tab-pane pb-20" v-if="selected == 5" :class="{'active' :  selected === 5  }" id="Health Conditions">
-                    <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabhealth"><save-icon/> <span class="text-sm">Save</span></div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabhealth = true"><edit-icon/> <span class="text-sm">Edit</span></div>
-                    </div>
-                    <div>
-                        <span
-                            class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-lg text-dark
-                                py-2
-                                mx-auto
-                                font-semibold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                        Known Medication Allergies
-                        </span> 
-                        <div class="w-full">
-                        <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                            <div class="border-r-2">
-                                <div class="mb-8 p-2">
-                                    <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                    <p class="text-sm text-black">Aspirin</p>
-                                </div>
-                            <div class="p-2">
-                                <span v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Codeine</p>
-                            </div>
-                            </div>
-                            <div class="border-r-2">
-                                <div class="mb-8 p-2">
-                                    <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                    <p class="text-sm text-black">Penicillin</p>
-                                </div>
-                            <div class="p-2">
-                                <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Aspirin</p>
-                            </div>
-                            </div>
-                            <div>
-                                <div class="mb-8 p-2">
-                                    <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                    <p class="text-sm text-black">Codeine</p>
-                                </div>
-                            <div class="p-2">
-                                <span v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Penicillin</p>
-                            </div>
-                            </div>     
-                        </div>
-                        <div class="float-right flex space-x-4 mt-3 text-sm text-primary font-semibold"><plus-icon class="mt-1 mr-2 text-primary fill-current"/> Add Another</div>
-                        </div>
-                    </div>
-                    <div class="mt-5">
-                        <span
-                            class="
-                                flex
-                                border-b-2
-                                border-dark-100
-                                w-full
-                                text-lg text-dark
-                                py-2
-                                mx-auto
-                                font-semibold
-                                col-span-full
-                                mb-4
-                                mt-5
-                            "
-                            >
-                        Known Medication Allergies
-                        </span> 
-                        <div class="w-full">
-                        <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                            <div class="border-r-2">
-                                <div class="mb-8 p-2">
-                                    <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                    <p class="text-sm text-black">Aspirin</p>
-                                </div>
-                            <div class="p-2">
-                                <span v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Codeine</p>
-                            </div>
-                            </div>
-                            <div class="border-r-2">
-                                <div class="mb-8 p-2">
-                                    <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                    <p class="text-sm text-black">Penicillin</p>
-                                </div>
-                            <div class="p-2">
-                                <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Aspirin</p>
-                            </div>
-                            </div>
-                            <div>
-                                <div class="mb-8 p-2">
-                                    <span   v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                    <p class="text-sm text-black">Codeine</p>
-                                </div>
-                            <div class="p-2">
-                                <span v-if="tabhealth">
-                                    <deleteorange-icon class="float-right" />
-                                    </span>
-                                <p class="text-sm text-black">Penicillin</p>
-                            </div>
-                            </div>     
-                        </div>
-                        <div class="float-right flex space-x-4 mt-3 text-sm text-primary font-semibold"><plus-icon class="mt-1 mr-2 text-primary fill-current"/> Add Another</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" v-if="selected == 6" :class="{'active' :  selected === 6  }" id="Other Info">
-                    <div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer" v-if="tabother"><save-icon/> <span class="text-sm">Save</span></div>
-                        <div class="text-danger font-semibold mb-10 mt-5 flex space-x-2 float-right cursor-pointer"  v-else @click="tabother = true"><edit-icon/> <span class="text-sm">Edit</span></div>
-                    </div> 
-                    <div class="w-full">
-                    <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                        <div>
-                            <cornie-select
-                            v-if="tabother"
-                            class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
-                            label="affix label?"
-                            placeholder="--Select--"
-                            >
-                            </cornie-select>
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">affix label?</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                            <cornie-select
-                            v-if="tabother"
-                            class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
-                            label="Substitution permitted?"
-                            placeholder="--Select--"
-                            >
-                            </cornie-select>
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">Substitution permitted?</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                        <cornie-select
-                            v-if="tabother"
-                            class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
-                            label="non-safety cap request?"
-                            placeholder="--Select--"
-                            >
-                            </cornie-select>
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">non-safety cap request?</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                        <div>
-                            <cornie-select
-                            v-if="tabother"
-                            class="mt-0"
-                            :items="dropdowns.serviceCategory"
-                            v-model="serviceCategory"
-                            label="priority shipping?"
-                            placeholder="--Select--"
-                            >
-                            </cornie-select>
-                            <span  v-else>
-                                <label class="block uppercase mb-1 text-xs font-bold">priority shipping?</label>
-                                <div class="bg-gray-100 text-sm text-gray-500 py-3 px-2 mt-3 rounded-md">{{ basedOn }}</div>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                </div>
+               
             </div>
         </div>
        <div class="-mt-44 mb-20">
@@ -967,7 +640,7 @@ import Availability from "@/components/availability.vue";
 import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
-import { first } from "@/plugins/utils";
+import { first, getTableKeyValue } from "@/plugins/utils";
 import { string } from "yup";
 import search from "@/plugins/search";
 import { Prop, Watch } from "vue-property-decorator";
@@ -985,6 +658,7 @@ import SingleDatePicker from "@/components/datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
+import IOtherrequest from "@/types/IOtherrequest";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -1008,17 +682,18 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 
 
-
-
-
-const appointment = namespace("appointment");
+const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
 
-const emptyParticipant: ParticipantDetail = {
-  period: {} as Period,
-  required: "",
-  consultationMedium: "",
-  
+const emptyOtherrequest: IOtherrequest = {
+  basicInfo: {},
+  requestInfo: {},
+  subject: {},
+  performer: {},
+  forms: {},
+  request: {
+        range: [20,50]
+  },
 };
 
 @Options({
@@ -1072,11 +747,40 @@ export default class AddAppointment extends Vue {
   id!: string;
 
 
-  @appointment.Action
-  getAppointmentById!: (id: string) => IAppointment;
+  @Prop({ type: Object, required: false, default: { ...emptyOtherrequest} })
+  otherrequest!: IOtherrequest;
 
-@appointment.State
-  appointments!: IAppointment[];
+  otherrequestModel = {...emptyOtherrequest} as IOtherrequest;
+
+  @otherrequest.Action
+  getOtherrequestById!: (id: string) => IOtherrequest;
+
+requestModel = {...emptyOtherrequest} as IOtherrequest;
+
+  @otherrequest.Action
+  getRequestById!: (id: string) => IOtherrequest;
+  @otherrequest.State
+  otherrequests!: any[];
+
+//   @Watch("request")
+//   requestUpdated(request: IRequest) {
+//     this.requestModel = JSON.parse(JSON.stringify({ ...request }));
+//   }
+
+
+  @otherrequest.Mutation
+  updatedRequests!: any;
+@otherrequest.State
+  patients!: any[];
+
+  @otherrequest.State
+  practitioners!: any[];
+
+  @otherrequest.Action
+  getPatients!: () => Promise<void>;
+
+  @otherrequest.Action
+  getPractitioners!: () => Promise<void>;
 
   loading = false;
   expand = false;
@@ -1114,37 +818,17 @@ actor = "";
   supportingInfo ="";
   slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   basedOn = "xxxxxx";
-  duration = "";
-  comments = "";
-  patientInstruction = "";
-  period = {} as Period;
-  participantDetail = {...emptyParticipant}
+  selectedPatient : any = { };
+selectedPractitioner: any = { };
+  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
+
   
   Practitioners = [];
   Devices = [];
   Patients: any[] = [];
   roles = [];
-
-  newPractitioners =[];
-  newDevices = [];
-  newPatients =[];
-  newRoles = [];
-
-  roleFilter = false;
-  deviceFilter = false;
-  practitionerFilter = false;
-  patientFilter = false;
-  availableFilter = false;
-  participantitem = "";
-
-  practitioner = [];
-  device  = [];
-  patient = [];
-  role = [];
- 
-  availability: any[] = [];
-  availabilities = Array();
- 
+practiceform=[];
+  
 
  
 
@@ -1158,72 +842,65 @@ actor = "";
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
+  
   @Watch("id")
   idChanged() {
-    this.setAppointment();
+    this.setRequest();
   }
+  
    query = "";
 
+  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", key: "keydisplay", show: true },
+    { title: "request code", key: "code", show: true },
     {
-      title: "Patient",
-      key: "patients",
-      show: false,
-    },
-    {
-      title: "Appointment Type",
-      key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
+      title: "Order Detail",
+      key: "order",
       show: true,
     },
     {
-      title: "Participants",
-      key: "Participants",
+      title: "Quantity",
+      key: "quantity",
       show: true,
     },
     {
-      title: "Slot",
-      key: "slot",
-      show: false,
-    },
-    {
-      title: "Status",
-      key: "status",
+      title: "Ratio",
+      key: "ratio",
       show: true,
     },
     {
-      title: "Code",
-      key: "reasonCode",
-      show: false,
+      title: "Range",
+      key: "range",
+      show: true,
     },
     {
-      title: "Reason Reference",
-      key: "reasonRef",
-      show: false,
+      title: "Specimen",
+      key: "specimen",
+      show: true,
     },
     {
+      title: "Body Site",
+      key: "body",
+      show: true,
+    },
+     {
+      title: "Required Date",
+      key: "required",
+      show: false,
+    },
+     {
       title: "Period",
       key: "period",
-      show: true,
-    },
-    {
-      title: "Priority",
-      key: "priority",
       show: false,
     },
-    {
-      title: "Description",
-      key: "description",
+     {
+      title: "Timing",
+      key: "timing",
       show: false,
     },
-    {
-      title: "Consultation Medium",
-      kwy: "consultationMedium",
-      show: false,
-    },
-
+    
+   
   ];
 
   get headers() {
@@ -1234,209 +911,169 @@ actor = "";
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
 
 
   get items() {
-    const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
-        console.log(singleParticipantlength);
-       (appointment as any).period = new Date(
-         (appointment as any).period 
+    const requests = this.otherrequests.map((request:any) => {
+       (request as any).createdAt = new Date(
+         (request as any).createdAt 
+       ).toLocaleDateString("en-US");
+        (request as any).request.occurenceDate = new Date(
+         (request as any).request.occurenceDate 
+       ).toLocaleDateString("en-US");
+
+        (request as any).request.occurencePeriod.start = new Date(
+         (request as any).request.occurencePeriod.start 
+       ).toLocaleDateString("en-US");
+        (request as any).request.occurencePeriod.end = new Date(
+         (request as any).request.occurencePeriod.end 
        ).toLocaleDateString("en-US");
         return {
-        ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
+        ...request,
+        code:request.request.requestCode,
+        order: request.request.orderDetail,
+        strength: "xxxxxx",
+        quantity: request.request.quantity,
+        ratio: request.request.ratio,
+        range: request.request.range,
+        specimen: request.request.specimen,
+        body: request.request.bodySite,
+        required: request.request.occurenceDate,
+        period: request.request.occurencePeriod.start +'-'+ request.request.occurencePeriod.end,
+        timing:request.request.occurenceTiming,
+        action: request.id,
+        //  keydisplay: "XXXXXXX",
+        //  Participants: singleParticipantlength 
         };
     });
-    if (!this.query) return appointments;
-    return search.searchObjectArray(appointments, this.query);
+    if (!this.query) return requests;
+    return search.searchObjectArray(requests, this.query);
   }
-
-  async setAppointment() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comments = appointment.comments;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
-
+ select(i:number) {
+      this.selected = i;
+    }
+ 
+   async setRequest() {
+    const otherrequest = await this.getOtherrequestById(this.id)
+    if (!otherrequest) return
+    this.otherrequestModel =  ({...otherrequest}) ;
   }
   get payload() {
-    const payload =  {
-      serviceCategory: this.serviceCategory,
-      locationId: this.locationId,
-      deviceId: this.deviceId,
-      serviceType: this.serviceType,
-      specialty: this.specialty,
-      appointmentType: this.appointmentType,
-      reasonCode: this.reasonCode,
-      supportingInfo: this.supportingInfo,
-      reasonRef: this.reasonRef,
-      priority: this.priority,
-      description: this.description,
-      slot: this.slot,
-      basedOn: this.basedOn,
-      duration: this.duration,
-      comments: this.comments,
-      patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
-      period: this.period,
-    } as any
-    if(this.Devices.length > 0){
-      payload.Devices = this.Devices;
-    }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
-    if(this.Practitioners.length > 0){
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload
+     const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
+   // const medication = model.medications.medicationDetails as any;
+    // if (medication.duration)
+    //   medication.duration = new Date(
+    //     medication.duration
+    //   ).toISOString();
+    //   if (medication.dispenseInterval)
+    //   medication.dispenseInterval = new Date(
+    //     medication.dispenseInterval
+    //   ).toISOString();
+    return model;
+
   }
+
+ 
+
   get allaction() {
     return this.id ? "Edit" : "New";
   }
  
-  get selectedItem() {
-    return this.participantitem;
-  }
-   select(i:number) {
-      this.selected = i;
-    }
-  async addPractitioner(value: any,id:any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.Practitioners = id;
-    this.practitionerFilter = false;
-  }
-  removePractitioner(index: number) {
-    this.newPractitioners.splice(index, 1);
-  }
-  removeRole(index: number){
-    this.newRoles.splice(index, 1);
-  }
-   removeDevice(index: number){
-    this.newDevices.splice(index, 1);
-  }
-  showAvailable() {
-    this.availableFilter = true;
-  }
-  async addPatients(value: any,id:any) {
-    this.newPatients = value;
-    this.Patients = id;
-    this.patientFilter = false;
-  }
-  async addDevices(value:any, id:any){
-     this.newDevices = value;
-     this.Devices = id;
-    this.deviceFilter = false;
-  }
-  async addRoles(value: any,id:any){
-   // this.role.push(value);
-    this.newRoles = value;
-    this.roles = id;
-    this.roleFilter = false;
-  }
-   get setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
-    }else if(this.type == 'Practitioner Role'){
-        this.roleFilter = true;
-    }
-    return this.type;
-  }
+get PatientName() {
+    const id = this.otherrequestModel.subject.subject;
+    const pt = this.patients.find((i: any) => i.id === id);
+    this.selectedPatient = pt ? pt : { };
 
+    return pt;
+  }
+     get PractitionerName(){
+     const id = this.otherrequestModel.performer.performer; 
+    const pt = this.practitioners.find((i: any) => i.id === id);
+        this.selectedPractitioner = pt ? pt : { };
+         return pt;
+  }
+  get selectedPatientData() {
+    const data = this.selectedPatient;
+    return {
+      gender: data.gender,
+      name:data.firstname +' '+ data.lastname,
+      dob: Math.floor(( Date.now() - new Date(data.dateOfBirth).getTime()) / 3.15576e+10),
+      mrn: data.mrn,
+    }
+  }
+  get selectedPractionerData() {
+    const data = this.selectedPractitioner;
+    return {
+      name:data.firstName +' '+ data.lastName,
+      id:data.id,
+      address:data.address,
+      email:data.email,
+      mobile: "xxxxxx"
+      
+    }
+  }
+ get allPerformer() {
+     if (!this.practitioners || this.practitioners.length === 0) return [ ];
+     return this.practitioners.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstName +' '+ i.lastName,
+         }
+     })
+ }
+ get allForms(){
+    if (!this.practiceform || this.practiceform.length === 0) return [ ];
+     return this.practiceform.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.formTitle,
+         }
+     })
+ }
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateAppointment();
-    else await this.createAppointment();
+   await this.updateOtherrequest();
     this.loading = false;
   }
-  async createAppointment() {
-    //const period = this.period;
-   this.payload.period.start = new Date(this.period.start).toISOString();
-   // this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
-    try {
-      const response = await cornieClient().post("/api/v1/appointment", this.payload);
-      if (response.success) {
-          window.notify({ msg: "Appointment created", status: "success" });
-          this.$router.push("/dashboard/provider/experience/appointments");
-      }
-    } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
-    }
-  }
-    changeChecked(valueitem:string){
-        this.checked = true
-        console.log("value");
-         console.log(valueitem);
-    }
-  async updateAppointment() {
-    const url = `/api/v1/appointment/${this.id}`;
-    const payload = { ...this.payload };
+
+  async updateOtherrequest() {
+     const id = this.id;
+    const url = `/api/v1/other-requests/${id}`;
+    const payload = this.payload ;
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Appointment updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
+          this.updatedRequests([response.data]);
+        window.notify({ msg: "Other Request Updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: "Appointment not updated", status: "error" });
+      window.notify({ msg: error, status: "error" });
     }
   }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
-  }
-  async fetchDevices() {
-    const AllDevices = cornieClient().get("/api/v1/devices");
-    const response = await Promise.all([AllDevices]);
-    this.device = response[0].data;
-  }
-  async fetchRoles() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
-  }
-   async fetchPatients() {
+  async fetchPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
-    this.patient = response[0].data;
+    this.patients = response[0].data;
   }
+   async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioners = response[0].data;
+  }
+  async fetchPracticeForms() {
+    const AllForms = cornieClient().get("/api/v1/practice-form");
+    const response = await Promise.all([AllForms]);
+    this.practiceform = response[0].data;
+  }
+
   async created() {
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
+    this.setRequest();
     this.fetchPatients();
+    this.fetchPracticeForms();
+    this.fetchPractitioner();
+    this.getPractitioners();
+    this.getPatients();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;

@@ -23,6 +23,7 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
+    practitionerAuthenticated: false,
   },
   getters: {
     accountType(state) {
@@ -44,6 +45,7 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
+
     setLoginInfo(state, payload) {
       state.user = payload.user;
 
@@ -56,5 +58,4 @@ export default {
       state.authToken = payload.token;
     },
   },
-  actions: {},
 } as StoreOptions<UserState>;

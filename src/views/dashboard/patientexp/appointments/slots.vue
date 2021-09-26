@@ -1,20 +1,17 @@
 <template>
-  <div class="overflow-y-auto bg-white">
-    <modal
-      :visible="visible"
-      style="height: 95%"
-      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
-    >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-3">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
-        <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Select slot</h2>
-      </div>
-      <div class="flex flex-col p-3">
+   <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+
+      
+     <cornie-card-title>
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Select slot</h2>
+      </cornie-card-title>
+
+    
+         <cornie-card-text class="flex-grow scrollable">
             <p class="text-sm mb-4 mt-2">Select a time slot for this appointment</p>
             <p class="text-xs text-gray-300 mb-5">Available time slots</p>
             <div class="grid grid-cols-2 gap-4 w-full">
@@ -28,54 +25,58 @@
                     />
                 </div>
             </div>
-        <div>
-            <div class="flex justify-end w-full mt-auto">
-            <button
-                class="
-                rounded-full
-                mt-5
-                py-2
-                px-3
-                border border-primary
-                focus:outline-none
-                hover:opacity-90
-                w-1/3
-                mr-2
-                text-primary
-                font-semibold
-                "
-                @click="show = false"
-            >
-                Cancel
-            </button>
-            <button
-                @click="apply('Practitioner')"
-                class="
-                bg-danger
-                rounded-full
-                text-white
-                mt-5
-                py-2
-                px-3
-                focus:outline-none
-                hover:opacity-90
-                w-1/3
-                "
-            >
-                Add
-            </button>
-            </div>
-        </div>
-      </div>
-    </modal>
-    <availability v-model:visible="availableFilter" :practitionerId="singleId"/>
-    <profile v-model:visible="profileFilter" />
-  </div>
+         </cornie-card-text>
+         
+        <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <div class="flex justify-end w-full mt-auto">
+              <button
+                  class="
+                  rounded-full
+                  mt-5
+                  py-2
+                  px-3
+                  border border-primary
+                  focus:outline-none
+                  hover:opacity-90
+                  w-1/3
+                  mr-2
+                  text-primary
+                  font-semibold
+                  "
+                  @click="show = false"
+              >
+                  Cancel
+              </button>
+              <button
+                  @click="apply('Practitioner')"
+                  class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  mt-5
+                  py-2
+                  px-3
+                  focus:outline-none
+                  hover:opacity-90
+                  w-1/3
+                  "
+              >
+                  Add
+              </button>
+          </div>
+        </cornie-card-text>
+        </cornie-card>
+    </cornie-card>
+   </cornie-dialog>
 </template>
 <script>
 import { setup} from "vue-class-component";
 import Modal from "@/components/practitionermodal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieCard from "@/components/cornie-card";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
@@ -94,6 +95,9 @@ const copy = (original) => JSON.parse(JSON.stringify(original));
 export default {
   name: "slots",
   components: {
+    ...CornieCard,
+    CornieDialog,
+    CornieIconBtn,
     Modal,
     CornieRadio,
     DragIcon,

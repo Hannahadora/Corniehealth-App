@@ -26,8 +26,8 @@
                     Share
                 </button>
                  <cornie-btn
-                :loading="loading"
-                type="submit"
+                @click="print"
+                type="button"
                 class="
                   bg-danger
                   rounded-full
@@ -99,11 +99,11 @@
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Priority</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.priority }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Precondition Code</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.performer.preconditionCode }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Reason Reference</label>
@@ -111,45 +111,45 @@
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Category</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.category }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Intent</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.intent }}</div>
                             </div>
 
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Replaces</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.replaces }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Do Not Perform</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.doNotPerform }}</div>
                             </div>
 
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Activity Definition</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.activityDefinition }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Based On</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.basicInfo.basedOn }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Encounter</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.requestInfo.encounter }}</div>
                             </div>
                             <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Precondition</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.request.preCondition }}</div>
                             </div>
                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Reason Code</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.request.reasonCode }}</div>
                             </div>
                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                 <label class="block text-gray-500 mb-1 text-xs font-light">Supporting Info</label>
-                                <div class="text-sm text-black">{{ basedOn }}</div>
+                                <div class="text-sm text-black">{{ otherrequestModel.request.supportingInfo }}</div>
                             </div>
                         </div>
                     </div>
@@ -185,19 +185,19 @@
                                 <p class="text-lg text-primary font-bold">Patient</p>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Patient Name:</p>
-                                  <p class="text-sm font-bold text-primary">James Dean</p>
+                                  <p class="text-sm font-bold text-primary">{{selectedPatientData.name}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">MRN Number::</p>
-                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                  <p class="text-sm font-bold text-primary">{{selectedPatientData.mrn}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Gender:</p>
-                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                  <p class="text-sm font-bold text-primary">{{selectedPatientData.gender}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Age:</p>
-                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                   <p class="text-sm font-bold text-primary">{{selectedPatientData.dob}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Address:</p>
@@ -222,11 +222,11 @@
                                 <p class="text-lg text-primary font-bold">Requester</p>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Practitioner Name:</p>
-                                  <p class="text-sm font-bold text-primary">James Dean</p>
+                                  <p class="text-sm font-bold text-primary">{{selectedPractionerData.name}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Practitioner ID:</p>
-                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                  <p class="text-sm font-bold text-primary">{{selectedPractionerData.id}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Facility Name:</p>
@@ -234,30 +234,30 @@
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Address:</p>
-                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                   <p class="text-sm font-bold text-primary">{{selectedPractionerData.address}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Email:</p>
-                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                   <p class="text-sm font-bold text-primary">{{selectedPractionerData.email}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Mobile:</p>
-                                   <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                   <p class="text-sm font-bold text-primary">{{selectedPractionerData.mobile}}</p>
                                 </div>
                             </div>
                             <div class="bg-white shadow-md p-3">
                                 <p class="text-lg text-primary font-bold">Performer</p>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Performer Type:</p>
-                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                  <p class="text-sm font-bold text-primary">{{otherrequestModel.performer.performerType}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Performer</p>
-                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                  <p class="text-sm font-bold text-primary">{{otherrequestModel.performer.performer}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Corniehealth ID:</p>
-                                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                                  <p class="text-sm font-bold text-primary">{{otherrequestModel.userId}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5">
                                   <p class="text-sm text-gray-400 font-light">Address:</p>
@@ -352,11 +352,11 @@
                       <div class="w-full grid grid-cols-3 gap-4">
                         <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                   <label class="block text-gray-500 mb-1 text-xs font-light">Comments</label>
-                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                                  <div class="text-sm text-black">{{ otherrequestModel.request.note }}</div>
                           </div>
                           <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                   <label class="block text-gray-500 mb-1 text-xs font-light">Link Form</label>
-                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                                  <div class="text-sm text-black">{{ otherrequestModel.forms.linkForms }}</div>
                           </div>
                           <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                   <label class="block text-gray-500 mb-1 text-xs font-light">History </label>
@@ -364,7 +364,7 @@
                           </div>
                           <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
                                   <label class="block text-gray-500 mb-1 text-xs font-light">Patient Instruction</label>
-                                  <div class="text-sm text-black">{{ basedOn }}</div>
+                                  <div class="text-sm text-black">{{ otherrequestModel.request.patientInstructions }}</div>
                           </div>
                       </div>
                     </div>
@@ -387,10 +387,10 @@ import CornieDialog from "@/components/CornieDialog.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, {ParticipantDetail}  from "@/types/IAppointment";
+import IOtherrequest from "@/types/IOtherrequest";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
-import { first } from "@/plugins/utils";
+import { first, getTableKeyValue } from "@/plugins/utils";
 import { string } from "yup";
 import search from "@/plugins/search";
 import { Prop, Watch } from "vue-property-decorator";
@@ -432,14 +432,18 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 
-const appointment = namespace("appointment");
+const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
 
-const emptyParticipant: ParticipantDetail = {
-  period: {} as Period,
-  required: "",
-  consultationMedium: "",
-  
+const emptyOtherrequest: IOtherrequest = {
+  basicInfo: {},
+  requestInfo: {},
+  subject: {},
+  performer: {},
+  forms: {},
+  request: {
+      range: [20,50]
+  },
 };
 
 @Options({
@@ -494,11 +498,39 @@ export default class AddAppointment extends Vue {
   id!: string;
 
 
-  @appointment.Action
-  getAppointmentById!: (id: string) => IAppointment;
+  @Prop({ type: Object, required: false, default: { ...emptyOtherrequest} })
+  otherrequest!: IOtherrequest;
 
-@appointment.State
-  appointments!: IAppointment[];
+  //otherrequestModel = {} as IOtherrequest;
+
+  @otherrequest.Action
+  getOtherrequestById!: (id: string) => IOtherrequest;
+
+otherrequestModel = {...emptyOtherrequest} as IOtherrequest;
+
+  @otherrequest.Action
+  getRequestById!: (id: string) => IOtherrequest;
+
+  @otherrequest.State
+  otherrequests!: any[];
+
+  @otherrequest.Action
+  fetchOtherequests!: () => Promise<void>;
+
+  @otherrequest.Mutation
+
+  updatedRequests!: any;
+@otherrequest.State
+  patients!: any[];
+
+  @otherrequest.State
+  practitioners!: any[];
+
+  @otherrequest.Action
+  getPatients!: () => Promise<void>;
+
+  @otherrequest.Action
+  getPractitioners!: () => Promise<void>;
 
   loading = false;
   expand = false;
@@ -523,52 +555,26 @@ export default class AddAppointment extends Vue {
 actor = "";
   type = "";
 
-  serviceCategory = "";
-  locationId = null;
-  deviceId = null;
-  serviceType = "";
-  specialty = "";
-  appointmentType = "";
-  reasonCode = "";
-  reasonRef = "";
-  priority = "";
-  description = "";
-  supportingInfo ="";
-  slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-  basedOn = "xxxxxx";
-  duration = "";
-  comments = "";
-  patientInstruction = "";
-  period = {} as Period;
-  participantDetail = {...emptyParticipant}
+ selectedPatient : any = { };
+selectedPractitioner: any = { };
+  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
+
   
   Practitioners = [];
   Devices = [];
   Patients: any[] = [];
   roles = [];
-
+basedOn = "xxxxxx";
   newPractitioners =[];
   newDevices = [];
   newPatients =[];
-  newRoles = [];
 
-  roleFilter = false;
-  deviceFilter = false;
-  practitionerFilter = false;
-  patientFilter = false;
-  availableFilter = false;
-  participantitem = "";
 
   practitioner = [];
   device  = [];
   patient = [];
   role = [];
- 
-  availability: any[] = [];
-  availabilities = Array();
- 
 
- 
 
   options = [
     { text: "Active", value: true },
@@ -580,72 +586,62 @@ actor = "";
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  @Watch("id")
+ @Watch("id")
   idChanged() {
-    this.setAppointment();
+    this.setRequest();
   }
    query = "";
-
+getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identifier", key: "keydisplay", show: true },
+    { title: "request code", key: "code", show: true },
     {
-      title: "Patient",
-      key: "patients",
-      show: false,
-    },
-    {
-      title: "Appointment Type",
-      key: "appointmentType",
-      orderBy: (a: IAppointment, b: IAppointment) => a.appointmentType < b.appointmentType ? -1 : 1,
+      title: "Order Detail",
+      key: "order",
       show: true,
     },
     {
-      title: "Participants",
-      key: "Participants",
+      title: "Quantity",
+      key: "quantity",
       show: true,
     },
     {
-      title: "Slot",
-      key: "slot",
-      show: false,
-    },
-    {
-      title: "Status",
-      key: "status",
+      title: "Ratio",
+      key: "ratio",
       show: true,
     },
     {
-      title: "Code",
-      key: "reasonCode",
-      show: false,
+      title: "Range",
+      key: "range",
+      show: true,
     },
     {
-      title: "Reason Reference",
-      key: "reasonRef",
-      show: false,
+      title: "Specimen",
+      key: "specimen",
+      show: true,
     },
     {
+      title: "Body Site",
+      key: "body",
+      show: true,
+    },
+     {
+      title: "Required Date",
+      key: "required",
+      show: false,
+    },
+     {
       title: "Period",
       key: "period",
-      show: true,
-    },
-    {
-      title: "Priority",
-      key: "priority",
       show: false,
     },
-    {
-      title: "Description",
-      key: "description",
+     {
+      title: "Timing",
+      key: "timing",
       show: false,
     },
-    {
-      title: "Consultation Medium",
-      kwy: "consultationMedium",
-      show: false,
-    },
-
+    
+   
   ];
 
   get headers() {
@@ -656,213 +652,114 @@ actor = "";
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
 
 
   get items() {
-    const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length
-        console.log(singleParticipantlength);
-       (appointment as any).period = new Date(
-         (appointment as any).period 
+    const requests = this.otherrequests.map((request:any) => {
+       (request as any).createdAt = new Date(
+         (request as any).createdAt 
+       ).toLocaleDateString("en-US");
+        (request as any).request.occurenceDate = new Date(
+         (request as any).request.occurenceDate 
+       ).toLocaleDateString("en-US");
+
+        (request as any).request.occurencePeriod.start = new Date(
+         (request as any).request.occurencePeriod.start 
+       ).toLocaleDateString("en-US");
+        (request as any).request.occurencePeriod.end = new Date(
+         (request as any).request.occurencePeriod.end 
        ).toLocaleDateString("en-US");
         return {
-        ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
+        ...request,
+        code:request.request.requestCode,
+        order: request.request.orderDetail,
+        strength: "xxxxxx",
+        quantity: request.request.quantity,
+        ratio: request.request.ratio,
+        range: request.request.range,
+        specimen: request.request.specimen,
+        body: request.request.bodySite,
+        required: request.request.occurenceDate,
+        period: request.request.occurencePeriod.start +'-'+ request.request.occurencePeriod.end,
+        timing:request.request.occurenceTiming,
+          action: request.id,
+        //  keydisplay: "XXXXXXX",
+        //  Participants: singleParticipantlength 
         };
     });
-    if (!this.query) return appointments;
-    return search.searchObjectArray(appointments, this.query);
+    if (!this.query) return requests;
+    return search.searchObjectArray(requests, this.query);
   }
 
-  async setAppointment() {
-    const appointment = await this.getAppointmentById(this.id);
-    if (!appointment) return;
-    this.serviceCategory = appointment.serviceCategory;
-    this.locationId = appointment.locationId;
-    this.deviceId = appointment.deviceId;
-    this.serviceType = appointment.serviceType;
-    this.specialty = appointment.specialty;
-    this.supportingInfo = appointment.supportingInfo;
-    this.appointmentType = appointment.appointmentType;
-    this.reasonCode = appointment.reasonCode;
-    this.reasonRef = appointment.reasonRef;
-    this.priority = appointment.priority;
-    this.description = appointment.description;
-    this.slot = appointment.slot;
-    this.basedOn = appointment.basedOn;
-    this.duration = appointment.duration;
-    this.comments = appointment.comments;
-    this.patientInstruction = appointment.patientInstruction;
-    this.period = appointment.period;
-    this.Practitioners = appointment.Practitioners;
-    this.Devices = appointment.Devices;
-    this.Patients = appointment.Patients;
-    this.participantDetail = appointment.participantDetail;
 
-  }
-  get payload() {
-    const payload =  {
-      serviceCategory: this.serviceCategory,
-      locationId: this.locationId,
-      deviceId: this.deviceId,
-      serviceType: this.serviceType,
-      specialty: this.specialty,
-      appointmentType: this.appointmentType,
-      reasonCode: this.reasonCode,
-      supportingInfo: this.supportingInfo,
-      reasonRef: this.reasonRef,
-      priority: this.priority,
-      description: this.description,
-      slot: this.slot,
-      basedOn: this.basedOn,
-      duration: this.duration,
-      comments: this.comments,
-      patientInstruction: this.patientInstruction,
-      participantDetail: this.participantDetail,
-      period: this.period,
-    } as any
-    if(this.Devices.length > 0){
-      payload.Devices = this.Devices;
-    }
-    if(this.Patients.length > 0){
-      payload.Patients = this.Patients;
-    }
-    if(this.Practitioners.length > 0){
-      payload.Practitioners = this.Practitioners;
-    }
-    return payload
-  }
   get allaction() {
     return this.id ? "Edit" : "New";
   }
- 
-  get selectedItem() {
-    return this.participantitem;
-  }
+
    select(i:number) {
       this.selected = i;
     }
-  async addPractitioner(value: any,id:any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.Practitioners = id;
-    this.practitionerFilter = false;
+ 
+  get PatientName() {
+    const id = this.otherrequestModel.subject.subject;
+    const pt = this.patients.find((i: any) => i.id === id);
+    this.selectedPatient = pt ? pt : { };
+
+    return pt;
   }
-  removePractitioner(index: number) {
-    this.newPractitioners.splice(index, 1);
+     get PractitionerName(){
+     const id = this.otherrequestModel.performer.performer; 
+    const pt = this.practitioners.find((i: any) => i.id === id);
+        this.selectedPractitioner = pt ? pt : { };
+         return pt;
   }
-  removeRole(index: number){
-    this.newRoles.splice(index, 1);
-  }
-   removeDevice(index: number){
-    this.newDevices.splice(index, 1);
-  }
-  showAvailable() {
-    this.availableFilter = true;
-  }
-  async addPatients(value: any,id:any) {
-    this.newPatients = value;
-    this.Patients = id;
-    this.patientFilter = false;
-  }
-  async addDevices(value:any, id:any){
-     this.newDevices = value;
-     this.Devices = id;
-    this.deviceFilter = false;
-  }
-  async addRoles(value: any,id:any){
-   // this.role.push(value);
-    this.newRoles = value;
-    this.roles = id;
-    this.roleFilter = false;
-  }
-   get setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
-    }else if(this.type == 'Practitioner Role'){
-        this.roleFilter = true;
+  get selectedPatientData() {
+    const data = this.selectedPatient;
+    return {
+      gender: data.gender,
+      name:data.firstname +' '+ data.lastname,
+      dob: Math.floor(( Date.now() - new Date(data.dateOfBirth).getTime()) / 3.15576e+10),
+      mrn: data.mrn,
     }
-    return this.type;
+  }
+  get selectedPractionerData() {
+    const data = this.selectedPractitioner;
+    return {
+      name:data.firstName +' '+ data.lastName,
+      id:data.id,
+      address:data.address,
+      email:data.email,
+      mobile: "xxxxxx"
+      
+    }
+  }
+     async print () {
+      // Pass the element id here
+      window.print();
+    }
+
+  async setRequest() {
+    const request = await this.getOtherrequestById(this.id)
+    if (!request) return
+    this.otherrequestModel =  ({...request}) ;
   }
 
-  async submit() {
-    this.loading = true;
-    if (this.id) await this.updateAppointment();
-    else await this.createAppointment();
-    this.loading = false;
-  }
-  async createAppointment() {
-    //const period = this.period;
-   //this.payload.period.start = new Date(this.period).toISOString();
-    //this.payload.period.end = new Date(this.period.end).toISOString();
-    this.actor = this.type
-    try {
-      const response = await cornieClient().post("/api/v1/appointment", this.payload);
-      if (response.success) {
-          window.notify({ msg: "Appointment created", status: "success" });
-          this.$router.push("/dashboard/provider/experience/appointments");
-      }
-    } catch (error) {
-      console.log(error);
-      window.notify({ msg: "Appointment not created", status: "error" });
-     // this.$router.push("/dashboard/provider/experience/appointments");
-    }
-  }
-    changeChecked(valueitem:string){
-        this.checked = true
-        console.log("value");
-         console.log(valueitem);
-    }
-  async updateAppointment() {
-    const url = `/api/v1/appointment/${this.id}`;
-    const payload = { ...this.payload };
-    try {
-      const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Appointment updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/appointments");
-      }
-    } catch (error) {
-      window.notify({ msg: "Appointment not updated", status: "error" });
-    }
-  }
-  async fetchPractitioners() {
-    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioners]);
-    this.practitioner = response[0].data;
-  }
-  async fetchDevices() {
-    const AllDevices = cornieClient().get("/api/v1/devices");
-    const response = await Promise.all([AllDevices]);
-    this.device = response[0].data;
-  }
-  async fetchRoles() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
-  }
-   async fetchPatients() {
+    async fetchPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
-    this.patient = response[0].data;
+    this.patients = response[0].data;
+  }
+   async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioners = response[0].data;
   }
   async created() {
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
+      this.setRequest();
     this.fetchPatients();
-    const data = await this.getDropdowns("availability");
-    const data2 = await this.getDropdowns("practitioner");
-    this.dropdowns = data;
-    this.dropdowns2 = data2;
+    this.fetchPractitioner();
+    this.getPractitioners();
+    this.getPatients();
   }
 }
 </script>

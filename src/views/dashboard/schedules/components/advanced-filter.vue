@@ -3,15 +3,15 @@
         <div class="w-full px-2">
             <div class="container-fluid" v-for="(option, index) in filterOptions" :key="index">
                 <div class="w-full">
-                    <p class="text-base text-gray-800 my-3 font-semibold flex justify-between">
+                    <p  @click="() => option.show = !option.show" class="text-base text-gray-800 my-3 font-semibold flex justify-between cursor-pointer">
                         <span>Filter by Practitioners</span>
-                        <span @click="() => option.show = !option.show"><ChevronDown /></span>
+                        <span><ChevronDown /></span>
                     </p>
                 </div>
 
                 <div class="w-full border p-2" v-if="option.show">
                     <div class="container-fluid">
-                        <div class="w-full">
+                        <div class="w-full cursor-pointer">
                             <span class="flex items-center w-full">
                             <icon-input
                             :width="'w-full'"
@@ -27,7 +27,7 @@
                         </div>
                         <div class="w-full mt-2 px-2 scroll-box">
                             <div class="w-12/12" v-for="(person, index) in actors" :key="index" @click="selectActor(person)">
-                                <label for="" class="flex items-center mb-3">
+                                <label for="" class="flex items-center mb-3 cursor-pointer">
                                     <input type="checkbox" name="" id="" :checked="selectedPractitioners.findIndex(i => i.id === person.id) >= 0">
                                     <span class="mx-3 flex flex-col">
                                         <span>{{ person.firstName }} {{ person.lastName }}</span>
