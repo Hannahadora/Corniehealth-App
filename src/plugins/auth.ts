@@ -1,4 +1,5 @@
 import store from "@/store";
+import { AuthPayload } from "@/types/auth";
 import { cornieClient, quantumClient } from "./http";
 import localstore from "./localstore";
 
@@ -10,6 +11,36 @@ export function rememberLogin(token: string) {
 export async function isLoggedIn() {
   const token = getStoreToken() ?? localstore.get("authToken");
   return Boolean(token);
+}
+
+export async function login(payload: AuthPayload) {
+  sessionStorage.clear();
+  const data = await quantumClient().post("/auth/login", payload);
+  store.commit("user/setLoginInfo", data.data);
+  const cornieData = await fetchCornieData();
+  store.commit("user/setCornieData", cornieData);
+}
+
+export async function getAccountType() {
+  let type = store.getters["user/accountType"] ?? getSessionData("accountType");
+  if (!type) {
+    const { user } = await fetchCornieData();
+    type = user.accountType;
+    setSessionData("accountType", type);
+  }
+  return type;
+}
+
+function setSessionData(key: string, val: string) {
+  try {
+    sessionStorage.setItem(key, val);
+  } catch (error) {
+    return; // user has disabled session storage
+  }
+}
+
+function getSessionData(key: string) {
+  return sessionStorage.getItem(key);
 }
 
 export async function refreshUser() {
@@ -44,9 +75,11 @@ export async function fetchCornieData() {
   }
   return {};
 }
+
 export async function logout() {
   clearInterval(interval);
   localstore.remove("authToken");
+  sessionStorage.clear();
   store.commit("user/setAuthToken", "");
 }
 

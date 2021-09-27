@@ -65,7 +65,7 @@
           </td>
           <td class="p-2">{{ index }}</td>
           <template v-for="(column, index) in preferredColumns" :key="index">
-            <td class="p-3 text-sm" v-if="column.show">
+            <td class="p-3 text-sm capitalize" v-if="column.show">
               <slot :name="column.key" :item="row" :index="index">
                 {{ row[column.key] }}
               </slot>
