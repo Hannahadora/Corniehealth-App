@@ -56,7 +56,7 @@ export default {
       commit("updatePractitionerAuthStatus", true);
       setTimeout(() => {
         commit("updatePractitionerAuthStatus", false);
-      }, 600000)
+      },10000)
     }
   },
 } as StoreOptions<UserState>;

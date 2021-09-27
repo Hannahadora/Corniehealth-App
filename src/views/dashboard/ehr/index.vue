@@ -16,20 +16,36 @@
     </div>
   </div>
   <patient-modal v-model:visible="showPatient"/>
+  <modal :visible="!practitionerAuthenticated">
+    <auth-modal />
+  </modal>
 </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ClinicalSidebar from "./clinicalSidebar.vue";
 import PatientModal from "./dialogs/patientDialog.vue";
+import Modal from "@/components/modal.vue"
+import AuthModal from "./auth-modal.vue"
+import { namespace } from "vuex-class";
+
+const userStore = namespace("user");
 
 @Options({
   components: {
     ClinicalSidebar,
     PatientModal,
+    Modal,
+    AuthModal,
   },
 })
 export default class ClinicalsSidebar extends Vue {
+  @userStore.Action
+  updatePractitionerAuthStatus!: () => Promise<void>;
+
+  @userStore.State
+  practitionerAuthenticated!: boolean;
+
   showPatient=false;
 
   showPatientModal(){

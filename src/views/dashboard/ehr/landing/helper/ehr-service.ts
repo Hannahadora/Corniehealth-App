@@ -9,7 +9,7 @@ interface Credential {
 
 const authenticateUser = async (payload: Credential) => {
   try {
-    const { data: { emailVerified} } = await quantumClient().post("/auth/login", payload);
+    const { data: { emailVerified} } = await quantumClient().post("/org/security/passwords/confirm", payload);
     return emailVerified;     
   } catch (error) {
       console.log(error);

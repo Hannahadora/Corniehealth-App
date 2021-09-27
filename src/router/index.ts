@@ -277,6 +277,13 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/allergy/index.vue"),
           },
+          {
+            path: "vitals",
+            props: true,
+            name: "Vital Signs",
+            component: () =>
+              import("@/views/dashboard/ehr/vitals/index.vue"),
+          },
         ],
       },
       {

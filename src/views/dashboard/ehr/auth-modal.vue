@@ -1,0 +1,77 @@
+<template>
+    <div class="w-full">
+        <div class="container p-6 content-con">
+        <p class="text-primary text-2xl font-semibold pb-3">You need to be authenticated to view health records.</p>
+        <span style="color:#667499" class="text-secondary text-base">Type in your password	</span>
+
+        <div class="w-full py-6">
+            <label for="password" class="flex flex-col">
+            <span class="block uppercase mb-1 text-xs font-bold">
+            Password
+            </span>
+            <password-input
+            id="password"
+            v-model="password"
+            class="border rounded"
+            />               
+        </label>
+        </div>
+        <div class="w-full flex flex justify-end">
+            <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #0A4269">
+                <span class="font-semibold" @click="() => $router.go(-1)">Cancel</span>
+            </corniebtn>
+
+            <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer">
+                <span class="text-white font-semibold" @click="authenticateUser">Submit</span>
+            </CornieBtn>
+        </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import CornieBtn from "@/components/CornieBtn.vue";
+import PasswordInput from "@/components/PasswordInput.vue";
+import ehrHelper from "./landing/helper/ehr-service"
+import User from "@/types/user";
+import { namespace } from "vuex-class";
+
+const userStore = namespace("user");
+
+@Options({
+    components: {
+        CornieBtn,
+        PasswordInput,
+    }
+})
+
+export default class AuthModal extends Vue {
+    @userStore.State
+    user!: User;
+
+    @userStore.Action
+    updatePractitionerAuthStatus!: () => Promise<void>;
+
+    loading = false;
+    password = "";
+
+    showAuthModal = false;
+
+     async authenticateUser() {
+        try {
+            this.loading = true;
+            const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
+            this.password = "";
+            this.loading = false;
+            if (verified) {
+                this.showAuthModal = false;
+                this.updatePractitionerAuthStatus();
+            }
+        } catch (error) {
+            this.loading = false;
+            console.log(error);
+        }
+    }
+}
+</script>
