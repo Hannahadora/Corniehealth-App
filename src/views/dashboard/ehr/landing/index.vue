@@ -267,6 +267,7 @@ import SearchInput from "@/components/search-input.vue"
 import SearchDropdown from '../careteam/components/search-dropdown.vue'
 import ehrHelper from "./helper/ehr-service"
 import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -311,6 +312,9 @@ export default class ExistingState extends Vue {
 
   @userStore.State
   user!: User;
+
+  @userStore.Getter
+  authPractitioner!: IPractitioner;
 
   @userStore.State
   practitionerAuthenticated!: User;
@@ -447,7 +451,7 @@ export default class ExistingState extends Vue {
   async authenticateUser() {
     try {
       this.loading = true;
-      const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
+      const verified = await ehrHelper.authenticateUser({ userId: this.authPractitioner?.id, password: this.password})
       this.password = "";
       this.loading = false;
       if (verified) {

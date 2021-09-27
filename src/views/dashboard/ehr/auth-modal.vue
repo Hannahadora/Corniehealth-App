@@ -36,6 +36,7 @@ import PasswordInput from "@/components/PasswordInput.vue";
 import ehrHelper from "./landing/helper/ehr-service"
 import User from "@/types/user";
 import { namespace } from "vuex-class";
+import IPractitioner from "@/types/IPractitioner";
 
 const userStore = namespace("user");
 
@@ -50,28 +51,53 @@ export default class AuthModal extends Vue {
     @userStore.State
     user!: User;
 
+    @userStore.Getter
+    authPractitioner!: any;
+
     @userStore.Action
-    updatePractitionerAuthStatus!: () => Promise<void>;
+    updatePractitionerAuthStatus!: (authenticated: boolean) => Promise<void>;
 
     loading = false;
     password = "";
+    time: any;
 
     showAuthModal = false;
 
      async authenticateUser() {
+         console.log(this.authPractitioner, "AU");
+         console.log(this.user, "USer");
+         
         try {
             this.loading = true;
-            const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
+            const verified = await ehrHelper.authenticateUser({ userId: this.authPractitioner.id, password: this.password})
             this.password = "";
             this.loading = false;
             if (verified) {
                 this.showAuthModal = false;
-                this.updatePractitionerAuthStatus();
+                this.updatePractitionerAuthStatus(true);
             }
         } catch (error) {
             this.loading = false;
             console.log(error);
         }
+    }
+
+    logout() {
+        this.updatePractitionerAuthStatus(false)
+    }
+
+    resetTimer() {
+        clearTimeout(this.time);
+        this.time = setTimeout(this.logout, 180000)
+    }
+
+    created() {
+        // const timer = new IdleTimer(() => alert('idle for 1 minute'), 1000 * 60 * 1);
+        // timer.activate();
+    window.onload = this.resetTimer;
+    // DOM Events
+    document.onmousemove = this.resetTimer;
+    document.onkeydown = this.resetTimer;
     }
 }
 </script>

@@ -1,5 +1,6 @@
 import { rememberLogin } from "@/plugins/auth";
-import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
+import User, { CornieUser } from "@/types/user";
 import { StoreOptions } from "vuex";
 
 interface UserState {
@@ -9,9 +10,10 @@ interface UserState {
   requiresTwoFactorAuth: boolean;
   requiresSecurityQuestion: boolean;
   authTime?: Date;
-  cornieData: { accountType: string };
+  cornieData: { user: CornieUser; practitioner: IPractitioner };
   practitionerAuthenticated: boolean;
 }
+
 export default {
   namespaced: true,
   state: {
@@ -22,9 +24,19 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: false
+    practitionerAuthenticated: false,
   },
-  getters: {},
+  getters: {
+    accountType(state) {
+      return state.cornieData?.user?.accountType;
+    },
+    cornieUser(state) {
+      return state.cornieData.user;
+    },
+    authPractitioner(state) {
+      return state.cornieData.practitioner;
+    },
+  },
   mutations: {
     setCornieData(state, payload) {
       state.cornieData = { ...state.cornieData, ...payload };
@@ -52,11 +64,8 @@ export default {
     }
   },
   actions: {
-    async updatePractitionerAuthStatus({ commit }) {
-      commit("updatePractitionerAuthStatus", true);
-      setTimeout(() => {
-        commit("updatePractitionerAuthStatus", false);
-      },10000)
+    async updatePractitionerAuthStatus({ commit }, authenticated) {
+      commit("updatePractitionerAuthStatus", authenticated);
     }
   },
 } as StoreOptions<UserState>;

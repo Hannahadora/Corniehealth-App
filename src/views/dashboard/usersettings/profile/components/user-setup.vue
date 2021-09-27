@@ -55,7 +55,7 @@
 
                                     <div class="container-fluid py-3 flex justify-around">
                                         <div class="w-4/12">
-                                            <CornieInput  label="Address (first and last)" v-model="data.address"  placeholder="--Enter--" />
+                                            <CornieInput  label="Address" v-model="data.address"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
                                             <DatePicker v-model="data.dateOfBirth" label="Date of birth" style="width:max-width:100%"  placeholder="--Enter--" />
@@ -114,14 +114,14 @@
 
                             <Accordion title="Available Time"  class="mt-6">
                                 <div class="w-full px-4">
-                                    <div class="container my-3">
+                                    <!-- <div class="container my-3">
                                         <label class="inline-flex items-center">
                                             <input type="checkbox" class="form-radio h-6 w-6" v-model="allChecked" @change="onAll"  name="schedule">
                                             <span class="ml-2">All days</span>
                                         </label>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="container flex">
+                                    <!-- <div class="container flex">
                                         <div class="w-2/12">
                                         </div>
                                         <div class="w-4/12">
@@ -134,9 +134,13 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div> -->
+
+                                    <div class="w-full">
+                                        <operation-hours v-model="hoursOfOperation" />
                                     </div>
 
-                                    <div class="container flex my-3" v-for="(day, index) in times" :key="index">
+                                    <!-- <div class="container flex my-3" v-for="(day, index) in times" :key="index">
                                         <div class="w-2/12">
                                             <label class="inline-flex items-center">
                                                 <input type="checkbox" v-model="day.selected" class="form-radio h-6 w-6"  name="schedule">
@@ -157,7 +161,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <div class="container flex my-3">
                                         <div class="w-4/12">
@@ -180,11 +184,11 @@
                             Cancel
                         </router-link>
                     </corniebtn>
-                    <Button :loading="false" @click="setup">
+                    <CornieBtn :loading="loading" @click="setup" :class="{ 'bg-gray-500': loading }">
                         <a  style="background: #FE4D3C" class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
                             Save 
                         </a>
-                    </Button>
+                    </CornieBtn>
                 </div>
             </div>
         </div>
@@ -206,7 +210,12 @@ import PhoneSelect from '@/components/phone-input.vue'
 import { cornieClient } from "@/plugins/http";
 import { namespace } from 'vuex-class';
 import User from "@/types/user";
-import IPractitioner from "@/types/IPractitioner";
+import setupHelper from "../helper/setup-helper"
+import OperationHours from "@/components/new-operation-hours.vue";
+import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import { Watch } from "vue-property-decorator";
+import CornieBtn from "@/components/CornieBtn.vue"
+
 
 const roles = namespace('roles');
 const dropdown = namespace("dropdown");
@@ -224,6 +233,8 @@ const userSettingsStore = namespace("usersettings");
         CornieSelect,
         PhoneSelect,
         Period,
+        OperationHours,
+        CornieBtn,
     }
 })
 
@@ -240,13 +251,18 @@ export default class USerSetup extends Vue {
     @userStore.State
     user!: User;
 
+    @userStore.Getter
+    authPractitioner!: IPractitioner;
+
     @userSettingsStore.Action
     setUserUp!: (body: IPractitioner) => Promise<boolean>;
 
     dropdown = {} as IIndexableObject;
+    hoursOfOperation: HoursOfOperation[] = [];
 
     show = true;
     data: any = { }
+    loading = false;
 
     types: string[] = [ 'Full Time (FT)', 'Part Time (PT)', 'AdHoc (AH)']
 
@@ -266,13 +282,13 @@ export default class USerSetup extends Vue {
     functions: any[] = [ ]
 
     times: any[] = [
-        { day: 'Monday', openTime: '', closeTime: '', selected: true },
-        { day: 'Tuesday', openTime: '', closeTime: '', selected: true },
-        { day: 'Wednesday', openTime: '', closeTime: '', selected: true },
-        { day: 'Thursday', openTime: '', closeTime: '', selected: true },
-        { day: 'Friday', openTime: '', closeTime: '', selected: true },
-        { day: 'Saturday', openTime: '', closeTime: '', selected: true },
-        { day: 'Sunday', openTime: '', closeTime: '', selected: true },
+        { day: 'Monday', openTime: '', closeTime: '', selected: false },
+        { day: 'Tuesday', openTime: '', closeTime: '', selected: false },
+        { day: 'Wednesday', openTime: '', closeTime: '', selected: false },
+        { day: 'Thursday', openTime: '', closeTime: '', selected: false },
+        { day: 'Friday', openTime: '', closeTime: '', selected: false },
+        { day: 'Saturday', openTime: '', closeTime: '', selected: false },
+        { day: 'Sunday', openTime: '', closeTime: '', selected: false },
     ]
 
 
@@ -343,7 +359,7 @@ export default class USerSetup extends Vue {
     async setup() {
         const body = {
             ...this.data,
-            id: this.user.id,
+            // id: this.user.id,
             firstName: this.data.name ? this.data.name.split(' ')[0] : '',
             lastName: this.data.name ? this.data.name.split(' ')[1] : '',
             email: this.user.email,
@@ -351,19 +367,25 @@ export default class USerSetup extends Vue {
                 number: this.data.phone,
                 dialCode: this.data.phoneCode
             },
-            hoursOfOperation: this.times,
+            hoursOfOperation: this.hoursOfOperation,
             dateOfBirth: this.data.dateOfBirth ? new Date(this.data.dateOfBirth).toISOString() : '',
             organizationId: this.user.orgId,
             image: this.img.url,
         }        
 
         try {
+            this.loading = true;
             const res = await this.setUserUp(body);
-            console.log(res, "put res");
-            
+             this.loading = false;        
         } catch (error) {
             console.log(error);
+            this.loading = false;  
         }
+    }
+
+    @Watch("authPractitioner")
+    updateData() {
+        this.data = setupHelper.constructPractitionerData(this.authPractitioner);
     }
 
     async created() {
