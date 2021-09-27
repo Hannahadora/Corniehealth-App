@@ -18,7 +18,7 @@ const cornieUrl =
   // process.env.NODE_env == "production"
   //   ? "https://corniehealth.herokuapp.com"
   //   : "http://localhost:7000";
-  "http://localhost:7000";
+  "https://corniehealth.herokuapp.com";
 
 export const cornieClient = () =>
   new JSONClient(
