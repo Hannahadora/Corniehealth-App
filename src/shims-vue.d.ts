@@ -49,4 +49,10 @@ declare global {
   declare module "@scelloo/cloudenly-ui/*";
   declare module "v-calendar";
   declare module "vue-select-connorshea";
+  declare module "@vueform/slider";
+  declare module "*.vue" {
+    import type { DefineComponent } from "vue";
+    const component: DefineComponent<{}, {}, any>;
+    export default component;
+  }
 }
