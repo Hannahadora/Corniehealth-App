@@ -17,10 +17,10 @@
       Allergy & Intolerance
       </span>
       <span class="w-full h-screen">
-          <allergys-empty-state
+          <medication-empty-state
                 v-if="empty"
           />
-          <allergys-existing-state
+          <medication-existing-state
         @allergy-added="allergyAdded"
         :allergys="allergys"
           v-else
@@ -33,8 +33,8 @@
 <script lang="ts">
 import IAllergy from "@/types/IAllergy";
 import { Options, Vue } from "vue-class-component";
-import AllergysEmptyState from "./emptyState.vue";
-import AllergysExistingState from "./existingState.vue";
+import MedicationEmptyState from "./emptyState.vue";
+import MedicationExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
 const allergy = namespace("allergy");
@@ -42,8 +42,8 @@ const allergy = namespace("allergy");
 @Options({
   name: "AllergysIndex",
   components: {
-    AllergysEmptyState,
-    AllergysExistingState,
+    MedicationEmptyState,
+    MedicationExistingState,
   },
 })
 export default class AllergysIndex extends Vue {

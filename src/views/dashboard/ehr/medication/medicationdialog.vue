@@ -5,7 +5,7 @@
           <cornie-icon-btn @click="show = false">
             <arrow-left-icon />
           </cornie-icon-btn>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">{{allaction}} Allergy</h2>
+          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">{{allaction}} Request</h2>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
@@ -481,44 +481,36 @@ import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "./components/datepicker.vue";
+import { string } from "yup";
 import Period from "@/types/IPeriod";
 import { IPatient, Practitioner, Provider } from "@/types/IPatient";
 import { IOrganization } from "@/types/IOrganization";
-import IAllergy ,{ OnSet,Reaction } from "@/types/IAllergy";
+import IRequest from "@/types/IRequest";
  import Slider from '@vueform/slider';
  import IPractitioner from "@/types/IPractitioner";
 import '@vueform/slider/themes/default.css';
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 
-const allergy = namespace('allergy')
+const request = namespace('request')
 const organization = namespace("organization");
+const dropdown = namespace("dropdown");
 
-const emptyOnSet: OnSet = {
-          onsetDateTime: "",
-          onsetAge: "",
-          onsetPeriod: {} as Period,
-          onsetRange: [20,50],
-          onsetString: "",
-          recordedDate: "",
-        recorder: "",
-         asserter: "",
-          lastOccurence: "",
-           note: ""
-};
+const emptyRequest: IRequest = {
+  requestInfo: {},
+  requestDetails: {},
+  subject: {},
+  performer: {},
+  medicationAdministration: {},
+  fufillment: {},
+  history: {},
+  medications: Array(),
 
-const emptyReaction: Reaction = {
-          substance: "",
-          manifestation: "",
-          description: "",
-          onset: "",
-          severity: "",
-          exposureRoute: "",
-        note: "",
+
 };
 
 @Options({
-  name: "allergyDialog",
+  name: "requestDialog",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -545,160 +537,167 @@ const emptyReaction: Reaction = {
   },
 })
 export default class Medication extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+  @Prop({ type: String, default: "" })
+  id!: string;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: Object, required: false, default: { ...emptyRequest} })
+  request!: IRequest;
 
-  @allergy.Action
-  getAllergyById!: (id: string) => IAllergy
+  requestModel = {} as IRequest;
 
-  @Prop({ type: Array,  default: () => [] })
-  available!: object;
+  @request.Action
+  getRequestById!: (id: string) => IRequest;
 
-
-  @organization.State
-  organizationInfo!: IOrganization;
-
-  @organization.Action
-  fetchOrgInfo!: () => Promise<void>;
-
-
- @allergy.State
-  practitioners!: any[];
-
-
-  @allergy.Action
-  getPractitioners!: () => Promise<void>;
-
-@Watch('id')
-  idChanged() {
-    this.setAllergy()
+  @Watch("request")
+  requestUpdated(request: IRequest) {
+    this.requestModel = JSON.parse(JSON.stringify({ ...request }));
   }
 
-practitioner!: IPractitioner;
-asserterName = "";
-clinicalStatus= "";
-verificationStatus = "";
-type = "";
-category="";
-criticality="";
-code = "";
-onSet={...emptyOnSet};
-reaction={...emptyReaction};
-switchshow = false;
-value=  [20, 40];
- data: any = {
-    days: [],
+  @request.Mutation
+  updatedRequests!: any;
+
+  loading = false;
+  expand = false;
+  isVisible = "";
+  startdate = "";
+  enddate = "";
+  rule = true;
+  opened = true;
+  openedR = true;
+  openedS = true;
+  openedM = false;
+  showMedicationModal = false;
+
+
+  patient=[];
+  practitioner=[];
+
+dispenser="";
+subject="";
+requester="";
+performer="";
+
+
+  preferredHeaders = [];
+  items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
+
+  options = [
+    { text: "Active", value: true },
+    { text: "Inactive", value: false },
+  ];
+
+  required = string().required();
+  dropdowns = {} as IIndexableObject;
+  dropdowns2 = {} as IIndexableObject;
+
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+
+  get isUpdate() {
+    return Boolean(this.id);
   }
-get format() {
-        return `${this.onSet.onsetRange}`
-  }
 
-loading=  false;
-notes='';
-availableFilter= false;
-profileFilter=false;
-
-  async  apply() {
-    //   this.$emit("update:preferred",  [...this.medications]);
-     this.loading = true
-    if (this.id) await this.updateAllergy()
-    else await this.createAllergy()
-    this.loading = false
-    }
-  async setAllergy() {
-    const allergy = await this.getAllergyById(this.id)
-    if (!allergy) return
-    this.clinicalStatus = allergy.clinicalStatus
-    this.verificationStatus = allergy.verificationStatus
-    this.type = allergy.type
-     this.category = allergy.category
-    this.criticality = allergy.criticality
-    this.code = allergy.code
-    this.onSet = allergy.onSet
-    this.reaction = allergy.reaction
-
-  
+  async setRequest() {
+     this.requestModel = JSON.parse(JSON.stringify({ ...this.request }));
   }
   get payload() {
-    return {
-      clinicalStatus: this.clinicalStatus,
-      verificationStatus: this.verificationStatus,
-      type: this.type,
-      category: this.category,
-      criticality: this.criticality,
-      code: this.code,
-      onSet: this.onSet,
-       reaction: this.reaction,
-    }
+     const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
+   // const medication = model.medications.medicationDetails as any;
+    // if (medication.duration)
+    //   medication.duration = new Date(
+    //     medication.duration
+    //   ).toISOString();
+    //   if (medication.dispenseInterval)
+    //   medication.dispenseInterval = new Date(
+    //     medication.dispenseInterval
+    //   ).toISOString();
+    return model;
   }
- get allaction() {
-    return this.id ? 'Edit' : 'New'
+  get allaction() {
+    return this.id ? "Edit" : "New";
+  }
+get allPerformer() {
+     if (!this.practitioner || this.practitioner.length === 0) return [ ];
+     return this.practitioner.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstName +' '+ i.lastName,
+         }
+     })
+ }
+ get allRequester() {
+     if (!this.patient || this.patient.length === 0) return [ ];
+     return this.patient.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstname +' '+ i.lastname,
+         }
+     })
+ }
+  async showMedication(value:any){
+    this.requestModel.medications = value;
+    this.showMedicationModal = true;
   }
 
- get newaction() {
-    return this.id ? 'Update' : 'Save'
+  async submit() {
+    this.loading = true;
+      await this.createRequest();
+    this.loading = false;
   }
-   async selected() {
-     const orgId = this.organizationInfo.id;
-    this.getPractitionerName(orgId);
-  }
-  getPractitionerName(id: string){
-   const pt = this.practitioners.find((i: any) => i.organizationId === id);
-   this.onSet.asserter = pt.id
-    this.onSet.recorder =  `${pt.firstName} ${pt.lastName}`;
-    this.asserterName =  `${pt.firstName} ${pt.lastName}`;
-    return pt ? `${pt.firstName} ${pt.lastName}` : '';
-  }
-   done() {
-    this.$emit("allergy-added");
-    this.show = false;
-  }
-
- async createAllergy() {
-   this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
-    this.payload.onSet.onsetDateTime = new Date(this.data.onsetDate).toISOString();
-    this.payload.onSet.onsetPeriod.start = new Date(this.data.startDate).toISOString();
-     this.payload.onSet.onsetPeriod.end = new Date(this.data.endDate).toISOString();
-      this.payload.onSet.lastOccurence = new Date(this.data.occurenceDate).toISOString();
-     this.payload.reaction.onset = new Date(this.data.reactionDate).toISOString();
-
+  async createRequest() {
+    //const period = this.period;
+    
     try {
-      const response = await cornieClient().post('/api/v1/allergy', this.payload)
+      const response = await cornieClient().post("/api/v1/requests", this.payload);
       if (response.success) {
-        window.notify({ msg: 'Allergy created', status: 'success' })
-        this.done();
-        // this.show = false;
+          this.updatedRequests([response.data]);
+          window.notify({ msg: "Request Created", status: "success" });
+          this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      console.log(error)
-      window.notify({ msg: error.message, status: 'error' })
-      // this.$router.push("/dashboard/provider/experience/appointments");
+      console.log(error);
+      window.notify({ msg: error, status: "error" });
     }
   }
 
-  async updateAllergy() {
-    const url = `/api/v1/allergy/${this.id}`
-    const payload = {
-       ...this.payload,
-      }
+  async updateRequest() {
+     this.payload.subject.subject = this.subject;
+    this.payload.requestDetails.requester = this.requester;
+    this.payload.medicationAdministration.performer = this.performer;
+    this.payload.performer.dispenser = this.dispenser;
+     const id = this.request.id;
+    const url = `/api/v1/requests/${id}`;
+    const payload = { ...this.payload };
     try {
-      const response = await cornieClient().put(url, payload)
+      const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: 'Allergy updated', status: 'success' })
-        this.$router.push('/dashboard/provider/clinical/allergy')
-          this.show = false;
+          this.updatedRequests([response.data]);
+        window.notify({ msg: response.data.message, status: "success" });
+        this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: 'Allergy not updated', status: 'error' })
+      window.notify({ msg: error, status: "error" });
     }
   }
-  created() {
-      this.setAllergy();
-      this.getPractitioners();
-      if (!this.organizationInfo) this.fetchOrgInfo();
+  async fetchPateints() {
+    const AllPateints = cornieClient().get("/api/v1/patient");
+    const response = await Promise.all([AllPateints]);
+    this.patient = response[0].data;
+  }
+ async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+
+  async created() {
+    this.setRequest();
+    this.fetchPateints();
+    this.fetchPractitioner();
+    const data = await this.getDropdowns("availability");
+    const data2 = await this.getDropdowns("practitioner");
+    this.dropdowns = data;
+    this.dropdowns2 = data2;
   }
 }
 </script>

@@ -17,9 +17,9 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="showAllergy('false')"
+                @click="showMedication('false')"
               >
-                New Allergy
+               New Request
               </button>
               
             </span>
@@ -82,7 +82,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IAllergy from "@/types/IAllergy";
+import IRequest from "@/types/IRequest";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -95,19 +95,31 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import AllergyModal from "./allergydialog.vue";
+import MedicationModal from "./medicationdialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
-const allergy = namespace("allergy");
+const request = namespace("request");
 
+const emptyRequest: IRequest = {
+  requestInfo: {},
+  requestDetails: {},
+  subject: {},
+  performer: {},
+  medicationAdministration: {},
+  fufillment: {},
+  history: {},
+  medications: [],
+
+
+};
 @Options({
   components: {
     Table,
     CancelIcon,
     SortIcon,
     CheckinIcon,
-    AllergyModal,
+    MedicationModal,
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,
@@ -139,138 +151,68 @@ export default class AllergyExistingState extends Vue {
   query = "";
   selected = 1;
   showNotes = false;
-  showAllergyModal= false;
-  allergyId="";
+  showRequestModal= false;
+  requestId="";
   tasknotes=[];
 
   @Prop({ type: Array, default: [] })
-  allergys!: IAllergy[];
+  allergys!: IRequest[];
 
   // @allergy.State
-  // allergys!: IAllergy[];
+  // allergys!: IRequest[];
+  
 
-  @allergy.State
+  @request.State
   practitioners!: any[];
 
-  @allergy.Action
-  deleteAllergy!: (id: string) => Promise<boolean>;
+  @request.Action
+  deleteRequest!: (id: string) => Promise<boolean>;
 
-  @allergy.Action
+  @request.Action
   getPractitioners!: () => Promise<void>;
 
-  @allergy.Action
-  fetchAllergys!: () => Promise<void>;
+  @request.Action
+  fetchRequests!: () => Promise<void>;
 
-  getKeyValue = getTableKeyValue;
+ getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    {
+     {
       title: "identifier",
       key: "id",
       show: true,
     },
-     { title: "Date Recorded", key: "createdAt", show: true },
+    { title: "Date Requested", key: "createdAt", show: true },
     {
-      title: "Type",
-      key: "type",
-      show: true,
-    },
-     {
-      title: "Category",
-      key: "category",
-      show: true,
-    },
-     {
-      title: "Criticality",
-      key: "criticality",
+      title: "rEQUISITION id",
+      key: "id",
       show: true,
     },
     {
-      title: "product",
-      key: "product",
+      title: "Patient",
+      key: "patient",
       show: true,
     },
     {
-      title: "clinical| verication",
-      key: "clinicalStatus",
-      show: false,
+      title: "Requester",
+      key: "requester",
+      show: true,
     },
     {
-      title: "Asserter",
-      key: "asserter",
-      show: false,
+      title: "Dispenser",
+      key: "dispenser",
+      show: true,
     },
     {
-      title: "Recorder",
-      key: "recorder",
-      show: false,
+      title: "Performer",
+      key: "performer",
+      show: true,
     },
     {
-      title: "Period",
-      key: "onsetPeriod",
-      show: false,
+      title: "Status",
+      key: "completeStatus",
+      show: true,
     },
-     {
-      title: "Code",
-      key: "code",
-      show: false,
-    },
-    {
-      title: "Onset Age",
-      key: "onsetAge",
-      show: false,
-    },
-    {
-      title: "Recorded Date",
-      key: "recordedDate",
-      show: false,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: false,
-    },
-    {
-      title: "Note",
-      kwy: "note",
-      show: false,
-    },
-     {
-      title: "Last Occurence",
-      kwy: "lastOccurence",
-      show: false,
-    },
-    //  {
-    //   title: "Encounter",
-    //   kwy: "encounter",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Repitition",
-    //   kwy: "repitition",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Input Type",
-    //   kwy: "inputType",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Input Value",
-    //   kwy: "inputValue",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Output Type",
-    //   kwy: "outputType",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Output Value",
-    //   kwy: "outputValue",
-    //   show: false,
-    // },
-
   ];
 
   get headers() {
@@ -297,9 +239,6 @@ export default class AllergyExistingState extends Vue {
         ...allergy,
          action: allergy.id,
          keydisplay: "XXXXXXX",
-         onsetPeriod: allergy.onSet.onsetPeriod.start +'-'+ allergy.onSet.onsetPeriod.end,
-         asserter: this.getPractitionerName(allergy.onSet.asserter),
-         product: allergy.reaction.substance
         };
     });
     if (!this.query) return allergys;
@@ -309,16 +248,16 @@ getPractitionerName(id: string){
    const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : '';
 }
-  async showAllergy(value:string){
-      this.showAllergyModal = true;
+  async showRequest(value:string){
+      this.showRequestModal = true;
       //this.stopEvent = true;
-      this.allergyId = value;
+      this.requestId = value;
   }
 
   allergyAdded() {
     console.log('HJGHFS');
  this.allergys;
-  this.fetchAllergys();
+  this.fetchRequests();
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -327,7 +266,7 @@ getPractitionerName(id: string){
     });
     if (!confirmed) return;
 
-    if (await this.deleteAllergy(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
+    if (await this.deleteRequest(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
     else window.notify({ msg: "Allergy not cancelled", status: "error" });
   }
  
@@ -340,7 +279,7 @@ getPractitionerName(id: string){
      async created() {
           this.getPractitioners();
           this.sortAllergys;
-          this.fetchAllergys();
+          this.fetchRequests();
     }
 
 }
