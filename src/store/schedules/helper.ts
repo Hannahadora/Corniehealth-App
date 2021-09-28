@@ -38,6 +38,18 @@ export async function createSchedule(body: any) {
   }
 }
 
+export async function deleteSlot(id: string) {
+  try {
+    const response = await cornieClient().delete(`/api/v1/schedule/slot/${id}`);
+    return response.data as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error deleting this slot",
+      status: "error",
+    });
+  }
+}
+
 export async function updateSchedule(body: any, id: string) {
   try {
     const response = await cornieClient().put(`/api/v1/schedule/${id}`, body);

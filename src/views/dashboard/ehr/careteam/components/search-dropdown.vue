@@ -31,6 +31,7 @@
         mt-2
         svelte-5uyqqj
       "
+      style="max-height: 300px"
     >
       <div class="flex flex-col w-full p-2">
         <div
@@ -60,7 +61,7 @@
               relative
             "
           >
-            {{ item.display || item }}
+            {{ item.display ? item.display : item }}
           </div>
         </div>
       </div>
@@ -100,7 +101,7 @@ export default class SearchDropdown extends Vue {
   get items() {
     if (!this.searchValue) return this.results;
     const results = this.results.filter((i: any) => {
-      return i.includes(this.searchValue)
+      return i.display ? i.display?.toLowerCase().includes(this.searchValue?.toLowerCase()) : i?.toLowerCase().includes(this.searchValue?.toLowerCase())
     })
     return results;
   }
@@ -108,7 +109,7 @@ export default class SearchDropdown extends Vue {
   select(item: any) {
     this.$emit("selected", item);
     this.show = false;
-    this.searchValue = item
+    this.searchValue = item.display ? item.display : item;
   }
 
   toggleDisplay() {

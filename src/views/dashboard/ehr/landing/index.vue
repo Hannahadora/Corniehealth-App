@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="p-2">
+    <div class="p-2" v-if="activeTab === 0">
       <cornie-table
         v-model="items"
         :columns="headers"
@@ -51,11 +51,19 @@
       >
         <template #name="{ item }">
           <div class="flex items-center">
-            <avatar class="w-5 h-5" :src="item.photo" />
+            <avatar class="w-5 h-5" :src="item.profilePhoto" />
             <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
           </div>
         </template>
         <template #actions="{ item }">
+          <table-action
+            @click="
+              goToEHR(item.id)
+            "
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">ViewChart</span>
+          </table-action>
           <table-action
             @click="
               $router.push(
@@ -95,6 +103,65 @@
         </template>
       </cornie-table>
     </div>
+
+    <div class="p-2" v-if="activeTab === 1">
+      <cornie-table
+        v-model="activeVisits"
+        :columns="headers"
+        @filter="filterAdvanced = true"
+      >
+        <template #name="{ item }">
+          <div class="flex items-center">
+            <avatar class="w-5 h-5" :src="item.profilePhoto" />
+            <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
+          </div>
+        </template>
+        <template #actions="{ item }">
+          <table-action
+            @click="
+              () => showAuthModal = true
+            "
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View Chart</span>
+          </table-action>
+          <table-action
+            @click="
+              goToEHR(item.id)
+            "
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View patient details</span>
+          </table-action>
+          <table-action
+            @click="
+              $router.push(
+                `/dashboard/provider/experience/edit-patient/${item.id}`
+              )
+            "
+          >
+            <edit-icon class="text-primary fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </table-action>
+          <table-action @click="removePatient(item.id)">
+            <cancel-icon class="text-red-500 fill-current" />
+            <span class="ml-3 text-xs">Remove Patient</span>
+          </table-action>
+          <table-action
+            @click="
+              $router.push(`/dashboard/provider/experience/settings/${item.id}`)
+            "
+          >
+            <settings-icon class="text-red-500 fill-current" />
+            <span class="ml-3 text-xs">Patient Settings</span>
+          </table-action>
+          <!-- <table-action @click="checkIn(item)">
+            <checkin-icon />
+            <span class="ml-3 text-xs">Check-In</span>
+          </table-action> -->
+        </template>
+      </cornie-table>
+    </div>
     <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
     <registration-dialog v-model="registerNew" />
     <advanced-filter
@@ -102,31 +169,40 @@
       v-model="filterAdvanced"
       :patients="patients"
     />
-    <modal :visible="false">
+    <modal :visible="showAuthModal">
       <template #title>
         <div class="w-full">
           <div class="container p-6 content-con">
             <p class="text-primary text-2xl font-semibold pb-3">You need to be authenticated to view health records.</p>
-            <span style="color:#667499" class="text-secondary text-base">Type in your access code	</span>
+            <span style="color:#667499" class="text-secondary text-base">Type in your password	</span>
 
             <div class="w-full py-6">
-              <cornie-input :label="'Access Code'" style="width: 100%" placeholder="Enter" />
+              <label for="password" class="flex flex-col">
+              <span class="block uppercase mb-1 text-xs font-bold">
+                Password
+              </span>
+              <password-input
+                id="password"
+                v-model="password"
+                class="border rounded"
+              />               
+            </label>
             </div>
             <div class="w-full flex flex justify-end">
-                <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4">
-                    <span class="font-semibold">Cancel</span>
+                <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="font-semibold" @click="() => $router.go(-1)">Cancel</span>
                 </corniebtn>
 
-                <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4">
-                    <span class="text-white font-semibold">Save</span>
-                </corniebtn>
+                <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="text-white font-semibold" @click="authenticateUser">Submit</span>
+                </CornieBtn>
             </div>
           </div>
         </div>
       </template>
     </modal>
 
-    <modal :visible="false">
+    <modal :visible="showSearchModal">
       <template #title>
         <div class="w-full">
           <div class="container p-6 content-con">
@@ -134,20 +210,33 @@
             <span style="color:#667499" class="text-secondary text-base">Search a patient to continue	</span>
 
             <div class="w-full py-4">
-              <search-input placehoder="Ssearch by patient name, mrn" />
+              <!-- <search-dropdown :results="searchList" /> -->
+              <search-input class="p-2" :placehoder="'Search by patient name, mrn, email, unique ID'" v-model="query" />
             </div>
             <div class="w-full pt-2 pb-8">
-              <button class="bg-red-500 p-2 rounded-full w-full">
-                <span class="text-white font-semibold">Search</span>
+              <button class="bg-red-500 p-2 rounded-full w-full cursor-pointer" @click="searchForPatient">
+                <span class="text-white font-semibold">{{ loading ? 'Searching' : 'Search' }}</span>
+                <div class="loadingio-spinner-rolling-pciy0fvd3t mt-auto" v-if="loading">
+                  <div class="ldio-s45rszdrvn">
+                    <div></div>
+                  </div>
+                </div>
               </button>
             </div>
+
+            <div class="w-full flex justify-around items-center mb-5" >
+              <div class="w-5/12" style="border-bottom: 1px dashed #C2C7D6;"></div>
+              <div class="w-1/12"><span>Or</span></div>
+              <div class="w-5/12" style="border-bottom: 1px dashed #C2C7D6;"></div>
+            </div>
+
             <div class="w-full flex flex justify-around">
-                <corniebtn class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4">
-                    <span class="font-semibold text-white">View all patients</span>
+                <corniebtn class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="font-semibold text-white" @click="closeAndViewAll">View all patients</span>
                 </corniebtn>
 
-                <corniebtn class="bg-white primary-border p-2 rounded-full px-8 mx-4">
-                    <span class="text-primary-500 font-semibold ">Go to active visits</span>
+                <corniebtn class="bg-white primary-border p-2 rounded-full px-8 mx-4 cursor-pointer">
+                    <span class="text-primary-500 font-semibold " @click="viewActiveVisits">Go to active visits</span>
                 </corniebtn>
             </div>
           </div>
@@ -171,24 +260,22 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
-// import RegistrationDialog from "./registration-dialog.vue";
-// import RegistrationChart from "./registration-chart.vue";
-// import CheckinIcon from "@/components/icons/checkin.vue";
-// import CheckInDialog from "./dialogs/checkin-dialog.vue";
 import AdvancedFilter from "../../patientexp/patients/dialogs/advanced-filter.vue";
 import Modal from "@/components/modal.vue"
-import CornieInput from "@/components/cornieinput.vue"
+import PasswordInput from "@/components/PasswordInput.vue";
 import SearchInput from "@/components/search-input.vue"
+import SearchDropdown from '../careteam/components/search-dropdown.vue'
+import ehrHelper from "./helper/ehr-service"
+import User from "@/types/user";
 
+const userStore = namespace("user");
 const patients = namespace("patients");
+const visitsStore = namespace("visits");
+
 @Options({
   name: "EHRPatients",
   components: {
     ...CornieCard,
-    // CheckInDialog,
-    // CheckinIcon,
-    // RegistrationChart,
-    // RegistrationDialog,
     TableAction,
     SettingsIcon,
     EditIcon,
@@ -201,8 +288,9 @@ const patients = namespace("patients");
     CornieTable,
     AdvancedFilter,
     Modal,
-    CornieInput,
+    PasswordInput,
     SearchInput,
+    SearchDropdown,
   },
 })
 export default class ExistingState extends Vue {
@@ -210,14 +298,41 @@ export default class ExistingState extends Vue {
   patients!: IPatient[];
 
   @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+  @patients.Action
   deletePatient!: (id: string) => Promise<boolean>;
+
+  @visitsStore.Action
+  getVisits!: () => Promise<void>;
+
+  @visitsStore.State
+  visits!: any;
+
+  @userStore.State
+  user!: User;
+
+  @userStore.State
+  practitionerAuthenticated!: User;
+
+  @userStore.Action
+  updatePractitionerAuthStatus!: () => Promise<void>;
+
+  password = "";
 
   filterAdvanced = false;
   filteredPatients: IPatient[] = [];
   checkInPatient!: IPatient;
   checkingIn = false;
   registerNew = false;
+  showAuthModal = false;
+  showSearchModal = false;
   activeTab = 0;
+  query = "";
+  searchResults: IPatient[] = [ ];
+  loading = false;
+  activeVisits: IPatient[] = [ ];
+  patientId = ""
 
   headers = [
     {
@@ -237,7 +352,7 @@ export default class ExistingState extends Vue {
     },
     {
       title: "D.O.B",
-      key: "dob",
+      key: "dateOfBirth",
       show: true,
     },
     {
@@ -253,17 +368,39 @@ export default class ExistingState extends Vue {
   ];
 
   get items() {
-    const patients = this.filteredPatients;
-    return patients.map((patient) => ({
-      name: `${patient.firstname} ${patient.lastname}`,
-      dob: this.printDOB(patient.dateOfBirth),
-      email: this.printEmail(patient),
-      phone: this.printPhone(patient),
-      mrn: this.printMRN(patient.mrn),
-      gender: patient.gender,
-      photo: patient.profilePhoto,
-      id: patient.id,
-    }));
+    return this.patients.map(patient => {
+      // console.log(, "contact info");
+      const contact = patient?.contactInfo?.find(contact => contact.phone?.number);
+      return {
+        ...patient,
+        name: `${patient.firstname} ${patient.lastname}`,
+        phone: `${ contact?.phone?.dialCode}${contact?.phone?.number}`,
+        email: contact?.email
+      }
+    });
+  }
+
+  get searchList() {
+    return this.searchResults.map((patient: any) => {
+      return {
+        code: patient.id,
+        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`
+      }
+    })
+  }
+
+  goToEHR(patientId: string) {
+    if (!this.practitionerAuthenticated) {
+      this.patientId = patientId;
+      this.showAuthModal = true;
+    } else {
+      this.$router.push({ name: 'Health Trend', params: { patientId }})
+    }
+  }
+
+  viewActiveVisits() {
+    this.showSearchModal = false;
+    this.activeTab = 1;
   }
 
   checkIn(patient: IPatient) {
@@ -289,6 +426,11 @@ export default class ExistingState extends Vue {
     return `XXXXX${mrn?.substr(31)}`;
   }
 
+  closeAndViewAll() {
+    this.showSearchModal = false;
+    this.activeTab = 0;
+  }
+
   async removePatient(id: string) {
     const confirmed = await window.confirmAction({
       message: `Are you sure you want to delete this patient?
@@ -300,6 +442,70 @@ export default class ExistingState extends Vue {
     const deleted = await this.deletePatient(id);
     if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
     else window.notify({ msg: "Patient not deleted", status: "error" });
+  }
+
+  async authenticateUser() {
+    try {
+      this.loading = true;
+      const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
+      this.password = "";
+      this.loading = false;
+      if (verified) {
+        this.showAuthModal = false;
+        this.updatePractitionerAuthStatus();
+        if (!this.patientId) {
+          this.showSearchModal = true;
+        } else {
+          this.$router.push({ name: 'Health Trend', params: { patientId: this.patientId }})
+        }
+      }
+    } catch (error) {
+      this.loading = false;
+      console.log(error);
+    }
+  }
+
+  async searchForPatient() {
+    try {
+      this.loading = true;
+      const data = await ehrHelper.searchPatient(this.query);
+      this.loading = false;
+      if (data && data.length > 0) {        
+        this.$router.push({ name: 'Health Trend', params: { patientId: data[0].id }})
+        // this.searchResults = data;        
+      } else {
+        window.notify({ msg: "No match found", status: "info" });
+      }
+    } catch (error) {
+      this.loading = false;
+      console.log(error);
+      
+    }
+  }
+
+  async created() {
+    if (!this.practitionerAuthenticated) this.showAuthModal = true;
+    await this.fetchPatients();
+    if (!this.visits || this.visits.length === 0) await this.getVisits();
+    this.visits?.map((visit: any) => {
+      if (visit.practitioners?.length === 0) {
+        visit.practitioners.push({ id: "87e846a3-bac0-43b9-a4db-0b2605426c42" })
+      }
+      return visit;
+    })
+    const activeVisits = ehrHelper.getActiveVisits(this.visits, this.user.id, this.patients);
+    this.activeVisits = activeVisits?.map((visit: any) => {
+      const patient = this.patients?.find(patient => patient.id === visit.id);
+      const contact = patient?.contactInfo?.find(contact => contact.phone?.number);
+      const data: any = { ...patient }
+      if (patient?.id) {
+        data.phone = `${ contact?.phone?.dialCode}${contact?.phone?.number}`,
+        data.email = contact?.email
+      }
+      console.log(activeVisits, "ACTIVE");
+      
+      return patient?.id ? patient : visit;
+    })
   }
 }
 </script>

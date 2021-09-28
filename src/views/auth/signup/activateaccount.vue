@@ -211,7 +211,6 @@ export default class ActivateAccount extends Vue {
          return window.notify({ msg: errMsg });
       }
       store.commit("user/setLoginInfo", data);
-      //this.$router.replace("/login");
       this.$router.replace("/dashboard");
       this.saveCornieData();
     } catch (error) {
