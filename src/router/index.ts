@@ -112,20 +112,6 @@ const routes: Array<RouteRecordRaw> = [
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
       },
-      // {
-      //   path: "schedules",
-      //   props: true,
-      //   name: "Patient Experience Management.",
-      //   component: () =>
-      //     import("@/views/dashboard/schedules/index.vue"),
-      // },
-      // {
-      //   path: "schedules/new/:scheduleId?",
-      //   props: true,
-      //   name: "Patient Experience Management",
-      //   component: () =>
-      //     import("@/views/dashboard/schedules/create-schedule.vue"),
-      // },
     ],
   },
 ];

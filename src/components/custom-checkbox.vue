@@ -20,7 +20,7 @@
       @change="$emit('change', $event.target.checked)"
       type="checkbox"
     />
-    <span class="ml-2">{{ label }}</span>
+    <span class="ml-2 text-sm">{{ label }}</span>
     <span v-if="errorMessage" class="text-xs text-red-500 block">{{
       errorMessage
     }}</span>

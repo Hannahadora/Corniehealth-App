@@ -13,7 +13,6 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/OrganisationHierarchy/index.vue"),
     },
-
     {
       path: "care-partners",
       name: "Care Partners",
@@ -54,12 +53,6 @@ export const SettingsRoute: RouteRecordRaw = {
           "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
         ),
     },
-    // {
-    //   path: "org-hierarchy",
-    //   name: "Organization Hierarchy",
-    //   component: () =>
-    //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-    // },
     {
       path: "contact-info",
       name: "Contact Information",
