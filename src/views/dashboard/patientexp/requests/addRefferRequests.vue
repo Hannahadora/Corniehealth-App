@@ -335,7 +335,7 @@ import { Options, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieNuminput from "@/components/cornienuminput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
+import CornieSelect from "@/components/autocomplete.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";

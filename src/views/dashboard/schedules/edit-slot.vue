@@ -12,7 +12,7 @@
                     <div title="Shift Details" class="bg-white shadow-xl rounded-lg">
                         <div class="w-full px-4">
 
-                            <div class="container-fluid pb-3 pt-3 flex justify-around">
+                            <!-- <div class="container-fluid pb-3 pt-3 flex justify-around">
                                 <div class="w-4/12">
                                     <cornie-input v-model="slotData.scheduleId" label="Schedule"  placeholder="--Enter--" />
                                 </div>
@@ -36,26 +36,98 @@
                                     </div>
                                     
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="container-fluid py-3 flex justify-around">
                                 <div class="w-4/12">
                                     <div class="w-11/12">
-                                        <date-picker label="Stop date" v-model="slotData.endDate"  placeholder="Enter" />
+                                        <DateTimePicker :label="'End date'">
+                                            <template #date>
+                                                <span>{{ new Date(slotData.startDate ?? Date.now()).toLocaleDateString()}}</span>
+                                            </template>
+                                            <template #time>
+                                                <span>{{ slotData.startTime }}</span>
+                                            </template>
+                                            <template #input>
+                                                <v-date-picker name="eeee" v-model="slotData.startDate" style="z-index:9000;width:100%"></v-date-picker>
+                                                <label
+                                                    class="block uppercase my-1 text-xs font-bold"
+                                                    >
+                                                    Time
+                                                </label>
+                                                <input v-model="slotData.startTime" type="time" class="w-full border rounded-md p-2">
+                                            </template>
+                                        </DateTimePicker>
                                     </div>
                                 </div>
                                 <div class="w-4/12">
                                     <div class="w-11/12">
+                                        <DateTimePicker :label="'End date'">
+                                            <template #date>
+                                                <span>{{ new Date(slotData.endDate ?? Date.now()).toLocaleDateString()}}</span>
+                                            </template>
+                                            <template #time>
+                                                <span>{{ slotData.endTime }}</span>
+                                            </template>
+                                            <template #input>
+                                                <v-date-picker name="eeee" v-model="slotData.endDate" style="z-index:9000;width:100%"></v-date-picker>
+                                                <label
+                                                    class="block uppercase my-1 text-xs font-bold"
+                                                    >
+                                                    Time
+                                                </label>
+                                                <input v-model="slotData.endTime" type="time" class="w-full border rounded-md p-2">
+                                            </template>
+                                        </DateTimePicker>
+                                    </div>
+                                    <!-- <div class="w-11/12">
                                         <label for="" class="w-95">
                                             <span class="uppercase font-bold text-xs">Stop Time</span>
                                             <div class="w-12/12 mx-auto">
                                                 <input type="time" v-model="slotData.endTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
                                             </div>
                                         </label>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="w-4/12">
-                                    <cornie-input label="Description" class="w-95" v-model="data.serviceType" placeholder="Enter" />
+                                    <cornie-input label="Description" class="w-95" v-model="slotData.serviceType" placeholder="Enter" />
+                                </div>
+                            </div>
+
+                            <div class="container-fluid my-4">
+                                <div class="w-full">
+                                    <label for="" class="mb-5 uppercase mb-1 text-xs font-bold flex items-center cursor-pointer"
+                                        @click="() => showCapacity = !showCapacity"
+                                    >
+                                        Capacity <span class="text-xs text-gray-400 lowercase mx-2">(optional)</span> <span class="mx-2"><chevron-down /></span>
+                                    </label>
+                                    <div class="w-full flex capacity-area" :class="{'capacity-area-full': showCapacity}">
+                                        <div class="w-4/12">
+                                            <cornie-input v-model="slotData.capacity" :label="'Capacity'" />
+                                        </div>
+                                        <div class="w-4/12">
+                                            <date-picker v-model="slotData.bookingCutOff" :label="'Booking CutOff'" />
+                                        </div>
+                                        <div class="w-4/12">
+                                            <div class="w-11/12 flex items-center flex-col">
+                                                <label for="">Waitlist on full capacity? <span class="text-xs text-gray-400 lowercase mx-2">(optional)</span></label>
+                                                <div class="w-full flex justify-center">
+                                                    <div class="mr-6">
+                                                        <label class="inline-flex items-center">
+                                                            <input type="radio" class="form-radio h-4 w-4" :value="'yes'" v-model="slotData.hasWaitList" >
+                                                            <span class="ml-2 text-base">Yes</span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="mr-6">
+                                                        <label class="inline-flex items-center">
+                                                            <input type="radio" class="form-radio h-4 w-4" :value="'no'" v-model="slotData.hasWaitList" >
+                                                            <span class="ml-2 text-base">No</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -65,13 +137,13 @@
                                         <span class="mr-3 text-sm font-normal font-bold flex items-center uppercase cursor-pointer"  @click="showAddActor" style="color: #FE4D3C">add participant(s) to this slot <span class="ml-2"><AddIcon /></span> </span>
                                         <span class="flex items-center">
                                             <span class="flex items-center">Status: <span class="ml-2"><info-icon/></span></span>
-                                            <span><toggle-check :uncheckedText="'Private'" :checkedText="'Public'" /></span>
+                                            <span><toggle-check :uncheckedText="'Private'" :checkedText="'Public'" v-model="slotData.private" /></span>
                                         </span>
                                     </span>
                                 </p>
                             </div>
 
-                            <div class="container-fluid py-4 border-l-none" style="border-top: 1px dashed #C2C7D6; border-bottom: 1px dashed #C2C7D6">
+                            <div v-if="participants.length > 0" class="container-fluid py-4 border-l-none" style="border-top: 1px dashed #C2C7D6; border-bottom: 1px dashed #C2C7D6">
                                 <div class="w-full flex flex-wrap">
                                     <div class="w-4/12" v-for="(participant, index) in participants" :key="index">
                                         <div class="w-11/12 mx-auto">
@@ -82,71 +154,17 @@
                                                         <img v-else src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
                                                     </div>
                                                     <div class="w-9/12 ml-3">
-                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">{{ participant.firstName }} {{ participant.lastName }}</p>
+                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">{{ participant.name  }}</p>
                                                         <span class="capitalize text-gray-400 font-normal text-xs">{{ participant.jobDesignation }}</span>
                                                     </div>
                                                 </div>
                                                 <div class="w-2/12">
-                                                    <input type="checkbox"  name="" id="">
+                                                    <delete-icon class="cursor-pointer" @click="removeActor(participant.id)" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="w-4/12">
-                                        <div class="w-11/12 mx-auto">
-                                            <div class="w-full flex relative items-center border-r-2">
-                                                <div class="w-10/12 flex">
-                                                    <div class="w-2/12">
-                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
-                                                    </div>
-                                                    <div class="w-9/12 ml-3">
-                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
-                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
-                                                    </div>
-                                                </div>
-                                                <div class="w-2/12">
-                                                    <input type="checkbox"  name="" id="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
-                                    <!-- <div class="w-4/12">
-                                        <div class="w-11/12 mx-auto">
-                                            <div class="w-full flex relative items-center border-r-2">
-                                                <div class="w-10/12 flex">
-                                                    <div class="w-2/12">
-                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
-                                                    </div>
-                                                    <div class="w-9/12 ml-3">
-                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
-                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
-                                                    </div>
-                                                </div>
-                                                <div class="w-2/12">
-                                                    <input type="checkbox"  name="" id="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-                                    <!-- <div class="w-4/12">
-                                        <div class="w-11/12 mx-auto">
-                                            <div class="w-full flex relative items-center border-r-2">
-                                                <div class="w-10/12 flex">
-                                                    <div class="w-2/12">
-                                                        <img src="https://via.placeholder.com/40x40" class="rounded-full border" alt="Image">
-                                                    </div>
-                                                    <div class="w-10/12 ml-3">
-                                                        <p class="capitalize py-0 my-0 font-semibold text-sm">Godstar</p>
-                                                        <span class="capitalize text-gray-400 font-normal text-xs">Doctor</span>
-                                                    </div>
-                                                </div>
-                                                <div class="w-2/12">
-                                                    <input type="checkbox"  name="" id="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
+                                    
                                 </div>
                             </div>
 
@@ -155,7 +173,7 @@
                             <div class="w-full flex mt-3">
                                 <div class="mr-6" v-for="(type, index) in occurrence" :key="index">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="type" v-model="breakData.type" name="break" >
+                                        <input type="radio" class="form-radio h-4 w-4" :value="type" v-model="slotData.repeat" name="break" >
                                         <span class="ml-2 text-base">{{ type }}</span>
                                     </label>
                                 </div>
@@ -164,27 +182,27 @@
                             <div class="w-full my-5">
                                 <div class="container-fluid flex items-center">
                                     <div class="w-4/12">
-                                        <custom-dropdown :label="'Status'" :items="[1, 2, 3, 4]" />
+                                        <custom-dropdown :label="'Status'" :items="['active', 'inactive']" v-model="slotData.status" />
                                     </div>
                                     <div class="w-4/12 -mt-5">
-                                        <cornie-input :label="'Comment'" />
+                                        <cornie-input :label="'Comment'" v-model="slotData.comment" />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="w-full pb-8 flex flex justify-end">
-                                <corniebtn class="bg-gray-300 p-2 rounded-full px-8 mx-4">
+                                <corniebtn class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056">
                                     <span class="font-semibold text-gray-500">Cancel</span>
                                 </corniebtn>
 
-                                <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4">
-                                    <span class="text-white font-semibold">Save</span>
-                                </corniebtn>
+                                <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer">
+                                    <span class="text-white font-semibold" @click="onSave">Save</span>
+                                </CornieBtn>
                             </div>
 
 
                             <side-modal :visible="addActorPane" @closesidemodal="() => addActorPane = false">
-                                <add-actors />
+                                <add-actors @participants="participantsAdded"  @closesidemodal="() => addActorPane = false" />
                             </side-modal>
 
                         </div>
@@ -211,6 +229,7 @@ import ChevronDown from '@/components/icons/chevrondownprimary.vue'
 import DatePicker from '@/components/datepicker.vue'
 import ToggleCheck from '@/components/ToogleCheck.vue'
 import IPractitioner from "@/types/IPractitioner";
+import CornieBtn from "@/components/CornieBtn.vue"
 
 import SearchBox from './components/search-box.vue'
 import User from "@/types/user";
@@ -221,7 +240,7 @@ import Templates from "@/components/icons/templates.vue";
 import AddIcon from '@/components/icons/add.vue'
 import IDevice from "@/types/IDevice";
 import SideModal from './components/side-modal.vue';
-import AddActors from './components/select-actor.vue'
+import AddActors, { IParticipantType } from './components/add-participant.vue'
 import InfoIcon from '@/components/icons/info.vue'
 import ISchedule from "@/types/ISchedule";
 
@@ -231,6 +250,7 @@ const contacts = namespace('practitioner');
 const userStore = namespace("user");
 const locationStore = namespace("location");
 const devices = namespace("device");
+const visitsStore = namespace("visits");
 
 @Options({
   components: {
@@ -251,6 +271,7 @@ const devices = namespace("device");
     SideModal,
     AddActors,
     InfoIcon,
+    CornieBtn,
   },
 })
 export default class Shift extends Vue {
@@ -260,6 +281,7 @@ export default class Shift extends Vue {
  loading = false;
  showSelectArea = false;
  addActorPane = false;
+ showCapacity = false;
 
     data: any = { 
         days: [ ],
@@ -283,8 +305,8 @@ export default class Shift extends Vue {
 
 
  removeActor(id: any) {
-     if (this.$route.params.scheduleId) return false;
-     this.data.practitioners = this.data.practitioners.filter((i: any)=> i.code !== id);
+    //  if (this.$route.params.scheduleId) return false;
+    this.slotData.practitioners = this.slotData.practitioners.filter((i: any)=> i.id !== id);
  }
 
  actorSelected(actor: any) {
@@ -359,6 +381,9 @@ export default class Shift extends Vue {
   @schedulesStore.Action
   updateSchedule!: (body: any) => Promise<boolean>;
 
+  @visitsStore.Action
+  createSlot!: (body: any) => Promise<any>;
+
  timeZones = [
     'Africa/Lagos', 'Africa/Algiers', 'Europe/Amsterdam', 'Europe/Berlin', 'Europe/Rome', 'WAT: West Africa Time', 'WEST: Western European Summer Time', 'MET: Middle European Time', 'CET: Central European Time'
  ]
@@ -369,11 +394,63 @@ export default class Shift extends Vue {
      { display: 'Monthly', code: 'monthly'}
  ]
 
+ async onSave() {
+    try {
+        this.loading = true;
+        const createdSlot = await this.createSlot({
+            endTime: this.slotData.endTime,
+            hasWaitList: this.slotData?.hasWaitList === "yes" ? true : false,
+            lastReset: null,
+            description: this.slotData.description,
+            scheduleId: this.$route.query?.scheduleId,
+            startTime: this.slotData.startTime,
+            practitionerId: this.slotData?.practitioners[0]?.id,
+            date: this.slotData.startDate,
+            comments: this.slotData.comments,
+            bookingCutOff: this.slotData.bookingCutOff,
+            repeat: this.slotData.repeat,
+            private: this.slotData.private,
+            status: this.slotData.status,
+            capacity: this.slotData.capacity,
+
+        });
+
+        if (createdSlot?.id) {
+            window.notify({ msg: "Slot created successfully", status: "success" });
+        } else {
+            window.notify({ msg: "Error creating slot", status: "error" });
+        }
+        console.log(createdSlot, "created slot");
+        this.loading = false;
+    } catch (error) {
+        console.log(error);
+        this.loading = false;
+        
+    }
+ }
+
  get participants() {
      const schedule = this.schedules.find(schedule => schedule.id === this.slotData?.scheduleId);
-     const scheduleParticipants = schedule?.practitioners;
+     const scheduleParticipants = [];
+    //  const scheduleParticipants = schedule?.practitioners;
      if (this.slotData?.practitioners) scheduleParticipants.push(...this.slotData.practitioners);
      return scheduleParticipants;
+ }
+
+ participantsAdded(data: any) {
+     if (data?.participants) {        
+        if (this.slotData?.practitioners) {
+            data.participants.forEach((participant: any) => {
+                if (this.slotData.practitioners.findIndex((practitioner: any) => practitioner.code === participant.code) < 0) {
+                    this.slotData.practitioners.push(participant)
+                }
+            });
+        } else {
+            this.slotData.practitioners = data.participants;
+        }
+    }
+    this.addActorPane = false;
+    
  }
 
 
@@ -474,6 +551,17 @@ async created() {
     .details-area-fuller {
         height: 600px;
         transition: all .5s ease-in-out;
+    }
 
+    .capacity-area {
+        height: 0px;
+        overflow: hidden;
+        transition: all .5s ease-in-out;
+    }
+
+    .capacity-area-full {
+        height: 72px;
+        overflow: hidden;
+        transition: all .5s ease-in-out;
     }
 </style>

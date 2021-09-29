@@ -1,3 +1,4 @@
+import { cornieClient } from "@/plugins/http";
 import IPractitioner from "@/types/IPractitioner";
 import ISchedule, { Slot } from "@/types/ISchedule";
 
@@ -23,6 +24,16 @@ const filterByDate = (schedules: ISchedule[], date: string | Date) => {
     })
 }
 
+const filterSlotsByDate = (slots: any, date: string | Date) => {
+    return slots.filter((slot: any ) => {
+        console.log(slot.date, "jdjd", date);
+        
+        return new Date(slot.date).getDate() === new Date(date).getDate() &&
+            new Date(slot.date).getMonth() === new Date(date).getMonth() &&
+            new Date(slot.date).getFullYear() === new Date(date).getFullYear()
+    })
+}
+
 const filterBySlotTime = (schedules: ISchedule[], slotStartTime: string, slotEndTime: string, date: string | Date) => {    
     return schedules.filter(schedule => {
         const { startTime, startDate, endTime, endDate } = schedule;        
@@ -45,6 +56,18 @@ const extractSlotsFromSchedules = (schedules: ISchedule[]) => {
         } else {
             slots.push(...generateSlots(schedule).map(slot => {
                 return { ...slot, scheduleId: schedule.id}
+            }));
+        }
+    });
+    return slots;
+}
+const extractExistingSlotsFromSchedules = (schedules: ISchedule[]) => {
+    const slots: any[] = [ ]
+    schedules.forEach(schedule => {
+        const { slots: slts } = schedule;
+        if (slts?.length > 0) {
+            slots.push(...slts.map(slot => {
+                return { ...slot, scheduleId: schedule.id }
             }));
         }
     });
@@ -86,6 +109,10 @@ const generateSlots = (schedule: ISchedule) => {
 
 
 export default {
+    slotsFromSchedules(schedules: ISchedule[]) {
+        return extractSlotsFromSchedules(schedules);
+    },
+
     getAvailableSlots(arrOfSchedules: any[]) {
         // const futureSchedules = arrOfSchedules.filter((i: any) => new Date(i.startDate) > new Date(Date.now()));
         console.log(arrOfSchedules, "arrs");
@@ -168,6 +195,38 @@ export default {
         const schedulesForTime = filterBySlotTime(schedulesForDate, startTime, endTime, date);
         if (schedulesForTime?.length > 0) return schedulesForTime[0].id;
         return '';
+    },
+
+    async getPractitionersSlots(practitionerId: string): Promise<any> {
+        try {
+            const slots = await cornieClient().get(`/api/v1/slot/practitioner/${practitionerId}`);
+            console.log(slots, "p slots");
+            if (!slots) return [ ];
+            return slots;
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    isSlotTime(slots: any, slotTime: string, date: Date | string) {
+        console.log(slots, "stae");
+        
+        if (!slots || slots.length === 0) return { };
+        const [ startTime, endTime ] = slotTime.split(' - ')
+        const slotsForDay = filterSlotsByDate(slots, date);
+        
+        const slotForTime = slotsForDay.find((slot: any) => {            
+            return constructDate(date, startTime) >= constructDate(date, slot.startTime) 
+                // && constructDate(date, slot.endTime) <= constructDate(date, slot.endTime)
+        })
+        console.log(slotsForDay, "for time");
+        
+        if (!slotForTime) return { };
+        return slotForTime;
+    },
+
+    getFixedSlots(schedules: ISchedule[]) {
+        return extractExistingSlotsFromSchedules(schedules);
     },
 
     constructDate

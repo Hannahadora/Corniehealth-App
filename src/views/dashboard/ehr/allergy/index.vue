@@ -21,7 +21,7 @@
                 v-if="empty"
           />
           <allergys-existing-state
-        :allergy-added="allergyAdded"
+        @allergy-added="allergyAdded"
         :allergys="allergys"
           v-else
 
@@ -62,8 +62,11 @@ export default class AllergysIndex extends Vue {
   fetchAllergys!: () => Promise<void>;
 
 
-  deviceAdded() {
+  allergyAdded() {
+    console.log('HJGHFS');
     this.show = false;
+ this.allergys;
+  this.fetchAllergys();
   }
 
 mounted(){

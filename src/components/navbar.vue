@@ -412,7 +412,9 @@
             <p class="2xl text-center text-gray-600 font-bold">
               {{ user ? user.email : "" }}
             </p>
-            <p class="2xl text-center text-yellow-400 font-bold">Surgeon</p>
+            <p class="2xl text-center text-yellow-400 font-bold">
+              {{ designation }}
+            </p>
           </li>
           <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5">
             <span class="text-gray-600 font-bold text-xs uppercase">
@@ -544,7 +546,7 @@ import SettingsIcon from "./icons/settings.vue";
 import BellIcon from "./icons/bell.vue";
 import ChevronDown from "./icons/chevrondownprimary.vue";
 import { namespace } from "vuex-class";
-import User from "@/types/user";
+import User, { CornieUser } from "@/types/user";
 import OrgIcon from "@/components/icons/org.vue";
 import ContactIcon from "@/components/icons/contactinfo.vue";
 import HierarchyIcon from "@/components/icons/hierarchy.vue";
@@ -552,6 +554,7 @@ import PractitionerIcon from "@/components/icons/practitioner.vue";
 import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
 import store from "@/store";
+import IPractitioner from "@/types/IPractitioner";
 
 const account = namespace("user");
 @Options({
@@ -575,8 +578,19 @@ export default class NavBar extends Vue {
   @account.State
   user!: User;
 
+  @account.Getter
+  authPractitioner!: IPractitioner;
+
+  @account.Getter
+  cornieUser!: CornieUser;
+
   get profilePhoto() {
-    return this.user?.photo;
+    return this.cornieUser?.image;
+  }
+
+  get designation() {
+    if (!this.authPractitioner) return "Root";
+    return this.authPractitioner.jobDesignation || this.authPractitioner.type;
   }
 
   get name() {
@@ -587,6 +601,7 @@ export default class NavBar extends Vue {
     middleInitials = middleInitials ? `${middleInitials}.` : "";
     return `${lastName} ${firstInitials}. ${middleInitials}`;
   }
+
   async logout() {
     await logout();
     this.$router.push("/login");

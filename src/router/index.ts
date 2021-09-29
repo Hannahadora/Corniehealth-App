@@ -243,6 +243,15 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+
+      {
+        path: "practitioner/patients",
+        props: true,
+        name: "EHR",
+        component: () =>
+          import("@/views/dashboard/ehr/landing/index.vue"),
+      },
+
       {
         path: "clinical/",
         name: "Patient EHR",
@@ -250,7 +259,7 @@ const routes: Array<RouteRecordRaw> = [
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
         children: [
           {
-            path: "health-trend",
+            path: "health-trend/:patientId?",
             name: "Health Trend",
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
@@ -272,6 +281,12 @@ const routes: Array<RouteRecordRaw> = [
             name: "Condition/Problem",
             component: () =>
               import("@/views/dashboard/ehr/condition/index.vue"),
+          },
+          {
+            path: "care-team",
+            name: "EHR - Care Team",
+            component: () =>
+              import("@/views/dashboard/ehr/careteam/index.vue"),
           },
           {
             path: "allergy",

@@ -4,11 +4,10 @@
     <div
       class="h-11 w-full  flex items-center  border-b-2 justify-between"
       :class="{
-        'bg-gray-50': expand,
         'rounded-t-xl': first && expand,
       }"
     >
-      <div class="font-semibold uppercase text-sm mb-1" :class="{ 'text-primary': expand }">
+      <div class="font-bold text-sm text-black mb-1" :class="{ 'text-black': expand }">
         {{ title }}
       </div>
       <span class="flex items-center">
@@ -39,8 +38,8 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
+import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
 
 @Options({
   name: "AccordionItem",

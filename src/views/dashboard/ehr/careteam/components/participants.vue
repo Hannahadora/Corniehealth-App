@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="w-full">
             <p class="flex justify-between items-center border-b-2 pb-2 cursor-pointer" @click="toggleDetailsDisplay"><span class="uppercase mb-1 text-xs font-bold">Participants</span> <span><add-icon /> </span></p>
-            <div class="w-full" :class="{ 'hide-details': !showDetails, 'show-details py-3': showDetails }">
+            <div class="w-full" :class="{ 'hide-details': !showDetails, 'show-details py-3 -mb-28': showDetails }">
                 <slot name="details" />
             </div>
         </div>
@@ -38,7 +38,7 @@ export default class Participants extends Vue {
     }
 
     .show-details {
-        height: 400px;
+        height: 500px;
         transition: all .4s ease-in-out;
         overflow: hidden;
     }

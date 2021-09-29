@@ -54,6 +54,7 @@
       <allergy-modal 
        v-if="allergyId == 'false'"
         :columns="practitioner"
+           @allergy-added="allergyAdded"
           @update:preferred="showAllergy"
           v-model="showAllergyModal"/>
 
@@ -161,45 +162,57 @@ export default class AllergyExistingState extends Vue {
   @allergy.Action
   getPractitioners!: () => Promise<void>;
 
+  @allergy.Action
+  fetchAllergys!: () => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Date", key: "createdAt", show: true },
     {
       title: "identifier",
       key: "id",
       show: true,
     },
+     { title: "Date Recorded", key: "createdAt", show: true },
     {
       title: "Type",
       key: "type",
       show: true,
     },
-    {
-      title: "Asserter",
-      key: "asserter",
-      show: true,
-    },
-    {
-      title: "Recorder",
-      key: "recorder",
-      show: true,
-    },
-    {
+     {
       title: "Category",
       key: "category",
-      show: false,
+      show: true,
     },
      {
       title: "Criticality",
       key: "criticality",
+      show: true,
+    },
+    {
+      title: "product",
+      key: "product",
+      show: true,
+    },
+    {
+      title: "clinical| verication",
+      key: "clinicalStatus",
+      show: false,
+    },
+    {
+      title: "Asserter",
+      key: "asserter",
+      show: false,
+    },
+    {
+      title: "Recorder",
+      key: "recorder",
       show: false,
     },
     {
       title: "Period",
       key: "onsetPeriod",
-      show: true,
+      show: false,
     },
      {
       title: "Code",
@@ -290,6 +303,7 @@ export default class AllergyExistingState extends Vue {
          keydisplay: "XXXXXXX",
          onsetPeriod: allergy.onSet.onsetPeriod.start +'-'+ allergy.onSet.onsetPeriod.end,
          asserter: this.getPractitionerName(allergy.onSet.asserter),
+         product: allergy.reaction.substance
         };
     });
     if (!this.query) return allergys;
@@ -305,6 +319,11 @@ getPractitionerName(id: string){
       this.allergyId = value;
   }
 
+  allergyAdded() {
+    console.log('HJGHFS');
+ this.allergys;
+  this.fetchAllergys();
+  }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this allergy",
@@ -325,6 +344,7 @@ getPractitionerName(id: string){
      async created() {
           this.getPractitioners();
           this.sortAllergys;
+          this.fetchAllergys();
     }
 
 }
