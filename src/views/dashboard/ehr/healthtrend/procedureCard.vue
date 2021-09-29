@@ -1,15 +1,15 @@
 <template>
-  <detail-card height="313px" title="Current Medications">
-   <div class="w-full grid grid-cols-1 gap-y-4">
+  <detail-card height="313px" title="Recent Procedures">
+    <div class="w-full grid grid-cols-1 gap-y-4">
       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
-          <avatar :src="photo" />
+          <!-- <avatar :src="photo" /> -->
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
+            <span class="font-semibold text-primary">
+              Asthma
             </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
+              <span class="text-gray-600"> <h5> Undergoing treatment for 5 years now </h5></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -27,15 +27,15 @@
         </div>
       </div>
 
-      <div class="w-full flex justify-between pb-2 border-b">
+       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
-          <avatar :src="photo" />
+          <!-- <avatar :src="photo" /> -->
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
+            <span class="font-semibold text-primary">
+              Paenut Allergy
             </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
+              <span class="text-gray-600"> <h5> Undergoing treatment for 5 years now </h5></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -53,15 +53,15 @@
         </div>
       </div>
 
-        <div class="w-full flex justify-between pb-2 border-b">
+       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
-          <avatar :src="photo" />
+          <!-- <avatar :src="photo" /> -->
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
+            <span class="font-semibold text-primary">
+              Asthma
             </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
+              <span class="text-gray-600"> <h5> Undergoing treatment for 5 years now </h5></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -93,31 +93,19 @@
           </span>
         </div>
       </div>
-    </div>
+  </div>
   </detail-card>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import DetailCard from "./detail-card.vue";
 
-import Avatar from "@/components/avatar.vue";
-import AddIcon from "@/components/icons/add.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-
-
-
-
 @Options({
-  name: "MedicationCard",
+  name: "ProcedureCard",
   components: {
-    DetailCard,
-    Avatar,
-    AddIcon,
-    // ArrowRightIcon,
-    ChevronRightIcon,
+    DetailCard
   },
 })
-export default class MedicationCard extends Vue {
-  photo = require("@/assets/img/avatar.png");
+export default class ProcedureCard extends Vue {
 }
 </script>

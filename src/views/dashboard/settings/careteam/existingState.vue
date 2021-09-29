@@ -20,115 +20,46 @@
       </button>
       
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+      <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$router.push(`add-careteam/${item.id}`)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="$router.push(`add-careteam/${getKeyValue(item).value}`)"
-              class="
-                list-none
-                items-center
-                flex
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-                my-1
-                py-3
-              "
-            >
-              
-              <span class="mr-3 text-2xl bold text-primary">+</span> Edit Care Team
-            </li>
-            <li
-              @click="deleteItem(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-           
-              <delete-icon class="mr-3" /> Delete
-            </li>
-            <li
-             v-if="item.data.status == 'active'"
-              @click="deactivateCareteam(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Deactivate Account
-            </li>
-            <li
-            v-if="item.data.status == 'inactive'"
-              @click="activateCareteam(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-               <close-icon class="mr-3" /> Activate Account
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <edit-icon class="mr-3 text-yellow-300 fill-current" /> 
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        
+              @click="deactivateCareteam(item.id)"
+        >
+           <close-icon class="mr-3" />
+          <span class="ml-3 text-xs">Deactivate</span>
+        </div>
+         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+         
+              @click="activateCareteam(item.id)"
+        >
+           <close-icon class="mr-3" />
+          <span class="ml-3 text-xs">Activate</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <cancel-icon class="text-danger fill-current"/>
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table>
+    </cornie-table>
+    
     <column-filter
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
-    />
+    /> 
   </div>
 </template>
 <script lang="ts">
@@ -147,11 +78,14 @@ import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import ICareteam from "@/types/ICareteam";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import CancelIcon from "@/components/icons/cancel.vue";
+import EditIcon from "@/components/icons/edit.vue";
 
 const careteam = namespace("careteam");
 
@@ -164,12 +98,15 @@ const careteam = namespace("careteam");
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
+    CornieTable,
     IconInput,
     ColumnFilter,
     TableOptions,
     DeleteIcon,
+    EditIcon,
     EyeIcon,
-    CloseIcon
+    CloseIcon,
+    CancelIcon
   },
   
 })
@@ -188,31 +125,31 @@ export default class CareteamExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identfier", value: "identifier", show: true },
-    { title: "Status", value: "status", show: true },
+    { title: "Identfier", key: "identifier", show: true },
+    { title: "Status", key: "status", show: true },
     {
       title: "Category",
-      value: "category",
+      key: "category",
       show: true,
     },
     {
       title: "Name",
-      value: "name",
+      key: "name",
       show: true,
     },
     {
       title: "Subject",
-      value: "subject",
+      key: "subject",
       show: false,
     },
     {
       title: "Period",
-      value: "period",
+      key: "period",
       show: false,
     },
     {
       title: "Participants",
-      value: "participants",
+      key: "participants",
       show: false,
     },
   ];

@@ -254,6 +254,19 @@ const routes: Array<RouteRecordRaw> = [
             name: "Health Trend",
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
+              // import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),             
+          },
+          {
+            path: "health-trend-empty",
+            name: "Health Trend Empty State",
+            component: () =>
+              import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),
+          },
+          {
+            path: "health-trend-existing",
+            name: "Health Trend Existing State",
+            component: () =>
+              import("@/views/dashboard/ehr/healthtrend/existing-state.vue"),
           },
           { path: "condition",
             name: "Condition/Problem",

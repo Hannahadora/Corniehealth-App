@@ -26,7 +26,7 @@
           py-2
         "
       >
-        Patients
+        Conditions/Problems
       </span>
       <!-- <registration-chart class="w-full" :height="100" /> -->
       <span class="w-full bg-danger">

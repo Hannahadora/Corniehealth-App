@@ -59,7 +59,6 @@ export default class GroupIndex extends Vue {
 
 
 created() {
-  this.fetchGroups()
     if (this.groups.length < 1) this.fetchGroups();
   }
 }

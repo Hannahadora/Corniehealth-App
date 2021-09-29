@@ -10,12 +10,12 @@ import ChartCard from "./chart-card.vue";
 import Chart from "chart.js/auto";
 
 @Options({
-  name: "BloodChart",
+  name: "WeightChartt",
   components: {
     ChartCard,
   },
 })
-export default class WeightChart extends Vue {
+export default class WeightChartt extends Vue {
   chart!: Chart;
 
   mounted() {
@@ -31,19 +31,19 @@ export default class WeightChart extends Vue {
       data: {
         labels: ["01-Jan", "02-Jan", "03-Jan", "11:00", "04-Jan"],
         datasets: [
-          {  
-             fill: {
-                target: 'origin',
-                above: 'rgb(219 248 230)',   // Area will be red above the origin
-                below: 'rgb(12 104 47)'    // And blue below the origin
-              },
-            data: [50, 100, 20, 55, 220, 100],
-            borderColor: "rgba(53, 186, 131, 1)",
-            borderWidth: 1,
-            tension: 0,
-            pointRadius: 0,
-            backgroundColor: ""
-          },
+          // {  
+          //    fill: {
+          //       target: 'origin',
+          //       above: 'rgb(219 248 230)',   // Area will be red above the origin
+          //       below: 'rgb(12 104 47)'    // And blue below the origin
+          //     },
+          //   data: [50, 100, 20, 55, 220, 100],
+          //   borderColor: "rgba(53, 186, 131, 1)",
+          //   borderWidth: 1,
+          //   tension: 0,
+          //   pointRadius: 0,
+          //   backgroundColor: ""
+          // },
         ],
       },
       options: {
