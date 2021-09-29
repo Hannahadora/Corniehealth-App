@@ -81,12 +81,7 @@
               />
               <cornie-select
                 :rules="required"
-                :items="[
-                  {
-                    code: 'c7453f3b-e712-4cb3-a86f-02d1f51198eb',
-                    display: 'Clinician',
-                  },
-                ]"
+                :items="practitionerRoles"
                 v-model="accessRole"
                 label="Access Role"
               />
@@ -198,6 +193,8 @@ import Avatar from "@/components/avatar.vue";
 import Period from "@/types/IPeriod";
 import { createDate } from "@/plugins/utils";
 
+const roles = namespace("roles");
+
 @Options({
   name: "AddPractitioner",
   components: {
@@ -216,6 +213,12 @@ export default class AddPractitioner extends Vue {
 
   img = setup(() => useHandleImage());
 
+  @roles.State
+  roles!: { id: string; name: string }[];
+
+  @roles.Action
+  getRoles!: () => Promise<void>;
+
   @practitioner.Action
   getPractitionerById!: (id: string) => Promise<IPractitioner>;
 
@@ -228,6 +231,10 @@ export default class AddPractitioner extends Vue {
     createDate(0, 0, -16),
     "Practitioner must be at least 16yrs."
   );
+
+  get practitionerRoles() {
+    return this.roles.map((role) => ({ code: role.id, display: role.name }));
+  }
 
   qualificationCode = "";
   name = "";
@@ -369,6 +376,7 @@ export default class AddPractitioner extends Vue {
   async created() {
     this.setPractitioner();
     this.setDropdown();
+    if (!this.roles.length) await this.getRoles();
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <span class="flex items-center">
-    <label class="radio-container">
+    <label class="radio-container text-xs">
       {{ label }}
       <input
         @change="$emit('change', e)"
