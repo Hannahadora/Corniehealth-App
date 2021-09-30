@@ -28,9 +28,8 @@
         </span>
     </div>
          <diagnostic-modal   
-        :columns="practitioner"
           @update:preferred="showDiagnostic"
-          v-model:visible="showDiagnosticModal"/>
+          v-model="showDiagnosticModal"/>
   </div>
 </template>
 <script lang="ts">

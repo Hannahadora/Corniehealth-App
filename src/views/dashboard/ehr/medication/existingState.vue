@@ -24,10 +24,38 @@
               
             </span>
             <cornie-table :columns="rawHeaders" v-model="sortMedications">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 w-full pl-10 pr-10 cursor-pointer" @click="showMedication(item.id)">
-                      <edit-icon class="text-purple-600 fill-current" />
-                      <span class="ml-8 text-xs">Edit</span>
+                 <template #actions="{ item }">
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showMedication(item.id)">
+                      <eye-icon class="text-blue-300 fill-current" />
+                      <span class="ml-8 text-xs">View</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer">
+                      <update-icon class="text-purple-800 fill-current" />
+                      <span class="ml-8 text-xs">Update Status</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
+                      <calender-icon  />
+                      <span class="ml-8 text-xs">Add Appointment</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDiagnostic(item.id)">
+                      <checkin-icon class="text-yellow-600 fill-current" />
+                      <span class="ml-8 text-xs">Check In</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id)">
+                      <checkout-icon class="text-red-600 fill-current" />
+                      <span class="ml-8 text-xs">Check Out</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <send-icon class="text-purple-800 fill-current" />
+                      <span class="ml-8 text-xs">Report</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"   @click="$router.push('/dashboard/provider/experience/add-task')">
+                      <plus-icon class="text-green-400 fill-current" />
+                      <span class="ml-8 text-xs">Add Task</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                      <message-icon class="text-blue-600 fill-current" />
+                      <span class="ml-8 text-xs">Message</span>
                   </div>
                 </template>
                  <template #asserter="{ item }">
@@ -88,6 +116,9 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import MedicationModal from "./medicationdialog.vue";
 import { namespace } from "vuex-class";
+import SendIcon from "@/components/icons/send.vue";
+import CheckoutIcon from "@/components/icons/newcheckout.vue";
+import CalenderIcon from "@/components/icons/newcalender.vue";
 import { cornieClient } from "@/plugins/http";
 import { routerViewLocationKey } from "vue-router";
 
@@ -109,9 +140,12 @@ const emptyRequest: IRequest = {
   components: {
     Table,
     CancelIcon,
+    CheckoutIcon,
     SortIcon,
     CheckinIcon,
+    SendIcon,
     MedicationModal,
+    CalenderIcon,
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,

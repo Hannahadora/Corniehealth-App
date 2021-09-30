@@ -125,7 +125,7 @@
                         <cornie-select
                 class="required"
                 :rules="required"
-                :items="['service']"
+                :items="['Specialized surgeon','Chiropractor','Dental assistant','Specialized nurse','Hospital administrator','Plastic surgeon','Neuropathologist','Nephrologist','Obstetrician','School dental assistant','Medical microbiologist','Cardiologist','Dermatologist','Laboratory hematologist','Gerodontist','Removable prosthodontist','Specialized dentist','Neuropsychiatrist','Medical assistant','Orthopedic surgeon','Thoracic surgeon','Community health physician','Physical medicine specialist','Urologist','Electroencephalography specialist','Dental hygienist']"
                 v-model="requestModel.medicationAdministration.performerType"
                 label="performer type"
                 placeholder="--Select--"
@@ -848,8 +848,7 @@ get allPerformer() {
         this.done();
       }
     } catch (error) {
-      console.log(error);
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
   async updateRequest() {
@@ -885,7 +884,7 @@ get allPerformer() {
         this.done();
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
   async fetchPateints() {

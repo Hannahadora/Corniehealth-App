@@ -53,7 +53,7 @@
                       <plus-icon class="text-green-400 fill-current" />
                       <span class="ml-8 text-xs">Add Task</span>
                   </div>
-                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
                       <message-icon class="text-blue-600 fill-current" />
                       <span class="ml-8 text-xs">Message</span>
                   </div>
@@ -69,7 +69,6 @@
     
       <diagnostic-modal 
        v-if="requestId == 'false'"
-        :columns="practitioner"
            @medication-added="medicationAdded"
           @update:preferred="showDiagnostic"
           v-model="showDiagnosticModal"/>
@@ -260,6 +259,9 @@ onePatientId ="";
   
   get items() {
     const otherrequests = this.otherrequests.map((otherrequest) => {
+         (otherrequest as any).createdAt = new Date(
+         (otherrequest as any).createdAt
+       ).toDateString();
         if (otherrequest.status === "cancelled" || otherrequest.status === "no-show") {
         otherrequest.completeStatus = "Completed";
       } else if (otherrequest.status === "On-Hold") {
@@ -267,11 +269,6 @@ onePatientId ="";
       } else {
         otherrequest.completeStatus = "Stopped";
       }
-         (otherrequest as any).createdAt = new Date(
-         (otherrequest as any).createdAt 
-       ).toDateString();
-
-        //this.onePatientId =  request.subject.subject;
         return {
         ...otherrequest,
          action: otherrequest.id,

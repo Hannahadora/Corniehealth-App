@@ -350,7 +350,7 @@ import RangeSlider from "@/components/range.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import IconInput from "@/components/IconInput.vue";
-import CornieDatePicker from "@/components/CornieDatePicker.vue";
+import CornieDatePicker from "./components/datepicker.vue";
 import CornieDateRangePicker from "@/components/daterangepicker.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
@@ -446,11 +446,10 @@ export default class Medication extends Vue {
   showMedicationModal = false;
 
 
-  patient=[];
-  practitioner=[];
+patient=[];
+practitioner=[];
 practiceform=[];
 location=[];
-
 dispenser="";
 subject="";
 requester="";
@@ -570,7 +569,7 @@ get allPerformer() {
       }
     } catch (error) {
       console.log(error);
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
   async updateOtherrequest() {
@@ -585,7 +584,7 @@ get allPerformer() {
         this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
 
