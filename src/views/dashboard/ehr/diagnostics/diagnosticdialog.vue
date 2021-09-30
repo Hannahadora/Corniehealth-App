@@ -257,7 +257,7 @@
                          <cornie-select
                   class="required"
                   :rules="required"
-                  :items="dropdowns.serviceCategory"
+                   :items="['Specialized surgeon','Chiropractor','Dental assistant','Specialized nurse','Hospital administrator','Plastic surgeon','Neuropathologist','Nephrologist','Obstetrician','School dental assistant','Medical microbiologist','Cardiologist','Dermatologist','Laboratory hematologist','Gerodontist','Removable prosthodontist','Specialized dentist','Neuropsychiatrist','Medical assistant','Orthopedic surgeon','Thoracic surgeon','Community health physician','Physical medicine specialist','Urologist','Electroencephalography specialist','Dental hygienist']"
                    v-model="otherrequestModel.performer.performerType"
                   label="performer type"
                   placeholder="--Select--"
