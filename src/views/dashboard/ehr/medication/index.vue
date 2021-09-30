@@ -14,15 +14,13 @@
             py-2
         "
       >
-      Allergy & Intolerance
+      Medications
       </span>
       <span class="w-full h-screen">
           <medication-empty-state
                 v-if="empty"
           />
           <medication-existing-state
-        @allergy-added="allergyAdded"
-        :allergys="allergys"
           v-else
 
           />
@@ -31,13 +29,13 @@
   </div>
 </template>
 <script lang="ts">
-import IAllergy from "@/types/IAllergy";
+import IRequest from "@/types/IRequest";
 import { Options, Vue } from "vue-class-component";
 import MedicationEmptyState from "./emptyState.vue";
 import MedicationExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const allergy = namespace("allergy");
+const request = namespace("request");
 
 @Options({
   name: "AllergysIndex",
@@ -46,34 +44,23 @@ const allergy = namespace("allergy");
     MedicationExistingState,
   },
 })
-export default class AllergysIndex extends Vue {
-  addAllergy = false;
+export default class MedicationIndex extends Vue {
+  addMedication = false;
   show=false;
-  TaskToUpdate = {} as IAllergy;
 
   get empty() {
-    return this.allergys.length < 1;
+    return this.requests.length < 1;
   }
 
- @allergy.State
-  allergys!: IAllergy[];
+ @request.State
+  requests!: IRequest[];
 
-  @allergy.Action
-  fetchAllergys!: () => Promise<void>;
+  @request.Action
+  fetchRequests!: () => Promise<void>;
 
-
-  allergyAdded() {
-    this.show = false;
- this.allergys;
-  this.fetchAllergys();
-  }
-
-mounted(){
-  this.fetchAllergys();
-}
 
 created() {
-    if (this.allergys.length < 1) this.fetchAllergys();
+    if (this.requests.length < 1) this.fetchRequests();
   }
 }
 </script>

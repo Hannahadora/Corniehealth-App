@@ -45,7 +45,7 @@
                         <p class="cursor-pointer">{{ item.asserter }}</p>
                 </template>
             </cornie-table>
-    </div>
+        </div>
     
       <allergy-modal 
        v-if="allergyId == 'false'"
@@ -183,7 +183,7 @@ export default class AllergyExistingState extends Vue {
      {
       title: "Criticality",
       key: "criticality",
-      show: true,
+      show: false,
     },
     {
       title: "product",
@@ -193,7 +193,7 @@ export default class AllergyExistingState extends Vue {
     {
       title: "clinical| verication",
       key: "clinicalStatus",
-      show: false,
+      show: true,
     },
     {
       title: "Asserter",
@@ -316,7 +316,6 @@ getPractitionerName(id: string){
   }
 
   allergyAdded() {
-    console.log('HJGHFS');
  this.allergys;
   this.fetchAllergys();
   }

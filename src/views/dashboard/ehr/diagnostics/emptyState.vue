@@ -1,10 +1,10 @@
 <template>
   <div class="w-full pb-80">  
     <div class="w-full flex flex-col justify-center items-center h-96">
-        <img src="@/assets/bro.svg" />
+        <img src="@/assets/diagnostics.svg" />
         <h3 class="text-center mt-5">
-            There are no current medications for this patient <br>
-            Add a new medication by clicking the button below
+            There are no current diagnosis for this patient <br>
+            Add a new diagnosis by clicking the button below
         </h3>
         <span class="flex justify-center w-full">
             <button
@@ -21,16 +21,16 @@
                 focus:outline-none
                 hover:opacity-90
                 "
-                @click="showMedication"
+                @click="showDiagnostic"
             >
             New Request
             </button>
         </span>
     </div>
-         <medication-modal   
+         <diagnostic-modal   
         :columns="practitioner"
-          @update:preferred="showMedication"
-          v-model="showMedicationModal"/>
+          @update:preferred="showDiagnostic"
+          v-model:visible="showDiagnosticModal"/>
   </div>
 </template>
 <script lang="ts">
@@ -39,20 +39,20 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
-import MedicationModal from "./medicationdialog.vue";
+import DiagnosticModal from "./diagnosticdialog.vue";
 @Options({
   components: {
     ChevronDownIcon,
     Select,
     SearchIcon,
     IconInput,
-    MedicationModal,
+    DiagnosticModal,
   },
 })
-export default class AllergysEmptyState extends Vue {
-   showMedicationModal= false;
- async showMedication(){
-      this.showMedicationModal = true;
+export default class DiagnosticsEmptyState extends Vue {
+   showDiagnosticModal= false;
+ async showDiagnostic(){
+      this.showDiagnosticModal = true;
   }
 }
 </script>
