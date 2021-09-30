@@ -19,7 +19,7 @@
       </template>
       <span class="flex px-3 pb-2 border-b-4 flex-grow"></span>
     </div>
-    <tab :vnode="$slots.default()[syncedValue]"/>
+    <tab :vnode="$slots.default()[syncedValue]" />
   </div>
 </template>
 
@@ -29,38 +29,36 @@ import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 
 @Options({
-  name: "tab"
+  name: "tab",
 })
 class Tab extends Vue {
   @Prop()
   vnode!: VNode;
 
   render() {
-    return this.vnode
+    return this.vnode;
   }
 }
 
 @Options({
   name: "tabs",
   components: {
-    Tab
-  }
+    Tab,
+  },
 })
 export default class Tabs extends Vue {
   @Prop()
   items!: string[];
-  
+
   @PropSync("modelValue", { type: Number, default: 0 })
-  syncedValue!: number
+  syncedValue!: number;
 
   isActive(index: number): boolean {
-    return index == this.syncedValue
+    return index == this.syncedValue;
   }
 
   mounted() {
-    console.log(this.$slots.default!().length)
+    console.log(this.$slots.default!().length);
   }
 }
-
-
 </script>

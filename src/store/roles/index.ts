@@ -64,8 +64,6 @@ export default {
 
     async getRoles(ctx) {
       const roles = await getRoles();
-      console.log(roles, "roles");
-
       ctx.commit("setRoles", roles);
     },
     // async getCareteamById(ctx, id: string) {
