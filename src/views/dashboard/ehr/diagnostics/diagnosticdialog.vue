@@ -481,8 +481,17 @@ async setRequestModel() {
      this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.otherrequest }));
   }
   get payload() {
-     const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
-    return model;
+    //  const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
+    // return model;
+    return{
+      basicInfo: this.otherrequestModel.basicInfo,
+       requestInfo: this.otherrequestModel.requestInfo,
+        subject: this.otherrequestModel.subject, 
+        performer: this.otherrequestModel.performer,
+         forms: this.otherrequestModel.forms,
+          request: this.otherrequestModel.request,
+     
+    }
   }
 get format() {
         return `${this.otherrequestModel.request.range}`
@@ -559,7 +568,7 @@ get allPerformer() {
     this.loading = false;
   }
  async createOtherrequest() {
-    this.payload.request.occurenceDate = new Date(this.payload.request.occurenceDate).toISOString();
+   // this.payload.request.occurenceDate = new Date(this.payload.request.occurenceDate).toISOString();
     try {
       const response = await cornieClient().post("/api/v1/other-requests", this.payload);
       if (response.success) {
@@ -580,8 +589,8 @@ get allPerformer() {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
           this.updatedOtherrequests([response.data]);
-        window.notify({ msg: "Other Request Updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/requests");
+        window.notify({ msg: "Request Updated", status: "success" });
+        this.done();
       }
     } catch (error) {
       window.notify({ msg: error.response.data.message, status: "error" });

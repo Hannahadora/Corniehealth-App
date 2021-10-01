@@ -5,6 +5,7 @@ import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
+import { flatten } from "@/plugins/utils";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -104,14 +105,12 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "medications",
-            props: true,
             name: "Medications",
             component: () =>
               import("@/views/dashboard/ehr/medication/index.vue"),
           },
           {
             path: "diagnostics",
-            props: true,
             name: "Diagnostics",
             component: () =>
               import("@/views/dashboard/ehr/diagnostics/index.vue"),

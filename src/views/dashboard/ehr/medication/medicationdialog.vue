@@ -690,18 +690,18 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, required: false, default: { ...emptyRequest} })
-  request!: IRequest;
-
+  // @Prop({ type: Object, required: false, default: { ...emptyRequest} })
+  // request!: IRequest;
+  
   requestModel = {} as IRequest;
 
   @request.Action
   getRequestById!: (id: string) => IRequest;
 
-//   @Watch("request")
-//   requestUpdated(request: IRequest) {
-//     this.requestModel = JSON.parse(JSON.stringify({ ...request }));
-//   }
+  // @Watch("request")
+  // requestUpdated(request: IRequest) {
+  //   this.requestModel = JSON.parse(JSON.stringify({ ...request }));
+  // }
 
   @request.Mutation
   updatedRequests!: any;
@@ -758,9 +758,6 @@ performer="";
   }
 
 
-  get isUpdate() {
-    return Boolean(this.id);
-  }
  select(i:number) {
       this.selected = i;
     }
@@ -774,9 +771,7 @@ performer="";
       this.width -= this.width_percent;
     }
 
-    get oneDetails (){
-        return this.medicationsDetail.medicationDetails
-    }
+ 
     medicationsDetail = {...emptyMedicationDetails}; 
     medicationsDetails: Medications[] = [];
  
@@ -787,20 +782,33 @@ performer="";
          this.medicationsDetails.splice(index, 1);
     }
   async setRequestModel() {
-     this.requestModel = JSON.parse(JSON.stringify({ ...this.request }));
+     this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest}));
   }
   async setRequest() {
     const request = await this.getRequestById(this.id)
     if (!request) return
-    this.requestModel =  ({...request}) ;
+    console.log("request");
+    console.log(request);
+    this.requestModel =  (request) ;
     this.requestModel.medications = request.medications;
   }
  get newaction() {
     return this.id ? 'Update' : 'Create New'
   }
   get payload() {
-     const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
-    return model;
+    //  const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
+    // return model;
+    return{
+        requestInfo: this.requestModel.requestInfo,
+        requestDetails: this.requestModel.requestDetails,
+        subject: this.requestModel.subject,
+        performer: this.requestModel.performer,
+        medicationAdministration: this.requestModel.medicationAdministration,
+        fufillment: this.requestModel.fufillment,
+        history: this.requestModel.history,
+        medications: this.requestModel.medications,
+    }
+
   }
   get allaction() {
     return this.id ? "Edit" : "New";
@@ -845,37 +853,16 @@ get allPerformer() {
       if (response.success) {
           this.updatedRequests([response.data]);
           window.notify({ msg: "Request Created", status: "success" });
-        this.done();
+       this.done();
       }
     } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: error.response.data[0].message, status: "error" });
     }
   }
   async updateRequest() {
      const id = this.id;
     const url = `/api/v1/requests/${id}`;
     const payload = this.payload ;
-    const body = {
-     // ...this.payload,
-      ...this.request.medications,
-      ...this.requestModel.fufillment,
-      ...this.requestModel.history,
-      ...this.requestModel.medicationAdministration,
-      ...this.requestModel.performer,
-      ...this.requestModel.requestDetails,
-      ...this.requestModel.requestInfo,
-      ...this.requestModel.subject,
-
-//        requestInfo: {},
-//   requestDetails: {},
-//   subject: {},
-//   performer: {},
-//   medicationAdministration: {},
-//   fufillment: {},
-//   history: {},
-//   medications: [],
-
-    }
     try {
       const response = await cornieClient().put(url, this.payload);
       if (response.success) {

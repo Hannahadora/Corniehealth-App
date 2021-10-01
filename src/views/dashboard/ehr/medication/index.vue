@@ -38,7 +38,7 @@ import { namespace } from "vuex-class";
 const request = namespace("request");
 
 @Options({
-  name: "AllergysIndex",
+  name: "MedicationIndex",
   components: {
     MedicationEmptyState,
     MedicationExistingState,

@@ -100,8 +100,6 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
-import IRequest from "@/types/IRequest";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -119,23 +117,8 @@ import { namespace } from "vuex-class";
 import SendIcon from "@/components/icons/send.vue";
 import CheckoutIcon from "@/components/icons/newcheckout.vue";
 import CalenderIcon from "@/components/icons/newcalender.vue";
-import { cornieClient } from "@/plugins/http";
-import { routerViewLocationKey } from "vue-router";
 
 const request = namespace("request");
-
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  medications: [],
-
-
-};
 @Options({
   components: {
     Table,
@@ -181,10 +164,6 @@ export default class AllergyExistingState extends Vue {
   requestId="";
   tasknotes=[];
 onePatientId ="";
-  statuses = ['Show All', 'On-Hold', 'Cancelled', 'Completed','Stopped'];
-
-  // @Prop({ type: Array, default: [] })
-  // requests!: IRequest[];
 
   @request.State
   requests!: any[];
@@ -238,7 +217,7 @@ onePatientId ="";
     },
     {
       title: "Status",
-      key: "completeStatus",
+      key: "status",
       show: true,
     },
   ];
@@ -254,13 +233,6 @@ onePatientId ="";
   
   get items() {
     const requests = this.requests.map((request) => {
-        if (request.status === "cancelled" || request.status === "no-show") {
-        request.completeStatus = "Completed";
-      } else if (request.status === "On-Hold") {
-        request.completeStatus = "On-Hold";
-      } else {
-        request.completeStatus = "Stopped";
-      }
          (request as any).createdAt = new Date(
          (request as any).createdAt 
        ).toDateString();
@@ -273,7 +245,6 @@ onePatientId ="";
        requester: this.getPatientName(request.requestDetails.requester),
         dispenser: this.getPractitionerName(request.performer.dispenser),
         performer: this.getPractitionerName(request.medicationAdministration.performer),
-        status: request.status,
         };
     });
     if (!this.query) return requests;

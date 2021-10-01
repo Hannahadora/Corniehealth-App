@@ -181,7 +181,6 @@ export default class DiagnosticExistingState extends Vue {
   tasknotes=[];
   showCheckout= false;
 onePatientId ="";
-  statuses = ['Show All', 'On-Hold', 'Cancelled', 'Completed','Stopped'];
 
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
@@ -243,7 +242,7 @@ onePatientId ="";
     },
     {
       title: "Status",
-      key: "completeStatus",
+      key: "status",
       show: true,
     },
   ];
@@ -262,13 +261,6 @@ onePatientId ="";
          (otherrequest as any).createdAt = new Date(
          (otherrequest as any).createdAt
        ).toDateString();
-        if (otherrequest.status === "cancelled" || otherrequest.status === "no-show") {
-        otherrequest.completeStatus = "Completed";
-      } else if (otherrequest.status === "On-Hold") {
-        otherrequest.completeStatus = "On-Hold";
-      } else {
-        otherrequest.completeStatus = "Stopped";
-      }
         return {
         ...otherrequest,
          action: otherrequest.id,
