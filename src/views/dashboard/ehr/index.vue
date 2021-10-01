@@ -1,20 +1,26 @@
 <template>
-<div class="w-full">
-  <div class="flex space-x-4 float-right col-span-full mr-4">
-    <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">Patient Queue (2)</p>
-    <p class="text-xs cursor-pointer text-gray-500" @click="showAppoont">Upcoming Appointments (2)</p>
-    <p class="text-xs cursor-pointer text-gray-500" @click="showChart">Find Patient Chart</p>
-  </div>
-  <div
-    class="mt-10 mb-5  rounded-lg settings"
-  >
-    <div class="w-full h-screen max-h-full">
-      <clinical-sidebar class="pb-96"/>
+  <div class="w-full">
+    <div class="flex space-x-4 float-right col-span-full mr-4">
+      <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">
+        Patient Queue (2)
+      </p>
+      <p class="text-xs cursor-pointer text-gray-500" @click="showAppoont">
+        Upcoming Appointments (2)
+      </p>
+      <p class="text-xs cursor-pointer text-gray-500" @click="showChart">
+        Find Patient Chart
+      </p>
     </div>
-    <div class="w-full overflow-auto h-screen pb-72 max-h-full border-l-2 ">
-      <router-view />
+    <div class="mt-10 mb-5 rounded-lg settings">
+      <div class="w-full h-screen max-h-full">
+        <clinical-sidebar class="pb-96" />
+      </div>
+      <div class="w-full overflow-auto h-screen pb-72 max-h-full border-l-2">
+        <router-view />
+      </div>
     </div>
-  </div>
+    <patient-modal v-model:visible="showPatient" />
+  <!-- </div> -->
   <patient-modal v-model:visible="showPatient"/>
   <modal :visible="!practitionerAuthenticated">
     <auth-modal />
@@ -46,9 +52,9 @@ export default class ClinicalsSidebar extends Vue {
   @userStore.State
   practitionerAuthenticated!: boolean;
 
-  showPatient=false;
+  showPatient = false;
 
-  showPatientModal(){
+  showPatientModal() {
     this.showPatient = true;
   }
 }

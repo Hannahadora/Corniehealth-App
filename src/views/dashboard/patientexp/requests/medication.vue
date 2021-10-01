@@ -197,7 +197,7 @@ const emptyMedication: Medications = {
           duration: { start: "", end: "" }
         },
          refillInfo:{
-            dispenseInterval: "",
+            dispenseInterval: {} as Period,
             numberOfRepeatsAllowed: 0,
             quantity: 0,
             expectedSupplyDuration: 0,

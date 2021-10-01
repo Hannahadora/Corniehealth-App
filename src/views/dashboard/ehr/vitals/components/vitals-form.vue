@@ -375,7 +375,7 @@ export default class VitalsForm extends Vue {
     type: "Type",
     status: "active",
     encounterId: "c5903ec6-20ac-47ee-b652-a562e5df7379",
-    patientId: this.$route.params.id,
+    patientId: this.$route?.params?.id,
     // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
     practitionerId: this.practitionerId,
     pulse: 78,
@@ -447,14 +447,20 @@ addPhysical() {
 
   }
 
+  get patientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
+  }
+
   async onSubmit() {
     //   await this.createEncounter(this.data);
     try {
         this.loading = true;
         this.vitalData.practitionerId = this.practitionerId;
+        this.vitalData.patientId = this.patientId;
      
         await this.createVital(this.vitalData);
-        this.getVitals("a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757")
+        this.getVitals(this.patientId)
         this.loading = false;
         this.$emit('closesidemodal')
     } catch (error) {
@@ -467,7 +473,6 @@ addPhysical() {
   @Watch('selectedVital')
   updateVitalData() {
       if (this.selectedVital?.id) {
-          alert("assign")
           this.vitalData = this.selectedVital;
           this.collectedPressures = [];
 

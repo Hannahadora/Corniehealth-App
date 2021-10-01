@@ -36,18 +36,18 @@
 
       <div class="w-full border-b-4 curved flex mb-8">
           <div class="container-fluid flex font-semibold text-lg">
-              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
-              @click="() => activeTab = 0"
-              >Episodes</a>
               <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
               @click="() => activeTab = 1"
               >Encounters</a>
+              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
+              @click="() => activeTab = 0"
+              >Episodes</a>
           </div>
       </div>
 
       <div class="w-full">
         <span class="w-full bg-danger">
-          <span class="flex justify-end w-full m4-5">
+          <span class="flex justify-end w-full m4-5" v-if="activeTab === 1">
             <cornie-btn
               class="bg-danger text-white m-5 p-2 font-semibold"
                @click="() => showNewEncounterModal = true"
@@ -55,13 +55,67 @@
               New Encounter
             </cornie-btn>
           </span>
+          <span class="flex justify-end w-full m4-5"  v-if="activeTab === 0">
+            <cornie-btn
+              class="bg-danger text-white m-5 p-2 font-semibold"
+              @click="() => showNewEpisodeModal = true"
+            >
+              New Episode
+            </cornie-btn>
+          </span>
         </span>
       </div>
 
-      <div class="p-2">
+      <div class="p-2" v-if="activeTab === 0">
         <cornie-table
           v-model="items"
           :columns="headers"
+          @filter="filterAdvanced = true"
+        >
+          <template #name="{ item }">
+            <div class="flex items-center">
+              <avatar class="w-5 h-5" :src="item.profilePhoto" />
+              <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
+            </div>
+          </template>
+          <template #actions="{  }">
+            <table-action
+            >
+              <newview-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">View</span>
+            </table-action>
+            <table-action
+            >
+              <update-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">Update Status</span>
+            </table-action>
+            <table-action
+            >
+              <add-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">Admit Patient</span>
+            </table-action>
+            <table-action
+            >
+              <newview-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">View Patient History</span>
+            </table-action>
+            <table-action
+            >
+              <newview-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">View Class History</span>
+            </table-action>
+            <table-action>
+              <cancel-icon class="text-red-500 fill-current" />
+              <span class="ml-3 text-xs">Cancel</span>
+            </table-action>
+          </template>
+        </cornie-table>
+      </div>
+
+      <div class="p-2"  v-if="activeTab === 1">
+        <cornie-table
+          v-model="items"
+          :columns="rawHeaders"
           @filter="filterAdvanced = true"
         >
           <template #name="{ item }">
@@ -115,8 +169,12 @@
       :patients="patients"
     />
 
-    <side-modal :visible="showNewEncounterModal" :width="990" @closesidemodal="() => showNewEncounterModal = false" :header="'New Vitals'">
+    <side-modal :visible="showNewEncounterModal" :width="990" @closesidemodal="() => showNewEncounterModal = false" :header="'New Encounter'">
       <new-encounter />
+    </side-modal>
+
+    <side-modal :visible="showNewEpisodeModal" :width="990" @closesidemodal="() => showNewEpisodeModal = false" :header="'New Episode'">
+      <new-episode />
     </side-modal>
 
     <modal :visible="false">
@@ -173,6 +231,7 @@ import VitalsForm from "./components/vitals-form.vue"
 import UpdateIcon from "@/components/icons/newupdate.vue"
 import AddIcon from "@/components/icons/add.vue"
 import NewEncounter from "./components/new-encounter.vue";
+import NewEpisode from "./components/new-episode.vue";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -203,6 +262,7 @@ const visitsStore = namespace("visits");
     UpdateIcon,
     AddIcon,
     NewEncounter,
+    NewEpisode,
   },
 })
 export default class ExistingState extends Vue {
@@ -233,6 +293,7 @@ export default class ExistingState extends Vue {
   password = "";
 
   filterAdvanced = false;
+  showNewEpisodeModal = false;
   showNewEncounterModal = false;
   filteredPatients: IPatient[] = [];
   checkInPatient!: IPatient;
@@ -264,8 +325,13 @@ export default class ExistingState extends Vue {
       show: true,
     },
     {
-      title: "Condition Role",
+      title: "Condition",
       key: "conditionRole",
+      show: true,
+    },
+    {
+      title: "Role",
+      key: "role",
       show: true,
     },
     {
@@ -281,7 +347,45 @@ export default class ExistingState extends Vue {
     {
       title: "Status",
       key: "status",
+      show: false,
+    },
+  ];
+
+  rawHeaders = [
+    {
+      title: "Identifier",
+      key: "identifier",
       show: true,
+    },
+    {
+      title: "Recorded",
+      key: "recorded",
+      show: true,
+    },
+    {
+      title: "Condition",
+      key: "conditionRole",
+      show: true,
+    },
+    {
+      title: "Service Type",
+      key: "type",
+      show: true,
+    },
+    {
+      title: "Based On",
+      key: "Based On",
+      show: true,
+    },
+    {
+      title: "Practitioner",
+      key: "practitioner",
+      show: true,
+    },
+    {
+      title: "Status",
+      key: "status",
+      show: false,
     },
   ];
 
@@ -292,8 +396,11 @@ export default class ExistingState extends Vue {
         recorded: "21-03-21",
         type: "Record Type",
         conditionRole: "Encounter",
+        role: "Role",
         careManager: "Performer",
-        encounters: "2/4",
+        encounters: "Encounter",
+        practitioner: "Practioner",
+        basedOn: "Based On",
         status: "Active"
       },
       {
@@ -301,8 +408,11 @@ export default class ExistingState extends Vue {
         recorded: "21-03-21",
         type: "Record Type",
         conditionRole: "Encounter",
+        role: "Role",
         careManager: "Performer",
-        encounters: "4/8",
+        basedOn: "Based On",
+        practitioner: "Practitioner",
+        encounters: "Encounter",
         status: "Active"
       },
     ]

@@ -14,7 +14,7 @@
       overflow-auto
     "
   >
-    <div class="container-fluid" v-if="true">
+    <div class="container-fluid" v-if="vitals?.length > 0">
       <div class="w-full p-2">
         <span
           class="
@@ -340,11 +340,16 @@ export default class ExistingState extends Vue {
     })
   }
 
+  get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
+  }
+
   async created() {
     console.log(this.$route, "ROUTER");
     
-    await this.getVitals("a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757");
-    await this.getEncounters("a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757");
+    await this.getVitals(this.activePatientId);
+    await this.getEncounters(this.activePatientId);
     console.log(this.vitals, "encounters");
     
   }

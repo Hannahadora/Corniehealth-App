@@ -3,16 +3,17 @@ import { IPatient } from "@/types/IPatient";
 import IPractitioner from "@/types/IPractitioner"
 
 interface Credential {
-    userId: string,
-    password: string,
+    email: string;
+    authPassword: string;
+    accountId: string;
 }
 
 const authenticateUser = async (payload: Credential) => {
   try {
-    const { data  } = await quantumClient().post("/org/security/passwords/confirm", payload);
-    console.log(data, "confirm data");
+    const { data: { emailVerified }  } = await quantumClient().post("/auth/login", payload);
+    console.log(emailVerified, "confirm data");
     
-    return data?.success ? true : false;     
+    return emailVerified ? true : false;     
   } catch (error) {
       console.log(error);
       window.notify({ msg: "Authentication failed", status: "error" });

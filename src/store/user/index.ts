@@ -12,6 +12,7 @@ interface UserState {
   authTime?: Date;
   cornieData: { user: CornieUser; practitioner: IPractitioner };
   practitionerAuthenticated: boolean;
+  domain: string;
 }
 
 export default {
@@ -24,7 +25,8 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: true,
+    practitionerAuthenticated: false,
+    domain: 'gcbv',
   },
   getters: {
     accountType(state) {

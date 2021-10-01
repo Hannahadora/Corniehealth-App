@@ -6,10 +6,10 @@
             <span class="font-semibold capitalize">{{ label }}</span>
           </div>
           <div class="w-full flex items-center">
-            <div class="w-3/12 pl-0">
+            <div class="w-4/12 pl-0">
                 <slot name="list" />
             </div>
-            <div class="w-9/12 -mt-5 pl-0">
+            <div class="w-8/12 -mt-5 pl-0">
                 <slot name="input" />
             </div>
         </div>

@@ -190,7 +190,7 @@
             </div>
             <div class="w-full flex flex justify-end">
                 <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
-                    <span class="font-semibold" @click="() => $router.go(-1)">Cancel</span>
+                    <span class="font-semibold" @click="() => $router.push('/dashboard/provider/home/')">Cancel</span>
                 </corniebtn>
 
                 <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer">
@@ -319,8 +319,11 @@ export default class ExistingState extends Vue {
   @userStore.State
   practitionerAuthenticated!: boolean;
 
+  @userStore.State
+  domain!: string;
+
   @userStore.Action
-  updatePractitionerAuthStatus!: () => Promise<void>;
+  updatePractitionerAuthStatus!: (value: boolean) => Promise<void>;
 
   password = "";
 
@@ -337,6 +340,7 @@ export default class ExistingState extends Vue {
   loading = false;
   activeVisits: IPatient[] = [ ];
   patientId = ""
+  time: any;
 
   headers = [
     {
@@ -398,7 +402,7 @@ export default class ExistingState extends Vue {
       this.patientId = patientId;
       this.showAuthModal = true;
     } else {
-      this.$router.push({ name: 'Health Trend', params: { patientId, id: patientId  }})
+      this.$router.push({ name: 'Health Trend', params: { id: patientId  }})
     }
   }
 
@@ -451,16 +455,18 @@ export default class ExistingState extends Vue {
   async authenticateUser() {
     try {
       this.loading = true;
-      const verified = await ehrHelper.authenticateUser({ userId: this.authPractitioner?.id, password: this.password})
+      const verified = await ehrHelper.authenticateUser({ email: this.authPractitioner?.email, authPassword: this.password, accountId: this.domain ? this.domain : ""})
       this.password = "";
+      
       this.loading = false;
       if (verified) {
         this.showAuthModal = false;
-        this.updatePractitionerAuthStatus();
+        this.updatePractitionerAuthStatus(true);
         if (!this.patientId) {
           this.showSearchModal = true;
         } else {
-          this.$router.push({ name: 'Health Trend', params: { patientId: this.patientId }})
+          this.$router.push(`/provider/clinical/${this.patientId}/health-trend`)
+          // this.$router.push({ name: 'Health Trend', params: { id: this.patientId }})
         }
       }
     } catch (error) {
@@ -475,7 +481,7 @@ export default class ExistingState extends Vue {
       const data = await ehrHelper.searchPatient(this.query);
       this.loading = false;
       if (data && data.length > 0) {        
-        this.$router.push({ name: 'Health Trend', params: { patientId: data[0].id }})
+        this.$router.push(`/dashboard/provider/clinical/${data[0].id}/health-trend`)
         // this.searchResults = data;        
       } else {
         window.notify({ msg: "No match found", status: "info" });
@@ -487,7 +493,24 @@ export default class ExistingState extends Vue {
     }
   }
 
+  logout() {
+    this.updatePractitionerAuthStatus(false)
+  }
+
+  resetTimer() {
+    clearTimeout(this.time);
+    this.time = setTimeout(this.logout, 180000)
+  }
+
+    mounted() {
+      window.onload = this.resetTimer;
+      // DOM Events
+      document.onmousemove = this.resetTimer;
+      document.onkeydown = this.resetTimer;
+    }
+
   async created() {
+    
     if (!this.practitionerAuthenticated) this.showAuthModal = true;
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();

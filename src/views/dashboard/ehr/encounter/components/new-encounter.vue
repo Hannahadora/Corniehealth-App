@@ -6,58 +6,53 @@
             <basic-info>
                 <template #form>
                     <div class="w-full flex items-center mb-3 mt-5">
-                        <div class="w-4/12 -mt-4">
-                            <cornie-input :label="'Encounter Id'" />
-                        </div>
-                        <div class="w-4/12">
+                        <div class="w-6/12">
                             <cornie-select :label="'Status'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-6/12">
                             <cornie-select :label="'Type'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center my-3">
-                        <div class="w-4/12 -mt-4">
+                    <div class="w-full flex items-center mt-3">
+                        <div class="w-6/12 -mt-4">
                             <cornie-select :label="'Class'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Priority'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
-                        <div class="w-4/12">
+                        <div class="w-6/12">
                             <cornie-select :label="'Service Type'"  :items="['Service 1', 'Service 2' ]"/>
                         </div>
                     </div>
 
+                    <div class="w-full mb-8 -mt-3 ">
+                        <div class="w-6/12">
+                            <p class="text-base font-semibold">Class History</p>
+                            <p>
+                                <span class="mr-2">Inpatient</span> 
+                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="w-full flex items-center my-3">
-                        <div class="w-4/12 -mt-4">
-                            <cornie-select :label="'Appointment'"  :items="['Ative', 'Inactive' ]"/>
+                        <div class="w-6/12">
+                            <cornie-select :label="'Priority'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Episode of care'"  :items="['Ative', 'Inactive' ]"/>
+                        <div class="w-6/12">
+                            <cornie-select :label="'Episode of care'"  :items="['Episode 1', 'Episode 2' ]"/>
                         </div>
-                        <div class="w-4/12">
+                    </div>
+
+                    <div class="w-full flex items-center my-3">
+                        <div class="w-6/12 -mt-4">
+                            <cornie-select :label="'Appointment'"  :items="['Appointment 1', 'Appointment 2' ]"/>
+                        </div>
+                        <div class="w-6/12">
                             <cornie-select :label="'Based on'"  :items="['Service 1', 'Service 2' ]"/>
                         </div>
                     </div>
 
                     <div class="w-full flex items-center my-3">
-                        <div class="w-4/12 -mt-4">
-                            <cornie-select :label="'Appointment'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Episode of care'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Based on'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                    </div>
-
-                    <div class="w-full flex items-center my-3">
-                        <div class="w-4/12 -mb-4">
-                            <cornie-select :label="'Reason Code'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                        <div class="w-4/12">
+                        <div class="w-6/12">
                             <div class="w-11/12">
                                 <date-time-picker :label="'Start date & Time'" :width="'w-full'">
                                     <template #date>
@@ -78,7 +73,7 @@
                                 </date-time-picker>
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-6/12">
                             <div class="w-11/12">
                                 <date-time-picker :label="'End date & Time'" :width="'w-full'">
                                     <template #date>
@@ -101,29 +96,6 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center mt-6 mb-3">
-                        <div class="w-4/12 -mt-4">
-                            <cornie-select :label="'Length'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Condition'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Reason Reference'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                    </div>
-
-                    <div class="w-full flex items-center mt-3 mb-3">
-                        <div class="w-4/12">
-                            <cornie-select :label="'Diagnosis'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Use'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
-                        <div class="w-4/12">
-                            <cornie-select :label="'Rank'"  :items="['Service 1', 'Service 2' ]"/>
-                        </div>
-                    </div>
                 </template>
             </basic-info>
 
@@ -134,14 +106,12 @@
                             <cornie-input :label="'Provider\'s name'" />
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Location'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Reference Location'"  :items="['Location 1', 'Location 2' ]"/>
                         </div>
                     </div>
 
                     <div class="w-full flex items-center my-3">
-                        <div class="w-6/12 -mt-4">
-                            <cornie-select :label="'Physical Type'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
+                        
                         <div class="w-6/12">
                             <p class="text-xs font-semibold uppercase">Status</p>
                             <div class="w-full flex flex-wrap py-4">
@@ -170,6 +140,10 @@
                                     </label>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="w-6/12 -mt-1">
+                            <cornie-select :label="'Physical Type'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
                     </div>
 
@@ -223,46 +197,42 @@
             <hospital-info style="margin: 2rem 0">
                 <template #form>
                     <div class="w-full flex items-center mb-3 mt-9">
-                        <div class="w-6/12 -mt-4">
-                            <cornie-select :label="'Pre Admission Identifier'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
+                        
                         <div class="w-6/12 -mt-4">
                             <cornie-select :label="'Origin'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                    </div>
-
-                    <div class="w-full flex items-center mb-3 mt-3">
                         <div class="w-6/12">
                             <cornie-select :label="'Admit Source'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
+                    </div>
+
+                    <div class="w-full flex items-center mb-3 mt-3">
+                        
                         <div class="w-6/12">
                             <cornie-select :label="'Re-admission'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                    </div>
-
-                    <div class="w-full flex items-center mb-3 mt-3">
                         <div class="w-6/12">
                             <cornie-select :label="'Diet Preference'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
+                    </div>
+
+                    <div class="w-full flex items-center mb-3 mt-3">
+                        
                         <div class="w-6/12">
                             <cornie-select :label="'Special Courtsey'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                    </div>
-
-                    <div class="w-full flex items-center mb-3 mt-3">
                         <div class="w-6/12">
                             <cornie-select :label="'Special Arrangement'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                        <div class="w-6/12">
-                            <cornie-select :label="'Destination'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
                     </div>
 
                     <div class="w-full flex items-center mb-3 mt-3">
+                        
                         <div class="w-6/12">
-                            <cornie-select :label="'Discharge Disposition'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Destination'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
                         <div class="w-6/12">
+                            <cornie-select :label="'Discharge Disposition'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
                     </div>
                 </template>

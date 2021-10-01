@@ -473,9 +473,10 @@ singleParticipant = [];
         i.Patients.length;
 
         const pateintId = i.Patients.map((patient:any) =>{
-            this.onePatientId =  patient.id;
+            this.onePatientId =  patient.patientId;
        
       });
+      const patientNewId = this.onePatientId;
       return {
         ...i,
         action: i.id,
@@ -528,6 +529,8 @@ async displayParticipants(value: string) {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
+    console.log(id);
+    console.log("id");
     return pt ? `${pt.firstname} ${pt.lastname}` : '';
   }
 
@@ -566,9 +569,8 @@ async displayParticipants(value: string) {
 
 
   async created() {
-    if (!this.patients || this.patients.length === 0) await this.getPatients();
-    if (!this.appointments || this.appointments.length === 0) await this.fetchAppointments();
-    if (!this.appointments || this.appointments.length === 0) await this.getPatients();
+    this.getPatients();
+   this.fetchAppointments();
     window.addEventListener('click', (e: any) => {
       if (!e.target.classList.contains('md')) {
         this.selectType = false;
