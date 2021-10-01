@@ -28,25 +28,25 @@ export default interface IAppointment {
   status: string;
 }
 export interface Practitioners{
-  id: string;
   type: string,
   required: boolean,
   consultationMedium: string,
   period: Period;
+  practitionerId: string,
 }
 export interface Devices{
-  id: string;
   type: string,
   required: boolean,
   consultationMedium: string,
   period: Period;
+  deviceId: string,
 }
 export interface Patients {
-  id: string;
   type: string,
   required: boolean,
   consultationMedium: string,
-  period: Period;
+  period: Period,
+  patientId: string,
   firstname: string,
   lastname: string,
   gender: string,

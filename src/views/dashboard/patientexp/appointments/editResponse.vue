@@ -133,20 +133,20 @@ const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
 const emptyPractitioners: Practitioners = {
-  id: "",
   type: "",
   required: false,
   consultationMedium: "",
   period : {} as Period,
+  practitionerId: "",
 
 
 };
 const emptyPatients: Patients = {
-  id: "",
   type: "",
   required: false,
   consultationMedium: "",
   period : {} as Period,
+  patientId:"",
   firstname: "",
   lastname: "",
   gender: "",
@@ -156,11 +156,11 @@ const emptyPatients: Patients = {
 
 };
 const emptyDevices: Devices = {
-    id: "",
   type: "",
   required: false,
   consultationMedium: "",
   period : {} as Period,
+  deviceId:"",
 
 
 };

@@ -63,7 +63,6 @@ export default class AllergysIndex extends Vue {
 
 
   allergyAdded() {
-    console.log('HJGHFS');
     this.show = false;
  this.allergys;
   this.fetchAllergys();

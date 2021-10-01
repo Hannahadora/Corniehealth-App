@@ -106,6 +106,11 @@ export default {
       required: true,
       default: () => [],
     },
+     practitionerprofile:{
+       type: Array,
+      required: true,
+      default: () => [],
+    },
       name:{
         type:String,
         required: true,
@@ -131,7 +136,6 @@ export default {
     return {
       columnsProxy: [],
       rating: 4,
-      practitionerprofile:[]
     };
   },
   watch: {
@@ -154,12 +158,6 @@ export default {
     },
   },
   methods: {
-     async viewProfile() {
-      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.profileId}`);
-      const response = await Promise.all([SinglePractitioner]);
-      this.practitionerprofile = response[0].data;
-      return response[0].data
-    }, 
     apply() {
       this.$emit("update:preferred", copy([...this.columnsProxy]));
       this.show = false;
@@ -173,8 +171,6 @@ export default {
       //this.viewProfile();
     this.columnsProxy = copy([...this.columns]);
   },
-  created(){
-    this.viewProfile();
-  }
+ 
 };
 </script>
