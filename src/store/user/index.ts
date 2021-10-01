@@ -24,7 +24,7 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: false,
+    practitionerAuthenticated: true,
   },
   getters: {
     accountType(state) {

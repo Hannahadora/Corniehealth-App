@@ -38,6 +38,7 @@
           <span class="flex justify-end w-full m4-5">
             <cornie-btn
               class="bg-danger text-white m-5 p-2 font-semibold"
+               @click="() => showNewModal = true"
             >
               New Vitals
             </cornie-btn>
@@ -58,23 +59,16 @@
           </template>
           <template #actions="{ item }">
             <table-action
+               @click="viewVital(item.id)"
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
             <table-action
-              @click="
-                $router.push(
-                  `/dashboard/provider/experience/edit-patient/${item.id}`
-                )
-              "
+              @click="openUpdateStatusModal(item.id)"
             >
               <edit-icon class="text-primary fill-current" />
-              <span class="ml-3 text-xs">Update</span>
-            </table-action>
-            <table-action @click="removePatient(item.id)">
-              <cancel-icon class="text-red-500 fill-current" />
-              <span class="ml-3 text-xs">Cancel</span>
+              <span class="ml-3 text-xs">Update Status</span>
             </table-action>
           </template>
         </cornie-table>
@@ -84,42 +78,54 @@
     <div class="w-full" v-else>
       <empty-state />
     </div>
-
+<!-- 
     <advanced-filter
       v-model:filtered="filteredPatients"
       v-model="filterAdvanced"
       :patients="patients"
-    />
+    /> -->
 
-    <side-modal :visible="true" :header="'New Vitals'">
-      <vitals-form />
+    <side-modal :visible="showNewModal" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal">
+      <vitals-form  @closesidemodal="() => showNewModal = false" :selectedVital="selectedVital" />
     </side-modal>
 
-    <modal :visible="false">
-      <template #title>
+    <side-modal :visible="showUpdateStatusModal" :width="590" :header="'Update Status'" @closesidemodal="closeUpdateModal">
         <div class="w-full">
-          <div class="container p-6 content-con">
-            <p class="text-primary text-2xl font-semibold">Update Status	</p>
-
+          <div class="container px-6 content-con">
             <div class="w-full py-3">
-              <!-- <search-dropdown :results="searchList" /> -->
-              <p style="color:#667499" class="text-secondary text-base py-2">Update status of this vital sign	</p>
-              <cornie-select :items="['Active', 'Inactive']" style="width: 100%" />
+              <div class="w-full my-6">
+                <input-desc-rounded :label="'Current Status'" :info="''">
+                  <input v-model="selectedVital.status" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                </input-desc-rounded>
+              </div>
+
+              <div class="w-full my-6">
+                <input-desc-rounded :label="'Updated By'" :info="''">
+                  <input v-model="selectedVital.status" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                </input-desc-rounded>
+              </div>
+
+              <div class="w-full my-6">
+                <input-desc-rounded :label="'Last Date Updated'" :info="''">
+                  <input :value="selectedVital.updatedAt" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                </input-desc-rounded>
+              </div>
+
+              <cornie-select v-model="updateData.status" :label="'New Status'" :items="['Active', 'Inactive']" style="width: 100%" />
             </div>
 
-            <div class="w-full flex flex justify-end">
+            <div class="w-full flex flex justify-end mt-12">
                 <corniebtn class="text-primary p-2 cancel-btn rounded-full px-8 mx-2 cursor-pointer">
                     <span class="font-semibold">Cancel</span>
                 </corniebtn>
 
-                <corniebtn class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
-                    <span class="text-white font-semibold " @click="viewActiveVisits">Update</span>
-                </corniebtn>
+                <CornieBtn :loading="loading" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
+                    <span class="text-white font-semibold" @click="updateStatus">Update</span>
+                </CornieBtn>
             </div>
           </div>
         </div>
-      </template>
-    </modal>
+    </side-modal>
   </div>
 </template>
 <script lang="ts">
@@ -132,7 +138,7 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
 import Avatar from "@/components/avatar.vue";
-import EditIcon from "@/components/icons/edit.vue";
+import EditIcon from "@/components/icons/newupdate.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
@@ -146,15 +152,20 @@ import EmptyState from "./components/empty-state.vue"
 import CornieSelect from "@/components/cornieselect.vue"
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue"
 import VitalsForm from "./components/vitals-form.vue"
-
+import CornieInput from "@/components/cornieinput.vue"
+import DatePicker from "@/components/datepicker.vue"
+import IVital, { IEncounter } from "@/types/IVital";
+import InputDescRounded from "./components/input-desc-rounded.vue"
 const userStore = namespace("user");
-const patients = namespace("patients");
-const visitsStore = namespace("visits");
+const vitalsStore = namespace("vitals");
 
 @Options({
   name: "EHRPatients",
   components: {
     ...CornieCard,
+    CornieInput,
+    InputDescRounded,
+    DatePicker,
     TableAction,
     SettingsIcon,
     EditIcon,
@@ -176,21 +187,6 @@ const visitsStore = namespace("visits");
   },
 })
 export default class ExistingState extends Vue {
-  @patients.State
-  patients!: IPatient[];
-
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-  @patients.Action
-  deletePatient!: (id: string) => Promise<boolean>;
-
-  @visitsStore.Action
-  getVisits!: () => Promise<void>;
-
-  @visitsStore.State
-  visits!: any;
-
   @userStore.State
   user!: User;
 
@@ -199,6 +195,21 @@ export default class ExistingState extends Vue {
 
   @userStore.Action
   updatePractitionerAuthStatus!: () => Promise<void>;
+
+  @vitalsStore.State
+  vitals!: IVital[];
+
+  @vitalsStore.State
+  encounters!: IEncounter[];
+
+  @vitalsStore.Action
+  getVitals!: (patientId: string) => Promise<void>;
+
+  @vitalsStore.Action
+  getEncounters!: (patientId: string) => Promise<void>;
+
+  @vitalsStore.Action
+  updateVitalStatus!: (body: any) => Promise<void>;
 
   password = "";
 
@@ -214,7 +225,9 @@ export default class ExistingState extends Vue {
   searchResults: IPatient[] = [ ];
   loading = false;
   activeVisits: IPatient[] = [ ];
-  patientId = ""
+  patientId = "";
+  showUpdateStatusModal = false;
+  showNewModal = false;
 
   headers = [
     {
@@ -254,27 +267,68 @@ export default class ExistingState extends Vue {
     },
   ];
 
+  updateData: any = {
+    status: this.selectedVital.status ?? ""
+  }
+
+  selectedVitalId = "";
+
   get items() {
-    return [
-      {
+    return this.vitals?.map(vital => {
+      return {
+        id: vital.id,
         identifier: "XXXXX",
-        recorded: "21-03-21",
-        recordType: "Record Type",
-        encounter: "Encounter",
-        performer: "Performer",
-        dataCount: "2/4",
-        status: "Active"
-      },
-      {
-        identifier: "XXXXX",
-        recorded: "21-03-21",
-        recordType: "Record Type",
-        encounter: "Encounter",
-        performer: "Performer",
-        dataCount: "4/8",
-        status: "Active"
-      },
-    ]
+        recorded: new Date(vital.date).toLocaleDateString(),
+        recordType: vital?.encounter?.serviceType,
+        encounter: vital?.encounter?.class,
+        performer: `${vital.practitioner?.lastName} ${vital.practitioner?.firstName}`,
+        dataCount: vital.datacount,
+        status: vital.status,
+        updatedAt: new Date(vital.updatedAt).toLocaleDateString()
+      }
+    })
+  }
+
+  openUpdateStatusModal(id: string) {    
+    this.showUpdateStatusModal = true
+    this.selectedVitalId = id;
+  }
+
+  async updateStatus() {
+    try {
+      this.loading = true;
+      await this.updateVitalStatus({
+        data: this.updateData,
+        vitalId: this.selectedVitalId
+      })
+      this.loading = false;
+      this.showUpdateStatusModal = false
+    } catch (error) {
+      console.log(error);
+      this.loading = false;
+    }
+  }
+
+  closeUpdateModal() {
+    this.showUpdateStatusModal = false;
+    this.selectedVitalId = "";
+  }
+
+  closeNewModal() {
+    this.showNewModal = false
+    this.selectedVitalId = "";
+  }
+
+  viewVital(id: string) {
+    this.selectedVitalId = id;
+    this.showNewModal = true;
+  }
+
+  get selectedVital() {
+    if (!this.selectedVitalId) return { } as IVital;
+    const selected =  this.vitals.find(vital => vital.id === this.selectedVitalId);
+    return selected || { } as IVital;
+    
   }
 
   get searchList() {
@@ -286,102 +340,13 @@ export default class ExistingState extends Vue {
     })
   }
 
-  goToEHR(patientId: string) {
-    if (!this.practitionerAuthenticated) {
-      this.patientId = patientId;
-      this.showAuthModal = true;
-    } else {
-      this.$router.push({ name: 'Health Trend', params: { patientId }})
-    }
-  }
-
-  viewActiveVisits() {
-    this.showSearchModal = false;
-    this.activeTab = 1;
-  }
-
-  checkIn(patient: IPatient) {
-    this.checkInPatient = patient;
-    this.checkingIn = true;
-  }
-  printPhone(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    const phone = patient.contactInfo[0].phone;
-    return phone?.number || "N/A";
-  }
-
-  printEmail(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    return patient.contactInfo[0].email || "N/A";
-  }
-  printDOB(dateOfBirth?: string) {
-    if (!dateOfBirth) return "N/A";
-    const date = new Date(dateOfBirth);
-    return date.toLocaleDateString("en-NG");
-  }
-  printMRN(mrn?: string) {
-    return `XXXXX${mrn?.substr(31)}`;
-  }
-
-  closeAndViewAll() {
-    this.showSearchModal = false;
-    this.activeTab = 0;
-  }
-
-  async removePatient(id: string) {
-    const confirmed = await window.confirmAction({
-      message: `Are you sure you want to delete this patient?
-       Removing patient from your register means patient
-      will no longer be associated with this provider`,
-      title: "Remove Patient",
-    });
-    if (!confirmed) return;
-    const deleted = await this.deletePatient(id);
-    if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
-    else window.notify({ msg: "Patient not deleted", status: "error" });
-  }
-
-//   async authenticateUser() {
-//     try {
-//       this.loading = true;
-//       const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
-//       this.password = "";
-//       this.loading = false;
-//       if (verified) {
-//         this.showAuthModal = false;
-//         this.updatePractitionerAuthStatus();
-//         if (!this.patientId) {
-//           this.showSearchModal = true;
-//         } else {
-//           this.$router.push({ name: 'Health Trend', params: { patientId: this.patientId }})
-//         }
-//       }
-//     } catch (error) {
-//       this.loading = false;
-//       console.log(error);
-//     }
-//   }
-
-  async searchForPatient() {
-    // try {
-    //   this.loading = true;
-    //   const data = await ehrHelper.searchPatient(this.query);
-    //   this.loading = false;
-    //   if (data && data.length > 0) {        
-    //     this.$router.push({ name: 'Health Trend', params: { patientId: data[0].id }})
-    //     // this.searchResults = data;        
-    //   } else {
-    //     window.notify({ msg: "No match found", status: "info" });
-    //   }
-    // } catch (error) {
-    //   this.loading = false;
-    //   console.log(error);
-      
-    // }
-  }
-
   async created() {
-    await this.fetchPatients();
+    console.log(this.$route, "ROUTER");
+    
+    await this.getVitals("a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757");
+    await this.getEncounters("a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757");
+    console.log(this.vitals, "encounters");
+    
   }
 }
 </script>
@@ -411,10 +376,10 @@ export default class ExistingState extends Vue {
     border-bottom: 4px solid #F0F4FE;
 }
 
-.content-con {
+/* .content-con {
   max-width: 30.65rem;
-  min-width: 590px;
-}
+  min-width: 500px;
+} */
 
 .cancel-btn {
   border: 1px solid #080056;

@@ -7,9 +7,9 @@
           </div>
           <div class="w-full">
             <div class="w-12/12 relative" :class="{ '-mt-2': !label }">
-                <slot />
+              <cornie-select type="text" class="p-2 border w-100 w-full" style="border-radius: 8px" />
                 <!-- <slot name="input" /> -->
-              <span class="text-gray-400 absolute right-2 top-2 italic text-xs">{{ info }}</span>
+              <span class="text-gray-400 absolute right-2 top-2">{{ info }}</span>
             </div>
         </div>
       </div>
@@ -18,12 +18,12 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CornieInput from "@/components/cornieinput.vue"
+import CornieSelect from "@/components/cornieselect.vue"
 import { Prop } from "vue-property-decorator";
 
 @Options({
   components: {
-      CornieInput,
+      CornieSelect,
   },
 })
 export default class DescInput extends Vue {

@@ -7,9 +7,9 @@
           </div>
           <div class="w-full">
             <div class="w-12/12 relative" :class="{ '-mt-2': !label }">
-                <slot />
+              <input type="text" class="p-2 border w-100 w-full" style="border-radius: 0 8px 8px 0">
                 <!-- <slot name="input" /> -->
-              <span class="text-gray-400 absolute right-2 top-2 italic text-xs">{{ info }}</span>
+              <span class="text-gray-400 absolute right-2 top-2">{{ info }}</span>
             </div>
         </div>
       </div>

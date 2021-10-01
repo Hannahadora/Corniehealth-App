@@ -58,7 +58,9 @@
                                             <CornieInput  label="Address" v-model="data.address"  placeholder="--Enter--" />
                                         </div>
                                         <div class="w-4/12">
-                                            <DatePicker v-model="data.dateOfBirth" label="Date of birth" style="width:max-width:100%"  placeholder="--Enter--" />
+                                            <div class="w-11/12">
+                                                <DatePicker v-model="data.dateOfBirth" label="Date of birth" style="width:max-width:100%"  placeholder="--Enter--" />
+                                            </div>
                                         </div>
                                         <div class="w-4/12">
                                             <CornieSelect label="Job Designation" :items="designations" v-model="data.jobDesignation" placeholder="--Enter--" />

@@ -317,7 +317,7 @@ export default class ExistingState extends Vue {
   authPractitioner!: IPractitioner;
 
   @userStore.State
-  practitionerAuthenticated!: User;
+  practitionerAuthenticated!: boolean;
 
   @userStore.Action
   updatePractitionerAuthStatus!: () => Promise<void>;
@@ -398,7 +398,7 @@ export default class ExistingState extends Vue {
       this.patientId = patientId;
       this.showAuthModal = true;
     } else {
-      this.$router.push({ name: 'Health Trend', params: { patientId }})
+      this.$router.push({ name: 'Health Trend', params: { patientId, id: patientId  }})
     }
   }
 

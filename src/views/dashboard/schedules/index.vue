@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full my-2 h-screen">
+  <div class="w-full my-2 h-screen" style="height:fit-content">
       <div class="container-fluid bg-white sm:p-6 h-full">
         <div class="w-full border-b-2 curved flex py-2 mt-4">
             <div class="container-fluid flex font-semibold text-xl py-2">
@@ -187,11 +187,11 @@
           </div>
         </div>
 
-        <div style="height: 50px">
-
-        </div>
       </div>
   </div>
+  <div style="height: 200px">
+
+        </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
