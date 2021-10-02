@@ -27,6 +27,7 @@ import PatientStore from "./patient";
 import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
+import VitalsStore from "./vitals";
 
 export default createStore({
   modules: {
@@ -58,5 +59,7 @@ export default createStore({
     organization: OrgStore,
     task: TaskStore,
     allergy:AllergyStore,
+
+    vitals: VitalsStore,
   },
 } as StoreOptions<any>);
