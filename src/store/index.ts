@@ -30,6 +30,7 @@ import AllergyStore from "./allergy";
 import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
+import VitalsStore from "./vitals";
 
 export default createStore({
   modules: {
@@ -65,5 +66,7 @@ export default createStore({
     organization: OrgStore,
     task: TaskStore,
     allergy: AllergyStore,
+
+    vitals: VitalsStore,
   },
 } as StoreOptions<any>);

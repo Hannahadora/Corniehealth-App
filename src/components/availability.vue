@@ -15,7 +15,7 @@
       </div>
       <div class="flex flex-col p-3 mb-7">
         <div v-if="available.length === 0">
-          <span>Practioner Availability is fetching...</span>
+          <span>Practioner Availability is fetching, Add Actor...</span>
         </div>
         <div v-else>
           <p class="text-sm mt-2">
@@ -103,6 +103,11 @@ export default {
       required: true,
       default: () => [],
     },
+     available: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
     practitionerId:{
       type:String,
        required: true,
@@ -117,18 +122,11 @@ export default {
   data() {
     return {
       columnsProxy: [],
-      available:[],
       options: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
       
     };
   },
   watch: {
-    async viewAvialaibilty() {
-      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
-      const response = await Promise.all([SinglePractitioner]);
-      this.available = response[0].data;
-      return this.available;
-    },
     columns(val) {
       this.columnsProxy = copy(val);
     },
@@ -156,18 +154,10 @@ export default {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-     async viewAvialaibilty() {
-      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.practitionerId}`);
-      const response = await Promise.all([SinglePractitioner]);
-      this.available = response[0].data;
-    },
+ 
   },
   mounted() {
-     this.viewAvialaibilty();
     this.columnsProxy = copy([...this.columns]);
   },
-  created(){
-   this.viewAvialaibilty();
-  }
 };
 </script>

@@ -37,10 +37,6 @@
                       <edit-icon class="text-purple-600 fill-current" />
                       <span class="ml-3 text-xs">Edit</span>
                   </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                      <share-icon class="text-blue-500 fill-current" />
-                      <span class="ml-3 text-xs">Share</span>
-                  </div>
                 </template>
                  <template #asserter="{ item }">
                           <p class="cursor-pointer">{{ item.asserter }}</p>
@@ -49,7 +45,7 @@
                         <p class="cursor-pointer">{{ item.asserter }}</p>
                 </template>
             </cornie-table>
-    </div>
+        </div>
     
       <allergy-modal 
        v-if="allergyId == 'false'"
@@ -187,7 +183,7 @@ export default class AllergyExistingState extends Vue {
      {
       title: "Criticality",
       key: "criticality",
-      show: true,
+      show: false,
     },
     {
       title: "product",
@@ -197,7 +193,7 @@ export default class AllergyExistingState extends Vue {
     {
       title: "clinical| verication",
       key: "clinicalStatus",
-      show: false,
+      show: true,
     },
     {
       title: "Asserter",
@@ -320,7 +316,6 @@ getPractitionerName(id: string){
   }
 
   allergyAdded() {
-    console.log('HJGHFS');
  this.allergys;
   this.fetchAllergys();
   }

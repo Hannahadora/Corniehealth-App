@@ -1,20 +1,16 @@
 <template>
   <div class="overflow-y-auto bg-white">
-    <modal
-      :visible="visible"
-      style="height: 95%"
-      class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
-    >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
+      <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+
+       <cornie-card-title>
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
           <h2 class="font-bold text-lg text-primary ml-3 -mt-2">All Participants</h2>
-      </div>
-      <div class="flex flex-col p-3">
+       </cornie-card-title>
+
+        <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mt-2">
           All participants for this appointment
         </p>
@@ -42,17 +38,17 @@
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
-                        <avatar class="mr-2" v-if="input.image" :src="input.image" />
-                         <avatar class="mr-2" v-else :src="img.placeholder" />
+                        <avatar class="mr-2" v-if="input.practitioner.image" :src="input.practitioner.image" />
+                         <avatar class="mr-2" v-else :src="localSrc" />
                       </div>
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
-                          {{ input.firstName }}
-                          {{ input.lastName }}
+                          {{ input.practitioner.firstName }}
+                          {{ input.practitioner.lastName }}
                         </p>
                         <p class="text-xs text-gray-500 font-meduim">
-                          {{ input.jobDesignation }}
-                          {{ input.department }}
+                          {{ input.practitioner.jobDesignation }}
+                          {{ input.practitioner.department }}
                         </p>
                       </div>
                     </div>
@@ -82,11 +78,11 @@
                   <div class="grid grid-cols-2 gap-4 col-span-full mt-2 p-5">
                      <div class="dflex space-x-4">
                        <div class="w-10 h-10">
-                        <avatar class="mr-2" :src="img.placeholder" />
+                        <avatar class="mr-2" :src="localSrc" />
                        </div>
                         <div class="w-full">
-                          <p class="text-xs text-dark font-semibold">{{input.deviceName.name}}</p>
-                          <p class="text-xs text-gray-500 font-meduim">{{input.deviceName.nameType}}</p>
+                          <p class="text-xs text-dark font-semibold">{{input.device.deviceName.name}}</p>
+                          <p class="text-xs text-gray-500 font-meduim">{{input.device.deviceName.nameType}}</p>
                         </div>
                      </div>
                      <div>
@@ -114,11 +110,11 @@
                 <div class="grid grid-cols-2 gap-2 col-span-full p-5">
                    <div class="dflex space-x-4">
                      <div class="w-10 h-10">
-                      <avatar class="mr-2" :src="img.placeholder" />
+                      <avatar class="mr-2" :src="input.patient.profilePhoto" />
                      </div>
                         <div class="w-full">
-                          <p class="text-xs text-dark font-semibold">{{input.name}}</p>
-                          <p class="text-xs text-gray font-light">{{input.description}}</p>
+                          <p class="text-xs text-dark font-semibold">{{input.patient.firstname}}  {{input.patient.lastname}}</p>
+                          <!-- <p class="text-xs text-gray font-light">{{input.patient.description}}</p> -->
                         </div>
                    </div>
                   <div>
@@ -147,11 +143,11 @@
                    <div class="dflex space-x-4">
                      <div class="w-10 h-10">
                      <!-- <avatar class="mr-2" :src="input.profilePhoto" v-if="input.profilePhoto" />-->
-                      <avatar class="mr-2"  :src="img.placeholder"/>
+                      <avatar class="mr-2"  :src="input.patient.profilePhoto"/>
                      </div>
                         <div class="w-full">
-                          <p class="text-xs text-dark font-semibold"> {{ input.firstname }}
-                          {{ input.lastname }}</p>
+                          <p class="text-xs text-dark font-semibold"> {{ input.patient.firstname }}
+                          {{ input.patient.lastname }}</p>
                         </div>
                    </div>
                   <div>
@@ -160,6 +156,10 @@
                 </div>
               </div>
         </div>
+        </cornie-card-text>
+
+  <cornie-card>
+        <cornie-card-text class="flex justify-end">
         <div class="flex justify-end w-full mt-auto">
           <button
           type="button"
@@ -179,8 +179,11 @@
             Close
           </button>
         </div>
-      </div>
-    </modal>
+        </cornie-card-text>
+  </cornie-card>
+
+    </cornie-card>
+      </cornie-dialog>
        <availability
             v-model:visible="availableFilter"
         />
@@ -192,6 +195,9 @@
 <script>
 import Modal from "@/components/practitionermodal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieCard from "@/components/cornie-card";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
@@ -208,6 +214,9 @@ const copy = (original) => JSON.parse(JSON.stringify(original));
 export default {
   name: "ParticipantFilter",
   components: {
+     ...CornieCard,
+    CornieDialog,
+    CornieIconBtn,
     Modal,
     DragIcon,
     ArrowLeftIcon,
@@ -249,6 +258,7 @@ export default {
   },
   data() {
     return {
+      localSrc: require('../../../../assets/img/placeholder.png'),
       columnsProxy: [],
       indexvalue: [],
       practitioners: [],

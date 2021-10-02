@@ -41,18 +41,27 @@ import Period from "./IPeriod";
     detectedIssue?: string;
     eventHistory?: string;
   }
+  export interface MedicationDetails{
+    medicationCode?: string;
+    medicationReference?: string;
+    courseOfTherapyType?: string;
+    dosageInstruction?: string;
+    initialFill?: string;
+    quantity?: number;
+    duration?: Period;
+  }
  export interface Medications {
     medicationDetails:{
         medicationCode?: string;
-        medicationReference?: string;
-        courseOfTherapyType?: string;
-        dosageInstruction?: string;
-        initialFill?: string;
-        quantity?: number;
-        duration?: Period;
+    medicationReference?: string;
+    courseOfTherapyType?: string;
+    dosageInstruction?: string;
+    initialFill?: string;
+    quantity?: number;
+    duration?: Period;
     },
     refillInfo:{
-        dispenseInterval?: string;
+        dispenseInterval?: Period;
         numberOfRepeatsAllowed?: number;
         quantity?: number;
         expectedSupplyDuration?: number;

@@ -769,7 +769,7 @@ requestModel = {...emptyOtherrequest} as IOtherrequest;
 
 
   @otherrequest.Mutation
-  updatedRequests!: any;
+  updatedOtherrequests!: any;
 @otherrequest.State
   patients!: any[];
 
@@ -1043,7 +1043,7 @@ get PatientName() {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-          this.updatedRequests([response.data]);
+          this.updatedOtherrequests([response.data]);
         window.notify({ msg: "Other Request Updated", status: "success" });
         this.$router.push("/dashboard/provider/experience/requests");
       }
