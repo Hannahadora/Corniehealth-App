@@ -13,38 +13,19 @@
         class="p-6 pt-0 flex-grow flex flex-col"
         style="overflow-y: auto"
       >
-        <v-form class="flex-grow flex flex-col" @submit="null">
+        <v-form class="flex-grow flex flex-col" ref="myForm" @submit="() => {}">
           <p class="text-danger mb-2">
             Which of these best describes the job level?
           </p>
           <div class="border-b-2 mb-6 pb-6 grid grid-cols-2 gap-y-1">
             <cornie-radio
+              v-for="(category, i) in categories"
+              :key="i"
               class="ml-3 my-3"
               name="type"
-              label="Top Management"
-              value="top-management"
-              v-model="supervisoryType"
-            />
-            <cornie-radio
-              class="ml-3 my-3"
-              label="Middle Management"
-              value="middle-management"
-              name="type"
-              v-model="supervisoryType"
-            />
-            <cornie-radio
-              class="ml-3 my-3"
-              label="Low Level Management"
-              value="low-level-management"
-              name="type"
-              v-model="supervisoryType"
-            />
-            <cornie-radio
-              class="ml-3 my-3"
-              label="Non Management"
-              value="non-management"
-              name="type"
-              v-model="supervisoryType"
+              :label="category.name"
+              :value="category.id"
+              v-model="categoryId"
             />
           </div>
           <h1 class="text-primary text-xl font-extrabold mb-5">
@@ -56,17 +37,17 @@
             placeholder="--Enter--"
             v-model="levelId"
           />
-          <cornie-select
-            class="w-full mb-6"
+          <tag-input
+            class="w-full"
             label="descriptions/tags"
-            placeholder="--Select--"
+            placeholder="--Enter--"
             v-model="tags"
           />
           <span class="flex-grow" />
           <div class="flex justify-end">
             <span class="flex-grow"></span>
-            <button
-              @click="show = false"
+            <span
+              @click="hide"
               class="
                 border-primary
                 rounded-full
@@ -74,6 +55,7 @@
                 mr-2
                 py-2
                 px-6
+                cursor-pointer
                 border
                 focus:outline-none
                 outline
@@ -82,9 +64,11 @@
               "
             >
               Cancel
-            </button>
-            <button
-              type="submit"
+            </span>
+            <cornie-btn
+              :loading="loading"
+              type="button"
+              @click="submit"
               class="
                 bg-danger
                 rounded-full
@@ -96,7 +80,7 @@
               "
             >
               Create a Job Level
-            </button>
+            </cornie-btn>
           </div>
         </v-form>
       </card-text>
@@ -115,16 +99,28 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import CornieRadio from "@/components/cornieradio.vue";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import TagInput from "@/components/tag-input.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import { namespace } from "vuex-class";
+import { LevelCollection } from "@/types/ILevel";
+import { quantumClient } from "@/plugins/http";
+import { CornieUser } from "@/types/user";
+
+const level = namespace("OrgLevels");
+const user = namespace("user");
+const hierarchy = namespace("hierarchy");
 
 @Options({
   name: "AddLevel",
   components: {
+    TagInput,
     CornieDialog,
     Card,
     CardText,
     CardTitle,
     ArrowLeft,
+    CornieBtn,
     IconBtn,
     CornieInput,
     CornieSelect,
@@ -137,10 +133,108 @@ export default class AddLevel extends Vue {
   modelValue!: boolean;
 
   @PropSync("modelValue")
-  show!: string;
+  show!: boolean;
+
+  @Prop({ type: Object, default: {} })
+  level!: LevelCollection;
 
   levelId = "";
-  tags = [];
-  supervisoryType = "";
+  tags = [] as string[];
+  categoryId = "";
+
+  loading = false;
+
+  @user.Getter
+  cornieUser!: CornieUser;
+
+  @hierarchy.State
+  categories!: { id: string; name: string }[];
+
+  @hierarchy.Action
+  fetchCategories!: () => Promise<void>;
+
+  @level.Mutation
+  addLevels!: (levels: LevelCollection[]) => void;
+
+  @level.Action
+  fetchLevels!: () => Promise<void>;
+
+  orgTags = [];
+
+  hide() {
+    this.show = false;
+  }
+
+  @Watch("level")
+  levelChanged() {
+    if (!this.level?.id) return;
+    const level = this.level;
+    this.levelId = level.name || "";
+    this.categoryId = level.category?.id || "";
+    this.tags = (level.tags || []).map((tag) => tag.name);
+  }
+
+  get levelTags() {
+    return [] as any[];
+  }
+
+  get newTags() {
+    return this.tags.map((tag) => ({
+      name: tag,
+      orgId: this.cornieUser.organizationId,
+    }));
+  }
+
+  get creationPayload() {
+    return {
+      level: {
+        orgId: this.cornieUser.organizationId,
+        categoryId: this.categoryId,
+        name: this.levelId,
+        levelTags: this.levelTags,
+      },
+      tags: this.newTags,
+    } as LevelCollection;
+  }
+
+  get updatePayload() {
+    return {
+      levelId: this.level.id,
+      orgId: this.cornieUser.organizationId,
+      categoryId: this.categoryId,
+      name: this.levelId,
+      levelTags: this.levelTags,
+      newTags: this.newTags,
+    };
+  }
+
+  async submit() {
+    this.loading = true;
+    if (this.level?.id) await this.update();
+    else await this.create();
+    this.loading = false;
+  }
+
+  async update() {
+    try {
+      await quantumClient().patch("/org/levels", this.updatePayload);
+      this.fetchLevels();
+    } catch (e) {
+      window.notify({ msg: "Level not updated", status: "error" });
+    }
+  }
+
+  async create() {
+    try {
+      await quantumClient().post("/org/levels", this.creationPayload);
+      this.fetchLevels();
+    } catch (e) {
+      window.notify({ msg: "Level not added", status: "error" });
+    }
+  }
+
+  created() {
+    if (!this.categories.length) this.fetchCategories();
+  }
 }
 </script>

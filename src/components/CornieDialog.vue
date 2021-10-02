@@ -25,28 +25,34 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   inheritAttrs: false,
-  name: "Dialog"
+  name: "Dialog",
 })
 export default class Modal extends Vue {
+  @Prop({ type: Boolean, default: false })
+  center!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  center!: boolean
+  @Prop({ type: Boolean, default: false })
+  right!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  right!: boolean
+  @Prop({ type: Boolean, default: false })
+  left!: boolean;
 
-  @Prop({type: Boolean, default: false})
-  left!: boolean
+  @Prop({ type: Boolean, default: false })
+  modelValue!: boolean;
 
   @PropSync("modelValue", { type: Boolean, required: true, default: false })
   show!: boolean;
-  
+
   get classes() {
     return [
-      this.center? "justify-center" :
-      this.left? "justify-start" :
-      this.right? "justify-end": ""
-      ] 
+      this.center
+        ? "justify-center"
+        : this.left
+        ? "justify-start"
+        : this.right
+        ? "justify-end"
+        : "",
+    ];
   }
 }
 </script>

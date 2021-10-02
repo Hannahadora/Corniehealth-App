@@ -28,7 +28,7 @@
         </button>
       </template>
     </empty-state>
-    <existing-state v-else />
+    <existing-state :levels="levels" v-else />
     <add-level v-model="addLevel" />
   </main>
 </template>
@@ -38,6 +38,10 @@ import { Vue, Options } from "vue-class-component";
 import EmptyState from "@/components/CornieEmptyState.vue";
 import AddLevel from "./add-level.vue";
 import ExistingState from "./ExistingState.vue";
+import { namespace } from "vuex-class";
+import { LevelCollection } from "@/types/ILevel";
+
+const level = namespace("OrgLevels");
 
 @Options({
   name: "Designations",
@@ -50,8 +54,18 @@ import ExistingState from "./ExistingState.vue";
 export default class Functions extends Vue {
   addLevel = false;
 
+  @level.State
+  levels!: LevelCollection[];
+
+  @level.Action
+  fetchLevels!: () => Promise<void>;
+
   get isEmpty() {
-    return true;
+    return this.levels.length < 1;
+  }
+
+  created() {
+    if (this.isEmpty) this.fetchLevels();
   }
 }
 </script>
