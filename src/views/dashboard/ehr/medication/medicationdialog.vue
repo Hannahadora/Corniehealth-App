@@ -54,7 +54,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['reason code']"
+                   :items="dropdowns.serviceType"
                     v-model="requestModel.requestInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
@@ -62,7 +62,7 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['reason reference']"
+                    :items="dropdowns.serviceType"
                     v-model="requestModel.requestInfo.reasonForProhibition"
                     label="reason for prohibition"
                     placeholder="--Select--"
@@ -71,7 +71,7 @@
                    <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['recorder']"
+                    :items="allPerformer"
                     v-model="requestModel.requestDetails.recorder"
                     label="recorder"
                     placeholder="--Select--"
@@ -199,7 +199,7 @@
                                 <cornie-select
                                 class="required w-full"
                                     :rules="required"
-                                    :items="['reason']"
+                                    :items="['2 x Daily', '3 x Daily']"
                                     v-model="medicationsDetail.medicationDetails.dosageInstruction"
                                     label="dosage instruction"
                                     placeholder="--Select--"
@@ -208,7 +208,7 @@
                                 <cornie-select
                                 class="required w-full"
                                     :rules="required"
-                                    :items="['reason']"
+                                    :items="['2 dosage daily']"
                                     label="initial fill"
                                     v-model="medicationsDetail.medicationDetails.initialFill"
                                     placeholder="--Select--"
@@ -217,7 +217,7 @@
                                 <cornie-select
                                 class="required w-full"
                                     :rules="required"
-                                    :items="[0,2,4]"
+                                    :items="[9,2,4]"
                                     label="quantity"
                                     v-model="medicationsDetail.medicationDetails.quantity"
                                     placeholder="--Select--"
@@ -292,7 +292,7 @@
                                 <cornie-select
                                     class="required w-full"
                                     :rules="required"
-                                    :items="['reason']"
+                                    :items="['Code']"
                                     label="Code"
                                     v-model="medicationsDetail.substitutionAllowed.code"
                                     placeholder="--Select--"
@@ -300,7 +300,7 @@
                                 </cornie-select>
                                 <cornie-select
                                 class="w-full"
-                                    :items="['reason']"
+                                    :items="['Headaches', 'Cough', 'Anemia']"
                                     label="reason"
                                     v-model="medicationsDetail.substitutionAllowed.reason"
                                     placeholder="--Select--"
@@ -335,7 +335,7 @@
                                         {{input.medicationDetails.medicationCode}}
                                         </p>
                                         <p class="text-xs text-gray-500 font-light">
-                                            2x3 Daily
+                                           {{input.medicationDetails.dosageInstruction}}
                                         </p>
                                     </div>
                                     <span>

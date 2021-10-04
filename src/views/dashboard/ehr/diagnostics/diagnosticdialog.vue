@@ -66,7 +66,7 @@
                   <cornie-select
                      class="required"
                     :rules="required"
-                    :items="['reason reference']"
+                    :items="dropdowns.serviceCategory"
                      v-model="otherrequestModel.basicInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
