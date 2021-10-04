@@ -424,7 +424,7 @@
         <div class="w-full mb-12">
             <div class="container-fluid mb-8 flex justify-end items-center">
                 <corniebtn :loading="false">
-                    <router-link :to="{ name: 'Patient Experience Management.' }" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
+                    <router-link :to="{ name: 'Schedules.' }" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
                         Cancel
                     </router-link>
                 </corniebtn>
