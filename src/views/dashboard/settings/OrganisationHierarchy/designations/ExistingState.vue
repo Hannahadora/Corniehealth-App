@@ -12,64 +12,31 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push({ name: 'New Designation'})"
+        @click="$router.push({ name: 'New Designation' })"
       >
         <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
         New Designation
       </button>
     </div>
-    <div class="flex w-full justify-between mt-6 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          placeholder="Search Table"
-          v-model="query"
+
+    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="updateDesignation(item.id)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="deletePartner(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <edit-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="removeDesignation(item.id)"
+        >
+          <delete-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table>
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
+    </cornie-table>
   </div>
 </template>
 <script lang="ts">
@@ -83,95 +50,80 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
-import ICarePartner from "@/types/ICarePartner";
+import EditIcon from "@/components/icons/edit.vue";
+import { IDesignation } from "@/types/IDesignation";
+import { Prop } from "vue-property-decorator";
 
-const CarePartnersStore = namespace("CarePartnersStore");
+const designation = namespace("designation");
 
 @Options({
+  name: "DesignationsExistingState",
   components: {
     Table,
     SortIcon,
     ThreeDotIcon,
+    CornieTable,
     SearchIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
     DeleteIcon,
-    EyeIcon,
+    EditIcon,
     ColumnFilter,
     TableOptions,
   },
 })
-export default class CarePartnersExistingState extends Vue {
-  showColumnFilter = false;
-  query = "";
+export default class DesignationsExistingState extends Vue {
+  @Prop({ type: Array, required: true })
+  designations!: IDesignation[];
 
-  @CarePartnersStore.State
-  carePartners!: ICarePartner[];
-
-  @CarePartnersStore.Action
-  delete!: (partner: ICarePartner) => Promise<boolean>;
-
-  getKeyValue = getTableKeyValue;
-  preferredHeaders = [];
   rawHeaders = [
     {
       title: "Title",
-      value: "functionName",
+      key: "name",
       show: true,
     },
     {
       title: "Job Level",
-      value: "hierarchy",
+      key: "jobLevel",
       show: true,
     },
     {
       title: "Function",
-      value: "supervisoryFunction",
+      key: "jobFunction",
       show: true,
     },
     {
       title: "Reporting To",
-      value: "supervisoryFunction",
+      key: "supervisor",
       show: true,
     },
   ];
 
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
-  }
+  @designation.Action
+  deleteDesignation!: (id: string) => Promise<void>;
 
   get items() {
-    const partners = this.carePartners.map((partner) => {
-      return {
-        ...partner,
-        action: partner.id,
-      };
-    });
-    if (!this.query) return partners;
-    return search.searchObjectArray(partners, this.query);
+    return this.designations.map((designation) => ({
+      ...designation,
+      jobLevel: designation?.level?.name || "N/A",
+      jobFunction: designation?.orgFunction?.name,
+      supervisor: designation.reportsTo?.name || "N/A",
+    }));
   }
 
-  async deletePartner(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this care partner",
-    });
-    if (!confirmed) return;
-    const partner = this.carePartners.find((element) => element.id == id);
-    if (partner && (await this.delete(partner))) alert("Care partner deleted");
-    else alert("Care partner not deleted");
+  removeDesignation(id: string) {
+    this.deleteDesignation(id);
+  }
+
+  updateDesignation(id: string) {
+    this.$router.push({ name: "New Designation", params: { id } });
   }
 }
 </script>

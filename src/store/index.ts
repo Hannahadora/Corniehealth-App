@@ -31,6 +31,7 @@ import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
+import designation from "./hierarchy/designation";
 
 export default createStore({
   modules: {
@@ -44,6 +45,7 @@ export default createStore({
     OrgFunctions,
 
     hierarchy: OrganizationHierarchy,
+    designation,
 
     CarePartnersStore,
     practitioner: practitioner,

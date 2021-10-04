@@ -74,3 +74,22 @@ export async function deleteFunction(id: string) {
     return false;
   }
 }
+
+export async function fetchDesignations(orgId: string) {
+  try {
+    const { data } = await quantumClient().get(`/org/${orgId}/designations`);
+    return data.designations;
+  } catch (error) {
+    window.notify({ msg: "Failed to fetch designations", status: "error" });
+  }
+}
+
+export async function deleteDesignation(id: string) {
+  try {
+    await quantumClient().delete(`/org/designations/`, [id]);
+    return true;
+  } catch (error) {
+    window.notify({ status: "error", msg: "Designation not deleted" });
+    return false;
+  }
+}

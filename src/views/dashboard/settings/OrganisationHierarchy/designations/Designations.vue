@@ -21,7 +21,7 @@
             focus:outline-none
             hover:opacity-90
           "
-          @click="$router.push({ name: 'New Designation'})"
+          @click="$router.push({ name: 'New Designation' })"
         >
           <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
           New Designation
@@ -29,7 +29,7 @@
       </template>
     </empty-state>
 
-    <existing-state v-else />
+    <existing-state v-else :designations="designations" />
   </main>
 </template>
 
@@ -47,6 +47,10 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { string as yupString } from "yup";
 import ExistingState from "./ExistingState.vue";
+import { namespace } from "vuex-class";
+import { IDesignation } from "@/types/IDesignation";
+
+const designation = namespace("designation");
 
 @Options({
   name: "Designations",
@@ -64,16 +68,21 @@ import ExistingState from "./ExistingState.vue";
     ExistingState,
   },
 })
-export default class Functions extends Vue {
-  showNewDesignationDialog = false;
+export default class Designations extends Vue {
+  @designation.State
+  designations!: IDesignation[];
 
-  required = yupString().required();
+  @designation.Action
+  fetchDesignations!: () => Promise<void>;
 
   get isEmpty() {
-    return false;
+    return this.designations.length < 1;
+  }
+
+  create() {
+    if (!this.designations.length) this.fetchDesignations();
   }
 }
 </script>
 
-<style>
-</style>
+<style></style>
