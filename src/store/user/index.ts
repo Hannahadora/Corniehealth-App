@@ -26,17 +26,17 @@ export default {
     emailVerified: false,
     cornieData: {} as any,
     practitionerAuthenticated: false,
-    domain: 'gcbv',
+    domain: "gcbv",
   },
   getters: {
     accountType(state) {
       return state.cornieData?.user?.accountType;
     },
     cornieUser(state) {
-      return state.cornieData.user;
+      return state.cornieData?.user;
     },
     authPractitioner(state) {
-      return state.cornieData.practitioner;
+      return state.cornieData?.practitioner;
     },
   },
   mutations: {
@@ -48,7 +48,6 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
-
     setLoginInfo(state, payload) {
       state.user = payload.user;
 
@@ -63,11 +62,11 @@ export default {
 
     updatePractitionerAuthStatus(state, payload) {
       state.practitionerAuthenticated = payload;
-    }
+    },
   },
   actions: {
     async updatePractitionerAuthStatus({ commit }, authenticated) {
       commit("updatePractitionerAuthStatus", authenticated);
-    }
+    },
   },
 } as StoreOptions<UserState>;
