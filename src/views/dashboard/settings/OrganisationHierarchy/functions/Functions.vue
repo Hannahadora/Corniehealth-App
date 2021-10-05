@@ -43,7 +43,7 @@
         </div>
       </template>
     </empty-state>
-    <existing-state v-else />
+    <existing-state :functions="functions" v-else />
     <add-function v-model="addFunction" />
   </main>
 </template>
@@ -53,6 +53,10 @@ import { Vue, Options } from "vue-class-component";
 import EmptyState from "@/components/CornieEmptyState.vue";
 import ExistingState from "./ExistingState.vue";
 import AddFunction from "./add-function.vue";
+import { namespace } from "vuex-class";
+import IFunction from "@/types/IFunction";
+
+const orgFunctions = namespace("OrgFunctions");
 
 @Options({
   name: "Functions",
@@ -65,7 +69,19 @@ import AddFunction from "./add-function.vue";
 export default class Functions extends Vue {
   addFunction = false;
 
-  isEmpty = true;
+  @orgFunctions.State
+  functions!: IFunction[];
+
+  @orgFunctions.Action
+  fetchFunctions!: () => Promise<void>;
+
+  get isEmpty() {
+    return this.functions.length < 1;
+  }
+
+  created() {
+    if (!this.functions?.length) this.fetchFunctions();
+  }
 }
 </script>
 

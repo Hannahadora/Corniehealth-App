@@ -1,6 +1,10 @@
 export default interface IFunction {
-  name: string;
-  costCenter: string;
+  orgId: string;
   hierarchyId: string;
-  reportingTo: string;
+  createdBy: string;
+  reportingTo?: string;
+  id?: string;
+  name: string;
+  hierarchy?: string;
+  reportsTo?: { id: string; name: string };
 }

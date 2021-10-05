@@ -27,7 +27,11 @@ import PatientStore from "./patient";
 import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
+import OrgLevels from "./hierarchy/levels";
+import OrganizationHierarchy from "./hierarchy";
+import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
+import designation from "./hierarchy/designation";
 
 export default createStore({
   modules: {
@@ -38,6 +42,10 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    OrgFunctions,
+
+    hierarchy: OrganizationHierarchy,
+    designation,
 
     CarePartnersStore,
     practitioner: practitioner,
@@ -45,12 +53,13 @@ export default createStore({
     careteam: CareteamStore,
     roles: RolesStore,
     group: GroupteamStore,
+    OrgLevels,
 
     shifts: ShiftsStore,
     practiceform: PracticeformStore,
     appointment: AppointmentStore,
     request: RequestStore,
-    otherrequest:OtherrequestStore,
+    otherrequest: OtherrequestStore,
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,
@@ -58,7 +67,7 @@ export default createStore({
     patients: PatientStore,
     organization: OrgStore,
     task: TaskStore,
-    allergy:AllergyStore,
+    allergy: AllergyStore,
 
     vitals: VitalsStore,
   },

@@ -100,8 +100,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "allergy",
             props: true,
             name: "Allergy & Intolerance",
-            component: () =>
-              import("@/views/dashboard/ehr/allergy/index.vue"),
+            component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
           },
           {
             path: "medications",
@@ -121,8 +120,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "vitals",
             props: true,
             name: "Vital Signs",
-            component: () =>
-              import("@/views/dashboard/ehr/vitals/index.vue"),
+            component: () => import("@/views/dashboard/ehr/vitals/index.vue"),
           },
           {
             path: "encounters",
@@ -374,7 +372,8 @@ const routes: Array<RouteRecordRaw> = [
       SettingsRoute,
       UserRoute,
       {
-        path: "org-heirarchy/new-designation",
+        path: "org-heirarchy/new-designation/:id?",
+        props: true,
         name: "New Designation",
         component: () =>
           import(
