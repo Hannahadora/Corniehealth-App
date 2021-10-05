@@ -133,7 +133,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import QuantumIcon from "@/components/icons/quantum.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
 import store from "@/store";
-import { login } from "@/plugins/auth";
+import { login, setAuthDomain } from "@/plugins/auth";
 import { string } from "yup";
 
 @Options({
@@ -177,7 +177,9 @@ export default class Signin extends Vue {
     this.loading = true;
     try {
       await login(this.payload);
+
       this.$emit("logged-in");
+      if (this.domainName) setAuthDomain(this.domainName);
     } catch (error) {
       window.notify({ msg: "Username or password incorrect", status: "error" });
     }
