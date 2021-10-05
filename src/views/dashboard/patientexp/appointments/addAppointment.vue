@@ -311,26 +311,6 @@
         :columns="availableSlots"
           @update:preferred="showSlots"
           v-model:visible="displaySlots"/>
-    <!--    <practitioners-filter
-          :columns="practitioner"
-          @update:preferred="addPractitioner"
-          v-model:visible="practitionerFilter"
-        />
-        <patients-filter
-          :columns="patient"
-          @update:preferred="addPatients"
-          v-model:visible="patientFilter"
-        />
-        <devices-filter
-          :columns="device"
-          @update:preferred="addDevices"
-          v-model:visible="deviceFilter"
-        />
-        <roles-filter
-          :columns="role"
-          @update:preferred="addRoles"
-          v-model:visible="roleFilter"
-        />-->
       </div>
     </div>
   </div>

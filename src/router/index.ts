@@ -105,12 +105,14 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "medications",
+            props: true,
             name: "Medications",
             component: () =>
               import("@/views/dashboard/ehr/medication/index.vue"),
           },
           {
             path: "diagnostics",
+            props: true,
             name: "Diagnostics",
             component: () =>
               import("@/views/dashboard/ehr/diagnostics/index.vue"),
