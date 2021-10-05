@@ -129,6 +129,13 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/encounter/index.vue"),
           },
+          {
+            path: "clinical-impressions",
+            props: true,
+            name: "Clinical Impressions",
+            component: () =>
+              import("@/views/dashboard/ehr/impression/index.vue"),
+          },
         ],
       },
       {
