@@ -25,11 +25,15 @@
             </span>
             <cornie-table :columns="rawHeaders" v-model="sortMedications">
                  <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showMedication(item.id)">
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showViewMedication(item.id)">
                       <eye-icon class="text-blue-300 fill-current" />
                       <span class="ml-8 text-xs">View</span>
                   </div>
-                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer">
+                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showMedication(item.id)">
+                      <edit-icon class="text-blue-300 fill-current" />
+                      <span class="ml-8 text-xs">Edit</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
                       <update-icon class="text-purple-800 fill-current" />
                       <span class="ml-8 text-xs">Update Status</span>
                   </div>
@@ -80,6 +84,17 @@
           @update:preferred="showMedication"
           v-model="showMedicationModal"/>
 
+            <view-modal
+        :id="requestId" 
+          @update:preferred="showViewMedication"
+          v-model="showViewMedicationModal"/>
+        
+           <status-modal
+        :id="requestId" 
+          @update:preferred="showStatus"
+          v-model="showStatusModal"/>
+
+
         
   </div>
 </template>
@@ -100,8 +115,6 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
-import IRequest from "@/types/IRequest";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -115,27 +128,17 @@ import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import MedicationModal from "./medicationdialog.vue";
+import ViewModal from "./viewRequest.vue";
+import StatusModal from "./status.vue";
 import { namespace } from "vuex-class";
 import SendIcon from "@/components/icons/send.vue";
 import CheckoutIcon from "@/components/icons/newcheckout.vue";
 import CalenderIcon from "@/components/icons/newcalender.vue";
-import { cornieClient } from "@/plugins/http";
-import { routerViewLocationKey } from "vue-router";
+import User from "@/types/user";
 
 const request = namespace("request");
+const userStore = namespace("user");
 
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  medications: [],
-
-
-};
 @Options({
   components: {
     Table,
@@ -145,6 +148,7 @@ const emptyRequest: IRequest = {
     CheckinIcon,
     SendIcon,
     MedicationModal,
+    ViewModal,
     CalenderIcon,
     NewviewIcon,
     UpdateIcon,
@@ -153,6 +157,7 @@ const emptyRequest: IRequest = {
     ThreeDotIcon,
     DangerIcon,
     PlusIcon,
+    StatusModal,
     SearchIcon,
     MessageIcon,
     PrintIcon,
@@ -178,13 +183,20 @@ export default class AllergyExistingState extends Vue {
   selected = 1;
   showNotes = false;
   showMedicationModal= false;
+  showViewMedicationModal=false;
   requestId="";
   tasknotes=[];
 onePatientId ="";
-  statuses = ['Show All', 'On-Hold', 'Cancelled', 'Completed','Stopped'];
+showStatusModal=false;
 
-  // @Prop({ type: Array, default: [] })
-  // requests!: IRequest[];
+  @userStore.State
+  user!: User;
+
+  @userStore.State
+  practitionerAuthenticated!: User;
+
+  @userStore.Action
+  updatePractitionerAuthStatus!: () => Promise<void>;
 
   @request.State
   requests!: any[];
@@ -210,7 +222,7 @@ onePatientId ="";
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Date Requested", key: "createdAt", show: true },
+    { title: "Date", key: "createdAt", show: true },
     {
       title: "rEQUISITION id",
       key: "id",
@@ -238,7 +250,7 @@ onePatientId ="";
     },
     {
       title: "Status",
-      key: "completeStatus",
+      key: "status",
       show: true,
     },
   ];
@@ -254,13 +266,6 @@ onePatientId ="";
   
   get items() {
     const requests = this.requests.map((request) => {
-        if (request.status === "cancelled" || request.status === "no-show") {
-        request.completeStatus = "Completed";
-      } else if (request.status === "On-Hold") {
-        request.completeStatus = "On-Hold";
-      } else {
-        request.completeStatus = "Stopped";
-      }
          (request as any).createdAt = new Date(
          (request as any).createdAt 
        ).toDateString();
@@ -273,7 +278,6 @@ onePatientId ="";
        requester: this.getPatientName(request.requestDetails.requester),
         dispenser: this.getPractitionerName(request.performer.dispenser),
         performer: this.getPractitionerName(request.medicationAdministration.performer),
-        status: request.status,
         };
     });
     if (!this.query) return requests;
@@ -286,6 +290,15 @@ onePatientId ="";
   async showMedication(value:string){
       this.showMedicationModal = true;
       this.requestId = value;
+  }
+  async showViewMedication(value:string){
+      this.showViewMedicationModal = true;
+      this.requestId = value;
+  }
+
+  async showStatus(value:string){
+    this.showStatusModal = true;
+    this.requestId = value;
   }
 
   medicationAdded() {

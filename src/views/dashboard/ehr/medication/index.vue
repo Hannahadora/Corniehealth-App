@@ -37,8 +37,9 @@ import { namespace } from "vuex-class";
 
 const request = namespace("request");
 
+
 @Options({
-  name: "AllergysIndex",
+  name: "MedicationIndex",
   components: {
     MedicationEmptyState,
     MedicationExistingState,
@@ -58,6 +59,7 @@ export default class MedicationIndex extends Vue {
   @request.Action
   fetchRequests!: () => Promise<void>;
 
+  
 
 created() {
     if (this.requests.length < 1) this.fetchRequests();
