@@ -5,6 +5,7 @@ import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
+import { flatten } from "@/plugins/utils";
 
 const routes: Array<RouteRecordRaw> = [
   {

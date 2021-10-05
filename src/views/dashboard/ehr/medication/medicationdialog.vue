@@ -54,7 +54,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['reason code']"
+                   :items="dropdowns.serviceType"
                     v-model="requestModel.requestInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
@@ -62,22 +62,34 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['reason reference']"
+                    :items="dropdowns.serviceType"
                     v-model="requestModel.requestInfo.reasonForProhibition"
                     label="reason for prohibition"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                   <cornie-select
+                   <!-- <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['recorder']"
+                    :items="allPerformer"
                     v-model="requestModel.requestDetails.recorder"
                     label="recorder"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
-                  <cornie-select
+                  </cornie-select>  -->
+                  <div class="w-full">
+                    <label class="flex uppercase mb-1  text-black text-xs font-bold">recorder</label>
+                    <input-desc-rounded  :info="''">
+                      <input :value="authPractitioner.firstName +' '+ authPractitioner.lastName" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                    </input-desc-rounded>
+                  </div>
+                   <div class="w-full">
+                    <label class="flex uppercase mb-1  text-black text-xs font-bold">requester</label>
+                    <input-desc-rounded :info="''">
+                      <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                    </input-desc-rounded>
+                  </div>
+                  <!-- <cornie-select
                    class="required"
                     :rules="required"
                     :items="allRequester"
@@ -85,24 +97,41 @@
                     label="requester"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
+                  </cornie-select> -->
                 </div>
               </template>
         </accordion-component>
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Participants" expand="true" v-model="opened" :opened="false">
                 <p class="text-gray-600 text-xs mt-5 mb-5 pb-3 italic border-b-2 border-dashed">Patient</p>
             <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                <cornie-select
+               <div class="w-full">
+                    <label class="flex uppercase mb-1  text-black text-xs font-bold">subject</label>
+                    <input-desc-rounded :info="''">
+                      <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                    </input-desc-rounded>
+                </div>
+                <!-- <cornie-select
                 class="required"
                 :items="allRequester"
                 v-model="requestModel.subject.subject"
                 label="subject"
                 >
-                </cornie-select>
+                </cornie-select> -->
                 <cornie-select
+                v-if="PatientName.insurances.length > 0"
                 class="required"
                 :rules="required"
-                :items="['Coverage','Claim Response']"
+                :items="PatientName.insurances"
+                v-model="requestModel.subject.paymentOption"
+                label="payment option"
+                placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+              v-else
+                class="required"
+                :rules="required"
+                :items="['No Payment option for this patient']"
                 v-model="requestModel.subject.paymentOption"
                 label="payment option"
                 placeholder="--Select--"
@@ -111,14 +140,20 @@
             </div>
                 <p class="text-gray-600 text-xs  pb-3 italic border-b-2 border-dashed">Dispenser</p>
             <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                    <cornie-select
+                    <!-- <cornie-select
                 class="required cursor-pointer"
                 :items="allPerformer"
                 v-model="requestModel.performer.dispenser"
                 label="dispenser"
                 placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
+                  <div class="w-full">
+                    <label class="flex uppercase mb-1  text-black text-xs font-bold">dispenser</label>
+                    <input-desc-rounded :info="''">
+                      <input :value="authPractitioner.firstName +' '+ authPractitioner.lastName" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                    </input-desc-rounded>
+                  </div>
             </div>
                 <p class="text-gray-600 text-xs pb-3 italic border-b-2 border-dashed">Performer</p>
                 <div  class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
@@ -131,13 +166,19 @@
                 placeholder="--Select--"
                 >
                 </cornie-select>
-                <cornie-select
+                <!-- <cornie-select
                 :items="allPerformer"
                 v-model="requestModel.medicationAdministration.performer"
                 label="performer"
                 placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
+                 <div class="w-full">
+                    <label class="flex uppercase mb-1  text-black text-xs font-bold">dispenser</label>
+                    <input-desc-rounded :info="''">
+                      <input :value="authPractitioner.firstName +' '+ authPractitioner.lastName" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                    </input-desc-rounded>
+                  </div>
                 </div>
         </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Medication" v-model="openedS">
@@ -199,7 +240,7 @@
                                 <cornie-select
                                 class="required w-full"
                                     :rules="required"
-                                    :items="['reason']"
+                                    :items="['2 x Daily', '3 x Daily']"
                                     v-model="medicationsDetail.medicationDetails.dosageInstruction"
                                     label="dosage instruction"
                                     placeholder="--Select--"
@@ -208,7 +249,7 @@
                                 <cornie-select
                                 class="required w-full"
                                     :rules="required"
-                                    :items="['reason']"
+                                    :items="['2 dosage daily']"
                                     label="initial fill"
                                     v-model="medicationsDetail.medicationDetails.initialFill"
                                     placeholder="--Select--"
@@ -217,7 +258,7 @@
                                 <cornie-select
                                 class="required w-full"
                                     :rules="required"
-                                    :items="[0,2,4]"
+                                    :items="[9,2,4]"
                                     label="quantity"
                                     v-model="medicationsDetail.medicationDetails.quantity"
                                     placeholder="--Select--"
@@ -292,7 +333,7 @@
                                 <cornie-select
                                     class="required w-full"
                                     :rules="required"
-                                    :items="['reason']"
+                                    :items="['Code']"
                                     label="Code"
                                     v-model="medicationsDetail.substitutionAllowed.code"
                                     placeholder="--Select--"
@@ -300,7 +341,7 @@
                                 </cornie-select>
                                 <cornie-select
                                 class="w-full"
-                                    :items="['reason']"
+                                    :items="['Headaches', 'Cough', 'Anemia']"
                                     label="reason"
                                     v-model="medicationsDetail.substitutionAllowed.reason"
                                     placeholder="--Select--"
@@ -335,7 +376,7 @@
                                         {{input.medicationDetails.medicationCode}}
                                         </p>
                                         <p class="text-xs text-gray-500 font-light">
-                                            2x3 Daily
+                                           {{input.medicationDetails.dosageInstruction}}
                                         </p>
                                     </div>
                                     <span>
@@ -614,13 +655,18 @@ import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
 import IRequest, { Medications,MedicationDetails } from "@/types/IRequest";
  import Slider from '@vueform/slider';
+ import { IPatient } from "@/types/IPatient";
 import Period from "@/types/IPeriod";
 import '@vueform/slider/themes/default.css';
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
+import IPractitioner from "@/types/IPractitioner";
+import InputDescRounded from "./components/input-desc-rounded.vue"
+const userStore = namespace("user");
 
 const request = namespace('request')
 const dropdown = namespace("dropdown");
+const patients = namespace("patients");
 
 const emptyMedicationDetails: Medications = {
     medicationDetails:{
@@ -663,6 +709,7 @@ const emptyRequest: IRequest = {
     RangeSlider,
     UpdateIcon,
     DeleteorangeIcon,
+    InputDescRounded ,
     CheckIcon,
     BluecheckIcon,
     DEdit,
@@ -690,18 +737,28 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, required: false, default: { ...emptyRequest} })
-  request!: IRequest;
-
+  // @Prop({ type: Object, required: false, default: { ...emptyRequest} })
+  // request!: IRequest;
+  
   requestModel = {} as IRequest;
 
   @request.Action
   getRequestById!: (id: string) => IRequest;
 
-//   @Watch("request")
-//   requestUpdated(request: IRequest) {
-//     this.requestModel = JSON.parse(JSON.stringify({ ...request }));
-//   }
+  // @Watch("request")
+  // requestUpdated(request: IRequest) {
+  //   this.requestModel = JSON.parse(JSON.stringify({ ...request }));
+  // }
+
+  @patients.State
+  patients!: IPatient[];
+
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+   @userStore.Getter
+  authPractitioner!: IPractitioner;
 
   @request.Mutation
   updatedRequests!: any;
@@ -725,6 +782,7 @@ export default class Medication extends Vue {
   openedS = true;
   openedM = false;
   showMedicationModal = false;
+ 
 
 
   patient=[];
@@ -757,10 +815,14 @@ performer="";
     this.setRequest()
   }
 
+  get PatientName() {
+            const id = this.$route.params.id;
+            const pt = this.patients.find((i: any) => i.id === id);
+           return {
+             ...pt
+           }
+        }
 
-  get isUpdate() {
-    return Boolean(this.id);
-  }
  select(i:number) {
       this.selected = i;
     }
@@ -774,33 +836,45 @@ performer="";
       this.width -= this.width_percent;
     }
 
-    get oneDetails (){
-        return this.medicationsDetail.medicationDetails
-    }
+
+
+ 
     medicationsDetail = {...emptyMedicationDetails}; 
     medicationsDetails: Medications[] = [];
  
     addMedicationDetails(){
       this.medicationsDetails.push({...this.medicationsDetail});
+      this.back();
     }
     removemedication(index:number){
          this.medicationsDetails.splice(index, 1);
     }
   async setRequestModel() {
-     this.requestModel = JSON.parse(JSON.stringify({ ...this.request }));
+     this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest}));
   }
   async setRequest() {
     const request = await this.getRequestById(this.id)
     if (!request) return
-    this.requestModel =  ({...request}) ;
+    this.requestModel =  (request) ;
     this.requestModel.medications = request.medications;
   }
  get newaction() {
     return this.id ? 'Update' : 'Create New'
   }
   get payload() {
-     const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
-    return model;
+    //  const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
+    // return model;
+    return{
+        requestInfo: this.requestModel.requestInfo,
+        requestDetails: this.requestModel.requestDetails,
+        subject: this.requestModel.subject,
+        performer: this.requestModel.performer,
+        medicationAdministration: this.requestModel.medicationAdministration,
+        fufillment: this.requestModel.fufillment,
+        history: this.requestModel.history,
+        medications: this.requestModel.medications,
+    }
+
   }
   get allaction() {
     return this.id ? "Edit" : "New";
@@ -839,13 +913,21 @@ get allPerformer() {
   }
   async createRequest() {
     //const period = this.period;
+    const practitionerfullnameid = this.authPractitioner.id;
+    const patientfullnameid = this.PatientName.id;
+
+    this.payload.requestDetails.recorder = practitionerfullnameid;
+     this.payload.requestDetails.requester = patientfullnameid;
+     this.payload.subject.subject = patientfullnameid;
+     this.payload.performer.dispenser = practitionerfullnameid;
+     this.payload.medicationAdministration.performer = practitionerfullnameid;
      this.payload.medications = this.medicationsDetails;
     try {
       const response = await cornieClient().post("/api/v1/requests", this.payload);
       if (response.success) {
           this.updatedRequests([response.data]);
           window.notify({ msg: "Request Created", status: "success" });
-        this.done();
+       this.done();
       }
     } catch (error) {
       window.notify({ msg: error.response.data.message, status: "error" });
@@ -855,27 +937,6 @@ get allPerformer() {
      const id = this.id;
     const url = `/api/v1/requests/${id}`;
     const payload = this.payload ;
-    const body = {
-     // ...this.payload,
-      ...this.request.medications,
-      ...this.requestModel.fufillment,
-      ...this.requestModel.history,
-      ...this.requestModel.medicationAdministration,
-      ...this.requestModel.performer,
-      ...this.requestModel.requestDetails,
-      ...this.requestModel.requestInfo,
-      ...this.requestModel.subject,
-
-//        requestInfo: {},
-//   requestDetails: {},
-//   subject: {},
-//   performer: {},
-//   medicationAdministration: {},
-//   fufillment: {},
-//   history: {},
-//   medications: [],
-
-    }
     try {
       const response = await cornieClient().put(url, this.payload);
       if (response.success) {
@@ -887,7 +948,7 @@ get allPerformer() {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
-  async fetchPateints() {
+  async fetchAllPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patient = response[0].data;
@@ -901,7 +962,8 @@ get allPerformer() {
   async created() {
     this.setRequest();
     this.setRequestModel();
-    this.fetchPateints();
+    this.fetchPatients();
+    this.fetchAllPatients();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");
