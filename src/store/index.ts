@@ -28,6 +28,7 @@ import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
 import VitalsStore from "./vitals";
+import ProcedureStore from "./procedure";
 
 export default createStore({
   modules: {
@@ -61,5 +62,6 @@ export default createStore({
     allergy:AllergyStore,
 
     vitals: VitalsStore,
+    procedure: ProcedureStore,
   },
 } as StoreOptions<any>);

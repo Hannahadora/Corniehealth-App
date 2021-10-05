@@ -89,25 +89,7 @@
               <update-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
-            <table-action
-            >
-              <add-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">Admit Patient</span>
-            </table-action>
-            <table-action
-            >
-              <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View Patient History</span>
-            </table-action>
-            <table-action
-            >
-              <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View Class History</span>
-            </table-action>
-            <table-action>
-              <cancel-icon class="text-red-500 fill-current" />
-              <span class="ml-3 text-xs">Cancel</span>
-            </table-action>
+            
           </template>
         </cornie-table>
       </div>
@@ -135,25 +117,7 @@
               <update-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
-            <table-action
-            >
-              <add-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">Admit Patient</span>
-            </table-action>
-            <table-action
-            >
-              <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View Patient History</span>
-            </table-action>
-            <table-action
-            >
-              <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View Class History</span>
-            </table-action>
-            <table-action>
-              <cancel-icon class="text-red-500 fill-current" />
-              <span class="ml-3 text-xs">Cancel</span>
-            </table-action>
+            
           </template>
         </cornie-table>
       </div>
@@ -174,7 +138,7 @@
     </side-modal>
 
     <side-modal :visible="showNewEpisodeModal" :width="990" @closesidemodal="() => showNewEpisodeModal = false" :header="'New Episode'">
-      <new-episode />
+      <new-episode :items="practitioners" />
     </side-modal>
 
     <modal :visible="false">
@@ -236,6 +200,7 @@ import NewEpisode from "./components/new-episode.vue";
 const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
+const practitioner  = namespace('practitioner');
 
 @Options({
   name: "EHRPatients",
@@ -283,6 +248,12 @@ export default class ExistingState extends Vue {
 
   @userStore.State
   user!: User;
+
+  @practitioner.State
+  practitioners!: User;
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
 
   @userStore.State
   practitionerAuthenticated!: User;
@@ -427,6 +398,11 @@ export default class ExistingState extends Vue {
     })
   }
 
+  get practitionersList() {
+    if (this.practitioners?.length === 0) return [ ];
+    return this.practitioners;
+  }
+
   goToEHR(patientId: string) {
     if (!this.practitionerAuthenticated) {
       this.patientId = patientId;
@@ -482,27 +458,6 @@ export default class ExistingState extends Vue {
     else window.notify({ msg: "Patient not deleted", status: "error" });
   }
 
-//   async authenticateUser() {
-//     try {
-//       this.loading = true;
-//       const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
-//       this.password = "";
-//       this.loading = false;
-//       if (verified) {
-//         this.showAuthModal = false;
-//         this.updatePractitionerAuthStatus();
-//         if (!this.patientId) {
-//           this.showSearchModal = true;
-//         } else {
-//           this.$router.push({ name: 'Health Trend', params: { patientId: this.patientId }})
-//         }
-//       }
-//     } catch (error) {
-//       this.loading = false;
-//       console.log(error);
-//     }
-//   }
-
   async searchForPatient() {
     // try {
     //   this.loading = true;
@@ -523,6 +478,7 @@ export default class ExistingState extends Vue {
 
   async created() {
     await this.fetchPatients();
+    await this.fetchPractitioners();
   }
 }
 </script>

@@ -1,8 +1,7 @@
 <template>
-    <div class="w-full">
+    <div class="w-full" style="max-width: 530px">
         <div class="container p-6 content-con">
-        <p class="text-primary text-2xl font-semibold pb-3">You need to be authenticated to view health records.</p>
-        <span style="color:#667499" class="text-secondary text-base">Type in your password	</span>
+        <p class="text-primary text-xl font-semibold pb-3">You need to be authenticated to view health records.</p>
 
         <div class="w-full py-6">
             <label for="password" class="flex flex-col">
@@ -13,6 +12,7 @@
             id="password"
             v-model="password"
             class="border rounded"
+            placeholder="Type in your password"
             />               
         </label>
         </div>

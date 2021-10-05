@@ -13,6 +13,39 @@
                             <cornie-select :label="'Type'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
                     </div>
+                    <div class="w-full mb-3 mt-3 mb-6">
+                        <div class="w-6/12">
+
+                            <div class="w-full">
+
+                                <div class="md w-12/12">
+                                    <div class="md w-full">
+                                        <div class="md w-full">
+                                            <p>
+                                                <span class="mr-2">Arrived</span> 
+                                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
+                                            </p>
+                                        </div>
+                                        <div class="md w-full my-2" style="height: 20px;border-left: 1px dashed #878E99;">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="md w-12/12">
+                                    <div class="md w-full">
+                                        <div class="md w-full">
+                                            <p>
+                                                <span class="mr-2">Inpatient</span> 
+                                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
 
                     <div class="w-full flex items-center mt-3">
                         <div class="w-6/12 -mt-4">
@@ -44,7 +77,7 @@
 
                     <div class="w-full flex items-center my-3">
                         <div class="w-6/12 -mt-4">
-                            <cornie-select :label="'Appointment'"  :items="['Appointment 1', 'Appointment 2' ]"/>
+                            <auto-complete :label="'Appointment'"  :items="['Appointment 1', 'Appointment 2' ]"/>
                         </div>
                         <div class="w-6/12">
                             <cornie-select :label="'Based on'"  :items="['Service 1', 'Service 2' ]"/>
@@ -103,7 +136,7 @@
                 <template #form>
                     <div class="w-full flex items-center mb-3 mt-5">
                         <div class="w-6/12 -mt-4">
-                            <cornie-input :label="'Provider\'s name'" />
+                            <auto-complete :label="'Provider\'s name'" :items="[ 'Provider 1', 'Provider 2' ]" />
                         </div>
                         <div class="w-6/12">
                             <cornie-select :label="'Reference Location'"  :items="['Location 1', 'Location 2' ]"/>
@@ -211,8 +244,18 @@
                         <div class="w-6/12">
                             <cornie-select :label="'Re-admission'"  :items="['Ative', 'Inactive' ]"/>
                         </div>
-                        <div class="w-6/12">
-                            <cornie-select :label="'Diet Preference'"  :items="['Ative', 'Inactive' ]"/>
+                        <div class="w-6/12 -mt-5">
+                            <label for="" class="font-bold uppercase text-xs mb-1">Diet Preference</label>
+                            <select-boxes>
+                                <div class="w-full border rounded px-2 absolute bg-white" style="z-index:1000">
+                                    <a class="text-gray-700 block py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                                    >
+                                        <span><input type="checkbox" class="h-4 w-4" name="" id="" ></span>
+                                        <span class="mx-2 text-lg">Fufu</span>
+                                    </a>
+                                </div>
+                            </select-boxes>
+                            <!-- <cornie-select :label="'Diet Preference'"  :items="['Ative', 'Inactive' ]"/> -->
                         </div>
                     </div>
 
@@ -238,6 +281,12 @@
                 </template>
             </hospital-info>
 
+            <modal :visible="false">
+                <div class="w-full" style="width: 565px">
+                    <origin-select />
+                </div>
+            </modal>
+
             <div class="spacer my-12"></div>
             <!-- <div class="w-full mt-12"> -->
             <div class="w-full mt-12">
@@ -248,7 +297,7 @@
                 </corniebtn>
 
                 <CornieBtn :loading="false" class="bg-red-500 p-2 rounded-full px-8 mx-4">
-                    <span class="text-white font-semibold">Save</span>
+                    <span class="text-white font-semibold">Create New Encounter</span>
                 </CornieBtn>
             </div>
           </div>
@@ -264,6 +313,10 @@ import DateTimePicker from "@/views/dashboard/schedules/components/datetime-pick
 import BasicInfo from "./basic-info.vue"
 import ServiceProvider from "./service-provider.vue"
 import HospitalInfo from "./hospital-info.vue"
+import AutoComplete from "@/components/autocomplete.vue"
+import SelectBoxes from "@/views/dashboard/schedules/components/apply-to.vue"
+import Modal from "@/components/modal.vue"
+import OriginSelect from "./origin-select.vue"
 
 @Options({
     components: {
@@ -273,6 +326,10 @@ import HospitalInfo from "./hospital-info.vue"
         BasicInfo,
         ServiceProvider,
         HospitalInfo,
+        AutoComplete,
+        SelectBoxes,
+        Modal,
+        OriginSelect,
     }
 })
 export default class NewEpisode extends Vue {

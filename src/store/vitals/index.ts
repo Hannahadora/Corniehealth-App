@@ -1,6 +1,7 @@
+import IEpisode from "@/types/IEpisode";
 import IVital, { IEncounter } from "@/types/IVital";
 import { StoreOptions } from "vuex";
-import { getVitals, createVital, createEncounter, getEncounters, updateVitalStatus } from "./helper";
+import { getVitals, createVital, createEncounter, getEncounters, updateVitalStatus, createEpisode} from "./helper";
 
 interface VitalsStore {
   vitals: IVital[],
@@ -58,6 +59,13 @@ export default {
       if (!res) return { };
       // ctx.commit("addSchedule", sch);
       return res;
+    },
+
+    async createEpisode(ctx, episode: IEpisode) {
+      const res = await createEpisode(episode);
+      if (!res) return false;
+      // ctx.commit("addSchedule", sch);
+      return true;
     },
 
     async updateVitalStatus(ctx, body: any) {

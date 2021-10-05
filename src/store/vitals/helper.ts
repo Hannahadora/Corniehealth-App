@@ -1,4 +1,5 @@
 import { cornieClient } from "@/plugins/http";
+import IEpisode from "@/types/IEpisode";
 import IVital, { IEncounter } from "@/types/IVital";
 
 export async function getVitals(patientId: string) {
@@ -42,6 +43,17 @@ export async function createEncounter(body: IEncounter) {
     return response.data as boolean;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function createEpisode(body: IEpisode) {
+  try {
+    const response = await cornieClient().post(`/api/v1/encounter/episode`, body);
+    if (response?.data?.id) notify({ msg: "Episode created successfully", status: "success" });
+    return response.data as boolean;
+  } catch (error) {
+    console.log(error);
+    notify({ msg: "Episode creation failed", status: "error" });
   }
 }
 
