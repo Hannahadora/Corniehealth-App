@@ -47,7 +47,14 @@ export class JsonResponse {
   }
 
   static async createJsonResponse(response: Response): Promise<JsonResponse> {
-    const json = await response.json();
+    let json;
+    try {
+      json = await response.json();
+    } catch (error) {
+      // this handles the edge case of an api returning an empty response on a valid call.
+      //response.json() fails if the body returned is empty.
+      json = {};
+    }
     return new JsonResponse(response, json);
   }
 }
@@ -71,7 +78,6 @@ export class JSONClient implements HttpClient {
       headers: { ...this.headers },
       body: this.buildBody(method, body),
     });
-
     if (!response.ok) {
       throw new ErrorResponse(await JsonResponse.createJsonResponse(response));
     }

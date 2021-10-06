@@ -51,7 +51,7 @@
               <div class="bg-gray-100">
                 <div  v-if="practitionerFilter">
                   <div v-for="(input, index) in practitioners" :key="index">
-                    <div class="flex justify-between space-x-7 w-full mt-2 p-3">
+                    <div class="flex justify-between space-x-4 w-full mt-2 p-3">
                       <div class="w-full dflex space-x-4">
                         <div class="w-10 h-10">
                           <avatar
@@ -94,7 +94,7 @@
                         class="bg-danger mb-5  focus-within:bg-danger px-6 shadow"/>
                     </div>
                     <div class="w-full p-3" v-if="singleId == input.id">
-                      <cornie-select
+                      <!-- <cornie-select
                         :onChange="setValue"
                         class="required w-full"
                         :rules="required"
@@ -103,7 +103,7 @@
                         label="TYPE"
                         placeholder="--Select--"
                       >
-                      </cornie-select>
+                      </cornie-select> -->
                       <!-- <cornie-select
                         class="required w-full"
                         :rules="required"
@@ -143,7 +143,7 @@
                       >
                         </cornie-select>
                         <div class="pb-5">
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].id" @click="clearActor('Practitioner',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].practitionerId" @click="clearActor('Practitioner',index)">Clear Actor</span>
                       <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Practitioner',index)">Add Actor</span>
                       </div>
                     </div>
@@ -187,7 +187,7 @@
                       class="bg-danger float-right focus-within:bg-danger px-6 shadow"/>
                   </div>
                     <div class="w-full p-3" v-if="singleId == input.id">
-                      <cornie-select
+                      <!-- <cornie-select
                         :onChange="setValue"
                         class="required w-full"
                         :rules="required"
@@ -196,7 +196,7 @@
                         label="TYPE"
                         placeholder="--Select--"
                       >
-                      </cornie-select>
+                      </cornie-select> -->
                       <!-- <cornie-select
                         class="required w-full"
                         :rules="required"
@@ -236,7 +236,7 @@
                       >
                         </cornie-select>
                         <div class="pb-5">
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Devices[index] && Devices[index].id" @click="clearActor('Device',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Devices[index] && Devices[index].deviceId" @click="clearActor('Device',index)">Clear Actor</span>
                       <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Device',index)">Add Actor</span>
                       </div>
                     </div>
@@ -295,7 +295,7 @@
                       class="bg-danger float-right  focus-within:bg-danger px-6 shadow"/>
                   </div>
                   <div class="w-full p-3" v-if="singleId == input.id">
-                      <cornie-select
+                      <!-- <cornie-select
                         :onChange="setValue"
                         class="required w-full"
                         :rules="required"
@@ -304,7 +304,7 @@
                         label="TYPE"
                         placeholder="--Select--"
                       >
-                      </cornie-select>
+                      </cornie-select> -->
                       <!-- <cornie-select
                         class="required w-full"
                         :rules="required"
@@ -345,7 +345,7 @@
                       >
                       </cornie-select>
                       <div class="pb-5">
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].id" @click="clearActor('Patient',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
                       <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span>
                       </div>
                   </div>
@@ -507,7 +507,7 @@
      
     </cornie-card>
     </cornie-dialog>
-    <availability v-model:visible="availableFilter" :name="practitionername" :practitionerId="singleId" :availability="practitioners"/>
+    <availability v-model:visible="availableFilter" :available="available" :name="practitionername" :practitionerId="singleId"/>
     <profile v-model:visible="profileFilter" :profile="practitioners" :name="practitionername" :activeState="activeState" :type="practitionerType" :profileId="singleId" />
 </template>
 <script>
@@ -608,25 +608,22 @@ export default {
           required:""
       },
       apractitioner: {
-          id: this.singleId,
-          type: "",
           required: false,
           consultationMedium: "",
           period :"",
+          practitionerId: "",
       },
       apatient:{
-          id: this.singleId,
-        type: "",
         required: false,
         consultationMedium: "",
         period :  "",
+        patientId: "",
       },
       adevice:{
-          id: this.singleId,
-        type: "",
         required: false,
         consultationMedium: "",
         period :  "",
+        deviceId: "",
       },
       Patients: [],
       Practitioners: [],
@@ -642,7 +639,8 @@ export default {
       newIndexvaluedevice:{},
       newIndexvaluepatient:{},
       valueid: [],
-      type:'Patient',
+      available:[],
+      type:'Practitioners',
       singleId:"",
       availableFilter: false,
       practitionername:"",
@@ -711,62 +709,54 @@ export default {
     },
     clearActor(value,index){
        if(value == 'Practitioner'){
-          this.apractitioner.id = this.singleId;
+         // this.apractitioner.id = this.singleId;
+          this.apractitioner.practitionerId = this.singleId;
         //this.Practitioners = this.apractitioner[index];
         this.Practitioners.splice(index, 1);
         }else if(value == 'Patient'){
-          this.apatient.id = this.singleId;
+          //this.apatient.id = this.singleId;
+          this.apatient.patientId = this.singleId;
           //this.Patients = this.apatient[index];
           this.Patients.splice(index, 1);
         }else if(value == 'Device'){
-          this.adevice.id = this.singleId;
+         // this.adevice.id = this.singleId;
+          this.adevice.deviceId = this.singleId;
             this.Devices.splice(index, 1);
         }
      this.reset(value);
     },
      applyActor(value){
       if(value == 'Practitioner'){
-          this.apractitioner.id = this.singleId;
+         // this.apractitioner.id = this.singleId;
+           this.apractitioner.practitionerId = this.singleId;
          this.Practitioners.push(this.apractitioner)
          this.indexvaluepractitioner.push(this.newIndexvaluepractitioner)
         }else if(value == 'Patient'){
-          this.apatient.id = this.singleId;
+         // this.apatient.id = this.singleId;
+           this.apatient.patientId = this.singleId;
          this.Patients.push(this.apatient)
          this.indexvaluepatient.push(this.newIndexvaluepatient)
         }else if(value == 'Device'){
-          this.adevice.id = this.singleId;
+        //  this.adevice.id = this.singleId;
+           this.adevice.deviceId = this.singleId;
          this.Devices.push(this.adevice)
          this.indexvaluedevice.push(this.newIndexvaluedevice)
         }
        // this.reset(value);
      },
     apply(value) {
-      //  if(value == 'Practitioner'){
-      //     this.apractitioner.id = this.singleId;
-      //    this.Practitioners.push(this.apractitioner)
-      //   }else if(value == 'Patient'){
-      //     this.apatient.id = this.singleId;
-      //    this.Patients.push(this.apatient)
-      //   }else if(value == 'Device'){
-      //     this.adevice.id = this.singleId;
-      //    this.Devices.push(this.adevice)
-      //   }
-      this.$emit("update:preferred", this.indexvaluepractitioner,this.indexvaluepatient, this.indexvaluedevice,value,this.Practitioners, this.Patients,this.Devices);
+      this.$emit("update:preferred", this.indexvaluepractitioner,this.indexvaluepatient, this.indexvaluedevice,value,this.Practitioners, this.Patients,this.Devices,this.apractitioner.practitionerId);
       this.indexvalue = [];
       this.valueid = [];
       this.value = [];
       this.show = false;
      
     },
-    // reset() {
-    //   this.$emit("update:preferred", copy([...this.columns]));
-    //   this.show = false;
-    //   this.showPartcipants = false;
-    // },
     showAvailable(value,firstname,lastname){
       this.singleId = value;
       this.availableFilter = true;
-      this.practitionername = firstname +' '+ lastname
+      this.practitionername = firstname +' '+ lastname;
+       this.viewAvialaibilty();
     },
     showProfile(value,firstname,lastname,type,state){
       this.singleId = value;
@@ -774,6 +764,8 @@ export default {
       this.practitionername = firstname +' '+ lastname;
       this.practitionerType = type;
       this.activeState = state;
+
+    this.viewProfile();
 
     },
      select(i) {
@@ -786,6 +778,17 @@ export default {
       }
       //this.valueid.push(index);
     },
+     async viewAvialaibilty() {
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.apractitioner.practitionerId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      this.available = response[0].data;
+    },
+     async viewProfile() {
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.apractitioner.practitionerId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      this.practitionerprofile = response[0].data;
+      return response[0].data
+    }, 
      async viewAppointemnt() {
       try {
         const response = await cornieClient().get(
@@ -801,8 +804,8 @@ export default {
     },
   },
   mounted() {
-    this.columnsProxy = copy([...this.indexvalue]);
     this.viewAppointemnt();
+    this.columnsProxy = copy([...this.indexvalue]);
   },
   created(){
     this.setValue();

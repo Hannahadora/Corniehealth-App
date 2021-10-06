@@ -1,6 +1,6 @@
 <template>
     <Modal :visible="visible">
-        <div class="modal-con p-2">
+        <div class="modal-con p-2" :style="{ width: width + 'px' }">
             <div class="container-fluid">
                 <div class="w-full px-3">
                     <h5 class="flex items-center py-3">
@@ -24,7 +24,7 @@ import ArrowLeft from '@/components/icons/arrowleft.vue'
 export default defineComponent({
     components: { Modal, ArrowLeft },
 
-    props: [ 'visible', 'header' ],
+    props: [ 'visible', 'header', 'width' ],
 
     setup (props, { emit }) {
         

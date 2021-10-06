@@ -8,11 +8,13 @@
     class="mb-5"
   >
     <div v-bind="$attrs" class="w-11/12">
-      <label class="flex uppercase mb-1  text-black text-xs font-bold">
+      <label class="flex uppercase mb-1 text-black text-xs font-bold">
         <slot name="label">
           {{ label }}
         </slot>
-         <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+        <span class="ml-1 mb-1" v-if="$slots.labelicon">
+          <slot name="labelicon" />
+        </span>
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
@@ -46,6 +48,7 @@
           <slot name="prepend-inner" />
         </div>
         <input
+          v-on:keyup.enter="$emit('keyenter')"
           class="p-2 rounded-lg w-full focus:outline-none"
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':

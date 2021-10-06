@@ -11,6 +11,8 @@ interface UserState {
   requiresSecurityQuestion: boolean;
   authTime?: Date;
   cornieData: { user: CornieUser; practitioner: IPractitioner };
+  practitionerAuthenticated: boolean;
+  domain: string;
 }
 
 export default {
@@ -24,16 +26,17 @@ export default {
     emailVerified: false,
     cornieData: {} as any,
     practitionerAuthenticated: false,
+    domain: "gcbv",
   },
   getters: {
     accountType(state) {
       return state.cornieData?.user?.accountType;
     },
     cornieUser(state) {
-      return state.cornieData.user;
+      return state.cornieData?.user;
     },
     authPractitioner(state) {
-      return state.cornieData.practitioner;
+      return state.cornieData?.practitioner;
     },
   },
   mutations: {
@@ -45,7 +48,9 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
-
+    setAuthDomain(state, domain: string){
+      state.domain = domain
+    },
     setLoginInfo(state, payload) {
       state.user = payload.user;
 
@@ -56,6 +61,15 @@ export default {
       state.requiresTwoFactorAuth = payload.requiresTwoFactorAuth;
       state.requiresSecurityQuestion = payload.requiresSecurityQuestion;
       state.authToken = payload.token;
+    },
+
+    updatePractitionerAuthStatus(state, payload) {
+      state.practitionerAuthenticated = payload;
+    },
+  },
+  actions: {
+    async updatePractitionerAuthStatus({ commit }, authenticated) {
+      commit("updatePractitionerAuthStatus", authenticated);
     },
   },
 } as StoreOptions<UserState>;

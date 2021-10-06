@@ -1,154 +1,108 @@
 <template>
   <div class="w-full pb-7">
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          placeholder="Search Table"
-          v-model="query"
+    <span class="flex justify-end w-full mb-5">
+      <cornie-btn
+        class="bg-danger py-2 text-white m-5"
+        @click="editingLevel = true"
+      >
+        <plus-icon class="mr-2 fill-current text-white" />
+        New Job Level
+      </cornie-btn>
+    </span>
+    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="editLevel(item.id)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-        <table-refresh-icon class="mr-7" />
-        <filter-icon class="cursor-pointer" @click="showColumnFilter = true" />
-      </span>
-    </div>
-    <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'action'">
-          <table-options>
-            <li
-              @click="deletePartner(getKeyValue(item).value)"
-              class="
-                list-none
-                flex
-                my-1
-                py-3
-                items-center
-                text-xs
-                font-semibold
-                text-gray-700
-                hover:bg-gray-100
-                hover:text-gray-900
-                cursor-pointer
-              "
-            >
-              <delete-icon class="mr-3" /> Delete
-            </li>
-          </table-options>
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <edit-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="remove(item.id)"
+        >
+          <delete-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
       </template>
-    </Table>
-    <column-filter
-      :columns="rawHeaders"
-      v-model:preferred="preferredHeaders"
-      v-model:visible="showColumnFilter"
-    />
+    </cornie-table>
+    <add-level v-model="editingLevel" :level="levelForEdit" />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
-import ThreeDotIcon from "@/components/icons/threedot.vue";
-import SortIcon from "@/components/icons/sort.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import PrintIcon from "@/components/icons/print.vue";
-import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
-import FilterIcon from "@/components/icons/filter.vue";
-import IconInput from "@/components/IconInput.vue";
-import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { namespace } from "vuex-class";
-import TableOptions from "@/components/table-options.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import { Prop } from "vue-property-decorator";
+import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
-import ICarePartner from "@/types/ICarePartner";
+import EditIcon from "@/components/icons/edit.vue";
+import AddLevel from "./add-level.vue";
+import { namespace } from "vuex-class";
 
-const CarePartnersStore = namespace("CarePartnersStore");
+const level = namespace("OrgLevels");
 
 @Options({
+  name: "JobLevelExistingState",
   components: {
-    Table,
-    SortIcon,
-    ThreeDotIcon,
-    SearchIcon,
-    PrintIcon,
-    TableRefreshIcon,
-    FilterIcon,
-    IconInput,
+    CornieTable,
     DeleteIcon,
-    EyeIcon,
-    ColumnFilter,
-    TableOptions,
+    EditIcon,
+    AddLevel,
   },
 })
-export default class CarePartnersExistingState extends Vue {
-  showColumnFilter = false;
-  query = "";
+export default class ExistingState extends Vue {
+  @Prop({ type: Array, default: [], required: true })
+  levels!: LevelCollection[];
 
-  @CarePartnersStore.State
-  carePartners!: ICarePartner[];
+  levelForEdit = {} as LevelCollection;
+  editingLevel = false;
 
-  @CarePartnersStore.Action
-  delete!: (partner: ICarePartner) => Promise<boolean>;
+  @level.Action
+  removeLevel!: (id: string) => Promise<void>;
 
-  getKeyValue = getTableKeyValue;
-  preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Function Name",
-      value: "functionName",
+      title: "Category",
+      key: "category",
       show: true,
     },
     {
-      title: "Hierarchy",
-      value: "hierarchy",
+      title: "Level ID",
+      key: "levelId",
       show: true,
     },
     {
-      title: "Supervisory Function",
-      value: "supervisoryFunction",
+      title: "Description/Tag",
+      key: "tags",
       show: true,
-    }
+    },
   ];
 
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
+  get items() {
+    return this.levels.map((level: any) => ({
+      category: level.category?.name,
+      levelId: level.name,
+      tags: this.printTags(level.tags),
+      id: level.id,
+    }));
   }
 
-  get items() {
-    const partners = this.carePartners.map((partner) => {
-      return {
-        ...partner,
-        action: partner.id,
-      };
-    });
-    if (!this.query) return partners;
-    return search.searchObjectArray(partners, this.query);
+  printTags(tags: Tag[]) {
+    const tagNames = tags.map((tag) => tag.name);
+    return tagNames.join(", ");
   }
-  
-  async deletePartner(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this care partner",
-    });
-    if (!confirmed) return;
-    const partner = this.carePartners.find(element => element.id == id)
-    if (partner && await this.delete(partner)) alert("Care partner deleted");
-    else alert("Care partner not deleted");
+
+  editLevel(id: string) {
+    console.log("Editing ", id);
+    const level = this.levels.find((level) => level.id == id);
+    if (!level) return;
+    this.levelForEdit = level;
+    this.editingLevel = true;
+  }
+
+  remove(id: string) {
+    this.removeLevel(id);
   }
 }
 </script>

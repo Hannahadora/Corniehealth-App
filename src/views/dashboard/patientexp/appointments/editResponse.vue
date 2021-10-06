@@ -1,69 +1,74 @@
 <template>
   <div class="w-full h-full bg-white rounded-md p-5">
-    <span class="  flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2">
-    Edit Response
+    <span
+      class="
+        flex flex-col
+        w-full
+        justify-center
+        border-b-2
+        font-bold
+        mb-10
+        text-xl text-primary
+        py-2
+      "
+    >
+      Edit Response
     </span>
     <div>
       <div class="w-full">
         <form class="mt-2 w-full" @submit.prevent="submit">
           <div class="pb-80">
             <div class="w-full border-2 mb-32 grid grid-cols-3 gap-5 p-5 pb-5">
-                  <cornie-input
-                    label="Appointment"
-                    placeholder="--Autoloaded--"
-                    v-model="appointmentType"
-                  />
-                   <single-date-picker
-                    label="start date"
-                    class="py-2"
-                    v-model="period.start"
-                    :rules="required"
-                  />
-                  <single-date-picker
-                    label="end date"
-                      class="py-2"
-                    v-model="period.end"
-                    :rules="required"
-                  />
-                  <cornie-select
-                    v-model="type"
-                    label="PARTICIPANT TYPE"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    v-model="actor"
-                    label="ACTOR"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Confirmed', 'Canceled']"
-                    v-model="status"
-                    label="Status"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-input
-                    class="required"
-                    label="comments"
-                    placeholder="--Enter--"
-                    v-model="comment"
-                  />
-            </div> 
+              <cornie-input
+                label="Appointment"
+                placeholder="--Autoloaded--"
+                v-model="appointmentType"
+              />
+              <single-date-picker
+                label="start date"
+                class="py-2"
+                v-model="period.start"
+                :rules="required"
+              />
+              <single-date-picker
+                label="end date"
+                class="py-2"
+                v-model="period.end"
+                :rules="required"
+              />
+              <cornie-select
+                v-model="type"
+                label="PARTICIPANT TYPE"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                v-model="actor"
+                label="ACTOR"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required"
+                :rules="required"
+                :items="['Confirmed', 'Canceled']"
+                v-model="status"
+                label="Status"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-input
+                class="required"
+                label="comments"
+                placeholder="--Enter--"
+                v-model="comment"
+              />
+            </div>
             <span class="flex justify-end w-full">
               <button
-                @click="$router.push('/dashboard/provider/experience/appointments')"
+                @click="
+                  $router.push('/dashboard/provider/experience/appointments')
+                "
                 type="button"
                 class="
                   outline-primary
@@ -114,7 +119,12 @@ import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, { ParticipantDetail, Practitioners, Patients, Devices }   from "@/types/IAppointment";
+import IAppointment, {
+  ParticipantDetail,
+  Practitioners,
+  Patients,
+  Devices,
+} from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -127,48 +137,43 @@ import SingleDatePicker from "./datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
-import moment from 'moment'
+import moment from "moment";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
 const emptyPractitioners: Practitioners = {
-  id: "",
   type: "",
   required: false,
   consultationMedium: "",
-  period : {} as Period,
-
-
+  period: {} as Period,
+  practitionerId: "",
 };
+
 const emptyPatients: Patients = {
-  id: "",
   type: "",
   required: false,
   consultationMedium: "",
-  period : {} as Period,
+  period: {} as Period,
+  patientId: "",
   firstname: "",
   lastname: "",
   gender: "",
   dateOfBirth: "",
   accountType: "",
   mrn: "",
-
 };
 const emptyDevices: Devices = {
-    id: "",
   type: "",
   required: false,
   consultationMedium: "",
-  period : {} as Period,
-
-
+  period: {} as Period,
+  deviceId: "",
 };
 const emptyParticipant: ParticipantDetail = {
   period: {} as Period,
   required: "",
   consultationMedium: "",
-  
 };
 
 @Options({
@@ -192,7 +197,6 @@ export default class EditResponse extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-
   @appointment.Action
   getAppointmentById!: (id: string) => IAppointment;
   loading = false;
@@ -205,12 +209,11 @@ export default class EditResponse extends Vue {
   openedR = true;
   openedT = false;
 
-
-actor = "";
+  actor = "";
   type = "";
 
-status = "";
-appointmentId = "";
+  status = "";
+  appointmentId = "";
   serviceCategory = "";
   locationId = null;
   deviceId = null;
@@ -221,21 +224,21 @@ appointmentId = "";
   reasonRef = "";
   priority = "";
   description = "";
-  supportingInfo ="";
+  supportingInfo = "";
   slot = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   basedOn = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
   duration = "";
   comment = "";
   patientInstruction = "";
-    period = {} as Period;
-  participantDetail = {...emptyParticipant}
+  period = {} as Period;
+  participantDetail = { ...emptyParticipant };
   practitioners: Practitioners[] = [];
   devices: Devices[] = [];
   patients: Patients[] = [];
   roles = [];
-  newPractitioners =[];
+  newPractitioners = [];
   newDevices = [];
-  newPatients =[];
+  newPatients = [];
   newRoles = [];
 
   roleFilter = false;
@@ -246,13 +249,12 @@ appointmentId = "";
   participantitem = "";
 
   practitioner = [];
-  device  = [];
+  device = [];
   patient = [];
   role = [];
- allresponse: any[] = [];
+  allresponse: any[] = [];
   availability: any[] = [];
   availabilities = Array();
- 
 
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
@@ -295,21 +297,19 @@ appointmentId = "";
     this.practitioners = appointment.Practitioners;
     this.devices = appointment.Devices;
     this.patients = appointment.Patients;
-     this.status = appointment.status;
-     this.appointmentId = appointment.appointmentId;
+    this.status = appointment.status;
+    this.appointmentId = appointment.appointmentId;
     this.participantDetail = appointment.participantDetail;
   }
   get payload() {
-    const payload =  {
+    const payload = {
       status: this.status,
       appointmentId: this.appointmentId,
       comment: this.comment,
-    } as any
-    return payload
+    } as any;
+    return payload;
   }
- 
 
- 
   async submit() {
     this.loading = true;
     const url = `/api/v1/appointment/editAppointmentReponse/${this.id}`;
@@ -317,28 +317,33 @@ appointmentId = "";
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Appointment response updated", status: "success" });
+        window.notify({
+          msg: "Appointment response updated",
+          status: "success",
+        });
         this.$router.push("/dashboard/provider/experience/responses");
       }
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      window.notify({ msg: "Appointment response not updated", status: "error" });
+      window.notify({
+        msg: "Appointment response not updated",
+        status: "error",
+      });
     }
   }
 
- get setDate(){
-  const end =   moment(this.period.end).format('DD/MM/YYYY')
-      const start =  moment(this.period.start).format('DD/MM/YYYY')
-     return{
+  get setDate() {
+    const end = moment(this.period.end).format("DD/MM/YYYY");
+    const start = moment(this.period.start).format("DD/MM/YYYY");
+    return {
       start,
-       end
-       } 
-      
+      end,
+    };
   }
 
   async created() {
-   // this.setDate();
+    // this.setDate();
     this.setAppointmentResponse();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");

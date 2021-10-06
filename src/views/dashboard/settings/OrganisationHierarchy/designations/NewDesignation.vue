@@ -3,16 +3,17 @@
     <card-title class="m-5 mb-0 border-b-2">
       <h1 class="text-primary text-xl font-extrabold">New Designation</h1>
     </card-title>
-    <v-form class="m-5 mt-0">
+    <v-form class="m-5 mt-0" @submit="submit">
       <card-text>
         <p class="text-danger mb-6">
           Which of these best describes the designation?
         </p>
-        <div class="flex border-b-2 pb-6 mb-6">
+        <div class="flex border-b-2 pb-6 mb-6 items-center">
           <cornie-radio
             label="Supervisory"
             value="Sup"
             v-model="supervisoryType"
+            class="mr-2"
           />
           <cornie-radio
             class="ml-3"
@@ -24,61 +25,51 @@
         <h1 class="text-primary text-xl font-extrabold mb-3">
           Designation Details
         </h1>
-        <div class="flex items-start border-b-2 pb-3">
-          <div class="w-4/12 mx-6">
-            <cornie-input
-              label="title"
-              class="my-6"
-              v-model="title"
-              :rules="required"
-              placeholder="--Enter--"
-            />
-            <cornie-input
-              label="cost centre"
-              class="my-6"
-              v-model="costCentre"
-              :rules="required"
-              placeholder="--Enter--"
-            />
-          </div>
-          <div class="w-4/12 mx-6">
-            <cornie-select
-              label="function"
-              class="my-6"
-              placeholder="--Select--"
-              :rules="required"
-              v-model="assignedFunction"
-              :items="[]"
-            />
-            <cornie-select
-              label="reporting to"
-              class="my-6"
-              placeholder="--Select--"
-              :rules="required"
-              v-model="reportingTo"
-              :items="[]"
-            />
-          </div>
-          <div class="w-4/12 mx-6">
-            <cornie-select
-              label="job level"
-              class="my-6"
-              placeholder="--Select--"
-              :rules="required"
-              v-model="jobLevel"
-              :items="[]"
-            />
-            <cornie-select
-              label="dotted reporting"
-              class="my-6"
-              placeholder="--Select--"
-              :rules="required"
-              v-model="dottedReporting"
-              :items="[]"
-            />
-          </div>
+        <div class="grid grid-cols-3 border-b-2 pb-3">
+          <cornie-input
+            label="title"
+            class=""
+            v-model="title"
+            :rules="required"
+            placeholder="--Enter--"
+          />
+          <cornie-input
+            label="cost centre"
+            v-model="costCentre"
+            :rules="required"
+            placeholder="--Enter--"
+          />
+          <cornie-select
+            label="function"
+            placeholder="--Select--"
+            :rules="required"
+            v-model="assignedFunction"
+            :items="allFunctions"
+          />
+          <cornie-select
+            label="reporting to"
+            class=""
+            placeholder="--Select--"
+            v-model="reportingTo"
+            :items="allDesignations"
+          />
+          <cornie-select
+            label="job level"
+            class=""
+            placeholder="--Select--"
+            :rules="required"
+            v-model="jobLevel"
+            :items="allLevels"
+          />
+          <cornie-select
+            label="dotted reporting"
+            class=""
+            placeholder="--Select--"
+            v-model="dottedReporting"
+            :items="[]"
+          />
         </div>
-        <card class="bg-gray-100 flat my-6">
+        <card class="bg-gray-100 flat">
           <card-title>
             <span>
               The feature is available for Cloudenly Subscribers only
@@ -116,42 +107,40 @@
           </card-text>
         </card>
         <div class="flex justify-items-end py-6 border-t-2">
-              <span class="flex-grow"></span>
-              <button
-                @click="showNewFunctionDialog = false"
-                class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mr-2
-                  py-2
-                  px-6
-                  focus:outline-none
-                  outline
-                  hover:bg-primary
-                  hover:text-white
-                "
-              >
-                Cancel
-              </button>
-              <button
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  py-2
-                  px-6
-                  focus:outline-none
-                  hover:opacity-90
-                "
-                @click="
-                  isEmpty = false;
-                  showNewFunctionDialog = false;
-                "
-              >
-                Create Function
-              </button>
-            </div>
+          <span class="flex-grow"></span>
+          <button
+            class="
+              outline-primary
+              rounded-full
+              text-black
+              mr-2
+              py-2
+              px-6
+              border border-primary
+              focus:outline-none
+              outline
+              hover:bg-primary
+              hover:text-white
+            "
+          >
+            Cancel
+          </button>
+          <cornie-btn
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              py-2
+              px-6
+              focus:outline-none
+              hover:opacity-90
+            "
+            type="submit"
+            :loading="loading"
+          >
+            Create Designation
+          </cornie-btn>
+        </div>
       </card-text>
     </v-form>
   </card>
@@ -167,12 +156,26 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import IconInput from "@/components/IconInput.vue";
 import { string as yupString, number as yupNumber } from "yup";
+import { namespace } from "vuex-class";
+import { LevelCollection } from "@/types/ILevel";
+import IFunction from "@/types/IFunction";
+import { CornieUser } from "@/types/user";
+import { IDesignation } from "@/types/IDesignation";
+import CornieBtn from "@/components/CornieBtn.vue";
+import { Prop, Watch } from "vue-property-decorator";
+import { quantumClient } from "@/plugins/http";
+
+const level = namespace("OrgLevels");
+const orgFunctions = namespace("OrgFunctions");
+const user = namespace("user");
+const designation = namespace("designation");
 
 @Options({
   name: "New Designation",
   components: {
     Card,
     CardText,
+    CornieBtn,
     CardTitle,
     CornieRadio,
     CornieInput,
@@ -181,17 +184,137 @@ import { string as yupString, number as yupNumber } from "yup";
   },
 })
 export default class NewDesignation extends Vue {
-  supervisoryType = false;
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  supervisoryType = "NonSup";
   costCentre = "";
   assignedFunction = "";
   reportingTo = "";
-  joblevel = "";
+  jobLevel = "";
   dottedReporting = "";
-  lowerSalaryBand: number | null = null;
-  upperSalaryBand: number | null = null;
+  lowerSalaryBand = 0;
+  upperSalaryBand = 0;
+  title = "";
+
+  loading = false;
+
+  @level.State
+  levels!: LevelCollection[];
+
+  @level.Action
+  fetchLevels!: () => Promise<void>;
+
+  @orgFunctions.State
+  functions!: IFunction[];
+
+  @user.Getter
+  cornieUser!: CornieUser;
+
+  @orgFunctions.Action
+  fetchFunctions!: () => Promise<void>;
+
+  @designation.Mutation
+  setDesignations!: (data: IDesignation[]) => void;
+
+  @designation.State
+  designations!: IDesignation[];
+
+  @designation.Action
+  fetchDesignations!: () => Promise<void>;
+
+  @designation.Action
+  getDesignationById!: (id: string) => Promise<IDesignation>;
 
   required = yupString().required();
-  numberRequired = yupNumber().required();
+  numberRequired = yupNumber();
+
+  get allLevels() {
+    return this.levels.map((l) => ({ code: l.id!!, display: l.name }));
+  }
+
+  get allFunctions() {
+    return this.functions.map((f) => ({ code: f.id!!, display: f.name }));
+  }
+
+  get allDesignations() {
+    return this.designations.map((designation) => ({
+      code: designation.id,
+      display: designation.name,
+    }));
+  }
+
+  get payload() {
+    const payload = {
+      orgId: this.cornieUser.organizationId,
+      name: this.title,
+      createdBy: this.cornieUser.id,
+      isSupervisory: this.supervisoryType == "Sup",
+      functionId: this.assignedFunction,
+      levelId: this.jobLevel,
+      costCentre: this.costCentre,
+    } as IDesignation;
+    if (this.id) payload.id = this.id;
+    if (this.reportingTo) payload.reportingTo = this.reportingTo;
+    return payload;
+  }
+
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.update();
+    else await this.create();
+    this.loading = false;
+    this.$router.back();
+  }
+
+  async create() {
+    try {
+      const { data } = await quantumClient().post(
+        "/org/designations",
+        this.payload
+      );
+      const { designation } = data;
+      this.setDesignations([designation]);
+      window.notify({ msg: "Designation created", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Designation not created", status: "error" });
+    }
+  }
+
+  async update() {
+    try {
+      const { data } = await quantumClient().patch(
+        "/org/designations",
+        this.payload
+      );
+      const { designation } = data;
+      this.setDesignations([designation]);
+      window.notify({ msg: "Designation updated", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Designation not updated", status: "error" });
+    }
+  }
+
+  setDesignation(designation: IDesignation) {
+    this.title = designation.name;
+    this.supervisoryType = designation.isSupervisory ? "Sup" : "NonSup";
+    this.assignedFunction = designation.functionId;
+    this.jobLevel = designation.levelId;
+    this.costCentre = designation.costCentre;
+  }
+
+  async mounted() {
+    if (this.id) {
+      const designation = await this.getDesignationById(this.id);
+      if (designation?.id) this.setDesignation(designation);
+    }
+  }
+
+  async created() {
+    if (!this.levels?.length) this.fetchLevels();
+    if (!this.functions?.length) this.fetchFunctions();
+    if (!this.designations?.length) this.fetchDesignations();
+  }
 }
 </script>
 

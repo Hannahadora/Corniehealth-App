@@ -19,6 +19,7 @@ export default {
   mutations: {
     updatedRequests(state, requests: IRequest[]) {
       const requestSet = new ObjectSet([...state.requests, ...requests], "id");
+      
       state.requests = [...requestSet];
     },
     setPatients(state, pts) {
