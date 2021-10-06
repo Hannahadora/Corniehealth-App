@@ -8,7 +8,7 @@
         type="radio"
         v-model="checked"
       />
-      <span class="checkmark"></span>
+      <span class="-mt-1  checkmark"></span>
     </label>
   </span>
 </template>

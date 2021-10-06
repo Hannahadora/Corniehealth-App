@@ -39,7 +39,7 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
-import ImpressionModal from "./impressiondialog.vue";
+import ImpressionModal from "./impressionDialog.vue";
 @Options({
   components: {
     ChevronDownIcon,

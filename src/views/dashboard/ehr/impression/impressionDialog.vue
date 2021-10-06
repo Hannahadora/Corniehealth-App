@@ -1,44 +1,337 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-      <cornie-card-title>
-          <cornie-icon-btn @click="show = false">
-            <arrow-left-icon />
-          </cornie-icon-btn>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">{{newaction}} Impression</h2>
+      <cornie-card-title  class="w-full">  
+          <div class="w-full">
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">{{newaction}} Impression</h2>
+            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
+          </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
+          <p class="text-gray-400 text-xs p-3 -mt-5 -mb-5">Fields with <span class="text-danger">*</span> are required</p>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" v-model="openedS">
                 <div>
-                    <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">status
-                            <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
+                    <label for="ecounter" class="flex uppercase mb-5 mt-5 text-black text-xs font-bold">status
                     </label>
-                    <div class="w-full flex space-x-4 mb-3">
+                    <div class="w-full flex space-x-4">
                             <cornie-radio label="Mid"  class="text-xs" name="request" id="pickup" v-model="status" @update:modelValue="changeChecked('Mid')"/>
                             <cornie-radio label="Medium"  name="request" id="patientadress" checked v-model="status" @update:modelValue="changeChecked('Medium')"/>
                             <cornie-radio label="Severe"  name="request" id="homeaddress" v-model="status" @update:modelValue="changeChecked('Severe')"/>
                     </div>
                 </div>
-                <div class="w-full mt-5 pb-5">
-                     <cornie-input label="Status Reason" class="mb-5 w-full"  v-model="statusReason" />
+                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                     <cornie-input label="Status Reason" class="mb-5 w-full"  v-model="impressionModel.statusReason" />
                     <main-cornie-select
                     class="w-full"
                     :items="['Active','Inactive','Resolved']"
-                    v-model="code"
+                    v-model="impressionModel.code"
                     label="Code"
                     >
                     </main-cornie-select>
-                    <cornie-input label="Description" class="mb-5 w-full"  v-model="description" />
+                    <cornie-input label="Description" class="mb-5 w-full"  v-model="impressionModel.description" />
                     <cornie-select
                     class="w-full"
                       :items="['Unconfirmed','Presumed','Confirmed','Refuted','Entered in Error']"
                       label="REFERENCE ENCOUNTER"
-                      v-model="encounter"
+                      v-model="impressionModel.encounter"
                       placeholder="Select"
                     >
                     </cornie-select>
                   </div>
+          </accordion-component>
+            <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Effective" v-model="openedS">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                      <div>
+                          <div class="w-full mt-5">
+                                <DateTimePicker :label="'Date/time'" class="z-10 w-full">
+                                    <template v-slot:labelicon>
+                                      <question-icon />
+                                    </template>
+                                    <template #date>
+                                      <span>
+                                        <span>
+                                          {{
+                                            new Date(
+                                              data.dateTime ?? Date.now(),
+                                            ).toLocaleDateString()
+                                          }}
+                                        </span>
+                                      </span>
+                                    </template>
+                                    <template #time>
+                                      <span>
+                                        <span>{{ data.timeDate }}</span>
+                                      </span>
+                                    </template>
+                                    <template #input>
+                                      <v-date-picker
+                                        v-model="data.dateTime"
+                                        style="
+                                          position: relative;
+                                          z-index: 9000;
+                                          width: 100%;
+                                        "
+                                      ></v-date-picker>
+                                      <label class="block uppercase my-1 text-xs font-bold">
+                                        Time
+                                      </label>
+                                      <input
+                                        v-model="data.timeDate"
+                                        type="time"
+                                        class="w-full border rounded-md p-2"
+                                      />
+                                    </template>
+                                  </DateTimePicker>
+                          </div>
+                      </div>
+                      <div>
+                          <div class="w-full mt-5">
+                                <DateTimePicker :label="'start DATE & Time'" class="z-10 w-full">
+                                    <template v-slot:labelicon>
+                                      <question-icon />
+                                    </template>
+                                    <template #date>
+                                      <span>
+                                        <span>
+                                          {{
+                                            new Date(
+                                              data.startDate ?? Date.now(),
+                                            ).toLocaleDateString()
+                                          }}
+                                        </span>
+                                      </span>
+                                    </template>
+                                    <template #time>
+                                      <span>
+                                        <span>{{ data.startTime }}</span>
+                                      </span>
+                                    </template>
+                                    <template #input>
+                                      <v-date-picker
+                                        v-model="data.startDate"
+                                        style="
+                                          position: relative;
+                                          z-index: 9000;
+                                          width: 100%;
+                                        "
+                                      ></v-date-picker>
+                                      <label class="block uppercase my-1 text-xs font-bold">
+                                        Time
+                                      </label>
+                                      <input
+                                        v-model="data.startTime"
+                                        type="time"
+                                        class="w-full border rounded-md p-2"
+                                      />
+                                    </template>
+                                  </DateTimePicker>
+                          </div>
+                      </div>
+                       <div>
+                          <div class="w-full mt-5">
+                              <DateTimePicker :label="'end DATE & Time'" class="z-10 w-full">
+                                  <template v-slot:labelicon>
+                                    <question-icon />
+                                  </template>
+                                  <template #date>
+                                    <span>
+                                      <span>
+                                        {{
+                                          new Date(
+                                            data.endDate ?? Date.now(),
+                                          ).toLocaleDateString()
+                                        }}
+                                      </span>
+                                    </span>
+                                  </template>
+                                  <template #time>
+                                    <span>
+                                      <span>{{ data.endTime }}</span>
+                                    </span>
+                                  </template>
+                                  <template #input>
+                                    <v-date-picker
+                                      v-model="data.endDate"
+                                      style="
+                                        position: relative;
+                                        z-index: 9000;
+                                        width: 100%;
+                                      "
+                                    ></v-date-picker>
+                                    <label class="block uppercase my-1 text-xs font-bold">
+                                      Time
+                                    </label>
+                                    <input
+                                      v-model="data.endTime"
+                                      type="time"
+                                      class="w-full border rounded-md p-2"
+                                    />
+                                  </template>
+                              </DateTimePicker>
+                          </div>
+                      </div>
+                      <div class="w-full cursor-pointer mt-6"  v-if="assessorItems.length == 0"  @click="showAssessor">
+                        <label class="flex uppercase mb-1  text-black text-xs font-bold">assessor</label>
+                        <input-desc-rounded  :info="''" class="cursor-pointer">
+                          <input disabled type="text" placeholder="Select Assesor" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                      <div class="mt-5" v-else>
+                        <label for="assessor"  @click="showAssessor" class="cursor-pointer flex uppercase text-black text-xs font-bold">assessor
+                        </label>
+                        <cornie-select
+                        class="w-full"
+                        :items="assessorItems"
+                        v-model="impressionModel.effective.assessor"
+                        >
+                        </cornie-select>
+                      </div>
+                     <main-cornie-select
+                    class="w-full"
+                    :items="['Active','Inactive','Resolved']"
+                    v-model="impressionModel.effective.previous"
+                    label="previous"
+                    >
+                    </main-cornie-select>
+                     <!-- <cornie-input
+                     v-if="setType == 'Allergy'"
+                     @click="showProblem"
+                      class="w-full"
+                      v-model="impressionModel.effective.problem" 
+                      :value="problemItems.code"
+                      label="Problem"
+                      placeholder="Select Problem"
+                      >
+                      </cornie-input>
+                       <cornie-input
+                    v-else
+                     @click="showProblem"
+                      class="w-full"
+                      v-model="impressionModel.effective.problem" 
+                     :value="conditionItems.name"
+                      label="Problem"
+                      placeholder="Select Problem"
+                      >
+                      </cornie-input> -->
+                     <div class="w-full cursor-pointer clear-left -mt-1" v-if="setType == 'Allergy'"  @click="showProblem($event)">
+                        <label class="flex normal-case mb-0  text-black text-sm font-bold">Problem</label>
+                        <input-desc-rounded  :info="''" class="cursor-pointer">
+                          <input  type="text" disabled  :value="problemItems.code" placeholder="Select Problem" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                      <div class="w-full cursor-pointer clear-left -mt-1" v-else  @click="showProblem($event)">
+                        <label class="flex normal-case mb-0  text-black text-sm font-bold">Problem</label>
+                        <input-desc-rounded  :info="''" class="cursor-pointer">
+                          <input  type="text"  disabled   :value="conditionItems.name" placeholder="Select Problem" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                  </div>
+          </accordion-component>
+             <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Investigation" v-model="openedS">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                     <cornie-select
+                        class="w-full"
+                        label="code"
+                        :items="['code']"
+                        v-model="impressionModel.investigation.code"
+                        >
+                        </cornie-select>
+                      <div class="w-full cursor-pointer"  v-if="investigateItems.length === 0"  @click="showItem">
+                        <label class="flex uppercase mb-1  text-black text-xs font-bold">Item</label>
+                        <input-desc-rounded  :info="''" class="cursor-pointer">
+                          <input disabled type="text" placeholder="Select Item" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                      <div class="" v-else>
+                        <label for="item"  @click="showItem" class="cursor-pointer flex uppercase text-black text-xs font-bold">item
+                        </label>
+                        <cornie-select
+                        class="w-full"
+                        :items="investigateItems"
+                        v-model="impressionModel.investigation.item"
+                        >
+                        </cornie-select>
+                      </div>
+                     <cornie-input
+                      class="w-full"
+                      v-model="impressionModel.investigation.summary"
+                      label="Summary"
+                      placeholder="Enter"
+                      >
+                      </cornie-input>
+                    
+                    
+                  </div>
+          </accordion-component>
+          <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Findings" v-model="openedS">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                     <cornie-select
+                        class="w-full"
+                        label="item"
+                        :items="['item']"
+                        v-model="impressionModel.findings.item"
+                        >
+                        </cornie-select>
+                      <div class="w-full cursor-pointer clear-left -mt-1" v-if="setFindingType == 'Condition'"  @click="showFindings">
+                        <label class="flex normal-case mb-0  text-black text-sm font-bold">Item  Reference</label>
+                        <input-desc-rounded   :info="''" class="cursor-pointer">
+                          <input  type="text" disabled   :value="'Identifier'"  placeholder="Select Item Reference" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                       <div class="w-full cursor-pointer clear-left -mt-1" v-else-if="setFindingType == 'Observation'"  @click="showFindings">
+                        <label class="flex normal-case mb-0  text-black text-sm font-bold">Item  Reference</label>
+                        <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input  type="text" disabled  :value="'Identifier'"  placeholder="Select Item Reference" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                      <div class="w-full cursor-pointer clear-left -mt-1" v-else  @click="showFindings">
+                        <label class="flex normal-case mb-0  text-black text-sm font-bold">Item  Reference</label>
+                        <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input type="text"  disabled  :value="'Identifier'" placeholder="Select Item Reference" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                         <cornie-select
+                        class="w-full"
+                        label="Prognosis"
+                        :items="['Prognosis']"
+                        v-model="impressionModel.findings.prognosis"
+                        >
+                        </cornie-select>
+                           <cornie-select
+                        class="w-full"
+                        label="Prognosis Reference"
+                        :items="['Prognosis Reference']"
+                        v-model="impressionModel.findings.prognosisReference"
+                        >
+                        </cornie-select>  
+                     <cornie-input
+                      class="w-full"
+                      v-model="impressionModel.findings.basis"
+                      label="Basis"
+                      placeholder="Enter"
+                      >
+                      </cornie-input>
+                         <cornie-select
+                        class="w-full"
+                        label="Supporting Info"
+                        :items="['Supporting Info']"
+                        v-model="impressionModel.findings.supportingInfo"
+                        >
+                        </cornie-select>
+                       
+                    
+                  </div>
+                   <div class="">
+                            <Textarea
+                            class="w-full"
+                            label="Notes"
+                            v-model="impressionModel.findings.note"
+                            placeholder="--Enter--"
+                            :rules="required"
+                          />
+                          <span></span>
+                        </div>
           </accordion-component>
           
         </v-form>
@@ -61,6 +354,28 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
+     <assesor-modal
+          :practitioners="practitioner"
+          :roles="role"
+          @update:preferred="showAssessor"
+          v-model:visible="showAssessorModal"
+        />
+       <problem-modal
+          :conditions="conditions"
+          :allergy="allergy"
+          @update:preferred="showProblem"
+          v-model:visible="showProblemModal"
+        />
+         <item-modal
+          :observations="observations"
+          :questions="questions"
+          @update:preferred="showItem"
+          v-model:visible="showItemModal"
+        />
+         <reference-modal
+          @update:preferred="showFindings"
+          v-model:visible="showFindingModal"
+        />
   </cornie-dialog>
 </template>
 
@@ -88,15 +403,53 @@ import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "./components/datepicker.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
 import Period from "@/types/IPeriod";
-import IImpression from "@/types/IImpression";
+import IImpression, {Effective} from "@/types/IImpression";
  import Slider from '@vueform/slider';
 import '@vueform/slider/themes/default.css';
 import DateTimePicker from './components/datetime-picker.vue'
+import AssesorModal from './assesor.vue'
+import ProblemModal from './problem.vue'
+import ItemModal from './itemdailog.vue'
+import ReferenceModal from './reference.vue'
 import { namespace } from 'vuex-class'
+
 
 const impression = namespace('impression')
 
+const emptyImpression: IImpression = {
+  status:  "",
+  statusReason : "",
+  code : "",
+  description : "",
+  encounter : "",
+  effective : {
+     effectiveDate : "",
+      effectivePeriod : {} as Period,
+      date : "",
+      assessor : "",
+      previous :  "",
+      problem : "",
+  },  
+  investigation : {
+    code: "",
+    item: "",
+    protocol: "",
+    summary: "",
+  },
+  findings : {
+     item: "",
+    itemReference: "",
+    basis: "",
+    prognosis: "",
+    prognosisReference: "",
+    supportingInfo: "",
+    note: "",
+  },
+
+
+};
 
 @Options({
   name: "impressionDialog",
@@ -108,7 +461,10 @@ const impression = namespace('impression')
     DatePicker,
     RangeSlider,
     DEdit,
+    AssesorModal,
+    ProblemModal,
     CDelete,
+    CancelIcon,
     InfoIcon,
     CornieDialog,
     DateTimePicker,
@@ -119,6 +475,8 @@ const impression = namespace('impression')
     CornieInput,
     CornieSelect,
     CorniePhoneInput,
+    ItemModal,
+    ReferenceModal,
     CornieRadio,
     CornieBtn,
     Slider,
@@ -138,24 +496,40 @@ export default class Medication extends Vue {
   @Prop({ type: Array,  default: () => [] })
   available!: object;
 
+  impressionModel = {} as IImpression;
 
 @Watch('id')
   idChanged() {
     this.setImpression()
   }
 
-status=  "";
-statusReason = "";
-code = "";
-description = "";
-encounter = "";
-effective=  {};
-investigation = {};
-findings = {};
 
+ data: any = {
+    days: [],
+  }
+assessorItems = [];
+conditionItems = [];
+problemItems=[];
+investigateItems=[];
 loading=  false;
+status=  false;
+showAssessorModal = false;
+showProblemModal = false;
+showItemModal = false;
+practitioner= [];
+role = [];
+condtions = [];
+allergy =[];
+setType = "";
+observations=[];
+questions=[];
+setFindingType="";
+showFindingModal = false;
+findingItems = [];
 
-
+   async setImpressionModel() {
+     this.impressionModel = JSON.parse(JSON.stringify({ ...emptyImpression}));
+  }
   async  apply() {
      this.loading = true
     if (this.id) await this.updateImpression()
@@ -165,25 +539,18 @@ loading=  false;
   async setImpression() {
     const impression = await this.getImpressionById(this.id)
     if (!impression) return
-    this.status = impression.status
-    this.code = impression.code
-    this.statusReason = impression.statusReason
-    this.description = impression.description
-    this.encounter = impression.encounter
-    this.effective = impression.effective
-    this.investigation = impression.investigation
-    this.findings = impression.findings
+    this.impressionModel =  (impression) ;
   }
   get payload() {
     return {
-      status: this.status,
-      code: this.code,
-      statusReason: this.statusReason,
-      description: this.description,
-      encounter: this.encounter,
-      effective: this.effective,
-      investigation: this.investigation,
-      findings: this.findings,
+      status: this.impressionModel.status,
+      code: this.impressionModel.code,
+      statusReason: this.impressionModel.statusReason,
+      description: this.impressionModel.description,
+      encounter: this.impressionModel.encounter,
+      effective: this.impressionModel.effective,
+      investigation: this.impressionModel.investigation,
+      findings: this.impressionModel.findings,
     }
   }
 
@@ -198,16 +565,57 @@ loading=  false;
 
   changeChecked(value:string){
       if(value == 'Mid'){
-          this.status = value
+          this.impressionModel.status = value
       }else if(value == 'Medium'){
-          this.status = value;
+          this.impressionModel.status = value;
       }else{
-          this.status = value;
+          this.impressionModel.status = value;
       }
   }
 
+  showAssessor(valueforrole:any){
+    this.showAssessorModal = true;
+    this.assessorItems = valueforrole 
+  }
+  showProblem(value:any,type:string){
+    this.showProblemModal = true;
+    if (type == 'Allergy'){
+      this.problemItems = value;
+      this.setType = type;
+      this.passProblem(this.problemItems);
+    }else if (type == 'Condition'){
+      this.conditionItems = value;
+      this.setType = type;
+       this.passProblem(this.conditionItems);
+    }
+
+  }
+  passProblem(e:any){
+    this.impressionModel.effective.problem = e.code
+  }
+
+  passRef(e:any){
+    this.impressionModel.findings.itemReference = 'Identifier';
+  }
+ async showItem(value:any){
+    this.showItemModal = true;
+    this.investigateItems = value;
+  }
+
+  showFindings(value:any){
+    this.showFindingModal = true;
+    this.findingItems = value;
+    this.passRef(this.findingItems);
+  }
  async createImpression() {
  
+      this.payload.effective.effectiveDate = new Date(this.data.dateTime).toISOString();
+     this.payload.effective.effectivePeriod.start = new Date(this.data.startDate).toISOString();
+        this.payload.effective.effectivePeriod.end = new Date(this.data.endDate).toISOString();
+        // if (this.setType == 'Allergy'){
+        //   this.impressionModel.effective.problem = this.problemItems.code;
+        // }
+  
     try {
       const response = await cornieClient().post('/api/v1/clinical_impressions', this.payload)
       if (response.success) {
@@ -216,11 +624,10 @@ loading=  false;
       }
     } catch (error) {
       console.log(error)
-      window.notify({ msg: error.data.response.message, status: 'error' })
+      window.notify({ msg: error, status: 'error' })
     
     }
   }
-
   async updateImpression() {
     const url = `/api/v1/clinical_impressions/${this.id}`
     const payload = {
@@ -237,8 +644,32 @@ loading=  false;
       window.notify({ msg: error.data.response.message, status: 'error' })
     }
   }
+   async fetchPractitioners() {
+    const AllPractitioners = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioners]);
+    this.practitioner = response[0].data;
+  }
+  async fetchRoles() {
+    const AllRoles = cornieClient().get("/api/v1/roles");
+    const response = await Promise.all([AllRoles]);
+    this.role = response[0].data;
+  }
+   async fetchCondtions() {
+    const AllRoles = cornieClient().get("/api/v1/roles");
+    const response = await Promise.all([AllRoles]);
+    this.role = response[0].data;
+  }
+   async fetchAllergy() {
+    const AllAllergy = cornieClient().get("/api/v1/allergy");
+    const response = await Promise.all([AllAllergy]);
+    this.allergy = response[0].data;
+  }
   created() {
       this.setImpression();
+      this.fetchRoles();
+      this.fetchPractitioners();
+      this.fetchAllergy();
+      this.setImpressionModel();
      
   }
 }

@@ -1,6 +1,6 @@
 import Period from "./IPeriod";
 
-  interface Effective {
+ export interface Effective {
     effectiveDate: string;
     effectivePeriod: Period;
     date: string;

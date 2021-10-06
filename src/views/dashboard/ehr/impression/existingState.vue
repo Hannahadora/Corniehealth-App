@@ -94,7 +94,7 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import ImpressionModal from "./impressiondialog.vue";
+import ImpressionModal from "./impressionDialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -161,40 +161,40 @@ export default class ImpressionExistingState extends Vue {
       key: "id",
       show: true,
     },
-     { title: "Date Recorded", key: "createdAt", show: true },
+     { title: "Recorded", key: "createdAt", show: true },
     {
-      title: "Type",
-      key: "type",
+      title: "problem",
+      key: "problem",
       show: true,
     },
      {
-      title: "Category",
-      key: "category",
+      title: "investigation type",
+      key: "investigation",
       show: true,
     },
      {
-      title: "Criticality",
-      key: "criticality",
+      title: "finding code",
+      key: "code",
       show: false,
     },
     {
-      title: "product",
-      key: "product",
+      title: "prognosis",
+      key: "prognosis",
       show: true,
     },
     {
-      title: "clinical| verication",
-      key: "clinicalStatus",
+      title: "assessor",
+      key: "assessor",
       show: true,
     },
     {
-      title: "Asserter",
-      key: "asserter",
+      title: "status",
+      key: "status",
       show: false,
     },
     {
-      title: "Recorder",
-      key: "recorder",
+      title: "Status Reason",
+      key: "statusReason",
       show: false,
     },
     {
@@ -203,33 +203,18 @@ export default class ImpressionExistingState extends Vue {
       show: false,
     },
      {
-      title: "Code",
-      key: "code",
-      show: false,
-    },
-    {
-      title: "Onset Age",
-      key: "onsetAge",
-      show: false,
-    },
-    {
-      title: "Recorded Date",
-      key: "recordedDate",
-      show: false,
-    },
-    {
-      title: "Description",
+      title: "description",
       key: "description",
       show: false,
     },
     {
-      title: "Note",
-      kwy: "note",
+      title: "subject",
+      key: "subject",
       show: false,
     },
-     {
-      title: "Last Occurence",
-      kwy: "lastOccurence",
+    {
+      title: "encounter",
+      key: "encounter",
       show: false,
     },
     //  {
@@ -284,6 +269,10 @@ export default class ImpressionExistingState extends Vue {
         ...impression,
          action: impression.id,
          keydisplay: "XXXXXXX",
+         problem: impression.effective.problem,
+         investigation: impression.investigation.item,
+         prognosis: impression.findings.prognosis,
+        assessor: impression.effective.assessor,
      
         };
     });

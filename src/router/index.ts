@@ -144,22 +144,22 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
           {
             path: "care-partners",
             name: "Care Partners",
