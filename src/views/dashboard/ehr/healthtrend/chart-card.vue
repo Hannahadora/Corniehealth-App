@@ -27,7 +27,7 @@
           <drop-down v-model="filter">
             <div class="text-base font-semibold grid grid-cols-1 gap-2">
               <span class="cursor-pointer" @click="order = 'Today'">Today</span>
-              <span class="cursor-pointer" @click="order = 'WTD'">WTD</span>
+              <span class="cursor-pointer" @click="order = 'WTD'">WTd</span>
               <span class="cursor-pointer" @click="order = 'MTD'">MTD</span>
               <span class="cursor-pointer" @click="order = 'YTD'">YTD</span>
             </div>
