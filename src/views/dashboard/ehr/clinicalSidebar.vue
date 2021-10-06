@@ -6,18 +6,18 @@
           <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="localSrc" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
-          <span class="text-sm text-black font-bold">Nkechi Claire Obi</span> | F <br>
-          <span>MRN-CH23022021-0010</span> 
-          <span>
-            21st January, 1996 (25yrs) Blood Type: 
-          </span>
-          <span class="text-sm text-black font-light">A+ | </span>
-          <span>Genotype: <span class="text-sm text-black font-light">AA</span> </span>
+          <span class="text-sm text-black font-bold">{{fullname}}</span> | {{patient.gender}} <br>
+          <p>MRN-{{patient.mrn}}</p> 
+          <p>
+            21st January, 1996 (25yrs) 
+          </p>
+         <p> Blood Type: <span class="text-sm text-black font-light">A+ | </span> <span>Genotype: <span class="text-sm text-black font-light">AA</span> </span></p>
+          
         </div>
           <div class="border-dashed border-2  border-gray-100 m-3"></div>
           <div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400 flex">Policy ID <eye-icon class="ml-2"/></p>
+              <p class="text-xs text-gray-400 flex">Policy IDs <eye-icon class="ml-2"/></p>
               <p class="text-xs text-black flex">34567890-0987</p>
             </div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
@@ -67,7 +67,7 @@
     <div class="mt-2 mb-5 rounded-lg bg-white  shadow-md w-full h-full max-h-full">
       <div class="w-full h-full p-2">
         <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-          <p class="text-black font-bold py-3 px-2">Records</p>
+          <p class="text-black font-bold py-3 px-2">Recordss</p>
           <icon-input
             autocomplete="off"
             type="search"
@@ -136,6 +136,14 @@ import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import eyeIcon from "@/components/icons/yelloweye.vue";
 
+import { namespace } from "vuex-class";
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+import { Prop, Ref } from "vue-property-decorator";
+
+
+
+const patients = namespace("patients");
+
 type INav = { name: string; to: string; icon: string };
 
 @Options({
@@ -202,14 +210,20 @@ export default class Settings extends Vue {
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
     ];
   }
-
-  
+ 
   get settings() {
     const provider = {
       Organization: this.filter(this.organization)
-    };
-   
+    };   
     return provider;
+  }
+
+  @Prop({ type: Object, required: true })
+  patient!: IPatient;
+
+get fullname() {
+    const name =  `${this.patient.firstname} ${this.patient.lastname}`
+    return name;
   }
 
   mapUrl(url: string) {
@@ -223,6 +237,7 @@ export default class Settings extends Vue {
       nav.name.toLowerCase().includes(this.query.toLowerCase())
     );
   }
+   
 }
 </script>
 <style scoped>

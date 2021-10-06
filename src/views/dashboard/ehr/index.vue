@@ -9,7 +9,7 @@
     class="mt-10 mb-5  rounded-lg settings"
   >
     <div class="w-full h-screen max-h-full">
-      <clinical-sidebar class="pb-96"/>
+      <clinical-sidebar class="pb-96" :patient='patient'/>
     </div>
     <div class="w-full overflow-auto h-screen pb-72 max-h-full border-l-2 ">
       <router-view />
@@ -23,6 +23,13 @@ import { Options, Vue } from "vue-class-component";
 import ClinicalSidebar from "./clinicalSidebar.vue";
 import PatientModal from "./dialogs/patientDialog.vue";
 
+import { namespace } from "vuex-class";
+import { Prop } from "vue-property-decorator";
+import { IPatient } from "@/types/IPatient";
+
+const patients = namespace("patients");
+
+
 @Options({
   components: {
     ClinicalSidebar,
@@ -32,9 +39,23 @@ import PatientModal from "./dialogs/patientDialog.vue";
 export default class ClinicalsSidebar extends Vue {
   showPatient=false;
 
+patient = {} as IPatient;
+
+ @patients.Action
+  findPatient!: (patientId: string) => Promise<IPatient>;
+
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
   showPatientModal(){
     this.showPatient = true;
   }
+
+   async created (){
+      console.log('id3', this.patientId);
+     this.patient = await this.findPatient(this.patientId)
+     console.log('fff', this.patient)
+     }
 }
 </script>
 <style scoped>
