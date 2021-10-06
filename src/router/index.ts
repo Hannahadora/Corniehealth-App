@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
             name: "Health Trend",
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
-              // import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),             
+              // import('@/views/dashboard/ehr/healthtrend/empty-state.vue'),
           },
           {
             path: "health-trend-empty",
