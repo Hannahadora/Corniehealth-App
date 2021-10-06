@@ -5,7 +5,7 @@
 import { Options, Vue } from "vue-class-component";
 
 @Options({
-  name: "CornieExistingState",
+  name: "ConditionExistingState",
   components: {},
 })
 export default class ExistingState extends Vue {}

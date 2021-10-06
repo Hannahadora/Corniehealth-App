@@ -348,11 +348,10 @@ export default class AddLocation extends Vue {
         this.payload
       );
       if (response.success) {
-        alert("Location created");
-        console.log(response.data);
+        window.notify({ msg: "Location Created", status: "success" });
       }
     } catch (error) {
-      console.log(error);
+      window.notify({ msg: "Location not Created", status: "error" });
     }
   }
 
@@ -361,11 +360,9 @@ export default class AddLocation extends Vue {
     const payload = { ...this.payload, id: this.id };
     try {
       const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        alert("Location updated");
-      }
+      window.notify({ msg: "Location Updated", status: "success" });
     } catch (error) {
-      console.log(error);
+      window.notify({ msg: "Location not Updated", status: "error" });
     }
   }
 

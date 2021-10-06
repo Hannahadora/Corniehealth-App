@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="flex uppercase mb-1 text-black text-xs font-bold"
+              class="flex capitalize mb-1 text-black text-sm font-semibold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -14,7 +14,9 @@
                 {{ label }}
               </template>
               <span class="text-danger ml-1" v-if="required"> * </span>
-              <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+              <span class="ml-1 mb-1" v-if="$slots.labelicon">
+                <slot name="labelicon" />
+              </span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -111,6 +113,7 @@
                     pl-2
                     border-transparent border-l-2
                     relative
+                    capitalize
                   "
                 >
                   {{ item.display || item }}
@@ -127,7 +130,7 @@
 import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync,Watch } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
 
@@ -194,24 +197,23 @@ export default class CornieSelect extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return `select-${id}`;
   }
-  
- @Watch("items")
-  update(){
-     this.$emit("change")
-     
+
+  @Watch("items")
+  update() {
+    this.$emit("change");
   }
-  
-//    @Watch("modelValue")
-// updateSubject(){
-//      this.$emit("changesubject")
-//   }
-//    @Watch("modelValue")
-//   updateRequester(){
-//      this.$emit("changerequest")
-//   }
-//   updatePerformer(){
-//      this.$emit("changeperformer")
-//   }
+
+  //    @Watch("modelValue")
+  // updateSubject(){
+  //      this.$emit("changesubject")
+  //   }
+  //    @Watch("modelValue")
+  //   updateRequester(){
+  //      this.$emit("changerequest")
+  //   }
+  //   updatePerformer(){
+  //      this.$emit("changeperformer")
+  //   }
 
   mounted() {
     clickOutside(this.id, () => {
