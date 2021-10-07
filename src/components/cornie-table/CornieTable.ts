@@ -15,6 +15,7 @@ import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieMenu from "@/components/CornieMenu.vue";
 import Card from "@/components/cornie-card/CornieCard.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
+import search from "@/plugins/search";
 
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
@@ -32,6 +33,10 @@ interface IColumn {
   title: string;
   key: string | number;
   orderBy: Sorter;
+}
+
+function defaultFilter(item: any, query: string) {
+  return search.searchObject(item, query);
 }
 
 @Options({
@@ -59,7 +64,7 @@ export default class CornieTable extends Vue {
   @Prop()
   columns!: IColumn[];
 
-  @Prop({ type: Function, default: (item: any, query: string) => true })
+  @Prop({ type: Function, default: defaultFilter })
   filter!: (item: any, query: string) => boolean;
 
   @PropSync("modelValue", { type: Array, default: [] })

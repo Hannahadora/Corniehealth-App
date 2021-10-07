@@ -64,7 +64,7 @@
           <td class="p-2" v-if="check">
             <cornie-checkbox @click="select(row)" :checked="isSelected(row)" />
           </td>
-          <td class="p-2">{{ index }}</td>
+          <td class="p-2">{{ index + 1 }}</td>
           <template v-for="(column, index) in preferredColumns" :key="index">
             <td class="p-3 text-sm capitalize" v-if="column.show">
               <slot :name="column.key" :item="row" :index="index">

@@ -53,12 +53,14 @@
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
               $slots.prepend,
+
             'border-top-right-radius: 0; border-bottom-right-radius: 0':
               $slots.append,
           }"
           :placeholder="$attrs.placeholder"
           :name="inputName"
-          :readonly="readonly"
+          :readonly="readonly || disabled"
+          :class="{ 'bg-gray-200': disabled }"
           v-model="valueSync"
           @update:modelValue="handleChange"
         />
@@ -85,9 +87,9 @@
           <slot name="append" />
         </div>
       </div>
-      <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-        errorMessage
-      }}</span>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">
+        {{ errorMessage }}
+      </span>
     </div>
   </field>
 </template>
@@ -124,6 +126,9 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
 
   @Prop({ type: Object, default: {} })
   errorClasses!: Object;
