@@ -248,10 +248,10 @@ get picture() {
   }
 
 
-//  get ppp() {
-//     const current_patient =  this.patient;
-//     return  this.printPhone(current_patient);
-//   }
+ get ppp() {
+    const current_patient =  this.patient;
+    return  this.printPhone(current_patient);
+  }
 
  get policies() {
     const current_patient =  this.patient;
