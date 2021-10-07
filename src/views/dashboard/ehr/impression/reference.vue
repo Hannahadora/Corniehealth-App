@@ -12,7 +12,7 @@
             />
             </span>
              <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">Problem </h2>
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">Item </h2>
               <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
              </div>
             </div>

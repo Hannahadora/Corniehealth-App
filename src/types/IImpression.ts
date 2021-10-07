@@ -30,6 +30,7 @@ import Period from "./IPeriod";
     code: string;
     description: string;
     encounter: string;
+    subject: string;
     effective: Effective;
     investigation: Investigation;
     findings: Findings;

@@ -1,16 +1,16 @@
 import { cornieClient } from "@/plugins/http";
-import IPayment from "@/types/IPayment";
+import ICurrency from "@/types/ICurrency";
 
 export async function fetchPayments() {
   try {
     const response = await cornieClient().get(
-      "/api/v1/payments/myOrg/getMyOrgPayments"
+      "/api/v1/currency/myOrg/conversions"
     );
     if (response.success) return response.data;
   } catch (error) {
     console.log(error);
   }
-  return [] as IPayment[];
+  return [] as ICurrency[];
 }
 export async function deletePayment(id: string) {
   try {

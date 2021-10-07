@@ -249,6 +249,7 @@
                         <cornie-select
                         class="w-full"
                         :items="investigateItems"
+                        :value="'Identifier'"
                         v-model="impressionModel.investigation.item"
                         >
                         </cornie-select>
@@ -423,11 +424,12 @@ const emptyImpression: IImpression = {
   statusReason : "",
   code : "",
   description : "",
+  subject: "subject",
   encounter : "",
   effective : {
      effectiveDate : "",
       effectivePeriod : {} as Period,
-      date : "",
+      date : "2021-10-14T14:42:16.549Z",
       assessor : "",
       previous :  "",
       problem : "",
@@ -435,7 +437,7 @@ const emptyImpression: IImpression = {
   investigation : {
     code: "",
     item: "",
-    protocol: "",
+    protocol: "protocol",
     summary: "",
   },
   findings : {
@@ -545,6 +547,7 @@ findingItems = [];
     return {
       status: this.impressionModel.status,
       code: this.impressionModel.code,
+      subject: this.impressionModel.subject,
       statusReason: this.impressionModel.statusReason,
       description: this.impressionModel.description,
       encounter: this.impressionModel.encounter,
@@ -617,7 +620,7 @@ findingItems = [];
         // }
   
     try {
-      const response = await cornieClient().post('/api/v1/clinical_impressions', this.payload)
+      const response = await cornieClient().post('/api/v1/clinical-impressions', this.payload)
       if (response.success) {
         window.notify({ msg: 'Clinical Impression Created', status: 'success' })
         this.done();
@@ -629,7 +632,7 @@ findingItems = [];
     }
   }
   async updateImpression() {
-    const url = `/api/v1/clinical_impressions/${this.id}`
+    const url = `/api/v1/clinical-impressions/${this.id}`
     const payload = {
        ...this.payload,
       }
