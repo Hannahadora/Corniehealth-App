@@ -174,16 +174,16 @@ export default class AutoComplete extends Vue {
   label!: string;
 
   @Prop({ type: Function })
-  filter!: (item: any) => boolean;
+  filter!: (item: any, query: string) => boolean;
 
   customFilter(item: any) {
-    if (this.filter) return this.filter(item);
+    if (this.filter) return this.filter(item, this.query);
     if (typeof item === "string" || item instanceof String)
       return item.includes(this.query);
     const { code, display }: { code: string; display: string } = item;
     return (
-      `${code}`.toLowerCase().includes(this.query) ||
-      `${display}`.toLowerCase().includes(this.query)
+      `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
+      `${display}`.toLowerCase().includes(this.query.toLowerCase())
     );
   }
 

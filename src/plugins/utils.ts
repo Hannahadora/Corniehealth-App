@@ -1,4 +1,5 @@
 import ObjectSet from "@/lib/objectset";
+import IPractitioner from "@/types/IPractitioner";
 
 export const first = (num: number, vals: any[]) => {
   const res = [];
@@ -84,4 +85,25 @@ export function dateBetween(dateStr: string, start: string, end: string) {
   if (start) return date > startDate;
   if (end) return date < endDate;
   return false;
+}
+
+export function printPractitioner(practitioner: IPractitioner) {
+  if (!practitioner) return "";
+  const name = `${practitioner.firstName} ${practitioner.lastName}`;
+  const title = printTitle(practitioner.jobDesignation);
+  return `${title} ${name}`;
+}
+
+function printTitle(designation: string) {
+  if (!designation) return "Pr.";
+  switch (designation.toLowerCase()) {
+    case "doctor":
+      return "Dr.";
+    case "nurse":
+      return "RN.";
+    case "surgeon":
+      return "Sr.";
+    default:
+      return designation;
+  }
 }
