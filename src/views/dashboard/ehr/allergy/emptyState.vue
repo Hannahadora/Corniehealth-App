@@ -1,14 +1,14 @@
 <template>
-  <div class="w-full pb-80">  
+  <div class="w-full pb-80">
     <div class="w-full flex flex-col justify-center items-center h-96">
-        <img src="@/assets/img/allergy.svg" />
-        <h3 class="text-center mt-5">
-            No allergies.<br>
+      <img src="@/assets/img/allergy.svg" />
+      <h3 class="text-center mt-5">
+        No allergies.<br />
         [Benefit of adding new allergy to the system]
-        </h3>
-            <span class="flex justify-center w-full">
+      </h3>
+      <span class="flex justify-center w-full">
         <button
-            class="
+          class="
             bg-danger
             rounded-full
             text-white
@@ -20,17 +20,18 @@
             font-semibold
             focus:outline-none
             hover:opacity-90
-            "
-            @click="showAllergy"
+          "
+          @click="showAllergy"
         >
-           New Allergy
+          New Allergy
         </button>
-            </span>
+      </span>
     </div>
-         <allergy-modal   
-        :columns="practitioner"
-          @update:preferred="showAllergy"
-          v-model="showAllergyModal"/>
+    <allergy-modal
+      :columns="practitioner"
+      @update:preferred="showAllergy"
+      v-model="showAllergyModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -50,14 +51,14 @@ import AllergyModal from "./allergydialog.vue";
   },
 })
 export default class AllergysEmptyState extends Vue {
-   showAllergyModal= false;
- async showAllergy(){
-      this.showAllergyModal = true;
+  showAllergyModal = false;
+  async showAllergy() {
+    this.showAllergyModal = true;
   }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

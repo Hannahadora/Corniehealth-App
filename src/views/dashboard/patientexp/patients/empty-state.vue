@@ -43,17 +43,11 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import CornieEmptyState from "@/components/CornieEmptyState.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
 import CornieCard from "@/components/cornie-card/CornieCard.vue";
 import CornieCardTitle from "@/components/cornie-card/CornieCardTitle.vue";
 import CornieCardText from "@/components/cornie-card/CornieCardText.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
-import CornieSpacer from "@/components/CornieSpacer.vue";
-import CornieTooltip from "@/components/CornieTooltip.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import InformationIcon from "@/components/icons/InformationIcon.vue";
 
 import RegistrationDialog from "./registration-dialog.vue";
 

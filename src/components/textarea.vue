@@ -6,11 +6,13 @@
     :rules="rules"
     v-model="valueSync"
   >
-    <label class="block uppercase mb-1 text-xs font-bold">{{ label }}</label>
-     <textarea
-    rows="10"
-    cols="50"
-    maxlength="255"
+    <label class="block text-black capitalize mb-1 text-xs font-semibold">
+      {{ label }}
+    </label>
+    <textarea
+      rows="10"
+      cols="50"
+      maxlength="255"
       :class="{
         'border-red-500': Boolean(errorMessage),
         'border-green-400': meta.valid && meta.touched,
@@ -20,9 +22,12 @@
       :name="inputName"
       v-model="valueSync"
     />
-    <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-      errorMessage
-    }}</span>
+    <span class="w-full block text-right text-xs text-gray-500">
+      {{ textCount }}/255
+    </span>
+    <span v-if="errorMessage" class="text-xs text-red-500 block">
+      {{ errorMessage }}
+    </span>
   </field>
 </template>
 <script lang="ts">
@@ -32,7 +37,7 @@ import { Field } from "vee-validate";
 
 @Options({
   inheritAttrs: false,
-  name: "CornieInput",
+  name: "CornieArea",
   components: {
     Field,
   },
@@ -58,5 +63,8 @@ export default class DInput extends Vue {
   @Prop({ type: Object })
   rules!: any;
 
+  get textCount() {
+    return this.modelValue?.length || 0;
+  }
 }
 </script>

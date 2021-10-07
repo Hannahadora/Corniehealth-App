@@ -2,19 +2,19 @@
   <div>
     <div class="flex">
       <slot name="topleft">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          placeholder="Search Table"
-          v-model="query"
-        >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
+        <span class="flex items-center">
+          <sort-icon class="mr-5" />
+          <icon-input
+            class="border border-gray-600 rounded-full focus:outline-none"
+            type="search"
+            placeholder="Search Table"
+            v-model="query"
+          >
+            <template v-slot:prepend>
+              <search-icon />
+            </template>
+          </icon-input>
+        </span>
       </slot>
       <cornie-spacer />
       <span class="flex justify-between items-center">
@@ -42,6 +42,7 @@
                   </span>
                 </slot>
                 <filter-by-icon
+                  v-if="!column.noOrder"
                   class="ml-2 cursor-pointer"
                   @click="setOrderBy(column.orderBy)"
                 />
@@ -63,7 +64,7 @@
           <td class="p-2" v-if="check">
             <cornie-checkbox @click="select(row)" :checked="isSelected(row)" />
           </td>
-          <td class="p-2">{{ index }}</td>
+          <td class="p-2">{{ index + 1 }}</td>
           <template v-for="(column, index) in preferredColumns" :key="index">
             <td class="p-3 text-sm capitalize" v-if="column.show">
               <slot :name="column.key" :item="row" :index="index">

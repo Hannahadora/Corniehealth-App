@@ -1,67 +1,77 @@
 <template>
   <div class="w-full pb-80">
-       <div>
-            <span class="flex justify-end w-full mb-8">
-              <button
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  py-2
-                  pr-12
-                  pl-12
-                  px-3
-                  mb-5
-                  font-semibold
-                  focus:outline-none
-                  hover:opacity-90
-                "
-                @click="showAllergy('false')"
-              >
-                New Allergy
-              </button>
-              
-            </span>
-            <cornie-table :columns="rawHeaders" v-model="sortAllergys">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
-                    <newview-icon  class="text-yellow-500 fill-current"/>
-                    <span class="ml-3 text-xs">View</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Occurrence</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAllergy(item.id)">
-                      <edit-icon class="text-purple-600 fill-current" />
-                      <span class="ml-3 text-xs">Edit</span>
-                  </div>
-                </template>
-                 <template #asserter="{ item }">
-                          <p class="cursor-pointer">{{ item.asserter }}</p>
-                </template>
-                 <template #recorder="{ item }">
-                        <p class="cursor-pointer">{{ item.asserter }}</p>
-                </template>
-            </cornie-table>
-        </div>
-    
-      <allergy-modal 
-       v-if="allergyId == 'false'"
-        :columns="practitioner"
-           @allergy-added="allergyAdded"
-          @update:preferred="showAllergy"
-          v-model="showAllergyModal"/>
+    <div>
+      <span class="flex justify-end w-full mb-8">
+        <button
+          class="
+            bg-danger
+            rounded-full
+            text-white
+            mt-5
+            py-2
+            pr-12
+            pl-12
+            px-3
+            mb-5
+            font-semibold
+            focus:outline-none
+            hover:opacity-90
+          "
+          @click="showAllergy('false')"
+        >
+          New Allergy
+        </button>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="sortAllergys">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$router.push(`/dashboard/experience/add-task/${item.id}`)"
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="
+              $router.push('/dashboard/provider/experience/add-appointment')
+            "
+          >
+            <plus-icon class="text-green-400 fill-current" />
+            <span class="ml-3 text-xs">Add Occurrence</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showAllergy(item.id)"
+          >
+            <edit-icon class="text-purple-600 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+        </template>
+        <template #asserter="{ item }">
+          <p class="cursor-pointer">{{ item.asserter }}</p>
+        </template>
+        <template #recorder="{ item }">
+          <p class="cursor-pointer">{{ item.asserter }}</p>
+        </template>
+      </cornie-table>
+    </div>
 
-     <allergy-modal
-     v-else 
-     :id="allergyId" 
-        :columns="practitioner"
-          @update:preferred="showAllergy"
-          v-model="showAllergyModal"/>
+    <allergy-modal
+      v-if="allergyId == 'false'"
+      :columns="practitioner"
+      @allergy-added="allergyAdded"
+      @update:preferred="showAllergy"
+      v-model="showAllergyModal"
+    />
 
-        
+    <allergy-modal
+      v-else
+      :id="allergyId"
+      :columns="practitioner"
+      @update:preferred="showAllergy"
+      v-model="showAllergyModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -128,9 +138,8 @@ const allergy = namespace("allergy");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
   },
-  
 })
 export default class AllergyExistingState extends Vue {
   showColumnFilter = false;
@@ -139,9 +148,9 @@ export default class AllergyExistingState extends Vue {
   query = "";
   selected = 1;
   showNotes = false;
-  showAllergyModal= false;
-  allergyId="";
-  tasknotes=[];
+  showAllergyModal = false;
+  allergyId = "";
+  tasknotes = [];
 
   @Prop({ type: Array, default: [] })
   allergys!: IAllergy[];
@@ -169,18 +178,18 @@ export default class AllergyExistingState extends Vue {
       key: "id",
       show: true,
     },
-     { title: "Date Recorded", key: "createdAt", show: true },
+    { title: "Date Recorded", key: "createdAt", show: true },
     {
       title: "Type",
       key: "type",
       show: true,
     },
-     {
+    {
       title: "Category",
       key: "category",
       show: true,
     },
-     {
+    {
       title: "Criticality",
       key: "criticality",
       show: false,
@@ -210,7 +219,7 @@ export default class AllergyExistingState extends Vue {
       key: "onsetPeriod",
       show: false,
     },
-     {
+    {
       title: "Code",
       key: "code",
       show: false,
@@ -235,7 +244,7 @@ export default class AllergyExistingState extends Vue {
       kwy: "note",
       show: false,
     },
-     {
+    {
       title: "Last Occurence",
       kwy: "lastOccurence",
       show: false,
@@ -270,7 +279,6 @@ export default class AllergyExistingState extends Vue {
     //   kwy: "outputValue",
     //   show: false,
     // },
-
   ];
 
   get headers() {
@@ -281,83 +289,84 @@ export default class AllergyExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
+
   get items() {
     const allergys = this.allergys.map((allergy) => {
-       (allergy as any).onSet.onsetPeriod.start = new Date(
-         (allergy as any).onSet.onsetPeriod.start 
-       ).toLocaleDateString("en-US");
-         (allergy as any).onSet.onsetPeriod.end = new Date(
-         (allergy as any).onSet.onsetPeriod.end 
-       ).toLocaleDateString("en-US");
-         (allergy as any).createdAt= new Date(
-         (allergy as any).createdAt
-       ).toLocaleDateString("en-US");
-        return {
+      (allergy as any).onSet.onsetPeriod.start = new Date(
+        (allergy as any).onSet.onsetPeriod.start
+      ).toLocaleDateString("en-US");
+      (allergy as any).onSet.onsetPeriod.end = new Date(
+        (allergy as any).onSet.onsetPeriod.end
+      ).toLocaleDateString("en-US");
+      (allergy as any).createdAt = new Date(
+        (allergy as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
         ...allergy,
-         action: allergy.id,
-         keydisplay: "XXXXXXX",
-         onsetPeriod: allergy.onSet.onsetPeriod.start +'-'+ allergy.onSet.onsetPeriod.end,
-         asserter: this.getPractitionerName(allergy.onSet.asserter),
-         product: allergy.reaction.substance
-        };
+        action: allergy.id,
+        keydisplay: "XXXXXXX",
+        onsetPeriod:
+          allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
+        asserter: this.getPractitionerName(allergy.onSet.asserter),
+        product: allergy.reaction.substance,
+      };
     });
     if (!this.query) return allergys;
     return search.searchObjectArray(allergys, this.query);
   }
-getPractitionerName(id: string){
-   const pt = this.practitioners.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : '';
-}
-  async showAllergy(value:string){
-      this.showAllergyModal = true;
-      //this.stopEvent = true;
-      this.allergyId = value;
+  getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  async showAllergy(value: string) {
+    this.showAllergyModal = true;
+    //this.stopEvent = true;
+    this.allergyId = value;
   }
 
   allergyAdded() {
- this.allergys;
-  this.fetchAllergys();
+    this.allergys;
+    this.fetchAllergys();
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this allergy",
-      title: "Delete allergy"
+      title: "Delete allergy",
     });
     if (!confirmed) return;
 
-    if (await this.deleteAllergy(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
+    if (await this.deleteAllergy(id))
+      window.notify({ msg: "Allergy cancelled", status: "success" });
     else window.notify({ msg: "Allergy not cancelled", status: "error" });
   }
- 
-      get sortAllergys (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-   
-     async created() {
-          this.getPractitioners();
-          this.sortAllergys;
-          this.fetchAllergys();
-    }
 
+  get sortAllergys() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+
+  async created() {
+    this.getPractitioners();
+    this.sortAllergys;
+    this.fetchAllergys();
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 .status-accepted {
-      background: #F3FCF8;
-      color: #35BA83;    
-  }
-.status-inactive {
-      background: #FFF1F0;
-      color: #FE4D3C;
+  background: #f3fcf8;
+  color: #35ba83;
 }
-.status-warning{
-  background: #FEFAF0;
-  color: #F7B538;
+.status-inactive {
+  background: #fff1f0;
+  color: #fe4d3c;
+}
+.status-warning {
+  background: #fefaf0;
+  color: #f7b538;
 }
 </style>
