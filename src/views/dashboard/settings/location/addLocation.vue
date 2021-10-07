@@ -20,36 +20,46 @@
             <div class="w-full grid grid-cols-2 gap-5">
               <cornie-input
                 :rules="required"
+                required
                 v-model="name"
                 label="Location Name"
               />
-              <cornie-input :modelValue="id" label="Location Identifier" />
+              <cornie-input
+                disabled
+                :modelValue="identifier"
+                label="Location Identifier"
+              />
               <cornie-select
                 :rules="required"
+                required
                 v-model="locationStatus"
                 :items="['active', 'inactive']"
                 label="Location Status"
               />
               <cornie-select
                 :rules="required"
+                required
                 :items="dropdowns.operationalStatus"
                 v-model="operationalStatus"
                 label="Operational status"
               />
               <cornie-input
                 :rules="required"
+                required
                 v-model="description"
                 label="Description"
               />
               <cornie-input :rules="required" v-model="alias" label="Alias" />
               <cornie-select
                 :rules="required"
+                required
                 :items="dropdowns.mode"
                 v-model="mode"
                 label="Mode"
               />
               <cornie-select
                 :rules="required"
+                required
                 :items="dropdowns.type"
                 v-model="type"
                 label="Type"
@@ -57,12 +67,14 @@
               <div class="block w-11/12">
                 <phone-input
                   v-model="phone"
+                  required
                   :rules="required"
                   label="Phone Number"
                 />
               </div>
               <cornie-input
-                :rules="required"
+                :rules="requiredEmail"
+                required
                 v-model="email"
                 label="Email Address"
               />
@@ -70,17 +82,28 @@
                 :rules="required"
                 v-model="address"
                 label="Address"
+                required
               />
-              <cornie-input :rules="required" v-model="state" label="State" />
-              <cornie-input
+              <auto-complete
                 :rules="required"
                 v-model="country"
+                required
                 label="Country"
+                :items="countries"
                 class=""
               />
+              <auto-complete
+                required
+                :rules="required"
+                :items="states"
+                v-model="state"
+                label="State"
+              />
+
               <cornie-select
                 :items="dropdowns.physicalType"
                 v-model="physicalType"
+                required
                 label="Physical Type"
                 :rules="required"
               />
@@ -146,17 +169,20 @@
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
               <cornie-select
                 :rules="required"
+                required
                 v-model="availabilityExceptions"
                 :items="['X-MAS', 'SALAH']"
                 label="Availability Exceptions"
               />
               <cornie-input
                 :rules="required"
+                required
                 v-model="openTo"
                 label="Open To"
               />
               <cornie-select
                 :rules="required"
+                required
                 v-model="careOptions"
                 label="Care Options"
                 :items="['dental', 'hospice']"
@@ -211,6 +237,10 @@ import { namespace } from "vuex-class";
 import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
 import { getCoordinates } from "@/plugins/utils";
+import { getCountries, getStates } from "@/plugins/nation-states";
+import AutoComplete from "@/components/autocomplete.vue";
+
+const countries = getCountries();
 
 const dropdown = namespace("dropdown");
 const location = namespace("location");
@@ -218,6 +248,7 @@ const location = namespace("location");
 @Options({
   components: {
     CornieInput,
+    AutoComplete,
     CornieSelect,
     PhoneInput,
     OperationHours,
@@ -258,10 +289,14 @@ export default class AddLocation extends Vue {
   dropdowns = {} as IIndexableObject;
 
   required = string().required();
+  requiredEmail = string().required().email();
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
+  get identifier() {
+    return this.id || "System generated";
+  }
   @Watch("id")
   idChanged() {
     this.setLocation();
@@ -277,6 +312,15 @@ export default class AddLocation extends Vue {
     const data = await cb();
     this.longitude = String(data.longitude);
     this.latitude = String(data.latitude);
+  }
+
+  states = [] as any;
+  countries = countries;
+
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
   }
 
   async setLocation() {

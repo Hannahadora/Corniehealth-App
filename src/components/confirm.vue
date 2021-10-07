@@ -95,7 +95,7 @@
               >
                 {{ yes }}
               </cornie-btn>
-              <button
+              <cornie-btn
                 type="button"
                 @click="cancelled"
                 class="
@@ -121,7 +121,7 @@
                 "
               >
                 {{ no }}
-              </button>
+              </cornie-btn>
             </div>
           </div>
         </div>
