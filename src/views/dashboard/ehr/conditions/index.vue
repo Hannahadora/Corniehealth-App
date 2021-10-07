@@ -20,7 +20,7 @@
           justify-center
           border-b-2
           font-bold
-          mb-10
+          mb-3
           text-xl text-primary
           py-2
         "
@@ -48,7 +48,7 @@ import ExistingState from "./existing-state.vue";
 })
 export default class Conditions extends Vue {
   get isEmpty() {
-    return true;
+    return false;
   }
 }
 </script>

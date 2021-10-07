@@ -202,6 +202,7 @@ import {
 import { namespace } from "vuex-class";
 import IPractitioner from "@/types/IPractitioner";
 import { string } from "yup";
+import { cornieClient } from "@/plugins/http";
 
 const user = namespace("user");
 
@@ -374,7 +375,16 @@ export default class AddCondition extends Vue {
 
   async submit() {
     const { valid } = await (this.$refs.form as any).validate();
-    console.log({ valid });
+    if (!valid) return;
+    try {
+      const { data } = await cornieClient().post(
+        "/api/v1/condition",
+        this.payload
+      );
+      window.notify({ msg: "Condition created", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Condition not created", status: "error" });
+    }
   }
 
   created() {
