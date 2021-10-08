@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="343px" title="Blood Pressure">
+  <chart-card height="338px" title="Blood Pressure">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">120/90 <span class="font-light">mmHgz</span></p>
     <canvas ref="chart"></canvas>
   </chart-card>
@@ -29,7 +29,7 @@ export default class BloodChart extends Vue {
         labels: ["01-Jan", "02-Jan", "03-Jan", "11:00", "04-Jan"],
         datasets: [
           {
-            label: "Upper band",
+            label: "Systolic",
             data: [0, 50, 50, 48, 220, 180],
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 1.5,
@@ -39,7 +39,7 @@ export default class BloodChart extends Vue {
           },
           {
             
-            label: "Lower band",
+            label: "Diastolic",
             data: [45, 0, 50, 200, 150, 200],
             borderColor: "rgba(254, 77, 60, 1)",
             borderWidth: 1.5,
