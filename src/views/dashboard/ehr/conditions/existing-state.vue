@@ -3,7 +3,7 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          @click="addCondition = true"
+          @click="addingCondition = true"
           class="
             bg-danger
             rounded-full
@@ -28,7 +28,10 @@
             <new-view-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div
+            @click="updatingStatus = true"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
             <update-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs"> Update Status </span>
           </div>
@@ -36,7 +39,10 @@
             <edit-icon class="text-purple-800 fill-current" />
             <span class="ml-3 text-xs"> Record Abatement </span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div
+            @click="addingNotes = true"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
             <plus-icon class="text-green-700 fill-current" />
             <span class="ml-3 text-xs"> Add Note </span>
           </div>
@@ -56,6 +62,8 @@
     </div>
     <add-condition v-model="addingCondition" />
     <add-occurence v-model="addingOccurence" />
+    <status-update v-model="updatingStatus" />
+    <add-notes v-model="addingNotes" />
   </div>
 </template>
 <script lang="ts">
@@ -68,12 +76,16 @@ import HistoryIcon from "@/components/icons/history.vue";
 import AddCondition from "./add-condition.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import AddOccurence from "./add-occurence.vue";
+import StatusUpdate from "./status-update.vue";
+import AddNotes from "./add-notes.vue";
 
 @Options({
   name: "ConditionExistingState",
   components: {
     CornieTable,
+    AddNotes,
     AddCondition,
+    StatusUpdate,
     AddOccurence,
     EditIcon,
     NewViewIcon,
@@ -85,6 +97,8 @@ import AddOccurence from "./add-occurence.vue";
 export default class ExistingState extends Vue {
   addingCondition = false;
   addingOccurence = false;
+  updatingStatus = false;
+  addingNotes = false;
   headers = [
     {
       title: "identifier",

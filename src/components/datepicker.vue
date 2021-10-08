@@ -110,6 +110,9 @@ export default class DatePicker extends Vue {
   rules!: any;
 
   @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
+
+  @Prop({ type: Boolean, default: false })
   left!: boolean;
 
   @Prop({ type: Boolean, default: false })
@@ -118,6 +121,7 @@ export default class DatePicker extends Vue {
   visible = false;
 
   toggleDropdown(): void {
+    if (this.disabled) return;
     this.visible = !this.visible;
   }
 
