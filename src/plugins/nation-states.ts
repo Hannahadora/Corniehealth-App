@@ -50,14 +50,30 @@ let countryMap: any;
 async function fetchCountries() {
   let countries: any;
   if (localStore.has("countryMap")) {
-    const rawData = localStore.get("countryMap");
-    countries = JSON.parse(rawData);
+    countries = await getCountriesFromCache();
   } else {
-    const response = await fetch("/country-state.json");
-    countries = await response.json();
+    countries = await getCountriesFromRemote();
     localStore.put("countryMap", countries, 7);
   }
   return countries;
+}
+
+async function getCountriesFromRemote() {
+  const response = await fetch("/country-state.json");
+  const countries = await response.json();
+  return countries;
+}
+
+async function getCountriesFromCache() {
+  const rawData = localStore.get("countryMap");
+  try {
+    const countries = JSON.parse(rawData);
+    return countries;
+  } catch (error) {
+    const countries = await getCountriesFromRemote();
+    localStore.put("countryMap", countries, 7);
+    return countries;
+  }
 }
 
 export async function getStates(country: string = "nigeria") {

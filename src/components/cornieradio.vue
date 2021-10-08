@@ -1,7 +1,9 @@
 <template>
-  <span class="flex items-center">
+  <span class="flex items-center relative">
     <label class="radio-container text-xs">
-      {{ label }}
+      <span class="block pt-1">
+        {{ label }}
+      </span>
       <input
         @change="$emit('change', e)"
         v-bind="$attrs"

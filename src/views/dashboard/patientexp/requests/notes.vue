@@ -1,7 +1,6 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-      
       <cornie-card-title>
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
@@ -22,25 +21,44 @@
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Some subtext if necessary.</p>
         <v-form ref="form">
-          <div class="my-2  w-full ">
+          <div class="my-2 w-full">
             <Textarea
-            class="w-full text-xs"
-            v-model="notes"
-            placeholder="Text Area"
-            :rules="required"
-          />
-          <span></span>
-        </div>
-         <span class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"  @click="save">Add</span>
-        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in requestnotes" :key="index">
+              class="w-full text-xs"
+              v-model="notes"
+              placeholder="Text Area"
+              :rules="required"
+            />
+            <span></span>
+          </div>
+          <span
+            class="
+              text-danger
+              float-right
+              mb-5
+              font-semibold
+              uppercase
+              text-xs
+              cursor-pointer
+            "
+            @click="save"
+          >
+            Add
+          </span>
+          <div
+            class="w-full flex space-x-4 mb-3"
+            v-for="(item, index) in requestnotes"
+            :key="index"
+          >
             <div>
-              <note-icon class="mt-3"/>
+              <note-icon class="mt-3" />
             </div>
             <div>
-              <span class="text-gray-400 text-xs">{{ new Date(item.createdAt).toDateString()}}</span>
-              <p class="text-gray-400 text-xs">{{item.text}}</p>
+              <span class="text-gray-400 text-xs">
+                {{ new Date(item.createdAt).toDateString() }}
+              </span>
+              <p class="text-gray-400 text-xs">{{ item.text }}</p>
             </div>
-        </div>
+          </div>
         </v-form>
       </cornie-card-text>
 
@@ -54,7 +72,6 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
-
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -76,7 +93,6 @@ import { Insurance, IPatient } from "@/types/IPatient";
 import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
 
-
 @Options({
   name: "notes",
   components: {
@@ -97,48 +113,50 @@ export default class Notes extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
- @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: "" })
   requestId!: string;
 
-@Prop({ type: Array, default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   requestnotes!: any[];
 
-loading=  false;
-notes='';
-availableFilter= false;
-profileFilter=false;
-tasknote=[];
-newtasknotes=[];
- 
+  loading = false;
+  notes = "";
+  availableFilter = false;
+  profileFilter = false;
+  tasknote = [];
+  newtasknotes = [];
+
   async save() {
-      this.loading = true;
+    this.loading = true;
     await this.submit();
     this.loading = false;
   }
 
- 
   async submit() {
     await this.createNew();
   }
 
   async createNew() {
-      try {
-        const response = await cornieClient().post("/api/v1/requests/notes", {text:this.notes, requestId:this.requestId});
-        if (response.success) {
-            window.notify({ msg: "Notes created", status: "success" });
-            this.loading = false;
-        }
-        } catch (error) {
-          this.loading = false;
-         this.show = false;
-          console.log(error);
-        window.notify({ msg: "Notes not created", status: "error" });
-        this.$router.push("/dashboard/provider/experience/requests");
-        }
+    try {
+      const response = await cornieClient().post("/api/v1/requests/notes", {
+        text: this.notes,
+        requestId: this.requestId,
+      });
+      if (response.success) {
+        window.notify({ msg: "Notes created", status: "success" });
+        this.loading = false;
+      }
+    } catch (error) {
+      this.loading = false;
+      this.show = false;
+      console.log(error);
+      window.notify({ msg: "Notes not created", status: "error" });
+      this.$router.push("/dashboard/provider/experience/requests");
+    }
   }
 
   async created() {
-      this.requestnotes
+    this.requestnotes;
   }
 }
 </script>
