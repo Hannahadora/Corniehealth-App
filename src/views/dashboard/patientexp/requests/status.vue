@@ -14,7 +14,7 @@
               <div class="w-full">
           <div class="container  content-con">
             <div class="w-full py-3">
-            <cornie-input disabled label="Current Status" v-model="currentStatus" class="w-full mb-4" />
+               <cornie-input disabled label="Current Status" v-model="currentStatus" class="w-full mb-4" />
               <cornie-input disabled label="Updated By" class="w-full mb-4" v-model="updatedBy"/>
               <cornie-input disabled label="Date Last Updated" class="w-full mb-4" v-model="dateUpdated"/>
           
@@ -36,7 +36,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-          Update
+          Status
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -74,14 +74,10 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
- import Slider from '@vueform/slider';
-import '@vueform/slider/themes/default.css';
-import DateTimePicker from './components/datetime-picker.vue'
-import { namespace } from 'vuex-class'
 
 
 @Options({
-  name: "status",
+  name: "requestDialog",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -98,7 +94,6 @@ import { namespace } from 'vuex-class'
     CancelIcon,
     InfoIcon,
     CornieDialog,
-    DateTimePicker,
     SearchIcon,
     AccordionComponent,
     IconInput,
@@ -108,11 +103,10 @@ import { namespace } from 'vuex-class'
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    Slider,
     MainCornieSelect
   },
 })
-export default class Status extends Vue {
+export default class Medication extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -125,7 +119,7 @@ export default class Status extends Vue {
    @Prop({ type: String, default: "" })
   currentStatus!: string;
 
-    @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   dateUpdated!: string;
 
 status = "";
@@ -139,7 +133,7 @@ status = "";
 
  async updateStatus() {
    const id = this.id;
-    const url = `/api/v1/other-requests/${id}`;
+    const url = `/api/v1/requests/${id}`;
     const body = {
        status: this.status,
     }

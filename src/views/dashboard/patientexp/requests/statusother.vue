@@ -76,7 +76,6 @@ import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
  import Slider from '@vueform/slider';
 import '@vueform/slider/themes/default.css';
-import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 
 
@@ -98,7 +97,6 @@ import { namespace } from 'vuex-class'
     CancelIcon,
     InfoIcon,
     CornieDialog,
-    DateTimePicker,
     SearchIcon,
     AccordionComponent,
     IconInput,

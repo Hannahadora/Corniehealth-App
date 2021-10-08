@@ -17,11 +17,15 @@
       Clinical Impression
       </span>
       <span class="w-full h-screen">
-          <impressions-empty-state
+          <!-- <impressions-empty-state
                 v-if="empty"
           />
           <impressions-existing-state
           v-else
+
+          /> -->
+                    <impressions-existing-state
+      
 
           />
       </span>

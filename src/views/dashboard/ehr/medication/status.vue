@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" center class="w-5/12 h-2/3">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title  class="w-full">
           <cornie-icon-btn @click="show = false">
@@ -14,24 +14,10 @@
               <div class="w-full">
           <div class="container  content-con">
             <div class="w-full py-3">
-              <div class="w-full my-6">
-                <input-desc-rounded :label="'Current Status'" :info="''">
-                  <input  disabled type="text" :value="currentStatus" class="p-2 border w-100 w-full" style="border-radius: 8px">
-                </input-desc-rounded>
-              </div>
-
-              <div class="w-full my-6">
-                <input-desc-rounded :label="'Updated By'" :info="''">
-                  <input  disabled type="text" :value="updatedBy" class="p-2  border w-100 w-full" style="border-radius: 8px">
-                </input-desc-rounded>
-              </div>
-
-              <div class="w-full my-6">
-                <input-desc-rounded :label="'Last Date Updated'" :info="''">
-                  <input  disabled type="text" class="p-2 border w-100 w-full" :value="updatedBy" style="border-radius: 8px">
-                </input-desc-rounded>
-              </div>
-
+               <cornie-input disabled label="Current Status" v-model="currentStatus" class="w-full mb-4" />
+              <cornie-input disabled label="Updated By" class="w-full mb-4" v-model="updatedBy"/>
+              <cornie-input disabled label="Date Last Updated" class="w-full mb-4" v-model="dateUpdated"/>
+          
               <cornie-select :label="'New Status'" v-model="status" :items="['Active', 'On-Hold','Cancelled','Completed','Stopped']" style="width: 100%" />
             </div>
           </div>
@@ -50,7 +36,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-          Update Status
+           Status
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -88,48 +74,10 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import IRequest, { Medications,MedicationDetails } from "@/types/IRequest";
- import Slider from '@vueform/slider';
- import { IPatient } from "@/types/IPatient";
 import Period from "@/types/IPeriod";
 import '@vueform/slider/themes/default.css';
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
-import IPractitioner from "@/types/IPractitioner";
-import InputDescRounded from "./components/input-desc-rounded.vue"
-const userStore = namespace("user");
-
-const request = namespace('request')
-const dropdown = namespace("dropdown");
-const patients = namespace("patients");
-
-const emptyMedicationDetails: Medications = {
-    medicationDetails:{
-        medicationCode: "",
-    medicationReference: "",
-    courseOfTherapyType: "",
-    dosageInstruction: "",
-    initialFill: "",
-    quantity: 0,
-    duration: {} as Period,
-    },
-    refillInfo:{},
-    substitutionAllowed:{},
-    
-}
-
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  medications: [],
-
-
-};
 
 
 @Options({
@@ -160,7 +108,6 @@ const emptyRequest: IRequest = {
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    Slider,
     MainCornieSelect
   },
 })
@@ -176,6 +123,9 @@ export default class Medication extends Vue {
 
    @Prop({ type: String, default: "" })
   currentStatus!: string;
+
+  @Prop({ type: String, default: "" })
+  dateUpdated!: string;
 
 status = "";
   loading = false;

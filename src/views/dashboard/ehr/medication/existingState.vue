@@ -94,6 +94,7 @@
             :id="requestId" 
            :updatedBy="updatedBy" 
         :currentStatus="currentStatus" 
+        :dateUpdated="update"
           @update:preferred="showStatus"
           v-model="showStatusModal"/>
 
@@ -193,6 +194,8 @@ onePatientId ="";
 showStatusModal=false;
 updatedBy= "";
 currentStatus="";
+update="";
+
 
   @userStore.State
   user!: User;
@@ -274,8 +277,12 @@ currentStatus="";
          (request as any).createdAt = new Date(
          (request as any).createdAt 
        ).toDateString();
+        (request as any).updatedAt = new Date(
+         (request as any).updatedAt 
+       ).toDateString();
       this.updatedBy = this.getPatientName(request.requestDetails.requester);
       this.currentStatus = request.status;
+      this.update= request.updatedAt
         return {
         ...request,
          action: request.id,
