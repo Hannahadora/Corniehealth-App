@@ -16,23 +16,23 @@
             <div class="w-full py-3">
               <div class="w-full my-6">
                 <input-desc-rounded :label="'Current Status'" :info="''">
-                  <input  disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                  <input  disabled type="text" :value="currentStatus" class="p-2 border w-100 w-full" style="border-radius: 8px">
                 </input-desc-rounded>
               </div>
 
               <div class="w-full my-6">
                 <input-desc-rounded :label="'Updated By'" :info="''">
-                  <input  disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                  <input  disabled type="text" :value="updatedBy" class="p-2  border w-100 w-full" style="border-radius: 8px">
                 </input-desc-rounded>
               </div>
 
               <div class="w-full my-6">
                 <input-desc-rounded :label="'Last Date Updated'" :info="''">
-                  <input  disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                  <input  disabled type="text" class="p-2 border w-100 w-full" :value="updatedBy" style="border-radius: 8px">
                 </input-desc-rounded>
               </div>
 
-              <cornie-select :label="'New Status'" :items="['Active', 'Inactive']" style="width: 100%" />
+              <cornie-select :label="'New Status'" v-model="status" :items="['Active', 'On-Hold','Cancelled','Completed','Stopped']" style="width: 100%" />
             </div>
           </div>
         </div>
@@ -171,241 +171,55 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  // @Prop({ type: Object, required: false, default: { ...emptyRequest} })
-  // request!: IRequest;
-  
-  requestModel = {} as IRequest;
+   @Prop({ type: String, default: "" })
+  updatedBy!: string;
 
-  @request.Action
-  getRequestById!: (id: string) => IRequest;
+   @Prop({ type: String, default: "" })
+  currentStatus!: string;
 
-  // @Watch("request")
-  // requestUpdated(request: IRequest) {
-  //   this.requestModel = JSON.parse(JSON.stringify({ ...request }));
-  // }
-
-  @patients.State
-  patients!: IPatient[];
-
-
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-   @userStore.Getter
-  authPractitioner!: IPractitioner;
-
-  @request.Mutation
-  updatedRequests!: any;
-
- checked = false;
-  checked2 = false;
-  checked3 = false;
-  step=1;
- width_percent= 33.33;
-  width= 33.33;
-
+status = "";
   loading = false;
   expand = false;
   isVisible = "";
-  startdate = "";
-  enddate = "";
-  selected=1;
-  rule = true;
-  opened = true;
-  openedR = true;
-  openedS = true;
-  openedM = false;
-  showMedicationModal = false;
- 
 
-
-  patient=[];
-  practitioner=[];
-
-dispenser="";
-subject="";
-requester="";
-performer="";
-
-
-  preferredHeaders = [];
-  items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
-
-  options = [
-    { text: "Active", value: true },
-    { text: "Inactive", value: false },
-  ];
 
   required = string().required();
-  dropdowns = {} as IIndexableObject;
-  dropdowns2 = {} as IIndexableObject;
-
-  @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
 
-@Watch('id')
-  idChanged() {
-    this.setRequest()
+ async updateStatus() {
+   const id = this.id;
+    const url = `/api/v1/requests/${id}`;
+    const body = {
+       status: this.status,
+    }
+    try {
+      const response = await cornieClient().put(url, body);
+      if (response.success){
+          window.notify({ msg: "Status Updated", status: "success" });
+        this.done();
+      }
+   
+    } catch (error) {
+      console.log(error);
+        window.notify({ msg: "Status Not Updated", status: "success" });
+      this.loading = false;
+    }
   }
-
-  get PatientName() {
-            const id = this.$route.params.id;
-            const pt = this.patients.find((i: any) => i.id === id);
-           return {
-             ...pt
-           }
-        }
-
- select(i:number) {
-      this.selected = i;
-    }
- async  next() {
-      this.step = this.step + 1;
-      this.width += this.width_percent;
-    }
-
-   async  back() {
-      this.step >= 0 && (this.step -= 1);
-      this.width -= this.width_percent;
-    }
-
-
 
  
-    medicationsDetail = {...emptyMedicationDetails}; 
-    medicationsDetails: Medications[] = [];
  
-    addMedicationDetails(){
-      this.medicationsDetails.push({...this.medicationsDetail});
-      this.back();
-    }
-    removemedication(index:number){
-         this.medicationsDetails.splice(index, 1);
-    }
-  async setRequestModel() {
-     this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest}));
-  }
-  async setRequest() {
-    const request = await this.getRequestById(this.id)
-    if (!request) return
-    this.requestModel =  (request) ;
-    this.requestModel.medications = request.medications;
-  }
- get newaction() {
-    return this.id ? 'Update' : 'Create New'
-  }
-  get payload() {
-    //  const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
-    // return model;
-    return{
-        requestInfo: this.requestModel.requestInfo,
-        requestDetails: this.requestModel.requestDetails,
-        subject: this.requestModel.subject,
-        performer: this.requestModel.performer,
-        medicationAdministration: this.requestModel.medicationAdministration,
-        fufillment: this.requestModel.fufillment,
-        history: this.requestModel.history,
-        medications: this.requestModel.medications,
-    }
-
-  }
-  get allaction() {
-    return this.id ? "Edit" : "New";
-  }
-get allPerformer() {
-     if (!this.practitioner || this.practitioner.length === 0) return [ ];
-     return this.practitioner.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.firstName +' '+ i.lastName,
-         }
-     })
- }
- get allRequester() {
-     if (!this.patient || this.patient.length === 0) return [ ];
-     return this.patient.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.firstname +' '+ i.lastname,
-         }
-     })
- }
-  async showMedication(value:any){
-    this.requestModel.medications = value;
-    this.showMedicationModal = true;
-  }
  done() {
     this.$emit("allergy-added");
     this.show = false;
   }
   async apply() {
     this.loading = true;
-      if (this.id) await this.updateRequest()
-    else await this.createRequest()
+     await this.updateStatus()
     this.loading = false;
   }
-  async createRequest() {
-    //const period = this.period;
-    const practitionerfullname = this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
-    const patientfullname = this.PatientName.firstname +' '+ this.PatientName.lastname;
-
-    const practitionerfullnameid = this.authPractitioner.id;
-    const patientfullnameid = this.PatientName.id;
-
-    this.payload.requestDetails.recorder = practitionerfullnameid;
-     this.payload.requestDetails.requester = patientfullnameid;
-     this.payload.subject.subject = patientfullnameid;
-     this.payload.performer.dispenser = practitionerfullnameid;
-     this.payload.medicationAdministration.performer = practitionerfullnameid;
-     this.payload.medications = this.medicationsDetails;
-    try {
-      const response = await cornieClient().post("/api/v1/requests", this.payload);
-      if (response.success) {
-          this.updatedRequests([response.data]);
-          window.notify({ msg: "Request Created", status: "success" });
-       this.done();
-      }
-    } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-  async updateRequest() {
-     const id = this.id;
-    const url = `/api/v1/requests/${id}`;
-    const payload = this.payload ;
-    try {
-      const response = await cornieClient().put(url, this.payload);
-      if (response.success) {
-          this.updatedRequests([response.data]);
-        window.notify({ msg: "Request Updated", status: "success" });
-        this.done();
-      }
-    } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-  async fetchAllPatients() {
-    const AllPateints = cornieClient().get("/api/v1/patient");
-    const response = await Promise.all([AllPateints]);
-    this.patient = response[0].data;
-  }
- async fetchPractitioner() {
-    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
-    const response = await Promise.all([AllPractitioner]);
-    this.practitioner = response[0].data;
-  }
-
+ 
   async created() {
-    this.setRequest();
-    this.setRequestModel();
-    this.fetchPatients();
-    this.fetchAllPatients();
-    this.fetchPractitioner();
-    const data = await this.getDropdowns("availability");
-    const data2 = await this.getDropdowns("practitioner");
-    this.dropdowns = data;
-    this.dropdowns2 = data2;
+   
   }
 }
 </script>

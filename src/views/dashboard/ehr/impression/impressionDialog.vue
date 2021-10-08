@@ -12,16 +12,16 @@
           <p class="text-gray-400 text-xs p-3 -mt-5 -mb-5">Fields with <span class="text-danger">*</span> are required</p>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" v-model="openedS">
                 <div>
-                    <label for="ecounter" class="flex uppercase mb-5 mt-5 text-black text-xs font-bold">status
+                    <label for="ecounter" class="flex capitalize mb-5 mt-5 text-black text-sm font-bold">status
                     </label>
                     <div class="w-full flex space-x-4">
-                            <cornie-radio label="Mid"  class="text-xs" name="request" id="pickup" v-model="status" @update:modelValue="changeChecked('Mid')"/>
+                            <cornie-radio label="Mid"  name="request" id="pickup" v-model="status" @update:modelValue="changeChecked('Mid')"/>
                             <cornie-radio label="Medium"  name="request" id="patientadress" checked v-model="status" @update:modelValue="changeChecked('Medium')"/>
                             <cornie-radio label="Severe"  name="request" id="homeaddress" v-model="status" @update:modelValue="changeChecked('Severe')"/>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
-                     <cornie-input label="Status Reason" class="mb-5 w-full"  v-model="impressionModel.statusReason" />
+                     <cornie-input label="Status Reason" class="w-full"  v-model="impressionModel.statusReason" />
                     <main-cornie-select
                     class="w-full"
                     :items="['Active','Inactive','Resolved']"
@@ -29,22 +29,20 @@
                     label="Code"
                     >
                     </main-cornie-select>
-                    <cornie-input label="Description" class="mb-5 w-full"  v-model="impressionModel.description" />
-                    <cornie-select
-                    class="w-full"
-                      :items="['Unconfirmed','Presumed','Confirmed','Refuted','Entered in Error']"
-                      label="REFERENCE ENCOUNTER"
+                    <cornie-input label="Description" class="w-full"  v-model="impressionModel.description" />
+                     <encounter-select
+                      class="w-full"
                       v-model="impressionModel.encounter"
-                      placeholder="Select"
-                    >
-                    </cornie-select>
+                      :rules="required"
+                      label="Reference Encounter"
+                    />
                   </div>
           </accordion-component>
             <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Effective" v-model="openedS">
-                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5">
                       <div>
                           <div class="w-full mt-5">
-                                <DateTimePicker :label="'Date/time'" class="z-10 w-full">
+                                <DateTimePicker :label="'Date/Time'" class="z-10 w-full">
                                     <template v-slot:labelicon>
                                       <question-icon />
                                     </template>
@@ -73,7 +71,7 @@
                                           width: 100%;
                                         "
                                       ></v-date-picker>
-                                      <label class="block uppercase my-1 text-xs font-bold">
+                                      <label class="block capitalize my-1 text-sm font-bold">
                                         Time
                                       </label>
                                       <input
@@ -87,7 +85,7 @@
                       </div>
                       <div>
                           <div class="w-full mt-5">
-                                <DateTimePicker :label="'start DATE & Time'" class="z-10 w-full">
+                                <DateTimePicker :label="'start Date & Time'" class="z-10 w-full">
                                     <template v-slot:labelicon>
                                       <question-icon />
                                     </template>
@@ -116,7 +114,7 @@
                                           width: 100%;
                                         "
                                       ></v-date-picker>
-                                      <label class="block uppercase my-1 text-xs font-bold">
+                                      <label class="block capitalize my-1 text-sm font-bold">
                                         Time
                                       </label>
                                       <input
@@ -130,7 +128,7 @@
                       </div>
                        <div>
                           <div class="w-full mt-5">
-                              <DateTimePicker :label="'end DATE & Time'" class="z-10 w-full">
+                              <DateTimePicker :label="'End Date & Time'" class="z-10 w-full">
                                   <template v-slot:labelicon>
                                     <question-icon />
                                   </template>
@@ -159,7 +157,7 @@
                                         width: 100%;
                                       "
                                     ></v-date-picker>
-                                    <label class="block uppercase my-1 text-xs font-bold">
+                                    <label class="block capitalize my-1 text-sm font-bold">
                                       Time
                                     </label>
                                     <input
@@ -171,14 +169,8 @@
                               </DateTimePicker>
                           </div>
                       </div>
-                      <div class="w-full cursor-pointer mt-6"  v-if="assessorItems.length == 0"  @click="showAssessor">
-                        <label class="flex uppercase mb-1  text-black text-xs font-bold">assessor</label>
-                        <input-desc-rounded  :info="''" class="cursor-pointer">
-                          <input disabled type="text" placeholder="Select Assesor" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
-                        </input-desc-rounded>
-                      </div>
-                      <div class="mt-5" v-else>
-                        <label for="assessor"  @click="showAssessor" class="cursor-pointer flex uppercase text-black text-xs font-bold">assessor
+                      <div class="mt-5" v-if="assessorItems.length > 0" >
+                        <label for="assessor"  @click="showAssessor" class="cursor-pointer flex capitalize text-black text-sm font-bold">assessor
                         </label>
                         <cornie-select
                         class="w-full"
@@ -187,9 +179,16 @@
                         >
                         </cornie-select>
                       </div>
+                      <div class="w-full cursor-pointer mt-6" v-else  @click="showAssessor">
+                        <label class="flex capitalize mb-1  text-black text-sm font-bold">assessor</label>
+                        <input-desc-rounded  :info="''" class="cursor-pointer">
+                          <input disabled type="text" placeholder="Select Assesor" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                        </input-desc-rounded>
+                      </div>
+                    
                      <main-cornie-select
                     class="w-full"
-                    :items="['Active','Inactive','Resolved']"
+                    :items="['Clinical Impression']"
                     v-model="impressionModel.effective.previous"
                     label="previous"
                     >
@@ -214,13 +213,13 @@
                       placeholder="Select Problem"
                       >
                       </cornie-input> -->
-                     <div class="w-full cursor-pointer clear-left -mt-1" v-if="setType == 'Allergy'"  @click="showProblem($event)">
+                     <div class="w-full cursor-pointer clear-left mt-1" v-if="setType == 'Allergy'"  @click="showProblem($event)">
                         <label class="flex normal-case mb-0  text-black text-sm font-bold">Problem</label>
                         <input-desc-rounded  :info="''" class="cursor-pointer">
                           <input  type="text" disabled  :value="problemItems.code" placeholder="Select Problem" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
                         </input-desc-rounded>
                       </div>
-                      <div class="w-full cursor-pointer clear-left -mt-1" v-else  @click="showProblem($event)">
+                      <div class="w-full cursor-pointer clear-left mt-1" v-else  @click="showProblem($event)">
                         <label class="flex normal-case mb-0  text-black text-sm font-bold">Problem</label>
                         <input-desc-rounded  :info="''" class="cursor-pointer">
                           <input  type="text"  disabled   :value="conditionItems.name" placeholder="Select Problem" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
@@ -229,22 +228,22 @@
                   </div>
           </accordion-component>
              <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Investigation" v-model="openedS">
-                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5">
                      <cornie-select
                         class="w-full"
                         label="code"
-                        :items="['code']"
+                        :items="['Examination / Signs','History / Symptoms']"
                         v-model="impressionModel.investigation.code"
                         >
                         </cornie-select>
                       <div class="w-full cursor-pointer"  v-if="investigateItems.length === 0"  @click="showItem">
-                        <label class="flex uppercase mb-1  text-black text-xs font-bold">Item</label>
+                        <label class="flex capitalize mb-1  text-black text-sm font-bold">Item</label>
                         <input-desc-rounded  :info="''" class="cursor-pointer">
                           <input disabled type="text" placeholder="Select Item" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
                         </input-desc-rounded>
                       </div>
                       <div class="" v-else>
-                        <label for="item"  @click="showItem" class="cursor-pointer flex uppercase text-black text-xs font-bold">item
+                        <label for="item"  @click="showItem" class="cursor-pointer flex capitalize text-black text-sm font-bold">item
                         </label>
                         <cornie-select
                         class="w-full"
@@ -266,11 +265,11 @@
                   </div>
           </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Findings" v-model="openedS">
-                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5">
                      <cornie-select
                         class="w-full"
                         label="item"
-                        :items="['item']"
+                        :items="['Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','	Spontaneous abortion with laceration of cervix','Homoiothermia','Decreased hair growth','Chronic pharyngitis','Normal peripheral vision']"
                         v-model="impressionModel.findings.item"
                         >
                         </cornie-select>
@@ -295,7 +294,7 @@
                          <cornie-select
                         class="w-full"
                         label="Prognosis"
-                        :items="['Prognosis']"
+                        :items="['Conditional prognosis','Fair prognosis','Guarded prognosis','Good prognosis','Poor prognosis','Prognosis uncertain']"
                         v-model="impressionModel.findings.prognosis"
                         >
                         </cornie-select>
@@ -313,13 +312,13 @@
                       placeholder="Enter"
                       >
                       </cornie-input>
-                         <cornie-select
+                         <cornie-input
                         class="w-full"
                         label="Supporting Info"
-                        :items="['Supporting Info']"
+                         placeholder="Enter"
                         v-model="impressionModel.findings.supportingInfo"
                         >
-                        </cornie-select>
+                        </cornie-input>
                        
                     
                   </div>
@@ -328,7 +327,7 @@
                             class="w-full"
                             label="Notes"
                             v-model="impressionModel.findings.note"
-                            placeholder="--Enter--"
+                            placeholder="Enter note"
                             :rules="required"
                           />
                           <span></span>
@@ -350,7 +349,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            {{newaction}}
+           Save
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -377,6 +376,9 @@
           @update:preferred="showFindings"
           v-model:visible="showFindingModal"
         />
+      
+
+        
   </cornie-dialog>
 </template>
 
@@ -409,6 +411,7 @@ import Period from "@/types/IPeriod";
 import IImpression, {Effective} from "@/types/IImpression";
  import Slider from '@vueform/slider';
 import '@vueform/slider/themes/default.css';
+import EncounterSelect from "./encounter-select.vue";
 import DateTimePicker from './components/datetime-picker.vue'
 import AssesorModal from './assesor.vue'
 import ProblemModal from './problem.vue'
@@ -468,6 +471,7 @@ const emptyImpression: IImpression = {
     CDelete,
     CancelIcon,
     InfoIcon,
+    EncounterSelect,
     CornieDialog,
     DateTimePicker,
     SearchIcon,
@@ -558,7 +562,7 @@ findingItems = [];
   }
 
  get newaction() {
-    return this.id ? 'Update' : 'New'
+    return this.id ? 'Update' : 'Create New'
   }
 
    done() {

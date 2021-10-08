@@ -23,9 +23,9 @@
               </button>
               
             </span>
-            <cornie-table :columns="rawHeaders" v-model="sortImpressions">
+            <cornie-table :columns="rawHeaders" v-model="items">
                 <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <newview-icon  class="text-yellow-500 fill-current"/>
                     <span class="ml-3 text-xs">View</span>
                   </div>
@@ -33,15 +33,27 @@
                       <edit-icon class="text-purple-600 fill-current" />
                       <span class="ml-3 text-xs">Edit</span>
                   </div>
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
+                      <update-icon class="text-purple-800 fill-current" />
+                      <span class="ml-3 text-xs">Update Status</span>
+                  </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
+                      <update-icon class="text-purple-800 fill-current" />
+                      <span class="ml-3 text-xs">Update Prognosis</span>
+                  </div>
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
                     <plus-icon class="text-green-400 fill-current"/>
                     <span class="ml-3 text-xs">Add Occurrence</span>
                   </div>
-                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
+                    <plus-icon class="text-green-400 fill-current"/>
+                    <span class="ml-3 text-xs">Add Condition</span>
+                  </div>
+                   <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
                       <cancel-icon />
                       <span class="ml-3 text-xs"
                       >Cancel</span>
-                    </div>
+                    </div> -->
                 </template>
             </cornie-table>
         </div>
@@ -59,7 +71,12 @@
         :columns="practitioner"
           @update:preferred="showImpression"
           v-model="showImpressionModal"/>
-
+     <status-modal
+            :id="impressionId" 
+           :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+          @update:preferred="showStatus"
+          v-model="showStatusModal"/>
         
   </div>
 </template>
@@ -97,6 +114,7 @@ import MessageIcon from "@/components/icons/message.vue";
 import ImpressionModal from "./impressionDialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+ import StatusModal from "./status.vue";
 
 const impression = namespace("impression");
 
@@ -112,7 +130,7 @@ const impression = namespace("impression");
     TimelineIcon,
     ShareIcon,
     ThreeDotIcon,
-    
+    StatusModal,
     DangerIcon,
     PlusIcon,
     SearchIcon,
@@ -140,8 +158,11 @@ export default class ImpressionExistingState extends Vue {
   selected = 1;
   showNotes = false;
   showImpressionModal= false;
+  showStatusModal=false;
   impressionId="";
   tasknotes=[];
+updatedBy= "Ikhide bright";
+currentStatus="Severe";
 
   @Prop({ type: Array, default: [] })
   impressions!: IImpression[];
@@ -258,26 +279,46 @@ export default class ImpressionExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
-  get items() {
-    const impressions = this.impressions.map((impression) => {
+  items = [
+    {
+      problem: "Identifier",
+         investigation: "Identifier",
+         prognosis: "Identifier",
+        assessor: "Identifier",
+      id: "XXXX",
+      createdAt: "10/08/2021"
+    },
+  ];
+
+  // get items() {
+  //   const impressions = this.impressions.map((impression) => {
    
-         (impression as any).createdAt= new Date(
-         (impression as any).createdAt
-       ).toLocaleDateString("en-US");
-        return {
-        ...impression,
-         action: impression.id,
-         keydisplay: "XXXXXXX",
-         problem: impression.effective.problem,
-         investigation: impression.investigation.item,
-         prognosis: impression.findings.prognosis,
-        assessor: impression.effective.assessor,
+  //        (impression as any).createdAt= new Date(
+  //        (impression as any).createdAt
+  //      ).toLocaleDateString("en-US");
+  //         this.updatedBy = impression.effective.assessor;
+  //     this.currentStatus = impression.status;
+  //       return {
+  //       ...impression,
+  //        action: impression.id,
+  //        keydisplay: "XXXXXXX",
+  //       //  problem: impression.effective.problem,
+  //       //  investigation: impression.investigation.item,
+  //       //  prognosis: impression.findings.prognosis,
+  //       // assessor: impression.effective.assessor,
+  //        problem: "Identifier",
+  //        investigation: "Identifier",
+  //        prognosis: "Identifier",
+  //       assessor: "Identifier",
      
-        };
-    });
-    if (!this.query) return impressions;
-    return search.searchObjectArray(impressions, this.query);
+  //       };
+  //   });
+  //   if (!this.query) return impressions;
+  //   return search.searchObjectArray(impressions, this.query);
+  // }
+  async showStatus(value:string){
+    this.showStatusModal = true;
+    this.impressionId = value;
   }
 
   async showImpression(value:string){
@@ -301,14 +342,14 @@ export default class ImpressionExistingState extends Vue {
     else window.notify({ msg: "Impression not cancelled", status: "error" });
   }
  
-      get sortImpressions (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
+      // get sortImpressions (){
+      //   return this.items.slice().sort(function(a, b){
+      //     return (a.createdAt < b.createdAt) ? 1 : -1;
+      //   });
+      // }
    
      async created() {
-          this.sortImpressions;
+         // this.sortImpressions;
           this.fetchImpressions();
     }
 

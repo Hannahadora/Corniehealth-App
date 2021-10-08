@@ -18,7 +18,7 @@
             </div>
             <div class="flex flex-col p-3 mb-7 h-96">
                 <div class="border-b-2 pb-3 border-dashed">
-                    <label for="ecounter" class="flex uppercase mb-5 mt-5 text-black text-xs font-bold">status
+                    <label for="ecounter" class="flex capitalize mb-5 mt-5 text-black text-xs font-bold">status
                     </label>
                     <div class="w-full flex space-x-4">
                         <cornie-radio  label="Condition"  class="text-xs" name="practice" v-model="check" :checked="check" @click="setValue('Condition')"/>
@@ -254,7 +254,7 @@ export default {
     return {
       selected:0,
       localSrc: require('../../../../assets/img/placeholder.png'),
-        check: true,
+        check: false,
          check2: false,
          check3: {
            practitioners:[{

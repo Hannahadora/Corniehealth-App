@@ -32,7 +32,7 @@
                 </input-desc-rounded>
               </div>
 
-              <cornie-select :label="'New Status'" v-model="status" :items="['Active', 'On-Hold','Cancelled','Completed','Stopped']" style="width: 100%" />
+              <cornie-select :label="'New Status'" v-model="status" :items="['Mid', 'Medium','Severe']" style="width: 100%" />
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ const emptyRequest: IRequest = {
 
 
 @Options({
-  name: "status",
+  name: "requestDialog",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -164,7 +164,7 @@ const emptyRequest: IRequest = {
     MainCornieSelect
   },
 })
-export default class Status extends Vue {
+export default class Medication extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -188,7 +188,7 @@ status = "";
 
  async updateStatus() {
    const id = this.id;
-    const url = `/api/v1/other-requests/${id}`;
+    const url = `/api/v1/clinical-impressions/${id}`;
     const body = {
        status: this.status,
     }
