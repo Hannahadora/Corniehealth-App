@@ -407,11 +407,9 @@ import RangeSlider from "@/components/range.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import CornieDateRangePicker from "@/components/daterangepicker.vue";
-import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import TimePicker from "@/components/Timepicker.vue";
-import patient from "@/store/patient";
-import Slider from "@vueform/slider";
+
 
 const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
@@ -451,7 +449,6 @@ const emptyOtherrequest: IOtherrequest = {
     PatientsFilter,
     DevicesFilter,
     RolesFilter,
-    Slider,
   },
 })
 export default class AddAppointment extends Vue {
