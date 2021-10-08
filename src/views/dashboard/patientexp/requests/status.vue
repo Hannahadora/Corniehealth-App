@@ -170,27 +170,6 @@ status = "";
 </script>
 
 <style>
-
-.slider-connect {
-    background: #fe4d3c;
-    cursor: pointer;
-}
-
-.slider-tooltip {
-    position: absolute;
-    display: block;
-    font-size: var(--slider-tooltip-font-size, .875rem);
-    line-height: var(--slider-tooltip-line-height, 1.25rem);
-    font-weight: var(--slider-tooltip-font-weight, 600);
-    white-space: nowrap;
-    padding: var(--slider-tooltip-py, 2px) var(--slider-tooltip-px, 6px);
-    min-width: var(--slider-tooltip-min-width, 20px);
-    text-align: center;
-    color: var(--slider-tooltip-color, #fff);
-    border-radius: var(--slider-tooltip-radius, 5px);
-    border: 1px solid #fe4d3c;
-    background: #fe4d3c;
-}
 .bg-gray {
     background-color: #F6F8F9;
 }
