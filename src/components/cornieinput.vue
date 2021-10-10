@@ -2,13 +2,13 @@
   <field
     :name="inputName"
     as="span"
-    v-slot="{ errorMessage, meta, field }"
+    v-slot="{ errorMessage, meta, handleChange }"
     :rules="rules"
     v-model="valueSync"
     class="mb-5"
   >
     <div v-bind="$attrs" class="w-11/12">
-      <label class="flex uppercase mb-1 text-black text-xs font-bold">
+      <label class="flex capitalize mb-1 text-black text-sm font-semibold">
         <slot name="label">
           {{ label }}
         </slot>
@@ -53,14 +53,16 @@
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
               $slots.prepend,
+
             'border-top-right-radius: 0; border-bottom-right-radius: 0':
               $slots.append,
           }"
-          v-bind="field"
           :placeholder="$attrs.placeholder"
           :name="inputName"
-          :readonly="readonly"
+          :readonly="readonly || disabled"
+          :class="{ 'bg-gray-200': disabled }"
           v-model="valueSync"
+          @update:modelValue="handleChange"
         />
         <div
           class="rounded-lg pr-2 bg-white flex items-center justify-center"
@@ -85,9 +87,9 @@
           <slot name="append" />
         </div>
       </div>
-      <span v-if="errorMessage" class="text-xs text-red-500 block">{{
-        errorMessage
-      }}</span>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">
+        {{ errorMessage }}
+      </span>
     </div>
   </field>
 </template>
@@ -124,6 +126,9 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
 
   @Prop({ type: Object, default: {} })
   errorClasses!: Object;

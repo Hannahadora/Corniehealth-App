@@ -5,7 +5,6 @@ import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
-import { flatten } from "@/plugins/utils";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -74,7 +73,7 @@ const routes: Array<RouteRecordRaw> = [
       ExperienceRoutes,
 
       {
-        path: "clinical/:id?",
+        path: "clinical/:id",
         name: "Patient EHR",
         component: () => import("@/views/dashboard/ehr/index.vue"),
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
@@ -95,6 +94,13 @@ const routes: Array<RouteRecordRaw> = [
             path: "care-team",
             name: "EHR - Care Team",
             component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
+          },
+          {
+            path: "conditions",
+            name: "Condition/Problem",
+            alias: "condition",
+            component: () =>
+              import("@/views/dashboard/ehr/conditions/index.vue"),
           },
           {
             path: "allergy",
@@ -123,14 +129,14 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/dashboard/ehr/vitals/index.vue"),
           },
           {
-            path: "encounters",
+            path: "encounter",
             props: true,
             name: "Encounter",
             component: () =>
               import("@/views/dashboard/ehr/encounter/index.vue"),
           },
           {
-            path: "procedures",
+            path: "procedure",
             props: true,
             name: "Procedures",
             component: () =>

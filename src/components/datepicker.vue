@@ -1,6 +1,8 @@
 <template>
-  <span class="block w-full">
-    <label class="block uppercase mb-0.5 text-xs font-bold">{{ label }}</label>
+  <span class="block" :class="[$attrs.width || 'w-full']">
+    <label class="block capitalize mb-0.5 text-sm font-semibold">{{
+      label
+    }}</label>
     <Field
       v-model="date"
       :rules="customRules"
@@ -8,7 +10,14 @@
       v-slot="{ meta, handleChange, errorMessage }"
     >
       <div class="relative" style="width: 100%" :id="inputName">
-        <div @click="toggleDropdown" class="block w-full">
+        <div
+          @click="
+            () => {
+              if (!$slots.time) toggleDropdown;
+            }
+          "
+          class="block w-full"
+        >
           <cornie-input
             class="w-full"
             readonly
@@ -19,7 +28,10 @@
             v-model="inputFieldText"
           >
             <template #prepend-inner>
-              <calendar-icon />
+              <calendar-icon class="cursor-pointer" @click="toggleDropdown" />
+            </template>
+            <template #append-inner>
+              <slot name="time" />
             </template>
           </cornie-input>
         </div>
@@ -98,6 +110,9 @@ export default class DatePicker extends Vue {
   rules!: any;
 
   @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
+
+  @Prop({ type: Boolean, default: false })
   left!: boolean;
 
   @Prop({ type: Boolean, default: false })
@@ -106,6 +121,7 @@ export default class DatePicker extends Vue {
   visible = false;
 
   toggleDropdown(): void {
+    if (this.disabled) return;
     this.visible = !this.visible;
   }
 

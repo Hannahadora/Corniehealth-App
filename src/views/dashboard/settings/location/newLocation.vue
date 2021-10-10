@@ -210,10 +210,10 @@ export default {
           this.payload
         );
         if (response.success) {
-          alert("Location Added Successfully");
+          window.notify({ msg: "Location Created", status: "success" });
         }
       } catch (error) {
-        console.error(error);
+        window.notify({ msg: "Location not Updated", status: "error" });
       }
     },
   },
