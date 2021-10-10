@@ -29,7 +29,11 @@
                       <eye-icon class="text-blue-300 fill-current" />
                       <span class="ml-8 text-xs">View</span>
                   </div>
-                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer">
+                    <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showDiagnostic(item.id)">
+                      <edit-icon class="text-blue-300 fill-current" />
+                      <span class="ml-8 text-xs">Edit</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
                       <update-icon class="text-purple-800 fill-current" />
                       <span class="ml-8 text-xs">Update Status</span>
                   </div>
@@ -79,6 +83,13 @@
           @update:preferred="showDiagnostic"
           v-model="showDiagnosticModal"/>
 
+          
+           <status-modal
+        :id="requestId" 
+          @update:preferred="showStatus"
+          v-model="showStatusModal"/>
+
+
         
   </div>
 </template>
@@ -117,6 +128,7 @@ import MessageIcon from "@/components/icons/message.vue";
 import CalenderIcon from "@/components/icons/newcalender.vue";
 import SendIcon from "@/components/icons/send.vue";
 import DiagnosticModal from "./diagnosticdialog.vue";
+import StatusModal from "./status.vue";
 import { namespace } from "vuex-class";
 import CheckIn from './components/checkin.vue'
 import CheckOut from './components/checkout.vue'
@@ -144,6 +156,7 @@ const emptyOtherrequest: IOtherrequest = {
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,
+    StatusModal,
     ShareIcon,
     ThreeDotIcon,
     DangerIcon,
@@ -181,7 +194,7 @@ export default class DiagnosticExistingState extends Vue {
   tasknotes=[];
   showCheckout= false;
 onePatientId ="";
-  statuses = ['Show All', 'On-Hold', 'Cancelled', 'Completed','Stopped'];
+showStatusModal= false;
 
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
@@ -243,7 +256,7 @@ onePatientId ="";
     },
     {
       title: "Status",
-      key: "completeStatus",
+      key: "status",
       show: true,
     },
   ];
@@ -262,13 +275,6 @@ onePatientId ="";
          (otherrequest as any).createdAt = new Date(
          (otherrequest as any).createdAt
        ).toDateString();
-        if (otherrequest.status === "cancelled" || otherrequest.status === "no-show") {
-        otherrequest.completeStatus = "Completed";
-      } else if (otherrequest.status === "On-Hold") {
-        otherrequest.completeStatus = "On-Hold";
-      } else {
-        otherrequest.completeStatus = "Stopped";
-      }
         return {
         ...otherrequest,
          action: otherrequest.id,
@@ -282,6 +288,10 @@ onePatientId ="";
     });
     if (!this.query) return otherrequests;
     return search.searchObjectArray(otherrequests, this.query);
+  }
+    async showStatus(value:string){
+    this.showStatusModal = true;
+    this.requestId = value;
   }
  showCheckoutPane(id: string) {
     this.showCheckout = true;

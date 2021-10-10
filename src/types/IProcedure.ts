@@ -29,6 +29,7 @@ export default interface IProcedure {
       end: string
     },
     performedRange: string,
+    createdAt: string | Date,
     performedAge: 0,
     performedString: string,
     recorderId: string,

@@ -43,42 +43,6 @@ export default interface IVital {
     updatedAt: string,
   }
 
-  export interface IEncounter {
-    id: string,
-    identifier: string,
-    status: string,
-    type: string,
-    class: string,
-    priority: string,
-    serviceType: string,
-    appointmentId: string,
-    episodeId: string,
-    organizationId: string,
-    patientId: string,
-    startDate: string,
-    endDate: string,
-    startTime: string,
-    endTime: string,
-    preAdmissionIdentifier: string,
-    origin: string,
-    admitSource: string,
-    readmission: string,
-    dietPreference: string,
-    locationId: string,
-    specialCourtesy: string,
-    practitionerId: string,
-    practitioner: IOrganization,
-    organization: IOrganization,
-    location: ILocation,
-    episode: {
-      id: string,
-      name: string,
-      start: string,
-      end: string,
-      patientId: string
-    }
-  }
-
   export interface IBloodPressure {
     type: string,
     position: string,

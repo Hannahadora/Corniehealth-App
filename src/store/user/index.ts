@@ -33,10 +33,10 @@ export default {
       return state.cornieData?.user?.accountType;
     },
     cornieUser(state) {
-      return state.cornieData.user;
+      return state.cornieData?.user;
     },
     authPractitioner(state) {
-      return state.cornieData.practitioner;
+      return state.cornieData?.practitioner;
     },
   },
   mutations: {
@@ -48,7 +48,9 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
-
+    setAuthDomain(state, domain: string){
+      state.domain = domain
+    },
     setLoginInfo(state, payload) {
       state.user = payload.user;
 
@@ -63,11 +65,11 @@ export default {
 
     updatePractitionerAuthStatus(state, payload) {
       state.practitionerAuthenticated = payload;
-    }
+    },
   },
   actions: {
     async updatePractitionerAuthStatus({ commit }, authenticated) {
       commit("updatePractitionerAuthStatus", authenticated);
-    }
+    },
   },
 } as StoreOptions<UserState>;

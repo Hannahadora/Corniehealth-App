@@ -4,50 +4,51 @@
             <p class="text-sm text-gray-400">All fields are required</p>
         </div>
 
-        <collapse-section :title="'Basic Info'" :height="490">
+        <collapse-section :title="'Basic Info'" :height="530">
             <template #form>
-                <div class="w-full flex items-center mb-1 mt-5">
+                <div class="w-full flex items-center mb-4 mt-5">
                     <div class="w-6/12">
-                        <cornie-select v-model="procedure.canonicalReference" :label="'Instantiates Canonical'"  :items="['Ative', 'Inactive' ]"/>
+                        <cornie-input v-model="procedure.canonicalReference" :label="'Instantiates Canonical'"  :items="['active', 'inactive', 'received' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select v-model="procedure.customReference" :label="'Instantiates Uri'"  :items="['Ative', 'Inactive' ]"/>
-                    </div>
-                </div>
-
-                <div class="w-full flex items-center mb-3">
-                    <div class="w-6/12">
-                        <cornie-select :label="'Based On'" v-model="procedure.basedOn.id"  :items="['Ative', 'Inactive' ]"/>
-                    </div>
-                    <div class="w-6/12">
-                        <cornie-select :label="'Part Of'" v-model="procedure.partOf.id"  :items="['Ative', 'Inactive' ]"/>
+                        <cornie-input v-model="procedure.customReference" :label="'Instantiates Uri'"  :items="['Ative', 'Inactive' ]"/>
                     </div>
                 </div>
 
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'Code'"  v-model="procedure.code" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Based On'" v-model="procedure.basedOn.id"  :items="['Reference 1', 'Reference 2' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Status Reason'" v-model="procedure.statusReason" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Part Of'" v-model="procedure.partOf.id"  :items="['Reference 1', 'Reference 2' ]"/>
                     </div>
                 </div>
 
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'Category'" v-model="procedure.category" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Code'"  v-model="procedure.code" :items="['Excision of lesion of patella', 'Fit removable orthodontic appliance' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Code'"  :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Status Reason'" v-model="procedure.statusReason" :items="['Nitrate contraindicated', 'Sensitivity C/I - immunization', 'Calcium channel blocker contraindicated' ]"/>
                     </div>
                 </div>
 
                 <div class="w-full flex items-center mb-3">
+                    <div class="w-6/12">
+                        <cornie-select :label="'Category'" v-model="procedure.category" :items="['Surgical procedure', 'Diagnostic procedure', 'Social service procedur' ]"/>
+                    </div>
                     <div class="w-6/12">
                         <cornie-select :label="'Subject'"  :items="['Ative', 'Inactive' ]"/>
+                        <!-- <cornie-select :label="'Code'"  :items="['Ative', 'Inactive' ]"/> -->
                     </div>
+                </div>
+
+                <div class="w-full flex items-center mb-3">
+                    <!-- <div class="w-6/12">
+                        <cornie-select :label="'Subject'"  :items="['Ative', 'Inactive' ]"/>
+                    </div> -->
                     <div class="w-6/12">
-                        <cornie-select :label="'Encounter'" v-model="procedure.encounterId" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Encounter'" v-model="procedure.encounterId" :items="encountersList"/>
                     </div>
                 </div>
             </template>
@@ -60,7 +61,7 @@
                         <div class="w-11/12">
                             <date-time-picker :label="'Performed date & Time'" :width="'w-full'">
                                 <template #date>
-                                    <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                    <span>{{ new Date(procedure.performedDate ?? Date.now()).toLocaleDateString()}}</span>
                                 </template>
                                 <template #time>
                                     <span>{{ '00:00' }}</span>
@@ -82,12 +83,12 @@
                     </div>
                 </div>
 
-                <div class="w-full flex items-center mb-3">
+                <div class="w-full flex items-center mt-6 mb-3">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <date-time-picker :label="'Start date & Time'" :width="'w-full'">
                                 <template #date>
-                                    <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                    <span>{{ new Date(procedure.performedPeriod?.start ?? Date.now()).toLocaleDateString()}}</span>
                                 </template>
                                 <template #time>
                                     <span>{{ '00:00' }}</span>
@@ -108,7 +109,7 @@
                         <div class="w-11/12">
                             <date-time-picker :label="'End date & Time'" :width="'w-full'">
                                 <template #date>
-                                    <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                    <span>{{ new Date(procedure.performedPeriod?.start ?? Date.now()).toLocaleDateString()}}</span>
                                 </template>
                                 <template #time>
                                     <span>{{ '00:00' }}</span>
@@ -154,7 +155,7 @@
             <template #form>
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'Function'"  :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Function'"  :items="['Specialized surgeon', 'Radiation therapist', 'Chiropractor' ]"/>
                     </div>
                     <div class="w-6/12">
                         <cornie-select :label="'Actor'"  v-model="procedure.actorId" :items="practitionersList"/>
@@ -162,42 +163,42 @@
                 </div>
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'On  Behalf Of'" v-model="procedure.onBehalfOf" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'On  Behalf Of'" v-model="procedure.onBehalfOf" :items="['Practitioner', 'Organisation' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Location'" v-model="procedure.locationId" :items="locationsList"/>
-                    </div>
-                </div>
-                <div class="w-full flex items-center mb-3">
-                    <div class="w-6/12">
-                        <cornie-select :label="'Reason Code'" v-model="procedure.reasonCode" :items="['Ative', 'Inactive' ]"/>
-                    </div>
-                    <div class="w-6/12">
-                        <cornie-select :label="'Reason Reference'" v-model="procedure.reasonReference" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Location'" v-model="procedure.locationId" :items="demoLocations"/>
                     </div>
                 </div>
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'Body Site'" v-model="procedure.bodySite" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Reason Code'" v-model="procedure.reasonCode" :items="['Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Decreased hair growth' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Outcome'" v-model="procedure.outcome" :items="['Ative', 'Inactive' ]"/>
-                    </div>
-                </div>
-                <div class="w-full flex items-center mb-3">
-                    <div class="w-6/12">
-                        <cornie-select :label="'Report'" v-model="procedure.report" :items="['Ative', 'Inactive' ]"/>
-                    </div>
-                    <div class="w-6/12">
-                        <cornie-select :label="'Complication'" v-model="procedure.complication" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Reason Reference'" v-model="procedure.reasonReference" :items="['Hand written reason', 'Unavailable' ]"/>
                     </div>
                 </div>
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'Complication Detail'" v-model="procedure.complicationDetail" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Body Site'" v-model="procedure.bodySite" :items="['Posterior carpal region', 'Fetal part of placenta', 'Parathyroid gland' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Followup'" v-model="procedure.followUp" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Outcome'" v-model="procedure.outcome" :items="['Successfull', 'Unsuccessfull', 'Partially Successful' ]"/>
+                    </div>
+                </div>
+                <div class="w-full flex items-center mb-3">
+                    <div class="w-6/12">
+                        <cornie-select :label="'Report'" v-model="procedure.report" :items="['Report 1', 'Report 2' ]"/>
+                    </div>
+                    <div class="w-6/12">
+                        <cornie-select :label="'Complication'" v-model="procedure.complication" :items="['Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Spontaneous abortion with laceration of cervix' ]"/>
+                    </div>
+                </div>
+                <div class="w-full flex items-center mb-3">
+                    <div class="w-6/12">
+                        <cornie-select :label="'Complication Detail'" v-model="procedure.complicationDetail" :items="['Condition 1', 'Condition 2' ]"/>
+                    </div>
+                    <div class="w-6/12">
+                        <cornie-select :label="'Followup'" v-model="procedure.followUp" :items="['Change of dressing', 'Removal of suture', 'Removal of drain' ]"/>
                     </div>
                 </div>
                 <div class="w-full flex items-center mb-3">
@@ -208,22 +209,22 @@
             </template>
         </collapse-section>
 
-        <collapse-section :title="'Focal Device'" :height="200">
+        <collapse-section :title="'Focal Device'" :height="300">
             <template #form>
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'Action'" v-model="procedure.deviceAction" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Action'" v-model="procedure.deviceAction" :items="['Patient evaluation - action', 'Measurement - action', 'Administrative action' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Manipulated'" v-model="procedure.deviceManipulated" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Manipulated'" v-model="procedure.deviceManipulated" :items="demoDevices"/>
                     </div>
                 </div>
                 <div class="w-full flex items-center mb-3">
                     <div class="w-6/12">
-                        <cornie-select :label="'User Reference'" v-model="procedure.deviceUsedReference" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Used Reference'" v-model="procedure.deviceUsedReference" :items="['Other substance used', 'Bone plate', 'Atomizer' ]"/>
                     </div>
                     <div class="w-6/12">
-                        <cornie-select :label="'Used Code'" v-model="procedure.deviceUsedCode" :items="['Ative', 'Inactive' ]"/>
+                        <cornie-select :label="'Used Code'" v-model="procedure.deviceUsedCode" :items="['Spine board', 'Inactive' ]"/>
                     </div>
                 </div>
             </template>
@@ -234,8 +235,12 @@
                 <span class="font-semibold text-primary-500" @click="() => $emit('closesidemodal')">Cancel</span>
             </corniebtn>
 
-            <CornieBtn :loading="false" class="bg-red-500 p-2 rounded-full px-8 mx-4">
-                <span class="text-white font-semibold" @click="onSave">Create New Procedure</span>
+            <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4"  v-if="!item?.id" @click="onSave">
+                <span class="text-white font-semibold">Create New Procedure</span>
+            </CornieBtn>
+
+            <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4" v-else @click="onUpdate">
+                <span class="text-white font-semibold">Update Procedure</span>
             </CornieBtn>
         </div>
   </div>
@@ -251,12 +256,16 @@ import { namespace } from "vuex-class";
 import IProcedure from "@/types/IProcedure";
 import ILocation from "@/types/ILocation";
 import IPractitioner from "@/types/IPractitioner";
-import { IEncounter } from "@/types/IVital";
+import IEncounter from "@/types/IEncounter";
+import { Prop, Watch } from "vue-property-decorator";
+import helperFunctions from "../helper/helper"
+import IDevice from "@/types/IDevice";
 
 const procedure = namespace('procedure');
 const location = namespace('location');
 const practitioner = namespace('practitioner')
 const vital = namespace('vitals')
+const device = namespace('device')
 
 @Options({
     components: {
@@ -288,22 +297,46 @@ export default class NewProcedure extends Vue {
     @vital.Action
     getEncounters!: (id: string) => Promise<void>;
 
+    @procedure.Action
+    updateProcedure!: (procedure: IProcedure) => Promise<void>;
+
+    @device.Action
+    fetchDevices!: () => Promise<void>;
+
+    @device.State
+    devices!: IDevice[];
+
+    @Prop({ type: Object, default: { }})
+    item!: IProcedure;
+
     procedure = { 
         basedOn: {
-            type: 'type',
-            id: ''
+            type: 'location',
+            id: 'd25cc910-0830-40cf-a0c8-7c303f381b29'
         },
         partOf: {
-            type: 'type',
-            id: ''
+            type: 'location',
+            id: 'd25cc910-0830-40cf-a0c8-7c303f381b29'
         },
         performedPeriod: {
-            start: '',
-            end: ''
-        }
+            start: new Date().toLocaleDateString(),
+            end: new Date().toLocaleDateString()
+        },
+        
     } as IProcedure;
 
-    patientId = ""
+    patientId = "";
+    loading = false;
+
+    demoLocations = [
+        { code: 'd25cc910-0830-40cf-a0c8-7c303f381b29', display: 'Market' },
+        { code: '25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a', display: 'Hospital' },
+    ]
+
+    demoDevices = [
+        { code: '1ddf9d31-2c65-4eb5-9ee5-d2eaa2d9f2a3', display: 'Stethoscope' },
+        { code: 'e581a5a9-8762-4c4a-9293-0ed964a49ce3', display: 'Stethoscope' },
+    ]
 
     get locationsList() {
         if (!this.locations || this.locations.length === 0) return [ ];
@@ -325,17 +358,63 @@ export default class NewProcedure extends Vue {
         })
     }
 
+    get encountersList() {
+        if (!this.encounters || this.encounters.length === 0) return [ ];
+        return this.encounters?.map(encounter => {
+            return {
+                code: encounter.id,
+                display: `${encounter.startDate} - ${encounter.endDate}` 
+            }
+        })
+    }
+
     async onSave() {
-        this.procedure.patientId = this.patientId;
-        await this.createProcedure(this.procedure)
+        try {
+            this.loading = true;
+            this.procedure.patientId = this.patientId;
+            this.procedure.locationId = 'd25cc910-0830-40cf-a0c8-7c303f381b29';
+            const response = await this.createProcedure(this.procedure)
+            console.log(response, "new procedure response");
+            this.loading = false;
+        } catch (error) {
+            console.log(error);
+            this.loading = false;
+        }
+    }
+
+    async onUpdate() {
+        try {
+            const reqBody = helperFunctions.formatReqBody(this.procedure);
+
+            this.loading = true;
+            const response = await this.updateProcedure(reqBody);
+            console.log(response);
+            
+            this.loading = false;
+            this.$emit('closesidemodal')
+        } catch (error) {
+            console.log(error);
+            this.loading = false;
+        }
     }
 
     async created() {
         this.patientId = this.$route.params.id as string;
-        this.getEncounters(this.patientId);
+        await this.getEncounters(this.patientId);
         await this.fetchLocations();
+
+        if (this.devices?.length <= 0) await this.fetchDevices();
+        console.log(this.devices, "Deviecs");
+        
         // await this.get
         this.fetchPractitioners()
+    }
+
+    @Watch('item')
+    updateProcedureData() {
+        this.procedure = helperFunctions.mapSelectedProcedure(this.item);
+        console.log(this.procedure, "CURRENT");
+        
     }
 }
 </script>

@@ -7,64 +7,34 @@
                 <div class="w-6/12">
                     <cornie-select :label="'Status'" v-model="episode.status"  :items="['planned', 'waitlist', 'active', 'onhold', 'finished', 'cancelled', 'entered-in-error' ]"/>
                 </div>
-            </div>
-
-            <div class="w-full mb-3 mt-3 mb-6">
-                <div class="w-16/12">
-                    <p class="text-base font-semibold">Class History</p>
-                    <div class="w-full">
-                        <div class="md w-12/12">
-                            <div class="md w-full">
-                                <div class="md w-full">
-                                    <p>
-                                        <span class="mr-2">Arrived</span> 
-                                        <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
-                                    </p>
-                                </div>
-                                <div class="md w-full my-2" style="height: 30px;border-left: 1px dashed #878E99;">
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="md w-12/12">
-                            <div class="md w-full">
-                                <div class="md w-full">
-                                    <p>
-                                        <span class="mr-2">Inpatient</span> 
-                                        <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="w-6/12">
+                    <cornie-select :label="'Type'" v-model="episode.type"  :items="types"/>
                 </div>
             </div>
 
             <div class="w-full flex items-center my-3">
+                
                 <div class="w-6/12">
-                    <cornie-select :label="'Type'" v-model="episode.type"  :items="['Ative', 'Inactive' ]"/>
-                </div>
-                <div class="w-6/12 -mt-3">
                     <auto-complete v-model="episode.condition" :label="'Reference Condition'" :items="['Obesity', 'Flu', 'Drug abuse', 'Mental illness' ]" />
                 </div>
+                <div class="w-6/12">
+                    <cornie-select :label="'Role'" v-model="episode.role"  :items="roles"/>
+                </div>
             </div>
 
             <div class="w-full flex items-center my-3">
-                <div class="w-6/12">
-                    <cornie-select :label="'Role'" v-model="episode.role"  :items="['Ative', 'Inactive' ]"/>
-                </div>
-                <div class="w-6/12 -mt-3">
+                
+                <div class="w-6/12 -mt-4">
                     <cornie-input :label="'Rank'" />
                 </div>
+                <div class="w-6/12">
+                    <auto-complete :label="'Managing Organisation'"  :items="['Option 1', 'Option 2' ]"/>
+                </div>
             </div>
 
             <div class="w-full flex items-center my-3">
-                <div class="w-4/12">
-                    <auto-complete :label="'Managing Organisation'"  :items="['Option 1', 'Option 2' ]"/>
-                </div>
-                <div class="w-4/12 -mt-3">
+                
+                <div class="w-6/12">
                     <div class="w-11/12">
                         <date-time-picker :label="'Start date & Time'" :width="'w-full'">
                             <template #date>
@@ -85,7 +55,7 @@
                         </date-time-picker>
                     </div>
                 </div>
-                <div class="w-4/12 -mt-3">
+                <div class="w-6/12">
                     <div class="w-11/12">
                         <date-time-picker :label="'End date & Time'" :width="'w-full'">
                             <template #date>
@@ -108,7 +78,7 @@
                 </div>
             </div>
 
-            <div class="w-full flex items-center my-3">
+            <div class="w-full flex items-center my-3 mt-6">
                 <div class="w-6/12">
                     <auto-complete :label="'Referral Request'"  :items="['Ative', 'Inactive' ]"/>
                 </div>
@@ -144,8 +114,10 @@ import { namespace } from "vuex-class";
 import IEpisode from "@/types/IEpisode";
 import { Prop } from "vue-property-decorator";
 import IPractitioner from "@/types/IPractitioner";
+import IRequest from "@/types/IRequest";
 
 const vital = namespace('vitals');
+const request = namespace('request');
 
 @Options({
     components: {
@@ -162,8 +134,28 @@ export default class NewEpisode extends Vue {
     @vital.Action
     createEpisode!: (episode: IEpisode) => Promise<boolean>
 
+    @request.State
+    requests!: IRequest[];
+
+    @request.Action
+    fetchRequests!: () => Promise<void>
+
     episode = {  } as IEpisode;
     patientId = '';
+
+    types = [
+        { code: 'hacc', display: 'Home and Community Care' },
+        { code: 'pac', display: 'Post Acute Care' },
+        { code: 'diab', display: 'Post coordinated diabetes program' },
+        { code: 'da', display: 'Drug and alcohol rehabilitation' },
+    ]
+
+    roles = [
+        { code: 'AD', display: 'Admission diagnosis' },
+        { code: 'DD', display: 'Discharge diagnosis' },
+        { code: 'CC', display: 'Chief complaint' },
+        { code: 'billing', display: 'Billing' },
+    ]
 
     get practitioners() {
         if (this.items?.length === 0) return [ ];
@@ -175,7 +167,6 @@ export default class NewEpisode extends Vue {
     async onSave() {
         try {
             this.episode.patientId = this.patientId;
-            this.episode.name = "Test"
             const created = await this.createEpisode(this.episode);
             console.log(created, "created");
         } catch (error) {
@@ -183,8 +174,11 @@ export default class NewEpisode extends Vue {
         }
     }
 
-    created() {
+    async created() {
         this.patientId = this.$route.params.id as string;
+        if (this.requests?.length <= 0) await this.fetchRequests();
+        console.log(this.requests, "REquest");
+        
     }
 }
 </script>

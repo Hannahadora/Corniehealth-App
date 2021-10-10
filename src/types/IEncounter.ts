@@ -1,3 +1,4 @@
+import { IOrigin } from "./IEpisode"
 import ILocation from "./ILocation"
 import { IOrganization } from "./IOrganization"
 import IPractitioner from "./IPractitioner"
@@ -19,21 +20,27 @@ export default interface IEncounter {
     startTime: string,
     endTime: string,
     preAdmissionIdentifier: string,
-    origin: string,
-    admitSource: string,
+    origin: IOrigin,
+    destination: IOrigin,
+    admitSource: IOrigin,
     readmission: string,
     dietPreference: string,
     locationId: string,
     specialCourtesy: string,
     practitionerId: string,
     practitioner: IPractitioner,
-    organization: IOrganization,
     location: ILocation,
+    providerStatus: string,
+    providerStartDate: string,
+    providerEndDate: string,
+    dischargeDisposition: string,
     episode: {
       id: string,
       name: string,
       start: string,
       end: string,
       patientId: string
-    }
+    },
+    createdAt: string,
+    organization: IOrganization,
   }

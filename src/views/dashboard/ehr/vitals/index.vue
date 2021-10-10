@@ -154,8 +154,9 @@ import SideModal from "@/views/dashboard/schedules/components/side-modal.vue"
 import VitalsForm from "./components/vitals-form.vue"
 import CornieInput from "@/components/cornieinput.vue"
 import DatePicker from "@/components/datepicker.vue"
-import IVital, { IEncounter } from "@/types/IVital";
+import IVital from "@/types/IVital";
 import InputDescRounded from "./components/input-desc-rounded.vue"
+import IEncounter from "@/types/IEncounter";
 const userStore = namespace("user");
 const vitalsStore = namespace("vitals");
 

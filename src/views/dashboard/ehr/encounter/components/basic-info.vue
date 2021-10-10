@@ -43,7 +43,7 @@ export default class Participants extends Vue {
     }
 
     .show-details {
-        height: 790px;
+        height: 649px;
         transition: all .4s ease-in-out;
         overflow: hidden;
     }

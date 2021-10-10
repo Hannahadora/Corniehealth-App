@@ -21,23 +21,7 @@
         <h3 class="text-center mt-5">There are no current procedures for this patient</h3>
         <h3>Add a new procedure by clicking the button below</h3>
         <div class="w-full flex items-center justify-center text-center">
-            <button
-        class="
-            text-white
-            font-semibold
-            bg-danger
-            rounded-full
-            mt-5
-            py-2
-            px-4
-            mx-3
-            focus:outline-none
-            hover:opacity-90
-        "
-        @click="$router.push('add-careteam')"
-        >
-        Add Procedure
-        </button>
+            <slot name="newProcedure" />
         </div>
     </div>
   </div>

@@ -56,19 +56,21 @@
               <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
             </div>
           </template>
-          <template #actions="{  }">
+          <template #actions="{ item }">
             <table-action
+              @click="viewProcedure(item)"
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
             <table-action
+            @click="viewProcedure(item)"
             >
               <update-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Edit</span>
             </table-action>
             <table-action
-            @click="openUpdateStatusModal"
+            @click="openUpdateStatusModal(item)"
             >
               <edit-icon class="text-primary fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
@@ -99,17 +101,44 @@
     </div>
 
     <div class="w-full" v-else>
-      <empty-state />
+      <empty-state>
+        <template #newProcedure>
+            <button
+          class="
+              text-white
+              font-semibold
+              bg-danger
+              rounded-full
+              mt-5
+              py-2
+              px-4
+              mx-3
+              focus:outline-none
+              hover:opacity-90
+          "
+          @click="() => showNewModal = true"
+          >
+          Add Procedure
+          </button>
+        </template>
+      </empty-state>
     </div>
 
     <side-modal :visible="showNewModal" :header="'New Procedure'" :width="990"  @closesidemodal="closeNewModal">
       <div class="w-full px-4">
-          <new-procedure  @closesidemodal="() => showNewModal = false"  />
+          <new-procedure  @closesidemodal="() => showNewModal = false" :item="selectedProcedure"  />
       </div>
     </side-modal>
 
     <side-modal :visible="showUpdateStatusModal" :width="590" :header="'Update Status'" @closesidemodal="closeUpdateModal">
-        <div class="w-full">
+       <update-status :updateData="updateData" @changed="newStatusSelected" @closesidemodal="closeUpdateModal">
+          <template #submit>
+            <CornieBtn :loading="loading" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer" @click="updateProcedureStatus">
+              <span class="text-white font-semibold">Update</span>
+            </CornieBtn>
+          </template>
+        </update-status>
+        <!-- <div class="w-full">
           <div class="container px-6 content-con">
             <div class="w-full py-3">
               <div class="w-full my-6">
@@ -143,14 +172,12 @@
                 </CornieBtn>
             </div>
           </div>
-        </div>
+        </div> -->
     </side-modal>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CornieCardTitle from "@/components/cornie-card/CornieCardTitle.vue";
-import CornieCardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { namespace } from "vuex-class";
@@ -175,6 +202,9 @@ import UpdateIcon from "@/components/icons/edit.vue"
 import AssertIcon from "@/components/icons/check.vue"
 import FileIcon from "@/components/icons/file.vue"
 import FeedbackIcon from "@/components/icons/feedback.vue"
+import UpdateStatus from "@/views/dashboard/ehr/encounter/components/update-status.vue"
+import IUpdateStatus, { Item } from "@/types/IUpdateModel";
+import helperFunctions from "./helper/helper"
 
 const userStore = namespace("user");
 const procedure = namespace("procedure");
@@ -190,8 +220,6 @@ const procedure = namespace("procedure");
     NewviewIcon,
     CancelIcon,
     Avatar,
-    CornieCardTitle,
-    CornieCardText,
     CornieBtn,
     CornieTable,
     Modal,
@@ -204,12 +232,10 @@ const procedure = namespace("procedure");
     AssertIcon,
     FileIcon,
     FeedbackIcon,
+    UpdateStatus,
   },
 })
 export default class ExistingState extends Vue {
-  @userStore.State
-  user!: User;
-
   @userStore.State
   practitionerAuthenticated!: User;
 
@@ -218,27 +244,27 @@ export default class ExistingState extends Vue {
 
   @procedure.Action
   getProcedures!: (id: string) => Promise<void>;
+
+  @procedure.Action
+  updateProcedure!: (procedure: IProcedure) => Promise<IProcedure>;
   
   @procedure.State
   procedures!: IProcedure[];
 
-  password = "";
+  updateData = { } as IUpdateStatus;
 
-  filterAdvanced = false;
-  filteredPatients: IPatient[] = [];
-  checkInPatient!: IPatient;
-  checkingIn = false;
-  registerNew = false;
-  showAuthModal = false;
-  showSearchModal = false;
-  activeTab = 0;
-  query = "";
-  searchResults: IPatient[] = [ ];
   loading = false;
-  activeVisits: IPatient[] = [ ];
   patientId = "";
   showUpdateStatusModal = false;
   showNewModal = false;
+  statuses = [ 
+    { code: 'preparation', display: 'Preparation' },
+    { code: 'in-progress', display: 'In Progress' },
+    { code: 'on-hold', display: 'On Hold' },
+    { code: 'not-done', display: 'Not Done' },
+    { code: 'stopped', display: 'Stopped' },
+    { code: 'completed', display: 'completed' },
+   ] as Item[];
 
   headers = [
     {
@@ -284,40 +310,49 @@ export default class ExistingState extends Vue {
   ];
 
   selectedVitalId = "";
+  selectedProcedureId = "";
+  newStatus = ""
 
   get items() {
-    return [
-        {
-            identifier: 'Identifier',
-            recorded: 'Recorded',
-            basedOn: 'Based On',
-            basedOf: 'Based Of',
-            category: "Category",
-            subject: 'Subject',
-            performer: 'Performer',
-            status: 'Status'
-        },
-        {
-            identifier: 'Identifier',
-            recorded: 'Recorded',
-            basedOn: 'Based On',
-            basedOf: 'Based Of',
-            category: "Category",
-            subject: 'Subject',
-            performer: 'Performer',
-            status: 'Status'
-        },
-    ]
+    if (this.procedures?.length === 0) return [ ];
+    return this.procedures.map(procedure => {
+      return {
+        id: procedure.id,
+        identifier: procedure.id,
+        recorded: new Date(procedure.createdAt).toLocaleDateString(),
+        basedOn: 'Based On',
+        basedOf: 'Based Of',
+        category: procedure.category,
+        subject: 'Subject',
+        performer: `${procedure.recorder.firstName} ${procedure.recorder.lastName}`,
+        status: procedure.status
+      }
+    })
   }
 
-  openUpdateStatusModal(id: string) {    
-    this.showUpdateStatusModal = true
-    this.selectedVitalId = id;
+  get selectedProcedure() {
+    if (!this.selectedProcedureId) return { } as IProcedure;
+    return this.procedures.find(procedure => procedure.id === this.selectedProcedureId) ?? { };
+  }
+
+  openUpdateStatusModal(item: IProcedure) {
+    this.selectedProcedureId = item?.id; 
+    this.updateData = {
+      currentStatus: item.status,
+      lastUpdated: "",
+      updatedBy: "",
+      statuses: this.statuses
+    }
+    this.showUpdateStatusModal = true;
+  }
+
+  newStatusSelected(status: string) {
+    this.newStatus = status;
   }
 
   closeUpdateModal() {
     this.showUpdateStatusModal = false;
-    this.selectedVitalId = "";
+    this.selectedProcedureId = "";
   }
 
   closeNewModal() {
@@ -325,30 +360,29 @@ export default class ExistingState extends Vue {
     this.selectedVitalId = "";
   }
 
-  viewVital(id: string) {
-    this.selectedVitalId = id;
+  viewProcedure(item: IProcedure) {
+    this.selectedProcedureId = item.id;
     this.showNewModal = true;
   }
 
-  get searchList() {
-    return this.searchResults.map((patient: any) => {
-      return {
-        code: patient.id,
-        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`
-      }
-    })
-  }
-
-  get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  async updateProcedureStatus() {
+    try {
+      const procedure = this.procedures.find(procedure => procedure.id === this.selectedProcedureId);
+      if (!procedure?.id) return false;
+      this.loading = true;
+      procedure.status = this.newStatus;
+      const response = await this.updateProcedure(helperFunctions.formatReqBody(procedure));
+      if (response?.id) this.showUpdateStatusModal = false;
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.log(error);
+    }
   }
 
   async created() {
     const patientId = this.$route.params.id as string;
-    await this.getProcedures(patientId);
-
-    console.log(this.procedures);
+    if (this.procedures?.length === 0) await this.getProcedures(patientId);
     
   }
 }

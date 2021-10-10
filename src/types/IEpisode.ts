@@ -15,4 +15,10 @@ export default interface IEpisode {
     updatedBy: IPractitioner,
     careManager: IPractitioner,
     careManagerId: string,
+    createdAt: string,
+}
+
+export interface IOrigin {
+    type: string,
+    id: string,
 }

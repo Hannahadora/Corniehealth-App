@@ -193,7 +193,7 @@ export default class Settings extends Vue {
       { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
       { name: "Encounter", to: "encounter", icon: "encounter-icon" },
       { name: "Condition/Problem", to: "condition", icon: "condition-icon" }, 
-      { name: "Medications", to: "medications", icon: "medication-icon" },
+      { name: "Medications", to: "/./medications", icon: "medication-icon" },
       { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },

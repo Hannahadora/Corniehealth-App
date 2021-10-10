@@ -5,6 +5,7 @@ import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
+import { flatten } from "@/plugins/utils";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -71,12 +72,6 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       ExperienceRoutes,
-      {
-        path: "practitioner/patients",
-        props: true,
-        name: "EHR",
-        component: () => import("@/views/dashboard/ehr/landing/index.vue"),
-      },
 
       {
         path: "clinical/:id?",
@@ -84,6 +79,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboard/ehr/index.vue"),
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
         children: [
+          {
+            path: "",
+            props: true,
+            name: "EHR",
+            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+          },
           {
             path: "health-trend/:patientId?",
             name: "Health Trend",
@@ -99,8 +100,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "allergy",
             props: true,
             name: "Allergy & Intolerance",
-            component: () =>
-              import("@/views/dashboard/ehr/allergy/index.vue"),
+            component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
           },
           {
             path: "medications",
@@ -120,8 +120,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "vitals",
             props: true,
             name: "Vital Signs",
-            component: () =>
-              import("@/views/dashboard/ehr/vitals/index.vue"),
+            component: () => import("@/views/dashboard/ehr/vitals/index.vue"),
           },
           {
             path: "encounters",
@@ -380,7 +379,8 @@ const routes: Array<RouteRecordRaw> = [
       SettingsRoute,
       UserRoute,
       {
-        path: "org-heirarchy/new-designation",
+        path: "org-heirarchy/new-designation/:id?",
+        props: true,
         name: "New Designation",
         component: () =>
           import(

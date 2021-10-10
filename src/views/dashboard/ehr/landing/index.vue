@@ -169,7 +169,7 @@
       v-model="filterAdvanced"
       :patients="patients"
     />
-    <modal :visible="showAuthModal">
+    <!-- <modal :visible="showAuthModal">
       <template #title>
         <div class="w-full">
           <div class="container p-6 content-con">
@@ -200,7 +200,7 @@
           </div>
         </div>
       </template>
-    </modal>
+    </modal> -->
 
     <modal :visible="showSearchModal">
       <template #title>
@@ -452,28 +452,28 @@ export default class ExistingState extends Vue {
     else window.notify({ msg: "Patient not deleted", status: "error" });
   }
 
-  async authenticateUser() {
-    try {
-      this.loading = true;
-      const verified = await ehrHelper.authenticateUser({ email: this.authPractitioner?.email, authPassword: this.password, accountId: this.domain ? this.domain : ""})
-      this.password = "";
+  // async authenticateUser() {
+  //   try {
+  //     this.loading = true;
+  //     const verified = await ehrHelper.authenticateUser({ email: this.authPractitioner?.email, authPassword: this.password, accountId: this.domain ? this.domain : ""})
+  //     this.password = "";
       
-      this.loading = false;
-      if (verified) {
-        this.showAuthModal = false;
-        this.updatePractitionerAuthStatus(true);
-        if (!this.patientId) {
-          this.showSearchModal = true;
-        } else {
-          this.$router.push(`/provider/clinical/${this.patientId}/health-trend`)
-          // this.$router.push({ name: 'Health Trend', params: { id: this.patientId }})
-        }
-      }
-    } catch (error) {
-      this.loading = false;
-      console.log(error);
-    }
-  }
+  //     this.loading = false;
+  //     if (verified) {
+  //       this.showAuthModal = false;
+  //       this.updatePractitionerAuthStatus(true);
+  //       if (!this.patientId) {
+  //         this.showSearchModal = true;
+  //       } else {
+  //         this.$router.push(`/provider/clinical/${this.patientId}/health-trend`)
+  //         // this.$router.push({ name: 'Health Trend', params: { id: this.patientId }})
+  //       }
+  //     }
+  //   } catch (error) {
+  //     this.loading = false;
+  //     console.log(error);
+  //   }
+  // }
 
   async searchForPatient() {
     try {

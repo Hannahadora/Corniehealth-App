@@ -18,7 +18,7 @@ export async function login(payload: AuthPayload) {
   const data = await quantumClient().post("/auth/login", payload);
   store.commit("user/setLoginInfo", data.data);
   const cornieData = await fetchCornieData();
-  
+
   store.commit("user/setCornieData", cornieData);
 }
 
@@ -83,6 +83,8 @@ export async function logout() {
   localstore.remove("authToken");
   sessionStorage.clear();
   store.commit("user/setAuthToken", "");
+  localstore.remove("authDomain");
+  store.commit("user/setAuthDomain", "");
 }
 
 let interval: number | undefined;
@@ -117,4 +119,13 @@ function getStoreToken() {
   if (!authTime || !authToken) return;
   if (daysBetweenDates(authTime, new Date()) > 2) return;
   return authToken;
+}
+
+export function setAuthDomain(domain: string) {
+  store.commit("user/setAuthDomain", domain);
+  localstore.put("authDomain", domain, 3);
+}
+
+export function getAuthDomain() {
+  return store.state.user.domain || localstore.get("authDomain");
 }

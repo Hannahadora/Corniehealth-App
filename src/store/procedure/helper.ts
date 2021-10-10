@@ -36,3 +36,16 @@ export async function updateVitalStatus(body: any, vitalId: string) {
     notify({ msg: "Vitals status updated failed", status: "error" });
   }
 }
+
+export async function updateProcedure(body: IProcedure, procedureId: string) {
+  try {
+    const response = await cornieClient().put(`/api/v1/procedure/${procedureId}`, body);
+    
+    notify({ msg: "Procedure updated successfully", status: "success" });
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    notify({ msg: "Procedure update failed", status: "error" });
+  }
+}
