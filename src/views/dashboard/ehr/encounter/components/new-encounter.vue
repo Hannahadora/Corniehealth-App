@@ -5,25 +5,59 @@
 
             <basic-info>
                 <template #form>
-                    <div class="w-full flex items-center mb-3 mt-5">
+
+                    <div class="w-full" style="overflow-y:scroll; height: 550px">
+                                            <div class="w-full flex items-center mb-3 mt-5">
                         <div class="w-6/12">
-                            <cornie-select :label="'Status'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Status'" v-model="encounter.status"  :items="[ 'active', 'inactive' ]"/>
+                            <!-- <cornie-select :label="'Status'" v-model="encounter.status"  :items="[ 'planned', 'arrived', 'in-progress', 'onleave', 'cancelled', 'finished' ]"/> -->
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Type'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Type'" v-model="encounter.type"  :items="['Annual diabetes mellitus screening', 'Bone drilling/bone marrow punction in clinic', 'Infant colon screening - 60 minutes' ]"/>
                         </div>
                     </div>
+                    <!-- <div class="w-full mb-3 mt-3 mb-6">
+                        <div class="w-6/12">
+                            <div class="w-full">
+                                <div class="md w-12/12">
+                                    <div class="md w-full">
+                                        <div class="md w-full">
+                                            <p>
+                                                <span class="mr-2">Arrived</span> 
+                                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
+                                            </p>
+                                        </div>
+                                        <div class="md w-full my-2" style="height: 20px;border-left: 1px dashed #878E99;">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="md w-12/12">
+                                    <div class="md w-full">
+                                        <div class="md w-full">
+                                            <p>
+                                                <span class="mr-2">Inpatient</span> 
+                                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div> -->
 
                     <div class="w-full flex items-center mt-3">
                         <div class="w-6/12 -mt-4">
-                            <cornie-select :label="'Class'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Class'" v-model="encounterClass"  :items="['inpatient', 'outpatient', 'ambulatory', 'emmergency' ]"/>
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Service Type'"  :items="['Service 1', 'Service 2' ]"/>
+                            <cornie-select :label="'Service Type'" v-model="encounter.serviceType"  :items="['Cardiology', 'Aged Care Assessment', 'Friendly Visiting', 'Personal Alarms/Alerts', 'Acupuncture', 'Aromatherapy', 'Bowen Therapy']"/>
                         </div>
                     </div>
 
-                    <div class="w-full mb-8 -mt-3 ">
+                    <!-- <div class="w-full mb-8 -mt-3 ">
                         <div class="w-6/12">
                             <p class="text-base font-semibold">Class History</p>
                             <p>
@@ -31,23 +65,23 @@
                                 <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
                             </p>
                         </div>
+                    </div> -->
+
+                    <div class="w-full flex items-center my-3">
+                        <div class="w-6/12">
+                            <cornie-select :label="'Priority'" v-model="encounter.priority" :items="['ASAP', 'Callback results', 'callback for scheduling' ]"/>
+                        </div>
+                        <div class="w-6/12">
+                            <cornie-select :label="'Episode of care'" v-model="encounter.episodeId"  :items="['Episode 1', 'Episode 2' ]"/>
+                        </div>
                     </div>
 
                     <div class="w-full flex items-center my-3">
                         <div class="w-6/12">
-                            <cornie-select :label="'Priority'"  :items="['Ative', 'Inactive' ]"/>
+                            <auto-complete :label="'Appointment'" v-model="encounter.appointmentId"  :items="appointmentList"/>
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Episode of care'"  :items="['Episode 1', 'Episode 2' ]"/>
-                        </div>
-                    </div>
-
-                    <div class="w-full flex items-center my-3">
-                        <div class="w-6/12 -mt-4">
-                            <cornie-select :label="'Appointment'"  :items="['Appointment 1', 'Appointment 2' ]"/>
-                        </div>
-                        <div class="w-6/12">
-                            <cornie-select :label="'Based on'"  :items="['Service 1', 'Service 2' ]"/>
+                            <cornie-select :label="'Based on'" :items="['Service 1', 'Service 2' ]"/>
                         </div>
                     </div>
 
@@ -56,19 +90,19 @@
                             <div class="w-11/12">
                                 <date-time-picker :label="'Start date & Time'" :width="'w-full'">
                                     <template #date>
-                                        <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                        <span>{{ new Date(encounter.startDate ?? Date.now()).toLocaleDateString()}}</span>
                                     </template>
                                     <template #time>
                                         <span>{{ '00:00' }}</span>
                                     </template>
                                     <template #input>
-                                        <v-date-picker name="eeee" style="z-index:9000;width:100%"></v-date-picker>
+                                        <v-date-picker v-model="encounter.startDate" name="eeee" style="z-index:9000;width:100%"></v-date-picker>
                                         <label
                                             class="block uppercase my-1 text-xs font-bold"
                                             >
                                             Time
                                         </label>
-                                        <input type="time" class="w-full border rounded-md p-2">
+                                        <input type="time" v-model="encounter.startTime" class="w-full border rounded-md p-2">
                                     </template>
                                 </date-time-picker>
                             </div>
@@ -77,23 +111,42 @@
                             <div class="w-11/12">
                                 <date-time-picker :label="'End date & Time'" :width="'w-full'">
                                     <template #date>
-                                        <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                        <span>{{ new Date(encounter.endDate ?? Date.now()).toLocaleDateString()}}</span>
                                     </template>
                                     <template #time>
                                         <span>{{ '00:00' }}</span>
                                     </template>
                                     <template #input>
-                                        <v-date-picker name="eeee" style="z-index:9000;width:100%"></v-date-picker>
+                                        <v-date-picker v-model="encounter.endDate" name="eeee" style="z-index:9000;width:100%"></v-date-picker>
                                         <label
                                             class="block uppercase my-1 text-xs font-bold"
                                             >
                                             Time
                                         </label>
-                                        <input type="time" class="w-full border rounded-md p-2">
+                                        <input type="time" v-model="encounter.endTime" class="w-full border rounded-md p-2">
                                     </template>
                                 </date-time-picker>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="w-full flex items-center mb-3 mt-6">
+                        <div class="w-6/12">
+                            <cornie-select :label="'Reason Reference'" v-model="encounter.episodeId"  :items="[ 'Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Decreased hair growth' ]"/>
+                        </div>
+                        <div class="w-6/12">
+                            <cornie-select :label="'Account'" v-model="encounter.episodeId"  :items="[ 'Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Decreased hair growth' ]"/>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex items-center my-3">
+                        <div class="w-6/12">
+                            <cornie-input :label="'Length'" />
+                        </div>
+                        <div class="w-6/12">
+                            <cornie-select :label="'Reference'" v-model="encounter.episodeId"  :items="[ 'Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Decreased hair growth' ]"/>
+                        </div>
+                    </div>
                     </div>
 
                 </template>
@@ -101,12 +154,13 @@
 
             <service-provider style="margin: 2rem 0">
                 <template #form>
-                    <div class="w-full flex items-center mb-3 mt-5">
-                        <div class="w-6/12 -mt-4">
-                            <cornie-input :label="'Provider\'s name'" />
+                    <div class="w-full" style="overflow-y:scroll; height: 350px">
+                        <div class="w-full flex items-center mb-3 mt-5">
+                        <div class="w-6/12">
+                            <auto-complete :label="'Provider\'s name'" :items="[ 'Provider 1', 'Provider 2' ]" />
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Reference Location'"  :items="['Location 1', 'Location 2' ]"/>
+                            <cornie-select :label="'Reference Location'" v-model="encounter.locationId"  :items="locationList"/>
                         </div>
                     </div>
 
@@ -117,25 +171,25 @@
                             <div class="w-full flex flex-wrap py-4">
                                 <div class="w-3/12">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'Planned'" >
+                                        <input type="radio" v-model="encounter.providerStatus" class="form-radio h-4 w-4" :value="'planned'" >
                                         <span class="ml-2 text-sm">Planned</span>
                                     </label>
                                 </div>
                                 <div class="w-3/12">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'Active'" >
+                                        <input type="radio" v-model="encounter.providerStatus" class="form-radio h-4 w-4" :value="'active'" >
                                         <span class="ml-2 text-sm">Active</span>
                                     </label>
                                 </div>
                                 <div class="w-3/12">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'Reserved'" >
+                                        <input type="radio" v-model="encounter.providerStatus" class="form-radio h-4 w-4" :value="'reserved'" >
                                         <span class="ml-2 text-sm">Reserved</span>
                                     </label>
                                 </div>
                                 <div class="w-3/12">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'Completed'" >
+                                        <input type="radio" v-model="encounter.providerStatus" class="form-radio h-4 w-4" :value="'completed'" >
                                         <span class="ml-2 text-sm">Completed</span>
                                     </label>
                                 </div>
@@ -143,28 +197,34 @@
                         </div>
 
                         <div class="w-6/12 -mt-1">
-                            <cornie-select :label="'Physical Type'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Physical Type'"  :items="physicalTypes"/>
                         </div>
                     </div>
 
                     <div class="w-full flex items-center my-3">
                         <div class="w-6/12">
-                            <div class="w-11/12">
+                            <div class="w-11/12 relative">
                                 <date-time-picker :label="'Start date & Time'" :width="'w-full'">
                                     <template #date>
-                                        <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                        <span>{{ new Date(encounter.providerStartDate ?? Date.now()).toLocaleDateString()}}</span>
                                     </template>
                                     <template #time>
                                         <span>{{ '00:00' }}</span>
                                     </template>
                                     <template #input>
-                                        <v-date-picker name="eeee" style="z-index:9000;width:100%"></v-date-picker>
-                                        <label
-                                            class="block uppercase my-1 text-xs font-bold"
-                                            >
-                                            Time
-                                        </label>
-                                        <input type="time" class="w-full border rounded-md p-2">
+                                        <div class="w-full">
+                                            <div class="w-full">
+                                                <v-date-picker v-model="encounter.providerStartDate" name="eeee" style="z-index:9000;width:100%"></v-date-picker>
+                                            </div>
+                                            <div class="w-full">
+                                                <label
+                                                    class="block uppercase my-1 text-xs font-bold"
+                                                >
+                                                    Time
+                                                </label>
+                                                <input type="time" class="w-full border rounded-md p-2">
+                                            </div>
+                                        </div>
                                     </template>
                                 </date-time-picker>
                             </div>
@@ -173,13 +233,13 @@
                             <div class="w-11/12">
                                 <date-time-picker :label="'End date & Time'" :width="'w-full'">
                                     <template #date>
-                                        <span>{{ new Date(Date.now()).toLocaleDateString()}}</span>
+                                        <span>{{ new Date(encounter.providerEndDate ?? Date.now()).toLocaleDateString()}}</span>
                                     </template>
                                     <template #time>
                                         <span>{{ '00:00' }}</span>
                                     </template>
                                     <template #input>
-                                        <v-date-picker name="eeee" style="z-index:9000;width:100%"></v-date-picker>
+                                        <v-date-picker v-model="encounter.providerEndDate" name="eeee" style="z-index:9000;width:100%"></v-date-picker>
                                         <label
                                             class="block uppercase my-1 text-xs font-bold"
                                             >
@@ -190,6 +250,7 @@
                                 </date-time-picker>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </template>
             </service-provider>
@@ -199,44 +260,77 @@
                     <div class="w-full flex items-center mb-3 mt-9">
                         
                         <div class="w-6/12 -mt-4">
-                            <cornie-select :label="'Origin'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Origin'" v-model="encounter.origin.id"  :items="locationList"/>
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Admit Source'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Ward'" v-model="encounter.admitSource.id"  :items="['Ative', 'Inactive' ]"/>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex items-center mb-3 mt-3">
+                        
+                        <div class="w-6/12 -mt-4">
+                            <cornie-select :label="'Room'" v-model="encounter.origin.id"  :items="locationList"/>
+                        </div>
+                        <div class="w-6/12">
+                            <cornie-select :label="'Bed'" v-model="encounter.admitSource.id"  :items="['Ative', 'Inactive' ]"/>
                         </div>
                     </div>
 
                     <div class="w-full flex items-center mb-3 mt-3">
                         
                         <div class="w-6/12">
-                            <cornie-select :label="'Re-admission'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Admit Source'" v-model="encounter.readmission"  :items="['Admit source' ]"/>
+                        </div>
+                        
+                        <div class="w-6/12">
+                            <cornie-select :label="'Re-admission'" v-model="encounter.readmission"  :items="['Re-admission' ]"/>
+                        </div>
+                        
+                    </div>
+
+                    <div class="w-full flex items-center mb-3 mt-3">
+                        <div class="w-6/12 -mt-5">
+                            <cornie-select :label="'Diet Preference'" v-model="encounter.dietPreference"  :items="diets"/>
+                            <!-- <label for="" class="font-bold uppercase text-xs mb-1">Diet Preference</label>
+                            <select-boxes>
+                                <div class="w-full border rounded px-2 absolute bg-white" style="z-index:1000">
+                                    <a class="text-gray-700 block py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                                    >
+                                        <span><input type="checkbox" class="h-4 w-4" name="" id="" ></span>
+                                        <span class="mx-2 text-lg">Fufu</span>
+                                    </a>
+                                </div>
+                            </select-boxes> -->
+                            <!-- <cornie-select :label="'Diet Preference'"  :items="['Ative', 'Inactive' ]"/> -->
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Diet Preference'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Special Courtsey'" v-model="encounter.specialCourtesy"  :items="courtseys"/>
                         </div>
                     </div>
 
                     <div class="w-full flex items-center mb-3 mt-3">
-                        
                         <div class="w-6/12">
-                            <cornie-select :label="'Special Courtsey'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Special Arrangement'"  :items="arrangements"/>
                         </div>
                         <div class="w-6/12">
-                            <cornie-select :label="'Special Arrangement'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Destination'" v-model="encounter.destination.id"  :items="locationList"/>
                         </div>
                     </div>
 
                     <div class="w-full flex items-center mb-3 mt-3">
-                        
                         <div class="w-6/12">
-                            <cornie-select :label="'Destination'"  :items="['Ative', 'Inactive' ]"/>
-                        </div>
-                        <div class="w-6/12">
-                            <cornie-select :label="'Discharge Disposition'"  :items="['Ative', 'Inactive' ]"/>
+                            <cornie-select :label="'Discharge Disposition'" v-model="encounter.dischargeDisposition"  :items="dispositions"/>
                         </div>
                     </div>
                 </template>
             </hospital-info>
+
+            <modal :visible="false">
+                <div class="w-full" style="width: 565px">
+                    <origin-select />
+                </div>
+            </modal>
 
             <div class="spacer my-12"></div>
             <!-- <div class="w-full mt-12"> -->
@@ -247,8 +341,8 @@
                     <span class="font-semibold text-primary-500" @click="() => $emit('closesidemodal')">Cancel</span>
                 </corniebtn>
 
-                <CornieBtn :loading="false" class="bg-red-500 p-2 rounded-full px-8 mx-4">
-                    <span class="text-white font-semibold">Save</span>
+                <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4" @click="onSave">
+                    <span class="text-white font-semibold">Create New Encounter</span>
                 </CornieBtn>
             </div>
           </div>
@@ -264,6 +358,22 @@ import DateTimePicker from "@/views/dashboard/schedules/components/datetime-pick
 import BasicInfo from "./basic-info.vue"
 import ServiceProvider from "./service-provider.vue"
 import HospitalInfo from "./hospital-info.vue"
+import AutoComplete from "@/components/autocomplete.vue"
+import SelectBoxes from "@/views/dashboard/schedules/components/apply-to.vue"
+import Modal from "@/components/modal.vue"
+import OriginSelect from "./origin-select.vue"
+import { namespace } from "vuex-class";
+import IAppointment from "@/types/IAppointment";
+import ILocation from "@/types/ILocation";
+import { IOrigin } from "@/types/IEpisode";
+import IEncounter from "@/types/IEncounter";
+import IPractitioner from "@/types/IPractitioner";
+import { Item } from "@/types/IUpdateModel";
+
+const vital = namespace('vitals')
+const appointment = namespace('appointment')
+const location = namespace('location')
+const userStore = namespace('user');
 
 @Options({
     components: {
@@ -273,10 +383,121 @@ import HospitalInfo from "./hospital-info.vue"
         BasicInfo,
         ServiceProvider,
         HospitalInfo,
+        AutoComplete,
+        SelectBoxes,
+        Modal,
+        OriginSelect,
     }
 })
 export default class NewEpisode extends Vue {
-    
+    @appointment.Action
+    fetchAppointments!: () => Promise<void>;
+
+    @appointment.State
+    appointments!: IAppointment[];
+
+    @location.Action
+    fetchLocations!: () => Promise<void>;
+
+    @location.State
+    locations!: ILocation[];
+
+    @vital.Action
+    createEncounter!: (encounter: IEncounter) => Promise<boolean>;
+
+    @userStore.Getter
+    authPractitioner!: IPractitioner;
+
+    loading = false;
+    encounterClass = "";
+
+    diets = [
+        { code: 'vegetarian', display: 'Vegetarian' },
+        { code: 'dairy-free', display: 'Dairy Free' },
+        { code: 'nut-free', display: 'Nut Free' },
+        { code: 'gluten-free', display: 'Gluten Free' },
+    ] as Item[];
+
+    courtseys = [
+        { code: 'EXT', display: 'extended courtesy' },
+        { code: 'NRM', display: 'Normal Courtsey' },
+        { code: 'PRF', display: 'professional courtesy' },
+        { code: 'STF', display: 'staff' },
+    ] as Item[];
+
+    arrangements = [
+        { code: 'add-bed', display: 'Additional bedding' },
+        { code: 'wheel', display: 'Wheelchair' },
+        { code: 'int', display: 'Interpreter' },
+        { code: 'att', display: 'Attendant' },
+        { code: 'dog', display: 'Guide dog' },
+    ] as Item[];
+
+    dispositions = [
+        { code: 'home', display: 'Home' },
+        { code: 'alt-home', display: 'Alternative Home' },
+        { code: 'other-hcf', display: 'Other healthcare facility' },
+        { code: 'exp', display: 'Expired' },
+    ] as Item[];
+
+    physicalTypes = [
+        { code: 'si', display: 'Site' },
+        { code: 'bu', display: 'Building' },
+        { code: 'wi', display: 'Wing' },
+        { code: 'wa', display: 'Ward' },
+    ] as Item[];
+
+    encounter = {
+        destination: { id: "d25cc910-0830-40cf-a0c8-7c303f381b29", type: 'location'},
+        origin: { id: "d25cc910-0830-40cf-a0c8-7c303f381b29", type: 'location'},
+        admitSource: { id: "d25cc910-0830-40cf-a0c8-7c303f381b29", type: 'location'},
+     } as IEncounter;
+    patientId = "";
+
+    get appointmentList() {
+        if (this.appointments?.length === 0) return [ ];
+        return this.appointments.map(appointment => {
+            return {
+                code: appointment.id,
+                display: appointment.description,
+            }
+        })
+    }
+
+    get locationList() {
+        if (this.locations?.length === 0) return [ ];
+        return this.locations.map(location => {
+            return {
+                code: location.id,
+                display: location.description,
+            }
+        })
+    }
+
+    async onSave() {        
+        try {
+            this.loading = true;
+            this.encounter.patientId = this.patientId;
+            this.encounter.practitionerId = this.authPractitioner?.id;
+            this.encounter.class = this.encounterClass;
+            this.encounter.locationId = "d25cc910-0830-40cf-a0c8-7c303f381b29";
+
+            const created = await this.createEncounter(this.encounter);
+            console.log(created);
+            
+            this.loading = false;
+        } catch (error) {
+            console.log(error);
+            this.loading = false;
+        }
+    }
+
+    async created() {
+        this.patientId = this.$route.params.id as string;
+        if (this.locations?.length <= 0) await this.fetchLocations()
+        console.log(this.locations, "LOCATIONS");
+        
+    }
 }
 </script>
 
