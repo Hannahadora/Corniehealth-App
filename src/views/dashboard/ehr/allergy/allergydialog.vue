@@ -218,8 +218,8 @@
                           </div>
                       </div>
                     </div>
-                         <cornie-input label="onset range (1st value)" class="mb-4"  :v-model="onSet.onsetRange[0]" placeholder="Enter" />
-                         <cornie-input label="onset range (2nd value)" class="mb-4"  :v-model="onSet.onsetRange[1]" placeholder="Enter" />
+                         <cornie-input label="onset range (1st value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
+                         <cornie-input label="onset range (2nd value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
                    
                     <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
                     <div class="mb-5">
@@ -468,7 +468,7 @@ import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
-import DatePicker from "./components/datepicker.vue";
+import DatePicker from "@/components/datepicker.vue";
 import Period from "@/types/IPeriod";
 import { IPatient, Practitioner, Provider } from "@/types/IPatient";
 import { IOrganization } from "@/types/IOrganization";
@@ -586,6 +586,12 @@ notes='';
 availableFilter= false;
 profileFilter=false;
 
+
+ get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
+  }
+
   async  apply() {
     //   this.$emit("update:preferred",  [...this.medications]);
      this.loading = true
@@ -609,6 +615,7 @@ profileFilter=false;
   }
   get payload() {
     return {
+      patientId: this.activePatientId,
       clinicalStatus: this.clinicalStatus,
       verificationStatus: this.verificationStatus,
       type: this.type,
