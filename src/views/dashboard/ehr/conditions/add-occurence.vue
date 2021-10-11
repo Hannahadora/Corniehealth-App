@@ -35,7 +35,7 @@
         Cancel
       </cornie-btn>
       <cornie-btn class="text-white bg-danger px-3 rounded-xl">
-        Add Occurence
+        Save
       </cornie-btn>
     </template>
   </clinical-dialog>

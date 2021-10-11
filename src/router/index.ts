@@ -71,19 +71,18 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       ExperienceRoutes,
-
+      {
+        path: "clinical/",
+        props: true,
+        name: "EHR",
+        component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+      },
       {
         path: "clinical/:id",
         name: "Patient EHR",
         component: () => import("@/views/dashboard/ehr/index.vue"),
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
         children: [
-          {
-            path: "",
-            props: true,
-            name: "EHR",
-            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
-          },
           {
             path: "health-trend/:patientId?",
             name: "Health Trend",
@@ -141,14 +140,14 @@ const routes: Array<RouteRecordRaw> = [
             name: "Clinical Impressions",
             component: () =>
               import("@/views/dashboard/ehr/impression/index.vue"),
-             },{
+          },
+          {
             path: "procedure",
             props: true,
             name: "Procedures",
             component: () =>
               import("@/views/dashboard/ehr/procedures/index.vue"),
           },
-          
         ],
       },
       {
