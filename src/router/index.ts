@@ -148,6 +148,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/procedures/index.vue"),
           },
+          
         ],
       },
       {
