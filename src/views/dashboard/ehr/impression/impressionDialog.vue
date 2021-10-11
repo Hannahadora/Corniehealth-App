@@ -15,7 +15,7 @@
                     <label for="ecounter" class="flex capitalize mb-5 mt-5 text-black text-sm font-bold">status
                     </label>
                     <div class="w-full flex space-x-4">
-                            <cornie-radio label="Mid"  name="request" id="pickup" v-model="status" @update:modelValue="changeChecked('Mid')"/>
+                            <cornie-radio label="Mild"  name="request" id="pickup" v-model="status" @update:modelValue="changeChecked('Mild')"/>
                             <cornie-radio label="Medium"  name="request" id="patientadress" checked v-model="status" @update:modelValue="changeChecked('Medium')"/>
                             <cornie-radio label="Severe"  name="request" id="homeaddress" v-model="status" @update:modelValue="changeChecked('Severe')"/>
                     </div>
@@ -42,131 +42,33 @@
                 <div class="grid grid-cols-2 gap-4 w-full mt-5">
                       <div>
                           <div class="w-full mt-5">
-                                <DateTimePicker :label="'Date/Time'" class="z-10 w-full">
-                                    <template v-slot:labelicon>
-                                      <question-icon />
-                                    </template>
-                                    <template #date>
-                                      <span>
-                                        <span>
-                                          {{
-                                            new Date(
-                                              data.dateTime ?? Date.now(),
-                                            ).toLocaleDateString()
-                                          }}
-                                        </span>
-                                      </span>
-                                    </template>
-                                    <template #time>
-                                      <span>
-                                        <span>{{ data.timeDate }}</span>
-                                      </span>
-                                    </template>
-                                    <template #input>
-                                      <v-date-picker
-                                        v-model="data.dateTime"
-                                        style="
-                                          position: relative;
-                                          z-index: 9000;
-                                          width: 100%;
-                                        "
-                                      ></v-date-picker>
-                                      <label class="block capitalize my-1 text-sm font-bold">
-                                        Time
-                                      </label>
-                                      <input
-                                        v-model="data.timeDate"
-                                        type="time"
-                                        class="w-full border rounded-md p-2"
-                                      />
-                                    </template>
-                                  </DateTimePicker>
+                              <date-time-picker
+                                v-model:date="data.date"
+                                v-model:time="data.dateTime"
+                                label="Date/Time"
+                                width="w-11/12"
+                              />
+                            
                           </div>
                       </div>
                       <div>
                           <div class="w-full mt-5">
-                                <DateTimePicker :label="'start Date & Time'" class="z-10 w-full">
-                                    <template v-slot:labelicon>
-                                      <question-icon />
-                                    </template>
-                                    <template #date>
-                                      <span>
-                                        <span>
-                                          {{
-                                            new Date(
-                                              data.startDate ?? Date.now(),
-                                            ).toLocaleDateString()
-                                          }}
-                                        </span>
-                                      </span>
-                                    </template>
-                                    <template #time>
-                                      <span>
-                                        <span>{{ data.startTime }}</span>
-                                      </span>
-                                    </template>
-                                    <template #input>
-                                      <v-date-picker
-                                        v-model="data.startDate"
-                                        style="
-                                          position: relative;
-                                          z-index: 9000;
-                                          width: 100%;
-                                        "
-                                      ></v-date-picker>
-                                      <label class="block capitalize my-1 text-sm font-bold">
-                                        Time
-                                      </label>
-                                      <input
-                                        v-model="data.startTime"
-                                        type="time"
-                                        class="w-full border rounded-md p-2"
-                                      />
-                                    </template>
-                                  </DateTimePicker>
+                              <date-time-picker
+                                v-model:date="data.startDate"
+                                v-model:time="data.startTime"
+                                label="Date/Time"
+                                width="w-11/12"
+                              />
                           </div>
                       </div>
                        <div>
                           <div class="w-full mt-5">
-                              <DateTimePicker :label="'End Date & Time'" class="z-10 w-full">
-                                  <template v-slot:labelicon>
-                                    <question-icon />
-                                  </template>
-                                  <template #date>
-                                    <span>
-                                      <span>
-                                        {{
-                                          new Date(
-                                            data.endDate ?? Date.now(),
-                                          ).toLocaleDateString()
-                                        }}
-                                      </span>
-                                    </span>
-                                  </template>
-                                  <template #time>
-                                    <span>
-                                      <span>{{ data.endTime }}</span>
-                                    </span>
-                                  </template>
-                                  <template #input>
-                                    <v-date-picker
-                                      v-model="data.endDate"
-                                      style="
-                                        position: relative;
-                                        z-index: 9000;
-                                        width: 100%;
-                                      "
-                                    ></v-date-picker>
-                                    <label class="block capitalize my-1 text-sm font-bold">
-                                      Time
-                                    </label>
-                                    <input
-                                      v-model="data.endTime"
-                                      type="time"
-                                      class="w-full border rounded-md p-2"
-                                    />
-                                  </template>
-                              </DateTimePicker>
+                             <date-time-picker
+                                v-model:date="data.endDate"
+                                v-model:time="data.endTime"
+                                label="Date/Time"
+                                width="w-11/12"
+                              />
                           </div>
                       </div>
                       <div class="mt-5" v-if="assessorItems.length > 0" >
@@ -222,7 +124,7 @@
                       <div class="w-full cursor-pointer clear-left mt-1" v-else  @click="showProblem($event)">
                         <label class="flex normal-case mb-0  text-black text-sm font-bold">Problem</label>
                         <input-desc-rounded  :info="''" class="cursor-pointer">
-                          <input  type="text"  disabled   :value="conditionItems.name" placeholder="Select Problem" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                          <input  type="text"  disabled   :value="'Identifier'" placeholder="Select Problem" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
                         </input-desc-rounded>
                       </div>
                   </div>
@@ -253,13 +155,16 @@
                         >
                         </cornie-select>
                       </div>
-                     <cornie-input
-                      class="w-full"
-                      v-model="impressionModel.investigation.summary"
-                      label="Summary"
-                      placeholder="Enter"
-                      >
-                      </cornie-input>
+                       <div class="">
+                            <Textarea
+                            class="w-full"
+                             v-model="impressionModel.investigation.summary"
+                            label="Summary"
+                            placeholder="Enter sumary"
+                            
+                          />
+                          <span></span>
+                        </div>
                     
                     
                   </div>
@@ -423,6 +328,7 @@ const impression = namespace('impression')
 const emptyImpression: IImpression = {
   status:  "",
   statusReason : "",
+  updatedAt:"",
   code : "",
   description : "",
   subject: "subject",
@@ -530,8 +436,24 @@ setFindingType="";
 showFindingModal = false;
 findingItems = [];
 
+
+onsetDate = "";
+  onsetTime = "";
+  onsetAge = "";
+  onsetStartDate = "";
+  onsetStartTime = "";
+  onsetEndDate = "";
+  onsetEndTime = "";
+  onsetMin = "";
+  onsetMax = "";
+  onsetString = "";
+
    async setImpressionModel() {
      this.impressionModel = JSON.parse(JSON.stringify({ ...emptyImpression}));
+  }
+   get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
   }
   async  apply() {
      this.loading = true
@@ -544,8 +466,28 @@ findingItems = [];
     if (!impression) return
     this.impressionModel =  (impression) ;
   }
+ 
+
+  buildPeriod(
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string
+  ) {
+    const start = this.buildDateTime(this.data.startDate, this.data.startTime);
+    const end = this.buildDateTime(this.data.endDate, this.data.endTime);
+    return { start, end };
+  }
+  buildDateTime(dateString: string, time: string) {
+    const date = new Date(dateString);
+    const [hour, minute] = time.split(":");
+    date.setMinutes(Number(minute));
+    date.setHours(Number(hour));
+    return date.toISOString();
+  }
   get payload() {
     return {
+      patientId: this.activePatientId,
       status: this.impressionModel.status,
       code: this.impressionModel.code,
       subject: this.impressionModel.subject,
@@ -568,7 +510,7 @@ findingItems = [];
   }
 
   changeChecked(value:string){
-      if(value == 'Mid'){
+      if(value == 'Mild'){
           this.impressionModel.status = value
       }else if(value == 'Medium'){
           this.impressionModel.status = value;
@@ -613,13 +555,9 @@ findingItems = [];
   }
  async createImpression() {
  
-      this.payload.effective.effectiveDate = new Date(this.data.dateTime).toISOString();
-     this.payload.effective.effectivePeriod.start = new Date(this.data.startDate).toISOString();
-        this.payload.effective.effectivePeriod.end = new Date(this.data.endDate).toISOString();
-        // if (this.setType == 'Allergy'){
-        //   this.impressionModel.effective.problem = this.problemItems.code;
-        // }
-  
+      this.payload.effective.effectiveDate = this.data.date;
+     this.payload.effective.effectivePeriod.start = this.data.startDate;
+        this.payload.effective.effectivePeriod.end = this.data.endDate;
     try {
       const response = await cornieClient().post('/api/v1/clinical-impressions', this.payload)
       if (response.success) {
@@ -663,8 +601,9 @@ findingItems = [];
     const response = await Promise.all([AllRoles]);
     this.role = response[0].data;
   }
+
    async fetchAllergy() {
-    const AllAllergy = cornieClient().get("/api/v1/allergy");
+    const AllAllergy = cornieClient().get(`/api/v1/allergy/findAllByPatient/${this.activePatientId}`);
     const response = await Promise.all([AllAllergy]);
     this.allergy = response[0].data;
   }

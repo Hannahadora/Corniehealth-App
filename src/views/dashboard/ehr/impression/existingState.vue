@@ -75,6 +75,7 @@
             :id="impressionId" 
            :updatedBy="updatedBy" 
         :currentStatus="currentStatus" 
+        :updateDate="update"
           @update:preferred="showStatus"
           v-model="showStatusModal"/>
         
@@ -161,18 +162,22 @@ export default class ImpressionExistingState extends Vue {
   showStatusModal=false;
   impressionId="";
   tasknotes=[];
-updatedBy= "Ikhide bright";
-currentStatus="Severe";
+updatedBy= "";
+currentStatus="";
+update ="";
 
-  @Prop({ type: Array, default: [] })
+  // @Prop({ type: Array, default: [] })
+  // impressions!: IImpression[];
+
+  @impression.State
   impressions!: IImpression[];
-
 
   @impression.Action
   deleteImpression!: (id: string) => Promise<boolean>;
 
   @impression.Action
-  fetchImpressions!: () => Promise<void>;
+  fetchImpressions!: (patientId: string) => Promise<void>;
+
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -279,43 +284,34 @@ currentStatus="Severe";
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  items = [
-    {
-      problem: "Identifier",
-         investigation: "Identifier",
-         prognosis: "Identifier",
-        assessor: "Identifier",
-      id: "XXXX",
-      createdAt: "10/08/2021"
-    },
-  ];
 
-  // get items() {
-  //   const impressions = this.impressions.map((impression) => {
-   
-  //        (impression as any).createdAt= new Date(
-  //        (impression as any).createdAt
-  //      ).toLocaleDateString("en-US");
-  //         this.updatedBy = impression.effective.assessor;
-  //     this.currentStatus = impression.status;
-  //       return {
-  //       ...impression,
-  //        action: impression.id,
-  //        keydisplay: "XXXXXXX",
-  //       //  problem: impression.effective.problem,
-  //       //  investigation: impression.investigation.item,
-  //       //  prognosis: impression.findings.prognosis,
-  //       // assessor: impression.effective.assessor,
-  //        problem: "Identifier",
-  //        investigation: "Identifier",
-  //        prognosis: "Identifier",
-  //       assessor: "Identifier",
-     
-  //       };
-  //   });
-  //   if (!this.query) return impressions;
-  //   return search.searchObjectArray(impressions, this.query);
-  // }
+
+  get items() {
+    const impressions = this.impressions?.map((impression) => {
+         (impression as any).createdAt= new Date(
+         (impression as any).createdAt
+       ).toLocaleDateString("en-US");
+       (impression as any).updatedAt= new Date(
+         (impression as any).updatedAt
+       ).toLocaleDateString("en-US");
+          this.updatedBy = impression.effective.assessor;
+      this.currentStatus = impression.status;
+        this.update = impression.updatedAt;
+        return {
+        ...impression,
+         action: impression.id,
+         keydisplay: "XXXXXXX",
+         problem: impression.effective.problem,
+         investigation: impression.investigation.item,
+         prognosis: impression.findings.prognosis,
+        assessor: impression.effective.assessor,
+        };
+    });
+
+    if (!this.query) return impressions;
+    return search.searchObjectArray(impressions, this.query);
+  }
+
   async showStatus(value:string){
     this.showStatusModal = true;
     this.impressionId = value;
@@ -326,11 +322,17 @@ currentStatus="Severe";
       //this.stopEvent = true;
       this.impressionId = value;
   }
+ get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
+  }
+
 
   impressionAdded() {
  this.impressions;
-  this.fetchImpressions();
+  this.fetchImpressions(this.activePatientId);
   }
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this impression",
@@ -342,15 +344,15 @@ currentStatus="Severe";
     else window.notify({ msg: "Impression not cancelled", status: "error" });
   }
  
-      // get sortImpressions (){
-      //   return this.items.slice().sort(function(a, b){
-      //     return (a.createdAt < b.createdAt) ? 1 : -1;
-      //   });
-      // }
+      get sortImpressions (){
+        return this.items.slice().sort(function(a, b){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
    
-     async created() {
-         // this.sortImpressions;
-          this.fetchImpressions();
+     created() {
+          this.sortImpressions;
+          this.fetchImpressions(this.activePatientId);
     }
 
 }

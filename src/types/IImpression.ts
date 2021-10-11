@@ -25,6 +25,7 @@ import Period from "./IPeriod";
   }
   export default interface IImpression {
     id?: string;
+    updatedAt:string,
     status: string;
     statusReason: string;
     code: string;

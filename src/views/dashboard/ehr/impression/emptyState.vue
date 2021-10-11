@@ -3,8 +3,7 @@
     <div class="w-full flex flex-col justify-center items-center h-96">
         <img src="@/assets/img/allergy.svg" />
         <h3 class="text-center mt-5">
-            No allergies.<br>
-        [Benefit of adding new allergy to the system]
+            No Clinical Impression.
         </h3>
             <span class="flex justify-center w-full">
         <button

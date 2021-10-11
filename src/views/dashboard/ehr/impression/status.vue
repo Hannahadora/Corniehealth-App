@@ -39,13 +39,14 @@
         </div> -->
         <v-form>
           <div class="grid grid-cols-1 gap-3 mt-2">
-            <cornie-input disabled label="Current Status" class="w-full" />
-            <cornie-input disabled label="Updated By" class="w-full" />
-            <date-picker disabled label="Date Last Updated" />
+            <cornie-input disabled label="Current Status" v-model="currentStatus"  class="w-full" />
+            <cornie-input disabled label="Updated By" v-model="updatedBy" class="w-full" />
+            <date-picker disabled label="Date Last Updated" v-model="updateDate" />
             <cornie-select
               label="Update Status"
               :items="statuses"
               class="w-full"
+              v-model="status"
             />
           </div>
         </v-form>
@@ -63,7 +64,7 @@
           >
             Cancel
           </cornie-btn>
-        <cornie-btn class="text-white bg-danger px-9 rounded-xl">
+        <cornie-btn @click="apply" class="text-white bg-danger px-9 rounded-xl">
           Update
         </cornie-btn>
       </div>
@@ -151,6 +152,10 @@ export default class Medication extends Vue {
    @Prop({ type: String, default: "" })
   currentStatus!: string;
 
+  
+   @Prop({ type: String, default: "" })
+  updateDate!: string;
+
 status = "";
   loading = false;
   expand = false;
@@ -172,13 +177,15 @@ status = "";
     }
     try {
       const response = await cornieClient().put(url, body);
+      this.loading= true;
       if (response.success){
+           this.loading= false;
           window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
    
     } catch (error) {
-      console.log(error);
+     this.loading= false;
         window.notify({ msg: "Status Not Updated", status: "success" });
       this.loading = false;
     }

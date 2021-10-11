@@ -17,23 +17,20 @@
       Clinical Impression
       </span>
       <span class="w-full h-screen">
-          <!-- <impressions-empty-state
+          <impressions-empty-state
                 v-if="empty"
           />
           <impressions-existing-state
           v-else
 
-          /> -->
-                    <impressions-existing-state
-      
-
           />
+                  
       </span>
     </div>
   </div>
 </template>
 <script lang="ts">
-import IAllergy from "@/types/IAllergy";
+import IImpression from "@/types/IImpression";
 import { Options, Vue } from "vue-class-component";
 import ImpressionsEmptyState from "./emptyState.vue";
 import ImpressionsExistingState from "./existingState.vue";
@@ -56,26 +53,27 @@ export default class ImpressionsIndex extends Vue {
   get empty() {
     return this.impressions.length < 1;
   }
-
- @impression.State
-  impressions!: IAllergy[];
-
-  @impression.Action
-  fetchImpressions!: () => Promise<void>;
-
-
-  allergyAdded() {
-    this.show = false;
- this.impressions;
-  this.fetchImpressions();
+ get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
   }
 
-mounted(){
-  this.fetchImpressions();
-}
+ @impression.State
+  impressions!: IImpression[];
+
+  @impression.Action
+  fetchImpressions!: (patientId: string) => Promise<void>;
+
+
+  impressionAdded() {
+    this.show = false;
+ this.impressions;
+  this.fetchImpressions(this.activePatientId);
+  }
+
 
 created() {
-    if (this.impressions.length < 1) this.fetchImpressions();
+    if (this.impressions.length < 1) this.fetchImpressions(this.activePatientId);
   }
 }
 </script>

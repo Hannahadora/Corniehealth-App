@@ -168,7 +168,7 @@ export default class AllergyExistingState extends Vue {
   getPractitioners!: () => Promise<void>;
 
   @allergy.Action
-  fetchAllergys!: () => Promise<void>;
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -323,10 +323,14 @@ export default class AllergyExistingState extends Vue {
     //this.stopEvent = true;
     this.allergyId = value;
   }
+ get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
+  }
 
   allergyAdded() {
     this.allergys;
-    this.fetchAllergys();
+    this.fetchAllergys(this.activePatientId);
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -349,7 +353,7 @@ export default class AllergyExistingState extends Vue {
   async created() {
     this.getPractitioners();
     this.sortAllergys;
-    this.fetchAllergys();
+    this.fetchAllergys(this.activePatientId);
   }
 }
 </script>

@@ -1,9 +1,9 @@
 import { cornieClient } from "@/plugins/http";
 import IImpression from "@/types/IImpression";
 
-export async function fetchImpressions() {
+export async function fetchImpressions(patientId: string) {
   try {
-    const response = await cornieClient().get("/api/v1/clinical-impressions");
+    const response = await cornieClient().get(`/api/v1/clinical-impressions/findAllByPatient/${patientId}`);
     if (response.success) {
       return response.data;
     }
