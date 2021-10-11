@@ -92,20 +92,20 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
               // import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),             
           },
-          {
-            path: "health-trend-empty",
-            props: true,
-            name: "Health Trend Empty State",
-            component: () =>
-              import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),
-          },
-          {
-            path: "health-trend-existing",
-            props: true,
-            name: "Health Trend Existing State",
-            component: () =>
-              import("@/views/dashboard/ehr/healthtrend/existing-state.vue"),
-          },
+          // {
+          //   path: "health-trend-empty",
+          //   props: true,
+          //   name: "Health Trend Empty State",
+          //   component: () =>
+          //     import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),
+          // },
+          // {
+          //   path: "health-trend-existing",
+          //   props: true,
+          //   name: "Health Trend Existing State",
+          //   component: () =>
+          //     import("@/views/dashboard/ehr/healthtrend/existing-state.vue"),
+          // },
           { path: "condition",
             name: "Condition/Problem",
             component: () =>
