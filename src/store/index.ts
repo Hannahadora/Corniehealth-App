@@ -32,6 +32,7 @@ import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
+import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 
 export default createStore({
@@ -72,5 +73,6 @@ export default createStore({
     impression:ImpressionStore,
 
     vitals: VitalsStore,
+    procedure: ProcedureStore,
   },
 } as StoreOptions<any>);

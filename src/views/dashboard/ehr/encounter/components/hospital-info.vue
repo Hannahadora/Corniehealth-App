@@ -43,7 +43,7 @@ export default class HospitalInfo extends Vue {
     }
 
     .show-details {
-        height: 570px;
+        height: 670px;
         transition: all .4s ease-in-out;
         overflow: hidden;
     }

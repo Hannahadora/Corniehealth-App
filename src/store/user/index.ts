@@ -25,8 +25,8 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: false,
-    domain: "gcbv",
+    practitionerAuthenticated: true,
+    domain: 'gcbv',
   },
   getters: {
     accountType(state) {

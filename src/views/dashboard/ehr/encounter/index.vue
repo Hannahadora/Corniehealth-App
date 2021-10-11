@@ -68,7 +68,7 @@
 
       <div class="p-2" v-if="activeTab === 0">
         <cornie-table
-          v-model="items"
+          v-model="episodesList"
           :columns="headers"
           @filter="filterAdvanced = true"
         >
@@ -97,17 +97,19 @@
             <table-action
             >
               <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View Patient History</span>
+              <span class="ml-3 text-xs">View Status History</span>
             </table-action>
             <table-action
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Class History</span>
             </table-action>
-            <table-action>
-              <cancel-icon class="text-red-500 fill-current" />
+            <table-action
+            >
+              <cancel-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Cancel</span>
             </table-action>
+            
           </template>
         </cornie-table>
       </div>
@@ -124,13 +126,14 @@
               <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
             </div>
           </template>
-          <template #actions="{  }">
+          <template #actions="{ item }">
             <table-action
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
             <table-action
+            @click="showUpdateModal(item)"
             >
               <update-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
@@ -143,17 +146,19 @@
             <table-action
             >
               <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View Patient History</span>
+              <span class="ml-3 text-xs">View Status History</span>
             </table-action>
             <table-action
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Class History</span>
             </table-action>
-            <table-action>
-              <cancel-icon class="text-red-500 fill-current" />
+            <table-action
+            >
+              <cancel-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Cancel</span>
             </table-action>
+            
           </template>
         </cornie-table>
       </div>
@@ -163,45 +168,24 @@
       <empty-state />
     </div>
 
-    <advanced-filter
-      v-model:filtered="filteredPatients"
-      v-model="filterAdvanced"
-      :patients="patients"
-    />
-
     <side-modal :visible="showNewEncounterModal" :width="990" @closesidemodal="() => showNewEncounterModal = false" :header="'New Encounter'">
       <new-encounter />
     </side-modal>
 
     <side-modal :visible="showNewEpisodeModal" :width="990" @closesidemodal="() => showNewEpisodeModal = false" :header="'New Episode'">
-      <new-episode />
+      <new-episode :items="practitioners" />
     </side-modal>
 
-    <modal :visible="false">
-      <template #title>
-        <div class="w-full">
-          <div class="container p-6 content-con">
-            <p class="text-primary text-2xl font-semibold">Update Status	</p>
-
-            <div class="w-full py-3">
-              <!-- <search-dropdown :results="searchList" /> -->
-              <p style="color:#667499" class="text-secondary text-base py-2">Update status of this vital sign	</p>
-              <cornie-select :items="['Active', 'Inactive']" style="width: 100%" />
-            </div>
-
-            <div class="w-full flex flex justify-end">
-                <corniebtn class="text-primary p-2 cancel-btn rounded-full px-8 mx-2 cursor-pointer">
-                    <span class="font-semibold">Cancel</span>
-                </corniebtn>
-
-                <corniebtn class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
-                    <span class="text-white font-semibold " @click="viewActiveVisits">Update</span>
-                </corniebtn>
-            </div>
-          </div>
-        </div>
-      </template>
-    </modal>
+    <side-modal :visible="showUpdateStatusModal" :width="590" :header="'Update Status'" @closesidemodal="closeUpdateModal">
+        
+        <update-status :updateData="updateData" @changed="newStatusSelected" @closesidemodal="closeUpdateModal">
+          <template #submit>
+            <CornieBtn :loading="loading" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer" @click="updateEncounterStatus">
+              <span class="text-white font-semibold">Update</span>
+            </CornieBtn>
+          </template>
+        </update-status>
+    </side-modal>
   </div>
 </template>
 <script lang="ts">
@@ -232,10 +216,16 @@ import UpdateIcon from "@/components/icons/newupdate.vue"
 import AddIcon from "@/components/icons/add.vue"
 import NewEncounter from "./components/new-encounter.vue";
 import NewEpisode from "./components/new-episode.vue";
+import IEncounter from "@/types/IEncounter";
+import IEpisode from "@/types/IEpisode";
+import UpdateStatus from "./components/update-status.vue"
+import IUpdateStatus, { Item } from "@/types/IUpdateModel";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
+const practitioner  = namespace('practitioner');
+const vital  = namespace('vitals');
 
 @Options({
   name: "EHRPatients",
@@ -263,20 +253,10 @@ const visitsStore = namespace("visits");
     AddIcon,
     NewEncounter,
     NewEpisode,
+    UpdateStatus,
   },
 })
 export default class ExistingState extends Vue {
-  @patients.State
-  patients!: IPatient[];
-
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-  @patients.Action
-  deletePatient!: (id: string) => Promise<boolean>;
-
-  @visitsStore.Action
-  getVisits!: () => Promise<void>;
 
   @visitsStore.State
   visits!: any;
@@ -284,11 +264,29 @@ export default class ExistingState extends Vue {
   @userStore.State
   user!: User;
 
+  @practitioner.State
+  practitioners!: User;
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
   @userStore.State
   practitionerAuthenticated!: User;
 
-  @userStore.Action
-  updatePractitionerAuthStatus!: () => Promise<void>;
+  @vital.State
+  encounters!: IEncounter[];
+
+  @vital.Action
+  getEncounters!: (patientId: string) => Promise<void>;
+
+  @vital.Action
+  updateStatusOfEncounter!: (body: any) => Promise<void>;
+
+  @vital.State
+  episodes!: IEpisode[];
+
+  @vital.Action
+  getEpisodes!: (patientId: string) => Promise<void>;
 
   password = "";
 
@@ -301,12 +299,22 @@ export default class ExistingState extends Vue {
   registerNew = false;
   showAuthModal = false;
   showSearchModal = false;
-  activeTab = 0;
+  activeTab = 1;
   query = "";
   searchResults: IPatient[] = [ ];
   loading = false;
+  showUpdateStatusModal = false;
   activeVisits: IPatient[] = [ ];
-  patientId = ""
+  patientId = "";
+  selectedEncounterId = ""
+
+  newStatus = '';
+  encounterStatus: Item[] = [ 
+    { code: 'active', display: 'Active' },
+    { code: 'inactive', display: 'Inactive'}
+  ]
+
+  updateData = { } as IUpdateStatus;
 
   headers = [
     {
@@ -369,13 +377,13 @@ export default class ExistingState extends Vue {
     },
     {
       title: "Service Type",
-      key: "type",
+      key: "serviceType",
       show: true,
     },
     {
       title: "Based On",
       key: "Based On",
-      show: true,
+      show: false,
     },
     {
       title: "Practitioner",
@@ -385,37 +393,46 @@ export default class ExistingState extends Vue {
     {
       title: "Status",
       key: "status",
-      show: false,
+      show: true,
     },
   ];
 
   get items() {
-    return [
-      {
-        identifier: "XXXXX",
-        recorded: "21-03-21",
-        type: "Record Type",
+    if (this.encounters?.length === 0) return [ ];
+    return this.encounters.map(encounter => {
+      return {
+        id: encounter.id,
+        identifier: encounter.id,
+        recorded: new Date(encounter.createdAt).toLocaleDateString(),
+        type: encounter.type,
         conditionRole: "Encounter",
+        serviceType: encounter.serviceType,
         role: "Role",
         careManager: "Performer",
         encounters: "Encounter",
-        practitioner: "Practioner",
+        practitioner: `${encounter?.practitioner?.firstName} ${encounter?.practitioner?.lastName}`,
         basedOn: "Based On",
-        status: "Active"
-      },
-      {
-        identifier: "XXXXX",
-        recorded: "21-03-21",
-        type: "Record Type",
-        conditionRole: "Encounter",
-        role: "Role",
-        careManager: "Performer",
-        basedOn: "Based On",
-        practitioner: "Practitioner",
-        encounters: "Encounter",
-        status: "Active"
-      },
-    ]
+        status: encounter.status,
+      }
+    })
+  }
+
+  get episodesList() {
+    if (this.episodes?.length === 0) return [ ];
+    return this.episodes.map(episode => {
+      return {
+        identifier: episode.id,
+        recorded: new Date(episode.createdAt).toLocaleDateString(),
+        type: episode.type,
+        conditionRole: episode.condition,
+        role: episode.role,
+        careManager: `${episode?.careManager?.firstName} ${episode?.careManager?.lastName}`,
+        episodes: "episode",
+        // practitioner: `${episode?.practitioner?.firstName} ${episode?.practitioner?.lastName}`,
+        status: episode.status,
+        encounters: this.encounters?.filter(encounter => encounter.episodeId === episode.id).length
+      }
+    })
   }
 
   get searchList() {
@@ -427,102 +444,57 @@ export default class ExistingState extends Vue {
     })
   }
 
-  goToEHR(patientId: string) {
-    if (!this.practitionerAuthenticated) {
-      this.patientId = patientId;
-      this.showAuthModal = true;
-    } else {
-      this.$router.push({ name: 'Health Trend', params: { patientId }})
+  get practitionersList() {
+    if (this.practitioners?.length === 0) return [ ];
+    return this.practitioners;
+  }
+
+  closeUpdateModal() {
+    this.showUpdateStatusModal = false;
+    this.newStatus = '';
+    this.selectedEncounterId = '';
+  }
+
+  showUpdateModal(item: IEncounter) {
+    this.selectedEncounterId = item?.id;
+    alert(item.id)
+    this.updateData = {
+      currentStatus: item.status,
+      lastUpdated: "",
+      updatedBy: "",
+      statuses: this.encounterStatus
+    }
+    this.showUpdateStatusModal = true;
+  }
+
+  newStatusSelected(status: string) {
+    this.newStatus = status;
+  }
+
+  async updateEncounterStatus() {
+    try {
+      this.loading = true;
+      const response = await this.updateStatusOfEncounter({
+        data: { status: this.newStatus },
+        patientId: this.selectedEncounterId,
+      })
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.log(error);
     }
   }
 
-  viewActiveVisits() {
-    this.showSearchModal = false;
-    this.activeTab = 1;
-  }
-
-  checkIn(patient: IPatient) {
-    this.checkInPatient = patient;
-    this.checkingIn = true;
-  }
-  printPhone(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    const phone = patient.contactInfo[0].phone;
-    return phone?.number || "N/A";
-  }
-
-  printEmail(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    return patient.contactInfo[0].email || "N/A";
-  }
-  printDOB(dateOfBirth?: string) {
-    if (!dateOfBirth) return "N/A";
-    const date = new Date(dateOfBirth);
-    return date.toLocaleDateString("en-NG");
-  }
-  printMRN(mrn?: string) {
-    return `XXXXX${mrn?.substr(31)}`;
-  }
-
-  closeAndViewAll() {
-    this.showSearchModal = false;
-    this.activeTab = 0;
-  }
-
-  async removePatient(id: string) {
-    const confirmed = await window.confirmAction({
-      message: `Are you sure you want to delete this patient?
-       Removing patient from your register means patient
-      will no longer be associated with this provider`,
-      title: "Remove Patient",
-    });
-    if (!confirmed) return;
-    const deleted = await this.deletePatient(id);
-    if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
-    else window.notify({ msg: "Patient not deleted", status: "error" });
-  }
-
-//   async authenticateUser() {
-//     try {
-//       this.loading = true;
-//       const verified = await ehrHelper.authenticateUser({ email: this.user.email, authPassword: this.password})
-//       this.password = "";
-//       this.loading = false;
-//       if (verified) {
-//         this.showAuthModal = false;
-//         this.updatePractitionerAuthStatus();
-//         if (!this.patientId) {
-//           this.showSearchModal = true;
-//         } else {
-//           this.$router.push({ name: 'Health Trend', params: { patientId: this.patientId }})
-//         }
-//       }
-//     } catch (error) {
-//       this.loading = false;
-//       console.log(error);
-//     }
-//   }
-
-  async searchForPatient() {
-    // try {
-    //   this.loading = true;
-    //   const data = await ehrHelper.searchPatient(this.query);
-    //   this.loading = false;
-    //   if (data && data.length > 0) {        
-    //     this.$router.push({ name: 'Health Trend', params: { patientId: data[0].id }})
-    //     // this.searchResults = data;        
-    //   } else {
-    //     window.notify({ msg: "No match found", status: "info" });
-    //   }
-    // } catch (error) {
-    //   this.loading = false;
-    //   console.log(error);
-      
-    // }
-  }
 
   async created() {
-    await this.fetchPatients();
+    this.patientId = this.$route.params.id as string;
+
+    if (this.practitioners?.length === 0) await this.fetchPractitioners();
+    if (this.encounters?.length === 0) await this.getEncounters(this.patientId)
+    if (this.episodes?.length <= 0) await this.getEpisodes(this.patientId)
+    console.log(this.episodes, "EPISODES");
+    console.log(this.encounters, "Encounters");
+    
   }
 }
 </script>
