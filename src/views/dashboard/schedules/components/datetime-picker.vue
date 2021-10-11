@@ -16,7 +16,7 @@
                 <div class="w-full" style="position: relative">
                     <div class="" v-if="show" style="position:absolute; width:100% ">
                         <slot name="input"></slot>
-                        <div class="w-full mt-4 flex justify-end">
+                        <!-- <div class="w-full mt-4 flex justify-end">
                             <corniebtn :loading="false">
                                 <a @click="() => show = false" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-2 px-4 rounded-full">
                                     Cancel
@@ -29,7 +29,7 @@
                                     Save
                                 </a>
                             </Button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
