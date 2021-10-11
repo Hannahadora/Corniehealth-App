@@ -1,17 +1,4 @@
 <template>
-<<<<<<< HEAD
-<div class="w-full">
-  <div class="flex space-x-4 float-right col-span-full mr-4">
-    <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">Patient Queue (2)</p>
-    <p class="text-xs cursor-pointer text-gray-500" @click="showAppoont">Upcoming Appointments (2)</p>
-    <p class="text-xs cursor-pointer text-gray-500" @click="showChart">Find Patient Chart</p>
-  </div>
-  <div
-    class="mt-10 mb-5  rounded-lg settings"
-  >
-    <div class="w-full h-screen max-h-full">
-      <clinical-sidebar class="pb-96" :patient='patient'/>
-=======
   <div class="w-full">
     <div class="flex space-x-4 float-right col-span-full mr-4">
       <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">
@@ -23,11 +10,10 @@
       <p class="text-xs cursor-pointer text-gray-500" @click="showChart">
         Find Patient Chart
       </p>
->>>>>>> c9d0030e7fedfe26d652847d44eba84ed0b2038d
     </div>
     <div class="mt-10 mb-5 rounded-lg settings">
       <div class="w-full h-screen max-h-full">
-        <clinical-sidebar class="pb-96" />
+        <clinical-sidebar class="pb-96" :patient='patient' />
       </div>
       <div class="w-full overflow-auto h-screen pb-72 max-h-full border-l-2">
         <router-view />
@@ -51,7 +37,6 @@ import { namespace } from "vuex-class";
 
 const userStore = namespace("user");
 
-import { namespace } from "vuex-class";
 import { Prop } from "vue-property-decorator";
 import { IPatient } from "@/types/IPatient";
 
@@ -75,7 +60,6 @@ export default class ClinicalsSidebar extends Vue {
 
   showPatient = false;
 
-<<<<<<< HEAD
 patient = {} as IPatient;
 
  @patients.Action
@@ -85,9 +69,6 @@ patient = {} as IPatient;
   patientId!: string;
 
   showPatientModal(){
-=======
-  showPatientModal() {
->>>>>>> c9d0030e7fedfe26d652847d44eba84ed0b2038d
     this.showPatient = true;
   }
 

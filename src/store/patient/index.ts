@@ -64,7 +64,7 @@ export default {
     async findPatient(ctx, id: string) {
       if (!ctx.state.patients.length) await ctx.dispatch("fetchPatients");
       const patient = ctx.state.patients.find((p) => p.id == id);
-      console.log('patient', patient);
+      console.log('patientddd', patient);
       return patient;
     },
   },

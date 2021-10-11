@@ -13,7 +13,7 @@
             mx-auto
             "
         >
-        Health Trend
+        Health Trends
         </span>
         <div class="w-full h-full">
             <div class="w-full grid grid-cols-2 gap-4">

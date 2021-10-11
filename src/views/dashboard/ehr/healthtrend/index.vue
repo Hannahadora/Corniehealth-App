@@ -1,49 +1,10 @@
 <template>
-  <main>
-      <div class="mb-5 p-3 border-l-none -mt-6 w-full ">
-        <span
-            class="
-            flex
-            border-b-2
-            w-full
-            font-bold
-            text-xl text-primary
-            py-2
-            mb-5
-            mx-auto
-            "
-        >
-        Health Trend
-        </span>
-        <div class="w-full h-full">
-            <div class="w-full grid grid-cols-2 gap-4">
-                <blood-chartt/>
-                <weight-chartt title="Weight"/>
-            </div>
-            <div class="w-full grid grid-cols-3 gap-4">
-                <!-- <appointment-chart /> -->
-                <medication-cardd/>
-                <condition-cardd/>
-                <allergy-cardd/>
-                <diagnostic-cardd/>
-                <procedure-cardd/>
-                <note-cardd/>
-                <!-- <appointment-card/>
-                <medication-card/>
-                <medication-card/> -->
-
-            </div>
-
-            <div class="w-full grid">
-                <appointment-cardd/>
-                <history-cardd/>
-            </div>
-        </div>
-      </div>
-  </main>
+  <empty-state v-if="empty" />
+  <existing-state v-else />
 </template>
 
-<script>
+<script lang="ts">
+import { Options,setup, Vue } from "vue-class-component";
 import { cornieClient } from "@/plugins/http";
 import Avatar from "@/components/avatar.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -79,13 +40,6 @@ import AppointmentCardd from "./appointmentCardd.vue";
 import HistoryCardd from "./historyCardd.vue";
 
 
-
-
-
-
-
-
-
 import RegistrationChart from "./registration-chart.vue";
 import ChartCard from "./chart-card.vue";
 import AppointmentChart from "./appointment-chart.vue";
@@ -98,9 +52,18 @@ import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
 import QuestionnaireChart from "./questionnaire-chart.vue";
 
-export default {
-  name: "HealthIndex",
-  components: {
+import { namespace } from "vuex-class";
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+import { Prop, Ref } from "vue-property-decorator";
+import EmptyState from "./empty-state.vue";
+import ExistingState from "./existing-state.vue";
+
+
+const patients = namespace("patients");
+
+@Options({
+   name: "HealthIndex",
+   components: {
     Avatar,
     CornieInput,
     CornieSelect,
@@ -125,34 +88,36 @@ export default {
     AppointmentCardd,
     HistoryCard,
     HistoryCardd,
+
+     EmptyState,
+    ExistingState,
     
   },
-  setup() {
-    const { url, placeholder, onChange } = useHandleImage();
-    return { img: reactive({ url, placeholder, onChange }) };
-  },
-  data() {
-    return {
-      OrganizationName: "",
-      image: "",
-    };
-  },
-  computed: {
-    ...mapState("organization", {
-      organizationInfo: (state) => state.organizationInfo,
-    }),
-    payload() {
-      return {
-        name: this.OrganizationName,
-      };
-    },
-  },
-  async created() {
-   
-  },
-  methods: {
-    
-  },
+})
+
+export default class HealthIndex extends Vue {
+patient = {} as IPatient;
+
+
+@Prop({ type: String, default: "" })
+  patientId!: string;
+
+@patients.Action
+  findPatient!: (patientId: string) => Promise<IPatient>;
+
+
+
+async created (){
+  console.log('id3', this.patientId);
+  this.patient = await this.findPatient(this.patientId)
+  console.log('fff1', this.patient)
+}
+
+ 
+  get empty() {
+    return !this.patient;
+  }
+
 };
 </script>
 
