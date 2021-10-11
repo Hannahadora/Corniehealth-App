@@ -135,10 +135,11 @@ export default {
           this.payload
         );
         if (response.success) {
-          alert("Currency conversion added");
+           window.notify({ msg: "Currency conversion added", status: "success" });
+           this.show = false;
         }
       } catch (error) {
-        console.error(error);
+           window.notify({ msg: "Currency conversion not added", status: "error" });
       }
     },
 

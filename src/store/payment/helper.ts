@@ -14,7 +14,7 @@ export async function fetchPayments() {
 }
 export async function deletePayment(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/payment/${id}`);
+    const response = await cornieClient().delete(`/api/v1/payments/${id}`);
     if (response.success) return true;
   } catch (error) {
     return false;

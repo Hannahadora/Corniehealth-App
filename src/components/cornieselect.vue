@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="flex capitalize mb-1 text-black text-sm font-semibold"
+              class="flex capitalize mb-1 text-black text-sm font-medium"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -80,6 +80,7 @@
               z-40
               w-full
               lef-0
+              border border-gray-400
               rounded
               max-h-select
               overflow-y-auto
@@ -202,18 +203,6 @@ export default class CornieSelect extends Vue {
   update() {
     this.$emit("change");
   }
-
-  //    @Watch("modelValue")
-  // updateSubject(){
-  //      this.$emit("changesubject")
-  //   }
-  //    @Watch("modelValue")
-  //   updateRequester(){
-  //      this.$emit("changerequest")
-  //   }
-  //   updatePerformer(){
-  //      this.$emit("changeperformer")
-  //   }
 
   mounted() {
     clickOutside(this.id, () => {

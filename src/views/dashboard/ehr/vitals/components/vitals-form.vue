@@ -7,8 +7,11 @@
                 <div class="w-full flex items-center py-3 mt-3">
                     <div class="w-6/12">
                         <div class="w-11/12">
-                            <input-desc-rounded :label="'Temperature'" :info="'°F'">
+                            <input-desc-rounded :label="'Temperature'">
                                 <input  v-model="vitalData.temperature.value" type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                                <template #unit>
+                                    <units-select class="-mt-1" v-model="vitalData.temperature.unit" :items="temperatureUnits" style="width: 48px; border:none;font-size:14px"/>
+                                </template>
                             </input-desc-rounded>
                         </div>
                     </div>
@@ -37,14 +40,20 @@
                 <div class="w-full flex items-center py-3">
                     <div class="w-6/12">
                         <div class="w-11/12">
-                            <input-desc-rounded :label="'Height'" :info="'in'">
+                            <input-desc-rounded :label="'Height'">
                                 <input v-model="vitalData.height.value" type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                                <template #unit>
+                                    <units-select class="-mt-1" v-model="vitalData.height.unit" :items="[ 'cm', 'in', 'ft']" style="width: 48px; border:none;font-size:14px"/>
+                                </template>
                             </input-desc-rounded>
                         </div>
                     </div>
                     <div class="w-6/12">
-                        <input-desc-rounded :label="'Weight'" :info="'kg'"  v-model="vitalData.height.value">
+                        <input-desc-rounded :label="'Weight'"  v-model="vitalData.height.value">
                             <input  v-model="vitalData.weight.value" type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                            <template #unit>
+                                <units-select class="-mt-1" v-model="vitalData.weight.unit" :items="[ 'Kg', 'Ib']" style="width: 48px; border:none;font-size:14px"/>
+                            </template>
                         </input-desc-rounded>
                     </div>
                 </div>
@@ -251,9 +260,12 @@ import Print from "@/components/icons/print.vue";
 import BasicInfo from "./basic-info.vue"
 import CheckIcon from "./check-icon.vue"
 import { namespace } from "vuex-class";
-import IVital, { IBloodPressure, IEncounter, IHabit } from "@/types/IVital";
+import IVital, { IBloodPressure, IHabit } from "@/types/IVital";
 import IPractitioner from "@/types/IPractitioner";
 import { Prop, Watch } from "vue-property-decorator";
+import IEncounter from "@/types/IEncounter";
+import { Item } from "@/types/IUpdateModel";
+import UnitsSelect from "./units-select.vue"
 
 const vitalsStore = namespace("vitals");
 const userStore = namespace("user");
@@ -279,6 +291,7 @@ interface Pressures {
       SaveIcon,
       ShareIcon,
       PrintIcon,
+      UnitsSelect,
     Share,
     Print,
     BasicInfo,
@@ -355,7 +368,7 @@ export default class VitalsForm extends Vue {
 
   vitalData: IVital = {
     weight: {
-        unit: 'kg',
+        unit: 'Kg',
         value: 70
     },
     height: {
@@ -363,7 +376,7 @@ export default class VitalsForm extends Vue {
         value: 170
     },
     temperature: {
-        unit: 'fahreinheit',
+        unit: 'fahrenheit',
         value: 50
     },
     comments: '',
@@ -381,6 +394,11 @@ export default class VitalsForm extends Vue {
     pulse: 78,
 
   } as IVital;
+
+  temperatureUnits = [ 
+      { display: '°F', code: 'fahrenheit' },
+      { display: '°C', code: 'celcius' },
+  ] as Item[];
 
   get practitionerId() {
       return this.authPractitioner?.id;

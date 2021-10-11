@@ -72,12 +72,11 @@ const routes: Array<RouteRecordRaw> = [
       },
       ExperienceRoutes,
       {
-        path: "practitioner/patients",
+        path: "clinical/",
         props: true,
         name: "EHR",
         component: () => import("@/views/dashboard/ehr/landing/index.vue"),
       },
-
       {
         path: "clinical/:patientId",
         name: "Patient EHR",
@@ -149,11 +148,25 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/dashboard/ehr/vitals/index.vue"),
           },
           {
-            path: "encounters",
+            path: "encounter",
             props: true,
             name: "Encounter",
             component: () =>
               import("@/views/dashboard/ehr/encounter/index.vue"),
+          },
+          {
+            path: "clinical-impressions",
+            props: true,
+            name: "Clinical Impressions",
+            component: () =>
+              import("@/views/dashboard/ehr/impression/index.vue"),
+          },
+          {
+            path: "procedure",
+            props: true,
+            name: "Procedures",
+            component: () =>
+              import("@/views/dashboard/ehr/procedures/index.vue"),
           },
         ],
       },
@@ -163,22 +176,22 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
           {
             path: "care-partners",
             name: "Care Partners",

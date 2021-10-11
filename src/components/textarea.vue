@@ -6,7 +6,7 @@
     :rules="rules"
     v-model="valueSync"
   >
-    <label class="block text-black capitalize mb-1 text-xs font-semibold">
+    <label class="block text-black capitalize mb-1 text-sm font-semibold">
       {{ label }}
     </label>
     <textarea

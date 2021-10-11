@@ -129,6 +129,7 @@ import MedicationIcon from "@/components/icons/ehrmedication.vue";
 import DiagIcon from "@/components/icons/ehrdiag.vue";
 import ProceedIcon from "@/components/icons/ehrprocedure.vue";
 import CareIcon from "@/components/icons/ehrcare.vue";
+import ImpressionIcon from "@/components/icons/ehrimpression.vue"
 import BillIcon from "@/components/icons/ehrbill.vue";
 import CorrespondIcon from "@/components/icons/ehrcorrespond.vue";
 import AttachIcon from "@/components/icons/ehrattach.vue";
@@ -157,6 +158,7 @@ type INav = { name: string; to: string; icon: string };
     ChevronDownIcon,
     IconInput,
     SearchIcon,
+    ImpressionIcon,
 TrendIcon,
 MedicalIcon,
 AllergyIcon,
@@ -196,16 +198,17 @@ export default class Settings extends Vue {
         to: "allergy",
         icon: "allergy-icon",
       },
+      { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
+      { name: "Condition/Problem", to: "condition", icon: "condition-icon" }, 
       {
         name: "Appointments",
         to: "appointment",
         icon: "appoint-icon",
       },
       { name: "Visits", to: "visits", icon: "visit-icon" },
-      { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
       { name: "Encounter", to: "encounter", icon: "encounter-icon" },
-      { name: "Condition/Problem", to: "condition", icon: "condition-icon" }, 
-      { name: "Medications", to: "/./medications", icon: "medication-icon" },
+      { name: "Clinical Impression", to: "clinical-impressions", icon: "impression-icon" },
+      { name: "Medications", to: "medications", icon: "medication-icon" },
       { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },

@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block uppercase mb-1 text-black text-xs font-bold"
+              class="block capitalize mb-1 text-black text-sm font-medium"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -73,6 +73,7 @@
               absolute
               shadow
               bg-white
+              border-gray-400 border
               top-100
               z-40
               w-full

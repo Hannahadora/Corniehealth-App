@@ -69,41 +69,34 @@
       </div>
     </div>
 
-    <form class="mt-5 w-full" @submit.prevent="submit">
+    <form @submit.prevent="submit">
       <div class="border-b-2 mb-10">
         <div class="select-box my-6">
           <div>
-            <label for="categories" class="font-bold text-base uppercase mb-4">
-              categories
-            </label>
-            <orgSelect
-              name="select"
-              v-model="PaymentCategories"
-              id=" categories"
-            >
-              <option
-                v-for="(PaymentsCategory, i) in PaymentsCategories"
-                :key="i"
-                :value="PaymentsCategory"
-              >
-                {{ PaymentsCategory }}
-              </option>
-            </orgSelect>
+             <cornie-select
+                    :items="PaymentsCategories"
+                    v-model="PaymentCategories"
+                  label="categories"
+                  placeholder="select"
+                >
+                </cornie-select>
+          
           </div>
 
           <div>
-            <label for="locations" class="font-bold text-base uppercase mb-4">
-              locations
-            </label>
-            <orgSelect name="select" id="locations" modelValue="locations">
-              <option>option 1</option>
-            </orgSelect>
+            <cornie-select
+                    :items="allLocation"
+                    v-model="location"
+                  label="locations"
+                  placeholder="select"
+                >
+                </cornie-select>
           </div>
         </div>
 
         <div class="select-box mt-4 mb-20">
           <div>
-            <label for="bank" class="font-bold text-base uppercase mb-4">
+            <label for="bank" class="font-bold text-base capitalize mb-4">
               bank
             </label>
             <orgSelect name="select" id="bank" v-model="bank">
@@ -116,26 +109,32 @@
           <div>
             <label
               for="accountNumber"
-              class="font-bold text-base uppercase mb-4"
+              class="font-bold text-base capitalize mb-4"
             >
               account number
             </label>
-            <orgInput
+            <!-- <cornie-input
               id="accountNumber"
               placeholder="Enter "
+              v-model="accountNumber"
+            /> -->
+              <account-input
+              id="accountNumber"
+              placeholder="Enter"
               v-model="accountNumber"
             />
           </div>
 
           <div>
-            <label for="accountName" class="font-bold text-base uppercase mb-4">
+            <label for="accountName" class="font-bold text-base capitalize mb-4">
               account nAME
             </label>
-            <orgInput
+              <cornie-input
               id="accountName"
-              placeholder="Enter"
+              placeholder="Enter "
               v-model="accountName"
             />
+          
           </div>
         </div>
 
@@ -176,22 +175,18 @@
         <span>
           <cornie-btn
             :loading="loading"
-            type="submit"
+             type="submit"
             class="
-              px-6
-              py-2
-              text-white
-              appearance-none
-              border-none
               bg-danger
               rounded-full
+              text-white
+      
+              pr-10
+              pl-10
+              py-1
+              px-5
               focus:outline-none
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-              cursor-pointer
+              hover:opacity-90
             "
           >
             Activate Account
@@ -206,7 +201,11 @@ import OrgSelect from "@/components/orgSelect.vue";
 import FileIcon from "@/components/icons/file.vue";
 import OrgInput from "@/components/orgInput.vue";
 import { mapActions } from "vuex";
+import AccountInput from "@/components/accountinput.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import { cornieClient } from "@/plugins/http";
+import CornieSelect from "@/components/cornieselect.vue";
+import responseVue from '@/components/icons/response.vue';
 
 export default {
   name: "AddPaymentAccount",
@@ -214,6 +213,9 @@ export default {
     OrgSelect,
     FileIcon,
     OrgInput,
+    AccountInput,
+    CornieInput,
+    CornieSelect
   },
   props: {
     id: {
@@ -232,8 +234,9 @@ export default {
       banks: [],
       PaymentCategories: "",
       bank: "",
-      locations: "",
+      location: "",
       self: null,
+      locations:[],
     };
   },
   computed: {
@@ -248,6 +251,15 @@ export default {
     action() {
       return this.id ? "Update" : "Add";
     },
+    allLocation() {
+     if (!this.locations || this.locations.length === 0) return [ ];
+     return this.locations.map((i) => {
+         return {
+             code: i.id,
+             display: i.name,
+         }
+     })
+   },
   },
 
   //  fetching of the dropdown data
@@ -255,6 +267,7 @@ export default {
     this.setPayment();
     try {
       await this.fetchDropDown();
+      await  this.fetchLocation();
     } catch (error) {
       console.log(error);
     }
@@ -279,6 +292,13 @@ export default {
       this.accountNumber = payment.accountNumber;
       this.bank = payment.bank;
     },
+    async fetchLocation() {
+    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+    const response = await Promise.all([AllLocation]);
+    console.log("response")
+     console.log(response)
+    this.locations = response[0].data;
+    },
 
     //Add Organization Payment Account
     async submit() {
@@ -297,19 +317,21 @@ export default {
           this.payload
         );
         if (response.success)
-          window.notify({ msg: "Payment account added", status: "success" });
+          window.notify({ msg: "Payment account created", status: "success" });
+           this.$router.push('/dashboard/provider/settings/bank-accounts')
       } catch (error) {
-        window.notify({ msg: "Payment account not added", status: "error" });
+        window.notify({ msg: error.response.data.message, status: "error" });
       }
     },
     async update() {
       this.loading = true;
       try {
         const response = await cornieClient().put(
-          `/api/v1/payments/${this.id}`
+          `/api/v1/payments/${this.id}`,this.payload
         );
         if (response.success)
           window.notify({ msg: "Payment account updated", status: "success" });
+             this.$router.push('/dashboard/provider/settings/bank-accounts')
       } catch (error) {
         window.notify({ msg: "Payment account not updated", status: "error" });
         console.error(error);

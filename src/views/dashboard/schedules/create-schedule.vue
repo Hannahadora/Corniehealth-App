@@ -1,9 +1,9 @@
 <template>
-    <div class="w-full  p-4 overflow-y-scroll h-scrren">
+    <div class="w-full  p-4 h-scrren" style="height: fit-content">
         <div class="container-fluid">
             <div class="w-full border-b-2 curved flex py-2 bg-white px-4">
                 <div class="container-fluid flex font-semibold text-xl py-2">
-                    <h2>Create Shift</h2>
+                    <h2>Create Schedule</h2>
                 </div>
             </div>
 

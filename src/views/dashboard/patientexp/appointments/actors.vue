@@ -149,7 +149,7 @@
                     </div>
                   </div>
                 <div v-if="practitioners.length === 0">
-                    <span class="text-center py-3 px-5">No Practitioner. Please select a slot.</span>
+                    <span class="text-center py-3 px-5">Practitioners Loading </span>
                   </div>
                 </div>
               </div>

@@ -27,10 +27,12 @@ import PatientStore from "./patient";
 import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
+import ImpressionStore from "./impression";
 import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
+import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 
 export default createStore({
@@ -68,7 +70,9 @@ export default createStore({
     organization: OrgStore,
     task: TaskStore,
     allergy: AllergyStore,
+    impression:ImpressionStore,
 
     vitals: VitalsStore,
+    procedure: ProcedureStore,
   },
 } as StoreOptions<any>);
