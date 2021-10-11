@@ -142,6 +142,13 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/procedures/index.vue"),
           },
+          {
+            path: "progressnotes",
+            props: true,
+            name: "Progress Notes",
+            component: () =>
+              import("@/views/dashboard/ehr/progressnotes/index.vue"),
+          },
         ],
       },
       {
