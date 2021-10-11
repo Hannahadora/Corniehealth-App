@@ -84,10 +84,14 @@
           v-model="showDiagnosticModal"/>
 
           
-           <status-modal
-        :id="requestId" 
+         <status-modal
+            :id="requestId" 
+           :updatedBy="updatedBy" 
+                   :dateUpdated="update"
+        :currentStatus="currentStatus" 
           @update:preferred="showStatus"
           v-model="showStatusModal"/>
+
 
 
         
@@ -195,6 +199,9 @@ export default class DiagnosticExistingState extends Vue {
   showCheckout= false;
 onePatientId ="";
 showStatusModal= false;
+updatedBy= "";
+currentStatus="";
+update="";
 
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
@@ -275,6 +282,14 @@ showStatusModal= false;
          (otherrequest as any).createdAt = new Date(
          (otherrequest as any).createdAt
        ).toDateString();
+
+         (otherrequest as any).updatedAt = new Date(
+         (otherrequest as any).updatedAt
+       ).toDateString();
+        this.updatedBy = this.getPractitionerName(otherrequest.performer.performer);
+      this.currentStatus = otherrequest.status;
+
+       this.update= otherrequest.updatedAt
         return {
         ...otherrequest,
          action: otherrequest.id,

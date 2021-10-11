@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block capitalize mb-1 text-black text-sm font-bold"
+              class="flex uppercase mb-1 text-black text-xs font-bold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -14,6 +14,7 @@
                 {{ label }}
               </template>
               <span class="text-danger ml-1" v-if="required"> * </span>
+              <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -85,19 +86,8 @@
             "
           >
             <div class="flex flex-col w-full p-2">
-              <icon-input
-                autocomplete="off"
-                class="border border-gray-600 rounded-full focus:outline-none"
-                type="search"
-                placeholder="Search"
-                v-model="query"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input>
               <div
-                v-for="(item, i) in processedItems"
+                v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
                 class="
@@ -137,21 +127,17 @@
 import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync,Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
-import IconInput from "@/components/IconInput.vue";
-import SearchIcon from "./icons/search.vue";
 
 @Options({
   components: {
     ChevronDownIcon,
     Field,
-    IconInput,
-    SearchIcon,
   },
 })
-export default class AutoComplete extends Vue {
+export default class CornieSelect extends Vue {
   @Prop({ type: Array, default: [] })
   items!: any[];
 
@@ -173,29 +159,11 @@ export default class AutoComplete extends Vue {
   @Prop({ type: String })
   label!: string;
 
-  @Prop({ type: Function })
-  filter!: (item: any, query: string) => boolean;
-
-  customFilter(item: any) {
-    if (this.filter) return this.filter(item, this.query);
-    if (typeof item === "string" || item instanceof String)
-      return item.includes(this.query);
-    const { code, display }: { code: string; display: string } = item;
-    return (
-      `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
-      `${display}`.toLowerCase().includes(this.query.toLowerCase())
-    );
-  }
+  @Prop({ type: String, default: "" })
+  labelicon!: string;
 
   showDatalist = false;
   id = "";
-
-  query = "";
-
-  get processedItems() {
-    if (!this.query) return this.items;
-    return this.items.filter(this.customFilter);
-  }
 
   get displayVal() {
     if (!this.modelValue || this.items.length < 1) return;
@@ -226,6 +194,25 @@ export default class AutoComplete extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return `select-${id}`;
   }
+  
+ @Watch("items")
+  update(){
+     this.$emit("change")
+     
+  }
+  
+//    @Watch("modelValue")
+// updateSubject(){
+//      this.$emit("changesubject")
+//   }
+//    @Watch("modelValue")
+//   updateRequester(){
+//      this.$emit("changerequest")
+//   }
+//   updatePerformer(){
+//      this.$emit("changeperformer")
+//   }
+
   mounted() {
     clickOutside(this.id, () => {
       this.showDatalist = false;
