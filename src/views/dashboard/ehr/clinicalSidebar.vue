@@ -3,7 +3,7 @@
   <div class="containers">
     <div class="rounded-lg bg-white shadow-md w-full">
         <div class="flex -mb-12 justify-center">
-          <!-- <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="picture" /> -->
+          <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="picture" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
           <span class="text-sm text-black font-bold">{{items.fullname}}</span> | {{items.email}} <br>
@@ -26,7 +26,7 @@
             </div>
             <div class="flex justify-between space-x-2 p-3">
               <p class="text-xs text-gray-400">Primary Physician</p>
-              <!-- <p class="text-xs text-black flex">{{items.authorizedPractitioner.firstName}}</p> -->
+              <p class="text-xs text-black flex">{{items.authorizedPractitioner.firstName}}</p>
             </div>
           </div>
 
@@ -261,12 +261,12 @@ get fullname() {
     return  this.printPolicyId(current_patient);
   }
 
-  //  get PrimaryPhysician() {
-  //   const current_patient =  this.patient;
-  //   if (current_patient.generalPractitioners?.length == 0) return "N/A";
-  //   const my_primaryPhysician = current_patient.generalPractitioners[0].patient_authorized_practitioners.user.firstName;
-  //   return my_primaryPhysician;
-  // }
+   get PrimaryPhysician() {
+    const current_patient =  this.patient;
+    if (current_patient.authorizedPractitioners?.length == 0) return "N/A";
+    const my_primaryPhysician = current_patient.authorizedPractitioners;
+    return my_primaryPhysician;
+  }
   get items() {
     // const name =  `${this.patient.firstname} ${this.patient.lastname}`
     // return name;
@@ -283,7 +283,7 @@ get fullname() {
                  mrn: this.printMRN(current_patient.mrn),
                  my_policyId: this.printPolicyId(current_patient),
                  the_policyExpiry: this.printPolicyExpiry(current_patient),
-                //  authorizedPractitioner: this.printPrimaryPhysician(current_patient),
+                 authorizedPractitioner: this.printPrimaryPhysician(current_patient),
                 //  email: this.printEmail(current_patient),
                 //  email: this.printEmail(current_patient),
                 //  email: this.printEmail(current_patient),
@@ -348,11 +348,12 @@ get fullname() {
     const policyExpiry = new Date(patient.insurances[0].policyExpiry)
     return policyExpiry.toLocaleDateString("en-Ng");
   }
-  // printPrimaryPhysician(patient: IPatient) {
-  //   if (!patient.authorizedPractitioners?.length) return "N/A";
-  //   return patient.authorizedPractitioners[0].user;
-  // }
-  // patient_authorized_practitioners
+  printPrimaryPhysician(patient: IPatient) {
+    if (!patient.authorizedPractitioners?.length) return "N/A";
+    const ret =  patient.authorizedPractitioners[0].user;
+    return ret;
+  }
+  // 
     
 }
 </script>

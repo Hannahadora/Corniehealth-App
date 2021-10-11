@@ -79,12 +79,14 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "clinical/:patientId",
+        props: true,
         name: "Patient EHR",
         component: () => import("@/views/dashboard/ehr/index.vue"),
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
         children: [
           {
             path: "health-trend/",
+            props: true,
             name: "Health Trend",
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
