@@ -30,7 +30,7 @@ import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
 
 
-//for empty state
+//for the empty state
 import conditionCardd from "./conditionCardd.vue";
 import AllergyCardd from "./allergyCardd.vue";
 import DiagnosticCardd from "./diagnosticCardd.vue";
