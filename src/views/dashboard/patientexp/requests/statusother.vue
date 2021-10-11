@@ -14,7 +14,7 @@
               <div class="w-full">
           <div class="container  content-con">
             <div class="w-full py-3">
-               <cornie-input disabled label="Current Status" v-model="currentStatus" class="w-full mb-4" />
+            <cornie-input disabled label="Current Status" v-model="currentStatus" class="w-full mb-4" />
               <cornie-input disabled label="Updated By" class="w-full mb-4" v-model="updatedBy"/>
               <cornie-input disabled label="Date Last Updated" class="w-full mb-4" v-model="dateUpdated"/>
           
@@ -36,7 +36,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-           Status
+          Update
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -74,11 +74,10 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import DateTimePicker from './components/datetime-picker.vue'
 
 
 @Options({
-  name: "requestDialog",
+  name: "status",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -95,7 +94,6 @@ import DateTimePicker from './components/datetime-picker.vue'
     CancelIcon,
     InfoIcon,
     CornieDialog,
-    DateTimePicker,
     SearchIcon,
     AccordionComponent,
     IconInput,
@@ -108,7 +106,7 @@ import DateTimePicker from './components/datetime-picker.vue'
     MainCornieSelect
   },
 })
-export default class Medication extends Vue {
+export default class Status extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -121,7 +119,7 @@ export default class Medication extends Vue {
    @Prop({ type: String, default: "" })
   currentStatus!: string;
 
-  @Prop({ type: String, default: "" })
+    @Prop({ type: String, default: "" })
   dateUpdated!: string;
 
 status = "";
@@ -135,7 +133,7 @@ status = "";
 
  async updateStatus() {
    const id = this.id;
-    const url = `/api/v1/requests/${id}`;
+    const url = `/api/v1/other-requests/${id}`;
     const body = {
        status: this.status,
     }

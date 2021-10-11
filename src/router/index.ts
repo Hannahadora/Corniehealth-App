@@ -136,6 +136,12 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/ehr/encounter/index.vue"),
           },
           {
+            path: "clinical-impressions",
+            props: true,
+            name: "Clinical Impressions",
+            component: () =>
+              import("@/views/dashboard/ehr/impression/index.vue"),
+             },{
             path: "procedure",
             props: true,
             name: "Procedures",
@@ -150,22 +156,22 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
           {
             path: "care-partners",
             name: "Care Partners",

@@ -218,21 +218,9 @@
                           </div>
                       </div>
                     </div>
-                      <div class="mb-4">
-                        <span class="uppercase font-bold text-black text-xs">onset range</span>
-                        <div class="flex p-3 space-x-2 justify-between w-full">
-                          <div class="float-left w-full pr-5">
-                            <div>
-                                <p class="relative top-4 right-4">0</p>
-                                <Slider v-model="onSet.onsetRange"  :format="format" showTooltip="drag"/>
-                                <p class="float-right relative bottom-4 -mr-7">100</p>
-                            </div>
-                          </div>
-                            <div class="border-2 text-xs h-10 p-2 w-16 mt-1 float-right rounded border-danger">
-                                {{format}}
-                            </div>
-                        </div>
-                      </div>
+                         <cornie-input label="onset range (1st value)" class="mb-4"  :v-model="onSet.onsetRange[0]" placeholder="Enter" />
+                         <cornie-input label="onset range (2nd value)" class="mb-4"  :v-model="onSet.onsetRange[1]" placeholder="Enter" />
+                   
                     <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
                     <div class="mb-5">
                         <label for="ecounter" class="flex uppercase text-black text-xs font-bold">recorded date
@@ -485,9 +473,7 @@ import Period from "@/types/IPeriod";
 import { IPatient, Practitioner, Provider } from "@/types/IPatient";
 import { IOrganization } from "@/types/IOrganization";
 import IAllergy ,{ OnSet,Reaction } from "@/types/IAllergy";
- import Slider from '@vueform/slider';
  import IPractitioner from "@/types/IPractitioner";
-import '@vueform/slider/themes/default.css';
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 
@@ -540,7 +526,6 @@ const emptyReaction: Reaction = {
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    Slider,
     MainCornieSelect
   },
 })
@@ -705,25 +690,5 @@ profileFilter=false;
 
 <style>
 
-.slider-connect {
-    background: #fe4d3c;
-    cursor: pointer;
-}
-
-.slider-tooltip {
-    position: absolute;
-    display: block;
-    font-size: var(--slider-tooltip-font-size, .875rem);
-    line-height: var(--slider-tooltip-line-height, 1.25rem);
-    font-weight: var(--slider-tooltip-font-weight, 600);
-    white-space: nowrap;
-    padding: var(--slider-tooltip-py, 2px) var(--slider-tooltip-px, 6px);
-    min-width: var(--slider-tooltip-min-width, 20px);
-    text-align: center;
-    color: var(--slider-tooltip-color, #fff);
-    border-radius: var(--slider-tooltip-radius, 5px);
-    border: 1px solid #fe4d3c;
-    background: #fe4d3c;
-}
 
 </style>

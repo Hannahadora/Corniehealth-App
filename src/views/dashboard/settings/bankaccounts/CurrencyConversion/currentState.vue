@@ -37,41 +37,45 @@
         New Exchange Rate
       </button>
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+       <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="$router.push(`add-payment-account/${item.id}`)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-      </span>
-    </div>
-    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon />
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <eye-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <delete-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <close-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Deactivate Account</span>
+        </div>
       </template>
-    </Table>
+    </cornie-table>
+
+  
     <default-currency v-model:visible="showDefaultCurrencyModal" />
     <new-exchange-rate v-model:visible="showNewExchangeRateModal" />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
+import { first, getTableKeyValue } from "@/plugins/utils";
 import PrintIcon from "@/components/icons/print.vue";
 import IconInput from "@/components/IconInput.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
@@ -85,6 +89,7 @@ import search from "@/plugins/search";
   components: {
     Table,
     SortIcon,
+    CornieTable,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
@@ -103,34 +108,39 @@ export default class currentState extends Vue {
   showNewExchangeRateModal = false;
   showDefaultCurrencyModal = false;
 
-  headers = [
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "CURRENCY",
-      value: "currency",
+      key: "currency",
+       show: true,
     },
-    { title: "CONVERSION", value: "conversion" },
+    { title: "CONVERSION", key: "conversion", show: true, },
 
     {
       title: "EXCHANGE RATE",
-      value: "exchangeRate",
+      key: "exchangeRate",
+       show: true,
     },
-    { title: "CREATED", value: "createdAt" },
+    { title: "CREATED", key: "createdAt" , show: true,},
     // Displaying Icon in the header - <table-setting-icon/>
   ];
 
   get header() {
-    return [...this.headers, { title: "", value: "action", image: true }];
+    return [...this.rawHeaders, { title: "", value: "action", image: true }];
   }
+
 
   get items() {
     const currencies = this.currencies.map((currency) => {
       (currency as any).createdAt = new Date(
         (currency as any).createdAt
       ).toLocaleDateString("en-US");
-
-      return currency;
+        return {
+        ...currency,
+         action: currency.id,
+        };
     });
-    return currencies;
     if (!this.query) {
       return currencies;
     } else {
@@ -148,5 +158,7 @@ export default class currentState extends Vue {
       index,
     };
   }
+
+ 
 }
 </script>

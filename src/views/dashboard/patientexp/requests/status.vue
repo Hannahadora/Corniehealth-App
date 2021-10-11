@@ -36,7 +36,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-           Status
+          Status
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -74,7 +74,6 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import DateTimePicker from './components/datetime-picker.vue'
 
 
 @Options({
@@ -95,7 +94,6 @@ import DateTimePicker from './components/datetime-picker.vue'
     CancelIcon,
     InfoIcon,
     CornieDialog,
-    DateTimePicker,
     SearchIcon,
     AccordionComponent,
     IconInput,
@@ -172,7 +170,6 @@ status = "";
 </script>
 
 <style>
-
 .bg-gray {
     background-color: #F6F8F9;
 }

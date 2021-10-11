@@ -19,7 +19,7 @@
         New Account
       </button>
     </span>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+    <cornie-table :columns="rawHeaders" v-model="sortPayments" :check="false">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -74,6 +74,7 @@ import DeleteModal from "./deleteModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
 import ShowComfirm from "@/components/confirm.vue";
 import { namespace } from "vuex-class";
+import search from "@/plugins/search";
 
 const payment = namespace("payment");
 
@@ -133,7 +134,7 @@ export default class BankAccountsExistingState extends Vue {
     {
       title: "Location(s)",
       key: "location",
-      show: true,
+      show: false,
     },
     {
       title: "PAYMENT CATEGORY(IES)",
@@ -147,8 +148,14 @@ export default class BankAccountsExistingState extends Vue {
       (payment as any).more = payment.id;
       return payment;
     });
-    return payments;
+     if (!this.query) return payments;
+    return search.searchObjectArray(payments, this.query);
   }
+    get sortPayments (){
+        return this.items.slice().sort(function(a, b){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -157,8 +164,8 @@ export default class BankAccountsExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deletePayment(id)) alert("Payment account deleted");
-    else alert("Payment account not deleted");
+    if (await this.deletePayment(id))  window.notify({ msg: "Payment account  deleted", status: "success" });
+    else   window.notify({ msg: "Payment account not deleted", status: "error" });
   }
 
   updatePayment(id: string) {

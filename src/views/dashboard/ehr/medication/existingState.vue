@@ -86,11 +86,15 @@
 
             <view-modal
         :id="requestId" 
+          @medication-added="medicationAdded"
           @update:preferred="showViewMedication"
           v-model="showViewMedicationModal"/>
         
            <status-modal
-        :id="requestId" 
+            :id="requestId" 
+           :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="update"
           @update:preferred="showStatus"
           v-model="showStatusModal"/>
 
@@ -188,6 +192,10 @@ export default class AllergyExistingState extends Vue {
   tasknotes=[];
 onePatientId ="";
 showStatusModal=false;
+updatedBy= "";
+currentStatus="";
+update="";
+
 
   @userStore.State
   user!: User;
@@ -269,8 +277,12 @@ showStatusModal=false;
          (request as any).createdAt = new Date(
          (request as any).createdAt 
        ).toDateString();
-
-        //this.onePatientId =  request.subject.subject;
+        (request as any).updatedAt = new Date(
+         (request as any).updatedAt 
+       ).toDateString();
+      this.updatedBy = this.getPatientName(request.requestDetails.requester);
+      this.currentStatus = request.status;
+      this.update= request.updatedAt
         return {
         ...request,
          action: request.id,
@@ -279,7 +291,9 @@ showStatusModal=false;
         dispenser: this.getPractitionerName(request.performer.dispenser),
         performer: this.getPractitionerName(request.medicationAdministration.performer),
         };
+        
     });
+    
     if (!this.query) return requests;
     return search.searchObjectArray(requests, this.query);
   }
