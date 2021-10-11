@@ -21,7 +21,7 @@
       </cornie-card-title>
       <cornie-card-text class="overflow-y-auto">
         <div>
-          <cornie-text-area class="w-full" />
+          <cornie-text-area class="w-full" rows="4" />
           <span class="w-full flex justify-end">
             <cornie-btn class="text-white bg-danger px-9 rounded-xl">
               Add
