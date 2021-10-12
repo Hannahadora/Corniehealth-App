@@ -17,8 +17,8 @@
           hidden
         />
         <label for="file" class="text-pink-600 font-bold cursor-pointer">
-          Upload Image</label
-        >
+          Upload Image
+        </label>
       </div>
 
       <v-form @submit="submitForm">
@@ -29,60 +29,12 @@
             v-model="OrganizationName"
             :rules="requiredRule"
           />
-          <div>
-            <label
-              for="DomainName"
-              class="uppercase mb-1 text-xs font-semibold"
-            >
-              Domain Name
-            </label>
-            <br />
-            <div id="DomainName" class="flex items-center">
-              <input
-                class="
-                  appearance-none
-                  w-1/2
-                  border border-gray-300
-                  bg-gray-500
-                  px-3
-                  py-2
-                  rounded-l-md
-                  placeholder-white
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
-                disabled
-                placeholder="https://corniehealth.com/"
-              />
-              <input
-                placeholder="Domain--"
-                class="
-                  rounded-r-md
-                  appearance-none
-                  w-1/2
-                  px-3
-                  py-2
-                  border border-gray-300
-                  placeholder-gray-400
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm
-                  sm:leading-5
-                "
-                v-model="DomainName"
-              />
-            </div>
-          </div>
+          <domain-input
+            label="Domain Name"
+            placeholder="--Enter--"
+            :rules="requiredRule"
+            v-model="DomainName"
+          />
           <cornie-input label="Alias" class="w-full" v-model="alias" />
           <cornie-input
             label="Organization Identifier"
@@ -219,6 +171,7 @@ import { reactive } from "@vue/reactivity";
 import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { mapActions, mapState } from "vuex";
+import DomainInput from "@/components/domain-input.vue";
 
 export default {
   name: "OrganizationInformation",
@@ -226,6 +179,7 @@ export default {
     Avatar,
     CornieInput,
     CornieSelect,
+    DomainInput,
     PhoneInput,
     AvatarField,
   },
@@ -243,7 +197,7 @@ export default {
       DialCode: "+234",
       PhoneNumber: "",
       DomainName: "",
-      OrganizationIdentifier: "",
+      OrganizationIdentifier: "System Generated",
       ProviderProfile: "",
       IncorporationType: "",
       EmailAddress: " ",
