@@ -1,28 +1,48 @@
 <template>
-  <chart-card height="343px" title="Weight">
-     <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
+  <div class="block w-full">
+    <div class="flex justify-between w-full">
+      <span class="flex items-center">
+        <h2 class="font-bold">Patient Registration Chart</h2>
+        <div class="flex items-center">
+          <span class="mx-2">{{ order }}</span>
+          <chevron-down-icon
+            @click="filter = !filter"
+            class="stroke-current cursor-pointer text-danger"
+          />
+          <drop-down v-model="filter">
+            <div class="flex flex-col">
+              <span class="cursor-pointer" @click="order = 'Today'">Today</span>
+              <span class="cursor-pointer" @click="order = 'WTD'">WTD</span>
+              <span class="cursor-pointer" @click="order = 'MTD'">MTD</span>
+              <span class="cursor-pointer" @click="order = 'YTD'">YTD</span>
+            </div>
+          </drop-down>
+        </div>
+      </span>
+      <span> Total={{ chartData.total }} </span>
+    </div>
     <canvas ref="registration_chart"></canvas>
-  </chart-card>
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import ChartCard from "./chart-card.vue";
 import Chart from "chart.js/auto";
-
-
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import DropDown from "@/components/drop-down.vue";
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
 import { groupData } from "./chart-filter";
 import { Prop, Watch } from "vue-property-decorator";
 
 @Options({
-  name: "BloodChart",
+  name: "RegistrationChart",
   components: {
-    ChartCard,
+    ChevronDownIcon,
+    DropDown,
   },
 })
-export default class WeightChart extends Vue {
- filter = false;
+export default class RegistrationChart extends Vue {
+  filter = false;
 
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
@@ -44,7 +64,6 @@ export default class WeightChart extends Vue {
         "api/v1/patient/analytics/stats"
       );
       this.raw = response.data;
-      console.log('raw', this.raw);
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
       window.notify({ msg: "Failed to fetch chart data", status: "error" });
@@ -65,8 +84,7 @@ export default class WeightChart extends Vue {
 
   mountChart() {
     const ctx: any = this.$refs.registration_chart;
-    // ctx.height = this.height;
-        ctx.height = 95;
+    ctx.height = this.height;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
@@ -124,70 +142,5 @@ export default class WeightChart extends Vue {
       },
     });
   }
-
-
-
-
-
-  // chart!: Chart;
-
-  // mounted() {
-  //   this.mountChart();
-  // }
-
-  // mountChart() {
-  //   const ctx: any = this.$refs.chart;
-  //   ctx.height = 95;
-  //   this.chart?.destroy();
-  //   this.chart = new Chart(ctx, {
-  //     type: "line",
-  //     data: {
-  //       labels: ["02-Jans", "03-Jan", "11:00", "04-Jan"],
-  //       datasets: [
-  //         {  
-  //            fill: {
-  //               target: 'origin',
-  //               above: 'rgb(219 248 230)',   // Area will be red above the origin
-  //               below: 'rgb(12 104 47)'    // And blue below the origin
-  //             },
-  //           data: [100, 20, 55, 220, 100],
-  //           borderColor: "rgba(53, 186, 131, 1)",
-  //           borderWidth: 1,
-  //           tension: 0,
-  //           pointRadius: 0,
-  //           backgroundColor: ""
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       responsive: true,
-  //       scales: {
-  //         x: {
-  //           grid: {
-  //             display: false,
-  //           },
-  //         },
-  //         y: {
-  //           grid: {
-  //             display: true,
-  //           },
-  //         },
-  //       },
-  //       plugins: {
-  //        legend: {
-  //       display: false
-  //   },
-  //         tooltip: {
-  //           titleAlign: "center",
-  //           titleMarginBottom: 9,
-  //           bodyAlign: "center",
-  //           padding: 30,
-  //           position: "average",
-  //           yAlign: "bottom",
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
 }
 </script>

@@ -1,12 +1,12 @@
 <template>
-  <detail-card height="313px" title="Current Medications">
-   <div class="w-full grid grid-cols-1 gap-y-4">
+  <detail-card height="313px" title="Recent Diagnostic Report">
+     <div class="w-full grid grid-cols-1 gap-y-4">
       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
           <avatar :src="photo" />
           <div class="text-xs flex flex-col">
             <span class="font-semibold">
-              Chlotiladone
+              Chlotiladones
             </span>
             <span class="">
               <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
@@ -61,7 +61,8 @@
               Chlotiladone
             </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
+              <span class="text-gray-600 text-uppercase"> <h3> MLT John Oyedele </h3></span>
+              <span class="text-gray-600"> <h3> 3 Pills Dailys </h3></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -101,23 +102,20 @@ import { Options, Vue } from "vue-class-component";
 import DetailCard from "./detail-card.vue";
 
 import Avatar from "@/components/avatar.vue";
-import AddIcon from "@/components/icons/add.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-
+import BillIcon from "@/components/icons/ehrbill.vue";
 
 
 
 @Options({
-  name: "MedicationCard",
+  name: "DiagnosticCard",
   components: {
     DetailCard,
     Avatar,
-    AddIcon,
-    // ArrowRightIcon,
-    ChevronRightIcon,
+    BillIcon,
   },
 })
-export default class MedicationCard extends Vue {
-  photo = require("@/assets/img/avatar.png");
+export default class DiagnosticCard extends Vue {
+    photo = require("@/assets/img/avatar.png");
+
 }
 </script>

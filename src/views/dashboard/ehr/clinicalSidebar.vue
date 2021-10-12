@@ -3,30 +3,30 @@
   <div class="containers">
     <div class="rounded-lg bg-white shadow-md w-full">
         <div class="flex -mb-12 justify-center">
-          <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="localSrc" />
+          <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="picture" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
-          <span class="text-sm text-black font-bold">Nkechi Claire Obi</span> | F <br>
-          <span>MRN-CH23022021-0010</span> 
-          <span>
-            21st January, 1996 (25yrs) Blood Type: 
-          </span>
-          <span class="text-sm text-black font-light">A+ | </span>
-          <span>Genotype: <span class="text-sm text-black font-light">AA</span> </span>
+          <span class="text-sm text-black font-bold">{{items.fullname}}</span> | {{items.email}} <br>
+          <p>MRN-{{items.mrn}}</p> 
+          <p>
+           {{ items.dob}} 
+          </p>
+         <p> Blood Type: <span class="text-sm text-black font-light">A+ | </span> <span>Genotype: <span class="text-sm text-black font-light">AA</span> </span></p>
+          
         </div>
           <div class="border-dashed border-2  border-gray-100 m-3"></div>
           <div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400 flex">Policy ID <eye-icon class="ml-2"/></p>
-              <p class="text-xs text-black flex">34567890-0987</p>
+              <p class="text-xs text-gray-400 flex">Policy IDs <eye-icon class="ml-2"/></p>
+              <p class="text-xs text-black flex">{{items.my_policyId}}</p>
             </div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
               <p class="text-xs text-gray-400">Expires</p>
-              <p class="text-xs text-black flex">24th March, 2024</p>
+              <p class="text-xs text-black flex"> {{items.the_policyExpiry}}</p>
             </div>
             <div class="flex justify-between space-x-2 p-3">
               <p class="text-xs text-gray-400">Primary Physician</p>
-              <p class="text-xs text-black flex">Dr. Obi Nduka</p>
+              <p class="text-xs text-black flex">{{items.authorizedPractitioner.firstName}}</p>
             </div>
           </div>
 
@@ -36,26 +36,26 @@
             <div>
               <div class="flex justify-between -mb-2 space-x-2 p-3">
                 <p class="text-xs text-gray-400 flex">Mobile </p>
-                <p class="text-xs text-black flex">34567890-0987</p>
+                <p class="text-xs text-black flex">{{items.phone}}</p>
               </div>
               <div class="flex justify-between -mb-2 space-x-2 p-3">
                 <p class="text-xs text-gray-400">Email</p>
-                <p class="text-xs text-black flex">nkechi@gmail.com</p>
+                <p class="text-xs text-black flex">{{items.email}}</p>
               </div>
               <div class="flex justify-between space-x-2 p-3">
                 <p class="text-xs text-gray-400">Address</p>
-                <p class="text-xs text-black flex">No 2. Victoria Street</p>
+                <p class="text-xs text-black flex">{{items.address}}</p>
               </div>
             </div>
              <div class="border-dashed border-2  border-gray-100 m-3"></div>
               <div>
                 <div class="flex justify-between -mb-2 space-x-2 p-3">
                   <p class="text-xs text-gray-400 flex">Last Visited </p>
-                  <p class="text-xs text-black flex">5th may 2021</p>
+                  <!-- <p class="text-xs text-black flex">{{items.lastVisited}}</p> -->
                 </div>
                 <div class="flex justify-between -mb-2 space-x-2 p-3">
                   <p class="text-xs text-gray-400">Active Since</p>
-                  <p class="text-xs text-black flex">12 febuary 2021</p>
+                  <!-- <p class="text-xs text-black flex">{{items.activeSince}}</p> -->
                 </div>
               </div>
           </div>
@@ -67,7 +67,7 @@
     <div class="mt-2 mb-5 rounded-lg bg-white  shadow-md w-full h-full max-h-full">
       <div class="w-full h-full p-2">
         <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-          <p class="text-black font-bold py-3 px-2">Records</p>
+          <p class="text-black font-bold py-3 px-2">Recordss</p>
           <icon-input
             autocomplete="off"
             type="search"
@@ -137,6 +137,14 @@ import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import eyeIcon from "@/components/icons/yelloweye.vue";
 
+import { namespace } from "vuex-class";
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+import { Prop, Ref } from "vue-property-decorator";
+
+
+
+const patients = namespace("patients");
+
 type INav = { name: string; to: string; icon: string };
 
 @Options({
@@ -175,7 +183,11 @@ export default class Settings extends Vue {
   expand = false;
   query = "";
   open = 0;
-  localSrc = require('../../../assets/img/ehr.png');
+  // localSrc = require('../../../assets/img/ehr.png');
+  // localSrc = this.patient.profilePhoto;
+  //  photo: patient.profilePhoto,
+  @Prop({ type: Object, required: true })
+  patient!: IPatient;
   img = setup(() => useHandleImage());
   get organization() {
     return [
@@ -205,14 +217,25 @@ export default class Settings extends Vue {
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
     ];
   }
-
-  
+ 
   get settings() {
     const provider = {
       Organization: this.filter(this.organization)
-    };
-   
+    };   
     return provider;
+  }  
+
+get fullname() {
+    const name =  `${this.patient.firstname} ${this.patient.lastname}`
+    return name;
+  }
+// get picture() {
+//   return this.patient.profilePhoto;
+// }
+  get physicianFullname() {
+    const rrr = this.patient;
+    const name =  `${this.patient.firstname} ${this.patient.lastname}`
+    return name;
   }
 
   mapUrl(url: string) {
@@ -226,6 +249,112 @@ export default class Settings extends Vue {
       nav.name.toLowerCase().includes(this.query.toLowerCase())
     );
   }
+
+
+ get ppp() {
+    const current_patient =  this.patient;
+    return  this.printPhone(current_patient);
+  }
+
+ get policies() {
+    const current_patient =  this.patient;
+    return  this.printPolicyId(current_patient);
+  }
+
+   get PrimaryPhysician() {
+    const current_patient =  this.patient;
+    if (current_patient.authorizedPractitioners?.length == 0) return "N/A";
+    const my_primaryPhysician = current_patient.authorizedPractitioners;
+    return my_primaryPhysician;
+  }
+  get items() {
+    // const name =  `${this.patient.firstname} ${this.patient.lastname}`
+    // return name;
+    const current_patient =  this.patient
+     return {
+                code: current_patient.id,
+                fullname: `${current_patient.firstname} ${current_patient.lastname}`,
+                email: this.printEmail(current_patient),
+                address: this.printAddress(current_patient),
+                phone: this.printPhone(current_patient),
+                dob: this.printDOB(current_patient.dateOfBirth),
+                // lastVisited: this.printLastVisited(current_patient.updatedAt),
+                // activeSince: this.printactiveSince(current_patient.createdAt),
+                 mrn: this.printMRN(current_patient.mrn),
+                 my_policyId: this.printPolicyId(current_patient),
+                 the_policyExpiry: this.printPolicyExpiry(current_patient),
+                 authorizedPractitioner: this.printPrimaryPhysician(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+                //  email: this.printEmail(current_patient),
+
+            }
+  }
+
+  printPhone(patient: IPatient) {
+    if (!patient.contactInfo) return "N/A";
+    const phone = patient.contactInfo[0].phone;
+    return phone?.number || "N/A";
+  }
+  printGender(gender: string) {
+    if (!gender) return "N/A";
+    return gender || "N/A";
+  }
+
+  printEmail(patient: IPatient) {
+    if (!patient.contactInfo) return "N/A";
+    return patient.contactInfo[0].email || "N/A";
+  }
+  printAddress(patient: IPatient) {
+    if (!patient.contactInfo) return "N/A";
+    return patient.contactInfo[0].primaryAddress || "N/A";
+  }
+  printDOB(dateOfBirth?: string) {
+    if (!dateOfBirth) return "N/A";
+    const date = new Date(dateOfBirth);
+    return date.toLocaleDateString("en-NG");
+  }
+  printLastVisited(updatedAt?: string) {
+    if (!updatedAt) return "N/A";
+    const date = new Date(updatedAt);
+    return date.toLocaleDateString("en-NG");
+  }
+  printactiveSince(createdAt?: string) {
+    if (!createdAt) return "N/A";
+    const date = new Date(createdAt);
+    return date.toLocaleDateString("en-NG");
+  }
+  
+  printMRN(mrn?: string) {
+    return `${mrn?.substr(31)}`;
+  }
+
+  printPolicyId(patient: IPatient) {
+    if (!patient.insurances?.length) return "N/A";
+    const policyNumber = patient.insurances[0].policyNo
+    return policyNumber || "N/A";
+  }
+
+  printPolicyExpiry(patient: IPatient) {
+    if (!patient.insurances?.length) return "N/A";
+    const policyExpiry = new Date(patient.insurances[0].policyExpiry)
+    return policyExpiry.toLocaleDateString("en-Ng");
+  }
+  printPrimaryPhysician(patient: IPatient) {
+    if (!patient.authorizedPractitioners?.length) return "N/A";
+    const ret =  patient.authorizedPractitioners[0].user;
+    return ret;
+  }
+  // 
+    
 }
 </script>
 <style scoped>
