@@ -24,7 +24,10 @@
       </span>
       <cornie-table :columns="headers" v-model="items">
         <template #actions>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div
+            @click="viewingCondition = true"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
             <new-view-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
@@ -35,7 +38,10 @@
             <update-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs"> Update Status </span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div
+            @click="recordingAbatement = true"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
             <edit-icon class="text-purple-800 fill-current" />
             <span class="ml-3 text-xs"> Record Abatement </span>
           </div>
@@ -64,6 +70,8 @@
     <add-occurence v-model="addingOccurence" />
     <status-update v-model="updatingStatus" />
     <add-notes v-model="addingNotes" />
+    <record-abatement v-model="recordingAbatement" />
+    <view-condition v-model="viewingCondition" />
   </div>
 </template>
 <script lang="ts">
@@ -78,12 +86,16 @@ import PlusIcon from "@/components/icons/plus.vue";
 import AddOccurence from "./add-occurence.vue";
 import StatusUpdate from "./status-update.vue";
 import AddNotes from "./add-notes.vue";
+import RecordAbatement from "./record-abatement.vue";
+import ViewCondition from "./view-condition.vue";
 
 @Options({
   name: "ConditionExistingState",
   components: {
     CornieTable,
     AddNotes,
+    ViewCondition,
+    RecordAbatement,
     AddCondition,
     StatusUpdate,
     AddOccurence,
@@ -99,6 +111,9 @@ export default class ExistingState extends Vue {
   addingOccurence = false;
   updatingStatus = false;
   addingNotes = false;
+  recordingAbatement = false;
+  viewingCondition = false;
+
   headers = [
     {
       title: "identifier",

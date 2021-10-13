@@ -71,24 +71,45 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
       ExperienceRoutes,
-
       {
-        path: "clinical/:id",
+        path: "clinical/",
+        props: true,
+        name: "EHR",
+        component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+      },
+      {
+        path: "clinical/:patientId",
+        props: true,
         name: "Patient EHR",
         component: () => import("@/views/dashboard/ehr/index.vue"),
         redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
         children: [
           {
-            path: "",
+            path: "health-trend/",
             props: true,
-            name: "EHR",
-            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
-          },
-          {
-            path: "health-trend/:patientId?",
             name: "Health Trend",
             component: () =>
               import("@/views/dashboard/ehr/healthtrend/index.vue"),
+              // import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),             
+          },
+          // {
+          //   path: "health-trend-empty",
+          //   props: true,
+          //   name: "Health Trend Empty State",
+          //   component: () =>
+          //     import("@/views/dashboard/ehr/healthtrend/empty-state.vue"),
+          // },
+          // {
+          //   path: "health-trend-existing",
+          //   props: true,
+          //   name: "Health Trend Existing State",
+          //   component: () =>
+          //     import("@/views/dashboard/ehr/healthtrend/existing-state.vue"),
+          // },
+          { path: "condition",
+            name: "Condition/Problem",
+            component: () =>
+              import("@/views/dashboard/ehr/condition/index.vue"),
           },
           {
             path: "care-team",

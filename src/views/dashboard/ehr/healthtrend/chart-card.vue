@@ -17,7 +17,7 @@
       <span
         class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2"
       >
-        <span class="font-medium text-xs">{{ title }}</span>
+        <span class="font-bold text-xl">{{ title }}</span>
         <div class="flex items-center">
           <span class="mx-2">{{ order }}</span>
           <chevron-down-icon
@@ -43,6 +43,8 @@ import { Options, Vue } from "vue-class-component";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import DropDown from "@/components/drop-down.vue";
 import { Prop } from "vue-property-decorator";
+
+
 
 @Options({
   name: "ChartCard",
