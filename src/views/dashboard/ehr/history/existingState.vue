@@ -24,8 +24,15 @@
       </span>
       <cornie-table :columns="headers" v-model="sortHistory">
         <template #actions="{ item }">
-            <div
+            <!-- <div
             @click="deleteItem(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <new-view-icon class="text-blue-300 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div> -->
+           <div
+            @click="viewHistory(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-blue-300 fill-current" />
@@ -72,6 +79,13 @@
            @history-added="historyAdded"
           @update:preferred="showStatus"
           v-model="showStatusModal"/>
+        
+          <view-modal  
+       :id="historyId" 
+       :practitionerId="practitionerId"
+         @history-added="historyAdded"
+          @show:modal="viewHistory"
+          v-model="viewHistoryModal"/>
   </div>
 </template>
 <script lang="ts">
@@ -89,7 +103,7 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import { IPatient } from "@/types/IPatient";
 import StatusModal from "./status-update.vue";
-
+import ViewModal from "./viewHistory.vue";
 
 const history = namespace("history");
 const patients = namespace("patients");
@@ -106,6 +120,7 @@ const patients = namespace("patients");
     PlusIcon,
     HistoryIcon,
     StatusModal,
+    ViewModal,
   },
 })
 export default class ExistingState extends Vue {
@@ -131,13 +146,14 @@ export default class ExistingState extends Vue {
   viewingCondition = false;
  showHistoryModal= false;
  showStatusModal= false;
+ viewHistoryModal= false;
  historyId="";
   loading = false;
   query = "";
   updatedBy= "";
 currentStatus="";
 update ="";
-
+practitionerId="";
 
   headers = [
     {
@@ -187,6 +203,7 @@ update ="";
          (history as any).createdAt= new Date(
          (history as any).createdAt
        ).toLocaleDateString("en-US");
+       this.practitionerId =  (history as any).practitionerId;
             this.updatedBy = this.getPatientName(history.patientId as string);
       this.currentStatus = history.basicInfo.status;
         this.update =  (history as any).updatedAt= new Date(
@@ -232,6 +249,10 @@ update ="";
     else window.notify({ msg: "Allergy not cancelled", status: "error" });
   }
  
+ async viewHistory(value:string){
+ this.viewHistoryModal = true;
+ this.historyId = value;
+ }
 async showStatus(value:string){
     this.showStatusModal = true;
     this.historyId = value;

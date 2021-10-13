@@ -1,187 +1,129 @@
 <template>
   <big-dialog
     v-model="show"
-    :title="newaction + ' '+ 'History' " 
-    subtext="All Fields are required"
+    title="View Family History" 
     class=""
   >
-    <v-form ref="form">
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Basic Info"
-        :opened="true"
-      >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <cornie-select
-            v-model="instantiatesCanonical"
-            label="Instantiates Canonical"
-            :items="['Plan Definition','Questionaire','Activity Definition','Measure','Operation Definition']"
-            :rules="required"
-          />
-          <cornie-select
-            v-model="instantiatesUri"
-            label="Instantiates Uri"
-            :items="['https://techsolutions.net//']"
-            :rules="required"
-          />
-          <auto-complete
-            v-model="status"
-            :rules="required"
-            class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
-            label="Status"
-          />
-          <cornie-select
-            v-model="dataAbsentReason"
-            label="Data Absent Reason"
-            :rules="required"
-            :items="['Subject Unknown','Information Withheld','Unable To Obtain','Deferred']"
-          />
-        <cornie-input disabled  :rules="required" label="Patient" v-model="asinglename"  class="w-full" />
-           <date-picker
-            :rules="required"
-            v-model="date"
-            label="Date"
-            width="w-full"
-          />
-           <!-- <cornie-input  :rules="required"  label="Relationship" v-model="relationship"  class="w-full" /> -->
-          <auto-complete
-           v-model="relationship"
-           class="w-full"
-            :rules="required"
-            :items="['family member','Child','Adopted child','Adopted daughter','Adopted son','Daughter']"
-            label="Relationship"
-          />
-          <auto-complete
-            v-model="sex"
-            :rules="required"
-            :items="['Male','Female','Other','Unknown	']"
-            label="Sex"
-          />
-        </div>
-      </accordion-component>
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Born"
-          >
-       
-          <timeable-picker v-model="bornTimeable" label="heading" />
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <cornie-input  :rules="required"  label="Born String" v-model="bornString"  class="w-full" />
-        </div>
-      </accordion-component>
-       <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Age"
-      >
-       <div class="grid grid-cols-2 mt-5 gap-2">
-            <cornie-input   :rules="required" label="Age" placeholder="--Enter--" v-model="oneage"  class="cursor-pointer w-full" />
-              <cornie-select
-                v-model="estimatedAge"
-                label="Estimated Age?"
-                :items="[10,90,80]"
-                :rules="required"
-              />
-          </div>
-           <measurable label="Age Range/String" v-model="agemesurable" />
-      </accordion-component>
-       <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Deceased"
-        >
-          
-          <div class="grid grid-cols-2 mt-5 gap-2">
-              <cornie-select
-                v-model="diseasedBoolean"
-                label="Deceased?"
-                :items="[true, false]"
-                :rules="required"
-              />
-          </div>
-          <timeable-picker v-model="deceasedtimeable" label="Deceased Date/Age" />
-           <measurable v-model="deceasedmeasurable" label="Deceased Range/String" />
-           <div class="grid grid-cols-2 gap-4">
-                <auto-complete
-              v-model="reasonCode"
-              :rules="required"
-              :items="['Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','Spontaneous abortion with laceration of cervix','	Homoiothermia','	Decreased hair growth','	Chronic pharyngitis','Normal peripheral vision']"
-              label="Reason Code"
-            />
-              <!-- <div class="" v-if="refItems.length > 0" >
-                <label for="assessor"  @click="showRef" class="cursor-pointer flex capitalize text-black text-sm font-bold">Reason Reference
-                </label>
-                <cornie-select
-                class="w-full"
-                :items="refItems"
-                v-model="reasonReference"
-                       :rules="required"
-                >
-                </cornie-select>
-              </div> -->
-               
-              <div class="w-full cursor-pointer"  @click="showRef">
-                <label class="flex normal-case mb-0  text-black text-sm font-bold">Reason Reference</label>
-                        <input-desc-rounded     :info="''" class="cursor-pointer">
-                          <input type="text"  disabled  :value="reasonReference" placeholder="Select" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
-                        </input-desc-rounded>
-                        
-                 <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
-              </div>
-           </div>
-            <cornie-text-area
-          :rules="required"
-          v-model="note"
-          placeholder="Placeholder"
-          label="Notes"
-          class="w-full"
-          rows="4"
-        />
-      </accordion-component>
-       <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Condition (Related Person)"
-        >
-          <div class="grid grid-cols-2 gap-2 mt-5">
-              <cornie-select
-                v-model="code"
-                label="Code"
-                :items="['Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage','Accident-prone','Injury of ascending right colon without open wound into abdominal cavity','Poisoning by sawfly larvae']"
-                :rules="required"
-              />
-               <cornie-select
-                v-model="outcome"
-                label="Outcome"
-                :items="['Anxiety disorder of childhood OR adolescence', 'Spontaneous abortion with laceration of cervix','Spontaneous abortion with laceration of cervix','	Homoiothermia','	Decreased hair growth','	Chronic pharyngitis','Normal peripheral vision']"
-                :rules="required"
-              />
-               <cornie-select
-                v-model="contributedToDeath"
-                label="Contributed to Death?"
-                :items="['true', 'false']"
-                :rules="required"
-              />
-          </div>
-         
-      </accordion-component>
-       <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Onset"
-      >
-        <timeable-picker v-model="onsettimeable" label="Start Date & Time" />
-           <measurable v-model="onsetmesurable" label="Heading"/>
+   <div class="w-full">
+       <div class="w-full bg-white shadow p-5">
+           <span class="flex space-x-4">
+               <hospital-icon /> <span class="text-lg text-black font-bold">Evergreen Hospital</span>
+           </span>
+           <div class="grid grid-cols-3 gap-1 mt-3">
+               <span class="flex space-x-2">
+                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 4C0 1.79086 1.79086 0 4 0H14C16.2091 0 18 1.79086 18 4V14C18 16.2091 16.2091 18 14 18H4C1.79086 18 0 16.2091 0 14V4Z" fill="white"/>
+                    <path d="M12.924 10.8C12.996 10.206 13.05 9.612 13.05 9C13.05 8.388 12.996 7.794 12.924 7.2H15.966C16.11 7.776 16.2 8.379 16.2 9C16.2 9.621 16.11 10.224 15.966 10.8H12.924ZM11.331 15.804C11.871 14.805 12.285 13.725 12.573 12.6H15.228C14.3561 14.1014 12.9727 15.2388 11.331 15.804ZM11.106 10.8H6.894C6.804 10.206 6.75 9.612 6.75 9C6.75 8.388 6.804 7.785 6.894 7.2H11.106C11.187 7.785 11.25 8.388 11.25 9C11.25 9.612 11.187 10.206 11.106 10.8ZM9 16.164C8.253 15.084 7.65 13.887 7.281 12.6H10.719C10.35 13.887 9.747 15.084 9 16.164ZM5.4 5.4H2.772C3.63497 3.89449 5.01732 2.75534 6.66 2.196C6.12 3.195 5.715 4.275 5.4 5.4ZM2.772 12.6H5.4C5.715 13.725 6.12 14.805 6.66 15.804C5.02076 15.2385 3.64036 14.1009 2.772 12.6ZM2.034 10.8C1.89 10.224 1.8 9.621 1.8 9C1.8 8.379 1.89 7.776 2.034 7.2H5.076C5.004 7.794 4.95 8.388 4.95 9C4.95 9.612 5.004 10.206 5.076 10.8H2.034ZM9 1.827C9.747 2.907 10.35 4.113 10.719 5.4H7.281C7.65 4.113 8.253 2.907 9 1.827ZM15.228 5.4H12.573C12.2913 4.28531 11.8742 3.20931 11.331 2.196C12.987 2.763 14.364 3.906 15.228 5.4ZM9 0C4.023 0 0 4.05 0 9C0 11.3869 0.948211 13.6761 2.63604 15.364C3.47177 16.1997 4.46392 16.8626 5.55585 17.3149C6.64778 17.7672 7.8181 18 9 18C11.3869 18 13.6761 17.0518 15.364 15.364C17.0518 13.6761 18 11.3869 18 9C18 7.8181 17.7672 6.64778 17.3149 5.55585C16.8626 4.46392 16.1997 3.47177 15.364 2.63604C14.5282 1.80031 13.5361 1.13738 12.4442 0.685084C11.3522 0.232792 10.1819 0 9 0Z" fill="#667499"/>
+                    </svg>
+                    <span class="text-xs text-gray-500">
+                        www.evergreenhospital.com
+                    </span>
 
-              <cornie-text-area
-                :rules="required"
-                v-model="onsetnote"
-                placeholder="Placeholder"
-                label="Notes"
-                class="w-full"
-                rows="4"
-              />
-     
-      </accordion-component>
-   
-    </v-form>
+               </span>
+               <span class="flex space-x-2">
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 0H2C1.175 0 0.5075 0.675 0.5075 1.5L0.5 10.5C0.5 11.325 1.175 12 2 12H14C14.825 12 15.5 11.325 15.5 10.5V1.5C15.5 0.675 14.825 0 14 0ZM14 3L8 6.75L2 3V1.5L8 5.25L14 1.5V3Z" fill="#114FF5"/>
+                    </svg>
+
+                    <span class="text-xs text-gray-500">
+                       hello.evergreenhospital.ng
+                    </span>
+
+               </span>
+               <span class="flex space-x-2">
+                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.965 6.0925C4.045 8.215 5.785 9.9475 7.9075 11.035L9.5575 9.385C9.76 9.1825 10.06 9.115 10.3225 9.205C11.1625 9.4825 12.07 9.6325 13 9.6325C13.4125 9.6325 13.75 9.97 13.75 10.3825V13C13.75 13.4125 13.4125 13.75 13 13.75C5.9575 13.75 0.25 8.0425 0.25 1C0.25 0.5875 0.5875 0.25 1 0.25H3.625C4.0375 0.25 4.375 0.5875 4.375 1C4.375 1.9375 4.525 2.8375 4.8025 3.6775C4.885 3.94 4.825 4.2325 4.615 4.4425L2.965 6.0925Z" fill="#35BA83"/>
+                    </svg>
+
+                    <span class="text-xs text-gray-500">
+                      08167743034, 08032244859
+                    </span>
+
+               </span>
+
+           </div>
+       </div>
+       <div class="grid grid-cols-2 gap-4 mt-5">
+          <patient-card :practitionerId="practitionerId"/>
+           <div class="w-full bg-white shadow p-5 rounded">
+                <span class="text-sm text-black font-bold">
+                Basic Info
+                </span>
+                <div class="grid grid-cols-2 gap-1 mt-5">
+                <span class="flex space-x-2">
+                    <span class="text-sm">Canonical - </span>  <span class="text-xs mt-1 text-gray-400">{{instantiatesCanonical}}</span> 
+                </span>
+                    <span class="flex space-x-2">
+                    <span class="text-sm">Uri - </span>  <span class="text-xs mt-1 text-gray-400">{{instantiatesUri}}</span> 
+                </span>
+                    <span class="flex space-x-2 mt-4">
+                    <span class="text-sm">Status - </span>  <span class="text-xs mt-1 text-gray-400">{{status}}</span> 
+                </span>
+                    <span class="flex space-x-2 mt-4">
+                    <span class="text-sm">Date - </span>  <span class="text-xs mt-1 text-gray-400">{{  new Date( date ?? Date.now()).toLocaleDateString() }}</span> 
+                </span>
+                    <span class="flex space-x-2 mt-4">
+                    <span class="text-sm">Relationship - </span>  <span class="text-xs mt-1 text-gray-400">{{relationship}}</span> 
+                </span>
+                    <span class="flex space-x-2 mt-4">
+                    <span class="text-sm">Sex - </span>  <span class="text-xs mt-1 text-gray-400">{{sex}}</span> 
+                </span>
+                    <span class="flex space-x-2 mt-4">
+                    <span class="text-sm">Canonical - </span>  <span class="text-xs mt-1 text-gray-400">{{instantiatesCanonical}}</span> 
+                </span>
+                
+
+                </div>
+            </div>
+       </div>
+       <div class="grid grid-cols-2 gap-4 mt-5">
+           <div class="w-full bg-blue-50 shadow rounded p-5">
+                <span class="text-sm text-black font-bold">
+                    Born    
+                </span>
+                 <span class="flex space-x-4 mt-4">
+                    <span class="text-sm float-left">Date/time  </span>  <span class="text-xs mt-1 text-gray-400">{{ new Date( bornDateTime ?? Date.now()).toLocaleDateString() }}</span> 
+                    <span class="text-sm float-right">String  </span>  <span class="text-xs mt-1 text-gray-400">{{ bornString }}</span> 
+                </span>
+           </div>
+           <div class="w-full bg-blue-50 shadow rounded p-5">
+                <span class="text-sm text-black font-bold">
+                    Age    
+                </span>
+                 <span class="flex space-x-4 mt-4">
+                    <span class="text-sm float-left">Age  </span>  <span class="text-xs mt-1 text-gray-400">{{ oneage }} Year</span> 
+                    <span class="text-sm float-right">String  </span>  <span class="text-xs mt-1 text-gray-400">{{ agemesurable.string }}</span> 
+                </span>
+           </div>
+       </div>
+         <div class="grid grid-cols-2 gap-4 mt-5">
+           <div class="w-full bg-white shadow rounded p-5">
+                <span class="text-sm text-black font-bold">
+                   Deceased
+                </span>
+                 <span class="flex space-x-4 mt-4">
+                    <span class="text-sm float-left">Date/time  </span>  <span class="text-xs mt-1 text-gray-400">{{ new Date( deceasedtimeable.date ?? Date.now()).toLocaleDateString() }}</span> 
+                    <span class="text-sm float-right">String  </span>  <span class="text-xs mt-1 text-gray-400">{{ deceasedmeasurable.string }}</span> 
+                </span>
+                 <span class="flex space-x-4 mt-4">
+                    <span class="text-sm float-left">Range (min)  </span>  <span class="text-xs mt-1 text-gray-400">{{ deceasedmeasurable.min }}</span> 
+                    <span class="text-sm float-right">Range (max)  </span>  <span class="text-xs mt-1 text-gray-400">{{ deceasedmeasurable.max }}</span> 
+                </span>
+           </div>
+           <div class="w-full bg-white shadow rounded p-5">
+                <span class="text-sm text-black font-bold">
+                    Condition (Related Problem)    
+                </span>
+                 <span class="flex space-x-4 mt-4">
+                    <span class="text-sm float-left">Code  </span>  <span class="text-xs mt-1 text-gray-400">{{ code }} </span> 
+                    <span class="text-sm float-right">Outcome  </span>  <span class="text-xs mt-1 text-gray-400">{{ outcome }}</span> 
+                </span>
+                 <span class="flex space-x-4 mt-4">
+                    <span class="text-sm float-left">Contributed to Death?  </span>  <span class="text-xs mt-1 text-gray-400">{{ contributedToDeath }}</span> 
+                </span>
+           </div>
+       </div>
+   </div>
     <template #actions>
       <cornie-btn
         @click="show = false"
@@ -189,18 +131,8 @@
       >
         Cancel
       </cornie-btn>
-      <cornie-btn  :loading="loading"
-            @click="apply" class="text-white bg-danger px-3 rounded-xl">
-       Save
-      </cornie-btn>
     </template>
   </big-dialog>
-      <reference-modal
-          :conditions="conditions"
-          :allergy="allergy"
-          @show:modal="showRef"
-          v-model:visible="showRefModal"
-        />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -209,22 +141,21 @@ import BigDialog from "@/components/bigdialog.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import HospitalIcon from "@/components/icons/hospital.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
 import CornieTextArea from "@/components/textarea.vue";
 import DatePicker from "./datepicker.vue";
 import Measurable from "@/components/measurable.vue";
 import ReferenceModal from "./reasonref.vue";
-// import EncounterSelect from "./encounter-select.vue";
-// import AssessmentSelect from "./assessment-select.vue";
-// import PractitionerSelect from "./practitioner-select.vue";
  import { IPatient } from "@/types/IPatient";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import TimeablePicker from "@/components/timeable.vue";
+import PatientCard from "@/components/patientcard.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
-import Ihistory,{BasicInfo, OnSet, Age, ConditionRelatedPerson, Born} from "@/types/Ihistory";
+import Ihistory from "@/types/Ihistory";
 
 const history = namespace("history");
 const patients = namespace("patients");
@@ -247,7 +178,7 @@ const measurable = {
   string: "",
 };
 @Options({
-  name: "AddMedicalHistory",
+  name: "ViewMedicalHistory",
   components: {
     BigDialog,
     TimeablePicker,
@@ -256,14 +187,13 @@ const measurable = {
     AutoComplete,
     DatePicker,
     Measurable,
-    // EncounterSelect,
-    // AssessmentSelect,
-    // PractitionerSelect,
+    HospitalIcon,
     AccordionComponent,
     ReferenceModal,
     CornieSelect,
     CornieInput,
     CornieTextArea,
+    PatientCard,
   },
 })
 export default class AddCondition extends Vue {
@@ -272,6 +202,9 @@ export default class AddCondition extends Vue {
 
    @Prop({ type: String, default: '' })
   id!: string
+
+   @Prop({ type: String, default: '' })
+  practitionerId!: string
 
 
   @PropSync("modelValue")
@@ -305,7 +238,8 @@ loading= false;
   status = "";
   dataAbsentReason = "";
   date = "";
-   name = "";
+  name="John Sins";
+  // name = this.PatientName.firstname +' '+ this.PatientName.lastname;
   relationship = "";
   sex = "";
 
@@ -356,16 +290,13 @@ deceasedmeasurable = {...measurable};
   get patientId() {
     return this.$route.params.patientId;
   }
-  get asinglename(){
-    return this.PatientName.firstname +' '+ this.PatientName.lastname;
-  }
-    get PatientName() {
-         var id = this.$route.params.patientId;
-        const pt = this.patients.find((i: any) => i.id === id);
-        return {
-            ...pt
-        }
-    }
+    // get PatientName() {
+    //      var id = this.$route.params.patientId;
+    //     const pt = this.patients.find((i: any) => i.id === id);
+    //     return {
+    //         ...pt
+    //     }
+    // }
 
   get onset() {
     return {

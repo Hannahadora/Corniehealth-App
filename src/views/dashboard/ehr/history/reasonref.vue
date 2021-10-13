@@ -12,16 +12,16 @@
             />
             </span>
              <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">Problem </h2>
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">Reason Reference </h2>
               <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
              </div>
             </div>
             <div class="flex flex-col p-3 mb-7 h-96">
                 <div class="border-b-2 pb-3 border-dashed">
-                    <label for="ecounter" class="flex capitalize mb-5 mt-5 text-black text-xs font-bold">status
+                    <label for="ecounter" class="flex capitalize mb-5 mt-5 text-black text-xs font-bold">Select
                     </label>
                     <div class="w-full flex space-x-4">
-                        <div class="grid grid-cols-3 gap-3">
+                        <div class="grid grid-cols-3 gap-1">
 
                         <cornie-radio  label="Condition"  class="text-xs" name="reference" @click="setValue('Condition')"/>
                          <cornie-radio label="Diagnostic Report"  class="text-xs" name="reference"   @click="setValue('report')"/>
