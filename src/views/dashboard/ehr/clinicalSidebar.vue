@@ -272,7 +272,7 @@ get fullname() {
     // return name;
     const current_patient =  this.patient
      return {
-                code: current_patient.id,
+                code: this.patient.id,
                 fullname: `${current_patient.firstname} ${current_patient.lastname}`,
                 email: this.printEmail(current_patient),
                 address: this.printAddress(current_patient),

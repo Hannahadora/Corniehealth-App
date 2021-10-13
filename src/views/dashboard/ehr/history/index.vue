@@ -33,7 +33,7 @@
 import Ihistory from "@/types/Ihistory";
 import { Options, Vue } from "vue-class-component";
 import HistoryEmptyState from "./emptyState.vue";
-import HistorExistyingState from "./existingState.vue";
+import HistoryExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
 const history = namespace("history");
@@ -42,7 +42,7 @@ const history = namespace("history");
   name: "HistoryIndex",
   components: {
     HistoryEmptyState,
-    HistorExistyingState,
+    HistoryExistingState,
   },
 })
 export default class HistoryIndex extends Vue {
@@ -54,7 +54,7 @@ export default class HistoryIndex extends Vue {
     return this.historys.length < 1;
   }
  get activePatientId() {
-      const id = this.$route?.params?.id as string;
+      const id = this.$route?.params?.patientId as string;
       return id;
   }
 
