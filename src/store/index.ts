@@ -28,6 +28,7 @@ import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
 import ImpressionStore from "./impression";
+import HistoryStore from "./history";
 import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
@@ -71,6 +72,7 @@ export default createStore({
     task: TaskStore,
     allergy: AllergyStore,
     impression:ImpressionStore,
+    history: HistoryStore,
 
     vitals: VitalsStore,
     procedure: ProcedureStore,

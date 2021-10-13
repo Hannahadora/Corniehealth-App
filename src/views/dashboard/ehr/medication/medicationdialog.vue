@@ -68,15 +68,6 @@
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                   <!-- <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="allPerformer"
-                    v-model="requestModel.requestDetails.recorder"
-                    label="recorder"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>  -->
                   <div class="w-full">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">recorder</label>
                     <input-desc-rounded  :info="''">
@@ -89,15 +80,6 @@
                       <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
                     </input-desc-rounded>
                   </div>
-                  <!-- <cornie-select
-                   class="required"
-                    :rules="required"
-                    :items="allRequester"
-                    v-model="requestModel.requestDetails.requester"
-                    label="requester"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select> -->
                 </div>
               </template>
         </accordion-component>
@@ -110,13 +92,6 @@
                       <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
                     </input-desc-rounded>
                 </div>
-                <!-- <cornie-select
-                class="required"
-                :items="allRequester"
-                v-model="requestModel.subject.subject"
-                label="subject"
-                >
-                </cornie-select> -->
                 <cornie-select
                 v-if="PatientName.insurances.length > 0"
                 class="required"
@@ -140,14 +115,6 @@
             </div>
                 <p class="text-gray-600 text-xs  pb-3 italic border-b-2 border-dashed">Dispenser</p>
             <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                    <!-- <cornie-select
-                class="required cursor-pointer"
-                :items="allPerformer"
-                v-model="requestModel.performer.dispenser"
-                label="dispenser"
-                placeholder="--Select--"
-                >
-                </cornie-select> -->
                   <div class="w-full">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">dispenser</label>
                     <input-desc-rounded :info="''">
@@ -166,13 +133,6 @@
                 placeholder="--Select--"
                 >
                 </cornie-select>
-                <!-- <cornie-select
-                :items="allPerformer"
-                v-model="requestModel.medicationAdministration.performer"
-                label="performer"
-                placeholder="--Select--"
-                >
-                </cornie-select> -->
                  <div class="w-full">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">dispenser</label>
                     <input-desc-rounded :info="''">
@@ -598,18 +558,12 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  // @Prop({ type: Object, required: false, default: { ...emptyRequest} })
-  // request!: IRequest;
-  
+ 
   requestModel = {} as IRequest;
 
   @request.Action
   getRequestById!: (id: string) => IRequest;
 
-  // @Watch("request")
-  // requestUpdated(request: IRequest) {
-  //   this.requestModel = JSON.parse(JSON.stringify({ ...request }));
-  // }
 
   @patients.State
   patients!: IPatient[];
