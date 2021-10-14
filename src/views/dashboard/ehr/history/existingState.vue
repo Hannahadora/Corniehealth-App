@@ -24,17 +24,17 @@
       </span>
       <cornie-table :columns="headers" v-model="sortHistory">
         <template #actions="{ item }">
-            <!-- <div
+            <div
             @click="deleteItem(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <new-view-icon class="text-blue-300 fill-current" />
-            <span class="ml-3 text-xs">View</span>
-          </div> -->
+            <new-view-icon class="text-red-800 fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
            <div
             @click="viewHistory(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
+             >
             <new-view-icon class="text-blue-300 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
@@ -82,6 +82,9 @@
         
           <view-modal  
        :id="historyId" 
+        :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="update"
        :practitionerId="practitionerId"
          @history-added="historyAdded"
           @show:modal="viewHistory"
@@ -240,13 +243,13 @@ practitionerId="";
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this allergy",
-      title: "Delete allergy"
+      message: "You are about to delete this Family history",
+      title: "Delete family history"
     });
     if (!confirmed) return;
 
-    if (await this.deleteHistory(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
-    else window.notify({ msg: "Allergy not cancelled", status: "error" });
+    if (await this.deleteHistory(id)) window.notify({ msg: "Family history deleted", status: "success" });
+    else window.notify({ msg: "Family history noy deleted", status: "error" });
   }
  
  async viewHistory(value:string){

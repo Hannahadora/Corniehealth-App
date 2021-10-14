@@ -121,9 +121,13 @@
                
               <div class="w-full cursor-pointer"  @click="showRef">
                 <label class="flex normal-case mb-0  text-black text-sm font-bold">Reason Reference</label>
-                        <input-desc-rounded     :info="''" class="cursor-pointer">
+                    <input-desc-rounded     :info="''" class="cursor-pointer">
                           <input type="text"  disabled  :value="reasonReference" placeholder="Select" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
-                        </input-desc-rounded>
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current"/>
+
+                          </span>
+                  </input-desc-rounded>
                         
                  <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
               </div>
@@ -214,9 +218,7 @@ import CornieTextArea from "@/components/textarea.vue";
 import DatePicker from "./datepicker.vue";
 import Measurable from "@/components/measurable.vue";
 import ReferenceModal from "./reasonref.vue";
-// import EncounterSelect from "./encounter-select.vue";
-// import AssessmentSelect from "./assessment-select.vue";
-// import PractitionerSelect from "./practitioner-select.vue";
+import plusIcon from "@/components/icons/plus.vue";
  import { IPatient } from "@/types/IPatient";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -256,9 +258,7 @@ const measurable = {
     AutoComplete,
     DatePicker,
     Measurable,
-    // EncounterSelect,
-    // AssessmentSelect,
-    // PractitionerSelect,
+    plusIcon,
     AccordionComponent,
     ReferenceModal,
     CornieSelect,
@@ -553,3 +553,12 @@ async showRef(value:any){
   }
 }
 </script>
+<style scoped>
+
+.aadd{
+      float: right;
+    position: relative;
+    bottom: 30px;
+    margin-right: 10px;
+}
+</style>

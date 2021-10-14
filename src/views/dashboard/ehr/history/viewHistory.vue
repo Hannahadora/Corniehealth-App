@@ -3,6 +3,8 @@
     v-model="show"
     title="View Family History" 
     class=""
+       :id="newhistoryId"
+    :horizontal="true"
   >
    <div class="w-full">
        <div class="w-full bg-white shadow p-5">
@@ -132,7 +134,41 @@
         Cancel
       </cornie-btn>
     </template>
+    <template #menuactions>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+             >
+            <new-view-icon class="text-blue-300 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div>
+          <div
+            @click="showHistory()"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <edit-icon class="text-purple-700 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            @click="showNewStatus"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <update-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs"> Update Status </span>
+          </div>
+    </template>
   </big-dialog>
+    <status-modal
+            :id="id" 
+           :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="dateUpdated"
+          v-model="showNewStatusModal"/>
+           <history-modal  
+        :id="id" 
+         @history-added="historyAdded"
+          @show:modal="showHistory"
+          v-model="showHistoryModal"/>
+    
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -154,8 +190,13 @@ import TimeablePicker from "@/components/timeable.vue";
 import PatientCard from "@/components/patientcard.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
-import { cornieClient } from "@/plugins/http";
+import HistoryModal from "./historyDialog.vue";
+import StatusModal from "./status-update.vue";
 import Ihistory from "@/types/Ihistory";
+import EditIcon from "@/components/icons/edit.vue";
+import NewViewIcon from "@/components/icons/newview.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+
 
 const history = namespace("history");
 const patients = namespace("patients");
@@ -183,13 +224,18 @@ const measurable = {
     BigDialog,
     TimeablePicker,
     CornieNumInput,
+     NewViewIcon,
+    UpdateIcon,
+    EditIcon,
     CornieBtn,
     AutoComplete,
+    StatusModal,
     DatePicker,
     Measurable,
     HospitalIcon,
     AccordionComponent,
     ReferenceModal,
+    HistoryModal,
     CornieSelect,
     CornieInput,
     CornieTextArea,
@@ -199,6 +245,14 @@ const measurable = {
 export default class AddCondition extends Vue {
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
+
+
+  @Prop({ type: String, default: '' })
+  updatedBy!: string
+  @Prop({ type: String, default: '' })
+  currentStatus!: string
+  @Prop({ type: String, default: '' })
+  dateUpdated!: string
 
    @Prop({ type: String, default: '' })
   id!: string
@@ -228,11 +282,13 @@ export default class AddCondition extends Vue {
   historymodel = {} as Ihistory;
 
 showRefModal = false;
+showHistoryModal=false;
+showNewStatusModal=false;
 condtions = [];
 allergy =[];
 refItems=[];
 loading= false;
-
+newhistoryId="";
   instantiatesCanonical = "";
   instantiatesUri = "";
   status = "";
@@ -285,6 +341,10 @@ deceasedmeasurable = {...measurable};
     onsetString = "";
 
 
+async showNewStatus(){
+  console.log("Turth");
+    this.showNewStatusModal = true;
+  }
 
 
   get patientId() {
@@ -414,7 +474,12 @@ deceasedmeasurable = {...measurable};
      this.bornString = history.born.bornString
     
   }
- 
+ async setId(){
+    this.newhistoryId = this.id;
+}
+  async showHistory(){
+      this.showHistoryModal = true;
+  }
   get payload() {
     return {
       patientId: this.patientId,
@@ -433,54 +498,14 @@ async showRef(value:any){
   this.showRefModal = true;
   this.reasonReference = value;
 }
-  done() {
-    this.$emit("history-added");
-    this.show = false;
-  }
-  async  apply() {
-     this.loading = true
-    if (this.id) await this.updatehistory()
-    else await this.createhistory()
-    this.loading = false
-    }
-  async createhistory() {
-     try {
-      const response = await cornieClient().post('/api/v1/family-history', this.payload)
-      if (response.success) {
-        window.notify({ msg: 'Medical family history created', status: 'success' })
-        this.done();
-      }
-    } catch (error) {
-      console.log(error)
-      window.notify({ msg: error, status: 'error' })
-    
-    }
-  }
-  async updatehistory(){
-    const url = `/api/v1/family-history/${this.id}`
-    const payload = {
-       ...this.payload,
-      }
-    try {
-      const response = await cornieClient().put(url, payload)
-      if (response.success) {
-        window.notify({ msg: 'Medical history  updated', status: 'success' })
-      this.done();
 
-      }
-    } catch (error) {
-      window.notify({ msg: error.data.response.message, status: 'error' })
-    }
-  }
-  async fetchAllergy() {
-    const AllAllergy = cornieClient().get(`/api/v1/allergy/findAllByPatient/${this.patientId}`);
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data;
-  }
+mounted(){
+this.setId();
+}
 
  async created() {
+   this.setId();
    this.setHistory();
-   this.fetchAllergy();
   }
 }
 </script>
