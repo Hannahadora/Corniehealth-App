@@ -216,7 +216,8 @@ export default class Settings extends Vue {
   }
 
   mapUrl(url: string) {
-    const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
+    const settingsBase = this.$router.resolve({ name: "Test URL" }).href;
+    // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
     return `${settingsBase}/${url}`.replace("//", "/");
   }
 

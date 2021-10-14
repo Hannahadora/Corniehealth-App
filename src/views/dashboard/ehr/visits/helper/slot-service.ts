@@ -171,7 +171,7 @@ export default {
         const schedulesForDate = filterByDate(schedules, date);
         const scheduleSlots = extractSlotsFromSchedules(schedulesForDate);
         
-        if (scheduleSlots?.length > 0) return scheduleSlots;
+        if (scheduleSlots?.length > 0) return scheduleSlots; 
         schedulesForDate.forEach(schedule => {
             availableSlots.push(...generateSlots(schedule));
         });

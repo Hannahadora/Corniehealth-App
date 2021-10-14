@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import { SettingsRoute } from "./settings";
+import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
@@ -70,87 +71,113 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
-      ExperienceRoutes,
-
       {
-        path: "clinical/:id",
+        path: "clinical",
+        props: true,
         name: "Patient EHR",
-        component: () => import("@/views/dashboard/ehr/index.vue"),
-        redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
-        children: [
-          {
-            path: "",
-            props: true,
-            name: "EHR",
-            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
-          },
-          {
-            path: "health-trend/:patientId?",
-            name: "Health Trend",
-            component: () =>
-              import("@/views/dashboard/ehr/healthtrend/index.vue"),
-          },
-          {
-            path: "care-team",
-            name: "EHR - Care Team",
-            component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
-          },
-          {
-            path: "conditions",
-            name: "Condition/Problem",
-            alias: "condition",
-            component: () =>
-              import("@/views/dashboard/ehr/conditions/index.vue"),
-          },
-          {
-            path: "allergy",
-            props: true,
-            name: "Allergy & Intolerance",
-            component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
-          },
-          {
-            path: "medications",
-            props: true,
-            name: "Medications",
-            component: () =>
-              import("@/views/dashboard/ehr/medication/index.vue"),
-          },
-          {
-            path: "diagnostics",
-            props: true,
-            name: "Diagnostics",
-            component: () =>
-              import("@/views/dashboard/ehr/diagnostics/index.vue"),
-          },
-          {
-            path: "vitals",
-            props: true,
-            name: "Vital Signs",
-            component: () => import("@/views/dashboard/ehr/vitals/index.vue"),
-          },
-          {
-            path: "encounter",
-            props: true,
-            name: "Encounter",
-            component: () =>
-              import("@/views/dashboard/ehr/encounter/index.vue"),
-          },
-          {
-            path: "clinical-impressions",
-            props: true,
-            name: "Clinical Impressions",
-            component: () =>
-              import("@/views/dashboard/ehr/impression/index.vue"),
-             },{
-            path: "procedure",
-            props: true,
-            name: "Procedures",
-            component: () =>
-              import("@/views/dashboard/ehr/procedures/index.vue"),
-          },
-          
-        ],
+        component: () =>
+          import("@/views/dashboard/ehr/landing.vue"),
+          children: [
+            {
+              path: "",
+              props: true,
+              component: () =>
+                import("@/views/dashboard/ehr/landing/index.vue"),
+            },
+            ClinicalsRoute,
+          ]
       },
+      ExperienceRoutes,
+      
+      // {
+        // path: "clinical/:id",
+        // name: "Patient EHR",
+        // component: () => import("@/views/dashboard/ehr/index.vue"),
+        // redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
+        // children: [
+        //   {
+        //     path: "",
+        //     props: true,
+        //     name: "EHR",
+        //     component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+        //   },
+        //   {
+        //     path: "health-trend/:patientId?",
+        //     name: "Health Trend",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/healthtrend/index.vue"),
+        //   },
+        //   {
+        //     path: "care-team",
+        //     name: "EHR - Care Team",
+        //     component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
+        //   },
+        //   {
+        //     path: "care-plan",
+        //     name: "EHR - Care Plan",
+        //     component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
+        //   },
+        //   {
+        //     path: "visit",
+        //     name: "EHR - Visit",
+        //     component: () => import("@/views/dashboard/ehr/visits/index.vue"),
+        //   },
+        //   {
+        //     path: "conditions",
+        //     name: "Condition/Problem",
+        //     alias: "condition",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/conditions/index.vue"),
+        //   },
+        //   {
+        //     path: "allergy",
+        //     props: true,
+        //     name: "Allergy & Intolerance",
+        //     component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
+        //   },
+        //   {
+        //     path: "medications",
+        //     props: true,
+        //     name: "Medications",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/medication/index.vue"),
+        //   },
+        //   {
+        //     path: "diagnostics",
+        //     props: true,
+        //     name: "Diagnostics",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/diagnostics/index.vue"),
+        //   },
+        //   {
+        //     path: "vitals",
+        //     props: true,
+        //     name: "Vital Signs",
+        //     component: () => import("@/views/dashboard/ehr/vitals/index.vue"),
+        //   },
+        //   {
+        //     path: "encounter",
+        //     props: true,
+        //     name: "Encounter",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/encounter/index.vue"),
+        //   },
+        //   {
+        //     path: "clinical-impressions",
+        //     props: true,
+        //     name: "Clinical Impressions",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/impression/index.vue"),
+        //      },{
+        //     path: "procedure",
+        //     props: true,
+        //     name: "Procedures",
+        //     component: () =>
+        //       import("@/views/dashboard/ehr/procedures/index.vue"),
+        //   },
+          
+        // ],
+      // },
       {
         path: "settings/",
         name: "Settings",
