@@ -19,7 +19,6 @@
           <v-form class="mt-5 w-full" @submit="submit">
             <div class="w-full grid grid-cols-2 gap-5">
               <cornie-input
-                :rules="required"
                 v-model="identifier"
                 label="Identifier"
                 class="bg-gray-200" disabled
@@ -408,7 +407,7 @@ activeStates = ["active", "inactive"]
           "/api/v1/organization/myOrg/get"
         );
         console.log(response);
-        this.identifier = response.data.identifier;
+        this.identifier = response.data.id;
       } catch (error) {
         window.notify({ msg: "Could not fetch organization", status: "error" });
       }

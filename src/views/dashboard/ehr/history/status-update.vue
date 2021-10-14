@@ -36,7 +36,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-           Status
+           Update
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>

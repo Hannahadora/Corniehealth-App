@@ -1,181 +1,129 @@
 <template>
-  <div class="">
-    <modal :visible="visible">
-      <div
-        class="fixed z-10 inset-0 overflow-y-auto"
-        aria-labelledby="modal-title"
-        role="dialog"
-        aria-modal="true"
-      >
-        <div
-          class="
-            flex
-            items-end
-            justify-center
-            min-h-screen
-            pt-4
-            px-4
-            pb-20
-            text-center
-            sm:block
-            sm:p-0
-          "
-        >
-          <div
-            class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-            aria-hidden="true"
-          ></div>
+  <cornie-dialog v-model="show" center class="w-5/12 h-2/3">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title  class="w-full">
+          <cornie-icon-btn @click="show = false">
+            <arrow-left-icon />
+          </cornie-icon-btn>
+          <div class="w-full">
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">  Deaactivate Account</h2>
+            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
+          </div>
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+              <div class="w-full">
+          <div class="container  content-con">
+            <div class="w-full py-3">
+               <date-picker
+                                      v-model="deactivateTillDate"
+                                     class="w-full mb-5"
+                                       label="Deactivation Date"
+                                    ></date-picker>
+                 
+                      <cornie-text-area
+                      :rules="required"
 
-          <!-- This element is to trick the browser into centering the modal contents. -->
-          <span
-            class="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-            >&#8203;</span
-          >
-          <div
-            class="
-              inline-block
-              align-bottom
-              bg-white
-              rounded-lg
-              text-left
-              overflow-hidden
-              shadow-xl
-              transform
-              transition-all
-              sm:my-8
-              sm:align-middle
-              sm:max-w-sm
-              sm:w-full
-            "
-          >
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-end">
-                <div class="mt-3 text-center sm:mt-0 sm:text-left">
-                  <h3
-                    class="text-lg leading-6 text-primary font-medium"
-                    id="modal-title"
-                  >
-                    Deaactivate Account
-                  </h3>
-                  <div class="mt-4">
-                    <cornie-input
-                      label="Deactivation Date"
-                      class="mb-5"
-                      v-model="deactivateTillDate"
-                    />
-                    <d-text
-                      label="Reason For Deactivating"
+                      placeholder="Placeholder"
+                    label="Reason For Deactivating"
                       v-model="reasonsForDeactivation"
+                      class="w-full mt-5"
+                      rows="4"
                     />
-                  </div>
-                </div>
-                <close-icon
-                  class="items-end absolute right-5 top-5 cursor-pointer"
-                  @click="show = false"
-                />
-              </div>
-            </div>
-            <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-              <cornie-btn
-                @click="deactivate"
-                :loading="loading"
-                class="
-                  w-full
-                  inline-flex
-                  justify-center
-                  rounded-full
-                  border border-transparent
-                  shadow-sm
-                  px-4
-                  py-2
-                  bg-danger
-                  text-base
-                  font-medium
-                  text-white
-                  focus:outline-none
-                  sm:ml-3
-                  sm:w-auto
-                  sm:text-sm
-                "
-                type="submit"
-              >
-                Proceed
-              </cornie-btn>
-              <button
-                @click="$router.push('bank-accounts')"
-                type="button"
-                class="
-                  mt-3
-                  w-full
-                  inline-flex
-                  justify-center
-                  rounded-full
-                  border border-white-300
-                  shadow-sm
-                  px-4
-                  py-2
-                  bg-white
-                  text-base
-                  font-medium
-                  text-gray-700
-                  hover:bg-gray-50
-                  focus:outline-none
-                  sm:mt-0
-                  sm:ml-3
-                  sm:w-auto
-                  sm:text-sm
-                "
-              >
-                Cancel
-              </button>
             </div>
           </div>
         </div>
-      </div>
-    </modal>
-  </div>
+      </cornie-card-text>
+      <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            @click="deactivate"
+                :loading="loading"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+           Deactivate
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card>
+    </cornie-card>
+  </cornie-dialog>
 </template>
-<script>
-import Modal from "@/components/modal.vue";
-import DText from "./dtext.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
-import { cornieClient } from "@/plugins/http";
 
-export default {
-  name: "extraModal",
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieCard from "@/components/cornie-card";
+import Textarea from "@/components/textarea.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import { cornieClient } from "@/plugins/http";
+import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
+import CDelete from "@/components/icons/adelete.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
+import AccordionComponent from "@/components/dialog-accordion.vue";
+import DatePicker from "./datepicker.vue";
+import CornieTextArea from "@/components/textarea.vue"
+import { string } from "yup";
+
+
+@Options({
+  name: "statusDialog",
   components: {
-    Modal,
-    CornieInput,
+    ...CornieCard,
+    CornieIconBtn,
     ArrowLeftIcon,
-    CloseIcon,
-    EyeIcon,
-    DeleteIcon,
-    DText,
+    DatePicker,
+    CDelete,
+    DeleteorangeIcon,
+    CornieTextArea,
+    CancelIcon,
+    CornieDialog,
+    AccordionComponent,
+    Textarea,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    paymentId: {
-      type: String,
-    },
-  },
-  data() {
-    return {
-      loading: false,
-      reasonsForDeactivation: "",
-      deactivateTillDate: "",
-    };
-  },
-  methods: {
-    async deactivate() {
+})
+export default class Medication extends Vue {
+@PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: String, default: "" })
+  paymentId!: string;
+
+   @Prop({ type: String, default: "" })
+  updatedBy!: string;
+
+   @Prop({ type: String, default: "" })
+  currentStatus!: string;
+
+  @Prop({ type: String, default: "" })
+  dateUpdated!: string;
+
+status = "";
+  loading = false;
+  expand = false;
+  isVisible = "";
+ reasonsForDeactivation = "";
+      deactivateTillDate= "";
+
+  required = string().required();
+
+  get  payload() {
+      return {
+        reasonsForDeactivation: this.reasonsForDeactivation,
+        deactivateTillDate: this.deactivateTillDate,
+      };
+    }
+
+ done() {
+    this.show = false;
+  }
+     async deactivate() {
       this.loading = true;
       try {
         const response = await cornieClient().post(
@@ -184,31 +132,112 @@ export default {
         );
         if (response.success) {
           this.loading = false;
-          alert("Payment account deactivated");
-        } else {
-          alert(response.message);
-        }
+           window.notify({ msg: 'Payment account deactivated', status: 'success' })
+            this.done();
+        } 
       } catch (error) {
         this.loading = false;
-        console.error(error);
+        window.notify({ msg:error, status: 'error' })
       }
-    },
-  },
-  computed: {
-    payload() {
-      return {
-        reasonsForDeactivation: this.reasonsForDeactivation,
-        deactivateTillDate: this.deactivateTillDate,
-      };
-    },
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
-};
+    }
+ 
+ 
+ 
+  async created() {
+   
+  }
+}
 </script>
+
+<style>
+
+.bg-gray {
+    background-color: #F6F8F9;
+}
+.icon-wrap {
+   content:counter(step);
+  counter-increment: step;
+    background: #fff;
+    border-radius: 50%;
+        top: -0.3em;
+    z-index: 1;
+    color: #fff;
+    border: 2px solid #FE4D3C;
+    display: block;
+    height: 1.4em;
+    margin: 0 auto -0.6em;
+   left: -54em;
+    right: 0;
+    position: absolute;
+    width: 1.4em;
+}
+.icon-wrap2 {
+    background: #fff;
+    border-radius: 50%;
+    top: -0.3em;
+    z-index: 1;
+    color: #fff;
+    border: 2px solid #FE4D3C;
+    display: block;
+    height: 1.4em;
+    margin: 0 auto -0.6em;
+    left: -7.5em;
+    right: 0;
+    position: absolute;
+    width: 1.4em;
+}
+.icon-wrap3 {
+    background: #fff;
+    border-radius: 50%;
+    top: -0.3em;
+    z-index: -1;
+    color: #fff;
+    border: 2px solid #FE4D3C;
+    display: block;
+    height: 1.4em;
+    margin: 0 auto -0.6em;
+    left: 52em;
+    right: 0;
+    position: absolute;
+    width: 1.4em;
+}
+.icon-wrap4 {
+    background: #fff;
+    border-radius: 50%;
+    top: -0.3em;
+    z-index: 1;
+    color: #fff;
+    border: 2px solid #FE4D3C;
+    display: block;
+    height: 1.4em;
+    margin: 0 auto -0.6em;
+    left: 42em;
+    right: 0;
+    position: absolute;
+    width: 1.4em;
+}
+ .icon-check-mark{
+    top: 1.3em;
+    z-index: 1;
+    left: 5em;
+    right: 0;
+    position: absolute;
+}
+.icon-check-mark2{
+       top: 1.3em;
+    z-index: 1;
+    left: 23em;
+    right: 0;
+    position: absolute;
+}
+.icon-check-mark3{
+      top: 1.3em;
+    z-index: 1;
+    left: 45.5em;
+    right: 0;
+    position: absolute;
+}
+.bg-danger-100{
+    background-color: #FE4D3C;
+}
+</style>
