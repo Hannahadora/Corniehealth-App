@@ -131,7 +131,7 @@
               <cornie-select
                 :rules="required"
                 v-model="consultationChannel"
-                label="Consulation Channel"
+                label="Consultation Channel"
                 :items="dropdown.ConsultationChannel"
               />
             </div>
@@ -247,6 +247,7 @@ export default class AddPractitioner extends Vue {
   jobDesignation = "";
   department = "";
   accessRole = "";
+
   qualificationIdentifier = "11-22";
   qualificationIssuer = "";
   licenseNumber = "";
@@ -294,6 +295,7 @@ export default class AddPractitioner extends Vue {
     this.consultationChannel = practitioner.consultationChannel;
     this.organizationId = practitioner.organizationId;
     this.hoursOfOperation = practitioner.hoursOfOperation;
+    this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
   }
   serializeDate(date: string) {
@@ -335,6 +337,7 @@ export default class AddPractitioner extends Vue {
     this.loading = true;
     if (this.id) await this.updatePractitioner();
     else await this.createPractitioner();
+    this.$router.back();
     this.loading = false;
   }
 
