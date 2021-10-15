@@ -17,7 +17,7 @@
                 <div class="w-full" style="position: relative">
                     <div class="" v-if="show" style="position:absolute; width:100% ">
                         <slot name="input"></slot>
-                        <div class="w-full mt-4 flex justify-end">
+                        <!-- <div class="w-full mt-4 flex justify-end">
                             <corniebtn :loading="false">
                                 <a @click="() => show = false" class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-2 px-4 rounded-full">
                                     Cancel
@@ -30,7 +30,7 @@
                                     Save
                                 </a>
                             </Button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 import DateIcon from '@/components/icons/calendar.vue'
 
 @Options({
@@ -51,6 +51,9 @@ import DateIcon from '@/components/icons/calendar.vue'
 export default class DateTimePicker extends Vue {
     date = new Date();
     show = false;
+
+    @Prop({ type: Boolean, default: false })
+    visible!: boolean;
 
     @Prop({ type: String, default: '' })
     label!: string;
@@ -63,6 +66,11 @@ export default class DateTimePicker extends Vue {
 
     showSelectArea() {
         this.show = !this.show;
+    }
+
+    @Watch('visible')
+    updateVissibility() {
+        this.show = this.visible;
     }
 }
 </script>

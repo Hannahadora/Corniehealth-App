@@ -166,7 +166,7 @@
                   </div>
 
                   <div>
-                    <DateTimePicker :label="'start DATE & Time'">
+                    <DateTimePicker :label="'start DATE & Time'" :visible="datePickerVissibility.first">
                       <template v-slot:labelicon>
                         <question-icon />
                       </template>
@@ -200,6 +200,8 @@
                         </label>
                         <input
                           v-model="data.startTime"
+                          @change="dateTimePickerUpdated(data.startDate, 'first')"
+                          @input="() => datePickerVissibility.first = true"
                           type="time"
                           class="w-full border rounded-md p-2"
                         />
@@ -207,7 +209,7 @@
                     </DateTimePicker>
                   </div>
                   <div>
-                    <DateTimePicker :label="'end DATE & Time'">
+                    <DateTimePicker :label="'end DATE & Time'" :visible="datePickerVissibility.second">
                       <template v-slot:labelicon>
                         <question-icon />
                       </template>
@@ -234,6 +236,8 @@
                         </label>
                         <input
                           v-model="data.endTime"
+                          @change="dateTimePickerUpdated(data.startDate, 'second')"
+                          @input="() => datePickerVissibility.second = true"
                           type="time"
                           class="w-full border rounded-md p-2"
                         />
@@ -588,6 +592,17 @@ locationInfo = [];
   @Watch('id')
   idChanged() {
     this.setTask()
+  }
+
+  datePickerVissibility: any = {
+    first: false,
+    second: false,
+  }
+  dateTimePickerUpdated(date: Date | string, key: string) {
+    // alert(date)
+    // if (date) {
+      this.datePickerVissibility[key] = false;
+    // }
   }
 
   async setTask() {
