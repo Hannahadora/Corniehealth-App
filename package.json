@@ -27,6 +27,7 @@
         "vue-class-component": "^8.0.0-rc.1",
         "vue-form-wizard": "^0.8.4",
         "vue-property-decorator": "^9.1.2",
+        "vue-range-component": "^1.0.3",
         "vue-router": "^4.0.8",
         "vue-select": "git+https://github.com/sagalbot/vue-select.git#feat/vue-3-compat",
         "vue-select-connorshea": "^3.12.1",

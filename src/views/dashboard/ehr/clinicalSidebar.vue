@@ -67,7 +67,7 @@
     <div class="mt-2 mb-5 rounded-lg bg-white  shadow-md w-full h-full max-h-full">
       <div class="w-full h-full p-2">
         <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-          <p class="text-black font-bold py-3 px-2">Recordss</p>
+          <p class="text-black font-bold py-3 px-2">Records</p>
           <icon-input
             autocomplete="off"
             type="search"
@@ -140,6 +140,8 @@ import eyeIcon from "@/components/icons/yelloweye.vue";
 import { namespace } from "vuex-class";
 import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { Prop, Ref } from "vue-property-decorator";
+import ClinicIcon from "@/components/icons/clinic.vue";
+
 
 
 
@@ -174,6 +176,7 @@ CareIcon,
 BillIcon,
 CorrespondIcon,
 AttachIcon,
+ClinicIcon,
 
 
   },
@@ -215,6 +218,11 @@ export default class Settings extends Vue {
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
+      {
+        name: "Progress Notes",
+        to: "progress-notes",
+        icon: "clinic-icon",
+      },
     ];
   }
  

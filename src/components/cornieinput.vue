@@ -8,7 +8,7 @@
     class="mb-5"
   >
     <div v-bind="$attrs" class="w-11/12">
-      <label class="flex capitalize mb-1 text-black text-sm font-medium">
+      <label class="flex capitalize mb-1 text-black text-xs font-bold font-medium">
         <slot name="label">
           {{ label }}
         </slot>
