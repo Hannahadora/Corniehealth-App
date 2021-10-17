@@ -49,14 +49,17 @@
               </div>
             </div>
           </div>
-          <div class="cursor-pointer dropdown">
-          <p class="flex mt-2 mb-5">Choose your account type <info-icon class="ml-2 mt-1"/> 
+          <div class="cursor-pointer">
+          <span class="flex mt-2 mb-5">Choose your account type  <info-icon class="ml-4 mt-1 dropdown cursor-pointer"/> 
+          <div class="">
+           
             <Tooltip class="text-white text-sm dropdown-menu" 
-            text="Account type is dependent of the type of services you want to receive/render. 
+            text="Account type is dependent on the type of services you want to receive/render. 
                 Patient account (Individual or Group), Provider account (Hospital, Laboratory, Pharmacy, Opticians, Dental or EMT) and Payer account
                 ">
             </Tooltip>
-          </p>
+          </div>
+          </span>
           </div>
           <div class="grid grid-cols-3 gap-4 mb-32">
             <div class="cursor-pointer">
@@ -78,7 +81,7 @@
                   <svg xmlns="http://www.w3.org/2000/svg"  class="justify-center ml-2" v-if="checked" width="28" height="28" viewBox="0 0 28 28" fill="none">
                   <path d="M14.0003 14.0003C17.6837 14.0003 20.667 11.017 20.667 7.33366C20.667 3.65033 17.6837 0.666992 14.0003 0.666992C10.317 0.666992 7.33366 3.65033 7.33366 7.33366C7.33366 11.017 10.317 14.0003 14.0003 14.0003ZM14.0003 17.3337C9.55032 17.3337 0.666992 19.567 0.666992 24.0003V27.3337H27.3337V24.0003C27.3337 19.567 18.4503 17.3337 14.0003 17.3337Z" fill="white"/>
                   </svg>
-                  <p class="font-semibold text-center" :class="{'text-white': checked == true}">Patient</p>
+                  <p class="font-semibold text-center mt-2" :class="{'text-white': checked == true}">Patient</p>
                 </div>
               </div>
             </div>
@@ -113,7 +116,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="justify-center ml-2"  v-if="checked2" width="31" height="30" viewBox="0 0 31 30" fill="none">
                     <path d="M27.1667 0H3.83333C2 0 0.516667 1.5 0.516667 3.33333L0.5 26.6667C0.5 28.5 2 30 3.83333 30H27.1667C29 30 30.5 28.5 30.5 26.6667V3.33333C30.5 1.5 29 0 27.1667 0ZM25.5 18.3333H18.8333V25H12.1667V18.3333H5.5V11.6667H12.1667V5H18.8333V11.6667H25.5V18.3333Z" fill="white" style="&#10;"/>
                     </svg>
-                    <p class="font-semibold text-center" :class="{'text-white': checked2 == true}">Provider</p>
+                    <p class="font-semibold text-center mt-2" :class="{'text-white': checked2 == true}">Provider</p>
                   </div>
               </div>
             </div>
@@ -126,7 +129,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="justify-center ml-2" v-if="checked3" width="34" height="30" viewBox="0 0 34 30" fill="none">
                 <path d="M16.9997 6.66667V0H0.333008V30H33.6663V6.66667H16.9997ZM6.99967 26.6667H3.66634V23.3333H6.99967V26.6667ZM6.99967 20H3.66634V16.6667H6.99967V20ZM6.99967 13.3333H3.66634V10H6.99967V13.3333ZM6.99967 6.66667H3.66634V3.33333H6.99967V6.66667ZM13.6663 26.6667H10.333V23.3333H13.6663V26.6667ZM13.6663 20H10.333V16.6667H13.6663V20ZM13.6663 13.3333H10.333V10H13.6663V13.3333ZM13.6663 6.66667H10.333V3.33333H13.6663V6.66667ZM30.333 26.6667H16.9997V23.3333H20.333V20H16.9997V16.6667H20.333V13.3333H16.9997V10H30.333V26.6667ZM26.9997 13.3333H23.6663V16.6667H26.9997V13.3333ZM26.9997 20H23.6663V23.3333H26.9997V20Z" fill="white"/>
                 </svg>
-                <p class="font-semibold text-center" :class="{'text-white': checked3 == true}">Payer</p>
+                <p class="font-semibold text-center mt-2" :class="{'text-white': checked3 == true}">Payer</p>
               </div>
             </div>   
           </div>
@@ -151,15 +154,15 @@
             <cornie-input v-model="email" :rules="emailRule" class="w-full mb-3" placeholder="Enter Email Address" label="Email Address"/>
             <phone-input v-model:code="dialCode" v-model="phone" :rules="phoneRule" class="w-full mb-4" label="Phone number"/>
             <label for="promos" class="flex mb-1 items-center">
-              <input id="promos" type="checkbox" />
+              <input id="promos"  type="checkbox" required>
               <span class="ml-1 text-xs">
                 Receive relevant offers and promotions from Cornie Health
               </span>
             </label>
-            <label for="terms" class="mt-1 mb-2 flex items-center">
-              <input required id="terms" type="checkbox" />
+            <label for="terms"  class="mt-1 mb-2 flex items-center">
+              <input  id="terms"  type="checkbox" required>
               <span class="ml-1 text-xs">
-                By continuing to sign up, I agree to Cornie Healths Terms of Service
+                I agree to CornieHealth’s <a href="#" class="text-danger"> Terms of service</a> and <a href="#" class="text-danger"> Privacy policy</a>
               </span>
             </label>
           <cornie-btn
@@ -274,11 +277,13 @@ code = "";
 
   @Prop({ required: false })
   //user!: CreatedUser;
-
+  required = string().required();
   requiredString = string().required().trim();
   phoneRule = string().matches(phoneRegex, "A valid phone number is required");
   emailRule = string().email("A valid email is required").required();
 
+promo= false;
+service=false;
   email = "";
   phone = "";
   dialCode = "+234";
