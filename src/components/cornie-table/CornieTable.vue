@@ -6,7 +6,6 @@
           <sort-icon class="mr-5" />
           <icon-input
             class="border border-gray-600 rounded-full focus:outline-none"
-            type="search"
             placeholder="Search Table"
             v-model="query"
           >

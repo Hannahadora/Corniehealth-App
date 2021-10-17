@@ -34,7 +34,7 @@ import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
-
+import condition from "./condition";
 export default createStore({
   modules: {
     user: UserStore,
@@ -45,7 +45,7 @@ export default createStore({
     domain: DomainStore,
     payment: PaymentStore,
     OrgFunctions,
-
+    condition,
     hierarchy: OrganizationHierarchy,
     designation,
 
@@ -70,7 +70,7 @@ export default createStore({
     organization: OrgStore,
     task: TaskStore,
     allergy: AllergyStore,
-    impression:ImpressionStore,
+    impression: ImpressionStore,
 
     vitals: VitalsStore,
     procedure: ProcedureStore,
