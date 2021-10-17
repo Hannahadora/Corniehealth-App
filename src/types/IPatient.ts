@@ -94,6 +94,11 @@ export interface RelatedPerson {
 
   type: string;
 }
+export interface authorizedPractitioners {
+  id?: string;
+  patient_authorized_practitioners: string;
+  user: {}
+}
 
 export interface Guarantor extends RelatedPerson {
   type: "guarantor";
@@ -127,4 +132,5 @@ export interface IPatient {
   demographicsData?: Demographics;
   belongsToPractice?: boolean;
   profilePhoto?: string;
+  authorizedPractitioners?: authorizedPractitioners[];
 }
