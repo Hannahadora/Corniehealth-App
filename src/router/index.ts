@@ -115,6 +115,13 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/ehr/medication/index.vue"),
           },
           {
+            path: "detectedissues",
+            props: true,
+            name: "DetectedIssues",
+            component: () =>
+              import("@/views/dashboard/ehr/detectedissues/index.vue"),
+          },
+          {
             path: "diagnostics",
             props: true,
             name: "Diagnostics",
@@ -133,6 +140,13 @@ const routes: Array<RouteRecordRaw> = [
             name: "Encounter",
             component: () =>
               import("@/views/dashboard/ehr/encounter/index.vue"),
+          },
+          {
+            path: "attachments",
+            props: true,
+            name: "Attachments",
+            component: () =>
+              import("@/views/dashboard/ehr/attachments/index.vue"),
           },
           {
             path: "clinical-impressions",

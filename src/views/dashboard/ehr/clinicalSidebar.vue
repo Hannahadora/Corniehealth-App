@@ -198,6 +198,7 @@ export default class Settings extends Vue {
       { name: "Clinical Impression", to: "clinical-impressions", icon: "impression-icon" },
       { name: "Medications", to: "medications", icon: "medication-icon" },
       { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
+      { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
