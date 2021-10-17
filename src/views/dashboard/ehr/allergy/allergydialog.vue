@@ -681,7 +681,7 @@ profileFilter=false;
       }
     } catch (error) {
       console.log(error)
-      window.notify({ msg: error.message, status: 'error' })
+      window.notify({ msg: "Allergy not created", status: 'error' })
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
