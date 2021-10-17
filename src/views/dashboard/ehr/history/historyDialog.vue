@@ -13,12 +13,14 @@
       >
         <div class="grid grid-cols-2 gap-3 mt-3">
           <cornie-select
+          class="w-full"
             v-model="instantiatesCanonical"
             label="Instantiates Canonical"
             :items="['Plan Definition','Questionaire','Activity Definition','Measure','Operation Definition']"
             :rules="required"
           />
           <cornie-select
+            class="w-full"
             v-model="instantiatesUri"
             label="Instantiates Uri"
             :items="['https://techsolutions.net//']"
@@ -33,6 +35,7 @@
           />
           <cornie-select
             v-model="dataAbsentReason"
+            class="w-full"
             label="Data Absent Reason"
             :rules="required"
             :items="['Subject Unknown','Information Withheld','Unable To Obtain','Deferred']"
@@ -54,6 +57,7 @@
           />
           <auto-complete
             v-model="sex"
+            class="w-full"
             :rules="required"
             :items="['Male','Female','Other','Unknown	']"
             label="Sex"
@@ -65,9 +69,9 @@
         title="Born"
           >
        
-          <timeable-picker v-model="bornTimeable" label="heading" />
+          <timeable-picker v-model="bornTimeable" class="w-full" label="heading" />
         <div class="grid grid-cols-2 gap-3 mt-4">
-          <cornie-input  :rules="required"  label="Born String" v-model="bornString"  class="w-full" />
+          <cornie-input  :rules="required"  label="Born String" v-model="bornString"   />
         </div>
       </accordion-component>
        <accordion-component
@@ -77,6 +81,7 @@
        <div class="grid grid-cols-2 mt-5 gap-2">
             <cornie-input   :rules="required" label="Age" placeholder="--Enter--" v-model="oneage"  class="cursor-pointer w-full" />
               <cornie-select
+              class="w-full"
                 v-model="estimatedAge"
                 label="Estimated Age?"
                 :items="[10,90,80]"
@@ -98,11 +103,12 @@
                 :rules="required"
               />
           </div>
-          <timeable-picker v-model="deceasedtimeable" label="Deceased Date/Age" />
-           <measurable v-model="deceasedmeasurable" label="Deceased Range/String" />
+          <timeable-picker v-model="deceasedtimeable" class="w-full" label="Deceased Date/Age" />
+           <measurable v-model="deceasedmeasurable" class="w-full" label="Deceased Range/String" />
            <div class="grid grid-cols-2 gap-4">
                 <auto-complete
               v-model="reasonCode"
+              class="w-full"
               :rules="required"
               :items="['Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','Spontaneous abortion with laceration of cervix','	Homoiothermia','	Decreased hair growth','	Chronic pharyngitis','Normal peripheral vision']"
               label="Reason Code"
@@ -147,6 +153,7 @@
         >
           <div class="grid grid-cols-2 gap-2 mt-5">
               <cornie-select
+              class="w-full"
                 v-model="code"
                 label="Code"
                 :items="['Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage','Accident-prone','Injury of ascending right colon without open wound into abdominal cavity','Poisoning by sawfly larvae']"
@@ -155,11 +162,13 @@
                <cornie-select
                 v-model="outcome"
                 label="Outcome"
+                class="w-full"
                 :items="['Anxiety disorder of childhood OR adolescence', 'Spontaneous abortion with laceration of cervix','Spontaneous abortion with laceration of cervix','	Homoiothermia','	Decreased hair growth','	Chronic pharyngitis','Normal peripheral vision']"
                 :rules="required"
               />
                <cornie-select
                 v-model="contributedToDeath"
+                class="w-full"
                 label="Contributed to Death?"
                 :items="['true', 'false']"
                 :rules="required"

@@ -24,13 +24,13 @@
       </span>
       <cornie-table :columns="headers" v-model="sortHistory">
         <template #actions="{ item }">
-            <div
+            <!-- <div
             @click="deleteItem(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-red-800 fill-current" />
             <span class="ml-3 text-xs">Delete</span>
-          </div>
+          </div> -->
            <div
             @click="viewHistory(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"

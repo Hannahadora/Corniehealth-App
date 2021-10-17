@@ -1,16 +1,12 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
-    <cornie-card height="100%" class="flex flex-col">
-      <cornie-card-title>
-          <cornie-icon-btn @click="show = false">
-            <arrow-left-icon />
-          </cornie-icon-btn>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">{{allaction}} Allergy</h2>
-      </cornie-card-title>
-      <cornie-card-text class="flex-grow scrollable">
+          <big-dialog
+          v-model="show"
+          :title="allaction + ' '+ 'Allergy' " 
+          class=""
+          >
         <v-form ref="form">
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" v-model="openedS">
-                <div class="w-full mt-5 pb-5">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
                     <main-cornie-select
                     class="w-full"
                     :items="['Active','Inactive','Resolved']"
@@ -63,7 +59,13 @@
                     >
                     </cornie-select>
                   <div>
-                      <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">encounter
+                     <encounter-select
+                      class="w-full"
+                        v-model="encounter"
+                      :rules="required"
+                      label="Reference Encounter"
+                    />
+                      <!-- <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">encounter
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
                         <div class="w-full flex space-x-4 mb-3">
@@ -90,57 +92,60 @@
                           id="homeaddress"
                           v-model="encounter"
                         />
-                      </div>
+                      </div> -->
                   </div>
                   </div>
           </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="OnSet" v-model="openedS">
                 <div class="w-full mt-5 pb-5">
-                  <div class="w-full mb-5">
-                      <DateTimePicker :label="'Onset date/time'" class="z-10 w-full">
-                                  <template v-slot:labelicon>
-                                    <question-icon />
-                                  </template>
-                                  <template #date>
-                                    <span>
+                    <div class="grid grid-cols-2 gap-4 ">
+                      <div class="w-full mb-5">
+                        <DateTimePicker :label="'Onset date/time'" class="z-10 w-full">
+                                    <template v-slot:labelicon>
+                                      <question-icon />
+                                    </template>
+                                    <template #date>
                                       <span>
-                                        {{
-                                          new Date(
-                                            data.onsetDate ?? Date.now(),
-                                          ).toLocaleDateString()
-                                        }}
+                                        <span>
+                                          {{
+                                            new Date(
+                                              data.onsetDate ?? Date.now(),
+                                            ).toLocaleDateString()
+                                          }}
+                                        </span>
                                       </span>
-                                    </span>
-                                  </template>
-                                  <template #time>
-                                    <span>
-                                      <span>{{ data.onsetTime }}</span>
-                                    </span>
-                                  </template>
-                                  <template #input>
-                                    <v-date-picker
-                                      v-model="data.onsetDate"
-                                      style="
-                                        position: relative;
-                                        z-index: 9000;
-                                        width: 100%;
-                                      "
-                                    ></v-date-picker>
-                                    <label class="block uppercase my-1 text-xs font-bold">
-                                      Time
-                                    </label>
-                                    <input
-                                      v-model="data.onsetTime"
-                                      type="time"
-                                      class="w-full border rounded-md p-2"
-                                    />
-                                  </template>
-                                </DateTimePicker>
+                                    </template>
+                                    <template #time>
+                                      <span>
+                                        <span>{{ data.onsetTime }}</span>
+                                      </span>
+                                    </template>
+                                    <template #input>
+                                      <v-date-picker
+                                        v-model="data.onsetDate"
+                                        style="
+                                          position: relative;
+                                          z-index: 9000;
+                                          width: 100%;
+                                        "
+                                      ></v-date-picker>
+                                      <label class="block uppercase my-1 text-xs font-bold">
+                                        Time
+                                      </label>
+                                      <input
+                                        v-model="data.onsetTime"
+                                        type="time"
+                                        class="w-full border rounded-md p-2"
+                                      />
+                                    </template>
+                                  </DateTimePicker>
+                      </div>
+                      <cornie-input label="onset age" class="mb-5 w-full"  v-model="onSet.onsetAge" />
                     </div>
-                    <cornie-input label="onset age" class="mb-5 w-full"  v-model="onSet.onsetAge" />
+
                     <div class="mb-5">
                       <span class="uppercase text-danger mt-4 font-bold text-xs">onset Period</span>
-                      <div class="w-full">
+                      <div class="grid grid-cols-2 gap-4 w-full">
                           <div class="w-full mt-5">
                               <DateTimePicker :label="'start DATE & Time'" class="z-10 w-full">
                                   <template v-slot:labelicon>
@@ -218,91 +223,99 @@
                           </div>
                       </div>
                     </div>
+                    <div class="grid grid-cols-2 gap-4">
                          <cornie-input label="onset range (1st value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
                          <cornie-input label="onset range (2nd value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
-                   
-                    <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
-                    <div class="mb-5">
-                        <label for="ecounter" class="flex uppercase text-black text-xs font-bold">recorded date
-                          <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                      </label>
-                        <date-picker  placeholder="autofill" v-model="onSet.recordedDate" class="w-full mb-5 required"
-                        :rules="required">
-                        </date-picker>
                     </div>
-                    <div class="mb-3">
-                        <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">recorder
-                          <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                        </label>
-                        <!-- <cornie-input class="w-full"  v-model="onSet.recorder" disabled/>  -->
-                        
-                        <input
-                        class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                        disabled
-                        :value="onSet.recorder"
-                      />
-                    </div>
-                      <div class="flex">
-                          <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">add asserter</p>
-                          <label class="switch">
-                            <input
-                              name="category"
-                              type="checkbox"
-                              @input="selected"
-                              v-model="switchshow"
-                              value="2"
-                            />
-                            <span class="slider round"></span>
+                      <div class="grid grid-cols-2 gap-4">
+                        <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
+                        <div class="mb-5">
+                            <label for="ecounter" class="flex uppercase text-black text-xs font-bold">recorded date
+                              <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                           </label>
-                      </div>
-                      <div class="mb-3">
-                        <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">asserter
-                          <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                        </label>
-                        <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
-                        <input
-                        class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                        disabled
-                        :value="asserterName"
-                      />
-                      </div>
-                      <div class="mb-3">
-                        <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">last occurence
-                          <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                        </label>
-                        <DateTimePicker class="w-full">
-                                <template v-slot:labelicon>
-                                  <question-icon />
-                                </template>
-                                <template #date>
-                                  <span>
-                                    {{
-                                      new Date(
-                                        data.occurenceDate ?? Date.now(),
-                                      ).toLocaleDateString()
-                                    }}
-                                  </span>
-                                </template>
-                                <template #time>
-                                  <span>{{ data.occurenceTime }}</span>
-                                </template>
-                                <template #input>
-                                  <v-date-picker
-                                    name="eeee"
-                                    v-model="data.occurenceDate"
-                                    style="z-index: 9000; width: 100%;"
-                                  ></v-date-picker>
-                                  <label class="block uppercase my-1 text-xs font-bold">
-                                    Time
-                                  </label>
-                                  <input
-                                    v-model="data.occurenceTime"
-                                    type="time"
-                                    class="w-full border rounded-md p-2"
-                                  />
-                                </template>
-                              </DateTimePicker>
-                      </div>
+                            <date-picker  placeholder="autofill" v-model="onSet.recordedDate" class="w-full mb-5 required"
+                            :rules="required">
+                            </date-picker>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">recorder
+                              <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
+                            </label>
+                            <!-- <cornie-input class="w-full"  v-model="onSet.recorder" disabled/>  -->
+                            
+                            <input
+                            class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                            disabled
+                            :value="onSet.recorder"
+                          />
+                        </div>
+
+                       </div>
+  
+                        <div class="flex">
+                            <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">add asserter</p>
+                            <label class="switch">
+                              <input
+                                name="category"
+                                type="checkbox"
+                                @input="selected"
+                                v-model="switchshow"
+                                value="2"
+                              />
+                              <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                        <div class="mb-3">
+                          <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">asserter
+                            <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
+                          </label>
+                          <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
+                          <input
+                          class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          disabled
+                          :value="asserterName"
+                        />
+                        </div>
+                        <div class="mb-3">
+                          <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">last occurence
+                            <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
+                          </label>
+                          <DateTimePicker class="w-full">
+                                  <template v-slot:labelicon>
+                                    <question-icon />
+                                  </template>
+                                  <template #date>
+                                    <span>
+                                      {{
+                                        new Date(
+                                          data.occurenceDate ?? Date.now(),
+                                        ).toLocaleDateString()
+                                      }}
+                                    </span>
+                                  </template>
+                                  <template #time>
+                                    <span>{{ data.occurenceTime }}</span>
+                                  </template>
+                                  <template #input>
+                                    <v-date-picker
+                                      name="eeee"
+                                      v-model="data.occurenceDate"
+                                      style="z-index: 9000; width: 100%;"
+                                    ></v-date-picker>
+                                    <label class="block uppercase my-1 text-xs font-bold">
+                                      Time
+                                    </label>
+                                    <input
+                                      v-model="data.occurenceTime"
+                                      type="time"
+                                      class="w-full border rounded-md p-2"
+                                    />
+                                  </template>
+                                </DateTimePicker>
+                        </div>
+  </div>
+                   
                       <div>
                         <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Note</label>
                           <div class="my-2  w-full">
@@ -317,7 +330,8 @@
                   </div>
           </accordion-component>
           <accordion-component class="shadow-none rounded-none  border-none  text-primary" title="Reaction" v-model="openedS">
-                <div class="w-full mt-5 pb-5">
+                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+                
                     <cornie-select
                       class="required w-full mb-2"
                       :rules="required"
@@ -409,6 +423,7 @@
                         v-model="reaction.exposureRoute"
                       >
                       </cornie-select>
+                  </div>
                       <div>
                         <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Note</label>
                           <div class="my-2  w-full">
@@ -420,29 +435,21 @@
                               />
                           </div>
                       </div>
-                  </div>
           </accordion-component>
         </v-form>
-      </cornie-card-text>
-      <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            {{newaction}}
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>
-    </cornie-card>
-  </cornie-dialog>
+         <template #actions>
+            <cornie-btn
+              @click="show = false"
+              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            >
+              Cancel
+            </cornie-btn>
+            <cornie-btn  :loading="loading"
+                  @click="apply" class="text-white bg-danger px-3 rounded-xl">
+            Save
+            </cornie-btn>
+          </template>
+        </big-dialog>
 </template>
 
 <script lang="ts">
@@ -454,7 +461,8 @@ import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieRadio from '@/components/cornieradio.vue'
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from '@/components/icons/info.vue'
+import InfoIcon from '@/components/icons/info.vue';
+import BigDialog from "@/components/bigdialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
@@ -464,6 +472,7 @@ import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
 import DEdit from "@/components/icons/aedit.vue";
 import RangeSlider from "@/components/range.vue";
+import EncounterSelect from "./encounter-select.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -513,7 +522,9 @@ const emptyReaction: Reaction = {
     DatePicker,
     RangeSlider,
     DEdit,
+    BigDialog,
     CDelete,
+    EncounterSelect,
     InfoIcon,
     CornieDialog,
     DateTimePicker,
@@ -530,11 +541,15 @@ const emptyReaction: Reaction = {
   },
 })
 export default class Medication extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+    @Prop({ type: Boolean, default: false })
+  modelValue!: boolean;
 
-  @Prop({ type: String, default: '' })
+   @Prop({ type: String, default: '' })
   id!: string
+
+
+  @PropSync("modelValue")
+  show!: boolean;
 
   @allergy.Action
   getAllergyById!: (id: string) => IAllergy

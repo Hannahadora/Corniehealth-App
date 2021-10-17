@@ -155,6 +155,9 @@
                         >
                         </cornie-select>
                       </div>
+                    
+                    
+                  </div>
                        <div class="">
                             <Textarea
                             class="w-full"
@@ -165,9 +168,6 @@
                           />
                           <span></span>
                         </div>
-                    
-                    
-                  </div>
           </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Findings" v-model="openedS">
                 <div class="grid grid-cols-2 gap-4 w-full mt-5">
