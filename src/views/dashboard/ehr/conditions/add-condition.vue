@@ -85,12 +85,6 @@
           <auto-complete v-model="stageType" :items="stages" label="Type" />
           <assessment-select v-model="stageAssessment" label="Assessment" />
         </div>
-        <cornie-text-area
-          rows="4"
-          v-model="stageNote"
-          label="Notes"
-          class="w-full"
-        />
       </accordion-component>
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
@@ -107,6 +101,7 @@
             :rules="required"
             v-model="evidenceDetail"
             label="Detail"
+            :items="['yes']"
           />
         </div>
         <cornie-text-area
@@ -125,7 +120,11 @@
       >
         Cancel
       </cornie-btn>
-      <cornie-btn @click="submit" class="text-white bg-danger px-6 rounded-xl">
+      <cornie-btn
+        :loading="loading"
+        @click="submit"
+        class="text-white bg-danger px-6 rounded-xl"
+      >
         Create
       </cornie-btn>
     </template>
@@ -148,6 +147,8 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import TimeablePicker from "./timeable.vue";
 import Measurable from "./measurable.vue";
 import { getDropdown } from "@/plugins/definitions";
+import { ICondition } from "@/types/ICondition";
+import { Codeable, Timeable } from "@/types/misc";
 
 import {
   verificationStatuses,
@@ -217,12 +218,13 @@ export default class AddCondition extends Vue {
   clinicalStatuses = clinicalStatuses;
   verificationStatuses = verificationStatuses;
   severities = severities;
-  categories: any = [];
+  categories: Codeable[] = [];
   conditionCodes = codes;
   bodySites = bodySites;
   stages = stages;
   evidenceCodes = evidenceCodes;
 
+  loading = false;
   clinicalStatus = "";
   verificationStatus = "";
   category = "";
@@ -253,7 +255,7 @@ export default class AddCondition extends Vue {
   }
 
   @Watch("authPractitioner")
-  practitionerChanged() {
+  practitionerChanged(): void {
     this.setAsserter();
   }
 
@@ -262,35 +264,69 @@ export default class AddCondition extends Vue {
   }
 
   get patientId() {
-    return this.$route.params.id;
+    return this.$route.params.patientId;
   }
 
   get onset() {
-    return {};
+    const { string, ...onsetRange } = this.onsetMeasurable;
+    const dateTime = this.safeBuildDateTime(
+      this.onsetTimeable.date,
+      this.onsetTimeable.time
+    );
+    const period = this.buildPeriod(this.onsetTimeable);
+    const data: any = {
+      age: this.onsetTimeable.age,
+      onsetString: this.onsetMeasurable.string,
+    };
+    if (onsetRange.unit && onsetRange.min && onsetRange.max)
+      data.range = onsetRange;
+    if (period) data.period = period;
+    if (dateTime) data.dateTime = dateTime;
+    return data;
   }
 
   get abatement() {
-    return {
+    const { string, ...range } = this.abatementMeasurable;
+    const dateTime = this.safeBuildDateTime(
+      this.abatementTimeable.date,
+      this.abatementTimeable.time
+    );
+    const period = this.buildPeriod(this.abatementTimeable);
+    const data: any = {
+      range,
+      string,
       asserter: this.asserter,
+      age: this.abatementTimeable.age,
     };
+    if (period) data.period = period;
+    if (dateTime) data.dateTime = dateTime;
+    return data;
   }
 
-  buildPeriod(
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string
-  ) {
-    const start = this.buildDateTime(startDate, startTime);
-    const end = this.buildDateTime(endDate, endTime);
-    return { start, end };
+  buildPeriod({ startDate, startTime, endDate, endTime }: Timeable) {
+    try {
+      const start = this.buildDateTime(startDate, startTime);
+      const end = this.buildDateTime(endDate, endTime);
+      return { start, end };
+    } catch (error) {
+      return;
+    }
   }
+
   buildDateTime(dateString: string, time: string) {
     const date = new Date(dateString);
     const [hour, minute] = time.split(":");
     date.setMinutes(Number(minute));
     date.setHours(Number(hour));
     return date.toISOString();
+  }
+
+  safeBuildDateTime(dateString: string, time: string) {
+    try {
+      return this.buildDateTime(dateString, time);
+    } catch (error) {
+      return;
+    }
   }
   get payload() {
     return {
@@ -302,18 +338,25 @@ export default class AddCondition extends Vue {
       category: this.category,
       summary: this.stageSummary,
       detail: this.evidenceDetail,
-      notes: this.stageNote,
       bodySite: this.bodySite,
-      subject: "patient",
-      assesment: "",
+      assessment: {
+        reference: "Clinical Impression",
+        id: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
+      },
       severity: this.severity,
       evidenceNote: this.evidenceNote,
-      onset: this.onset,
+      onSet: this.onset,
       abatement: this.abatement,
+      code: this.code,
     };
   }
 
   async submit() {
+    this.loading = true;
+    await this.create();
+    this.loading = false;
+  }
+  async create() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
     try {
@@ -322,7 +365,9 @@ export default class AddCondition extends Vue {
         this.payload
       );
       window.notify({ msg: "Condition created", status: "success" });
+      this.show = false;
     } catch (error) {
+      console.log(error);
       window.notify({ msg: "Condition not created", status: "error" });
     }
   }

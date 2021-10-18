@@ -37,15 +37,31 @@
             Verification Status
           </span>
         </div>
-        <v-form>
+        <v-form ref="form">
           <div class="grid grid-cols-1 gap-3 mt-2">
-            <cornie-input disabled label="Current Status" class="w-full" />
-            <cornie-input disabled label="Updated By" class="w-full" />
-            <date-picker disabled label="Date Last Updated" />
+            <cornie-input
+              disabled
+              :modelValue="currentStatus"
+              label="Current Status"
+              class="w-full"
+            />
+            <cornie-input
+              disabled
+              :modelValue="updatedBy"
+              label="Updated By"
+              class="w-full"
+            />
+            <date-picker
+              disabled
+              :modelValue="lastUpdated"
+              label="Date Last Updated"
+            />
             <cornie-select
               label="Update Status"
               :items="statuses"
+              v-model="newStatus"
               class="w-full"
+              :rules="required"
             />
           </div>
         </v-form>
@@ -57,18 +73,22 @@
         >
           View History
         </cornie-btn>
-        <cornie-btn class="text-white bg-danger px-9 rounded-xl">
+        <cornie-btn
+          @click="submit"
+          :loading="loading"
+          class="text-white bg-danger px-9 rounded-xl"
+        >
           Update
         </cornie-btn>
       </div>
     </cornie-card>
-    <status-history v-model="showHistory" :active="active" />
+    <status-history v-model="showHistory" :histories="histories" />
   </cornie-dialog>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
-import { PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieCard from "@/components/cornie-card";
 import DeleteIcon from "@/components/icons/cancel.vue";
@@ -77,13 +97,21 @@ import CornieSelect from "@/components/cornieselect.vue";
 import DatePicker from "@/components/datepicker.vue";
 import { verificationStatuses, clinicalStatuses } from "./drop-downs";
 import StatusHistory from "./status-history.vue";
+import { ICondition } from "@/types/ICondition";
+import { string } from "yup";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+
+const condition = namespace("condition");
 
 @Options({
-  name: "StatusUpdate",
+  name: "ConditionStatusUpdate",
   components: {
     CornieDialog,
     StatusHistory,
     ArrowLeftIcon,
+    CornieIconBtn,
     DatePicker,
     ...CornieCard,
     CornieSelect,
@@ -95,12 +123,87 @@ export default class StatusUpdate extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ type: Object })
+  condition!: ICondition;
+
   showHistory = false;
 
   active = "clinical";
 
+  required = string().required();
+
+  newStatus = "";
+
+  loading = false;
+
+  @condition.Mutation
+  setPatientConditions!: ({
+    patientId,
+    conditions,
+  }: {
+    patientId: string;
+    conditions: ICondition[];
+  }) => Promise<void>;
+
   get statuses() {
     return this.active == "clinical" ? clinicalStatuses : verificationStatuses;
+  }
+
+  get currentStatus() {
+    return this.active == "clinical"
+      ? this.condition.clinicalStatus
+      : this.condition.verificationStatus;
+  }
+
+  get histories() {
+    const histories =
+      this.active == "clinical"
+        ? this.condition.clinicalStatusHistory
+        : this.condition.verificationSatusHistory;
+    return histories || [];
+  }
+
+  get updatedBy() {
+    const histories = this.histories;
+    const latest = [...histories].pop();
+    return latest?.practitionerName || "";
+  }
+
+  get lastUpdated() {
+    const dateString = this.condition.updatedAt;
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  }
+
+  async submit() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+    this.loading = true;
+    const type =
+      this.active == "clinical" ? "clinical-status" : "verification-status";
+    const payload = { status: this.newStatus };
+    await this.setStatus(payload, type);
+    this.loading = false;
+  }
+
+  async setStatus(payload: any, type: string) {
+    try {
+      const { data } = await cornieClient().patch(
+        `/api/v1/condition/${type}/${this.condition.id}`,
+        payload
+      );
+      this.updateCondition(data);
+      window.notify({ status: "success", msg: "Status updated" });
+      this.show = false;
+    } catch (error) {
+      window.notify({ status: "error", msg: "Status not updated" });
+    }
+  }
+
+  updateCondition(condition: ICondition) {
+    const payload = { patientId: condition.patientId, conditions: [condition] };
+    this.setPatientConditions(payload);
   }
 }
 </script>

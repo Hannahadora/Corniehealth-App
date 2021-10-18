@@ -6,14 +6,14 @@
         <cornie-input label="Note" />
       </div>
       <section class="mt-2 block">
-        <h2 class="text-lg font-semibold">Onset</h2>
+        <h2 class="text-lg font-semibold mb-2">Onset</h2>
         <div class="grid grid-cols-2 gap-3">
           <cornie-select label="Substance" />
           <cornie-select label="Manifestation" />
           <cornie-input label="Description" />
           <date-time-picker label="Onset" width="w-11/12" />
           <div class="block">
-            <h2 class="capitalize mb-1 text-black text-sm font-semibold">
+            <h2 class="capitalize mb-3 text-black text-sm font-semibold">
               Severity
             </h2>
             <span class="grid grid-cols-3">
@@ -24,7 +24,7 @@
           </div>
           <auto-complete label="Exposure route" />
         </div>
-        <cornie-text-area label="Note" class="w-full" />
+        <cornie-text-area rows="4" label="Note" class="w-full" />
       </section>
     </v-form>
     <template #actions>

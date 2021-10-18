@@ -20,7 +20,9 @@
       <input
         v-bind="{ ...$attrs, ...field }"
         v-model="valueSync"
-         @blur="$emit('blur')"
+        @blur="$emit('blur')"
+        :type="$attrs.type || 'text'"
+        :autocomplete="$attrs.autocomplete || 'off'"
         class="py-1 text-sm text-black rounded-md w-full focus:outline-none"
         :class="{
           'pl-10': prepend,
@@ -46,6 +48,7 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import { Field } from "vee-validate";
+
 @Options({
   inheritAttrs: false,
   name: "IconInput",
@@ -81,7 +84,7 @@ export default class IconInput extends Vue {
 }
 </script>
 <style scoped>
-.rounded-r-none{
-   border-radius: 9999px;
- }
+.rounded-r-none {
+  border-radius: 9999px;
+}
 </style>
