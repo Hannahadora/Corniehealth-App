@@ -130,7 +130,7 @@ export default class AddNotes extends Vue {
 
   get items() {
     let notes = this.condition.notes || [];
-    const noteSet = new ObjectSet([...notes], "id");
+    const noteSet = new ObjectSet([...notes, this._notes], "id");
     return [...noteSet].map((note) => ({
       note: note.note,
       practitioner: printPractitioner(note.Practitioner!!),
