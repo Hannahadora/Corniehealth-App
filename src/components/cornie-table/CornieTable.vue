@@ -23,71 +23,76 @@
         <filter-icon class="cursor-pointer" @click="$emit('filter')" />
       </span>
     </div>
-    <card class="mt-3">
-      <table class="w-full" style="border-radius: 5px">
-        <thead class="bg-accent p-4 text-primary">
-          <th class="text-left p-2" width="1" v-if="check">
-            <cornie-checkbox @click="selectAll" v-model="selectedAll" />
-          </th>
-          <th class="text-left p-2" width="1">
-            <span> # </span>
-          </th>
-          <template v-for="(column, index) in preferredColumns" :key="index">
-            <th class="text-left p-3" v-if="column.show">
-              <div class="flex items-center">
-                <slot :name="`${column.key}-header`">
-                  <span class="uppercase text-xs">
-                    {{ column.title }}
-                  </span>
-                </slot>
-                <filter-by-icon
-                  v-if="!column.noOrder"
-                  class="ml-2 cursor-pointer"
-                  @click="setOrderBy(column.orderBy)"
-                />
-              </div>
+    <div class="">
+      <card class="mt-3 overflow-x-auto table-card pb-2" flat>
+        <table class="w-full" style="border-radius: 5px">
+          <thead class="bg-accent p-4 text-primary">
+            <th class="text-left p-2" width="1" v-if="check">
+              <cornie-checkbox @click="selectAll" v-model="selectedAll" />
             </th>
-          </template>
-          <th class="text-left p-2" width="1">
-            <table-settings-icon
-              class="text-primary cursor-pointer"
-              @click="showColumnFilter = true"
-            />
-          </th>
-        </thead>
-        <tr
-          v-for="(row, index) in filteredItems"
-          :key="index"
-          class="border-t-2 border-y-gray"
-        >
-          <td class="p-2" v-if="check">
-            <cornie-checkbox @click="select(row)" :checked="isSelected(row)" />
-          </td>
-          <td class="p-2">{{ index + 1 }}</td>
-          <template v-for="(column, index) in preferredColumns" :key="index">
-            <td class="p-3 text-sm capitalize" v-if="column.show">
-              <slot :name="column.key" :item="row" :index="index">
-                {{ row[column.key] }}
-              </slot>
+            <th class="text-left p-2" width="1">
+              <span> # </span>
+            </th>
+            <template v-for="(column, index) in preferredColumns" :key="index">
+              <th class="text-left p-3" v-if="column.show">
+                <div class="flex items-center">
+                  <slot :name="`${column.key}-header`">
+                    <span class="uppercase text-xs">
+                      {{ column.title }}
+                    </span>
+                  </slot>
+                  <filter-by-icon
+                    v-if="!column.noOrder"
+                    class="ml-2 cursor-pointer"
+                    @click="setOrderBy(column.orderBy)"
+                  />
+                </div>
+              </th>
+            </template>
+            <th class="text-left p-2" width="1">
+              <table-settings-icon
+                class="text-primary cursor-pointer"
+                @click="showColumnFilter = true"
+              />
+            </th>
+          </thead>
+          <tr
+            v-for="(row, index) in filteredItems"
+            :key="index"
+            class="border-t-2 border-2 border-y-gray"
+          >
+            <td class="p-2" v-if="check">
+              <cornie-checkbox
+                @click="select(row)"
+                :checked="isSelected(row)"
+              />
             </td>
-          </template>
-          <td>
-            <div class="flex justify-center">
-              <cornie-menu top="30px" right="100%">
-                <template #activator="{ on }">
-                  <icon-btn v-on="on">
-                    <dots-vertical-icon />
-                  </icon-btn>
-                </template>
-                <card-text>
-                  <slot name="actions" :item="row" :index="index" />
-                </card-text>
-              </cornie-menu>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </card>
+            <td class="p-2">{{ index + 1 }}</td>
+            <template v-for="(column, index) in preferredColumns" :key="index">
+              <td class="p-3 text-sm capitalize" v-if="column.show">
+                <slot :name="column.key" :item="row" :index="index">
+                  {{ row[column.key] }}
+                </slot>
+              </td>
+            </template>
+            <td>
+              <div class="flex justify-center">
+                <cornie-menu top="30px" right="100%">
+                  <template #activator="{ on }">
+                    <icon-btn v-on="on">
+                      <dots-vertical-icon />
+                    </icon-btn>
+                  </template>
+                  <card-text>
+                    <slot name="actions" :item="row" :index="index" />
+                  </card-text>
+                </cornie-menu>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </card>
+    </div>
     <column-filter
       :columns="columns"
       v-model:preferred="preferredColumns"
@@ -99,6 +104,17 @@
 <script src="./CornieTable.ts"></script>
 
 <style scoped>
-table {
+.table-card::-webkit-scrollbar {
+  width: 5px !important;
+  height: 5px !important;
+}
+.table-card::-webkit-scrollbar-track {
+  background-color: #f0f4fe;
+  border-radius: 2rem;
+}
+.table-card::-webkit-scrollbar-thumb {
+  background-color: #949eb8;
+  border-radius: 2rem;
+  border-color: #949eb8;
 }
 </style>
