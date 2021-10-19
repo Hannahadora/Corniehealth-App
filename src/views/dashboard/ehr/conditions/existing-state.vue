@@ -88,7 +88,7 @@
             <span class="ml-3 text-xs"> Add Note </span>
           </div>
           <div
-            @click="addingOccurence = true"
+            @click="addOccurence(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <plus-icon class="text-danger fill-current" />
@@ -134,7 +134,6 @@ const condition = namespace("condition");
 import { categories, codes, severities } from "./drop-downs";
 import { Codeable } from "@/types/misc";
 import { printPractitioner } from "@/plugins/utils";
-import Condition from "yup/lib/Condition";
 
 function copy(data: any) {
   return JSON.parse(JSON.stringify(data));
@@ -197,6 +196,11 @@ export default class ExistingState extends Vue {
   addNote(condition: MutantCondition) {
     this.currentCondition = condition.original;
     this.addingNotes = true;
+  }
+
+  addOccurence(condition: MutantCondition) {
+    this.currentCondition = condition.original;
+    this.addingOccurence = true;
   }
 
   headers = [

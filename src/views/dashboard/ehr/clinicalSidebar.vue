@@ -239,7 +239,8 @@ get fullname() {
   }
 
   mapUrl(url: string) {
-    const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
+    const settingsBase = this.$router.resolve({ name: "EHR" }).href;
+    // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
     return `${settingsBase}/${url}`.replace("//", "/");
   }
 
@@ -272,15 +273,15 @@ get fullname() {
     // return name;
     const current_patient =  this.patient
      return {
-                code: this.patient.id,
-                fullname: `${current_patient.firstname} ${current_patient.lastname}`,
+                code: current_patient?.id,
+                fullname: `${current_patient?.firstname} ${current_patient?.lastname}`,
                 email: this.printEmail(current_patient),
                 address: this.printAddress(current_patient),
                 phone: this.printPhone(current_patient),
-                dob: this.printDOB(current_patient.dateOfBirth),
-                // lastVisited: this.printLastVisited(current_patient.updatedAt),
-                // activeSince: this.printactiveSince(current_patient.createdAt),
-                 mrn: this.printMRN(current_patient.mrn),
+                dob: this.printDOB(current_patient?.dateOfBirth),
+                // lastVisited: this.printLastVisited(current_patient?.updatedAt),
+                // activeSince: this.printactiveSince(current_patient?.createdAt),
+                 mrn: this.printMRN(current_patient?.mrn),
                  my_policyId: this.printPolicyId(current_patient),
                  the_policyExpiry: this.printPolicyExpiry(current_patient),
                  authorizedPractitioner: this.printPrimaryPhysician(current_patient),
@@ -300,8 +301,8 @@ get fullname() {
   }
 
   printPhone(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    const phone = patient.contactInfo[0].phone;
+    if (!patient?.contactInfo) return "N/A";
+    const phone = patient?.contactInfo[0].phone;
     return phone?.number || "N/A";
   }
   printGender(gender: string) {
@@ -310,12 +311,12 @@ get fullname() {
   }
 
   printEmail(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    return patient.contactInfo[0].email || "N/A";
+    if (!patient?.contactInfo) return "N/A";
+    return patient?.contactInfo[0].email || "N/A";
   }
   printAddress(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    return patient.contactInfo[0].primaryAddress || "N/A";
+    if (!patient?.contactInfo) return "N/A";
+    return patient?.contactInfo[0].primaryAddress || "N/A";
   }
   printDOB(dateOfBirth?: string) {
     if (!dateOfBirth) return "N/A";
@@ -338,19 +339,19 @@ get fullname() {
   }
 
   printPolicyId(patient: IPatient) {
-    if (!patient.insurances?.length) return "N/A";
-    const policyNumber = patient.insurances[0].policyNo
+    if (!patient?.insurances?.length) return "N/A";
+    const policyNumber = patient?.insurances[0].policyNo
     return policyNumber || "N/A";
   }
 
   printPolicyExpiry(patient: IPatient) {
-    if (!patient.insurances?.length) return "N/A";
-    const policyExpiry = new Date(patient.insurances[0].policyExpiry)
-    return policyExpiry.toLocaleDateString("en-Ng");
+    if (!patient?.insurances?.length) return "N/A";
+    const policyExpiry = new Date(patient?.insurances[0].policyExpiry)
+    return policyExpiry?.toLocaleDateString("en-Ng");
   }
   printPrimaryPhysician(patient: IPatient) {
-    if (!patient.authorizedPractitioners?.length) return "N/A";
-    const ret =  patient.authorizedPractitioners[0].user;
+    if (!patient?.authorizedPractitioners?.length) return "N/A";
+    const ret =  patient?.authorizedPractitioners[0].user;
     return ret;
   }
   // 
