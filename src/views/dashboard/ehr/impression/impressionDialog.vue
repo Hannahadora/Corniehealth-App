@@ -559,7 +559,7 @@ findingItems = [];
       }
     } catch (error) {
       console.log(error)
-      window.notify({ msg: error, status: 'error' })
+      window.notify({ msg: 'Clinical Impression not Created', status: 'error' })
     
     }
   }
@@ -576,7 +576,7 @@ findingItems = [];
 
       }
     } catch (error) {
-      window.notify({ msg: error.data.response.message, status: 'error' })
+      window.notify({ msg: 'Clincial Impression not  updated', status: 'error' })
     }
   }
    async fetchPractitioners() {

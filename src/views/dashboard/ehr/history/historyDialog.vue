@@ -530,7 +530,7 @@ async showRef(value:any){
       }
     } catch (error) {
       console.log(error)
-      window.notify({ msg: error, status: 'error' })
+      window.notify({ msg: 'Medical family history not created', status: 'error' })
     
     }
   }
@@ -547,7 +547,7 @@ async showRef(value:any){
 
       }
     } catch (error) {
-      window.notify({ msg: error.data.response.message, status: 'error' })
+      window.notify({ msg: 'Medical history not updated', status: 'error' })
     }
   }
   async fetchAllergy() {

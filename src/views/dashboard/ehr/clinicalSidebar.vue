@@ -202,7 +202,7 @@ export default class Settings extends Vue {
       { name: "Condition/Problem", to: "condition", icon: "condition-icon" }, 
       {
         name: "Appointments",
-        to: "appointment",
+        to: "appointments",
         icon: "appoint-icon",
       },
       { name: "Visits", to: "visits", icon: "visit-icon" },

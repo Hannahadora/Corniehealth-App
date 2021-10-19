@@ -15,7 +15,7 @@
       <div class="w-full h-screen max-h-full">
         <clinical-sidebar class="pb-96" :patient='patient' />
       </div>
-      <div class="w-full overflow-auto h-screen pb-72 max-h-full border-l-2">
+      <div class="w-full overflow-auto h-screen pb-72 max-h-full  mb-5 p-3 border-l-none -mt-3">
         <router-view />
       </div>
     </div>

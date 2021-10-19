@@ -14,13 +14,13 @@
             py-2
         "
       >
-     Medical | Family History
+     Appointments | Visits
       </span>
       <span class="w-full h-screen">
-          <history-empty-state
+          <appointment-empty-state
                 v-if="empty"
           />
-          <history-existing-state
+          <appointment-existing-state
           v-else
 
           />
@@ -30,50 +30,50 @@
   </div>
 </template>
 <script lang="ts">
-import Ihistory from "@/types/Ihistory";
+import IAppointment from "@/types/IAppointment";
 import { Options, Vue } from "vue-class-component";
-import HistoryEmptyState from "./emptyState.vue";
-import HistoryExistingState from "./existingState.vue";
+import AppointmentEmptyState from "./emptyState.vue";
+import AppointmentExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const history = namespace("history");
+const appointment = namespace("appointment");
 
 @Options({
-  name: "HistoryIndex",
+  name: "ApppointmentIndex",
   components: {
-    HistoryEmptyState,
-    HistoryExistingState,
+    AppointmentEmptyState,
+    AppointmentExistingState,
   },
 })
-export default class HistoryIndex extends Vue {
+export default class ApppointmentIndex extends Vue {
   addHistory = false;
   show=false;
 
 
   get empty() {
-    return this.historys.length < 1;
+    return this.appointments.length < 1;
   }
  get activePatientId() {
       const id = this.$route?.params?.patientId as string;
       return id;
   }
 
- @history.State
-  historys!: Ihistory[];
+ @appointment.State
+  appointments!: IAppointment[];
 
-  @history.Action
-  fetchHistorys!: (patientId: string) => Promise<void>;
+  @appointment.Action
+  fetchByIdAppointments!: (patientId: string) => Promise<void>;
 
 
  historyAdded() {
     this.show = false;
- this.historys;
-  this.fetchHistorys(this.activePatientId);
+ this.appointments;
+  this.fetchByIdAppointments(this.activePatientId);
   }
 
 
 created() {
-    if (this.fetchHistorys.length < 1) this.fetchHistorys(this.activePatientId);
+    if (this.fetchByIdAppointments.length < 1) this.fetchByIdAppointments(this.activePatientId);
   }
 }
 </script>
