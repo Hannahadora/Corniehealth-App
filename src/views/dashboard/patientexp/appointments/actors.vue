@@ -389,6 +389,7 @@
               hover:opacity-90
               w-1/3
             "
+            :disabled="!singleId"
           >
             Add
           </button>
@@ -425,6 +426,7 @@
               hover:opacity-90
               w-1/3
             "
+            :disabled="!singleId"
           >
             Add
           </button>
@@ -461,6 +463,7 @@
               hover:opacity-90
               w-1/3
             "
+            :disabled="!singleId"
           >
             Add
           </button>
@@ -497,6 +500,7 @@
               hover:opacity-90
               w-1/3
             "
+            :disabled="!singleId"
           >
             Add
           </button>
@@ -673,6 +677,10 @@ export default {
       },
     },
 
+    actorSelected() {
+      return this.indexvaluepractitioner?.length == 0 && this.indexvaluepatient?.length == 0 && this.indexvaluedevice?.length == 0 && this.Practitioners?.length == 0 && this.Patients?.length == 0 && this.Devices?.length == 0 && !this.apractitioner?.practitionerId;
+      // return !this.indexvaluepractitioner?.length === 0 && !this.indexvaluepatient?.length === 0 && !this.indexvaluedevice?.length === 0 && !this.Practitioners?.length === 0 && !this.Patients?.length === 0 && !this.Devices?.length === 0 && !this.apractitioner?.practitionerId
+    },
   },
   methods: {
     setValue() {
@@ -752,6 +760,7 @@ export default {
       this.show = false;
      
     },
+
     showAvailable(value,firstname,lastname){
       this.singleId = value;
       this.availableFilter = true;
@@ -853,5 +862,9 @@ input[type="checkbox"]:after {
     border-radius: 3px;
     text-align: center;
     border: 1px solid #FE4D3C;
+}
+
+button:disabled {
+  background: #80808061;
 }
 </style>
