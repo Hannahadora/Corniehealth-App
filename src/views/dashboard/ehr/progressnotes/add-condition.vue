@@ -163,12 +163,17 @@
             </div> -->
         </div>
       </accordion-component>
+        
 
       <accordion-component
         class="shadow-none rounded-none border-none text-primary mt-5 mb-5"
         title="Objective"
       >
         <!-- <vue-range-slider v-model="value"></vue-range-slider> -->
+            <!-- <CustomRangeSlider/> -->
+
+            <Range />
+
 
         <div class="grid grid-cols-2 gap-3 mt-3">
           <div class="relative z-10 mt-5">
@@ -204,7 +209,71 @@
               </p>
             </div>
 
-            <div class="relative pt-1">
+<vue-slider v-model="value"></vue-slider>
+
+
+
+<!-- 
+
+<input id="rangeInput" type="range" list="tickmarks" min="0" max="100">
+
+<datalist id="tickmarks">
+  <option value="0" label="0%"></option>
+  <option value="10"></option>
+  <option value="20"></option>
+  <option value="30"></option>
+  <option value="40"></option>
+  <option value="50" label="50%"></option>
+  <option value="60"></option>
+  <option value="70"></option>
+  <option value="80"></option>
+  <option value="90"></option>
+  <option value="100" label="100%"></option>
+</datalist> -->
+
+
+
+
+<!-- most basic, used for Knobs demo
+<div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
+  <input type="range" min="0" max="100" step="5" value="75" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
+  <output></output>
+  <div class='range-slider__progress'></div>
+</div> -->
+
+
+
+
+<!-- <form>
+  <div>
+    <input id="rangeInput2" type="range" min="0" max="200" oninput="amount.value=rangeInput.value" />
+    <input id="amount" type="number" value="100" min="0" max="200" oninput="rangeInput.value=amount.value" />
+  </div>
+</form>
+
+
+
+<input id="rangeInput" type="range" list="tickmarks" min="0" max="100" oninput="amount.value=rangeInput.value">
+
+<datalist id="tickmarks">
+  <option value="0" label="0%"></option>
+  <option value="10"></option>
+  <option value="20"></option>
+  <option value="30"></option>
+  <option value="40"></option>
+  <option value="50" label="50%"></option>
+  <option value="60"></option>
+  <option value="70"></option>
+  <option value="80"></option>
+  <option value="90"></option>
+  <option value="100" label="100%"></option>
+</datalist> -->
+
+
+
+
+
+            <div class="relative pt-1 mt-5">
               <div
                 class="
                   overflow-hidden
@@ -371,6 +440,7 @@ import TimeablePicker from "./timeable.vue";
 import TimeablePicker2 from "./timeable2.vue";
 import Measurable from "./measurable.vue";
 
+
 import {
   verificationStatuses,
   clinicalStatuses,
@@ -391,12 +461,22 @@ import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
 import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
 import DateTimePicker2 from "./date-time-picker.vue";
 import AddIcon from "@/components/icons/add.vue";
+import Range from "@/components/range.vue";
 
-import "vue-range-component/dist/vue-range-slider.js";
+
+// import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
 // import { VueRangeSlider} from 'vue-range-component'
 // const VueRangeSlider = require('vue-range-component');
 // const VueRangeSlider = require('vue-range-component');
+
+// import '@yaireo/ui-range'
+
+// import VueSlider from 'vue-slider-component'
+// import 'vue-slider-component/theme/default.css'
+
+//  import CustomRangeSlider from "./CustomRangeSlider.vue";
+
 
 const user = namespace("user");
 
@@ -438,6 +518,12 @@ const measurable = {
     DotsVerticalIcon,
     TimeablePicker2,
     AddIcon,
+
+    Range,
+
+    // CustomRangeSlider
+
+    // VueSlider
   },
 })
 export default class AddCondition extends Vue {
@@ -569,9 +655,20 @@ export default class AddCondition extends Vue {
     }
   }
 
+
+
+
+
+
+
+
   created() {
     this.loadDropdown();
     this.setAsserter();
   }
 }
 </script>
+
+<style scoped>
+
+</style>

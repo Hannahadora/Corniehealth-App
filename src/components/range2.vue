@@ -11,13 +11,14 @@
 	<option>80</option>
 	<option>100</option>
 </datalist>
-    <input type="range" min="0" max="180" 	step="20" list="volsettings" v-model="sliderMin">
 
+
+<input type="range" min="0" max="180" step="1">
     <div class='range-slider'>
-    <input type="range" min="0" max="180" step="1" v-model="sliderMin">
-    <input type="number" min="0" max="180" step="1" v-model="sliderMin" class="minnumber">
-    <input type="range" min="0" max="180" step="1" v-model="sliderMax">
-    <input type="number" min="0" max="180" step="1" v-model="sliderMax" class="maxnumber">
+    <!-- <input type="range" min="0" max="180" step="1" v-model="sliderMin"> -->
+    <!-- <input type="number" min="0" max="180" step="1" v-model="sliderMin" class="minnumber"> -->
+    <!-- <input type="range" min="0" max="180" step="1" v-model="sliderMax"> -->
+    <!-- <input type="number" min="0" max="180" step="1" v-model="sliderMax" class="maxnumber"> -->
   </div>
 </template>
 <script>
@@ -29,32 +30,7 @@ export default {
         }
     },
      computed: {
-    sliderMin: {
-      get: function() {
-        var val = parseInt(this.minAngle);
-        return val;
-      },
-      set: function(val) {
-        val = parseInt(val);
-        if (val > this.maxAngle) {
-          this.maxAngle = val;
-        }
-        this.minAngle = val;
-      }
-    },
-    sliderMax: {
-      get: function() {
-        var val = parseInt(this.maxAngle);
-        return val;
-      },
-      set: function(val) {
-        val = parseInt(val);
-        if (val < this.minAngle) {
-          this.minAngle = val;
-        }
-        this.maxAngle = val;
-      }
-    }
+   
   }
 }
 </script>
