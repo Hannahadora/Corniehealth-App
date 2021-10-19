@@ -1,7 +1,7 @@
 <template>
   <div class="menu" @click="onMenuClick">
     <slot name="activator" :on="{ click }" />
-    <div class="absolute pt-2 z-10 -left-44 right-0 top-2">
+    <div class="absolute pt-2 z-50 -left-44 right-0 top-2">
       <card
         v-show="showMenu"
         class="
