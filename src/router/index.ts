@@ -177,15 +177,7 @@ const routes: Array<RouteRecordRaw> = [
             name: "Progress Notes",
             component: () =>
               import("@/views/dashboard/ehr/progressnotes/index.vue"),
-          },
-            path: "medical-family-history",
-            props: true,
-            name: "Medical | Family History",
-            component: () =>
-              import("@/views/dashboard/ehr/history/index.vue"),
-             
-            },
-          
+          },          
         ],
       },
       {
