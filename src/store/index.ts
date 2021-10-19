@@ -28,13 +28,14 @@ import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
 import ImpressionStore from "./impression";
+import HistoryStore from "./history";
 import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
-
+import condition from "./condition";
 export default createStore({
   modules: {
     user: UserStore,
@@ -45,7 +46,7 @@ export default createStore({
     domain: DomainStore,
     payment: PaymentStore,
     OrgFunctions,
-
+    condition,
     hierarchy: OrganizationHierarchy,
     designation,
 
@@ -71,6 +72,7 @@ export default createStore({
     task: TaskStore,
     allergy: AllergyStore,
     impression:ImpressionStore,
+    history: HistoryStore,
 
     vitals: VitalsStore,
     procedure: ProcedureStore,

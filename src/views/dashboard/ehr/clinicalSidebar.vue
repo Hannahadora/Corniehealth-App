@@ -192,7 +192,7 @@ export default class Settings extends Vue {
   get organization() {
     return [
       { name: "Health Trend", to: "health-trend", icon: "trend-icon" },
-      { name: "Medical | Family History", to: "medical", icon: "medical-icon" },
+      { name: "Medical | Family History", to: "medical-family-history", icon: "medical-icon" },
       {
         name: "Allergies (Intolerance)",
         to: "allergy",
@@ -239,7 +239,7 @@ get fullname() {
   }
 
   mapUrl(url: string) {
-    const settingsBase = this.$router.resolve({ name: "Test URL" }).href;
+    const settingsBase = this.$router.resolve({ name: "EHR" }).href;
     // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
     return `${settingsBase}/${url}`.replace("//", "/");
   }

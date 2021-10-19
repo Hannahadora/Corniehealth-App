@@ -12,7 +12,7 @@
 
 
         <div class="w-full mt-6">
-             <div class="w-full flex my-6">
+             <!-- <div class="w-full flex my-6">
                 <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 0}"
                   @click="() => selectedStatus = 0"
                 >
@@ -37,7 +37,7 @@
                       <span class="text-danger font-semibold text-success">{{ patientVisits.filter((i) => i.status?.toLowerCase() !== "in-progress" && i.status?.toLowerCase() !== "queue" && i.status?.toLowerCase() !== "active").length }}</span>
                     </span>
                 </div>
-            </div>
+            </div> -->
 
              <div class="w-full curved flex py-2 justify-end my-6">
                 <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
@@ -49,59 +49,11 @@
                 </div>
             </div>
 
-            <div class="w-full" v-if="false">
-                <TimeLine />
-            </div>
-
-            <div class="w-full pb-7 mb-8">
+            <div class="w-full pb-7 mb-8 bg-white" style="max-width: 100%; overflow-x:scroll">
                 <cornie-table :columns="rawHeaders" v-model="items">
-                
-                <template #appointmentType-header="{  }">
-                    <p class="cursor-pointer md" style="font-weight: 600" @click="() => selectType = !selectType">Appointment Type</p>
-                    <div class="absolute md" v-if="selectType">
-                      <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                        <div class="py-1 md" role="none">
-                        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a class="md text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
-                            v-for="(day, index) in types" :key="index"
-                        >
-                            <span><input type="checkbox" class="h-4 w-4 md" name="" v-model="filterByType" id="" :value="day"></span>
-                            <span class="mx-2 text-xs md">{{ day }}</span>
-                        </a>
-                        </div>
-                    </div>
-                    </div>
-                </template>
-                
-                <template #status-header="{  }">
-                    <p class="cursor-pointer md" style="font-weight: 600" @click="() => filterStatus = !filterStatus">Participant Status</p>
-                    <div class="absolute md" v-if="filterStatus">
-                      <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                        <div class="py-1 md" role="none">
-                        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a class="md text-gray-700 block px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
-                            v-for="(day, index) in statuses" :key="index"
-                        >
-                            <span><input type="checkbox" class="h-4 w-4 md" name="" id="" v-model="filterByStatus" :value="day"></span>
-                            <span class="mx-2 text-xs md">{{ day }}</span>
-                        </a>
-                        </div>
-                    </div>
-                    </div>
-                </template>
-                
-                <template #name="{ item }">
-                    <p>{{ getAppointment(item.appointmentId).specialty }}</p>
-                </template>
-                <template #patient="{ item }">
-                    <p class="cursor-pointer" @click="showPatientDetails(item.patientId)">{{ item.patient }}</p>
-                </template>
-                <template #days="{ item }">
-                    <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
-                </template>
-                <template #appointmentType="{ item }">
+                <!-- <template #appointmentType="{ item }">
                     <p>{{ item.appointmentId ? getAppointment(item.appointmentId).appointmentType : '' }}</p>
-                </template>
+                </template> -->
                 <template #status="{ item }">
                     <div class="container">
                     <span class="rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
@@ -201,84 +153,6 @@
                     <ViewBreaks :schedule="selectedSchedule" />
                 </div>
                 </side-modal>
-
-                <modal :visible="timeLineVissible">
-                  <template #title>
-                    <p class="md flex items-center justify-between px2" style="width: 440px">
-                      <span class="md font-lignt text-primary p-2 text-xl">Timeline</span> 
-                      <span class="md text-danger cursor-pointer">
-                        <a class="md">
-                          See all
-                        </a>
-                      </span>
-                    </p>
-                  </template>
-                  <ActionLog :timeline="selectedVisit.timelines" :appointmentId="currentVisit.appointmentId" @closetimeline="() => timeLineVissible = false" />
-                 
-
-                </modal>
-
-                <modal :visible="viewDetails">
-                  <template #title>
-                    <p class="flex items-center justify-between px-2" style="width: 440px">
-                      <span class="font-bold text-danger p-2 text-xl">{{ getPatientName(selectedPatient.id)}}</span> 
-                      <span class="bg-danger cursor-pointer" @click="() => viewDetails = false">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 4C0 1.79086 1.79086 0 4 0H20C22.2091 0 24 1.79086 24 4V20C24 22.2091 22.2091 24 20 24H4C1.79086 24 0 22.2091 0 20V4Z" fill="white"/>
-                        <path d="M12 2C17.53 2 22 6.47 22 12C22 17.53 17.53 22 12 22C6.47 22 2 17.53 2 12C2 6.47 6.47 2 12 2ZM15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z" fill="#FF0000"/>
-                        </svg>
-                      </span>
-                    </p>
-                  </template>
-                  <div class="w-4/12 px-4" style="width: 440px">
-                    <div class="w-full flex">
-                      <div class="w-7/12">
-                        <div class="w-full">
-                          <div class="w-11/12">
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-primary">MRN No:</span> 
-                              <span class="ml-2">{{ selectedPatientData.mrn }}</span> 
-                            </div>
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-primary">D.O.B:</span> 
-                              <span class="ml-2">{{ selectedPatientData.dob }}</span> 
-                            </div>
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-primary">Policy Expiry:</span> 
-                              <span class="ml-2">XXXXXX</span> 
-                            </div>
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-primary">Policy No:</span> 
-                              <span class="ml-2">XXXXXX</span> 
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="w-5/12">
-                        <div class="w-full">
-                          <div class="w-11/12">
-                            <div class="py-2 w-full">
-                              <span class="font-semibold text-primary">Gender:</span> 
-                              <span class="ml-2">{{ selectedPatientData.gender }}</span> 
-                            </div>
-                            <div class="py-2 w-full">
-                              <span class="font-semibold text-primary">Profile Type:</span> 
-                              <span class="ml-2">XXXX</span> 
-                            </div>
-                            <div class="py-2w-full">
-                              <span class="font-semibold text-primary">Payor:</span> 
-                              <span class="ml-2">XXXXXX</span> 
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="w-full pt-3 pb-6">
-                      <p class="text-center font-normal text-large text-primary">View Policy Coverage</p>
-                    </div>
-                  </div>
-
-                </modal>
 
             </div>
 
@@ -447,18 +321,13 @@ export default class PractitionerExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
+      title: "Recorded",
+      key: "recorded",
+      show: true,
+    },
+    {
       title: "Identifier",
-      key: "id",
-      show: true,
-    },
-    {
-      title: "Specialty",
-      key: "name",
-      show: true,
-    },
-    {
-      title: "Patient",
-      key: "patient",
+      key: "identifier",
       show: true,
     },
     {
@@ -475,6 +344,11 @@ export default class PractitionerExistingState extends Vue {
     {
       title: "Participant Status",
       key: "status",
+      show: true,
+    },
+    {
+      title: "Location",
+      key: "location",
       show: true,
     },
     
@@ -500,45 +374,109 @@ export default class PractitionerExistingState extends Vue {
   }
 
   get items() {
-    if (!this.patientVisits || this.patientVisits.length === 0 ) return [];
-    const filtered = this.patientVisits.filter((i: any) => {
-      if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
-        return i;
-      } else {
-        if (this.filterByStatus.includes('All') || this.filterByType.includes('All')) return true;
-        const indexInTypes = this.filterByType.findIndex((j: any) => j.toLowerCase() === this.getAppointment(i.appointmentId).appointmentType.toLowerCase());
-        const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
-
-        if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
+    if (this.patientVisits?.length === 0) return [ ];
+    return this.patientVisits.map((visit: any) => {
+      return {
+        recorded: new Date(visit.createdAt).toLocaleDateString(),
+        identifier: "XXXXX",
+        appointmentType: this.getAppointment(visit.appointmentId).appointmentType,
+        slot: `${visit.checkInTime.substring(11, 16)} ${new Date(new Date(visit.checkInTime).getMinutes() + 60).toLocaleTimeString().substring(0, 5)}`,
+        status: visit.status,
+        location: visit?.room?.name,
+        practitioners: [
+          {
+            "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+            "firstName": "Darlington",
+            "email": "anselem16m@outlook.com",
+            "middleName": "",
+            "lastName": "Onyemere",
+            "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
+            "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+            "accountType": "Provider",
+            "roleId": null,
+            "phone": {
+              "number": "08122463202",
+              "dialCode": "+1264"
+            },
+            "createdAt": "2021-07-23T12:20:34.591Z",
+            "updatedAt": "2021-07-23T12:20:34.591Z",
+            "OrganizationId": null
+        },
+          {
+            "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+            "firstName": "Darlington",
+            "email": "anselem16m@outlook.com",
+            "middleName": "",
+            "lastName": "Onyemere",
+            "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
+            "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+            "accountType": "Provider",
+            "roleId": null,
+            "phone": {
+              "number": "08122463202",
+              "dialCode": "+1264"
+            },
+            "createdAt": "2021-07-23T12:20:34.591Z",
+            "updatedAt": "2021-07-23T12:20:34.591Z",
+            "OrganizationId": null
+        },
+          {
+            "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+            "firstName": "Darlington",
+            "email": "anselem16m@outlook.com",
+            "middleName": "",
+            "lastName": "Onyemere",
+            "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
+            "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+            "accountType": "Provider",
+            "roleId": null,
+            "phone": {
+              "number": "08122463202",
+              "dialCode": "+1264"
+            },
+            "createdAt": "2021-07-23T12:20:34.591Z",
+            "updatedAt": "2021-07-23T12:20:34.591Z",
+            "OrganizationId": null
+        },
+          {
+            "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+            "firstName": "Darlington",
+            "email": "anselem16m@outlook.com",
+            "middleName": "",
+            "lastName": "Onyemere",
+            "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
+            "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+            "accountType": "Provider",
+            "roleId": null,
+            "phone": {
+              "number": "08122463202",
+              "dialCode": "+1264"
+            },
+            "createdAt": "2021-07-23T12:20:34.591Z",
+            "updatedAt": "2021-07-23T12:20:34.591Z",
+            "OrganizationId": null
+        },
+          {
+            "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+            "firstName": "Darlington",
+            "email": "anselem16m@outlook.com",
+            "middleName": "",
+            "lastName": "Onyemere",
+            "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
+            "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+            "accountType": "Provider",
+            "roleId": null,
+            "phone": {
+              "number": "08122463202",
+              "dialCode": "+1264"
+            },
+            "createdAt": "2021-07-23T12:20:34.591Z",
+            "updatedAt": "2021-07-23T12:20:34.591Z",
+            "OrganizationId": null
+        },
+      ]
       }
     })
-
-    const visits = filtered.map((i: any) => {
-      if (i.status === "cancelled" || i.status === "no-show") {
-        i.completedStatus = "Completed";
-      } else if (i.status === "queue") {
-        i.completedStatus = "Queue";
-      } else {
-        i.completedStatus = "In-Progress";
-      }
-      
-      return {
-        ...i,
-        action: i.id,
-        patient: this.getPatientName(i.patientId),
-        location: i.room ? i.room.name : "",
-        status: i.status,
-        slot: `10:00 - 13:00`,
-        // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
-        practitioners: this.getActors(i.appointmentId)
-      };
-    });
-    if (this.selectedStatus === 1) return visits.filter((i: any) => i.completedStatus === "Queue");
-    if (this.selectedStatus === 2) return visits.filter((i) => i.status?.toLowerCase() === "in-progress" ||  i.status?.toLowerCase() === "active");
-    if (this.selectedStatus === 3) return visits.filter((i) => i.status?.toLowerCase() !== "in-progress" && i.status?.toLowerCase() !== "queue" && i.status?.toLowerCase() !== "active");
-    return visits;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
   }
 
   getPatientName(id: string) {

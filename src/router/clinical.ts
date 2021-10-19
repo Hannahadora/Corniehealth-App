@@ -4,7 +4,7 @@ import EHR from "@/views/dashboard/ehr/index.vue";
 export const ClinicalsRoute: RouteRecordRaw = {
     path: ":id",
     component: EHR,
-    name: "Test URL",
+    name: "EHR",
     // redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
     children: [
       {
@@ -74,12 +74,21 @@ export const ClinicalsRoute: RouteRecordRaw = {
         name: "Clinical Impressions",
         component: () =>
           import("@/views/dashboard/ehr/impression/index.vue"),
-         },{
+         },
+         {
         path: "procedure",
         props: true,
         name: "Procedures",
         component: () =>
           import("@/views/dashboard/ehr/procedures/index.vue"),
+      },
+      {
+        path: "medical-family-history",
+        props: true,
+        name: "Medical | Family History",
+        component: () =>
+          import("@/views/dashboard/ehr/history/index.vue"),
+         
       },
       
     ],

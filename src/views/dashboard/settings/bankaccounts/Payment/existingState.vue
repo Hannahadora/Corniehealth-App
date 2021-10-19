@@ -37,7 +37,7 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
+          @click="showDeactivate(item.id)"
         >
           <close-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">Deactivate Account</span>
@@ -45,7 +45,7 @@
       </template>
     </cornie-table>
     <deactivate-modal
-      v-model:visible="showDeativateModal"
+      v-model="showDeativateModal"
       :paymentId="paymentId"
     />
   </div>
@@ -72,6 +72,7 @@ import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import DeleteModal from "./deleteModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
+
 import ShowComfirm from "@/components/confirm.vue";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";

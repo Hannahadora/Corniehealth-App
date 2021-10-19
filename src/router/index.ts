@@ -74,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "clinical",
         props: true,
-        name: "Patient EHR",
+        name: "Patient",
         component: () =>
           import("@/views/dashboard/ehr/landing.vue"),
           children: [

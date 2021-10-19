@@ -6,7 +6,6 @@
           <sort-icon class="mr-5" />
           <icon-input
             class="border border-gray-600 rounded-full focus:outline-none"
-            type="search"
             placeholder="Search Table"
             v-model="query"
           >
@@ -24,7 +23,7 @@
         <filter-icon class="cursor-pointer" @click="$emit('filter')" />
       </span>
     </div>
-    <card class="mt-3">
+    <card class="mt-3 w-full" style="width: fit-content">
       <table class="w-full" style="border-radius: 5px">
         <thead class="bg-accent p-4 text-primary">
           <th class="text-left p-2" width="1" v-if="check">
