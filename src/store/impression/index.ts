@@ -29,8 +29,8 @@ export default {
     },
   },
   actions: {
-    async fetchImpressions(ctx) {
-      const impressions = await fetchImpressions();
+    async fetchImpressions(ctx,patientId:string) {
+      const impressions = await fetchImpressions(patientId);
       ctx.commit("setImpressions", impressions);
     },
     async getImpressionById(ctx, id: string) {

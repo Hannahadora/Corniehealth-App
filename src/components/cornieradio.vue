@@ -1,7 +1,7 @@
 <template>
   <span class="flex items-center relative">
     <label class="radio-container text-xs">
-      <span class="block pt-1">
+      <span class="block pt-0 text-black font-medium">
         {{ label }}
       </span>
       <input
@@ -10,7 +10,7 @@
         type="radio"
         v-model="checked"
       />
-      <span class="-mt-1  checkmark"></span>
+      <span class="-mt-1 checkmark"></span>
     </label>
   </span>
 </template>

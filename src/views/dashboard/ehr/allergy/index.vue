@@ -50,25 +50,30 @@ export default class AllergysIndex extends Vue {
   get empty() {
     return this.allergys.length < 1;
   }
+ get activePatientId() {
+      const id = this.$route?.params?.id as string;
+      return id;
+  }
+
 
   @allergy.State
   allergys!: IAllergy[];
 
   @allergy.Action
-  fetchAllergys!: () => Promise<void>;
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
   allergyAdded() {
     this.show = false;
     this.allergys;
-    this.fetchAllergys();
+    this.fetchAllergys(this.activePatientId);
   }
 
   mounted() {
-    this.fetchAllergys();
+    this.fetchAllergys(this.activePatientId);
   }
 
   created() {
-    if (this.allergys.length < 1) this.fetchAllergys();
+    if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
   }
 }
 </script>

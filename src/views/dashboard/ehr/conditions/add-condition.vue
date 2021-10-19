@@ -59,63 +59,15 @@
         class="shadow-none rounded-none border-none text-primary"
         title="Onset"
       >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <date-time-picker
-            v-model:date="onsetDate"
-            v-model:time="onsetTime"
-            label="Date/Time"
-            width="w-11/12"
-          />
-          <cornie-input v-model="onsetAge" label="Age" class="" />
-          <date-time-picker
-            v-model:date="onsetStartDate"
-            v-model:time="onsetStartTime"
-            label="Start Date/Time"
-            width="w-11/12"
-          />
-          <date-time-picker
-            v-model:date="onsetEndDate"
-            v-model:time="onsetEndTime"
-            label="End Date/Time"
-            width="w-11/12"
-          />
-        </div>
-        <div class="grid grid-cols-3 gap-3 mt-4">
-          <cornie-input v-model="onsetMin" label="Range (min)" />
-          <cornie-input v-model="onsetMax" label="Range (max)" />
-          <cornie-input v-model="onsetString" label="String" />
-        </div>
+        <timeable-picker v-model="onsetTimeable" />
+        <measurable v-model="onsetMeasurable" />
       </accordion-component>
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="Abatement"
       >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <date-time-picker
-            v-model:date="abatementDate"
-            v-model:time="abatementTime"
-            label="Date/Time"
-            width="w-11/12"
-          />
-          <cornie-input v-model="abatementAge" label="Age" class="" />
-          <date-time-picker
-            v-model:date="abatementStartDate"
-            v-model:time="abatementStartTime"
-            label="Start Date/Time"
-            width="w-11/12"
-          />
-          <date-time-picker
-            v-model:date="abatementEndDate"
-            v-model:time="abatementEndTime"
-            label="End Date/Time"
-            width="w-11/12"
-          />
-        </div>
-        <div class="grid grid-cols-3 gap-3 mt-4">
-          <cornie-input v-model="abatementMin" label="Range (min)" />
-          <cornie-input v-model="abatementMax" label="Range (max)" />
-          <cornie-input v-model="abatementString" label="String" />
-        </div>
+        <timeable-picker v-model="abatementTimeable" />
+        <measurable v-model="abatementMeasurable" />
         <span class="grid grid-cols-2 gap-3 mt-3">
           <practitioner-select
             :rules="required"
@@ -133,13 +85,18 @@
           <auto-complete v-model="stageType" :items="stages" label="Type" />
           <assessment-select v-model="stageAssessment" label="Assessment" />
         </div>
-        <cornie-text-area v-model="stageNote" label="Notes" class="w-full" />
+        <cornie-text-area
+          rows="4"
+          v-model="stageNote"
+          label="Notes"
+          class="w-full"
+        />
       </accordion-component>
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="Evidence"
       >
-        <div class="grid grid-cols-2 gap-3 mt-3">
+        <div class="flex items-center justify-between gap-3 mt-3">
           <auto-complete
             v-model="evidenceCode"
             :rules="required"
@@ -157,6 +114,7 @@
           v-model="evidenceNote"
           label="Notes"
           class="w-full"
+          rows="4"
         />
       </accordion-component>
     </v-form>
@@ -167,8 +125,8 @@
       >
         Cancel
       </cornie-btn>
-      <cornie-btn @click="submit" class="text-white bg-danger px-3 rounded-xl">
-        Create New Condition
+      <cornie-btn @click="submit" class="text-white bg-danger px-6 rounded-xl">
+        Create
       </cornie-btn>
     </template>
   </clinical-dialog>
@@ -187,6 +145,9 @@ import AssessmentSelect from "./assessment-select.vue";
 import PractitionerSelect from "./practitioner-select.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
+import TimeablePicker from "./timeable.vue";
+import Measurable from "./measurable.vue";
+import { getDropdown } from "@/plugins/definitions";
 
 import {
   verificationStatuses,
@@ -206,11 +167,30 @@ import { cornieClient } from "@/plugins/http";
 
 const user = namespace("user");
 
+const timeable = {
+  age: "",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+  endTime: "",
+  date: "",
+  time: "",
+};
+
+const measurable = {
+  unit: "",
+  min: "",
+  max: "",
+  string: "",
+};
+
 @Options({
   name: "AddCondition",
   components: {
     ClinicalDialog,
     CornieBtn,
+    Measurable,
+    TimeablePicker,
     AutoComplete,
     EncounterSelect,
     AssessmentSelect,
@@ -253,27 +233,11 @@ export default class AddCondition extends Vue {
 
   asserter = "";
 
-  onsetDate = "";
-  onsetTime = "";
-  onsetAge = "";
-  onsetStartDate = "";
-  onsetStartTime = "";
-  onsetEndDate = "";
-  onsetEndTime = "";
-  onsetMin = "";
-  onsetMax = "";
-  onsetString = "";
+  onsetTimeable = { ...timeable };
+  onsetMeasurable = { ...measurable };
 
-  abatementDate = "";
-  abatementTime = "";
-  abatementAge = "";
-  abatementStartDate = "";
-  abatementStartTime = "";
-  abatementEndDate = "";
-  abatementEndTime = "";
-  abatementMin = "";
-  abatementMax = "";
-  abatementString = "";
+  abatementTimeable = { ...timeable };
+  abatementMeasurable = { ...measurable };
 
   stageSummary = "";
   stageType = "";
@@ -302,35 +266,11 @@ export default class AddCondition extends Vue {
   }
 
   get onset() {
-    return {
-      dateTime: this.buildDateTime(this.onsetDate, this.onsetTime),
-      age: this.onsetAge,
-      period: this.buildPeriod(
-        this.onsetStartDate,
-        this.onsetStartTime,
-        this.onsetEndDate,
-        this.onsetEndTime
-      ),
-      range: { min: this.abatementMin, max: this.abatementMax },
-      onsetString: this.abatementString,
-    };
+    return {};
   }
 
   get abatement() {
     return {
-      abatementDateTime: this.buildDateTime(
-        this.abatementDate,
-        this.abatementTime
-      ),
-      abatementAge: this.abatementAge,
-      abatementPeriod: this.buildPeriod(
-        this.abatementStartDate,
-        this.abatementStartTime,
-        this.abatementEndDate,
-        this.abatementEndTime
-      ),
-      abatementRange: { min: this.abatementMin, max: this.abatementMax },
-      abatementString: this.abatementString,
       asserter: this.asserter,
     };
   }

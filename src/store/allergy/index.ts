@@ -34,8 +34,8 @@ export default {
     },
   },
   actions: {
-    async fetchAllergys(ctx) {
-      const allergys = await fetchAllergys();
+    async fetchAllergys(ctx,patientId:string) {
+      const allergys = await fetchAllergys(patientId);
       ctx.commit("setAllergys", allergys);
     },
     async getPractitioners(ctx) {
