@@ -1,7 +1,7 @@
 <template>
   <auto-complete :items="items" v-model="encounter">
     <template #item="{ item }">
-      <div class="flex justify-between my-1 items-center text-xs">
+      <div class="flex justify-between my-1 w-full items-center text-xs">
         <span class="flex flex-col">
           XXX-XXX-XXX
           <span class="flex items-center">
@@ -47,7 +47,7 @@ export default class EncounterSelect extends Vue {
   encounters: IEncounter[] = [];
 
   get patientId() {
-    return this.$route.params.id;
+    return this.$route.params.patientId;
   }
 
   get items() {

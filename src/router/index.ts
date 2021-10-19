@@ -162,8 +162,9 @@ const routes: Array<RouteRecordRaw> = [
             name: "Clinical Impressions",
             component: () =>
               import("@/views/dashboard/ehr/impression/index.vue"),
-          },
-          {
+             
+            },
+             {
             path: "procedure",
             props: true,
             name: "Procedures",
@@ -177,6 +178,14 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/ehr/progressnotes/index.vue"),
           },
+            path: "medical-family-history",
+            props: true,
+            name: "Medical | Family History",
+            component: () =>
+              import("@/views/dashboard/ehr/history/index.vue"),
+             
+            },
+          
         ],
       },
       {

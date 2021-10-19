@@ -195,7 +195,7 @@ export default class Settings extends Vue {
   get organization() {
     return [
       { name: "Health Trend", to: "health-trend", icon: "trend-icon" },
-      { name: "Medical | Family History", to: "medical", icon: "medical-icon" },
+      { name: "Medical | Family History", to: "medical-family-history", icon: "medical-icon" },
       {
         name: "Allergies (Intolerance)",
         to: "allergy",
@@ -280,7 +280,7 @@ get fullname() {
     // return name;
     const current_patient =  this.patient
      return {
-                code: current_patient.id,
+                code: this.patient.id,
                 fullname: `${current_patient.firstname} ${current_patient.lastname}`,
                 email: this.printEmail(current_patient),
                 address: this.printAddress(current_patient),

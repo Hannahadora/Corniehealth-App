@@ -22,6 +22,7 @@ async function uploadImage(img: any): Promise<string> {
   }
   return "";
 }
+
 export function useHandleImage(oldUrl: string = "") {
   const url = ref(oldUrl);
   const placeholder = ref(require("@/assets/img/placeholder.png"));
