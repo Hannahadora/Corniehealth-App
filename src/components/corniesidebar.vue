@@ -170,16 +170,6 @@ export default class CorniDashboardeSideBar extends Vue {
         },
       ],
     },
-<<<<<<< HEAD
-    { name: "Clinical", to:  "clinical", icon: "book-icon", hasSubsection: false },
-    { name: "In-Patient", to: "in-patient", icon: "clinic-icon", hasSubsection: false },
-    { name: "Diagnostics", to: "diagnostics", icon: "clip-board-icon", hasSubsection: false },
-    { name: "Medications", to: "medications", icon: "pill-icon", hasSubsection: false },
-    { name: "Certificates", to: "certificates", icon: "medal-icon", hasSubsection: false },
-    { name: "Bills & Payments", to: "bills", icon: "debit-card-icon", hasSubsection: false },
-    { name: "Accounting", to: "accounting", icon: "wallet-icon", hasSubsection: false },
-    { name: "Analytics", to: "analytics", icon: "chart-icon", hasSubsection: false },
-=======
     {
       name: "Clinical",
       to: "clinical",
@@ -228,7 +218,6 @@ export default class CorniDashboardeSideBar extends Vue {
       icon: "chart-icon",
       hasSubsection: false,
     },
->>>>>>> main
     { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
   ];
 

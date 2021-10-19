@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <div class="w-full pb-7 mb-8 bg-white" style="max-width: 100%; overflow-x:scroll">
+            <div class="w-full pb-7 mb-8 bg-white">
                 <cornie-table :columns="rawHeaders" v-model="items">
                 <!-- <template #appointmentType="{ item }">
                     <p>{{ item.appointmentId ? getAppointment(item.appointmentId).appointmentType : '' }}</p>
