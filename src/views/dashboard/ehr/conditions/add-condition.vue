@@ -36,16 +36,15 @@
             :rules="required"
             reference="http://hl7.org/fhir/ValueSet/condition-severity"
           />
-          <auto-complete
+          <fhir-input
             v-model="code"
             :rules="required"
-            :items="conditionCodes"
             label="Code"
             reference="http://hl7.org/fhir/ValueSet/condition-code"
           />
-          <auto-complete
+          <fhir-input
             v-model="bodySite"
-            :items="bodySites"
+            reference="http://hl7.org/fhir/ValueSet/body-site"
             :rules="required"
             label="Body Site"
           />
