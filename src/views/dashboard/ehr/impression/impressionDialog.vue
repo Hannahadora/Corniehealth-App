@@ -414,7 +414,12 @@ export default class Medication extends Vue {
 
 
  data: any = {
-    days: [],
+    date:"",
+    dateTime:"",
+    startDate:"",
+    startTime:"",
+    endDate:"",
+    endTime:""
   }
 assessorItems = [];
 conditionItems = [];
@@ -435,18 +440,6 @@ questions=[];
 setFindingType="";
 showFindingModal = false;
 findingItems = [];
-
-
-onsetDate = "";
-  onsetTime = "";
-  onsetAge = "";
-  onsetStartDate = "";
-  onsetStartTime = "";
-  onsetEndDate = "";
-  onsetEndTime = "";
-  onsetMin = "";
-  onsetMax = "";
-  onsetString = "";
 
    async setImpressionModel() {
      this.impressionModel = JSON.parse(JSON.stringify({ ...emptyImpression}));

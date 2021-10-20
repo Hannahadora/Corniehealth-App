@@ -68,3 +68,10 @@ export default class DInput extends Vue {
   }
 }
 </script>
+<style>
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
+}
+</style>

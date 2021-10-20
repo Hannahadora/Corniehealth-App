@@ -60,7 +60,7 @@
           :placeholder="$attrs.placeholder"
           :name="inputName"
           :readonly="readonly || disabled"
-          :class="{ 'bg-gray-200': disabled }"
+          :class="{ 'bg-gray-100': disabled }"
           v-model="valueSync"
           @update:modelValue="handleChange"
         />

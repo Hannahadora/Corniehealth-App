@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import { SettingsRoute } from "./settings";
+import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
@@ -70,15 +71,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
-      ExperienceRoutes,
       {
-        path: "clinical/",
-        props: true,
-        name: "EHR",
-        component: () => import("@/views/dashboard/ehr/landing/index.vue"),
-      },
-      {
-        path: "clinical/:patientId",
+        path: "clinical",
         props: true,
         name: "Patient EHR",
         component: () => import("@/views/dashboard/ehr/index.vue"),
@@ -185,7 +179,21 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/ehr/procedures/index.vue"),
           },
         ],
+        name: "Patient",
+        component: () =>
+          import("@/views/dashboard/ehr/landing.vue"),
+          children: [
+            {
+              path: "",
+              props: true,
+              component: () =>
+                import("@/views/dashboard/ehr/landing/index.vue"),
+            },
+            ClinicalsRoute,
+          ]
       },
+      ExperienceRoutes,
+      
       {
         path: "settings/",
         name: "Settings",

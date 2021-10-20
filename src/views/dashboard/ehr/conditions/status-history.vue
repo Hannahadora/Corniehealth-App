@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-1/3 h-2/5">
+  <cornie-dialog v-model="show" center class="w-2/5 h-2/5">
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
         <div class="w-full flex items-center justify-between">
@@ -23,10 +23,15 @@
             class="block border-l-2 border-dotted ml-1 my-1 h-4"
             v-if="i != 0"
           />
-          <span>{{ i + 1 }}</span>
-          <span class="text-sm text-gray-400 ml-1">
-            (29/04/2021, 09:00 - 29/04/2021, 09:30)
-          </span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <span>{{ i + 1 }}</span>
+              <span class="text-sm text-gray-400 ml-1">
+                {{ value.date }}
+              </span>
+            </div>
+            <span class="text-sm text-gray-400 ml-1"> {{ value.value }} </span>
+          </div>
         </div>
       </cornie-card-text>
       <div class="flex justify-end mr-2 mt-auto mb-1">
@@ -47,10 +52,21 @@ import { Prop, PropSync } from "vue-property-decorator";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieCard from "@/components/cornie-card";
 import DeleteIcon from "@/components/icons/cancel.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+
+interface History {
+  value: string;
+  current: boolean;
+  start: string;
+  end?: string;
+  practitionerId: string;
+  practitionerName?: string;
+}
 
 @Options({
-  name: "StatusHistory",
+  name: "ConditionStatusHistory",
   components: {
+    CornieIconBtn,
     CornieDialog,
     ArrowLeftIcon,
     ...CornieCard,
@@ -61,9 +77,24 @@ export default class StatusHistory extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, required: true })
-  active!: "clinical" | "verification";
+  @Prop({ type: Array, required: true, default: [] })
+  histories!: History[];
 
-  values = [1, 2, 3, 4, 5];
+  get values() {
+    return [...this.histories, ...this.histories].map((history) => ({
+      ...history,
+      date: `(${this.printDate(history.start)} - ${this.printDate(
+        history.end
+      )})`,
+    }));
+  }
+
+  printDate(dateString?: string) {
+    if (!dateString) return "present";
+    const date = new Date(dateString);
+    const localeDate = date.toLocaleDateString();
+    const localeTime = `${date.getHours()}:${date.getMinutes()}`;
+    return `${localeDate}, ${localeTime}`;
+  }
 }
 </script>

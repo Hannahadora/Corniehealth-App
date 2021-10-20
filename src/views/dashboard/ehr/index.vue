@@ -22,9 +22,9 @@
     <patient-modal v-model:visible="showPatient" />
   <!-- </div> -->
   <patient-modal v-model:visible="showPatient"/>
-  <modal :visible="!practitionerAuthenticated">
+  <!-- <modal :visible="!practitionerAuthenticated">
     <auth-modal />
-  </modal>
+  </modal> -->
 </div>
 </template>
 <script lang="ts">
