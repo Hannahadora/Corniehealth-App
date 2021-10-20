@@ -94,7 +94,7 @@ export default class VerifyEmailCode extends Vue {
          window.notify({ msg: errMsg  });
       }
     } catch (error) {
-       window.notify({ msg: error });
+       window.notify({ msg: "Email verification code not sent" });
     }
   }
 

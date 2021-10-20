@@ -289,7 +289,7 @@ async editMedication() {
         this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Medication not Updated", status: "error" });
     }
   }
  
