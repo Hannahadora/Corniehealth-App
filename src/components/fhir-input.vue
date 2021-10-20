@@ -24,9 +24,12 @@ export default class FHIRInput extends Vue {
   @Prop({ type: String, required: true })
   reference!: string;
 
+  @Prop({ type: Boolean, default: false })
+  snomed!: boolean;
+
   items: Codeable[] = [];
 
-  async created() {
+  async setRefs() {
     const ref = this.reference.trim();
     const defs = await getDropdown(ref);
     if (defs && Array.isArray(defs)) {
@@ -37,6 +40,10 @@ export default class FHIRInput extends Vue {
         msg: `Cannot get definitions for ${this.reference}`,
       });
     }
+  }
+
+  created() {
+    this.setRefs();
   }
 }
 </script>
