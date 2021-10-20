@@ -4,7 +4,12 @@ module.exports = {
   purge: {
     content: ["./public/**/*.html", "./src/**/*.vue"],
     options: {
-      safelist: ["border-blue-400", "border-red-400", "border-green-400"],
+      safelist: [
+        "border-blue-400",
+        "success",
+        "border-red-400",
+        "border-green-400",
+      ],
     },
   },
   presets: [],
@@ -262,9 +267,7 @@ module.exports = {
       DEFAULT: "1",
     },
     fontFamily: {
-      sans: [
-        'Inter', 'sans-serif'
-      ],
+      sans: ["Inter", "sans-serif"],
       serif: [
         "ui-serif",
         "Georgia",

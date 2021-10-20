@@ -105,7 +105,7 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import AllergyModal from "./attachmentdialog.vue";
+import AllergyModal from "./attachmentDialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -323,9 +323,9 @@ export default class AllergyExistingState extends Vue {
     //this.stopEvent = true;
     this.allergyId = value;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
 
   allergyAdded() {

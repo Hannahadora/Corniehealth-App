@@ -21,17 +21,13 @@
             focus:outline-none
             hover:opacity-90
           "
-          @click="showAllergy"
+          @click="show"
         >
           Attachment
         </button>
       </span>
     </div>
-    <allergy-modal
-      :columns="practitioner"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
-    />
+    <add-attachment v-model="addAttachment" />
   </div>
 </template>
 <script lang="ts">
@@ -40,20 +36,21 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
-import AllergyModal from "./attachmentdialog.vue";
+import AddAttachment from "./add-attachment.vue";
+
 @Options({
   components: {
     ChevronDownIcon,
     Select,
     SearchIcon,
     IconInput,
-    AllergyModal,
+    AddAttachment,
   },
 })
 export default class AllergysEmptyState extends Vue {
-  showAllergyModal = false;
-  async showAllergy() {
-    this.showAllergyModal = true;
+  addAttachment = false;
+  async show() {
+    this.addAttachment = true;
   }
 }
 </script>
