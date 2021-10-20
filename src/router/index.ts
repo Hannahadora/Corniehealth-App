@@ -179,18 +179,18 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/ehr/procedures/index.vue"),
           },
         ],
-        // name: "Patient",
-        // component: () =>
-        //   import("@/views/dashboard/ehr/landing.vue"),
-        //   children: [
-        //     {
-        //       path: "",
-        //       props: true,
-        //       component: () =>
-        //         import("@/views/dashboard/ehr/landing/index.vue"),
-        //     },
-        //     ClinicalsRoute,
-        //   ]
+        name: "Patient",
+        component: () =>
+          import("@/views/dashboard/ehr/landing.vue"),
+          children: [
+            {
+              path: "",
+              props: true,
+              component: () =>
+                import("@/views/dashboard/ehr/landing/index.vue"),
+            },
+            ClinicalsRoute,
+          ]
       },
       ExperienceRoutes,
       
