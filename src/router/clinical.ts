@@ -90,6 +90,14 @@ export const ClinicalsRoute: RouteRecordRaw = {
           import("@/views/dashboard/ehr/history/index.vue"),
          
       },
+      {
+        path: "appointments",
+        props: true,
+        name: "Appointments",
+        component: () =>
+          import("@/views/dashboard/ehr/appointment/index.vue"),
+         
+        },
       
     ],
   }

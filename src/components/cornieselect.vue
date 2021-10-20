@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="flex capitalize mb-1 text-black text-sm font-medium"
+              class="flex capitalize mb-1 text-black text-sm font-semibold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -30,14 +30,14 @@
                   'border-red-500': Boolean(errorMessage),
                   'border-green-400': meta.valid && meta.touched,
                 }"
-                class="p-1 bg-white flex border border-gray-200 rounded-lg"
+                class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
               >
                 <span v-if="Boolean($slots.selected)">
                   <slot name="selected" :item="selectedItem" />
                 </span>
                 <input
                   v-else
-                  placeholder="Select"
+                 :placeholder="$attrs.placeholder"
                   disabled
                   :value="displayVal"
                   class="
@@ -228,7 +228,8 @@ export default class CornieSelect extends Vue {
 }
 ::placeholder {
   font-size: 0.8em;
-  font-weight: 300;
+  font-weight: 400;
+  font-style: italic;
   color: #667499;
 }
 </style>
