@@ -507,7 +507,9 @@ async checkActor(){
 }
 async showActor(updatePractitioners:any,updatePatients:any,updateDevices:any,updateLocation:any,updateHealthcare:any,getPractitioner:any){
   this.newPractitioners = updatePractitioners;
-    console.log(getPractitioner);
+  getPractitioner.required = this.requiredPractitioner;
+  getPractitioner.consultationMedium = this.consultationMediumPractitioner;
+    console.log( getPractitioner.required);
 }
 
 

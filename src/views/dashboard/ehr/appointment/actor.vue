@@ -238,7 +238,7 @@
                 <div v-if="actorType == 'Practitioner'">
                       <div class="w-full flex space-x-2 mb-5">
                           <input
-                          checked
+                         
                             v-model="requiredPractitioner"
                             type="checkbox"
                             class="bg-danger focus-within:bg-danger px-6 shadow"
@@ -661,6 +661,13 @@ export default {
             start:"",
             end:""
         },
+        getPractitioner: {
+        id: this.practitionerId,
+        required: this.requiredPractitioner,
+        consultationMedium: this.consultationMediumPractitioner,
+        period: this.periodPractitioner
+       
+    },
     };
   },
   watch: {
@@ -677,14 +684,7 @@ export default {
       total(){
           return this.updateHealthcare.length + this.updateDevices.length + this.updatePatients.length + this.updatePractitioners.length + this.updateLocation.length;  
       },
-   getPractitioner(){
-       return {
-        id: this.practitionerId,
-        required: this.requiredPractitioner,
-        consultationMedium: this.consultationMediumPractitioner,
-        period: this.periodPractitioner
-       }
-   },
+
    getPatient(){
        return {
         id: this.patientId,
