@@ -7,7 +7,7 @@
   >
     <div class="flex items-center justify-between mt-3">
       <p class="text-xs">Started: 9:15am, 22 September,2021</p>
-      <p class="text-xs">Duration: 30 mins</p>
+      <p class="text-xs">Duration: 30 min</p>
       <cornie-btn
         class="border-danger border-2 px-6 mr-3 rounded-xl text-danger"
       >
