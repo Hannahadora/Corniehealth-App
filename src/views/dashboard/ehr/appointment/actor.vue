@@ -236,16 +236,6 @@
             </div>
             <div class="w-full" v-if="stepped == 2">
                 <div v-if="actorType == 'Practitioner'">
-                       <cornie-select
-                        class="w-full mb-2"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
-
                       <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
@@ -278,15 +268,6 @@
                       </cornie-select>
                 </div>
                  <div v-if="actorType == 'Patient'">
-                       <cornie-select
-                        class="w-full mb-2"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
@@ -320,15 +301,6 @@
                       </cornie-select>
                 </div>
                  <div v-if="actorType == 'Practitioner Role'">
-                       <cornie-select
-                        class="w-full mb-2"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
@@ -362,15 +334,6 @@
                       </cornie-select>
                 </div>
                  <div v-if="actorType == 'Device'">
-                       <cornie-select
-                        class="w-full mb-2"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
@@ -404,15 +367,6 @@
                       </cornie-select>
                 </div>
                  <div v-if="actorType == 'Location'">
-                       <cornie-select
-                        class="w-full mb-2"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
@@ -446,15 +400,6 @@
                       </cornie-select>
                 </div>
                  <div v-if="actorType == 'Healthcare Services'">
-                       <cornie-select
-                        class="w-full mb-2"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="type"
-                        label="Type"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
