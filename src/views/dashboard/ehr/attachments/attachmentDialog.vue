@@ -12,34 +12,32 @@
         <div class="grid grid-cols-3 gap-4 mt-3">
             <cornie-input label="TITLE" class="mt-3" placeholder="---Enter---"  />
             </div>
-            <field class="justify-content-center mt-5"
-  >
-    <label class="block text-black bold capitalize mb-1 text-sm font-semibold">
-      Upload File
-    </label>
-    <textarea
-      rows="10"
-      cols="40"
-      class="rounded-lg border-2 border-dashed p-2 w-full"
-    /> 
-  </field>
+            <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Upload</label>
+            <div 
+             class="dropzone border-2 border-dashed">
+              <span>Drag or Drop File</span>
+              <span>OR</span>
+              <label for="dropzoneFile" class=" font-bold  py-1 px-3 my-1 cursor-pointer">
+                    Browse Files
+              </label>
               <input
                 type="file"
                 name="attachment"
-                id="file"
+                id="dropzoneFile"
                 @change="img.onChange"
                 hidden
               />
-              <label for="file" class=" font-bold block bg-danger text-white text-center rounded-full py-3 px-6 cursor-pointer">
+              </div>
+              <label for="dropzoneFile" class=" font-bold block bg-danger text-white text-center rounded-full py-1 px-3 my-1 cursor-pointer">
                     Upload
               </label>
             
              <div class=" justify-content-center mt-5">
-                        <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Detail</label>
+                        <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Comments(optional)</label>
                           <div class="my-2  w-full">
                                 <Textarea
                                 class="w-full text-xs"
-                                placeholder="Text Area"
+                                placeholder="Placeholder"
                                 :rules="required"
                               />
                           </div>
@@ -126,6 +124,7 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import AssesorModal from './assesor.vue'
 import ProblemModal from './problem.vue'
 import ItemModal from './itemdailog.vue'
+import Dropzone from './dropzone.vue'
 import ReferenceModal from './reference.vue'
 import { namespace } from 'vuex-class'
 
@@ -196,7 +195,8 @@ const emptyImpression: IImpression = {
     ReferenceModal,
     CornieRadio,
     CornieBtn,
-    MainCornieSelect
+    MainCornieSelect,
+    Dropzone
   },
 })
 export default class Medication extends Vue {
@@ -228,6 +228,7 @@ conditionItems = [];
 problemItems=[];
 investigateItems=[];
 loading=  false;
+active= false;
 status=  false;
 showAssessorModal = false;
 showProblemModal = false;
@@ -254,9 +255,14 @@ onsetDate = "";
   onsetMin = "";
   onsetMax = "";
   onsetString = "";
+  dropzoneFile="";
 
    async setImpressionModel() {
      this.impressionModel = JSON.parse(JSON.stringify({ ...emptyImpression}));
+  }
+
+  async toggleActive() {
+     this.active = !this.active;
   }
    get activePatientId() {
       const id = this.$route?.params?.id as string;
@@ -428,5 +434,22 @@ onsetDate = "";
 </script>
 
 <style>
+.dropzone{
+  width: 800px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 16px;
+  /* border: 2px dashed #41b883; */
+  background-color: #fff;
+  transition: 0.3s ease all;
+}
 
+.active-dropzone{
+  color: #fff;
+  border-color: #ffff;
+  background-color: #41b883;
+}
 </style>

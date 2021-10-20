@@ -1,84 +1,77 @@
 <template>
   <div class="w-full pb-80">
-       <div>
-            <span class="flex justify-end w-full mb-8">
-              <button
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  py-2
-                  pr-12
-                  pl-12
-                  px-3
-                  mb-5
-                  font-semibold
-                  focus:outline-none
-                  hover:opacity-90
-                "
-                @click="showImpression('false')"
-              >
-                Add Attachments
-              </button>
-              
-            </span>
-            <cornie-table :columns="rawHeaders" v-model="items">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <newview-icon  class="text-yellow-500 fill-current"/>
-                    <span class="ml-3 text-xs">View</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showImpression(item.id)">
-                      <edit-icon class="text-purple-600 fill-current" />
-                      <span class="ml-3 text-xs">Edit</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
-                      <update-icon class="text-purple-800 fill-current" />
-                      <span class="ml-3 text-xs">Update Status</span>
-                  </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
-                      <update-icon class="text-purple-800 fill-current" />
-                      <span class="ml-3 text-xs">Update Prognosis</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Occurrence</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Condition</span>
-                  </div>
-                   <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
-                      <cancel-icon />
-                      <span class="ml-3 text-xs"
-                      >Cancel</span>
-                    </div> -->
-                </template>
-            </cornie-table>
-        </div>
-    
-      <attachment-modal 
-       v-if="impressionId == 'false'"
-        :columns="practitioner"
-           @impression-added="impressionAdded"
-          @update:preferred="showImpression"
-          v-model="showImpressionModal"/>
+    <div>
+      <span class="flex justify-end w-full mb-8">
+        <button
+          class="
+            bg-danger
+            rounded-full
+            text-white
+            mt-5
+            py-2
+            pr-12
+            pl-12
+            px-3
+            mb-5
+            font-semibold
+            focus:outline-none
+            hover:opacity-90
+          "
+          @click="showAllergy('false')"
+        >
+          New Allergy
+        </button>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="sortAllergys">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$router.push(`/dashboard/experience/add-task/${item.id}`)"
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="
+              $router.push('/dashboard/provider/experience/add-appointment')
+            "
+          >
+            <plus-icon class="text-green-400 fill-current" />
+            <span class="ml-3 text-xs">Add Occurrence</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showAllergy(item.id)"
+          >
+            <edit-icon class="text-purple-600 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+        </template>
+        <template #asserter="{ item }">
+          <p class="cursor-pointer">{{ item.asserter }}</p>
+        </template>
+        <template #recorder="{ item }">
+          <p class="cursor-pointer">{{ item.asserter }}</p>
+        </template>
+      </cornie-table>
+    </div>
 
-     <attachment-modal
-     v-else 
-     :id="impressionId" 
-        :columns="practitioner"
-          @update:preferred="showImpression"
-          v-model="showImpressionModal"/>
-     <status-modal
-            :id="impressionId" 
-           :updatedBy="updatedBy" 
-        :currentStatus="currentStatus" 
-        :updateDate="update"
-          @update:preferred="showStatus"
-          v-model="showStatusModal"/>
-        
+    <allergy-modal
+      v-if="allergyId == 'false'"
+      :columns="practitioner"
+      @allergy-added="allergyAdded"
+      @update:preferred="showAllergy"
+      v-model="showAllergyModal"
+    />
+
+    <allergy-modal
+      v-else
+      :id="allergyId"
+      :columns="practitioner"
+      @update:preferred="showAllergy"
+      v-model="showAllergyModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -99,7 +92,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IImpression from "@/types/IImpression";
+import IAllergy from "@/types/IAllergy";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -112,12 +105,11 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import AttachmentModal from "./attachmentDialog.vue";
+import AllergyModal from "./attachmentdialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
- import StatusModal from "./status.vue";
 
-const impression = namespace("impression");
+const allergy = namespace("allergy");
 
 @Options({
   components: {
@@ -125,13 +117,12 @@ const impression = namespace("impression");
     CancelIcon,
     SortIcon,
     CheckinIcon,
-    AttachmentModal,
+    AllergyModal,
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,
     ShareIcon,
     ThreeDotIcon,
-    StatusModal,
     DangerIcon,
     PlusIcon,
     SearchIcon,
@@ -147,75 +138,80 @@ const impression = namespace("impression");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
   },
-  
 })
-export default class AttachmentExistingState extends Vue {
+export default class AllergyExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
   selected = 1;
   showNotes = false;
-  showImpressionModal= false;
-  showStatusModal=false;
-  impressionId="";
-  tasknotes=[];
-updatedBy= "";
-currentStatus="";
-update ="";
+  showAllergyModal = false;
+  allergyId = "";
+  tasknotes = [];
 
-  // @Prop({ type: Array, default: [] })
-  // impressions!: IImpression[];
+  @Prop({ type: Array, default: [] })
+  allergys!: IAllergy[];
 
-  @impression.State
-  impressions!: IImpression[];
+  // @allergy.State
+  // allergys!: IAllergy[];
 
-  @impression.Action
-  deleteImpression!: (id: string) => Promise<boolean>;
+  @allergy.State
+  practitioners!: any[];
 
-  @impression.Action
-  fetchImpressions!: (patientId: string) => Promise<void>;
+  @allergy.Action
+  deleteAllergy!: (id: string) => Promise<boolean>;
 
+  @allergy.Action
+  getPractitioners!: () => Promise<void>;
+
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Date",
+      title: "identifier",
       key: "id",
       show: true,
     },
-     { title: "Time", key: "createdAt", show: true },
+    { title: "Date Recorded", key: "createdAt", show: true },
     {
-      title: "Title",
-      key: "problem",
+      title: "Type",
+      key: "type",
       show: true,
     },
-     {
-      title: "Format",
-      key: "investigation",
+    {
+      title: "Category",
+      key: "category",
       show: true,
     },
-     {
-      title: "finding code",
-      key: "code",
+    {
+      title: "Criticality",
+      key: "criticality",
       show: false,
     },
     {
-      title: "Size",
-      key: "prognosis",
+      title: "product",
+      key: "product",
       show: true,
     },
     {
-      title: "status",
-      key: "status",
+      title: "clinical| verication",
+      key: "clinicalStatus",
+      show: true,
+    },
+    {
+      title: "Asserter",
+      key: "asserter",
       show: false,
     },
     {
-      title: "Status Reason",
-      key: "statusReason",
+      title: "Recorder",
+      key: "recorder",
       show: false,
     },
     {
@@ -223,19 +219,34 @@ update ="";
       key: "onsetPeriod",
       show: false,
     },
-     {
-      title: "description",
+    {
+      title: "Code",
+      key: "code",
+      show: false,
+    },
+    {
+      title: "Onset Age",
+      key: "onsetAge",
+      show: false,
+    },
+    {
+      title: "Recorded Date",
+      key: "recordedDate",
+      show: false,
+    },
+    {
+      title: "Description",
       key: "description",
       show: false,
     },
     {
-      title: "subject",
-      key: "subject",
+      title: "Note",
+      kwy: "note",
       show: false,
     },
     {
-      title: "encounter",
-      key: "encounter",
+      title: "Last Occurence",
+      kwy: "lastOccurence",
       show: false,
     },
     //  {
@@ -268,7 +279,6 @@ update ="";
     //   kwy: "outputValue",
     //   show: false,
     // },
-
   ];
 
   get headers() {
@@ -280,92 +290,87 @@ update ="";
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-
   get items() {
-    const impressions = this.impressions?.map((impression) => {
-         (impression as any).createdAt= new Date(
-         (impression as any).createdAt
-       ).toLocaleDateString("en-US");
-       (impression as any).updatedAt= new Date(
-         (impression as any).updatedAt
-       ).toLocaleDateString("en-US");
-          this.updatedBy = impression.effective.assessor;
-      this.currentStatus = impression.status;
-        this.update = impression.updatedAt;
-        return {
-        ...impression,
-         action: impression.id,
-         keydisplay: "XXXXXXX",
-         problem: impression.effective.problem,
-         investigation: impression.investigation.item,
-         prognosis: impression.findings.prognosis,
-        assessor: impression.effective.assessor,
-        };
+    const allergys = this.allergys.map((allergy) => {
+      (allergy as any).onSet.onsetPeriod.start = new Date(
+        (allergy as any).onSet.onsetPeriod.start
+      ).toLocaleDateString("en-US");
+      (allergy as any).onSet.onsetPeriod.end = new Date(
+        (allergy as any).onSet.onsetPeriod.end
+      ).toLocaleDateString("en-US");
+      (allergy as any).createdAt = new Date(
+        (allergy as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...allergy,
+        action: allergy.id,
+        keydisplay: "XXXXXXX",
+        onsetPeriod:
+          allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
+        asserter: this.getPractitionerName(allergy.onSet.asserter),
+        product: allergy.reaction.substance,
+      };
     });
-
-    if (!this.query) return impressions;
-    return search.searchObjectArray(impressions, this.query);
+    if (!this.query) return allergys;
+    return search.searchObjectArray(allergys, this.query);
   }
-
-  async showStatus(value:string){
-    this.showStatusModal = true;
-    this.impressionId = value;
+  getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
-
-  async showImpression(value:string){
-      this.showImpressionModal = true;
-      //this.stopEvent = true;
-      this.impressionId = value;
+  async showAllergy(value: string) {
+    this.showAllergyModal = true;
+    //this.stopEvent = true;
+    this.allergyId = value;
   }
  get activePatientId() {
       const id = this.$route?.params?.id as string;
       return id;
   }
 
-
-  impressionAdded() {
- this.impressions;
-  this.fetchImpressions(this.activePatientId);
+  allergyAdded() {
+    this.allergys;
+    this.fetchAllergys(this.activePatientId);
   }
-
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this impression",
-      title: "Delete impression"
+      message: "You are about to delete this allergy",
+      title: "Delete allergy",
     });
     if (!confirmed) return;
 
-    if (await this.deleteImpression(id)) window.notify({ msg: "impression cancelled", status: "success" });
-    else window.notify({ msg: "Impression not cancelled", status: "error" });
+    if (await this.deleteAllergy(id))
+      window.notify({ msg: "Allergy cancelled", status: "success" });
+    else window.notify({ msg: "Allergy not cancelled", status: "error" });
   }
- 
-      get sortImpressions (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-   
-     created() {
-          this.sortImpressions;
-          this.fetchImpressions(this.activePatientId);
-    }
 
+  get sortAllergys() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+
+  async created() {
+    this.getPractitioners();
+    this.sortAllergys;
+    this.fetchAllergys(this.activePatientId);
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 .status-accepted {
-      background: #F3FCF8;
-      color: #35BA83;    
-  }
-.status-inactive {
-      background: #FFF1F0;
-      color: #FE4D3C;
+  background: #f3fcf8;
+  color: #35ba83;
 }
-.status-warning{
-  background: #FEFAF0;
-  color: #F7B538;
+.status-inactive {
+  background: #fff1f0;
+  color: #fe4d3c;
+}
+.status-warning {
+  background: #fefaf0;
+  color: #f7b538;
 }
 </style>

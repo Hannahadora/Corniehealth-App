@@ -1,79 +1,79 @@
 <template>
-  <div class="flex justify-center  bg-white shadow-md p-3 mb-2 rounded w-full">
+  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded w-full">
     <div class="w-full">
-    <span
+      <span
         class="
-          flex
-          flex-col
+          flex flex-col
           w-full
           justify-center
           border-b-2
           font-bold
           mb-10
           text-xl text-primary
-            py-2
+          py-2
         "
       >
-       Attachments
+        Attachment
       </span>
       <span class="w-full h-screen">
-          <attachment-empty-state
-                v-if="empty"
-          />
-          <attachment-existing-state
+        <allergys-empty-state v-if="empty" />
+        <allergys-existing-state
+          @allergy-added="allergyAdded"
+          :allergys="allergys"
           v-else
-
-          />
-                  
+        />
       </span>
     </div>
   </div>
 </template>
 <script lang="ts">
-import IImpression from "@/types/IImpression";
+import IAllergy from "@/types/IAllergy";
 import { Options, Vue } from "vue-class-component";
-import AttachmentEmptyState from "./emptyState.vue";
-import AttachmentExistingState from "./existingState.vue";
+import AllergysEmptyState from "./emptyState.vue";
+import AllergysExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const impression = namespace("impression");
+const allergy = namespace("allergy");
 
 @Options({
-  name: "AttachmentIndex",
+  name: "AllergysIndex",
   components: {
-    AttachmentEmptyState,
-    AttachmentExistingState,
+    AllergysEmptyState,
+    AllergysExistingState,
   },
 })
-export default class AttachmentIndex extends Vue {
-  addImpression = false;
-  show=false;
-
+export default class AllergysIndex extends Vue {
+  addAllergy = false;
+  show = false;
+  TaskToUpdate = {} as IAllergy;
 
   get empty() {
-    return this.impressions.length < 1;
+    return this.allergys.length < 1;
   }
  get activePatientId() {
       const id = this.$route?.params?.id as string;
       return id;
   }
 
- @impression.State
-  impressions!: IImpression[];
 
-  @impression.Action
-  fetchImpressions!: (patientId: string) => Promise<void>;
+  @allergy.State
+  allergys!: IAllergy[];
 
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
-  impressionAdded() {
+  allergyAdded() {
     this.show = false;
- this.impressions;
-  this.fetchImpressions(this.activePatientId);
+    this.allergys;
+    this.fetchAllergys(this.activePatientId);
   }
 
+  mounted() {
+    this.fetchAllergys(this.activePatientId);
+  }
 
-created() {
-    if (this.impressions.length < 1) this.fetchImpressions(this.activePatientId);
+  created() {
+    if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
   }
 }
 </script>
