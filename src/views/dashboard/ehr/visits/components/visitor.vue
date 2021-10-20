@@ -4,12 +4,13 @@
             <div class="container-fluid pb-2">
                 <div class="w-full flex items-center" >
                     <div class="w-1/12 rounded-full">
-                        <img v-if="patient && patient.image" src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image">
-                        <img v-else src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image">
+                        <!-- <img v-if="patient && patient.image" src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image"> -->
+                        <!-- <img v-else src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image"> -->
+                        <Avatar :src="`https://via.placeholder.com/40x40`" />
                     </div>
                     <div class="w-11/12 ml-2">
                         <div class="w-full">
-                            <p class="font-semibold text-sm mb-0"> {{ patient ? `${patient.firstname ? patient.firstname : ''} ${patient.lastname ? patient.lastname : ''}` : 'Unavailbale' }}</p>
+                            <p class="font-semibold text-sm mb-0"> {{ patient ? `${patient.firstname ? patient.firstname : 'Tstt'} ${patient.lastname ? patient.lastname : 'Tsts'}` : 'Unavailbale' }}</p>
                         </div>
                     </div>
                 </div>
@@ -28,12 +29,14 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import { namespace } from 'vuex-class';
+import Avatar from "@/components/avatar.vue"
 
 const patientsStore = namespace('visits');
+const appointment = namespace('appointment');
 
 @Options({
   components: {
-      
+      Avatar,
   },
 })
 export default class CheckIn extends Vue {

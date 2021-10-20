@@ -1,23 +1,23 @@
 <template>
     <div class="container-fluid">
         <div class="w-full">
-          <div class="container px-6 content-con">
+          <div class="container px-2 content-con">
             <div class="w-full py-3">
-              <div class="w-full my-6">
+              <div class="w-full mb-6">
                 <input-desc-rounded :label="'Current Status'" :info="''">
-                  <input disabled type="text" v-model="updateData.currentStatus" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                  <input disabled type="text" v-model="updateData.currentStatus" class="p-2 border w-100 w-full" style="border-radius: 8px;color:#667499">
                 </input-desc-rounded>
               </div>
 
               <div class="w-full my-6">
                 <input-desc-rounded :label="'Updated By'" :info="''">
-                  <input disabled type="text" v-model="updateData.updatedBy"  class="p-2 border w-100 w-full" style="border-radius: 8px">
+                  <input disabled type="text" v-model="updateData.updatedBy"  class="p-2 border w-100 w-full" style="border-radius: 8px;color:#667499">
                 </input-desc-rounded>
               </div>
 
               <div class="w-full my-6">
                 <input-desc-rounded :label="'Last Date Updated'" :info="''">
-                  <input disabled type="text" v-model="updateData.lastUpdated" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                  <input disabled type="text" v-model="updateData.lastUpdated" class="p-2 border w-100 w-full" style="border-radius: 8px;color:#667499">
                 </input-desc-rounded>
               </div>
 

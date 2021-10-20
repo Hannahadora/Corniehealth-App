@@ -1,10 +1,10 @@
 <template>
-  <div class="w-full my-2 h-screen">
+  <div class="w-full mt-2 h-screen">
       <div class="containr-fluid" v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0 && !selectedStatus">
         <EmptyState />
       </div>
-      <div v-else class="container-fluid bg-white sm:p-6 h-full">
-        <div class="w-full border-b-2 curved flex py-2 mt-4">
+      <div v-else class="container-fluid bg-white sm:px-6 h-full">
+        <div class="w-full border-b-2 curved flex py-2">
             <div class="container-fluid flex font-semibold text-xl py-2">
                 <h2>Active Visits</h2>
             </div>
@@ -54,9 +54,25 @@
                 <!-- <template #appointmentType="{ item }">
                     <p>{{ item.appointmentId ? getAppointment(item.appointmentId).appointmentType : '' }}</p>
                 </template> -->
+                <template #slot="{ item }">
+                    <div class="container flex justify-between" style="width: 100px">
+                      <span>{{ item.startTime }}</span>
+                      <span> - </span>
+                      <span>{{ item.endTime }}</span>
+                    </div>
+                </template>
                 <template #status="{ item }">
                     <div class="container">
-                    <span class="rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
+                      <span class="status-border p-1" 
+                        :class="{ 
+                          'status-inactive': item.status === 'inactive',
+                          'status-active': item.status === 'active', 
+                          'text-success completed': item.status === 'completed', 
+                          'text-danger queued': item.status === 'queued',
+                          'text-dark planned': item.status === 'planned', 
+                          'arrived': item.status === 'arrived',
+                          'waitlisted': item.status === 'waitlisted',
+                        }">{{ item.status }}</span>
                     </div>
                 </template>
                 <template #practitioners="{ item }">
@@ -69,54 +85,25 @@
                 <template #actions="{ item }">
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <eye-icon class="mt-1" />
-                    <span class="ml-3 text-xs" @click="showTimeline(item.id)">View timeline</span>
+                    <span class="ml-3 text-xs" @click="showTimeline(item.id)">View</span>
                     </div>
                     <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <ArrowRight />
                     <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
                     </div> -->
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="start(item.id)">
-                    <EncounterIcon class="mr-3 mt-1"  />
-                    <span class="ml-3 text-xs" >Start Encounter</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
-                      <CancelIcon />
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showUpdateModal(item)">
+                      <UpdateIcon />
                       <span class="ml-3 text-xs"
-                      >Cancel Visit</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <AddIcon />
-                      <span class="ml-3 text-xs">Add Vitals</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <ArrowRight />
-                      <span class="ml-3 text-xs"
-                      >Refer Patient</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <ManageBillIcon />
-                      <span class="ml-3 text-xs"
-                      >Manage Bill</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <AddIcon />
-                      <span class="ml-3 text-xs"
-                      >Admit Patient</span>
-                    </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="markAsNoShow(item.id)">
-                      <NoshowIcon />
-                      <span class="ml-3 text-xs"
-                      >No Show</span>
+                      >Update Status</span>
                     </div>
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id)">
                       <CheckoutIcon />
                       <span class="ml-3 text-xs"
                       >Check-out</span>
                     </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id)">
-                      <UpdateIcon />
-                      <span class="ml-3 text-xs"
-                      >Update Status</span>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <AddIcon />
+                      <span class="ml-3 text-xs">Add Vitals</span>
                     </div>
                 </template>
                 </cornie-table>
@@ -126,9 +113,6 @@
                 v-model:preferred="preferredHeaders"
                 v-model:visible="showColumnFilter"
                 />
-                <side-modal :visible="showCheckout" :header="'Check-Out'" @closesidemodal="() => showCheckout = false">
-                    <CheckOut :item="currentVisit" @close="() => showCheckout = false" />
-                </side-modal>
 
                 <!-- <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
                     <CheckIn :item="appointments[0]" @close="() => showCheckin = false"  />
@@ -138,8 +122,22 @@
                     <CheckinNoapp :patientId="patients[0]?.id" :item="appointments[0]"  @close="() => showCheckNoapp = false" />
                 </side-modal>
 
-                <side-modal :visible="false">
-                <AdvancedFilter />
+                <side-modal :visible="showCheckout" :header="'Check-Out'" :width="990"  @closesidemodal="closeUpdateModal">
+                  <patient-checkout :visit="currentVisit" :visitId="currentVisit?.id" @closesidemodal="closeUpdateModal" />
+                </side-modal>
+
+                <side-modal :visible="false" :header="'Check-In'" :width="990"  @closesidemodal="closeUpdateModal">
+                  <patient-checkn :visit="currentVisit" :visitId="currentVisit?.id" @closesidemodal="closeUpdateModal" />
+                </side-modal>
+
+                <side-modal :visible="showStatusUpdateModal" @closesidemodal="closeUpdateModal">
+                  <update-status :updateData="updateData" @changed="newStatusSelected" @closesidemodal="closeUpdateModal">
+                    <template #submit>
+                      <CornieBtn :loading="loading" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer" @click="updateStatus">
+                        <span class="text-white font-semibold">Update</span>
+                      </CornieBtn>
+                    </template>
+                  </update-status>
                 </side-modal>
 
                 <side-modal :visible="showViewPane" :header="'View Stot'">
@@ -156,9 +154,9 @@
 
             </div>
 
-            <div style="height: 400px">
+            <!-- <div style="height: 400px">
 
-            </div>
+            </div> -->
         </div>
       </div>
   </div>
@@ -180,9 +178,9 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye.vue";
+import EyeIcon from "@/components/icons/eye-yellow.vue";
 import EditIcon from '@/components/icons/edit.vue'
-import AddIcon from '@/components/icons/add.vue'
+import AddIcon from '@/components/icons/add-green.vue'
 import DeactivateIcon from '@/components/icons/deactivate.vue'
 import Button from '@/components/globals/corniebtn.vue'
 
@@ -204,7 +202,10 @@ import UpdateIcon from './components/update.vue'
 import NoshowIcon from './components/no-show.vue'
 import ManageBillIcon from './components/manage-bill.vue'
 import ActionLog from './components/timeline-component.vue'
-import { IPatient } from "@/types/IPatient";
+import UpdateStatus from "@/views/dashboard/ehr/encounter/components/update-status.vue"
+import IUpdateStatus from "@/types/IUpdateModel";
+import PatientCheckout from "./components/patient-checkout.vue"
+import PatientCheckn from "./components/patient-checkin.vue"
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
@@ -244,6 +245,9 @@ const appointment = namespace("appointment");
     UpdateIcon,
     NoshowIcon,
     ManageBillIcon,
+    UpdateStatus,
+    PatientCheckout,
+    PatientCheckn,
   },
 })
 export default class PractitionerExistingState extends Vue {
@@ -292,6 +296,9 @@ export default class PractitionerExistingState extends Vue {
 
   @visitsStore.Action
   getPatients!: () => Promise<void>;
+
+  @visitsStore.Action
+  updateVisitStatus!: (body: any) => Promise<boolean>;
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
@@ -358,6 +365,11 @@ export default class PractitionerExistingState extends Vue {
   types = ['All', 'Emergency', 'Walk-In', 'Follow-Up', 'Routine']
   statuses = ['All', 'Completed', 'Queue', 'In-Progress']
   availableSlots: any = [ ]
+  showStatusUpdateModal = false
+  updateData = { } as IUpdateStatus;
+  newStatus = ''
+  loading = false;
+  selectedVisitId = ''
 
   get currentVisit() {
     if (!this.currentVisitId) return { }
@@ -377,10 +389,16 @@ export default class PractitionerExistingState extends Vue {
     if (this.patientVisits?.length === 0) return [ ];
     return this.patientVisits.map((visit: any) => {
       return {
+        id: visit.id,
+        updatedAt: visit?.updatedAt,
         recorded: new Date(visit.createdAt).toLocaleDateString(),
         identifier: "XXXXX",
-        appointmentType: this.getAppointment(visit.appointmentId).appointmentType,
-        slot: `${visit.checkInTime.substring(11, 16)} ${new Date(new Date(visit.checkInTime).getMinutes() + 60).toLocaleTimeString().substring(0, 5)}`,
+        appointmentType: "Emergency",
+        // appointmentType: this.getAppointment(visit.appointmentId).appointmentType,
+        startTime: this.formatSlotTime(visit.slot?.startTime),
+        endTime: this.formatSlotTime(visit.slot?.endTime),
+        // startTime: `${visit.checkInTime.substring(11, 16)}`,
+        // endTime: `${new Date(new Date(visit.checkInTime).getMinutes() + 60).toLocaleTimeString().substring(0, 5)},
         status: visit.status,
         location: visit?.room?.name,
         practitioners: [
@@ -409,7 +427,7 @@ export default class PractitionerExistingState extends Vue {
             "middleName": "",
             "lastName": "Onyemere",
             "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-            "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+            // "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
             "accountType": "Provider",
             "roleId": null,
             "phone": {
@@ -479,6 +497,105 @@ export default class PractitionerExistingState extends Vue {
     })
   }
 
+  newStatusSelected(status: any) {
+    this.newStatus = status;
+  }
+
+  closeUpdateModal() {
+    this.showStatusUpdateModal = false;
+    this.showCheckout = false;
+    this.selectedVisitId = '';
+    this.updateData = { } as IUpdateStatus;
+  }
+
+  async updateStatus() {
+    try {
+      this.loading = true;
+      const updated = await this.updateVisitStatus({
+        id: this.selectedVisitId,
+        status: this.newStatus,
+      })
+      this.loading = false;
+
+      if (updated) {
+        notify({
+          msg: "Status updated successfully",
+          status: "success",
+        });
+        this.showStatusUpdateModal = false;
+      } else {
+        notify({
+          msg: "There was an error updating status",
+          status: "error",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      this.loading = false;
+    }
+    
+  }
+
+  showUpdateModal(item: any) {
+    this.selectedVisitId = item?.id;
+    this.updateData = {
+      currentStatus: item.status,
+      lastUpdated: new Date(item?.updatedAt).toLocaleDateString(),
+      updatedBy: "",
+      statuses: [
+        {
+          code: 'queued',
+          display: 'Queued'
+        },
+        {
+          code: 'no-show',
+          display: 'No Show'
+        },
+        {
+          code: 'cancelled',
+          display: 'Cancelled'
+        },
+        {
+          code: 'completed',
+          display: 'Completed'
+        },
+        {
+          code: 'planned',
+          display: 'Planned'
+        },
+        {
+          code: 'arrived',
+          display: 'Arrived'
+        },
+        {
+          code: 'waitlisted',
+          display: 'Waitlisted'
+        },
+      ]
+    }
+    this.showStatusUpdateModal = true;
+  }
+
+  formatSlotTime (timeString: any) {
+    var H = +timeString.substr(0, 2);
+    var h = H % 12 || 12;
+    var ampm = (H < 12 || H === 24) ? "AM" : "PM";
+    timeString = h + timeString.substr(2, 3) + ampm;
+    return timeString;
+  }
+
+  // formatSlotTime (time: any) {
+  //   // Check correct time format and split into components
+  //   time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+  //   if (time.length > 1) { // If time format correct
+  //     time = time.slice (1);  // Remove full string match value
+  //     time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+  //     time[0] = +time[0] % 12 || 12; // Adjust hours
+  //   }
+  //   return time.join (''); // return adjusted time or original string
+  // }
+
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
     console.log(pt, id);
@@ -508,21 +625,6 @@ export default class PractitionerExistingState extends Vue {
     const pt = this.appointments.find((i: any) => i.id === id);
     
     return pt ? pt : { };
-  }
-
-  async start(id: string) {
-    await this.startEncounter(id).then((res: any) => {
-        window.notify({ msg: "Visit Started", status: "success" });
-    })
-  }
-
-  async destroy(id: string) {
-    const cancelled = await this.cancel(id);
-    console.log(cancelled ,"cancelled");
-    
-    if (cancelled) {
-      window.notify({ msg: "Visit Cancelled", status: "success" });
-    }
   }
 
   async markAsNoShow(id: string) {
@@ -555,6 +657,7 @@ export default class PractitionerExistingState extends Vue {
   showCheckoutPane(id: string) {
     this.setSelectedVisit(id)
     this.currentVisitId = id;
+    this.selectedVisitId = id;
     this.showCheckout = true;
   }
 
@@ -648,5 +751,31 @@ export default class PractitionerExistingState extends Vue {
 
     .light-grey-bg {
       background: #F0F4FE;
+    }
+
+    .status-border {
+      border-radius: 5px;
+    }
+
+    .completed {
+      background: rgba(53, 186, 131, 0.08);
+    }
+
+    .queued {
+      background: rgba(254, 77, 60, 0.08);
+    }
+
+    .planned {
+      background: #14171F26;
+    }
+
+    .arrived {
+      background: #54138826;
+      color: #541388;
+    }
+
+    .waitlisted {
+      background: #F7B53814;
+      color: #F7B538;
     }
 </style>

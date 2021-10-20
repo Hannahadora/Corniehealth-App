@@ -6,13 +6,13 @@
                 <!-- <img :src="actor.image" class="rounded-full" style="width: 100%;height:100%" :alt="actor.name"> -->
                 <avatar :src="actor.image" />
             </div>
-            <div v-else class="image-con rounded-full -ml-3 flex items-center border justify-center bg-white">
+            <div v-else class="image-con rounded-full relative -ml-1 flex items-center border justify-center bg-white">
                 <span class="text-warning">{{ actor.firstName ? actor.firstName[0] : '' }} </span>
                 <span class="text-warning">{{ actor.lastName ? actor.lastName[0] : '' }} </span>
             </div>
             
         </span>
-        <div class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center bg-white" style="z-index:100">
+        <div class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center bg-white relative">
             <span v-if="items?.length > 3" class="text-xs">+{{ items?.length - actors?.length }}</span>
         </div>
         
