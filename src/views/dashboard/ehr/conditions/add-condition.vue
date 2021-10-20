@@ -12,39 +12,39 @@
         :opened="true"
       >
         <div class="grid grid-cols-2 gap-3 mt-3">
-          <cornie-select
+          <fhir-input
             v-model="clinicalStatus"
             label="Clinical Status"
-            :items="clinicalStatuses"
+            reference="http://hl7.org/fhir/ValueSet/condition-clinical"
             :rules="required"
           />
-          <cornie-select
+          <fhir-input
             v-model="verificationStatus"
             label="Verification Status"
-            :items="verificationStatuses"
+            reference="http://hl7.org/fhir/ValueSet/condition-ver-status"
             :rules="required"
           />
-          <auto-complete
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/condition-category"
             v-model="category"
             :rules="required"
-            :items="categories"
             label="Category"
           />
-          <cornie-select
+          <fhir-input
             v-model="severity"
             label="Severity"
             :rules="required"
-            :items="severities"
+            reference="http://hl7.org/fhir/ValueSet/condition-severity"
           />
-          <auto-complete
+          <fhir-input
             v-model="code"
             :rules="required"
-            :items="conditionCodes"
             label="Code"
+            reference="http://hl7.org/fhir/ValueSet/condition-code"
           />
-          <auto-complete
+          <fhir-input
             v-model="bodySite"
-            :items="bodySites"
+            reference="http://hl7.org/fhir/ValueSet/body-site"
             :rules="required"
             label="Body Site"
           />
@@ -82,7 +82,11 @@
       >
         <div class="grid grid-cols-3 gap-3 mt-3">
           <cornie-input v-model="stageSummary" label="Summary" />
-          <auto-complete v-model="stageType" :items="stages" label="Type" />
+          <fhir-input
+            v-model="stageType"
+            reference="http://hl7.org/fhir/ValueSet/condition-stage-type"
+            label="Type"
+          />
           <assessment-select v-model="stageAssessment" label="Assessment" />
         </div>
       </accordion-component>
@@ -90,18 +94,17 @@
         class="shadow-none rounded-none border-none text-primary"
         title="Evidence"
       >
-        <div class="flex items-center justify-between gap-3 mt-3">
-          <auto-complete
+        <div class="grid grid-cols-2 justify-between gap-3 mt-3">
+          <fhir-input
             v-model="evidenceCode"
             :rules="required"
-            :items="evidenceCodes"
+            reference="http://hl7.org/fhir/ValueSet/manifestation-or-symptom"
             label="Code"
           />
-          <cornie-select
+          <cornie-input
             :rules="required"
             v-model="evidenceDetail"
             label="Detail"
-            :items="['yes']"
           />
         </div>
         <cornie-text-area
@@ -146,9 +149,8 @@ import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import TimeablePicker from "./timeable.vue";
 import Measurable from "./measurable.vue";
-import { getDropdown } from "@/plugins/definitions";
-import { ICondition } from "@/types/ICondition";
 import { Codeable, Timeable } from "@/types/misc";
+import FhirInput from "@/components/fhir-input.vue";
 
 import {
   verificationStatuses,
@@ -201,6 +203,7 @@ const measurable = {
     CornieInput,
     CornieTextArea,
     DateTimePicker,
+    FhirInput,
   },
 })
 export default class AddCondition extends Vue {

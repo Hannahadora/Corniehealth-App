@@ -138,7 +138,7 @@
 import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
 import IconInput from "@/components/IconInput.vue";
@@ -192,6 +192,11 @@ export default class AutoComplete extends Vue {
   id = "";
 
   query = "";
+
+  @Watch("query")
+  searched(query: string) {
+    this.$emit("query", query);
+  }
 
   get processedItems() {
     if (!this.query) return this.items;

@@ -132,12 +132,11 @@ export default class ConditionOccurence extends Vue {
 
   get payload() {
     return {
-      lastOccurenceDate: this.buildDateTime(
+      lastOccurrence: this.buildDateTime(
         this.lastOccurenceDate,
         this.lastOccurenceTime
       ),
-      lastOccurenceNote: this.lastOccurenceNote,
-
+      lastOccurrenceNote: this.lastOccurenceNote,
       substance: this.substance,
       manifestation: this.manifestation,
       description: this.description,
@@ -150,7 +149,7 @@ export default class ConditionOccurence extends Vue {
   }
   buildDateTime(dateString: string, time: string) {
     const date = new Date(dateString);
-    const [hour, minute] = time.split(":");
+    const [hour, minute] = (time || "00:00").split(":");
     date.setMinutes(Number(minute));
     date.setHours(Number(hour));
     return date.toISOString();
@@ -160,11 +159,8 @@ export default class ConditionOccurence extends Vue {
     if (!valid) return;
     this.loading = true;
     try {
-      const { data } = await cornieClient().post(
-        "/api/v1/condition/occurence",
-        this.payload
-      );
-      console.log(data);
+      await cornieClient().post("/api/v1/condition/occurence", this.payload);
+      this.show = false;
       window.notify({ msg: "Occurence added", status: "success" });
     } catch (error) {
       window.notify({ msg: "Occurence not added", status: "error" });
