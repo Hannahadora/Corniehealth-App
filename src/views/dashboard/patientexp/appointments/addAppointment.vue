@@ -25,7 +25,7 @@
                     uppercase
                     font-semibold
                   "
-                  @click="displayParticipants"
+                  @click="displayParticipants()"
                 >
                   add actor(s)
                   <plus-icon class="ml-2 text-primary fill-current" />
@@ -305,12 +305,12 @@
           :roles="role"
           :patients="patient"
           @update:preferred="displayParticipants"
-          v-model="showActors"
+          v-model:visible="showActors"
         />
         <all-slots  
         :columns="availableSlots"
           @update:preferred="showSlots"
-          v-model="displaySlots"/>
+          v-model:visible="displaySlots"/>
       </div>
     </div>
   </div>
