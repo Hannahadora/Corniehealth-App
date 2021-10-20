@@ -363,7 +363,7 @@ deceasedmeasurable = {...measurable};
 
 
   get patientId() {
-    return this.$route.params.patientId;
+    return this.$route.params.id;
   }
   get asinglename(){
     return this.PatientName.firstname +' '+ this.PatientName.lastname;

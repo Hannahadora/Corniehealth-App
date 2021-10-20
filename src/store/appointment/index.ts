@@ -14,9 +14,14 @@ export default {
     appointments: [],
     patients: [],
   },
-  mutations: {
-    setAppointments(state, appointments: any) {      
-      state.appointments = [...appointments.result];
+  mutations: { 
+    // setAppointments(state, appointments: any) {      
+    //   state.appointments = [...appointments.result];
+    // },
+    setAppointments(state, appointments: IAppointment[]) {
+      const appointmentSet = new ObjectSet([state.appointments, appointments], "id");
+      
+      state.appointments = [...appointmentSet];
     },
     // setAppointments(state, appointments: IAppointment[]) {      
     //   state.appointments = [...appointments];
@@ -53,6 +58,11 @@ export default {
     async getPatients(ctx) {
       const pts = await getPatients();      
       ctx.commit("setPatients", pts);
+    },
+    async getAppointmentByPatientId(ctx, id: string) {
+      if (ctx.state.appointments.length < 1)
+        await ctx.dispatch("fetchByIdAppointments");
+      return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async getAppointmentById(ctx, id: string) {
       if (ctx.state.appointments.length < 1)

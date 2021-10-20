@@ -112,6 +112,15 @@
                
  <cornie-input disabled  :rules="required" label="Duration"   class="w-full mt-3" />
   <cornie-input  :rules="required" label="Comments"  placeholder="--Enter--" class="w-full mt-3" />
+   <cornie-input  :rules="required" label="Patient’s Instruction"  placeholder="--Enter--" class="w-full mt-3" />
+    <auto-complete
+           placeholder="--Select--"
+           
+            :rules="required"
+            class="w-full"
+            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+            label="Based On"
+          />
         </div>
       </accordion-component>
        <accordion-component
@@ -121,30 +130,30 @@
       >
         <div class="grid grid-cols-2 gap-3 mt-5">
           <cornie-select
-          :onChange="checkActor"
+          @click="checkActor"
           class="w-full"
           placeholder="--Select--"
             v-model="actors"
             label="Actor"
-            :items="['Patient','Practitioner','Device','Location','Practitioner Role','Healthcare Services']"
+            :items="['Patient','Practitioner','Device','Location','Healthcare Services']"
             :rules="required"
           />
         </div>
-         <!-- <div class="w-full">
+          <div class="w-full">
                   <div>
                     <div class="w-full grid grid-cols-3 gap-4 mt-5">
                       <div class="border-r-2" v-for="(input, index) in newPractitioners" :key="index">
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
                             <avatar class="mr-2" v-if="input.image" :src="input.image" />
-                               <avatar class="mr-2" v-else :src="img.placeholder" />
+                               <avatar class="mr-2" v-else :src="localSrc" />
                             <div>
                               <p class="text-xs text-dark font-semibold">
                                 {{ input.firstName }}
                                 {{ input.lastName }}
                               </p>
                               <p class="text-xs text-gray font-light">
-                                {{ valuePractioner }}
+                                {{ actorType }}
                               </p>
                             </div>
                           </div>
@@ -156,7 +165,7 @@
                           </span>
                         </div>
                       </div>
-                      <div class="border-r-2" v-for="(input, index) in newDevices" :key="index">
+                      <!-- <div class="border-r-2" v-for="(input, index) in newDevices" :key="index">
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
                               <avatar class="mr-2"  :src="img.placeholder" />
@@ -220,10 +229,10 @@
                             />
                           </span>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>          
-                </div> -->
+                </div> 
       </accordion-component>
      
     </v-form>
@@ -262,6 +271,8 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
 import CornieTextArea from "@/components/textarea.vue";
 // import DatePicker from "./datepicker.vue";
+import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
+import ActorModal from "./actor.vue";
 import DateTimePicker from '@/components/datetime-picker.vue'
 import Measurable from "@/components/measurable.vue";
 import plusIcon from "@/components/icons/plus.vue";
@@ -277,6 +288,8 @@ import ILocation from "@/types/ILocation";
 import IDevice from "@/types/IDevice";
 import IPractitioner from "@/types/IPractitioner";
 import IHealthcare  from "@/types/IHealthcare";
+import Period from "@/types/IPeriod";
+import Avatar from "@/components/avatar.vue";
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -303,8 +316,11 @@ const data = {
     TimeablePicker,
     CornieNumInput,
     CornieBtn,
+    DeleteorangeIcon,
     AutoComplete,
     DateTimePicker,
+    Avatar,
+    ActorModal,
     // DatePicker,
     Measurable,
     plusIcon,
@@ -363,7 +379,7 @@ export default class AddAppointment extends Vue {
   required = string().required();
 @Watch('id')
   idChanged() {
-    this.setHistory()
+    this.setAppointment()
   }
 
   historymodel = {} as IAppointment;
@@ -376,21 +392,79 @@ period = {...data};
 actors="";
 actorType="";
 practitionerRoles=[];
+ localSrc = require('../../../../assets/img/placeholder.png');
+serviceCategory="";
+serviceType="";
+specialty="";
+appointmentType="";
+reasonCode="";
+reasonRef="";
+priority="";
+description="";
+supportingInfo="";
+slot="";
+basedOn="";
+comments="";
+patientInstruction="";
+// period = {} as Period;
+
+newPractitioners=[];
+newPatients=[];
+newDevices=[];
+newLocations=[];
+newHealthcare=[];
+
+requiredPractitioner = false;
+        consultationMediumPractitioner =  "";
+        periodPractitioner ={
+            start:"",
+            end:""
+        };
+         requiredPatient = false;
+        consultationMediumPatient =  "";
+        periodPatient ={
+            start:"",
+            end:""
+        };
+         requiredDevice = false;
+        consultationMediumDevice = "";
+        periodDevice = {
+            start:"",
+            end:""
+        };
+         requiredLocation = false;
+        consultationMediumLocation = "";
+        periodLocation ={
+            start:"",
+            end:""
+        };
+         requiredHealthcare = false;
+        consultationMediumHealthcare ="";
+        periodHealthcare ={
+            start:"",
+            end:""
+        };
 
   // startAndEndDateTimeStart = "";
   // startAndEndDateTimeEnd = "";
   // bornDateTime = "";
 
-
+get allPractitioners() {
+     return {
+        required: this.requiredPractitioner,
+        consultationMedium: this.consultationMediumPractitioner,
+        period: this.periodPractitioner
+       }
+}
   get patientId() {
-    return this.$route.params.patientId;
+    return this.$route.params.id;
   }
 
   async setNewHistoryModel() {
      this.historymodel = JSON.parse(JSON.stringify(this.payload));
   }
 
-  async setHistory() {
+  async setAppointment() {
     const history = await this.getAppointmentById(this.id)
     if (!history) return
     this.historymodel =  (history)
@@ -408,28 +482,32 @@ practitionerRoles=[];
 
 async checkActor(){
     if(this.actors == 'Patient'){
-        this.actorType = this.actors;
+        this.actorType = 'Patient';
         this.showActorModal = true;
     }else if (this.actors == 'Practitioner'){
         this.actorType = 'Practitioner'
-        this.showActorModal = true;
+         this.showActorModal = true;
     }else if (this.actors == 'Device'){
         this.actorType = 'Device'
-        this.showActorModal = true;
+         this.showActorModal = true;
     }else if (this.actors == 'Practitioner Role'){
         this.actorType = 'Practitioner Role'
-        this.showActorModal = true;
+         this.showActorModal = true;
     } else if (this.actors == 'Location'){
         this.actorType = 'Location'
         this.showActorModal = true;
-    }else{
+    }else if(this.actors == 'Healthcare Services') {
         this.actorType = 'Healthcare Services'
         this.showActorModal = true;
+    }else {
+        this.actors =""
     }
+  
    
 }
-async showActor(){
-  this.showActorModal = true;
+async showActor(updatePractitioners:any,updatePatients:any,updateDevices:any,updateLocation:any,updateHealthcare:any,getPractitioner:any){
+  this.newPractitioners = updatePractitioners;
+    console.log(getPractitioner);
 }
 
 
@@ -481,7 +559,7 @@ async showActor(){
  
  async created() {
      this.fetchRoles();
-   this.setHistory();
+   this.setAppointment();
    this.fetchPractitioners();
    this.fetchDevices();
    this.fetchLocations();

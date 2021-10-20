@@ -159,11 +159,11 @@ appointmentId="";
 showPartcipants= false;
 singleParticipant= [];
 
-@Prop({ type: Array, default: [] })
-  appointments!: IAppointment[];
-
-//   @appointment.State
+// @Prop({ type: Array, default: [] })
 //   appointments!: IAppointment[];
+
+  @appointment.State
+  appointments!: IAppointment[];
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
@@ -214,7 +214,7 @@ singleParticipant= [];
   }
   
  get patientId() {
-    return this.$route.params.patientId;
+    return this.$route.params.id;
   }
 
   get headers() {

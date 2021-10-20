@@ -197,7 +197,7 @@ practitionerId="";
     // },
   ];
  get activepatientId() {
-    const id = this.$route?.params?.patientId as string;
+    const id = this.$route?.params?.id as string;
       return id;
   }
 

@@ -54,7 +54,7 @@ export default class ApppointmentIndex extends Vue {
     return this.appointments.length < 1;
   }
  get activePatientId() {
-      const id = this.$route?.params?.patientId as string;
+      const id = this.$route?.params?.id as string;
       return id;
   }
 
