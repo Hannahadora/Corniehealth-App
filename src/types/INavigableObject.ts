@@ -1,0 +1,3 @@
+interface INavigableObject {
+  to: string;
+}
