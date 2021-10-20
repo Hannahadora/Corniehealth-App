@@ -54,6 +54,8 @@
           class="rounded-r-lg border p-2 flex-grow w-full focus:outline-none"
           type="tel"
           v-bind="field"
+          minlength="10"
+          maxlength="11"
         />
       </span>
       <span v-if="errorMessage" class="text-xs text-red-500 block">

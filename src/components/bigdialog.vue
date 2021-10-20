@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="h-full" style="width:70.6667%">
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
         <div class="w-full flex items-center justify-between">
@@ -10,7 +10,7 @@
               </cornie-icon-btn>
             </span>
 
-            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">
+            <h2 class="font-bold text-xl text-primary ml-3 -mt-0.5">
               {{ title }}
             </h2>
           </div>
@@ -32,7 +32,7 @@
           />
         </div>
       </cornie-card-title>
-      <span class="text-xs ml-3 text-gray-500 -mt-1">
+      <span class="text-xs ml-3 text-gray-500 mt-2">
         {{ subtext }}
       </span>
       <cornie-card-text class="overflow-y-auto">

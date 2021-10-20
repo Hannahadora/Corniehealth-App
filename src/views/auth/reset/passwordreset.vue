@@ -208,7 +208,7 @@ export default class SignUp extends Vue {
       }
    //   this.setUser(data);
     } catch (error) {
-       window.notify({ msg: error.response.data.msg });
+       window.notify({ msg: "Password Not updated" });
          this.loading = false;
     }
   }
