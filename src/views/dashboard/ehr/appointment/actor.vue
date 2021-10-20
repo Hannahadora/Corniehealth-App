@@ -66,7 +66,7 @@
                             <avatar class="mr-2" v-else :src="localSrc" />
                         </div>
                         <div class="w-full">
-                            <p class="text-xs text-dark font-semibold">
+                            <p class="text-xs text-black font-light">
                             {{ input.firstName }}
                             {{ input.lastName }}
                             </p>
@@ -78,9 +78,16 @@
                         </div>
                     
                         
-                        <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
+                        <div class="w-full mb-5 cursor-pointer w-full text-xs float-right text-danger">
+                          <!-- <cornie-radio  type="radio"
+                                name="practitioner"
+                                v-model="updatePractitioners" :value="input"
+                                class="float-right">
+
+                          </cornie-radio> -->
                             <input
                                 type="checkbox"
+                                name="practitioner"
                                 v-model="updatePractitioners" :value="input"
                                 class="bg-danger focus-within:bg-danger px-6 shadow float-right"
                             />
@@ -235,11 +242,10 @@
               </div>
             </div>
             <div class="w-full" v-if="stepped == 2">
-                <div v-if="actorType == 'Practitioner'">
+                <div>
                       <div class="w-full flex space-x-2 mb-5">
                           <input
-                         
-                            v-model="requiredPractitioner"
+                            v-model="required"
                             type="checkbox"
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
@@ -249,7 +255,7 @@
                       <date-picker
                       class="w-full mb-5 mt-4"
                         label="period"
-                        v-model="periodPractitioner"
+                        v-model="period"
                         :rules="required"
                       />
                       <cornie-select
@@ -261,18 +267,18 @@
                           ' Virtual',
                           'HomeCare',
                         ]"
-                        v-model="consultationMediumPractitioner"
+                        v-model="consultationMedium"
                         label="consultation medium"
                         placeholder="--Select--"
                       >
                       </cornie-select>
                 </div>
-                 <div v-if="actorType == 'Patient'">
+                 <!-- <div v-if="actorType == 'Patient'">
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
-                            v-model="requiredPatient"
+                            v-model="getPatient.required"
                             type="checkbox"
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
@@ -282,7 +288,7 @@
                       <date-picker
                       class="w-full mb-5 mt-4"
                         label="period"
-                        v-model="periodPatient"
+                        v-model="getPatient.period"
                         :rules="required"
                       />
                       <cornie-select
@@ -294,13 +300,13 @@
                           ' Virtual',
                           'HomeCare',
                         ]"
-                        v-model="consultationMediumPatient"
+                        v-model="getPatient.consultationMedium"
                         label="consultation medium"
                         placeholder="--Select--"
                       >
                       </cornie-select>
                 </div>
-                 <div v-if="actorType == 'Practitioner Role'">
+                  <div v-if="actorType == 'Practitioner Role'">
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
@@ -332,13 +338,13 @@
                         placeholder="--Select--"
                       >
                       </cornie-select>
-                </div>
+                </div> 
                  <div v-if="actorType == 'Device'">
 
                       <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
-                            v-model="requiredDevice"
+                            v-model="getDevice.required"
                             type="checkbox"
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
@@ -348,7 +354,7 @@
                       <date-picker
                       class="w-full mb-5 mt-4"
                         label="period"
-                        v-model="periodDevice"
+                        v-model="getDevice.period"
                         :rules="required"
                       />
                       <cornie-select
@@ -360,7 +366,7 @@
                           ' Virtual',
                           'HomeCare',
                         ]"
-                        v-model="consultationMediumDevice"
+                        v-model="getDevice.consultationMedium"
                         label="consultation medium"
                         placeholder="--Select--"
                       >
@@ -371,7 +377,7 @@
                       <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
-                            v-model="requiredLocation"
+                            v-model="getLocation.required"
                             type="checkbox"
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
@@ -381,7 +387,7 @@
                       <date-picker
                       class="w-full mb-5 mt-4"
                         label="period"
-                        v-model="periodLocation"
+                        v-model="getLocation.period"
                         :rules="required"
                       />
                       <cornie-select
@@ -393,7 +399,7 @@
                           ' Virtual',
                           'HomeCare',
                         ]"
-                        v-model="consultationMediumLocation"
+                        v-model="getLocation.consultationMedium"
                         label="consultation medium"
                         placeholder="--Select--"
                       >
@@ -404,7 +410,7 @@
                       <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
-                            v-model="requiredHealthcare"
+                            v-model="getHealthcare.required"
                             type="checkbox"
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
@@ -414,7 +420,7 @@
                       <date-picker
                       class="w-full mb-5 mt-4"
                         label="period"
-                        v-model="periodHealthcare"
+                        v-model="getHealthcare.period"
                         :rules="required"
                       />
                       <cornie-select
@@ -426,12 +432,12 @@
                           ' Virtual',
                           'HomeCare',
                         ]"
-                        v-model="consultationMediumHealthcare"
+                        v-model="getHealthcare.consultationMedium"
                         label="consultation medium"
                         placeholder="--Select--"
                       >
                       </cornie-select>
-                </div>
+                </div> -->
 
             </div>
          
@@ -631,43 +637,44 @@ export default {
         updateDevices:[],
          updateHealthcare:[],
           updateLocation:[],
-     requiredPractitioner: false,
-        consultationMediumPractitioner: "",
-        periodPractitioner:{
-            start:"",
-            end:""
-        },
-         requiredPatient: false,
-        consultationMediumPatient: "",
-        periodPatient:{
-            start:"",
-            end:""
-        },
-         requiredDevice: false,
-        consultationMediumDevice: "",
-        periodDevice:{
-            start:"",
-            end:""
-        },
-         requiredLocation: false,
-        consultationMediumLocation: "",
-        periodLocation:{
-            start:"",
-            end:""
-        },
-         requiredHealthcare: false,
-        consultationMediumHealthcare: "",
-        periodHealthcare:{
-            start:"",
-            end:""
-        },
+          allPractitioners:[],
+           required: false,
+          consultationMedium: "",
+          period :"",
+          practitionerId: "",
         getPractitioner: {
-        id: this.practitionerId,
-        required: this.requiredPractitioner,
-        consultationMedium: this.consultationMediumPractitioner,
-        period: this.periodPractitioner
+          required: false,
+          consultationMedium: "",
+          period :"",
+          practitionerId: "",
        
-    },
+        },
+          getPatient:{
+          required: false,
+          consultationMedium: "",
+          period :"",
+          patientId: "",
+        },
+        
+
+   getLocation:{
+      required: false,
+          consultationMedium: "",
+          period :"",
+          locationId: "",
+   },
+   getHealthcare:{
+       required: false,
+          consultationMedium: "",
+          period :"",
+          healthId: "",
+   },
+   getDevice:{
+       required: false,
+          consultationMedium: "",
+          period :"",
+          deviceId: "",
+   },
     };
   },
   watch: {
@@ -684,39 +691,6 @@ export default {
       total(){
           return this.updateHealthcare.length + this.updateDevices.length + this.updatePatients.length + this.updatePractitioners.length + this.updateLocation.length;  
       },
-
-   getPatient(){
-       return {
-        id: this.patientId,
-        required: this.requiredPatient,
-        consultationMedium: this.consultationMediumPatient,
-        period: this.periodPatient
-       }
-   },
-   getLocation(){
-       return {
-        id: this.locationId,
-        required: this.requiredLocation,
-        consultationMedium: this.consultationMediumLocation,
-        period: this.periodLocation
-       }
-   },
-   getHealthcare(){
-       return {
-        id: this.healthId,
-        required: this.requiredHealthcare,
-        consultationMedium: this.consultationMediumHealthcare,
-        period: this.periodHealthcare
-       }
-   },
-   getDevice(){
-       return {
-        id: this.deviceId,
-        required: this.requiredDevice,
-        consultationMedium: this.consultationMediumDevice,
-        period: this.periodDevice
-       }
-   },
     show: {
       get() {
         return this.visible;
@@ -728,6 +702,10 @@ export default {
 
   },
   methods: {
+     applyActor(){
+        this.allPractitioners.push(this.getPractitioner)
+       // this.reset(value);
+     },
    
     next(i) {
       this.stepped = i;
@@ -737,7 +715,8 @@ export default {
     },
    
     apply() {
-      this.$emit("show:modal",this.updatePractitioners,this.updatePatients,this.updateDevices,this.updateLocation,this.updateHealthcare,this.getPractitioner,this.getPatient,this.getLocation,this.getDevice,this.getHealthcare);
+      this.$emit("show:modal",this.updatePractitioners,this.updatePatients,this.updateDevices,this.updateLocation,this.updateHealthcare,this.required,this.period,this.consultationMedium);
+      this.applyActor();
     this.show=false;
     },
   
