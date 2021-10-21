@@ -19,58 +19,58 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Fill the form below to add Insurance.</p>
-        <v-form ref="form">
+        <v-form ref="form" class="grid grid-cols-1 gap-y-2">
           <cornie-input
             label="Type"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="type"
           />
           <cornie-select
             label="Group"
-            class="mb-5"
+            class="w-full"
             placeholder="Select One"
             :items="['one', 'two']"
             v-model="group"
           />
           <cornie-input
             label="Payer"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="payer"
           />
           <cornie-input
             label="plan"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="plan"
           />
           <cornie-input
             label="policy No."
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="policyNo"
           />
           <cornie-date-picker
             label="Policy Expiry"
-            class="mb-5"
+            class="w-full"
             v-model="policyExpiry"
           />
           <cornie-input
             label="Deductible/Co-pay AMT"
-            class="mb-5"
+            class="w-full mt-3"
             placeholder="Enter"
             v-model="deductible"
           />
           <cornie-input
             label="Main Policy Holder"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="mainPolicyHolder"
           />
           <cornie-input
             label="Group Policy No."
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="groupPolicyNo"
           />

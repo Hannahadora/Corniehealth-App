@@ -82,7 +82,7 @@
             v-model="IncorporationType"
           />
           <phone-input
-            class="w-full"
+            class="w-full mt-1"
             label="Phone Number"
             v-model:code="DialCode"
             v-model="PhoneNumber"
