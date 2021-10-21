@@ -19,7 +19,7 @@
           "
           @click="showAllergy('false')"
         >
-          New Allergy
+          New Attachments
         </button>
       </span>
       <cornie-table :columns="rawHeaders" v-model="sortAllergys">
