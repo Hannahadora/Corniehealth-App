@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IAppointment from "@/types/IAppointment";
 import { StoreOptions } from "vuex";
-import { deleteAppointment, fetchAppointments,getPatients } from "./helper";
+import { deleteAppointment, fetchAppointments,getPatients,fetchByIdAppointments } from "./helper";
 
 interface AppointmentState {
   appointments: IAppointment[],
@@ -14,10 +14,18 @@ export default {
     appointments: [],
     patients: [],
   },
-  mutations: {
-    setAppointments(state, appointments: any) {      
-      state.appointments = [...appointments.result];
+  mutations: { 
+    // setAppointments(state, appointments: any) {      
+    //   state.appointments = [...appointments.result];
+    // },
+    setAppointments(state, appointments: IAppointment[]) {
+      const appointmentSet = new ObjectSet([state.appointments, appointments], "id");
+      
+      state.appointments = [...appointmentSet];
     },
+    // setAppointments(state, appointments: IAppointment[]) {      
+    //   state.appointments = [...appointments];
+    // },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [ ...pts ];
     },
@@ -39,6 +47,10 @@ export default {
     },
   },
   actions: {
+    async fetchByIdAppointments(ctx,patientId:string) {
+      const appointments = await fetchByIdAppointments(patientId);
+      ctx.commit("setAppointments", appointments);
+    },
     async fetchAppointments(ctx) {
       const appointments = await fetchAppointments();
       ctx.commit("setAppointments", appointments);
@@ -46,6 +58,11 @@ export default {
     async getPatients(ctx) {
       const pts = await getPatients();      
       ctx.commit("setPatients", pts);
+    },
+    async getAppointmentByPatientId(ctx, id: string) {
+      if (ctx.state.appointments.length < 1)
+        await ctx.dispatch("fetchByIdAppointments");
+      return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async getAppointmentById(ctx, id: string) {
       if (ctx.state.appointments.length < 1)

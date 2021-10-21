@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid mb-5">
         <div class="w-full">
-            <p class="flex justify-between items-center border-b-2 cursor-pointer" @click="toggleDetailsDisplay"><span class="uppercase mb-1 text-sm font-bold">{{ title }}</span> <span><ChevronDown /> </span></p>
+            <p class="flex justify-between items-center border-b-2 cursor-pointer" @click="toggleDetailsDisplay"><span class="uppercase mb-1 text-sm font-bold">{{ title }}</span> <span><ChevronDown :class="{ 'icon-down': showDetails, 'icon-normal': !showDetails }" /> </span></p>
             <div class="w-full show-details mt-5" :style="{ height: displayHeight + 'px' }">
             <!-- <div class="w-full" :class="{ 'hide-details': !showDetails, 'show-details -mb-28': showDetails }"> -->
                 <!-- <slot name="details" /> -->
@@ -35,6 +35,9 @@ export default class Participants extends Vue {
     @Prop({ title: String, default: ''})
     title!: string;
 
+    @Prop({ title: Boolean, default: true})
+    show!: boolean;
+
     get displayHeight() {
         if (this.showDetails) return this.height;
         return 0;
@@ -42,6 +45,10 @@ export default class Participants extends Vue {
 
     toggleDetailsDisplay() {
         this.showDetails = !this.showDetails;
+    }
+
+    created() {
+        if (this.show === false) this.showDetails = false;
     }
 }
 </script>
@@ -57,5 +64,15 @@ export default class Participants extends Vue {
         /* height: 790px; */
         transition: all .4s ease-in-out;
         overflow: hidden;
+    }
+
+    .icon-normal {
+        transition: all .5s ease-in-out;
+        transform: rotate(270deg);
+    }
+
+    .icon-down {
+        transition: all .5s ease-in-out;
+        transform: rotate(360deg);
     }
 </style>

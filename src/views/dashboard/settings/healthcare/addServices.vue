@@ -385,7 +385,7 @@ activeStates = ["active", "inactive"]
             this.$router.push('/dashboard/provider/settings/health-services')
       }
     } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg:"Healthcare service not added", status: "error" });
     }
   }
   async updateHealthcare() {
@@ -398,7 +398,7 @@ activeStates = ["active", "inactive"]
         window.notify({ msg: "Health care service updated", status: "success" });
       }
     } catch (error) {
-       window.notify({ msg: error.response.data.message, status: "error" });
+       window.notify({ msg:"Health care service not updated", status: "error" });
     }
   }
   async fetchOrgInfo() {

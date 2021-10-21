@@ -124,6 +124,21 @@ input[type="checkbox"]:after {
     cursor: pointer;
 }
 
+::placeholder {
+    font-size: 0.8em;
+    font-weight: 400;
+    font-style: italic;
+    color: #667499;
+}
+
+.text-dye {
+    color: #211F45;
+}
+
+.border-1 {
+    border-width: 1.5px;
+}
+
 .slider-tooltip {
     position: absolute;
     display: block;
