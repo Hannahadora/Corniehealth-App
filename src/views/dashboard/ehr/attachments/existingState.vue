@@ -323,9 +323,9 @@ export default class AllergyExistingState extends Vue {
     //this.stopEvent = true;
     this.allergyId = value;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
 
   allergyAdded() {
