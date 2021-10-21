@@ -493,7 +493,7 @@ export default class AddPracticeform extends Vue {
         this.$router.push("/dashboard/provider/settings/practice-templates");
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Practice form not created", status: "error" });
       this.$router.push("/dashboard/provider/settings/practice-templates");
     }
   }

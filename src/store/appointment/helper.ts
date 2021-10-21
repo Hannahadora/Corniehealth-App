@@ -12,6 +12,17 @@ export async function fetchAppointments() {
   }
   return [] as IAppointment[];
 }
+export async function fetchByIdAppointments(patientId: string) {
+  try {
+    const response = await cornieClient().get(`/api/v1/appointment/getAllByPatient/${patientId}`);
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return [] as IAppointment[];
+}
 export async function deleteAppointment(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/appointment/${id}`);

@@ -1112,7 +1112,7 @@ basedOn = "xxxxxx";
         this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Request not Updated", status: "error" });
     }
   }
   async fetchPateints() {
