@@ -15,17 +15,17 @@ export default {
     patients: [],
   },
   mutations: { 
-    // setAppointments(state, appointments: any) {      
-    //   state.appointments = [...appointments.result];
-    // },
-    setAppointments(state, appointments: IAppointment[]) {
-      const appointmentSet = new ObjectSet([state.appointments, appointments], "id");
-      
-      state.appointments = [...appointmentSet];
+    setAppointments(state, appointments: any) {      
+      state.appointments = [...appointments.result];
     },
-    // setAppointments(state, appointments: IAppointment[]) {      
-    //   state.appointments = [...appointments];
+    // setAppointments(state, appointments: IAppointment[]) {
+    //   const appointmentSet = new ObjectSet([state.appointments, appointments], "id");
+      
+    //   state.appointments = [...appointmentSet];
     // },
+    // // setAppointments(state, appointments: IAppointment[]) {      
+    // //   state.appointments = [...appointments];
+    // // },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [ ...pts ];
     },

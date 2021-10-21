@@ -159,17 +159,17 @@ appointmentId="";
 showPartcipants= false;
 singleParticipant= [];
 
-// @Prop({ type: Array, default: [] })
-//   appointments!: IAppointment[];
-
-  @appointment.State
+@Prop({ type: Array, default: [] })
   appointments!: IAppointment[];
+
+//   @appointment.State
+//   appointments!: IAppointment[];
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
 
-  @appointment.Action
-  fetchByIdAppointments!: (patientId: string) => Promise<void>;
+  // @appointment.Action
+  // fetchByIdAppointments!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -285,7 +285,7 @@ singleParticipant= [];
         });
       }
      async created() {
-         this.fetchByIdAppointments(this.patientId as string);
+        // this.fetchByIdAppointments(this.patientId as string);
     }
 
 }
