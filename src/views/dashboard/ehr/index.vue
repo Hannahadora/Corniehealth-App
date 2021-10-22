@@ -74,8 +74,9 @@ patient = {} as IPatient;
 
    async created (){
       console.log('id3', this.patientId);
-     this.patient = await this.findPatient(this.patientId)
-     console.log('fff', this.patient)
+      this.patient = await this.findPatient(this.$route.params.id.toString())
+      // this.patient = await this.findPatient(this.patientId)
+      console.log('fff', this.patient)
      }
 }
 </script>

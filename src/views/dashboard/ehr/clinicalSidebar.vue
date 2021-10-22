@@ -226,15 +226,15 @@ export default class Settings extends Vue {
   }  
 
 get fullname() {
-    const name =  `${this.patient.firstname} ${this.patient.lastname}`
+    const name =  `${this.patient?.firstname} ${this.patient?.lastname}`
     return name;
   }
-// get picture() {
-//   return this.patient.profilePhoto;
-// }
+get picture() {
+  return this.patient?.profilePhoto;
+}
   get physicianFullname() {
     const rrr = this.patient;
-    const name =  `${this.patient.firstname} ${this.patient.lastname}`
+    const name =  `${this.patient?.firstname} ${this.patient?.lastname}`
     return name;
   }
 
