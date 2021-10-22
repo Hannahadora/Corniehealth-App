@@ -26,7 +26,7 @@
       "
        @click="() => $emit('clicked')"
     >
-      Go to Appointments;
+      Go to Appointments
     </button>
   </div>
 </template>
