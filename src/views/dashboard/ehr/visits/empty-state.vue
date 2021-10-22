@@ -1,11 +1,11 @@
 <template>
-    <div class="w-full mb-8 px-4">
+    <!-- <div class="w-full mb-8 px-4">
         <div class="w-full border-b-2 curved flex py-2">
             <div class="container-fluid flex font-semibold text-xl py-2">
                 <h2>New Visits</h2>
             </div>
         </div>
-    </div>
+    </div> -->
 
   <div class="w-full flex flex-col justify-center items-center h-96">
     <!-- <img src="@/assets/img/empty-domain.svg" /> -->
@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import VisitIcon from '@/components/icons/empty-visits.vue'
+import VisitIcon from './components/empty-icon.vue'
 
 @Options({
   components: {

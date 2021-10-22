@@ -12,8 +12,8 @@
             </div>
             
         </span>
-        <div class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center bg-white relative">
-            <span v-if="items?.length > 3" class="text-xs">+{{ items?.length - actors?.length }}</span>
+        <div v-if="items?.length > 3"  class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center bg-white relative">
+            <span class="text-xs">+{{ items?.length - actors?.length }}</span>
         </div>
         
     </div>

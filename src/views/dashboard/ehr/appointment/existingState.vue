@@ -63,6 +63,9 @@
           </cornie-table>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Visits">
+          <div class="w-full">
+            <EHRVisits />
+          </div>
         </div>
        
        
@@ -115,6 +118,7 @@ import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import AppointmentModal from "./appointmentDialog.vue";
+import EHRVisits from "@/views/dashboard/ehr/visits/index.vue"
 
 const appointment = namespace("appointment");
 
@@ -144,7 +148,8 @@ const appointment = namespace("appointment");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
+    EHRVisits,
   },
   
 })

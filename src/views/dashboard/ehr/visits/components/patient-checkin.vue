@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="w-6/12">
-                    <cornie-select :label="'Room'" :items="rooms" v-model="visitData.room" style="width: 100%" />
+                    <cornie-select :label="'Room'" :items="rooms" v-model="visitData.roomId" style="width: 100%" />
                 </div>
             </div>
 <!-- 
@@ -44,10 +44,10 @@
             </div>
 
             <div class="w-full">
-                <div class="w-12/12">
+                <div class="w-12/12 mt-5">
                     <label for="" class="flex capitalize mb-1 text-black text-sm font-medium">All Patients for Visit</label>
-                    <div class="w-full">
-                        <visitor id />
+                    <div class="w-full mt-4">
+                        <visitor :appointment="appointment" />
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     <span class="font-semibold text-primary-500" @click="() => $emit('closesidemodal')">Cancel</span>
                 </corniebtn>
 
-                <CornieBtn :loading="loading" @click="checkPatientOut" class="bg-red-500 p-2 rounded-full px-8 mx-4">
+                <CornieBtn :loading="loading" @click="checkinPatient" class="bg-red-500 p-2 rounded-full px-8 mx-4">
                     <span class="text-white font-semibold">Checkin</span>
                 </CornieBtn>
             </div>
@@ -75,14 +75,12 @@ import CornieSelect from "@/components/cornieselect.vue"
 import CornieInput from "@/components/cornieinput.vue"
 import { Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import IPractitioner from "@/types/IPractitioner";
 import ILocation from "@/types/ILocation";
 import IVisit from "@/types/IVisit";
 import TextArea from "@/components/textarea.vue"
 import Visitor from "./visitor.vue"
 import IAppointment from "@/types/IAppointment";
 
-const practitioner = namespace('practitioner');
 const location = namespace('location');
 const visitStore = namespace('visits');
 const appointment = namespace('appointment');
@@ -98,12 +96,6 @@ const appointment = namespace('appointment');
     }
 })
 export default class PatientCheckin extends Vue {
-    @practitioner.State
-    practitioners!: IPractitioner[];
-
-    @practitioner.Action
-    fetchPractitioners!: () => Promise<void>
-
     @location.State
     locations!: ILocation[];
 
@@ -111,13 +103,16 @@ export default class PatientCheckin extends Vue {
     fetchLocations!: () => Promise<void>
 
     @appointment.State
-    appointments!: IAppointment[];
+    appointments!: any[];
 
     @appointment.Action
-    fetchAppointments!: () => Promise<void>
+    fetchByIdAppointments!: (patientId: string) => Promise<void>;
 
     @visitStore.Action
     checkout!: (id: string) => Promise<boolean>
+
+    @visitStore.Action
+    checkin!: (body: any) => Promise<boolean>
 
     @Prop({ type: Object, default: { }})
     visit!: IVisit;
@@ -127,13 +122,11 @@ export default class PatientCheckin extends Vue {
     }
     loading = false;
     @Prop({ type: String, default: ''})
-    visitId = ""
+    appointmentId = ""
 
-    get physicians() {
-        if (this.practitioners?.length <= 0) return [ ]
-        return this.practitioners?.map(practitioner => {
-            return { code: practitioner.id, display: `${practitioner.firstName} ${practitioner.lastName}`}
-        })
+    get appointment() {
+        if (!this.appointmentId) return { }
+        return this.appointments[0]?.result.find((appointment: IAppointment) => appointment?.id === this.appointmentId)
     }
 
     async checkPatientOut() {
@@ -155,7 +148,6 @@ export default class PatientCheckin extends Vue {
             this.loading = false;
         } catch (error) {
             console.log(error);
-            
             this.loading = false;
         }
     }
@@ -167,22 +159,60 @@ export default class PatientCheckin extends Vue {
         })
     }
 
+    async checkinPatient() {
+    try {
+        this.loading = true;
+        const checkedIn = await this.checkin({
+            "patientId": this.$route.params.id,
+            "appointmentId": this.appointmentId,
+            "status": "In-progress",
+            "roomId": this.visitData.roomId,
+            "notes": this.visitData.notes,
+            "slotId": this.visitData.slotId,
+        })
+
+        this.loading = false;
+        
+        if (checkedIn && checkedIn) {
+            window.notify({ msg: "Patient Check-in", status: "success" });
+            this.$emit("closesidemodal")
+        } else {
+            window.notify({ msg: "Patient check-in failed", status: "error" });
+        }
+    } catch (error) {
+        this.loading = false;
+        console.log(error);
+    }
+  }
+
     async created() {
-        if (this.practitioners?.length <= 0) await this.fetchPractitioners();
         if (this.locations?.length <= 0) await this.fetchLocations();
-        if (this.appointments?.length <= 0) await this.fetchAppointments();
+        if (this.appointments?.length <= 0) await this.fetchByIdAppointments(this.$route.params.id.toString());
         console.log(this.appointments, "appoitmbrb");
     }
 
-    @Watch("visitId", { deep: true })
+    @Watch("appointmentId", { deep: true })
     updateVisit() {
-        if (this.visit?.id) {
-            this.visitData.startDate = new Date(this.visit?.checkInTime)
-            this.visitData.startTime = this.visit?.checkInTime.substring(11, 16)
-            this.visitData.room = this.visit?.roomId
-            if (this.visit?.practitioners?.length > 0) {
-                this.visitData.practitioner = this.visit?.practitioners[0];
-            }
+        alert('ff')
+        if (this.appointmentId) {
+            alert('has')
+            const appointment = this.appointments[0]?.result?.find((appointment: IAppointment) => appointment?.id === this.appointmentId) as IAppointment;
+            alert(this.appointmentId)
+            console.log(appointment, "TARGET");
+            
+            if (appointment?.id) {
+                alert("hello")
+                this.visitData.startDate = appointment.period?.start;
+                this.visitData.startDate = appointment.period?.end?.toString().substring(11, 15);
+                this.visitData.roomId = 'd25cc910-0830-40cf-a0c8-7c303f381b29';
+                // this.visitData.roomId = appointment?.locationId;
+                this.visitData.slotId = appointment?.slot;
+                alert(appointment?.slot)
+                console.log(this.visitData);
+                
+             } else {
+                 alert('no o')
+             }
         }
     }
 }
