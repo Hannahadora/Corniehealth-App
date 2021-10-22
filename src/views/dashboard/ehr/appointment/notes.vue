@@ -24,13 +24,21 @@
           <span></span>
         </div>
         <span class="text-danger cursor-pointer"  @click="apply">Add</span>
-        <div class="w-full flex space-x-4">
-            <note-icon/>
+        <div
+            class="w-full flex space-x-4 mb-3"
+            v-for="(item, index) in appointmentNotes"
+            :key="index"
+          >
             <div>
-              <span class="text-gray-600">8-Sep-2021</span>
-              <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis egestas at sociis sodales nunc metus, commodo, viverra sit. Bibendum sagittis neque blandit varius.</p>
+              <note-icon class="mt-3" />
             </div>
-        </div>
+            <div>
+              <span class="text-gray-400 text-xs">
+                {{ new Date(item.createdAt).toDateString() }}
+              </span>
+              <p class="text-gray-400 text-xs">{{ item.text }}</p>
+            </div>
+          </div>
         </cornie-card-text>
           <cornie-card>
         <cornie-card-text class="flex justify-end">
@@ -51,7 +59,7 @@
             "
             @click="show = false"
           >
-            Cancel
+            Close
           </button>
          <!-- <cornie-btn
             @click="apply"
@@ -130,6 +138,11 @@ export default {
     },
     appointmentId: {
       type: String,
+    },
+    appointmentNotes: {
+      type: Array,
+      required: true,
+      default: () => [],
     },
     preferred: {
       type: Array,

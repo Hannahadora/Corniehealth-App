@@ -49,17 +49,19 @@ export default class ApppointmentIndex extends Vue {
   addHistory = false;
   show=false;
 
-
   get empty() {
-    return this.appointments.length < 1;
+    return this.patientappointments.length < 1;
   }
  get activePatientId() {
-      const id = this.$route?.params?.id as string;
+      const id = this.$route?.params?.id.toString();
       return id;
   }
 
  @appointment.State
-  appointments!: any[];
+  patientappointments!:IAppointment[];
+
+ @appointment.State
+  appointments!:IAppointment[];
 
   @appointment.Action
   fetchByIdAppointments!: (patientId: string) => Promise<void>;
@@ -67,13 +69,13 @@ export default class ApppointmentIndex extends Vue {
 
  historyAdded() {
     this.show = false;
- this.appointments;
-  this.fetchByIdAppointments(this.activePatientId);
+ this.patientappointments;
+  this.fetchByIdAppointments(this.$route.params.id.toString());
   }
 
 
-created() {
-    if (this.fetchByIdAppointments.length < 1) this.fetchByIdAppointments(this.activePatientId);
+async created() {
+    if (this.fetchByIdAppointments.length < 1) this.fetchByIdAppointments(this.$route.params.id.toString());
   }
 }
 </script>

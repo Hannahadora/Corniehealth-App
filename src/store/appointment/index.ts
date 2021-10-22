@@ -6,7 +6,7 @@ import { deleteAppointment, fetchAppointments,getPatients,fetchByIdAppointments 
 interface AppointmentState {
   appointments: IAppointment[],
   patients: any[],
-  patientappointment: any[],
+  patientappointments: IAppointment[],
 }
 
 export default {
@@ -14,14 +14,14 @@ export default {
   state: {
     appointments: [],
     patients: [],
-    patientappointment:[ ],
+    patientappointments:[],
   },
   mutations: { 
     setAppointments(state, appointments: any) {      
       state.appointments = [...appointments.result];
     },
-    setPatientAppointment(state, appointments) {
-      if (appointments && appointments.length > 0) state.patientappointment = [ ...appointments ];
+    setPatientAppointment(state, appointments:any) {
+      state.patientappointments = [ ...appointments.result ];
     },
 
     setPatients(state, pts) {
@@ -56,11 +56,6 @@ export default {
     async getPatients(ctx) {
       const pts = await getPatients();      
       ctx.commit("setPatients", pts);
-    },
-    async getAppointmentByPatientId(ctx, id: string) {
-      if (ctx.state.appointments.length < 1)
-        await ctx.dispatch("fetchByIdAppointments");
-      return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async getAppointmentById(ctx, id: string) {
       if (ctx.state.appointments.length < 1)

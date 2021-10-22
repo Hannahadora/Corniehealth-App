@@ -88,6 +88,7 @@
        
     </div>
       <notes-add
+          :appointmentNotes="appointmentNotes"
           :appointmentId="appointmentId"
           @update:preferred="makeNotes"
           v-model:visible="showNotes"
@@ -211,9 +212,9 @@ update ="";
 onePatientId="";
 onePractitionerId="";
 newslot: any;
-
+appointmentNotes=[];
 availableSlots=[];
-
+create="";
    @patients.State
   patients!: IPatient[];
 
@@ -221,7 +222,7 @@ availableSlots=[];
 //   appointments!: IAppointment[];
 
   @appointment.State
-  appointments!:  any[];
+  patientappointments!:IAppointment[];
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
@@ -320,49 +321,43 @@ availableSlots=[];
 
    
   get items() {
-    if (!this.appointments || this.appointments.length === 0 ) return [];
-   
-
-    const appointments = this.appointments.map((i: any) => {
-         (i as any).createdAt= new Date(
-         (i as any).createdAt
+          console.log(this.patientappointments);
+       const filteritems =  this.patientappointments.filter((c) => c !== null);
+    const patientappointments = filteritems.map((patientappointment:any) => {
+          (patientappointment as any).createdAt= new Date(
+         (patientappointment as any).createdAt
        ).toLocaleDateString("en-US",{ day: 'numeric', month: 'long', year: 'numeric' });
-     
-     const singleParticipantlength =
-        i.Practitioners.length +
-        i.Devices.length +
-        i.Patients.length;
 
-        const pateintId = i.Patients.map((patient:any) =>{
+        
+     const singleParticipantlength =
+        patientappointment.Practitioners.length +
+        patientappointment.Devices.length +
+        patientappointment.Patients.length + patientappointment.Location.length + patientappointment.HealthCare.length;
+
+            const pateintId = patientappointment.Patients.map((patient:any) =>{
             this.onePatientId =  patient.patientId;
        
       });
-
-       const practitionerId = i.Practitioners.map((Practitioner:any) =>{
+       const practitionerId = patientappointment.Practitioners.map((Practitioner:any) =>{
             this.onePractitionerId =  Practitioner.practitionerId;
        
       });
         this.updatedBy = this.getPatientName(this.onePatientId);
-      this.currentStatus =i.status;
-        this.update =  (i as any).updatedAt= new Date(
-         (i as any).updatedAt
+      this.currentStatus =patientappointment.status;
+        this.update =  (patientappointment as any).updatedAt= new Date(
+         (patientappointment as any).updatedAt
        ).toLocaleDateString("en-US");
       const patientNewId = this.onePatientId;
       return {
-        ...i,
-        action: i.id,
+        ...patientappointment,
+       action: patientappointment.id,
         patient: this.getPatientName(this.onePatientId),
-        newslot:this.showSlots(i.slot),
+       newslot:this.showSlots(patientappointment.slot),
         Participants: singleParticipantlength,
-        // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
       };
-    });
-   
-    return appointments;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
+    });  
+     return patientappointments;
   }
-
     getPatientName(id: string) {
             const pt = this.patients.find((i: any) => i.id === id);
             return pt ? `${pt.firstname} ${pt.lastname}` : '';
@@ -395,6 +390,7 @@ availableSlots=[];
   async makeNotes(id:string){
     this.appointmentId = id;
     this.showNotes = true;
+      this.fetchNotes();
   }
   closeModal(){
     this.showPartcipants = false;
@@ -415,13 +411,21 @@ availableSlots=[];
       }
   }
       get sortAppointments (){
-        return this.items.slice().sort(function(a, b){
+        return this.items.slice().sort(function(a:any, b:any){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
+        async fetchNotes() {
+    const id = this.appointmentId;
+      const AllNotes = cornieClient().get(`/api/v1/appointment/notes/getAllNotesForAppointment/${id}`);
+      const response = await Promise.all([AllNotes]);
+      this.appointmentNotes = response[0].data;
+    }
+
      async created() {
         await this.fetchByIdAppointments(this.$route.params.id.toString());
         this.getSlot();
+      
     }
 
 }

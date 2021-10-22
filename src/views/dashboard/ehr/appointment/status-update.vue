@@ -158,22 +158,17 @@ status = "";
     try {
       const response = await cornieClient().put(url, body);
       if (response.success){
-        this.updateAppointment(response.data);
           window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
    
     } catch (error) {
-        window.notify({ msg: "Status Not Updated", status: "success" });
+        window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
   }
 
- updateAppointment(appointment: IAppointment) {
-    const payload = {appointments: [appointment] };
-    this.setPatientAppointment(payload);
-  }
- 
+
  
   
   async apply() {

@@ -292,26 +292,31 @@
                 </div>
               </div>
               <div  v-if="actorType == 'Patient'">
-                <div v-for="(input, index) in patients" :key="index">
+                <div v-if="patients.lenth !==0">
                   <div class="flex space-x-10 w-full justify-between p-3">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
-                        <avatar class="mr-2" :src="localSrc" />
+                         <avatar
+                            class="mr-2"
+                            v-if="patients.profilePhoto"
+                            :src="patients.profilePhoto"
+                          />
+                        <avatar class="mr-2" v-else :src="localSrc" />
                       </div>
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
-                          {{ input.firstname }} {{ input.lastname }}
+                          {{ patients.firstname }} {{ patients.lastname }}
                         </p>
                       </div>
                     </div>
                       <cornie-radio
                       v-model="newIndexvaluepatient"
-                      :value="input"
-                      @input="changed(input.id)"
+                      :value="patients"
+                      @input="changed(patients.id)"
                       name="patients"
                       class="bg-danger float-right  focus-within:bg-danger px-6 shadow"/>
                   </div>
-                  <div class="w-full p-3" v-if="singleId == input.id">
+                  <div class="w-full p-3" v-if="singleId == patients.id">
                       <!-- <cornie-select
                         :onChange="setValue"
                         class="required w-full"

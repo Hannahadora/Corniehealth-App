@@ -457,8 +457,9 @@ export default class AddAppointment extends Vue {
   @PropSync("modelValue")
   show!: boolean;
 
-  @patients.State
-  patients!: IPatient[];
+  // @patients.State
+  // patients!: IPatient[];
+patients=[];
 
 @practitioner.State
   practitioners!: IPractitioner[];
@@ -473,8 +474,8 @@ export default class AddAppointment extends Vue {
   @healthcare.State
   healthcares!: IHealthcare[];
 
-    @patients.Action
-  fetchPatients!: () => Promise<void>; 
+  //   @patients.Action
+  // fetchPatients!: () => Promise<void>; 
   
    @practitioner.Action
   fetchPractitioners!: () => Promise<void>; 
@@ -711,18 +712,25 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
     this.loading = false
     }
   async createappointment() {
-     try {
-       const response = await cornieClient().post('/api/v1/appointment', this.payload);
-          console.log(response);
-           console.log("error");
-      if (response.success) {
-        window.notify({ msg: 'Appointment created', status: 'success' })
-        this.done();
-      }
-   
-    } catch (error) {
-      window.notify({ msg: "This slot is overbooked", status: 'error' })
+    if(this.apractitioners.length === 0){
+        window.notify({ msg: "Pracitioner is required", status: 'error' })
+    }else if ( this.apatients.length === 0){
+       window.notify({ msg: "Patient is required", status: 'error' })
+    }else{
+
+      try {
+        const response = await cornieClient().post('/api/v1/appointment', this.payload);
+           console.log(response);
+            console.log("error");
+       if (response.success) {
+         window.notify({ msg: 'Appointment created', status: 'success' })
+         this.done();
+       }
     
+     } catch (error) {
+       window.notify({ msg: "This slot is overbooked", status: 'error' })
+     
+     }
     }
   }
   async updateappointment(){
@@ -769,9 +777,13 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
        const oneId = this.practitionerId;
         const AllSlots = cornieClient().get(`/api/v1/slot/practitioner/${this.practitionerId}`);
         const response = await Promise.all([AllSlots]);
-        this.availableSlots = response[0].data;
-       
-      
+        this.availableSlots = response[0].data;  
+  }
+  async getSinglePatient() {
+       const oneId = this.practitionerId;
+        const AllSlots = cornieClient().get(`/api/v1/patient/${this.patientId}`);
+        const response = await Promise.all([AllSlots]);
+        this.patients = response[0].data;  
   }
    async fetchRequest() {
     const AllRequests = cornieClient().get("/api/v1/requests");
@@ -780,6 +792,7 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
   }
  
  async created() {
+   this.getSinglePatient();
      this.fetchRoles();
    this.setAppointment();
    this.fetchPractitioners();
