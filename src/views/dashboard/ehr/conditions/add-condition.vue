@@ -267,7 +267,7 @@ export default class AddCondition extends Vue {
   }
 
   get patientId() {
-    return this.$route.params.patientId;
+    return this.$route.params.id;
   }
 
   get onset() {

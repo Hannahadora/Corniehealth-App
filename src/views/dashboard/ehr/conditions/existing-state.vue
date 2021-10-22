@@ -176,7 +176,7 @@ export default class ExistingState extends Vue {
   conditions!: { [state: string]: ICondition[] };
 
   get patientId() {
-    return this.$route.params.patientId as string;
+    return this.$route.params.id as string;
   }
 
   get patientConditions() {
