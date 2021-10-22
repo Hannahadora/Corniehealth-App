@@ -24,9 +24,9 @@
         hover:opacity-90
         font-semibold
       "
-       @click="$router.push({ name: 'Create Appointment' })"
+       @click="() => $emit('clicked')"
     >
-      New Visit
+      Go to Appointments;
     </button>
   </div>
 </template>

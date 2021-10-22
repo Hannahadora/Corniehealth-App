@@ -2,7 +2,7 @@
     <div class="w-full mb-5">
         <div class="w-full">
             <div class="container-fluid pb-2">
-                <div class="w-5/12 flex items-center" style="border-right: 1px dashed #878E99;">
+                <div class="w-5/12 flex items-center">
                     <div class="w-1/12 rounded-full" style="max-height: 60px; max-width: 40px">
                         <!-- <img v-if="patient && patient.image" src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image"> -->
                         <!-- <img v-else src="https://via.placeholder.com/40x40" class="rounded-full w-full" alt="Image"> -->

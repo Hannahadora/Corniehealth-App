@@ -46,7 +46,7 @@
             <div class="w-full">
                 <div class="w-12/12 mt-5">
                     <label for="" class="flex capitalize mb-1 text-black text-sm font-medium">All Patients for Visit</label>
-                    <div class="w-full mt-4">
+                    <div class="w-full mt-4" v-if="appointment && appointment?.Practitioners?.length > 0">
                         <visitor :appointment="appointment" />
                     </div>
                 </div>
@@ -193,25 +193,18 @@ export default class PatientCheckin extends Vue {
 
     @Watch("appointmentId", { deep: true })
     updateVisit() {
-        alert('ff')
         if (this.appointmentId) {
-            alert('has')
             const appointment = this.appointments[0]?.result?.find((appointment: IAppointment) => appointment?.id === this.appointmentId) as IAppointment;
-            alert(this.appointmentId)
             console.log(appointment, "TARGET");
             
             if (appointment?.id) {
-                alert("hello")
                 this.visitData.startDate = appointment.period?.start;
                 this.visitData.startDate = appointment.period?.end?.toString().substring(11, 15);
                 this.visitData.roomId = 'd25cc910-0830-40cf-a0c8-7c303f381b29';
                 // this.visitData.roomId = appointment?.locationId;
                 this.visitData.slotId = appointment?.slot;
-                alert(appointment?.slot)
                 console.log(this.visitData);
                 
-             } else {
-                 alert('no o')
              }
         }
     }

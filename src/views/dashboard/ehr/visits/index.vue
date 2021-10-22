@@ -1,10 +1,7 @@
 <template>
   <div class="w-full h-screen">
       <div class="containr-fluid" v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0 && !selectedStatus">
-        <EmptyState />
-        <side-modal :visible="true" :header="'Check-In'" :width="990"  @closesidemodal="closeUpdateModal">
-                  <patient-checkn :visit="currentVisit" :appointmentId="appointmentId" @closesidemodal="closeUpdateModal" />
-                </side-modal>
+        <EmptyState @clicked="() => $emit('gotoappointments')" />
       </div>
       <div v-else class="container-fluid bg-white sm:px-2 h-full">
         <!-- <div class="w-full border-b-2 curved flex py-2">
@@ -44,10 +41,10 @@
 
              <div class="w-full curved flex py-2 justify-end mb-4 -mt-2">
                 <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
-                    <Button :loading="false">
-                        <router-link :to="{ name: 'Appointment' }" style="background: #FE4D3C" class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-full">
+                    <Button @click="() => $emit('gotoappointments')">
+                        <a  style="background: #FE4D3C" class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-full">
                             Go To Appointments 
-                        </router-link>
+                        </a>
                     </Button>
                 </div>
             </div>
@@ -79,7 +76,7 @@
                     </div>
                 </template>
                 <template #practitioners="{ item }">
-                    <div class="container cursor-pointer" @click="viewSchedule(item.id)">
+                    <div class="container cursor-pointer flex justify-center" @click="viewSchedule(item.id)">
                     <span class="rounded-full">
                         <Actors :items="item.practitioners" />
                     </span>
@@ -88,7 +85,11 @@
                 <template #actions="{ item }">
                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
                     <eye-icon class="mt-1" />
-                    <span class="ml-3 text-xs" @click="showTimeline(item.id)">View</span>
+                    <span class="ml-3 text-xs">View</span>
+                    </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
+                    <eye-icon class="mt-1" />
+                    <span class="ml-3 text-xs" @click="showTimeline(item.id)">View timeline</span>
                     </div>
                     <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <ArrowRight />
@@ -120,6 +121,21 @@
                 <!-- <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
                     <CheckIn :item="appointments[0]" @close="() => showCheckin = false"  />
                 </side-modal> -->
+                <modal :visible="timeLineVissible">
+                  <!-- <template #title>
+                    <p class="md flex items-center justify-between px2" style="width: 440px">
+                      <span class="md font-lignt text-primary p-2 text-xl">Timeline</span> 
+                      <span class="md text-danger cursor-pointer">
+                        <a class="md">
+                          See all
+                        </a>
+                      </span>
+                    </p>
+                  </template> -->
+                  <ActionLog :timeline="selectedVisit.timelines" :appointmentId="currentVisit.appointmentId" @closetimeline="() => timeLineVissible = false" />
+                 
+
+                </modal>
 
                 <side-modal :visible="showCheckNoapp" :header="'Check-In'" @closesidemodal="() => showCheckNoapp = false">
                     <CheckinNoapp :patientId="patients[0]?.id" :item="appointments[0]"  @close="() => showCheckNoapp = false" />
@@ -129,7 +145,8 @@
                   <patient-checkout :visit="currentVisit" :visitId="currentVisit?.id" @closesidemodal="closeUpdateModal" />
                 </side-modal>
 
-                <side-modal :visible="showCheckin" :header="'Check-In'" :width="990"  @closesidemodal="closeUpdateModal">
+                <side-modal :visible="false" :header="'Check-In'" :width="990"  @closesidemodal="closeUpdateModal">
+                <!-- <side-modal :visible="showCheckin" :header="'Check-In'" :width="990"  @closesidemodal="closeUpdateModal"> -->
                   <patient-checkn :visit="currentVisit" :appointmentId="appointmentId" @closesidemodal="() => showCheckin = false" />
                 </side-modal>
 
@@ -144,15 +161,15 @@
                 </side-modal>
 
                 <side-modal :visible="showViewPane" :header="'View Stot'">
-                <div class="w-full my-3">
-                    <ViewDetails :schedule="selectedSchedule" />
-                </div>
-                <div class="w-full my-3">
-                    <ViewPlan :schedule="selectedSchedule" />
-                </div>
-                <div class="w-full my-3">
-                    <ViewBreaks :schedule="selectedSchedule" />
-                </div>
+                  <div class="w-full my-3">
+                      <ViewDetails :schedule="selectedSchedule" />
+                  </div>
+                  <div class="w-full my-3">
+                      <ViewPlan :schedule="selectedSchedule" />
+                  </div>
+                  <div class="w-full my-3">
+                      <ViewBreaks :schedule="selectedSchedule" />
+                  </div>
                 </side-modal>
 
             </div>
@@ -393,8 +410,9 @@ export default class PractitionerExistingState extends Vue {
   get items() {
     if (this.patientVisits?.length === 0) return [ ];
     return this.patientVisits.map((visit: any) => {
-      return {
+      let data = {
         id: visit.id,
+        appointmentId: visit.appointmentId,
         updatedAt: visit?.updatedAt,
         recorded: new Date(visit.createdAt).toLocaleDateString(),
         identifier: "XXXXX",
@@ -406,134 +424,73 @@ export default class PractitionerExistingState extends Vue {
         // endTime: `${new Date(new Date(visit.checkInTime).getMinutes() + 60).toLocaleTimeString().substring(0, 5)},
         status: visit.status,
         location: visit?.room?.name,
-        practitioners: [
+        practitioners: !visit.appointmentId || visit.Practitioners?.length <= 0 ? [ 
           {
-              "phone": {
-                "number": "08122463202",
-                "dialCode": "+1264"
-              },
-              "firstName": "Darlington",
-              "lastName": "Onyemere",
-              "email": "anselem16m@outlook.com",
-              "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-              "accessRole": null,
-              "userId": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-              "department": "Oncology",
-              "jobDesignation": "Doctor",
-              "id": "87e846a3-bac0-43b9-a4db-0b2605426c42",
-              "user": {
-                "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-                "firstName": "Darlington",
-                "email": "anselem16m@outlook.com",
-                "middleName": "",
-                "lastName": "Onyemere",
-                "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-                "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-                "accountType": "Provider",
-                "roleId": null,
-                "phone": {
-                  "number": "08122463202",
-                  "dialCode": "+1264"
-                },
-                "createdAt": "2021-07-23T12:20:34.591Z",
-                "updatedAt": "2021-07-23T12:20:34.591Z",
-                "OrganizationId": null
-              }
-            }
-        ]
-      //   practitioners: [
-      //     {
-      //       "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-      //       "firstName": "Darlington",
-      //       "email": "anselem16m@outlook.com",
-      //       "middleName": "",
-      //       "lastName": "Onyemere",
-      //       "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      //       "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-      //       "accountType": "Provider",
-      //       "roleId": null,
-      //       "phone": {
-      //         "number": "08122463202",
-      //         "dialCode": "+1264"
-      //       },
-      //       "createdAt": "2021-07-23T12:20:34.591Z",
-      //       "updatedAt": "2021-07-23T12:20:34.591Z",
-      //       "OrganizationId": null
-      //   },
-      //     {
-      //       "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-      //       "firstName": "Darlington",
-      //       "email": "anselem16m@outlook.com",
-      //       "middleName": "",
-      //       "lastName": "Onyemere",
-      //       "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      //       // "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-      //       "accountType": "Provider",
-      //       "roleId": null,
-      //       "phone": {
-      //         "number": "08122463202",
-      //         "dialCode": "+1264"
-      //       },
-      //       "createdAt": "2021-07-23T12:20:34.591Z",
-      //       "updatedAt": "2021-07-23T12:20:34.591Z",
-      //       "OrganizationId": null
-      //   },
-      //     {
-      //       "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-      //       "firstName": "Darlington",
-      //       "email": "anselem16m@outlook.com",
-      //       "middleName": "",
-      //       "lastName": "Onyemere",
-      //       "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      //       "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-      //       "accountType": "Provider",
-      //       "roleId": null,
-      //       "phone": {
-      //         "number": "08122463202",
-      //         "dialCode": "+1264"
-      //       },
-      //       "createdAt": "2021-07-23T12:20:34.591Z",
-      //       "updatedAt": "2021-07-23T12:20:34.591Z",
-      //       "OrganizationId": null
-      //   },
-      //     {
-      //       "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-      //       "firstName": "Darlington",
-      //       "email": "anselem16m@outlook.com",
-      //       "middleName": "",
-      //       "lastName": "Onyemere",
-      //       "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      //       "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-      //       "accountType": "Provider",
-      //       "roleId": null,
-      //       "phone": {
-      //         "number": "08122463202",
-      //         "dialCode": "+1264"
-      //       },
-      //       "createdAt": "2021-07-23T12:20:34.591Z",
-      //       "updatedAt": "2021-07-23T12:20:34.591Z",
-      //       "OrganizationId": null
-      //   },
-      //     {
-      //       "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-      //       "firstName": "Darlington",
-      //       "email": "anselem16m@outlook.com",
-      //       "middleName": "",
-      //       "lastName": "Onyemere",
-      //       "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-      //       "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-      //       "accountType": "Provider",
-      //       "roleId": null,
-      //       "phone": {
-      //         "number": "08122463202",
-      //         "dialCode": "+1264"
-      //       },
-      //       "createdAt": "2021-07-23T12:20:34.591Z",
-      //       "updatedAt": "2021-07-23T12:20:34.591Z",
-      //       "OrganizationId": null
-      //   },
-      // ]
+            firstName: visit.checkedInBy?.firstName,
+            lastName: visit.checkedInBy?.lastName,
+            image: visit.checkedInBy?.image ? visit.checkedInBy?.image : visit.checkedInBy?.user?.image,
+            id: visit.checkedInBy?.id
+          }
+         ] : visit.Practitioners
+        // practitioners: [
+        //   {
+        //       "phone": {
+        //         "number": "08122463202",
+        //         "dialCode": "+1264"
+        //       },
+        //       "firstName": "Darlington",
+        //       "lastName": "Onyemere",
+        //       "email": "anselem16m@outlook.com",
+        //       "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+        //       "accessRole": null,
+        //       "userId": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+        //       "department": "Oncology",
+        //       "jobDesignation": "Doctor",
+        //       "id": "87e846a3-bac0-43b9-a4db-0b2605426c42",
+        //       "user": {
+        //         "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
+        //         "firstName": "Darlington",
+        //         "email": "anselem16m@outlook.com",
+        //         "middleName": "",
+        //         "lastName": "Onyemere",
+        //         "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
+        //         "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
+        //         "accountType": "Provider",
+        //         "roleId": null,
+        //         "phone": {
+        //           "number": "08122463202",
+        //           "dialCode": "+1264"
+        //         },
+        //         "createdAt": "2021-07-23T12:20:34.591Z",
+        //         "updatedAt": "2021-07-23T12:20:34.591Z",
+        //         "OrganizationId": null
+        //       }
+        //     }
+        // ]
+      
       }
+
+      if (visit.appointmentId) {
+        if (visit.Practitioners?.length > 0) data.practitioners = visit.Practitioners;
+        else data.practitioners = [ 
+          {
+            firstName: visit.checkedInBy?.firstName,
+            lastName: visit.checkedInBy?.lastName,
+            image: visit.checkedInBy?.image ? visit.checkedInBy?.image : visit.checkedInBy?.user?.image,
+            id: visit.checkedInBy?.id
+          }
+         ] 
+      } else {
+        data.practitioners = [ 
+          {
+            firstName: visit.checkedInBy?.firstName,
+            lastName: visit.checkedInBy?.lastName,
+            image: visit.checkedInBy?.image ? visit.checkedInBy?.image : visit.checkedInBy?.user?.image,
+            id: visit.checkedInBy?.id
+          }
+         ] 
+      }
+      return data;
     })
   }
 
@@ -563,6 +520,7 @@ export default class PractitionerExistingState extends Vue {
           status: "success",
         });
         this.showStatusUpdateModal = false;
+        await this.getPatientVisits(this.$route.params.id.toString());
       } else {
         notify({
           msg: "There was an error updating status",
@@ -722,15 +680,14 @@ export default class PractitionerExistingState extends Vue {
   }
 
   async created() {
-    this.showCheckin = true;
     setTimeout(() => {
-      this.appointmentId = "89ba4a28-aeee-47b4-acd5-ecb6fe867d52"
+      this.appointmentId = "c4b30067-6d40-4548-b95c-8f2dbc97d0a8"
     }, 5000)
     if (this.patients?.length === 0) await this.getPatients();
     if (this.appointments?.length === 0) await this.fetchByIdAppointments(this.$route.params.id.toString());
     console.log(this.appointments, "apposhhhh");
     
-    if (!this.patientVisits || this.patientVisits.length === 0) await this.getPatientVisits(this.$route.params.id.toString());
+    await this.getPatientVisits(this.$route.params.id.toString());
     console.log(this.patientVisits, "visits");
     window.addEventListener('click', (e: any) => {
       if (!e.target.classList.contains('md')) {

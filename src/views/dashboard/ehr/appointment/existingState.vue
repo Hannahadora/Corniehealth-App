@@ -64,7 +64,7 @@
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Visits">
           <div class="w-full">
-            <EHRVisits />
+            <EHRVisits @gotoappointments="() => selected = 1" />
           </div>
         </div>
        

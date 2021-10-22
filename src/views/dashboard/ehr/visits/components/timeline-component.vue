@@ -1,17 +1,27 @@
 <template>
-    <div class="w-full md">
+    <div class="w-full md px-4">
+        <div class="w-full">
+            <p class="md flex items-center justify-between px2" style="width: 440px">
+                <span class="md text-primary p-2 text-xl" style="color: #667499">Timeline</span> 
+                <span class="md text-danger cursor-pointer">
+                <a class="md" @click="() => showAll = !showAll">
+                    {{ showAll && timeline?.length > 3 ? 'See less' : 'See all'}}
+                </a>
+                </span>
+            </p>
+        </div>
         <div class="w-full" style="max-height: 90vh;overflow-y:scroll">
-            <div class="md w-4/12 px-4" style="width: 440px" v-for="(item, index) in timeline" :key="index">
+            <div class="md w-4/12 px-4" style="width: 440px" v-for="(item, index) in actions" :key="index">
                 <div class="md w-full">
                 <div class="md w-full">
                     <p class="md font-weight-light">{{ item.action }}</p>
-                    <span class="flex items-center">
-                        <span class="md font-weight-light italic text-xs text-gray-400 mx-3">{{ new Date(item.createdAt).toDateString()}}</span>
+                    <span class="flex items-center ">
+                        <span class="md font-weight-light italic text-xs" style="color: #667499">{{ new Date(item.createdAt).toDateString()}}</span>
                     <span class="md font-weight-light text-lg mx-3" style="color: #114FF5">Open</span>
                     <span class="md font-weight-light text-lg" style="color: #114FF5"><Actors :items="actors" /></span>
                     </span>
                 </div>
-                <div class="md w-full my-2" style="height: 50px;border-left: 1px dashed #878E99;" v-if="index !== timeline.length - 1">
+                <div class="md w-full my-2" style="height: 25px;border-left: 1px dashed #878E99;" v-if="index !== actions.length - 1">
 
                 </div>
                 
@@ -43,6 +53,7 @@ const appointment = namespace("appointment");
       Actors
   },
 })
+
 export default class CheckIn extends Vue {
     @Prop({ type: String, default: ''})
     appointmentId!: string;
@@ -57,10 +68,17 @@ export default class CheckIn extends Vue {
     @appointment.Action
     fetchAppointments!: () => Promise<void>;
 
+    showAll = false;
+
     get actors() {
         if (!this.appointmentId) return [ ];
         const apmt =  this.appointments.find((i: any) => i.id === this.appointmentId);
         return apmt ? apmt.Practitioners : [ ];
+    }
+
+    get actions() {
+        if (this.showAll || this.timeline?.length <= 3) return this.timeline;
+        return this.timeline?.slice(0, 3)
     }
 
     async created() {

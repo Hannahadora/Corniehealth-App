@@ -6,7 +6,7 @@
                 <!-- <img :src="actor.image" class="rounded-full" style="width: 100%;height:100%" :alt="actor.name"> -->
                 <avatar :src="actor.image" />
             </div>
-            <div v-else class="image-con rounded-full relative -ml-1 flex items-center border justify-center bg-white">
+            <div v-if="!actor.image && actor.firstName" class="image-con rounded-full relative -ml-1 flex items-center border justify-center bg-white">
                 <span class="text-warning">{{ actor.firstName ? actor.firstName[0] : '' }} </span>
                 <span class="text-warning">{{ actor.lastName ? actor.lastName[0] : '' }} </span>
             </div>
