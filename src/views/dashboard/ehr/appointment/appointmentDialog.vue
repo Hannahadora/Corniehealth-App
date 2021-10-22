@@ -144,7 +144,7 @@
                     <div class="w-full grid grid-cols-3 gap-4 mt-5">
                       <div class="border-r-2" v-for="(input, index) in newPractitioners" :key="index">
                         <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
+                          <div class="flex space-x-4 float-left">
                             <avatar class="mr-2" v-if="input.image" :src="input.image" />
                                <avatar class="mr-2" v-else :src="localSrc" />
                             <div>
@@ -157,12 +157,16 @@
                               </p>
                             </div>
                           </div>
-                          <span>
-                            <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
-                              @click="removePractitioner(index)"
-                            />
-                          </span>
+                          <div class="float-right">
+                            <div class="flex space-x-4">
+                                <d-edit class="float-left cursor-pointer" />
+                                <deleteorange-icon
+                                class="float-right cursor-pointer"
+                                @click="removePractitioner(index)"
+                                />
+                            
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <!-- <div class="border-r-2" v-for="(input, index) in newDevices" :key="index">
@@ -269,6 +273,7 @@ import AccordionComponent from "@/components/dialog-accordion.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
+import DEdit from "@/components/icons/aedit.vue";
 import CornieTextArea from "@/components/textarea.vue";
 // import DatePicker from "./datepicker.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
@@ -314,6 +319,7 @@ const data = {
   components: {
     BigDialog,
     TimeablePicker,
+    DEdit,
     CornieNumInput,
     CornieBtn,
     DeleteorangeIcon,
@@ -507,7 +513,9 @@ async checkActor(){
 }
 async showActor(updatePractitioners:any,updatePatients:any,updateDevices:any,updateLocation:any,updateHealthcare:any,getPractitioner:any){
   this.newPractitioners = updatePractitioners;
-    console.log(getPractitioner);
+  getPractitioner.required = this.requiredPractitioner;
+  getPractitioner.consultationMedium = this.consultationMediumPractitioner;
+    console.log( getPractitioner.required);
 }
 
 
