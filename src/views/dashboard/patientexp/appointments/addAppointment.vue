@@ -350,8 +350,9 @@ const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
 const emptyPractitioners: Practitioners = {
+   id:"",
   type: "",
-  required: false,
+  required: "",
   consultationMedium: "",
   period : {} as Period,
   practitionerId:"",
@@ -359,8 +360,9 @@ const emptyPractitioners: Practitioners = {
 
 };
 const emptyPatients: Patients = {
+  id:"",
   type: "",
-  required: false,
+  required: "",
   consultationMedium: "",
   period : {} as Period,
   patientId:"",
@@ -373,8 +375,9 @@ const emptyPatients: Patients = {
 
 };
 const emptyDevices: Devices = {
+   id:"",
   type: "",
-  required: false,
+  required: "",
   consultationMedium: "",
   period : {} as Period,
   deviceId: "",

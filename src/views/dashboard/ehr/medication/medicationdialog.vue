@@ -1,6 +1,7 @@
 <template>
   <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
+
       <cornie-card-title  class="w-full">
           <cornie-icon-btn @click="show = false">
             <arrow-left-icon />
@@ -10,6 +11,7 @@
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
       </cornie-card-title>
+      
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Request Info" v-model="opened" :opened="false">
@@ -426,6 +428,7 @@
         
         </v-form>
       </cornie-card-text>
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
@@ -443,6 +446,7 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
+
     </cornie-card>
   </cornie-dialog>
 </template>

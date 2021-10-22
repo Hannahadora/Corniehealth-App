@@ -103,7 +103,7 @@ export default class PatientCheckin extends Vue {
     fetchLocations!: () => Promise<void>
 
     @appointment.State
-    appointments!: any[];
+    patientappointments!: any[];
 
     @appointment.Action
     fetchByIdAppointments!: (patientId: string) => Promise<void>;
@@ -126,7 +126,7 @@ export default class PatientCheckin extends Vue {
 
     get appointment() {
         if (!this.appointmentId) return { }
-        return this.appointments[0]?.result.find((appointment: IAppointment) => appointment?.id === this.appointmentId)
+        return this.patientappointments.find((appointment: IAppointment) => appointment?.id === this.appointmentId)
     }
 
     async checkPatientOut() {
@@ -174,7 +174,7 @@ export default class PatientCheckin extends Vue {
         this.loading = false;
         
         if (checkedIn && checkedIn) {
-            window.notify({ msg: "Patient Check-in", status: "success" });
+            window.notify({ msg: "Patient Check-in successfull", status: "success" });
             this.$emit("closesidemodal")
         } else {
             window.notify({ msg: "Patient check-in failed", status: "error" });
@@ -187,14 +187,14 @@ export default class PatientCheckin extends Vue {
 
     async created() {
         if (this.locations?.length <= 0) await this.fetchLocations();
-        if (this.appointments?.length <= 0) await this.fetchByIdAppointments(this.$route.params.id.toString());
-        console.log(this.appointments, "appoitmbrb");
+        if (this.patientappointments?.length <= 0) await this.fetchByIdAppointments(this.$route.params.id.toString());
+        console.log(this.patientappointments, "appoitmbrb pppuojo");
     }
 
     @Watch("appointmentId", { deep: true })
     updateVisit() {
         if (this.appointmentId) {
-            const appointment = this.appointments[0]?.result?.find((appointment: IAppointment) => appointment?.id === this.appointmentId) as IAppointment;
+            const appointment = this.patientappointments.find((appointment: IAppointment) => appointment?.id === this.appointmentId) as IAppointment;
             console.log(appointment, "TARGET");
             
             if (appointment?.id) {

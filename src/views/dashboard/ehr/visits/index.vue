@@ -138,7 +138,7 @@
                 </modal>
 
                 <side-modal :visible="showCheckNoapp" :header="'Check-In'" @closesidemodal="() => showCheckNoapp = false">
-                    <CheckinNoapp :patientId="patients[0]?.id" :item="appointments[0]"  @close="() => showCheckNoapp = false" />
+                    <CheckinNoapp :patientId="patients[0]?.id"  @close="() => showCheckNoapp = false" />
                 </side-modal>
 
                 <side-modal :visible="showCheckout" :header="'Check-Out'" :width="990"  @closesidemodal="closeUpdateModal">
@@ -341,7 +341,7 @@ export default class PractitionerExistingState extends Vue {
   noShow!: (id: string) => Promise<boolean>;
 
   @appointment.State
-  appointments!: any[];
+  patientappointments!: any[];
 
   @appointment.Action
   fetchByIdAppointments!: (patientId: string) => Promise<void>;
@@ -612,14 +612,14 @@ export default class PractitionerExistingState extends Vue {
   }
 
   getActors(id: string) {
-    const pt = this.appointments.find((i: any) => i.id === id);
+    const pt = this.patientappointments.find((i: any) => i?.id === id);
     
     return pt ? pt.Practitioners : [ ];
   }
 
   getAppointment(id: string) {
-    if (this.appointments?.length === 0 || this.appointments[0]?.result?.length === 0) return { };
-    const pt = this.appointments[0]?.result?.find((i: any) => i?.id === id);
+    if (this.patientappointments?.length === 0 || this.patientappointments?.length === 0) return { };
+    const pt = this.patientappointments?.find((i: any) => i?.id === id);
     
     return pt ? pt : { };
   }
@@ -684,8 +684,8 @@ export default class PractitionerExistingState extends Vue {
       this.appointmentId = "c4b30067-6d40-4548-b95c-8f2dbc97d0a8"
     }, 5000)
     if (this.patients?.length === 0) await this.getPatients();
-    if (this.appointments?.length === 0) await this.fetchByIdAppointments(this.$route.params.id.toString());
-    console.log(this.appointments, "apposhhhh");
+    await this.fetchByIdAppointments(this.$route.params.id.toString());
+    console.log(this.patientappointments, "apposhhhh");
     
     await this.getPatientVisits(this.$route.params.id.toString());
     console.log(this.patientVisits, "visits");

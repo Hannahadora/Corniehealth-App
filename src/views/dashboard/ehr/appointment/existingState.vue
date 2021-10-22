@@ -21,43 +21,63 @@
                         focus:outline-none
                         hover:opacity-90
                         "
-                        @click="showAppointment"
+                        @click="showAppointment('false')"
                     >
                    New Appointment
                     </button>
             
           </span>
-          <cornie-table :columns="rawHeaders" v-model="items">
+          <cornie-table :columns="rawHeaders" v-model="sortAppointments">
               <template #actions="{ item }">
-                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/view-request/${item.id}`)">
-                  <newview-icon  class="text-blue-700 fill-current"/>
+                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
+                  <newview-icon  class="text-blue-300 fill-current"/>
                   <span class="ml-3 text-xs">View</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
-                  <newview-icon  class="text-blue-700 fill-current"/>
-                  <span class="ml-3 text-xs">View & Edit</span>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"   @click="showAppointment(item.id)">
+                  <newview-icon  class="text-blue-300 fill-current"/>
+                  <span class="ml-3 text-xs">Edit</span>
                 </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <update-icon />
-                  <span class="ml-3 text-xs">Update</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-primary fill-current"/>
-                  <span class="ml-3 text-xs">Add Appointment</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-red-500 fill-current"/>
-                  <span class="ml-3 text-xs">Add Task</span>
-                </div>
+                <div
+                    @click="showStatus(item.id)"
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                  >
+                    <update-icon class="text-danger fill-current" />
+                    <span class="ml-3 text-xs"> Update Status </span>
+                  </div>
+                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinPane(item.id)">
+                        <checkin-icon />
+                        <span class="ml-3 text-xs">Check-In</span>
+                        </div>
                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
                   <note-icon class="text-green-600 fill-current"/>
-                  <span class="ml-3 text-xs">Add Notes</span>
+                  <span class="ml-3 text-xs">Make Notes</span>
                 </div>
+                 <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="deleteItem(item.id)"
+                        >
+                        <cancel-icon/>
+                        <span class="ml-3 text-xs">Cancel</span>
+                        </div>
               </template>
               <template #Participants="{ item }">
                 <div class="flex items-center">
                   <span class="text-xs">{{item.Participants}}</span>
                   <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
+                </div>
+              </template>
+                <template #status="{ item }">
+                <div class="flex items-center">
+                  <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'Proposed'">{{item.status}}</p>
+                  <p class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded" v-if="item.status == 'Pending'">{{item.status}}</p>
+                  <p class="text-xs bg-green-200 text-green-500 p-1 rounded" v-if="item.status == 'Booked'">{{item.status}}</p>
+                  <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'Arrived'">{{item.status}}</p>
+                  <p class="text-xs bg-green-200 text-green-500 p-1 rounded" v-if="item.status == 'Fullfiled'">{{item.status}}</p>
+                  <p class="text-xs bg-red-300 text-red-600 p-1 rounded" v-if="item.status == 'Cancelled'">{{item.status}}</p>
+                  <p class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded" v-if="item.status == 'No show'">{{item.status}}</p>
+                  <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'Entered-in-Error'">{{item.status}}</p>
+                   <p class="text-xs bg-green-200 text-green-500 p-1 rounded" v-if="item.status == 'Checked-in'">{{item.status}}</p>
+                    <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'Waitlist'">{{item.status}}</p>
                 </div>
               </template>
           </cornie-table>
@@ -71,6 +91,7 @@
        
     </div>
       <notes-add
+          :appointmentNotes="appointmentNotes"
           :appointmentId="appointmentId"
           @update:preferred="makeNotes"
           v-model:visible="showNotes"
@@ -82,7 +103,29 @@
           v-model:visible="showPartcipants"
         />
           <appointment-modal   
+           v-if="appointmentId == 'false'" 
+            @appointment-added="appointmentAdded"
+               @show:modal="showAppointment"
           v-model="showAppointmentModal"/>
+           <appointment-modal   
+          v-else
+            :id="appointmentId" 
+            @appointment-added="appointmentAdded"
+               @show:modal="showAppointment"
+          v-model="showAppointmentModal"/>
+
+              
+        <status-modal
+            :id="appointmentId" 
+           :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="update"
+            @appointment-added="appointmentAdded"
+          v-model="showStatusModal"/>
+
+          <side-modal :visible="showCheckin" :header="'Check-In'" :width="990"  @closesidemodal="() => showCheckin = false">
+            <checkin-component :appointmentId="checkinAppointment" @closesidemodal="() => showCheckin = false" />
+          </side-modal>
   </div>
 </template>
 <script lang="ts">
@@ -107,6 +150,9 @@ import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
+import AllParticipants from "./participants.vue";
+import NotesAdd from "./notes.vue";
+import StatusModal from "./status-update.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
@@ -119,8 +165,12 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import AppointmentModal from "./appointmentDialog.vue";
 import EHRVisits from "@/views/dashboard/ehr/visits/index.vue"
+import { IPatient } from "@/types/IPatient";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue"
+import CheckinComponent from "@/views/dashboard/ehr/visits/components/patient-checkin.vue"
 
 const appointment = namespace("appointment");
+const patients = namespace("patients");
 
 @Options({
   components: {
@@ -132,9 +182,12 @@ const appointment = namespace("appointment");
     UpdateIcon,
     AppointmentModal,
     NoteIcon,
+    StatusModal,
     ThreeDotIcon,
+    NotesAdd,
     PlusIcon,
     SearchIcon,
+    AllParticipants,
   //  CloseIcon,
     MessageIcon,
     PrintIcon,
@@ -150,6 +203,8 @@ const appointment = namespace("appointment");
     CardText,
     CornieDialog,
     EHRVisits,
+    SideModal,
+    CheckinComponent,
   },
   
 })
@@ -163,12 +218,24 @@ export default class AppointmentExistingState extends Vue {
 appointmentId="";
 showPartcipants= false;
 singleParticipant= [];
+showStatusModal=false;
+  updatedBy= "";
+currentStatus="";
+update ="";
+onePatientId="";
+onePractitionerId="";
+newslot: any;
+appointmentNotes=[];
+availableSlots=[];
+create="";
+   @patients.State
+  patients!: IPatient[];
 
 // @Prop({ type: Array, default: [] })
 //   appointments!: IAppointment[];
 
   @appointment.State
-  appointments!: IAppointment[];
+  patientappointments!:IAppointment[];
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
@@ -179,26 +246,27 @@ singleParticipant= [];
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Date Requested", key: "createdAt", show: true },
-    {
-      title: "Subject",
-      key: "subject",
-      show: false,
-    },
-    {
-      title: "Requester",
-      key: "requester",
+    { title: "Recorded", key: "createdAt", show: true },
+      { title: "Identifier", key: "id", show: true },
+       {
+      title: "Appointment Type",
+      key: "appointmentType",
       show: true,
     },
     {
-      title: "Dispenser",
-      key: "dispenser",
+      title: "Patient",
+      key: "patient",
+      show: false,
+    },
+    {
+      title: "Participants",
+      key: "Participants",
       show: true,
     },
     {
-      title: "Performer",
-      key: "performer",
-      show: false,
+      title: "Slot",
+      key: "newslot",
+      show: true,
     },
     {
       title: "Status",
@@ -206,18 +274,57 @@ singleParticipant= [];
       show: true,
     },
     {
+      title: "Code",
+      key: "reasonCode",
+      show: false,
+    },
+    {
+      title: "Reason Reference",
+      key: "reasonRef",
+      show: false,
+    },
+    {
+      title: "Period",
+      key: "newperiod",
+      show: false,
+    },
+    {
+      title: "Priority",
+      key: "priority",
+      show: false,
+    },
+    {
       title: "Description",
       key: "description",
       show: false,
     },
-   
+    {
+      title: "Consultation Medium",
+      kwy: "consultationMedium",
+      show: false,
+    },
   ];
 
-  showAppointmentModal= false;
- async showAppointment(){
-      this.showAppointmentModal = true;
+  showCheckin = false
+  checkinAppointment = ""
+  showCheckinPane(id: string) {
+    this.checkinAppointment = id
+    this.showCheckin = true;
   }
-  
+
+  showAppointmentModal= false;
+ async showAppointment(value:string){
+      this.showAppointmentModal = true;
+      this.appointmentId = value;
+  }
+  async showStatus(value:string){
+    this.showStatusModal = true;
+    this.appointmentId = value;
+  }
+
+   appointmentAdded() {
+  this.fetchByIdAppointments(this.$route.params.id.toString());
+  }
  get patientId() {
     return this.$route.params.id;
   }
@@ -232,22 +339,60 @@ singleParticipant= [];
   }
 
 
+   
   get items() {
-    const appointments = this.appointments.map((appointment) => {
+          console.log(this.patientappointments);
+       const filteritems =  this.patientappointments.filter((c) => c !== null);
+    const patientappointments = filteritems.map((patientappointment:any) => {
+          (patientappointment as any).createdAt= new Date(
+         (patientappointment as any).createdAt
+       ).toLocaleDateString("en-US",{ day: 'numeric', month: 'long', year: 'numeric' });
 
-       (appointment as any).createdAt = new Date(
-         (appointment as any).createdAt 
+        
+     const singleParticipantlength =
+        patientappointment.Practitioners.length +
+        patientappointment.Devices.length +
+        patientappointment.Patients.length + patientappointment.Location.length + patientappointment.HealthCare.length;
+
+            const pateintId = patientappointment.Patients.map((patient:any) =>{
+            this.onePatientId =  patient.patientId;
+       
+      });
+       const practitionerId = patientappointment.Practitioners.map((Practitioner:any) =>{
+            this.onePractitionerId =  Practitioner.practitionerId;
+       
+      });
+        this.updatedBy = this.getPatientName(this.onePatientId);
+      this.currentStatus =patientappointment.status;
+        this.update =  (patientappointment as any).updatedAt= new Date(
+         (patientappointment as any).updatedAt
        ).toLocaleDateString("en-US");
-        return {
-        ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-        };
-    });
-    if (!this.query) return appointments;
-    return search.searchObjectArray(appointments, this.query);
+      const patientNewId = this.onePatientId;
+      return {
+        ...patientappointment,
+       action: patientappointment.id,
+        patient: this.getPatientName(this.onePatientId),
+       newslot:this.showSlots(patientappointment.slot),
+        Participants: singleParticipantlength,
+      };
+    });  
+     return patientappointments;
   }
-
+    getPatientName(id: string) {
+            const pt = this.patients.find((i: any) => i.id === id);
+            return pt ? `${pt.firstname} ${pt.lastname}` : '';
+    }
+     showSlots(id:string){
+        const pt = this.availableSlots.find((i: any) => i.id === id);
+          this.newslot = pt;
+           return pt ? `${this.newslot.startTime} - ${this.newslot.endTime}` : '';
+      // return  `${this.newslot.startTime} ${this.newslot.startTime}`;
+  }
+    async getSlot(){
+        const AllSlots = cornieClient().get(`/api/v1/slot/practitioner/${this.onePractitionerId}`);
+        const response = await Promise.all([AllSlots]);
+        this.availableSlots = response[0].data;
+    }
  select(i:number) {
       this.selected = i;
     }
@@ -265,6 +410,7 @@ singleParticipant= [];
   async makeNotes(id:string){
     this.appointmentId = id;
     this.showNotes = true;
+      this.fetchNotes();
   }
   closeModal(){
     this.showPartcipants = false;
@@ -285,12 +431,21 @@ singleParticipant= [];
       }
   }
       get sortAppointments (){
-        return this.items.slice().sort(function(a, b){
+        return this.items.slice().sort(function(a:any, b:any){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
+        async fetchNotes() {
+    const id = this.appointmentId;
+      const AllNotes = cornieClient().get(`/api/v1/appointment/notes/getAllNotesForAppointment/${id}`);
+      const response = await Promise.all([AllNotes]);
+      this.appointmentNotes = response[0].data;
+    }
+
      async created() {
-         this.fetchByIdAppointments(this.patientId as string);
+        await this.fetchByIdAppointments(this.$route.params.id.toString());
+        this.getSlot();
+      
     }
 
 }

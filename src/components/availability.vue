@@ -15,7 +15,7 @@
       </div>
       <div class="flex flex-col p-3 mb-7">
         <div v-if="available.length === 0">
-          <span>Practioner Availability is fetching, Add Actor...</span>
+          <span class="text-sm">Practioner Availability is fetching, Choose Practitioner...</span>
         </div>
         <div v-else>
           <p class="text-sm mt-2">

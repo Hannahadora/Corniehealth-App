@@ -23,27 +23,32 @@ export default interface IAppointment {
   Practitioners: Practitioners[];
   Devices: Devices[];
   Patients: Patients[];
+  Locations: Location[];
+  HealthCare:HealthCare[];
   appointmentId: string;
   comment: string;
   status: string;
 }
 export interface Practitioners{
+  id?: string,
   type: string,
-  required: boolean,
+  required: string,
   consultationMedium: string,
   period: Period;
   practitionerId: string,
 }
 export interface Devices{
+  id?: string,
   type: string,
-  required: boolean,
+  required: string,
   consultationMedium: string,
   period: Period;
   deviceId: string,
 }
 export interface Patients {
+  id?: string,
   type: string,
-  required: boolean,
+  required: string,
   consultationMedium: string,
   period: Period,
   patientId: string,
@@ -54,7 +59,22 @@ export interface Patients {
   accountType: string,
   mrn: string,
 }
-
+export interface Location{
+  id?: string,
+  type: string,
+  required: string,
+  consultationMedium: string,
+  period: Period;
+  deviceId: string,
+}
+export interface HealthCare{
+  id?: string,
+  type: string,
+  required: string,
+  consultationMedium: string,
+  period: Period;
+  deviceId: string,
+}
 export interface ParticipantDetail {
   required: string;
   consultationMedium: string;
