@@ -87,12 +87,21 @@
               v-model="supportingInfo"
             />
               <cornie-select
-           v-if="availableSlots.length === 0"
+           v-if="availableSlots.length === 0 && newPractitioners.length === 0"
              placeholder="--Select--"
             class="w-full"
             label="Slot"
             :rules="required"
             :items="['Please choose a pracitioner participant to view avialable slots']"
+          />
+
+            <cornie-select
+            v-else-if="(availableSlots.length === 0) && (newPractitioners.length !== 0)"
+             placeholder="--Select--"
+            class="w-full"
+            label="Slot"
+            :rules="required"
+            :items="['This pracitioner does not have an avialable slot']"
           />
           <cornie-select
            v-else
@@ -106,7 +115,7 @@
           />
         
            
-                     <!-- <single-date-picker
+                     <single-date-picker
                         label="start date"
                         v-model="period.start"
                         :rules="required"
@@ -119,8 +128,8 @@
                         v-model="period.end"
                         :rules="required"
                         class="w-full"
-                      /> -->
-                      <date-time-picker
+                      />
+                      <!-- <date-time-picker
                     v-model:date="period.start"
                     v-model:time="data.startTime"
                     label="Start Date & Time"
@@ -134,7 +143,7 @@
                     v-model:time="data.endTime"
                     label="End Date & Time"
                     width="w-full"
-                    />
+                    /> -->
                 
                
  <cornie-input disabled  :rules="required" label="Duration"    v-model="duration" placeholder="--Autofilled--"  class="w-full mt-3" />
@@ -383,7 +392,7 @@ import TimeablePicker from "@/components/timeable.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
-import IAppointment ,{  Practitioners, Patients, Devices } from "@/types/IAppointment";
+import IAppointment ,{  Practitioners, Patients, Devices, Location, HealthCare } from "@/types/IAppointment";
 import ILocation from "@/types/ILocation";
 import IDevice from "@/types/IDevice";
 import IPractitioner from "@/types/IPractitioner";
@@ -391,6 +400,7 @@ import IHealthcare  from "@/types/IHealthcare";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import SingleDatePicker from "./datepicker.vue";
+import FhirInput from "@/components/fhir-input.vue";
 
 
 const appointment = namespace("appointment");
@@ -424,6 +434,7 @@ const data = {
     AutoComplete,
     DateTimePicker,
     Avatar,
+    FhirInput,
     ActorModal,
     // DatePicker,
     SingleDatePicker,
@@ -529,7 +540,7 @@ duration = "";
 patientInstruction="";
 practitionerId= "";
 period = {} as Period;
-
+errortext="";
 newPractitioners=[];
 newPatients=[];
 newDevices=[];
@@ -539,6 +550,8 @@ newHealthcare=[];
   apractitioners: Practitioners[] = [];
   adevices: Devices[] = [];
   apatients: Patients[] = [];
+  alocation: Location[] = [];
+  ahealthcare: HealthCare[] = [];
 
 
   get patientId() {
@@ -576,6 +589,8 @@ newHealthcare=[];
     this.apractitioners = appointment.Practitioners;
     this.adevices = appointment.Devices;
     this.apatients = appointment.Patients;
+    this.alocation = appointment.Locations;
+    this.ahealthcare = appointment.HealthCare;
   }
  
   get payload() {
@@ -599,7 +614,9 @@ newHealthcare=[];
       Devices: this.adevices,
       period: this.period,
       Patients: this.apatients,
-      Practitioners:this.apractitioners
+      Practitioners:this.apractitioners,
+      Locations: this.alocation,
+      healthcare: this.ahealthcare
     };
   }
  get newaction() {
@@ -652,26 +669,21 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
   } else if (value == 'Location'){
     this.newLocations = updateLocation;
       this.valueLocation = value;
-
+      this.alocation = getLocation;
   } else if (value == 'Healthcare Services'){
     this.newHealthcare = updateHealthcare;
       this.valueHealth = value;
-
+      this.ahealthcare = getHealthcare;
   }
 }
 
 
  async showSlots(slots: any,id:string){
-   console.log(slots)
   const pt = this.availableSlots.find((i: any) => i.id === id);
-// const pt = this.availableSlots.filter((c:any) => c.id == id);
-    // this.period.start = slots.startDate;
-    // this.period.end = slots.endDate;
-      //this.duration = pt.startTime  +'-'+ pt.endTime
       this.newslot = pt;
-      this.duration = this.newslot.startTime
-    console.log(pt);
-   // this.practitioner = slots.practitioners;
+        this.period.start = this.newslot.date;
+    this.period.end = this.newslot.date;
+      this.duration = this.newslot.startTime +'-'+ this.newslot.endTime;
   }
    removePractitioner(index: number) {
     this.newPractitioners.splice(index, 1);
@@ -689,7 +701,7 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
     this.newHealthcare.splice(index, 1);
   }
   done() {
-    this.$emit("history-added");
+    this.$emit("appointment-added");
     this.show = false;
   }
   async  apply() {
@@ -700,14 +712,16 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
     }
   async createappointment() {
      try {
-      const response = await cornieClient().post('/api/v1/createappointment', this.payload)
+       const response = await cornieClient().post('/api/v1/appointment', this.payload);
+          console.log(response);
+           console.log("error");
       if (response.success) {
         window.notify({ msg: 'Appointment created', status: 'success' })
         this.done();
       }
+   
     } catch (error) {
-      console.log(error)
-      window.notify({ msg: 'Appointment not created', status: 'error' })
+      window.notify({ msg: "This slot is overbooked", status: 'error' })
     
     }
   }
@@ -721,7 +735,6 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
       if (response.success) {
         window.notify({ msg: 'Appointment  updated', status: 'success' })
       this.done();
-
       }
     } catch (error) {
       window.notify({ msg: 'Appointment not updated', status: 'error' })
@@ -736,9 +749,6 @@ async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDe
   get allSlots() {
      if (!this.availableSlots || this.availableSlots.length === 0) return [ ];
      return this.availableSlots.map((i: any) => {
-      //  this.period.start = i.startDate;
-      //     this.period.end = i.endDate;
-      //     this.duration = i.startTime +'-'+ i.endTime;
          return {
              code: i.id,
              display: i.startTime +'-'+ i.endTime,

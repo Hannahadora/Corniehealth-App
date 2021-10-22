@@ -59,7 +59,7 @@ export default class ApppointmentIndex extends Vue {
   }
 
  @appointment.State
-  appointments!: IAppointment[];
+  appointments!: any[];
 
   @appointment.Action
   fetchByIdAppointments!: (patientId: string) => Promise<void>;

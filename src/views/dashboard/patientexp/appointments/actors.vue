@@ -764,7 +764,7 @@ export default {
        // this.reset(value);
      },
     apply(value) {
-      this.applyActor();
+      this.applyActor(value);
       this.$emit("update:preferred", this.indexvaluepractitioner,this.indexvaluepatient, this.indexvaluedevice,value,this.Practitioners, this.Patients,this.Devices,this.singleId);
       this.indexvalue = [];
       this.valueid = [];
