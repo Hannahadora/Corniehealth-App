@@ -3,7 +3,7 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          @click="addingCondition = true"
+          @click="addingProgressnote = true"
           class="
             bg-danger
             rounded-full
@@ -66,7 +66,7 @@
         </template>
       </cornie-table>
     </div>
-    <add-condition v-model="addingCondition" />
+    <add-progress-note v-model="addingProgressnote" :patient='patient' :patientId='patientId' />
     <add-occurence v-model="addingOccurence" />
     <status-update v-model="updatingStatus" />
     <add-notes v-model="addingNotes" />
@@ -91,6 +91,15 @@ import ViewCondition from "./view-condition.vue";
 
 
 import CornieTextArea from "@/components/textarea.vue";
+import AddProgressNote from "./add-progressnote.vue";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { IPatient } from "@/types/IPatient";
+
+
+const patients = namespace("patients");
+
+
 
 
 @Options({
@@ -110,9 +119,19 @@ import CornieTextArea from "@/components/textarea.vue";
     HistoryIcon,
 
     CornieTextArea,
+    AddProgressNote
   },
 })
 export default class ExistingState extends Vue {
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
+  patient = {} as IPatient;
+
+ @patients.Action
+  findPatient!: (patientId: string) => Promise<IPatient>;
+
+  addingProgressnote = false;
   addingCondition = false;
   addingOccurence = false;
   updatingStatus = false;

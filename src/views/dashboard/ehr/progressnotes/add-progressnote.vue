@@ -5,6 +5,24 @@
     subtext="All Fields are required"
     class=""
   >
+    <dots-horizontal-icon class="mr-7" @click="isShow" />
+    <div v-if="topClick" class="p-2 flex flex-row-reverse">
+      <div class="card">
+        <div class="p-2 m-1">
+          <div class="p-3 flex justify-between p-1">
+            <add-icon class="" />
+            <p class="text-xs">Reference Encounter</p>
+          </div>
+          <div class="p-3 flex justify-between p-1">
+            <add-icon class="" style="color: red" />
+            <p class="text-xs">Clinical Impression</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <add-progres-note @click="addingProgressnote = true"  /> -->
+
     <div class="flex items-center justify-between mt-3">
       <p class="text-xs">Started: 9:15am, 22 September,2021</p>
       <p class="text-xs">Duration: 30 min</p>
@@ -22,11 +40,41 @@
       >
         <div class="flex items-center justify-between mt-3">
           <h3 class="text-sm">Chief Complaint</h3>
-          <dots-horizontal-icon class="mr-7" />
+          <dots-horizontal-icon class="mr-7" @click="isShow" />
         </div>
 
         <div class="grid grid-cols-2 text-center gap-3 mt-5">
           <cornie-input v-model="complaint" label="Chief Complaint" />
+          <condition-select
+            :rules="required"
+            v-model="MyConditions"
+            label="Chief Complaint"
+            :conditions="conditions"
+          />
+
+          <auto-complete
+            v-bind="$attrs"
+            v-model="item"
+            :filter="filter"
+            :items="items"
+          >
+            <template #item="{ item }">
+              <div
+                @click="printId(item.id)"
+                class="w-full flex items-center my-1 justify-between"
+              >
+                <div class="flex items-center">
+                  <!-- <avatar :src="item.image" /> -->
+                  <div class="flex ml-1 flex-col">
+                    <span class="text-xs">{{ item.severity }}</span>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-gray-500">
+                  {{ item.recorder.name }}
+                </span>
+              </div>
+            </template>
+          </auto-complete>
           <div
             class="
               absolute
@@ -228,26 +276,23 @@
         <!-- <vue-range-slider v-model="value"></vue-range-slider> -->
         <!-- <CustomRangeSlider/> -->
 
-        <Range />
+        <!-- <Range /> -->
+
+        <!-- <div class="range-slider">
+    <input type="range" min="0" max="180" step="1" v-model="sliderMax"  class="mr-10"/>
+    <input
+      type="number"
+      min="0"
+      max="180"
+      step="1"
+      v-model="sliderMax"
+      class="maxnumber"
+    />
+    </div> -->
 
         <div class="grid grid-cols-2 gap-3 mt-3">
           <div class="relative z-10 mt-5">
-            <div class="relative z-10">
-              <!-- <check-icon class="icon-check-mark bg-white rounded-full" v-if=" width == 66.66 || width == 99.99"/>
-                </div>
-                <div class="relative z-10">
-                    <check-icon class="icon-check-mark2 bg-white rounded-full" v-if="width == 99.99"/>
-                </div>
-                <div class="relative z-10">
-                    <check-icon class="icon-check-mark3 bg-white rounded-full" v-if="width == 99.99"/> -->
-            </div>
-
-            <check-icon
-              class="icon-check-mark bg-white rounded-full"
-              style="width: 66.66"
-            />
-
-            <div
+            <!-- <div
               class="
                 grid grid-cols-3
                 gap-40
@@ -262,105 +307,21 @@
               >
                 Pain Scale
               </p>
-            </div>
+            </div> -->
 
             <vue-slider v-model="value"></vue-slider>
 
-            <!-- 
-
-<input id="rangeInput" type="range" list="tickmarks" min="0" max="100">
-
-<datalist id="tickmarks">
-  <option value="0" label="0%"></option>
-  <option value="10"></option>
-  <option value="20"></option>
-  <option value="30"></option>
-  <option value="40"></option>
-  <option value="50" label="50%"></option>
-  <option value="60"></option>
-  <option value="70"></option>
-  <option value="80"></option>
-  <option value="90"></option>
-  <option value="100" label="100%"></option>
-</datalist> -->
-
-            <!-- most basic, used for Knobs demo
-<div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
-  <input type="range" min="0" max="100" step="5" value="75" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
-  <output></output>
-  <div class='range-slider__progress'></div>
-</div> -->
-
-            <!-- <form>
-  <div>
-    <input id="rangeInput2" type="range" min="0" max="200" oninput="amount.value=rangeInput.value" />
-    <input id="amount" type="number" value="100" min="0" max="200" oninput="rangeInput.value=amount.value" />
-  </div>
-</form>
-
-
-
-<input id="rangeInput" type="range" list="tickmarks" min="0" max="100" oninput="amount.value=rangeInput.value">
-
-<datalist id="tickmarks">
-  <option value="0" label="0%"></option>
-  <option value="10"></option>
-  <option value="20"></option>
-  <option value="30"></option>
-  <option value="40"></option>
-  <option value="50" label="50%"></option>
-  <option value="60"></option>
-  <option value="70"></option>
-  <option value="80"></option>
-  <option value="90"></option>
-  <option value="100" label="100%"></option>
-</datalist> -->
-
-            <div class="relative pt-1 mt-5">
-              <div
-                class="
-                  overflow-hidden
-                  h-1
-                  mb-4
-                  text-xs
-                  flex
-                  rounded
-                  bg-gray-200
-                  cursor-pointer
-                "
-              >
-                <!-- <div  :style="{width: `${width}%`}" aria-valuenow="25" aria-valuemin="0"  aria-valuemax="100" class="progress cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"> -->
-                <div
-                  style="width: 20%"
-                  aria-valuenow="25"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  class="
-                    progress
-                    cursor-pointer
-                    shadow-none
-                    flex flex-col
-                    text-center
-                    whitespace-nowrap
-                    text-white
-                    justify-center
-                    bg-danger
-                  "
-                >
-                  <div class="icon-wrap"></div>
-                </div>
-              </div>
+            <!-- <div class="relative pt-1 mt-5">
+            
               <div>
                 <div class="flex items-center justify-between">
                   <p class="text-xs font-semibold">0</p>
                   <p class="text-xs font-semibold">100</p>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
-        <!-- <timeable-picker v-model="onsetTimeable" /> -->
-        <!-- <timeable-picker2 v-model="onsetTimeable" /> -->
         <!-- <cornie-radio class="icon-check-mark3 bg-white rounded-full" :label="ggg"
     :modelValue="true" v-model="generalNormal" /> -->
         <h3 class="text-sm font-bold">General WNL</h3>
@@ -384,9 +345,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="generalNormal"
-                name="patient"
+                v-model="generals.value"
+                name="generalNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -410,9 +372,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="generalAbnormal"
-                name="patient"
+                v-model="generals.value"
+                name="generalNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -420,7 +383,7 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="generalNote"
+          v-model="generals.note"
           label="Notes"
           class="w-full"
         />
@@ -446,9 +409,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="heentNormal"
-                name="patient"
+                v-model="heent.value"
+                name="heentNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -472,9 +436,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="heentAbnormal"
-                name="patient"
+                v-model="heent.value"
+                name="heentNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -482,8 +447,8 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="heentNote"
-          label="Notess"
+          v-model="heent.note"
+          label="Notes"
           class="w-full"
         />
 
@@ -508,9 +473,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="skinNormal"
-                name="patient"
+                v-model="skin.value"
+                name="skinNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -534,9 +500,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="skinAbnormal"
-                name="patient"
+                v-model="skin.value"
+                name="skinNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -544,8 +511,8 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="skinNote"
-          label="Notess"
+          v-model="skin.note"
+          label="Notes"
           class="w-full"
         />
 
@@ -570,9 +537,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="neckNormal"
-                name="patient"
+                v-model="neck.value"
+                name="neckNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -596,9 +564,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="neckAbnormal"
-                name="patient"
+                v-model="neck.value"
+                name="neckNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -606,8 +575,8 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="stageNote"
-          label="Notess"
+          v-model="neck.note"
+          label="Notes"
           class="w-full"
         />
 
@@ -632,9 +601,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="exteremitiesNormal"
-                name="patient"
+                v-model="extremeties.value"
+                name="extremetiesNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -658,9 +628,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="extremetiesAbnormal"
-                name="patient"
+                v-model="extremeties.value"
+                name="extremetiesAbnormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -668,8 +639,8 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="extremetiesNote"
-          label="Notess"
+          v-model="extremeties.note"
+          label="Notes"
           class="w-full"
         />
         <!-- <measurable v-model="onsetMeasurable" /> -->
@@ -721,6 +692,12 @@
         title="Assessment"
         :opened="false"
       >
+        <div class="p-2 flex flex-row-reverse">
+          <div class="p-3 flex justify-between p-1">
+            <add-icon class="p-1" />
+            <p class="text-xs">Clinical Impression</p>
+          </div>
+        </div>
         <cornie-text-area
           rows="4"
           v-model="stageNote"
@@ -737,7 +714,7 @@
         <add-icon />
 
         <div class="grid grid-cols-2 gap-3 mt-3">
-          <cornie-input
+          <!-- <cornie-input
             v-model="stageChiefComplaint"
             label="Diagnostic Request"
           />
@@ -753,9 +730,9 @@
           <cornie-input
             v-model="stageChiefComplaint"
             label="Hospitalizations"
-          />
+          /> -->
 
-          <!-- <cornie-select
+          <cornie-select
             v-model="status"
             label="Diagnostic Request"
             :items="clinicalStatuses"
@@ -778,7 +755,7 @@
             label="Hospitalizations"
             :rules="required"
             :items="severities"
-          /> -->
+          />
         </div>
         <cornie-text-area
           rows="4"
@@ -843,6 +820,19 @@ import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
 import DateTimePicker2 from "./date-time-picker.vue";
 import AddIcon from "@/components/icons/add.vue";
 import Range from "@/components/range.vue";
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+import CornieCard from "@/components/cornie-card";
+import AddProgressNote2 from "./add-progressnote.vue";
+
+import ConditionSelect from "./condition-select.vue";
+
+import { ICondition } from "@/types/ICondition";
+
+const condition = namespace("condition");
+
+import { Codeable } from "@/types/misc";
+import { printPractitioner } from "@/plugins/utils";
+import Condition from "yup/lib/Condition";
 
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
@@ -879,6 +869,7 @@ const measurable = {
 @Options({
   name: "AddProgressNote",
   components: {
+    ...CornieCard,
     ClinicalDialog,
     CornieBtn,
     Measurable,
@@ -886,7 +877,6 @@ const measurable = {
     AutoComplete,
     EncounterSelect,
     AssessmentSelect,
-    PractitionerSelect,
     AccordionComponent,
     CornieSelect,
     CornieInput,
@@ -901,21 +891,40 @@ const measurable = {
     Range,
 
     CornieRadio,
+    ConditionSelect,
 
     // CustomRangeSlider
 
     // VueSlider
   },
 })
-export default class AddCondition extends Vue {
+export default class AddProgressNote extends Vue {
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<ICondition>;
+
+  // conditions!: ICondition;
+  //  general!: {
+  //    Normal: "",
+  //    Abnormal: "",
+  //    Note: ""
+  //  };
+
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
   @PropSync("modelValue")
   show!: boolean;
+  @Prop({ type: Object, required: true })
+  patient!: IPatient;
+
+  @Prop({ type: String, default: "" })
+  patientId!: string;
 
   @user.Getter
   authPractitioner!: IPractitioner;
+
+  addingProgressnote = false;
+  meConditions!: [];
 
   required = string().required();
 
@@ -937,6 +946,7 @@ export default class AddCondition extends Vue {
   referenceEncounter = "";
 
   asserter = "";
+  theCondition = "";
 
   onsetTimeable = { ...timeable };
   onsetMeasurable = { ...measurable };
@@ -953,23 +963,32 @@ export default class AddCondition extends Vue {
   evidenceDetail = "";
   evidenceNote = "";
 
-
-
-  generalNormal = "";
-  generalAbnormal = "";
-  generalNote = "";
-  heentNormal = "";
-  heentAbnormal = "";
-  heentNote = "";  
-  skinNormal = "";
-  skinAbnormal = "";
-  skinNote = "";
-  extremetiesNormal = "";
-  extremetiesAbnormal = "";
-  extremetiesNote = "";
+  // form: {
+  //         name: "",
+  //         slogan: "",
+  //         email: "",
+  //         description: "",
+  //         phone_number: "",
+  //         tags: [],
+  //         state_id: "",
+  //         city_id: "",
+  //       },
+  // general =  {
+  //   note: "",
+  //   value: ""
+  // };
 
   async loadDropdown() {
     this.categories = await categories();
+  }
+
+  get painScale() {
+    return this.sliderMax;
+  }
+
+  get isShow() {
+    console.log("gdgdg");
+    return (this.topClick = !this.topClick);
   }
 
   @Watch("authPractitioner")
@@ -981,8 +1000,67 @@ export default class AddCondition extends Vue {
     this.asserter = this.authPractitioner?.id || "";
   }
 
-  get patientId() {
-    return this.$route.params.id;
+  async setCondition() {
+    this.theCondition = this.authPractitioner?.id || "";
+  }
+
+  get MyConditions() {
+    return this.fetchPatientConditions(this.patientId);
+  }
+
+  // get patientId() {
+  //   return this.$route.params.id;
+  // }
+
+  
+
+  @condition.State
+  conditions!: { [state: string]: ICondition[] };
+
+  _categories = [] as Codeable[];
+
+  get patientConditions() {
+    return this.conditions[this.patientId] || [];
+  }
+  printCategory(category: string) {
+    return this._categories.find((cat) => cat.code == category)?.display || "";
+  }
+
+  printCode(code: string) {
+    return codes.find((c) => c.code == code);
+  }
+
+  printRecorded(condition: any) {
+    const dateString = condition.createdAt;
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  }
+
+  printSeverity(severity: string) {
+    return severities.find((s) => s.code == severity)?.display || "";
+  }
+
+  printId(id: string) {
+    return (this.myId = id);
+    //  this.items.find((s) => s.id == id) || "";
+  }
+
+  get items() {
+    const items = this.patientConditions.map((condition) => ({
+      ...condition,
+      original: condition,
+      identifier: "XXXXX",
+      recorded: this.printRecorded(condition),
+      category: this.printCategory(condition.category),
+      code: this.printCode(condition.code),
+      severity: this.printSeverity(condition.severity),
+      // clinicalStatus: this.stripQuote(condition.clinicalStatus),
+      recorder: {
+        name: printPractitioner(condition.practitioner!!),
+        department: condition.practitioner!!.department,
+      },
+    }));
+    return items;
   }
 
   get onset() {
@@ -1016,45 +1094,95 @@ export default class AddCondition extends Vue {
     date.setHours(Number(hour));
     return date.toISOString();
   }
-  // get payload() {
-  //   return {
-  //     patientId: this.patientId,
-  //     encounterId: this.referenceEncounter,
-  //     clinicalStatus: this.clinicalStatus,
-  //     verificationStatus: this.verificationStatus,
-  //     type: this.stageType,
-  //     category: this.category,
-  //     summary: this.stageSummary,
-  //     detail: this.evidenceDetail,
-  //     notes: this.stageNote,
-  //     bodySite: this.bodySite,
-  //     subject: "patient",
-  //     assesment: "",
-  //     severity: this.severity,
-  //     evidenceNote: this.evidenceNote,
-  //     onset: this.onset,
-  //     abatement: this.abatement,
-  //   };
-  // }
+  // get getGeneral(){
+  //   if (generalNormal) {
 
+  //   }
+  // }
+  //  get general() {
+  //    var value = "";
+  //    if (this.generalNormal) {
+  //      return value = "normal"
+  //    }
+  //    return value = "Abnormal"
+  //  }
+
+
+get generals() {
+    return {
+      value: "",
+      note: "",
+    };
+  }
+
+  get heent() {
+    return {
+      value: "",
+      note: "",
+    };
+  }
+
+  get skin() {
+    return {
+      value: "",
+      note: "",
+    };
+  }
+
+  get neck() {
+    return {
+      value: "",
+      note: "",
+    };
+  }
+
+  get extremeties() {
+    return {
+      value: "",
+      note: "",
+    };
+  }
+  myId = "";
+  // generalNote = "";
+  // heentNormal = "";
+  // heentAbnormal = "";
+  // heentNote = "";
+  // skinNormal = "";
+  // skinAbnormal = "";
+  // skinNote = "";
+  // neckNormal = "";
+  // neckAbnormal = "";
+  // neckNote = "";
+  // extremetiesNormal = "";
+  // extremetiesAbnormal = "";
+  // extremetiesNote = "";
+  sliderMax = "";
+  topClick = false;
+  
+  // thegeneral=this.general
+  // general = {};
+
+  // get gene() {
+  //   return this.general = {
+  //     value : "value"
+  //     note : "mnmnnm"
+
+  //   }
+  // }
   get payload2() {
     return {
-      patientId: this.patientId,
-      encounterId: this.referenceEncounter,
-      clinicalStatus: this.clinicalStatus,
-      verificationStatus: this.verificationStatus,
-      generalNormal: this.generalNormal,
-      generalAbnormal: this.generalAbnormal,
-      generalNote: this.generalNote,
-      heentNormal: this.heentNormal,
-      heentAbnormal: this.heentAbnormal,
-      heentNote: this.heentNote,
-      skinNormal: this.skinNormal,
-      skinAbnormal: this.skinAbnormal,
-      skinNote: this.skinNote,
-      extremetiesNormal: this.extremetiesNormal,
-      extremetiesAbnormal: this.extremetiesAbnormal,
-      extremetiesNote: this.extremetiesNote,
+     " patientId": this.patientId,
+      // encounterId: this.referenceEncounter,
+      // clinicalStatus: this.clinicalStatus,
+      // verificationStatus: this.verificationStatus,
+      "conditionId": this.myId,
+      // painScale: this.painScale,
+      "heent": this.heent,
+      "skin": this.skin,
+      "extremeties": this.extremeties,
+      "neck": this.neck,
+      "general": this.generals,
+
       // type: this.stageType,
       // category: this.category,
       // summary: this.stageSummary,
@@ -1065,8 +1193,8 @@ export default class AddCondition extends Vue {
       // assesment: "",
       // severity: this.severity,
       // evidenceNote: this.evidenceNote,
-      onset: this.onset,
-      abatement: this.abatement,
+      // onset: this.onset,
+      // abatement: this.abatement,
     };
   }
 
@@ -1085,25 +1213,55 @@ export default class AddCondition extends Vue {
   // }
 
   async submit() {
-    console.log('payload', this.payload2);
+    console.log("payload", this.payload2);
+    console.log("conditionId", this.payload2.conditionId);
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return console.log('form is invalid');
-    } 
+      return console.log("form is invalid");
+    }
+
+    // try {
+    //     const { data } = await cornieClient().post(`/api/v1/participants/`, { 
+    //         careTeamId: team.id, 
+    //         role: 'practitioner', 
+    //         practitionerId: practitioneData.id,
+    //         name: practitioneData.name,
+    //         reasonCode:"109006 ",
+    //     });
+    //     if (data?.id) window.notify({ msg: "Added to care team successfully", status: "success" });
+    //     return data;
+        
+    // } catch (error) {
+    //     console.log(error);
+    //     window.notify({ msg: "Error adding to care team", status: "error" });
+    // }
     try {
       const { data } = await cornieClient().post(
         "/api/v1/progress-notes",
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      console.log('success', this.payload2);
+      console.log("success", this.payload2);
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      console.log('error', error);
+      console.log("error", error);
     }
   }
 
-  created() {
+  // created() {
+  //   this.loadDropdown();
+  //   this.setAsserter();
+  // }
+
+  async created() {
+    //   if (Object.keys(this.conditions).length < 1)
+    //     this.fetchPatientConditions(this.patientId);
+    //   this._categories = await categories();
+    // }
+    // this.NewfemCondition = await this.fetchPatientConditions(this.patientId);
+    this.fetchPatientConditions(this.patientId);
+    // this.fetchPatientConditions(this.patientId);
+
     this.loadDropdown();
     this.setAsserter();
   }

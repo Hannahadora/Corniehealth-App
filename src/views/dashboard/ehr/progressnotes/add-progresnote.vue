@@ -1,10 +1,12 @@
 <template>
-  <clinical-dialog
+  <top-dialog
     v-model="show"
     title="New Progress Note"
     subtext="All Fields are required"
     class=""
   >
+    <!-- <cornie-card height="100%" class="flex flex-col bg-white"></cornie-card> -->
+
     <div class="flex items-center justify-between mt-3">
       <p class="text-xs">Started: 9:15am, 22 September,2021</p>
       <p class="text-xs">Duration: 30 min</p>
@@ -228,26 +230,23 @@
         <!-- <vue-range-slider v-model="value"></vue-range-slider> -->
         <!-- <CustomRangeSlider/> -->
 
-        <Range />
+        <!-- <Range /> -->
+
+    <!-- <div class="range-slider">
+    <input type="range" min="0" max="180" step="1" v-model="sliderMax"  class="mr-10"/>
+    <input
+      type="number"
+      min="0"
+      max="180"
+      step="1"
+      v-model="sliderMax"
+      class="maxnumber"
+    />
+    </div> -->
 
         <div class="grid grid-cols-2 gap-3 mt-3">
-          <div class="relative z-10 mt-5">
-            <div class="relative z-10">
-              <!-- <check-icon class="icon-check-mark bg-white rounded-full" v-if=" width == 66.66 || width == 99.99"/>
-                </div>
-                <div class="relative z-10">
-                    <check-icon class="icon-check-mark2 bg-white rounded-full" v-if="width == 99.99"/>
-                </div>
-                <div class="relative z-10">
-                    <check-icon class="icon-check-mark3 bg-white rounded-full" v-if="width == 99.99"/> -->
-            </div>
-
-            <check-icon
-              class="icon-check-mark bg-white rounded-full"
-              style="width: 66.66"
-            />
-
-            <div
+          <div class="relative z-10 mt-5">         
+            <!-- <div
               class="
                 grid grid-cols-3
                 gap-40
@@ -262,105 +261,22 @@
               >
                 Pain Scale
               </p>
-            </div>
+            </div> -->
 
             <vue-slider v-model="value"></vue-slider>
 
-            <!-- 
 
-<input id="rangeInput" type="range" list="tickmarks" min="0" max="100">
-
-<datalist id="tickmarks">
-  <option value="0" label="0%"></option>
-  <option value="10"></option>
-  <option value="20"></option>
-  <option value="30"></option>
-  <option value="40"></option>
-  <option value="50" label="50%"></option>
-  <option value="60"></option>
-  <option value="70"></option>
-  <option value="80"></option>
-  <option value="90"></option>
-  <option value="100" label="100%"></option>
-</datalist> -->
-
-            <!-- most basic, used for Knobs demo
-<div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
-  <input type="range" min="0" max="100" step="5" value="75" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
-  <output></output>
-  <div class='range-slider__progress'></div>
-</div> -->
-
-            <!-- <form>
-  <div>
-    <input id="rangeInput2" type="range" min="0" max="200" oninput="amount.value=rangeInput.value" />
-    <input id="amount" type="number" value="100" min="0" max="200" oninput="rangeInput.value=amount.value" />
-  </div>
-</form>
-
-
-
-<input id="rangeInput" type="range" list="tickmarks" min="0" max="100" oninput="amount.value=rangeInput.value">
-
-<datalist id="tickmarks">
-  <option value="0" label="0%"></option>
-  <option value="10"></option>
-  <option value="20"></option>
-  <option value="30"></option>
-  <option value="40"></option>
-  <option value="50" label="50%"></option>
-  <option value="60"></option>
-  <option value="70"></option>
-  <option value="80"></option>
-  <option value="90"></option>
-  <option value="100" label="100%"></option>
-</datalist> -->
-
-            <div class="relative pt-1 mt-5">
-              <div
-                class="
-                  overflow-hidden
-                  h-1
-                  mb-4
-                  text-xs
-                  flex
-                  rounded
-                  bg-gray-200
-                  cursor-pointer
-                "
-              >
-                <!-- <div  :style="{width: `${width}%`}" aria-valuenow="25" aria-valuemin="0"  aria-valuemax="100" class="progress cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"> -->
-                <div
-                  style="width: 20%"
-                  aria-valuenow="25"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  class="
-                    progress
-                    cursor-pointer
-                    shadow-none
-                    flex flex-col
-                    text-center
-                    whitespace-nowrap
-                    text-white
-                    justify-center
-                    bg-danger
-                  "
-                >
-                  <div class="icon-wrap"></div>
-                </div>
-              </div>
+            <!-- <div class="relative pt-1 mt-5">
+            
               <div>
                 <div class="flex items-center justify-between">
                   <p class="text-xs font-semibold">0</p>
                   <p class="text-xs font-semibold">100</p>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
-        <!-- <timeable-picker v-model="onsetTimeable" /> -->
-        <!-- <timeable-picker2 v-model="onsetTimeable" /> -->
         <!-- <cornie-radio class="icon-check-mark3 bg-white rounded-full" :label="ggg"
     :modelValue="true" v-model="generalNormal" /> -->
         <h3 class="text-sm font-bold">General WNL</h3>
@@ -385,8 +301,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="generalNormal"
-                name="patient"
+                name="generalNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -411,8 +328,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="generalAbnormal"
-                name="patient"
+                name="generalNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -447,8 +365,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="heentNormal"
-                name="patient"
+                name="heentNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -473,8 +392,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="heentAbnormal"
-                name="patient"
+                name="heentNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -483,7 +403,7 @@
         <cornie-text-area
           rows="4"
           v-model="heentNote"
-          label="Notess"
+          label="Notes"
           class="w-full"
         />
 
@@ -509,8 +429,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="skinNormal"
-                name="patient"
+                name="skinNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -535,8 +456,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="skinAbnormal"
-                name="patient"
+                name="skinNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -545,7 +467,7 @@
         <cornie-text-area
           rows="4"
           v-model="skinNote"
-          label="Notess"
+          label="Notes"
           class="w-full"
         />
 
@@ -571,8 +493,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="neckNormal"
-                name="patient"
+                name="neckNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -597,8 +520,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="neckAbnormal"
-                name="patient"
+                name="neckNormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -606,8 +530,8 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="stageNote"
-          label="Notess"
+          v-model="neckNote"
+          label="Notes"
           class="w-full"
         />
 
@@ -632,9 +556,10 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="exteremitiesNormal"
-                name="patient"
+                v-model="extremetiesNormal"
+                name="extremetiesNormal"
                 id="group"
+                value="normal"
               />
               Normal
             </div>
@@ -659,8 +584,9 @@
               <cornie-radio
                 class="col-span-2"
                 v-model="extremetiesAbnormal"
-                name="patient"
+                name="extremetiesAbnormal"
                 id="group"
+                value="abnormal"
               />
               Abnormal
             </div>
@@ -669,7 +595,7 @@
         <cornie-text-area
           rows="4"
           v-model="extremetiesNote"
-          label="Notess"
+          label="Notes"
           class="w-full"
         />
         <!-- <measurable v-model="onsetMeasurable" /> -->
@@ -737,7 +663,7 @@
         <add-icon />
 
         <div class="grid grid-cols-2 gap-3 mt-3">
-          <cornie-input
+          <!-- <cornie-input
             v-model="stageChiefComplaint"
             label="Diagnostic Request"
           />
@@ -753,9 +679,9 @@
           <cornie-input
             v-model="stageChiefComplaint"
             label="Hospitalizations"
-          />
+          /> -->
 
-          <!-- <cornie-select
+          <cornie-select
             v-model="status"
             label="Diagnostic Request"
             :items="clinicalStatuses"
@@ -778,7 +704,7 @@
             label="Hospitalizations"
             :rules="required"
             :items="severities"
-          /> -->
+          />
         </div>
         <cornie-text-area
           rows="4"
@@ -799,12 +725,12 @@
         Create
       </cornie-btn>
     </template>
-  </clinical-dialog>
+  </top-dialog>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import ClinicalDialog from "./clinical-dialog.vue";
+import TopDialog from "./top-dialog.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -821,6 +747,8 @@ import TimeablePicker2 from "./timeable2.vue";
 import Measurable from "./measurable.vue";
 
 import CornieRadio from "@/components/cornieradio.vue";
+
+
 
 import {
   verificationStatuses,
@@ -843,6 +771,21 @@ import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
 import DateTimePicker2 from "./date-time-picker.vue";
 import AddIcon from "@/components/icons/add.vue";
 import Range from "@/components/range.vue";
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+import CornieCard from "@/components/cornie-card";
+
+
+
+import { ICondition } from "@/types/ICondition";
+
+const condition = namespace("condition");
+
+import { Codeable } from "@/types/misc";
+import { printPractitioner } from "@/plugins/utils";
+import Condition from "yup/lib/Condition";
+
+
+
 
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
@@ -877,9 +820,9 @@ const measurable = {
 };
 
 @Options({
-  name: "AddProgressNote",
+  name: "AddProgresNote",
   components: {
-    ClinicalDialog,
+    TopDialog,
     CornieBtn,
     Measurable,
     TimeablePicker,
@@ -907,12 +850,20 @@ const measurable = {
     // VueSlider
   },
 })
-export default class AddCondition extends Vue {
+export default class AddProgresNote extends Vue {
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
   @PropSync("modelValue")
   show!: boolean;
+   @Prop({ type: Object, required: true })
+  patient!: IPatient;
+
+  @Prop({ type: String, default: "" })
+  patientId!: string;
 
   @user.Getter
   authPractitioner!: IPractitioner;
@@ -954,7 +905,6 @@ export default class AddCondition extends Vue {
   evidenceNote = "";
 
 
-
   generalNormal = "";
   generalAbnormal = "";
   generalNote = "";
@@ -964,12 +914,24 @@ export default class AddCondition extends Vue {
   skinNormal = "";
   skinAbnormal = "";
   skinNote = "";
+  neckNormal = "";
+  neckAbnormal = "";
+  neckNote = "";
   extremetiesNormal = "";
   extremetiesAbnormal = "";
   extremetiesNote = "";
+  sliderMax = "";
 
   async loadDropdown() {
     this.categories = await categories();
+  }
+
+  get painScale() {
+    return this.sliderMax;
+  }
+
+  get hhh(){
+    return this.fetchPatientConditions(this.patientId);
   }
 
   @Watch("authPractitioner")
@@ -977,13 +939,18 @@ export default class AddCondition extends Vue {
     this.setAsserter();
   }
 
+  // @Watch("authPractitioner")
+  // practitionerChanged() {
+  //   this.setAsserter();
+  // }
+
   async setAsserter() {
     this.asserter = this.authPractitioner?.id || "";
   }
 
-  get patientId() {
-    return this.$route.params.id;
-  }
+  // get patientId() {
+  //   return this.$route.params.id;
+  // }
 
   get onset() {
     return {};
@@ -1040,9 +1007,10 @@ export default class AddCondition extends Vue {
   get payload2() {
     return {
       patientId: this.patientId,
-      encounterId: this.referenceEncounter,
-      clinicalStatus: this.clinicalStatus,
-      verificationStatus: this.verificationStatus,
+      // encounterId: this.referenceEncounter,
+      // clinicalStatus: this.clinicalStatus,
+      // verificationStatus: this.verificationStatus,
+      painScale : this.painScale,
       generalNormal: this.generalNormal,
       generalAbnormal: this.generalAbnormal,
       generalNote: this.generalNote,
@@ -1055,6 +1023,10 @@ export default class AddCondition extends Vue {
       extremetiesNormal: this.extremetiesNormal,
       extremetiesAbnormal: this.extremetiesAbnormal,
       extremetiesNote: this.extremetiesNote,
+      neckNormal: this.neckNormal,
+      neckAbnormal: this.neckAbnormal,
+      neckNote: this.neckNote,
+      
       // type: this.stageType,
       // category: this.category,
       // summary: this.stageSummary,
@@ -1065,8 +1037,8 @@ export default class AddCondition extends Vue {
       // assesment: "",
       // severity: this.severity,
       // evidenceNote: this.evidenceNote,
-      onset: this.onset,
-      abatement: this.abatement,
+      // onset: this.onset,
+      // abatement: this.abatement,
     };
   }
 
@@ -1085,7 +1057,7 @@ export default class AddCondition extends Vue {
   // }
 
   async submit() {
-    console.log('payload', this.payload2);
+    console.log('payload', this.patientId);
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
       return console.log('form is invalid');
@@ -1099,15 +1071,29 @@ export default class AddCondition extends Vue {
       console.log('success', this.payload2);
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      console.log('error', error);
+      console.log('my error', error);
     }
   }
 
-  created() {
-    this.loadDropdown();
+  // created() {
+  //   this.loadDropdown();
+  //   this.setAsserter();
+  // }
+
+     async created() {
+  //   if (Object.keys(this.conditions).length < 1)
+  //     this.fetchPatientConditions(this.patientId);
+  //   this._categories = await categories();
+  // }
+
+  // this.fetchPatientConditions(this.patientId);
+  this.hhh
+
+  this.loadDropdown();
     this.setAsserter();
-  }
 }
+
+
 </script>
 
 <style scoped>

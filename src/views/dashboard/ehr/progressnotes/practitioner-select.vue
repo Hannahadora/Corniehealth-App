@@ -32,13 +32,13 @@ import { printPractitioner } from "@/plugins/utils";
 const practitioners = namespace("practitioner");
 
 @Options({
-  name: "PractitionerSelect",
+  name: "ConditionSelect",
   components: {
     Avatar,
     AutoComplete,
   },
 })
-export default class PractitionerSelect extends Vue {
+export default class ConditionSelect extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 

@@ -26,65 +26,18 @@
         </div>
 
         <div class="grid grid-cols-2 text-center gap-3 mt-5">
-          <cornie-input v-model="complaint" label="Chief Complaint" />
-          <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
-          >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-              <path
-                d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-              ></path>
-            </svg>
-          </div>
+          <cornie-input v-model="stageChiefComplaint" label="Chief Complaint" />
+          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+  </div>
         </div>
 
-        <div class="relative text-gray-700">
-          <input
-            class="
-              w-full
-              h-10
-              pl-3
-              pr-8
-              text-base
-              focus:outline-none
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            "
-            type="text"
-            placeholder="Regular input"
-          />
-          <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
-          >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-              <path
-                d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-              ></path>
-            </svg>
-          </div>
-        </div>
+<div class="relative text-gray-700">
+  <input class="w-full h-10 pl-3 pr-8 text-base focus:outline-none  placeholder-gray-600 border rounded-lg focus:shadow-outline" type="text" placeholder="Regular input"/>
+  <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+  </div>
+</div>
 
         <div class="flex items-center justify-between mt-3 mb-2">
           <h3 class="text-sm">History of Present Sickness (HPI)</h3>
@@ -92,12 +45,12 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mt-5">
-          <cornie-input v-model="status" label="Status" />
-          <cornie-input v-model="severity" label="Severity" />
-          <cornie-input v-model="onset" label="Onset" />
-          <cornie-input v-model="abatement" label="Abatement" />
+          <cornie-input v-model="stageChiefComplaint" label="Status" />
+          <cornie-input v-model="stageChiefComplaint" label="Severity" />
+          <cornie-input v-model="stageChiefComplaint" label="Onset" />
+          <cornie-input v-model="stageChiefComplaint" label="Abatement" />
 
-          <cornie-input v-model="stage" label="Stage" />
+          <cornie-input v-model="stageChiefComplaint" label="Stage" />
 
           <!-- <cornie-select
             v-model="severity"
@@ -220,15 +173,17 @@
             </div> -->
         </div>
       </accordion-component>
+        
 
       <accordion-component
         class="shadow-none rounded-none border-none text-primary mt-5 mb-5"
         title="Objective"
       >
         <!-- <vue-range-slider v-model="value"></vue-range-slider> -->
-        <!-- <CustomRangeSlider/> -->
+            <!-- <CustomRangeSlider/> -->
 
-        <Range />
+            <Range />
+
 
         <div class="grid grid-cols-2 gap-3 mt-3">
           <div class="relative z-10 mt-5">
@@ -264,9 +219,11 @@
               </p>
             </div>
 
-            <vue-slider v-model="value"></vue-slider>
+<vue-slider v-model="value"></vue-slider>
 
-            <!-- 
+
+
+<!-- 
 
 <input id="rangeInput" type="range" list="tickmarks" min="0" max="100">
 
@@ -284,14 +241,20 @@
   <option value="100" label="100%"></option>
 </datalist> -->
 
-            <!-- most basic, used for Knobs demo
+
+
+
+<!-- most basic, used for Knobs demo
 <div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
   <input type="range" min="0" max="100" step="5" value="75" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
   <output></output>
   <div class='range-slider__progress'></div>
 </div> -->
 
-            <!-- <form>
+
+
+
+<!-- <form>
   <div>
     <input id="rangeInput2" type="range" min="0" max="200" oninput="amount.value=rangeInput.value" />
     <input id="amount" type="number" value="100" min="0" max="200" oninput="rangeInput.value=amount.value" />
@@ -315,6 +278,10 @@
   <option value="90"></option>
   <option value="100" label="100%"></option>
 </datalist> -->
+
+
+
+
 
             <div class="relative pt-1 mt-5">
               <div
@@ -359,361 +326,24 @@
             </div>
           </div>
         </div>
-        <!-- <timeable-picker v-model="onsetTimeable" /> -->
-        <!-- <timeable-picker2 v-model="onsetTimeable" /> -->
-        <!-- <cornie-radio class="icon-check-mark3 bg-white rounded-full" :label="ggg"
-    :modelValue="true" v-model="generalNormal" /> -->
-        <h3 class="text-sm font-bold">General WNL</h3>
-        <ul class="flex">
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="generalNormal"
-                name="patient"
-                id="group"
-              />
-              Normal
-            </div>
-          </li>
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="generalAbnormal"
-                name="patient"
-                id="group"
-              />
-              Abnormal
-            </div>
-          </li>
-        </ul>
-        <cornie-text-area
-          rows="4"
-          v-model="generalNote"
-          label="Notes"
-          class="w-full"
-        />
+        <timeable-picker v-model="onsetTimeable" />
+        <timeable-picker2 v-model="onsetTimeable" />
 
-        <h3 class="text-sm font-bold">HEENT WNL</h3>
-        <ul class="flex">
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="heentNormal"
-                name="patient"
-                id="group"
-              />
-              Normal
-            </div>
-          </li>
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="heentAbnormal"
-                name="patient"
-                id="group"
-              />
-              Abnormal
-            </div>
-          </li>
-        </ul>
-        <cornie-text-area
-          rows="4"
-          v-model="heentNote"
-          label="Notess"
-          class="w-full"
-        />
+        <h3 class="text-sm">Extremities</h3>
 
-        <h3 class="text-sm font-bold">Skin WNL</h3>
-        <ul class="flex">
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="skinNormal"
-                name="patient"
-                id="group"
-              />
-              Normal
-            </div>
-          </li>
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="skinAbnormal"
-                name="patient"
-                id="group"
-              />
-              Abnormal
-            </div>
-          </li>
-        </ul>
-        <cornie-text-area
-          rows="4"
-          v-model="skinNote"
-          label="Notess"
-          class="w-full"
-        />
-
-        <h3 class="text-sm font-bold">Neck WNL</h3>
-        <ul class="flex">
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="neckNormal"
-                name="patient"
-                id="group"
-              />
-              Normal
-            </div>
-          </li>
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="neckAbnormal"
-                name="patient"
-                id="group"
-              />
-              Abnormal
-            </div>
-          </li>
-        </ul>
         <cornie-text-area
           rows="4"
           v-model="stageNote"
-          label="Notess"
-          class="w-full"
-        />
-
-        <h3 class="text-sm">Extremities</h3>
-        <ul class="flex">
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="exteremitiesNormal"
-                name="patient"
-                id="group"
-              />
-              Normal
-            </div>
-          </li>
-          <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex item-center">
-              <cornie-radio
-                class="col-span-2"
-                v-model="extremetiesAbnormal"
-                name="patient"
-                id="group"
-              />
-              Abnormal
-            </div>
-          </li>
-        </ul>
-        <cornie-text-area
-          rows="4"
-          v-model="extremetiesNote"
-          label="Notess"
+          label="Notes"
           class="w-full"
         />
         <!-- <measurable v-model="onsetMeasurable" /> -->
-
-        <!-- <cornie-input v-model="diagnotisResult" label="Diagnostics Result" /> -->
-        <div class="relative text-gray-700">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="Diagnostics-Result"
-          >
-            Diagnostics Result
-          </label>
-          <input
-            class="
-              w-full
-              h-10
-              pl-3
-              pr-8
-              text-base
-              focus:outline-none
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            "
-            id="Diagnostics-Result"
-            type="text"
-            placeholder="Regular input"
-          />
-          <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
-          >
-            <add-icon class="mt-8" style="color: red" />
-          </div>
-        </div>
-        <div></div>
+        <cornie-select
+          v-model="status"
+          label="Diagnostics Result"
+          :items="clinicalStatuses"
+          :rules="required"
+        />
       </accordion-component>
 
       <accordion-component
@@ -820,7 +450,6 @@ import TimeablePicker from "./timeable.vue";
 import TimeablePicker2 from "./timeable2.vue";
 import Measurable from "./measurable.vue";
 
-import CornieRadio from "@/components/cornieradio.vue";
 
 import {
   verificationStatuses,
@@ -844,6 +473,7 @@ import DateTimePicker2 from "./date-time-picker.vue";
 import AddIcon from "@/components/icons/add.vue";
 import Range from "@/components/range.vue";
 
+
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
 // import { VueRangeSlider} from 'vue-range-component'
@@ -856,6 +486,7 @@ import Range from "@/components/range.vue";
 // import 'vue-slider-component/theme/default.css'
 
 //  import CustomRangeSlider from "./CustomRangeSlider.vue";
+
 
 const user = namespace("user");
 
@@ -877,7 +508,7 @@ const measurable = {
 };
 
 @Options({
-  name: "AddProgressNote",
+  name: "AddCondition",
   components: {
     ClinicalDialog,
     CornieBtn,
@@ -899,8 +530,6 @@ const measurable = {
     AddIcon,
 
     Range,
-
-    CornieRadio,
 
     // CustomRangeSlider
 
@@ -953,21 +582,6 @@ export default class AddCondition extends Vue {
   evidenceDetail = "";
   evidenceNote = "";
 
-
-
-  generalNormal = "";
-  generalAbnormal = "";
-  generalNote = "";
-  heentNormal = "";
-  heentAbnormal = "";
-  heentNote = "";  
-  skinNormal = "";
-  skinAbnormal = "";
-  skinNote = "";
-  extremetiesNormal = "";
-  extremetiesAbnormal = "";
-  extremetiesNote = "";
-
   async loadDropdown() {
     this.categories = await categories();
   }
@@ -1016,92 +630,47 @@ export default class AddCondition extends Vue {
     date.setHours(Number(hour));
     return date.toISOString();
   }
-  // get payload() {
-  //   return {
-  //     patientId: this.patientId,
-  //     encounterId: this.referenceEncounter,
-  //     clinicalStatus: this.clinicalStatus,
-  //     verificationStatus: this.verificationStatus,
-  //     type: this.stageType,
-  //     category: this.category,
-  //     summary: this.stageSummary,
-  //     detail: this.evidenceDetail,
-  //     notes: this.stageNote,
-  //     bodySite: this.bodySite,
-  //     subject: "patient",
-  //     assesment: "",
-  //     severity: this.severity,
-  //     evidenceNote: this.evidenceNote,
-  //     onset: this.onset,
-  //     abatement: this.abatement,
-  //   };
-  // }
-
-  get payload2() {
+  get payload() {
     return {
       patientId: this.patientId,
       encounterId: this.referenceEncounter,
       clinicalStatus: this.clinicalStatus,
       verificationStatus: this.verificationStatus,
-      generalNormal: this.generalNormal,
-      generalAbnormal: this.generalAbnormal,
-      generalNote: this.generalNote,
-      heentNormal: this.heentNormal,
-      heentAbnormal: this.heentAbnormal,
-      heentNote: this.heentNote,
-      skinNormal: this.skinNormal,
-      skinAbnormal: this.skinAbnormal,
-      skinNote: this.skinNote,
-      extremetiesNormal: this.extremetiesNormal,
-      extremetiesAbnormal: this.extremetiesAbnormal,
-      extremetiesNote: this.extremetiesNote,
-      // type: this.stageType,
-      // category: this.category,
-      // summary: this.stageSummary,
-      // detail: this.evidenceDetail,
-      // notes: this.stageNote,
-      // bodySite: this.bodySite,
-      // subject: "patient",
-      // assesment: "",
-      // severity: this.severity,
-      // evidenceNote: this.evidenceNote,
+      type: this.stageType,
+      category: this.category,
+      summary: this.stageSummary,
+      detail: this.evidenceDetail,
+      notes: this.stageNote,
+      bodySite: this.bodySite,
+      subject: "patient",
+      assesment: "",
+      severity: this.severity,
+      evidenceNote: this.evidenceNote,
       onset: this.onset,
       abatement: this.abatement,
     };
   }
 
-  // async submit() {
-  //   const { valid } = await (this.$refs.form as any).validate();
-  //   if (!valid) return;
-  //   try {
-  //     const { data } = await cornieClient().post(
-  //       "/api/v1/condition",
-  //       this.payload
-  //     );
-  //     window.notify({ msg: "Condition created", status: "success" });
-  //   } catch (error) {
-  //     window.notify({ msg: "Condition not created", status: "error" });
-  //   }
-  // }
-
   async submit() {
-    console.log('payload', this.payload2);
     const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) {
-      return console.log('form is invalid');
-    } 
+    if (!valid) return;
     try {
       const { data } = await cornieClient().post(
-        "/api/v1/progress-notes",
-        this.payload2
+        "/api/v1/condition",
+        this.payload
       );
-      window.notify({ msg: "Progress notes Created", status: "success" });
-      console.log('success', this.payload2);
+      window.notify({ msg: "Condition created", status: "success" });
     } catch (error) {
-      window.notify({ msg: "Progress note not created", status: "error" });
-      console.log('error', error);
+      window.notify({ msg: "Condition not created", status: "error" });
     }
   }
+
+
+
+
+
+
+
 
   created() {
     this.loadDropdown();
@@ -1111,4 +680,5 @@ export default class AddCondition extends Vue {
 </script>
 
 <style scoped>
+
 </style>

@@ -147,7 +147,7 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import TimeablePicker from "./timeable.vue";
 import Measurable from "./measurable.vue";
 import { getDropdown } from "@/plugins/definitions";
-import { ICondition } from "@/types/ICondition";
+// import { ICondition } from "@/types/ICondition";
 import { Codeable, Timeable } from "@/types/misc";
 
 import {
@@ -165,6 +165,17 @@ import { namespace } from "vuex-class";
 import IPractitioner from "@/types/IPractitioner";
 import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
+
+
+
+import { ICondition } from "@/types/ICondition";
+
+const condition = namespace("condition");
+
+// import { Codeable } from "@/types/misc";
+import { printPractitioner } from "@/plugins/utils";
+import Condition from "yup/lib/Condition";
+
 
 const user = namespace("user");
 
@@ -204,6 +215,12 @@ const measurable = {
   },
 })
 export default class AddCondition extends Vue {
+    @Prop({ type: String, default: "" })
+  patientId!: string;
+
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
@@ -263,8 +280,12 @@ export default class AddCondition extends Vue {
     this.asserter = this.authPractitioner?.id || "";
   }
 
-  get patientId() {
-    return this.$route.params.patientId;
+  // get patientId() {
+  //   return this.$route.params.patientId;
+  // }
+
+  get myCoditions(){
+    return this.fetchPatientConditions(this.patientId);
   }
 
   get onset() {

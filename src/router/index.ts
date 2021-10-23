@@ -172,11 +172,11 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/ehr/procedures/index.vue"),
           },
           {
-            path: "progress-notes",
+            path: "progress-notes-existing",
             props: true,
             name: "Progress Notes",
             component: () =>
-              import("@/views/dashboard/ehr/progressnotes/index.vue"),
+              import("@/views/dashboard/ehr/progressnotes/existing-state.vue"),
           },          
         ],
       },
