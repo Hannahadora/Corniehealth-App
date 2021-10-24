@@ -322,8 +322,8 @@
             </div> -->
           </div>
         </div>
-        <!-- <cornie-radio class="icon-check-mark3 bg-white rounded-full" :label="ggg"
-    :modelValue="true" v-model="generalNormal" /> -->
+        <cornie-radio class="icon-check-mark3 bg-white rounded-full" label="ggg"
+    modelValue="true" v-model="generalNormal" />
         <h3 class="text-sm font-bold">General WNL</h3>
         <ul class="flex">
           <li
@@ -345,12 +345,11 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="generals.value"
                 name="generalNormal"
                 id="group"
-                value="normal"
+                label="ffff"
+                modelValue="generals.value"
               />
-              Normal
             </div>
           </li>
           <li
@@ -601,8 +600,8 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="extremeties.value"
-                name="extremetiesNormal"
+                v-model="extremities.value"
+                name="extremitiesNormal"
                 id="group"
                 value="normal"
               />
@@ -628,8 +627,8 @@
             <div class="flex item-center">
               <cornie-radio
                 class="col-span-2"
-                v-model="extremeties.value"
-                name="extremetiesAbnormal"
+                v-model="extremities.value"
+                name="extremitiesAbnormal"
                 id="group"
                 value="abnormal"
               />
@@ -639,7 +638,7 @@
         </ul>
         <cornie-text-area
           rows="4"
-          v-model="extremeties.note"
+          v-model="extremities.note"
           label="Notes"
           class="w-full"
         />
@@ -1109,7 +1108,7 @@ export default class AddProgressNote extends Vue {
 
 
 get generals() {
-    return {
+  return {
       value: "",
       note: "",
     };
@@ -1136,66 +1135,74 @@ get generals() {
     };
   }
 
-  get extremeties() {
+  get extremities() {
     return {
       value: "",
       note: "",
     };
   }
   myId = "";
-  // generalNote = "";
-  // heentNormal = "";
-  // heentAbnormal = "";
-  // heentNote = "";
-  // skinNormal = "";
-  // skinAbnormal = "";
-  // skinNote = "";
-  // neckNormal = "";
-  // neckAbnormal = "";
-  // neckNote = "";
-  // extremetiesNormal = "";
-  // extremetiesAbnormal = "";
-  // extremetiesNote = "";
+
+  // "general": {
+  //   "note": "string",
+  //   "value": "normal"
+  // },
+  // "heent": {
+  //   "note": "string",
+  //   "value": "normal"
+  // },
+  // "skin": {
+  //   "note": "string",
+  //   "value": "normal"
+  // },
+  // "neck": {
+  //   "note": "string",
+  //   "value": "normal"
+  // },
+  // "extremities": {
+  //   "note": "string",
+  //   "value": "normal"
+  // },
+  // "planComment": "string",
+
   sliderMax = "";
   topClick = false;
   
-  // thegeneral=this.general
-  // general = {};
-
-  // get gene() {
-  //   return this.general = {
-  //     value : "value"
-  //     note : "mnmnnm"
-
-  //   }
-  // }
   get payload2() {
-    return {
-     " patientId": this.patientId,
-      // encounterId: this.referenceEncounter,
-      // clinicalStatus: this.clinicalStatus,
-      // verificationStatus: this.verificationStatus,
-      "conditionId": this.myId,
-      // painScale: this.painScale,
-      "heent": this.heent,
-      "skin": this.skin,
-      "extremeties": this.extremeties,
-      "neck": this.neck,
-      "general": this.generals,
 
-      // type: this.stageType,
-      // category: this.category,
-      // summary: this.stageSummary,
-      // detail: this.evidenceDetail,
-      // notes: this.stageNote,
-      // bodySite: this.bodySite,
-      // subject: "patient",
-      // assesment: "",
-      // severity: this.severity,
-      // evidenceNote: this.evidenceNote,
-      // onset: this.onset,
-      // abatement: this.abatement,
-    };
+    // const mypayload : any;
+    // this.generals.note ? this.generals : null
+    const data: any = {}
+    if (this.generals.note) data.general = this.generals;
+    
+  
+     data.patientId = this.patientId;
+     data.conditionId = this.myId;
+     return data;
+//       // encounterId: this.referenceEncounter,
+//       // clinicalStatus: this.clinicalStatus,
+//       // verificationStatus: this.verificationStatus,
+//       "conditionId": this.myId,
+//       // painScale: this.painScale,
+// // var a = (condition) ? expr1 : expr2;  
+//       "general": this.generals.note ? this.generals : null,
+//       "heent": this.heent,
+//       "skin": this.skin,
+//       "extremities": this.extremities,
+//       "neck": this.neck,
+
+//       // type: this.stageType,
+//       // category: this.category,
+//       // summary: this.stageSummary,
+//       // detail: this.evidenceDetail,
+//       // notes: this.stageNote,
+//       // bodySite: this.bodySite,
+//       // subject: "patient",
+//       // assesment: "",
+//       // severity: this.severity,
+//       // evidenceNote: this.evidenceNote,
+//       // onset: this.onset,
+//       // abatement: this.abatement,
   }
 
   // async submit() {

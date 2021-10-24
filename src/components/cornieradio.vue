@@ -25,7 +25,7 @@ export default {
   computed: {
     checked: {
       get() {
-        return this.modelValue;
+        return this.modelValue = !this.modelValue;
       },
       set(val) {
         this.$emit("update:modelValue", val);
