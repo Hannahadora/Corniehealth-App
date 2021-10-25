@@ -1,6 +1,6 @@
 <template>
   <span class="block w-11/12">
-    <label class="flex uppercase mb-2 text-xs font-bold">
+    <label class="flex capitalize mb-2 text-sm font-bold">
       {{ label }}
         <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
     </label>

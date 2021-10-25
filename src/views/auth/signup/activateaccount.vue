@@ -215,7 +215,7 @@ export default class ActivateAccount extends Vue {
       this.saveCornieData();
     } catch (error) {
 
-       window.notify({ msg: error });
+       window.notify({ msg: "Account not activated" });
     }
   }
 }

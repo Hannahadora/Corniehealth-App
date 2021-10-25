@@ -350,8 +350,9 @@ const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
 const emptyPractitioners: Practitioners = {
+   id:"",
   type: "",
-  required: false,
+  required: "",
   consultationMedium: "",
   period : {} as Period,
   practitionerId:"",
@@ -359,8 +360,9 @@ const emptyPractitioners: Practitioners = {
 
 };
 const emptyPatients: Patients = {
+  id:"",
   type: "",
-  required: false,
+  required: "",
   consultationMedium: "",
   period : {} as Period,
   patientId:"",
@@ -373,8 +375,9 @@ const emptyPatients: Patients = {
 
 };
 const emptyDevices: Devices = {
+   id:"",
   type: "",
-  required: false,
+  required: "",
   consultationMedium: "",
   period : {} as Period,
   deviceId: "",
@@ -659,7 +662,7 @@ actorTypeValue = "";
         this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Appointment not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
@@ -674,7 +677,7 @@ actorTypeValue = "";
         this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Appointment not updated", status: "error" });
     }
   }
     

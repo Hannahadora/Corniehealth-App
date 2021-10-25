@@ -134,7 +134,6 @@ const condition = namespace("condition");
 import { categories, codes, severities } from "./drop-downs";
 import { Codeable } from "@/types/misc";
 import { printPractitioner } from "@/plugins/utils";
-import Condition from "yup/lib/Condition";
 
 function copy(data: any) {
   return JSON.parse(JSON.stringify(data));
@@ -177,7 +176,7 @@ export default class ExistingState extends Vue {
   conditions!: { [state: string]: ICondition[] };
 
   get patientId() {
-    return this.$route.params.patientId as string;
+    return this.$route.params.id as string;
   }
 
   get patientConditions() {

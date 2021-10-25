@@ -32,7 +32,6 @@
         "vue-property-decorator": "^9.1.2",
         "vue-range-slider": "0.6.0",
         "vue-router": "^4.0.8",
-        "vue-select": "git+https://github.com/sagalbot/vue-select.git#feat/vue-3-compat",
         "vue-select-connorshea": "^3.12.1",
         "vue-slide-bar": "^1.2.0",
         "vue-star-rating": "^2.1.0",

@@ -155,6 +155,9 @@
                         >
                         </cornie-select>
                       </div>
+                    
+                    
+                  </div>
                        <div class="">
                             <Textarea
                             class="w-full"
@@ -165,9 +168,6 @@
                           />
                           <span></span>
                         </div>
-                    
-                    
-                  </div>
           </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Findings" v-model="openedS">
                 <div class="grid grid-cols-2 gap-4 w-full mt-5">
@@ -559,7 +559,7 @@ findingItems = [];
       }
     } catch (error) {
       console.log(error)
-      window.notify({ msg: error, status: 'error' })
+      window.notify({ msg: 'Clinical Impression not Created', status: 'error' })
     
     }
   }
@@ -576,7 +576,7 @@ findingItems = [];
 
       }
     } catch (error) {
-      window.notify({ msg: error.data.response.message, status: 'error' })
+      window.notify({ msg: 'Clincial Impression not  updated', status: 'error' })
     }
   }
    async fetchPractitioners() {

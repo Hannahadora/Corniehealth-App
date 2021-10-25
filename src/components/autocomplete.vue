@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block capitalize mb-1 text-black text-sm font-medium"
+              class="block capitalize mb-1 text-black text-sm font-semibold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -27,14 +27,14 @@
                   'border-red-500': Boolean(errorMessage),
                   'border-green-400': meta.valid && meta.touched,
                 }"
-                class="p-1 bg-white flex border border-gray-200 rounded-lg"
+                class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
               >
                 <span v-if="Boolean($slots.selected)">
                   <slot name="selected" :item="selectedItem" />
                 </span>
                 <input
                   v-else
-                  placeholder="Select"
+                  :placeholder="$attrs.placeholder"
                   disabled
                   :value="displayVal"
                   class="
@@ -138,7 +138,7 @@
 import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
 import IconInput from "@/components/IconInput.vue";
@@ -192,6 +192,11 @@ export default class AutoComplete extends Vue {
   id = "";
 
   query = "";
+
+  @Watch("query")
+  searched(query: string) {
+    this.$emit("query", query);
+  }
 
   get processedItems() {
     if (!this.query) return this.items;
@@ -252,7 +257,7 @@ export default class AutoComplete extends Vue {
 }
 ::placeholder {
   font-size: 0.8em;
-  font-weight: 300;
+  font-weight: 400;
   color: #667499;
 }
 </style>

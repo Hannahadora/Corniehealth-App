@@ -31,11 +31,7 @@ function getFromStore() {
 }
 
 async function populateCache() {
-  let data = getFromStore();
-  if (!data) {
-    data = await getRemoteDefinitions();
-    localStore.put("definitions", data);
-  }
+  const data = await getRemoteDefinitions();
   cache = data;
 }
 

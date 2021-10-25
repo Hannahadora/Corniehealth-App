@@ -209,7 +209,7 @@ export default class memberModal extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Not Deactivated", status: "error" });
       this.show = false;
     }
   }

@@ -8,7 +8,7 @@
     class="mb-5"
   >
     <div v-bind="$attrs" class="w-11/12">
-      <label class="flex capitalize mb-1 text-black text-xs font-bold font-medium">
+      <label class="flex capitalize mb-1 text-black text-sm font-semibold">
         <slot name="label">
           {{ label }}
         </slot>
@@ -18,7 +18,7 @@
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
-        class="flex rounded-lg border"
+        class="flex rounded-md border-1"
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
@@ -145,7 +145,7 @@ export default class CornieInput extends Vue {
 <style scoped>
 ::placeholder {
   font-size: 0.8em;
-  font-weight: 300;
+  font-weight: 400;
   color: #667499;
 }
 </style>

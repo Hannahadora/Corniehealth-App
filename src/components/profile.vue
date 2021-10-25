@@ -1,44 +1,62 @@
 <template>
-  <div class="overflow-y-auto bg-white">
-    <modal
-      :visible="visible"
-      class="w-4/12 flex flex-col overflow-y-auto mr-2"
-    >
-      <div class="flex w-full overflow-y-auto rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Profile </h2>
-      </div>
-      <div class="flex flex-col p-3 mb-7">
-        <p class="text-sm mt-2">
-         View {{name}} profile
-        </p>
+  <cornie-dialog v-model="show" center class="w-4/12  h-5/6">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title  class="w-full">
+          <cornie-icon-btn @click="show = false">
+            <arrow-left-icon />
+          </cornie-icon-btn>
+          <div class="w-full">
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Profile</h2>
+            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
+          </div>
+      </cornie-card-title>
+
+         <cornie-card-text >
+     
+                     <div class="w-full dflex space-x-4">
+                        <div class="w-10 h-10">
+                          <avatar
+                            class="mr-2"
+                            v-if="image"
+                            :src="image"
+                          />
+                          <avatar class="mr-2" v-else :src="localSrc" />
+                        </div>
+                        <div class="w-full">
+                          <p class="text-xs text-black font-semibold">
+                            {{name }}
+                          </p>
+                          <p class="text-xs text-gray-500 font-meduim">
+                            {{ type }}
+                          </p>
+                        </div>
+                      </div>
         <div class="my-5 border-2 p-3 border-gray-200 w-full flex-col flex">
-            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+            <span class="items-center mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Provider ID</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">{{profileId}}</p>
             </span>
-            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+            <span class="items-center mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Status</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">{{activeState}}</p>
             </span>
-            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+            <span class="items-center mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Specialty</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">{{type}}</p>
             </span>
-            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+            <span class="items-center  mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Total Patients Seen</p>
               <p class="cursor-pointer float-right text-xs text-gray-500">0</p>
             </span>
-            <span class="items-center hover:bg-gray-100 mb-5 w-full flex justify-between">
+            <span class="items-center  mb-5 w-full flex justify-between">
               <p class="cursor-pointer float-left text-xs text-black">Rating</p>
               <p class="cursor-pointer float-right text-xs text-gray-500"><star-rating :show-rating="false" v-model:rating="rating" :star-size="20" /></p>
             </span>
         </div>
+         </cornie-card-text>
+
+ <cornie-card>
+        <cornie-card-text class="flex justify-end">
         <div class="flex justify-end w-full mt-auto">
           <button
             class="
@@ -59,9 +77,11 @@
             Close
           </button>
         </div>
-      </div>
-    </modal>
-  </div>
+        </cornie-card-text>
+ </cornie-card>
+    
+    </cornie-card>
+  </cornie-dialog>
 </template>
 <script>
 import Modal from "@/components/practitionermodal.vue";
@@ -71,11 +91,17 @@ import Draggable from "vuedraggable";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import StarRating from 'vue-star-rating';
+import CornieCard from "@/components/cornie-card";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
+import Avatar from "@/components/avatar.vue";
+
 const copy = (original) => JSON.parse(JSON.stringify(original));
 import { cornieClient } from "@/plugins/http";
 
 export default {
-  name: "ParticipantFilter",
+  name: "Profile",
   components: {
     Modal,
     DragIcon,
@@ -83,7 +109,13 @@ export default {
     Draggable,
     IconInput,
     SearchIcon,
-    StarRating
+    StarRating,
+    Avatar,
+    ...CornieCard,
+    CornieIconBtn,
+    ArrowLeftIcon,
+    CornieDialog,
+    CancelIcon
   },
   props: {
     visible: {
@@ -131,11 +163,17 @@ export default {
        required: true,
       default: "",
     },
+     image:{
+      type:String,
+       required: true,
+      default: "",
+    },
   },
   data() {
     return {
       columnsProxy: [],
       rating: 4,
+       localSrc: require('../assets/img/placeholder.png'),
     };
   },
   watch: {
@@ -174,3 +212,9 @@ export default {
  
 };
 </script>
+<style>
+.dflex {
+  display: -webkit-box;
+}
+
+</style>

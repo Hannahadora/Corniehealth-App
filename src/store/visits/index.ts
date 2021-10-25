@@ -1,21 +1,28 @@
+import { IPatient } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel, noShow } from "./helper";
+import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel, noShow, getPatientVisits } from "./helper";
 
 interface SchedulesStore {
   visits: any[],
-  patients: any[]
+  patients: any[],
+  patientVisits: any[],
 }
 
 export default {
   namespaced: true,
   state: {
     visits: [],
-    patients: []
+    patients: [],
+    patientVisits: [ ],
   },
   mutations: {
 
     setVisits(state, visits) {
       if (visits && visits.length > 0) state.visits = [ ...visits ];
+    },
+
+    setPatientVisits(state, visits) {
+      if (visits && visits.length > 0) state.patientVisits = [ ...visits ];
     },
 
     setPatients(state, pts) {
@@ -24,7 +31,11 @@ export default {
 
     updateStatus(state, payload) {
       const index = state.visits.findIndex((i: any) => i.id === payload.id);
-      state.visits[index].status = payload.status;
+      if (index >= 0) state.visits[index].status = payload.status;
+
+      const inPatientsVisits = state.patientVisits.findIndex((i: any) => i.id === payload.id);
+      
+      if (inPatientsVisits >= 0) state.patientVisits[inPatientsVisits].status = payload.status;
     },
 
     addVisit(state, payload) {
@@ -36,6 +47,11 @@ export default {
     async getVisits(ctx) {
       const visits = await getVisits();
       ctx.commit("setVisits", visits);
+    },
+
+    async getPatientVisits(ctx, id: string) {
+      const visits = await getPatientVisits(id);
+      ctx.commit("setPatientVisits", visits);
     },
 
     async getPatients(ctx) {

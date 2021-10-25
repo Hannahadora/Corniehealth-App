@@ -87,7 +87,7 @@
                         </p>
                      
                       <cornie-radio
-                        v-model="newindexvaluepractitioner"
+                        v-model="newIndexvaluepractitioner"
                         :value="input"
                         @input="changed(input.id)"
                         name="practioner"
@@ -113,7 +113,7 @@
                         placeholder="--Select--"
                       >
                       </cornie-select> -->
-                          <div class="w-full flex space-x-2 mb-5">
+                          <!-- <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
                             v-model="apractitioner.required"
@@ -121,7 +121,16 @@
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
                           <p class="text-sm">Required</p>
-                      </div>
+                      </div> -->
+                      <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apractitioner.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select>
                       <date-picker
                       class="w-full mb-5"
                         label="period"
@@ -143,8 +152,8 @@
                       >
                         </cornie-select>
                         <div class="pb-5">
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].practitionerId" @click="clearActor('Practitioner',index)">Clear Actor</span>
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Practitioner',index)">Add Actor</span>
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].practitionerId" @click="clearActor('Practitioner',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Practitioner',index)">Add Actor</span> -->
                       </div>
                     </div>
                   </div>
@@ -197,16 +206,8 @@
                         placeholder="--Select--"
                       >
                       </cornie-select> -->
-                      <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="adevice.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                        <div class="w-full flex space-x-2 mb-5">
+                    
+                        <!-- <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
                             v-model="adevice.required"
@@ -214,7 +215,16 @@
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
                           <p class="text-sm">Required</p>
-                      </div>
+                      </div> -->
+                      <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="adevice.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select>
                       <date-picker
                       class="w-full mb-5"
                         label="period"
@@ -236,8 +246,8 @@
                       >
                         </cornie-select>
                         <div class="pb-5">
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Devices[index] && Devices[index].deviceId" @click="clearActor('Device',index)">Clear Actor</span>
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Device',index)">Add Actor</span>
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Devices[index] && Devices[index].deviceId" @click="clearActor('Device',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Device',index)">Add Actor</span> -->
                       </div>
                     </div>
                 </div>
@@ -314,7 +324,7 @@
                         placeholder="--Select--"
                       >
                       </cornie-select> -->
-                      <div class="w-full flex space-x-2 mb-5">
+                      <!-- <div class="w-full flex space-x-2 mb-5">
                           <input
                           checked
                             v-model="apatient.required"
@@ -322,7 +332,16 @@
                             class="bg-danger focus-within:bg-danger px-6 shadow"
                           />
                           <p class="text-sm">Required</p>
-                      </div>
+                      </div> -->
+                      <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apatient.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select>
                     
                       <date-picker
                       class="w-full mb-5"
@@ -345,8 +364,8 @@
                       >
                       </cornie-select>
                       <div class="pb-5">
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span>
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span> -->
                       </div>
                   </div>
                 </div>
@@ -745,7 +764,8 @@ export default {
        // this.reset(value);
      },
     apply(value) {
-      this.$emit("update:preferred", this.indexvaluepractitioner,this.indexvaluepatient, this.indexvaluedevice,value,this.Practitioners, this.Patients,this.Devices,this.apractitioner.practitionerId);
+      this.applyActor(value);
+      this.$emit("update:preferred", this.indexvaluepractitioner,this.indexvaluepatient, this.indexvaluedevice,value,this.Practitioners, this.Patients,this.Devices,this.singleId);
       this.indexvalue = [];
       this.valueid = [];
       this.value = [];

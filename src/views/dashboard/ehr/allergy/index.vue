@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded w-full">
+  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded-3xl w-full">
     <div class="w-full">
       <span
         class="
@@ -9,7 +9,7 @@
           border-b-2
           font-bold
           mb-10
-          text-xl text-primary
+          text-xl text-dye
           py-2
         "
       >
