@@ -6,7 +6,7 @@
     class=""
   >
     <dots-horizontal-icon class="mr-7" @click="isShow" />
-    <div v-if="topClick" class="p-2 flex flex-row-reverse">
+    <div v-if="topClick" class="p-2 flex flex-row-reverse" style="margin-top:-30px;">
       <div class="card">
         <div class="p-2 m-1">
           <div class="p-3 flex justify-between p-1">
@@ -731,6 +731,30 @@
             label="Hospitalizations"
           /> -->
 
+            <auto-complete
+            v-bind="$attrs"
+            v-model="item"
+            :filter="filter"
+            :items="items"
+          >
+            <template #item="{ item }">
+              <div
+                @click="printId(item.id)"
+                class="w-full flex items-center my-1 justify-between"
+              >
+                <div class="flex items-center">
+                  <!-- <avatar :src="item.image" /> -->
+                  <div class="flex ml-1 flex-col">
+                    <span class="text-xs">{{ item.severity }}</span>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold text-gray-500">
+                  {{ item.recorder.name }}
+                </span>
+              </div>
+            </template>
+          </auto-complete>
+
           <cornie-select
             v-model="status"
             label="Diagnostic Request"
@@ -833,6 +857,14 @@ import { Codeable } from "@/types/misc";
 import { printPractitioner } from "@/plugins/utils";
 import Condition from "yup/lib/Condition";
 
+const userStore = namespace("user");
+const patients = namespace("patients");
+const visitsStore = namespace("visits");
+const practitioner  = namespace('practitioner');
+const vital  = namespace('vitals');
+import IEncounter from "@/types/IEncounter";
+
+
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
 // import { VueRangeSlider} from 'vue-range-component'
@@ -922,6 +954,12 @@ export default class AddProgressNote extends Vue {
   @user.Getter
   authPractitioner!: IPractitioner;
 
+  @vital.State
+  encounters!: IEncounter[];
+
+  @vital.Action
+  getEncounters!: (patientId: string) => Promise<void>;
+
   addingProgressnote = false;
   meConditions!: [];
 
@@ -962,20 +1000,6 @@ export default class AddProgressNote extends Vue {
   evidenceDetail = "";
   evidenceNote = "";
 
-  // form: {
-  //         name: "",
-  //         slogan: "",
-  //         email: "",
-  //         description: "",
-  //         phone_number: "",
-  //         tags: [],
-  //         state_id: "",
-  //         city_id: "",
-  //       },
-  // general =  {
-  //   note: "",
-  //   value: ""
-  // };
 
   async loadDropdown() {
     this.categories = await categories();
@@ -1173,7 +1197,11 @@ get generals() {
     // const mypayload : any;
     // this.generals.note ? this.generals : null
     const data: any = {}
-    if (this.generals.note) data.general = this.generals;
+    if (this.generals.note && this.generals.value) data.general = this.generals;
+     if (this.heent.note && this.heent.value) data.heent = this.heent;
+      if (this.skin.note && this.skin.value) data.skin = this.skin;
+       if (this.neck.note && this.neck.value) data.neck = this.neck;
+        if (this.extremities.note && this.extremities.value) data.extremities = this.extremities;
     
   
      data.patientId = this.patientId;
@@ -1267,7 +1295,10 @@ get generals() {
     // }
     // this.NewfemCondition = await this.fetchPatientConditions(this.patientId);
     this.fetchPatientConditions(this.patientId);
+     if (this.encounters?.length === 0) await this.getEncounters(this.patientId)
     // this.fetchPatientConditions(this.patientId);
+        console.log(this.encounters, "Encounters");
+
 
     this.loadDropdown();
     this.setAsserter();
