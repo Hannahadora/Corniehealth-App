@@ -1,6 +1,15 @@
 <template>
   <clinical-dialog class="w-9/12" v-model="show" title="[Identifier]" noarrow>
     <div class="w-full flex flex-col pl-3">
+      <div class="w-full flex justify-between mb-3">
+        <img src="@/assets/img/SNH-LOGO.png" />
+        <div class="grid grid-cols-1 text-xs gap-y-2 text-right">
+          <span>St. Nicholas Hospital</span>
+          <span>57 Campbell Street, Lagos Island. Lagos</span>
+          <span>+234 802 290 8484</span>
+          <span>Info@saintnicholashospital.com</span>
+        </div>
+      </div>
       <div class="w-full grid grid-cols-2 pb-6 border-b-2 border-dashed">
         <div class="grid grid-cols-1 gap-y-2 text-sm">
           <h2 class="text-primary text-sm font-bold">Patient Information</h2>
@@ -78,7 +87,7 @@
               <onset-icon class="mr-3" />
               Onset
             </span>
-            <div class="mt-3 grid grid-cols-2">
+            <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
                 <span class="text-sm text-gray-500 mb-3">Date/Time</span>
                 <span class="text-sm">21/10/2021</span>
@@ -97,7 +106,7 @@
               <onset-icon class="mr-3" />
               Abatement
             </span>
-            <div class="mt-3 grid grid-cols-2">
+            <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
                 <span class="text-sm text-gray-500 mb-3">Age</span>
                 <span class="text-sm">1 Year</span>
