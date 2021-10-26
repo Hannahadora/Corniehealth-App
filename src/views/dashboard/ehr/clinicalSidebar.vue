@@ -128,6 +128,7 @@ import ConditionIcon from "@/components/icons/ehrcondition.vue";
 import MedicationIcon from "@/components/icons/ehrmedication.vue";
 import DiagIcon from "@/components/icons/ehrdiag.vue";
 import ProceedIcon from "@/components/icons/ehrprocedure.vue";
+import RefferIcon from "@/components/icons/ehrreffer.vue";
 import CareIcon from "@/components/icons/ehrcare.vue";
 import ImpressionIcon from "@/components/icons/ehrimpression.vue"
 import BillIcon from "@/components/icons/ehrbill.vue";
@@ -159,6 +160,7 @@ type INav = { name: string; to: string; icon: string };
     IconInput,
     SearchIcon,
     ImpressionIcon,
+    RefferIcon,
 TrendIcon,
 MedicalIcon,
 AllergyIcon,
@@ -211,6 +213,7 @@ export default class Settings extends Vue {
       { name: "Medications", to: "medications", icon: "medication-icon" },
       { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
+       { name: "Referral", to: "referral", icon: "reffer-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
