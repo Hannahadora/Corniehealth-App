@@ -126,7 +126,7 @@
       <note-dialog  @closesidemodal="() => showNewModal = false" />
     </side-modal>
 
-    <side-modal :visible="true" :header="'Details'" :width="850"  @closesidemodal="closeNewModal">
+    <side-modal :visible="false" :header="'Details'" :width="850"  @closesidemodal="closeNewModal">
       <view-details  @closesidemodal="() => showNewModal = false" />
     </side-modal>
 
