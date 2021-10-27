@@ -87,7 +87,11 @@
             reference="http://hl7.org/fhir/ValueSet/condition-stage-type"
             label="Type"
           />
-          <assessment-select v-model="stageAssessment" label="Assessment" />
+          <assessment-select
+            :patientId="patientId"
+            v-model="stageAssessment"
+            label="Assessment"
+          />
         </div>
       </accordion-component>
       <accordion-component
@@ -246,7 +250,7 @@ export default class AddCondition extends Vue {
 
   stageSummary = "";
   stageType = "";
-  stageAssessment = "";
+  stageAssessment = {};
   stageNote = "";
 
   evidenceCode = "";
@@ -342,10 +346,7 @@ export default class AddCondition extends Vue {
       summary: this.stageSummary,
       detail: this.evidenceDetail,
       bodySite: this.bodySite,
-      assessment: {
-        reference: "Clinical Impression",
-        id: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
-      },
+      assessment: this.stageAssessment,
       severity: this.severity,
       evidenceNote: this.evidenceNote,
       onSet: this.onset,

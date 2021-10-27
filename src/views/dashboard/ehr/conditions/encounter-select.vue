@@ -47,7 +47,7 @@ export default class EncounterSelect extends Vue {
   encounters: IEncounter[] = [];
 
   get patientId() {
-    return this.$route.params.patientId;
+    return this.$route.params.patientId || this.$route.params.id;
   }
 
   get items() {
