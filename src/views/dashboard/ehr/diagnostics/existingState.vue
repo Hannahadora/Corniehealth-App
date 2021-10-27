@@ -68,6 +68,18 @@
                  <template #recorder="{ item }">
                         <p class="cursor-pointer">{{ item.asserter }}</p>
                 </template>
+                 <template #status="{ item }">
+                <div class="flex items-center">
+                  <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'Draft'">{{item.status}}</p>
+                  <p class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded" v-if="item.status == 'On-Hold'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-500 p-1 rounded" v-if="item.status == 'Active'">{{item.status}}</p>
+                  <p class="text-xs bg-gray-300  p-1 rounded" v-if="item.status == 'Unknown'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'Completed'">{{item.status}}</p>
+                  <p class="text-xs bg-red-300 text-red-600 p-1 rounded" v-if="item.status == 'Revoked'">{{item.status}}</p>
+                  <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'Entered-in-Error'">{{item.status}}</p>
+                    <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'Do Not Perform'">{{item.status}}</p>
+                </div>
+              </template>
             </cornie-table>
     </div>
     
@@ -136,8 +148,10 @@ import StatusModal from "./status.vue";
 import { namespace } from "vuex-class";
 import CheckIn from './components/checkin.vue'
 import CheckOut from './components/checkout.vue'
+import IPractitioner from "@/types/IPractitioner";
 
 const otherrequest = namespace("otherrequest");
+const userStore = namespace("user");
 
 const emptyOtherrequest: IOtherrequest = {
   basicInfo: {},
@@ -202,7 +216,10 @@ showStatusModal= false;
 updatedBy= "";
 currentStatus="";
 update="";
+practitonerId="";
 
+   @userStore.Getter
+  authPractitioner!: IPractitioner;
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
 
@@ -268,6 +285,9 @@ update="";
     },
   ];
 
+ get patientId() {
+    return this.$route.params.id;
+  }
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -293,10 +313,10 @@ update="";
         return {
         ...otherrequest,
          action: otherrequest.id,
-         patient: this.getPatientName(otherrequest.subject.subject),
-       requester: this.getPatientName(otherrequest.requestInfo.requester),
-        dispenser: this.getPractitionerName(otherrequest.performer.performer),
-        performer: this.getPractitionerName(otherrequest.performer.performer),
+       patient: this.getPatientName(this.patientId as string),
+       requester: this.getPatientName(this.patientId as string),
+        dispenser: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
+        performer: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
         status: otherrequest.status,
         category: otherrequest.basicInfo.category,
         };

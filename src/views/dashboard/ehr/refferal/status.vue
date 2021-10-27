@@ -6,7 +6,7 @@
             <arrow-left-icon />
           </cornie-icon-btn>
           <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">  Deaactivate Account</h2>
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Update Status</h2>
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
       </cornie-card-title>
@@ -14,21 +14,11 @@
               <div class="w-full">
           <div class="container  content-con">
             <div class="w-full py-3">
-               <date-picker
-                                      v-model="deactivateTillDate"
-                                     class="w-full mb-5"
-                                       label="Deactivation Date"
-                                    ></date-picker>
-                 
-                      <cornie-text-area
-                      :rules="required"
-
-                      placeholder="Placeholder"
-                    label="Reason For Deactivating"
-                      v-model="reasonsForDeactivation"
-                      class="w-full mt-5"
-                      rows="4"
-                    />
+            <cornie-input disabled label="Current Status" v-model="currentStatus" class="w-full mb-4" />
+              <cornie-input disabled label="Updated By" class="w-full mb-4" v-model="updatedBy"/>
+              <cornie-input disabled label="Date Last Updated" class="w-full mb-4" v-model="dateUpdated"/>
+          
+              <cornie-select :label="'New Status'" v-model="status" :items="['Active', 'On-Hold','Revoked','Completed','Draft','Do Not Perform','Unknown','Entered-in-Error']" style="width: 100%" />
             </div>
           </div>
         </div>
@@ -42,11 +32,11 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-            @click="deactivate"
-                :loading="loading"
+            :loading="loading"
+            @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-           Deactivate
+          Update
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -61,39 +51,70 @@ import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieRadio from '@/components/cornieradio.vue'
 import CornieDialog from "@/components/CornieDialog.vue";
+import InfoIcon from '@/components/icons/info.vue'
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/autocomplete.vue";
+import MainCornieSelect from "@/components/cornieselect.vue";
+import UpdateIcon from "@/components/icons/blueupdate.vue";
+import CorniePhoneInput from "@/components/phone-input.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import CheckIcon from "@/components/icons/authcheck.vue";
+import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
+import DEdit from "@/components/icons/aedit.vue";
+import RangeSlider from "@/components/range.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
+import BluecheckIcon from "@/components/icons/bluecheck.vue";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
-import DatePicker from "./datepicker.vue";
-import CornieTextArea from "@/components/textarea.vue"
+import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
+import DateTimePicker from './components/datetime-picker.vue'
+import { namespace } from 'vuex-class'
 
 
 @Options({
-  name: "statusDialog",
+  name: "status",
   components: {
     ...CornieCard,
     CornieIconBtn,
+    NoteIcon,
     ArrowLeftIcon,
     DatePicker,
     CDelete,
+    RangeSlider,
+    UpdateIcon,
     DeleteorangeIcon,
-    CornieTextArea,
+    CheckIcon,
+    BluecheckIcon,
+    DEdit,
     CancelIcon,
+    InfoIcon,
     CornieDialog,
+    DateTimePicker,
+    SearchIcon,
     AccordionComponent,
+    IconInput,
     Textarea,
+    CornieInput,
+    CornieSelect,
+    CorniePhoneInput,
+    CornieRadio,
+    CornieBtn,
+    MainCornieSelect
   },
 })
-export default class Medication extends Vue {
+export default class Status extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
-  paymentId!: string;
+  id!: string;
 
    @Prop({ type: String, default: "" })
   updatedBy!: string;
@@ -101,47 +122,49 @@ export default class Medication extends Vue {
    @Prop({ type: String, default: "" })
   currentStatus!: string;
 
-  @Prop({ type: String, default: "" })
+    @Prop({ type: String, default: "" })
   dateUpdated!: string;
 
 status = "";
   loading = false;
   expand = false;
   isVisible = "";
- reasonsForDeactivation = "";
-      deactivateTillDate= "";
+
 
   required = string().required();
 
-  get  payload() {
-      return {
-        reasonsForDeactivation: this.reasonsForDeactivation,
-        deactivateTillDate: this.deactivateTillDate,
-      };
-    }
 
+ async updateStatus() {
+   const id = this.id;
+    const url = `/api/v1/other-requests/${id}`;
+    const body = {
+       status: this.status,
+    }
+    try {
+      const response = await cornieClient().put(url, body);
+      if (response.success){
+          window.notify({ msg: "Status Updated", status: "success" });
+        this.done();
+      }
+   
+    } catch (error) {
+      console.log(error);
+        window.notify({ msg: "Status Not Updated", status: "success" });
+      this.loading = false;
+    }
+  }
+
+ 
+ 
  done() {
+    this.$emit("medication-added");
     this.show = false;
   }
-     async deactivate() {
-      this.loading = true;
-      try {
-        const response = await cornieClient().post(
-          `/api/v1/payments/deactivateActivatePaymentAccount/${this.paymentId}`,
-          this.payload
-        );
-        if (response.success) {
-          this.loading = false;
-           window.notify({ msg: 'Payment account deactivated', status: 'success' })
-            this.done();
-        } 
-      } catch (error) {
-        this.loading = false;
-        window.notify({ msg:"Payment account not deactivated", status: 'error' })
-      }
-    }
- 
- 
+  async apply() {
+    this.loading = true;
+     await this.updateStatus()
+    this.loading = false;
+  }
  
   async created() {
    

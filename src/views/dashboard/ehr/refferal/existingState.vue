@@ -17,19 +17,19 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="showMedication('false')"
+                @click="showDiagnostic('false')"
               >
                New Request
               </button>
               
             </span>
             <cornie-table :columns="rawHeaders" v-model="sortMedications">
-                 <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showViewMedication(item.id)">
+                <template #actions="{ item }">
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showView(item.id)">
                       <eye-icon class="text-blue-300 fill-current" />
                       <span class="ml-8 text-xs">View</span>
                   </div>
-                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showMedication(item.id)">
+                    <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showDiagnostic(item.id)">
                       <edit-icon class="text-blue-300 fill-current" />
                       <span class="ml-8 text-xs">Edit</span>
                   </div>
@@ -82,34 +82,34 @@
               </template>
             </cornie-table>
     </div>
-    
-      <medication-modal 
+      <notes-add
+       :requestnotes="requestnotes"
+          :requestId="requestId"
+      v-model="showNotes"
+    />
+      <reffer-modal 
        v-if="requestId == 'false'"
-        :columns="practitioner"
            @medication-added="medicationAdded"
-          @update:preferred="showMedication"
-          v-model="showMedicationModal"/>
+          @update:preferred="showDiagnostic"
+          v-model="showDiagnosticModal"/>
 
-     <medication-modal
+     <reffer-modal
         v-else 
         :id="requestId" 
-          @update:preferred="showMedication"
-          v-model="showMedicationModal"/>
+          @update:preferred="showDiagnostic"
+          v-model="showDiagnosticModal"/>
 
-            <view-modal
-        :id="requestId" 
-          @medication-added="medicationAdded"
-          @update:preferred="showViewMedication"
-          v-model="showViewMedicationModal"/>
-        
-           <status-modal
+          
+         <status-modal
+           @medication-added="medicationAdded"
             :id="requestId" 
            :updatedBy="updatedBy" 
+                   :dateUpdated="update"
         :currentStatus="currentStatus" 
-        :dateUpdated="update"
-          @update:preferred="showStatus"
           v-model="showStatusModal"/>
 
+        <view-modal  :id="requestId" 
+          v-model="showViewModal"/>
 
         
   </div>
@@ -131,6 +131,8 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
+import { Prop } from "vue-property-decorator";
+import IOtherrequest from "@/types/IOtherrequest";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -138,111 +140,126 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import TimelineIcon from "@/components/icons/timeline.vue";
 import DangerIcon from "@/components/icons/danger.vue";
 import ShareIcon from "@/components/icons/share.vue";
-import CheckinIcon from "@/components/icons/checkin.vue";
+import CheckinIcon from "@/components/icons/newcheckin.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
+import CheckoutIcon from "@/components/icons/newcheckout.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import MedicationModal from "./medicationdialog.vue";
-import ViewModal from "./viewRequest.vue";
-import StatusModal from "./status.vue";
-import { namespace } from "vuex-class";
-import SendIcon from "@/components/icons/send.vue";
-import CheckoutIcon from "@/components/icons/newcheckout.vue";
 import CalenderIcon from "@/components/icons/newcalender.vue";
-import User from "@/types/user";
+import SendIcon from "@/components/icons/send.vue";
+import refferModal from "./refferDailog.vue";
+import StatusModal from "./status.vue";
+import ViewModal from "./view.vue";
+import { namespace } from "vuex-class";
+import CheckIn from './components/checkin.vue'
+import CheckOut from './components/checkout.vue'
+import { IPatient } from "@/types/IPatient";
+import IPractitioner from "@/types/IPractitioner";
 
-const request = namespace("request");
+const otherrequest = namespace("otherrequest");
+const patients = namespace("patients");
 const userStore = namespace("user");
 
+
+const emptyOtherrequest: IOtherrequest = {
+  basicInfo: {},
+  requestInfo: {},
+  subject: {},
+  performer: {},
+  forms: {},
+  request: {
+      range: [20,50]
+  },
+};
 @Options({
   components: {
     Table,
     CancelIcon,
-    CheckoutIcon,
     SortIcon,
-    CheckinIcon,
-    SendIcon,
-    MedicationModal,
-    ViewModal,
     CalenderIcon,
+    CheckinIcon,
+    refferModal,
+    ViewModal,
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,
+    StatusModal,
     ShareIcon,
     ThreeDotIcon,
     DangerIcon,
     PlusIcon,
-    StatusModal,
+    SendIcon,
     SearchIcon,
     MessageIcon,
     PrintIcon,
+    CheckoutIcon,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
     ColumnFilter,
     TableOptions,
     DeleteIcon,
+    CheckIn,
     EyeIcon,
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
+    CheckOut
   },
   
 })
-export default class AllergyExistingState extends Vue {
+export default class ReferralExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
   selected = 1;
   showNotes = false;
-  showMedicationModal= false;
-  showViewMedicationModal=false;
+  showDiagnosticModal= false;
   requestId="";
   tasknotes=[];
+  showCheckout= false;
 onePatientId ="";
-showStatusModal=false;
+showStatusModal= false;
 updatedBy= "";
 currentStatus="";
 update="";
+newname ="";
+practitonerId="";
+showViewModal=false;
+  // @Prop({ type: Array, default: [] })
+  // requests!: IOtherrequest[];
 
+   @otherrequest.State
+  otherrequests!: any[];
 
-  @userStore.State
-  user!: User;
-
-  @userStore.State
-  practitionerAuthenticated!: User;
-
-  @userStore.Action
-  updatePractitionerAuthStatus!: () => Promise<void>;
-
-  @request.State
-  requests!: any[];
-
-  @request.State
+  @otherrequest.State
   practitioners!: any[];
 
-    @request.State
-  patients!: any[];
+    @userStore.Getter
+  authPractitioner!: IPractitioner;
 
-  @request.Action
-  deleteRequest!: (id: string) => Promise<boolean>;
+    @patients.State
+  patients!:IPatient[];
 
- @request.Action
-  getPatients!: () => Promise<void>;
+  @otherrequest.Action
+  deleteOtherrequest!: (id: string) => Promise<boolean>;
 
-  @request.Action
+ @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+  @otherrequest.Action
   getPractitioners!: () => Promise<void>;
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+ @otherrequest.Action
+  fetchOtherrequests!: () => Promise<void>;
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Date", key: "createdAt", show: true },
+    { title: "Requested", key: "createdAt", show: true },
     {
       title: "rEQUISITION id",
       key: "id",
@@ -251,17 +268,27 @@ update="";
     {
       title: "Patient",
       key: "patient",
-      show: true,
+      show: false,
     },
     {
       title: "Requester",
       key: "requester",
-      show: false,
+      show: true,
+    },
+     {
+      title: "Category",
+      key: "category",
+      show: true,
+    },
+     {
+      title: "Priority",
+      key: "priority",
+      show: true,
     },
     {
       title: "Dispenser",
       key: "dispenser",
-      show: true,
+      show: false,
     },
     {
       title: "Performer",
@@ -274,6 +301,12 @@ update="";
       show: true,
     },
   ];
+ async makeNotes(id: string) {
+    this.requestId = id;
+    this.showNotes = true;
+    //this.fetchNotes();
+  }
+
 
   get headers() {
     const preferred =
@@ -283,56 +316,61 @@ update="";
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
+   get patientId() {
+    return this.$route.params.id;
+  }
   get items() {
-    const requests = this.requests.map((request) => {
-         (request as any).createdAt = new Date(
-         (request as any).createdAt 
+    const otherrequests = this.otherrequests.map((otherrequest) => {
+         (otherrequest as any).createdAt = new Date(
+         (otherrequest as any).createdAt
        ).toDateString();
-        (request as any).updatedAt = new Date(
-         (request as any).updatedAt 
-       ).toDateString();
-      this.updatedBy = this.getPatientName(request.requestDetails.requester);
-      this.currentStatus = request.status;
-      this.update= request.updatedAt
-        return {
-        ...request,
-         action: request.id,
-         patient: this.getPatientName(request.subject.subject),
-       requester: this.getPatientName(request.requestDetails.requester),
-        dispenser: this.getPractitionerName(request.performer.dispenser),
-        performer: this.getPractitionerName(request.medicationAdministration.performer),
-        };
-        
-    });
-    
-    if (!this.query) return requests;
-    return search.searchObjectArray(requests, this.query);
-  }
-// getPractitionerName(id: string){
-//    const pt = this.practitioners.find((i: any) => i.id === id);
-//     return pt ? `${pt.firstName} ${pt.lastName}` : '';
-// }
-  async showMedication(value:string){
-      this.showMedicationModal = true;
-      this.requestId = value;
-  }
-  async showViewMedication(value:string){
-      this.showViewMedicationModal = true;
-      this.requestId = value;
-  }
 
-  async showStatus(value:string){
+         (otherrequest as any).updatedAt = new Date(
+         (otherrequest as any).updatedAt
+       ).toDateString();
+        this.updatedBy = this.getPractitionerName(otherrequest.performer.performer);
+      this.currentStatus = otherrequest.status;
+
+       this.update= otherrequest.updatedAt
+       this.practitonerId = otherrequest.performer.performer;
+        return {
+        ...otherrequest,
+         action: otherrequest.id,
+         patient: this.getPatientName(this.patientId as string),
+       requester: this.getPatientName(this.patientId as string),
+        dispenser: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
+        performer: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
+        status: otherrequest.status,
+        category: otherrequest.basicInfo.category,
+        priority: otherrequest.basicInfo.priority
+        };
+    });
+    if (!this.query) return otherrequests;
+    return search.searchObjectArray(otherrequests, this.query);
+  }
+    async showStatus(value:string){
     this.showStatusModal = true;
     this.requestId = value;
   }
+ showCheckoutPane(id: string) {
+    this.showCheckout = true;
+  }
+  async showDiagnostic(value:string){
+      this.showDiagnosticModal = true;
+      this.requestId = value;
+  }
 
+async showView(value:string){
+    console.log("hello world");
+    this.showViewModal = true;
+    this.requestId = value;
+}
   medicationAdded() {
-  this.fetchRequests();
+  this.fetchOtherrequests();
   }
         getPatientName(id: string) {
-            const pt = this.patients.find((i: any) => i.id === id);
-            return pt ? `${pt.firstname} ${pt.lastname}` : '';
+            const pujhjht = this.patients.find((i: any) => i.id === id);
+            return pujhjht ? `${pujhjht.firstname} ${pujhjht.lastname}` : '';
         }
         getPractitionerName(id: string){
         const pt = this.practitioners.find((i: any) => i.id === id);
@@ -341,13 +379,13 @@ update="";
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this allergy",
-      title: "Delete allergy"
+      message: "You are about to delete this request",
+      title: "Delete request"
     });
     if (!confirmed) return;
 
-    if (await this.deleteRequest(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
-    else window.notify({ msg: "Allergy not cancelled", status: "error" });
+    if (await this.deleteOtherrequest(id)) window.notify({ msg: "Request deleted", status: "success" });
+    else window.notify({ msg: "Request not deleted", status: "error" });
   }
  
       get sortMedications (){
@@ -358,9 +396,8 @@ update="";
    
      async created() {
           this.getPractitioners();
-          this.getPatients();
-          this.sortMedications;
-          this.fetchRequests();
+          this.fetchPatients();
+          this.fetchOtherrequests();
     }
 
 }
