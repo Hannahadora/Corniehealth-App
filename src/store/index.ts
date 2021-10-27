@@ -7,6 +7,7 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
+import CurrencyStore from "./currency";
 import CarePartnersStore from "./CarePartners";
 import practitioner from "./practitioner";
 import HealthcareStore from "./healthcare";
@@ -45,6 +46,7 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    currency: CurrencyStore,
     OrgFunctions,
     condition,
     hierarchy: OrganizationHierarchy,

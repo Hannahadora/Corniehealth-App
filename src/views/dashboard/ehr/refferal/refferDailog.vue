@@ -25,7 +25,7 @@
                   </cornie-select>
                   <cornie-select
                     class="w-full"
-                    :items="dropdowns.serviceType"
+                    :items="['Care Plan', 'Service Request', 'Medication Request']"
                     v-model="otherrequestModel.basicInfo.basedOn"
                     label="based on"
                     placeholder="--Select--"
