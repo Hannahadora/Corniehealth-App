@@ -4,7 +4,7 @@ type Concept = {
   [state: string]: {
     code: string;
     display: string;
-  };
+  }[];
 };
 
 const localStore = new LocalStore("corniehealth-dd-cache");
