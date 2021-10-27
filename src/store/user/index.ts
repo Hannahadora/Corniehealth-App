@@ -26,7 +26,7 @@ export default {
     emailVerified: false,
     cornieData: {} as any,
     practitionerAuthenticated: true,
-    domain: 'gcbv',
+    domain: "",
   },
   getters: {
     accountType(state) {
@@ -48,8 +48,8 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
-    setAuthDomain(state, domain: string){
-      state.domain = domain
+    setAuthDomain(state, domain: string) {
+      state.domain = domain;
     },
     setLoginInfo(state, payload) {
       state.user = payload.user;
