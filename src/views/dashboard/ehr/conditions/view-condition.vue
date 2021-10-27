@@ -85,7 +85,7 @@
                 <span class="text-sm text-gray-500 mb-3">{{ onset.key }}</span>
                 <span class="text-sm">{{ onset.text }}</span>
                 <span class="text-sm text-gray-500 mb-3">
-                  {{ onset.subtext }}
+                  {{ onset.subtext || "" }}
                 </span>
               </div>
             </div>
@@ -98,12 +98,13 @@
             </span>
             <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3">Age</span>
-                <span class="text-sm">1 Year</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3">String</span>
-                <span class="text-sm">XXXX</span>
+                <span class="text-sm text-gray-500 mb-3 capitalize">{{
+                  abatement.key
+                }}</span>
+                <span class="text-sm">{{ abatement.text }}</span>
+                <span class="text-sm text-gray-500 mb-3">
+                  {{ abatement.subtext || "" }}
+                </span>
               </div>
             </div>
           </div>
@@ -116,11 +117,11 @@
             <div class="mt-3 grid grid-cols-2 gap-y-2">
               <div class="flex flex-col">
                 <span class="text-sm text-gray-500 mb-3">Summary</span>
-                <span class="text-sm">XXXXXXXXX</span>
+                <span class="text-sm">{{ item.summary || "" }}</span>
               </div>
               <div class="flex flex-col">
                 <span class="text-sm text-gray-500 mb-3">Type</span>
-                <span class="text-sm">XXXX</span>
+                <span class="text-sm">{{ stageType }}</span>
               </div>
             </div>
             <div class="flex flex-col mt-4">
@@ -144,7 +145,7 @@
               </div>
               <div class="flex flex-col">
                 <span class="text-sm text-gray-500 mb-3">Details</span>
-                <span class="text-sm">XXXX</span>
+                <span class="text-sm">{{ item.detail }}</span>
               </div>
             </div>
           </div>
@@ -175,7 +176,6 @@ import { ICondition } from "@/types/ICondition";
 import { printPractitioner } from "@/plugins/utils";
 import { getDropdown } from "@/plugins/definitions";
 import { Codeable } from "@/types/misc";
-import { times } from "lodash";
 import Period from "@/types/IPeriod";
 
 @Options({
@@ -207,6 +207,7 @@ export default class ViewCondition extends Vue {
   verificationStatuses: Codeable[] = [];
   severities: Codeable[] = [];
   clinicalStatuses: Codeable[] = [];
+  stageTypes: Codeable[] = [];
 
   get item() {
     return this.condition || {};
@@ -220,6 +221,12 @@ export default class ViewCondition extends Vue {
       department: practitioner.department,
       date: new Date(this.item.createdAt!!).toLocaleDateString(),
     };
+  }
+
+  get stageType() {
+    if (!this.item.id) return {};
+    const value = this.item.type?.replaceAll('"', "");
+    return this.stageTypes.find((s) => (s.code = value))?.display;
   }
 
   get clinicalStatus() {
@@ -256,6 +263,40 @@ export default class ViewCondition extends Vue {
     if (!this.item.id) return;
     const value = this.item.bodySite?.replaceAll('"', "");
     return this.bodySites.find((s) => (s.code = value))?.display;
+  }
+
+  get abatement() {
+    if (!this.item.id) return;
+    const abatements = this.item.abatements;
+    if (!abatements?.length) return;
+    const abatement = abatements[0];
+    if (abatement.dateTime) {
+      return {
+        key: "Date/Time",
+        text: new Date(abatement.dateTime).toLocaleDateString(),
+        subtext: this.printTime(abatement.dateTime),
+      };
+    } else if (abatement.age) {
+      return {
+        key: "Age",
+        text: abatement.age,
+      };
+    } else if (abatement.period) {
+      return {
+        key: "Period",
+        text: this.printPeriod(abatement.period),
+      };
+    } else if (abatement.string) {
+      return {
+        key: "String",
+        text: abatement.string,
+      };
+    } else if (abatement.range) {
+      return {
+        key: "Range",
+        text: `${abatement.range.min} ${abatement.range.unit} to ${abatement.range.max} ${abatement.range.unit}`,
+      };
+    }
   }
 
   get onset() {
@@ -318,6 +359,9 @@ export default class ViewCondition extends Vue {
     );
     this.bodySites = await getDropdown(
       "http://hl7.org/fhir/ValueSet/body-site"
+    );
+    this.stageTypes = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-stage-type"
     );
   }
 }
