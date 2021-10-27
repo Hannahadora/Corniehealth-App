@@ -65,7 +65,7 @@ interface IAbatement {
   id?: string;
   dateTime?: string;
   age?: string;
-  period?: string;
+  period?: Period;
   range?: Range;
   string?: string;
   asserter: string;
