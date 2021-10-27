@@ -1,34 +1,16 @@
 <template>
-  <clinical-dialog class="w-9/12" v-model="show" title="[Identifier]" noarrow>
+  <clinical-dialog class="w-9/12" v-model="show" :title="item.id" noarrow>
     <div class="w-full flex flex-col pl-3">
-      <div class="w-full flex justify-between mb-3">
-        <img src="@/assets/img/SNH-LOGO.png" />
-        <div class="grid grid-cols-1 text-xs gap-y-2 text-right">
-          <span>St. Nicholas Hospital</span>
-          <span>57 Campbell Street, Lagos Island. Lagos</span>
-          <span>+234 802 290 8484</span>
-          <span>Info@saintnicholashospital.com</span>
-        </div>
-      </div>
+      <org-card :organization="item.organization" />
       <div class="w-full grid grid-cols-2 pb-6 border-b-2 border-dashed">
-        <div class="grid grid-cols-1 gap-y-2 text-sm">
-          <h2 class="text-primary text-sm font-bold">Patient Information</h2>
-          <avatar :src="avatar" class="h-24 w-24" />
-          <h3 class="text-primary text-sm font-semibold">Nkechi Claire Obi</h3>
-          <span class="text-gray-500">MRN-CH23022021-0010</span>
-          <span class="text-xs">
-            87 Montagomery Close, Friend’s Colony Estate, Lekki
-          </span>
-          <span class="text-xs">08032545678</span>
-          <span class="text-xs">Nkechi@gmail.com</span>
-        </div>
+        <patient-card :id="item?.patientId" />
         <div class="grid grid-cols-1 gap-y-1 text-sm">
           <h2 class="text-primary text-sm font-bold">Recorder and asserter</h2>
           <div class="grid grid-cols-1 gap-y-1">
             <span class="text-danger text-xs">Recorded By</span>
-            <span> Dr. Obi Nduka </span>
-            <span class="text-gray-500 text-xs">Pathology</span>
-            <span class="text-gray-500 text-xs">21/09/2021</span>
+            <span>{{ recorder.name }} </span>
+            <span class="text-gray-500 text-xs">{{ recorder.department }}</span>
+            <span class="text-gray-500 text-xs">{{ recorder.date }}</span>
           </div>
           <div class="grid grid-cols-1 gap-y-1">
             <span class="text-danger text-xs">Asserted By</span>
@@ -47,27 +29,39 @@
           <div class="mt-2 grid grid-cols-3 gap-y-4">
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Clinical Status </span>
-              <span class="mt-1 text-xs text-black"> Active</span>
+              <span class="mt-1 text-xs text-black capitalize">
+                {{ clinicalStatus }}</span
+              >
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Verification Status </span>
-              <span class="mt-1 text-xs text-black"> Provisional </span>
+              <span class="mt-1 text-xs text-black capitalize">
+                {{ verificationStatus }}
+              </span>
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Category </span>
-              <span class="mt-1 text-xs text-black"> Encounter-diagnosis </span>
+              <span class="mt-1 text-xs text-black capitalize">
+                {{ category }}
+              </span>
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Severity </span>
-              <span class="mt-1 text-xs text-black"> Mild</span>
+              <span class="mt-1 text-xs text-black capitalize">
+                {{ severity }}</span
+              >
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Code </span>
-              <span class="mt-1 text-xs text-black"> Typhlolithiasis </span>
+              <span class="mt-1 text-xs text-black capitalize">
+                {{ code }}
+              </span>
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Body Site </span>
-              <span class="mt-1 text-xs text-black"> Kupffer cell </span>
+              <span class="mt-1 text-xs text-black capitalize">
+                {{ bodySite }}
+              </span>
             </div>
           </div>
           <div class="mt-3 flex flex-col">
@@ -76,8 +70,7 @@
               Note
             </span>
             <p class="text-sm pt-3">
-              At this stage of the condition, the patient is expected to avoid
-              foods with high cholesterol.
+              {{ item.evidenceNote || "N/A" }}
             </p>
           </div>
         </div>
@@ -89,14 +82,11 @@
             </span>
             <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3">Date/Time</span>
-                <span class="text-sm">21/10/2021</span>
-                <span class="text-sm text-gray-500 mb-3">15:00</span>
-              </div>
-
-              <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3">String</span>
-                <span class="text-sm">XXXX</span>
+                <span class="text-sm text-gray-500 mb-3">{{ onset.key }}</span>
+                <span class="text-sm">{{ onset.text }}</span>
+                <span class="text-sm text-gray-500 mb-3">
+                  {{ onset.subtext }}
+                </span>
               </div>
             </div>
           </div>
@@ -179,14 +169,24 @@ import ConditionIcon from "@/components/icons/condition-icon.vue";
 import NoteIcon from "@/components/icons/note.vue";
 import OnsetIcon from "@/components/icons/onset.vue";
 import StageIcon from "@/components/icons/stage.vue";
+import OrgCard from "./components/org-card.vue";
+import PatientCard from "./components/patient-card.vue";
+import { ICondition } from "@/types/ICondition";
+import { printPractitioner } from "@/plugins/utils";
+import { getDropdown } from "@/plugins/definitions";
+import { Codeable } from "@/types/misc";
+import { times } from "lodash";
+import Period from "@/types/IPeriod";
 
 @Options({
   name: "ViewCondition",
   components: {
     ClinicalDialog,
+    PatientCard,
     ConditionIcon,
     StageIcon,
     OnsetIcon,
+    OrgCard,
     Avatar,
     NoteIcon,
   },
@@ -198,6 +198,127 @@ export default class ViewCondition extends Vue {
   @PropSync("modelValue")
   show!: boolean;
 
-  avatar = require("@/assets/img/avatar.png");
+  @Prop({ type: Object, required: true })
+  condition!: ICondition;
+
+  bodySites: Codeable[] = [];
+  codes: Codeable[] = [];
+  categories: Codeable[] = [];
+  verificationStatuses: Codeable[] = [];
+  severities: Codeable[] = [];
+  clinicalStatuses: Codeable[] = [];
+
+  get item() {
+    return this.condition || {};
+  }
+
+  get recorder() {
+    if (!this.item.id) return {};
+    const practitioner = this.item.practitioner!!;
+    return {
+      name: printPractitioner(practitioner),
+      department: practitioner.department,
+      date: new Date(this.item.createdAt!!).toLocaleDateString(),
+    };
+  }
+
+  get clinicalStatus() {
+    if (!this.item.id) return;
+    const status = this.item.clinicalStatus?.replaceAll('"', "");
+    return this.clinicalStatuses.find((s) => (s.code = status))?.display;
+  }
+
+  get verificationStatus() {
+    if (!this.item.id) return;
+    const status = this.item.verificationStatus?.replaceAll('"', "");
+    return this.verificationStatuses.find((s) => (s.code = status))?.display;
+  }
+
+  get category() {
+    if (!this.item.id) return;
+    const cat = this.item.category?.replaceAll('"', "");
+    return this.categories.find((s) => (s.code = cat))?.display;
+  }
+
+  get severity() {
+    if (!this.item.id) return;
+    const value = this.item.severity?.replaceAll('"', "");
+    return this.severities.find((s) => (s.code = value))?.display;
+  }
+
+  get code() {
+    if (!this.item.id) return;
+    const value = this.item.code?.replaceAll('"', "");
+    return this.codes.find((s) => (s.code = value))?.display;
+  }
+
+  get bodySite() {
+    if (!this.item.id) return;
+    const value = this.item.bodySite?.replaceAll('"', "");
+    return this.bodySites.find((s) => (s.code = value))?.display;
+  }
+
+  get onset() {
+    if (!this.item.id) return;
+    const onset = this.item.onSet;
+    if (onset.dateTime) {
+      return {
+        key: "Date/Time",
+        text: new Date(onset.dateTime).toLocaleDateString(),
+        subtext: this.printTime(onset.dateTime),
+      };
+    } else if (onset.age) {
+      return {
+        key: "Age",
+        text: onset.age,
+      };
+    } else if (onset.period) {
+      return {
+        key: "Period",
+        text: this.printPeriod(onset.period),
+      };
+    } else if (onset.onsetString) {
+      return {
+        key: "String",
+        text: onset.onsetString,
+      };
+    } else if (onset.range) {
+      return {
+        key: "Range",
+        text: `${onset.range.min} ${onset.range.unit} to ${onset.range.max} ${onset.range.unit}`,
+      };
+    }
+  }
+
+  printPeriod(period: Period) {
+    const start = new Date(period.start).toLocaleDateString();
+    let end = "";
+    if (period.end) end = new Date(period.end).toLocaleDateString();
+    return `${start} - ${end}`;
+  }
+  printTime(timeString: string) {
+    const date = new Date(timeString);
+    return `${date.getHours()}:${date.getMinutes()}`;
+  }
+  async created() {
+    this.clinicalStatuses = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-clinical"
+    );
+    this.verificationStatuses = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-ver-status"
+    );
+    this.categories = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-category"
+    );
+    this.severities = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-severity"
+    );
+    this.codes = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+    this.bodySites = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/body-site"
+    );
+  }
 }
 </script>
