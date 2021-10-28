@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="h-full"  style="width:70.6667%">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title  class="w-full">
           <cornie-icon-btn @click="show = false">
@@ -165,11 +165,15 @@
                   v-model="otherrequestModel.request.quantity"
                   placeholder="--Enter--"
                 />
-                 <cornie-input  class="w-full" label="range (1st value)"   :v-model="otherrequestModel.request.range[0]" placeholder="Enter" />
-                  <cornie-input  class="w-full" label="range (2nd value)"   :v-model="otherrequestModel.request.range[1]" placeholder="Enter" />
+            </div>
+                <measurable label="Heading" v-model="otherrequestModel.request.range" />
+              <div class="grid grid-cols-2 gap-2 mt-5">
 
-                 <cornie-input  class="w-full" label="ratio (1st value)"   :v-model="otherrequestModel.request.ratio" placeholder="Enter" />
-                  <cornie-input  class="w-full" label="ratio (2nd value)"   :v-model="otherrequestModel.request.ratio" placeholder="Enter" />
+                 <!-- <cornie-input  class="w-full" label="range (1st value)"   :v-model="otherrequestModel.request.range[0]" placeholder="Enter" />
+                  <cornie-input  class="w-full" label="range (2nd value)"   :v-model="otherrequestModel.request.range[1]" placeholder="Enter" /> -->
+
+                 <cornie-input  class="w-full" label="ratio (1st value)"   v-model="otherrequestModel.request.ratio" placeholder="Enter" />
+                  <cornie-input  class="w-full" label="ratio (2nd value)"   v-model="ratio" placeholder="Enter" />
                 <!-- <div>
                   <label class="block uppercase mb-1 text-xs font-bold"
                     >Ratio</label
@@ -370,7 +374,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            {{newaction}} Request
+            {{newaction}} 
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -407,8 +411,9 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "./components/datetime-picker.vue";
 import { string } from "yup";
+import Measurable from "@/components/measurable.vue";
 import IOtherrequest from "@/types/IOtherrequest";
-  import { IPatient } from "@/types/IPatient";
+import { IPatient } from "@/types/IPatient";
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 import IPractitioner from "@/types/IPractitioner";
@@ -439,6 +444,7 @@ const emptyOtherrequest: IOtherrequest = {
     CornieIconBtn,
     NoteIcon,
     ArrowLeftIcon,
+    Measurable,
     DatePicker,
     CDelete,
     RangeSlider,
@@ -472,7 +478,7 @@ export default class Medication extends Vue {
   id!: string;
   
   @Prop({ type: Object, required: false, default: { ...emptyOtherrequest} })
-  otherrequest!: IOtherrequest;
+  patientrequests!: IOtherrequest;
 
   otherrequestModel = {} as IOtherrequest;
 
@@ -493,7 +499,7 @@ export default class Medication extends Vue {
     this.otherrequestModel = JSON.parse(JSON.stringify({ ...otherrequest }));
   }
   @otherrequest.Mutation
-  updatedOtherrequests!: any;
+  setPatientRequests!: any;
 
 
   loading = false;
@@ -508,7 +514,7 @@ export default class Medication extends Vue {
   openedS = true;
   openedM = false;
   showMedicationModal = false;
-
+ratio="";
 
 patient=[];
 practitioner=[];
@@ -541,7 +547,7 @@ performer="";
   }
 
 async setRequestModel() {
-     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.otherrequest }));
+     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.patientrequests }));
   }
   get payload() {
     //  const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
@@ -570,7 +576,7 @@ get format() {
 
 
     get newaction() {
-    return this.id ? 'Update' : 'Create New'
+    return this.id ? 'Update' : 'Save'
   }
 
   get allaction() {
@@ -596,9 +602,10 @@ get allPerformer() {
  }
 
  done() {
-    this.$emit("allergy-added");
+    this.$emit("medication-added");
     this.show = false;
   }
+
     async setRequest() {
     const otherrequest = await this.getOtherrequestById(this.id)
     if (!otherrequest) return
@@ -643,8 +650,8 @@ get allPerformer() {
     const patientfullnameid = this.PatientName.id;
 
 
-   this.payload.requestInfo.requester = practitionerfullnameid;
-  this.payload.subject.subject = practitionerfullnameid;
+   this.payload.requestInfo.requester = patientfullnameid;
+  this.payload.subject.subject = patientfullnameid;
   this.payload.performer.performer = practitionerfullnameid;
   
   if(this.allLocation.length === 0) this.payload.performer.location = practitionerfullnameid;
@@ -652,7 +659,7 @@ get allPerformer() {
    try {
       const response = await cornieClient().post("/api/v1/other-requests", this.payload);
       if (response.success) {
-          this.updatedOtherrequests([response.data]);
+          this.setPatientRequests([response.data]);
           window.notify({ msg: "Request Created", status: "success" });
         this.done();
       }
@@ -668,7 +675,7 @@ get allPerformer() {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-          this.updatedOtherrequests([response.data]);
+          this.setPatientRequests([response.data]);
         window.notify({ msg: "Request Updated", status: "success" });
         this.done();
       }
