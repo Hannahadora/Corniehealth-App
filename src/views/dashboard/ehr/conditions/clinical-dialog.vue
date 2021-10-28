@@ -43,11 +43,13 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieCard from "@/components/cornie-card";
 import DeleteIcon from "@/components/icons/cancel.vue";
 import { Prop, PropSync } from "vue-property-decorator";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
 
 @Options({
   name: "ClinicalDialog",
   components: {
     ...CornieCard,
+    CornieIconBtn,
     CornieDialog,
     ArrowLeftIcon,
     DeleteIcon,
