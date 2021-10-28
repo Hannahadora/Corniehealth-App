@@ -255,8 +255,13 @@ export default class Settings extends Vue {
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
       {
         name: "Progress Notes",
-        to: "progress-notes",
-        icon: "clinic-icon",
+        to: "/progress-notes-existing/",
+        icon: "proceed-icon",
+      },
+      {
+        name: "Risk Assesment",
+        to: "/risk-assessment/",
+        icon: "diag-icon",
       },
     ];
   }

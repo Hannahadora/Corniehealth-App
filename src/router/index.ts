@@ -175,6 +175,7 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       ExperienceRoutes,
+      ClinicalsRoute,
       
       {
         path: "settings/",

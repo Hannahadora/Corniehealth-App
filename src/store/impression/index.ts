@@ -31,6 +31,7 @@ export default {
   actions: {
     async fetchImpressions(ctx,patientId:string) {
       const impressions = await fetchImpressions(patientId);
+      console.log('impression patient', impressions);
       ctx.commit("setImpressions", impressions);
     },
     async getImpressionById(ctx, id: string) {

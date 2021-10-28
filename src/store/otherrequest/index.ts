@@ -42,6 +42,7 @@ export default {
   actions: {
     async fetchOtherrequests(ctx) {
       const otherrequests = await fetchOtherrequests();
+      console.log('otherrequests', otherrequests);
       ctx.commit("updatedOtherrequests", otherrequests);
     },
     async getPatients(ctx) {

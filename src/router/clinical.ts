@@ -98,6 +98,20 @@ export const ClinicalsRoute: RouteRecordRaw = {
           import("@/views/dashboard/ehr/appointment/index.vue"),
          
         },
+        {
+          path: "progress-notes-existing/:patientId?",
+          props: true,
+          name: "Progress Notes",
+          component: () =>
+            import("@/views/dashboard/ehr/progressnotes/existing-state.vue"),
+        },
+        {
+          path: "risk-assessment",
+          props: true,
+          name: "Risk Assessment",
+          component: () =>
+            import("@/views/dashboard/ehr/riskassessment/index.vue"),
+        },
       
     ],
   }

@@ -43,6 +43,7 @@ export default {
   actions: {
     async fetchRequests(ctx) {
       const requests = await fetchRequests();
+      console.log('request', requests);
       ctx.commit("updatedRequests", requests);
     },
     async getPatients(ctx) {

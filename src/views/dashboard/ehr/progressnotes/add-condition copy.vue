@@ -651,6 +651,8 @@ export default class AddCondition extends Vue {
     };
   }
 
+  
+
   async submit() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;

@@ -6,7 +6,11 @@
     class=""
   >
     <dots-horizontal-icon class="mr-7" @click="isShow" />
-    <div v-if="topClick" class="p-2 flex flex-row-reverse" style="margin-top:-30px;">
+    <div
+      v-if="topClick"
+      class="p-2 flex flex-row-reverse"
+      style="margin-top: -30px"
+    >
       <div class="card">
         <div class="p-2 m-1">
           <div class="p-3 flex justify-between p-1">
@@ -322,8 +326,12 @@
             </div> -->
           </div>
         </div>
-        <cornie-radio class="icon-check-mark3 bg-white rounded-full" label="ggg"
-    modelValue="true" v-model="generalNormal" />
+        <cornie-radio
+          class="icon-check-mark3 bg-white rounded-full"
+          label="ggg"
+          modelValue="true"
+          v-model="generalNormal"
+        />
         <h3 class="text-sm font-bold">General WNL</h3>
         <ul class="flex">
           <li
@@ -731,52 +739,82 @@
             label="Hospitalizations"
           /> -->
 
-            <auto-complete
+          <encounter-select
+            v-model="referenceEncounter"
+            :rules="required"
+            label="Reference Encounter"
+            @click="printEncounterId(referenceEncounter)"
+          />
+
+
+
+           <!-- <auto-complete :items="items2" v-model="encounter">
+    <template #item="{ item }">
+      <div class="flex justify-between my-1 items-center text-xs">
+        <span class="flex flex-col">
+          YXXX-XXX-XXX
+          <span class="flex items-center">
+            <avatar :src="item.practitionerImage" class="mr-1" />
+            {{ item.practitioner }}
+          </span>
+        </span>
+        <span class="flex flex-col">
+          <span class="font-semibold text-sm mb-1 text-black">
+            {{ item.type }}
+          </span>
+          <span class="text-gray-500">{{ item.time }}</span>
+        </span>
+      </div>
+    </template>
+  </auto-complete> -->
+          <!-- <auto-complete
             v-bind="$attrs"
             v-model="item"
             :filter="filter"
-            :items="items"
+            :items="itemsencounter"
           >
             <template #item="{ item }">
               <div
-                @click="printId(item.id)"
+                
                 class="w-full flex items-center my-1 justify-between"
               >
                 <div class="flex items-center">
-                  <!-- <avatar :src="item.image" /> -->
                   <div class="flex ml-1 flex-col">
-                    <span class="text-xs">{{ item.severity }}</span>
+                    <span class="text-xs">{{ item.practitioner }}</span>
                   </div>
                 </div>
                 <span class="text-xs font-semibold text-gray-500">
-                  {{ item.recorder.name }}
+                  {{ item.practitioner }}
                 </span>
               </div>
             </template>
-          </auto-complete>
+          </auto-complete> -->
 
           <cornie-select
             v-model="status"
             label="Diagnostic Request"
             :items="clinicalStatuses"
-            :rules="required"
           />
           <cornie-select
             v-model="severity"
             label="Medication Request"
             :items="verificationStatuses"
-            :rules="required"
           />
+
+          <!-- <cornie-select
+            v-model="severity"
+            label="Medication Request"
+            :items="verificationStatuses"
+            :rules="required"
+          /> -->
           <auto-complete
             v-model="category"
-            :rules="required"
             :items="categories"
             label="Referral Request"
           />
           <cornie-select
             v-model="severity"
             label="Hospitalizations"
-            :rules="required"
             :items="severities"
           />
         </div>
@@ -850,6 +888,8 @@ import AddProgressNote2 from "./add-progressnote.vue";
 import ConditionSelect from "./condition-select.vue";
 
 import { ICondition } from "@/types/ICondition";
+import IOtherrequest from "@/types/IOtherrequest";
+import IRequest from "@/types/IRequest";
 
 const condition = namespace("condition");
 
@@ -860,9 +900,13 @@ import Condition from "yup/lib/Condition";
 const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
-const practitioner  = namespace('practitioner');
-const vital  = namespace('vitals');
+const practitioner = namespace("practitioner");
+const vital = namespace("vitals");
 import IEncounter from "@/types/IEncounter";
+
+const request = namespace("request");
+const otherrequest = namespace("otherrequest");
+const impression = namespace("impression");
 
 
 // import "vue-range-component/dist/vue-range-slider.js";
@@ -895,6 +939,20 @@ const measurable = {
   min: "",
   max: "",
   string: "",
+};
+
+
+const emptyRequest: IRequest = {
+  requestInfo: {},
+  requestDetails: {},
+  subject: {},
+  performer: {},
+  medicationAdministration: {},
+  fufillment: {},
+  history: {},
+  medications: [],
+
+
 };
 
 @Options({
@@ -930,6 +988,11 @@ const measurable = {
   },
 })
 export default class AddProgressNote extends Vue {
+
+
+  // encounters: IEncounter[] = [];
+
+  
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<ICondition>;
 
@@ -955,10 +1018,50 @@ export default class AddProgressNote extends Vue {
   authPractitioner!: IPractitioner;
 
   @vital.State
-  encounters!: IEncounter[];
+  encounters!: [];
 
   @vital.Action
   getEncounters!: (patientId: string) => Promise<void>;
+
+
+
+//  request: IRequest = emptyRequest;
+
+  
+  @request.State
+  requests!: any[];
+
+  @otherrequest.State
+  otherrequests!: any[];
+
+  @request.Action
+  fetchRequests!: () => Promise<void>;
+
+  @otherrequest.Action
+  fetchOtherrequests!: () => Promise<void>;
+
+  @request.State
+  patients!: any[];
+
+  @request.State
+  practitioners!: any[];
+
+  @request.Action
+  getPatients!: () => Promise<void>;
+
+  @request.Action
+  getPractitioners!: () => Promise<void>;
+
+
+ @request.State
+  impressions!: any[];
+
+   @impression.Action
+  fetchImpressions!: (patientId: string) => Promise<void>;
+
+  select(i:number) {
+      this.selected = i;
+    }
 
   addingProgressnote = false;
   meConditions!: [];
@@ -1000,7 +1103,6 @@ export default class AddProgressNote extends Vue {
   evidenceDetail = "";
   evidenceNote = "";
 
-
   async loadDropdown() {
     this.categories = await categories();
   }
@@ -1035,8 +1137,6 @@ export default class AddProgressNote extends Vue {
   //   return this.$route.params.id;
   // }
 
-  
-
   @condition.State
   conditions!: { [state: string]: ICondition[] };
 
@@ -1067,6 +1167,12 @@ export default class AddProgressNote extends Vue {
     return (this.myId = id);
     //  this.items.find((s) => s.id == id) || "";
   }
+  enc: any = [];
+  printEncounterId(id: string) {
+    // return console.log(id, 'ggggge');
+    // const enc: any = [];
+    return this.enc.push(id);
+  }
 
   get items() {
     const items = this.patientConditions.map((condition) => ({
@@ -1084,6 +1190,20 @@ export default class AddProgressNote extends Vue {
       },
     }));
     return items;
+  }
+
+  get theid() {
+    const id = this.patientId;
+    return id;
+  }
+
+  printEncounterPractioner(encounter: any) {
+    if (!encounter?.practitioner) return "N/A";
+    return encounter?.practitioner[0].firstname;
+    // const current_patient = this.encounters;
+    // // const my_primaryPhysician = current_patient[0].practitioner!!
+    //   const name = `${current_patient?[0].practitioner!!} ${this.itemsencounter.practitioner.lastName}`;
+    //   return name;
   }
 
   get onset() {
@@ -1117,22 +1237,9 @@ export default class AddProgressNote extends Vue {
     date.setHours(Number(hour));
     return date.toISOString();
   }
-  // get getGeneral(){
-  //   if (generalNormal) {
 
-  //   }
-  // }
-  //  get general() {
-  //    var value = "";
-  //    if (this.generalNormal) {
-  //      return value = "normal"
-  //    }
-  //    return value = "Abnormal"
-  //  }
-
-
-get generals() {
-  return {
+  get generals() {
+    return {
       value: "",
       note: "",
     };
@@ -1166,71 +1273,172 @@ get generals() {
     };
   }
   myId = "";
-
-  // "general": {
-  //   "note": "string",
-  //   "value": "normal"
-  // },
-  // "heent": {
-  //   "note": "string",
-  //   "value": "normal"
-  // },
-  // "skin": {
-  //   "note": "string",
-  //   "value": "normal"
-  // },
-  // "neck": {
-  //   "note": "string",
-  //   "value": "normal"
-  // },
-  // "extremities": {
-  //   "note": "string",
-  //   "value": "normal"
-  // },
-  // "planComment": "string",
-
   sliderMax = "";
   topClick = false;
+  showColumnFilter = false;
+  showMedicationModal= false;
+  showEditMedicationModal= false;
+  // show = false;
+   selected = 1;
+requestId = "";
+showPartcipants = false;
+  query = "";
+  search = "";
+
+  selectedStatus = 0;
+  filterByStatus: any = [ ]
+  completeStatus: any = [  ]
+  currentVisitId = '';
+  onePatientId= "";
+  showNotes = false;
+  taskId="";
+  activeTab = 0;
+  showOthersNotes=false;
+  selectType = false;
+  filterStatus = false;
+  showStatusModal=false;
+  showOtherStatusModal=false;
+  viewDetails = false;
+requestnotes=[];
+otherrequestnotes=[];
+  selectedSchedule: any = { };
+singleParticipant = [];
+  selectedVisit : any = { };
+  selectedPatient : any = { };
+  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
+updatedBy= "";
+currentStatus="";
+update="";
+otherupdatedBy = "";
+othercurrentStatus = "";
+otherupdate="";
+ request: IRequest = emptyRequest;
+
+    get itemsrequest() {
+    if (!this.requests || this.requests.length === 0 ) return [];
+    const filtered = this.requests.filter((i: any) => {
+        if (this.filterByStatus.length === 0) {
+            return i;
+      } else {
+          if (this.filterByStatus.includes('Show All')) return true;
+        const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
+        if (indexInStatuses >= 0) return true;
+      }
+    })
+
+    const requests = filtered.map((i: any) => {
+      if (i.status === "cancelled" || i.status === "no-show") {
+        i.completeStatus = "Completed";
+      } else if (i.status === "On-Hold") {
+        i.completeStatus = "On-Hold";
+      } else {
+        i.completeStatus = "Stopped";
+      }
+         (i as any).createdAt = new Date(
+         (i as any).createdAt 
+       ).toDateString();
+
+  (i as any).updatedAt = new Date(
+         (i as any).updatedAt
+       ).toDateString();
+        this.onePatientId =  i.subject.subject;
+        this.updatedBy = this.getPatientName(i.requestDetails.requester);
+      this.currentStatus = i.status;
+      this.update= i.updatedAt
+      return {
+        ...i,
+        action: i.id,
+        patientsubject: this.getPatientName(i.subject.subject),
+        patientrequester: this.getPatientName(i.requestDetails.requester),
+        practitionerdispenser: this.getPractitionerName(i.performer.dispenser),
+        practitionerperformer: this.getPractitionerName(i.medicationAdministration.performer),
+        status: i.status,
+        // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
+      };
+    });
+    if (this.selectedStatus === 1) return requests.filter((i: any) => i.completeStatus === "On-Hold");
+    if (this.selectedStatus === 2) return requests.filter((i) => i.status === "Stopped");
+    if (this.selectedStatus === 3) return requests.filter((i) => i.status !== "Stopped" && i.status !== "On-Hold");
+
+    return requests;
+    // if (!this.query) return shifts;
+    // return search.searchObjectArray(shifts, this.query);
+  }
+
+   getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+  }
+getPractitionerName(id: string){
+   const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : '';
+}
+  setSelectedPatient(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    this.selectedPatient = pt ? pt : { };
+  }
+
   
+
+  getRequest(id: string) {
+    const pt = this.requests.find((i: any) => i.id === id);
+    return pt ? pt : { };
+  }
+
+  get selectedPatientData() {
+    if (!this.selectedPatient || !this.selectedPatient.id) return { };
+    const data = this.selectedPatient;
+    return {
+      gender: data.gender,
+      dob: `${new Date(data.dateOfBirth).getDate()} ${this.months[new Date(data.dateOfBirth).getMonth()]}, ${new Date(data.dateOfBirth).getFullYear()}`,
+      mrn: data.mrn
+    }
+  }
+
+  showPatientDetails(id: string) {
+    this.setSelectedPatient(id)
+    this.viewDetails = true;
+  }
+
   get payload2() {
-
-    // const mypayload : any;
-    // this.generals.note ? this.generals : null
-    const data: any = {}
+    const data: any = {};
     if (this.generals.note && this.generals.value) data.general = this.generals;
-     if (this.heent.note && this.heent.value) data.heent = this.heent;
-      if (this.skin.note && this.skin.value) data.skin = this.skin;
-       if (this.neck.note && this.neck.value) data.neck = this.neck;
-        if (this.extremities.note && this.extremities.value) data.extremities = this.extremities;
-    
-  
-     data.patientId = this.patientId;
-     data.conditionId = this.myId;
-     return data;
-//       // encounterId: this.referenceEncounter,
-//       // clinicalStatus: this.clinicalStatus,
-//       // verificationStatus: this.verificationStatus,
-//       "conditionId": this.myId,
-//       // painScale: this.painScale,
-// // var a = (condition) ? expr1 : expr2;  
-//       "general": this.generals.note ? this.generals : null,
-//       "heent": this.heent,
-//       "skin": this.skin,
-//       "extremities": this.extremities,
-//       "neck": this.neck,
+    if (this.heent.note && this.heent.value) data.heent = this.heent;
+    if (this.skin.note && this.skin.value) data.skin = this.skin;
+    if (this.neck.note && this.neck.value) data.neck = this.neck;
+    if (this.extremities.note && this.extremities.value) data.extremities = this.extremities;
+    if (this.extremities.note && this.extremities.value) data.extremities = this.extremities;
 
-//       // type: this.stageType,
-//       // category: this.category,
-//       // summary: this.stageSummary,
-//       // detail: this.evidenceDetail,
-//       // notes: this.stageNote,
-//       // bodySite: this.bodySite,
-//       // subject: "patient",
-//       // assesment: "",
-//       // severity: this.severity,
-//       // evidenceNote: this.evidenceNote,
-//       // onset: this.onset,
-//       // abatement: this.abatement,
+    data.patientId = this.patientId;
+    data.conditionId = this.myId;
+    data.diagnosticsResults = this.enc.length ? this.enc : [];
+    //  diagnosticRequests
+    // data.printEncounterId();
+    return data;
+    //       // encounterId: this.referenceEncounter,
+    //       // clinicalStatus: this.clinicalStatus,
+    //       // verificationStatus: this.verificationStatus,
+    //       "conditionId": this.myId,
+    //       // painScale: this.painScale,
+    // // var a = (condition) ? expr1 : expr2;
+    //       "general": this.generals.note ? this.generals : null,
+    //       "heent": this.heent,
+    //       "skin": this.skin,
+    //       "extremities": this.extremities,
+    //       "neck": this.neck,
+
+    //       // type: this.stageType,
+    //       // category: this.category,
+    //       // summary: this.stageSummary,
+    //       // detail: this.evidenceDetail,
+    //       // notes: this.stageNote,
+    //       // bodySite: this.bodySite,
+    //       // subject: "patient",
+    //       // assesment: "",
+    //       // severity: this.severity,
+    //       // evidenceNote: this.evidenceNote,
+    //       // onset: this.onset,
+    //       // abatement: this.abatement,
   }
 
   // async submit() {
@@ -1248,6 +1456,7 @@ get generals() {
   // }
 
   async submit() {
+    return console.log('ffgghh', this.impressions);
     console.log("payload", this.payload2);
     console.log("conditionId", this.payload2.conditionId);
     const { valid } = await (this.$refs.form as any).validate();
@@ -1256,16 +1465,16 @@ get generals() {
     }
 
     // try {
-    //     const { data } = await cornieClient().post(`/api/v1/participants/`, { 
-    //         careTeamId: team.id, 
-    //         role: 'practitioner', 
+    //     const { data } = await cornieClient().post(`/api/v1/participants/`, {
+    //         careTeamId: team.id,
+    //         role: 'practitioner',
     //         practitionerId: practitioneData.id,
     //         name: practitioneData.name,
     //         reasonCode:"109006 ",
     //     });
     //     if (data?.id) window.notify({ msg: "Added to care team successfully", status: "success" });
     //     return data;
-        
+
     // } catch (error) {
     //     console.log(error);
     //     window.notify({ msg: "Error adding to care team", status: "error" });
@@ -1295,14 +1504,33 @@ get generals() {
     // }
     // this.NewfemCondition = await this.fetchPatientConditions(this.patientId);
     this.fetchPatientConditions(this.patientId);
-     if (this.encounters?.length === 0) await this.getEncounters(this.patientId)
+    if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
     // this.fetchPatientConditions(this.patientId);
-        console.log(this.encounters, "Encounters");
-
+    console.log(this.encounters, "Encounters");
 
     this.loadDropdown();
     this.setAsserter();
+
+    // if (!this.patients || this.patients.length === 0) await this.getPatients();
+    if (!this.requests || this.requests.length === 0) await this.fetchRequests();
+     if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
+    
+    this.getPractitioners();
+ // if (!this.practitioners || this.practitioners.length === 0) await this.getPractitioners();
+    if (!this.patients || this.patients.length === 0) await this.getPatients();
+    if (!this.requests || this.requests.length === 0) await this.fetchRequests();
+     if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
+    if (!this.requests || this.requests.length === 0) await this.getPatients();
+    window.addEventListener('click', (e: any) => {
+      if (!e.target.classList.contains('md')) {
+        this.filterStatus = false;
+      }
+    })
+
+      this.fetchImpressions(this.patientId);
+
   }
+
 }
 </script>
 
