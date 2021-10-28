@@ -112,10 +112,10 @@ export default class AccordionComponent extends Vue {
   titledescription!: string;
 
  get patientId() {
-    return this.$route.params.patientId;
+    return this.$route.params.id;
   }
   get PatientName() {
-         var id = this.$route.params.patientId;
+         var id = this.$route.params.id;
         const pt = this.patients.find((i: any) => i.id === id);
         return {
             ...pt

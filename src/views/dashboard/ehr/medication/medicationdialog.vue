@@ -17,7 +17,15 @@
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Request Info" v-model="opened" :opened="false">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                  <cornie-select
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/medicationrequest-status-reason"
+                     class="required w-full"
+                      :rules="required"
+                     v-model="requestModel.requestInfo.statusReason"
+                    label="status reason"
+                    placeholder="--Select--"
+                />
+                  <!-- <cornie-select
                     class="required"
                     :rules="required"
                     :items="['Try another treatment first','Prescription requires clarification','Drug level too high','Drug level too high','Admission to hospital','Lab interference issues','Patient not available','Parent is pregnant/breast feeding','Allergy','Drug interacts with another drug','Duplicate therapy','Suspected intolerance','Patient scheduled for surgery','Waiting for old drug to wash out']"
@@ -25,8 +33,16 @@
                     label="status reason"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
-                  <cornie-select
+                  </cornie-select> -->
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/medicationrequest-intent"
+                     class="required w-full"
+                      :rules="required"
+                    v-model="requestModel.requestInfo.intent"
+                    label="intent"
+                    placeholder="--Select--"
+                />
+                  <!-- <cornie-select
                     class="required"
                     :rules="required"
                     :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
@@ -34,8 +50,16 @@
                     label="intent"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
-                  <cornie-select
+                  </cornie-select> -->
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/medicationrequest-category"
+                     class="required w-full"
+                      :rules="required"
+                    v-model="requestModel.requestInfo.category"
+                    label="category"
+                    placeholder="--Select--"
+                />
+                  <!-- <cornie-select
                     class="required"
                     :rules="required"
                     :items="['Inpatient','Outpatient','Community','Discharge']"
@@ -43,8 +67,16 @@
                     label="category"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
-                  <cornie-select
+                  </cornie-select> -->
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/request-priority"
+                     class="required w-full"
+                      :rules="required"
+                      v-model="requestModel.requestInfo.priority"
+                    label="priority"
+                    placeholder="--Select--"
+                />
+                  <!-- <cornie-select
                     class="required"
                     :rules="required"
                     :items="['Routine','Urgent','ASAP','STAT']"
@@ -52,24 +84,23 @@
                     label="priority"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
+                  </cornie-select> -->
                   <cornie-select
                     class="required"
                     :rules="required"
-                   :items="dropdowns.serviceType"
+                   :items="['True','False']"
                     v-model="requestModel.requestInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                  <cornie-select
+                  <cornie-input
                     :rules="required"
-                    :items="dropdowns.serviceType"
                     v-model="requestModel.requestInfo.reasonForProhibition"
                     label="reason for prohibition"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
+                  </cornie-input>
                   <div class="w-full">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">recorder</label>
                     <input-desc-rounded  :info="''">
@@ -217,15 +248,14 @@
                                     placeholder="--Select--"
                                 >
                                 </cornie-select>
-                                <cornie-select
+                                <cornie-input
                                 class="required w-full"
                                     :rules="required"
-                                    :items="[9,2,4]"
                                     label="quantity"
                                     v-model="medicationsDetail.medicationDetails.quantity"
-                                    placeholder="--Select--"
+                                    placeholder="--Enter--"
                                 >
-                                </cornie-select>
+                                </cornie-input>
                                 <date-picker  placeholder="autofill" label="Duration" v-model="medicationsDetail.medicationDetails.duration"  class="mb-5 w-full"/>
                             </div>
                         </div>
@@ -295,7 +325,7 @@
                                 <cornie-select
                                     class="required w-full"
                                     :rules="required"
-                                    :items="['Code']"
+                                    :items="['Equivalent','Equivalent composition','Brand composition','Generic composition','Therapeutic alternative','Therapeutic brand','Therapeutic generic','Formulary','none']"
                                     label="Code"
                                     v-model="medicationsDetail.substitutionAllowed.code"
                                     placeholder="--Select--"
@@ -303,7 +333,7 @@
                                 </cornie-select>
                                 <cornie-select
                                 class="w-full"
-                                    :items="['Headaches', 'Cough', 'Anemia']"
+                                    :items="['Continuing therapy', 'Formulary policy', 'Out of stock','Regulatory requirement']"
                                     label="reason"
                                     v-model="medicationsDetail.substitutionAllowed.reason"
                                     placeholder="--Select--"
@@ -486,6 +516,7 @@ import IRequest, { Medications,MedicationDetails } from "@/types/IRequest";
 import Period from "@/types/IPeriod";
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
+import FhirInput from "@/components/fhir-input.vue";
 import IPractitioner from "@/types/IPractitioner";
 import InputDescRounded from "./components/input-desc-rounded.vue"
 const userStore = namespace("user");
@@ -539,6 +570,7 @@ const emptyRequest: IRequest = {
     CheckIcon,
     BluecheckIcon,
     DEdit,
+    FhirInput,
     CancelIcon,
     InfoIcon,
     CornieDialog,

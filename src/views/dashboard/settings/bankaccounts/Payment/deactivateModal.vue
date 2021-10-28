@@ -137,7 +137,7 @@ status = "";
         } 
       } catch (error) {
         this.loading = false;
-        window.notify({ msg:error, status: 'error' })
+        window.notify({ msg:"Payment account not deactivated", status: 'error' })
       }
     }
  

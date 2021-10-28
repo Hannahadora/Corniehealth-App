@@ -68,6 +68,18 @@
                  <template #recorder="{ item }">
                         <p class="cursor-pointer">{{ item.asserter }}</p>
                 </template>
+                 <template #status="{ item }">
+                <div class="flex items-center">
+                  <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'Draft'">{{item.status}}</p>
+                  <p class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded" v-if="item.status == 'On-Hold'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-500 p-1 rounded" v-if="item.status == 'Active'">{{item.status}}</p>
+                  <p class="text-xs bg-gray-300  p-1 rounded" v-if="item.status == 'Unknown'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'Completed'">{{item.status}}</p>
+                  <p class="text-xs bg-red-300 text-red-600 p-1 rounded" v-if="item.status == 'Revoked'">{{item.status}}</p>
+                  <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'Entered-in-Error'">{{item.status}}</p>
+                    <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'Do Not Perform'">{{item.status}}</p>
+                </div>
+              </template>
             </cornie-table>
     </div>
     
