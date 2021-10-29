@@ -6,7 +6,7 @@
        :id="newhistoryId"
     :horizontal="true"
   >
-   <div class="w-full">
+   <div class="w-full p-3">
       <span class="w-full">
           <div class="float-left">
                 <img

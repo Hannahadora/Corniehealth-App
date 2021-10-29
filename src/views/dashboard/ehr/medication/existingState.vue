@@ -107,7 +107,7 @@
            :updatedBy="updatedBy" 
         :currentStatus="currentStatus" 
         :dateUpdated="update"
-          @update:preferred="showStatus"
+       @medication-added="medicationAdded"
           v-model="showStatusModal"/>
 
 
@@ -151,6 +151,7 @@ import SendIcon from "@/components/icons/send.vue";
 import CheckoutIcon from "@/components/icons/newcheckout.vue";
 import CalenderIcon from "@/components/icons/newcalender.vue";
 import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
 
 const request = namespace("request");
 const userStore = namespace("user");
@@ -208,7 +209,9 @@ updatedBy= "";
 currentStatus="";
 update="";
 
-
+   @userStore.Getter
+  authPractitioner!: IPractitioner;
+  
   @userStore.State
   user!: User;
 
@@ -299,16 +302,16 @@ update="";
         (request as any).updatedAt = new Date(
           (request as any).updatedAt 
        ).toDateString();
-      this.updatedBy = this.getPatientName(request.requestDetails.requester);
+      this.updatedBy = this.getPatientName(this.patientId as string);
       this.currentStatus = request.status;
       this.update= request.updatedAt
         return {
           ...request,
          action: request.id,
-         patient: this.getPatientName(request.subject.subject),
-       requester: this.getPatientName(request.requestDetails.requester),
-        dispenser: this.getPractitionerName(request.performer.dispenser),
-        performer: this.getPractitionerName(request.medicationAdministration.performer),
+         patient: this.getPatientName(this.patientId as string),
+       requester: this.getPatientName(this.patientId as string),
+        dispenser: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
+        performer: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
         };
         
     });
@@ -357,7 +360,7 @@ update="";
     });
     if (!confirmed) return;
 
-    if (await this.deleteRequest(id)) window.notify({ msg: "Medicaiton not deleted", status: "success" });
+    if (await this.deleteRequest(id)) window.notify({ msg: "Medicaiton deleted", status: "success" });
     else window.notify({ msg: "Medication not deleted", status: "error" });
   }
  
