@@ -27,9 +27,10 @@
       >
         Progress Notes
       </span>
+      <p>fdfdfd</p>{{items}}
       <span class="w-full">
-        <empty-state v-if="isEmpty" />
-        <existing-state v-else :patient='patient' :patientId='patientId' />
+        <empty-state v-if="items?.length <= 0" />
+        <existing-state v-else :patient='patient' :patientId='patientId' :items="items" />
       </span>
     </div>
   </div>
@@ -44,6 +45,15 @@ import ExistingState from "./existing-state.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
+import  IProgressnote  from "@/types/IProgressnote";
+
+import { cornieClient } from "@/plugins/http";
+import { Codeable } from "@/types/misc";
+import { ICondition } from "@/types/ICondition";
+import { getDropdown } from "@/plugins/definitions";
+
+
+
 
 
 const patients = namespace("patients");
@@ -61,11 +71,70 @@ export default class ProgressNotes extends Vue {
 
   patient = {} as IPatient;
 
+  patientProgressNotes = [] as IProgressnote[];
+
+
  @patients.Action
   findPatient!: (patientId: string) => Promise<IPatient>;
 
-  get isEmpty() {
-    return false;
+  categories: Codeable[] = [];
+
+ isEmpty= false;
+
+  printRecorded(progress: any) {
+    const dateString = progress.createdAt;
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  }
+
+   printCondition(condition : ICondition) {
+    const cat = condition.category?.replaceAll('"', "");
+    return this.categories.find((s) => (s.code = cat))?.display;
+  }
+
+
+  get items() {
+    const items = this.patientProgressNotes.map((progress: any) => ({
+      ...progress,
+      original: progress,
+      identifier: "XXXXX",
+      recorded: this.printRecorded(progress),
+      condition: this.printCondition(progress.condition),
+      status: progress.clinicalStatus,
+      // code: this.printCode(condition.code),
+      // severity: this.printSeverity(condition.severity),
+      // clinicalStatus: this.stripQuote(condition.clinicalStatus),
+      // recorder: {
+      //   name: printPractitioner(condition.practitioner!!),
+      //   department: condition.practitioner!!.department,
+      // },
+    }));
+    return items;
+  }
+
+
+  async fetchProgressnotes() {
+    console.log('progresssssfff1' , this.patientId);
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/progress-notes/${this.patientId}`
+      );
+      this.patientProgressNotes = data;
+      console.log('progresssssfff2', this.patientProgressNotes );
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching patient's progress notes",
+        status: "error",
+      });
+    }
+  } 
+
+  async created() {
+     await this.fetchProgressnotes();
+    console.log('zzz',  this.patientProgressNotes);
+    this.categories = await getDropdown(
+      "http://hl7.org/fhir/ValueSet/condition-category"
+    );
   }
   
 }

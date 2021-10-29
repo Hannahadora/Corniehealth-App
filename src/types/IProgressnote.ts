@@ -1,6 +1,6 @@
 
 import Period from "./IPeriod";
-import IAllergy from "./IAll"
+import IAllergy from "./IAllergy"
 import Phone from "./IPhone";
 
 export default interface IProgressnote {
@@ -40,7 +40,7 @@ export default interface IProgressnote {
   diagnosticRequests?: diagnosticRequests[];
   medicationRequests?: [];
   referralRequests?: [];
-  hospitalizations?: []];
+  hospitalizations?: [];
   medications?: [];
 }
 
@@ -52,16 +52,16 @@ export interface allergies {
       type?: string;
       category?: string;
       criticality?: string;
-      code?: string;,
+      code?: string;
       onSet?: {
         onsetDateTime?: string;
-        onsetAge?: string;,
+        onsetAge?: string;
         onsetPeriod?: {
           start?: string;
           end?: string;
         };
         onsetRange?: []
-        onsetString?: string;,
+        onsetString?: string;
         recordedDate?: string;
         recorder?: string;
         asserter?: string;
@@ -154,4 +154,3 @@ export interface allergies {
       }
     
     }
-}

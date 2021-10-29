@@ -22,48 +22,10 @@
           New Progress Note
         </button>
       </span>
+      <p>ghghgh</p>
+      {{items}}
       <cornie-table :columns="headers" v-model="items">
-        <template #actions>
-          <div
-            @click="viewingCondition = true"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <new-view-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">View</span>
-          </div>
-          <div
-            @click="updatingStatus = true"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <update-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> Update Status </span>
-          </div>
-          <div
-            @click="recordingAbatement = true"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <edit-icon class="text-purple-800 fill-current" />
-            <span class="ml-3 text-xs"> Record Abatement </span>
-          </div>
-          <div
-            @click="addingNotes = true"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Add Note </span>
-          </div>
-          <div
-            @click="addingOccurence = true"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> Add Occurence </span>
-          </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <history-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> View History </span>
-          </div>
-        </template>
+       
       </cornie-table>
     </div>
     <add-progress-note v-model="addingProgressnote" :patient='patient' :patientId='patientId' />
@@ -95,6 +57,8 @@ import AddProgressNote from "./add-progressnote.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
+import { cornieClient } from "@/plugins/http";
+
 
 
 const patients = namespace("patients");
@@ -126,7 +90,12 @@ export default class ExistingState extends Vue {
   @Prop({ type: String, default: "" })
   patientId!: string;
 
+  @Prop({ type: Array })
+  items!: [];
+
   patient = {} as IPatient;
+
+  patientProgressNotes: any;
 
  @patients.Action
   findPatient!: (patientId: string) => Promise<IPatient>;
@@ -142,7 +111,7 @@ export default class ExistingState extends Vue {
   headers = [
     {
       title: "identifier",
-      key: "id",
+      key: "identifier",
       show: true,
       noOrder: true,
     },
@@ -152,23 +121,8 @@ export default class ExistingState extends Vue {
       show: true,
     },
     {
-      title: "primary encounter",
-      key: "primaryencounter",
-      show: true,
-    },
-    {
       title: "condition",
       key: "condition",
-      show: true,
-    },
-    {
-      title: "participant",
-      key: "participant",
-      show: true,
-    },
-    {
-      title: "billing account",
-      key: "billingaccount",
       show: true,
     },
     {
@@ -176,6 +130,23 @@ export default class ExistingState extends Vue {
       key: "status",
       show: true,
     },
+    {
+      title: "primary encounter",
+      key: "primaryencounter",
+      show: false,
+    },
+    
+    {
+      title: "participant",
+      key: "participant",
+      show: false,
+    },
+    {
+      title: "billing account",
+      key: "billingaccount",
+      show: false,
+    },
+    
   ];
 
   // items = [
@@ -190,5 +161,50 @@ export default class ExistingState extends Vue {
   //     id: "XXXX",
   //   },
   // ];
+ printRecorded(progress: any) {
+    const dateString = progress.createdAt;
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  }
+
+  // get items() {
+  //   const items = this.patientProgressNotes.map((progress: any) => ({
+  //     ...progress,
+  //     original: progress,
+  //     identifier: "XXXXX",
+  //     recorded: this.printRecorded(progress),
+  //     condition: progress.condition.category,
+  //     status: progress.clinicalStatus,
+  //     // code: this.printCode(condition.code),
+  //     // severity: this.printSeverity(condition.severity),
+  //     // clinicalStatus: this.stripQuote(condition.clinicalStatus),
+  //     // recorder: {
+  //     //   name: printPractitioner(condition.practitioner!!),
+  //     //   department: condition.practitioner!!.department,
+  //     // },
+  //   }));
+  //   return items;
+  // }
+
+  async fetchProgressnotes() {
+    console.log('progresssssfff1' , this.patientId);
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/progress-notes/${this.patientId}`
+      );
+      this.patientProgressNotes = data;
+      console.log('progresssssfff2', data);
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching patient's progress notes",
+        status: "error",
+      });
+    }
+  }  
+  async created() {
+    this.fetchProgressnotes();
+
+
+  }
 }
 </script>

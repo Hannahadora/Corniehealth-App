@@ -704,6 +704,11 @@
             <add-icon class="p-1" />
             <p class="text-xs">Clinical Impression</p>
           </div>
+          <assessment-select
+            :patientId="patientId"
+            v-model="stageAssessment"
+            label="Assessment"
+          />
         </div>
         <cornie-text-area
           rows="4"
@@ -896,6 +901,9 @@ const condition = namespace("condition");
 import { Codeable } from "@/types/misc";
 import { printPractitioner } from "@/plugins/utils";
 import Condition from "yup/lib/Condition";
+import { IClinicalImpression } from "@/types/ClinicalImpression";
+
+
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -906,8 +914,6 @@ import IEncounter from "@/types/IEncounter";
 
 const request = namespace("request");
 const otherrequest = namespace("otherrequest");
-const impression = namespace("impression");
-
 
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
@@ -1014,6 +1020,9 @@ export default class AddProgressNote extends Vue {
   @Prop({ type: String, default: "" })
   patientId!: string;
 
+  @Prop({ type: String, default: "" })
+  id!: string;
+
   @user.Getter
   authPractitioner!: IPractitioner;
 
@@ -1052,16 +1061,11 @@ export default class AddProgressNote extends Vue {
   @request.Action
   getPractitioners!: () => Promise<void>;
 
-
- @request.State
-  impressions!: any[];
-
-   @impression.Action
-  fetchImpressions!: (patientId: string) => Promise<void>;
-
   select(i:number) {
       this.selected = i;
     }
+
+  rawClinicalImpressions: IClinicalImpression[] = [];
 
   addingProgressnote = false;
   meConditions!: [];
@@ -1456,7 +1460,6 @@ getPractitionerName(id: string){
   // }
 
   async submit() {
-    return console.log('ffgghh', this.impressions);
     console.log("payload", this.payload2);
     console.log("conditionId", this.payload2.conditionId);
     const { valid } = await (this.$refs.form as any).validate();
@@ -1497,6 +1500,22 @@ getPractitionerName(id: string){
   //   this.setAsserter();
   // }
 
+    async fetchClinicalImpressions() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/clinical-impressions/findAllByPatient/${this.patientId}`
+      );
+      this.rawClinicalImpressions = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching patient's clinical impressions",
+        status: "error",
+      });
+    }
+  }
+
+
+
   async created() {
     //   if (Object.keys(this.conditions).length < 1)
     //     this.fetchPatientConditions(this.patientId);
@@ -1514,23 +1533,18 @@ getPractitionerName(id: string){
     // if (!this.patients || this.patients.length === 0) await this.getPatients();
     if (!this.requests || this.requests.length === 0) await this.fetchRequests();
      if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
-    
-    this.getPractitioners();
- // if (!this.practitioners || this.practitioners.length === 0) await this.getPractitioners();
-    if (!this.patients || this.patients.length === 0) await this.getPatients();
-    if (!this.requests || this.requests.length === 0) await this.fetchRequests();
-     if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
-    if (!this.requests || this.requests.length === 0) await this.getPatients();
-    window.addEventListener('click', (e: any) => {
-      if (!e.target.classList.contains('md')) {
-        this.filterStatus = false;
-      }
-    })
+    // if (!this.requests || this.requests.length === 0) await this.getPatients();
+    // window.addEventListener('click', (e: any) => {
+    //   if (!e.target.classList.contains('md')) {
+    //     this.filterStatus = false;
+    //   }
+    // })
+          // console.log('request', requests);
+              this.fetchClinicalImpressions();
+              // this.fetchProgressnotes();
 
-      this.fetchImpressions(this.patientId);
 
   }
-
 }
 </script>
 
