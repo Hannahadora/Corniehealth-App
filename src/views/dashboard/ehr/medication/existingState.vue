@@ -218,8 +218,15 @@ update="";
   @userStore.Action
   updatePractitionerAuthStatus!: () => Promise<void>;
 
+  // @request.State
+  // requests!: any[];
+  
   @request.State
-  requests!: any[];
+  patientrequests!: any[];
+
+
+ @request.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
   @request.State
   practitioners!: any[];
@@ -236,8 +243,8 @@ update="";
   @request.Action
   getPractitioners!: () => Promise<void>;
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  // @request.Action
+  // fetchRequests!: () => Promise<void>;
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -285,18 +292,18 @@ update="";
   }
   
   get items() {
-    const requests = this.requests.map((request) => {
-         (request as any).createdAt = new Date(
-         (request as any).createdAt 
+    const patientrequests = this.patientrequests.map((request) => {
+      (request as any).createdAt = new Date(
+        (request as any).createdAt 
        ).toDateString();
         (request as any).updatedAt = new Date(
-         (request as any).updatedAt 
+          (request as any).updatedAt 
        ).toDateString();
       this.updatedBy = this.getPatientName(request.requestDetails.requester);
       this.currentStatus = request.status;
       this.update= request.updatedAt
         return {
-        ...request,
+          ...request,
          action: request.id,
          patient: this.getPatientName(request.subject.subject),
        requester: this.getPatientName(request.requestDetails.requester),
@@ -306,17 +313,20 @@ update="";
         
     });
     
-    if (!this.query) return requests;
-    return search.searchObjectArray(requests, this.query);
+    if (!this.query) return patientrequests;
+    return search.searchObjectArray(patientrequests, this.query);
   }
 // getPractitionerName(id: string){
-//    const pt = this.practitioners.find((i: any) => i.id === id);
+  //    const pt = this.practitioners.find((i: any) => i.id === id);
 //     return pt ? `${pt.firstName} ${pt.lastName}` : '';
 // }
   async showMedication(value:string){
-      this.showMedicationModal = true;
+    this.showMedicationModal = true;
       this.requestId = value;
   }
+    get patientId() {
+       return this.$route.params.id as string;
+     }
   async showViewMedication(value:string){
       this.showViewMedicationModal = true;
       this.requestId = value;
@@ -327,8 +337,9 @@ update="";
     this.requestId = value;
   }
 
-  medicationAdded() {
-  this.fetchRequests();
+ 
+   medicationAdded() {
+   this.fetchOtherrequestsById(this.patientId);
   }
         getPatientName(id: string) {
             const pt = this.patients.find((i: any) => i.id === id);
@@ -341,13 +352,13 @@ update="";
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this allergy",
-      title: "Delete allergy"
+      message: "You are about to delete this medication",
+      title: "Delete medication"
     });
     if (!confirmed) return;
 
-    if (await this.deleteRequest(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
-    else window.notify({ msg: "Allergy not cancelled", status: "error" });
+    if (await this.deleteRequest(id)) window.notify({ msg: "Medicaiton not deleted", status: "success" });
+    else window.notify({ msg: "Medication not deleted", status: "error" });
   }
  
       get sortMedications (){
@@ -360,7 +371,7 @@ update="";
           this.getPractitioners();
           this.getPatients();
           this.sortMedications;
-          this.fetchRequests();
+         this.fetchOtherrequestsById(this.patientId);
     }
 
 }

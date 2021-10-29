@@ -132,7 +132,11 @@ status = "";
 
 
   required = string().required();
-
+  
+ done() {
+    this.$emit("medication-added");
+    this.show = false;
+  }
 
  async updateStatus() {
    const id = this.id;
@@ -156,10 +160,7 @@ status = "";
 
  
  
- done() {
-    this.$emit("medication-added");
-    this.show = false;
-  }
+
   async apply() {
     this.loading = true;
      await this.updateStatus()

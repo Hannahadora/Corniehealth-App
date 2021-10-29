@@ -49,18 +49,29 @@ export default class RefferIndex extends Vue {
   show=false;
 
   get empty() {
-    return this.otherrequests.length < 1;
+    return this.patientrequests.length < 1;
+  }
+  get patientId() {
+    return this.$route.params.id as string;
   }
 
- @otherrequest.State
+    medicationAdded() {
+     this.show = false;
+     this.patientrequests;
+   this.fetchOtherrequestsById(this.patientId);
+  }
+    @otherrequest.State
   otherrequests!: IOtherrequest[];
 
+ @otherrequest.State
+  patientrequests!: IOtherrequest[];
+
   @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
 
 created() {
-    if (this.otherrequests.length < 1) this.fetchOtherrequests();
+    if (this.patientrequests.length < 1) this.fetchOtherrequestsById(this.patientId);
   }
 }
 </script>
