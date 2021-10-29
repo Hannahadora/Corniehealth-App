@@ -6,18 +6,19 @@
                     <div class="w-full">
                         <p class="basic-info">Patient</p>
                         <div class="w-full">
-                            <div class="my-4" style="width:90px">
-                                <img src="https://via.placeholder.com/90x90" class="rounded-full w-full" alt="Image">
+                            <div class="my-4" style="width:90px; height:90px">
+                                <img v-if="patient?.profilePhoto" :src="patient?.profilePhoto" class="rounded-full w-full" alt="Image" style="max-height:100%">
+                                <img v-else src="https://via.placeholder.com/90x90" class="rounded-full w-full" alt="Image" style="max-height:100%">
                             </div>
                         </div>
 
                         <div class="w-full">
-                            <p class="patient-name">Nkechi Claire Obi</p>
+                            <p class="patient-name">{{ patient?.firstname }} {{ patient?.middlename }} {{ patient?.lastname }}</p>
                             <p class="flex flex-col my-4">
-                                <span class="subheader">MRN-CH23022021-0010</span>
-                                <span class="my-2 text-xs">87 Montagomery Close, Friend’s Colony Estate, Lekki</span>
-                                <span class="my-2 text-xs">08032545678</span>
-                                <span class="my-2 text-xs">Nkechi@gmail.com</span>
+                                <span class="subheader">{{ patient?.mrn }}</span>
+                                <span class="my-2 text-xs">{{ patientAddress }}</span>
+                                <span class="my-2 text-xs">{{ patientPhone }}</span>
+                                <span class="my-2 text-xs">{{ patientEmail }}</span>
                             </p>
                         </div>
                     </div>
@@ -34,7 +35,7 @@
                                 </p>
                                 <p class="flex flex-col my-4">
                                     <span class="subheader">Admit Date</span>
-                                    <span class="">21/10/2021</span>
+                                    <span class="">{{ new Date(hospitalisation.createdAt).toLocaleDateString() }}</span>
                                 </p>
                                 <p class="flex flex-col my-4">
                                     <span class="subheader">Duration of stay</span>
@@ -42,7 +43,7 @@
                                 </p>
                                 <p class="flex flex-col my-4">
                                     <span class="subheader">Room</span>
-                                    <span class="">12</span>
+                                    <span class="">{{ hospitalisation.room }}</span>
                                 </p>
                             </div>
                             <div class="w-6/12">
@@ -56,11 +57,11 @@
                                 </p>
                                 <p class="flex flex-col my-4">
                                     <span class="subheader">Ward</span>
-                                    <span class="">XXXXX</span>
+                                    <span class="">{{ hospitalisation.ward }}</span>
                                 </p>
                                 <p class="flex flex-col my-4">
                                     <span class="subheader">Bed</span>
-                                    <span class="">24</span>
+                                    <span class="">{{ hospitalisation.bed }}</span>
                                 </p>
                             </div>
                         </div>
@@ -84,19 +85,19 @@
                     <div class="w-3/12">
                         <p class="flex flex-col my-2">
                             <span class="subheader my-2">Admit Source</span>
-                            <span class="">XXXXX</span>
+                            <span class="">{{ hospitalisation.admitSource}}</span>
                         </p>
                     </div>
                     <div class="w-3/12">
                         <p class="flex flex-col my-2">
                             <span class="subheader my-2">Re-admission</span>
-                            <span class="">XXXXX</span>
+                            <span class="">{{hospitalisation.reAdmission}}</span>
                         </p>
                     </div>
                     <div class="w-3/12">
                         <p class="flex flex-col my-2">
                             <span class="subheader my-2">Diet Preference</span>
-                            <span class="">Vegetarian</span>
+                            <span class="">{{ hospitalisation.dietPreference }}</span>
                         </p>
                     </div>
                 </div>
@@ -105,33 +106,33 @@
                     <div class="w-3/12">
                         <p class="flex flex-col mb-2">
                             <span class="subheader my-2">Special Courtesy</span>
-                            <span class="">XXXXX</span>
+                            <span class="">{{ hospitalisation.specialCourtesy }}</span>
                         </p>
                     </div>
                     <div class="w-3/12">
                         <p class="flex flex-col mb-2">
                             <span class="subheader my-2">Special Arrangement</span>
-                            <span class="">XXXXX</span>
+                            <span class="">{{ hospitalisation.specialArrangement }}</span>
                         </p>
                     </div>
                     <div class="w-3/12">
                         <p class="flex flex-col mb-2">
                             <span class="subheader my-2">Destination</span>
-                            <span class="">XXXXX</span>
+                            <span class="">{{ hospitalisation.destination }}</span>
                             <span class="subheader my-2">12, Marwa, Lekki, Lagos</span>
                         </p>
                     </div>
                     <div class="w-3/12">
                         <p class="flex flex-col mb-2">
                             <span class="subheader my-2">Discharge Disposition</span>
-                            <span class="">XXXXX</span>
+                            <span class="">{{ hospitalisation.dischargeDisposition }}</span>
                         </p>
                     </div>
                 </div>
             </div>
 
             <div class="w-full flex justify-end mt-4">
-                <CornieBtn :loading="false" class="p-2 rounded-full px-8 mx-2 cursor-pointer border">
+                <CornieBtn @click="$emit('onedit', hospitalisationId)" class="p-2 rounded-full px-8 mx-2 cursor-pointer border">
                     <span class="text-gray font-semibold">Edit</span>
                 </CornieBtn>
             </div>
@@ -139,9 +140,15 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { IHospitalisation } from "@/types/IHospitalisation";
+import { IPatient } from "@/types/IPatient";
 import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import HospitalisationIcon from "./hospital-icon.vue"
+
+const patient = namespace('patients')
 
 @Options({
     components: {
@@ -149,7 +156,60 @@ import HospitalisationIcon from "./hospital-icon.vue"
     }
 })
 export default class DetailsView extends Vue {
-    
+    @patient.State
+    patients!: IPatient[]
+
+    @patient.Action
+    fetchPatients!: () => Promise<void>
+
+    @Prop({ type: String, default: ""})
+    hospitalisationId!: string;
+
+    @Prop({ type: Array, default: [ ]})
+    items!: IHospitalisation[];
+
+    get hospitalisation() {
+        if (!this.hospitalisationId) return { } as IHospitalisation;
+        return this.items.find(hospitalisation => hospitalisation.id === this.hospitalisationId) as IHospitalisation;
+    }
+
+
+    get patient() {
+        if (!this.$route.params?.id) return { } as IPatient;
+        const target =  this.patients.find(patient => patient.id === this.$route.params.id);
+        return target;
+    }
+
+    get patientAddress() {
+        if (!this.patient?.id) return "";
+        const { contactInfo } = this.patient;
+        if (!contactInfo || contactInfo?.length <= 0) return "Unknown";
+        const firstAddress = contactInfo[0];
+        return `${firstAddress.country} ${firstAddress.state}, ${firstAddress.city}`
+    }
+
+    get patientPhone() {
+        if (!this.patient?.id) return "";
+        const { contactInfo } = this.patient;
+        if (!contactInfo || contactInfo?.length <= 0) return "Unknown";
+        const firstAddress = contactInfo[0];
+        return `${firstAddress.phone?.dialCode}${firstAddress.phone?.number}`
+    }
+
+    get patientEmail() {
+        if (!this.patient?.id) return "";
+        const { contactInfo } = this.patient;
+        if (!contactInfo || contactInfo?.length <= 0) return "Unknown";
+        const firstAddress = contactInfo[0];
+        return `${firstAddress.email}`
+    }
+
+
+    async created() {
+        if (this.patients?.length === 0) await this.fetchPatients();
+        console.log(this.patients, "Patients");
+        
+    }
 }
 </script>
 

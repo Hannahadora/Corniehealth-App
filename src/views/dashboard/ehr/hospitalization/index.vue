@@ -10,10 +10,9 @@
       mb-2
       rounded
       w-full
-      h-screen
-      overflow-auto
     "
   >
+
     <div class="container-fluid" v-if="true">
       <div class="w-full p-2">
         <span
@@ -61,6 +60,7 @@
           </template>
           <template #actions="{ item }">
             <table-action
+            @click="viewHospitalisationDetails(item.id)"
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
@@ -72,6 +72,7 @@
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
             <table-action
+              @click="showTimeline(item)"
             >
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Timeline</span>
@@ -86,7 +87,9 @@
             <table-action
             >
               <add-icon class="text-primary fill-current" />
-              <span class="ml-3 text-xs">Administrative Note</span>
+              <span class="ml-3 text-xs"
+                @click="showNotes(item.id)"
+              >Administrative Note</span>
             </table-action>
             <table-action
             >
@@ -119,30 +122,54 @@
     </div>
 
     <side-modal :visible="showNewModal" :header="'Admit Patient'" :width="990"  @closesidemodal="closeNewModal">
-      <new-plan  @closesidemodal="() => showNewModal = false" />
+      <new-plan  @closesidemodal="() => showNewModal = false"
+          :hospitalisationId="selectedItemId"
+          :items="patientHospitalisations"
+       />
     </side-modal>
 
-    <side-modal :visible="false" :header="'Add Notes'" :width="850"  @closesidemodal="closeNewModal">
-      <note-dialog  @closesidemodal="() => showNewModal = false" />
+    <side-modal :visible="notesVissible" :header="'Add Notes'" :width="850"  @closesidemodal="closeNewModal">
+      <note-dialog  
+        :items="patientHospitalisations"
+        :hospitalisationId="selectedItemId"
+        @closesidemodal="closeNewModal" />
     </side-modal>
 
-    <side-modal :visible="false" :header="'Details'" :width="850"  @closesidemodal="closeNewModal">
-      <view-details  @closesidemodal="() => showNewModal = false" />
+    <side-modal :visible="viewDetails" :header="'Details'" :width="850"  @closesidemodal="closeNewModal">
+      <view-details :items="patientHospitalisations" :hospitalisationId="selectedItemId" @onedit="goToEdit"  @closesidemodal="closeNewModal" />
     </side-modal>
 
-    <side-modal :visible="showStatusUpdateModal" @closesidemodal="(closeUpdateModal)">
-      <update-status :updateData="updateData" @changed="newStatusSelected" @closesidemodal="closeUpdateModal">
-        <template #submit>
-          <CornieBtn :loading="false" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
-            <span class="text-white font-semibold">Update</span>
-          </CornieBtn>
-        </template>
-      </update-status>
-    </side-modal>
+    <modal :visible="showStatusUpdateModal" @closesidemodal="closeUpdateModal">
+      <div class="w-full px-5 mb-6" style="width: 520px">
+        <p
+          class="
+            flex 
+            justify-between
+            items-center
+            w-full
+            justify-center
+            font-bold
+            text-xl text-primary
+            p-2
+            -mb-5
+          "
+        >
+          Update Status
+          <span class="cursor-pointer" @click="closeUpdateModal"><close-icon /> </span>
+        </p>
+        <update-status :updateData="updateData" @changed="newStatusSelected" @closesidemodal="closeUpdateModal">
+          <template #submit>
+            <CornieBtn :loading="false" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
+              <span class="text-white font-semibold">Update</span>
+            </CornieBtn>
+          </template>
+        </update-status>
+      </div>
+    </modal>
 
-    <modal :visible="false">
+    <modal :visible="timelineVissible" >
       <div class="p-4">
-        <Timeline />
+        <Timeline @closesidemodal="closeUpdateModal" />
       </div>
     </modal>
 
@@ -175,6 +202,12 @@ import UpdateStatus from "@/views/dashboard/ehr/encounter/components/update-stat
 import NoteDialog from "./components/notes-dialog.vue"
 import Timeline from "./components/timeline.vue"
 import ViewDetails from "./components/view-details.vue"
+import { namespace } from "vuex-class";
+import { IHospitalisation } from "@/types/IHospitalisation";
+import CloseIcon from "@/components/icons/CloseIcon.vue"
+import LocOrg from "./components/location-org.vue"
+
+const hospitalisation = namespace('hospitalisation');
 
 @Options({
   name: "EHRPatients",
@@ -202,10 +235,18 @@ import ViewDetails from "./components/view-details.vue"
     UpdateStatus,
     NoteDialog,
     Timeline,
-    ViewDetails
+    ViewDetails,
+    CloseIcon,
+    LocOrg,
   },
 })
 export default class ExistingState extends Vue {
+
+  @hospitalisation.State
+  patientHospitalisations!: IHospitalisation[]
+  
+  @hospitalisation.Action
+  getHospitalisations!: (patientId: string) => Promise<void>
 
   headers = [
     {
@@ -248,6 +289,16 @@ export default class ExistingState extends Vue {
       key: "status",
       show: true,
     },
+    {
+      title: "Ward",
+      key: "ward",
+      show: false,
+    },
+    {
+      title: "Re-admission",
+      key: "reAdmission",
+      show: false,
+    },
   ];
 
   showNewModal = false;
@@ -255,21 +306,34 @@ export default class ExistingState extends Vue {
   showStatusUpdateModal = false;
   updateData = { } as IUpdateStatus;
   newStatus = "";
+  notesVissible = false;
+  timelineVissible = false;
+  viewDetails = false;
+  selectedItemId = ""
 
   get items() {
-    return [
-        {
-        id: "1",
+    if (this.patientHospitalisations?.length <= 0) return [ ];
+    return this.patientHospitalisations.map(hospitalisation => {
+      return {
+        id: hospitalisation.id,
         identifier: "XXXXX",
         condition: "Condition",
-        admitDate: "1/2/3000",
+        admitDate: new Date(hospitalisation.createdAt).toLocaleDateString(),
         duration: "Ongoing",
-        room: "12",
-        beds: `24`,
+        room: hospitalisation.room,
+        beds: hospitalisation.bed,
         careTeam: "Care Team",
         status: "Status",
+        ward: hospitalisation.ward,
+        reAdmission: hospitalisation.reAdmission
       }
-    ]
+    })
+  }
+
+  goToEdit(hospitalisationId: string) {
+    this.selectedItemId = hospitalisationId;
+    this.viewDetails = false;
+    this.showNewModal = true;
   }
 
   showUpdateModal(item: any) {
@@ -307,22 +371,52 @@ export default class ExistingState extends Vue {
     this.showStatusUpdateModal = true;
   }
 
+  get selectedHospitalization() {
+    if (!this.selectedItemId) return { };
+    return this.patientHospitalisations.find(hospitalisation => hospitalisation.id === this.selectedItemId);
+  }
+
+  viewHospitalisationDetails(id: string) {
+    this.selectedItemId = id;
+    this.viewDetails = true;
+  }
+
+  showNotes(id: string) {
+    this.selectedItemId = id;
+    this.notesVissible = true;
+  }
+
+  showTimeline(item: IHospitalisation) {
+    console.log(item);
+    this.timelineVissible = true;
+  }
+
   newStatusSelected(status: string) {
     this.newStatus = status
   }
 
   closeUpdateModal() {
     this.showStatusUpdateModal = false;
+    this.timelineVissible = false;
+    this.selectedItemId = ""
   }
 
 
   closeNewModal() {
-    this.showNewModal = false
+    this.showNewModal = false;
+    this.notesVissible = false;
+    this.viewDetails = false;
+    this.selectedItemId = ""
   }
 
   get activePatientId() {
       const id = this.$route?.params?.id as string;
       return id;
+  }
+
+  async created() {
+    await this.getHospitalisations(this.$route.params.id.toString())
+    console.log(this.patientHospitalisations, "Hellloooo");
   }
 
 }

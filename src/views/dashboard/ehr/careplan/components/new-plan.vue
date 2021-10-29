@@ -10,31 +10,31 @@
                         <div class="w-full flex flex-wrap py-4">
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio h-4 w-4" :value="'planned'" >
+                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'planned'" >
                                     <span class="ml-2 text-sm">Plan Definition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio h-4 w-4" :value="'active'" >
+                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'active'" >
                                     <span class="ml-2 text-sm">ActivityDefinition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio h-4 w-4" :value="'reserved'" >
+                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'reserved'" >
                                     <span class="ml-2 text-sm">Measure</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio h-4 w-4" :value="'completed'" >
+                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'completed'" >
                                     <span class="ml-2 text-sm">Operation Definition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio h-4 w-4" :value="'completed'" >
+                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'completed'" >
                                     <span class="ml-2 text-sm">Questionnaire</span>
                                 </label>
                             </div>
@@ -43,7 +43,7 @@
 
                     <div class="w-full my-2 flex items-center">
                         <div class="w-6/12 -mt-3">
-                            <cornie-input :label="'Instantiate Uri'" />
+                            <cornie-input v-model="reqBody.detail.instantiatesUri" :label="'Instantiate Uri'" />
                         </div>
                         <div class="w-6/12">
                             <auto-complete :label="'Based On'" :items="[ 'Provider 1', 'Provider 2' ]" />
@@ -61,31 +61,36 @@
 
                     <div class="w-full my-2 flex items-center">
                         <div class="w-6/12">
-                            <cornie-select :label="'Status'" :items="planStatus" />
+                            <fhir-input
+                                v-model="reqBody.status"
+                                label="Status"
+                                reference="http://hl7.org/fhir/ValueSet/request-status"
+                            />
                         </div>
                         <div class="w-6/12">
+                            <label class="flex capitalize mb-1 text-black text-sm font-semibold">Intent</label>
                             <div class="w-full flex flex-wrap py-4">
                                 <div class="mx-3">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'planned'" >
+                                        <input type="radio" v-model="reqBody.intent" class="form-radio h-4 w-4" :value="'proposal'" >
                                         <span class="ml-2 text-sm">Proposal</span>
                                     </label>
                                 </div>
                                 <div class="mx-3">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'active'" >
+                                        <input type="radio"  v-model="reqBody.intent" class="form-radio h-4 w-4" :value="'plan'" >
                                         <span class="ml-2 text-sm">Plan</span>
                                     </label>
                                 </div>
                                 <div class="mx-3">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'reserved'" >
+                                        <input type="radio" v-model="reqBody.intent" class="form-radio h-4 w-4" :value="'order'" >
                                         <span class="ml-2 text-sm">Order</span>
                                     </label>
                                 </div>
                                 <div class="mx-3">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-4 w-4" :value="'completed'" >
+                                        <input type="radio" v-model="reqBody.intent" class="form-radio h-4 w-4" :value="'option'" >
                                         <span class="ml-2 text-sm">Option</span>
                                     </label>
                                 </div>
@@ -95,19 +100,24 @@
 
                     <div class="w-full my-2 flex items-center">
                         <div class="w-6/12">
-                            <auto-complete :label="'Category'" :items="[ 'Catgory 1', 'Catgory 2' ]" />
+                            <fhir-input
+                                v-model="reqBody.status"
+                                label="Category"
+                                reference="http://hl7.org/fhir/ValueSet/care-plan-category"
+                            />
                         </div>
                         <div class="w-6/12 -mt-3">
-                            <cornie-input :label="'Title'" />
+                            <cornie-input v-model="reqBody.title" :label="'Title'" />
                         </div>
                     </div>
 
                     <div class="w-full my-2 flex items-center">
                         <div class="w-6/12 -mt-3">
-                            <cornie-input :label="'Description'" />
+                            <cornie-input v-model="reqBody.description" :label="'Description'" />
                         </div>
                         <div class="w-6/12">
-                            <auto-complete :label="'Reference Encounter'" :items="[ 'Encounter 1', 'Encounter 2' ]" />
+                            <encounter-select label="Reference Encounter" v-model="reqBody.referenceEncounter" />
+                            <!-- <auto-complete :label="'Reference Encounter'" :items="[ 'Encounter 1', 'Encounter 2' ]" /> -->
                         </div>
                     </div>
 
@@ -125,7 +135,7 @@
                                         <template #input>
                                             <div class="w-full">
                                                 <div class="w-full">
-                                                    <v-date-picker name="eeee" style="z-index:9000;width:100%"></v-date-picker>
+                                                    <v-date-picker v-model="reqBody.scheduleTiming.startDate" name="eeee" style="z-index:9000;width:100%"></v-date-picker>
                                                 </div>
                                                 <div class="w-full">
                                                     <label
@@ -133,7 +143,7 @@
                                                     >
                                                         Time
                                                     </label>
-                                                    <input type="time" class="w-full border rounded-md p-2">
+                                                    <input type="time"  class="w-full border rounded-md p-2">
                                                 </div>
                                             </div>
                                         </template>
@@ -150,7 +160,7 @@
                                             <span>{{ '00:00' }}</span>
                                         </template>
                                         <template #input>
-                                            <v-date-picker name="eeee" style="z-index:9000;width:100%"></v-date-picker>
+                                            <v-date-picker name="eeee" v-model="reqBody.scheduleTiming.endDate"  style="z-index:9000;width:100%"></v-date-picker>
                                             <label
                                                 class="block uppercase my-1 text-xs font-bold"
                                                 >
@@ -385,7 +395,7 @@
                     <span class="font-semibold text-primary-500" @click="() => $emit('closesidemodal')">Cancel</span>
                 </corniebtn>
 
-                <CornieBtn :loading="false" class="bg-red-500 p-2 rounded-full px-8 mx-4">
+                <CornieBtn :loading="loading" @click="onSave" class="bg-red-500 p-2 rounded-full px-8 mx-4">
                     <span class="text-white font-semibold">Save</span>
                 </CornieBtn>
             </div>
@@ -405,6 +415,12 @@ import DateTimePicker from "@/views/dashboard/schedules/components/datetime-pick
 import CollapseSection from "@/views/dashboard/ehr/procedures/components/collapse-section.vue"
 import helper from "../helper/helper"
 import TextArea from "@/components/textarea.vue"
+import ICarePlan from "@/types/ICarePlan"
+import FhirInput from "@/components/fhir-input.vue";
+import EncounterSelect from "@/views/dashboard/ehr/allergy/encounter-select.vue"
+import { namespace } from "vuex-class";
+
+const careplan = namespace('careplan');
 
 @Options({
     components: {
@@ -415,9 +431,68 @@ import TextArea from "@/components/textarea.vue"
         DateTimePicker,
         CollapseSection,
         TextArea,
+        FhirInput,
+        EncounterSelect,
     }
 })
-export default class NewNote extends Vue {
+export default class NewPlan extends Vue {
+    @careplan.Action
+    createCarePlan!: (body: ICarePlan) => Promise<void>
+
+    reqBody = {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "patientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "practitionerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "organizationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "instantiatesUri": "string",
+        "basedOn": "string",
+        "replaces": "string",
+        "partOf": "string",
+        "intent": "string",
+        "status": "string",
+        "author": "string",
+        "contributor": "string",
+        "careTeam": "string",
+        "category": "string",
+        "addresses": "string",
+        "referenceEncounter": "string",
+        "title": "Unknown Type: string;",
+        "description": "string",
+        "startDate": "string",
+        "endDate": "string",
+        "reference": "string",
+        "outcomeReference": "string",
+        "progress": "string",
+        "outcome": "string",
+        "detail": {
+            "kind": "string",
+            "instantiatesCanonical": "string",
+            "instantiatesUri": "string",
+            "code": "string",
+            "reasonCode": "string",
+            "referenceCode": "string",
+            "goal": "string",
+            "status": "string",
+            "statusReason": "string",
+            "doNotPerform": true
+        },
+        "scheduleTiming": {
+            "scheduleTiming": "string",
+            "startDate": "string",
+            "endDate": "string",
+            "location": "string",
+            "performer": "string"
+        },
+        "product": {
+            "productCode": "string",
+            "productReference": "string",
+            "dailyAmount": "string",
+            "quantity": "string",
+            "description": "string",
+            "note": "string"
+        }
+     } as ICarePlan;
+
     planStatus = [
         { code: 'draft', display: 'Draft'},
         { code: 'active', display: 'Active'},
@@ -427,6 +502,7 @@ export default class NewNote extends Vue {
         { code: 'entered-in-error', display: 'Entered in Error'},
         { code: 'unknown', display: 'Unknown'},
     ] as Item[];
+    loading = false;
 
     get codes() {
         return helper.carePlanCodes;
@@ -438,6 +514,20 @@ export default class NewNote extends Vue {
 
     get detailStatus() {
         return helper.carePlanDetailStatus;
+    }
+
+    async onSave() {
+        try {
+            alert('hello')
+            this.loading = true;
+            alert('hello')
+            const response = await this.createCarePlan(this.reqBody);
+            console.log(response, );
+            this.loading = false
+        } catch (error) {
+            console.log(error);
+            
+        }
     }
 }
 </script>

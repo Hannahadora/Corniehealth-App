@@ -36,6 +36,10 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
+import hospitalisationStore from "./hospitalisation";
+import CareplanStore from "./careplan";
+
+
 export default createStore({
   modules: {
     user: UserStore,
@@ -76,5 +80,7 @@ export default createStore({
 
     vitals: VitalsStore,
     procedure: ProcedureStore,
+    hospitalisation: hospitalisationStore,
+    careplan: CareplanStore
   },
 } as StoreOptions<any>);

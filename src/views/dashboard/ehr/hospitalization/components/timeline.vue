@@ -3,7 +3,7 @@
         <div class="w-full mb-4">
             <p class="header flex justify-between">
                 <span>Timeline</span>
-                <span><close-icon /></span>
+                <span class="cursor-pointer" @click="() => $emit('closesidemodal')"><close-icon /></span>
             </p>
         </div>
         <div class="w-full border-l-4">
@@ -42,7 +42,7 @@
         </div>
 
         <div class="w-full flex justify-end mt-4">
-            <CornieBtn :loading="false" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
+            <CornieBtn @click="$emit('closesidemodal')" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
                 <span class="text-white font-semibold">Close</span>
             </CornieBtn>
         </div>

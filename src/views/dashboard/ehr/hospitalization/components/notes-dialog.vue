@@ -1,66 +1,37 @@
 <template>
     <div class="container-fluid p-3">
         <div class="w-full">
-            <div class="w-full mb-2 flex items-center">
+            <!-- <div class="w-full mb-2 flex items-center">
                 <p class="header">Add Notes</p>
-            </div>
-
+            </div> -->
             <div class="w-full">
-                <text-area style="width: 100%; height:200px" />
+                <text-area v-model="note.text" style="width: 100%; height:200px" />
             </div>
         </div>
 
         <div class="w-full mt-4">
             <div class=" flex justify-end">
-                <CornieBtn :loading="false" class="bg-red-500 p-2 rounded-full px-8 ml-4">
+                <CornieBtn :loading="loading" @click="saveNote" class="bg-red-500 p-2 rounded-full px-8 ml-4">
                     <span class="text-white font-semibold">Add</span>
                 </CornieBtn>
             </div>
         </div>
 
         <div class="w-full notes mt-5">
-            <div class="w-full flex my-4">
+            <div class="w-full flex my-4" v-for="(item, index) in notes" :key="index">
                 <div class="" style="width:5%">
                     <doc-icon />
                 </div>
                 <div class="">
                     <p class="flex items-center">
-                        <span class="text-xs">8-Sep-2021 8:00PM</span>
+                        <span class="text-sm">
+                            {{ `${new Date(item.createdAt)?.toString().split(' ')[2]}-${new Date(item.createdAt)?.toString().split(' ')[1]}-${new Date(item.createdAt).toString().split(' ')[3]}` }}
+                        </span>
                         <span class="flex items-center mx-1 text-lg"><dot-icon /></span>
-                        <span class="text-xs">Dr. EBUBE OGE</span>
+                        <span class="text-sm font-semibold">{{ item.user?.firstName }} {{ item.user?.lastName }}</span>
                     </p>
-                    <p class="text-xs">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis egestas at sociis sodales nunc metus, commodo, viverra sit. Bibendum sagittis neque blandit varius.
-                    </p>
-                </div>
-            </div>
-            <div class="w-full flex my-4">
-                <div class="" style="width:5%">
-                    <doc-icon />
-                </div>
-                <div class="">
-                    <p class="flex items-center">
-                        <span class="text-xs">8-Sep-2021 8:00PM</span>
-                        <span class="flex items-center mx-1 text-lg"><dot-icon /></span>
-                        <span class="text-xs">Dr. EBUBE OGE</span>
-                    </p>
-                    <p class="text-xs">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis egestas at sociis sodales nunc metus, commodo, viverra sit. Bibendum sagittis neque blandit varius.
-                    </p>
-                </div>
-            </div>
-            <div class="w-full flex my-4">
-                <div class="" style="width:5%">
-                    <doc-icon />
-                </div>
-                <div class="">
-                    <p class="flex items-center">
-                        <span class="text-xs">8-Sep-2021 8:00PM</span>
-                        <span class="flex items-center mx-1 text-lg"><dot-icon /></span>
-                        <span class="text-xs">Dr. EBUBE OGE</span>
-                    </p>
-                    <p class="text-xs">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis egestas at sociis sodales nunc metus, commodo, viverra sit. Bibendum sagittis neque blandit varius.
+                    <p class="text-sm">
+                        {{ item.text }}
                     </p>
                 </div>
             </div>
@@ -82,6 +53,11 @@ import helper from "../helper/helper"
 import TextArea from "@/components/textarea.vue"
 import DocIcon from "@/components/icons/doc.vue"
 import DotIcon from "./dot-icon.vue"
+import { Prop } from "vue-property-decorator";
+import { IAdminNote, IHospitalisation } from "@/types/IHospitalisation";
+import { namespace } from "vuex-class";
+
+const hospitalisation = namespace('hospitalisation')
 
 @Options({
     components: {
@@ -98,6 +74,28 @@ import DotIcon from "./dot-icon.vue"
 })
 export default class NewNote extends Vue {
 
+    @Prop({ type: Array, default: [ ]})
+    items!: IHospitalisation[]
+
+    @Prop({ type: String, default: ''})
+    hospitalisationId!: string
+
+    @hospitalisation.Action
+    createAdminNote!: (body: IAdminNote) => Promise<boolean>
+
+    note = { } as IAdminNote;
+    loading = false;
+
+    get hospitalisation() {
+        if (!this.hospitalisationId || this.items?.length === 0) return { } as IHospitalisation;
+        const result = this.items?.find(hospitalisation => hospitalisation.id === this.hospitalisationId) as IHospitalisation;
+        return result;
+    }
+
+    get notes() {
+        return this.hospitalisation?.notes;
+    }
+
     get codes() {
         return helper.carePlanCodes;
     }
@@ -108,6 +106,30 @@ export default class NewNote extends Vue {
 
     get detailStatus() {
         return helper.carePlanDetailStatus;
+    }
+
+    async saveNote() {
+        try {
+            this.note.hospitalizationId = this.hospitalisationId;
+            this.loading = true;
+            const response = await this.createAdminNote(this.note);
+            this.loading = false;
+            if (response) {
+                this.$emit('closesidemodal')
+                notify({
+                  msg: "Note added successfully",
+                  status: "success"
+                });
+            } else {
+                notify({
+                  msg: "Adding noted failed",
+                  status: "error"
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            this.loading = false;
+        }
     }
 }
 </script>

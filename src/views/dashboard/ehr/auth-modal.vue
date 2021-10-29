@@ -64,6 +64,9 @@ export default class AuthModal extends Vue {
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
+  @userStore.Getter
+  authPractitionerDomain!: string;
+
   @userStore.State
   domain!: string;
 
@@ -82,7 +85,7 @@ export default class AuthModal extends Vue {
       const verified = await ehrHelper.authenticateUser({
         email: this.authPractitioner?.email,
         authPassword: this.password,
-        accountId: this.domain ? this.domain : "",
+        accountId: this.domain ? this.domain : this.authPractitionerDomain,
       });
       this.password = "";
       this.loading = false;
