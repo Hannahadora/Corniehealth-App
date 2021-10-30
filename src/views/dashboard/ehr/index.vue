@@ -13,26 +13,38 @@
     </div>
     <div class="mt-10 mb-5 rounded-lg settings">
       <div class="w-full h-screen max-h-full">
-        <clinical-sidebar class="pb-96" :patient='patient' />
+        <clinical-sidebar class="pb-96" :patient="patient" />
       </div>
-      <div class="w-full overflow-auto h-screen pb-72 max-h-full  mb-5 p-3 border-l-none -mt-3">
+      <div
+        class="
+          w-full
+          overflow-auto
+          h-screen
+          pb-72
+          max-h-full
+          mb-5
+          p-3
+          border-l-none
+          -mt-3
+        "
+      >
         <router-view />
       </div>
     </div>
     <patient-modal v-model:visible="showPatient" />
-  <!-- </div> -->
-  <patient-modal v-model:visible="showPatient"/>
-  <!-- <modal :visible="!practitionerAuthenticated">
+    <!-- </div> -->
+    <patient-modal v-model:visible="showPatient" />
+    <!-- <modal :visible="!practitionerAuthenticated">
     <auth-modal />
   </modal> -->
-</div>
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ClinicalSidebar from "./clinicalSidebar.vue";
 import PatientModal from "./dialogs/patientDialog.vue";
-import Modal from "@/components/modal.vue"
-import AuthModal from "./auth-modal.vue"
+import Modal from "@/components/modal.vue";
+import AuthModal from "./auth-modal.vue";
 import { namespace } from "vuex-class";
 
 const userStore = namespace("user");
@@ -41,7 +53,6 @@ import { Prop } from "vue-property-decorator";
 import { IPatient } from "@/types/IPatient";
 
 const patients = namespace("patients");
-
 
 @Options({
   components: {
@@ -60,24 +71,22 @@ export default class ClinicalsSidebar extends Vue {
 
   showPatient = false;
 
-patient = {} as IPatient;
+  patient = {} as IPatient;
 
- @patients.Action
+  @patients.Action
   findPatient!: (patientId: string) => Promise<IPatient>;
 
-  @Prop({ type: String, default: "" })
-  patientId!: string;
+  get patientId() {
+    return (this.$route.params.id || this.$route.params.patientId) as string;
+  }
 
-  showPatientModal(){
+  showPatientModal() {
     this.showPatient = true;
   }
 
-   async created (){
-      console.log('id3', this.patientId);
-      this.patient = await this.findPatient(this.$route.params.id.toString())
-      // this.patient = await this.findPatient(this.patientId)
-      console.log('fff', this.patient)
-     }
+  async created() {
+    this.patient = await this.findPatient(this.patientId);
+  }
 }
 </script>
 <style scoped>

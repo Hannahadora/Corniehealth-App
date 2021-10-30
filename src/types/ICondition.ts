@@ -1,3 +1,4 @@
+import { IOrganization } from "./IOrganization";
 import Period from "./IPeriod";
 import IPractitioner from "./IPractitioner";
 
@@ -64,7 +65,7 @@ interface IAbatement {
   id?: string;
   dateTime?: string;
   age?: string;
-  period?: string;
+  period?: Period;
   range?: Range;
   string?: string;
   asserter: string;
@@ -79,7 +80,7 @@ export interface ConditionNote {
   id: string;
   createdAt?: string;
   updatedAt?: string;
-  practitioner?: IPractitioner
+  practitioner?: IPractitioner;
 }
 export interface ICondition {
   id?: string;
@@ -110,4 +111,5 @@ export interface ICondition {
   createdAt?: string;
   updatedAt?: string;
   practitioner?: IPractitioner;
+  organization?: IOrganization;
 }

@@ -49,18 +49,32 @@ export default class DiagnoticIndex extends Vue {
   show=false;
 
   get empty() {
-    return this.otherrequests.length < 1;
+    return this.patientrequests.length < 1;
   }
 
- @otherrequest.State
-  otherrequests!: IOtherrequest[];
+//  @otherrequest.State
+//   otherrequests!: IOtherrequest[];
 
-  @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+//   @otherrequest.Action
+//   fetchOtherrequests!: () => Promise<void>;
+ get patientId() {
+    return this.$route.params.id as string;
+  }
+     @otherrequest.State
+  patientrequests!: any[];
+
+   medicationAdded() {
+     this.show = false;
+     this.patientrequests;
+   this.fetchOtherrequestsById(this.patientId);
+  }
+
+ @otherrequest.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
 
 created() {
-    if (this.otherrequests.length < 1) this.fetchOtherrequests();
+    if (this.patientrequests.length < 1) this.fetchOtherrequestsById(this.patientId);
   }
 }
 </script>

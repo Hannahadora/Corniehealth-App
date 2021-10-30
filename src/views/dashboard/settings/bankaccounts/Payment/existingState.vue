@@ -7,15 +7,18 @@
           rounded-full
           text-white
           mt-5
-          py-2
+          py-3
           px-3
+          pl-5
+          pr-5
+          mb-5
           focus:outline-none
           hover:opacity-90
           flex
         "
         @click="$router.push('add-payment-account')"
       >
-        <span class="mt-2 mr-2"> <bank-add-icon /> </span>
+         <bank-add-icon class="mt-1 mr-2"/> 
         New Account
       </button>
     </span>
