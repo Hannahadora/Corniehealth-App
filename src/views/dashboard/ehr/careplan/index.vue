@@ -51,6 +51,9 @@
           :columns="headers"
           @filter="filterAdvanced = true"
         >
+          <template #title-header>
+            <div class="text-no-wrap flex uppercase text-xs" style="white-space:nowrap">Intent | Title</div>
+          </template>
           <template #actions="{  }">
             <table-action
             >
@@ -197,6 +200,7 @@ export default class ExistingState extends Vue {
   ];
 
   showNewModal = false;
+  filterAdvanced = false;
 
   get items() {
     return [

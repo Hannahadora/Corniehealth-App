@@ -1,6 +1,6 @@
 import { IPatient } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel, noShow, getPatientVisits } from "./helper";
+import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel, noShow, getPatientVisits, updateStatus } from "./helper";
 
 interface SchedulesStore {
   visits: any[],
@@ -82,7 +82,7 @@ export default {
       const sch = await checkout(id);
       if (!sch) return false;
       ctx.commit("updateStatus", { id, status: "completed" });
-      return sch;
+      return sch as boolean;
     },
 
     async startEncounter(ctx, id: string) {
@@ -104,6 +104,13 @@ export default {
       if (!sch) return false;
       ctx.commit("updateStatus", { id, status: "no-show" });
       return sch;
+    },
+
+    async updateVisitStatus(ctx, body: any) {
+      const sch = await updateStatus(body);
+      if (!sch) return false;
+      ctx.commit("updateStatus", { id: body.id, status: body.status });
+      return sch as boolean;
     },
   },
 } as StoreOptions<SchedulesStore>
