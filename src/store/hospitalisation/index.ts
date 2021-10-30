@@ -25,9 +25,9 @@ export default {
       }
     },
 
-    addNote(state, data) {
-      if (data) {
-        const index = state.patientHospitalisations.findIndex(hospitalisation => hospitalisation.id === data.hospitalisationId);
+    addNote(state, data) {      
+      if (data) {        
+        const index = state.patientHospitalisations.findIndex(hospitalisation => hospitalisation.id === data.hospitalizationId);
         state.patientHospitalisations[index]?.notes?.unshift(data); 
       }
     },
@@ -64,7 +64,9 @@ export default {
 
     async createAdminNote(ctx, body: IAdminNote) {
       const res = await createAdminNote(body)
+      console.log(res, "NEW NOTE");
       if (!res) return false;
+      
       ctx.commit("addNote", res)
       return res as boolean;
     },

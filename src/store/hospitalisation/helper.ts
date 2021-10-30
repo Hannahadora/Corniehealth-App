@@ -30,10 +30,10 @@ export async function createHospitalisation(body: IHospitalisation) {
 
 export async function createAdminNote(body: IAdminNote) {
   try {
-    const response = await cornieClient().post(`/api/v1/hospitalization/admin_notes`, body);
-    console.log(response, "Note");
+    const { data } = await cornieClient().post(`/api/v1/hospitalization/admin_notes`, body);
+    console.log(data, "Note");
 
-    return response.data as boolean;
+    return data;
   } catch (error) {
     console.log(error);
 

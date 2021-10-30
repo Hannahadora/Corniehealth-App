@@ -114,8 +114,9 @@ export default class NewNote extends Vue {
             this.loading = true;
             const response = await this.createAdminNote(this.note);
             this.loading = false;
+            
+            this.note = { } as IAdminNote;
             if (response) {
-                this.$emit('closesidemodal')
                 notify({
                   msg: "Note added successfully",
                   status: "success"
