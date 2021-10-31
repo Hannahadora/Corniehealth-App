@@ -318,7 +318,7 @@ showViewModal=false;
          (otherrequest as any).updatedAt = new Date(
          (otherrequest as any).updatedAt
        ).toDateString();
-        this.updatedBy = this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName;
+        this.updatedBy = this.getPatientName(this.patientId as string);
       this.currentStatus = otherrequest.status;
 
        this.update= otherrequest.updatedAt

@@ -232,8 +232,8 @@
 <div class="grid grid-cols-2 gap-5 mt-5">
                  <cornie-input label="ratio (1st value)"     class="w-full"  v-model="otherrequestModel.request.ratio" placeholder="Enter" />
                   <cornie-input label="ratio (2nd value)"    class="w-full"   v-model="range" placeholder="Enter" />
-                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full -mt-3" label="occurence DATE" />
-                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full" label="occurence Period" />
+                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full" label="Occurence Date" />
+                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full -mt-1" label="occurence Period" />
                 <div class="w-full">
                     <label for="" class="w-full">
                         <span class="uppercase font-bold text-xs">occurence timing</span>
@@ -264,7 +264,7 @@
                 </div>
                    <cornie-select
                      v-if="PatientName.insurances.length === 0"
-                class="required w-full"
+                class="required w-full -mt-1"
                 :rules="required"
                 :items="['No Payment option for this patient']"
                   v-model="otherrequestModel.subject.paymentOption"

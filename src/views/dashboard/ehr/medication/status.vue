@@ -148,7 +148,7 @@ status = "";
    
     } catch (error) {
       console.log(error);
-        window.notify({ msg: "Status Not Updated", status: "success" });
+        window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
   }
@@ -156,7 +156,7 @@ status = "";
  
  
  done() {
-    this.$emit("allergy-added");
+    this.$emit("medicationAdded");
     this.show = false;
   }
   async apply() {
