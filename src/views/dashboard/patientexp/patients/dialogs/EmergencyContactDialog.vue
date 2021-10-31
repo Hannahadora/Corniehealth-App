@@ -261,12 +261,13 @@ export default class EmergencyDontactDialog extends Vue {
       postalCode: this.postCode,
       period: this.period,
       primaryPhone: this.primaryPhone,
-      secondaryPhone: this.secondaryPhone,
       mailingAddress: this.mailingAddress,
       type: "emergency-contact",
     } as RelatedPerson;
     if (this.patient?.id) payload.patientId = this.patient.id;
     if (this.currentId) payload.id = this.currentId;
+    if (this.secondaryPhone.number)
+      payload.secondaryPhone = this.secondaryPhone;
     return payload;
   }
   async save() {

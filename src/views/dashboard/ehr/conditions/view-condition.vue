@@ -30,37 +30,37 @@
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Clinical Status </span>
               <span class="mt-1 text-xs text-black capitalize">
-                {{ clinicalStatus }}</span
+                {{ clinicalStatus.display }}</span
               >
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Verification Status </span>
               <span class="mt-1 text-xs text-black capitalize">
-                {{ verificationStatus }}
+                {{ verificationStatus.display }}
               </span>
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Category </span>
               <span class="mt-1 text-xs text-black capitalize">
-                {{ category }}
+                {{ category.display }}
               </span>
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Severity </span>
               <span class="mt-1 text-xs text-black capitalize">
-                {{ severity }}</span
+                {{ severity.display }}</span
               >
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Code </span>
               <span class="mt-1 text-xs text-black capitalize">
-                {{ code }}
+                {{ code.display }}
               </span>
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Body Site </span>
               <span class="mt-1 text-xs text-black capitalize">
-                {{ bodySite }}
+                {{ bodySite.display }}
               </span>
             </div>
           </div>
@@ -98,9 +98,9 @@
             </span>
             <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3 capitalize">{{
-                  abatement.key
-                }}</span>
+                <span class="text-sm text-gray-500 mb-3 capitalize">
+                  {{ abatement.key }}
+                </span>
                 <span class="text-sm">{{ abatement.text }}</span>
                 <span class="text-sm text-gray-500 mb-3">
                   {{ abatement.subtext || "" }}
@@ -121,7 +121,7 @@
               </div>
               <div class="flex flex-col">
                 <span class="text-sm text-gray-500 mb-3">Type</span>
-                <span class="text-sm">{{ stageType }}</span>
+                <span class="text-sm">{{ stage.display }}</span>
               </div>
             </div>
             <div class="flex flex-col mt-4">
@@ -162,7 +162,7 @@
   </clinical-dialog>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import ClinicalDialog from "./clinical-dialog.vue";
 import Avatar from "@/components/avatar.vue";
@@ -172,11 +172,12 @@ import OnsetIcon from "@/components/icons/onset.vue";
 import StageIcon from "@/components/icons/stage.vue";
 import OrgCard from "./components/org-card.vue";
 import PatientCard from "./components/patient-card.vue";
-import { ICondition } from "@/types/ICondition";
+import { ICondition, Timeable } from "@/types/ICondition";
 import { printPractitioner } from "@/plugins/utils";
 import { getDropdown } from "@/plugins/definitions";
 import { Codeable } from "@/types/misc";
 import Period from "@/types/IPeriod";
+import { useFHIRDefinition } from "@/composables/useFHIRDefinition";
 
 @Options({
   name: "ViewCondition",
@@ -201,13 +202,27 @@ export default class ViewCondition extends Vue {
   @Prop({ type: Object, required: true })
   condition!: ICondition;
 
-  bodySites: Codeable[] = [];
-  codes: Codeable[] = [];
-  categories: Codeable[] = [];
-  verificationStatuses: Codeable[] = [];
-  severities: Codeable[] = [];
-  clinicalStatuses: Codeable[] = [];
-  stageTypes: Codeable[] = [];
+  clinicalStatus = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-clinical")
+  );
+  verificationStatus = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-ver-status")
+  );
+  category = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-category")
+  );
+  severity = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-severity")
+  );
+  code = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-code")
+  );
+  bodysite = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/body-site")
+  );
+  stage = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-stage-type")
+  );
 
   get item() {
     return this.condition || {};
@@ -223,112 +238,50 @@ export default class ViewCondition extends Vue {
     };
   }
 
-  get stageType() {
-    if (!this.item.id) return {};
-    const value = this.item.type?.replaceAll('"', "");
-    return this.stageTypes.find((s) => (s.code = value))?.display;
+  displayTimeable(item: Timeable, stringKey: string) {
+    const value = { ...item };
+    value.string = stringKey ? item[stringKey] : item.string;
+    if (!value) return;
+    if (value.dateTime) {
+      return {
+        key: "Date/Time",
+        text: new Date(value.dateTime).toLocaleDateString(),
+        subtext: this.printTime(value.dateTime),
+      };
+    } else if (value.age) {
+      return {
+        key: "Age",
+        text: value.age,
+      };
+    } else if (value.period) {
+      return {
+        key: "Period",
+        text: this.printPeriod(value.period),
+      };
+    } else if (value.string) {
+      return {
+        key: "String",
+        text: value.string,
+      };
+    } else if (value.range) {
+      return {
+        key: "Range",
+        text: `${value.range.min} ${value.range.unit} to ${value.range.max} ${value.range.unit}`,
+      };
+    }
   }
-
-  get clinicalStatus() {
-    if (!this.item.id) return;
-    const status = this.item.clinicalStatus?.replaceAll('"', "");
-    return this.clinicalStatuses.find((s) => (s.code = status))?.display;
-  }
-
-  get verificationStatus() {
-    if (!this.item.id) return;
-    const status = this.item.verificationStatus?.replaceAll('"', "");
-    return this.verificationStatuses.find((s) => (s.code = status))?.display;
-  }
-
-  get category() {
-    if (!this.item.id) return;
-    const cat = this.item.category?.replaceAll('"', "");
-    return this.categories.find((s) => (s.code = cat))?.display;
-  }
-
-  get severity() {
-    if (!this.item.id) return;
-    const value = this.item.severity?.replaceAll('"', "");
-    return this.severities.find((s) => (s.code = value))?.display;
-  }
-
-  get code() {
-    if (!this.item.id) return;
-    const value = this.item.code?.replaceAll('"', "");
-    return this.codes.find((s) => (s.code = value))?.display;
-  }
-
-  get bodySite() {
-    if (!this.item.id) return;
-    const value = this.item.bodySite?.replaceAll('"', "");
-    return this.bodySites.find((s) => (s.code = value))?.display;
-  }
-
   get abatement() {
     if (!this.item.id) return;
     const abatements = this.item.abatements;
     if (!abatements?.length) return;
     const abatement = abatements[0];
-    if (abatement.dateTime) {
-      return {
-        key: "Date/Time",
-        text: new Date(abatement.dateTime).toLocaleDateString(),
-        subtext: this.printTime(abatement.dateTime),
-      };
-    } else if (abatement.age) {
-      return {
-        key: "Age",
-        text: abatement.age,
-      };
-    } else if (abatement.period) {
-      return {
-        key: "Period",
-        text: this.printPeriod(abatement.period),
-      };
-    } else if (abatement.string) {
-      return {
-        key: "String",
-        text: abatement.string,
-      };
-    } else if (abatement.range) {
-      return {
-        key: "Range",
-        text: `${abatement.range.min} ${abatement.range.unit} to ${abatement.range.max} ${abatement.range.unit}`,
-      };
-    }
+    return this.displayTimeable(abatement, "string");
   }
 
   get onset() {
     if (!this.item.id) return;
     const onset = this.item.onSet;
-    if (onset.dateTime) {
-      return {
-        key: "Date/Time",
-        text: new Date(onset.dateTime).toLocaleDateString(),
-        subtext: this.printTime(onset.dateTime),
-      };
-    } else if (onset.age) {
-      return {
-        key: "Age",
-        text: onset.age,
-      };
-    } else if (onset.period) {
-      return {
-        key: "Period",
-        text: this.printPeriod(onset.period),
-      };
-    } else if (onset.onsetString) {
-      return {
-        key: "String",
-        text: onset.onsetString,
-      };
-    } else if (onset.range) {
-      return {
-        key: "Range",
-        text: `${onset.range.min} ${onset.range.unit} to ${onset.range.max} ${onset.range.unit}`,
-      };
-    }
+    return this.displayTimeable(onset, "onsetString");
   }
 
   printPeriod(period: Period) {
@@ -337,32 +290,24 @@ export default class ViewCondition extends Vue {
     if (period.end) end = new Date(period.end).toLocaleDateString();
     return `${start} - ${end}`;
   }
+
   printTime(timeString: string) {
     const date = new Date(timeString);
     return `${date.getHours()}:${date.getMinutes()}`;
   }
+
+  loadDefinitions() {
+    this.clinicalStatus.code = this.item?.clinicalStatus;
+    this.verificationStatus.code = this.item?.verificationStatus;
+    this.category.code = this.item?.category;
+    this.severity.code = this.item?.severity;
+    this.code.code = this.item?.code;
+    this.bodysite.code = this.item?.bodySite;
+    this.stage.code = this.item?.type;
+  }
+
   async created() {
-    this.clinicalStatuses = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-clinical"
-    );
-    this.verificationStatuses = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-ver-status"
-    );
-    this.categories = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-category"
-    );
-    this.severities = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-severity"
-    );
-    this.codes = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-code"
-    );
-    this.bodySites = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/body-site"
-    );
-    this.stageTypes = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-stage-type"
-    );
+    this.loadDefinitions();
   }
 }
 </script>
