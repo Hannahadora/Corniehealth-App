@@ -5,7 +5,7 @@
                 <div class="w-full px-3 flex items-center justify-between">
                     <h5 class="flex items-center py-3">
                         <span class="font-bold flex items-center cursor-pointer" @click="close"><ArrowLeft class="mr-3" /> <span class="text-gray-500">|</span></span>
-                        <p class="mx-3 font-semibold text-lg">
+                        <p class="mx-3 font-semibold text-lg header">
                             <span>{{ header ? header : 'Edit Slot' }}</span>
                             
                         </p>
@@ -53,5 +53,14 @@ export default defineComponent({
         position: absolute;
         right: 0;
         top: 0;
+    }
+
+    .header {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 34px;
+        color: #080056;
     }
 </style>

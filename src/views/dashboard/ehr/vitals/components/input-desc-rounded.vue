@@ -3,7 +3,7 @@
 
       <div class="w-full">
           <div class="w-12/12 py-1">
-            <span class="font-semibold">{{ label }}</span>
+            <span class="flex capitalize mb-1 text-black text-sm font-medium">{{ label }}</span>
           </div>
           <div class="w-full">
             <div class="w-12/12 relative" :class="{ '-mt-2': !label }">

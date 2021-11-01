@@ -4,13 +4,13 @@
             <div class="w-11/12" :class="width">
                 <label
                     v-if="label"
-                    class="block uppercase mb-1 text-xs font-bold"
+                    class="flex capitalize mb-1 text-black text-sm font-medium"
                     :for="`${id}-inputfield`"
                     >
                     {{ label }}
                 </label>
                 <p class="border rounded-md w-full py-2 px-1 flex justify-between" @click="showSelectArea">
-                    <span class=" flex items-center"><span><DateIcon class="pr-" /></span><slot name="date" /></span>
+                    <span class=" flex items-center"><span class="mx-1"><DateIcon class="pr-" /></span><slot name="date" /></span>
                     <span><slot name="time" /></span>
                 </p>
                 <div class="w-full" style="position: relative">
