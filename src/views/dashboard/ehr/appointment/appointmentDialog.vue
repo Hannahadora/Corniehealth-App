@@ -12,90 +12,126 @@
         :opened="true"
       >
         <div class="grid grid-cols-2 gap-3 mt-5">
-          <cornie-select
+          <auto-complete
           class="w-full"
           placeholder="--Select--"
-           
             label="Service Category"
-            :items="['Plan Definition','Questionaire','Activity Definition','Measure','Operation Definition']"
+            :items="dropdowns.serviceCategory"
             :rules="required"
+              v-model="serviceCategory"
           />
-          <cornie-select
+          <auto-complete
             class="w-full"
              placeholder="--Select--"
-           
             label="Service Type"
-            :items="['https://techsolutions.net//']"
+            :items="dropdowns.serviceType"
+             v-model="serviceType"
             :rules="required"
           />
           <auto-complete
            placeholder="--Select--"
-         
             :rules="required"
             class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+             v-model="specialty"
+           :items="dropdowns.specialty"
             label="Specialty"
           />
           <auto-complete
            placeholder="--Select--"
-          
             :rules="required"
+             v-model="appointmentType"
             class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+              :items="[
+                      'Check-Up',
+                      'Follow-Up',
+                      'Emergency',
+                      'Routine',
+                      'Walk-In',
+                    ]"
             label="Appointment Type"
           />
           <auto-complete
            placeholder="--Select--"
-          
+             v-model="reasonCode"
             :rules="required"
             class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+            :items="['Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','	Spontaneous abortion with laceration of cervix','	Homoiothermia']"
             label="Reason Code"
           />
           <auto-complete
            placeholder="--Select--"
-          
             :rules="required"
             class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+            v-model="reasonRef"
+            :items="['Refferal','Condition','Procedure','Observation','Immunization', 'Recommendation']"
             label="Reason Reference"
           />
           <auto-complete
            placeholder="--Select--"
-           
             :rules="required"
             class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+             v-model="priority"
+             :items="['Routine', 'Urgent', 'Asap', 'Stat']"
             label="Priority"
           />
-          <cornie-select
-          
-             placeholder="--Select--"
-            class="w-full"
+           <cornie-input
             label="Description"
-            :rules="required"
-            :items="['Subject Unknown','Information Withheld','Unable To Obtain','Deferred']"
-          />
-          <cornie-select
-           
-             placeholder="--Select--"
+            placeholder="--Enter--"
+            v-model="description"
             class="w-full"
-            label="Supporting Information"
-            :rules="required"
-            :items="['Subject Unknown','Information Withheld','Unable To Obtain','Deferred']"
           />
-          <cornie-select
-           
+          <cornie-input
+          class="w-full"
+              label="supporting information"
+              placeholder="--Enter--"
+              v-model="supportingInfo"
+            />
+              <cornie-select
+           v-if="availableSlots.length === 0 && newPractitioners.length === 0"
              placeholder="--Select--"
             class="w-full"
             label="Slot"
             :rules="required"
-            :items="['Subject Unknown','Information Withheld','Unable To Obtain','Deferred']"
+            :items="['Please choose a pracitioner participant to view avialable slots']"
           />
+
+            <cornie-select
+            v-else-if="(availableSlots.length === 0) && (newPractitioners.length !== 0)"
+             placeholder="--Select--"
+            class="w-full"
+            label="Slot"
+            :rules="required"
+            :items="['This pracitioner does not have an avialable slot']"
+          />
+          <cornie-select
+           v-else
+           @click="showSlots(allSlots,slot)"
+           v-model="slot"
+             placeholder="--Select--"
+            class="w-full"
+            label="Slot"
+            :rules="required"
+            :items="allSlots"
+          />
+        
            
-                    <date-time-picker
-                    v-model:date="period.startDate"
-                    v-model:time="period.startTime"
+                     <single-date-picker
+                        label="start date"
+                        v-model="period.start"
+                        :rules="required"
+                        class="w-full"
+                      />
+
+                    
+                      <single-date-picker
+                        label="end date"
+                        v-model="period.end"
+                        :rules="required"
+                        class="w-full"
+                      />
+                      <!-- <date-time-picker
+                    v-model:date="period.start"
+                    v-model:time="data.startTime"
                     label="Start Date & Time"
                     width="w-full"
                   
@@ -103,33 +139,44 @@
 
                     
                     <date-time-picker
-                    v-model:date="period.endDate"
-                    v-model:time="period.endTime"
+                    v-model:date="period.end"
+                    v-model:time="data.endTime"
                     label="End Date & Time"
                     width="w-full"
-                    />
+                    /> -->
                 
                
- <cornie-input disabled  :rules="required" label="Duration"   class="w-full mt-3" />
-  <cornie-input  :rules="required" label="Comments"  placeholder="--Enter--" class="w-full mt-3" />
-   <cornie-input  :rules="required" label="Patient’s Instruction"  placeholder="--Enter--" class="w-full mt-3" />
+ <cornie-input disabled  :rules="required" label="Duration"    v-model="duration" placeholder="--Autofilled--"  class="w-full mt-3" />
+  <cornie-input  :rules="required" label="Comments"  v-model="comments"  placeholder="--Enter--" class="w-full mt-3" />
+   <cornie-input  :rules="required" label="Patient’s Instruction"   v-model="patientInstruction"  placeholder="--Enter--" class="w-full" />
     <auto-complete
            placeholder="--Select--"
-           
+           v-model="basedOn"
             :rules="required"
             class="w-full"
-            :items="['Partial','Completed','Entered in Error','Health Unknown']"
+            :items="allRequests"
             label="Based On"
           />
         </div>
       </accordion-component>
-       <accordion-component
+        <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="Participants"
         :opened="false"
       >
         <div class="grid grid-cols-2 gap-3 mt-5">
-          <cornie-select
+          <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">Actor</label>
+                    <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input type="text"  disabled  v-model="actorType" placeholder="--Select--" class="cursor-pointer p-2 border-1 border-gray-300 rounded-md w-100 w-full">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer"   @click="showActor()"/>
+
+                          </span>
+                  </input-desc-rounded>
+              </div>
+           
+          <!-- <cornie-select
           @click="checkActor"
           class="w-full"
           placeholder="--Select--"
@@ -137,103 +184,164 @@
             label="Actor"
             :items="['Patient','Practitioner','Device','Location','Healthcare Services']"
             :rules="required"
-          />
+          /> -->
         </div>
           <div class="w-full">
                   <div>
                     <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                      <div class="border-r-2" v-for="(input, index) in newPractitioners" :key="index">
+                      <div class="border-r-2 border-dashed" v-for="(input, index) in newPractitioners" :key="index">
                         <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
+                          <div class="flex space-x-4 float-left">
                             <avatar class="mr-2" v-if="input.image" :src="input.image" />
                                <avatar class="mr-2" v-else :src="localSrc" />
                             <div>
-                              <p class="text-xs text-dark font-semibold">
+                              <p class="text-xs text-black font-semibold">
                                 {{ input.firstName }}
                                 {{ input.lastName }}
                               </p>
-                              <p class="text-xs text-gray font-light">
-                                {{ actorType }}
+                              <p class="text-xs text-gray-400 font-medium">
+                                {{ valuePractioner }}
                               </p>
                             </div>
                           </div>
-                          <span>
-                            <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
-                              @click="removePractitioner(index)"
-                            />
-                          </span>
+                          <div class="float-right">
+                            <div class="flex space-x-4">
+                                <d-edit class="float-left cursor-pointer" @click="showActor()"/>
+                                <deleteorange-icon
+                                class="float-right cursor-pointer"
+                                @click="removePractitioner(index)"
+                                />
+                            
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <!-- <div class="border-r-2" v-for="(input, index) in newDevices" :key="index">
+                       <div class="border-r-2 border-dashed" v-for="(input, index) in newDevices" :key="index">
                         <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
-                              <avatar class="mr-2"  :src="img.placeholder" />
+                          <div class="flex space-x-4 float-left">
+                              <avatar class="mr-2"  :src="localSrc" />
                             <div>
-                              <p class="text-xs text-dark font-semibold">
+                              <p class="text-xs text-black font-semibold">
                                 {{ input.deviceName.name }}
                               </p>
-                              <p class="text-xs text-gray font-light">
+                              <p class="text-xs text-gray-400 font-medium">
                                  {{ valueDevice }}
                               </p>
                             </div>
                           </div>
-                          <span>
+                          <div class="float-right">
+                            <div class="flex space-x-4">
+                                <d-edit class="float-left cursor-pointer" @click="showActor()"/>
                             <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
+                              class="float-right cursor-pointer"
                               @click="removeDevice(index)"
                             />
-                          </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div  class="border-r-2" v-for="(input, index) in newRoles" :key="index">
+                      <div  class="border-r-2 border-dashed" v-for="(input, index) in newRoles" :key="index">
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
                             <avatar class="mr-2" v-if="input.image" :src="input.image" />
                               <avatar class="mr-2" v-else :src="img.placeholder" />
                             <div>
-                              <p class="text-xs text-dark font-semibold">
+                              <p class="text-xs text-black font-semibold">
                                 {{ input.name }}
                               </p>
-                              <p class="text-xs text-gray font-light">
+                              <p class="text-xs text-gray-400 font-medium">
                                   {{ valueRole }}
                               </p>
                             </div>
                           </div>
                           <span>
                             <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
+                              class="float-right cursor-pointer"
                               @click="removeRole(index)"
                             />
                           </span>
                         </div>
                       </div>
-                      <div class="border-r-2" v-for="(input, index) in newPatients" :key="index">
+                      <div class="border-r-2 border-dashed" v-for="(input, index) in newPatients" :key="index">
                         <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
+                          <div class="flex space-x-4 float-left">
                             <avatar class="mr-2" v-if="input.profilePhoto" :src="input.profilePhoto" />
-                            <avatar class="mr-2" v-else :src="img.placeholder" />
+                            <avatar class="mr-2" v-else :src="localSrc" />
                             <div>
-                              <p class="text-xs text-dark font-semibold">
+                              <p class="text-xs text-black font-semibold">
                                 {{ input.firstname }} {{ input.lastname }}
                               </p>
-                              <p class="text-xs text-gray font-light">
+                              <p class="text-xs text-gray-400 font-medium">
                                   {{ valuePatient }}
                               </p>
                             </div>
                           </div>
-                          <span>
+                          <div class="float-right">
+                            <div class="flex space-x-4">
+                                <d-edit class="float-left cursor-pointer" @click="showActor()"/>
                             <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
+                              class="float-right cursor-pointer"
                               @click="removePatient(index)"
                             />
-                          </span>
+                            </div>
+                          </div>
                         </div>
-                      </div> -->
+                      </div>
+                      <div class="border-r-2 border-dashed" v-for="(input, index) in newLocations" :key="index">
+                        <div class="mb-8 p-2">
+                          <div class="flex space-x-4 float-left">
+                            <avatar class="mr-2" v-if="input.profilePhoto" :src="input.profilePhoto" />
+                            <avatar class="mr-2" v-else :src="localSrc" />
+                            <div>
+                              <p class="text-xs text-black font-semibold">
+                                {{ input.name }}
+                              </p>
+                              <p class="text-xs text-gray-400 font-medium">
+                                  {{ valueLocation }}
+                              </p>
+                            </div>
+                          </div>
+                            <div class="float-right">
+                            <div class="flex space-x-4">
+                                <d-edit class="float-left cursor-pointer" @click="showActor()"/>
+                            <deleteorange-icon
+                              class="float-right cursor-pointer"
+                              @click="removeLocation(index)"
+                            />
+                            </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="border-r-2 border-dashed" v-for="(input, index) in newHealthcare" :key="index">
+                        <div class="mb-8 p-2">
+                          <div class="flex space-x-4 float-left">
+                            <avatar class="mr-2" v-if="input.profilePhoto" :src="input.profilePhoto" />
+                            <avatar class="mr-2" v-else :src="localSrc" />
+                            <div>
+                              <p class="text-xs text-black font-semibold">
+                                {{ input.name }}
+                              </p>
+                              <p class="text-xs text-gray-400 font-medium">
+                                  {{ valueHealth }}
+                              </p>
+                            </div>
+                          </div>
+                           <div class="float-right">
+                           <div class="flex space-x-4">
+                                <d-edit class="float-left cursor-pointer" @click="showActor()"/>
+                            <deleteorange-icon
+                              class="float-right cursor-pointer"
+                              @click="removeHealth(index)"
+                            />
+                          </div>
+                           </div>
+                        </div>
+                      </div>
                     </div>
                   </div>          
                 </div> 
       </accordion-component>
+     
      
     </v-form>
     <template #actions>
@@ -269,6 +377,7 @@ import AccordionComponent from "@/components/dialog-accordion.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
+import DEdit from "@/components/icons/aedit.vue";
 import CornieTextArea from "@/components/textarea.vue";
 // import DatePicker from "./datepicker.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
@@ -283,13 +392,16 @@ import TimeablePicker from "@/components/timeable.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
-import IAppointment from "@/types/IAppointment";
+import IAppointment ,{  Practitioners, Patients, Devices, Location, HealthCare } from "@/types/IAppointment";
 import ILocation from "@/types/ILocation";
 import IDevice from "@/types/IDevice";
 import IPractitioner from "@/types/IPractitioner";
 import IHealthcare  from "@/types/IHealthcare";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
+import SingleDatePicker from "./datepicker.vue";
+import FhirInput from "@/components/fhir-input.vue";
+
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -298,6 +410,7 @@ const device = namespace("device");
 const practitioner = namespace("practitioner");
 const roles = namespace('roles');
 const healthcare = namespace("healthcare");
+const dropdown = namespace("dropdown");
 
 const data = {
     age: "",
@@ -314,14 +427,17 @@ const data = {
   components: {
     BigDialog,
     TimeablePicker,
+    DEdit,
     CornieNumInput,
     CornieBtn,
     DeleteorangeIcon,
     AutoComplete,
     DateTimePicker,
     Avatar,
+    FhirInput,
     ActorModal,
     // DatePicker,
+    SingleDatePicker,
     Measurable,
     plusIcon,
     AccordionComponent,
@@ -341,8 +457,9 @@ export default class AddAppointment extends Vue {
   @PropSync("modelValue")
   show!: boolean;
 
-  @patients.State
-  patients!: IPatient[];
+  // @patients.State
+  // patients!: IPatient[];
+patients=[];
 
 @practitioner.State
   practitioners!: IPractitioner[];
@@ -357,8 +474,8 @@ export default class AddAppointment extends Vue {
   @healthcare.State
   healthcares!: IHealthcare[];
 
-    @patients.Action
-  fetchPatients!: () => Promise<void>; 
+  //   @patients.Action
+  // fetchPatients!: () => Promise<void>; 
   
    @practitioner.Action
   fetchPractitioners!: () => Promise<void>; 
@@ -377,23 +494,37 @@ export default class AddAppointment extends Vue {
   getAppointmentById!: (id: string) => IAppointment;
 
   required = string().required();
-@Watch('id')
-  idChanged() {
-    this.setAppointment()
-  }
+
+   dropdowns = {} as IIndexableObject;
+    dropdowns2 = {} as IIndexableObject;
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
   historymodel = {} as IAppointment;
 
 showActorModal = false;
 loading= false;
 
-
-period = {...data};
-actors="";
+  data: any = {
+  }
+ //period = {...data};
+actors="Practitioner";
 actorType="";
 practitionerRoles=[];
  localSrc = require('../../../../assets/img/placeholder.png');
+ valuePractioner = "";
+  valuePatient = "";
+  valueRole = "";
+  valueDevice = "";
+  valueLocation="";
+  valueHealth="";
+  availableSlots=[];
+  request=[];
+  newslot: any;
+
 serviceCategory="";
+locationId = null;
+deviceId = null;
 serviceType="";
 specialty="";
 appointmentType="";
@@ -402,60 +533,28 @@ reasonRef="";
 priority="";
 description="";
 supportingInfo="";
+oldslots="";
 slot="";
 basedOn="";
 comments="";
+duration = "";
 patientInstruction="";
-// period = {} as Period;
-
+practitionerId= "";
+period = {} as Period;
+errortext="";
 newPractitioners=[];
 newPatients=[];
 newDevices=[];
 newLocations=[];
 newHealthcare=[];
 
-requiredPractitioner = false;
-        consultationMediumPractitioner =  "";
-        periodPractitioner ={
-            start:"",
-            end:""
-        };
-         requiredPatient = false;
-        consultationMediumPatient =  "";
-        periodPatient ={
-            start:"",
-            end:""
-        };
-         requiredDevice = false;
-        consultationMediumDevice = "";
-        periodDevice = {
-            start:"",
-            end:""
-        };
-         requiredLocation = false;
-        consultationMediumLocation = "";
-        periodLocation ={
-            start:"",
-            end:""
-        };
-         requiredHealthcare = false;
-        consultationMediumHealthcare ="";
-        periodHealthcare ={
-            start:"",
-            end:""
-        };
+  apractitioners: Practitioners[] = [];
+  adevices: Devices[] = [];
+  apatients: Patients[] = [];
+  alocation: Location[] = [];
+  ahealthcare: HealthCare[] = [];
 
-  // startAndEndDateTimeStart = "";
-  // startAndEndDateTimeEnd = "";
-  // bornDateTime = "";
 
-get allPractitioners() {
-     return {
-        required: this.requiredPractitioner,
-        consultationMedium: this.consultationMediumPractitioner,
-        period: this.periodPractitioner
-       }
-}
   get patientId() {
     return this.$route.params.id;
   }
@@ -464,16 +563,61 @@ get allPractitioners() {
      this.historymodel = JSON.parse(JSON.stringify(this.payload));
   }
 
+  @Watch("id")
+  idChanged() {
+    this.setAppointment();
+  }
   async setAppointment() {
-    const history = await this.getAppointmentById(this.id)
-    if (!history) return
-    this.historymodel =  (history)
-    
+    const appointment = await this.getAppointmentById(this.id);
+    if (!appointment) return;
+    this.serviceCategory = appointment.serviceCategory;
+    this.locationId = appointment.locationId;
+    this.deviceId = appointment.deviceId;
+    this.serviceType = appointment.serviceType;
+    this.specialty = appointment.specialty;
+    this.supportingInfo = appointment.supportingInfo;
+    this.appointmentType = appointment.appointmentType;
+    this.reasonCode = appointment.reasonCode;
+    this.reasonRef = appointment.reasonRef;
+    this.priority = appointment.priority;
+    this.description = appointment.description;
+    this.slot = appointment.slot;
+    this.basedOn = appointment.basedOn;
+    this.duration = appointment.duration;
+    this.comments = appointment.comments;
+    this.patientInstruction = appointment.patientInstruction;
+    this.period = appointment.period;
+    this.apractitioners = appointment.Practitioners;
+    this.adevices = appointment.Devices;
+    this.apatients = appointment.Patients;
+    this.alocation = appointment.Locations;
+    this.ahealthcare = appointment.HealthCare;
   }
  
   get payload() {
     return {
-    
+     serviceCategory: this.serviceCategory,
+      locationId: this.locationId,
+      deviceId: this.deviceId,
+      serviceType: this.serviceType,
+      specialty: this.specialty,
+      appointmentType: this.appointmentType,
+      reasonCode: this.reasonCode,
+      supportingInfo: this.supportingInfo,
+      reasonRef: this.reasonRef,
+      priority: this.priority,
+      description: this.description,
+       slot: this.slot,
+      basedOn: this.basedOn,
+      duration: this.duration,
+      comments: this.comments,
+      patientInstruction: this.patientInstruction,
+      Devices: this.adevices,
+      period: this.period,
+      Patients: this.apatients,
+      Practitioners:this.apractitioners,
+      Locations: this.alocation,
+      healthcare: this.ahealthcare
     };
   }
  get newaction() {
@@ -505,49 +649,103 @@ async checkActor(){
   
    
 }
-async showActor(updatePractitioners:any,updatePatients:any,updateDevices:any,updateLocation:any,updateHealthcare:any,getPractitioner:any){
-  this.newPractitioners = updatePractitioners;
-    console.log(getPractitioner);
+async showActor(newid:string,updatePractitioners:any,updatePatients:any,updateDevices:any,updateLocation:any,updateHealthcare:any,getPractitioner:any,getPatient:any,getDevice:any,getLocation:any,getHealthcare:any,value:string,apractitionerId:string){
+   this.showActorModal = true;
+  this.actorType = value;
+
+  if(value == 'Practitioner'){
+    this.newPractitioners = updatePractitioners;
+      this.apractitioners = getPractitioner;
+      this.valuePractioner = value;
+      this.practitionerId = newid;
+       this.getSlots();
+  } else if (value == 'Patient'){
+    this.newPatients = updatePatients;
+     this.apatients = getPatient;
+       this.valuePatient = value;
+  } else if (value == 'Device'){
+    this.newDevices = updateDevices;
+    this.adevices = getDevice;
+      this.valueDevice = value;
+  } else if (value == 'Location'){
+    this.newLocations = updateLocation;
+      this.valueLocation = value;
+      this.alocation = getLocation;
+  } else if (value == 'Healthcare Services'){
+    this.newHealthcare = updateHealthcare;
+      this.valueHealth = value;
+      this.ahealthcare = getHealthcare;
+  }
 }
 
 
+ async showSlots(slots: any,id:string){
+  const pt = this.availableSlots.find((i: any) => i.id === id);
+      this.newslot = pt;
+        this.period.start = this.newslot.date;
+    this.period.end = this.newslot.date;
+      this.duration = this.newslot.startTime +'-'+ this.newslot.endTime;
+  }
+   removePractitioner(index: number) {
+    this.newPractitioners.splice(index, 1);
+  }
+  removePatient(index: number) {
+    this.newPatients.splice(index, 1);
+  }
+  removeDevice(index: number) {
+    this.newDevices.splice(index, 1);
+  }
+   removeLocation(index: number) {
+    this.newLocations.splice(index, 1);
+  }
+   removeHealth(index: number) {
+    this.newHealthcare.splice(index, 1);
+  }
   done() {
-    this.$emit("history-added");
+    this.$emit("appointment-added");
     this.show = false;
   }
   async  apply() {
      this.loading = true
-    if (this.id) await this.updatehistory()
-    else await this.createhistory()
+    if (this.id) await this.updateappointment()
+    else await this.createappointment()
     this.loading = false
     }
-  async createhistory() {
-     try {
-      const response = await cornieClient().post('/api/v1/family-history', this.payload)
-      if (response.success) {
-        window.notify({ msg: 'Medical family history created', status: 'success' })
-        this.done();
-      }
-    } catch (error) {
-      console.log(error)
-      window.notify({ msg: 'Medical family history not created', status: 'error' })
+  async createappointment() {
+    if(this.apractitioners.length === 0){
+        window.notify({ msg: "Pracitioner is required", status: 'error' })
+    }else if ( this.apatients.length === 0){
+       window.notify({ msg: "Patient is required", status: 'error' })
+    }else{
+
+      try {
+        const response = await cornieClient().post('/api/v1/appointment', this.payload);
+           console.log(response);
+            console.log("error");
+       if (response.success) {
+         window.notify({ msg: 'Appointment created', status: 'success' })
+         this.done();
+       }
     
+     } catch (error) {
+       window.notify({ msg: "This slot is overbooked", status: 'error' })
+     
+     }
     }
   }
-  async updatehistory(){
-    const url = `/api/v1/family-history/${this.id}`
+  async updateappointment(){
+    const url = `/api/v1/appointment/${this.id}`
     const payload = {
        ...this.payload,
       }
     try {
       const response = await cornieClient().put(url, payload)
       if (response.success) {
-        window.notify({ msg: 'Medical history  updated', status: 'success' })
+        window.notify({ msg: 'Appointment  updated', status: 'success' })
       this.done();
-
       }
     } catch (error) {
-      window.notify({ msg: 'Medical history not updated', status: 'error' })
+      window.notify({ msg: 'Appointment not updated', status: 'error' })
     }
   }
 
@@ -556,14 +754,57 @@ async showActor(updatePractitioners:any,updatePatients:any,updateDevices:any,upd
     const response = await Promise.all([AllRoles]);
     this.practitionerRoles = response[0].data;
   }
+  get allSlots() {
+     if (!this.availableSlots || this.availableSlots.length === 0) return [ ];
+     return this.availableSlots.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.startTime +'-'+ i.endTime,
+         }
+     })
+ }
+
+ get allRequests() {
+     if (!this.request || this.request.length === 0) return [ ];
+     return this.request.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.requestInfo.intent,
+         }
+     })
+ }
+    async getSlots() {
+       const oneId = this.practitionerId;
+        const AllSlots = cornieClient().get(`/api/v1/slot/practitioner/${this.practitionerId}`);
+        const response = await Promise.all([AllSlots]);
+        this.availableSlots = response[0].data;  
+  }
+  async getSinglePatient() {
+       const oneId = this.practitionerId;
+        const AllSlots = cornieClient().get(`/api/v1/patient/${this.patientId}`);
+        const response = await Promise.all([AllSlots]);
+        this.patients = response[0].data;  
+  }
+   async fetchRequest() {
+    const AllRequests = cornieClient().get("/api/v1/requests");
+    const response = await Promise.all([AllRequests]);
+    this.request = response[0].data;
+  }
  
  async created() {
+   this.getSinglePatient();
      this.fetchRoles();
    this.setAppointment();
    this.fetchPractitioners();
    this.fetchDevices();
    this.fetchLocations();
    this.fetchHealthcares();
+   this.fetchRequest();
+  
+    const data = await this.getDropdowns("availability");
+    const data2 = await this.getDropdowns("practitioner");
+    this.dropdowns = data;
+    this.dropdowns2 = data2;
 
 
   }

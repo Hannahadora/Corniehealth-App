@@ -60,7 +60,7 @@
         </template>
         <template #actions="{ item }">
           <div
-            @click="viewingCondition = true"
+            @click="viewCondition(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-yellow-500 fill-current" />
@@ -176,7 +176,7 @@ export default class ExistingState extends Vue {
   conditions!: { [state: string]: ICondition[] };
 
   get patientId() {
-    return this.$route.params.patientId as string;
+    return this.$route.params.id as string;
   }
 
   get patientConditions() {
@@ -201,6 +201,11 @@ export default class ExistingState extends Vue {
   addOccurence(condition: MutantCondition) {
     this.currentCondition = condition.original;
     this.addingOccurence = true;
+  }
+
+  viewCondition(condition: MutantCondition) {
+    this.currentCondition = condition.original;
+    this.viewingCondition = true;
   }
 
   headers = [

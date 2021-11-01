@@ -16,11 +16,11 @@
       "
       @click="showNewExchangeRateModal = true"
     >
-      <span class="mt-2 mr-2"> <bank-add-icon /> </span>
+      <bank-add-icon class="mt-1 mr-2"/> 
       New Exchange Rate
     </button>
 
-    <new-exchange-rate v-model:visible="showNewExchangeRateModal" />
+    <new-exchange-rate v-model="showNewExchangeRateModal" />
   </div>
 </template>
 

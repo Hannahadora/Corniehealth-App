@@ -1,6 +1,6 @@
 <template>
-  <span class="w-11/12 block">
-    <label class="block uppercase mb-1 text-xs font-bold">
+  <span class="w-11/12">
+    <label class="flex capitalize mb-1 text-black text-sm font-medium">
       {{ label }}
     </label>
     <field

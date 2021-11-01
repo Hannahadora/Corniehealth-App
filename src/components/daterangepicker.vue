@@ -1,6 +1,6 @@
 <template>
   <span class="block w-11/12">
-    <label class="flex capitalize mb-2 text-sm font-bold">
+    <label class="flex capitalize mb-2 text-black text-sm font-bold">
       {{ label }}
         <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
     </label>
@@ -13,11 +13,10 @@
               flex
               items-center
               w-full
-              rounded-md
-              border border-gray-300
+border-1 border-gray-300 rounded-md
               shadow-sm
               p-1
-              py-2
+          py-2.5
               bg-white
               text-sm
               font-medium
@@ -67,6 +66,7 @@
               v-model="range"
               is-range
               color="red"
+              class="border-1 border-gray-300 rounded-md"
             >
             </DatePicker>
           </span>

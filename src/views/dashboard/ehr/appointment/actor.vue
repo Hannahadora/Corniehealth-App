@@ -2,10 +2,10 @@
      <cornie-dialog v-model="show" center class="w-4/12  h-5/6">
     <cornie-card height="100%" class="flex flex-col">
      <cornie-card-title>
-        <!-- <cornie-icon-btn @click="show = false">
+        <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
-        </cornie-icon-btn> -->
-        <div class="w-full">
+        </cornie-icon-btn>
+         <div class="w-full">
          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Add Actor</h2>
 
            <delete-icon
@@ -16,10 +16,11 @@
       </cornie-card-title>
      
          <cornie-card-text class="flex-grow scrollable">
-            <div class="w-full">
+         
+            <p class="text-sm mb-4 mt-2">Add Actor(s) to this appointment</p>
+             <div class="w-full">
               <div class="border-dashed border-b-2">
                 <cornie-select
-                v-if="stepped == 1"
                   label="Select"
                  :items="['Patient','Practitioner','Device','Location','Healthcare Services']"
                   v-model="actorType"
@@ -28,10 +29,10 @@
                 >
                 </cornie-select>
               </div>
-                 <div class="mt-4 mb-4">
+                 <div class="mt-5 mb-4">
                         <p class="text-gray-400 text-xs">{{total}} selected</p>
-                    </div>
-              <div class="relative bottom-2">
+                </div>
+              <div class="relative bottom-5">
                 <icon-input
                   autocomplete="off"
                   class="
@@ -52,42 +53,123 @@
                 </icon-input>
               </div>
             </div>
-            <div class="" v-if="stepped == 1">
+            <div>
+              <div>
                 <div  v-if="actorType == 'Practitioner'">
-                    <div v-for="(input, index) in practitioners" :key="index">
-                    <div class="flex justify-between space-x-4 w-full mt-2 p-3">
-                        <div class="w-full dflex space-x-4">
+                  <div v-for="(input, index) in practitioners" :key="index">
+                    <div class="flex justify-between space-x-4 w-full mt-2 p-1">
+                      <div class="w-full dflex space-x-1">
                         <div class="w-10 h-10">
-                            <avatar
+                          <avatar
                             class="mr-2"
                             v-if="input.image"
                             :src="input.image"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
+                          />
+                          <avatar class="mr-2" v-else :src="localSrc" />
                         </div>
                         <div class="w-full">
-                            <p class="text-xs text-dark font-semibold">
+                          <p class="text-xs text-dark font-semibold">
                             {{ input.firstName }}
                             {{ input.lastName }}
-                            </p>
-                            <p class="text-xs text-gray-500 font-meduim">
+                          </p>
+                          <p class="text-xs text-gray-500 font-meduim">
                             {{ input.jobDesignation }}
                             {{ input.department }}
+                          </p>
+                        </div>
+                      </div>
+                        <div class="flex space-x-4 w-full">
+                            
+                            <p
+                            style="font-size: 0.5rem;"
+                            class="cursor-pointer w-full  text-danger"
+                            @click="showAvailable(input.id,input.firstName,input.lastName)"
+                            >
+                            View Availability
+                            </p>
+                            <p
+                             style="font-size: 0.5rem;"
+                            class="cursor-pointer  w-full  text-danger"
+                            @click="showProfile(input.id,input.firstName,input.lastName,input.type,input.activeState,input.image)"
+                            >
+                            View Profile
                             </p>
                         </div>
-                        </div>
-                    
-                        
-                        <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
+                      <!-- <div class="w-full mt-5 cursor-pointer w-full text-xs text-danger">
                             <input
-                                type="checkbox"
-                                v-model="updatePractitioners" :value="input"
-                                class="bg-danger focus-within:bg-danger px-6 shadow float-right"
+                              v-model="newIndexvaluepractitioner"
+                        :value="input"
+                        @input="changed(input.id)"
+                        name="practioner"
+                        class="bg-danger mb-5  focus-within:bg-danger px-6 shadow float-right"
                             />
+                    </div> -->
+                    <div class=" relative bottom-1 ">
+                      <cornie-radio
+                        v-model="newIndexvaluepractitioner"
+                        :value="input"
+                        @input="changed(input.id)"
+                        name="practioner"
+                        class="bg-danger focus-within:bg-danger px-6 shadow float-right"/>
                     </div>
                     </div>
+                    <div class="w-full p-1 mt-5" v-if="singleId == input.id">
+                      <!-- <cornie-select
+                        :onChange="setValue"
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Type']"
+                        v-model="apractitioner.type"
+                        label="TYPE"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                      <!-- <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apractitioner.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                          <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apractitioner.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select>
+                      <date-picker
+                      class="w-full mb-5"
+                        label="period"
+                        v-model="apractitioner.period"
+                        :rules="required"
+                      />
+                      <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="[
+                          'Out-Patient',
+                          ' In-Patient',
+                          ' Virtual',
+                          'HomeCare',
+                        ]"
+                        v-model="apractitioner.consultationMedium"
+                        label="consultation medium"
+                        placeholder="--Select--"
+                      >
+                        </cornie-select>
+                        <div class="pb-5">
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].practitionerId" @click="clearActor('Practitioner',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Practitioner',index)">Add Actor</span> -->
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
               <div v-if="actorType == 'Device'">
                 <div v-for="(input, index) in devices" :key="index">
                   <div class="flex space-x-10 w-full justify-between p-3">
@@ -114,22 +196,75 @@
                         </p>
                       </div>
                     </div>
-                     <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
-                            <input
-                                type="checkbox"
-                                 v-model="updateDevices" :value="input"
-                                class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                            />
-                    </div>
+                    <cornie-radio
+                      v-model="newIndexvaluedevice"
+                      :value="input"
+                      @input="changed(input.id)"
+                      name="device"
+                      class="bg-danger float-right focus-within:bg-danger px-6 shadow"/>
                   </div>
+                    <div class="w-full p-3" v-if="singleId == input.id">
+                      <!-- <cornie-select
+                        :onChange="setValue"
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Type']"
+                        v-model="adevice.type"
+                        label="TYPE"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                      <!-- <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="adevice.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                        <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="adevice.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select>
+                      <date-picker
+                      class="w-full mb-5"
+                        label="period"
+                        v-model="adevice.period"
+                        :rules="required"
+                      />
+                      <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="[
+                          'Out-Patient',
+                          ' In-Patient',
+                          ' Virtual',
+                          'HomeCare',
+                        ]"
+                        v-model="adevice.consultationMedium"
+                        label="consultation medium"
+                        placeholder="--Select--"
+                      >
+                        </cornie-select>
+                        <div class="pb-5">
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Devices[index] && Devices[index].deviceId" @click="clearActor('Device',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Device',index)">Add Actor</span> -->
+                      </div>
+                    </div>
                 </div>
               </div>
-              <!-- <div  v-if="actorType == 'Practitioner Role'">
-                <div v-for="(input, index) in practitionerRoles" :key="index">
+              <div  v-if="roleFilter">
+                <div v-for="(input, index) in roles" :key="index">
                   <div class="grid grid-cols-2 gap-4 w-full col-span-full p-3">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
-                          <avatar class="mr-2"  :src="localSrc" />
+                        <avatar class="mr-2" :src="'@/assets/img/placeholder.png'" />
                       </div>
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
@@ -140,186 +275,85 @@
                         </p>
                       </div>
                     </div>
-                    <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
-                            <input
-                                type="checkbox"
-                                  v-model="updateDevices" :value="input"
-                                class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                            />
-                    </div>
+                    <cornie-radio
+                      v-model="newIndexvalue"
+                      :value="input"
+                      @input="changed(input.id)"
+                      name="role"
+                      class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"/>
+                  <!-- <input
+                      v-model="indexvalue"
+                      :value="input"
+                      @input="changed(input.id)"
+                      type="checkbox"
+                      class="bg-danger ml-32 focus-within:bg-danger px-6 shadow"
+                    />-->
                   </div>
                 </div>
-              </div> -->
-              <div v-if="actorType == 'Patient'">
-                <div v-for="(input, index) in patients" :key="index">
+              </div>
+              <div  v-if="actorType == 'Patient'">
+                <div v-if="patients.lenth !==0">
                   <div class="flex space-x-10 w-full justify-between p-3">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
                          <avatar
                             class="mr-2"
-                            v-if="input.profilePhoto"
-                            :src="input.profilePhoto"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
-                      </div>
-                      <div class="w-full">
-                        <p class="text-xs text-dark font-semibold">
-                          {{ input.firstname }} {{ input.lastname }}
-                        </p>
-                      </div>
-                    </div>
-                     <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
-                            <input
-                                type="checkbox"
-                                  v-model="updatePatients" :value="input"
-                                class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                            />
-                    </div>
-                  </div>
-                </div>
-              </div>
-               <div v-if="actorType == 'Location'">
-                <div v-for="(input, index) in locations" :key="index">
-                  <div class="flex space-x-10 w-full justify-between p-3">
-                    <div class="dflex space-x-4">
-                      <div class="w-10 h-10">
-                        <avatar class="mr-2" :src="localSrc" />
-                      </div>
-                      <div class="w-full">
-                        <p class="text-xs text-dark font-semibold">
-                          {{ input.name }} 
-                        </p>
-                        <p class="text-xs text-gray font-light">
-                          {{ input.description }}
-                        </p>
-                      </div>
-                    </div>
-                      <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
-                            <input
-                                type="checkbox"
-                                  v-model="updateLocation" :value="input"
-                                class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                            />
-                    </div>
-                  </div>
-                
-                </div>
-              </div>
-               <div v-if="actorType == 'Healthcare Services'">
-                <div v-for="(input, index) in healthcares" :key="index">
-                  <div class="flex space-x-10 w-full justify-between p-3">
-                    <div class="dflex space-x-4">
-                      <div class="w-10 h-10">
-                        <avatar
-                            class="mr-2"
-                            v-if="input.profilePhoto"
-                            :src="input.profilePhoto"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
-                      </div>
-                      <div class="w-full">
-                        <p class="text-xs text-dark font-semibold">
-                          {{ input.name }}
-                        </p>
-                      </div>
-                    </div>
-                       <div class="w-full mb-5 cursor-pointer w-full text-xs text-danger">
-                            <input
-                                type="checkbox"
-                                  v-model="updateHealthcare" :value="input"
-                                class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                            />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="w-full" v-if="stepped == 2">
-                <div v-if="actorType == 'Practitioner'">
-                      <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="requiredPractitioner"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
+                            v-if="patients.profilePhoto"
+                            :src="patients.profilePhoto"
                           />
-                          <p class="text-sm">Required</p>
+                        <avatar class="mr-2" v-else :src="localSrc" />
                       </div>
-                    
-                      <date-picker
-                      class="w-full mb-5 mt-4"
-                        label="period"
-                        v-model="periodPractitioner"
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ patients.firstname }} {{ patients.lastname }}
+                        </p>
+                      </div>
+                    </div>
+                      <cornie-radio
+                      v-model="newIndexvaluepatient"
+                      :value="patients"
+                      @input="changed(patients.id)"
+                      name="patients"
+                      class="bg-danger float-right  focus-within:bg-danger px-6 shadow"/>
+                  </div>
+                  <div class="w-full p-3" v-if="singleId == patients.id">
+                      <!-- <cornie-select
+                        :onChange="setValue"
+                        class="required w-full"
                         :rules="required"
-                      />
-                      <cornie-select
-                        class="w-full mt-4"
+                        :items="['Type']"
+                        v-model="apatient.type"
+                        label="TYPE"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                      <!-- <cornie-select
+                        class="required w-full"
                         :rules="required"
-                        :items="[
-                          'Out-Patient',
-                          ' In-Patient',
-                          ' Virtual',
-                          'HomeCare',
-                        ]"
-                        v-model="consultationMediumPractitioner"
-                        label="consultation medium"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apatient.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                     <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apatient.required"
+                        label="required"
                         placeholder="--Select--"
                       >
                       </cornie-select>
-                </div>
-                 <div v-if="actorType == 'Patient'">
-
-                      <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="requiredPatient"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
-                      </div>
                     
                       <date-picker
-                      class="w-full mb-5 mt-4"
-                        label="period"
-                        v-model="periodPatient"
-                        :rules="required"
-                      />
-                      <cornie-select
-                        class="w-full mt-4"
-                        :rules="required"
-                        :items="[
-                          'Out-Patient',
-                          ' In-Patient',
-                          ' Virtual',
-                          'HomeCare',
-                        ]"
-                        v-model="consultationMediumPatient"
-                        label="consultation medium"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
-                </div>
-                 <div v-if="actorType == 'Practitioner Role'">
-
-                      <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="apatient.required"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
-                      </div>
-                    
-                      <date-picker
-                      class="w-full mb-5 mt-4"
+                      class="w-full mb-5"
                         label="period"
                         v-model="apatient.period"
                         :rules="required"
                       />
                       <cornie-select
-                        class="w-full mt-4"
+                        class="required w-full"
                         :rules="required"
                         :items="[
                           'Out-Patient',
@@ -332,27 +366,74 @@
                         placeholder="--Select--"
                       >
                       </cornie-select>
-                </div>
-                 <div v-if="actorType == 'Device'">
-
-                      <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="requiredDevice"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
+                      <div class="pb-5">
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span> -->
                       </div>
+                  </div>
+                </div>
+              </div>
+              <div  v-if="actorType == 'Location'">
+                <div v-for="(input, index) in locations" :key="index">
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-10 h-10">
+                        <avatar class="mr-2" :src="localSrc" />
+                      </div>
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                         {{ input.name }} 
+                        </p>
+                         <p class="text-xs text-gray font-light">
+                          {{ input.description }}
+                        </p>
+                      </div>
+                    </div>
+                      <cornie-radio
+                      v-model="newIndexvaluelocation"
+                      :value="input"
+                      @input="changed(input.id)"
+                      name="patients"
+                      class="bg-danger float-right  focus-within:bg-danger px-6 shadow"/>
+                  </div>
+                  <div class="w-full p-3" v-if="singleId == input.id">
+                      <!-- <cornie-select
+                        :onChange="setValue"
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Type']"
+                        v-model="apatient.type"
+                        label="TYPE"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                      <!-- <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="apatient.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select> -->
+                      <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="alocation.required"
+                        label="required"
+                        placeholder="--Select--"
+                      >
+                      </cornie-select>
                     
                       <date-picker
-                      class="w-full mb-5 mt-4"
+                      class="w-full mb-5"
                         label="period"
-                        v-model="periodDevice"
+                        v-model="alocation.period"
                         :rules="required"
                       />
                       <cornie-select
-                        class="w-full mt-4"
+                        class="required w-full"
                         :rules="required"
                         :items="[
                           'Out-Patient',
@@ -360,86 +441,107 @@
                           ' Virtual',
                           'HomeCare',
                         ]"
-                        v-model="consultationMediumDevice"
+                        v-model="alocation.consultationMedium"
                         label="consultation medium"
                         placeholder="--Select--"
                       >
                       </cornie-select>
-                </div>
-                 <div v-if="actorType == 'Location'">
-
-                      <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="requiredLocation"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
+                      <div class="pb-5">
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
+                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span> -->
                       </div>
-                    
-                      <date-picker
-                      class="w-full mb-5 mt-4"
-                        label="period"
-                        v-model="periodLocation"
+                  </div>
+                </div>
+              </div>
+                <div  v-if="actorType == 'Healthcare Services'">
+                    <div v-for="(input, index) in healthcares" :key="index">
+                    <div class="flex space-x-10 w-full justify-between p-3">
+                        <div class="dflex space-x-4">
+                        <div class="w-10 h-10">
+                            <avatar
+                                class="mr-2"
+                                v-if="input.profilePhoto"
+                                :src="input.profilePhoto"
+                                />
+                                <avatar class="mr-2" v-else :src="localSrc" />
+                        </div>
+                        <div class="w-full">
+                            <p class="text-xs text-dark font-semibold">
+                            {{ input.name }}
+                            </p>
+                        </div>
+                        </div>
+                        <cornie-radio
+                        v-model="newIndexvaluehealthcare"
+                        :value="input"
+                        @input="changed(input.id)"
+                        name="patients"
+                        class="bg-danger float-right  focus-within:bg-danger px-6 shadow"/>
+                    </div>
+                    <div class="w-full p-3" v-if="singleId == input.id">
+                        <!-- <cornie-select
+                            :onChange="setValue"
+                            class="required w-full"
+                            :rules="required"
+                            :items="['Type']"
+                            v-model="apatient.type"
+                            label="TYPE"
+                            placeholder="--Select--"
+                        >
+                        </cornie-select> -->
+                        <!-- <cornie-select
+                            class="required w-full"
+                            :rules="required"
+                            :items="['Required', 'Information Only', 'Optional']"
+                            v-model="apatient.required"
+                            label="required"
+                            placeholder="--Select--"
+                        >
+                        </cornie-select> -->
+                       <cornie-select
+                        class="required w-full"
                         :rules="required"
-                      />
-                      <cornie-select
-                        class="w-full mt-4"
-                        :rules="required"
-                        :items="[
-                          'Out-Patient',
-                          ' In-Patient',
-                          ' Virtual',
-                          'HomeCare',
-                        ]"
-                        v-model="consultationMediumLocation"
-                        label="consultation medium"
+                        :items="['Required', 'Information Only', 'Optional']"
+                        v-model="ahealthcare.required"
+                        label="required"
                         placeholder="--Select--"
                       >
                       </cornie-select>
+                        
+                        <date-picker
+                        class="w-full mb-5"
+                            label="period"
+                            v-model="ahealthcare.period"
+                            :rules="required"
+                        />
+                        <cornie-select
+                            class="required w-full"
+                            :rules="required"
+                            :items="[
+                            'Out-Patient',
+                            ' In-Patient',
+                            ' Virtual',
+                            'HomeCare',
+                            ]"
+                            v-model="ahealthcare.consultationMedium"
+                            label="consultation medium"
+                            placeholder="--Select--"
+                        >
+                        </cornie-select>
+                        <div class="pb-5">
+                        <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
+                        <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span> -->
+                        </div>
+                    </div>
+                    </div>
                 </div>
-                 <div v-if="actorType == 'Healthcare Services'">
-
-                      <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="requiredHealthcare"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
-                      </div>
-                    
-                      <date-picker
-                      class="w-full mb-5 mt-4"
-                        label="period"
-                        v-model="periodHealthcare"
-                        :rules="required"
-                      />
-                      <cornie-select
-                        class="w-full mt-4"
-                        :rules="required"
-                        :items="[
-                          'Out-Patient',
-                          ' In-Patient',
-                          ' Virtual',
-                          'HomeCare',
-                        ]"
-                        v-model="consultationMediumHealthcare"
-                        label="consultation medium"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select>
-                </div>
-
             </div>
          
          </cornie-card-text>
 
        <cornie-card>
         <cornie-card-text class="flex justify-end">
-        <div class="flex justify-end w-full mt-auto" v-if="stepped == 1">
+        <div class="flex justify-end w-full mt-auto" v-if="actorType == 'Practitioner'">
           <button
             class="
               rounded-full
@@ -459,7 +561,7 @@
             Cancel
           </button>
           <button
-            @click="next(2)"
+            @click="apply('Practitioner')"
             class="
               bg-danger
               rounded-full
@@ -472,10 +574,10 @@
               w-1/3
             "
           >
-            Next
+            Add
           </button>
         </div>
-         <div class="flex justify-end w-full mt-auto" v-if="stepped == 2">
+        <div class="flex justify-end w-full mt-auto" v-if="actorType == 'Device'">
           <button
             class="
               rounded-full
@@ -490,12 +592,156 @@
               text-primary
               font-semibold
             "
-            @click="back()"
+            @click="show = false"
           >
-            Back
+            Cancel
           </button>
           <button
-            @click="apply"
+            @click="apply('Device')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
+        </div>
+        <div class="flex justify-end w-full mt-auto" v-if="roleFilter">
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Role')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
+        </div>
+        <div class="flex justify-end w-full mt-auto" v-if="actorType == 'Patient'">
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Patient')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
+        </div>
+         <div class="flex justify-end w-full mt-auto" v-if="actorType == 'Location'">
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Location')"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+            "
+          >
+            Add
+          </button>
+        </div>
+         <div class="flex justify-end w-full mt-auto" v-if="actorType == 'Healthcare Services'">
+          <button
+            class="
+              rounded-full
+              mt-5
+              py-2
+              px-3
+              border border-primary
+              focus:outline-none
+              hover:opacity-90
+              w-1/3
+              mr-2
+              text-primary
+              font-semibold
+            "
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply('Healthcare Services')"
             class="
               bg-danger
               rounded-full
@@ -517,6 +763,8 @@
      
     </cornie-card>
     </cornie-dialog>
+    <availability v-model:visible="availableFilter" :available="available" :name="practitionername" :practitionerId="singleId"/>
+    <profile v-model:visible="profileFilter" :profile="practitioners" :name="practitionername" :activeState="activeState" :type="practitionerType" :profileId="singleId" :image="image" />
 </template>
 <script>
 import { setup} from "vue-class-component";
@@ -527,12 +775,12 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieCard from "@/components/cornie-card";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import DeleteIcon from "@/components/icons/cancel.vue";
 import IconInput from "@/components/IconInput.vue";
 import Availability from "@/components/availability.vue";
 import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import Avatar from "@/components/avatar.vue";
+import DeleteIcon from "@/components/icons/cancel.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieCheckbox from "@/components/corniecheckbox.vue";
@@ -547,11 +795,11 @@ export default {
   name: "actors",
   components: {
       ...CornieCard,
-      DeleteIcon,
     Modal,
     DragIcon,
     CornieSelect,
     CornieCheckbox,
+    DeleteIcon,
     ArrowLeftIcon,
     CornieIconBtn,
     Draggable,
@@ -570,13 +818,18 @@ export default {
       required: true,
       default: false,
     },
-     actorType:{
-      type: String,
+    showPartcipants:{
+      type: Boolean,
     },
     columns: {
       type: Array,
       required: true,
       default: () => [],
+    },
+     actorType:{
+      type: String,
+       required: true,
+      default: () => "Practitioner",
     },
     preferred: {
       type: Array,
@@ -617,50 +870,75 @@ export default {
   data() {
     return {
       selected:0,
-      stepped:1,
       localSrc: require('../../../../assets/img/placeholder.png'),
-          columnsProxy: [],
+      participantDetail:{
+          consultationMedium : "",
+          period:"",
+          required:""
+      },
+      apractitioner: {
+          required: false,
+          consultationMedium: "",
+          period :"",
+          practitionerId: "",
+      },
+      apatient:{
+        required: false,
+        consultationMedium: "",
+        period :  "",
+        patientId: "",
+      },
+      adevice:{
+        required: false,
+        consultationMedium: "",
+        period :  "",
+        deviceId: "",
+      },
+       alocation:{
+        required: false,
+        consultationMedium: "",
+        period :  "",
+        locationId: "",
+      },
+       ahealthcare:{
+        required: false,
+        consultationMedium: "",
+        period :  "",
+        healthId: "",
+      },
+      Patients: [],
+      Practitioners: [],
+        Devices:[],
+         Locations:[],
+          Healths:[],
+      activeState:"",
+      practitionerType:"",
+      columnsProxy: [],
       indexvalue:[],
-      practitionerId:"",
-      patientId:"",
-      deviceId:"",
-      locationId:"",
-      healthId:"",
-      updatePractitioners:[],
-        updatePatients:[],
-        updateDevices:[],
-         updateHealthcare:[],
-          updateLocation:[],
-     requiredPractitioner: false,
-        consultationMediumPractitioner: "",
-        periodPractitioner:{
-            start:"",
-            end:""
-        },
-         requiredPatient: false,
-        consultationMediumPatient: "",
-        periodPatient:{
-            start:"",
-            end:""
-        },
-         requiredDevice: false,
-        consultationMediumDevice: "",
-        periodDevice:{
-            start:"",
-            end:""
-        },
-         requiredLocation: false,
-        consultationMediumLocation: "",
-        periodLocation:{
-            start:"",
-            end:""
-        },
-         requiredHealthcare: false,
-        consultationMediumHealthcare: "",
-        periodHealthcare:{
-            start:"",
-            end:""
-        },
+      indexvaluepractitioner: [],
+        newIndexvaluepractitioner: {},
+           newIndexvaluepatient: {},
+              newIndexvaluedevice: {},
+                 newIndexvaluelocation: {},
+                    newIndexvaluehealthcare: {},
+      indexvaluepatient: [],
+      indexvaluedevice: [],
+    indexvaluelocation: [],
+        indexvaluehealthcare: [],
+     
+      valueid: [],
+      available:[],
+      type:'Practitioners',
+      singleId:"",
+      availableFilter: false,
+      practitionername:"",
+      image:"",
+      profileFilter:false,
+      practitionerFilter:true,
+      deviceFilter:false,
+      patientFilter:false,
+      roleFilter:false,
+      practitionerId: "",
     };
   },
   watch: {
@@ -674,49 +952,9 @@ export default {
     },
   },
   computed: {
-      total(){
-          return this.updateHealthcare.length + this.updateDevices.length + this.updatePatients.length + this.updatePractitioners.length + this.updateLocation.length;  
+    total(){
+          return this.indexvaluepractitioner.length + this.indexvaluepatient.length + this.indexvaluedevice.length + this.indexvaluelocation.length + this.indexvaluehealthcare.length;  
       },
-   getPractitioner(){
-       return {
-        id: this.practitionerId,
-        required: this.requiredPractitioner,
-        consultationMedium: this.consultationMediumPractitioner,
-        period: this.periodPractitioner
-       }
-   },
-   getPatient(){
-       return {
-        id: this.patientId,
-        required: this.requiredPatient,
-        consultationMedium: this.consultationMediumPatient,
-        period: this.periodPatient
-       }
-   },
-   getLocation(){
-       return {
-        id: this.locationId,
-        required: this.requiredLocation,
-        consultationMedium: this.consultationMediumLocation,
-        period: this.periodLocation
-       }
-   },
-   getHealthcare(){
-       return {
-        id: this.healthId,
-        required: this.requiredHealthcare,
-        consultationMedium: this.consultationMediumHealthcare,
-        period: this.periodHealthcare
-       }
-   },
-   getDevice(){
-       return {
-        id: this.deviceId,
-        required: this.requiredDevice,
-        consultationMedium: this.consultationMediumDevice,
-        period: this.periodDevice
-       }
-   },
     show: {
       get() {
         return this.visible;
@@ -728,29 +966,132 @@ export default {
 
   },
   methods: {
-   
-    next(i) {
-      this.stepped = i;
+    setValue() {
+    if (this.type == "Practitioner") {
+      this.practitionerFilter = true;
+        this.patientFilter = false;
+         this.deviceFilter = false;
+          this.roleFilter = false;
+    } else if (this.type == "Patient") {
+      this.patientFilter = true;
+      this.deviceFilter = false;
+      this.roleFilter = false;
+    this.practitionerFilter = false;
+    }else if(this.type == 'Device'){
+       this.deviceFilter = true;
+        this.practitionerFilter = false;
+        this.patientFilter = false;
+         this.roleFilter = false;
+    }else if(this.type == 'Practitioner Role'){
+        this.roleFilter = true;
+          this.practitionerFilter = false;
+        this.patientFilter = false;
+              this.deviceFilter = false;
+    }
+     },
+     async reset(value){
+      if(value == 'Practitioner'){
+          this.apractitioner = {...this.Practitioners};
+        }else if(value == 'Patient'){
+            this.apatient = {...this.Patients};
+        }else if(value == 'Device'){
+          this.adevice = {...this.Devices};
+        }
     },
-     back() {
-      this.stepped >= 0 && (this.stepped -= 1);
+     applyActor(value){
+      if(value == 'Practitioner'){
+           this.apractitioner.practitionerId = this.singleId;
+         this.Practitioners.push(this.apractitioner);
+           this.indexvaluepractitioner.push(this.newIndexvaluepractitioner)
+        }else if(value == 'Patient'){
+           this.apatient.patientId = this.singleId;
+         this.Patients.push(this.apatient);
+           this.indexvaluepatient.push(this.newIndexvaluepatient)
+        }else if(value == 'Device'){
+           this.adevice.deviceId = this.singleId;
+         this.Devices.push(this.adevice)
+           this.indexvaluedevice.push(this.newIndexvaluedevice)
+        }else if(value == 'Location'){
+           this.alocation.locationId = this.singleId;
+         this.Locations.push(this.alocation)
+           this.indexvaluelocation.push(this.newIndexvaluelocation)
+        }
+        else if(value == 'Healthcare Services'){
+           this.ahealthcare.healthId = this.singleId;
+         this.Healths.push(this.ahealthcare)
+           this.indexvaluehealthcare.push(this.newIndexvaluehealthcare)
+        }
+       // this.reset(value);
+     },
+    apply(value) {
+        this.applyActor(value);
+      this.$emit("show:modal", this.singleId, this.indexvaluepractitioner,this.indexvaluepatient, this.indexvaluedevice,this.indexvaluelocation,this.indexvaluehealthcare,this.Practitioners, this.Patients,this.Devices,this.Locations, this.Healths, value, this.apractitioner.practitionerId);
+      this.indexvalue = [];
+      this.valueid = [];
+      this.value = [];
+      this.show = false;
+     
     },
-   
-    apply() {
-      this.$emit("show:modal",this.updatePractitioners,this.updatePatients,this.updateDevices,this.updateLocation,this.updateHealthcare,this.getPractitioner,this.getPatient,this.getLocation,this.getDevice,this.getHealthcare);
-    this.show=false;
+    showAvailable(value,firstname,lastname){
+      this.singleId = value;
+      this.availableFilter = true;
+      this.practitionername = firstname +' '+ lastname;
+       this.viewAvialaibilty();
     },
-  
+    showProfile(value,firstname,lastname,type,state,image){
+      this.singleId = value;
+      this.profileFilter = true;
+      this.practitionername = firstname +' '+ lastname;
+      this.practitionerType = type;
+      this.activeState = state;
+      this.image = image;
+
+    this.viewProfile();
+
+    },
      select(i) {
       this.selected = i;
     },
-  
+    changed(index){
+      this.singleId = index;
+      if(this.setValue == 'Practitioner'){
+          this.singleId = index;
+      }
+      //this.valueid.push(index);
+    },
+     async viewAvialaibilty() {
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.singleId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      this.available = response[0].data;
+    },
+     async viewProfile() {
+      const SinglePractitioner = cornieClient().get(`/api/v1/schedule/practitioner/${this.singleId}`);
+      const response = await Promise.all([SinglePractitioner]);
+      this.practitionerprofile = response[0].data;
+      return response[0].data
+    }, 
+     async viewAppointemnt() {
+      try {
+        const response = await cornieClient().get(
+          '/api/v1/appointment', this.appointmentId
+        );
+        if (response.success) {
+        this.columnsProxy = response.data
+        }
+      } catch (error) {
+        this.show = false;
+        console.error(error);
+      }
+    },
   },
-//   mounted() {
-//     this.columnsProxy = copy([...this.indexvalue]);
-//   },
+  mounted() {
+    this.viewAppointemnt();
+    this.columnsProxy = copy([...this.indexvalue]);
+  },
   created(){
-     
+      this.viewAvialaibilty();
+      
+    this.setValue();
   }
 };
 </script>

@@ -12,6 +12,17 @@ export async function fetchRequests() {
   }
   return [] as IRequest[];
 }
+export async function fetchOtherrequestsById(patientId: string) {
+  try {
+    const response = await cornieClient().get(`/api/v1/requests/findByPatientSubject/all/${patientId}`);
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return [] as IRequest[];
+}
 
 export async function deleteRequest(id: string) {
   try {

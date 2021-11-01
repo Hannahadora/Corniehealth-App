@@ -21,37 +21,37 @@
         <p class="text-sm mb-5">
           Fill the form below to add an emergency contact.
         </p>
-        <v-form @submit="save" ref="form">
+        <v-form @submit="save" class="grid grid-cols-1 gap-y-4" ref="form">
           <cornie-input
             label="First, Middle, Surname"
-            class="mb-5"
+            class="w-full"
             placeholder="David Alabi Smith"
             v-model="name"
           />
           <cornie-select
             label="Gender"
-            class="mb-5"
+            class="w-full"
             placeholder="Select One"
             :items="genderOptions"
             v-model="gender"
           />
           <cornie-select
             label="Relationship"
-            class="mb-5"
+            class="w-full"
             placeholder="Select One"
             :items="relationshipOptions"
             v-model="relationship"
           />
           <cornie-input
             label="Mailing Address"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="mailingAddress"
           />
 
           <auto-complete
             label="Country"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="country"
             :items="countries"
@@ -59,7 +59,7 @@
 
           <auto-complete
             label="State"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="state"
             :items="states"
@@ -67,25 +67,25 @@
 
           <cornie-input
             label="City"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="city"
           />
           <cornie-input
             label="Suite or Apt No"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="aptNumber"
           />
           <cornie-input
             label="Post Code"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="postCode"
           />
           <cornie-phone-input
             label="Mobile Number 1"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="primaryPhone.number"
             v-model:code="primaryPhone.dialCode"
@@ -93,27 +93,27 @@
 
           <cornie-phone-input
             label="Mobile Number 2"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="secondaryPhone.number"
             v-model:code="secondaryPhone.dialCode"
           />
           <cornie-input
             label="Email"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="email"
           />
           <cornie-input
             label="Organization"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="organization"
           />
-          <div class="flex items-end">
+          <div class="flex items-end w-full">
             <period-picker
               label="Period (from - to)"
-              class="mr-1"
+              class="mr-1 w-full"
               v-model="period"
             />
           </div>
@@ -261,12 +261,13 @@ export default class EmergencyDontactDialog extends Vue {
       postalCode: this.postCode,
       period: this.period,
       primaryPhone: this.primaryPhone,
-      secondaryPhone: this.secondaryPhone,
       mailingAddress: this.mailingAddress,
       type: "emergency-contact",
     } as RelatedPerson;
     if (this.patient?.id) payload.patientId = this.patient.id;
     if (this.currentId) payload.id = this.currentId;
+    if (this.secondaryPhone.number)
+      payload.secondaryPhone = this.secondaryPhone;
     return payload;
   }
   async save() {

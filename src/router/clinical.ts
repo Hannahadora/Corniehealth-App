@@ -112,6 +112,22 @@ export const ClinicalsRoute: RouteRecordRaw = {
           import("@/views/dashboard/ehr/appointment/index.vue"),
          
         },
+      {
+        path: "hospitalization",
+        props: true,
+        name: "Hospitalization",
+        component: () =>
+          import("@/views/dashboard/ehr/hospitalization/index.vue"),
+         
+        },
+        {
+          path: "referral",
+          props: true,
+          name: "Referral",
+          component: () =>
+            import("@/views/dashboard/ehr/refferal/index.vue"),
+           
+          },
       
     ],
   }

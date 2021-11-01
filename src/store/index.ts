@@ -7,6 +7,7 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
+import CurrencyStore from "./currency";
 import CarePartnersStore from "./CarePartners";
 import practitioner from "./practitioner";
 import HealthcareStore from "./healthcare";
@@ -36,7 +37,14 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
+<<<<<<< HEAD
 import DetectedIssues from "./detectedissues"
+=======
+import hospitalisationStore from "./hospitalisation";
+import CareplanStore from "./careplan";
+
+
+>>>>>>> 5ab82228ce10fb53787c8c66341acc4256d4da68
 export default createStore({
   modules: {
     user: UserStore,
@@ -46,6 +54,7 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    currency: CurrencyStore,
     OrgFunctions,
     condition,
     hierarchy: OrganizationHierarchy,
@@ -77,5 +86,7 @@ export default createStore({
     issues: DetectedIssues,
     vitals: VitalsStore,
     procedure: ProcedureStore,
+    hospitalisation: hospitalisationStore,
+    careplan: CareplanStore
   },
 } as StoreOptions<any>);
