@@ -178,12 +178,12 @@
                   placeholder="--Select--"
                 >
                 </cornie-select> -->
-                 <div class="w-full cursor-pointer"  @click="showRef">
+                 <div class="w-full cursor-pointer">
                 <label class="flex normal-case mb-0  text-black text-sm font-bold">Request Reference</label>
                     <input-desc-rounded  class="cursor-pointer">
                           <input type="text"  disabled  :value="otherrequestModel.request.requestReference" placeholder="Select" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
                           <span>
-                           <plus-icon class="aadd text-danger fill-current"/>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer"  @click="showRef"/>
                           </span>
                   </input-desc-rounded>         
                  <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
@@ -411,10 +411,10 @@
     </cornie-card>
   </cornie-dialog>
     <reference-modal
-          :conditions="conditions"
+          :conditions="patientConditions"
           :allergy="allergy"
           @show:modal="showRef"
-          v-model:visible="showRefModal"
+          v-model="showRefModal"
         />
 </template>
 
@@ -638,6 +638,10 @@ get format() {
       this.selected = i;
     }
     
+     get patientConditions() {
+    return this.conditions[this.patientId] || [];
+  }
+
 async showRef(value:any){
   this.showRefModal = true;
   this.otherrequestModel.request.requestReference = value;

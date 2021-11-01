@@ -1,21 +1,21 @@
 <template>
-    <div class="bg-white">
-        <modal
-        :visible="visible"
-        class="w-2/4 flex flex-col  mr-2"
-        >
-            <div class="flex w-full rounded-t-lg p-5">
-            <span class="block pr-2 border-r-2">
-            <arrow-left-icon
-                class="stroke-current text-primary cursor-pointer"
-                @click="show = false"
-            />
-            </span>
-             <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">Request Reference </h2>
-              <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-             </div>
-            </div>
+   <cornie-dialog v-model="show" center class="w-6/12  h-5/6">
+    <cornie-card height="100%" class="flex flex-col">
+      
+       <cornie-card-title>
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+         <div class="w-full">
+         <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Request Reference</h2>
+
+           <delete-icon
+            class="text-danger fill-current cursor-pointer float-right"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+           <cornie-card-text class="flex-grow scrollable">
             <div class="flex flex-col p-3 mb-7 h-96">
                 <div class="border-b-2 pb-3 border-dashed">
                     <label for="ecounter" class="flex capitalize mb-5 mt-5 text-black text-xs font-bold">Select
@@ -25,7 +25,7 @@
 
                         <cornie-radio  label="Condition"  class="text-xs" name="reference" @click="setValue('Condition')"/>
                          <cornie-radio label="Diagnostic Report"  class="text-xs" name="reference"   @click="setValue('report')"/>
-                        <cornie-radio label="Allegry Intolerance"  class="text-xs" name="reference"   @click="setValue('allergy')"/>
+                        <cornie-radio label="Allegry Intolerance"  class="text-xs" name="reference"   @click="setValue('Allergy')"/>
                         <cornie-radio label="Questionnaire Response"  class="text-xs" name="reference"   @click="setValue('question')"/>
                         <cornie-radio label="Observation"  class="text-xs" name="reference"   @click="setValue('observation')"/>
                         <cornie-radio label="Document Reference"  class="text-xs" name="reference"   @click="setValue('document')"/>
@@ -58,14 +58,23 @@
                 <div class="overflow-y-auto h-96">
                     <div>
                         <div  v-if="conditionFilter">
-                            - <div v-for="(input, index) in conditions" :key="index"> 
-                                    <div class="w-full mt-2 p-3  hover:bg-gray-100 cursor-pointer"  @click="getValue('Identifier')">
+                             <div v-for="(input, index) in conditions" :key="index"> 
+                                    <div class="w-full mt-2 p-3  hover:bg-gray-100 cursor-pointer"  @click="getValue(input.code)">
                                         <div class="w-full">
                                             <div class="w-full">
                                                 <p class="text-sm text-dark mb-1 font-medium" >
                                                  {{input.code}}
                                                 </p>
-                                            <p class="text-xs text-gray-300">04/09/2021, 19:45</p>
+                                            <p class="text-xs text-gray-300">  {{
+                                        new Date(
+                                                input.createdAt
+                                            ).toLocaleDateString()
+                                    }}
+                                        ,  {{
+                                        new Date(
+                                                input.createdAt
+                                            ).toLocaleTimeString()
+                                    }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -101,7 +110,10 @@
                   
                 </div>
             </div>
-            <div class="flex justify-end pb-6 px-2">
+           </cornie-card-text>
+
+              <cornie-card>
+        <cornie-card-text class="flex justify-end">
                 <div class="flex justify-end w-full mt-auto">
                 <button
                     class="
@@ -138,9 +150,12 @@
                     Add
                 </button>
                 </div>
-            </div>
-        </modal>
-    </div>
+        </cornie-card-text>
+              </cornie-card>
+
+    </cornie-card>
+   </cornie-dialog>  
+    
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -166,9 +181,9 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from '@/components/cornieradio.vue';
 import { Codeable } from "@/types/misc";
-import Period from "@/types/IPeriod";
-import { initial } from 'lodash';
+import { useFHIRDefinition } from "@/composables/useFHIRDefinition";
 import { ICondition } from "@/types/ICondition";
+import Condition from "yup/lib/Condition";
 //const copy = (original) => JSON.parse(JSON.stringify(original));
 
 
@@ -196,14 +211,14 @@ import { ICondition } from "@/types/ICondition";
 })
 
 export default class reasonreference extends Vue {
-    @Prop({ type: Boolean, default: false })
-    visible!: boolean;
+   @Prop({ type: Boolean, default: false })
+  modelValue!: boolean;
 
+  @PropSync("modelValue")
+  show!: boolean;
 // @Prop({ type: Array, default: [] })
 //   selected!: object;
-get patientId() {
-    return this.$route.params.id as string;
-  }
+
 
 @Prop({ type: Array, default: [] })
   columns!: object;
@@ -217,8 +232,6 @@ get patientId() {
   @Prop({ type: Array, default: [] })
   allergy!: object;
 
- @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
 
   @Prop({ type: Object, required: true })
   conditions!: ICondition;
@@ -244,9 +257,9 @@ get patientId() {
           code: "",
           date:""
       };
-      type ='Condition';
-      conditionFilter= false;
-      allergyFilter = true;
+      type ="Condition";
+      conditionFilter= true;
+      allergyFilter = false;
 
 //   watch: {
 //     columns(val) {
@@ -268,25 +281,30 @@ get patientId() {
     //     this.$emit("update:visible", val);
     //   },
     // },
+    
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+
 
 get item() {
     return this.conditions || {};
   }
-
-get code() {
-    if (!this.item.id) return;
-    const value = this.item.code?.replaceAll('"', "");
-    return this.codes.find((s) => (s.code = value))?.display;
+ loadDefinitions() {
+    this.code.code = this.item?.code;
   }
+ code = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-code")
+  );
     setValue(value:string) {
     if (value == "Condition") {
       this.conditionFilter = true;
     this.allergyFilter = false;
-          this.type = value;
+          this.type = "Condition";
     }else if(value == 'Allergy'){
         this.allergyFilter = true;
           this.conditionFilter = false;
-        this.type = value;
+        this.type = "Allergy";
     }
      }
      getValue(value:string){
@@ -307,6 +325,7 @@ get code() {
 //     this.columnsProxy = copy([...this.indexvalue]);
 //   }
   created(){
+    this.loadDefinitions();
    // this.setValue();
   }
 };

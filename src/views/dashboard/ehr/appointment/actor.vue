@@ -1,6 +1,7 @@
 <template>
      <cornie-dialog v-model="show" center class="w-4/12  h-5/6">
     <cornie-card height="100%" class="flex flex-col">
+      
      <cornie-card-title>
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
