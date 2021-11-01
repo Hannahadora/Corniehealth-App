@@ -17,12 +17,12 @@
             focus:outline-none
             hover:opacity-90
           "
-          @click="showAllergy('false')"
+          @click="showIssues"
         >
           Register Detected Issues
         </button>
       </span>
-      <cornie-table :columns="rawHeaders" v-model="sortAllergys">
+      <cornie-table :columns="rawHeaders" v-model="sortIssues">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -42,35 +42,26 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showAllergy(item.id)"
+            @click="showIssues(item)"
           >
             <edit-icon class="text-purple-600 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
           </div>
         </template>
-        <template #asserter="{ item }">
+        <!-- <template #asserter="{ item }">
           <p class="cursor-pointer">{{ item.asserter }}</p>
-        </template>
-        <template #recorder="{ item }">
+        </template> -->
+        <!-- <template #recorder="{ item }">
           <p class="cursor-pointer">{{ item.asserter }}</p>
-        </template>
+        </template> -->
       </cornie-table>
     </div>
 
-    <allergy-modal
-      v-if="allergyId == 'false'"
-      :columns="practitioner"
-      @allergy-added="allergyAdded"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
-    />
 
     <allergy-modal
-      v-else
-      :id="allergyId"
-      :columns="practitioner"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
+      @update:preferred="showIssues"
+      v-model="showIssuesModal"
+      :id="issuesId"
     />
   </div>
 </template>
@@ -108,8 +99,10 @@ import MessageIcon from "@/components/icons/message.vue";
 import AllergyModal from "./issuesdialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import IIssues from "@/types/IIssues";
 
-const allergy = namespace("allergy");
+const issues = namespace("issues");
+
 
 @Options({
   components: {
@@ -148,106 +141,63 @@ export default class AllergyExistingState extends Vue {
   query = "";
   selected = 1;
   showNotes = false;
-  showAllergyModal = false;
-  allergyId = "";
+  showIssuesModal = false;
+  issuesId = "";
   tasknotes = [];
 
-  @Prop({ type: Array, default: [] })
-  allergys!: IAllergy[];
+  // @Prop({ type: Array, default: [] })
+  // issues!: IIssues[];
 
   // @allergy.State
   // allergys!: IAllergy[];
 
-  @allergy.State
-  practitioners!: any[];
+  @issues.State
+  issues!: any[];
 
-  @allergy.Action
-  deleteAllergy!: (id: string) => Promise<boolean>;
+  // @issues.Action
+  // deleteAllergy!: (id: string) => Promise<boolean>;
 
-  @allergy.Action
+  @issues.Action
   getPractitioners!: () => Promise<void>;
 
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
+ 
+
+  @issues.Action
+  fetchIssues!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
+    { title: "Date", key: "createdAt", show: true },
     {
       title: "identifier",
       key: "id",
       show: true,
     },
-    { title: "Date Recorded", key: "createdAt", show: true },
-    {
-      title: "Type",
-      key: "type",
-      show: true,
-    },
-    {
-      title: "Category",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "Criticality",
-      key: "criticality",
-      show: false,
-    },
-    {
-      title: "product",
-      key: "product",
-      show: true,
-    },
-    {
-      title: "clinical| verication",
-      key: "clinicalStatus",
-      show: true,
-    },
-    {
-      title: "Asserter",
-      key: "asserter",
-      show: false,
-    },
-    {
-      title: "Recorder",
-      key: "recorder",
-      show: false,
-    },
-    {
-      title: "Period",
-      key: "onsetPeriod",
-      show: false,
-    },
     {
       title: "Code",
       key: "code",
-      show: false,
+      show: true,
     },
     {
-      title: "Onset Age",
-      key: "onsetAge",
-      show: false,
+      title: "Author",
+      key: "author",
+      show: true,
     },
     {
-      title: "Recorded Date",
-      key: "recordedDate",
-      show: false,
+      title: "Identified(Date)",
+      key: "date",
+      show: true,
     },
     {
-      title: "Description",
-      key: "description",
-      show: false,
+      title: "Implicated",
+      key: "implicated",
+      show: true,
     },
     {
-      title: "Note",
-      kwy: "note",
-      show: false,
-    },
-    {
-      title: "Last Occurence",
-      kwy: "lastOccurence",
-      show: false,
+      title: "Patient",
+      key: "patient",
+      show: true,
     },
     //  {
     //   title: "Encounter",
@@ -289,39 +239,43 @@ export default class AllergyExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-
+   currentIssue: any =null
   get items() {
-    const allergys = this.allergys.map((allergy) => {
-      (allergy as any).onSet.onsetPeriod.start = new Date(
-        (allergy as any).onSet.onsetPeriod.start
+    const issues = this.issues.map((issue) => {
+      (issue as any).identified.identifiedPeriod.start = new Date(
+        (issue as any).identified.identifiedPeriod.start
       ).toLocaleDateString("en-US");
-      (allergy as any).onSet.onsetPeriod.end = new Date(
-        (allergy as any).onSet.onsetPeriod.end
+      (issue as any).identified.identifiedPeriod.end = new Date(
+        (issue as any).identified.identifiedPeriod.end
       ).toLocaleDateString("en-US");
-      (allergy as any).createdAt = new Date(
-        (allergy as any).createdAt
+      (issue as any).createdAt = new Date(
+        (issue as any).createdAt
       ).toLocaleDateString("en-US");
       return {
-        ...allergy,
-        action: allergy.id,
-        keydisplay: "XXXXXXX",
-        onsetPeriod:
-          allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
-        asserter: this.getPractitionerName(allergy.onSet.asserter),
-        product: allergy.reaction.substance,
+        ...issue,
+        date: issue.createdAt,
+        code:issue.code,
+        author:issue.mitigation.author,
+        implicated:issue.identified.implicated,
+        patient:issue.patient
+        // onsetPeriod:
+          // issue.onSet.onsetPeriod.start + "-" + issue.onSet.onsetPeriod.end,
+        // asserter: this.getPractitionerName(allergy.onSet.asserter),
+        // product: issue.reaction.substance,
       };
     });
-    if (!this.query) return allergys;
-    return search.searchObjectArray(allergys, this.query);
+    if (!this.query) return issues;
+    return search.searchObjectArray(issues, this.query);
   }
-  getPractitionerName(id: string) {
-    const pt = this.practitioners.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : "";
-  }
-  async showAllergy(value: string) {
-    this.showAllergyModal = true;
+  // getPractitionerName(id: string) {
+  //   const pt = this.practitioners.find((i: any) => i.id === id);
+  //   return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  // }
+  async showIssues(issue: IIssues) {
+    this.showIssuesModal = true;
     //this.stopEvent = true;
-    this.allergyId = value;
+    this.currentIssue = issue;
+    // console.log(this.issuesId);
   }
  get activePatientId() {
       const id = this.$route?.params?.id as string;
@@ -329,31 +283,31 @@ export default class AllergyExistingState extends Vue {
   }
 
   allergyAdded() {
-    this.allergys;
-    this.fetchAllergys(this.activePatientId);
+    this.issues;
+    this.fetchIssues(this.activePatientId);
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this allergy",
-      title: "Delete allergy",
-    });
-    if (!confirmed) return;
+  // async deleteItem(id: string) {
+  //   const confirmed = await window.confirmAction({
+  //     message: "You are about to delete this allergy",
+  //     title: "Delete allergy",
+  //   });
+  //   if (!confirmed) return;
 
-    if (await this.deleteAllergy(id))
-      window.notify({ msg: "Allergy cancelled", status: "success" });
-    else window.notify({ msg: "Allergy not cancelled", status: "error" });
-  }
+  //   if (await this.deleteAllergy(id))
+  //     window.notify({ msg: "Allergy cancelled", status: "success" });
+  //   else window.notify({ msg: "Allergy not cancelled", status: "error" });
+  // }
 
-  get sortAllergys() {
+  get sortIssues() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
 
   async created() {
-    this.getPractitioners();
-    this.sortAllergys;
-    this.fetchAllergys(this.activePatientId);
+    // this.getPractitioners();
+    this.sortIssues;
+    this.fetchIssues(this.activePatientId);
   }
 }
 </script>

@@ -36,6 +36,7 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
+import DetectedIssues from "./detectedissues"
 export default createStore({
   modules: {
     user: UserStore,
@@ -73,7 +74,7 @@ export default createStore({
     allergy: AllergyStore,
     impression:ImpressionStore,
     history: HistoryStore,
-
+    issues: DetectedIssues,
     vitals: VitalsStore,
     procedure: ProcedureStore,
   },

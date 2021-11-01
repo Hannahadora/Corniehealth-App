@@ -105,7 +105,7 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import AllergyModal from "./attachmentDialog.vue";
+import AllergyModal from "./add-attachment.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
@@ -178,107 +178,27 @@ export default class AllergyExistingState extends Vue {
       key: "id",
       show: true,
     },
-    { title: "Date Recorded", key: "createdAt", show: true },
+    { title: "Date", key: "createdAt", show: true },
     {
-      title: "Type",
-      key: "type",
+      title: "TIME",
+      key: "time",
       show: true,
     },
     {
-      title: "Category",
-      key: "category",
+      title: "TITLE",
+      key: "title",
       show: true,
     },
     {
-      title: "Criticality",
-      key: "criticality",
-      show: false,
-    },
-    {
-      title: "product",
-      key: "product",
+      title: "FORMAT",
+      key: "format",
       show: true,
     },
     {
-      title: "clinical| verication",
-      key: "clinicalStatus",
+      title: "SIZE",
+      key: "size",
       show: true,
     },
-    {
-      title: "Asserter",
-      key: "asserter",
-      show: false,
-    },
-    {
-      title: "Recorder",
-      key: "recorder",
-      show: false,
-    },
-    {
-      title: "Period",
-      key: "onsetPeriod",
-      show: false,
-    },
-    {
-      title: "Code",
-      key: "code",
-      show: false,
-    },
-    {
-      title: "Onset Age",
-      key: "onsetAge",
-      show: false,
-    },
-    {
-      title: "Recorded Date",
-      key: "recordedDate",
-      show: false,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: false,
-    },
-    {
-      title: "Note",
-      kwy: "note",
-      show: false,
-    },
-    {
-      title: "Last Occurence",
-      kwy: "lastOccurence",
-      show: false,
-    },
-    //  {
-    //   title: "Encounter",
-    //   kwy: "encounter",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Repitition",
-    //   kwy: "repitition",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Input Type",
-    //   kwy: "inputType",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Input Value",
-    //   kwy: "inputValue",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Output Type",
-    //   kwy: "outputType",
-    //   show: false,
-    // },
-    //  {
-    //   title: "Output Value",
-    //   kwy: "outputValue",
-    //   show: false,
-    // },
   ];
 
   get headers() {

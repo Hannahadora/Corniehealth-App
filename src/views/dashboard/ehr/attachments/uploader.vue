@@ -59,6 +59,7 @@
       type="button"
       @click.stop="upload"
       :disabled="uploading"
+      @click="showupload"
       :class="{
         'bg-danger text-white': !uploading,
         ' bg-gray-300 text-black': uploading,
@@ -99,6 +100,8 @@ export default class Uploader extends Vue {
 
   progress = 0;
 
+  fileInfo = {} ;
+
   uploading = false;
 
   get filename() {
@@ -117,6 +120,16 @@ export default class Uploader extends Vue {
     this.file = imageFile;
   }
 
+  setmeta(){
+    const fileExt = this.file.type;
+    const fileSize = this.file.size;
+    const fileInfo = { fileSize, fileExt};
+    this.fileInfo = fileInfo;
+    console.log(this.fileInfo);
+  }
+    showupload(){
+      this.$emit('show-parent', this.fileInfo)
+    }
   cancel() {
     this.uploading = false;
     this.xhr?.abort();

@@ -19,6 +19,18 @@ export const clinicalItems = [
   { code: "low", display: "Low" },
 ];
 
+export const clinicalImplicated = [
+  { code: "high", display: "High	" },
+  { code: "moderate", display: "Moderate" },
+  { code: "low", display: "Low" },
+];
+
+export const clinicalAuthur = [
+  { code: "high", display: "High	" },
+  { code: "moderate", display: "Moderate" },
+  { code: "low", display: "Low" },
+];
+
 export const clinicalCode = [
   { code: "FOOD", display: "Food Interaction Alert" },
   { code: "TPROD", display: "Therapeutic Product Alert" },
