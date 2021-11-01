@@ -109,6 +109,9 @@
           v-model="showStatusModal"/>
 
         <view-modal  :id="requestId" 
+         :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="update"
           v-model="showViewModal"/>
 
         
@@ -229,11 +232,19 @@ update="";
 newname ="";
 practitonerId="";
 showViewModal=false;
+name=[];
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
 
-   @otherrequest.State
-  otherrequests!: any[];
+  //  @otherrequest.State
+  // otherrequests!: any[];
+
+     @otherrequest.State
+  patientrequests!: any[];
+
+ @otherrequest.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+
 
   @otherrequest.State
   practitioners!: any[];
@@ -253,8 +264,7 @@ showViewModal=false;
   @otherrequest.Action
   getPractitioners!: () => Promise<void>;
 
- @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -317,10 +327,10 @@ showViewModal=false;
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
    get patientId() {
-    return this.$route.params.id;
+    return this.$route.params.id as string;
   }
   get items() {
-    const otherrequests = this.otherrequests.map((otherrequest) => {
+    const patientrequests = this.patientrequests.map((otherrequest) => {
          (otherrequest as any).createdAt = new Date(
          (otherrequest as any).createdAt
        ).toDateString();
@@ -328,7 +338,7 @@ showViewModal=false;
          (otherrequest as any).updatedAt = new Date(
          (otherrequest as any).updatedAt
        ).toDateString();
-        this.updatedBy = this.getPractitionerName(otherrequest.performer.performer);
+        this.updatedBy = this.getPatientName(this.patientId as string);
       this.currentStatus = otherrequest.status;
 
        this.update= otherrequest.updatedAt
@@ -345,8 +355,8 @@ showViewModal=false;
         priority: otherrequest.basicInfo.priority
         };
     });
-    if (!this.query) return otherrequests;
-    return search.searchObjectArray(otherrequests, this.query);
+    if (!this.query) return patientrequests;
+    return search.searchObjectArray(patientrequests, this.query);
   }
     async showStatus(value:string){
     this.showStatusModal = true;
@@ -361,19 +371,21 @@ showViewModal=false;
   }
 
 async showView(value:string){
-    console.log("hello world");
     this.showViewModal = true;
     this.requestId = value;
 }
-  medicationAdded() {
-  this.fetchOtherrequests();
+
+
+   medicationAdded() {
+   this.fetchOtherrequestsById(this.patientId);
   }
         getPatientName(id: string) {
             const pujhjht = this.patients.find((i: any) => i.id === id);
             return pujhjht ? `${pujhjht.firstname} ${pujhjht.lastname}` : '';
         }
         getPractitionerName(id: string){
-        const pt = this.practitioners.find((i: any) => i.id === id);
+        const pt = this.practitioners.find((i: any) => i.id == id);
+        this.name = pt
             return pt ? `${pt.firstName} ${pt.lastName}` : '';
         }
 
@@ -397,7 +409,7 @@ async showView(value:string){
      async created() {
           this.getPractitioners();
           this.fetchPatients();
-          this.fetchOtherrequests();
+          this.fetchOtherrequestsById(this.patientId);
     }
 
 }

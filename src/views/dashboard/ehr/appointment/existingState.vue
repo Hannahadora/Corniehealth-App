@@ -83,6 +83,9 @@
           </cornie-table>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Visits">
+          <div class="w-full">
+            <EHRVisits @gotoappointments="() => selected = 1" />
+          </div>
         </div>
        
        
@@ -119,6 +122,10 @@
         :dateUpdated="update"
             @appointment-added="appointmentAdded"
           v-model="showStatusModal"/>
+
+          <side-modal :visible="showCheckin" :header="'Check-In'" :width="990"  @closesidemodal="() => showCheckin = false">
+            <checkin-component :appointmentId="checkinAppointment" @closesidemodal="() => showCheckin = false" />
+          </side-modal>
   </div>
 </template>
 <script lang="ts">
@@ -157,7 +164,10 @@ import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import AppointmentModal from "./appointmentDialog.vue";
+import EHRVisits from "@/views/dashboard/ehr/visits/index.vue"
 import { IPatient } from "@/types/IPatient";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue"
+import CheckinComponent from "@/views/dashboard/ehr/visits/components/patient-checkin.vue"
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -191,7 +201,10 @@ const patients = namespace("patients");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
+    EHRVisits,
+    SideModal,
+    CheckinComponent,
   },
   
 })
@@ -291,6 +304,13 @@ create="";
       show: false,
     },
   ];
+
+  showCheckin = false
+  checkinAppointment = ""
+  showCheckinPane(id: string) {
+    this.checkinAppointment = id
+    this.showCheckin = true;
+  }
 
   showAppointmentModal= false;
  async showAppointment(value:string){

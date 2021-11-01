@@ -232,8 +232,8 @@
 <div class="grid grid-cols-2 gap-5 mt-5">
                  <cornie-input label="ratio (1st value)"     class="w-full"  v-model="otherrequestModel.request.ratio" placeholder="Enter" />
                   <cornie-input label="ratio (2nd value)"    class="w-full"   v-model="range" placeholder="Enter" />
-                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full -mt-3" label="occurence DATE" />
-                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full" label="occurence Period" />
+                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full" label="Occurence Date" />
+                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full -mt-1" label="occurence Period" />
                 <div class="w-full">
                     <label for="" class="w-full">
                         <span class="uppercase font-bold text-xs">occurence timing</span>
@@ -264,7 +264,7 @@
                 </div>
                    <cornie-select
                      v-if="PatientName.insurances.length === 0"
-                class="required w-full"
+                class="required w-full -mt-1"
                 :rules="required"
                 :items="['No Payment option for this patient']"
                   v-model="otherrequestModel.subject.paymentOption"
@@ -505,7 +505,7 @@ export default class Referral extends Vue {
   id!: string;
   
   @Prop({ type: Object, required: false, default: { ...emptyOtherrequest} })
-  otherrequest!: IOtherrequest;
+  patientrequests!: IOtherrequest;
 
   otherrequestModel = {} as IOtherrequest;
 
@@ -526,7 +526,7 @@ export default class Referral extends Vue {
     this.otherrequestModel = JSON.parse(JSON.stringify({ ...otherrequest }));
   }
   @otherrequest.Mutation
-  updatedOtherrequests!: any;
+  setPatientRequests!: any;
 
 range="";
   loading = false;
@@ -579,7 +579,7 @@ get age() {
     };
   }
 async setRequestModel() {
-     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.otherrequest }));
+     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.patientrequests }));
   }
   get payload() {
     return{
@@ -632,9 +632,10 @@ get allPerformer() {
  }
 
  done() {
-    this.$emit("allergy-added");
+    this.$emit("medication-added");
     this.show = false;
   }
+
     async setRequest() {
     const otherrequest = await this.getOtherrequestById(this.id)
     if (!otherrequest) return
@@ -679,8 +680,8 @@ get allPerformer() {
     const patientfullnameid = this.PatientName.id;
 
 
-   this.payload.requestInfo.requester = practitionerfullnameid;
-  this.payload.subject.subject = practitionerfullnameid;
+   this.payload.requestInfo.requester = patientfullnameid;
+  this.payload.subject.subject = patientfullnameid;
   this.payload.performer.performer = practitionerfullnameid;
   
   if(this.allLocation.length === 0) this.payload.performer.location = practitionerfullnameid;
@@ -688,7 +689,7 @@ get allPerformer() {
    try {
       const response = await cornieClient().post("/api/v1/other-requests", this.payload);
       if (response.success) {
-          this.updatedOtherrequests([response.data]);
+          this.setPatientRequests([response.data]);
           window.notify({ msg: "Request Created", status: "success" });
         this.done();
       }
@@ -704,7 +705,7 @@ get allPerformer() {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-          this.updatedOtherrequests([response.data]);
+          this.setPatientRequests([response.data]);
         window.notify({ msg: "Request Updated", status: "success" });
         this.done();
       }

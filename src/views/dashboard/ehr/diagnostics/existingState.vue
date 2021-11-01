@@ -25,7 +25,7 @@
             </span>
             <cornie-table :columns="rawHeaders" v-model="sortMedications">
                 <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showDiagnostic(item.id)">
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showView(item.id)">
                       <eye-icon class="text-blue-300 fill-current" />
                       <span class="ml-8 text-xs">View</span>
                   </div>
@@ -97,13 +97,15 @@
 
           
          <status-modal
+          @medication-added="medicationAdded"
             :id="requestId" 
            :updatedBy="updatedBy" 
                    :dateUpdated="update"
         :currentStatus="currentStatus" 
-          @update:preferred="showStatus"
           v-model="showStatusModal"/>
 
+    <view-modal  :id="requestId" 
+          v-model="showViewModal"/>
 
 
         
@@ -146,6 +148,7 @@ import SendIcon from "@/components/icons/send.vue";
 import DiagnosticModal from "./diagnosticdialog.vue";
 import StatusModal from "./status.vue";
 import { namespace } from "vuex-class";
+import ViewModal from "./view.vue";
 import CheckIn from './components/checkin.vue'
 import CheckOut from './components/checkout.vue'
 import IPractitioner from "@/types/IPractitioner";
@@ -177,6 +180,7 @@ const emptyOtherrequest: IOtherrequest = {
     StatusModal,
     ShareIcon,
     ThreeDotIcon,
+    ViewModal,
     DangerIcon,
     PlusIcon,
     SendIcon,
@@ -217,14 +221,22 @@ updatedBy= "";
 currentStatus="";
 update="";
 practitonerId="";
+showViewModal=false;
 
    @userStore.Getter
   authPractitioner!: IPractitioner;
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
 
-   @otherrequest.State
-  otherrequests!: any[];
+  //  @otherrequest.State
+  // otherrequests!: any[];
+
+  
+     @otherrequest.State
+  patientrequests!: any[];
+
+ @otherrequest.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
   @otherrequest.State
   practitioners!: any[];
@@ -241,8 +253,8 @@ practitonerId="";
   @otherrequest.Action
   getPractitioners!: () => Promise<void>;
 
- @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+//  @otherrequest.Action
+//   fetchOtherrequests!: () => Promise<void>;
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -286,7 +298,7 @@ practitonerId="";
   ];
 
  get patientId() {
-    return this.$route.params.id;
+    return this.$route.params.id as string;
   }
   get headers() {
     const preferred =
@@ -298,7 +310,7 @@ practitonerId="";
   }
   
   get items() {
-    const otherrequests = this.otherrequests.map((otherrequest) => {
+    const patientrequests = this.patientrequests.map((otherrequest) => {
          (otherrequest as any).createdAt = new Date(
          (otherrequest as any).createdAt
        ).toDateString();
@@ -306,7 +318,7 @@ practitonerId="";
          (otherrequest as any).updatedAt = new Date(
          (otherrequest as any).updatedAt
        ).toDateString();
-        this.updatedBy = this.getPractitionerName(otherrequest.performer.performer);
+        this.updatedBy = this.getPatientName(this.patientId as string);
       this.currentStatus = otherrequest.status;
 
        this.update= otherrequest.updatedAt
@@ -321,8 +333,8 @@ practitonerId="";
         category: otherrequest.basicInfo.category,
         };
     });
-    if (!this.query) return otherrequests;
-    return search.searchObjectArray(otherrequests, this.query);
+    if (!this.query) return patientrequests;
+    return search.searchObjectArray(patientrequests, this.query);
   }
     async showStatus(value:string){
     this.showStatusModal = true;
@@ -335,16 +347,21 @@ practitonerId="";
       this.showDiagnosticModal = true;
       this.requestId = value;
   }
-
+async showView(value:string){
+    this.showViewModal = true;
+    this.requestId = value;
+}
   medicationAdded() {
-  this.fetchOtherrequests();
+  this.fetchOtherrequestsById(this.patientId);
   }
         getPatientName(id: string) {
             const pt = this.patients.find((i: any) => i.id === id);
             return pt ? `${pt.firstname} ${pt.lastname}` : '';
         }
         getPractitionerName(id: string){
-        const pt = this.practitioners.find((i: any) => i.id === id);
+          const pt = this.practitioners.find((i: any) => i.id === id);
+          console.log(pt);
+           console.log("id");
             return pt ? `${pt.firstName} ${pt.lastName}` : '';
         }
 
@@ -368,7 +385,7 @@ practitonerId="";
      async created() {
           this.getPractitioners();
           this.getPatients();
-          this.fetchOtherrequests();
+          this.fetchOtherrequestsById(this.patientId);
     }
 
 }

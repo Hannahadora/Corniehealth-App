@@ -6,7 +6,7 @@
        :id="newhistoryId"
     :horizontal="true"
   >
-   <div class="w-full">
+   <div class="w-full p-3">
       <span class="w-full">
           <div class="float-left">
                 <img
@@ -177,28 +177,52 @@
         Cancel
       </cornie-btn>
     </template>
-    <template #menuactions>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-             >
-            <new-view-icon class="text-blue-300 fill-current" />
-            <span class="ml-3 text-xs">View</span>
-          </div>
-          <div
-            @click="showHistory()"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <edit-icon class="text-purple-700 fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
-          </div>
-          <div
-            @click="showNewStatus"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <update-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> Update Status </span>
-          </div>
-    </template>
+     <template #menuactions="{ item }">
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showView()">
+                      <eye-icon class="text-blue-300 fill-current" />
+                      <span class="ml-8 text-xs">View</span>
+                  </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showDiagnostic">
+                      <edit-icon class="text-blue-300 fill-current" />
+                      <span class="ml-8 text-xs">Edit</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus">
+                      <update-icon class="text-purple-800 fill-current" />
+                      <span class="ml-8 text-xs">Update Status</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
+                      <calender-icon  />
+                      <span class="ml-8 text-xs">Add Appointment</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDiagnostic(item.id)">
+                      <checkin-icon class="text-yellow-600 fill-current" />
+                      <span class="ml-8 text-xs">Check In</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id)">
+                      <checkout-icon class="text-red-600 fill-current" />
+                      <span class="ml-8 text-xs">Check Out</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <send-icon class="text-purple-800 fill-current" />
+                      <span class="ml-8 text-xs">Report</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"   @click="$router.push('/dashboard/provider/experience/add-task')">
+                      <plus-icon class="text-green-400 fill-current" />
+                      <span class="ml-8 text-xs">Add Task</span>
+                  </div>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                      <message-icon class="text-blue-600 fill-current" />
+                      <span class="ml-8 text-xs">Message</span>
+                  </div>
+      </template>
+              
+         <status-modal
+           @medication-added="medicationAdded"
+               :id="id" 
+           :updatedBy="updatedBy" 
+                   :dateUpdated="update"
+        :currentStatus="currentStatus" 
+          v-model="showStatusModal"/>
   </big-dialog>
 </template>
 
@@ -240,6 +264,21 @@ import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 import IPractitioner from "@/types/IPractitioner";
 import FhirInput from "@/components/fhir-input.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/yelloweye.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import TimelineIcon from "@/components/icons/timeline.vue";
+import DangerIcon from "@/components/icons/danger.vue";
+import ShareIcon from "@/components/icons/share.vue";
+import CheckinIcon from "@/components/icons/newcheckin.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import CheckoutIcon from "@/components/icons/newcheckout.vue";
+import NewviewIcon from "@/components/icons/newview.vue";
+import MessageIcon from "@/components/icons/message.vue";
+import CalenderIcon from "@/components/icons/newcalender.vue";
+import SendIcon from "@/components/icons/send.vue";
+import StatusModal from "./status.vue";
 
 
 const patients = namespace("patients");
@@ -271,13 +310,28 @@ const emptyOtherrequest: IOtherrequest = {
   components: {
     ...CornieCard,
     CornieIconBtn,
+    DeleteIcon,
     NoteIcon,
     FhirInput,
+    EyeIcon,
+    EditIcon,
+    TimelineIcon,
     ArrowLeftIcon,
+    PlusIcon,
+    UpdateIcon,
+    ShareIcon,
+    StatusModal,
+    SendIcon,
+    CalenderIcon,
+    NewviewIcon,
+    DangerIcon,
+    CheckinIcon,
     EncounterSelect,
+    CheckoutIcon,
     Avatar,
     DatePicker,
     CDelete,
+    MessageIcon,
     RangeSlider,
     DEdit,
     CancelIcon,
@@ -315,6 +369,13 @@ export default class ViewReferral extends Vue {
   @otherrequest.Action
   getOtherrequestById!: (id: string) => IOtherrequest;
 
+@Prop({ type: String, default: '' })
+  updatedBy!: string
+  @Prop({ type: String, default: '' })
+  currentStatus!: string
+  @Prop({ type: String, default: '' })
+  dateUpdated!: string
+
  @patients.State
   patients!: IPatient[];
 
@@ -345,7 +406,8 @@ range="";
   openedS = true;
   openedM = false;
   showMedicationModal = false;
-
+  showStatusModal= false;
+requestId="";
 
 patient=[];
 practitioner=[];
@@ -403,6 +465,11 @@ get age() {
             ...pt
         }
     }
+
+       async showStatus(value:string){
+    this.showStatusModal = true;
+    this.requestId = value;
+  }
 async setRequestModel() {
      this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.otherrequest }));
   }

@@ -25,7 +25,7 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: true,
+    practitionerAuthenticated: false,
     domain: "",
   },
   getters: {
@@ -37,6 +37,10 @@ export default {
     },
     authPractitioner(state) {
       return state.cornieData?.practitioner;
+    },
+    authPractitionerDomain(state) {
+      const corniedata = localStorage.getItem('corniehealthdata') as string;
+      return JSON.parse(corniedata)?.authDomain
     },
   },
   mutations: {
