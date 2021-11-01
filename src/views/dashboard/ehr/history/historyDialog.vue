@@ -131,10 +131,8 @@
                           <input type="text"  disabled  :value="reasonReference" placeholder="Select" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
                           <span>
                            <plus-icon class="aadd text-danger fill-current"/>
-
                           </span>
-                  </input-desc-rounded>
-                        
+                  </input-desc-rounded>         
                  <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
               </div>
            </div>
