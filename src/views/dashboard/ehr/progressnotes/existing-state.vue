@@ -22,8 +22,6 @@
           New Progress Note
         </button>
       </span>
-      <p>ghghgh</p>
-      {{items}}
       <cornie-table :columns="headers" v-model="items">
        
       </cornie-table>

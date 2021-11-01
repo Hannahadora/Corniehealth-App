@@ -260,7 +260,7 @@ export default class Settings extends Vue {
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
       {
         name: "Progress Notes",
-        to: "/progress-notes-existing/",
+        to: "/progress-notes/",
         icon: "proceed-icon",
       },
       {

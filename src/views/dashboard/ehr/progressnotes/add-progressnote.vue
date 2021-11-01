@@ -707,7 +707,7 @@
           <assessment-select
             :patientId="patientId"
             v-model="stageAssessment"
-            label="Assessment"
+            label=""
           />
         </div>
         <cornie-text-area
@@ -1100,7 +1100,7 @@ export default class AddProgressNote extends Vue {
 
   stageSummary = "";
   stageType = "";
-  stageAssessment = "";
+  stageAssessment = {};
   stageNote = "";
 
   evidenceCode = "";

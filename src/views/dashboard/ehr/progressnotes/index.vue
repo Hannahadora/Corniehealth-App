@@ -27,7 +27,6 @@
       >
         Progress Notes
       </span>
-      <p>fdfdfd</p>{{items}}
       <span class="w-full">
         <empty-state v-if="items?.length <= 0" />
         <existing-state v-else :patient='patient' :patientId='patientId' :items="items" />
