@@ -135,6 +135,12 @@ export function groupData(data: IStat[], order: Order) {
   return weekToDay(datedData);
 }
 
+export const formatFullDate = (date: string | Date) => { //e.g 16th September, 2021, 15:00
+  // const dateAsDAte = new Date(date);
+  // const month: number = dateAsDAte.getMonth();
+  // return `${dateAsDAte.getDate()} - ${Months[month]}`;
+}
+
 export const formatDate = (date: string | Date) => {
   const dateAsDAte = new Date(date);
   const month: number = dateAsDAte.getMonth();
