@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="343px" title="Weight">
+  <chart-card height="338px" title="Weight">
      <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
     <canvas ref="registration_chart"></canvas>
   </chart-card>
@@ -28,8 +28,7 @@ export default class WeightChart extends Vue {
 
   chart!: Chart;
 
-  @Prop({ type: Number, default: 70 })
-  height!: number;
+  height = "643px";
 
   get chartData() {
     const data = groupData(this.raw, this.order);
@@ -66,7 +65,7 @@ export default class WeightChart extends Vue {
   mountChart() {
     const ctx: any = this.$refs.registration_chart;
     // ctx.height = this.height;
-        ctx.height = 95;
+     //   ctx.height = 95;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",

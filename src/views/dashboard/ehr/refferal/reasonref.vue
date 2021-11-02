@@ -58,7 +58,7 @@
                 <div class="overflow-y-auto h-96">
                     <div>
                         <div  v-if="conditionFilter">
-                             <div v-for="(input, index) in conditions" :key="index"> 
+                             <div v-for="(input, index) in clinicalMapper" :key="index"> 
                                     <div class="w-full mt-2 p-3  hover:bg-gray-100 cursor-pointer"  @click="getValue(input.code)">
                                         <div class="w-full">
                                             <div class="w-full">
@@ -184,6 +184,8 @@ import { Codeable } from "@/types/misc";
 import { useFHIRDefinition } from "@/composables/useFHIRDefinition";
 import { ICondition } from "@/types/ICondition";
 import Condition from "yup/lib/Condition";
+import { mapDisplay } from "@/plugins/definitions";
+import { string } from "yup/lib/locale";
 //const copy = (original) => JSON.parse(JSON.stringify(original));
 
 
@@ -216,9 +218,8 @@ export default class reasonreference extends Vue {
 
   @PropSync("modelValue")
   show!: boolean;
-// @Prop({ type: Array, default: [] })
-//   selected!: object;
 
+clinicalMapper= (code: string) => string;
 
 @Prop({ type: Array, default: [] })
   columns!: object;
@@ -226,18 +227,18 @@ export default class reasonreference extends Vue {
 @Prop({ type: Array, default: [] })
   preferred!: object;
 
-//   @Prop({ type: Array, default: [] })
-//   conditions!: object;
 
   @Prop({ type: Array, default: [] })
   allergy!: object;
 
 
   @Prop({ type: Object, required: true })
-  conditions!: ICondition;
+  conditions!: any;
 
        selected = 0;
+     
       localSrc = require('../../../../assets/img/placeholder.png');
+     clinicalStatus = "";
         check= false;
          check2 = false;
         check3 = {
@@ -260,42 +261,10 @@ export default class reasonreference extends Vue {
       type ="Condition";
       conditionFilter= true;
       allergyFilter = false;
-
-//   watch: {
-//     columns(val) {
-//       this.columnsProxy = copy(val);
-//     },
-//     visible() {
-//       const active = this.preferred.length > 0 ? this.preferred : this.columns;
-//       //this.columnsProxy = copy([...active]);
-        
-//     },
-//   },
-
-   
-    // show: {
-    //   get() {
-    //     return this.visible;
-    //   },
-    //   set(val) {
-    //     this.$emit("update:visible", val);
-    //   },
-    // },
-    
   get patientId() {
     return this.$route.params.id as string;
   }
 
-
-get item() {
-    return this.conditions || {};
-  }
- loadDefinitions() {
-    this.code.code = this.item?.code;
-  }
- code = setup(() =>
-    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-code")
-  );
     setValue(value:string) {
     if (value == "Condition") {
       this.conditionFilter = true;
@@ -319,14 +288,17 @@ get item() {
       this.selected = i;
     }
 
-    
 
-//   mounted() {
-//     this.columnsProxy = copy([...this.indexvalue]);
-//   }
-  created(){
-    this.loadDefinitions();
-   // this.setValue();
+ async created(){
+     const clinicalStatusMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/condition-code");
+     this.clinicalMapper = this.conditions.map((condition:any) => {
+      const clinicalStatus =  clinicalStatusMapper(condition.code)
+        return {
+        ...condition,
+        code: clinicalStatus
+        };
+    });
+    return this.clinicalMapper;
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="313px" title="Weight">
+  <chart-card height="338px" title="Weight">
      <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
     <canvas ref="chart"></canvas>
   </chart-card>

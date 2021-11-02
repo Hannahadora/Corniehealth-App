@@ -8,6 +8,8 @@
 import { Options, Vue } from "vue-class-component";
 import ChartCard from "./chart-card.vue";
 import Chart from "chart.js/auto";
+import { Prop, Watch } from "vue-property-decorator";
+
 @Options({
   name: "BloodChart",
   components: {
@@ -16,12 +18,18 @@ import Chart from "chart.js/auto";
 })
 export default class BloodChart extends Vue {
   chart!: Chart;
+  
+  // @Prop({ type: Number, default: 70 })
+  // height!: number;
+
+    height = "643px";
+
   mounted() {
     this.mountChart();
   }
   mountChart() {
     const ctx: any = this.$refs.chart;
-    ctx.height = 95;
+   // ctx.height = 95;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",

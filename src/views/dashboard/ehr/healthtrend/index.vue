@@ -96,6 +96,7 @@ const patients = namespace("patients");
 })
 
 export default class HealthIndex extends Vue {
+
 patient = {} as IPatient;
 
 
@@ -108,14 +109,12 @@ patient = {} as IPatient;
 
 
 async created (){
-  console.log('id3', this.patientId);
   this.patient = await this.findPatient(this.patientId)
-  console.log('fff1', this.patient)
 }
 
  
   get empty() {
-    return !this.patient;
+    return this.patientId == null;
   }
 
 };
