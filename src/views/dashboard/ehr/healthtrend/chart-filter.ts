@@ -134,3 +134,30 @@ export function groupData(data: IStat[], order: Order) {
   }
   return weekToDay(datedData);
 }
+
+export const formatFullDate = (date: string | Date) => { //e.g 16th September, 2021, 15:00
+  // const dateAsDAte = new Date(date);
+  // const month: number = dateAsDAte.getMonth();
+  // return `${dateAsDAte.getDate()} - ${Months[month]}`;
+}
+
+export const formatDate = (date: string | Date) => {
+  const dateAsDAte = new Date(date);
+  const month: number = dateAsDAte.getMonth();
+  return `${dateAsDAte.getDate()} - ${Months[month]}`;
+}
+
+
+export const sortListByDate = (list: any[]) => {
+  if (!list || list.length <= 0) return []
+  return list?.sort((a, b) => {
+    const date1: any = new Date(a.date);
+    const date2: any = new Date(b.date);
+    return date1 - date2;
+  })
+}
+
+export const getDatesAsChartLabel = (list: any[]) => {
+  const dates = new Set(list?.map(vital => formatDate(vital.date)));
+  return Array.from(dates);
+}

@@ -25,7 +25,7 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: false,
+    practitionerAuthenticated: true,
     domain: "",
   },
   getters: {
