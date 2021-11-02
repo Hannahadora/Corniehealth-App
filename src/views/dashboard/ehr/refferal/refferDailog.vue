@@ -104,7 +104,7 @@
                  <div class="w-full">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">requester</label>
                     <input-desc-rounded :info="''">
-                      <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                       <input :value="authPractitioner.firstName +' '+ authPractitioner.lastName" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
                     </input-desc-rounded>
                 </div>
                 <encounter-select
@@ -178,7 +178,17 @@
                   placeholder="--Select--"
                 >
                 </cornie-select> -->
-                <cornie-select
+                 <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">Request Reference</label>
+                    <input-desc-rounded  class="cursor-pointer">
+                          <input type="text"  disabled  :value="otherrequestModel.request.requestReference" placeholder="Select" class="cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer"  @click="showRef"/>
+                          </span>
+                  </input-desc-rounded>         
+                 <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
+              </div>
+                <!-- <cornie-select
                   class="required w-full"
                   :rules="required"
                   :items="['Condition','Observation','Diagnostic Report','Document Reference']"
@@ -186,7 +196,7 @@
                   label="request reference"
                   placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
                 <cornie-input label="supporting info"   class="w-full"   v-model="otherrequestModel.request.supportingInfo" placeholder="--Enter--" />
                 <!-- <fhir-input
                     reference="http://terminology.hl7.org/CodeSystem/v2-0487"
@@ -232,8 +242,8 @@
 <div class="grid grid-cols-2 gap-5 mt-5">
                  <cornie-input label="ratio (1st value)"     class="w-full"  v-model="otherrequestModel.request.ratio" placeholder="Enter" />
                   <cornie-input label="ratio (2nd value)"    class="w-full"   v-model="range" placeholder="Enter" />
-                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full -mt-3" label="occurence DATE" />
-                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full" label="occurence Period" />
+                <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full" label="Occurence Date" />
+                <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full -mt-1" label="occurence Period" />
                 <div class="w-full">
                     <label for="" class="w-full">
                         <span class="uppercase font-bold text-xs">occurence timing</span>
@@ -264,7 +274,7 @@
                 </div>
                    <cornie-select
                      v-if="PatientName.insurances.length === 0"
-                class="required w-full"
+                class="required w-full -mt-1"
                 :rules="required"
                 :items="['No Payment option for this patient']"
                   v-model="otherrequestModel.subject.paymentOption"
@@ -400,6 +410,12 @@
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
+    <reference-modal
+          :conditions="patientConditions"
+          :allergy="allergy"
+          @show:modal="showRef"
+          v-model="showRefModal"
+        />
 </template>
 
 <script lang="ts">
@@ -419,6 +435,7 @@ import MainCornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import NoteIcon from "@/components/icons/graynote.vue";
+import ReferenceModal from "./reasonref.vue";
 import { cornieClient } from "@/plugins/http";
 import DEdit from "@/components/icons/aedit.vue";
 import RangeSlider from "@/components/range.vue";
@@ -439,8 +456,11 @@ import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 import IPractitioner from "@/types/IPractitioner";
 import FhirInput from "@/components/fhir-input.vue";
+import { ICondition } from "@/types/ICondition";
+import plusIcon from "@/components/icons/plus.vue";
 
 
+const condition = namespace("condition");
 const patients = namespace("patients");
 const userStore = namespace("user");
 const otherrequest = namespace('otherrequest')
@@ -475,9 +495,11 @@ const emptyOtherrequest: IOtherrequest = {
     EncounterSelect,
     DatePicker,
     CDelete,
+    plusIcon,
     RangeSlider,
     DEdit,
     CancelIcon,
+    ReferenceModal,
     Measurable,
     InfoIcon,
     CornieDatePicker,
@@ -515,6 +537,12 @@ export default class Referral extends Vue {
  @patients.State
   patients!: IPatient[];
 
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  @condition.State
+  conditions!: { [state: string]: ICondition[] };
+
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
@@ -528,7 +556,11 @@ export default class Referral extends Vue {
   @otherrequest.Mutation
   setPatientRequests!: any;
 
+
+allergy=[];
 range="";
+reasonReference="";
+showRefModal = false;
   loading = false;
   expand = false;
   isVisible = "";
@@ -578,6 +610,9 @@ get age() {
     age: this.range,
     };
   }
+  get patientId() {
+    return this.$route.params.id as string;
+  }
 async setRequestModel() {
      this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.patientrequests }));
   }
@@ -603,7 +638,14 @@ get format() {
       this.selected = i;
     }
     
+     get patientConditions() {
+    return this.conditions[this.patientId] || [];
+  }
 
+async showRef(value:any){
+  this.showRefModal = true;
+  this.otherrequestModel.request.requestReference = value;
+}
 
     get newaction() {
     return this.id ? 'Update' : 'Save'
@@ -736,6 +778,12 @@ get allPerformer() {
     const response = await Promise.all([AllPractitioner]);
     this.practitioner = response[0].data;
   }
+    async fetchAllergy() {
+    const AllAllergy = cornieClient().get(`/api/v1/allergy/findAllByPatient/${this.patientId}`);
+    const response = await Promise.all([AllAllergy]);
+    this.allergy = response[0].data;
+  }
+
   
   async created() {
     this.setRequest();
@@ -744,6 +792,8 @@ get allPerformer() {
     this.fetchPracticeForms();
     this.fetchPatients();
     this.fetchAllPatients();
+    this.fetchPatientConditions(this.patientId);
+    this.fetchAllergy();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");
@@ -753,6 +803,12 @@ get allPerformer() {
 }
 </script>
 
-<style>
+<style scoped>
 
+.aadd{
+      float: right;
+    position: relative;
+    bottom: 30px;
+    margin-right: 10px;
+}
 </style>

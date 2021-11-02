@@ -8,12 +8,24 @@ interface Range {
   max: string;
 }
 
-interface OnSet {
+export interface Timeable {
+  id?: string;
   dateTime?: string;
   age?: string;
   period?: Period;
   range?: Range;
+  string?: string;
+  [state: string]: any;
+}
+
+interface OnSet extends Timeable {
   onsetString?: string;
+}
+
+interface IAbatement extends Timeable {
+  asserter: string;
+  practitionerId: string;
+  conditionId: string;
 }
 
 export interface IAssessment {
@@ -57,18 +69,6 @@ interface IOccurence {
   severity: "Mild" | "Moderate" | "Severe";
   exposureRoute: string;
   note: string;
-  practitionerId: string;
-  conditionId: string;
-}
-
-interface IAbatement {
-  id?: string;
-  dateTime?: string;
-  age?: string;
-  period?: Period;
-  range?: Range;
-  string?: string;
-  asserter: string;
   practitionerId: string;
   conditionId: string;
 }

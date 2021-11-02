@@ -8,12 +8,12 @@
     class="mb-5"
   >
     <div v-bind="$attrs">
-      <label class="block uppercase mb-1 text-xs font-bold">
+      <label class="block capitalize mb-1 text-sm text-black font-bold">
         {{ label }}
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
-        class="flex rounded-lg border"
+        class="flex   border-1 border-gray-300 rounded-md"
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
