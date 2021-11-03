@@ -14,7 +14,7 @@
       
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-        <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Request Info" v-model="opened" :opened="false">
+        <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Request Info" v-model="opened" :opened="true">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                    <fhir-input
@@ -120,7 +120,7 @@
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Participants" expand="true" v-model="opened" :opened="false">
                 <p class="text-gray-600 text-xs mt-5 mb-5 pb-3 italic border-b-2 border-dashed">Patient</p>
             <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-               <div class="w-full">
+               <div class="w-full mt-1">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">subject</label>
                     <input-desc-rounded :info="''">
                       <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
