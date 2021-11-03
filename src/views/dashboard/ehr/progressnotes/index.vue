@@ -91,6 +91,11 @@ export default class ProgressNotes extends Vue {
     return this.categories.find((s) => (s.code = cat))?.display;
   }
 
+  printStatus(condition : ICondition) {
+    const cat = condition.clinicalStatus?.replaceAll('"', "");
+    return cat;
+  }
+
 
   get items() {
     const items = this.patientProgressNotes.map((progress: any) => ({
@@ -99,7 +104,8 @@ export default class ProgressNotes extends Vue {
       identifier: "XXXXX",
       recorded: this.printRecorded(progress),
       condition: this.printCondition(progress.condition),
-      status: progress.clinicalStatus,
+      status: this.printStatus(progress.condition),
+      // status:history.basicInfo.status
       // code: this.printCode(condition.code),
       // severity: this.printSeverity(condition.severity),
       // clinicalStatus: this.stripQuote(condition.clinicalStatus),

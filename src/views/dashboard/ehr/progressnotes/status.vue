@@ -6,7 +6,7 @@
             <arrow-left-icon />
           </cornie-icon-btn>
           <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Update Statusss</h2>
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Updates Status</h2>
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
       </cornie-card-title>
@@ -18,7 +18,7 @@
               <cornie-input disabled label="Updated By" class="w-full mb-4" v-model="updatedBy"/>
               <cornie-input disabled label="Date Last Updated" class="w-full mb-4" v-model="dateUpdated"/>
           
-              <cornie-select :label="'New Status'" v-model="status"  :items="['Proposed','Pending','Booked','Arrived','Fullfiled','Cancelled','No show','Entered in Error','Cheked In','Waitlist']" style="width: 100%" />
+              <cornie-select :label="'New Status'" v-model="status" :items="['Pending', 'Active', 'Arrived', 'On-Hold','Revoked','Completed','Draft','Do Not Perform','Unknown','Entered-in-Error']" style="width: 100%" />
             </div>
           </div>
         </div>
@@ -36,7 +36,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-           Update
+           Status
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -74,12 +74,11 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import IAppointment from "@/types/IAppointment";
-import { namespace } from "vuex-class";
+import DateTimePicker from './date-time-picker.vue'
 
-const appointment = namespace("appointment");
+
 @Options({
-  name: "statusDialog",
+  name: "StatusModal",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -96,6 +95,7 @@ const appointment = namespace("appointment");
     CancelIcon,
     InfoIcon,
     CornieDialog,
+    DateTimePicker,
     SearchIcon,
     AccordionComponent,
     IconInput,
@@ -108,7 +108,7 @@ const appointment = namespace("appointment");
     MainCornieSelect
   },
 })
-export default class Medication extends Vue {
+export default class StatusModal extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -121,21 +121,17 @@ export default class Medication extends Vue {
    @Prop({ type: String, default: "" })
   currentStatus!: string;
 
+    @Prop({ type: Boolean, default: true })
+  showStatusModal!: boolean;  
+
   @Prop({ type: String, default: "" })
   dateUpdated!: string;
 
-  
-  @Prop({ type: Object })
-  appointments!: IAppointment;
+   @Prop({ type: String, default: "" })
+  conditionId!: string;
 
-
-  @appointment.Mutation
-  setPatientAppointment!: ({
-    appointments,
-  }: {
-    appointments: IAppointment[];
-  }) => Promise<void>;
-
+  @Prop({ type: String, default: "" })
+  patientId!: string;
 
 status = "";
   loading = false;
@@ -145,15 +141,14 @@ status = "";
 
   required = string().required();
 
- done() {
-    this.$emit("appointment-added");
-    this.show = false;
-  }
+
  async updateStatus() {
    const id = this.id;
-    const url = `/api/v1/appointment/${id}`;
+    const url = `/api/v1/progress-notes/${id}`;
     const body = {
        status: this.status,
+       conditionId: this.conditionId,
+       patientId: this.patientId
     }
     try {
       const response = await cornieClient().put(url, body);
@@ -163,14 +158,18 @@ status = "";
       }
    
     } catch (error) {
+      console.log(error);
         window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
   }
 
-
  
-  
+ 
+ done() {
+    this.$emit("medicationAdded");
+    this.show = false;
+  }
   async apply() {
     this.loading = true;
      await this.updateStatus()

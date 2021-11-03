@@ -11,7 +11,7 @@
       class="p-2 flex flex-row-reverse"
       style="margin-top: -30px"
     >
-      <div class="card">
+      <!-- <div class="card">
         <div class="p-2 m-1">
           <div class="p-3 flex justify-between p-1">
             <add-icon class="" />
@@ -22,7 +22,7 @@
             <p class="text-xs">Clinical Impression</p>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- <add-progres-note @click="addingProgressnote = true"  /> -->
@@ -48,13 +48,13 @@
         </div>
 
         <div class="grid grid-cols-2 text-center gap-3 mt-5">
-          <cornie-input v-model="complaint" label="Chief Complaint" />
+          <!-- <cornie-input v-model="complaint" label="Chief Complaint" />
           <condition-select
             :rules="required"
             v-model="MyConditions"
             label="Chief Complaint"
             :conditions="conditions"
-          />
+          /> -->
 
           <auto-complete
             v-bind="$attrs"
@@ -64,7 +64,7 @@
           >
             <template #item="{ item }">
               <div
-                @click="printId(item.id)"
+                @click="printId(item)"
                 class="w-full flex items-center my-1 justify-between"
               >
                 <div class="flex items-center">
@@ -90,18 +90,18 @@
               pointer-events-none
             "
           >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+            <!-- <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
               <path
                 d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
                 clip-rule="evenodd"
                 fill-rule="evenodd"
               ></path>
-            </svg>
+            </svg> -->
           </div>
         </div>
 
         <div class="relative text-gray-700">
-          <input
+          <!-- <input
             class="
               w-full
               h-10
@@ -116,7 +116,7 @@
             "
             type="text"
             placeholder="Regular input"
-          />
+          /> -->
           <div
             class="
               absolute
@@ -128,13 +128,13 @@
               pointer-events-none
             "
           >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+            <!-- <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
               <path
                 d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
                 clip-rule="evenodd"
                 fill-rule="evenodd"
               ></path>
-            </svg>
+            </svg> -->
           </div>
         </div>
 
@@ -144,10 +144,10 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mt-5">
-          <cornie-input v-model="status" label="Status" />
-          <cornie-input v-model="severity" label="Severity" />
-          <cornie-input v-model="onset" label="Onset" />
-          <cornie-input v-model="abatement" label="Abatement" />
+          <cornie-input v-model="myItem.id" label="Statuses" />
+          <cornie-input v-model="myItem.severity" label="Severity" />
+          <cornie-input v-model="myItem.onset" label="Onset" />
+          <cornie-input v-model="myItem.abatement" label="Abatement" />
 
           <cornie-input v-model="stage" label="Stage" />
 
@@ -181,8 +181,7 @@
           <h3 class="text-sm">Allergies</h3>
           <dots-horizontal-icon class="mr-7" />
         </div>
-
-        <div class="flex items-center justify-between mt-3 mb-5">
+        <div class="flex items-center justify-between mt-3 mb-5"  v-for="(item,index) in patientAllergy" :key="index">
           <div class="grid grid-cols-2 gap-2">
             <div class="grid grid-cols-2 gap-2">
               <p class="text-xs text-black font-bold">1. Asthma</p>
@@ -212,6 +211,40 @@
             </p>
           </div>
         </div>
+
+
+          <div class="flex items-center justify-between mt-3 mb-5">
+          <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <p class="text-xs text-black font-bold">1. Asthma</p>
+            </div>
+            <p class="text-xs text-gray-400">
+              Undergoing treatment for 5 years now
+            </p>
+          </div>
+          <div class="mr-3 mr-3">
+            <img
+              src="https://img.icons8.com/fluency-systems-regular/14/000000/menu-2--v1.png"
+            />
+            <img
+              src="https://img.icons8.com/fluency-systems-regular/14/000000/menu-2--v1.png"
+              style="margin-top: -4px"
+            />
+            <img
+              src="https://img.icons8.com/fluency-systems-regular/14/000000/menu-2--v1.png"
+              style="margin-top: -4px"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <p class="text-xs text-black font-bold">1. Peanut</p>
+            <p class="text-xs text-gray-400">
+              Undergoing treatment for 5 years now
+            </p>
+          </div>
+        </div>
+
+
 
         <div class="flex items-center justify-between mt-5">
           <h3 class="text-sm">Medications</h3>
@@ -296,42 +329,16 @@
 
         <div class="grid grid-cols-2 gap-3 mt-3">
           <div class="relative z-10 mt-5">
-            <!-- <div
-              class="
-                grid grid-cols-3
-                gap-40
-                w-full
-                justify-content-between
-                content-center
-              "
-            >
-              <p
-                class="text-xs text-black mb-2 font-bold"
-                :class="{ 'text-gray-900': width == 33.33 }"
-              >
-                Pain Scale
-              </p>
-            </div> -->
-
             <vue-slider v-model="value"></vue-slider>
 
-            <!-- <div class="relative pt-1 mt-5">
-            
-              <div>
-                <div class="flex items-center justify-between">
-                  <p class="text-xs font-semibold">0</p>
-                  <p class="text-xs font-semibold">100</p>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
-        <cornie-radio
+        <!-- <cornie-radio
           class="icon-check-mark3 bg-white rounded-full"
           label="ggg"
           modelValue="true"
           v-model="generalNormal"
-        />
+        /> -->
         <h3 class="text-sm font-bold">General WNL</h3>
         <ul class="flex">
           <li
@@ -700,15 +707,20 @@
         :opened="false"
       >
         <div class="p-2 flex flex-row-reverse">
-          <div class="p-3 flex justify-between p-1">
+          <!-- <div class="p-3 flex justify-between p-1">
             <add-icon class="p-1" />
             <p class="text-xs">Clinical Impression</p>
-          </div>
-          <assessment-select
+          </div> -->
+          <!-- <assessment-select
             :patientId="patientId"
             v-model="stageAssessment"
             label=""
           />
+           <referrer-select
+            :patientId="patientId"
+            v-model="stageAssessment"
+            label="dsdsds"
+          /> -->
         </div>
         <cornie-text-area
           rows="4"
@@ -723,8 +735,7 @@
         title="Plan"
         :opened="false"
       >
-        <add-icon />
-
+        <!-- <add-icon /> -->
         <div class="grid grid-cols-2 gap-3 mt-3">
           <!-- <cornie-input
             v-model="stageChiefComplaint"
@@ -750,6 +761,13 @@
             label="Reference Encounter"
             @click="printEncounterId(referenceEncounter)"
           />
+
+           <referrer-select
+            v-model="referenceEncounter2"
+            label="Referral Request"
+            @click="printEncounterId(referenceEncounter2)"
+          />
+
 
 
 
@@ -902,6 +920,11 @@ import { Codeable } from "@/types/misc";
 import { printPractitioner } from "@/plugins/utils";
 import Condition from "yup/lib/Condition";
 import { IClinicalImpression } from "@/types/ClinicalImpression";
+import ReferrerSelect from "./referrer-select.vue";
+
+import  IAllergy  from "@/types/IAllergy";
+
+
 
 
 
@@ -914,6 +937,8 @@ import IEncounter from "@/types/IEncounter";
 
 const request = namespace("request");
 const otherrequest = namespace("otherrequest");
+const allergy = namespace("allergy");
+
 
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
@@ -987,27 +1012,17 @@ const emptyRequest: IRequest = {
 
     CornieRadio,
     ConditionSelect,
+    ReferrerSelect
 
     // CustomRangeSlider
 
     // VueSlider
   },
 })
-export default class AddProgressNote extends Vue {
-
-
-  // encounters: IEncounter[] = [];
-
-  
+export default class AddProgressNote extends Vue { 
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<ICondition>;
 
-  // conditions!: ICondition;
-  //  general!: {
-  //    Normal: "",
-  //    Abnormal: "",
-  //    Note: ""
-  //  };
 
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
@@ -1031,11 +1046,6 @@ export default class AddProgressNote extends Vue {
 
   @vital.Action
   getEncounters!: (patientId: string) => Promise<void>;
-
-
-
-//  request: IRequest = emptyRequest;
-
   
   @request.State
   requests!: any[];
@@ -1046,8 +1056,12 @@ export default class AddProgressNote extends Vue {
   @request.Action
   fetchRequests!: () => Promise<void>;
 
-  @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+  // @otherrequest.Action
+  // fetchOtherrequests!: () => Promise<void>;
+
+   @otherrequest.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+
 
   @request.State
   patients!: any[];
@@ -1065,7 +1079,12 @@ export default class AddProgressNote extends Vue {
       this.selected = i;
     }
 
+@allergy.Action
+  getAllergyById!: (id: string) => IAllergy
+
   rawClinicalImpressions: IClinicalImpression[] = [];
+
+  patientAllergy: any = [];
 
   addingProgressnote = false;
   meConditions!: [];
@@ -1088,6 +1107,8 @@ export default class AddProgressNote extends Vue {
   code = "";
   bodySite = "";
   referenceEncounter = "";
+  referenceEncounter2 = "";
+
 
   asserter = "";
   theCondition = "";
@@ -1100,12 +1121,17 @@ export default class AddProgressNote extends Vue {
 
   stageSummary = "";
   stageType = "";
-  stageAssessment = {};
+  stageAssessment: any = {};
   stageNote = "";
 
   evidenceCode = "";
   evidenceDetail = "";
   evidenceNote = "";
+  // item: any = {};
+
+   item = {} as ICondition;
+
+  // patientProgressNotes = [] as IProgressnote[];
 
   async loadDropdown() {
     this.categories = await categories();
@@ -1123,6 +1149,12 @@ export default class AddProgressNote extends Vue {
   @Watch("authPractitioner")
   practitionerChanged() {
     this.setAsserter();
+  }
+
+  
+@Watch('id')
+  idChanged() {
+    this.setAllergy()
   }
 
   async setAsserter() {
@@ -1146,6 +1178,9 @@ export default class AddProgressNote extends Vue {
 
   _categories = [] as Codeable[];
 
+   @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
+
   get patientConditions() {
     return this.conditions[this.patientId] || [];
   }
@@ -1167,18 +1202,60 @@ export default class AddProgressNote extends Vue {
     return severities.find((s) => s.code == severity)?.display || "";
   }
 
-  printId(id: string) {
-    return (this.myId = id);
-    //  this.items.find((s) => s.id == id) || "";
+  printId(  item = {} as ICondition) {
+    console.log("dddd", this.newitem);
+    this.myId = item.id;
+    this.myItem = this.newitem;
+    // // const uuu =  this.items.find((s) => s.id == item.id) || "";
+    return this.myItem;
   }
   enc: any = [];
   printEncounterId(id: string) {
-    // return console.log(id, 'ggggge');
-    // const enc: any = [];
-    return this.enc.push(id);
+    this.enc.push(id);
+    console.log("push", this.enc);
+
+const newArr = this.enc.filter(function(entry: any) { return entry.trim() != ''; })
+// var filtered = this.enc.filter(function (el: any) {
+//   return el != null;
+// });
+
+console.log("filtered", newArr);
+    return newArr;
   }
 
+    referrers: any = [];
+
+async setAllergy() {
+    const allergy = await this.getAllergyById(this.id)
+    if (!allergy) return
+    this.clinicalStatus = allergy.clinicalStatus
+    this.verificationStatus = allergy.verificationStatus
+    // this.type = allergy.type
+    //  this.category = allergy.category
+    // this.criticality = allergy.criticality
+    // this.code = allergy.code
+    // this.onSet = allergy.onSet
+    // this.reaction = allergy.reaction  
+  }
   get items() {
+    const items = this.patientConditions.map((condition) => ({
+      ...condition,
+      original: condition,
+      identifier: "XXXXX",
+      recorded: this.printRecorded(condition),
+      category: this.printCategory(condition.category),
+      code: this.printCode(condition.code),
+      severity: this.printSeverity(condition.severity),
+      // clinicalStatus: this.stripQuote(condition.clinicalStatus),
+      recorder: {
+        name: printPractitioner(condition.practitioner!!),
+        department: condition.practitioner!!.department,
+      },
+    }));
+    return items;
+  }
+
+   get items2() {
     const items = this.patientConditions.map((condition) => ({
       ...condition,
       original: condition,
@@ -1199,6 +1276,11 @@ export default class AddProgressNote extends Vue {
   get theid() {
     const id = this.patientId;
     return id;
+  }
+
+  get newitem() {
+    const uuitem = this.patientConditions[0];
+    return uuitem;
   }
 
   printEncounterPractioner(encounter: any) {
@@ -1222,24 +1304,6 @@ export default class AddProgressNote extends Vue {
     return {
       asserter: this.asserter,
     };
-  }
-
-  buildPeriod(
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string
-  ) {
-    const start = this.buildDateTime(startDate, startTime);
-    const end = this.buildDateTime(endDate, endTime);
-    return { start, end };
-  }
-  buildDateTime(dateString: string, time: string) {
-    const date = new Date(dateString);
-    const [hour, minute] = time.split(":");
-    date.setMinutes(Number(minute));
-    date.setHours(Number(hour));
-    return date.toISOString();
   }
 
   get generals() {
@@ -1276,7 +1340,8 @@ export default class AddProgressNote extends Vue {
       note: "",
     };
   }
-  myId = "";
+  myItem: any = {};
+  myId: any = "";
   sliderMax = "";
   topClick = false;
   showColumnFilter = false;
@@ -1365,8 +1430,6 @@ otherupdate="";
     if (this.selectedStatus === 3) return requests.filter((i) => i.status !== "Stopped" && i.status !== "On-Hold");
 
     return requests;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
   }
 
    getPatientName(id: string) {
@@ -1416,72 +1479,20 @@ getPractitionerName(id: string){
     data.patientId = this.patientId;
     data.conditionId = this.myId;
     data.diagnosticsResults = this.enc.length ? this.enc : [];
-    //  diagnosticRequests
-    // data.printEncounterId();
-    return data;
-    //       // encounterId: this.referenceEncounter,
-    //       // clinicalStatus: this.clinicalStatus,
-    //       // verificationStatus: this.verificationStatus,
-    //       "conditionId": this.myId,
-    //       // painScale: this.painScale,
-    // // var a = (condition) ? expr1 : expr2;
-    //       "general": this.generals.note ? this.generals : null,
-    //       "heent": this.heent,
-    //       "skin": this.skin,
-    //       "extremities": this.extremities,
-    //       "neck": this.neck,
 
-    //       // type: this.stageType,
-    //       // category: this.category,
-    //       // summary: this.stageSummary,
-    //       // detail: this.evidenceDetail,
-    //       // notes: this.stageNote,
-    //       // bodySite: this.bodySite,
-    //       // subject: "patient",
-    //       // assesment: "",
-    //       // severity: this.severity,
-    //       // evidenceNote: this.evidenceNote,
-    //       // onset: this.onset,
-    //       // abatement: this.abatement,
+    return data;
   }
 
-  // async submit() {
-  //   const { valid } = await (this.$refs.form as any).validate();
-  //   if (!valid) return;
-  //   try {
-  //     const { data } = await cornieClient().post(
-  //       "/api/v1/condition",
-  //       this.payload
-  //     );
-  //     window.notify({ msg: "Condition created", status: "success" });
-  //   } catch (error) {
-  //     window.notify({ msg: "Condition not created", status: "error" });
-  //   }
-  // }
 
   async submit() {
     console.log("payload", this.payload2);
+    console.log("request", this.requests);
     console.log("conditionId", this.payload2.conditionId);
+    console.log("push", this.enc);
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
       return console.log("form is invalid");
     }
-
-    // try {
-    //     const { data } = await cornieClient().post(`/api/v1/participants/`, {
-    //         careTeamId: team.id,
-    //         role: 'practitioner',
-    //         practitionerId: practitioneData.id,
-    //         name: practitioneData.name,
-    //         reasonCode:"109006 ",
-    //     });
-    //     if (data?.id) window.notify({ msg: "Added to care team successfully", status: "success" });
-    //     return data;
-
-    // } catch (error) {
-    //     console.log(error);
-    //     window.notify({ msg: "Error adding to care team", status: "error" });
-    // }
     try {
       const { data } = await cornieClient().post(
         "/api/v1/progress-notes",
@@ -1494,11 +1505,6 @@ getPractitionerName(id: string){
       console.log("error", error);
     }
   }
-
-  // created() {
-  //   this.loadDropdown();
-  //   this.setAsserter();
-  // }
 
     async fetchClinicalImpressions() {
     try {
@@ -1513,9 +1519,20 @@ getPractitionerName(id: string){
       });
     }
   }
-
-
-
+  async fetchReferrer() {
+    try {
+      const { data } = await cornieClient().get(
+        `/other-requests/findByPatientSubject/all/${this.patientId}`
+      );
+      this.referrers = data || [];
+      console.log('refereee', this.referrers);
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching referrers for patient",
+        status: "error",
+      });
+    }
+  }
   async created() {
     //   if (Object.keys(this.conditions).length < 1)
     //     this.fetchPatientConditions(this.patientId);
@@ -1526,24 +1543,28 @@ getPractitionerName(id: string){
     if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
     // this.fetchPatientConditions(this.patientId);
     console.log(this.encounters, "Encounters");
-
     this.loadDropdown();
     this.setAsserter();
 
     // if (!this.patients || this.patients.length === 0) await this.getPatients();
-    if (!this.requests || this.requests.length === 0) await this.fetchRequests();
-     if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
+    // if (!this.requests || this.requests.length === 0) await this.fetchRequests();
+    //  if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
+          // if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequestsById(this.patientId);
+
+     
     // if (!this.requests || this.requests.length === 0) await this.getPatients();
     // window.addEventListener('click', (e: any) => {
     //   if (!e.target.classList.contains('md')) {
     //     this.filterStatus = false;
     //   }
     // })
-          // console.log('request', requests);
               this.fetchClinicalImpressions();
-              // this.fetchProgressnotes();
-
-
+    this.fetchReferrer();
+        if (!this.fetchAllergys || this.fetchAllergys.length === 0) 
+        {
+         const patientAllergy = await this.fetchAllergys(this.patientId);
+         return this.patientAllergy = patientAllergy;
+        }
   }
 }
 </script>
