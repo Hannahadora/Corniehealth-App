@@ -5,25 +5,47 @@
           class=""
           >
         <v-form ref="form">
-          <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" v-model="openedS">
+          <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" :opened="true">
                 <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
-                    <main-cornie-select
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergyintolerance-clinical"
+                     class="w-full"
+                      v-model="clinicalStatus"
+                    label="clinical status"
+                     placeholder="Select"
+                />
+                    <!-- <main-cornie-select
                     class="w-full"
                     :items="['Active','Inactive','Resolved']"
                     v-model="clinicalStatus"
                     label="clinical status"
                      placeholder="Select"
                     >
-                    </main-cornie-select>
-                    <cornie-select
+                    </main-cornie-select> -->
+                     <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergyintolerance-verification"
+                     class="w-full"
+                      label="verification status"
+                      v-model="verificationStatus"
+                      placeholder="Select"
+                />
+                    <!-- <cornie-select
                     class="w-full"
-                      :items="['Unconfirmed','Presumed','Confirmed','Refuted','Entered in Error']"
+                      :items="['Unconfirmed','Confirmed','Refuted','Entered in Error']"
                       label="verification status"
                       v-model="verificationStatus"
                       placeholder="Select"
                     >
-                    </cornie-select>
-                    <main-cornie-select
+                    </cornie-select> -->
+                      <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
+                     class="required w-full"
+                      v-model="type"
+                      label="type"
+                      placeholder="Select"
+                />
+
+                    <!-- <main-cornie-select
                     class="required w-full"
                       :rules="required"
                       :items="['Allergy','Intolerance']"
@@ -31,8 +53,15 @@
                       label="type"
                       placeholder="Select"
                     >
-                    </main-cornie-select>
-                    <cornie-select
+                    </main-cornie-select> -->
+                      <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
+                     class="required w-full"
+                     v-model="category"
+                      label="category"
+                    placeholder="Select"
+                />
+                    <!-- <cornie-select
                     class="required w-full"
                       :rules="required"
                       :items="['Food','Medication','Environment','Biologic',]"
@@ -40,8 +69,15 @@
                       label="category"
                     placeholder="Select"
                     >
-                    </cornie-select>
-                    <cornie-select
+                    </cornie-select> -->
+                       <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
+                     class="required w-full"
+                     label="criticality"
+                      v-model="criticality"
+                    placeholder="Select"
+                />
+                    <!-- <cornie-select
                     class="required w-full"
                       :rules="required"
                       :items="['Low Risk','High Risk','Unable to Assess Risk',]"
@@ -49,8 +85,15 @@
                       v-model="criticality"
                     placeholder="Select"
                     >
-                    </cornie-select>
-                    <cornie-select
+                    </cornie-select> -->
+                        <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
+                     class="required w-full"
+                     label="code"
+                      v-model="code"
+                    placeholder="Select"
+                />
+                    <!-- <cornie-select
                     class="required w-full"
                       :rules="required"
                       :items="['Hemoglobin Okaloosa','Ornithine racemase','Ferrocyanide salt','Berberine','Heptachlor','Coumachlor','Hemoglobin Nagoya','Nitrilase','	Free protein S','Guanosine']"
@@ -58,7 +101,7 @@
                       v-model="code"
                     placeholder="Select"
                     >
-                    </cornie-select>
+                    </cornie-select> -->
                   <div>
                      <encounter-select
                       class="w-full"
@@ -74,160 +117,6 @@
                 <div class="w-full mt-5 pb-5">
                    <timeable-picker v-model="onsettimeable" class="w-full" label="Deceased Date/Age" />
                     <measurable v-model="onsetmeasurable" class="w-full" label="Deceased Range/String" />
-                    <!-- <div class="grid grid-cols-2 gap-4 ">
-                      <div class="w-full mb-5">
-                        <DateTimePicker :label="'Onset date/time'" class="z-10 w-full">
-                                    <template v-slot:labelicon>
-                                      <question-icon />
-                                    </template>
-                                    <template #date>
-                                      <span>
-                                        <span>
-                                          {{
-                                            new Date(
-                                              data.onsetDate ?? Date.now(),
-                                            ).toLocaleDateString()
-                                          }}
-                                        </span>
-                                      </span>
-                                    </template>
-                                    <template #time>
-                                      <span>
-                                        <span>{{ data.onsetTime }}</span>
-                                      </span>
-                                    </template>
-                                    <template #input>
-                                      <v-date-picker
-                                        v-model="data.onsetDate"
-                                        style="
-                                          position: relative;
-                                          z-index: 9000;
-                                          width: 100%;
-                                        "
-                                      ></v-date-picker>
-                                      <label class="block uppercase my-1 text-xs font-bold">
-                                        Time
-                                      </label>
-                                      <input
-                                        v-model="data.onsetTime"
-                                        type="time"
-                                        class="w-full border rounded-md p-2"
-                                      />
-                                    </template>
-                                  </DateTimePicker>
-                      </div>
-                      <cornie-input label="onset age" class="mb-5 w-full"  v-model="onSet.onsetAge" />
-                    </div>
-
-                    <div class="mb-5">
-                      <span class="uppercase text-danger mt-4 font-bold text-xs">onset Period</span>
-                      <div class="grid grid-cols-2 gap-4 w-full">
-                          <div class="w-full mt-5">
-                              <DateTimePicker :label="'start DATE & Time'" class="z-10 w-full">
-                                  <template v-slot:labelicon>
-                                    <question-icon />
-                                  </template>
-                                  <template #date>
-                                    <span>
-                                      <span>
-                                        {{
-                                          new Date(
-                                            data.startDate ?? Date.now(),
-                                          ).toLocaleDateString()
-                                        }}
-                                      </span>
-                                    </span>
-                                  </template>
-                                  <template #time>
-                                    <span>
-                                      <span>{{ data.startTime }}</span>
-                                    </span>
-                                  </template>
-                                  <template #input>
-                                    <v-date-picker
-                                      v-model="data.startDate"
-                                      style="
-                                        position: relative;
-                                        z-index: 9000;
-                                        width: 100%;
-                                      "
-                                    ></v-date-picker>
-                                    <label class="block uppercase my-1 text-xs font-bold">
-                                      Time
-                                    </label>
-                                    <input
-                                      v-model="data.startTime"
-                                      type="time"
-                                      class="w-full border rounded-md p-2"
-                                    />
-                                  </template>
-                                </DateTimePicker>
-                          </div>
-                          <div class="w-full mt-5">
-                              <DateTimePicker :label="'end DATE & Time'" class="w-full">
-                                <template v-slot:labelicon>
-                                  <question-icon />
-                                </template>
-                                <template #date>
-                                  <span>
-                                    {{
-                                      new Date(
-                                        data.endDate ?? Date.now(),
-                                      ).toLocaleDateString()
-                                    }}
-                                  </span>
-                                </template>
-                                <template #time>
-                                  <span>{{ data.endTime }}</span>
-                                </template>
-                                <template #input>
-                                  <v-date-picker
-                                    name="eeee"
-                                    v-model="data.endDate"
-                                    style="z-index: 9000; width: 100%;"
-                                  ></v-date-picker>
-                                  <label class="block uppercase my-1 text-xs font-bold">
-                                    Time
-                                  </label>
-                                  <input
-                                    v-model="data.endTime"
-                                    type="time"
-                                    class="w-full border rounded-md p-2"
-                                  />
-                                </template>
-                              </DateTimePicker>
-                          </div>
-                      </div>
-                    </div> -->
-                    <!-- <div class="grid grid-cols-2 gap-4">
-                         <cornie-input label="onset range (1st value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
-                         <cornie-input label="onset range (2nd value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
-                    </div> -->
-                      <div class="grid grid-cols-2 gap-4">
-                        <!-- <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
-                        <div class="mb-5">
-                            <label for="ecounter" class="flex uppercase text-black text-xs font-bold">recorded date
-                              <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                          </label>
-                            <date-picker  placeholder="autofill" v-model="onSet.recordedDate" class="w-full mb-5 required"
-                            :rules="required">
-                            </date-picker>
-                        </div> -->
-
-                        <!-- <div class="mb-3">
-                            <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">recorder
-                              <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                            </label>
-                         
-                            <input
-                            class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            disabled
-                            :value="onSet.recorder"
-                          />
-                        </div> -->
-
-                       </div>
-  
                         <div class="flex pt-5 mt-4 border-t-2">
                             <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">add asserter</p>
                             <label class="switch">
@@ -321,8 +210,14 @@
           </accordion-component>
           <accordion-component class="shadow-none rounded-none  border-none  text-primary" title="Reaction" v-model="openedS">
                 <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
-                
-                    <cornie-select
+                 <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/substance-code"
+                     class="required w-full"
+                      label="substance"
+                      v-model="reaction.substance"
+                      placeholder="select"
+                />
+                    <!-- <cornie-select
                       class="required w-full mb-2"
                       :rules="required"
                       :items="['Hemoglobin Okaloosa','	Ferrocyanide salt','Berberine','Blood group antigen IH','Heptachlor','Coumachlor','	Codeine phosphate','Arsenic-76','Enzyme variant','Fibrinogen San Juan','Acylcarnitine hydrolase','Immunoglobulin pentamer','Carminic acid','Vegetable textile fiber','Nitrilase','Free protein S','Guanosine','Hemoglobin Jianghua','	2-oxoglutarate synthase','Oil of calamus','	Coal tar extract','Lytic antibody','Urethan','Carbamate kinase']"
@@ -330,15 +225,22 @@
                       v-model="reaction.substance"
                       placeholder="select"
                     >
-                    </cornie-select>
-                    <cornie-select
+                    </cornie-select> -->
+                       <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/clinical-findings"
+                     class="w-full mb-2"
+                      label="manifestation"
+                      v-model="reaction.manifestation"
+                      placeholder="select"
+                />
+                    <!-- <cornie-select
                     class="w-full mb-2"
                       :items="['Clinical finding','Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','Spontaneous abortion with laceration of cervix','Homoiothermia','Decreased hair growth','Chronic pharyngitis','Normal peripheral vision','Superficial foreign body of scrotum without major open wound but with infection','Abnormal bladder continence','	Gonococcal meningitis','Severe manic bipolar I disorder without psychotic features','	Accident-prone']"
                       label="manifestation"
                       v-model="reaction.manifestation"
                       placeholder="select"
                     >
-                    </cornie-select>
+                    </cornie-select> -->
                     <cornie-input label="description" class="mb-5 mt-2 w-full" placeholder="enter"   v-model="reaction.description" />
                     <div class="mb-5">
                        <date-time-picker
@@ -348,41 +250,6 @@
                             width="w-11/12"
                             class="required"
                           />
-                        <!-- <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">ONSET
-                          <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                        </label>
-                        <DateTimePicker class="w-full">
-                                <template v-slot:labelicon>
-                                  <question-icon />
-                                </template>
-                                <template #date>
-                                  <span>
-                                    {{
-                                      new Date(
-                                        data.reactionDate ?? Date.now(),
-                                      ).toLocaleDateString()
-                                    }}
-                                  </span>
-                                </template>
-                                <template #time>
-                                  <span>{{ data.reactionTime }}</span>
-                                </template>
-                                <template #input>
-                                  <v-date-picker
-                                    name="eeee"
-                                    v-model="data.reactionDate"
-                                    style="z-index: 9000; width: 100%;"
-                                  ></v-date-picker>
-                                  <label class="block uppercase my-1 text-xs font-bold">
-                                    Time
-                                  </label>
-                                  <input
-                                    v-model="data.reactionTime"
-                                    type="time"
-                                    class="w-full border rounded-md p-2"
-                                  />
-                                </template>
-                              </DateTimePicker> -->
                       </div>
                     <div class="mb-2">
                       <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold">SEVERITY
@@ -414,7 +281,14 @@
                         />
                       </div>
                     </div>
-                      <cornie-select
+                     <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/route-codes"
+                     class="w-full mb-2"
+                       label="Exposure Route"
+                        v-model="reaction.exposureRoute"
+                        placeholder="select"
+                />
+                      <!-- <cornie-select
                         class="required w-full mb-2"
                         :rules="required"
                         :items="['Route of administration values','Topical route','Otic route','Intra-articular route','Per vagina','Oral route','Subcutaneous route','Per rectum','Intraluminal route','Sublingual route','Intraperitoneal route','Transdermal route','Nasal route','Intravenous route','Buccal route','Ophthalmic route','Intra-arterial route','Intramedullary route','Intrauterine route','Intrathecal route','Intramuscular route','Urethral route','Gastrostomy route','Jejunostomy route','Nasogastric route','Dental use','Endocervical use','Endosinusial use','Endotracheopulmonary use','Extra-amniotic use','Gastroenteral use','Gingival use','Intraamniotic use','Intrabursal use','Intracardiac use','Intracavernous use','Intracervical route','Intracoronary use','Intradermal use']"
@@ -422,7 +296,7 @@
                         v-model="reaction.exposureRoute"
                         placeholder="select"
                       >
-                      </cornie-select>
+                      </cornie-select> -->
                   </div>
                       <div>
                         <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Note</label>
@@ -481,7 +355,7 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/datepicker.vue";
 import Period from "@/types/IPeriod";
-import { IPatient, Practitioner, Provider } from "@/types/IPatient";
+import FhirInput from "@/components/fhir-input.vue";
 import { IOrganization } from "@/types/IOrganization";
 import IAllergy ,{ OnSet,Reaction } from "@/types/IAllergy";
  import IPractitioner from "@/types/IPractitioner";
@@ -538,6 +412,7 @@ const emptyReaction: Reaction = {
     ArrowLeftIcon,
     DatePicker,
     RangeSlider,
+    FhirInput,
     DEdit,
     BigDialog,
     CDelete,

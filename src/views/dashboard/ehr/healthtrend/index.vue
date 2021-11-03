@@ -1,7 +1,7 @@
 <template>
-  <empty-state v-if="false" />
+  <!-- <empty-state v-if="false" /> -->
   <!-- <empty-state v-if="empty" /> -->
-  <existing-state v-else />
+  <existing-state />
 </template>
 
 <script lang="ts">
@@ -20,7 +20,6 @@ import BloodChartt from "./bloodChartt.vue";
 import WeightChartt from "./weight-chartt.vue";
 
 import MedicationCard from "./medicationCard.vue";
-import MedicationCardd from "./medicationCardd.vue";
 
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
@@ -33,11 +32,9 @@ import HistoryCard from "./historyCard.vue";
 
 //for the empty state
 import conditionCardd from "./conditionCardd.vue";
-import AllergyCardd from "./allergyCardd.vue";
 import DiagnosticCardd from "./diagnosticCardd.vue";
 import ProcedureCardd from "./procedureCardd.vue";
 import NoteCardd from "./noteCardd.vue";
-import AppointmentCardd from "./appointmentCardd.vue";
 import HistoryCardd from "./historyCardd.vue";
 
 
@@ -74,11 +71,9 @@ const patients = namespace("patients");
     WeightChartt,
     AppointmentChart,
     MedicationCard,
-    MedicationCardd,
     conditionCard,
     conditionCardd,
     AllergyCard,
-    AllergyCardd,
     DiagnosticCard,
     DiagnosticCardd,
     ProcedureCard,
@@ -86,7 +81,6 @@ const patients = namespace("patients");
     NoteCard,
     NoteCardd,
     AppointmentCard,
-    AppointmentCardd,
     HistoryCard,
     HistoryCardd,
 

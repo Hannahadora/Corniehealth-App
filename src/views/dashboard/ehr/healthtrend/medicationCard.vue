@@ -8,7 +8,7 @@
         <p class="mt-8 text-sm text-gray-500 text-center">No Medications</p>
     </div>
    <div class="w-full grid grid-cols-1 gap-y-4" v-else>
-      <div class="w-full flex justify-between pb-2 border-b" v-for="(input, index) in medicationMapper" :key="index">
+      <div class="w-full flex justify-between pb-2 border-b" v-for="(input, index) in items" :key="index">
             <div class="w-full flex space-x-2 items-center">
               <drug-icon />
               <div class="text-xs flex flex-col">
@@ -81,7 +81,7 @@ const request = namespace("request");
 export default class MedicationCard extends Vue {
   
   photo = require("@/assets/img/avatar.png");
-  medicationMapper = (code: string) => string;
+   medicationMapper = (code:string) => ""
   dosageInstructions="";
     
   @request.State
@@ -101,23 +101,30 @@ export default class MedicationCard extends Vue {
        return this.$route.params.id as string;
      }
 
+   get sortMedications (){
+        return this.items.slice().sort(function(a:any, b:any){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
+   
    get totalMedication(){
       return this.patientrequests.length
     }
     oldclinicalStatus="";
 
-  async created(){
-     await this.fetchOtherrequestsById(this.patientId);
-       const medicaitonCodeMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/medication-codes");
-     this.medicationMapper  = this.newmedicationrequest.map((medication:any) => {
+async createMapper(){
+        this.medicationMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/medication-codes");
+    }
+
+get items(){
+     const newmedicationrequest  = this.newmedicationrequest.map((medication:any) => {
        medication.Medications.map((codeme:any) =>{
-         const clinicalStatus =  medicaitonCodeMapper(codeme.medicationDetails.medicationCode)
-         this.oldclinicalStatus = clinicalStatus as string;
+        this.oldclinicalStatus =  this.medicationMapper(codeme.medicationDetails.medicationCode)
          this.dosageInstructions = codeme.medicationDetails.dosageInstruction;
 
           return{
             ...codeme,
-            medicationCode: clinicalStatus
+            medicationCode: this.oldclinicalStatus
           }
        });
         return {
@@ -127,8 +134,12 @@ export default class MedicationCard extends Vue {
 
         };
     });
-    return this.medicationMapper;
+    return newmedicationrequest;
   
+}
+  async created(){
+    await this.createMapper();
+     await this.fetchOtherrequestsById(this.patientId);  
   }
 
 }

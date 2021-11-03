@@ -243,7 +243,7 @@
                                     :rules="required"
                                     v-model="medicationsDetail.medicationDetails.dosageInstruction"
                                     label="dosage instruction"
-                                    placeholder="--Enter--"
+                                    placeholder="e.g 2 x Daily"
                                 >
                                 </cornie-input>
                                 <cornie-input
@@ -524,7 +524,9 @@ import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 import FhirInput from "@/components/fhir-input.vue";
 import IPractitioner from "@/types/IPractitioner";
-import InputDescRounded from "./components/input-desc-rounded.vue"
+import InputDescRounded from "./components/input-desc-rounded.vue";
+import ReferenceModal from "@/views/dashboard/ehr/refferal/reasonref.vue";
+
 const userStore = namespace("user");
 
 const request = namespace('request')

@@ -32,7 +32,7 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white ">
-                  <tr  class="border-b-2 border-gray-100" v-for="(input, index) in items" :key="index">
+                  <tr  class="border-b-2 border-gray-100" v-for="(input, index) in sortAppointments" :key="index">
                     <td class="px-1 py-1 whitespace-nowrap">
                       <div class="flex items-center">
                         <div class="flex-shrink-0 h-10 w-10">
@@ -168,6 +168,11 @@ locationId ="";
   return this.patientappointments.slice(0, 3) 
   }
 
+ get sortAppointments (){
+        return this.items.slice().sort(function(a:any, b:any){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
       get items() {
         const filteritems =  this.patientappointments.filter((c) => c !== null);
         const newappointment = filteritems.slice(0, 3) 
