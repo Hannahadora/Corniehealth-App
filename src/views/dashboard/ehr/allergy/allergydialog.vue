@@ -12,6 +12,7 @@
                     :items="['Active','Inactive','Resolved']"
                     v-model="clinicalStatus"
                     label="clinical status"
+                     placeholder="Select"
                     >
                     </main-cornie-select>
                     <cornie-select
@@ -63,42 +64,17 @@
                       class="w-full"
                         v-model="encounter"
                       :rules="required"
+                       placeholder="Select Encounter"
                       label="Reference Encounter"
                     />
-                      <!-- <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">encounter
-                        <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                      </label>
-                        <div class="w-full flex space-x-4 mb-3">
-                        <cornie-radio
-                          v-bind:value="'Days'"
-                          label="xxxxxx"
-                          class="text-xs"
-                          name="request"
-                          id="pickup"
-                          v-model="encounter"
-                        />
-                        <cornie-radio
-                          v-bind:value="'Week'"
-                          label="xxxxxx"
-                          name="request"
-                          id="patientadress"
-                          checked
-                          v-model="encounter"
-                        />
-                        <cornie-radio
-                          v-bind:value="'Month'"
-                          label="xxxxxx"
-                          name="request"
-                          id="homeaddress"
-                          v-model="encounter"
-                        />
-                      </div> -->
                   </div>
                   </div>
           </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="OnSet" v-model="openedS">
                 <div class="w-full mt-5 pb-5">
-                    <div class="grid grid-cols-2 gap-4 ">
+                   <timeable-picker v-model="onsettimeable" class="w-full" label="Deceased Date/Age" />
+                    <measurable v-model="onsetmeasurable" class="w-full" label="Deceased Range/String" />
+                    <!-- <div class="grid grid-cols-2 gap-4 ">
                       <div class="w-full mb-5">
                         <DateTimePicker :label="'Onset date/time'" class="z-10 w-full">
                                     <template v-slot:labelicon>
@@ -222,13 +198,13 @@
                               </DateTimePicker>
                           </div>
                       </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    </div> -->
+                    <!-- <div class="grid grid-cols-2 gap-4">
                          <cornie-input label="onset range (1st value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
                          <cornie-input label="onset range (2nd value)" class="w-full mb-4"  v-model="onSet.onsetRange[' ']" placeholder="Enter" />
-                    </div>
+                    </div> -->
                       <div class="grid grid-cols-2 gap-4">
-                        <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
+                        <!-- <cornie-input label="onset string" class="mb-5 w-full"   v-model="onSet.onsetString" />
                         <div class="mb-5">
                             <label for="ecounter" class="flex uppercase text-black text-xs font-bold">recorded date
                               <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
@@ -236,23 +212,23 @@
                             <date-picker  placeholder="autofill" v-model="onSet.recordedDate" class="w-full mb-5 required"
                             :rules="required">
                             </date-picker>
-                        </div>
-                        <div class="mb-3">
+                        </div> -->
+
+                        <!-- <div class="mb-3">
                             <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">recorder
                               <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                             </label>
-                            <!-- <cornie-input class="w-full"  v-model="onSet.recorder" disabled/>  -->
-                            
+                         
                             <input
                             class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                             disabled
                             :value="onSet.recorder"
                           />
-                        </div>
+                        </div> -->
 
                        </div>
   
-                        <div class="flex">
+                        <div class="flex pt-5 mt-4 border-t-2">
                             <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">add asserter</p>
                             <label class="switch">
                               <input
@@ -265,9 +241,10 @@
                               <span class="slider round"></span>
                             </label>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4">
-                        <div class="mb-3">
-                          <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">asserter
+                        <div class="mb-3 mt-2">
+                          <label for="ecounter" class="flex capitalize mb-1 text-sm text-black font-medium">asserter
                             <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                           </label>
                           <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
@@ -277,7 +254,20 @@
                           :value="asserterName"
                         />
                         </div>
-                        <div class="mb-3">
+                          <div>
+                              <div class="w-full mb-3">
+                                  <date-time-picker
+                                    v-model:date="lastOccurence"
+                                    v-model:time="data.dateTime"
+                                    label="last occurence"
+                                    width="w-11/12"
+                                    class="required"
+                                  />
+                                
+                              </div>
+                        
+                          </div>
+                        <!-- <div class="mb-3">
                           <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">last occurence
                             <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                           </label>
@@ -313,15 +303,15 @@
                                     />
                                   </template>
                                 </DateTimePicker>
-                        </div>
-  </div>
+                        </div> -->
+                    </div>
                    
                       <div>
                         <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Note</label>
                           <div class="my-2  w-full">
                                 <Textarea
                                 class="w-full text-xs"
-                                v-model="onSet.note"
+                                v-model="note"
                                 placeholder="Text Area"
                                 :rules="required"
                               />
@@ -338,6 +328,7 @@
                       :items="['Hemoglobin Okaloosa','	Ferrocyanide salt','Berberine','Blood group antigen IH','Heptachlor','Coumachlor','	Codeine phosphate','Arsenic-76','Enzyme variant','Fibrinogen San Juan','Acylcarnitine hydrolase','Immunoglobulin pentamer','Carminic acid','Vegetable textile fiber','Nitrilase','Free protein S','Guanosine','Hemoglobin Jianghua','	2-oxoglutarate synthase','Oil of calamus','	Coal tar extract','Lytic antibody','Urethan','Carbamate kinase']"
                       label="substance"
                       v-model="reaction.substance"
+                      placeholder="select"
                     >
                     </cornie-select>
                     <cornie-select
@@ -345,11 +336,19 @@
                       :items="['Clinical finding','Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','Spontaneous abortion with laceration of cervix','Homoiothermia','Decreased hair growth','Chronic pharyngitis','Normal peripheral vision','Superficial foreign body of scrotum without major open wound but with infection','Abnormal bladder continence','	Gonococcal meningitis','Severe manic bipolar I disorder without psychotic features','	Accident-prone']"
                       label="manifestation"
                       v-model="reaction.manifestation"
+                      placeholder="select"
                     >
                     </cornie-select>
-                    <cornie-input label="description" class="mb-5 w-full"   v-model="reaction.description" />
+                    <cornie-input label="description" class="mb-5 mt-2 w-full" placeholder="enter"   v-model="reaction.description" />
                     <div class="mb-5">
-                        <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">ONSET
+                       <date-time-picker
+                            v-model:date="date"
+                            v-model:time="data.reactionTime"
+                            label="Onset"
+                            width="w-11/12"
+                            class="required"
+                          />
+                        <!-- <label for="ecounter" class="flex uppercase mb-1 text-xs text-black font-bold">ONSET
                           <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                         </label>
                         <DateTimePicker class="w-full">
@@ -383,13 +382,13 @@
                                     class="w-full border rounded-md p-2"
                                   />
                                 </template>
-                              </DateTimePicker>
+                              </DateTimePicker> -->
                       </div>
                     <div class="mb-2">
                       <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold">SEVERITY
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
-                        <div class="w-full mb-3">
+                        <div class="w-full flex space-x-4 mt-5 mb-3">
                         <cornie-radio
                           v-bind:value="'Mid'"
                           label="Mid"
@@ -421,6 +420,7 @@
                         :items="['Route of administration values','Topical route','Otic route','Intra-articular route','Per vagina','Oral route','Subcutaneous route','Per rectum','Intraluminal route','Sublingual route','Intraperitoneal route','Transdermal route','Nasal route','Intravenous route','Buccal route','Ophthalmic route','Intra-arterial route','Intramedullary route','Intrauterine route','Intrathecal route','Intramuscular route','Urethral route','Gastrostomy route','Jejunostomy route','Nasogastric route','Dental use','Endocervical use','Endosinusial use','Endotracheopulmonary use','Extra-amniotic use','Gastroenteral use','Gingival use','Intraamniotic use','Intrabursal use','Intracardiac use','Intracavernous use','Intracervical route','Intracoronary use','Intradermal use']"
                         label="Exposure Route"
                         v-model="reaction.exposureRoute"
+                        placeholder="select"
                       >
                       </cornie-select>
                   </div>
@@ -475,6 +475,8 @@ import RangeSlider from "@/components/range.vue";
 import EncounterSelect from "./encounter-select.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
+import Measurable from "@/components/measurable.vue";
+import TimeablePicker from "@/components/timeable.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/datepicker.vue";
@@ -488,7 +490,22 @@ import { namespace } from 'vuex-class'
 
 const allergy = namespace('allergy')
 const organization = namespace("organization");
+const timeable = {
+    age: "",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+  endTime: "",
+  date: "",
+  time: "",
+};
 
+const measurable = {
+  unit: "",
+  min: 0,
+  max: 0,
+  string: "",
+};
 const emptyOnSet: OnSet = {
           onsetDateTime: "",
           onsetAge: "",
@@ -525,7 +542,9 @@ const emptyReaction: Reaction = {
     BigDialog,
     CDelete,
     EncounterSelect,
+    TimeablePicker,
     InfoIcon,
+    Measurable,
     CornieDialog,
     DateTimePicker,
     SearchIcon,
@@ -585,6 +604,19 @@ type = "";
 category="";
 criticality="";
 code = "";
+encounter="";
+  onsetDateTime= "";
+          onsetAge = "";
+          onsetPeriod = {} as Period;
+          onsetRange = [20,50];
+          onsetString=  "";
+          recordedDate= "";
+
+        recorder= "";
+         asserter= "";
+          lastOccurence= "";
+           note = "";
+date="";
 onSet={...emptyOnSet};
 reaction={...emptyReaction};
 switchshow = false;
@@ -592,6 +624,9 @@ value=  [20, 40];
  data: any = {
     days: [],
   }
+
+  onsettimeable = {...timeable};
+onsetmeasurable = {...measurable};
 get format() {
         return `${this.onSet.onsetRange}`
   }
@@ -601,7 +636,20 @@ notes='';
 availableFilter= false;
 profileFilter=false;
 
-
+get onsetnew(){
+  return{
+    onsetDateTime: this.onsettimeable.date,
+    onsetAge: this.onsettimeable.age,
+    onsetPeriod: {start:this.onsettimeable.startDate,end:this.onsettimeable.endDate },
+    onsetRange: [this.onsetmeasurable.min,this.onsetmeasurable.max],
+    onsetString: this.onsetmeasurable.string,
+    recordedDate: this.date,
+      recorder: this.recorder,
+        asserter: this.asserter,
+          lastOccurence: this.lastOccurence,
+           note: this.note,
+  }
+}
  get activePatientId() {
       const id = this.$route?.params?.id as string;
       return id;
@@ -637,7 +685,7 @@ profileFilter=false;
       category: this.category,
       criticality: this.criticality,
       code: this.code,
-      onSet: this.onSet,
+      onSet: this.onsetnew,
        reaction: this.reaction,
     }
   }
@@ -654,8 +702,8 @@ profileFilter=false;
   }
   getPractitionerName(id: string){
    const pt = this.practitioners.find((i: any) => i.organizationId === id);
-   this.onSet.asserter = pt.id
-    this.onSet.recorder =  `${pt.firstName} ${pt.lastName}`;
+   this.asserter = pt.id
+    this.recorder =  `${pt.firstName} ${pt.lastName}`;
     this.asserterName =  `${pt.firstName} ${pt.lastName}`;
     return pt ? `${pt.firstName} ${pt.lastName}` : '';
   }
@@ -665,12 +713,12 @@ profileFilter=false;
   }
 
  async createAllergy() {
-   this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
-    this.payload.onSet.onsetDateTime = new Date(this.data.onsetDate).toISOString();
-    this.payload.onSet.onsetPeriod.start = new Date(this.data.startDate).toISOString();
-     this.payload.onSet.onsetPeriod.end = new Date(this.data.endDate).toISOString();
-      this.payload.onSet.lastOccurence = new Date(this.data.occurenceDate).toISOString();
-     this.payload.reaction.onset = new Date(this.data.reactionDate).toISOString();
+  // this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
+   // this.payload.onSet.onsetDateTime = new Date( this.onsettimeable.time).toISOString();
+  //  this.payload.onSet.onsetPeriod.start = new Date(this.data.startDate).toISOString();
+    // this.payload.onSet.onsetPeriod.end = new Date(this.data.endDate).toISOString();
+    ///  this.payload.onSet.lastOccurence = this.data.occurenceDate;
+     this.payload.reaction.onset = new Date(this.date).toISOString();
 
     try {
       const response = await cornieClient().post('/api/v1/allergy', this.payload)

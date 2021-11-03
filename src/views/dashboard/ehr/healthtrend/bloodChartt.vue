@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="30px" title="Blood Pressure">
+  <chart-card height="338px" title="Blood Pressure">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">120/90 <span class="font-light">mmHgz</span></p>
     <canvas ref="chart"></canvas>
   </chart-card>

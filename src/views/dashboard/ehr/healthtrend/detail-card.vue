@@ -17,9 +17,9 @@
       <span
         class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2"
       >
-        <span class="text-primary font-bold text-sm">{{ title }}</span>
+        <span class="text-primary font-bold text-sm">{{ title }} <span v-if="showTotal" class="font-bold text-sm text-danger">({{total}})</span> </span>
         <div class="flex items-center">
-            <add-icon/>
+             <slot name="actions"/>
         </div>
       </span>
       <slot />
@@ -49,6 +49,12 @@ export default class DetailCard extends Vue {
 
   @Prop({ type: String, default: "" })
   title!: string;
+
+  @Prop({ type: Number, default: 0 })
+  total!: number;
+
+  @Prop({ type: Boolean, default: false })
+  showTotal!: boolean;
 
   @Prop({ type: String, default: "" })
   height!: string;
