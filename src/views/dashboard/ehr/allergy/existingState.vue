@@ -323,14 +323,13 @@ export default class AllergyExistingState extends Vue {
     //this.stopEvent = true;
     this.allergyId = value;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
-  }
+   get patientId() {
+       return this.$route.params.id as string;
+     }
 
   allergyAdded() {
     this.allergys;
-    this.fetchAllergys(this.activePatientId);
+    this.fetchAllergys(this.patientId);
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -353,7 +352,7 @@ export default class AllergyExistingState extends Vue {
   async created() {
     this.getPractitioners();
     this.sortAllergys;
-    this.fetchAllergys(this.activePatientId);
+    await this.fetchAllergys(this.patientId);
   }
 }
 </script>

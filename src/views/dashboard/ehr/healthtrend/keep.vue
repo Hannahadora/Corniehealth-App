@@ -1,9 +1,9 @@
-<div class="p-12 " v-if="items.length === 0">
-      <noappoint-icon class="flex mt-5 justify-center w-full text-center"/>
-        <p class="mt-8 text-sm text-gray-500 text-center">Patient have no appoinntment saved. <br>
+ <div class="p-8" v-if="items.length === 0">
+      <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
+        <p class="mt-4 text-sm text-gray-500 text-center pb-5">Patient have no appoinntment saved. <br>
         Add new  by clicking the add icon</p>
     </div>
-     <div v-else >
+      <div v-else >
       <div class="flex flex-col">
         <div class="-my-8 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

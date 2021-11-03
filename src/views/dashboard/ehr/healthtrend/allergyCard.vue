@@ -1,5 +1,8 @@
 <template>
   <detail-card height="313px" title="Allergies" :showTotal="true" :total="totalAllergeis">
+    <template #actions>
+     <add-icon/>
+   </template>
   <div class="w-full grid grid-cols-1 gap-y-4">
       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
@@ -35,13 +38,15 @@ import { Options, Vue } from "vue-class-component";
 import DetailCard from "./detail-card.vue";
 import { namespace } from "vuex-class";
 import IAllergy from "@/types/IAllergy";
+import AddIcon from "@/components/icons/add.vue";
 
 
 const allergy = namespace("allergy");
 @Options({
   name: "AllergyCard",
   components: {
-    DetailCard
+    DetailCard,
+    AddIcon
   },
 })
 export default class AllergyCard extends Vue {

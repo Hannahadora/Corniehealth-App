@@ -2,6 +2,17 @@ import { cornieClient } from "@/plugins/http";
 import IAllergy from "@/types/IAllergy";
 import { string } from "yup/lib/locale";
 
+export async function fetchAllAllergys() {
+  try {
+    const response = await cornieClient().get('/api/v1/allergy');
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return [] as IAllergy[];
+}
 export async function fetchAllergys(patientId:string) {
   try {
     const response = await cornieClient().get(`/api/v1/allergy/findAllByPatient/${patientId}`);
