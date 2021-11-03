@@ -11,6 +11,7 @@
       w-full
       h-full
       bg-black bg-opacity-50
+      z-10
     "
     v-if="show"
   >

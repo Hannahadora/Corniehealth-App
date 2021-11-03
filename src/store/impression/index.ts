@@ -13,8 +13,8 @@ export default {
     impressions: [],
   },
   mutations: {
-    setImpressions(state, impressions: IImpression[]) {
-      state.impressions = [...impressions];
+    setImpressions(state, impressions: any) {
+      state.impressions = [...impressions.result];
     },
     updateImpressions(state, impressions: IImpression[]) {
       const impressionSet = new ObjectSet([...state.impressions, ...impressions], "id");

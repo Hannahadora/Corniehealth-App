@@ -57,8 +57,7 @@ export default class AllergysIndex extends Vue {
     return this.allergys.length < 1;
   }
  get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+      return this.$route.params.id as string;
   }
 
 
@@ -71,10 +70,6 @@ export default class AllergysIndex extends Vue {
   allergyAdded() {
     this.show = false;
     this.allergys;
-    this.fetchAllergys(this.activePatientId);
-  }
-
-  mounted() {
     this.fetchAllergys(this.activePatientId);
   }
 

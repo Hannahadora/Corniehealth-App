@@ -539,7 +539,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: Array(),
+  Medications: Array(),
 
 
 };
@@ -838,7 +838,7 @@ get Medications(){
     const request = await this.getRequestById(this.id)
     if (!request) return
     this.requestModel =  ({...request}) ;
-    this.requestModel.medications = request.medications;
+    this.requestModel.Medications = request.Medications;
   }
 
    async fetchPatients() {
