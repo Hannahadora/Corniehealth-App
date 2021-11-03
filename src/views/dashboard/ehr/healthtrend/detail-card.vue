@@ -60,6 +60,12 @@ export default class DetailCard extends Vue {
   @Prop({ type: String, default: "" })
   title!: string;
 
+  @Prop({ type: Number, default: 0 })
+  total!: number;
+
+  @Prop({ type: Boolean, default: false })
+  showTotal!: boolean;
+
   @Prop({ type: String, default: "" })
   height!: string;
 

@@ -17,7 +17,7 @@
       <span
         class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2"
       >
-        <span class="font-bold text-xl">{{ title }}</span>
+        <span class="chart-title">{{ title }}</span>
         <div class="flex items-center">
           <span class="mx-2">{{ order }}</span>
           <chevron-down-icon
@@ -65,3 +65,19 @@ export default class ChartCard extends Vue {
   height!: string;
 }
 </script>
+
+<style scoped>
+  .chart-title {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    /* identical to box height, or 140% */
+
+
+    /* Greys/Blue Yonder */
+
+    color: #667499;
+  }
+</style>

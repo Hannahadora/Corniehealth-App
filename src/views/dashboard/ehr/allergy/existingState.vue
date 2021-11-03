@@ -152,11 +152,11 @@ export default class AllergyExistingState extends Vue {
   allergyId = "";
   tasknotes = [];
 
-  @Prop({ type: Array, default: [] })
-  allergys!: IAllergy[];
-
-  // @allergy.State
+  // @Prop({ type: Array, default: [] })
   // allergys!: IAllergy[];
+
+  @allergy.State
+  allergys!: IAllergy[];
 
   @allergy.State
   practitioners!: any[];

@@ -68,10 +68,6 @@ export default class AllergysIndex extends Vue {
     this.fetchAllergys(this.activePatientId);
   }
 
-  mounted() {
-    this.fetchAllergys(this.activePatientId);
-  }
-
   created() {
     if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
   }

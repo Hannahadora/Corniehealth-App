@@ -1,102 +1,57 @@
 <template>
   <div>
-    <div class="container-fluid">
-      <div class="w-full">
-        <label
-          v-if="label"
-          class="flex uppercase mb-1 text-black text-xs font-bold"
-          :for="`${id}-inputfield`"
-        >
-          {{ label }}
-          <span class="ml-1 mb-1" v-if="$slots.labelicon">
-            <slot name="labelicon" />
-          </span>
-        </label>
-        <p
-          class="border rounded-md w-full p-2 flex justify-between"
-          @click="showSelectArea"
-        >
-          <span class="flex"
-            ><span><DateIcon class="pr-4 w-8 h-8" /></span><slot name="date"
-          /></span>
-          <span class="mt-1"><slot name="time" /></span>
-        </p>
-        <div class="w-full" style="position: relative">
-          <div class="z-10" v-if="show" style="position: absolute; width: 100%">
-            <slot name="input"></slot>
-            <div class="w-full mt-4 flex justify-end">
-              <corniebtn :loading="false">
-                <a
-                  @click="() => (show = false)"
-                  class="
-                    cursor-pointer
-                    bg-white
-                    focus:outline-none
-                    text-gray-500
-                    border
-                    mr-6
-                    font-bold
-                    py-2
-                    px-4
-                    rounded-full
-                  "
-                >
-                  Cancel
-                </a>
-              </corniebtn>
-              <Button class="text-white-500">
-                <a
-                  @click="() => (show = false)"
-                  style="background: #fe4d3c"
-                  class="
-                    text-white
-                    hover:bg-blue-700
-                    cursor-pointer
-                    focus:outline-none
-                    font-bold
-                    py-2
-                    px-4
-                    rounded-full
-                  "
-                >
-                  Save
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <date-picker v-bind="$attrs" v-model="dateSync">
+      <template #time>
+        <span>
+          <input
+            type="time"
+            class="outline-none focus:outline-none"
+            v-model="timeSync"
+          />
+        </span>
+      </template>
+    </date-picker>
   </div>
 </template>
-
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
-import DateIcon from "@/components/icons/calendar.vue";
+import DatePicker from "@/components/datepicker.vue";
+import { Prop, PropSync } from "vue-property-decorator";
 
 @Options({
+  name: "DateTimePicker",
+  inheritAttrs: false,
   components: {
-    DateIcon,
+    DatePicker,
   },
 })
 export default class DateTimePicker extends Vue {
-  date = new Date();
-  show = false;
-
   @Prop({ type: String, default: "" })
-  label!: string;
+  date!: string;
 
-  @Prop({ type: String, default: "" })
-  labelicon!: string;
+  @Prop({ type: String, default: "00:00" })
+  time!: string;
 
-  @Prop({ type: String, default: "" })
-  id!: string;
+  @PropSync("date")
+  dateSync!: string;
 
-  showSelectArea() {
-    this.show = !this.show;
-  }
+  @PropSync("time")
+  timeSync!: string;
 }
 </script>
+<style scoped>
+input[type="time"] {
+  position: relative;
+}
 
-<style scoped></style>
+input[type="time"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  color: transparent;
+  background: transparent;
+}
+</style>

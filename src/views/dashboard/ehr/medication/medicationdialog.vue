@@ -554,7 +554,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: [],
+  Medications: [],
 
 
 };
@@ -650,7 +650,21 @@ subject="";
 requester="";
 performer="";
 
-
+medicationCode="";
+medicationReference="";
+courseOfTherapyType="";
+dosageInstruction="";
+initialFill="";
+quantity=0;
+duration = {} as Period;
+dispenseInterval = {} as Period;
+numberOfRepeatsAllowed =  0;
+repeatquantity =  0;
+expectedSupplyDuration = 0;
+code = "";
+reason = "";
+    
+   
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
 
@@ -671,7 +685,41 @@ performer="";
   idChanged() {
     this.setRequest()
   }
+  get allMedicationDetails(){
+    return{
+        medicationCode: this.medicationCode,
+        medicationReference: this.medicationReference,
+        courseOfTherapyType: this.courseOfTherapyType,
+        dosageInstruction: this.dosageInstruction,
+        initialFill:this.initialFill,
+        quantity: this.quantity,
+        duration:this.duration,
+    }
+  }
+get allRefillInfo(){
+  return{
+    dispenseInterval: this.dispenseInterval,
+    numberOfRepeatsAllowed:this.numberOfRepeatsAllowed,
+    quantity:this.repeatquantity,
+    expectedSupplyDuration: this.expectedSupplyDuration,
 
+  }
+}
+
+get allSubstitution(){
+  return{
+    code: this.code,
+    reason:this.reason,
+  }
+}
+
+get allMedications(){
+  return{
+    medicationDetails: this.allMedicationDetails,
+    refillInfo: this.allRefillInfo,
+    substitutionAllowed: this.allSubstitution
+  }
+}
   get PatientName() {
             const id = this.$route.params.id;
             const pt = this.patients.find((i: any) => i.id === id);
@@ -694,24 +742,34 @@ performer="";
     }
 
  
-    medicationsDetail = {...emptyMedicationDetails}; 
+  medicationsDetail = {...emptyMedicationDetails}; 
+  // medicationsDetail = this.requestModel.Medications;
     medicationsDetails: Medications[] = [];
  
     addMedicationDetails(){
       this.medicationsDetails.push({...this.medicationsDetail});
       this.back();
+      
     }
     removemedication(index:number){
          this.medicationsDetails.splice(index, 1);
     }
   async setRequestModel() {
      this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest}));
+     this.requestModel.Medications = [this.allMedications]
   }
   async setRequest() {
     const request = await this.getRequestById(this.id)
     if (!request) return
-    this.requestModel =  (request) ;
-    this.requestModel.medications = request.medications;
+   // this.requestModel =  (request);
+     this.requestModel.requestInfo = request.requestInfo;
+      this.requestModel.requestDetails = request.requestDetails;
+      this.requestModel.subject = request.subject;
+      this.requestModel.performer = request.performer;
+      this.requestModel.medicationAdministration = request.medicationAdministration;
+      this.requestModel.fufillment = request.fufillment;
+        this.requestModel.history = request.history;
+        this.requestModel.Medications = request.Medications;
   }
  get newaction() {
     return this.id ? 'Update' : 'Save'
@@ -727,7 +785,7 @@ performer="";
         medicationAdministration: this.requestModel.medicationAdministration,
         fufillment: this.requestModel.fufillment,
         history: this.requestModel.history,
-        medications: this.requestModel.medications,
+        medications: this.requestModel.Medications,
     }
 
   }
@@ -753,7 +811,7 @@ get allPerformer() {
      })
  }
   async showMedication(value:any){
-    this.requestModel.medications = value;
+    this.requestModel.Medications = value;
     this.showMedicationModal = true;
   }
  done() {
