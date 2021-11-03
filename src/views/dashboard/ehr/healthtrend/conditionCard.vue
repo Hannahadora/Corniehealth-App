@@ -1,6 +1,6 @@
 <template>
-  <detail-card height="313px" title="Current Conditions">
-     <div class="w-full grid grid-cols-1 gap-y-4">
+  <detail-card height="313px" title="Current Conditions" :count="1" more="">
+    <div class="w-full grid grid-cols-1 gap-y-4">
       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
           <avatar :src="photo" />
@@ -10,16 +10,13 @@
               <p class="text-gray-300 pd-2 pt-2 gap-y-4">[severity]</p>
             </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
-              <!-- <span class="text-gray-600">
-                | 45 respondent | 45 feedback |
-              </span> -->
+              <span class="text-gray-600"> <h3>3 Pills Daily</h3></span>
             </span>
           </div>
         </div>
         <div class="text-xs text-primary">
           <span class="flex items-center">
-            <chevron-right-icon/>
+            <chevron-right-icon />
             <!-- Details
             <chevron-down-icon
               class="ml-2 stroke-current cursor-pointer text-danger"
@@ -28,15 +25,11 @@
         </div>
       </div>
       <div class="w-full flex justify-between pb-2 border-b">
-          <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Primary
-            </span>
+        <div class="text-xs flex flex-col">
+          <span class="font-semibold"> Primary </span>
         </div>
         <div class="text-xs text-primary">
-          <span class="flex">
-            Diagnosed
-          </span>
+          <span class="flex"> Diagnosed </span>
         </div>
       </div>
 
@@ -44,28 +37,24 @@
         <div class="w-full flex items-center">
           <avatar :src="photo" />
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Dr. Joe Smith
-            </span>
+            <span class="font-semibold"> Dr. Joe Smith </span>
           </div>
         </div>
         <div class="text-xs text-primary">
-          <span class="flex items-center">
-            24-09-21
-          </span>
+          <span class="flex items-center"> 24-09-21 </span>
         </div>
       </div>
 
-        <div class="w-full flex justify-between pb-2 border-b">
+      <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
           <avatar :src="photo" />
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
-            </span>
+            <span class="font-semibold"> Chlotiladone </span>
             <span class="">
-              <span class="text-gray-600 text-uppercase"> <h3> MLT John Oyedele </h3></span>
-              <span class="text-gray-600"> <h3> 3 Pills Dailys </h3></span>
+              <span class="text-gray-600 text-uppercase">
+                <h3>MLT John Oyedele</h3></span
+              >
+              <span class="text-gray-600"> <h3>3 Pills Dailys</h3></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -74,27 +63,14 @@
         </div>
         <div class="text-xs text-primary">
           <span class="flex items-center">
-            <chevron-right-icon/>
-            <!-- Details
-            <chevron-down-icon
-              class="ml-2 stroke-current cursor-pointer text-danger"
-            /> -->
+            <chevron-right-icon />
           </span>
         </div>
       </div>
 
       <div class="w-full flex justify-end pb-2">
-        <!-- <div class="w-full flex items-center">
-          <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
-            </span>
-          </div>
-        </div> -->
         <div class="text-xs text-danger font-semibold">
-          <span class="">
-            View all
-          </span>
+          <span class=""> View all </span>
         </div>
       </div>
     </div>
@@ -105,18 +81,25 @@ import { Options, Vue } from "vue-class-component";
 import DetailCard from "./detail-card.vue";
 
 import Avatar from "@/components/avatar.vue";
-
+import { ICondition } from "@/types/ICondition";
 
 @Options({
   name: "conditionCard",
   components: {
     DetailCard,
     Avatar,
-
   },
 })
 export default class conditionCard extends Vue {
-    photo = require("@/assets/img/avatar.png");
+  photo = require("@/assets/img/avatar.png");
 
+  conditions = [] as ICondition[];
+  get patientId() {
+    return this.$route.params.patientId || this.$route.params.id;
+  }
+
+  get count() {
+    return this.conditions.length;
+  }
 }
 </script>
