@@ -133,7 +133,17 @@
                   label="reason code"
                   placeholder="--Select--"
                 />
-                <cornie-select
+                   <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">Request Reference</label>
+                    <input-desc-rounded  class="cursor-pointer">
+                          <input type="text"  disabled  :value="otherrequestModel.request.requestReference" placeholder="Select" class="required cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer"  @click="showRef"/>
+                          </span>
+                  </input-desc-rounded>         
+                 <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
+              </div>
+                <!-- <cornie-select
                   class="required w-full"
                   :rules="required"
                   :items="dropdowns.serviceType"
@@ -141,7 +151,7 @@
                   label="request reference"
                   placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
                 <cornie-input label="supporting info"  class="w-full"   v-model="otherrequestModel.request.supportingInfo" placeholder="--Enter--" />
                 <cornie-select
                   :items="dropdowns.serviceType"
@@ -380,6 +390,12 @@
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
+      <reference-modal
+          :conditions="patientConditions"
+          :allergy="allergy"
+          @show:modal="showRef"
+          v-model="showRefModal"
+        />
 </template>
 
 <script lang="ts">
@@ -411,6 +427,7 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "./components/datetime-picker.vue";
 import { string } from "yup";
+import ReferenceModal from "@/views/dashboard/ehr/refferal/reasonref.vue";
 import Measurable from "@/components/measurable.vue";
 import IOtherrequest from "@/types/IOtherrequest";
 import { IPatient } from "@/types/IPatient";
@@ -419,7 +436,11 @@ import { namespace } from 'vuex-class'
 import IPractitioner from "@/types/IPractitioner";
 import EncounterSelect from "./encounter-select.vue";
 import FhirInput from "@/components/fhir-input.vue";
+import { ICondition } from "@/types/ICondition";
+import plusIcon from "@/components/icons/plus.vue";
 
+
+const condition = namespace("condition");
 const patients = namespace("patients");
 const userStore = namespace("user");
 const otherrequest = namespace('otherrequest')
@@ -443,11 +464,13 @@ const emptyOtherrequest: IOtherrequest = {
     ...CornieCard,
     CornieIconBtn,
     NoteIcon,
+    plusIcon,
     ArrowLeftIcon,
     Measurable,
     DatePicker,
     CDelete,
     RangeSlider,
+    ReferenceModal,
     DEdit,
     CancelIcon,
     InfoIcon,
@@ -494,6 +517,12 @@ export default class Medication extends Vue {
     @patients.Action
     fetchPatients!: () => Promise<void>;
 
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  @condition.State
+  conditions!: { [state: string]: ICondition[] };
+
   @Watch("otherrequest")
   requestUpdated(request: IOtherrequest) {
     this.otherrequestModel = JSON.parse(JSON.stringify({ ...otherrequest }));
@@ -501,7 +530,8 @@ export default class Medication extends Vue {
   @otherrequest.Mutation
   setPatientRequests!: any;
 
-
+showRefModal = false;
+allergy=[];
   loading = false;
   expand = false;
   isVisible = "";
@@ -544,6 +574,14 @@ performer="";
 @Watch('id')
   idChanged() {
     this.setRequest()
+  }
+
+ get patientId() {
+    return this.$route.params.id as string;
+  }
+
+   get patientConditions() {
+    return this.conditions[this.patientId] || [];
   }
 
 async setRequestModel() {
@@ -600,7 +638,10 @@ get allPerformer() {
          }
      })
  }
-
+async showRef(value:any){
+  this.showRefModal = true;
+  this.otherrequestModel.request.requestReference = value;
+}
  done() {
     this.$emit("medication-added");
     this.show = false;
@@ -707,12 +748,22 @@ get allPerformer() {
     this.practitioner = response[0].data;
   }
   
+  
+    async fetchAllergy() {
+    const AllAllergy = cornieClient().get(`/api/v1/allergy/findAllByPatient/${this.patientId}`);
+    const response = await Promise.all([AllAllergy]);
+    this.allergy = response[0].data.result;
+  }
+
+
   async created() {
+    await this.fetchPatientConditions(this.patientId);
     this.setRequest();
     this.setRequestModel();
     this.fetchLocation();
     this.fetchPracticeForms();
     this.fetchPatients();
+    this.fetchAllergy();
     this.fetchAllPatients();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
@@ -723,6 +774,13 @@ get allPerformer() {
 }
 </script>
 
-<style>
 
+<style scoped>
+
+.aadd{
+      float: right;
+    position: relative;
+    bottom: 30px;
+    margin-right: 10px;
+}
 </style>

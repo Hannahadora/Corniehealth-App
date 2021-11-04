@@ -42,6 +42,5 @@ export async function getDropdown(key: string) {
 
 export async function mapDisplay(key: string) {
   const data = await getDropdown(key);
-  return (code: string) =>
-    data.find((d) => d.code == code.replaceAll('"', ""))?.display;
+  return (code: string) => data.find((d) => d.code == code.replaceAll('"', ''))?.display || "";
 }

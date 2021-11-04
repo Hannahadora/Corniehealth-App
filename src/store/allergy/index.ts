@@ -17,8 +17,8 @@ export default {
     practitioners: [],
   },
   mutations: {
-    setAllAllergys(state, allergys: IAllergy[]) {
-      state.allallergys = [...allergys];
+    setAllAllergys(state, allergys: any) {
+      state.allallergys = [...allergys.result];
     },
     setAllergys(state, allergys:any) {
       state.allergys = [...allergys.result];
