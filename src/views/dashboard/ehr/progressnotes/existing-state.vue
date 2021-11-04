@@ -22,7 +22,7 @@
           New Progress Note
         </button>
       </span>
-      <cornie-table :columns="headers" v-model="items">
+      <cornie-table :columns="headers" v-model="sortProgressNotes">
        <!-- <template #clinicalStatus="{ item: { status: status } }">
           <span
             :class="{
@@ -265,14 +265,9 @@ export default class ExistingState extends Vue {
       show: true,
     },
     {
-      title: "status",
-      key: "status",
-      show: true,
-    },
-    {
       title: "primary encounter",
       key: "primaryencounter",
-      show: false,
+      show: true,
     },
     
     {
@@ -283,7 +278,12 @@ export default class ExistingState extends Vue {
     {
       title: "billing account",
       key: "billingaccount",
-      show: false,
+      show: true,
+    },    
+    {
+      title: "status",
+      key: "status",
+      show: true,
     },
     
   ];
@@ -396,8 +396,8 @@ async showStatus(value:string, value2:string, value3:string){
       recorded: this.printRecorded(progress),
       condition: this.printCondition(progress.condition),
       status: this.printStatus(progress.condition),
-      participant: this.printPractitioner(progress.condition)
-      // participant: this.printPracName(progress.practitionerId)
+      // participant: this.printPractitioner(progress.condition)
+      participant: progress.practitionerId
       // currentStatus: this.printStatus(progress.condition),
       // status:history.basicInfo.status
       // code: this.printCode(condition.code),
@@ -410,6 +410,12 @@ async showStatus(value:string, value2:string, value3:string){
     }));
     return items;
   }
+
+  get sortProgressNotes (){
+        return this.items.slice().sort(function(a, b){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
 
 
   async fetchProgressnotes() {

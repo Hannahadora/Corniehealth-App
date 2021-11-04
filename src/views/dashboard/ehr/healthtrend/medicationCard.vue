@@ -5,7 +5,7 @@
    </template>
     <div class="p-5" v-if="medicationMapper.length ===0">
         <nodrug-icon class="flex mt-5 justify-center w-full text-center"/>
-        <p class="mt-8 text-sm text-gray-500 text-center">No Medications</p>
+        <p class="mt-8 text-sm text-gray-500 text-center">No Medicationss</p>
     </div>
    <div class="w-full grid grid-cols-1 gap-y-4" v-else>
       <div class="w-full flex justify-between pb-2 border-b" v-for="(input, index) in medicationMapper" :key="index">

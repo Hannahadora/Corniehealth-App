@@ -36,7 +36,7 @@
         </span>
         <span> Total=140 </span>
       </div>
-      <canvas ref="inpatient_chart"></canvas>
+      <canvas ref="inpatient_chart" style="margin: auto; margin-top: -30px;"></canvas>
     </div>
   </div>
 </template>
