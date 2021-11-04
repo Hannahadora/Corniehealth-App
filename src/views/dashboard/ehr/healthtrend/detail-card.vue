@@ -16,10 +16,10 @@
         </div>
       </span>
     </div>
-    <div class="flex flex-col justify-center items-center" v-if="empty">
+    <div class="flex flex-col px-2 justify-center items-center" v-if="empty">
       <slot name="empty" />
     </div>
-    <div class="flex flex-col overflow-y-hidden" v-else>
+    <div class="flex flex-col px-2 overflow-y-hidden" v-else>
       <slot />
     </div>
     <div

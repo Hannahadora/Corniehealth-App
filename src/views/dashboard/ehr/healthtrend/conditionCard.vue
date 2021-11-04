@@ -1,77 +1,32 @@
 <template>
   <detail-card height="313px" title="Current Conditions" :count="1" more="">
-    <div class="w-full grid grid-cols-1 gap-y-4">
-      <div class="w-full flex justify-between pb-2 border-b">
-        <div class="w-full flex items-center">
-          <avatar :src="photo" />
-          <div class="text-xs flex flex-col">
-            <span class="font-semibold text-primary">
-              Asthma
-              <p class="text-gray-300 pd-2 pt-2 gap-y-4">[severity]</p>
-            </span>
-            <span class="">
-              <span class="text-gray-600"> <h3>3 Pills Daily</h3></span>
-            </span>
-          </div>
-        </div>
-        <div class="text-xs text-primary">
-          <span class="flex items-center">
-            <chevron-right-icon />
-            <!-- Details
-            <chevron-down-icon
-              class="ml-2 stroke-current cursor-pointer text-danger"
-            /> -->
-          </span>
-        </div>
+    <div
+      class="
+        w-full
+        grid grid-cols-3
+        gap-1
+        text-sm
+        pb-2
+        border-b border-gray-200
+      "
+      v-for="(item, i) in items"
+      :key="i"
+    >
+      <div class="flex flex-col">
+        <span class="font-semibold">{{ item.name }}</span>
+        <span class="text-gray-400">{{ item.severity }}</span>
       </div>
-      <div class="w-full flex justify-between pb-2 border-b">
-        <div class="text-xs flex flex-col">
-          <span class="font-semibold"> Primary </span>
-        </div>
-        <div class="text-xs text-primary">
-          <span class="flex"> Diagnosed </span>
-        </div>
+      <div class="flex flex-col">
+        <span class="font-semibold">Onset</span>
+        <span class="text-gray-400"
+          >{{ item.onset.key }}: {{ item.onset.text }}</span
+        >
       </div>
-
-      <div class="w-full flex justify-around pb-2 border-b">
-        <div class="w-full flex items-center">
-          <avatar :src="photo" />
-          <div class="text-xs flex flex-col">
-            <span class="font-semibold"> Dr. Joe Smith </span>
-          </div>
-        </div>
-        <div class="text-xs text-primary">
-          <span class="flex items-center"> 24-09-21 </span>
-        </div>
-      </div>
-
-      <div class="w-full flex justify-between pb-2 border-b">
-        <div class="w-full flex items-center">
-          <avatar :src="photo" />
-          <div class="text-xs flex flex-col">
-            <span class="font-semibold"> Chlotiladone </span>
-            <span class="">
-              <span class="text-gray-600 text-uppercase">
-                <h3>MLT John Oyedele</h3></span
-              >
-              <span class="text-gray-600"> <h3>3 Pills Dailys</h3></span>
-              <!-- <span class="text-gray-600">
-                | 45 respondent | 45 feedback |
-              </span> -->
-            </span>
-          </div>
-        </div>
-        <div class="text-xs text-primary">
-          <span class="flex items-center">
-            <chevron-right-icon />
-          </span>
-        </div>
-      </div>
-
-      <div class="w-full flex justify-end pb-2">
-        <div class="text-xs text-danger font-semibold">
-          <span class=""> View all </span>
-        </div>
+      <div class="flex flex-col">
+        <span class="font-semibold">Abatement</span>
+        <span class="text-gray-400"
+          >{{ item.abatement.key }}: {{ item.abatement.text }}</span
+        >
       </div>
     </div>
   </detail-card>
@@ -81,7 +36,12 @@ import { Options, Vue } from "vue-class-component";
 import DetailCard from "./detail-card.vue";
 
 import Avatar from "@/components/avatar.vue";
-import { ICondition } from "@/types/ICondition";
+import { ICondition, Timeable } from "@/types/ICondition";
+import { namespace } from "vuex-class";
+import { mapDisplay } from "@/plugins/definitions";
+import Period from "@/types/IPeriod";
+
+const condition = namespace("condition");
 
 @Options({
   name: "conditionCard",
@@ -91,15 +51,114 @@ import { ICondition } from "@/types/ICondition";
   },
 })
 export default class conditionCard extends Vue {
-  photo = require("@/assets/img/avatar.png");
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
 
-  conditions = [] as ICondition[];
+  @condition.State
+  conditions!: { [state: string]: ICondition[] };
+
+  severityMapper = (code: string) => "";
+  codeMapper = (code: string) => "";
+
   get patientId() {
-    return this.$route.params.patientId || this.$route.params.id;
+    return this.$route.params.id as string;
+  }
+
+  get patientConditions() {
+    return this.conditions[this.patientId] || [];
   }
 
   get count() {
     return this.conditions.length;
+  }
+
+  async loadMappers() {
+    this.severityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-severity"
+    );
+    this.codeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+  }
+
+  get items() {
+    const items = this.patientConditions.map((condition) => ({
+      name: this.codeMapper(condition.code),
+      severity: this.severityMapper(condition.severity),
+      onset: this.displayTimeable(condition.onSet, "onsetString"),
+      abatement: this.printAbatement(condition),
+    }));
+
+    return items;
+  }
+
+  printAbatement(condition: ICondition) {
+    const latest = this.latestAbatement(condition);
+    if (!latest)
+      return {
+        key: "N/A",
+        text: "N/A",
+      };
+    return this.displayTimeable(latest, "string");
+  }
+
+  latestAbatement({ abatements }: ICondition) {
+    const allAbatements = abatements || [];
+    const sorted = allAbatements.sort((a: any, b: any) => {
+      if ((a.createdAt = b.createdAt)) return 0;
+      return a.createdAt > b.createdAt ? 1 : -1;
+    });
+    return sorted.pop();
+  }
+
+  displayTimeable(item: Timeable, stringKey: string) {
+    const value = { ...item };
+    value.string = stringKey ? item[stringKey] : item.string;
+    if (!value) return;
+    if (value.dateTime) {
+      return {
+        key: "Date/Time",
+        text: new Date(value.dateTime).toLocaleDateString(),
+        subtext: this.printTime(value.dateTime),
+      };
+    } else if (value.age) {
+      return {
+        key: "Age",
+        text: value.age,
+      };
+    } else if (value.period) {
+      return {
+        key: "Period",
+        text: this.printPeriod(value.period),
+      };
+    } else if (value.string) {
+      return {
+        key: "String",
+        text: value.string,
+      };
+    } else if (value.range) {
+      return {
+        key: "Range",
+        text: `${value.range.min} ${value.range.unit} to ${value.range.max} ${value.range.unit}`,
+      };
+    }
+  }
+
+  printPeriod(period: Period) {
+    const start = new Date(period.start).toLocaleDateString();
+    let end = "";
+    if (period.end) end = new Date(period.end).toLocaleDateString();
+    return `${start} - ${end}`;
+  }
+
+  printTime(timeString: string) {
+    const date = new Date(timeString);
+    return `${date.getHours()}:${date.getMinutes()}`;
+  }
+
+  async created() {
+    this.loadMappers();
+    this.fetchPatientConditions(this.patientId);
   }
 }
 </script>
