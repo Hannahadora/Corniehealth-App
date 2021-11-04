@@ -82,12 +82,12 @@
                         </div>
                     </div>
                     <div v-if="allergyFilter">
-                        <div v-for="(input, index) in allergy" :key="index">
-                            <div class="w-full mt-2 p-3  hover:bg-gray-100 cursor-pointer" @click="getValue(input.code)">
+                        <div v-for="(input, index) in items" :key="index">
+                            <div class="w-full mt-2 p-3  hover:bg-gray-100 cursor-pointer" @click="getValue(input.manifestation)">
                                 <div class="w-full">
                                     <div class="w-full">
                                     <p class="text-sm text-dark mb-1 font-meduim">
-                                    {{input.code}}
+                                    {{input.manifestation}}
                                         </p>
                                     <p class="text-xs text-gray-300">
                                     {{
@@ -181,9 +181,6 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from '@/components/cornieradio.vue';
 import { Codeable } from "@/types/misc";
-import { useFHIRDefinition } from "@/composables/useFHIRDefinition";
-import { ICondition } from "@/types/ICondition";
-import Condition from "yup/lib/Condition";
 import { mapDisplay } from "@/plugins/definitions";
 import { string } from "yup/lib/locale";
 //const copy = (original) => JSON.parse(JSON.stringify(original));
@@ -213,6 +210,8 @@ import { string } from "yup/lib/locale";
 })
 
 export default class reasonreference extends Vue {
+   medicationMapper!:  (code: string) => string;
+
    @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
@@ -236,11 +235,12 @@ clinicalMapper= (code: string) => string;
   conditions!: any;
 
        selected = 0;
-     
+     newallergy=[];
       localSrc = require('../../../../assets/img/placeholder.png');
      clinicalStatus = "";
         check= false;
          check2 = false;
+         manifestation="";
         check3 = {
            reference:[] as any
          };
@@ -287,9 +287,25 @@ clinicalMapper= (code: string) => string;
      select(i:number) {
       this.selected = i;
     }
+  async createMapper(){
+        this.medicationMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/clinical-findings");
+    }
+get items(){
+  this.newallergy = this.allergy as any;
+      const newallergys = this.newallergy.map((allerg:any) => {
+        const manifestationStatus =   this.medicationMapper(allerg.reaction.manifestation);
+        this.manifestation = manifestationStatus as string;
+        return {
+        ...allerg,
+        manifestation: this.manifestation,
 
-
+        };
+    });
+    return newallergys;
+  
+     }
  async created(){
+   await this.createMapper();
      const clinicalStatusMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/condition-code");
      this.clinicalMapper = this.conditions.map((condition:any) => {
       const clinicalStatus =  clinicalStatusMapper(condition.code)

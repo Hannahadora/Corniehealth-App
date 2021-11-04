@@ -13,8 +13,8 @@ export default {
     locations: [],
   },
   mutations: {
-    setLocations(state, locations: ILocation[]) {
-      state.locations = [...locations];
+    setLocations(state, locations: any) {
+      state.locations = [...locations.result];
     },
     updateLocations(state, locations: ILocation[]) {
       const locationSet = new ObjectSet(

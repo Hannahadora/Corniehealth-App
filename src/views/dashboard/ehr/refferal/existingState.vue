@@ -159,6 +159,7 @@ import CheckIn from './components/checkin.vue'
 import CheckOut from './components/checkout.vue'
 import { IPatient } from "@/types/IPatient";
 import IPractitioner from "@/types/IPractitioner";
+import { mapDisplay } from "@/plugins/definitions";
 
 const otherrequest = namespace("otherrequest");
 const patients = namespace("patients");
@@ -233,6 +234,9 @@ newname ="";
 practitonerId="";
 showViewModal=false;
 name=[];
+ medicationMapper = (code:string) => ""
+ priorityMapper = (code:string) => ""
+
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
 
@@ -329,6 +333,11 @@ name=[];
    get patientId() {
     return this.$route.params.id as string;
   }
+   async createMapper(){
+        this.medicationMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/servicerequest-category");
+          this.priorityMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/request-priority");
+    }
+
   get items() {
     const patientrequests = this.patientrequests.map((otherrequest) => {
          (otherrequest as any).createdAt = new Date(
@@ -351,8 +360,8 @@ name=[];
         dispenser: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
         performer: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
         status: otherrequest.status,
-        category: otherrequest.basicInfo.category,
-        priority: otherrequest.basicInfo.priority
+         category: this.medicationMapper(otherrequest.basicInfo.category),
+        priority: this.priorityMapper(otherrequest.basicInfo.priority),
         };
     });
     if (!this.query) return patientrequests;
@@ -407,6 +416,7 @@ async showView(value:string){
       }
    
      async created() {
+       await this.createMapper();
           this.getPractitioners();
           this.fetchPatients();
           this.fetchOtherrequestsById(this.patientId);
