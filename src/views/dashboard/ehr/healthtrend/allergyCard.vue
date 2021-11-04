@@ -1,36 +1,31 @@
 <template>
-  <detail-card height="313px" title="Allergies" :showTotal="true" :total="totalAllergeis">
-    <template #actions>
-     <add-icon class="cursor-pointer"   @click="showAllergy"/>
-   </template>
-  <div class="w-full grid grid-cols-1 gap-y-4">
-      <div class="w-full flex justify-between pb-2 border-b" v-for="(input, index) in items" :key="index">
-        <div class="w-full flex items-center">
+  <detail-card height="313px" @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/allergy`)" title="Allergies" @add="showAllergy" :showTotal="true" :count="totalAllergeis">
+   <div class="p-2">
+     <div class="p-5" v-if="allergys.length ===0">
+          <noallergy-icon class="flex mt-5 justify-center w-full text-center"/>
+          <p class="mt-8 text-sm text-gray-500 text-center">No Allergies</p>
+      </div>
+      <div class="w-full grid grid-cols-1 gap-y-4">
+          <div class="w-full flex justify-between pb-2 border-b" v-for="(input, index) in items" :key="index">
+            <div class="w-full flex items-center">
 
-          <div class="text-xs flex flex-col">
-            <span class="font-semibold text-primary">
-              {{input.manifestation}}
-            </span>
-            <span class="">
-              <span class="text-gray-600"> <h5> {{input.reaction.description}} </h5></span>
-            </span>
+              <div class="text-xs flex flex-col">
+                <span class="font-semibold text-primary">
+                  {{input.manifestation}}
+                </span>
+                <span class="">
+                  <span class="text-gray-600"> <h5> {{input.reaction.description}} </h5></span>
+                </span>
+              </div>
+            </div>
+            <div class="text-xs text-primary">
+              <span class="flex items-center">
+                <chevron-right-icon/>
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="text-xs text-primary">
-          <span class="flex items-center">
-            <chevron-right-icon/>
-          </span>
-        </div>
       </div>
-
-      <div class="w-full flex justify-end pb-2">
-        <div class="text-xs text-danger font-semibold">
-          <span class="">
-            View all
-          </span>
-        </div>
-      </div>
-  </div>
+   </div>
   </detail-card>
    <allergy-modal
       v-model="showAllergyModal"
@@ -45,7 +40,7 @@ import AddIcon from "@/components/icons/add.vue";
 import { mapDisplay } from "@/plugins/definitions";
 import { string } from "yup/lib/locale";
 import AllergyModal from "@/views/dashboard/ehr/allergy/allergydialog.vue";
-
+import NoallergyIcon from "@/components/icons/noallergy.vue";
 
 const allergy = namespace("allergy");
 @Options({
@@ -53,7 +48,8 @@ const allergy = namespace("allergy");
   components: {
     DetailCard,
     AddIcon,
-    AllergyModal
+    AllergyModal,
+    NoallergyIcon
   },
 })
 export default class AllergyCard extends Vue {

@@ -1,14 +1,13 @@
 <template>
-  <detail-card height="auto" title="Appointments">
-     <template #actions>
-     <add-icon class="cursor-pointer"   @click="showAppointment"/>
-   </template>
-     <div class="p-8" v-if="items.length === 0">
+  <detail-card more="Manage Appointments"  @add="showAppointment" :showTotal="true" :count="0"  @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)"  title="Appointments">
+       <template #empty>
+     <div class="p-8" v-if="sortAppointments.length === 0">
       <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
         <p class="mt-4 text-sm text-gray-500 text-center pb-5">Patient have no appoinntment saved. <br>
         Add new  by clicking the add icon</p>
     </div>
-      <div v-else >
+            </template>
+        <template>
       <div class="flex flex-col">
         <div class="-my-8 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -88,15 +87,7 @@
           </div>
         </div>
       </div>
-
-       <div class="w-full flex justify-end pb-2 mt-5">
-        <div class="text-danger mt-5 font-semibold">
-          <span class="cursor-pointer text-sm" @click="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)">
-           Manage Appointments
-          </span>
-        </div>
-      </div>
-     </div>
+        </template>
     
   </detail-card>
     <appointment-modal   
@@ -165,7 +156,7 @@ locationId ="";
        return this.$route.params.id as string;
      }
        get newmedicationrequest () { 
-  return this.patientappointments.slice(0, 3) 
+  return this.sortAppointments.slice(0, 3) 
   }
 
  get sortAppointments (){
@@ -235,7 +226,7 @@ locationId ="";
     }
     async created() {
         await this.fetchByIdAppointments(this.$route.params.id.toString());
-        this.getSlot();
+     //  await this.getSlot();
     }
 }
 </script>
