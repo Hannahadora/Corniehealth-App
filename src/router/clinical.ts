@@ -2,10 +2,10 @@ import { RouteRecordRaw } from "vue-router";
 import EHR from "@/views/dashboard/ehr/index.vue";
 
 export const ClinicalsRoute: RouteRecordRaw = {
-  path: "clinical/:id?",
-  name: "EHR",
-  component: () => import("@/views/dashboard/ehr/index.vue"),
-  redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
+    path: ":id",
+    component: EHR,
+    name: "EHR",
+    // redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
     children: [
       {
         path: "health-trend/:patientId?",
@@ -107,14 +107,14 @@ export const ClinicalsRoute: RouteRecordRaw = {
          
         },
         {
-          path: "progress-notes-existing/:patientId?",
+          path: "progress-notes-existing",
           props: true,
           name: "Progress Notes",
           component: () =>
             import("@/views/dashboard/ehr/progressnotes/existing-state.vue"),
         },
         {
-          path: "progress-notes/:patientId?",
+          path: "progress-notes",
           props: true,
           name: "Progress Notes",
           component: () =>
@@ -127,7 +127,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
           component: () =>
             import("@/views/dashboard/ehr/riskassessment/index.vue"),
         },
-      {
+        {
           path: "referral",
           props: true,
           name: "Referral",
