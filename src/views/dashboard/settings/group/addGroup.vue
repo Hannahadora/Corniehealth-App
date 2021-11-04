@@ -30,8 +30,9 @@
                   v-model="state"
                   label="State"
                   placeholder="--Select--"
-                >
+                >                 
                 </cornie-select>
+               
                 <cornie-select
                   :onChange="setValue(options.text)"
                   :items="items"
@@ -41,14 +42,23 @@
                   placeholder="--Select--"
                 >
                 </cornie-select>
-                <cornie-select
+                
+                <!-- <cornie-select
                   :rules="required"
                   :items="['type']"
                   v-model="type"
                   label="Type"
                   placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
+                 <fhir-input
+                  reference="http://hl7.org/fhir/ValueSet/group-type"
+                  class="w-full"
+                  :rules="required"
+                  v-model="state"
+                  label="Type"
+                  placeholder="--Select--"
+                />
                 <cornie-input
                   label="Name"
                   placeholder="--Enter--"
@@ -59,16 +69,21 @@
                   placeholder="--Enter--"
                   v-model="code"
                 />
-                <cornie-select
+                <cornie-input
+                  label="Quantity"
+                  placeholder="--Enter--"
+                  v-model="quantity"
+                />
+                <!-- <cornie-select
                   :rules="required"
                   :items="['quantity']"
                   v-model="quantity"
                   label="Quantity"
                   placeholder="--Select--"
-                ></cornie-select>
+                ></cornie-select> -->
                 <cornie-select
                   :rules="required"
-                  :items="['Managing entity']"
+                  :items="['Organization', 'RelatedPerson', 'Practitioner', 'PractitionerRole']"
                   v-model="managingEntity"
                   label="Managing Entity"
                   placeholder="--Select--"
@@ -263,6 +278,9 @@ import DatePicker from "@/components/daterangepicker.vue";
 import SingleDatePicker from "./datepicker.vue";
 import Period from "@/types/IPeriod";
 
+import FhirInput from "@/components/fhir-input.vue";
+
+
 const group = namespace("group");
 const dropdown = namespace("dropdown");
 
@@ -286,6 +304,9 @@ const dropdown = namespace("dropdown");
     PhoneInput,
     DatePicker,
     AccordionComponent,
+
+
+    FhirInput,
   },
 })
 export default class AddGroup extends Vue {

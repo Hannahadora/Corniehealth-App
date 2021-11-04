@@ -1,6 +1,6 @@
 <template>
-  <chart-card height="439px" title="Medication">
-    <canvas ref="chart"></canvas>
+  <chart-card height="390px" title="Medication">
+    <canvas ref="chart" style="margin: auto;"></canvas>
   </chart-card>
 </template>
 <script lang="ts">

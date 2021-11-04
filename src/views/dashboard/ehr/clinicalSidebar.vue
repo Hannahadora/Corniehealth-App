@@ -171,6 +171,8 @@ import eyeIcon from "@/components/icons/yelloweye.vue";
 import { namespace } from "vuex-class";
 import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { Prop, Ref } from "vue-property-decorator";
+import ClinicIcon from "@/components/icons/clinic.vue";
+
 
 const patients = namespace("patients");
 
@@ -256,6 +258,16 @@ export default class Settings extends Vue {
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
+      {
+        name: "Progress Notes",
+        to: "/progress-notes/",
+        icon: "proceed-icon",
+      },
+      {
+        name: "Risk Assesment",
+        to: "/risk-assessment/",
+        icon: "diag-icon",
+      },
     ];
   }
 

@@ -16,11 +16,17 @@
         Allergy & Intolerance
       </span>
       <span class="w-full h-screen">
-        <allergys-empty-state v-if="empty" />
+        <!-- <allergys-empty-state v-if="empty" />
         <allergys-existing-state
           @allergy-added="allergyAdded"
           :allergys="allergys"
           v-else
+        /> -->
+
+        <!-- <allergys-empty-state v-if="empty" /> -->
+        <allergys-existing-state
+          @allergy-added="allergyAdded"
+          :allergys="allergys"
         />
       </span>
     </div>

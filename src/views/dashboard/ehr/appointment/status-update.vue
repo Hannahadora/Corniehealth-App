@@ -6,7 +6,7 @@
             <arrow-left-icon />
           </cornie-icon-btn>
           <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Update Status</h2>
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Update Statusss</h2>
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
       </cornie-card-title>

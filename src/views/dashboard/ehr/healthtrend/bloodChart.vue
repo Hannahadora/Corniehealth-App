@@ -1,7 +1,7 @@
 <template>
   <chart-card height="343px" title="Blood Pressure">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">120/90 <span class="font-light">mmHgz</span></p>
-    <canvas ref="chart"></canvas>
+    <canvas ref="chart" style="margin: auto;"></canvas>
   </chart-card>
 </template>
 <script lang="ts">

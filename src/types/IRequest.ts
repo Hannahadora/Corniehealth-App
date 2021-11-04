@@ -81,6 +81,5 @@ import Period from "./IPeriod";
     fufillment: Fufillment;
     history: History;
     Medications: Medications[];
-
   }
   
