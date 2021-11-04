@@ -22,7 +22,6 @@ export default {
         [...patientConditions, ...conditions],
         "id"
       );
-      console.error("Setting condition", [...conditionSet]);
       state.conditions[patientId] = [...conditionSet];
     },
   },
