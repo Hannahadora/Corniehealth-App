@@ -1,10 +1,15 @@
 <template>
   <detail-card height="313px" @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/allergy`)" title="Allergies" @add="showAllergy" :showTotal="true" :count="totalAllergeis">
+    <template #empty>
    <div class="p-2">
      <div class="p-5" v-if="allergys.length ===0">
           <noallergy-icon class="flex mt-5 justify-center w-full text-center"/>
           <p class="mt-8 text-sm text-gray-500 text-center">No Allergies</p>
       </div>
+   </div>
+    </template>
+  
+        <div class="p-2">
       <div class="w-full grid grid-cols-1 gap-y-4">
           <div class="w-full flex justify-between pb-2 border-b" v-for="(input, index) in items" :key="index">
             <div class="w-full flex items-center">
@@ -25,7 +30,9 @@
             </div>
           </div>
       </div>
-   </div>
+
+        </div>
+   
   </detail-card>
    <allergy-modal
       v-model="showAllergyModal"

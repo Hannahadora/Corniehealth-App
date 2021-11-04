@@ -1,13 +1,7 @@
- <div class="p-8" v-if="items.length === 0">
-      <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
-        <p class="mt-4 text-sm text-gray-500 text-center pb-5">Patient have no appoinntment saved. <br>
-        Add new  by clicking the add icon</p>
-    </div>
-      <div v-else >
-      <div class="flex flex-col">
-        <div class="-my-8 overflow-x-auto sm:-mx-6 lg:-mx-8">
+  <div class="flex flex-col">
+        <div class="-my-2 sm:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="overflow-hidden border-0">
+            <div class="border-0">
               <table class="min-w-full">
                 <thead class="border-b-2 border-gray-100">
                   <tr>
@@ -27,7 +21,7 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white ">
-                  <tr  class="border-b-2 border-gray-100" v-for="(input, index) in items" :key="index">
+                  <tr  class="border-b-2 border-gray-100" v-for="(input, index) in sortAppointments" :key="index">
                     <td class="px-1 py-1 whitespace-nowrap">
                       <div class="flex items-center">
                         <div class="flex-shrink-0 h-10 w-10">
@@ -83,12 +77,4 @@
           </div>
         </div>
       </div>
-
-       <div class="w-full flex justify-end pb-2 mt-5">
-        <div class="text-xs text-danger mt-5 font-semibold">
-          <span class="cursor-pointer" @click="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)">
-           Manage Appointments
-          </span>
-        </div>
-      </div>
-     </div>
+      
