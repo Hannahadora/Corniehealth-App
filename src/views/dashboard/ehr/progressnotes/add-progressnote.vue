@@ -981,7 +981,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: [],
+  Medications: []
 
 
 };
