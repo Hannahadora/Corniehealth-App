@@ -1,8 +1,8 @@
 <template>
-  <chart-card height="439px" title="Rating">
+  <chart-card height="450px" title="Rating">
     <div class="w-full grid rating-grid">
       <span class="block p-3">
-        <canvas id="rating-chart"></canvas>
+        <canvas id="rating-chart"  style="margin: auto;"></canvas>
       </span>
       <div class="w-full mt-5 flex flex-col">
         <rating-bar :percent="12" color="warning" title="Neutral Responses" />
@@ -99,7 +99,7 @@ export default class RatingChart extends Vue {
       type: "derivedDoughnut",
       data,
       options: {
-        cutout: "70%",
+        // cutout: "70%",
         maintainAspectRatio: false,
         elements: {
           center: {
@@ -107,7 +107,7 @@ export default class RatingChart extends Vue {
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
-            minFontSize: 20,
+            minFontSize: 12,
             lineHeight: 25,
           },
         },
@@ -124,7 +124,7 @@ export default class RatingChart extends Vue {
     });
     if (this.chart && this.chart.canvas.parentNode) {
       const parent: any = this.chart.canvas.parentNode;
-      parent.style.height = "350px";
+      parent.style.height = "390px";
     }
   }
 }

@@ -1,15 +1,97 @@
 <template>
-  <detail-card height="auto" title="Appointments">
-     <template #actions>
-     <add-icon/>
-   </template>
-    <div class="p-8">
+  <detail-card more="Manage Appointments"  @add="showAppointment" :showTotal="true" :count="0"  @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)"  title="Appointments">
+       <template #empty>
+     <div class="p-8" v-if="sortAppointments.length === 0">
       <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
         <p class="mt-4 text-sm text-gray-500 text-center pb-5">Patient have no appoinntment saved. <br>
         Add new  by clicking the add icon</p>
     </div>
+            </template>
+        <template>
+      <div class="flex flex-col">
+        <div class="-my-8 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div class="overflow-hidden border-0">
+              <table class="min-w-full">
+                <thead class="border-b-2 border-gray-100">
+                  <tr>
+                    <th scope="col" class="px-1 py-1 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th scope="col" class="px-1 py-1 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                      practitioner
+                    </th>
+                    <th scope="col" class="px-1 py-1 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                      Appointment Type
+                    </th>
+                    <th scope="col" class="px-1  py-1 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      Location
+                    </th>
+                   
+                  </tr>
+                </thead>
+                <tbody class="bg-white ">
+                  <tr  class="border-b-2 border-gray-100" v-for="(input, index) in sortAppointments" :key="index">
+                    <td class="px-1 py-1 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                          <calendar-icon/>
+                        </div>
+                        <div class="ml-0">
+                          <div class="text-sm font-bold text-primary">
+                            {{
+                              new Date(
+                              input.createdAt
+                            ).toLocaleDateString("en-US",{ day: 'numeric', month: 'long', year: 'numeric' })
+                            }}
+                          </div>
+                          <div class="text-sm mt-1 font-light text-gray-800">
+                            {{input.newslot}} (1 slot)
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-1 py-1 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                           <span class="rounded-full">
+                               <more-actors :items="input.practitioner" v-if="input.practitioner.length > 1"/>
+                              <Actors :items="input.practitioner" v-else/>
+                          </span>
+                        </div>
+                        <div class="ml-0">
+                          <div class="text-sm font-bold text-black">
+                            Dr. {{input.practitioner.firstName +' '+ input.practitioner.lastName}}
+                          </div>
+                          <div class="text-sm mt-1 font-light text-gray-800">
+                            {{input.practitioner.department}}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-1 py-1 whitespace-nowrap text-sm text-black">
+                        {{input.appointmentType}}
+                    </td>
+                    <td class="px-1 py-1 whitespace-nowrap text-sm text-black" v-if="input.Location.length > 0">
+                      {{input.location}}
+                    </td>
+                    <td class="px-1 py-1 whitespace-nowrap text-sm text-black" v-else>
+                      No location
+                    </td>
+                  </tr>
+
+                  <!-- More people... -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+        </template>
     
   </detail-card>
+    <appointment-modal   
+          v-model="showAppointmentModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -24,6 +106,8 @@ import Actors from "./actors.vue";
 import MoreActors from "@/views/dashboard/schedules/components/actors.vue"
 import ILocation from "@/types/ILocation";
 import AddIcon from "@/components/icons/add.vue";
+import AppointmentModal from "@/views/dashboard/ehr/appointment/appointmentDialog.vue";
+
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -37,7 +121,8 @@ const location = namespace("location");
     NoappointIcon,
     MoreActors,
     Actors,
-    AddIcon
+    AddIcon,
+    AppointmentModal
   },
 })
 export default class AppointmentCard extends Vue {
@@ -48,7 +133,12 @@ appointmentNotes=[];
 availableSlots=[];
 availablepractioner=[];
 locationId ="";
-
+  showAppointmentModal= false;
+    selected = 1;
+ async showAppointment(){
+      this.showAppointmentModal = true;
+  }
+  
 @location.State
   locations!: ILocation[];
 
@@ -66,9 +156,14 @@ locationId ="";
        return this.$route.params.id as string;
      }
        get newmedicationrequest () { 
-  return this.patientappointments.slice(0, 3) 
+  return this.sortAppointments.slice(0, 3) 
   }
 
+ get sortAppointments (){
+        return this.items.slice().sort(function(a:any, b:any){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
       get items() {
         const filteritems =  this.patientappointments.filter((c) => c !== null);
         const newappointment = filteritems.slice(0, 3) 
@@ -131,7 +226,13 @@ locationId ="";
     }
     async created() {
         await this.fetchByIdAppointments(this.$route.params.id.toString());
-        this.getSlot();
+     //  await this.getSlot();
     }
 }
 </script>
+<style scoped>
+table tbody tr {
+   border-right: 0;
+    border-left: 0;
+}
+</style>

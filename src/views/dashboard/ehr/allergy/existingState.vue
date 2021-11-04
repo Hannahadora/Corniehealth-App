@@ -33,10 +33,7 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="
-              $router.push('/dashboard/provider/experience/add-appointment')
-            "
-          >
+            @click="deleteItem(item.id)">
             <plus-icon class="text-green-400 fill-current" />
             <span class="ml-3 text-xs">Add Occurrence</span>
           </div>
@@ -107,7 +104,8 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import AllergyModal from "./allergydialog.vue";
 import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
+import { mapDisplay } from "@/plugins/definitions";
+import { string } from "yup/lib/locale";
 
 const allergy = namespace("allergy");
 
@@ -142,6 +140,7 @@ const allergy = namespace("allergy");
   },
 })
 export default class AllergyExistingState extends Vue {
+
   showColumnFilter = false;
   showModal = false;
   loading = false;
@@ -151,9 +150,10 @@ export default class AllergyExistingState extends Vue {
   showAllergyModal = false;
   allergyId = "";
   tasknotes = [];
-
+substance="";
   // @Prop({ type: Array, default: [] })
   // allergys!: IAllergy[];
+     medicationMapper = (code:string) => ""
 
   @allergy.State
   allergys!: IAllergy[];
@@ -290,8 +290,12 @@ export default class AllergyExistingState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
+    async createMapper(){
+        this.medicationMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/substance-code");
+    }
+
   get items() {
-    const allergys = this.allergys.map((allergy) => {
+    const allergys = this.allergys.map((allergy:any) => {
       (allergy as any).onSet.onsetPeriod.start = new Date(
         (allergy as any).onSet.onsetPeriod.start
       ).toLocaleDateString("en-US");
@@ -301,6 +305,8 @@ export default class AllergyExistingState extends Vue {
       (allergy as any).createdAt = new Date(
         (allergy as any).createdAt
       ).toLocaleDateString("en-US");
+
+     
       return {
         ...allergy,
         action: allergy.id,
@@ -308,12 +314,14 @@ export default class AllergyExistingState extends Vue {
         onsetPeriod:
           allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
         asserter: this.getPractitionerName(allergy.onSet.asserter),
-        product: allergy.reaction.substance,
+        product:  this.medicationMapper(allergy.reaction.substance),
+       // type: mapDisplay(allergy.type),
       };
     });
     if (!this.query) return allergys;
     return search.searchObjectArray(allergys, this.query);
   }
+  
   getPractitionerName(id: string) {
     const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
@@ -323,14 +331,15 @@ export default class AllergyExistingState extends Vue {
     //this.stopEvent = true;
     this.allergyId = value;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+   get patientId() {
+       return this.$route.params.id as string;
+     }
+stripQuote(val: string) {
+    return val.replaceAll('"', "");
   }
-
   allergyAdded() {
     this.allergys;
-    this.fetchAllergys(this.activePatientId);
+    this.fetchAllergys(this.patientId);
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -351,9 +360,10 @@ export default class AllergyExistingState extends Vue {
   }
 
   async created() {
+    await this.createMapper();
     this.getPractitioners();
     this.sortAllergys;
-    this.fetchAllergys(this.activePatientId);
+    await this.fetchAllergys(this.patientId);
   }
 }
 </script>

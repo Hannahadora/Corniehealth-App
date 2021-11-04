@@ -30,11 +30,12 @@
   },
   "include": [
     "src/**/*.ts",
+    "index.d.ts", // this
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/views/dashboard/ehr/careplan"  ],
   "exclude": [
     "node_modules"
   ]

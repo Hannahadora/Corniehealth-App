@@ -16,11 +16,17 @@
         Allergy & Intolerance
       </span>
       <span class="w-full h-screen">
-        <allergys-empty-state v-if="empty" />
+        <!-- <allergys-empty-state v-if="empty" />
         <allergys-existing-state
           @allergy-added="allergyAdded"
           :allergys="allergys"
           v-else
+        /> -->
+
+        <!-- <allergys-empty-state v-if="empty" /> -->
+        <allergys-existing-state
+          @allergy-added="allergyAdded"
+          :allergys="allergys"
         />
       </span>
     </div>
@@ -51,8 +57,7 @@ export default class AllergysIndex extends Vue {
     return this.allergys.length < 1;
   }
  get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+      return this.$route.params.id as string;
   }
 
 

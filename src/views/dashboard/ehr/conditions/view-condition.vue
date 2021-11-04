@@ -172,7 +172,10 @@ import OnsetIcon from "@/components/icons/onset.vue";
 import StageIcon from "@/components/icons/stage.vue";
 import OrgCard from "./components/org-card.vue";
 import PatientCard from "./components/patient-card.vue";
-import { ICondition, Timeable } from "@/types/ICondition";
+import { ICondition } from "@/types/ICondition";
+import { Timeable } from "@/types/Timable";
+
+
 import { printPractitioner } from "@/plugins/utils";
 import { getDropdown } from "@/plugins/definitions";
 import { Codeable } from "@/types/misc";

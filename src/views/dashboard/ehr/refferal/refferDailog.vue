@@ -781,7 +781,7 @@ get allPerformer() {
     async fetchAllergy() {
     const AllAllergy = cornieClient().get(`/api/v1/allergy/findAllByPatient/${this.patientId}`);
     const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data;
+    this.allergy = response[0].data.result;
   }
 
   
