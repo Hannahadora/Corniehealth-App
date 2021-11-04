@@ -273,6 +273,7 @@ export default class ViewCondition extends Vue {
       };
     }
   }
+
   get abatement() {
     if (!this.item.id) return;
     const abatements = this.item.abatements;
