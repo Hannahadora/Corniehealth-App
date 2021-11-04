@@ -1,17 +1,16 @@
 <template>
-  <detail-card more="Manage Appointments"  @add="showAppointment" :showTotal="true" :count="0"  @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)"  title="Appointments">
+  <detail-card more="Manage Appointments"  @add="showAppointment" :showTotal="true" :count="total"  @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)"  title="Appointments">
        <template #empty>
-     <div class="p-8" v-if="sortAppointments.length === 0">
-      <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
-        <p class="mt-4 text-sm text-gray-500 text-center pb-5">Patient have no appoinntment saved. <br>
-        Add new  by clicking the add icon</p>
-    </div>
-            </template>
-        <template>
+            <div class="p-8" v-if="patientappointments.length === 0">
+              <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
+                <p class="mt-4 text-sm text-gray-500 text-center pb-5">Patient have no appoinntment saved. <br>
+                Add new  by clicking the add icon</p>
+            </div>
+        </template>
       <div class="flex flex-col">
-        <div class="-my-8 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="-my-2 pb-5 sm:-mx-6 lg:-mx-8">
           <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="overflow-hidden border-0">
+            <div class="border-0">
               <table class="min-w-full">
                 <thead class="border-b-2 border-gray-100">
                   <tr>
@@ -87,7 +86,7 @@
           </div>
         </div>
       </div>
-        </template>
+      
     
   </detail-card>
     <appointment-modal   
@@ -138,7 +137,7 @@ locationId ="";
  async showAppointment(){
       this.showAppointmentModal = true;
   }
-  
+  total=3;
 @location.State
   locations!: ILocation[];
 
@@ -230,9 +229,12 @@ locationId ="";
     }
 }
 </script>
-<style scoped>
+<style>
 table tbody tr {
    border-right: 0;
     border-left: 0;
+}
+.overflow-y-hidden {
+    overflow-y: unset !important;
 }
 </style>

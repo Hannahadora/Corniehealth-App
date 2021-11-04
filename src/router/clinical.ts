@@ -2,10 +2,10 @@ import { RouteRecordRaw } from "vue-router";
 import EHR from "@/views/dashboard/ehr/index.vue";
 
 export const ClinicalsRoute: RouteRecordRaw = {
-    path: ":id",
-    component: EHR,
-    name: "EHR",
-    // redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
+  path: "clinical/:id?",
+  name: "EHR",
+  component: () => import("@/views/dashboard/ehr/index.vue"),
+  redirect: (to) => `${to.path}/health-trend`.replace("//", "/"),
     children: [
       {
         path: "health-trend/:patientId?",
