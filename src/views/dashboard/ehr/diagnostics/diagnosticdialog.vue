@@ -42,8 +42,8 @@
                    <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/request-intent"
                      class="w-full"
-                      v-model="otherrequestModel.basicInfo.intent"
-                    label="intent"
+                    v-model="otherrequestModel.basicInfo.intent"
+                    label="Intent"
                     placeholder="--Select--"
                 />
                    <fhir-input
