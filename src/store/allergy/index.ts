@@ -21,7 +21,7 @@ export default {
       state.allallergys = [...allergys.result];
     },
     setAllergys(state, allergys:any) {
-      state.allergys = [...allergys.result];
+      state.allergys = [...allergys];
     },
     setPractitioners(state, pts) {
       if (pts && pts.length > 0) state.practitioners = [ ...pts ];
