@@ -1,6 +1,6 @@
 <template>
   <span class="" :class="[$attrs.width || 'w-full']">
-    <label class="flex capitalize mb-1 text-black text-sm font-medium">
+    <label class="flex capitalize mb-1 text-black text-sm font-semibold">
       {{ label }}
     </label>
     <Field
