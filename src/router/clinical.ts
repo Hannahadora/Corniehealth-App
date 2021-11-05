@@ -107,7 +107,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
          
         },
         {
-          path: "progress-notes-existing/:patientId?",
+          path: "progress-notes-existing",
           props: true,
           name: "Progress Notes",
           component: () =>
