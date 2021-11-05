@@ -1,7 +1,7 @@
 <template>
   <chart-card height="343px" title="Weight" @ordered="onOrder">
      <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
-    <canvas ref="registration_chart"></canvas>
+    <canvas ref="registration_chart" style="margin: auto;"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -44,8 +44,7 @@ export default class WeightChart extends Vue {
 
   chart!: Chart;
 
-  @Prop({ type: Number, default: 70 })
-  height!: number;
+  height = "643px";
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;

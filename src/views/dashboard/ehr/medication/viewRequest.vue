@@ -104,7 +104,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: [],
+  Medications: [],
 
 
 };
@@ -265,7 +265,7 @@ performer="";
     const request = await this.getRequestById(this.id)
     if (!request) return
     this.requestModel =  (request) ;
-    this.requestModel.medications = request.medications;
+    this.requestModel.Medications = request.Medications;
   }
  get newaction() {
     return this.id ? 'Update' : 'Create New'

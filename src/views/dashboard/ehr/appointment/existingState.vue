@@ -341,7 +341,6 @@ create="";
 
    
   get items() {
-          console.log(this.patientappointments);
        const filteritems =  this.patientappointments.filter((c) => c !== null);
     const patientappointments = filteritems.map((patientappointment:any) => {
           (patientappointment as any).createdAt= new Date(

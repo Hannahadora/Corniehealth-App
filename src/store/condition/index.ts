@@ -22,13 +22,13 @@ export default {
         [...patientConditions, ...conditions],
         "id"
       );
-      console.error("Setting condition", [...conditionSet]);
       state.conditions[patientId] = [...conditionSet];
     },
   },
   actions: {
     async fetchPatientConditions(ctx, patientId: string) {
       const conditions = await fetchPatientConditions(patientId);
+      console.log('stateconditions', conditions);
 
       ctx.commit("setPatientConditions", { patientId, conditions });
     },

@@ -167,15 +167,11 @@ import AttachIcon from "@/components/icons/ehrattach.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import eyeIcon from "@/components/icons/yelloweye.vue";
-
 import { namespace } from "vuex-class";
 import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { Prop, Ref } from "vue-property-decorator";
-
 const patients = namespace("patients");
-
 type INav = { name: string; to: string; icon: string };
-
 @Options({
   name: "ClinicalSidebar",
   components: {
@@ -204,8 +200,6 @@ CareIcon,
 BillIcon,
 CorrespondIcon,
 AttachIcon,
-
-
   },
 })
 export default class Settings extends Vue {
@@ -215,11 +209,9 @@ export default class Settings extends Vue {
   open = 0;
   @Prop({ type: Object, required: true })
   patient!: IPatient;
-
   get profilePhoto() {
     return this.patient.profilePhoto;
   }
-
   img = setup(() => useHandleImage());
   get organization() {
     return [
@@ -258,14 +250,12 @@ export default class Settings extends Vue {
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
     ];
   }
-
   get settings() {
     const provider = {
       Organization: this.filter(this.organization),
     };
     return provider;
   }
-
   get fullname() {
     const name = `${this.patient.firstname} ${this.patient.lastname}`;
     return name;
@@ -278,30 +268,25 @@ export default class Settings extends Vue {
     const name = `${this.patient.firstname} ${this.patient.lastname}`;
     return name;
   }
-
   mapUrl(url: string) {
     const settingsBase = this.$router.resolve({ name: "EHR" }).href;
     // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
     return `${settingsBase}/${url}`.replace("//", "/");
   }
-
   filter(navs: INav[]) {
     if (!this.query) return navs;
     return navs.filter((nav) =>
       nav.name.toLowerCase().includes(this.query.toLowerCase())
     );
   }
-
   get ppp() {
     const current_patient = this.patient;
     return this.printPhone(current_patient);
   }
-
   get policies() {
     const current_patient = this.patient;
     return this.printPolicyId(current_patient);
   }
-
   get PrimaryPhysician() {
     const current_patient = this.patient;
     if (current_patient.authorizedPractitioners?.length == 0) return "N/A";
@@ -325,7 +310,6 @@ export default class Settings extends Vue {
       authorizedPractitioner: this.printPrimaryPhysician(current_patient),
     };
   }
-
   printPhone(patient: IPatient) {
     if (!patient?.contactInfo) return "N/A";
     const phone = patient?.contactInfo[0].phone;
@@ -335,7 +319,6 @@ export default class Settings extends Vue {
     if (!gender) return "N/A";
     return gender || "N/A";
   }
-
   printEmail(patient: IPatient) {
     if (!patient?.contactInfo) return "N/A";
     return patient?.contactInfo[0].email || "N/A";
@@ -359,17 +342,14 @@ export default class Settings extends Vue {
     const date = new Date(createdAt);
     return date.toLocaleDateString("en-NG");
   }
-
   printMRN(mrn?: string) {
     return `${mrn?.substr(31)}`;
   }
-
   printPolicyId(patient: IPatient) {
     if (!patient?.insurances?.length) return "N/A";
     const policyNumber = patient?.insurances[0].policyNo;
     return policyNumber || "N/A";
   }
-
   printPolicyExpiry(patient: IPatient) {
     if (!patient?.insurances?.length) return "N/A";
     const policyExpiry = new Date(patient?.insurances[0].policyExpiry);
@@ -389,7 +369,6 @@ export default class Settings extends Vue {
   overflow: hidden;
   transition: all 0.5s ease-in-out;
 }
-
 .experience-links-con-min {
   height: 10px;
   overflow: hidden;

@@ -1,6 +1,6 @@
 <template>
-  <chart-card height="439px" title="Billings and Payments">
-    <canvas ref="chart"></canvas>
+  <chart-card height="390px" title="Billings and Payments">
+    <canvas ref="chart" style="margin: auto;"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -40,14 +40,14 @@ export default class BillingsChart extends Vue {
       type: "derivedDoughnut",
       data,
       options: {
-        cutout: 90,
+        // cutout: 90,
         elements: {
           center: {
             text: "N800, 000",
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
-            minFontSize: 20,
+            minFontSize: 12,
             lineHeight: 25,
           },
         },

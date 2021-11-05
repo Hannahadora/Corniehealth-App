@@ -363,7 +363,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: Array(),
+  Medications: Array(),
 
 
 };
@@ -490,7 +490,7 @@ get allPerformer() {
      })
  }
   async showMedication(value:any){
-    this.requestModel.medications = value;
+    this.requestModel.Medications = value;
     this.showMedicationModal = true;
   }
 

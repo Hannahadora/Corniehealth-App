@@ -1,6 +1,6 @@
 <template>
-  <chart-card height="439px" title="Active Visits">
-    <canvas ref="chart"></canvas>
+  <chart-card height="390px" title="Active Visits">
+    <canvas ref="chart" style="margin: auto;"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -59,14 +59,14 @@ export default class VisitsChart extends Vue {
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
-            minFontSize: 17,
+            minFontSize: 12,
             lineHeight: 25,
           },
         },
         responsive: true,
         plugins: {
           legend: {
-            position: "right",
+            position: "bottom",
             labels: {
               boxWidth: 10,
               boxHeight: 10,

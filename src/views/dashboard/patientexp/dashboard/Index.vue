@@ -27,7 +27,7 @@
             py-2
           "
         >
-          Dashboard
+          Dashboards
         </span>
         <registration-chart class="w-full" />
       </div>
