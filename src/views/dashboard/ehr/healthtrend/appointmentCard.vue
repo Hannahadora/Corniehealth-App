@@ -137,7 +137,7 @@ locationId ="";
  async showAppointment(){
       this.showAppointmentModal = true;
   }
-  total=3;
+ // total=3;
 @location.State
   locations!: ILocation[];
 
@@ -154,12 +154,14 @@ locationId ="";
      get patientId() {
        return this.$route.params.id as string;
      }
-       get newmedicationrequest () { 
-  return this.sortAppointments.slice(0, 3) 
-  }
-
+  //      get newmedicationrequest () { 
+  // return this.patientappointments.slice(0, 3) 
+  // }
+get total(){
+  return this.sortAppointments.length
+}
  get sortAppointments (){
-        return this.items.slice().sort(function(a:any, b:any){
+        return this.items.slice().sort(function(a, b){
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }

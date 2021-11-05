@@ -14,7 +14,7 @@ export default {
   },
   mutations: {
     setLocations(state, locations: any) {
-      state.locations = [...locations.result];
+      state.locations = [...locations];
     },
     updateLocations(state, locations: ILocation[]) {
       const locationSet = new ObjectSet(
