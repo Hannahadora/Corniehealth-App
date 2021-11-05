@@ -1,7 +1,7 @@
 <template>
   <div class="block w-full mt-4">
     <span
-      class="flex capitalize mb-1 text-black text-sm font-semibold items-center"
+      class="flex capitalize mb-5 text-black text-sm font-semibold items-center"
     >
       Heading
       <info-icon class="fill-current ml-2 text-primary" />
