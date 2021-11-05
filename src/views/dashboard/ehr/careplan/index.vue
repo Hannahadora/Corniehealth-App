@@ -131,7 +131,7 @@ import DatePicker from "@/components/datepicker.vue"
 import UpdateIcon from "@/components/icons/edit.vue"
 import AddIcon from "@/components/icons/add.vue"
 import NewPlan from "./components/new-plan.vue"
-import DocIcon from "@/components/icons/doc.vue"
+import DocIcon from "@/components/icons/assign-careteam.vue"
 import FeedbackIcon from "@/components/icons/feedback.vue"
 
 @Options({

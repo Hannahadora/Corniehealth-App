@@ -65,12 +65,21 @@ function getDaysInMonth() {
 
 function getUnitData(data: DateStat[], getUnit: (date: Date) => number) {
   const map = new Map<number, number>();
+  
+  
   data.forEach((d) => {
     const day = getUnit(d.date);
+    
     const dayCount = Number(d.count);
+    console.log(dayCount, "DAY COUNT");
+    console.log(map, "DAY");
+    
     const sum = (map.get(day) || 0) + dayCount;
+    console.log(map.get(day), "SUM");
+    
     map.set(day, sum);
   });
+  
   return map;
 }
 
@@ -80,11 +89,14 @@ function getChartData(
   getUnit: (date: Date) => number
 ) {
   const unitData = getUnitData(data, getUnit);
+  
   const dataSet: number[] = [];
   let total = 0;
+  
   labels.forEach((_, index) => {
     const unit = index + 1;
     const sum = unitData.get(unit) || 0;
+    
     dataSet.push(sum);
     total += sum;
   });
@@ -155,7 +167,7 @@ export const sortListByDate = (list: any[]) => {
   return list?.sort((a, b) => {
     const date1: any = new Date(a.date);
     const date2: any = new Date(b.date);
-    return date1 - date2;
+    return  date2 - date1;
   })
 }
 

@@ -1,7 +1,7 @@
 <template>
   <chart-card height="343px" title="Weight" @ordered="onOrder">
-     <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
-    <canvas ref="registration_chart" style="margin: auto;"></canvas>
+     <p class="text-primary font-bold text-sm -mt-5 mb-3">{{ average }}<span class="font-light">kg</span></p>
+    <canvas ref="registration_chart" style="margin: auto;width:100%"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -53,6 +53,12 @@ export default class WeightChart extends Vue {
   get chartData() {
     const data = groupData(this.raw, this.order);
     return data;
+  }
+
+  get average() {
+    const values = this.raw?.map(a => a.count);
+    if (values?.length === 0) return 0
+    return (values.reduce((a, b) => a + b) / values?.length).toFixed(1);
   }
 
   get labels() {

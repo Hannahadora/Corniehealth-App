@@ -22,7 +22,7 @@
             <span class="cursor-pointer relative"><cornie-select v-model="option" :items="[ 'All', 'Recent' ]" style="border: none;width: 86px"/></span>
         </div>
       </span>
-      <div class="w-full grid grid-cols-1 gap-y-2 -mt-8">
+      <div class="w-full grid grid-cols-1 gap-y-2 -mt-8" v-if="itemsList?.length > 0">
         <div class="w-full py-2" v-for="(item, index) in itemsList" :key="index" style="border-bottom: 1px solid #EBEFF2;">
           <div class="w-full flex">
             <div class="w-3/12">
@@ -49,19 +49,16 @@
         </div>
 
         <div class="w-full flex justify-end pb-2 mt-10">
-          <!-- <div class="w-full flex items-center">
-            <div class="text-xs flex flex-col">
-              <span class="font-semibold">
-                Chlotiladone
-              </span>
-            </div>
-          </div> -->
           <div class="text-xs text-danger font-semibold">
             <router-link class="cursor-pointer" :to="{ name: 'Medical | Family History' }">
               View all
             </router-link>
           </div>
         </div>
+      </div>
+      <div class="w-full flex flex-col justify-center items-center" v-else>
+        <p class="my-2"><empty-history-icon /></p>
+        <p class="grey-text">No patient history</p>
       </div>
     </div>
       
@@ -73,11 +70,11 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import DetailCard from "./detail-card.vue";
 import InfoIcon from "@/components/icons/info-white-bg.vue"
-import { Practitioner } from "@/types/IPatient";
 import IPractitioner from "@/types/IPractitioner";
 import { formatFullDate, sortListByDate } from "./chart-filter"
 import CheckIcon from "@/components/icons/check-white-bg.vue"
 import CornieSelect from "@/components/cornieselect.vue"
+import EmptyHistoryIcon from "@/components/icons/empty-history.vue"
 
 const history = namespace('history');
 const practitioner = namespace('practitioner');
@@ -89,6 +86,7 @@ const practitioner = namespace('practitioner');
     InfoIcon,
     CheckIcon,
     CornieSelect,
+    EmptyHistoryIcon,
   },
 })
 export default class HistoryCard extends Vue {

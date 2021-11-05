@@ -1,7 +1,8 @@
 <template>
   <chart-card height="343px" title="Blood Pressure" @ordered="onOrder">
-    <p class="text-primary font-bold text-sm -mt-5 mb-3">120/90 <span class="font-light">mmHgz</span></p>
-    <canvas ref="chart" style="margin: auto;"></canvas>
+    <p class="text-primary font-bold text-sm -mt-5 mb-3">{{ diastolicAverage }}/{{ systolicAverage }} <span class="font-light">mmHgz</span></p>
+    <canvas ref="chart" style="margin: auto; width: 100%"></canvas>
+    
   </chart-card>
 </template>
 <script lang="ts">
@@ -33,6 +34,8 @@ export default class BloodChartt extends Vue {
   loaded = false;
 
   raw: IStat[] = [];
+  diastolicRaw: IStat[] = [];
+  systolicRaw: IStat[] = [];
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   get sortedVitals() {
@@ -110,6 +113,29 @@ export default class BloodChartt extends Vue {
     return data;    
   }
 
+  get diastolicChartData() {
+    // if (this.diastolicRaw?.length === 0) return [ ];
+    const data = groupData(this.diastolicRaw, this.order);
+    return data;
+  }
+
+  get systolicChartData() {
+    // if (this.systolicRaw?.length === 0) return [ ];
+    const data = groupData(this.systolicRaw, this.order);
+    return data;
+  }
+
+  get systolicAverage() {
+    const values = this.systolicRaw?.map(a => a.count);
+    if (values?.length === 0) return 0
+    return Math.ceil((values.reduce((a, b) => a + b) / values?.length));
+  }
+  get diastolicAverage() {
+    const values = this.diastolicRaw?.map(a => a.count);
+    if (values?.length === 0) return 0
+    return Math.ceil((values.reduce((a, b) => a + b) / values?.length));
+  }
+
   chart!: Chart;
   async mounted() {
     await this.getVitals(this.$route.params.id.toString());
@@ -120,13 +146,16 @@ export default class BloodChartt extends Vue {
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
     this.chartData
-    this.diastolicData
+    this.diastolicChartData
+    this.systolicChartData
   }
 
   @Watch("order")
   orderUpdated() {
     this.chartData;
-    this.diastolicData
+    this.diastolicChartData
+    this.systolicChartData
+    this.mountChart()
   }
 
   async fetchData(patientId: string) {
@@ -134,8 +163,14 @@ export default class BloodChartt extends Vue {
       const response = await cornieClient().get(
         `api/v1/vitals/bp/stats/${patientId}`
       );
+      this.diastolicRaw = response?.data?.diastolicData?.map((record: any) => {
+        return { count: record.value, date: record.date }
+      })
+      this.systolicRaw = response?.data?.systolicData?.map((record: any) => {
+        return { count: record.value, date: record.date }
+      })
       this.raw = response.data;
-      console.log(response.data, "RAW");
+      console.log(response.data, "RESPONSE");
       
       
       // this.raw = response.data?.map((item: any) => {
@@ -159,9 +194,7 @@ export default class BloodChartt extends Vue {
     this.chart = new Chart(ctx, {
       type: "line",
       data: {
-        // labels: this.chartData.labels,
-        labels: this.labels,
-        // labels: ["01-Jan", "02-Jan", "03-Jan", "11:00", "04-Jan"],
+        labels: this.diastolicChartData.labels,
         datasets: [
           
           {
@@ -169,10 +202,9 @@ export default class BloodChartt extends Vue {
               target: "origin",
               below: "rgb(0, 0, 255)",
             },
-            label: "Upper Band",
+            label: "Systolic",
             // data: [90, 250, 150, 408, 200, 180],
-            data: this.chartData.dataSet,
-            // data: this.upperBand,
+            data: this.systolicChartData?.dataSet,
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
@@ -182,10 +214,9 @@ export default class BloodChartt extends Vue {
               target: "origin",
               below: "rgb(0, 0, 255)",
             },
-            label: "Lower Band",
+            label: "Diastolic",
             // data: [90, 250, 150, 408, 200, 180],
-            data: this.diastolicData.dataSet,
-            // data: this.lowerBand,
+            data: this.diastolicChartData.dataSet,
             borderColor: "rgba(254, 77, 60, 1)",
             borderWidth: 2,
             tension: 0.1,
