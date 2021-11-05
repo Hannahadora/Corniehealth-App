@@ -99,7 +99,7 @@
           <div
             class="flex flex-col h-full w-full overflow-auto max-h-full pr-2"
           >
-            <p class="text-black font-bold py-3 px-2">Recordss</p>
+            <p class="text-black font-bold py-3 px-2">Records</p>
             <icon-input
               autocomplete="off"
               type="search"

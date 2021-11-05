@@ -62,6 +62,6 @@ import Period from "./IPeriod";
     age: Age;
     deceased: Deceased;
     onset: OnSet;
-
+    practitionerId: string
   }
   

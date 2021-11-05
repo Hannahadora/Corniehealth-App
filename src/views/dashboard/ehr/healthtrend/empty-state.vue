@@ -73,7 +73,7 @@ import HistoryCard from "./historyCard.vue";
 import conditionCardd from "./conditionCardd.vue";
 import AllergyCardd from "./allergyCardd.vue";
 import DiagnosticCardd from "./diagnosticCardd.vue";
-import ProcedureCardd from "./procedureCardd.vue";
+// import ProcedureCardd from "./procedureCardd.vue";
 import NoteCardd from "./noteCardd.vue";
 import AppointmentCardd from "./appointmentCardd.vue";
 import HistoryCardd from "./historyCardd.vue";
@@ -118,7 +118,7 @@ export default {
     DiagnosticCard,
     DiagnosticCardd,
     ProcedureCard,
-    ProcedureCardd,
+    // ProcedureCardd,
     NoteCard,
     NoteCardd,
     AppointmentCard,

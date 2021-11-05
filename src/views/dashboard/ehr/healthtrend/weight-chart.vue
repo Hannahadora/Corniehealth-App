@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="343px" title="Weight">
+  <chart-card height="343px" title="Weight" @ordered="onOrder">
      <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
     <canvas ref="registration_chart"></canvas>
   </chart-card>
@@ -36,7 +36,7 @@ export default class WeightChart extends Vue {
   loaded = false;
 
   get sortedVitals() {
-    return sortListByDate(this.vitals);
+    return sortListByDate(this.raw);
   }
  filter = false;
 
@@ -47,15 +47,12 @@ export default class WeightChart extends Vue {
   @Prop({ type: Number, default: 70 })
   height!: number;
 
-  get chartData() {
-    const data = groupData(this.raw, this.order);
-    return data;
+  onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
+    this.order = option;
   }
 
-  get weightsData() {
-    const data = sortListByDate(this.vitals).map((vital: IVital) => vital.weight?.value);
-    console.log(data, "Weight DAta");
-    
+  get chartData() {
+    const data = groupData(this.raw, this.order);
     return data;
   }
 
@@ -65,20 +62,22 @@ export default class WeightChart extends Vue {
 
   raw: IStat[] = [];
 
-  async fetchData() {
+  async fetchData(patientId: string) {
     try {
       const response = await cornieClient().get(
-        "api/v1/patient/analytics/stats"
+        `api/v1/vitals/weight-stats/${patientId}`
       );
-      this.raw = response.data;
-      console.log('raw', this.raw);
+      this.raw = response.data?.map((item: any) => {
+        return { count: item.value, date: item.date }
+      });
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
-      window.notify({ msg: "Failed to fetch chart data", status: "error" });
+      window.notify({ msg: "Failed to fetch weight chart data", status: "error" });
     }
   }
-  created() {
-    this.fetchData();
+  async created() {
+    await this.fetchData(this.$route.params.id.toString());
+    
   }
 
   @Watch("chartData")
@@ -86,8 +85,12 @@ export default class WeightChart extends Vue {
     this.mountChart();
   }
 
+  @Watch("order")
+  orderUpdated() {
+    this.chartData;
+  }
+
   async mounted() {
-    await this.getVitals(this.$route.params.id.toString());
     this.mountChart();
   }
 
@@ -99,16 +102,15 @@ export default class WeightChart extends Vue {
     this.chart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: this.labels,
+        labels: this.chartData.labels,
         datasets: [
           {
             fill: {
               target: "origin",
               below: "rgb(0, 0, 255)",
             },
-            label: "Patient Registration Stat",
-            data: this.weightsData,
-            // data: this.chartData.dataSet,
+            label: "Patient Weight Stats",
+            data: this.chartData.dataSet,
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,

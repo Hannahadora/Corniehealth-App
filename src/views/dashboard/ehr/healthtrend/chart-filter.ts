@@ -136,9 +136,11 @@ export function groupData(data: IStat[], order: Order) {
 }
 
 export const formatFullDate = (date: string | Date) => { //e.g 16th September, 2021, 15:00
-  // const dateAsDAte = new Date(date);
-  // const month: number = dateAsDAte.getMonth();
-  // return `${dateAsDAte.getDate()} - ${Months[month]}`;
+  const dateAsDAte = new Date(date);
+  const month: number = dateAsDAte.getMonth();
+  const day = dateAsDAte.getDate();
+  const lastNumInDay = day.toString().split('')[day.toString().split('').length - 1]
+  return `${day}${ lastNumInDay === '1' ? 'st' : lastNumInDay === '2' ? 'nd' : lastNumInDay === '3' ? 'rd' : 'th'} ${Months[month]} ${dateAsDAte.getFullYear()}`;
 }
 
 export const formatDate = (date: string | Date) => {
