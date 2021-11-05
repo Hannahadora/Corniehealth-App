@@ -87,10 +87,7 @@ const routes: Array<RouteRecordRaw> = [
             ClinicalsRoute,
           ]
       },
-      // ClinicalsRoute,
-
-      ExperienceRoutes,
-      
+      ExperienceRoutes,      
       {
         path: "settings/",
         name: "Settings",
