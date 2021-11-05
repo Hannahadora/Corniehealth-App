@@ -107,7 +107,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
          
         },
         {
-          path: "progress-notes-existing",
+          path: "progress-notes-existing/:patientId?",
           props: true,
           name: "Progress Notes",
           component: () =>
@@ -127,7 +127,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
           component: () =>
             import("@/views/dashboard/ehr/riskassessment/index.vue"),
         },
-        {
+      {
           path: "referral",
           props: true,
           name: "Referral",

@@ -87,6 +87,8 @@ const routes: Array<RouteRecordRaw> = [
             ClinicalsRoute,
           ]
       },
+      // ClinicalsRoute,
+
       ExperienceRoutes,
       
       {

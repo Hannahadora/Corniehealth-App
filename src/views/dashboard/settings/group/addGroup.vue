@@ -53,7 +53,7 @@
                 </cornie-select> -->
                  <fhir-input
                   reference="http://hl7.org/fhir/ValueSet/group-type"
-                  class="w-full"
+                  class="w-auto"
                   :rules="required"
                   v-model="type"
                   label="Type"
