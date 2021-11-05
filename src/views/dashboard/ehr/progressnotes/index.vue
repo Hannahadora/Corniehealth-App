@@ -65,8 +65,8 @@ const patients = namespace("patients");
   },
 })
 export default class ProgressNotes extends Vue {
-@Prop({ type: String, default: "" })
-  patientId!: string;
+// @Prop({ type: String, default: "" })
+//   patientId!: string;
 
   patient = {} as IPatient;
 
@@ -95,7 +95,9 @@ export default class ProgressNotes extends Vue {
     const cat = condition.clinicalStatus?.replaceAll('"', "");
     return cat;
   }
-
+get patientId() {
+    return this.$route.params.id;
+  }
 
   get items() {
     const items = this.patientProgressNotes.map((progress: any) => ({

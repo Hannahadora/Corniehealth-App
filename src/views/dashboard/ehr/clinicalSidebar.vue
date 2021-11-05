@@ -99,7 +99,7 @@
           <div
             class="flex flex-col h-full w-full overflow-auto max-h-full pr-2"
           >
-            <p class="text-black font-bold py-3 px-2">Recordss</p>
+            <p class="text-black font-bold py-3 px-2">Records</p>
             <icon-input
               autocomplete="off"
               type="search"
@@ -243,11 +243,21 @@ export default class Settings extends Vue {
       { name: "Medications", to: "medications", icon: "medication-icon" },
       { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
-       { name: "Referral", to: "referral", icon: "reffer-icon" },
+      { name: "Referral", to: "referral", icon: "reffer-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
+      {
+        name: "Progress Notes",
+        to: "progress-notes/",
+        icon: "proceed-icon",
+      },
+      {
+        name: "Risk Assesment",
+        to: "/risk-assessment/",
+        icon: "diag-icon",
+      },
     ];
   }
   get settings() {
