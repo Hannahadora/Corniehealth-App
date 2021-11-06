@@ -12,7 +12,7 @@ export async function getCarePlans(patientId: string) {
   return {};
 }
 
-export async function createCarePlan(body: ICarePlan) {
+export async function createCarePlan(body: any) {
   try {
     const response = await cornieClient().post(`/api/v1/care-plan`, body);
     console.log(response, "CAre Plan");
