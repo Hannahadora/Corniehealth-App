@@ -337,6 +337,15 @@ const routes: Array<RouteRecordRaw> = [
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
       },
+      {
+        path: "kyc",
+        props: true,
+        name: "KYC",
+        component: () =>
+          import(
+            "@/views/dashboard/settings/kyc/index.vue"
+          ),
+      },
     ],
   },
 ];
