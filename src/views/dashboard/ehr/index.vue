@@ -13,11 +13,7 @@
     </div>
     <div class="mt-10 mb-5 rounded-lg settings">
       <div class="w-full h-screen max-h-full">
-<<<<<<< HEAD
-        <clinical-sidebar class="pb-96" :patient="patient"/>
-=======
         <clinical-sidebar class="pb-96" :patient="patient" />
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
       </div>
       <div
         class="
@@ -58,10 +54,6 @@ import { IPatient } from "@/types/IPatient";
 
 const patients = namespace("patients");
 
-<<<<<<< HEAD
-// 025
-=======
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 @Options({
   components: {
     ClinicalSidebar,
@@ -79,11 +71,7 @@ export default class ClinicalsSidebar extends Vue {
 
   showPatient = false;
 
-<<<<<<< HEAD
-patient = {} as IPatient;
-=======
   patient = {} as IPatient;
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 
   @patients.Action
   findPatient!: (patientId: string) => Promise<IPatient>;
@@ -92,17 +80,6 @@ patient = {} as IPatient;
     return (this.$route.params.id || this.$route.params.patientId) as string;
   }
 
-<<<<<<< HEAD
-  showPatientModal(){
-    this.showPatient = true;
-  }
-
-   async created (){
-      console.log('id3', this.patientId);
-     this.patient = await this.findPatient(this.patientId)
-     console.log('fff2', this.patient)
-     }
-=======
   showPatientModal() {
     this.showPatient = true;
   }
@@ -110,7 +87,6 @@ patient = {} as IPatient;
   async created() {
     this.patient = await this.findPatient(this.patientId);
   }
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 }
 </script>
 <style scoped>

@@ -17,17 +17,17 @@
         </span>
         <div class="w-full h-full">
             <div class="w-full grid grid-cols-2 gap-4">
-                <blood-chartt/>
-                <weight-chartt title="Weight"/>
+                <!-- <blood-chartt/>
+                <weight-chartt title="Weight"/> -->
             </div>
             <div class="w-full grid grid-cols-3 gap-4">
                 <!-- <appointment-chart /> -->
-                <medication-cardd/>
+                <!-- <medication-cardd/>
                 <condition-cardd/>
                 <allergy-cardd/>
                 <diagnostic-cardd/>
                 <procedure-cardd/>
-                <note-cardd/>
+                <note-cardd/> -->
                 <!-- <appointment-card/>
                 <medication-card/>
                 <medication-card/> -->
@@ -35,8 +35,8 @@
             </div>
 
             <div class="w-full grid">
-                <appointment-cardd/>
-                <history-cardd/>
+                <!-- <appointment-cardd/>
+                <history-cardd/> -->
             </div>
         </div>
       </div>
@@ -54,11 +54,11 @@ import { reactive } from "@vue/reactivity";
 import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { mapActions, mapState } from "vuex";
-import BloodChartt from "./bloodChartt.vue";
-import WeightChartt from "./weight-chartt.vue";
+// import BloodChartt from "./bloodChartt.vue";
+// import WeightChartt from "./weight-chartt.vue";
 
 import MedicationCard from "./medicationCard.vue";
-import MedicationCardd from "./medicationCardd.vue";
+// import MedicationCardd from "./medicationCardd.vue";
 
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
@@ -70,13 +70,13 @@ import HistoryCard from "./historyCard.vue";
 
 
 //for empty state
-import conditionCardd from "./conditionCardd.vue";
-import AllergyCardd from "./allergyCardd.vue";
-import DiagnosticCardd from "./diagnosticCardd.vue";
-import ProcedureCardd from "./procedureCardd.vue";
-import NoteCardd from "./noteCardd.vue";
-import AppointmentCardd from "./appointmentCardd.vue";
-import HistoryCardd from "./historyCardd.vue";
+// import conditionCardd from "./conditionCardd.vue";
+// import AllergyCardd from "./allergyCardd.vue";
+// import DiagnosticCardd from "./diagnosticCardd.vue";
+// import ProcedureCardd from "./procedureCardd.vue";
+// import NoteCardd from "./noteCardd.vue";
+// import AppointmentCardd from "./appointmentCardd.vue";
+// import HistoryCardd from "./historyCardd.vue";
 
 
 
@@ -106,25 +106,25 @@ export default {
     CornieSelect,
     PhoneInput,
     AvatarField,
-    BloodChartt,
+    // BloodChartt,
     WeightChartt,
     AppointmentChart,
     MedicationCard,
-    MedicationCardd,
+    // MedicationCardd,
     conditionCard,
-    conditionCardd,
+    // conditionCardd,
     AllergyCard,
     AllergyCardd,
     DiagnosticCard,
-    DiagnosticCardd,
+    // DiagnosticCardd,
     ProcedureCard,
-    ProcedureCardd,
+    // ProcedureCardd,
     NoteCard,
-    NoteCardd,
+    // NoteCardd,
     AppointmentCard,
-    AppointmentCardd,
+    // AppointmentCardd,
     HistoryCard,
-    HistoryCardd,
+    // HistoryCardd,
     
   },
   setup() {
