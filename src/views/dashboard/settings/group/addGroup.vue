@@ -53,9 +53,9 @@
                 </cornie-select> -->
                  <fhir-input
                   reference="http://hl7.org/fhir/ValueSet/group-type"
-                  class="w-full"
+                  class="w-auto"
                   :rules="required"
-                  v-model="state"
+                  v-model="type"
                   label="Type"
                   placeholder="--Select--"
                 />
@@ -115,27 +115,40 @@
           <accordion-component title="Value" v-model="openedR">
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-5 p-5">
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   :items="['value Boolean']"
                   v-model="valueBoolean"
                   label="Value Boolean"
                   placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
+                   <cornie-select
+                  :rules="required"
+                  :items="['True', 'False']"
+                  v-model="valueBoolean"
+                  label="Value(True/False)"
+                  placeholder="--Choose A Value--"
+                ></cornie-select>
                 <cornie-input
                   label="value codeable concept"
                   placeholder="--Enter--"
                   v-model="valueCodeableConcept"
                 />
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   :items="['Value Quantity']"
                   v-model="valueQuantity"
                   label="Value Quantity"
                   placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
+                 <cornie-input
+                 :rules="required"
+                  label="Value Quantity"
+                  placeholder="--Enter the quantity--"
+                  v-model="valueQuantity"
+                />
                 <cornie-select
                   :rules="required"
                   :items="['Value Range']"
@@ -145,14 +158,21 @@
                 >
                 </cornie-select>
 
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   :items="['exclude']"
                   v-model="exclude"
                   label="exclude"
                   placeholder="--Select--"
                 >
-                </cornie-select>
+                </cornie-select> -->
+                 <cornie-select
+                  :rules="required"
+                  :items="['True', 'False']"
+                  v-model="exclude"
+                  label="Exclude(True/False)"
+                  placeholder="--Select--"
+                ></cornie-select>
                 <cornie-input
                   label="value reference"
                   placeholder="--Enter--"
@@ -183,24 +203,40 @@
               </div>-->
             </div>
               <div class="w-full grid grid-cols-3 gap-5 p-5">
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   :items="['Member Entity']"
                   v-model="memberEntity"
                   label="entity"
                   placeholder="--Select--"
-                >
-                </cornie-select>
+                >             
+                </cornie-select> -->
+                   <cornie-select
+                  :rules="required"
+                  :items="['Organization', 'RelatedPerson', 'Practitioner', 'PractitionerRole']"
+                  v-model="managingEntity"
+                  label="Managing Entity"
+                  placeholder="--Select--"
+                ></cornie-select>
                 <single-date-picker
                   label="Member Period"
                   v-model="memberPeriod"
                   placeholder="--Enter--"
                   :rules="required"
                 />
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   :items="['Member Status']"
                   v-model="memberStatus"
+                  label="Status"
+                  placeholder="--Select--"
+                >
+                </cornie-select> -->
+                <cornie-select
+                  :onChange="setValue(options.text)"
+                  :items="items"
+                  :rules="required"
+                  v-model="status"
                   label="Status"
                   placeholder="--Select--"
                 >

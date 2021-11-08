@@ -184,7 +184,7 @@ import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
 import Avatar from "@/components/avatar.vue";
 import EditIcon from "@/components/icons/newupdate.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
+import NewviewIcon from "@/components/icons/eye-blue-bg.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
@@ -198,7 +198,7 @@ import CornieInput from "@/components/cornieinput.vue"
 import DatePicker from "@/components/datepicker.vue"
 import NewProcedure from "./components/new-procedure.vue"
 import IProcedure from "@/types/IProcedure";
-import UpdateIcon from "@/components/icons/edit.vue"
+import UpdateIcon from "@/components/icons/edit-purple.vue"
 import AssertIcon from "@/components/icons/check.vue"
 import FileIcon from "@/components/icons/file.vue"
 import FeedbackIcon from "@/components/icons/feedback.vue"

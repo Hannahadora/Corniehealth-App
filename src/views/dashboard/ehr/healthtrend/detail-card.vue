@@ -55,6 +55,8 @@ import AddIcon from "@/components/icons/add.vue";
 export default class DetailCard extends Vue {
   filter = false;
 
+  showModal = false;
+
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   @Prop({ type: String, default: "" })

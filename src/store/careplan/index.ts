@@ -54,7 +54,7 @@ export default {
       return res as boolean;
     },
 
-    async updateCarePlan(ctx, body: ICarePlan) {
+    async updateCarePlan(ctx, body: any) {
       const res = await updateCarePlan(body)
       if (!res) return false;
     //   ctx.commit("updateHospitalisation", res)

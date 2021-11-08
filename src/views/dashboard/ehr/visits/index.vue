@@ -214,7 +214,7 @@ import CheckinNoapp from './components/checkin-noappointment.vue'
 import ArrowRight from '@/components/icons/arrow-right.vue'
 import EncounterIcon from '@/components/icons/encounter.vue'
 import MultiSelect from "@/views/dashboard/schedules/components/apply-to.vue"
-import CheckoutIcon from '@/components/icons/checkout.vue'
+import CheckoutIcon from '@/components/icons/check-red-bg.vue'
 
 import EmptyState from './empty-state.vue'
 import CancelIcon from './components/cancel.vue'
