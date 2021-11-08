@@ -70,10 +70,10 @@ import HistoryCard from "./historyCard.vue";
 
 //for empty state
 // import conditionCardd from "./conditionCardd.vue";
-import DiagnosticCardd from "./diagnosticCardd.vue";
+// import DiagnosticCardd from "./diagnosticCardd.vue";
 // import ProcedureCardd from "./procedureCardd.vue";
-import NoteCardd from "./noteCardd.vue";
-import HistoryCardd from "./historyCardd.vue";
+// import NoteCardd from "./noteCardd.vue";
+// import HistoryCardd from "./historyCardd.vue";
 
 
 
