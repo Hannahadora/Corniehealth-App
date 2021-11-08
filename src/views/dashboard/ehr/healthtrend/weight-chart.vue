@@ -1,11 +1,7 @@
 <template>
   <chart-card height="338px" title="Weight">
      <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
-<<<<<<< HEAD
-    <canvas ref="registration_chart"></canvas>
-=======
     <canvas ref="registration_chart" style="margin: auto;"></canvas>
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
   </chart-card>
 </template>
 <script lang="ts">
@@ -16,10 +12,6 @@ import Chart from "chart.js/auto";
 
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
-<<<<<<< HEAD
-import { groupData } from "./chart-filter";
-import { Prop, Watch } from "vue-property-decorator";
-=======
 import { getDatesAsChartLabel, groupData } from "./chart-filter";
 import { Prop, Watch } from "vue-property-decorator";
 import { formatDate, sortListByDate } from "./chart-filter"
@@ -27,7 +19,6 @@ import { namespace } from "vuex-class";
 import IVital from "@/types/IVital";
 
 const vitalsStore = namespace('vitals')
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 
 @Options({
   name: "BloodChart",
@@ -36,8 +27,6 @@ const vitalsStore = namespace('vitals')
   },
 })
 export default class WeightChart extends Vue {
-<<<<<<< HEAD
-=======
   @vitalsStore.State
   vitals!: IVital[];
 
@@ -49,27 +38,19 @@ export default class WeightChart extends Vue {
   get sortedVitals() {
     return sortListByDate(this.vitals);
   }
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
  filter = false;
 
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   chart!: Chart;
 
-<<<<<<< HEAD
-  @Prop({ type: Number, default: 70 })
-  height!: number;
-=======
   height = "643px";
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 
   get chartData() {
     const data = groupData(this.raw, this.order);
     return data;
   }
 
-<<<<<<< HEAD
-=======
   get weightsData() {
     const data = sortListByDate(this.vitals).map((vital: IVital) => vital.weight?.value);
     console.log(data, "Weight DAta");
@@ -81,7 +62,6 @@ export default class WeightChart extends Vue {
     return getDatesAsChartLabel(this.vitals);
   }
 
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
   raw: IStat[] = [];
 
   async fetchData() {
@@ -105,32 +85,20 @@ export default class WeightChart extends Vue {
     this.mountChart();
   }
 
-<<<<<<< HEAD
-  mounted() {
-=======
   async mounted() {
     await this.getVitals(this.$route.params.id.toString());
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
     this.mountChart();
   }
 
   mountChart() {
     const ctx: any = this.$refs.registration_chart;
     // ctx.height = this.height;
-<<<<<<< HEAD
-        ctx.height = 95;
-=======
         ctx.height = 200;
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
       data: {
-<<<<<<< HEAD
-        labels: this.chartData.labels,
-=======
         labels: this.labels,
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
         datasets: [
           {
             fill: {
@@ -138,12 +106,8 @@ export default class WeightChart extends Vue {
               below: "rgb(0, 0, 255)",
             },
             label: "Patient Registration Stat",
-<<<<<<< HEAD
-            data: this.chartData.dataSet,
-=======
             data: this.weightsData,
             // data: this.chartData.dataSet,
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
