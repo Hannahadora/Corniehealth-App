@@ -110,7 +110,6 @@ get sortAllergys() {
     
     async created(){
       await this.createMapper();
-      console.log( this.medicationMapper,"fdejeghetjkg");
        await this.fetchAllergys(this.patientId);
      ///  this.medicationMapper = this.createMapper();
     }

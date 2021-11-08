@@ -34,7 +34,7 @@ export default {
     async createProcedure(ctx, procedure: IProcedure) {
       const res = await createProcedure(procedure);
       if (!res) return { };
-      // ctx.commit("addVital", res);
+      getProcedures(procedure.patientId)
       return res;
     },
 

@@ -42,7 +42,7 @@
 import { Options, Vue } from "vue-class-component";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import DropDown from "@/components/drop-down.vue";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 
 
 
@@ -63,6 +63,12 @@ export default class ChartCard extends Vue {
 
   @Prop({ type: String, default: "" })
   height!: string;
+
+  @Watch('order')
+  filterUpdated() {
+    this.$emit('ordered', this.order)
+    this.filter = !this.filter;
+  }
 }
 </script>
 

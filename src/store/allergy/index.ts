@@ -20,7 +20,7 @@ export default {
     setAllAllergys(state, allergys: any) {
       state.allallergys = [...allergys.result];
     },
-    setAllergys(state, allergys:any) {
+    setAllergys(state, allergys:IAllergy[]) {
       state.allergys = [...allergys];
     },
     setPractitioners(state, pts) {
@@ -45,8 +45,7 @@ export default {
     },
     async fetchAllergys(ctx,patientId:string) {
       const allergys = await fetchAllergys(patientId);
-      console.log("allergyfromstatebypatient", allergys.result);
-      ctx.commit("setAllergys", allergys.result);
+      ctx.commit("setAllergys", allergys);
     },
     async getPractitioners(ctx) {
       const pts = await getPractitioners();      
