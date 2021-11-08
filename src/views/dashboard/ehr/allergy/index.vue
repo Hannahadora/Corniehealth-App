@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded w-full">
+  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded-3xl w-full">
     <div class="w-full">
       <span
         class="
@@ -9,18 +9,24 @@
           border-b-2
           font-bold
           mb-10
-          text-xl text-primary
+          text-xl text-dye
           py-2
         "
       >
         Allergy & Intolerance
       </span>
       <span class="w-full h-screen">
-        <allergys-empty-state v-if="empty" />
+        <!-- <allergys-empty-state v-if="empty" />
         <allergys-existing-state
           @allergy-added="allergyAdded"
           :allergys="allergys"
           v-else
+        /> -->
+
+        <!-- <allergys-empty-state v-if="empty" /> -->
+        <allergys-existing-state
+          @allergy-added="allergyAdded"
+          :allergys="allergys"
         />
       </span>
     </div>
@@ -50,25 +56,25 @@ export default class AllergysIndex extends Vue {
   get empty() {
     return this.allergys.length < 1;
   }
+ get activePatientId() {
+      return this.$route.params.id as string;
+  }
+
 
   @allergy.State
   allergys!: IAllergy[];
 
   @allergy.Action
-  fetchAllergys!: () => Promise<void>;
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
   allergyAdded() {
     this.show = false;
     this.allergys;
-    this.fetchAllergys();
-  }
-
-  mounted() {
-    this.fetchAllergys();
+    this.fetchAllergys(this.activePatientId);
   }
 
   created() {
-    if (this.allergys.length < 1) this.fetchAllergys();
+    if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
   }
 }
 </script>

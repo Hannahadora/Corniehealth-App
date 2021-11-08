@@ -25,8 +25,8 @@ export default {
     requiresTwoFactorAuth: false,
     emailVerified: false,
     cornieData: {} as any,
-    practitionerAuthenticated: false,
-    domain: "gcbv",
+    practitionerAuthenticated: true,
+    domain: "",
   },
   getters: {
     accountType(state) {
@@ -38,6 +38,10 @@ export default {
     authPractitioner(state) {
       return state.cornieData?.practitioner;
     },
+    authPractitionerDomain(state) {
+      const corniedata = localStorage.getItem('corniehealthdata') as string;
+      return JSON.parse(corniedata)?.authDomain
+    },
   },
   mutations: {
     setCornieData(state, payload) {
@@ -48,8 +52,8 @@ export default {
       state.authTime = new Date();
       rememberLogin(token);
     },
-    setAuthDomain(state, domain: string){
-      state.domain = domain
+    setAuthDomain(state, domain: string) {
+      state.domain = domain;
     },
     setLoginInfo(state, payload) {
       state.user = payload.user;

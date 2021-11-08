@@ -68,6 +68,18 @@
                  <template #recorder="{ item }">
                         <p class="cursor-pointer">{{ item.asserter }}</p>
                 </template>
+                 <template #status="{ item }">
+                <div class="flex items-center">
+                  <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'Draft'">{{item.status}}</p>
+                  <p class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded" v-if="item.status == 'On-Hold'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-500 p-1 rounded" v-if="item.status == 'Active'">{{item.status}}</p>
+                  <p class="text-xs bg-gray-300  p-1 rounded" v-if="item.status == 'Unknown'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'Completed'">{{item.status}}</p>
+                  <p class="text-xs bg-red-300 text-red-600 p-1 rounded" v-if="item.status == 'Revoked'">{{item.status}}</p>
+                  <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'Entered-in-Error'">{{item.status}}</p>
+                    <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'Do Not Perform'">{{item.status}}</p>
+                </div>
+              </template>
             </cornie-table>
     </div>
     
@@ -86,12 +98,16 @@
 
             <view-modal
         :id="requestId" 
+          @medication-added="medicationAdded"
           @update:preferred="showViewMedication"
           v-model="showViewMedicationModal"/>
         
            <status-modal
-        :id="requestId" 
-          @update:preferred="showStatus"
+            :id="requestId" 
+           :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="update"
+       @medication-added="medicationAdded"
           v-model="showStatusModal"/>
 
 
@@ -135,6 +151,7 @@ import SendIcon from "@/components/icons/send.vue";
 import CheckoutIcon from "@/components/icons/newcheckout.vue";
 import CalenderIcon from "@/components/icons/newcalender.vue";
 import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
 
 const request = namespace("request");
 const userStore = namespace("user");
@@ -188,7 +205,13 @@ export default class AllergyExistingState extends Vue {
   tasknotes=[];
 onePatientId ="";
 showStatusModal=false;
+updatedBy= "";
+currentStatus="";
+update="";
 
+   @userStore.Getter
+  authPractitioner!: IPractitioner;
+  
   @userStore.State
   user!: User;
 
@@ -198,8 +221,15 @@ showStatusModal=false;
   @userStore.Action
   updatePractitionerAuthStatus!: () => Promise<void>;
 
+  // @request.State
+  // requests!: any[];
+  
   @request.State
-  requests!: any[];
+  patientrequests!: any[];
+
+
+ @request.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
   @request.State
   practitioners!: any[];
@@ -216,8 +246,8 @@ showStatusModal=false;
   @request.Action
   getPractitioners!: () => Promise<void>;
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  // @request.Action
+  // fetchRequests!: () => Promise<void>;
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -265,32 +295,41 @@ showStatusModal=false;
   }
   
   get items() {
-    const requests = this.requests.map((request) => {
-         (request as any).createdAt = new Date(
-         (request as any).createdAt 
+    const patientrequests = this.patientrequests.map((request) => {
+      (request as any).createdAt = new Date(
+        (request as any).createdAt 
        ).toDateString();
-
-        //this.onePatientId =  request.subject.subject;
+        (request as any).updatedAt = new Date(
+          (request as any).updatedAt 
+       ).toDateString();
+      this.updatedBy = this.getPatientName(this.patientId as string);
+      this.currentStatus = request.status;
+      this.update= request.updatedAt
         return {
-        ...request,
+          ...request,
          action: request.id,
-         patient: this.getPatientName(request.subject.subject),
-       requester: this.getPatientName(request.requestDetails.requester),
-        dispenser: this.getPractitionerName(request.performer.dispenser),
-        performer: this.getPractitionerName(request.medicationAdministration.performer),
+         patient: this.getPatientName(this.patientId as string),
+       requester: this.getPatientName(this.patientId as string),
+        dispenser: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
+        performer: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
         };
+        
     });
-    if (!this.query) return requests;
-    return search.searchObjectArray(requests, this.query);
+    
+    if (!this.query) return patientrequests;
+    return search.searchObjectArray(patientrequests, this.query);
   }
 // getPractitionerName(id: string){
-//    const pt = this.practitioners.find((i: any) => i.id === id);
+  //    const pt = this.practitioners.find((i: any) => i.id === id);
 //     return pt ? `${pt.firstName} ${pt.lastName}` : '';
 // }
   async showMedication(value:string){
-      this.showMedicationModal = true;
+    this.showMedicationModal = true;
       this.requestId = value;
   }
+    get patientId() {
+       return this.$route.params.id as string;
+     }
   async showViewMedication(value:string){
       this.showViewMedicationModal = true;
       this.requestId = value;
@@ -301,8 +340,9 @@ showStatusModal=false;
     this.requestId = value;
   }
 
-  medicationAdded() {
-  this.fetchRequests();
+ 
+   medicationAdded() {
+   this.fetchOtherrequestsById(this.patientId);
   }
         getPatientName(id: string) {
             const pt = this.patients.find((i: any) => i.id === id);
@@ -315,13 +355,13 @@ showStatusModal=false;
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this allergy",
-      title: "Delete allergy"
+      message: "You are about to delete this medication",
+      title: "Delete medication"
     });
     if (!confirmed) return;
 
-    if (await this.deleteRequest(id)) window.notify({ msg: "Allergy cancelled", status: "success" });
-    else window.notify({ msg: "Allergy not cancelled", status: "error" });
+    if (await this.deleteRequest(id)) window.notify({ msg: "Medicaiton deleted", status: "success" });
+    else window.notify({ msg: "Medication not deleted", status: "error" });
   }
  
       get sortMedications (){
@@ -334,7 +374,7 @@ showStatusModal=false;
           this.getPractitioners();
           this.getPatients();
           this.sortMedications;
-          this.fetchRequests();
+         this.fetchOtherrequestsById(this.patientId);
     }
 
 }

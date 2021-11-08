@@ -23,7 +23,7 @@ export default {
       const data = await fetchOrganization();
       if (data) ctx.commit("setData", data);
     },
-    async getCurrenctOrg(ctx) {
+    async getCurrentOrg(ctx) {
       if (ctx.state.organizationInfo) return ctx.state.organizationInfo;
       await ctx.dispatch("fetchOrgInfo");
       return ctx.state.organizationInfo;

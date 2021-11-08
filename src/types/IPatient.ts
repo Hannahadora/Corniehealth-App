@@ -94,6 +94,11 @@ export interface RelatedPerson {
 
   type: string;
 }
+export interface authorizedPractitioners {
+  id?: string;
+  patient_authorized_practitioners: string;
+  user: {}
+}
 
 export interface Guarantor extends RelatedPerson {
   type: "guarantor";
@@ -102,11 +107,11 @@ export interface EmergencyContact extends RelatedPerson {
   type: "emergency-contact";
 }
 
-export interface authorizedPractitioners {
-  id?: string;
-  patient_authorized_practitioners?: object;
-  user?: object;
-}
+// export interface authorizedPractitioners {
+//   id?: string;
+//   patient_authorized_practitioners?: object;
+//   user?: object;
+// }
 
 export interface IPatient {
   id?: string;
@@ -134,7 +139,5 @@ export interface IPatient {
   demographicsData?: Demographics;
   belongsToPractice?: boolean;
   profilePhoto?: string;
-  updatedAt?: string;
-  createdAt?: string;
-  authorizedPractitioners: authorizedPractitioners[];
+  authorizedPractitioners?: authorizedPractitioners[];
 }

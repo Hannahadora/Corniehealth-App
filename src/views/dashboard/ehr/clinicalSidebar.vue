@@ -1,20 +1,53 @@
 <template>
-<div class="h-screen w-full overflow-auto max-h-full">
-  <div class="containers">
-    <div class="rounded-lg bg-white shadow-md w-full">
+  <div class="h-screen w-full overflow-auto max-h-full">
+    <div class="containers">
+      <div class="rounded-lg bg-white shadow-md w-full">
         <div class="flex -mb-12 justify-center">
-          <avatar class="mr-2  h-24 w-24 m-5"  v-bind:src="picture" />
+          <avatar class="mr-2 h-24 w-24 m-5" :src="profilePhoto" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
-          <span class="text-sm text-black font-bold">{{items.fullname}}</span> | {{items.email}} <br>
-          <p>MRN-{{items.mrn}}</p> 
+          <span class="text-sm text-black font-bold">{{ items.fullname }}</span>
+          | {{ items.email }} <br />
+          <p>MRN-{{ items.mrn }}</p>
           <p>
-           {{ items.dob}} 
+            {{ items.dob }}
           </p>
-         <p> Blood Type: <span class="text-sm text-black font-light">A+ | </span> <span>Genotype: <span class="text-sm text-black font-light">AA</span> </span></p>
-          
+          <p>
+            Blood Type:
+            <span class="text-sm text-black font-light">A+ | </span>
+            <span
+              >Genotype: <span class="text-sm text-black font-light">AA</span>
+            </span>
+          </p>
         </div>
-          <div class="border-dashed border-2  border-gray-100 m-3"></div>
+        <div class="border-dashed border-2 border-gray-100 m-3"></div>
+        <div>
+          <div class="flex justify-between -mb-2 space-x-2 p-3">
+            <p class="text-xs text-gray-400 flex">
+              Policy IDs <eye-icon class="ml-2" />
+            </p>
+            <p class="text-xs text-black flex">{{ items.my_policyId }}</p>
+          </div>
+          <div class="flex justify-between -mb-2 space-x-2 p-3">
+            <p class="text-xs text-gray-400">Expires</p>
+            <p class="text-xs text-black flex">{{ items.the_policyExpiry }}</p>
+          </div>
+          <div class="flex justify-between space-x-2 p-3">
+            <p class="text-xs text-gray-400">Primary Physician</p>
+            <p class="text-xs text-black flex">
+              {{ items.authorizedPractitioner.firstName }}
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="experience-links-con"
+          :class="{
+            'experience-links-con-max': showFullHeight,
+            'experience-links-con-min': !showFullHeight,
+          }"
+        >
+          <div class="border-dashed border-2 border-gray-100 m-3"></div>
           <div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
               <p class="text-xs text-gray-400 flex">Policy IDs <eye-icon class="ml-2"/></p>
@@ -59,58 +92,74 @@
                 </div>
               </div>
           </div>
-          <span  @click="() => showFullHeight = !showFullHeight" class="text-danger more font-bold cursor-pointer p-5 text-sm flex justify-center">{{ showFullHeight ? 'See less' : 'See more' }}</span>
+        </div>
+        <span
+          @click="() => (showFullHeight = !showFullHeight)"
+          class="
+            text-danger
+            more
+            font-bold
+            cursor-pointer
+            p-5
+            text-sm
+            flex
+            justify-center
+          "
+          >{{ showFullHeight ? "See less" : "See more" }}</span
+        >
+      </div>
     </div>
-  </div>
 
-  <div class="containers sticky">
-    <div class="mt-2 mb-5 rounded-lg bg-white  shadow-md w-full h-full max-h-full">
-      <div class="w-full h-full p-2">
-        <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-          <p class="text-black font-bold py-3 px-2">Recordss</p>
-          <icon-input
-            autocomplete="off"
-            type="search"
-            v-model="query"
-            placeholder="Search"
-            class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
+    <div class="containers sticky">
+      <div
+        class="mt-2 mb-5 rounded-lg bg-white shadow-md w-full h-full max-h-full"
+      >
+        <div class="w-full h-full p-2">
+          <div
+            class="flex flex-col h-full w-full overflow-auto max-h-full pr-2"
           >
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-          </icon-input>
-          <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
-            <span>
-              <div
-                class="flex flex-col mt-1 text-gray-500"
+            <p class="text-black font-bold py-3 px-2">Records</p>
+            <icon-input
+              autocomplete="off"
+              type="search"
+              v-model="query"
+              placeholder="Search"
+              class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
+            >
+              <template v-slot:prepend>
+                <search-icon />
+              </template>
+            </icon-input>
+            <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
+              <span>
+                <div class="flex flex-col mt-1 text-gray-500">
+                  <s-bar-link
+                    class="mb-3"
+                    :name="item.name"
+                    :to="mapUrl(item.to)"
+                    v-for="(item, index) in setting"
+                    :key="index"
                   >
-                <s-bar-link
-                class="mb-3"
-                  :name="item.name"
-                  :to="mapUrl(item.to)"
-                  v-for="(item, index) in setting"
-                  :key="index"
-                  >
-                  <template v-slot="{ active }">
-                    <keep-alive>
-                      <component
-                        :is="item.icon"
-                        :class="{ 'fill-current': active }"
-                      ></component>
-                    </keep-alive>
-                  </template>
-                </s-bar-link>
-              </div>
-            </span>
+                    <template v-slot="{ active }">
+                      <keep-alive>
+                        <component
+                          :is="item.icon"
+                          :class="{ 'fill-current': active }"
+                        ></component>
+                      </keep-alive>
+                    </template>
+                  </s-bar-link>
+                </div>
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 <script lang="ts">
-import { Options,setup, Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import IconInput from "@/components/IconInput.vue";
 import Avatar from "@/components/avatar.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -128,24 +177,20 @@ import ConditionIcon from "@/components/icons/ehrcondition.vue";
 import MedicationIcon from "@/components/icons/ehrmedication.vue";
 import DiagIcon from "@/components/icons/ehrdiag.vue";
 import ProceedIcon from "@/components/icons/ehrprocedure.vue";
+import RefferIcon from "@/components/icons/ehrreffer.vue";
 import CareIcon from "@/components/icons/ehrcare.vue";
+import ImpressionIcon from "@/components/icons/ehrimpression.vue";
 import BillIcon from "@/components/icons/ehrbill.vue";
 import CorrespondIcon from "@/components/icons/ehrcorrespond.vue";
 import AttachIcon from "@/components/icons/ehrattach.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import eyeIcon from "@/components/icons/yelloweye.vue";
-
 import { namespace } from "vuex-class";
 import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { Prop, Ref } from "vue-property-decorator";
-
-
-
 const patients = namespace("patients");
-
 type INav = { name: string; to: string; icon: string };
-
 @Options({
   name: "ClinicalSidebar",
   components: {
@@ -157,6 +202,8 @@ type INav = { name: string; to: string; icon: string };
     ChevronDownIcon,
     IconInput,
     SearchIcon,
+    ImpressionIcon,
+    RefferIcon,
 TrendIcon,
 MedicalIcon,
 AllergyIcon,
@@ -172,53 +219,70 @@ CareIcon,
 BillIcon,
 CorrespondIcon,
 AttachIcon,
-
-
   },
 })
 export default class Settings extends Vue {
-  showFullHeight=false;
+  showFullHeight = false;
   expand = false;
   query = "";
   open = 0;
-  // localSrc = require('../../../assets/img/ehr.png');
-  // localSrc = this.patient.profilePhoto;
-  //  photo: patient.profilePhoto,
   @Prop({ type: Object, required: true })
   patient!: IPatient;
+  get profilePhoto() {
+    return this.patient.profilePhoto;
+  }
   img = setup(() => useHandleImage());
   get organization() {
     return [
       { name: "Health Trend", to: "health-trend", icon: "trend-icon" },
-      { name: "Medical | Family History", to: "medical", icon: "medical-icon" },
+      {
+        name: "Medical | Family History",
+        to: "medical-family-history",
+        icon: "medical-icon",
+      },
       {
         name: "Allergies (Intolerance)",
         to: "allergy",
         icon: "allergy-icon",
       },
+      { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
+      { name: "Condition/Problem", to: "condition", icon: "condition-icon" },
       {
         name: "Appointments",
-        to: "appointment",
+        to: "appointments",
         icon: "appoint-icon",
       },
       { name: "Visits", to: "visits", icon: "visit-icon" },
-      { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
       { name: "Encounter", to: "encounter", icon: "encounter-icon" },
-      { name: "Condition/Problem", to: "condition", icon: "condition-icon" }, 
-      { name: "Medications", to: "/./medications", icon: "medication-icon" },
+      {
+        name: "Clinical Impression",
+        to: "clinical-impressions",
+        icon: "impression-icon",
+      },
+      { name: "Medications", to: "medications", icon: "medication-icon" },
       { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
+      { name: "Referral", to: "referral", icon: "reffer-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
+      {
+        name: "Progress Notes",
+        to: "progress-notes/",
+        icon: "proceed-icon",
+      },
+      {
+        name: "Risk Assesment",
+        to: "/risk-assessment/",
+        icon: "diag-icon",
+      },
     ];
   }
- 
   get settings() {
     const provider = {
-      Organization: this.filter(this.organization)
-    };   
+      Organization: this.filter(this.organization),
+    };
     return provider;
   }  
 
@@ -236,83 +300,63 @@ get picture() {
   }
 
   mapUrl(url: string) {
-    const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
+    const settingsBase = this.$router.resolve({ name: "EHR" }).href;
+    // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
     return `${settingsBase}/${url}`.replace("//", "/");
   }
-
   filter(navs: INav[]) {
     if (!this.query) return navs;
     return navs.filter((nav) =>
       nav.name.toLowerCase().includes(this.query.toLowerCase())
     );
   }
-
-
- get ppp() {
-    const current_patient =  this.patient;
-    return  this.printPhone(current_patient);
+  get ppp() {
+    const current_patient = this.patient;
+    return this.printPhone(current_patient);
   }
-
- get policies() {
-    const current_patient =  this.patient;
-    return  this.printPolicyId(current_patient);
+  get policies() {
+    const current_patient = this.patient;
+    return this.printPolicyId(current_patient);
   }
-
-  //  get PrimaryPhysician() {
-  //   const current_patient =  this.patient;
-  //   if (current_patient.generalPractitioners?.length == 0) return "N/A";
-  //   const my_primaryPhysician = current_patient.generalPractitioners[0].patient_authorized_practitioners.user.firstName;
-  //   return my_primaryPhysician;
-  // }
+  get PrimaryPhysician() {
+    const current_patient = this.patient;
+    if (current_patient.authorizedPractitioners?.length == 0) return "N/A";
+    const my_primaryPhysician = current_patient.authorizedPractitioners;
+    return my_primaryPhysician;
+  }
   get items() {
     // const name =  `${this.patient.firstname} ${this.patient.lastname}`
     // return name;
-    const current_patient =  this.patient
-     return {
-                code: current_patient.id,
-                fullname: `${current_patient.firstname} ${current_patient.lastname}`,
-                email: this.printEmail(current_patient),
-                address: this.printAddress(current_patient),
-                phone: this.printPhone(current_patient),
-                dob: this.printDOB(current_patient.dateOfBirth),
-                lastVisited: this.printLastVisited(current_patient.updatedAt),
-                activeSince: this.printactiveSince(current_patient.createdAt),
-                 mrn: this.printMRN(current_patient.mrn),
-                 my_policyId: this.printPolicyId(current_patient),
-                 the_policyExpiry: this.printPolicyExpiry(current_patient),
-                 authorizedPractitioner: this.printPrimaryPhysician(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-                //  email: this.printEmail(current_patient),
-
-            }
+    const current_patient = this.patient;
+    return {
+      code: current_patient?.id,
+      fullname: `${current_patient?.firstname} ${current_patient?.lastname}`,
+      email: this.printEmail(current_patient),
+      address: this.printAddress(current_patient),
+      phone: this.printPhone(current_patient),
+      dob: this.printDOB(current_patient?.dateOfBirth),
+      mrn: this.printMRN(current_patient?.mrn),
+      my_policyId: this.printPolicyId(current_patient),
+      the_policyExpiry: this.printPolicyExpiry(current_patient),
+      authorizedPractitioner: this.printPrimaryPhysician(current_patient),
+    };
   }
-
   printPhone(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    const phone = patient.contactInfo[0].phone;
+    if (!patient?.contactInfo) return "N/A";
+    const phone = patient?.contactInfo[0].phone;
     return phone?.number || "N/A";
   }
   printGender(gender: string) {
     if (!gender) return "N/A";
     return gender || "N/A";
   }
-
   printEmail(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    return patient.contactInfo[0].email || "N/A";
+    if (!patient?.contactInfo) return "N/A";
+    return patient?.contactInfo[0].email || "N/A";
   }
   printAddress(patient: IPatient) {
-    if (!patient.contactInfo) return "N/A";
-    return patient.contactInfo[0].primaryAddress || "N/A";
+    if (!patient?.contactInfo) return "N/A";
+    return patient?.contactInfo[0].primaryAddress || "N/A";
   }
   printDOB(dateOfBirth?: string) {
     if (!dateOfBirth) return "N/A";
@@ -329,40 +373,36 @@ get picture() {
     const date = new Date(createdAt);
     return date.toLocaleDateString("en-NG");
   }
-  
   printMRN(mrn?: string) {
     return `${mrn?.substr(31)}`;
   }
-
   printPolicyId(patient: IPatient) {
-    if (!patient.insurances?.length) return "N/A";
-    const policyNumber = patient.insurances[0].policyNo
+    if (!patient?.insurances?.length) return "N/A";
+    const policyNumber = patient?.insurances[0].policyNo;
     return policyNumber || "N/A";
   }
-
   printPolicyExpiry(patient: IPatient) {
-    if (!patient.insurances?.length) return "N/A";
-    const policyExpiry = new Date(patient.insurances[0].policyExpiry)
-    return policyExpiry.toLocaleDateString("en-Ng");
+    if (!patient?.insurances?.length) return "N/A";
+    const policyExpiry = new Date(patient?.insurances[0].policyExpiry);
+    return policyExpiry?.toLocaleDateString("en-Ng");
   }
   printPrimaryPhysician(patient: IPatient) {
-    if (!patient.authorizedPractitioners?.length) return "N/A";
-    return patient.authorizedPractitioners[0].user;
+    if (!patient?.authorizedPractitioners?.length) return "N/A";
+    const ret = patient?.authorizedPractitioners[0].user;
+    return ret;
   }
-  // patient_authorized_practitioners
-    
+  //
 }
 </script>
 <style scoped>
 .experience-links-con-max {
- height: 225px;
+  height: 225px;
   overflow: hidden;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
-
 .experience-links-con-min {
   height: 10px;
   overflow: hidden;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 </style>

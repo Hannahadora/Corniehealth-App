@@ -1,23 +1,35 @@
 <template>
     <div class="container-fluid flex">
         <!-- {{ items }} -->
-        <span v-for="(actor, index) in items" :key="index">
+        <span v-for="(actor, index) in actors" :key="index" :class="{ 'img-hover': index > 0 }">
             <div class="image-con rounded-full border flex items-center justify-center" v-if="actor.image">
-                <img :src="actor.image" class="rounded-full" style="width: 100%;height:100%" :alt="actor.name">
+                <!-- <img :src="actor.image" class="rounded-full" style="width: 100%;height:100%" :alt="actor.name"> -->
+                <avatar :src="actor.image" />
             </div>
-            <div v-else class="image-con rounded-full -ml-3 flex items-center border justify-center bg-white">
+            <div v-if="!actor.image && actor.firstName" class="image-con rounded-full relative -ml-1 flex items-center border justify-center bg-white">
                 <span class="text-warning">{{ actor.firstName ? actor.firstName[0] : '' }} </span>
                 <span class="text-warning">{{ actor.lastName ? actor.lastName[0] : '' }} </span>
             </div>
+            
         </span>
+        <div v-if="items?.length > 3"  class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center bg-white relative">
+            <span class="text-xs">+{{ items?.length - actors?.length }}</span>
+        </div>
+        
     </div>
 </template>
 
 <script lang="ts">
 import IPractitioner from "@/types/IPractitioner";
-import { Vue } from "vue-class-component";
+import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
+import Avatar from "@/components/avatar.vue"
 
+@Options({
+    components: {
+        Avatar,
+    }
+})
 
 export default class ActorsList extends Vue {
     @Prop()
@@ -35,5 +47,9 @@ export default class ActorsList extends Vue {
 .image-con {
     width: 32px;
     height: 32px;
+}
+
+.img-hover {
+    margin-left: -.8rem
 }
 </style>

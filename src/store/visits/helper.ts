@@ -11,6 +11,17 @@ export async function getVisits() {
   return {};
 }
 
+export async function getPatientVisits(patientId: string) {
+  try {
+    const response = await cornieClient().get(`/api/v1/visit/patient/${patientId}`);
+
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching patient's visits", status: "error" });
+  }
+  return {};
+}
+
 export async function schedulesByPractitioner(id: string) {
   try {
     const response = await cornieClient().get(
@@ -136,15 +147,15 @@ export async function startEncounter(id: string) {
 export async function updateStatus(body: any) {
   try {
     const response = await cornieClient().post(
-      `/api/v1/visit/update-status`,
-      body
+      `/api/v1/visit/update-status/${body.id}`,
+      { status: body.status }
     );
     console.log(response, "visit cancel");
 
     return response.data as boolean;
   } catch (error) {
     notify({
-      msg: "There was an error starting this encounter",
+      msg: "There was an error updating status",
       status: "error",
     });
   }

@@ -363,7 +363,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: Array(),
+  Medications: Array(),
 
 
 };
@@ -490,7 +490,7 @@ get allPerformer() {
      })
  }
   async showMedication(value:any){
-    this.requestModel.medications = value;
+    this.requestModel.Medications = value;
     this.showMedicationModal = true;
   }
 
@@ -511,7 +511,7 @@ get allPerformer() {
       }
     } catch (error) {
       console.log(error);
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Request not Created", status: "error" });
     }
   }
 
@@ -531,7 +531,7 @@ get allPerformer() {
         this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Request not Updated", status: "error" });
     }
   }
   async fetchPateints() {

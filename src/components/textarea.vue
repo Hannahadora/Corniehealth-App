@@ -6,7 +6,7 @@
     :rules="rules"
     v-model="valueSync"
   >
-    <label class="block text-black capitalize mb-1 text-xs font-semibold">
+    <label class="block text-black capitalize mb-1 mt-5 text-sm font-semibold">
       {{ label }}
     </label>
     <textarea
@@ -68,3 +68,10 @@ export default class DInput extends Vue {
   }
 }
 </script>
+<style>
+::placeholder {
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #667499;
+}
+</style>

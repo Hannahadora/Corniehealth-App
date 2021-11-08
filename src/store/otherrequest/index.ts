@@ -1,12 +1,13 @@
 import ObjectSet from "@/lib/objectset";
 import IOtherrequest from "@/types/IOtherrequest";
 import { StoreOptions } from "vuex";
-import { deleteOtherrequest, fetchOtherrequests,getPatients,getPractitioners } from "./helper";
+import { deleteOtherrequest, fetchOtherrequests,getPatients,getPractitioners,fetchOtherrequestsById } from "./helper";
 
 interface OtherrequestState {
 otherrequests: IOtherrequest[];
   patients: any[],
   practitioners: any[],
+  patientrequests:IOtherrequest[],
 }
 
 export default {
@@ -15,11 +16,16 @@ export default {
     otherrequests: [],
     patients: [],
     practitioners: [],
+    patientrequests:[],
   },
   mutations: {
     updatedOtherrequests(state, otherrequests: IOtherrequest[]) {
       const otherrequestSet = new ObjectSet([...state.otherrequests, ...otherrequests], "id");
       state.otherrequests = [...otherrequestSet];
+    },
+    setPatientRequests(state, otherrequests: IOtherrequest[]) {
+      const otherrequestSet = new ObjectSet([...state.otherrequests, ...otherrequests], "id");
+      state.patientrequests = [...otherrequestSet];
     },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [ ...pts ];
@@ -40,8 +46,14 @@ export default {
     },
   },
   actions: {
+    async fetchOtherrequestsById(ctx, patientId: string){
+      const otherrequests = await fetchOtherrequestsById(patientId);
+      console.log('otherforrequestsstest', otherrequests);
+      ctx.commit("setPatientRequests", otherrequests);
+    },
     async fetchOtherrequests(ctx) {
       const otherrequests = await fetchOtherrequests();
+      console.log('otherallrequestss', otherrequests);
       ctx.commit("updatedOtherrequests", otherrequests);
     },
     async getPatients(ctx) {

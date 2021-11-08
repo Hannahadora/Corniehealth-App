@@ -48,7 +48,7 @@ export default {
     },
     async fetchPatients(ctx) {
       const patients = await fetchPatients();
-      console.log('patients', patients);
+      console.log("patients", patients);
       ctx.commit("addPatients", patients);
     },
     async deletePatient(ctx, id: string) {
@@ -64,7 +64,6 @@ export default {
     async findPatient(ctx, id: string) {
       if (!ctx.state.patients.length) await ctx.dispatch("fetchPatients");
       const patient = ctx.state.patients.find((p) => p.id == id);
-      console.log('patientt', patient);
       return patient;
     },
   },

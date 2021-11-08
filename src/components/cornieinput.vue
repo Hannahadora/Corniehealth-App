@@ -18,7 +18,7 @@
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
-        class="flex rounded-lg border"
+        class="flex rounded-md border-1"
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
@@ -60,7 +60,7 @@
           :placeholder="$attrs.placeholder"
           :name="inputName"
           :readonly="readonly || disabled"
-          :class="{ 'bg-gray-200': disabled }"
+          :class="{ 'bg-gray-100': disabled }"
           v-model="valueSync"
           @update:modelValue="handleChange"
         />
@@ -145,7 +145,7 @@ export default class CornieInput extends Vue {
 <style scoped>
 ::placeholder {
   font-size: 0.8em;
-  font-weight: 300;
+  font-weight: 400;
   color: #667499;
 }
 </style>

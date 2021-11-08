@@ -28,8 +28,6 @@
       </span>
     </div>
     <allergy-modal
-      :columns="practitioner"
-      @update:preferred="showAllergy"
       v-model="showAllergyModal"
     />
   </div>

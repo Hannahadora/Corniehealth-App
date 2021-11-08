@@ -50,19 +50,34 @@ export default class MedicationIndex extends Vue {
   show=false;
 
   get empty() {
-    return this.requests.length < 1;
+    return this.patientrequests.length < 1;
   }
 
- @request.State
-  requests!: IRequest[];
+//  @request.State
+//   requests!: IRequest[];
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+//   @request.Action
+//   fetchRequests!: () => Promise<void>;
+ get patientId() {
+    return this.$route.params.id as string;
+  }
+  
+  @request.State
+  patientrequests!: any[];
+
+   medicationAdded() {
+     this.show = false;
+     this.patientrequests;
+   this.fetchOtherrequestsById(this.patientId);
+  }
+
+ @request.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
   
 
 created() {
-    if (this.requests.length < 1) this.fetchRequests();
+    if (this.patientrequests.length < 1) this.fetchOtherrequestsById(this.patientId);
   }
 }
 </script>

@@ -24,6 +24,7 @@ export class JsonResponse {
   numberOfPages?: number | undefined;
   nextPage?: number | undefined;
   previousPage?: number | undefined;
+  currentPage?: number;
   errors?: Errors | undefined;
   token: string;
   baseResponse: Response;
@@ -42,6 +43,7 @@ export class JsonResponse {
     this.numberOfPages = json.numberOfPages;
     this.nextPage = json.nextPage;
     this.previousPage = json.previousPage;
+    this.currentPage = json.currentPage;
     this.errors = json.errors;
     this.token = json.token;
   }

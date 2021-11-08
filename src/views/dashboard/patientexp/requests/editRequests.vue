@@ -747,7 +747,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: Array(),
+  Medications: Array(),
 
 
 };
@@ -1049,7 +1049,7 @@ basedOn = "xxxxxx";
     const request = await this.getRequestById(this.id)
     if (!request) return
     this.requestModel =  ({...request}) ;
-    this.requestModel.medications = request.medications;
+    this.requestModel.Medications = request.Medications;
   }
   get payload() {
      const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
@@ -1090,7 +1090,7 @@ basedOn = "xxxxxx";
      })
  }
   async showMedication(value:any){
-    this.requestModel.medications = value;
+    this.requestModel.Medications = value;
     this.showMedicationModal = true;
   }
 
@@ -1112,7 +1112,7 @@ basedOn = "xxxxxx";
         this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Request not Updated", status: "error" });
     }
   }
   async fetchPateints() {

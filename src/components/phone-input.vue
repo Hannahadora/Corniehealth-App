@@ -1,6 +1,6 @@
 <template>
-  <span class="w-11/12 block">
-    <label class="block uppercase mb-1 text-xs font-bold">
+  <span class="w-11/12">
+    <label class="flex capitalize mb-1 text-black text-sm font-medium">
       {{ label }}
     </label>
     <field
@@ -54,6 +54,8 @@
           class="rounded-r-lg border p-2 flex-grow w-full focus:outline-none"
           type="tel"
           v-bind="field"
+          minlength="10"
+          maxlength="11"
         />
       </span>
       <span v-if="errorMessage" class="text-xs text-red-500 block">

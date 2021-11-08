@@ -407,11 +407,9 @@ import RangeSlider from "@/components/range.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import CornieDateRangePicker from "@/components/daterangepicker.vue";
-import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import TimePicker from "@/components/Timepicker.vue";
-import patient from "@/store/patient";
-import Slider from "@vueform/slider";
+
 
 const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
@@ -451,7 +449,6 @@ const emptyOtherrequest: IOtherrequest = {
     PatientsFilter,
     DevicesFilter,
     RolesFilter,
-    Slider,
   },
 })
 export default class AddAppointment extends Vue {
@@ -586,7 +583,7 @@ export default class AddAppointment extends Vue {
       }
     } catch (error) {
       console.log(error);
-      window.notify({ msg: error, status: "error" });
+      window.notify({ msg: "Other Request not Created", status: "error" });
     }
   }
 
@@ -648,24 +645,4 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
 }
 
-.slider-connect {
-  background: #fe4d3c;
-  cursor: pointer;
-}
-
-.slider-tooltip {
-  position: absolute;
-  display: block;
-  font-size: var(--slider-tooltip-font-size, 0.875rem);
-  line-height: var(--slider-tooltip-line-height, 1.25rem);
-  font-weight: var(--slider-tooltip-font-weight, 600);
-  white-space: nowrap;
-  padding: var(--slider-tooltip-py, 2px) var(--slider-tooltip-px, 6px);
-  min-width: var(--slider-tooltip-min-width, 20px);
-  text-align: center;
-  color: var(--slider-tooltip-color, #fff);
-  border-radius: var(--slider-tooltip-radius, 5px);
-  border: 1px solid #fe4d3c;
-  background: #fe4d3c;
-}
 </style>

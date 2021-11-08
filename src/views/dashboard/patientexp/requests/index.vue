@@ -60,7 +60,7 @@
                                 <newview-icon  class="text-blue-700 fill-current"/>
                                 <span class="ml-3 text-xs">View & Edit</span>
                                 </div>
-                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
+                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item.id)">
                                 <update-icon />
                                 <span class="ml-3 text-xs">Update</span>
                                 </div>
@@ -143,7 +143,7 @@
                             <newview-icon  class="text-yellow-500 fill-current"/>
                             <span class="ml-3 text-xs">View & Edit</span>
                             </div>
-                            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-other-request/${item.id}`)">
+                            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showOtherStatus(item.id)">
                             <update-icon />
                             <span class="ml-3 text-xs">Update</span>
                             </div>
@@ -220,7 +220,7 @@
                                 <newview-icon  class="text-blue-700 fill-current"/>
                                 <span class="ml-3 text-xs">View & Edit</span>
                                 </div>
-                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
+                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item.id)">
                                 <update-icon />
                                 <span class="ml-3 text-xs">Update</span>
                                 </div>
@@ -302,7 +302,7 @@
                               <newview-icon  class="text-yellow-500 fill-current"/>
                               <span class="ml-3 text-xs">View & Edit</span>
                               </div>
-                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-other-request/${item.id}`)">
+                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showOtherStatus(item.id)">
                               <update-icon />
                               <span class="ml-3 text-xs">Update</span>
                               </div>
@@ -374,6 +374,24 @@
         :columns="practitioner"
           @update:preferred="showEditMedication"
           v-model="showEditMedicationModal"/>
+               <status-modal
+            :id="requestId" 
+           :updatedBy="updatedBy" 
+        :currentStatus="currentStatus" 
+        :dateUpdated="update"
+          @update:preferred="showStatus"
+          v-model="showStatusModal"/>
+
+            <other-status-modal
+            :id="requestId" 
+           :updatedBy="otherupdatedBy" 
+        :currentStatus="othercurrentStatus" 
+        :dateUpdated="otherupdate"
+          @update:preferred="showOtherStatus"
+          v-model="showOtherStatusModal"/>
+
+
+        
   </div>
 </template>
 <script lang="ts">
@@ -409,6 +427,8 @@ import MedicationModal from "./medication.vue";
 import EditMedicationModal from "./updateMedication.vue";
 import DangerIcon from "@/components/icons/danger.vue";
 import NotesAdd from "./notes.vue";
+import StatusModal from "./status.vue";
+import OtherStatusModal from "./statusother.vue";
 import OtherNotesAdd from "./othernote.vue";
 import ArrowRight from '@/components/icons/arrow-right.vue'
 import EncounterIcon from '@/components/icons/encounter.vue'
@@ -439,7 +459,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  medications: [],
+  Medications: [],
 
 
 };
@@ -454,6 +474,8 @@ const emptyRequest: IRequest = {
     SearchIcon,
     NotesAdd,
     PrintIcon,
+    StatusModal,
+    OtherStatusModal,
     PlusIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -502,17 +524,10 @@ showPartcipants = false;
   taskId="";
   activeTab = 0;
   showOthersNotes=false;
-  showEditPane = false;
-  showViewPane = false;
-  showAllActors = false;
-  showActorsPane = false;
-  showAddActorsPane = false;
-  showCheckin = false;
-  showCheckNoapp = false;
   selectType = false;
   filterStatus = false;
-  showCheckout = false;
-  timeLineVissible = false;
+  showStatusModal=false;
+  showOtherStatusModal=false;
   viewDetails = false;
 requestnotes=[];
 otherrequestnotes=[];
@@ -521,7 +536,12 @@ singleParticipant = [];
   selectedVisit : any = { };
   selectedPatient : any = { };
   months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
-
+updatedBy= "";
+currentStatus="";
+update="";
+otherupdatedBy = "";
+othercurrentStatus = "";
+otherupdate="";
  request: IRequest = emptyRequest;
 
  @request.Action
@@ -632,8 +652,13 @@ getKeyValue = getTableKeyValue;
          (i as any).createdAt 
        ).toDateString();
 
+  (i as any).updatedAt = new Date(
+         (i as any).updatedAt
+       ).toDateString();
         this.onePatientId =  i.subject.subject;
-       
+        this.updatedBy = this.getPatientName(i.requestDetails.requester);
+      this.currentStatus = i.status;
+      this.update= i.updatedAt
       return {
         ...i,
         action: i.id,
@@ -713,6 +738,14 @@ rawHeadersothers = [
          (i as any).createdAt = new Date(
          (i as any).createdAt 
        ).toDateString();
+    (i as any).updatedAt = new Date(
+         (i as any).updatedAt
+       ).toDateString();
+
+         this.otherupdatedBy = this.getPractitionerName(i.performer.performer);
+      this.othercurrentStatus = i.status;
+
+       this.otherupdate= i.updatedAt
 
         this.onePatientId =  i.subject.subject;
        
@@ -880,6 +913,15 @@ rawHeadersRequest = [
 //          this.show = false;
 //         }
 //   }
+ async showStatus(value:string){
+    this.showStatusModal = true;
+    this.requestId = value;
+  }
+
+  async showOtherStatus(value:string){
+    this.showOtherStatusModal = true;
+    this.requestId = value;
+  }
 
  async makeNotes(id: string) {
     this.requestId = id;

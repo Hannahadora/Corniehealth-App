@@ -1,8 +1,8 @@
 <template>
-  <span class="block" :class="[$attrs.width || 'w-full']">
-    <label class="block capitalize mb-0.5 text-sm font-semibold">{{
-      label
-    }}</label>
+  <span class="" :class="[$attrs.width || 'w-full']">
+    <label class="flex capitalize mb-1 text-black text-sm font-semibold">
+      {{ label }}
+    </label>
     <Field
       v-model="date"
       :rules="customRules"
@@ -110,6 +110,9 @@ export default class DatePicker extends Vue {
   rules!: any;
 
   @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
+
+  @Prop({ type: Boolean, default: false })
   left!: boolean;
 
   @Prop({ type: Boolean, default: false })
@@ -118,12 +121,13 @@ export default class DatePicker extends Vue {
   visible = false;
 
   toggleDropdown(): void {
+    if (this.disabled) return;
     this.visible = !this.visible;
   }
 
   get customRules() {
     const defaultRule = date();
-    if (!this.rules) return defaultRule.concat(this.rules);
+    if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
 

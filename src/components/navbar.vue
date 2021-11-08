@@ -59,7 +59,7 @@
             </cornie-btn>
           </li>
           <li
-            @click="$router.push('org-info')"
+            @click="$router.push('/dashboard/settings/org-info')"
             class="
               mb-3
               list-none
@@ -83,7 +83,7 @@
             >
           </li>
           <li
-            @click="$router.push('contact-info')"
+            @click="$router.push('/dashboard/settings/contact-info')"
             class="
               mb-3
               list-none
@@ -107,7 +107,7 @@
             </div>
           </li>
           <li
-            @click="$router.push('org-hierarchy')"
+            @click="$router.push('/dashboard/settings/org-hierarchy')"
             class="
               mb-3
               list-none
@@ -131,7 +131,7 @@
             </div>
           </li>
           <li
-            @click="$router.push('practitioners')"
+            @click="$router.push('/dashboard/settings/practitioners')"
             class="
               mb-3
               list-none
@@ -151,7 +151,7 @@
           >
             <div class="flex">
               <practitioner-icon />
-              <p class="ml-2">Practicioner</p>
+              <p class="ml-2">Practitioner</p>
             </div>
           </li>
           <li

@@ -1,10 +1,5 @@
 <template>
-  <clinical-dialog
-    v-model="show"
-    title="New Condition"
-    subtext="All Fields are required"
-    class=""
-  >
+  <clinical-dialog v-model="show" title="New Condition" class="">
     <v-form ref="form">
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
@@ -12,39 +7,39 @@
         :opened="true"
       >
         <div class="grid grid-cols-2 gap-3 mt-3">
-          <cornie-select
+          <fhir-input
             v-model="clinicalStatus"
             label="Clinical Status"
-            :items="clinicalStatuses"
+            reference="http://hl7.org/fhir/ValueSet/condition-clinical"
             :rules="required"
           />
-          <cornie-select
+          <fhir-input
             v-model="verificationStatus"
             label="Verification Status"
-            :items="verificationStatuses"
+            reference="http://hl7.org/fhir/ValueSet/condition-ver-status"
             :rules="required"
           />
-          <auto-complete
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/condition-category"
             v-model="category"
             :rules="required"
-            :items="categories"
             label="Category"
           />
-          <cornie-select
+          <fhir-input
             v-model="severity"
             label="Severity"
             :rules="required"
-            :items="severities"
+            reference="http://hl7.org/fhir/ValueSet/condition-severity"
           />
-          <auto-complete
+          <fhir-input
             v-model="code"
             :rules="required"
-            :items="conditionCodes"
             label="Code"
+            reference="http://hl7.org/fhir/ValueSet/condition-code"
           />
-          <auto-complete
+          <fhir-input
             v-model="bodySite"
-            :items="bodySites"
+            reference="http://hl7.org/fhir/ValueSet/body-site"
             :rules="required"
             label="Body Site"
           />
@@ -59,63 +54,15 @@
         class="shadow-none rounded-none border-none text-primary"
         title="Onset"
       >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <date-time-picker
-            v-model:date="onsetDate"
-            v-model:time="onsetTime"
-            label="Date/Time"
-            width="w-11/12"
-          />
-          <cornie-input v-model="onsetAge" label="Age" class="" />
-          <date-time-picker
-            v-model:date="onsetStartDate"
-            v-model:time="onsetStartTime"
-            label="Start Date/Time"
-            width="w-11/12"
-          />
-          <date-time-picker
-            v-model:date="onsetEndDate"
-            v-model:time="onsetEndTime"
-            label="End Date/Time"
-            width="w-11/12"
-          />
-        </div>
-        <div class="grid grid-cols-3 gap-3 mt-4">
-          <cornie-input v-model="onsetMin" label="Range (min)" />
-          <cornie-input v-model="onsetMax" label="Range (max)" />
-          <cornie-input v-model="onsetString" label="String" />
-        </div>
+        <timeable-picker v-model="onsetTimeable" />
+        <measurable v-model="onsetMeasurable" />
       </accordion-component>
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="Abatement"
       >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <date-time-picker
-            v-model:date="abatementDate"
-            v-model:time="abatementTime"
-            label="Date/Time"
-            width="w-11/12"
-          />
-          <cornie-input v-model="abatementAge" label="Age" class="" />
-          <date-time-picker
-            v-model:date="abatementStartDate"
-            v-model:time="abatementStartTime"
-            label="Start Date/Time"
-            width="w-11/12"
-          />
-          <date-time-picker
-            v-model:date="abatementEndDate"
-            v-model:time="abatementEndTime"
-            label="End Date/Time"
-            width="w-11/12"
-          />
-        </div>
-        <div class="grid grid-cols-3 gap-3 mt-4">
-          <cornie-input v-model="abatementMin" label="Range (min)" />
-          <cornie-input v-model="abatementMax" label="Range (max)" />
-          <cornie-input v-model="abatementString" label="String" />
-        </div>
+        <timeable-picker v-model="abatementTimeable" />
+        <measurable v-model="abatementMeasurable" />
         <span class="grid grid-cols-2 gap-3 mt-3">
           <practitioner-select
             :rules="required"
@@ -130,23 +77,30 @@
       >
         <div class="grid grid-cols-3 gap-3 mt-3">
           <cornie-input v-model="stageSummary" label="Summary" />
-          <auto-complete v-model="stageType" :items="stages" label="Type" />
-          <assessment-select v-model="stageAssessment" label="Assessment" />
+          <fhir-input
+            v-model="stageType"
+            reference="http://hl7.org/fhir/ValueSet/condition-stage-type"
+            label="Type"
+          />
+          <assessment-select
+            :patientId="patientId"
+            v-model="stageAssessment"
+            label="Assessment"
+          />
         </div>
-        <cornie-text-area v-model="stageNote" label="Notes" class="w-full" />
       </accordion-component>
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="Evidence"
       >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <auto-complete
+        <div class="grid grid-cols-2 justify-between gap-3 mt-3">
+          <fhir-input
             v-model="evidenceCode"
             :rules="required"
-            :items="evidenceCodes"
+            reference="http://hl7.org/fhir/ValueSet/manifestation-or-symptom"
             label="Code"
           />
-          <cornie-select
+          <cornie-input
             :rules="required"
             v-model="evidenceDetail"
             label="Detail"
@@ -157,6 +111,7 @@
           v-model="evidenceNote"
           label="Notes"
           class="w-full"
+          rows="4"
         />
       </accordion-component>
     </v-form>
@@ -167,8 +122,12 @@
       >
         Cancel
       </cornie-btn>
-      <cornie-btn @click="submit" class="text-white bg-danger px-3 rounded-xl">
-        Create New Condition
+      <cornie-btn
+        :loading="loading"
+        @click="submit"
+        class="text-white bg-danger px-6 rounded-xl"
+      >
+        Create
       </cornie-btn>
     </template>
   </clinical-dialog>
@@ -187,6 +146,10 @@ import AssessmentSelect from "./assessment-select.vue";
 import PractitionerSelect from "./practitioner-select.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
+import TimeablePicker from "./timeable.vue";
+import Measurable from "./measurable.vue";
+import { Codeable, Timeable } from "@/types/misc";
+import FhirInput from "@/components/fhir-input.vue";
 
 import {
   verificationStatuses,
@@ -204,13 +167,40 @@ import IPractitioner from "@/types/IPractitioner";
 import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
 
+import { ICondition } from "@/types/ICondition";
+
+const condition = namespace("condition");
+
+// import { Codeable } from "@/types/misc";
+import { printPractitioner } from "@/plugins/utils";
+import Condition from "yup/lib/Condition";
+
 const user = namespace("user");
+
+const timeable = {
+  age: "",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+  endTime: "",
+  date: "",
+  time: "",
+};
+
+const measurable = {
+  unit: "",
+  min: "",
+  max: "",
+  string: "",
+};
 
 @Options({
   name: "AddCondition",
   components: {
     ClinicalDialog,
     CornieBtn,
+    Measurable,
+    TimeablePicker,
     AutoComplete,
     EncounterSelect,
     AssessmentSelect,
@@ -220,9 +210,13 @@ const user = namespace("user");
     CornieInput,
     CornieTextArea,
     DateTimePicker,
+    FhirInput,
   },
 })
 export default class AddCondition extends Vue {
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
@@ -237,12 +231,13 @@ export default class AddCondition extends Vue {
   clinicalStatuses = clinicalStatuses;
   verificationStatuses = verificationStatuses;
   severities = severities;
-  categories: any = [];
+  categories: Codeable[] = [];
   conditionCodes = codes;
   bodySites = bodySites;
   stages = stages;
   evidenceCodes = evidenceCodes;
 
+  loading = false;
   clinicalStatus = "";
   verificationStatus = "";
   category = "";
@@ -253,31 +248,15 @@ export default class AddCondition extends Vue {
 
   asserter = "";
 
-  onsetDate = "";
-  onsetTime = "";
-  onsetAge = "";
-  onsetStartDate = "";
-  onsetStartTime = "";
-  onsetEndDate = "";
-  onsetEndTime = "";
-  onsetMin = "";
-  onsetMax = "";
-  onsetString = "";
+  onsetTimeable = { ...timeable };
+  onsetMeasurable = { ...measurable };
 
-  abatementDate = "";
-  abatementTime = "";
-  abatementAge = "";
-  abatementStartDate = "";
-  abatementStartTime = "";
-  abatementEndDate = "";
-  abatementEndTime = "";
-  abatementMin = "";
-  abatementMax = "";
-  abatementString = "";
+  abatementTimeable = { ...timeable };
+  abatementMeasurable = { ...measurable };
 
   stageSummary = "";
   stageType = "";
-  stageAssessment = "";
+  stageAssessment = {};
   stageNote = "";
 
   evidenceCode = "";
@@ -289,7 +268,7 @@ export default class AddCondition extends Vue {
   }
 
   @Watch("authPractitioner")
-  practitionerChanged() {
+  practitionerChanged(): void {
     this.setAsserter();
   }
 
@@ -302,55 +281,65 @@ export default class AddCondition extends Vue {
   }
 
   get onset() {
-    return {
-      dateTime: this.buildDateTime(this.onsetDate, this.onsetTime),
-      age: this.onsetAge,
-      period: this.buildPeriod(
-        this.onsetStartDate,
-        this.onsetStartTime,
-        this.onsetEndDate,
-        this.onsetEndTime
-      ),
-      range: { min: this.abatementMin, max: this.abatementMax },
-      onsetString: this.abatementString,
+    const { string, ...onsetRange } = this.onsetMeasurable;
+    const dateTime = this.safeBuildDateTime(
+      this.onsetTimeable.date,
+      this.onsetTimeable.time
+    );
+    const period = this.buildPeriod(this.onsetTimeable);
+    const data: any = {
+      age: this.onsetTimeable.age,
+      onsetString: this.onsetMeasurable.string,
     };
+    if (onsetRange.unit && onsetRange.min && onsetRange.max)
+      data.range = onsetRange;
+    if (period) data.period = period;
+    if (dateTime) data.dateTime = dateTime;
+    return data;
   }
 
   get abatement() {
-    return {
-      abatementDateTime: this.buildDateTime(
-        this.abatementDate,
-        this.abatementTime
-      ),
-      abatementAge: this.abatementAge,
-      abatementPeriod: this.buildPeriod(
-        this.abatementStartDate,
-        this.abatementStartTime,
-        this.abatementEndDate,
-        this.abatementEndTime
-      ),
-      abatementRange: { min: this.abatementMin, max: this.abatementMax },
-      abatementString: this.abatementString,
+    const { string, ...range } = this.abatementMeasurable;
+    const dateTime = this.safeBuildDateTime(
+      this.abatementTimeable.date,
+      this.abatementTimeable.time
+    );
+    const period = this.buildPeriod(this.abatementTimeable);
+    const data: any = {
+      range,
+      string,
       asserter: this.asserter,
+      age: this.abatementTimeable.age,
     };
+    if (period) data.period = period;
+    if (dateTime) data.dateTime = dateTime;
+    return data;
   }
 
-  buildPeriod(
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string
-  ) {
-    const start = this.buildDateTime(startDate, startTime);
-    const end = this.buildDateTime(endDate, endTime);
-    return { start, end };
+  buildPeriod({ startDate, startTime, endDate, endTime }: Timeable) {
+    try {
+      const start = this.buildDateTime(startDate, startTime);
+      const end = this.buildDateTime(endDate, endTime);
+      return { start, end };
+    } catch (error) {
+      return;
+    }
   }
+
   buildDateTime(dateString: string, time: string) {
     const date = new Date(dateString);
     const [hour, minute] = time.split(":");
     date.setMinutes(Number(minute));
     date.setHours(Number(hour));
     return date.toISOString();
+  }
+
+  safeBuildDateTime(dateString: string, time: string) {
+    try {
+      return this.buildDateTime(dateString, time);
+    } catch (error) {
+      return;
+    }
   }
   get payload() {
     return {
@@ -362,18 +351,22 @@ export default class AddCondition extends Vue {
       category: this.category,
       summary: this.stageSummary,
       detail: this.evidenceDetail,
-      notes: this.stageNote,
       bodySite: this.bodySite,
-      subject: "patient",
-      assesment: "",
+      assessment: this.stageAssessment,
       severity: this.severity,
       evidenceNote: this.evidenceNote,
-      onset: this.onset,
+      onSet: this.onset,
       abatement: this.abatement,
+      code: this.code,
     };
   }
 
   async submit() {
+    this.loading = true;
+    await this.create();
+    this.loading = false;
+  }
+  async create() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
     try {
@@ -382,7 +375,9 @@ export default class AddCondition extends Vue {
         this.payload
       );
       window.notify({ msg: "Condition created", status: "success" });
+      this.show = false;
     } catch (error) {
+      console.log(error);
       window.notify({ msg: "Condition not created", status: "error" });
     }
   }

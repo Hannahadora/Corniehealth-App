@@ -19,7 +19,6 @@
           <v-form class="mt-5 w-full" @submit="submit">
             <div class="w-full grid grid-cols-2 gap-5">
               <cornie-input
-                :rules="required"
                 v-model="identifier"
                 label="Identifier"
                 class="bg-gray-200" disabled
@@ -386,7 +385,7 @@ activeStates = ["active", "inactive"]
             this.$router.push('/dashboard/provider/settings/health-services')
       }
     } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg:"Healthcare service not added", status: "error" });
     }
   }
   async updateHealthcare() {
@@ -399,7 +398,7 @@ activeStates = ["active", "inactive"]
         window.notify({ msg: "Health care service updated", status: "success" });
       }
     } catch (error) {
-       window.notify({ msg: error.response.data.message, status: "error" });
+       window.notify({ msg:"Health care service not updated", status: "error" });
     }
   }
   async fetchOrgInfo() {
@@ -408,7 +407,7 @@ activeStates = ["active", "inactive"]
           "/api/v1/organization/myOrg/get"
         );
         console.log(response);
-        this.identifier = response.data.identifier;
+        this.identifier = response.data.id;
       } catch (error) {
         window.notify({ msg: "Could not fetch organization", status: "error" });
       }

@@ -1,11 +1,12 @@
 import ObjectSet from "@/lib/objectset";
 import IAppointment from "@/types/IAppointment";
 import { StoreOptions } from "vuex";
-import { deleteAppointment, fetchAppointments,getPatients } from "./helper";
+import { deleteAppointment, fetchAppointments,getPatients,fetchByIdAppointments } from "./helper";
 
 interface AppointmentState {
   appointments: IAppointment[],
   patients: any[],
+  patientappointments: IAppointment[],
 }
 
 export default {
@@ -13,11 +14,16 @@ export default {
   state: {
     appointments: [],
     patients: [],
+    patientappointments:[],
   },
-  mutations: {
+  mutations: { 
     setAppointments(state, appointments: any) {      
       state.appointments = [...appointments.result];
     },
+    setPatientAppointment(state, appointments:any) {
+      state.patientappointments = [ ...appointments.result ];
+    },
+
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [ ...pts ];
     },
@@ -39,6 +45,10 @@ export default {
     },
   },
   actions: {
+    async fetchByIdAppointments(ctx, patientId: string) {
+      const appointments = await fetchByIdAppointments(patientId);
+      ctx.commit("setPatientAppointment", appointments);
+    },
     async fetchAppointments(ctx) {
       const appointments = await fetchAppointments();
       ctx.commit("setAppointments", appointments);

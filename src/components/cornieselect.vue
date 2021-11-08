@@ -30,14 +30,14 @@
                   'border-red-500': Boolean(errorMessage),
                   'border-green-400': meta.valid && meta.touched,
                 }"
-                class="p-1 bg-white flex border border-gray-200 rounded-lg"
+                class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
               >
                 <span v-if="Boolean($slots.selected)">
                   <slot name="selected" :item="selectedItem" />
                 </span>
                 <input
                   v-else
-                  placeholder="Select"
+                 :placeholder="$attrs.placeholder"
                   disabled
                   :value="displayVal"
                   class="
@@ -80,6 +80,7 @@
               z-40
               w-full
               lef-0
+              border border-gray-400
               rounded
               max-h-select
               overflow-y-auto
@@ -203,18 +204,6 @@ export default class CornieSelect extends Vue {
     this.$emit("change");
   }
 
-  //    @Watch("modelValue")
-  // updateSubject(){
-  //      this.$emit("changesubject")
-  //   }
-  //    @Watch("modelValue")
-  //   updateRequester(){
-  //      this.$emit("changerequest")
-  //   }
-  //   updatePerformer(){
-  //      this.$emit("changeperformer")
-  //   }
-
   mounted() {
     clickOutside(this.id, () => {
       this.showDatalist = false;
@@ -239,7 +228,8 @@ export default class CornieSelect extends Vue {
 }
 ::placeholder {
   font-size: 0.8em;
-  font-weight: 300;
+  font-weight: 400;
+  font-style: italic;
   color: #667499;
 }
 </style>

@@ -19,92 +19,99 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Fill the form below to add a guarantor.</p>
-        <v-form ref="form">
+        <v-form ref="form" class="grid grid-cols-1 gap-y-4">
           <cornie-input
             label="First, Middle, Surname"
-            class="mb-5"
+            class="w-full"
             placeholder="David Alabi Smith"
             v-model="name"
           />
           <cornie-select
             label="Gender"
-            class="mb-5"
+            class="w-full"
             placeholder="Select One"
             :items="genderOptions"
             v-model="gender"
           />
           <cornie-input
             label="Relationship"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="relationship"
           />
           <cornie-input
             label="Mailing Address"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="mailingAddress"
           />
           <auto-complete
             :items="countries"
             label="Country"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="country"
           />
           <auto-complete
             label="State"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="state"
             :items="states"
           />
           <cornie-input
             label="City"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="city"
           />
           <cornie-input
             label="Suite or Apt No"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="aptNumber"
           />
           <cornie-input
             label="Post Code"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
             v-model="postcode"
           />
-          <cornie-phone-input
-            label="Mobile Number 1"
-            class="mb-5"
-            placeholder="Enter"
-            v-model="postcode"
-          />
-          <cornie-phone-input
-            label="Mobile Number 2"
-            class="mb-5"
-            placeholder="Enter"
-            v-model="postcode"
-          />
+          <span class="block w-full">
+            <cornie-phone-input
+              label="Mobile Number 1"
+              class="w-full"
+              placeholder="Enter"
+              v-model:code="primaryPhone.dialCode"
+              v-model="primaryPhone.number"
+            />
+          </span>
+          <span class="block w-full">
+            <cornie-phone-input
+              label="Mobile Number 2"
+              class="w-full"
+              placeholder="Enter"
+              v-model:code="secondaryPhone.dialCode"
+              v-model="secondaryPhone.number"
+            />
+          </span>
+
           <cornie-input
             label="Email"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
-            v-model="postcode"
+            v-model="email"
           />
           <cornie-input
             label="Organization"
-            class="mb-5"
+            class="w-full"
             placeholder="Enter"
-            v-model="postcode"
+            v-model="organization"
           />
-          <div class="flex items-end">
+          <div class="flex items-end w-full">
             <period-picker
               label="Period (from - to)"
-              class="mr-1"
+              class="mr-1 w-full"
               v-model="period"
             />
           </div>

@@ -7,6 +7,8 @@
           rounded-full
           text-white
           mt-5
+          text-sm
+          mb-5
           py-2
           px-3
           focus:outline-none
@@ -16,14 +18,16 @@
         "
         @click="showDefaultCurrencyModal = true"
       >
-        <span class="mt-2 mr-2"> <bank-add-icon /> </span>
+   <bank-add-icon class="mt-1 mr-2" /> 
         Set Default Currecncy
       </button>
       <button
         class="
           bg-danger
           rounded-full
+          text-sm
           text-white
+          mb-5
           mt-5
           py-2
           px-3
@@ -33,45 +37,49 @@
         "
         @click="showNewExchangeRateModal = true"
       >
-        <span class="mt-2 mr-2"> <bank-add-icon /> </span>
+    <bank-add-icon class="mt-1 mr-2"/> 
         New Exchange Rate
       </button>
     </span>
-    <div class="flex w-full justify-between mt-5 items-center">
-      <span class="flex items-center">
-        <sort-icon class="mr-5" />
-        <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none"
-          type="search"
-          v-model="query"
+       <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showRateModal(item.id)"
         >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input>
-      </span>
-      <span class="flex justify-between items-center">
-        <print-icon class="mr-7" />
-      </span>
-    </div>
-    <Table :headers="header" :items="items" class="tableu rounded-xl mt-5">
-      <template v-slot:item="{ item }">
-        <span v-if="getKeyValue(item).key == 'more'">
-          <three-dot-icon />
-        </span>
-        <span v-else> {{ getKeyValue(item).value }} </span>
+          <eye-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View & Edit</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <delete-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Delete</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <close-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Deactivate Account</span>
+        </div>
       </template>
-    </Table>
-    <default-currency v-model:visible="showDefaultCurrencyModal" />
-    <new-exchange-rate v-model:visible="showNewExchangeRateModal" />
+    </cornie-table>
+
+  
+    <default-currency v-model="showDefaultCurrencyModal" />
+  <new-exchange-rate v-model="showNewExchangeRateModal" @currency-added="currencyadded" :id="currencyId"/>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
+import { first, getTableKeyValue } from "@/plugins/utils";
 import PrintIcon from "@/components/icons/print.vue";
 import IconInput from "@/components/IconInput.vue";
 import BankAddIcon from "@/components/icons/bankadd.vue";
@@ -80,11 +88,20 @@ import ICurrency from "@/types/ICurrency";
 import NewExchangeRate from "./newExchangeRate.vue";
 import defaultCurrency from "./defaultCurrency.vue";
 import search from "@/plugins/search";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import CancelIcon from "@/components/icons/cancel.vue";
+
+const currency = namespace("currency");
 
 @Options({
   components: {
     Table,
     SortIcon,
+    CornieTable,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
@@ -92,52 +109,87 @@ import search from "@/plugins/search";
     BankAddIcon,
     NewExchangeRate,
     defaultCurrency,
+    DeleteIcon,
+    EyeIcon,
+    CloseIcon
   },
 })
 export default class currentState extends Vue {
-  @Prop({ type: Array, default: [] })
-  currencies!: ICurrency[];
+
+   @currency.State
+  currencys!: ICurrency[];
+
+  @currency.Action
+  deleteCurrency!: (id: string) => Promise<boolean>;
+
+
+
+  @currency.Action
+  fetchCurrencys!: () => Promise<void>;
 
   query = "";
-
+currencyId="";
   showNewExchangeRateModal = false;
   showDefaultCurrencyModal = false;
 
-  headers = [
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "CURRENCY",
-      value: "currency",
+      key: "currency",
+       show: true,
     },
-    { title: "CONVERSION", value: "conversion" },
+    { title: "CONVERSION", key: "conversion", show: true, },
 
     {
       title: "EXCHANGE RATE",
-      value: "exchangeRate",
+      key: "exchangeRate",
+       show: true,
     },
-    { title: "CREATED", value: "createdAt" },
+    { title: "CREATED", key: "createdAt" , show: true,},
     // Displaying Icon in the header - <table-setting-icon/>
   ];
 
   get header() {
-    return [...this.headers, { title: "", value: "action", image: true }];
+    return [...this.rawHeaders, { title: "", value: "action", image: true }];
   }
 
+
   get items() {
-    const currencies = this.currencies.map((currency) => {
+    const currencys = this.currencys.map((currency) => {
       (currency as any).createdAt = new Date(
         (currency as any).createdAt
       ).toLocaleDateString("en-US");
-
-      return currency;
+        return {
+        ...currency,
+         action: currency.id,
+        };
     });
-    return currencies;
     if (!this.query) {
-      return currencies;
+      return currencys;
     } else {
-      return search.searchObjectArray(currencies, this.query);
+      return search.searchObjectArray(currencys, this.query);
     }
   }
+     get sortCurrency (){
+        return this.items.slice().sort(function(a, b){
+          return (a.createdAt < b.createdAt) ? 1 : -1;
+        });
+      }
+       async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this currency",
+      title: "Delete Currency"
+    });
+    if (!confirmed) return;
 
+    if (await this.deleteCurrency(id)) window.notify({ msg: "Currency Deleted", status: "success" });
+    else window.notify({ msg: "Currency Not Deleted", status: "error" });
+  }
+async showRateModal(value:string){
+  this.showNewExchangeRateModal = true;
+  this.currencyId = value;
+}
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
@@ -148,5 +200,12 @@ export default class currentState extends Vue {
       index,
     };
   }
+
+currencyadded(){
+this.fetchCurrencys();
+}
+ created(){
+   this.fetchCurrencys();
+ }
 }
 </script>

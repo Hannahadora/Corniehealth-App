@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <empty-state v-if="empty" />
   <existing-state v-else />
 </template>
@@ -17,9 +18,50 @@ import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue"
 import { mapActions, mapState } from "vuex";
 import BloodChartt from "./bloodChartt.vue";
 import WeightChartt from "./weight-chartt.vue";
+=======
+  <main>
+    <div class="mb-5 p-3 border-l-none -mt-6 w-full">
+      <span
+        class="
+          flex
+          border-b-2
+          w-full
+          font-bold
+          text-xl text-primary
+          py-2
+          mb-5
+          mx-auto
+        "
+      >
+        Health Trend
+      </span>
+      <div class="w-full h-full">
+        <div class="w-full grid grid-cols-2 gap-4">
+          <blood-chart />
+          <weight-chart title="Weight" />
+        </div>
+        <div class="w-full grid grid-cols-3 gap-4">
+          <medication-card />
+          <condition-card />
+          <allergy-card />
+          <diagnostic-card />
+          <procedure-card />
+          <note-card />
+        </div>
+
+        <div class="w-full grid">
+          <appointment-card />
+          <history-card />
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+>>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 
 import MedicationCard from "./medicationCard.vue";
-import MedicationCardd from "./medicationCardd.vue";
 
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
@@ -30,13 +72,11 @@ import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
 
 
-//for empty state
+//for the empty state
 import conditionCardd from "./conditionCardd.vue";
-import AllergyCardd from "./allergyCardd.vue";
 import DiagnosticCardd from "./diagnosticCardd.vue";
 import ProcedureCardd from "./procedureCardd.vue";
 import NoteCardd from "./noteCardd.vue";
-import AppointmentCardd from "./appointmentCardd.vue";
 import HistoryCardd from "./historyCardd.vue";
 
 
@@ -60,6 +100,7 @@ import ExistingState from "./existing-state.vue";
 
 
 const patients = namespace("patients");
+<<<<<<< HEAD
 
 @Options({
    name: "HealthIndex",
@@ -72,21 +113,28 @@ const patients = namespace("patients");
     BloodChartt,
     WeightChartt,
     AppointmentChart,
+=======
+import BloodChart from "./bloodChart.vue";
+import WeightChart from "./weight-chart.vue";
+
+@Options({
+  name: "HealthTrendIndex",
+  components: {
+>>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
     MedicationCard,
-    MedicationCardd,
+    WeightChart,
     conditionCard,
-    conditionCardd,
+    BloodChart,
     AllergyCard,
-    AllergyCardd,
+
     DiagnosticCard,
-    DiagnosticCardd,
+
     ProcedureCard,
-    ProcedureCardd,
+
     NoteCard,
-    NoteCardd,
     AppointmentCard,
-    AppointmentCardd,
     HistoryCard,
+<<<<<<< HEAD
     HistoryCardd,
 
      EmptyState,
@@ -115,18 +163,9 @@ async created (){
   }
 
 };
+=======
+  },
+})
+export default class HelthTrends extends Vue {}
+>>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 </script>
-
-<style scoped>
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-</style>

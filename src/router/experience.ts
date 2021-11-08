@@ -146,7 +146,7 @@ export const ExperienceRoutes: RouteRecordRaw = {
     {
       path: "schedules",
       props: true,
-      name: "Patient Experience Management.",
+      name: "Schedules",
       component: () => import("@/views/dashboard/schedules/index.vue"),
     },
     {

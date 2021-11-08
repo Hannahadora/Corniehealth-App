@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
 import { SettingsRoute } from "./settings";
+import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import Settings from "@/views/dashboard/settings/index.vue";
@@ -70,9 +71,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
       },
-      ExperienceRoutes,
       {
-        path: "practitioner/patients",
+        path: "clinical",
         props: true,
         name: "EHR",
         component: () => import("@/views/dashboard/ehr/landing/index.vue"),
@@ -159,28 +159,30 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+      ClinicalsRoute,
+      ExperienceRoutes,      
       {
         path: "settings/",
         name: "Settings",
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
-          {
-            path: "org-hierarchy",
-            name: "Organization Hierarchy",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-              ),
-          },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
+          // {
+          //   path: "org-hierarchy",
+          //   name: "Organization Hierarchy",
+          //   component: () =>
+          //     import(
+          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
+          //     ),
+          // },
           {
             path: "care-partners",
             name: "Care Partners",

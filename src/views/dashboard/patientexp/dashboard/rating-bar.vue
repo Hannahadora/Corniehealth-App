@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col">
     <span class="w-full flex justify-between items-center">
-      <span class="font-semibold text-blue-yonder mb-1">
+      <span class="text-blue-yonder mb-1">
         {{ title }}
         <span class="text-danger ml-1 text-xs">
           {{ subtitle }}

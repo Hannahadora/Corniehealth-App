@@ -7,6 +7,7 @@ import ContactStore from "./contact";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
+import CurrencyStore from "./currency";
 import CarePartnersStore from "./CarePartners";
 import practitioner from "./practitioner";
 import HealthcareStore from "./healthcare";
@@ -27,11 +28,18 @@ import PatientStore from "./patient";
 import RequestStore from "./request";
 import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
+import ImpressionStore from "./impression";
+import HistoryStore from "./history";
 import OrgLevels from "./hierarchy/levels";
 import OrganizationHierarchy from "./hierarchy";
 import OrgFunctions from "./hierarchy/functions";
 import VitalsStore from "./vitals";
+import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
+import condition from "./condition";
+import hospitalisationStore from "./hospitalisation";
+import CareplanStore from "./careplan";
+
 
 export default createStore({
   modules: {
@@ -42,8 +50,9 @@ export default createStore({
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
+    currency: CurrencyStore,
     OrgFunctions,
-
+    condition,
     hierarchy: OrganizationHierarchy,
     designation,
 
@@ -68,7 +77,12 @@ export default createStore({
     organization: OrgStore,
     task: TaskStore,
     allergy: AllergyStore,
+    impression:ImpressionStore,
+    history: HistoryStore,
 
     vitals: VitalsStore,
+    procedure: ProcedureStore,
+    hospitalisation: hospitalisationStore,
+    careplan: CareplanStore
   },
 } as StoreOptions<any>);

@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="h-full"  style="width:70.6667%">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title  class="w-full">
           <cornie-icon-btn @click="show = false">
@@ -14,8 +14,9 @@
         <v-form ref="form">
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" v-model="opened" :opened="false">
               <template v-slot:default>
-                <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
+                <div class="w-full grid grid-cols-2 gap-2 mt-5 pb-5">
                    <cornie-select
+                   class="w-full"
                     :items="dropdowns.serviceCategory"
                     v-model="otherrequestModel.basicInfo.activityDefinition"
                     label="activity definition"
@@ -23,6 +24,7 @@
                   >
                   </cornie-select>
                   <cornie-select
+                   class="w-full"
                     :items="dropdowns.serviceType"
                     v-model="otherrequestModel.basicInfo.basedOn"
                     label="based on"
@@ -30,43 +32,38 @@
                   >
                   </cornie-select>
                   <cornie-select
+                   class="w-full"
                     :items="dropdowns.specialty"
                      v-model="otherrequestModel.basicInfo.replaces"
                     label="replaces"
                     placeholder="--Select--"
                   >
                   </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                   :items="['proposal','plan','order','original-order','reflex-order','filler-order','instance-order','option']"
-                     v-model="otherrequestModel.basicInfo.intent"
-                    label="intent"
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/request-intent"
+                     class="w-full"
+                    v-model="otherrequestModel.basicInfo.intent"
+                    label="Intent"
                     placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="['Inpatient','Outpatient','Community','Discharge']"
-                    v-model="otherrequestModel.basicInfo.category"
+                />
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/servicerequest-category"
+                     class="required w-full"
+                     v-model="otherrequestModel.basicInfo.category"
                     label="category"
                     placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                     class="required"
-                    :rules="required"
-                    :items="['Routine','Urgent','ASAP','STAT']"
-                      v-model="otherrequestModel.basicInfo.priority"
+                />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/request-priority"
+                     class="required w-full"
+                     v-model="otherrequestModel.basicInfo.priority"
                     label="priority"
                     placeholder="--Select--"
-                  >
-                  </cornie-select>
+                />
                   <cornie-select
-                     class="required"
+                     class="required w-full"
                     :rules="required"
-                    :items="dropdowns.serviceCategory"
+                    :items="['True','False']"
                      v-model="otherrequestModel.basicInfo.doNotPerform"
                     label="do not perform"
                     placeholder="--Select--"
@@ -76,7 +73,7 @@
               </template>
         </accordion-component>
         <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Request Info" expand="true" v-model="opened" :opened="false">
-            <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
+            <div class="grid grid-cols-2 gap-2 mt-5">
                  <!-- <cornie-select
                   class="required"
                   :rules="required"
@@ -86,41 +83,39 @@
                 >
                 </cornie-select> -->
                  <div class="w-full">
-                    <label class="flex uppercase mb-1  text-black text-xs font-bold">subject</label>
+                    <label class="flex uppercase mb-1  text-black text-xs font-bold">requester</label>
                     <input-desc-rounded :info="''">
                       <input :value="PatientName.firstname +' '+ PatientName.lastname" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
                     </input-desc-rounded>
                 </div>
-                <cornie-select
-                  class="required"
+                <encounter-select
+                  class="required w-full"
                   :rules="required"
-                  :items="dropdowns.specialty"
                     v-model="otherrequestModel.requestInfo.encounter"
                   label="encounter"
                   placeholder="--Select--"
                 >
-                </cornie-select>
-                 <cornie-select
-                  class="required"
-                  :rules="required"
-                  :items="dropdowns.serviceCategory"
-                   v-model="otherrequestModel.request.requestCode"
-                  label="reason code"
+                </encounter-select>
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/procedure-code"
+                     class="required w-full"
+                     v-model="otherrequestModel.request.requestCode"
+                  label="Request code"
                   placeholder="--Select--"
-                >
-                </cornie-select>
-                <cornie-select
-                  :items="dropdowns.serviceCategory"
-                   v-model="otherrequestModel.request.orderDetail"
+                />
+                <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/servicerequest-orderdetail"
+                     v-model="otherrequestModel.request.orderDetail"
                   label="order detail"
+                    class="w-full"
                   placeholder="--Select--"
-                >
-                </cornie-select>
+                />
                 <cornie-select
                   :items="dropdowns.serviceType"
                   v-model="otherrequestModel.request.preCondition"
                   label="precondition?"
                   placeholder="--Select--"
+                   class="w-full"
                 >
                 </cornie-select>
                 <cornie-select
@@ -128,52 +123,67 @@
                   v-model="otherrequestModel.request.preconditionCode"
                   label="precondition code"
                   placeholder="--Select--"
+                   class="w-full"
                 >
                 </cornie-select>
-                <cornie-select
-                  class="required"
-                  :rules="required"
-                  :items="dropdowns.serviceType"
-                   v-model="otherrequestModel.request.reasonCode"
+               <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/procedure-reason"
+                     class="required w-full"
+                    v-model="otherrequestModel.request.reasonCode"
                   label="reason code"
                   placeholder="--Select--"
-                >
-                </cornie-select>
-                <cornie-select
-                  class="required"
+                />
+                   <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">Request Reference</label>
+                    <input-desc-rounded  class="cursor-pointer">
+                          <input type="text"  disabled  :value="otherrequestModel.request.requestReference" placeholder="Select" class="required cursor-pointer p-2 border w-100 w-full" style="border-radius: 8px">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer"  @click="showRef"/>
+                          </span>
+                  </input-desc-rounded>         
+                 <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
+              </div>
+                <!-- <cornie-select
+                  class="required w-full"
                   :rules="required"
                   :items="dropdowns.serviceType"
                   v-model="otherrequestModel.request.requestReference"
                   label="request reference"
                   placeholder="--Select--"
                 >
-                </cornie-select>
-                <cornie-input label="supporting info"   v-model="otherrequestModel.request.supportingInfo" placeholder="--Enter--" />
+                </cornie-select> -->
+                <cornie-input label="supporting info"  class="w-full"   v-model="otherrequestModel.request.supportingInfo" placeholder="--Enter--" />
                 <cornie-select
                   :items="dropdowns.serviceType"
                    v-model="otherrequestModel.request.specimen"
                   label="specimen"
+                   class="w-full"
                   placeholder="--Select--"
                 >
                 </cornie-select>
-                <cornie-select
-                  :items="dropdowns.serviceType"
-                   v-model="otherrequestModel.request.bodySite"
+                <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/body-site"
+                     class="required w-full"
+                     v-model="otherrequestModel.request.bodySite"
                   label="body site"
                   placeholder="--Select--"
-                >
-                </cornie-select>
+                />
                 <cornie-numinput
                   label="quantity"
                   type="number"
+                   class="w-full"
                   v-model="otherrequestModel.request.quantity"
                   placeholder="--Enter--"
                 />
-                 <cornie-input label="range (1st value)"   :v-model="otherrequestModel.request.range[0]" placeholder="Enter" />
-                  <cornie-input label="range (2nd value)"   :v-model="otherrequestModel.request.range[1]" placeholder="Enter" />
+            </div>
+                <measurable label="Heading" v-model="otherrequestModel.request.range" />
+              <div class="grid grid-cols-2 gap-2 mt-5">
 
-                 <cornie-input label="ratio (1st value)"   :v-model="otherrequestModel.request.ratio" placeholder="Enter" />
-                  <cornie-input label="ratio (2nd value)"   :v-model="otherrequestModel.request.ratio" placeholder="Enter" />
+                 <!-- <cornie-input  class="w-full" label="range (1st value)"   :v-model="otherrequestModel.request.range[0]" placeholder="Enter" />
+                  <cornie-input  class="w-full" label="range (2nd value)"   :v-model="otherrequestModel.request.range[1]" placeholder="Enter" /> -->
+
+                 <cornie-input  class="w-full" label="ratio (1st value)"   v-model="otherrequestModel.request.ratio" placeholder="Enter" />
+                  <cornie-input  class="w-full" label="ratio (2nd value)"   v-model="ratio" placeholder="Enter" />
                 <!-- <div>
                   <label class="block uppercase mb-1 text-xs font-bold"
                     >Ratio</label
@@ -222,26 +232,19 @@
                     </label>
                 </div>
                 
-                <cornie-input label="note" placeholder="--Enter--"  v-model="otherrequestModel.request.note"/>
                 <cornie-input
+                 class="w-full"
                   label="patient instructions"
                   placeholder="--Enter--"
                   v-model="otherrequestModel.request.patientInstructions"
                 />
             </div>
+                <Textarea  class="w-full" label="note" placeholder="--Enter--"   v-model="otherrequestModel.request.note"/>
             
         </accordion-component>
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Participants" expand="true" v-model="opened" :opened="false">
                 <p class="text-gray-600 text-xs mt-5 mb-5 pb-3 italic border-b-2 border-dashed">Patient</p>
-            <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                <!-- <cornie-select
-                  class="required"
-                  :rules="required"
-                  :items="allRequester"
-                  v-model="otherrequestModel.subject.subject"
-                  label="subject"
-                >
-                </cornie-select> -->
+            <div class="w-full grid grid-cols-2 gap-2 mt-5 pb-5">
                    <div class="w-full">
                     <label class="flex uppercase mb-1  text-black text-xs font-bold">subject</label>
                     <input-desc-rounded :info="''">
@@ -250,7 +253,7 @@
                 </div>
                    <cornie-select
                      v-if="PatientName.insurances.length === 0"
-                class="required"
+                class="required w-full"
                 :rules="required"
                 :items="['No Payment option for this patient']"
                   v-model="otherrequestModel.subject.paymentOption"
@@ -260,7 +263,7 @@
                 </cornie-select>
                  <cornie-select
                 v-else
-                class="required"
+                class="required w-full"
                 :rules="required"
                 :items="PatientName.insurances"
                 v-model="otherrequestModel.subject.paymentOption"
@@ -289,15 +292,13 @@
             </div>
                 <p class="text-gray-600 text-xs pb-3 italic border-b-2 border-dashed">Performer</p>
                 <div  class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                         <cornie-select
-                  class="required"
-                  :rules="required"
-                   :items="['Specialized surgeon','Chiropractor','Dental assistant','Specialized nurse','Hospital administrator','Plastic surgeon','Neuropathologist','Nephrologist','Obstetrician','School dental assistant','Medical microbiologist','Cardiologist','Dermatologist','Laboratory hematologist','Gerodontist','Removable prosthodontist','Specialized dentist','Neuropsychiatrist','Medical assistant','Orthopedic surgeon','Thoracic surgeon','Community health physician','Physical medicine specialist','Urologist','Electroencephalography specialist','Dental hygienist']"
-                   v-model="otherrequestModel.performer.performerType"
+                          <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/participant-role"
+                     class="required w-full"
+                    v-model="otherrequestModel.performer.performerType"
                   label="performer type"
                   placeholder="--Select--"
-                >
-                </cornie-select>
+                />
                 <!-- <cornie-select
                   class="required"
                   :rules="required"
@@ -314,7 +315,7 @@
                     </input-desc-rounded>
                   </div>
                 <cornie-select
-                  class="required"
+                  class="required w-full"
                   :rules="required"
                   :items="dropdowns.serviceType"
                    v-model="otherrequestModel.performer.locationCode"
@@ -324,7 +325,7 @@
                 </cornie-select>
                     <cornie-select
                     v-if="allLocation.length === 0"
-                  class="required"
+                  class="required w-full"
                   :rules="required"
                     :items="['No Location Available']"
                     v-model="otherrequestModel.performer.location"
@@ -334,7 +335,7 @@
                 </cornie-select>
                 <cornie-select
                 v-else
-                  class="required"
+                  class="required w-full"
                   :rules="required"
                     :items="allLocation"
                     v-model="otherrequestModel.performer.location"
@@ -346,12 +347,13 @@
                 </div>
         </accordion-component>
             <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Link Forms" expand="true" v-model="opened" :opened="false">
-                <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
+                <div class="w-full grid grid-cols-2 gap-2 mt-5 pb-5">
                         <cornie-select
                         v-if="allForms.length === 0 "
                         :items="['No Practice Form Available']"
                         v-model="otherrequestModel.forms.linkForms"
                         label="Link Forms"
+                          class="w-full"
                         placeholder="--Select--"
                         >
                         </cornie-select>
@@ -360,6 +362,7 @@
                         :items="allForms"
                         v-model="otherrequestModel.forms.linkForms"
                         label="Link Forms"
+                          class="w-full"
                         placeholder="--Select--"
                         >
                         </cornie-select>
@@ -381,12 +384,18 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            {{newaction}} Request
+            {{newaction}} 
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
+      <reference-modal
+          :conditions="patientConditions"
+          :allergy="allergy"
+          @show:modal="showRef"
+          v-model="showRefModal"
+        />
 </template>
 
 <script lang="ts">
@@ -418,14 +427,20 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "./components/datetime-picker.vue";
 import { string } from "yup";
+import ReferenceModal from "@/views/dashboard/ehr/refferal/reasonref.vue";
+import Measurable from "@/components/measurable.vue";
 import IOtherrequest from "@/types/IOtherrequest";
- import Slider from '@vueform/slider';
-  import { IPatient } from "@/types/IPatient";
-import '@vueform/slider/themes/default.css';
+import { IPatient } from "@/types/IPatient";
 import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 import IPractitioner from "@/types/IPractitioner";
+import EncounterSelect from "./encounter-select.vue";
+import FhirInput from "@/components/fhir-input.vue";
+import { ICondition } from "@/types/ICondition";
+import plusIcon from "@/components/icons/plus.vue";
 
+
+const condition = namespace("condition");
 const patients = namespace("patients");
 const userStore = namespace("user");
 const otherrequest = namespace('otherrequest')
@@ -449,13 +464,18 @@ const emptyOtherrequest: IOtherrequest = {
     ...CornieCard,
     CornieIconBtn,
     NoteIcon,
+    plusIcon,
     ArrowLeftIcon,
+    Measurable,
     DatePicker,
     CDelete,
     RangeSlider,
+    ReferenceModal,
     DEdit,
     CancelIcon,
     InfoIcon,
+    EncounterSelect,
+    FhirInput,
     CornieDatePicker,
     CornieDateRangePicker,
     CornieDialog,
@@ -470,7 +490,6 @@ const emptyOtherrequest: IOtherrequest = {
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    Slider,
     MainCornieSelect
   },
 })
@@ -482,7 +501,7 @@ export default class Medication extends Vue {
   id!: string;
   
   @Prop({ type: Object, required: false, default: { ...emptyOtherrequest} })
-  otherrequest!: IOtherrequest;
+  patientrequests!: IOtherrequest;
 
   otherrequestModel = {} as IOtherrequest;
 
@@ -498,14 +517,21 @@ export default class Medication extends Vue {
     @patients.Action
     fetchPatients!: () => Promise<void>;
 
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  @condition.State
+  conditions!: { [state: string]: ICondition[] };
+
   @Watch("otherrequest")
   requestUpdated(request: IOtherrequest) {
     this.otherrequestModel = JSON.parse(JSON.stringify({ ...otherrequest }));
   }
   @otherrequest.Mutation
-  updatedOtherrequests!: any;
+  setPatientRequests!: any;
 
-
+showRefModal = false;
+allergy=[];
   loading = false;
   expand = false;
   isVisible = "";
@@ -518,7 +544,7 @@ export default class Medication extends Vue {
   openedS = true;
   openedM = false;
   showMedicationModal = false;
-
+ratio="";
 
 patient=[];
 practitioner=[];
@@ -550,8 +576,16 @@ performer="";
     this.setRequest()
   }
 
+ get patientId() {
+    return this.$route.params.id as string;
+  }
+
+   get patientConditions() {
+    return this.conditions[this.patientId] || [];
+  }
+
 async setRequestModel() {
-     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.otherrequest }));
+     this.otherrequestModel = JSON.parse(JSON.stringify({ ...this.patientrequests }));
   }
   get payload() {
     //  const model = JSON.parse(JSON.stringify({ ...this.otherrequestModel }));
@@ -580,7 +614,7 @@ get format() {
 
 
     get newaction() {
-    return this.id ? 'Update' : 'Create New'
+    return this.id ? 'Update' : 'Save'
   }
 
   get allaction() {
@@ -604,11 +638,15 @@ get allPerformer() {
          }
      })
  }
-
+async showRef(value:any){
+  this.showRefModal = true;
+  this.otherrequestModel.request.requestReference = value;
+}
  done() {
-    this.$emit("allergy-added");
+    this.$emit("medication-added");
     this.show = false;
   }
+
     async setRequest() {
     const otherrequest = await this.getOtherrequestById(this.id)
     if (!otherrequest) return
@@ -653,8 +691,8 @@ get allPerformer() {
     const patientfullnameid = this.PatientName.id;
 
 
-   this.payload.requestInfo.requester = practitionerfullnameid;
-  this.payload.subject.subject = practitionerfullnameid;
+   this.payload.requestInfo.requester = patientfullnameid;
+  this.payload.subject.subject = patientfullnameid;
   this.payload.performer.performer = practitionerfullnameid;
   
   if(this.allLocation.length === 0) this.payload.performer.location = practitionerfullnameid;
@@ -662,13 +700,13 @@ get allPerformer() {
    try {
       const response = await cornieClient().post("/api/v1/other-requests", this.payload);
       if (response.success) {
-          this.updatedOtherrequests([response.data]);
+          this.setPatientRequests([response.data]);
           window.notify({ msg: "Request Created", status: "success" });
         this.done();
       }
     } catch (error) {
       console.log(error);
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Request not Created", status: "error" });
     }
   }
   async updateOtherrequest() {
@@ -678,12 +716,12 @@ get allPerformer() {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-          this.updatedOtherrequests([response.data]);
+          this.setPatientRequests([response.data]);
         window.notify({ msg: "Request Updated", status: "success" });
         this.done();
       }
     } catch (error) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Request not Updated", status: "error" });
     }
   }
 
@@ -710,12 +748,22 @@ get allPerformer() {
     this.practitioner = response[0].data;
   }
   
+  
+    async fetchAllergy() {
+    const AllAllergy = cornieClient().get(`/api/v1/allergy/findAllByPatient/${this.patientId}`);
+    const response = await Promise.all([AllAllergy]);
+    this.allergy = response[0].data.result;
+  }
+
+
   async created() {
+    await this.fetchPatientConditions(this.patientId);
     this.setRequest();
     this.setRequestModel();
     this.fetchLocation();
     this.fetchPracticeForms();
     this.fetchPatients();
+    this.fetchAllergy();
     this.fetchAllPatients();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
@@ -726,27 +774,13 @@ get allPerformer() {
 }
 </script>
 
-<style>
 
-.slider-connect {
-    background: #fe4d3c;
-    cursor: pointer;
+<style scoped>
+
+.aadd{
+      float: right;
+    position: relative;
+    bottom: 30px;
+    margin-right: 10px;
 }
-
-.slider-tooltip {
-    position: absolute;
-    display: block;
-    font-size: var(--slider-tooltip-font-size, .875rem);
-    line-height: var(--slider-tooltip-line-height, 1.25rem);
-    font-weight: var(--slider-tooltip-font-weight, 600);
-    white-space: nowrap;
-    padding: var(--slider-tooltip-py, 2px) var(--slider-tooltip-px, 6px);
-    min-width: var(--slider-tooltip-min-width, 20px);
-    text-align: center;
-    color: var(--slider-tooltip-color, #fff);
-    border-radius: var(--slider-tooltip-radius, 5px);
-    border: 1px solid #fe4d3c;
-    background: #fe4d3c;
-}
-
 </style>

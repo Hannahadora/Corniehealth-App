@@ -25,7 +25,7 @@
             </span>
             <cornie-table :columns="rawHeaders" v-model="sortMedications">
                 <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showDiagnostic(item.id)">
+                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showView(item.id)">
                       <eye-icon class="text-blue-300 fill-current" />
                       <span class="ml-8 text-xs">View</span>
                   </div>
@@ -68,6 +68,18 @@
                  <template #recorder="{ item }">
                         <p class="cursor-pointer">{{ item.asserter }}</p>
                 </template>
+                 <template #status="{ item }">
+                <div class="flex items-center">
+                  <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'Draft'">{{item.status}}</p>
+                  <p class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded" v-if="item.status == 'On-Hold'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-500 p-1 rounded" v-if="item.status == 'Active'">{{item.status}}</p>
+                  <p class="text-xs bg-gray-300  p-1 rounded" v-if="item.status == 'Unknown'">{{item.status}}</p>
+                  <p class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'Completed'">{{item.status}}</p>
+                  <p class="text-xs bg-red-300 text-red-600 p-1 rounded" v-if="item.status == 'Revoked'">{{item.status}}</p>
+                  <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'Entered-in-Error'">{{item.status}}</p>
+                    <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'Do Not Perform'">{{item.status}}</p>
+                </div>
+              </template>
             </cornie-table>
     </div>
     
@@ -84,10 +96,16 @@
           v-model="showDiagnosticModal"/>
 
           
-           <status-modal
-        :id="requestId" 
-          @update:preferred="showStatus"
+         <status-modal
+          @medication-added="medicationAdded"
+            :id="requestId" 
+           :updatedBy="updatedBy" 
+                   :dateUpdated="update"
+        :currentStatus="currentStatus" 
           v-model="showStatusModal"/>
+
+    <view-modal  :id="requestId" 
+          v-model="showViewModal"/>
 
 
         
@@ -130,10 +148,14 @@ import SendIcon from "@/components/icons/send.vue";
 import DiagnosticModal from "./diagnosticdialog.vue";
 import StatusModal from "./status.vue";
 import { namespace } from "vuex-class";
+import ViewModal from "./view.vue";
 import CheckIn from './components/checkin.vue'
 import CheckOut from './components/checkout.vue'
+import IPractitioner from "@/types/IPractitioner";
+import { mapDisplay } from "@/plugins/definitions";
 
 const otherrequest = namespace("otherrequest");
+const userStore = namespace("user");
 
 const emptyOtherrequest: IOtherrequest = {
   basicInfo: {},
@@ -159,6 +181,7 @@ const emptyOtherrequest: IOtherrequest = {
     StatusModal,
     ShareIcon,
     ThreeDotIcon,
+    ViewModal,
     DangerIcon,
     PlusIcon,
     SendIcon,
@@ -195,12 +218,28 @@ export default class DiagnosticExistingState extends Vue {
   showCheckout= false;
 onePatientId ="";
 showStatusModal= false;
+updatedBy= "";
+currentStatus="";
+update="";
+practitonerId="";
+showViewModal=false;
 
+   @userStore.Getter
+  authPractitioner!: IPractitioner;
   // @Prop({ type: Array, default: [] })
   // requests!: IOtherrequest[];
 
-   @otherrequest.State
-  otherrequests!: any[];
+  //  @otherrequest.State
+  // otherrequests!: any[];
+
+  medicationMapper = (code:string) => ""
+  priorityMapper = (code:string) => ""
+  
+     @otherrequest.State
+  patientrequests!: any[];
+
+ @otherrequest.Action
+  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
   @otherrequest.State
   practitioners!: any[];
@@ -217,8 +256,8 @@ showStatusModal= false;
   @otherrequest.Action
   getPractitioners!: () => Promise<void>;
 
- @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+//  @otherrequest.Action
+//   fetchOtherrequests!: () => Promise<void>;
 
  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -261,6 +300,9 @@ showStatusModal= false;
     },
   ];
 
+ get patientId() {
+    return this.$route.params.id as string;
+  }
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -269,25 +311,39 @@ showStatusModal= false;
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
+  async createMapper(){
+        this.medicationMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/servicerequest-category");
+        this.priorityMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/request-priority");
+    }
+
+
   get items() {
-    const otherrequests = this.otherrequests.map((otherrequest) => {
+    const patientrequests = this.patientrequests.map((otherrequest) => {
          (otherrequest as any).createdAt = new Date(
          (otherrequest as any).createdAt
        ).toDateString();
+
+         (otherrequest as any).updatedAt = new Date(
+         (otherrequest as any).updatedAt
+       ).toDateString();
+        this.updatedBy = this.getPatientName(this.patientId as string);
+      this.currentStatus = otherrequest.status;
+
+       this.update= otherrequest.updatedAt
         return {
         ...otherrequest,
          action: otherrequest.id,
-         patient: this.getPatientName(otherrequest.subject.subject),
-       requester: this.getPatientName(otherrequest.requestInfo.requester),
-        dispenser: this.getPractitionerName(otherrequest.performer.performer),
-        performer: this.getPractitionerName(otherrequest.performer.performer),
+       patient: this.getPatientName(this.patientId as string),
+       requester: this.getPatientName(this.patientId as string),
+        dispenser: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
+        performer: this.authPractitioner.firstName +'-'+ this.authPractitioner.lastName,
         status: otherrequest.status,
-        category: otherrequest.basicInfo.category,
+        category: this.medicationMapper(otherrequest.basicInfo.category),
+        priority: this.priorityMapper(otherrequest.basicInfo.priority),
         };
     });
-    if (!this.query) return otherrequests;
-    return search.searchObjectArray(otherrequests, this.query);
+    if (!this.query) return patientrequests;
+    return search.searchObjectArray(patientrequests, this.query);
   }
     async showStatus(value:string){
     this.showStatusModal = true;
@@ -300,16 +356,21 @@ showStatusModal= false;
       this.showDiagnosticModal = true;
       this.requestId = value;
   }
-
+async showView(value:string){
+    this.showViewModal = true;
+    this.requestId = value;
+}
   medicationAdded() {
-  this.fetchOtherrequests();
+  this.fetchOtherrequestsById(this.patientId);
   }
         getPatientName(id: string) {
             const pt = this.patients.find((i: any) => i.id === id);
             return pt ? `${pt.firstname} ${pt.lastname}` : '';
         }
         getPractitionerName(id: string){
-        const pt = this.practitioners.find((i: any) => i.id === id);
+          const pt = this.practitioners.find((i: any) => i.id === id);
+          console.log(pt);
+           console.log("id");
             return pt ? `${pt.firstName} ${pt.lastName}` : '';
         }
 
@@ -331,9 +392,10 @@ showStatusModal= false;
       }
    
      async created() {
+       await this.createMapper();
           this.getPractitioners();
           this.getPatients();
-          this.fetchOtherrequests();
+          this.fetchOtherrequestsById(this.patientId);
     }
 
 }
