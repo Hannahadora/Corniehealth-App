@@ -69,7 +69,7 @@ import HistoryCard from "./historyCard.vue";
 
 
 //for empty state
-import conditionCardd from "./conditionCardd.vue";
+// import conditionCardd from "./conditionCardd.vue";
 import DiagnosticCardd from "./diagnosticCardd.vue";
 // import ProcedureCardd from "./procedureCardd.vue";
 import NoteCardd from "./noteCardd.vue";
