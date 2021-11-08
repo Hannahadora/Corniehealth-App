@@ -1,24 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <empty-state v-if="empty" />
-  <existing-state v-else />
-</template>
-
-<script lang="ts">
-import { Options,setup, Vue } from "vue-class-component";
-import { cornieClient } from "@/plugins/http";
-import Avatar from "@/components/avatar.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import PhoneInput from "@/components/phone-input.vue";
-import { reactive } from "@vue/reactivity";
-import { string } from "yup";
-import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import { mapActions, mapState } from "vuex";
-import BloodChartt from "./bloodChartt.vue";
-import WeightChartt from "./weight-chartt.vue";
-=======
   <main>
     <div class="mb-5 p-3 border-l-none -mt-6 w-full">
       <span
@@ -59,7 +39,6 @@ import WeightChartt from "./weight-chartt.vue";
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 
 import MedicationCard from "./medicationCard.vue";
 
@@ -100,27 +79,12 @@ import ExistingState from "./existing-state.vue";
 
 
 const patients = namespace("patients");
-<<<<<<< HEAD
-
-@Options({
-   name: "HealthIndex",
-   components: {
-    Avatar,
-    CornieInput,
-    CornieSelect,
-    PhoneInput,
-    AvatarField,
-    BloodChartt,
-    WeightChartt,
-    AppointmentChart,
-=======
 import BloodChart from "./bloodChart.vue";
 import WeightChart from "./weight-chart.vue";
 
 @Options({
   name: "HealthTrendIndex",
   components: {
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
     MedicationCard,
     WeightChart,
     conditionCard,
@@ -134,38 +98,7 @@ import WeightChart from "./weight-chart.vue";
     NoteCard,
     AppointmentCard,
     HistoryCard,
-<<<<<<< HEAD
-    HistoryCardd,
-
-     EmptyState,
-    ExistingState,
-    
-  },
-})
-export default class HealthIndex extends Vue {
-patient = {} as IPatient;
-
-@patients.Action
-  findPatient!: (patientId: string) => Promise<IPatient>;
-
-@Prop({ type: String, default: "" })
-  patientId!: string;
-
-async created (){
-  console.log('id3', this.patientId);
-  this.patient = await this.findPatient(this.patientId)
-  console.log('fff1', this.patient)
-}
-
- 
-  get empty() {
-    return !this.patient;
-  }
-
-};
-=======
   },
 })
 export default class HelthTrends extends Vue {}
->>>>>>> d9ee342ee977ec356439e98659a2cdec8cb2c1bd
 </script>
