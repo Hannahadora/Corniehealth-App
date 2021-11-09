@@ -14,7 +14,7 @@
           placeholder="--Enter--"
         />
       </div>
-      <uploader v-model="file" @show-parent="passfileinfo" />
+      <uploader v-model="file" v-model:meta="fileInfo" />
       <cornie-text-area
         :rules="required"
         v-model="comment"
@@ -69,8 +69,8 @@ export default class AddAttachment extends Vue {
 
   loading = false;
 
-  // fileInfo = {};
-  apivar = {};
+  fileInfo = {} as any;
+  
 
    @userStore.Getter
   authPractitioner!: IPractitioner;
@@ -88,19 +88,15 @@ get activePatientId() {
       return id;     
   }
   
-  passfileinfo(value:any){
-    this.apivar= value;
-    console.log(value);
-  }
+  
   get payload() {
     return {
       title: this.title,
       imageUrl: this.file,
       comment: this.comment,
       patientId: this.activePatientId,
-      practitionerId : this.authPractitioner.id,
-      // format: this.apivar.fileExt,
-      // fileSize: this.apivar.fileSize
+      format: this.fileInfo.fileExt,
+      fileSize: this.fileInfo.fileSize,
     };
   }
   

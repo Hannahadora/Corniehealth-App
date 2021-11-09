@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid p-4">
       <div class="w-full">
-
+        <p class="my-2" style="color:#667499; font-size: 14px">All Fields are required</p>
         <basic-info :title="'Basic Info'" :show="true">
             <template #form>
                 <div class="w-full flex items-center py-3 mt-3">

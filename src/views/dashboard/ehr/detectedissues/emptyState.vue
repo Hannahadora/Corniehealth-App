@@ -50,7 +50,7 @@ import IssuesModal from "./issuesdialog.vue";
     IssuesModal,
   },
 })
-export default class DetectedIssuesEmptyState extends Vue {
+export default class IssuesEmptyState extends Vue {
   showIssuesModal = false;
   async showIssues() {
     this.showIssuesModal = true;

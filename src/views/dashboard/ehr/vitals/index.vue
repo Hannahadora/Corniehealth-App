@@ -106,7 +106,7 @@
               </div>
 
               <div class="w-full my-6">
-                <input-desc-rounded :label="'Last Date Updated'" :info="''">
+                <input-desc-rounded :label="'Date Last Updated'" :info="''">
                   <input :value="selectedVital.updatedAt" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
                 </input-desc-rounded>
               </div>

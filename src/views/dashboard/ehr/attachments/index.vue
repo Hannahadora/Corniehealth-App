@@ -18,8 +18,8 @@
       <span class="w-full h-screen">
         <allergys-empty-state v-if="empty" />
         <allergys-existing-state
-          @allergy-added="allergyAdded"
-          :allergys="allergys"
+          @attachment-added="attachmentAdded"
+          :attachments="attachments"
           v-else
         />
       </span>
@@ -27,28 +27,30 @@
   </div>
 </template>
 <script lang="ts">
-import IAllergy from "@/types/IAllergy";
+import IAttachment from "@/types/IAttachment";
 import { Options, Vue } from "vue-class-component";
-import AllergysEmptyState from "./emptyState.vue";
-import AllergysExistingState from "./existingState.vue";
+import AttachmentEmptyState from "./emptyState.vue";
+import AttachmentExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const allergy = namespace("allergy");
+const attachments = namespace("attachments");
 
 @Options({
-  name: "AllergysIndex",
+  name: "AttachmentIndex",
   components: {
-    AllergysEmptyState,
-    AllergysExistingState,
+    AttachmentEmptyState,
+    AttachmentExistingState,
   },
 })
-export default class AllergysIndex extends Vue {
+export default class AttachmentIndex extends Vue {
   addAllergy = false;
   show = false;
-  TaskToUpdate = {} as IAllergy;
+  // TaskToUpdate = {} as IAllergy;
+  //  @attachments.Action
+  // fetchAttachment!: (patientId: string) => Promise<void>;
 
   get empty() {
-    return this.allergys.length < 1;
+    return this.attachments.length < 1;
   }
  get activePatientId() {
       const id = this.$route?.params?.id as string;
@@ -56,24 +58,24 @@ export default class AllergysIndex extends Vue {
   }
 
 
-  @allergy.State
-  allergys!: IAllergy[];
+  @attachments.State
+  attachments!: IAttachment[];
 
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
+  @attachments.Action
+  fetchAttachment!: (patientId: string) => Promise<void>;
 
-  allergyAdded() {
+  attachmentAdded() {
     this.show = false;
-    this.allergys;
-    this.fetchAllergys(this.activePatientId);
+    this.attachments;
+    this.fetchAttachment(this.activePatientId);
   }
 
   mounted() {
-    this.fetchAllergys(this.activePatientId);
+    this.fetchAttachment(this.activePatientId);
   }
 
   created() {
-    if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
+    if (this.attachments.length < 1) this.fetchAttachment(this.activePatientId);
   }
 }
 </script>

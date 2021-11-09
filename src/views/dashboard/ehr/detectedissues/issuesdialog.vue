@@ -5,6 +5,7 @@
           <cornie-icon-btn @click="show = false">
             <arrow-left-icon />
           </cornie-icon-btn>
+
           <h2 class="font-bold text-lg text-primary ml-3 -mt-2">{{allaction}} Detected issues</h2>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
@@ -279,12 +280,15 @@ export default class DetectedIssue extends Vue {
 
   @Prop()
   issue: any
+  
+   @issues.State
+  issues!: any[];
 
   @issues.Action
   getIssuesById!: (id: string) => IIssues
 
-  @Prop({ type: Array,  default: () => [] })
-  available!: object;
+  // @Prop({ type: Array,  default: () => [] })
+  // available!: object;
 
   @patients.State
   patients!: IPatient[];
@@ -307,7 +311,8 @@ export default class DetectedIssue extends Vue {
 
 @Watch('id')
   idChanged() {
-    this.setIssues()
+    this.checkingissues();
+    // this.setIssues()
   }
 
  data: any = {
@@ -327,18 +332,30 @@ practitioner!: IPractitioner;
   clinicalAuthur=clinicalAuthur;
   clinicalImplicated=clinicalImplicated;
 
- async setDetectedIssue() {
-     this.issuesModel = JSON.parse(JSON.stringify({ ...emptyIssues}));
-  }
-   
-// get format() {
-//         return `${this.onSet.onsetRange}`
+//  async setDetectedIssue() {
+     
 //   }
+  //  checkissues(){
+  // if(!this.issue){
+  //   this.issuesModel = JSON.parse(JSON.stringify({ ...emptyIssues}));
+  // } else {
+  //   this.setIssues();
+  // }
+  //  }
+
+  checkingissues(){
+     const updatingissues = this.issues.find(c=> c.id ===this.id);
+     this.issuesModel = { ...updatingissues},
+    //  this.issuesModel.identifier = updatingissues.
+     this.data.startDate = new Date(updatingissues.identified.identifiedPeriod.start);
+    //  this.data.endDate = new Date(updatingissues.identified.identifiedPeriod.end)
+     this.data.startTime =new Date(updatingissues.identified.identifiedPeriod.end)
+    //  this.issuesModel.identified.identifiedPeriod.end = new Date(updatingissues.identified.identifiedPeriod.start)
+  }
 
 loading=  false;
 availableFilter= false;
 profileFilter=false;
-// openS=true;
 
  get activePatientId() {
       const id = this.$route?.params?.id as string;
@@ -347,7 +364,6 @@ profileFilter=false;
  
 
   async  apply() {
-    //   this.$emit("update:preferred",  [...this.medications]);
      this.loading = true
     if (this.id) await this.updateIssues()
      await this.createIssues()
@@ -355,10 +371,13 @@ profileFilter=false;
     }
 
      async setIssues() {
-    const issues = await this.getIssuesById(this.id)
-    // console.log(this.id);
-    // if (!issues) return
-    // this.issuesModel =  (issues) ;
+    this.issue.status = this.issuesModel.status;
+    this.issue.code = this.issuesModel.code;
+    this.issue.patient = this.issuesModel.patient;
+    this.issue.severity = this.issuesModel.severity;
+    this.issue.identified = this.issuesModel.identified;
+    this.issue.evidence = this.issuesModel.evidence;
+    this.issue.mitigation = this.issuesModel.mitigation;  
   }
 //   
 buildPeriod(
@@ -380,7 +399,6 @@ buildPeriod(
   }
   get payload() {
     return {
-      // patientId: this.activePatientId,
       status: this.issuesModel.status,
       code: this.issuesModel.code,
       patient:this.activePatientId,
@@ -398,17 +416,6 @@ buildPeriod(
  get newaction() {
     return this.id ? 'Update' : 'Save'
   }
-  //  async selected() {
-  //    const orgId = this.organizationInfo.id;
-  //   this.getPractitionerName(orgId);
-  // }
-  // getPractitionerName(id: string){
-  //  const pt = this.practitioners.find((i: any) => i.organizationId === id);
-  // //  this.onSet.asserter = pt.id
-  //   // this.onSet.recorder =  `${pt.firstName} ${pt.lastName}`;
-  //   this.asserterName =  `${pt.firstName} ${pt.lastName}`;
-  //   return pt ? `${pt.firstName} ${pt.lastName}` : '';
-  // }
    done() {
     this.$emit("-added");
     this.show = false;
@@ -446,11 +453,18 @@ async updateIssues() {
     }
   }
   created() {
-      this.setIssues();
       this.getPractitioners();
       if (!this.organizationInfo) this.fetchOrgInfo();
-      this.setDetectedIssue();
+      // this.setIssues();
+      // this.checkissues();
+      console.log(this.issue);
+      // console.log(this.updatingissues)
+      // this.setDetectedIssue();
   }
+
+  // mounted(){
+    
+  // }
 }
 </script>
 

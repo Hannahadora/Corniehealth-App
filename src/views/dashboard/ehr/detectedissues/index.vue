@@ -18,8 +18,8 @@
       <span class="w-full h-screen">
         <issues-empty-state v-if="empty" />
         <issues-existing-state
-          @allergy-added="allergyAdded"
-          :allergys="allergys"
+          @issues-added="issuesAdded"
+          :issues="issues"
           v-else
         />
       </span>
@@ -27,28 +27,29 @@
   </div>
 </template>
 <script lang="ts">
-import IAllergy from "@/types/IAllergy";
+// import IAllergy from "@/types/IAllergy";
+import IIssues from "@/types/IIssues";
 import { Options, Vue } from "vue-class-component";
 import IssuesEmptyState from "./emptyState.vue";
 import IssuesExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const allergy = namespace("allergy");
+const issues = namespace("issues");
 
 @Options({
-  name: "AllergysIndex",
+  name: "AttachmentsIndex",
   components: {
     IssuesEmptyState,
     IssuesExistingState,
   },
 })
-export default class AllergysIndex extends Vue {
+export default class AttachmentsIndex extends Vue {
   addAllergy = false;
   show = false;
-  TaskToUpdate = {} as IAllergy;
+  // TaskToUpdate = {} as IAllergy;
 
   get empty() {
-    return this.allergys.length < 1;
+    return this.issues.length < 1;
   }
  get activePatientId() {
       const id = this.$route?.params?.id as string;
@@ -56,24 +57,24 @@ export default class AllergysIndex extends Vue {
   }
 
 
-  @allergy.State
-  allergys!: IAllergy[];
+  @issues.State
+  issues!: IIssues[];
 
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
+  @issues.Action
+  fetchIssues!: (patientId: string) => Promise<void>;
 
-  allergyAdded() {
+  issuesAdded() {
     this.show = false;
-    this.allergys;
-    this.fetchAllergys(this.activePatientId);
+    this.issues;
+    this.fetchIssues(this.activePatientId);
   }
 
   mounted() {
-    this.fetchAllergys(this.activePatientId);
+    this.fetchIssues(this.activePatientId);
   }
 
   created() {
-    if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
+    if (this.issues.length < 1) this.fetchIssues(this.activePatientId);
   }
 }
 </script>

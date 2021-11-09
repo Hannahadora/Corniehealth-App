@@ -37,14 +37,12 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
-<<<<<<< HEAD
 import DetectedIssues from "./detectedissues"
-=======
+import Attachments from "./attachment"
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
 
 
->>>>>>> 5ab82228ce10fb53787c8c66341acc4256d4da68
 export default createStore({
   modules: {
     user: UserStore,
@@ -84,6 +82,7 @@ export default createStore({
     impression:ImpressionStore,
     history: HistoryStore,
     issues: DetectedIssues,
+    attachments: Attachments,
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,

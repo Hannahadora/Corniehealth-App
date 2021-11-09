@@ -17,12 +17,12 @@
             focus:outline-none
             hover:opacity-90
           "
-          @click="showAllergy('false')"
+          @click="showAttachment('false')"
         >
           New Attachments
         </button>
       </span>
-      <cornie-table :columns="rawHeaders" v-model="sortAllergys">
+      <cornie-table :columns="rawHeaders" v-model="sortAttachment">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -42,7 +42,7 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showAllergy(item.id)"
+            @click="showAttachment(item.id)"
           >
             <edit-icon class="text-purple-600 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
@@ -57,20 +57,20 @@
       </cornie-table>
     </div>
 
-    <allergy-modal
-      v-if="allergyId == 'false'"
+    <attachment-modal
+      v-if="attachmentId == 'false'"
       :columns="practitioner"
-      @allergy-added="allergyAdded"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
+      @allergy-added="attachmentAdded"
+      @update:preferred="showAttachment"
+      v-model="showAttachmentModal"
     />
 
-    <allergy-modal
+    <attachment-modal
       v-else
-      :id="allergyId"
+      :id="attachmentId"
       :columns="practitioner"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
+      @update:preferred="showAttachment"
+      v-model="showAttachmentModal"
     />
   </div>
 </template>
@@ -92,7 +92,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IAllergy from "@/types/IAllergy";
+import IAttachment from "@/types/IAttachment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -105,11 +105,11 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import AllergyModal from "./add-attachment.vue";
+import AttachmentModal from "./add-attachment.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
-const allergy = namespace("allergy");
+const attachments = namespace("attachments");
 
 @Options({
   components: {
@@ -117,7 +117,7 @@ const allergy = namespace("allergy");
     CancelIcon,
     SortIcon,
     CheckinIcon,
-    AllergyModal,
+    AttachmentModal,
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,
@@ -141,34 +141,34 @@ const allergy = namespace("allergy");
     CornieDialog,
   },
 })
-export default class AllergyExistingState extends Vue {
+export default class AttachmentExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
   query = "";
   selected = 1;
   showNotes = false;
-  showAllergyModal = false;
-  allergyId = "";
+  showAttachmentModal = false;
+  attachmentId = "";
   tasknotes = [];
 
   @Prop({ type: Array, default: [] })
-  allergys!: IAllergy[];
+  attachments!: IAttachment[];
 
   // @allergy.State
   // allergys!: IAllergy[];
 
-  @allergy.State
-  practitioners!: any[];
+  // @allergy.State
+  // practitioners!: any[];
 
-  @allergy.Action
-  deleteAllergy!: (id: string) => Promise<boolean>;
+  // @allergy.Action
+  // deleteAllergy!: (id: string) => Promise<boolean>;
 
-  @allergy.Action
-  getPractitioners!: () => Promise<void>;
+  // @allergy.Action
+  // getPractitioners!: () => Promise<void>;
 
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
+  @attachments.Action
+  fetchAttachment!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -211,69 +211,69 @@ export default class AllergyExistingState extends Vue {
   }
 
   get items() {
-    const allergys = this.allergys.map((allergy) => {
-      (allergy as any).onSet.onsetPeriod.start = new Date(
-        (allergy as any).onSet.onsetPeriod.start
-      ).toLocaleDateString("en-US");
-      (allergy as any).onSet.onsetPeriod.end = new Date(
-        (allergy as any).onSet.onsetPeriod.end
-      ).toLocaleDateString("en-US");
-      (allergy as any).createdAt = new Date(
-        (allergy as any).createdAt
-      ).toLocaleDateString("en-US");
+    const attachments = this.attachments.map((attachment) => {
+      // (allergy as any).onSet.onsetPeriod.start = new Date(
+      //   (allergy as any).onSet.onsetPeriod.start
+      // ).toLocaleDateString("en-US");
+      // (allergy as any).onSet.onsetPeriod.end = new Date(
+      //   (allergy as any).onSet.onsetPeriod.end
+      // ).toLocaleDateString("en-US");
+      // (allergy as any).createdAt = new Date(
+      //   (allergy as any).createdAt
+      // ).toLocaleDateString("en-US");
       return {
-        ...allergy,
-        action: allergy.id,
+        ...attachment,
+        action: attachment.id,
         keydisplay: "XXXXXXX",
-        onsetPeriod:
-          allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
-        asserter: this.getPractitionerName(allergy.onSet.asserter),
-        product: allergy.reaction.substance,
+        // onsetPeriod:
+        //   allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
+        // asserter: this.getPractitionerName(allergy.onSet.asserter),
+        // product: allergy.reaction.substance,
       };
     });
-    if (!this.query) return allergys;
-    return search.searchObjectArray(allergys, this.query);
+    if (!this.query) return attachments;
+    return search.searchObjectArray(attachments, this.query);
   }
-  getPractitionerName(id: string) {
-    const pt = this.practitioners.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : "";
-  }
-  async showAllergy(value: string) {
-    this.showAllergyModal = true;
+  // getPractitionerName(id: string) {
+  //   const pt = this.practitioners.find((i: any) => i.id === id);
+  //   return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  // }
+  async showAttachment(value: string) {
+    this.showAttachmentModal = true;
     //this.stopEvent = true;
-    this.allergyId = value;
+    this.attachmentId = value;
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
   }
 
-  allergyAdded() {
-    this.allergys;
-    this.fetchAllergys(this.activePatientId);
+  attachmentAdded() {
+    this.attachments;
+    this.fetchAttachment(this.activePatientId);
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this allergy",
-      title: "Delete allergy",
-    });
-    if (!confirmed) return;
+  // async deleteItem(id: string) {
+  //   const confirmed = await window.confirmAction({
+  //     message: "You are about to delete this allergy",
+  //     title: "Delete allergy",
+  //   });
+  //   if (!confirmed) return;
 
-    if (await this.deleteAllergy(id))
-      window.notify({ msg: "Allergy cancelled", status: "success" });
-    else window.notify({ msg: "Allergy not cancelled", status: "error" });
-  }
+  //   if (await this.deleteAllergy(id))
+  //     window.notify({ msg: "Allergy cancelled", status: "success" });
+  //   else window.notify({ msg: "Allergy not cancelled", status: "error" });
+  // }
 
-  get sortAllergys() {
+  get sortAttachment() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
 
   async created() {
-    this.getPractitioners();
-    this.sortAllergys;
-    this.fetchAllergys(this.activePatientId);
+    // this.getPractitioners();
+    this.sortAttachment;
+    this.fetchAttachment(this.activePatientId);
   }
 }
 </script>

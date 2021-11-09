@@ -94,6 +94,11 @@ export default class Uploader extends Vue {
   @PropSync("modelValue")
   fileUrl!: string;
 
+  @Prop({ type: Object})
+  meta!: any;
+  @PropSync("meta")
+  metaData!: any;
+
   file = {} as File;
 
   xhr!: XMLHttpRequest;
@@ -124,12 +129,11 @@ export default class Uploader extends Vue {
     const fileExt = this.file.type;
     const fileSize = this.file.size;
     const fileInfo = { fileSize, fileExt};
-    this.fileInfo = fileInfo;
-    console.log(this.fileInfo);
+    this.metaData = fileInfo;
   }
-    showupload(){
-      this.$emit('show-parent', this.fileInfo)
-    }
+    // showupload(){
+    //   this.$emit('show-parent', this.fileInfo)
+    // }
   cancel() {
     this.uploading = false;
     this.xhr?.abort();
@@ -139,7 +143,10 @@ export default class Uploader extends Vue {
     if (!this.file?.name) return;
     this.uploading = true;
     const url = await this.execUpload();
-    if (url) this.fileUrl = url as string;
+    if (url) {
+      this.fileUrl = url as string;
+      this.setmeta();
+      }
     this.uploading = false;
     this.progress = 0;
   }

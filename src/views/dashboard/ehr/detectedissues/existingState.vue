@@ -42,7 +42,7 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showIssues(item)"
+            @click="showIssues(item.id)"
           >
             <edit-icon class="text-purple-600 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
@@ -58,10 +58,10 @@
     </div>
 
 
-    <allergy-modal
+    <issues-modal
       @update:preferred="showIssues"
       v-model="showIssuesModal"
-      :id="issuesId"
+      :id="currentIssue"
     />
   </div>
 </template>
@@ -83,7 +83,8 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import IAllergy from "@/types/IAllergy";
+import IIssues from "@/types/IIssues";
+// import IAllergy from "@/types/IAllergy";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -96,10 +97,10 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import AllergyModal from "./issuesdialog.vue";
+import IssuesModal from "./issuesdialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import IIssues from "@/types/IIssues";
+
 
 const issues = namespace("issues");
 
@@ -110,7 +111,7 @@ const issues = namespace("issues");
     CancelIcon,
     SortIcon,
     CheckinIcon,
-    AllergyModal,
+    IssuesModal,
     NewviewIcon,
     UpdateIcon,
     TimelineIcon,
@@ -134,7 +135,7 @@ const issues = namespace("issues");
     CornieDialog,
   },
 })
-export default class AllergyExistingState extends Vue {
+export default class IssuesExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
@@ -271,7 +272,7 @@ export default class AllergyExistingState extends Vue {
   //   const pt = this.practitioners.find((i: any) => i.id === id);
   //   return pt ? `${pt.firstName} ${pt.lastName}` : "";
   // }
-  async showIssues(issue: IIssues) {
+  async showIssues(issue: String) {
     this.showIssuesModal = true;
     //this.stopEvent = true;
     this.currentIssue = issue;
@@ -308,6 +309,7 @@ export default class AllergyExistingState extends Vue {
     // this.getPractitioners();
     this.sortIssues;
     this.fetchIssues(this.activePatientId);
+    console.log(this.currentIssue);
   }
 }
 </script>
