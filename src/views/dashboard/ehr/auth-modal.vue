@@ -1,7 +1,9 @@
 <template>
-    <div class="w-full" style="max-width: 530px">
-        <div class="container p-6 content-con">
-        <p class="text-primary text-xl font-semibold pb-3">You need to be authenticated to view health records.</p>
+  <div class="w-full" style="max-width: 530px">
+    <div class="container p-6 content-con">
+      <p class="text-primary text-xl font-semibold pb-3">
+        You need to be authenticated to view health records.
+      </p>
 
       <div class="w-full py-6">
         <label for="password" class="flex flex-col">
@@ -12,7 +14,7 @@
             class="border rounded"
             placeholder="Type in your password"
             :autocomplete="false"
-            />               
+          />
         </label>
       </div>
       <div class="w-full flex justify-end">
@@ -85,7 +87,7 @@ export default class AuthModal extends Vue {
       const verified = await ehrHelper.authenticateUser({
         email: this.authPractitioner?.email,
         authPassword: this.password,
-        accountId: this.domain ? this.domain : this.authPractitionerDomain,
+        accountId: this.domain || "",
       });
       this.password = "";
       this.loading = false;

@@ -258,7 +258,7 @@ import PrintIcon from "./print.vue"
 import Share from "@/components/icons/share.vue";
 import Print from "@/components/icons/print.vue";
 import BasicInfo from "./basic-info.vue"
-import CheckIcon from "./check-icon.vue"
+import CheckIcon from "@/components/icons/add.vue"
 import { namespace } from "vuex-class";
 import IVital, { IBloodPressure, IHabit } from "@/types/IVital";
 import IPractitioner from "@/types/IPractitioner";
@@ -497,7 +497,7 @@ addPhysical() {
           for (let i = 1; i <= this.selectedVital.bloodPressure?.length; i = i + 2) {
               this.collectedPressures.push({
                 position: this.selectedVital?.bloodPressure[i-1].position,
-                pressure: `${this.selectedVital?.bloodPressure[i - 1].measurement?.value}/${this.selectedVital?.bloodPressure[i].measurement?.value}mmHg`,
+                pressure: `${this.selectedVital?.bloodPressure[i - 1]?.measurement?.value}/${this.selectedVital?.bloodPressure[i]?.measurement?.value}mmHg`,
                 date: new Date().toLocaleDateString(),
                 time: new Date().toTimeString().substring(0, 5),
             })

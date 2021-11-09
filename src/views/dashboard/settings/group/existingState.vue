@@ -42,7 +42,7 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          v-if="item.data.groupStatusDetails.active == true"
+          v-if="item.groupStatusDetails.active == true"
               @click="showDeactivateGroup(item.id)"
         >
            <close-icon class="mr-3" />
@@ -50,7 +50,7 @@
         </div>
          <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          v-if="item.data.groupStatusDetails.active == false"
+          v-if="item.groupStatusDetails.active == false"
               @click="activateGroup(getKeyValue(item).value)"
         >
            <close-icon class="mr-3" />
@@ -140,6 +140,7 @@ export default class GroupExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
+    { title: "IDENTIFIER", key: "id", show: true },
     { title: "Name", key: "name", show: true },
     {
       title: "Quantity",

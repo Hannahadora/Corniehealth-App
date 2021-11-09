@@ -437,10 +437,10 @@ const careplan = namespace('careplan');
 })
 export default class NewPlan extends Vue {
     @careplan.Action
-    createCarePlan!: (body: ICarePlan) => Promise<void>
+    createCarePlan!: (body: any) => Promise<void>
 
     reqBody = {
-        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        // "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "patientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "practitionerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "organizationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -480,8 +480,8 @@ export default class NewPlan extends Vue {
             "scheduleTiming": "string",
             "startDate": "string",
             "endDate": "string",
-            "location": "string",
-            "performer": "string"
+            "location": "d25cc910-0830-40cf-a0c8-7c303f381b29",
+            "performer": "d25cc910-0830-40cf-a0c8-7c303f381b29"
         },
         "product": {
             "productCode": "string",
@@ -491,7 +491,7 @@ export default class NewPlan extends Vue {
             "description": "string",
             "note": "string"
         }
-     } as ICarePlan;
+     } as any;
 
     planStatus = [
         { code: 'draft', display: 'Draft'},

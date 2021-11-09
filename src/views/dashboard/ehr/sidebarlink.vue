@@ -20,7 +20,6 @@ export default {
   computed: {
     active() {
       const currentRoute = this.$route.fullPath;
-
       return currentRoute == this.$router.resolve(this.to).path;
     },
   },

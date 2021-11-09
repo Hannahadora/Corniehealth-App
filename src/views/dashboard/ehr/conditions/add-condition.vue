@@ -1,10 +1,5 @@
 <template>
-  <clinical-dialog
-    v-model="show"
-    title="New Condition"
-    subtext="All Fields are required"
-    class=""
-  >
+  <clinical-dialog v-model="show" title="New Condition" class="">
     <v-form ref="form">
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
@@ -161,6 +156,14 @@ import IPractitioner from "@/types/IPractitioner";
 import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
 
+import { ICondition } from "@/types/ICondition";
+
+const condition = namespace("condition");
+
+// import { Codeable } from "@/types/misc";
+import { printPractitioner } from "@/plugins/utils";
+import Condition from "yup/lib/Condition";
+
 const user = namespace("user");
 
 const timeable = {
@@ -200,6 +203,9 @@ const measurable = {
   },
 })
 export default class AddCondition extends Vue {
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 

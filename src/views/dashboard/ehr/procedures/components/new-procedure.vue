@@ -109,7 +109,7 @@
                         <div class="w-11/12">
                             <date-time-picker :label="'End date & Time'" :width="'w-full'">
                                 <template #date>
-                                    <span>{{ new Date(procedure.performedPeriod?.start ?? Date.now()).toLocaleDateString()}}</span>
+                                    <span>{{ new Date(procedure.performedPeriod?.end ?? Date.now()).toLocaleDateString()}}</span>
                                 </template>
                                 <template #time>
                                     <span>{{ '00:00' }}</span>
@@ -376,6 +376,7 @@ export default class NewProcedure extends Vue {
             const response = await this.createProcedure(this.procedure)
             console.log(response, "new procedure response");
             this.loading = false;
+            this.$emit('closesidemodal')
         } catch (error) {
             console.log(error);
             this.loading = false;

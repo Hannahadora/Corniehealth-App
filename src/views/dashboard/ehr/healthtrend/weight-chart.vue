@@ -1,7 +1,7 @@
 <template>
-  <chart-card height="343px" title="Weight">
-     <p class="text-primary font-bold text-sm -mt-5 mb-3">115.97<span class="font-light">kg</span></p>
-    <canvas ref="registration_chart"></canvas>
+  <chart-card height="343px" title="Weight" @ordered="onOrder">
+     <p class="text-primary font-bold text-sm -mt-5 mb-3">{{ average }}<span class="font-light">kg</span></p>
+    <canvas ref="registration_chart" style="margin: auto;width:100%"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -12,8 +12,13 @@ import Chart from "chart.js/auto";
 
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
-import { groupData } from "./chart-filter";
+import { getDatesAsChartLabel, groupData } from "./chart-filter";
 import { Prop, Watch } from "vue-property-decorator";
+import { formatDate, sortListByDate } from "./chart-filter"
+import { namespace } from "vuex-class";
+import IVital from "@/types/IVital";
+
+const vitalsStore = namespace('vitals')
 
 @Options({
   name: "BloodChart",
@@ -22,36 +27,62 @@ import { Prop, Watch } from "vue-property-decorator";
   },
 })
 export default class WeightChart extends Vue {
+  @vitalsStore.State
+  vitals!: IVital[];
+
+  @vitalsStore.Action
+  getVitals!: (patientId: string) => Promise<void>;
+
+  loaded = false;
+
+  get sortedVitals() {
+    return sortListByDate(this.raw);
+  }
  filter = false;
 
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   chart!: Chart;
 
-  @Prop({ type: Number, default: 70 })
-  height!: number;
+  height = "643px";
+
+  onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
+    this.order = option;
+  }
 
   get chartData() {
     const data = groupData(this.raw, this.order);
     return data;
   }
 
+  get average() {
+    const values = this.raw?.map(a => a.count);
+    if (values?.length === 0) return 0
+    return (values.reduce((a, b) => a + b) / values?.length).toFixed(1);
+  }
+
+  get labels() {
+    return getDatesAsChartLabel(this.vitals);
+  }
+
   raw: IStat[] = [];
 
-  async fetchData() {
+  async fetchData(patientId: string) {
     try {
       const response = await cornieClient().get(
-        "api/v1/patient/analytics/stats"
+        `api/v1/vitals/weight-stats/${patientId}`
       );
-      this.raw = response.data;
-      console.log('raw', this.raw);
+      this.raw = response.data?.map((item: any) => {
+        return { count: item.value, date: item.date }
+      });
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
-      window.notify({ msg: "Failed to fetch chart data", status: "error" });
+      window.notify({ msg: "Failed to fetch weight chart data", status: "error" });
     }
   }
-  created() {
-    this.fetchData();
+  async created() {
+    await this.fetchData(this.$route.params.id.toString());
+    
   }
 
   @Watch("chartData")
@@ -59,14 +90,19 @@ export default class WeightChart extends Vue {
     this.mountChart();
   }
 
-  mounted() {
+  @Watch("order")
+  orderUpdated() {
+    this.chartData;
+  }
+
+  async mounted() {
     this.mountChart();
   }
 
   mountChart() {
     const ctx: any = this.$refs.registration_chart;
     // ctx.height = this.height;
-        ctx.height = 95;
+        ctx.height = 200;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
@@ -78,7 +114,7 @@ export default class WeightChart extends Vue {
               target: "origin",
               below: "rgb(0, 0, 255)",
             },
-            label: "Patient Registration Stat",
+            label: "Patient Weight Stats",
             data: this.chartData.dataSet,
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,

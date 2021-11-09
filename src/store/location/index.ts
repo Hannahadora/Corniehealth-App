@@ -13,7 +13,7 @@ export default {
     locations: [],
   },
   mutations: {
-    setLocations(state, locations: ILocation[]) {
+    setLocations(state, locations: any) {
       state.locations = [...locations];
     },
     updateLocations(state, locations: ILocation[]) {

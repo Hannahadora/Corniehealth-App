@@ -65,9 +65,15 @@
               <span class="ml-3 text-xs">View</span>
             </table-action>
             <table-action
+               @click="viewVital(item.id)"
+            >
+              <edit-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">Edit</span>
+            </table-action>
+            <table-action
               @click="openUpdateStatusModal(item.id)"
             >
-              <edit-icon class="text-primary fill-current" />
+              <update-icon class="text-primary fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
           </template>
@@ -138,8 +144,8 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
 import Avatar from "@/components/avatar.vue";
-import EditIcon from "@/components/icons/newupdate.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
+import EditIcon from "@/components/icons/edit-purple.vue";
+import NewviewIcon from "@/components/icons/eye-blue-bg.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
@@ -157,6 +163,7 @@ import DatePicker from "@/components/datepicker.vue"
 import IVital from "@/types/IVital";
 import InputDescRounded from "./components/input-desc-rounded.vue"
 import IEncounter from "@/types/IEncounter";
+import UpdateIcon from "@/components/icons/update-status-yellow.vue"
 const userStore = namespace("user");
 const vitalsStore = namespace("vitals");
 
@@ -185,6 +192,7 @@ const vitalsStore = namespace("vitals");
     CornieSelect,
     SideModal,
     VitalsForm,
+    UpdateIcon,
   },
 })
 export default class ExistingState extends Vue {
@@ -346,13 +354,9 @@ export default class ExistingState extends Vue {
       return id;
   }
 
-  async created() {
-    console.log(this.$route, "ROUTER");
-    
+  async created() {    
     await this.getVitals(this.activePatientId);
-    await this.getEncounters(this.activePatientId);
-    console.log(this.vitals, "encounters");
-    
+    await this.getEncounters(this.activePatientId);    
   }
 }
 </script>
