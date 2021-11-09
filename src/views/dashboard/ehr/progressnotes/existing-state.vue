@@ -57,8 +57,8 @@
             @click="updateStatus(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <update-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> Update Status2 </span>
+            <!-- <update-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs"> Update Status2 </span> -->
           </div>
 
           <!-- <div
