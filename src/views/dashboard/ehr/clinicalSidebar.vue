@@ -50,28 +50,47 @@
           <div class="border-dashed border-2 border-gray-100 m-3"></div>
           <div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400 flex">Mobile</p>
-              <p class="text-xs text-black flex">{{ items.phone }}</p>
+              <p class="text-xs text-gray-400 flex">Policy IDs <eye-icon class="ml-2"/></p>
+              <p class="text-xs text-black flex">{{items.my_policyId}}</p>
             </div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400">Email</p>
-              <p class="text-xs text-black flex">{{ items.email }}</p>
+              <p class="text-xs text-gray-400">Expires</p>
+              <p class="text-xs text-black flex"> {{items.the_policyExpiry}}</p>
             </div>
             <div class="flex justify-between space-x-2 p-3">
-              <p class="text-xs text-gray-400">Address</p>
-              <p class="text-xs text-black flex">{{ items.address }}</p>
+              <p class="text-xs text-gray-400">Primary Physician</p>
+              <p class="text-xs text-black flex">{{items.authorizedPractitioner.firstName}}</p>
             </div>
           </div>
-          <div class="border-dashed border-2 border-gray-100 m-3"></div>
-          <div>
-            <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400 flex">Last Visited</p>
-              <!-- <p class="text-xs text-black flex">{{items.lastVisited}}</p> -->
+
+          <div class="experience-links-con" :class="{ 'experience-links-con-max': showFullHeight, 'experience-links-con-min': !showFullHeight }">
+
+            <div class="border-dashed border-2  border-gray-100 m-3"></div>
+            <div>
+              <div class="flex justify-between -mb-2 space-x-2 p-3">
+                <p class="text-xs text-gray-400 flex">Mobile </p>
+                <p class="text-xs text-black flex">{{items.phone}}</p>
+              </div>
+              <div class="flex justify-between -mb-2 space-x-2 p-3">
+                <p class="text-xs text-gray-400">Email</p>
+                <p class="text-xs text-black flex">{{items.email}}</p>
+              </div>
+              <div class="flex justify-between space-x-2 p-3">
+                <p class="text-xs text-gray-400">Address</p>
+                <p class="text-xs text-black flex">{{items.address}}</p>
+              </div>
             </div>
-            <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400">Active Since</p>
-              <!-- <p class="text-xs text-black flex">{{items.activeSince}}</p> -->
-            </div>
+             <div class="border-dashed border-2  border-gray-100 m-3"></div>
+              <div>
+                <div class="flex justify-between -mb-2 space-x-2 p-3">
+                  <p class="text-xs text-gray-400 flex">Last Visited </p>
+                  <p class="text-xs text-black flex">{{items.lastVisited}}</p>
+                </div>
+                <div class="flex justify-between -mb-2 space-x-2 p-3">
+                  <p class="text-xs text-gray-400">Active Since</p>
+                  <p class="text-xs text-black flex">{{items.activeSince}}</p>
+                </div>
+              </div>
           </div>
         </div>
         <span
@@ -265,19 +284,13 @@ export default class Settings extends Vue {
       Organization: this.filter(this.organization),
     };
     return provider;
-  }
-  get fullname() {
-    const name = `${this.patient.firstname} ${this.patient.lastname}`;
+  }  
+
+get fullname() {
+    const name =  `${this.patient.firstname} ${this.patient.lastname}`
     return name;
   }
-  // get picture() {
-  //   return this.patient.profilePhoto;
-  // }
-  get physicianFullname() {
-    const rrr = this.patient;
-    const name = `${this.patient.firstname} ${this.patient.lastname}`;
-    return name;
-  }
+  
   mapUrl(url: string) {
     const settingsBase = this.$router.resolve({ name: "EHR" }).href;
     // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;

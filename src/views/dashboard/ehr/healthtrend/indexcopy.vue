@@ -13,7 +13,7 @@
             mx-auto
             "
         >
-        Health Trends
+        Health Trend
         </span>
         <div class="w-full h-full">
             <div class="w-full grid grid-cols-2 gap-4">
@@ -58,6 +58,7 @@ import { mapActions, mapState } from "vuex";
 // import WeightChartt from "./weight-chartt.vue";
 
 import MedicationCard from "./medicationCard.vue";
+// import MedicationCardd from "./medicationCardd.vue";
 
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
@@ -70,9 +71,11 @@ import HistoryCard from "./historyCard.vue";
 
 //for empty state
 // import conditionCardd from "./conditionCardd.vue";
+// import AllergyCardd from "./allergyCardd.vue";
 // import DiagnosticCardd from "./diagnosticCardd.vue";
 // import ProcedureCardd from "./procedureCardd.vue";
 // import NoteCardd from "./noteCardd.vue";
+// import AppointmentCardd from "./appointmentCardd.vue";
 // import HistoryCardd from "./historyCardd.vue";
 
 
@@ -107,9 +110,11 @@ export default {
     WeightChartt,
     AppointmentChart,
     MedicationCard,
+    // MedicationCardd,
     conditionCard,
     // conditionCardd,
     AllergyCard,
+    AllergyCardd,
     DiagnosticCard,
     // DiagnosticCardd,
     ProcedureCard,
@@ -117,6 +122,7 @@ export default {
     NoteCard,
     // NoteCardd,
     AppointmentCard,
+    // AppointmentCardd,
     HistoryCard,
     // HistoryCardd,
     

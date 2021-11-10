@@ -5,7 +5,7 @@
     subtext="All Fields are required"
     class=""
   >
-    <dots-horizontal-icon class="mr-7" @click="isShow" />
+    <!-- <dots-horizontal-icon class="mr-7" @click="isShow" /> -->
     <div
       v-if="topClick"
       class="p-2 flex flex-row-reverse"
@@ -144,7 +144,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mt-5">
-          <cornie-input v-model="myItem.id" label="Statuses" />
+          <cornie-input v-model="myItem.id" label="Status" />
           <cornie-input v-model="myItem.severity" label="Severity" />
           <cornie-input v-model="myItem.onset" label="Onset" />
           <cornie-input v-model="myItem.abatement" label="Abatement" />
@@ -362,7 +362,7 @@
                 class="col-span-2"
                 name="generalNormal"
                 id="group"
-                label="ffff"
+                label="Normal"
                 modelValue="generals.value"
               />
             </div>

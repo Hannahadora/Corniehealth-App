@@ -52,10 +52,10 @@ import HistoryCard from "./historyCard.vue";
 
 
 //for the empty state
-import conditionCardd from "./conditionCardd.vue";
-import DiagnosticCardd from "./diagnosticCardd.vue";
-import NoteCardd from "./noteCardd.vue";
-import HistoryCardd from "./historyCardd.vue";
+// import conditionCardd from "./conditionCardd.vue";
+// import DiagnosticCardd from "./diagnosticCardd.vue";
+// import NoteCardd from "./noteCardd.vue";
+// import HistoryCardd from "./historyCardd.vue";
 
 
 import RegistrationChart from "./registration-chart.vue";
