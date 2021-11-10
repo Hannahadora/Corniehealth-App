@@ -37,6 +37,7 @@
       <visits-chart />
       <billings-chart />
       <medication-chart />
+      
        <diagnostics-chart />
       <!-- <chart-card height="439px" title="Diagnostics" /> -->
       <referral-chart />

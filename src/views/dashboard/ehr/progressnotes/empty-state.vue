@@ -10,15 +10,16 @@
       <template #actions>
         <div class="flex justify-center">
           <cornie-btn
-            @click="addCondition = true"
+            @click="addingProgressnote = true"
             class="bg-danger text-white m-5 p-2"
           >
-            Add Progress Note
+            Add Progress Notes
           </cornie-btn>
         </div>
       </template>
     </cornie-empty-state>
-    <add-condition v-model="addCondition" />
+    <!-- <add-condition v-model="addCondition" /> -->
+    <add-progress-note v-model="addingProgressnote" />
   </div>
 </template>
 <script lang="ts">
@@ -26,6 +27,8 @@ import { Options, Vue } from "vue-class-component";
 import CornieEmptyState from "@/components/CornieEmptyState.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import AddCondition from "./add-condition.vue";
+import AddProgressNote from "./add-progressnote.vue";
+
 
 @Options({
   name: "ConditionEmptyState",
@@ -33,9 +36,11 @@ import AddCondition from "./add-condition.vue";
     CornieEmptyState,
     AddCondition,
     CornieBtn,
+    AddProgressNote,
   },
 })
 export default class EmptyState extends Vue {
   addCondition = false;
+  addingProgressnote = false;
 }
 </script>
