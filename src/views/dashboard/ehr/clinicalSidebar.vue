@@ -290,15 +290,7 @@ get fullname() {
     const name =  `${this.patient.firstname} ${this.patient.lastname}`
     return name;
   }
-get picture() {
-  return this.patient.profilePhoto;
-}
-  get physicianFullname() {
-    const rrr = this.patient;
-    const name =  `${this.patient.firstname} ${this.patient.lastname}`
-    return name;
-  }
-
+  
   mapUrl(url: string) {
     const settingsBase = this.$router.resolve({ name: "EHR" }).href;
     // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;

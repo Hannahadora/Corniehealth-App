@@ -38,7 +38,7 @@ import AddLocation from "./addLocation.vue";
 
 
 @Options({
-  name: "Organisation Hierarchy",
+  name: "Booking Site",
   components: {
     Tabs,
     Functions,
@@ -47,7 +47,7 @@ import AddLocation from "./addLocation.vue";
     AddLocation
   },
 })
-export default class OrganisationHierarchy extends Vue {
+export default class BookingSite extends Vue {
   tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellations"];
   currentTab = 0;
 }

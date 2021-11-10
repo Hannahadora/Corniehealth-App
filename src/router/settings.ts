@@ -164,7 +164,7 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "booking-site",
       name: "Booking Site",
       component: () =>
-        import("@/views/dashboard/settings/OrganisationHierarchyy/index.vue"),
+        import("@/views/dashboard/settings/BookingSite/index.vue"),
     },
   ],
 };

@@ -185,7 +185,7 @@ export default class Settings extends Vue {
       Organization: this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
-      PRACTICEMANAGEMENT  : this.filter(this.PracticeManagement),
+      "PRACTICE MANAGEMENT"  : this.filter(this.PracticeManagement),
     };
     const hmo = {
       Organization: this.filter(this.organization),
