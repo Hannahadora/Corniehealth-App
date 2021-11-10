@@ -170,12 +170,22 @@ export default class Settings extends Vue {
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
     ];
   }
+  get PracticeManagement() {
+    return [
+      {
+        name: "Booking Site",
+        to: "booking-site",
+        icon: "security-icon",
+      },
+    ];
+  }
 
   get settings() {
     const provider = {
       Organization: this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
+      "PRACTICE MANAGEMENT"  : this.filter(this.PracticeManagement),
     };
     const hmo = {
       Organization: this.filter(this.organization),
