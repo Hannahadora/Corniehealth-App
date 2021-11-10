@@ -227,7 +227,7 @@ get total(){
     }
     async created() {
         await this.fetchByIdAppointments(this.$route.params.id.toString());
-     //  await this.getSlot();
+       await this.getSlot();
     }
 }
 </script>

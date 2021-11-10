@@ -27,15 +27,18 @@ select {
     width: 5px !important;
     height: 5px !important;
 }
+
 ::-webkit-scrollbar-track {
     background-color: #f0f4fe;
     border-radius: 2rem;
 }
+
 ::-webkit-scrollbar-thumb {
     background-color: #949eb8;
     border-radius: 2rem;
     border-color: #949eb8;
-  }
+}
+
 table thead th:first-child {
     border-top-left-radius: 0.4rem 0.4rem !important;
 }

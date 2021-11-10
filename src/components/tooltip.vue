@@ -3,7 +3,7 @@
     <slot />
     <div class="tooltip flex flex-col">
       <slot name="tooltip">
-        <span class="text">
+        <span class="text text-xs">
           {{ text }}
         </span>
       </slot>
