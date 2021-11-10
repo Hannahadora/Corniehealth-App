@@ -48,7 +48,7 @@ import AddLocation from "./addLocation.vue";
   },
 })
 export default class BookingSite extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellations"];
+  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation"];
   currentTab = 0;
 }
 </script>
