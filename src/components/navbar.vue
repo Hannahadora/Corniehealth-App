@@ -177,6 +177,30 @@
               <p class="ml-2">Approval</p>
             </div>
           </li>
+          <li
+           @click="$router.push('/dashboard/settings/practise-management/forms-questionnaires')"
+            class="
+              cursor-pointer
+              list-none
+              items-center
+              flex
+              text-sm
+              mb-3
+              font-semibold
+              text-gray-700
+              hover:bg-gray-100
+              hover:text-gray-900
+              my-1
+              -m-2
+              p-5
+              py-2
+            "
+          >
+            <div class="flex">
+              <approval-icon />
+              <p class="ml-2">Forms & Questionnaires</p>
+            </div>
+          </li>
         </ul>
       </div>
     </span>

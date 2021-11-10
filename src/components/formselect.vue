@@ -83,7 +83,7 @@ export default class AutoComplete extends Vue {
       this.modelValueSync = item.code || item;
     });
      if(item == 'Blank form'){
-            this.$router.push({path: '/dashboard/provider/add-practice-form-template' })
+            this.$router.push({path: '/dashboard/settings/practise-management/add-new-form' })
         }
 
      if(item == 'Others'){
