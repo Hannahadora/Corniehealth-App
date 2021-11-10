@@ -4,8 +4,8 @@
       <template #text>
         <span>
           <input
+          contenteditable="true"
             type="text"
-            class="outline-none focus:outline-none"
             v-model="textSync"
             placeholder="--Enter--"
           />
@@ -38,6 +38,8 @@ export default class DatetextPicker extends Vue {
 
   @PropSync("text")
   textSync!: string;
+
+  //inputtext="";
 }
 </script>
 <style scoped>

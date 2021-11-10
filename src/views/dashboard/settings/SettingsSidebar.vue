@@ -73,6 +73,7 @@ import LocationIcon from "@/components/icons/location.vue";
 import HierarchyIcon from "@/components/icons/hierarchy.vue";
 import BankIcon from "@/components/icons/bank.vue";
 import SecurityIcon from "@/components/icons/security.vue";
+import FormIcon from "@/components/icons/questionnaire.vue";
 import DomainIcon from "@/components/icons/domain.vue";
 import PractitionerIcon from "@/components/icons/practitioner.vue";
 import GroupIcon from "@/components/icons/group.vue";
@@ -95,6 +96,7 @@ type INav = { name: string; to: string; icon: string };
     ApprovalIcon,
     ChevronRightIcon,
     ChevronDownIcon,
+    FormIcon,
     IconInput,
     OrgIcon,
     LocationIcon,
@@ -177,6 +179,11 @@ export default class Settings extends Vue {
         to: "booking-site",
         icon: "security-icon",
       },
+      //  {
+      //   name: "Forms & Questionnaires",
+      //   to: "forms-questionnaires",
+      //   icon: "form-icon",
+      // },
     ];
   }
 
