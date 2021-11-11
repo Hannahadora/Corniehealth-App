@@ -78,7 +78,7 @@
                         </button>
                         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1" style="margin-left: -60px;">
                         <li class="">
-                            <Select v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></Select>
+                            <select-survey v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></select-survey>
                         </li>
                         </ul>
                     </div>
@@ -157,6 +157,7 @@ import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import Select from "@/components/formselect.vue";
+import SelectSurvey from "@/components/surveyselect.vue";
 import ITask from "@/types/ITask";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
@@ -185,6 +186,7 @@ const task = namespace("task");
     UpdateIcon,
     ChevronDownIcon,
     TimelineIcon,
+    SelectSurvey,
     NoteIcon,
     ShareIcon,
     ThreeDotIcon,

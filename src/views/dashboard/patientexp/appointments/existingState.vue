@@ -393,7 +393,7 @@ async  fetchPatients() {
     });
   }
   async created() {
-    console.log(this.items);
+    
   }
 }
 </script>

@@ -3,7 +3,7 @@
     <input
       contenteditable="false"
       v-model="formTitle"
-      placholder="New Practice Forms"
+      placholder="Satisfaction Surveys"
       class="
       mb-12
         flex
@@ -559,7 +559,7 @@ inputtext="";
   othersType = "";
   habitType = "";
   formType = "";
-  formTitle = "New Practice Forms";
+  formTitle = "Satisfaction Surveys";
   displayTitle = "Blank Form";
   description = "Kindly tell us about your medical history!";
   question = "Type question here";

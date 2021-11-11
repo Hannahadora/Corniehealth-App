@@ -197,7 +197,7 @@
             "
           >
             <div class="flex">
-              <approval-icon />
+              <form-icon />
               <p class="ml-2">Forms & Questionnaires</p>
             </div>
           </li>
@@ -577,6 +577,7 @@ import HierarchyIcon from "@/components/icons/hierarchy.vue";
 import PractitionerIcon from "@/components/icons/practitioner.vue";
 import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
+import FormIcon from "@/components/icons/questionnaire.vue";
 import store from "@/store";
 import IPractitioner from "@/types/IPractitioner";
 
@@ -586,6 +587,7 @@ const account = namespace("user");
     ArrowLeftIcon,
     ChevronDown,
     SettingsIcon,
+    FormIcon,
     BellIcon,
     OrgIcon,
     ContactIcon,

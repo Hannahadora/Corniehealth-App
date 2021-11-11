@@ -16,32 +16,74 @@
         <form class="mt-2 w-full" @submit.prevent="submit">
           <div class="pb-80">
             <div class="w-full border-2 mb-32 grid grid-cols-3 gap-5 p-5 pb-5">
-                  <cornie-input
+                  <!-- <cornie-input
                     label="Appointment"
                     placeholder="--Autoloaded--"
                     v-model="appointmentType"
-                  />
-                   <single-date-picker
+                  /> -->
+                  <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">Appointment</label>
+                    <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input type="text"  disabled :value="singleParticipant.appointmentType" placeholder="--Autofilled--" class="cursor-pointer p-2 border-1 border-gray-300 rounded-md w-100 w-full">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer" />
+
+                          </span>
+                  </input-desc-rounded>
+              </div>
+                   <!-- <single-date-picker
                     label="start date"
                     class="py-2"
-                    v-model="setDate.start"
+                    v-model="period.start"
                     :rules="required"
-                  />
-                  <single-date-picker
+                  /> -->
+                   <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">Start Date</label>
+                    <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input type="text"  disabled :value="startdate" placeholder="--Autofilled--" class="cursor-pointer p-2 border-1 border-gray-300 rounded-md w-100 w-full">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer" />
+
+                          </span>
+                  </input-desc-rounded>
+              </div>
+              <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">End Date</label>
+                    <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input type="text"  disabled :value="enddate" placeholder="--Autofilled--" class="cursor-pointer p-2 border-1 border-gray-300 rounded-md w-100 w-full">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer" />
+
+                          </span>
+                  </input-desc-rounded>
+              </div>
+                  <!-- <single-date-picker
                     label="end date"
                       class="py-2"
-                    v-model="setDate.end"
+                    v-model="period.end"
                     :rules="required"
-                  />
+                  /> -->
+                  <!-- <div class="w-full cursor-pointer">
+                <label class="flex normal-case mb-0  text-black text-sm font-bold">PARTICIPANT TYPE</label>
+                    <input-desc-rounded     :info="''" class="cursor-pointer">
+                          <input type="text"  disabled :value="singleParticipant.appointmentType" placeholder="--Select--" class="cursor-pointer p-2 border-1 border-gray-300 rounded-md w-100 w-full">
+                          <span>
+                           <plus-icon class="aadd text-danger fill-current cursor-pointer" />
+
+                          </span>
+                  </input-desc-rounded>
+              </div> -->
                   <cornie-select
                     v-model="type"
-                    label="PARTICIPANT TYPE"
+                    label="Participant Type"
+                     :items="allActorsTypes"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
                     v-model="actor"
-                    label="ACTOR"
+                    :items="allActors"
+                    label="Actor"
                     placeholder="--Select--"
                   >
                   </cornie-select>
@@ -124,7 +166,7 @@ import DEdit from "@/components/icons/aedit.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
-import SingleDatePicker from "@/components/datepicker.vue";
+import SingleDatePicker from "./datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
@@ -207,6 +249,8 @@ appointmentId = "";
   newPatients =[];
   newRoles = [];
 
+
+  singleParticipant = [] as any;
   roleFilter = false;
   deviceFilter = false;
   practitionerFilter = false;
@@ -245,8 +289,80 @@ appointmentId = "";
     } as any
     return payload
   }
- 
- 
+
+
+  get allActors() {
+     if (!this.singleParticipant.Participants || this.singleParticipant.Participants === 0) return [ ];
+      const filteritems =  this.singleParticipant.Participants.filter((c:any) => c !== null);
+     return filteritems.map((i: any) => {
+    if(i.practitioner){
+      if ( i.practitioner == null) return i.practitioner.firstName = 'Not';
+      return {
+          code: i.id,
+          display:  i.practitioner.firstName + ' '+ i.practitioner.lastName,
+          type: "Practitioner"
+
+      }
+    } else if(i.patient){
+        if ( i.patient == null) return i.patient.firstname = 'Not';
+         return {
+          code: i.id,
+          display:  i.patient.firstname + ' '+ i.patient.lastname,
+          type: "Patient"
+      
+      }
+    } else if (i.device){
+      return {
+          code: i.id,
+          display:  i.name,
+          type: "Device"
+      
+      }
+    }else if (i.location){
+      return {
+          code: i.id,
+          display:  i.name,
+            type: "Location"
+          
+      }
+    }
+  
+     })
+ }
+  get allActorsTypes() {
+     if (!this.singleParticipant.Participants || this.singleParticipant.Participants === 0) return [ ];
+      const filteritems =  this.singleParticipant.Participants.filter((c:any) => c !== null);
+     return filteritems.map((i: any) => {
+    if(i.practitioner){
+      if ( i.practitioner == null) return i.practitioner.firstName = 'Not';
+      return {
+          code: i.id,
+          display:  "Practitioner",
+
+      }
+    } else if(i.patient){
+        if ( i.patient == null) return i.patient.firstname = 'Not';
+         return {
+          code: i.id,
+          display:  "Patient",
+      
+      }
+    } else if (i.device){
+      return {
+          code: i.id,
+          display: "Device",
+      
+      }
+    }else if (i.location){
+      return {
+          code: i.id,
+          display: "Location",
+          
+      }
+    }
+  
+     })
+ }
   async submit() {
   this.loading = true;
     this.appointmentId = this.id;
@@ -265,20 +381,31 @@ appointmentId = "";
      // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
-
- get setDate(){
-  const end =   moment(this.period.end).format('DD/MM/YYYY')
-      const start =  moment(this.period.start).format('DD/MM/YYYY')
-     return{
-      start,
-       end
-       } 
-      
+  async displayParticipants() {
+    try {
+      const response = await cornieClient().get(`/api/v1/appointment/${this.id}`);
+      if (response.success) {
+        this.singleParticipant = response.data;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
+
+  get allDate() {
+   const date = this.singleParticipant.period;
+   this.enddate = new Date(date.end).toLocaleDateString();
+   this.startdate = new Date(date.start).toLocaleDateString();
+   return{
+     date
+   }
+ }
 
   async created() {
-   // this.setDate();
+
+    this.displayParticipants();
   }
+
 }
 </script>
 <style>

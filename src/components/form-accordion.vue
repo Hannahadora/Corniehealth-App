@@ -3,49 +3,49 @@
   <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between">
-        <div contenteditable="true" class="flex space-x-4 cursor-pointer font-bold text-sm text-black uppercase mb-1" v-if="editabetitle" :class="{ 'text-black': expand }">
-            <edit-icon class="mr-3"/> {{ editabetitle }}
-        </div>
-        <div class="font-bold text-sm text-black uppercase mb-1" v-else :class="{ 'text-black': expand }">
-            {{ title }}
-        </div>
-        <div class="flex space-x-6 justify-end items-end">
-            <span
-            class="mr-3 cursor-pointer"
-            :class="{ 'fill-current text-white': expand }"
-            >
-            <slot name="misc" />
-            </span>
-            <div class="flex space-x-3  -mt-4 cursor-pointer" v-if="question">
-                        <question-icon class="-mt-4"/> 
-                        <span class="-mt-4"> Add question</span>
-                </div>
-                <div  v-if="text">
-                    <display-icon class="-mt-4  cursor-pointer"/>
-                </div>
-                <div v-if="image">
-                    <image-icon class="-mt-4  cursor-pointer"/>
-                </div>
-                <div v-if="video">
-                    <video-icon class="-mt-4 cursor-pointer"/>
-                </div>
-            
-                <div   v-if="expand" class>
-                    <chevron-down-icon
-                    class="cursor-pointer stroke-current -mt-4"
-                    :class="{ 'text-primary': expand }"
-                        @click="expand = false"
-                    />
-                </div>
-                <div  v-else>
-                    <chevron-right-icon
-                    class="cursor-pointer stroke-current -mt-4"
-                    :class="{ 'text-primary': expand }"
-                        @click="expand = true"
-                    />
-                </div>
+            <div contenteditable="true" class="flex space-x-4 cursor-pointer font-bold text-sm text-black uppercase mb-1" v-if="editabetitle" :class="{ 'text-black': expand }">
+                <edit-icon class="mr-3"/> {{ editabetitle }}
+            </div>
+            <div class="font-bold text-sm text-black uppercase mb-1" v-else :class="{ 'text-black': expand }">
+                {{ title }}
+            </div>
+            <div class="flex space-x-6 justify-end items-end">
+                <span
+                class="mr-3 cursor-pointer"
+                :class="{ 'fill-current text-white': expand }"
+                >
+                <slot name="misc" />
+                </span>
+                <div class="flex space-x-3  -mt-4 cursor-pointer" v-if="question">
+                            <question-icon class="-mt-4"/> 
+                            <span class="-mt-4 text-sm"> Add question</span>
+                    </div>
+                    <div  v-if="text">
+                        <display-icon class="-mt-4  cursor-pointer"/>
+                    </div>
+                    <div v-if="image">
+                        <image-icon class="-mt-4  cursor-pointer"/>
+                    </div>
+                    <div v-if="video">
+                        <video-icon class="-mt-4 cursor-pointer"/>
+                    </div>
+                
+                    <div   v-if="expand" class>
+                        <chevron-down-icon
+                        class="cursor-pointer stroke-current -mt-4"
+                        :class="{ 'text-primary': expand }"
+                            @click="expand = false"
+                        />
+                    </div>
+                    <div  v-else>
+                        <chevron-right-icon
+                        class="cursor-pointer stroke-current -mt-4"
+                        :class="{ 'text-primary': expand }"
+                            @click="expand = true"
+                        />
+                    </div>
 
-        </div>
+            </div>
         </div>
         <move-icon class="cursor-pointer mt-1 float-right" v-if="move"/>
       </div>

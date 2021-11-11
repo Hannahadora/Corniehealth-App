@@ -19,5 +19,12 @@ export const NewSettingsRoutes: RouteRecordRaw = {
         component: () =>
           import("@/views/dashboard/settings/forms/newform.vue"),
       },
+      {
+        path: "add-statisfaction-survey/:id?",
+        props: true,
+        name: "Satisfaction Surveys",
+        component: () =>
+          import("@/views/dashboard/settings/forms/surveys.vue"),
+      },
   ],
 };
