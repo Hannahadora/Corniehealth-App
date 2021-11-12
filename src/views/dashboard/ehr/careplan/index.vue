@@ -105,11 +105,12 @@
       <empty-state />
     </div>
 
-    <side-modal :visible="showNewModal" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal">
+    <side-modal :visible="true" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal">
+    <!-- <side-modal :visible="showNewModal" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal"> -->
       <new-plan  @closesidemodal="() => showNewModal = false" />
     </side-modal>
 
-  </div>
+  </div>z
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -133,6 +134,10 @@ import AddIcon from "@/components/icons/add.vue"
 import NewPlan from "./components/new-plan.vue"
 import DocIcon from "@/components/icons/assign-careteam.vue"
 import FeedbackIcon from "@/components/icons/feedback.vue"
+import { namespace } from "vuex-class";
+import ICarePlan from "@/types/ICarePlan";
+
+const careplan = namespace('careplan')
 
 @Options({
   name: "EHRPatients",
@@ -160,6 +165,11 @@ import FeedbackIcon from "@/components/icons/feedback.vue"
   },
 })
 export default class ExistingState extends Vue {
+  @careplan.Action
+  getCarePlans!: (patientId: string) => Promise<void>;
+
+  @careplan.State
+  careplans!: ICarePlan[]
 
   headers = [
     {
@@ -227,6 +237,12 @@ export default class ExistingState extends Vue {
       return id;
   }
 
+  async created() {
+    await this.getCarePlans(this.$route.params.id.toString());
+    console.log(this.careplans, 'CARE PLANS');
+    
+  }
+
 }
 </script>
 
@@ -272,4 +288,5 @@ export default class ExistingState extends Vue {
   box-sizing: border-box;
   border-radius: 124px;
 }
+
 </style>

@@ -9,6 +9,15 @@ import Settings from "@/views/dashboard/settings/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: "/kyc-email",
+    props: true,
+    name: "KYC Email",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/kyc/components/email-body.vue"
+      ),
+  },
+  {
     path: "/",
     name: "Home",
     component: Home,
@@ -346,6 +355,16 @@ const routes: Array<RouteRecordRaw> = [
             "@/views/dashboard/settings/kyc/index.vue"
           ),
       },
+      {
+        path: "kyc-link",
+        props: true,
+        name: "KYC Setting",
+        component: () =>
+          import(
+            "@/views/dashboard/settings/kyc/components/email-link.vue"
+          ),
+      },
+      
     ],
   },
 ];

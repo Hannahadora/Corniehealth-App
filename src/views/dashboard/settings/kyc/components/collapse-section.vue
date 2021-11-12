@@ -5,12 +5,12 @@
                 <span class="header py-2">{{ title }}</span>
                 <span class="flex">
                     <span class="flex mx-3 add" @click="() => $emit('add')" v-if="showAdd">
-                        <span class="mr-2 add"><add-icon class="add" /></span>
+                        <span class="mr-1 add"><add-icon class="add" /></span>
                         <span class="mx-2 add">Add</span>
                     </span>
 
                     <span class="flex mx-3 add" @click="() => $emit('select')" v-if="showAddExisting">
-                        <span class="mr-2 add"><select-exsiting class="add" /></span>
+                        <span class="mr-2 add"><img class="add" src="../img/select-existing.svg" alt=""></span>
                         <span class="mx-2 add">{{ buttonText }}</span>
                     </span>
                     <ChevronDown :class="{ 'icon-down': showDetails, 'icon-normal': !showDetails }" /> 
