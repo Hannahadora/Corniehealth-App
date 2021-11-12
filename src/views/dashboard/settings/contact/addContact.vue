@@ -59,14 +59,14 @@
             <cornie-select
               :rules="requiredRule"
               label="Country"
-              v-model="country"
-              :items="['Nigeria']"
+              v-model="nationState.country"
+              :items="nationState.countries"
             />
             <cornie-select
               :rules="requiredRule"
               label="State"
               v-model="state"
-              :items="states"
+              :items="nationState.states"
             />
             <cornie-input :rules="requiredRule" label="City" v-model="city" />
             <cornie-input
@@ -132,6 +132,7 @@ import { namespace } from "vuex-class";
 import { getStates } from "@/plugins/nation-states";
 import { string } from "yup";
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import { useCountryStates } from "@/composables/useCountryStates";
 
 const contact = namespace("contact");
 
@@ -168,12 +169,13 @@ export default class AddContact extends Vue {
 
   requiredRule = string().required();
 
+  nationState = setup(() => useCountryStates());
+
   fname = "";
   lname = "";
   gender = "";
   email = "";
   phone = "";
-  country = "";
   state = "";
   city = "";
   address = "";
@@ -182,10 +184,6 @@ export default class AddContact extends Vue {
   @Watch("image")
   imageChanged(val: string) {
     console.log("Value for image", val);
-  }
-
-  get states() {
-    return getStates();
   }
 
   @Watch("visible")
@@ -197,7 +195,7 @@ export default class AddContact extends Vue {
     this.gender = "";
     this.email = "";
     this.phone = "";
-    this.country = "";
+    this.nationState.country = "";
     this.state = "";
     this.city = "";
     this.address = "";
@@ -212,7 +210,7 @@ export default class AddContact extends Vue {
     this.gender = contact.gender;
     this.email = contact.email;
     this.phone = contact.phone;
-    this.country = contact.country;
+    this.nationState.country = contact.country;
     this.state = contact.state;
     this.city = contact.city;
     this.address = contact.address;
@@ -265,7 +263,7 @@ export default class AddContact extends Vue {
       purpose: this.purpose,
       gender: this.gender,
       image: this.image,
-      country: this.country,
+      country: this.nationState.country,
       state: this.state,
       city: this.city,
       phone: this.phone,
