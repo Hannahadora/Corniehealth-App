@@ -1,6 +1,6 @@
 <template>
   <span class="block w-full">
-    <label class="block uppercase mb-0.5 text-xs font-bold">{{ label }}</label>
+    <label class="block capitalize mb-0.5 text-black text-sm font-semibold">{{ label }}</label>
     <Field
       v-model="date"
       :rules="customRules"
@@ -31,7 +31,7 @@
             absolute
             mt-2
             w-full
-            rounded-md
+           border-1 border-gray-300 rounded-md
             shadow-lg
             bg-white
             z-20

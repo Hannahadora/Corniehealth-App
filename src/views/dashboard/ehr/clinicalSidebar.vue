@@ -1,6 +1,9 @@
 <template>
-  <div class="h-screen w-full overflow-auto max-h-full">
-    <div class="containers">
+  <div
+    class="h-screen w-full overflow-auto max-h-full clinical-nav"
+    style="scroll-snap-type: y mandatory"
+  >
+    <div class="containers" style="scroll-snap-align: start">
       <div class="rounded-lg bg-white shadow-md w-full">
         <div class="flex -mb-12 justify-center">
           <avatar class="mr-2 h-24 w-24 m-5" :src="profilePhoto" />
@@ -50,27 +53,57 @@
           <div class="border-dashed border-2 border-gray-100 m-3"></div>
           <div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400 flex">Mobile</p>
-              <p class="text-xs text-black flex">{{ items.phone }}</p>
+              <p class="text-xs text-gray-400 flex">
+                Policy IDs <eye-icon class="ml-2" />
+              </p>
+              <p class="text-xs text-black flex">{{ items.my_policyId }}</p>
             </div>
             <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400">Email</p>
-              <p class="text-xs text-black flex">{{ items.email }}</p>
+              <p class="text-xs text-gray-400">Expires</p>
+              <p class="text-xs text-black flex">
+                {{ items.the_policyExpiry }}
+              </p>
             </div>
             <div class="flex justify-between space-x-2 p-3">
-              <p class="text-xs text-gray-400">Address</p>
-              <p class="text-xs text-black flex">{{ items.address }}</p>
+              <p class="text-xs text-gray-400">Primary Physician</p>
+              <p class="text-xs text-black flex">
+                {{ items.authorizedPractitioner.firstName }}
+              </p>
             </div>
           </div>
-          <div class="border-dashed border-2 border-gray-100 m-3"></div>
-          <div>
-            <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400 flex">Last Visited</p>
-              <!-- <p class="text-xs text-black flex">{{items.lastVisited}}</p> -->
+
+          <div
+            class="experience-links-con"
+            :class="{
+              'experience-links-con-max': showFullHeight,
+              'experience-links-con-min': !showFullHeight,
+            }"
+          >
+            <div class="border-dashed border-2 border-gray-100 m-3"></div>
+            <div>
+              <div class="flex justify-between -mb-2 space-x-2 p-3">
+                <p class="text-xs text-gray-400 flex">Mobile</p>
+                <p class="text-xs text-black flex">{{ items.phone }}</p>
+              </div>
+              <div class="flex justify-between -mb-2 space-x-2 p-3">
+                <p class="text-xs text-gray-400">Email</p>
+                <p class="text-xs text-black flex">{{ items.email }}</p>
+              </div>
+              <div class="flex justify-between space-x-2 p-3">
+                <p class="text-xs text-gray-400">Address</p>
+                <p class="text-xs text-black flex">{{ items.address }}</p>
+              </div>
             </div>
-            <div class="flex justify-between -mb-2 space-x-2 p-3">
-              <p class="text-xs text-gray-400">Active Since</p>
-              <!-- <p class="text-xs text-black flex">{{items.activeSince}}</p> -->
+            <div class="border-dashed border-2 border-gray-100 m-3"></div>
+            <div>
+              <div class="flex justify-between -mb-2 space-x-2 p-3">
+                <p class="text-xs text-gray-400 flex">Last Visited</p>
+                <p class="text-xs text-black flex">{{ items.lastVisited }}</p>
+              </div>
+              <div class="flex justify-between -mb-2 space-x-2 p-3">
+                <p class="text-xs text-gray-400">Active Since</p>
+                <p class="text-xs text-black flex">{{ items.activeSince }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -91,27 +124,41 @@
       </div>
     </div>
 
-    <div class="containers sticky">
+    <div class="containers sticky" style="scroll-snap-align: start">
       <div
         class="mt-2 mb-5 rounded-lg bg-white shadow-md w-full h-full max-h-full"
       >
-        <div class="w-full h-full p-2">
+        <div class="w-full h-full p-2 pb-6">
           <div
-            class="flex flex-col h-full w-full overflow-auto max-h-full pr-2"
+            class="grid w-full pr-2 gap-y-9"
+            style="grid-template-rows: 10% 85%; max-height: 77vh"
           >
-            <p class="text-black font-bold py-3 px-2">Records</p>
-            <icon-input
-              autocomplete="off"
-              type="search"
-              v-model="query"
-              placeholder="Search"
-              class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
+            <div class="flex flex-col w-full">
+              <p class="text-black font-bold py-3 px-2">Records</p>
+              <icon-input
+                autocomplete="off"
+                type="search"
+                v-model="query"
+                placeholder="Search"
+                class="
+                  rounded-full
+                  w-full
+                  border-2
+                  py-2
+                  px-8
+                  focus:outline-none
+                "
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </div>
+            <div
+              class="mt-3 overflow-y-auto nav-list"
+              v-for="(setting, key, i) in settings"
+              :key="i"
             >
-              <template v-slot:prepend>
-                <search-icon />
-              </template>
-            </icon-input>
-            <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
               <span>
                 <div class="flex flex-col mt-1 text-gray-500">
                   <s-bar-link
@@ -185,21 +232,21 @@ type INav = { name: string; to: string; icon: string };
     SearchIcon,
     ImpressionIcon,
     RefferIcon,
-TrendIcon,
-MedicalIcon,
-AllergyIcon,
-AppointIcon,
-VisitIcon,
-VitalIcon,
-EncounterIcon,
-ConditionIcon,
-MedicationIcon,
-DiagIcon,
-ProceedIcon,
-CareIcon,
-BillIcon,
-CorrespondIcon,
-AttachIcon,
+    TrendIcon,
+    MedicalIcon,
+    AllergyIcon,
+    AppointIcon,
+    VisitIcon,
+    VitalIcon,
+    EncounterIcon,
+    ConditionIcon,
+    MedicationIcon,
+    DiagIcon,
+    ProceedIcon,
+    CareIcon,
+    BillIcon,
+    CorrespondIcon,
+    AttachIcon,
   },
 })
 export default class Settings extends Vue {
@@ -266,18 +313,12 @@ export default class Settings extends Vue {
     };
     return provider;
   }
+
   get fullname() {
     const name = `${this.patient.firstname} ${this.patient.lastname}`;
     return name;
   }
-  // get picture() {
-  //   return this.patient.profilePhoto;
-  // }
-  get physicianFullname() {
-    const rrr = this.patient;
-    const name = `${this.patient.firstname} ${this.patient.lastname}`;
-    return name;
-  }
+
   mapUrl(url: string) {
     const settingsBase = this.$router.resolve({ name: "EHR" }).href;
     // const settingsBase = this.$router.resolve({ name: "Patient EHR" }).href;
@@ -383,5 +424,8 @@ export default class Settings extends Vue {
   height: 10px;
   overflow: hidden;
   transition: all 0.5s ease-in-out;
+}
+.clinical-nav::-webkit-scrollbar {
+  display: none;
 }
 </style>

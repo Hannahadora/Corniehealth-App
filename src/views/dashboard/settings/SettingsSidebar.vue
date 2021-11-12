@@ -73,6 +73,7 @@ import LocationIcon from "@/components/icons/location.vue";
 import HierarchyIcon from "@/components/icons/hierarchy.vue";
 import BankIcon from "@/components/icons/bank.vue";
 import SecurityIcon from "@/components/icons/security.vue";
+import FormIcon from "@/components/icons/questionnaire.vue";
 import DomainIcon from "@/components/icons/domain.vue";
 import PractitionerIcon from "@/components/icons/practitioner.vue";
 import GroupIcon from "@/components/icons/group.vue";
@@ -95,6 +96,7 @@ type INav = { name: string; to: string; icon: string };
     ApprovalIcon,
     ChevronRightIcon,
     ChevronDownIcon,
+    FormIcon,
     IconInput,
     OrgIcon,
     LocationIcon,
@@ -170,12 +172,27 @@ export default class Settings extends Vue {
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
     ];
   }
+  get PracticeManagement() {
+    return [
+      {
+        name: "Booking Site",
+        to: "booking-site",
+        icon: "security-icon",
+      },
+      //  {
+      //   name: "Forms & Questionnaires",
+      //   to: "forms-questionnaires",
+      //   icon: "form-icon",
+      // },
+    ];
+  }
 
   get settings() {
     const provider = {
       Organization: this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
+      "PRACTICE MANAGEMENT"  : this.filter(this.PracticeManagement),
     };
     const hmo = {
       Organization: this.filter(this.organization),

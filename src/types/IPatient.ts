@@ -106,6 +106,13 @@ export interface Guarantor extends RelatedPerson {
 export interface EmergencyContact extends RelatedPerson {
   type: "emergency-contact";
 }
+
+// export interface authorizedPractitioners {
+//   id?: string;
+//   patient_authorized_practitioners?: object;
+//   user?: object;
+// }
+
 export interface IPatient {
   id?: string;
   mrn?: string;
