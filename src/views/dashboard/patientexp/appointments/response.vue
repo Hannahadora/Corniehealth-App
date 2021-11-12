@@ -273,12 +273,12 @@ appointmentsResponse = [];
     const appointments = this.appointments.map((appointment) => {
      // const responses = appointment.
       const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
-      (appointment as any).period = new Date((appointment as any).peroid).toLocaleDateString("en-US");
-       const start=   (appointment as any).participantDetail.period.start = new Date(
-         (appointment as any).participantDetail.period.start 
+   //   (appointment as any).period = new Date((appointment as any).peroid.start.toLocaleDateString("en-US");
+       const start=   (appointment as any).period.start = new Date(
+         (appointment as any).period.start 
        ).toLocaleDateString("en-US");
-       const end = (appointment as any).participantDetail.period.end = new Date(
-         (appointment as any).participantDetail.period.end 
+       const end = (appointment as any).period.end = new Date(
+         (appointment as any).period.end 
        ).toLocaleDateString("en-US");
         return {
         ...appointment,

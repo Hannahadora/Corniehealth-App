@@ -166,5 +166,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/BookingSite/index.vue"),
     },
+    // {
+    //   path: "forms-questionnaires",
+    //   name: "Forms & Questionnaires",
+    //   component: () =>
+    //   import("@/views/dashboard/settings/forms/index.vue"),
+    // },
   ],
 };

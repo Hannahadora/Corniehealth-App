@@ -93,18 +93,6 @@ const patients = namespace("patients");
 
 
 
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  medications: [],
-
-
-};
 
 @Options({
   name: "requestDialog",
@@ -255,14 +243,11 @@ performer="";
 
   requestModel = {} as IRequest;
 
-  async setRequestModel() {
-     this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest}));
-  }
   async setRequest() {
     const request = await this.getRequestById(this.id)
     if (!request) return
     this.requestModel =  (request) ;
-    this.requestModel.medications = request.medications;
+ //   this.requestModel.medications = request.medications;
   }
  get newaction() {
     return this.id ? 'Update' : 'Create New'
@@ -303,7 +288,7 @@ get allPerformer() {
 
   async created() {
     this.setRequest();
-    this.setRequestModel();
+  //  this.setRequestModel();
     this.fetchPatients();
     this.fetchAllPatients();
     this.fetchPractitioner();

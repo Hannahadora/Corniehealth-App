@@ -41,7 +41,7 @@
       "
       @click="editingContact = true"
     >
-      Edit My Contacts
+      Edit My Info
     </button>
 
     <add-contact

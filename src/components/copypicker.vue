@@ -11,11 +11,6 @@
     >
       <div class="relative" style="width: 100%" :id="inputName">
         <div
-          @click="
-            () => {
-              if (!$slots.time) toggleDropdown;
-            }
-          "
           class="block w-full"
         >
           <cornie-input
@@ -25,10 +20,14 @@
               'border-red-500': Boolean(errorMessage),
               'border-green-400': Boolean(meta.valid),
             }"
-            v-model="inputFieldText"
+           
           >
             <template #append-inner>
-              <calendar-icon class="cursor-pointer" @click="toggleDropdown" />
+                <div class="flex space-3 w-full float-left">
+                    <span class="flex text-gray-300 pr-3">| </span> 
+                    <calendar-icon class="cursor-pointer mr-3" @click="toggleDropdown" />  
+                    <input type="text" class="w-10 text-gray-400" contenteditable="true" v-model="inputFieldText">
+                </div>
             </template>
             <template #prepend-inner>
               <slot name="text" />
@@ -56,7 +55,7 @@
           tabindex="-1"
           style="z-index: 999"
         >
-          <input type="number" class="form-control col-sm-6 numberinput" id="current-year" v-model="currentYear"  @update:modelValue="handleChange"/>
+          <input type="number"  class="form-control col-sm-6 numberinput" id="current-year" v-model="currentYear"  @update:modelValue="handleChange"/>
           <!-- <v-date-picker
             @update:modelValue="handleChange"
             v-model="date"
@@ -155,7 +154,7 @@ export default class DatePicker extends Vue {
   }
 
   mounted() {
-    clickOutside(this.inputName, () => (this.visible = false));
+    //clickOutside(this.inputName, () => (this.visible = false));
   }
 }
 </script>

@@ -99,7 +99,7 @@
   </cornie-card-text>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import CornieCardText from "@/components/cornie-card/CornieCardText.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { Contact, IPatient } from "@/types/IPatient";

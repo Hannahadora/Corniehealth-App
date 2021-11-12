@@ -179,48 +179,8 @@
                 <measurable label="Heading" v-model="otherrequestModel.request.range" />
               <div class="grid grid-cols-2 gap-2 mt-5">
 
-                 <!-- <cornie-input  class="w-full" label="range (1st value)"   :v-model="otherrequestModel.request.range[0]" placeholder="Enter" />
-                  <cornie-input  class="w-full" label="range (2nd value)"   :v-model="otherrequestModel.request.range[1]" placeholder="Enter" /> -->
-
-                 <cornie-input  class="w-full" label="ratio (1st value)"   v-model="otherrequestModel.request.ratio" placeholder="Enter" />
+                   <cornie-input  class="w-full" label="ratio (1st value)"   v-model="otherrequestModel.request.ratio" placeholder="Enter" />
                   <cornie-input  class="w-full" label="ratio (2nd value)"   v-model="ratio" placeholder="Enter" />
-                <!-- <div>
-                  <label class="block uppercase mb-1 text-xs font-bold"
-                    >Ratio</label
-                  >
-                  <div
-                    class="flex h-12 border-gray-100 rounded-lg w-full border-2"
-                  >
-                    <input
-                      contenteditable="true"
-                      class="w-10 ml-20 outline-none focus-within:outline-none"
-                      type="text"
-                      :v-model="otherrequestModel.request.ratio"
-                    />
-                    <span class="relative left-14 top-2">:</span>
-                    <input
-                      contenteditable="true"
-                      type="text"
-                      :value="otherrequestModel.request.ratio"
-                      class="ml-32 w-10 outline-none focus-within:outline-none"
-                    />
-                  </div>
-                </div> -->
-                 <!-- <div>
-                        <span class="uppercase font-bold text-black text-xs"> range</span>
-                        <div class="flex p-3 space-x-2 justify-between w-full">
-                          <div class="float-left w-full pr-5">
-                            <div>
-                                <p class="relative top-4 right-4">0</p>
-                                <Slider v-model="otherrequestModel.request.range"  :format="format" showTooltip="drag"/>
-                                <p class="float-right relative bottom-4 -mr-7">100</p>
-                            </div>
-                          </div>
-                            <div class="border-2 text-xs h-10 p-2 w-16 mt-1 float-right rounded border-danger">
-                                {{format}}
-                            </div>
-                        </div>
-                      </div> -->
                 <cornie-date-picker  v-model="otherrequestModel.request.occurenceDate" class="w-full -mt-3" label="occurence DATE" />
                 <cornie-date-range-picker  v-model="otherrequestModel.request.occurencePeriod" class="w-full" label="occurence Period" />
                 <div class="w-full">
