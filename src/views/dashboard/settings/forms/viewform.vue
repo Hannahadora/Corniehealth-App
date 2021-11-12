@@ -115,7 +115,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="bg-danger rounded-full font-semibold text-white border-2 pl-8 pr-8 px-3 py-2 mr-3"
+                class="bg-danger rounded-full font-semibold text-white border-2 pl-8 pr-8 px-3  mr-3"
               >
                 Submit
               </cornie-btn>

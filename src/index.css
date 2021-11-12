@@ -138,6 +138,20 @@ input[type="checkbox"]:after {
     color: #211F45;
 }
 
+.tooltip {
+    color: #ffffff;
+    text-align: center;
+    padding: 9px;
+    border-radius: 4px;
+    width: 150px;
+    bottom: 100%;
+    opacity: 0;
+    transition: opacity 1s;
+    position: absolute;
+    z-index: 1;
+    background-color: #080056;
+}
+
 .border-1 {
     border-width: 1.5px;
 }

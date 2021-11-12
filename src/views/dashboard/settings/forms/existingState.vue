@@ -16,7 +16,7 @@
                         </button>
                         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1" style="margin-left: -60px;">
                         <li class="">
-                            <Select v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></Select>
+                            <Select v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></Select>
                         </li>
                         </ul>
                     </div>
@@ -59,7 +59,7 @@
                 </template>
                 <template #status="{ item }">
                     <div class="container">
-                      <span class="p-2 px-3 rounded-full text-black" :class="{ 'text-red-300 bg-red-50': item.status === 'Cancelled' || 'Stopped' || 'Failed' || 'Entered in Error' || 'Rejected',   'text-green-300 bg-green-50': item.status === 'Ready'|| 'Completed' || 'Requested' ||'Received'||'Accepted',  'text-yellow-300 bg-yellow-50': item.status === 'Draft' || 'In Progress' || 'On Hold',}">{{ item.status }}</span>
+                      <span class="p-2 px-3 rounded-full text-black" >{{ item.status }}</span>
                     </div>
                 </template>
             </cornie-table>
@@ -78,12 +78,12 @@
                         </button>
                         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1" style="margin-left: -60px;">
                         <li class="">
-                            <select-survey v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></select-survey>
+                            <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
                         </li>
                         </ul>
                     </div>
             </span>
-            <cornie-table :columns="rawHeaders" v-model="Upcoming">
+            <cornie-table :columns="rawHeaders2" v-model="Upcoming">
                 <template #actions="{ item }">
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                     <edit-icon  class="text-primary fill-current"/>
@@ -121,7 +121,7 @@
                 </template>
                 <template #status="{ item }">
                     <div class="container">
-                      <span class="p-2 px-3 rounded-full text-black" :class="{ 'text-red-300 bg-red-50': item.status === 'Cancelled' || 'Stopped' || 'Failed' || 'Entered in Error' || 'Rejected',   'text-green-300 bg-green-50': item.status === 'Ready'|| 'Completed' || 'Requested' ||'Received'||'Accepted',  'text-yellow-300 bg-yellow-50': item.status === 'Draft' || 'In Progress' || 'On Hold',}">{{ item.status }}</span>
+                      <span class="p-2 px-3 rounded-full text-black" >{{ item.status }}</span>
                     </div>
                 </template>
             </cornie-table>
@@ -263,6 +263,102 @@ export default class TaskExistingState extends Vue {
       title: "Code",
       key: "code",
       show: false,
+    },
+    {
+      title: "Reason Reference",
+      key: "reasonReference",
+      show: false,
+    },
+    {
+      title: "Period",
+      key: "excecutionPeriod",
+      show: false,
+    },
+    {
+      title: "Priority",
+      key: "priority",
+      show: false,
+    },
+    {
+      title: "Description",
+      key: "description",
+      show: false,
+    },
+    {
+      title: "Note",
+      kwy: "note",
+      show: false,
+    },
+     {
+      title: "Focus",
+      kwy: "focus",
+      show: false,
+    },
+     {
+      title: "Encounter",
+      kwy: "encounter",
+      show: false,
+    },
+     {
+      title: "Repitition",
+      kwy: "repitition",
+      show: false,
+    },
+     {
+      title: "Input Type",
+      kwy: "inputType",
+      show: false,
+    },
+     {
+      title: "Input Value",
+      kwy: "inputValue",
+      show: false,
+    },
+     {
+      title: "Output Type",
+      kwy: "outputType",
+      show: false,
+    },
+     {
+      title: "Output Value",
+      kwy: "outputValue",
+      show: false,
+    },
+
+  ];
+
+ rawHeaders2 = [
+    // { title: "Date Created", key: "createdAt", show: true },
+    {
+      title: "Identifier",
+      key: "id",
+      show: true,
+    },
+    {
+      title: "Name",
+      key: "priority",
+      show: true,
+    },
+    {
+      title: "Title",
+      key: "intent",
+      show: true,
+    },
+         {
+      title: "Status",
+      key: "status",
+      show: true,
+    },
+     {
+      title: "Experimental",
+      key: "recipient",
+      show: true,
+    },
+
+    {
+      title: "Subject Type",
+      key: "code",
+      show: true,
     },
     {
       title: "Reason Reference",
