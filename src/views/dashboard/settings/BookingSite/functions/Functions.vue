@@ -3,7 +3,7 @@
     <div class="flex justify-items-end">
       <span class="flex-grow"></span>
     </div>
-    <empty-state heading="No function recorded" v-if="isEmpty">
+    <!-- <empty-state heading="No function recorded">
       <template #icon>
         <img src="@/assets/img/functions.svg" class="inline-block mr-2" />
       </template>
@@ -42,8 +42,8 @@
           </button>
         </div>
       </template>
-    </empty-state>
-    <existing-state :functions="functions" v-else />
+    </empty-state> -->
+    <existing-state :functions="functions" />
     <add-function v-model="addFunction" />
   </main>
 </template>

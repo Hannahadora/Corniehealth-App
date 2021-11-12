@@ -21,11 +21,14 @@
             focus:outline-none
             hover:opacity-90
           "
-          @click="$router.push({ name: 'New Designation' })"
+          @click="registerNew = true"
         >
           <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-          New Designation
+          New Appointment
         </button>
+        <side-modal :visible="registerNew" @closesidemodal="closeModal" :header="'New Appointment'">
+        <AppointmentModal  @closesidemodal="closeModal"  />
+      </side-modal>
       </template>
     </empty-state>
 
@@ -45,6 +48,8 @@ import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
+import AppointmentModal from "./Appointmentdialog.vue";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import { string as yupString } from "yup";
 import ExistingState from "./ExistingState.vue";
 import { namespace } from "vuex-class";
@@ -66,19 +71,25 @@ const designation = namespace("designation");
     CornieSelect,
     CustomCheckbox,
     ExistingState,
+    AppointmentModal,
+    SideModal
   },
 })
 export default class Designations extends Vue {
   @designation.State
   designations!: IDesignation[];
 
+  registerNew=false;
   @designation.Action
   fetchDesignations!: () => Promise<void>;
 
   get isEmpty() {
-    return this.designations.length < 1;
+    return false;
   }
-
+  closeModal() {
+    this.registerNew = false;
+    // this.selectedTeamId = "";
+  }
   create() {
     if (!this.designations.length) this.fetchDesignations();
   }

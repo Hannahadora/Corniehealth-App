@@ -1,49 +1,32 @@
 <template>
   <div class="w-full p-4 overflow-y-scroll h-screen">
     <div class="container-fluid">
-      <div class="w-full flex items-center">
-        <div class="w-6/12">
-          <div class="w-11/12">
-            <label class="block uppercase mb-3 text-xs font-bold">
-              Time
-              <input
-                type="time"
-                name=""
-                class="p-3 border rounded-md w-full"
-                id=""
-                v-model="checkinData.time"
-              />
-            </label>
-          </div>
-        </div>
-        <div class="w-6/12 flex -mt-3">
-          <div class="container flex justify-end">
-            <div class="w-12/12">
-              <DatePicker
-                color="red"
-                class="w-full"
-                :label="'Date'"
-                style="width: 100%"
-                v-model="date"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="w-full my-4">
+       <div class="w-full my-4">
         <CornieSelect
           :items="['Follow Up', 'Routine', 'Walk In', 'Check Up', 'Emergency']"
-          :label="'Type'"
+          :label="'Appointment Type'"
           v-model="checkinData.type"
           style="width: 100%"
         />
+      </div>
+     <div class="w-full mt-5">
+                              <date-time-picker
+                                
+                                v-model:time="data.dateTime"
+                                label="Duration"
+                                width="full"
+                              />
+                            
+                          </div>
+
+      <div class="w-full my-4">
+         <cornie-input label="Appointment Fee"   class="mb-5 w-full" />
       </div>
 
       <div class="w-full my-5">
         <label class="block uppercase mb-1 text-xs font-bold">
           <span class="">
-            <span class="uppercase font-semibold">Physician</span>
+            <span class="uppercase font-semibold">Practioner</span>
           </span>
           <span>
             <MultiSelect :fullWidth="true">
@@ -117,70 +100,8 @@
           </span>
         </label>
       </div>
-
       <div class="w-full my-4">
-        <CornieSelect
-          :items="slots"
-          :label="'Slot'"
-          v-model="checkinData.slot"
-          style="width: 100%; font-size: 13px"
-        />
-      </div>
-
-      <div class="w-full my-4">
-        <CornieSelect
-          :items="rooms"
-          :label="'Room'"
-          v-model="checkinData.room"
-          style="width: 100%"
-        />
-      </div>
-
-      <div class="w-full mb-4 mt-8">
-        <TextArea
-          :label="'Notes'"
-          v-model="checkinData.notes"
-          style="width: 100%"
-        />
-      </div>
-
-      <div class="w-full">
-        <div class="container-fluid">
-          <p class="font-semibold font-normall text-sm">
-            All patients for visit
-          </p>
-        </div>
-        <div class="container-fluid my-5 border-b-2 pb-2">
-          <div
-            class="w-full flex items-center"
-            v-for="(patient, index) in []"
-            :key="index"
-          >
-            <div class="w-1/12 rounded-full">
-              <img
-                src="https://via.placeholder.com/40x40"
-                class="rounded-full w-full"
-                alt="Image"
-              />
-            </div>
-            <div class="w-11/12 ml-2">
-              <div class="w-full">
-                <p class="font-semibold text-sm mb-0">Damorola David</p>
-              </div>
-              <div class="w-full flex justify-between">
-                <span class="uppercase text-success">
-                  <span class="cursor-pointer text-success font-light text-xs"
-                    >Appointment Time</span
-                  >
-                  <span class="mx-1 font-light text-success">|</span>
-                  <span class="cursor-pointer text-success font-light text-xs"
-                    >Queue No: 232222</span
-                  >
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+         <cornie-input label="Link Forms" placeholder=""  class="mb-5 w-full" />
       </div>
     </div>
 
@@ -197,7 +118,7 @@
           type="submit"
           class="text-white bg-danger px-3 rounded-xl"
         >
-          Check-In
+          Save
         </cornie-btn>
       </div>
     </div>
@@ -211,7 +132,7 @@ import { namespace } from "vuex-class";
 import CustomDropdown from "@/components/cornieselect.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import ChevronDown from "@/components/icons/chevrondownprimary.vue";
-import DatePicker from "@/components/datepicker.vue";
+import DateTimePicker from './components/datetime-picker.vue'
 import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
@@ -232,7 +153,7 @@ const locationsStore = namespace("location");
     CustomDropdown,
     DeleteIcon,
     ChevronDown,
-    DatePicker,
+    DateTimePicker,
     ToggleCheck,
     CornieSelect,
     TextArea,
