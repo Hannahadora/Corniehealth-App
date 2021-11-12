@@ -118,7 +118,7 @@ export default class AutoComplete extends Vue {
       this.modelValueSync = item.code || item;
     });
      if(item == 'Blank Survey'){
-            this.$router.push({path: '/dashboard/settings/practise-management/add-statisfaction-survey' })
+            this.$router.push({path: '/dashboard/settings/practise-management/add-questionnaires' })
         }
 
      if(item == 'Others'){

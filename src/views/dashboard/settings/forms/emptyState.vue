@@ -3,7 +3,7 @@
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Practice Forms</a></li>    
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Questionnaires</a></li>
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Satisfaction Surveys</a></li>
+        <!-- <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Satisfaction Surveys</a></li> -->
     </ul>
       <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Practice Forms">     
@@ -28,10 +28,7 @@
             </div>
         </div>
         <div class="tab-pane" v-if="selected == 2" :class="{'active' :  selected === 2  }" id="Questionnaires">
-           
-        </div>
-        <div class="tab-pane" v-if="selected == 3" :class="{'active' :  selected === 3  }" id="Satisfaction Survey">
-            <div class="w-full flex flex-col justify-center items-center h-full mt-40">
+             <div class="w-full flex flex-col justify-center items-center h-full mt-40">
              <img src="@/assets/img/Forms.svg" />
               <h3 class="text-center mt-5">
                 You have no satisfactory surveys to display.
@@ -51,6 +48,9 @@
                 </span>
             </div>
         </div>
+        <!-- <div class="tab-pane" v-if="selected == 3" :class="{'active' :  selected === 3  }" id="Satisfaction Survey">
+          
+        </div> -->
       </div>
   </div>
 </template>

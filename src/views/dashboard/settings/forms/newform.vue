@@ -171,7 +171,7 @@
                                         <cornie-input label="Text" class="required ml-3" :required="true" placeholder="--Enter--"/>
                                     </div>
                                     <div class="p-5 justify-center items-center h-full">
-                                            <accordion-component class="h-11/12 pb-10" v-if="showquestion" editabetitle="Questions (s)" :opened="true" :text="true" :video="true" :image="true" :move="true">
+                                            <accordion-component class="h-11/12 pb-10" v-if="showquestion"  @anotherdisplay="anotherdisplay"  editabetitle="Questions (s)" :opened="true" :text2="true" :video="true" :image="true" :move="true">
                                                 <template v-slot:default>
                                                   <div class="flex space-x-9 mt-5 w-full">
                                                     <div class="w-full">
@@ -251,6 +251,19 @@
 
                                                 </template>
                                             </accordion-component>
+                                                  <accordion-component class="h-11/12 pb-10" v-if="onedisplay" editabetitle="Display" :opened="true" :text="true" :video="true" :image="true" :move="true">
+                                                    <template v-slot:default>
+                                                        <div class="flex space-x-9 mt-5 w-full">
+                                                          <div class="w-full">
+                                                                <div class="mt-5">
+                                                                    <cornie-input label="text"  class="border-b-2 border-gray-100 w-full mt-5" :required="true" placeholder="Enter text..."/>
+                                                                
+                                                                </div>
+                                                          </div>
+                                                          <div></div>
+                                                        </div>
+                                                    </template>
+                                                </accordion-component>
                                     </div>
                                     <div class="flex space-x-4 float-right">
                                             <copyform-icon class="float-right"/>
@@ -366,6 +379,7 @@
                                                           <copyform-icon class="float-right"/>
                                                           <delete-icon class="float-right  cursor-pointer" @click="showquestion = false"/>
                                                       </div>
+                                                       <cornie-select label="Answer" class="required w-full"   placeholder="--Select"/>
                                                     </div>
                                                     <div></div>
                                                   </div>
@@ -644,7 +658,7 @@ showquestion= false;
   questionOption = [];
   checkoption = false;
 checkinput = false;
-
+onedisplay = false;
  questions: Question[] = [];
  groups: []  = [];
 group: []  = [] as any;
@@ -724,6 +738,9 @@ group: []  = [] as any;
 //      this.questions.push(question);
 // }
 
+anotherdisplay(){
+  this.onedisplay = true;
+}
 showonequestion(){
   this.showquestion = true;
 }

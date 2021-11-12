@@ -3,7 +3,7 @@
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Practice Forms</a></li>    
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Questionnaires</a></li>
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Satisfaction Surveys</a></li>
+        <!-- <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Satisfaction Surveys</a></li> -->
     </ul>
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Forms">   
@@ -66,10 +66,7 @@
           </div>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Questionnaires">
-
-        </div>
-        <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="Satisfaction">
-           <div>
+              <div>
             <span class="flex justify-end w-full mb-8">
                <div class="dropdown inline-block relative z-10">
                         <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
@@ -127,6 +124,9 @@
             </cornie-table>
           </div>
         </div>
+        <!-- <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="Satisfaction">
+         
+        </div> -->
     </div>
     <notes-add
     :tasknotes="tasknotes"
@@ -240,7 +240,7 @@ export default class TaskExistingState extends Vue {
       show: true,
     },
     {
-      title: "Name |Subject Type",
+      title: "Name | Subject Type",
       key: "priority",
       show: true,
     },

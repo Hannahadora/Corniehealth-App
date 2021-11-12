@@ -3,7 +3,7 @@
     <input
       contenteditable="false"
       v-model="formTitle"
-      placholder="Satisfaction Surveys"
+      placholder="Questionnaires"
       class="
       mb-12
         flex
@@ -155,7 +155,7 @@
                                         <display-icon class="float-right"/> 
                                         <p class="float-right text-sm">Display</p>
                                 </div>
-                                <div class="flex space-x-2 float-right -mt-3 cursor-pointer mr-5" @click="showonequestion">
+                                <div class="flex space-x-2 float-right -mt-3 cursor-pointer mr-5" @click="showtwoquestion">
                                         <question-icon class="float-right"/> 
                                         <p class="float-right text-sm">Add question</p>
                                 </div>
@@ -183,11 +183,7 @@
                                                       <div class="mt-4" v-if="answerOption == 'Open Choice'">
                                                           <span class="flex item-center mb-2">
                                                               <select-option />
-                                                              <span contenteditable="true"  class="text-sm mt-2 w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">Option 1
-                                                                <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
-                                                                  <cancel-icon class="float-right -mt-3 cursor-pointer"/>
-                                                              </div>
-                                                              </span>
+                                                              <span contenteditable="true"  class="text-sm mt-2 w-full">Option 1</span>
                                                           </span>
                                                           <!-- <span class="flex item-center mb-2">
                                                               <select-option/>
@@ -197,7 +193,7 @@
                                                               <select-option />
                                                               <span contenteditable="true"  class="text-sm mt-2 w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">Option 2
                                                                 <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
-                                                                  <cancel-icon class="float-right -mt-3 cursor-pointer"/>
+                                                                  <cancel-icon class="float-right -mt-3 cursor-pointer" @click="showoption = false"/>
                                                                 </div>
                                                               </span>
                                                           </span>
@@ -213,35 +209,29 @@
                                                          <div class="mt-4"   v-if="answerOption == 'Choice'">
                                                               <span class="flex item-center mb-4">
                                                                 <cornie-radio name="question" />
-                                                                <span contenteditable="true"  class="text-sm  w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">Sparingly
-                                                                <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
-                                                                    <cancel-icon class="float-right -mt-3 cursor-pointer"/>
-                                                                </div>
-                                                                </span>
+                                                                <span contenteditable="true"  class="text-sm  w-full">Sparingly</span>
                                                             </span>
-                                                              <span class="flex item-center mb-4">
+                                                              <!-- <span class="flex item-center mb-4">
                                                                 <cornie-radio name="question" />
                                                                 <span contenteditable="true"  class="text-sm  w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">I don’t smoke
                                                                 <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
                                                                     <cancel-icon class="float-right -mt-3 cursor-pointer"/>
                                                                 </div>
                                                                 </span>
-                                                            </span>
+                                                            </span> -->
                                                             <span class="flex item-center mb-4" v-if="showoption">
                                                                 <cornie-radio name="question" />
                                                                 <span contenteditable="true"  class="text-sm  w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">I smoke always
-                                                                <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
-                                                                    <cancel-icon class="float-right -mt-3 cursor-pointer"/>
-                                                                </div>
+                                                                  <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
+                                                                      <cancel-icon class="float-right -mt-3 cursor-pointer" @click="showoption = false"/>
+                                                                  </div>
                                                                 </span>
                                                             </span>
-                                                            <div class="cursor-pointer">
-                                                              <span class="cursor-pointer text-danger mr-2 text-xs  float-left" @click="addOptionothers2">Add new option</span>
-                                                            </div>
-                                                      
+                                                              <span class="cursor-pointer text-danger mr-2 text-xs  float-left" @click="addOptionothers">Add new option</span>
+                                                            
                                                         </div>
 
-                                                      <div class="mt-20 flex space-x-4 w-full">
+                                                      <div class="mt-32 flex space-x-4 w-full">
                                                           <tooltip text="Answer is optional & not visible to the patients">
                                                           <div class="text-black text-sm font-bold flex space-x-2">
                                                           <span>Answer</span>   
@@ -275,8 +265,8 @@
             </template>
           </draggable>
 
-              <!-- <draggable
-              v-if="showquestion"
+               <draggable
+              v-if="shownewquestion"
           v-model="questions"
           item-key="id"
           group="people"
@@ -301,64 +291,92 @@
                                 </div>           
                             </div>
                                     <div class="p-5 justify-center items-center h-full">
-                                            <accordion-component class="h-11/12 pb-10" editabetitle="Question" :opened="true" :text="true" :video="true" :image="true" :move="true">
+                                            <accordion-component class="h-11/12 pb-10"  editabetitle="Question" :opened="true" :text="true" :video="true" :image="true" :move="true">
                                                 <template v-slot:default>
-                                                    <div class="flex space-x-9 mt-5 w-full">
-                                                      <div class="w-full">
-                                                        <div class="w-full grid grid-cols-3  col-span-full mt-3">
-                                                            <cornie-input label="Prefix" class="required" :required="true" placeholder="--Enter--"/>
-                                                                <cornie-input label="Question Text" class="required ml-3" :required="true" placeholder="--Enter--"/>
-                                                                 <cornie-select label="Answer Option" v-model="answerOption" class="required w-full" :items="['Boolean', 'Decimal', 'Integer','Date','Date & Time','Time','String','Text','Url','Choice','Open Choice','Attachment','Reference','Quantity']"  placeholder="--Select"/>
+                                                  <div class="flex space-x-9 mt-5 w-full">
+                                                    <div class="w-full">
+                                                      <div class="w-full grid grid-cols-3  col-span-full mt-3">
+                                                          <cornie-input label="Prefix" class="required" :required="true" placeholder="--Enter--"/>
+                                                              <cornie-input label="Question Text" class="required ml-3" :required="true" placeholder="--Enter--"/>
+                                                              <cornie-select label="Answer Option" v-model="answerOption" class="required w-full" :items="['Boolean', 'Decimal', 'Integer','Date','Date & Time','Time','String','Text','Url','Choice','Open Choice','Attachment','Reference','Quantity']"  placeholder="--Select"/>
+                                                      </div>
+                                                      <div class="mt-4" v-if="answerOption == 'Open Choice'">
+                                                          <span class="flex item-center mb-2">
+                                                              <select-option />
+                                                              <span contenteditable="true"  class="text-sm mt-2 w-full">Option 1</span>
+                                                          </span>
+                                                          <!-- <span class="flex item-center mb-2">
+                                                              <select-option/>
+                                                                <span contenteditable="true"  class="text-sm mt-2 w-full">Option 2</span>
+                                                          </span> -->
+                                                        <span class="flex item-center mb-2" v-if="showoption">
+                                                              <select-option />
+                                                              <span contenteditable="true"  class="text-sm mt-2 w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">Option 2
+                                                                <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
+                                                                  <cancel-icon class="float-right -mt-3 cursor-pointer"/>
+                                                                </div>
+                                                              </span>
+                                                          </span>
+                                                          <p class="cursor-pointer text-danger mr-2 text-xs  float-left"  @click="addOptionothers">Add new option</p>
+                                                      </div>
+                                                      <div class="mt-4"      v-if="answerOption == 'Text'">
+                                                          <div class="mt-5">
+                                                              <input type="text" class="border-b-2 border-gray-100 w-full mt-5" placeholder="Enter text..."/>
+                                                              <input type="text" class="border-b-2 border-gray-100 w-full mt-5"/>
+                                                          </div>
+                                                        
                                                         </div>
-                                                        <div class="mt-4">
-                                                            <span class="flex item-center mb-6">
-                                                                <cornie-radio  name="question"/>
-                                                                <span contenteditable="true"  class="text-sm  w-full">I don’t smoke
-                                                                </span>
-                                                            </span>
-                                                            <span class="flex item-center mb-6">
-                                                                <cornie-radio  name="question"/>
-                                                                <span contenteditable="true"  class="text-sm w-full">Sparingly
-                                                                </span>
-                                                            </span>
-                                                            <span class="flex item-center mb-4" v-if="checkoption">
+                                                         <div class="mt-4"   v-if="answerOption == 'Choice'">
+                                                              <span class="flex item-center mb-4">
                                                                 <cornie-radio name="question" />
-                                                                <span contenteditable="true"  class="text-sm  w-full">I smoke always
-                                                                <div class="border-b-2 border-gray-200 w-full pt-3">
+                                                                <span contenteditable="true"  class="text-sm  w-full">Sparingly
+                                                                </span>
+                                                            </span>
+                                                              <!-- <span class="flex item-center mb-4">
+                                                                <cornie-radio name="question" />
+                                                                <span contenteditable="true"  class="text-sm  w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">I don’t smoke
+                                                                <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
                                                                     <cancel-icon class="float-right -mt-3 cursor-pointer"/>
                                                                 </div>
                                                                 </span>
+                                                            </span> -->
+                                                            <span class="flex item-center mb-5" v-if="checkoption">
+                                                                <cornie-radio name="question" />
+                                                                <span contenteditable="true"  class="text-sm  w-full" @keyup.delete="showcancel = false"  @input="event => showcancel = true">I smoke always
+                                                                  <div class="border-b-2 border-gray-200 w-full pt-3" v-if="showcancel">
+                                                                      <cancel-icon class="float-right -mt-3 cursor-pointer"/>
+                                                                  </div>
+                                                                </span>
                                                             </span>
-                                                            <span class="cursor-pointer text-danger mr-2 text-xs  float-left" @click="addOptionothers2">Add new option</span>
-                                                      
+                                                              <p class="cursor-pointer text-danger mr-2 text-xs  float-left" @click="addOptionothers2">Add new option</p>
+                                                            
                                                         </div>
-                                                        <div class="mt-20 flex space-x-4 w-full">
-                                                            <tooltip text="Answer is optional & not visible to the patients">
-                                                            <div class="text-black text-sm font-bold flex space-x-2">
-                                                            <span>Answer</span>   
-                                                                <tooltip-icon class="cursor-pointer"/>
-                                                                <template></template>
-                                                        </div>
-                                                            </tooltip>
-                                                            <div class="text-black w-full flex space-x-2 text-sm cursor-pointer"><question-icon/> <span>Add</span></div>
-                                                        </div>
-                                                        <div class="grid grid-cols-3 gap-4 ">
-                                                            <cornie-select  class="required w-full mt-2" :items="['Draft','Active','Retired']"  placeholder="--Select"/>
-                                                        </div>
-                                                        <div class="flex space-x-4 float-right">
-                                                            <copyform-icon class="float-right"/>
-                                                            <delete-icon class="float-right cursor-pointer" @click="showquestion = false"/>
-                                                        </div>
+
+                                                      <div class="mt-32 flex space-x-4 w-full">
+                                                          <tooltip text="Answer is optional & not visible to the patients">
+                                                          <div class="text-black text-sm font-bold flex space-x-2">
+                                                          <span>Answer</span>   
+                                                              <tooltip-icon class="cursor-pointer"/>
+                                                              <template></template>
                                                       </div>
-                                                      <div></div>
+                                                          </tooltip>
+                                                          <div class="text-black w-full flex space-x-2 text-sm cursor-pointer"><question-icon/> <span>Add</span></div>
+                                                      </div>
+                                                      <div class="flex space-x-4 float-right">
+                                                          <copyform-icon class="float-right"/>
+                                                          <delete-icon class="float-right  cursor-pointer" @click="showquestion = false"/>
+                                                      </div>
                                                     </div>
+                                                    <div></div>
+                                                  </div>
+
                                                 </template>
                                             </accordion-component>
                                     </div>
                         </template>
                     </all-forms>
             </template>
-          </draggable> -->
+          </draggable>
              <!-- <draggable
             
           v-model="questions"
@@ -607,11 +625,12 @@ showcancel= false;
   items = ["Habits", "Diet Template", "Exercise", "Sleep", "Others"];
 
 showsection=false;
+shownewquestion= false;
 inputtext="";
   othersType = "";
   habitType = "";
   formType = "";
-  formTitle = "Satisfaction Surveys";
+  formTitle = "Questionnaires";
   displayTitle = "Blank Form";
   description = "Kindly tell us about your medical history!";
   question = "Type question here";
@@ -707,6 +726,9 @@ group: []  = [] as any;
 
 showonequestion(){
   this.showquestion = true;
+}
+showtwoquestion(){
+  this.shownewquestion = true;
 }
 async showonegroup(value:string){
   this.showgroup = true;
@@ -844,17 +866,15 @@ this.checkoption= true;
 }
 .tooltip {
     color: #ffffff;
-    text-align: center !important;
-    padding: 9px !important;
-    border-radius: 4px !important;
-    width: 150px !important;
-    bottom: 100% !important;
-    opacity: 0 !important;
+    text-align: center;
+    padding: 9px;
+    border-radius: 4px;
+    width: 150px;
+    bottom: 100% ;
+    opacity: 0 ;
     transition: opacity 1s;
     position: absolute;
     z-index: 1;
-    left: unset !important;
-    margin-left: unset !important;
-    background-color: #080056 !important;
+    background-color: #080056 ;
 }
 </style>
