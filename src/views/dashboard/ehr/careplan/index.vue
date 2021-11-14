@@ -105,8 +105,8 @@
       <empty-state />
     </div>
 
-    <side-modal :visible="true" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal">
-    <!-- <side-modal :visible="showNewModal" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal"> -->
+    <!-- <side-modal :visible="true" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal"> -->
+    <side-modal :visible="showNewModal" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal">
       <new-plan  @closesidemodal="() => showNewModal = false" />
     </side-modal>
 

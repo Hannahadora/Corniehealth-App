@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import ChevronDown from "@/components/icons/chevrondown-red.vue"
+import ChevronDown from "@/components/icons/chevrondown.vue"
 import CornieSelect from "@/components/cornieselect.vue"
 import { Prop } from 'vue-property-decorator';
 import AddIcon from "@/components/icons/add-circled.vue"

@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="w-full section-card px-4 my-6">
-                        <collapse-section :title="'Particulars of Directors'" :overflow="true" @add="() => nominateRefree = true" :height="480" :showAdd="true" :showAddExisting="true" :buttonText="'Select existing director'">
+                        <collapse-section :title="'Particulars of Directors'" :overflow="true" @add="() => nominateRefree = true" :height="480" :showAdd="true" :buttonText="'Select existing director'">
                             <template #form>
                                 <div class="w-full section-card p-4">
                                     <collapse-section :title="'Director 1'" :height="330" :overflow="true" >
@@ -245,8 +245,8 @@
                     </div>
 
 
-                    <div class="w-full py-10 flex justify-between">
-                        <cornie-button class="rounded-full px-8 font-semibold cursor-pointer py-1" style="border: 1px solid #080056; color: #080056">
+                    <div class="w-full py-10 flex justify-end">
+                        <cornie-button class="rounded-full mr-6 px-8 font-semibold cursor-pointer py-1" style="border: 1px solid #080056; color: #080056">
                             Cancel
                         </cornie-button>
 

@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="w-full flex mb-4">
-                            <div class="w-12/12 flex items-center flex-wrap mx-4 my-2">
+                            <div class="w-12/12 flex items-center flex-wrap my-2">
                                 <a class="normal-text mr-4">Please select qualities that best describe Dr. Obi Akeem Musa</a>
                                 <div class="mx-3 -mb-2" v-for="(quality, index) in qualities" :key="index">
                                     <label class="inline-flex items-center my-4">
@@ -61,7 +61,7 @@
                             </div>
                         </div>
 
-                        <div class="w-full flex flex-wrap items-center pb-4">
+                        <div class="w-full flex flex-wrap items-start pb-4">
                             <div class="w-6/12">
                                 <p class="normal-text mr-4">Please rate Dr. Obi Akeem Musa's clinical experience</p>
                             </div>
@@ -70,7 +70,7 @@
                             </div>
                         </div>
 
-                        <div class="w-full flex flex-wrap items-center py-4">
+                        <div class="w-full flex flex-wrap items-start py-4">
                             <div class="w-6/12">
                                 <p class="normal-text mr-4">Please rate Dr. Obi Akeem Musa quality of work in clinical medicine</p>
                             </div>
@@ -177,8 +177,8 @@
                     </div>
 
 
-                    <div class="w-full py-10 flex justify-between">
-                        <cornie-button class="rounded-full px-8 font-semibold cursor-pointer py-1" style="border: 1px solid #080056; color: #080056">
+                    <div class="w-full py-10 flex justify-end">
+                        <cornie-button class="rounded-full px-8 mr-5 font-semibold cursor-pointer py-1" style="border: 1px solid #080056; color: #080056">
                             Cancel
                         </cornie-button>
 
