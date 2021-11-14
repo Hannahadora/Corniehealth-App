@@ -150,9 +150,9 @@ const getHourlyInDayData = (arr: IStat[]) => {
     }
   }
 
-  export const getChartData = (arr: IStat[], order: "Today" | "WTD" | "MTD" | "YTD") => {
-      if (order === "Today") return getHourlyInDayData(arr);
-      if (order === "WTD") return getDailyInWeekData(arr);
-      if (order === "MTD") return getDailyInMonthData(arr);
-      if (order === "YTD") return getYearData(arr);
-  }
+export const getChartData = (arr: IStat[], order: "Today" | "WTD" | "MTD" | "YTD") => {
+  if (order === "Today") return getHourlyInDayData(arr);
+  if (order === "WTD") return getDailyInWeekData(arr);
+  if (order === "MTD") return getDailyInMonthData(arr);
+  if (order === "YTD") return getYearData(arr);
+}
