@@ -366,7 +366,12 @@ const routes: Array<RouteRecordRaw> = [
             "@/views/dashboard/settings/kyc/components/email-link.vue"
           ),
       },
-      
+      {
+        path: "pricebook",
+        name: "PriceBook",
+        component: () =>
+          import("@/views/dashboard/settings/pricebook/index.vue"),
+      },
     ],
   },
 ];
