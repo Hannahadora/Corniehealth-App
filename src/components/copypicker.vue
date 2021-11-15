@@ -1,7 +1,8 @@
 <template>
   <span class="" :class="[$attrs.width || 'w-full']">
-    <label class="flex capitalize mb-1 text-black text-sm font-semibold">
+    <label class="flex capitalize mb-1 -mt-1.5 text-black text-sm font-semibold">
       {{ label }}
+        <span class="text-danger ml-1" v-if="required"> * </span>
     </label>
     <Field
       v-model="date"
@@ -119,6 +120,9 @@ export default class DatePicker extends Vue {
   @Prop({ type: Boolean, default: false })
   right!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
+  
   visible = false;
  currentYear = new Date().getFullYear();
   toggleDropdown(): void {

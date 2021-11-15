@@ -7,7 +7,7 @@
     "
     :disabled="loading"
   >
-    <div :class="{invisible: loading}" class="px-3 py-1 flex items-center justify-center w-full h-full">
+    <div :class="{invisible: loading}" class="px-3 py-2 pl-8 pr-8 flex items-center justify-center w-full h-full">
       <slot />
     </div>
     <div v-if="loading" class="absolute w-full h-full flex items-center justify-center" style="top: 0; left: 0; right: 0; bottom: 0;" >

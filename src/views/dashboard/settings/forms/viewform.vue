@@ -3,7 +3,7 @@
     v-model="show"
     title="Identifier" 
     :id="newhistoryId"
-    :horizontal="true"
+    :horizontal="false"
   >
   
       <div class="w-full">
@@ -108,14 +108,14 @@
            <span class="flex justify-end w-full">
       <cornie-btn
         @click="show = false"
-        class="border-primary border-2 px-3 mr-3 py-2 pl-8 pr-8 rounded-xl text-primary"
+        class="border-primary border-2  mr-3  pl-8 pr-8 rounded-xl text-primary"
       >
         Cancel
       </cornie-btn>
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="bg-danger rounded-full font-semibold text-white border-2 pl-8 pr-8 px-3 py-2 mr-3"
+                class="bg-danger rounded-full font-semibold text-white border-2 pl-8 pr-8 px-3  mr-3"
               >
                 Submit
               </cornie-btn>
