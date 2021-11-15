@@ -1,8 +1,9 @@
 <template>
  <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Practice Information" expand="true" v-model="opened" :opened="false">
-        
-             
-       <div class="grid grid-cols-3 mt-3 pb-3">
+        <p class="small-font mt-3"> The information contained below will appear in the CornieHealth booking site, if you have embedded the link. This information does not 
+          affect other related data in your practice settings
+        </p>
+        <div class="grid grid-cols-3 mt-3 pb-3">
           <cornie-input
             label="Email"
             class=""
@@ -10,6 +11,7 @@
           />
           <phone-input
             class="w-full mt-1 bold"
+            style="width: 95%"
             label="Contact Number"
             v-model:code="DialCode"
             v-model="PhoneNumber"
@@ -22,7 +24,7 @@
           />
         </div>
         <div>
-            <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Site Message</label>
+            <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Site Message<span class="message-font">(Max 150 characters)</span></label>
                 <div class="my-2  w-full">
                       <Textarea
                           class="w-full text-xs"    
@@ -319,5 +321,16 @@ export default class CarePartnersExistingState extends Vue {
 <style scoped>
 .day-grid {
   grid-template-columns: 20% 75%;
+}
+
+.small-font{
+  font-size: 10px;
+  color: #14171F;
+}
+
+.message-font{
+  color: red;
+  font-size: 6px;
+  margin-left:6px;
 }
 </style>

@@ -29,74 +29,11 @@
             <span class="uppercase font-semibold">Practioner</span>
           </span>
           <span>
-            <MultiSelect :fullWidth="true">
-              <template #selected>
-                <span>
-                  <span>{{ selectedPractitioners }}</span>
-                </span>
-              </template>
-              <div
-                style="max-height: 350px; overflow-y: scroll; z-index: 99999"
-                class="
-                  origin-top-right
-                  absolute
-                  right-0
-                  mt-2
-                  w-full
-                  rounded-md
-                  shadow-lg
-                  bg-white
-                  ring-1 ring-black ring-opacity-5
-                  focus:outline-none
-                "
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="menu-button"
-                tabindex="-1"
-              >
-                <div class="py-1 px-1" role="none">
-                  <div
-                    class="w-full flex relative items-center my-2"
-                    v-for="(actor, index) in allActors"
-                    :key="index"
-                  >
-                    <div class="w-1/12">
-                      <input
-                        type="checkbox"
-                        :checked="
-                          selectedActors.findIndex(
-                            (i) => i.code === actor.code
-                          ) >= 0
-                        "
-                        name=""
-                        @click="selectPractitioner(actor, index)"
-                        id=""
-                      />
-                    </div>
-                    <div
-                      class="w-5/12"
-                      @click="selectPractitioner(actor, index)"
+           <practioner-select
+                    class="w-full mb-2"
+                      label="Author"
                     >
-                      <p class="capitalize font-semibold text-sm">
-                        {{ actor.display }}
-                      </p>
-                      <span
-                        class="capitalize text-gray-400 font-normal text-xs"
-                        >{{ actor.type }}</span
-                      >
-                    </div>
-                    <div class="w-6/12 flex justify-between ml-1">
-                      <span class="text-danger text-xs font-semibold capitalize"
-                        >View Avaliability</span
-                      >
-                      <span class="text-danger text-xs font-semibold capitalize"
-                        >View Profile</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </MultiSelect>
+            </practioner-select> 
           </span>
         </label>
       </div>
@@ -137,9 +74,9 @@ import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
-import MultiSelect from "@/views/dashboard/schedules/components/apply-to.vue"
 // import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
+import PractionerSelect from "@/components/practitioner-select.vue";
 import { Prop, Watch } from "vue-property-decorator";
 
 const visitsStore = namespace("visits");
@@ -157,7 +94,7 @@ const locationsStore = namespace("location");
     ToggleCheck,
     CornieSelect,
     TextArea,
-    MultiSelect,
+    PractionerSelect
   },
 })
 export default class CheckIn extends Vue {
