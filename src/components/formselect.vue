@@ -1,11 +1,17 @@
 <template>
    <span class="relative">
     <div class="bg-white rounded-t p-1 shadow">
-      <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-      </icon-input>
+      <icon-input
+                autocomplete="off"
+                class="border border-gray-600 rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-model="query"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
       <div
         :class="{ hidden: showDatalist }"
         class="
@@ -22,7 +28,7 @@
           >
         <div
           class="flex flex-row px-1 divide-y-2 divide-solid cursor-pointer hover:bg-gray-100 rounded-full"
-          v-for="(item, i) in filteredItems"
+          v-for="(item, i) in processedItems"
           :key="i"
           @click="selected(item)"
         >
@@ -60,29 +66,58 @@ export default class AutoComplete extends Vue {
   @PropSync("modelValue")
   modelValueSync!: string;
 
-  displayVal = "";
+
 
   showDatalist = false;
 
-  get filteredItems() {
-    if (!this.displayVal) return this.items;
-    return search.searchObjectArray(this.items, this.displayVal);
+   query = "";
+
+ @Prop({ type: Function })
+  filter!: (item: any, query: string) => boolean;
+
+  customFilter(item: any) {
+    if (this.filter) return this.filter(item, this.query);
+    if (typeof item === "string" || item instanceof String)
+      return item.includes(this.query);
+    const { code, display }: { code: string; display: string } = item;
+    return (
+      `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
+      `${display}`.toLowerCase().includes(this.query.toLowerCase())
+    );
   }
 
-  @Watch("displayVal")
-  changed(val: string, prev: string) {
-    if (val && val != prev) {
-      this.showDatalist = true;
-    } else this.showDatalist = false;
+  @Watch("query")
+  searched(query: string) {
+    this.$emit("query", query);
   }
+ get processedItems() {
+    if (!this.query) return this.items;
+    return this.items.filter(this.customFilter);
+  }
+
+ get displayVal() {
+    if (!this.modelValue || this.items.length < 1) return;
+
+    const selected = this.selectedItem;
+    return selected?.display || selected || "";
+  }
+
+
+  get selectedItem() {
+    const selected = this.items.find(
+      (item) => item.code == this.modelValue || item == this.modelValue
+    );
+    console.log('jjjj', this.modelValue);
+    return selected;
+  }
+
 
   selected(item: any) {
-    this.displayVal = item.display || item;
-    nextTick(() => {
+     nextTick(() => {
       this.showDatalist = false;
       this.modelValueSync = item.code || item;
     });
-     if(item == 'Blank form'){
+     if(item == 'Blank Survey'){
             this.$router.push({path: '/dashboard/settings/practise-management/add-new-form' })
         }
 

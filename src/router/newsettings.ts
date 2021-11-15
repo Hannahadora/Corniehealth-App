@@ -20,9 +20,9 @@ export const NewSettingsRoutes: RouteRecordRaw = {
           import("@/views/dashboard/settings/forms/newform.vue"),
       },
       {
-        path: "add-statisfaction-survey/:id?",
+        path: "add-questionnaires/:id?",
         props: true,
-        name: "Satisfaction Surveys",
+        name: "Questionnaires",
         component: () =>
           import("@/views/dashboard/settings/forms/surveys.vue"),
       },
