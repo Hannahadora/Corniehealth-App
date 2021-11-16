@@ -19,6 +19,15 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
+    path: "/reference/:id",
+    props: true,
+    name: "Reference Response",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/kyc/components/email-link.vue"
+      ),
+  },
+  {
     path: "/",
     name: "Home",
     component: Home,
@@ -358,19 +367,22 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
       {
-        path: "kyc-link",
-        props: true,
-        name: "KYC Setting",
-        component: () =>
-          import(
-            "@/views/dashboard/settings/kyc/components/email-link.vue"
-          ),
-      },
-      {
         path: "pricebook",
         name: "PriceBook",
         component: () =>
           import("@/views/dashboard/settings/pricebook/index.vue"),
+      },
+      {
+        path: "catalogues",
+        name: "Catalogues",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/index.vue"),
+      },
+      {
+        path: "newcatalogue",
+        name: "New Catalogue",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
       },
     ],
   },

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col justify-center items-center h-96">
+  <div class="w-full flex flex-col justify-center items-center">
       <div class="w-full p-2">
       <span
         class="
@@ -16,7 +16,7 @@
         Vital SIgns
       </span>
     </div>
-    <div class="w-8/12 mx-auto flex justify-center items-center flex-col">
+    <div class="w-8/12 mx-auto flex justify-center items-center flex-col mb-12">
         <empty-icon />
         <h3 class="text-center mt-5">There are no current vitals records for this patient</h3>
     <h3>Add new vitals by clicking the button below</h3>
@@ -34,7 +34,7 @@
             focus:outline-none
             hover:opacity-90
         "
-        @click="$router.push('add-careteam')"
+        @click="() => $emit('addnew')"
         >
         New Request
         </button>
