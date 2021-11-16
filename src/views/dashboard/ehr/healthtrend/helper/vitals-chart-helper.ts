@@ -64,7 +64,7 @@ const getAverage = (arr: number[]) => {
       const num2 = b ? b : 0;
       return num1 + num2;
     })
-    return +(sum / arr.length).toFixed(1);
+    return +(sum / arr.length).toFixed(1)
 }
   
   export const getYearData = (arr: IStat[]) => {
