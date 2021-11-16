@@ -16,12 +16,15 @@
                 >
                 <slot name="misc" />
                 </span>
-                <div class="flex space-x-3  -mt-4 cursor-pointer" v-if="question">
+                <div class="flex space-x-3  -mt-4 cursor-pointer" v-if="question"  @click="$emit('showonequestion')">
                             <question-icon class="-mt-4"/> 
                             <span class="-mt-4 text-sm"> Add question</span>
                     </div>
                     <div  v-if="text">
-                        <display-icon class="-mt-4  cursor-pointer"/>
+                        <display-icon class="-mt-4  cursor-pointer" @click="$emit('showdisplay')"/>
+                    </div>
+                    <div  v-if="text2">
+                        <display-icon class="-mt-4  cursor-pointer" @click="$emit('anotherdisplay')"/>
                     </div>
                     <div v-if="image">
                         <image-icon class="-mt-4  cursor-pointer"/>
@@ -98,6 +101,9 @@ export default class AccordionComponent extends Vue {
 
   @Prop({ type: Boolean, default: false })
   text!: boolean;
+
+   @Prop({ type: Boolean, default: false })
+  text2!: boolean;
 
   @Prop({ type: Boolean, default: false })
   image!: boolean;
