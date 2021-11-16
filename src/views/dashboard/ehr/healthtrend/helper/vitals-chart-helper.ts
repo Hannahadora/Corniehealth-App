@@ -74,7 +74,7 @@ const getAverage = (arr: number[]) => {
       groupedData.push(thisYear.filter(j => +(new Date(j.date).getMonth()) === i).map(k => k.count))
     }
     return {
-        dataSet: groupedData.map(m => getAverage(m)),
+        dataSet: groupedData.map((m) => getAverage(m)),
         labels: Months,
         total: 0
     }
@@ -92,7 +92,7 @@ const getAverage = (arr: number[]) => {
       groupedData.push(thisMonth.filter(j => +(new Date(j.date).getDate()) === i).map(k => k.count))
     }
     const data = {
-        dataSet: groupedData.map(m => getAverage(m)),
+        dataSet: groupedData.map((m) => getAverage(m)),
         labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
         total: 0,
     }
@@ -115,7 +115,7 @@ const getHourlyInDayData = (arr: IStat[]) => {
       groupedData.push(hourItems.map(k => k.count))
     }
     return {
-        dataSet: groupedData.map(m => getAverage(m)),
+        dataSet: groupedData.map((m) => getAverage(m)),
         labels: HoursOfDay,
         total: 0,
     }
@@ -126,9 +126,9 @@ const getHourlyInDayData = (arr: IStat[]) => {
   }
 
   const weeksDates = () => {
-    let arr = [ ];
+    const arr = [ ];
     for (let i = 0; i < 7; i++) {
-      let sunday = new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() + 7) % 6))
+      const sunday = new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() + 7) % 6))
       arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
     }
     
@@ -139,12 +139,12 @@ const getHourlyInDayData = (arr: IStat[]) => {
     const thisYear = currentYearData(arr);
     const dates = weeksDates();
     const groupedData = []
-    for (let date of dates) {
+    for (const date of dates) {
       const forDayInWeek = thisYear.filter(i => isSameDate(date, i.date))
       groupedData.push(forDayInWeek.map(i => i.value));
     }
     return {
-        dataSet: groupedData.map(m => getAverage(m)),
+        dataSet: groupedData.map((m) => getAverage(m)),
         labels: Weekdays,
         total: 0,
     }

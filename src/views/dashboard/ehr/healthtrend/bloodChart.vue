@@ -115,9 +115,7 @@ export default class BloodChartt extends Vue {
   }
 
   get diastolicChartData() {
-    // if (this.diastolicRaw?.length === 0) return [ ];
     const data = getChartData(this.diastolicRaw, this.order);
-    // const data = groupData(this.diastolicRaw, this.order);
     return data;
   }
 
