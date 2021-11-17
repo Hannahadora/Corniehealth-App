@@ -16,8 +16,8 @@
         Attachment
       </span>
       <span class="w-full h-screen">
-        <allergys-empty-state v-if="empty" />
-        <allergys-existing-state
+        <attachment-empty-state v-if="empty" />
+        <attachment-existing-state
           @attachment-added="attachmentAdded"
           :attachments="attachments"
           v-else

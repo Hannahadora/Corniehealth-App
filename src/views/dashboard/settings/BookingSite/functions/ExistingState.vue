@@ -9,10 +9,11 @@
             class=""
             placeholder="--Enter--"
           />
+          <label>Contact information</label> 
+          <span class="d-flex justify-content-space-between"><plus-icon class="text-green-400 fill-current" /></span>
           <phone-input
             class="w-full mt-1 bold"
             style="width: 95%"
-            label="Contact Number"
             v-model:code="DialCode"
             v-model="PhoneNumber"
             :rules="requiredRule"
@@ -244,6 +245,7 @@ export default class CarePartnersExistingState extends Vue {
   removeFunction!: (id: string) => Promise<void>;
   expand=false;
   opened=true;
+  PhoneNumber="";
   rawHeaders = [
     {
       title: "ROOM NAME",

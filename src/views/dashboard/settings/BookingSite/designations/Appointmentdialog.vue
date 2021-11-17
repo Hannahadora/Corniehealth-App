@@ -38,8 +38,15 @@
         </label>
       </div>
       <div class="w-full my-4">
-         <cornie-input label="Link Forms" placeholder=""  class="mb-5 w-full" />
+         <cornie-input label="Link Forms" placeholder="" class="mb-5 w-full" />
       </div>
+      <domain-input
+            label="Domain Name"
+            placeholder="--Enter--"
+            :rules="requiredRule"
+             :modelValue="orgValue"
+            
+          />
     </div>
 
     <div class="w-full mb-3 mt-8">
@@ -71,17 +78,20 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import ChevronDown from "@/components/icons/chevrondownprimary.vue";
 import DateTimePicker from './components/datetime-picker.vue'
 import ToggleCheck from "@/components/ToogleCheck.vue";
+import PlusIcon from "@/components/icons/plus.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
 // import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
 import PractionerSelect from "@/components/practitioner-select.vue";
+import DomainInput from "@/components/domain-input.vue";
 import { Prop, Watch } from "vue-property-decorator";
 
 const visitsStore = namespace("visits");
 const actors = namespace("practitioner");
 const locationsStore = namespace("location");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -90,10 +100,12 @@ const locationsStore = namespace("location");
     CustomDropdown,
     DeleteIcon,
     ChevronDown,
+    DomainInput,
     DateTimePicker,
     ToggleCheck,
     CornieSelect,
     TextArea,
+    PlusIcon,
     PractionerSelect
   },
 })
@@ -121,8 +133,15 @@ export default class CheckIn extends Vue {
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
+  
+   @organization.Action
+    fetchOrgInfo!: () => Promise<void>
+
+  @organization.State
+  organizationInfo: any
 
   showDetails = true;
+  orgValue = "";
   showBreaks = false;
   showPlanning = false;
   loading = false;
@@ -214,7 +233,7 @@ export default class CheckIn extends Vue {
           slotId: slot,
           // "practitioners": this.selectedActors.map(i => i.id)
         });
-
+        // const orgValue = this.organizationInfo.domainValue;
         if (checkedIn && checkedIn) {
           window.notify({ msg: "Patient Check-in", status: "success" });
           this.$emit("close");
@@ -283,6 +302,9 @@ export default class CheckIn extends Vue {
       await this.fetchLocations();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
+      if (!this.organizationInfo || this.organizationInfo.length === 0)
+      await this.fetchOrgInfo();
+      this.orgValue = this.organizationInfo.domainName;
   }
 }
 </script>

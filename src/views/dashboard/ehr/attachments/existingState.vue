@@ -48,12 +48,6 @@
             <span class="ml-3 text-xs">Edit</span>
           </div>
         </template>
-        <template #asserter="{ item }">
-          <p class="cursor-pointer">{{ item.asserter }}</p>
-        </template>
-        <template #recorder="{ item }">
-          <p class="cursor-pointer">{{ item.asserter }}</p>
-        </template>
       </cornie-table>
     </div>
 
@@ -67,7 +61,7 @@
 
     <attachment-modal
       v-else
-      :id="attachmentId"
+      :id="currentAttachment"
       :columns="practitioner"
       @update:preferred="showAttachment"
       v-model="showAttachmentModal"
@@ -151,9 +145,12 @@ export default class AttachmentExistingState extends Vue {
   showAttachmentModal = false;
   attachmentId = "";
   tasknotes = [];
+  timeFormat= "";
+  formattedTime="";
 
   @Prop({ type: Array, default: [] })
   attachments!: IAttachment[];
+  
 
   // @allergy.State
   // allergys!: IAllergy[];
@@ -173,11 +170,11 @@ export default class AttachmentExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    {
-      title: "identifier",
-      key: "id",
-      show: true,
-    },
+    // {
+    //   title: "identifier",
+    //   key: "id",
+    //   show: true,
+    // },
     { title: "Date", key: "createdAt", show: true },
     {
       title: "TIME",
@@ -209,26 +206,22 @@ export default class AttachmentExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-
+  currentAttachment: any =null;
   get items() {
     const attachments = this.attachments.map((attachment) => {
-      // (allergy as any).onSet.onsetPeriod.start = new Date(
-      //   (allergy as any).onSet.onsetPeriod.start
-      // ).toLocaleDateString("en-US");
-      // (allergy as any).onSet.onsetPeriod.end = new Date(
-      //   (allergy as any).onSet.onsetPeriod.end
-      // ).toLocaleDateString("en-US");
-      // (allergy as any).createdAt = new Date(
-      //   (allergy as any).createdAt
-      // ).toLocaleDateString("en-US");
+       this.timeFormat = (attachment as any).createdAt.split("T");
+       console.log(this.timeFormat);
+      this.formattedTime = new Date( this.timeFormat).toLocaleTimeString("en-US");
+      (attachment as any).createdAt = new Date(
+        (attachment as any).createdAt
+      ).toLocaleDateString("en-US");
       return {
         ...attachment,
-        action: attachment.id,
-        keydisplay: "XXXXXXX",
-        // onsetPeriod:
-        //   allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
-        // asserter: this.getPractitionerName(allergy.onSet.asserter),
-        // product: allergy.reaction.substance,
+        // date: attachment.id,
+        title: attachment.title,
+        format: attachment.format,
+        size: attachment.fileSize,
+        time: this.formattedTime,
       };
     });
     if (!this.query) return attachments;
@@ -241,7 +234,7 @@ export default class AttachmentExistingState extends Vue {
   async showAttachment(value: string) {
     this.showAttachmentModal = true;
     //this.stopEvent = true;
-    this.attachmentId = value;
+    this.currentAttachment = value;
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;
@@ -273,7 +266,8 @@ export default class AttachmentExistingState extends Vue {
   async created() {
     // this.getPractitioners();
     this.sortAttachment;
-    this.fetchAttachment(this.activePatientId);
+    alert('fetch');
+    await this.fetchAttachment(this.activePatientId);
   }
 }
 </script>

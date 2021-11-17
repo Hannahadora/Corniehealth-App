@@ -118,8 +118,6 @@
                     <!-- <div> -->
                           <div class="w-full mt-5">
                               <date-time-picker
-                               v-model:date="data.endDate"
-                                v-model:time="data.endTime"
                                 label="Date/Time"
                                 width="w-full"
                               />
@@ -345,11 +343,11 @@ practitioner!: IPractitioner;
 
   checkingissues(){
      const updatingissues = this.issues.find(c=> c.id ===this.id);
-     this.issuesModel = { ...updatingissues},
+     this.issuesModel = { ...updatingissues}
     //  this.issuesModel.identifier = updatingissues.
-     this.data.startDate = new Date(updatingissues.identified.identifiedPeriod.start);
+    //  this.data.startDate = new Date(updatingissues.identified.identifiedPeriod.start);
     //  this.data.endDate = new Date(updatingissues.identified.identifiedPeriod.end)
-     this.data.startTime =new Date(updatingissues.identified.identifiedPeriod.end)
+    //  this.data.startTime =new Date(updatingissues.identified.identifiedPeriod.end)
     //  this.issuesModel.identified.identifiedPeriod.end = new Date(updatingissues.identified.identifiedPeriod.start)
   }
 
@@ -370,15 +368,15 @@ profileFilter=false;
     this.loading = false
     }
 
-     async setIssues() {
-    this.issue.status = this.issuesModel.status;
-    this.issue.code = this.issuesModel.code;
-    this.issue.patient = this.issuesModel.patient;
-    this.issue.severity = this.issuesModel.severity;
-    this.issue.identified = this.issuesModel.identified;
-    this.issue.evidence = this.issuesModel.evidence;
-    this.issue.mitigation = this.issuesModel.mitigation;  
-  }
+  //    async setIssues() {
+  //   this.issue.status = this.issuesModel.status;
+  //   this.issue.code = this.issuesModel.code;
+  //   this.issue.patient = this.issuesModel.patient;
+  //   this.issue.severity = this.issuesModel.severity;
+  //   this.issue.identified = this.issuesModel.identified;
+  //   this.issue.evidence = this.issuesModel.evidence;
+  //   this.issue.mitigation = this.issuesModel.mitigation;  
+  // }
 //   
 buildPeriod(
     startDate: string,
@@ -456,7 +454,7 @@ async updateIssues() {
       this.getPractitioners();
       if (!this.organizationInfo) this.fetchOrgInfo();
       // this.setIssues();
-      // this.checkissues();
+      // this.checkingissues();
       console.log(this.issue);
       // console.log(this.updatingissues)
       // this.setDetectedIssue();

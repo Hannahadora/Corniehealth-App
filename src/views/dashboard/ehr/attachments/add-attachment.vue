@@ -41,7 +41,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ClinicalDialog from "@/components/clinical-dialog.vue";
-import { Prop, PropSync } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieInput from "@/components/cornieinput.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieTextArea from "@/components/textarea.vue";
@@ -50,6 +50,7 @@ import IPractitioner from "@/types/IPractitioner";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 
+const attachments = namespace("attachments");
 const userStore = namespace("user");
 @Options({
   name: "AddAttachment",
@@ -62,6 +63,9 @@ const userStore = namespace("user");
 })
 export default class AddAttachment extends Vue {
   @Prop({ type: Boolean, default: false })
+
+  @Prop({ type: String, default: '' })
+  id!: string
   modelValue!: boolean;
 
   @PropSync("modelValue")
@@ -70,10 +74,18 @@ export default class AddAttachment extends Vue {
   loading = false;
 
   fileInfo = {} as any;
-  
+
+  @attachments.State
+  attachments!: any[];
 
    @userStore.Getter
   authPractitioner!: IPractitioner;
+
+  @Watch('id')
+  idChanged() {
+    this.checkingAttachments();
+    // this.setIssues()
+  }
 
   required = string().required();
   title = "";
@@ -88,7 +100,20 @@ get activePatientId() {
       return id;     
   }
   
-  
+  checkingAttachments(){
+     const updatingAttachments = this.attachments.find(c=> c.id ===this.id);
+     console.log(updatingAttachments);
+     this.title = updatingAttachments.title;
+     this.comment = updatingAttachments.comment;
+     this.file = updatingAttachments.imageUrl;
+    //  this.issuesModel = { ...updatingissues}
+    //  this.issuesModel.identifier = updatingissues.
+    //  this.data.startDate = new Date(updatingissues.identified.identifiedPeriod.start);
+    //  this.data.endDate = new Date(updatingissues.identified.identifiedPeriod.end)
+    //  this.data.startTime =new Date(updatingissues.identified.identifiedPeriod.end)
+    //  this.issuesModel.identified.identifiedPeriod.end = new Date(updatingissues.identified.identifiedPeriod.start)
+  }
+
   get payload() {
     return {
       title: this.title,
@@ -108,7 +133,15 @@ get activePatientId() {
     this.$emit("attachment-added");
     this.show = false;
   }
-  async submit() {
+
+  async  submit() {
+     this.loading = true
+    if (this.id) await this.updateAttachments()
+     await this.createAttachment()
+    this.loading = false
+    }
+
+  async createAttachment(){
     const valid = await this.validate();
     if (!valid) return;
     try {
@@ -122,8 +155,25 @@ get activePatientId() {
       window.notify({ msg: 'Attachment not Created', status: 'error' })
     
     }
-  
   }
+
+  async updateAttachments() {
+    const url = `/api/v1/attachment/${this.id}`
+    try {
+      const response = await cornieClient().put(url, this.payload)
+      if (response.success) {
+        window.notify({ msg: 'Attachments  updated', status: 'success' })
+      this.done();
+
+      }
+    } catch (error) {
+      window.notify({ msg: 'Attachments not  updated', status: 'error' })
+    }
+  }
+  // async submit() {
+  //   // if (this.id) await this.updateAttachments();
+
+  //   }
 
 }
 </script>
