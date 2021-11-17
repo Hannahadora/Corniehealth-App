@@ -82,7 +82,7 @@
     </div>
 
     <div class="w-full" v-else>
-      <empty-state />
+      <empty-state @addnew="() => showNewModal = true" />
     </div>
 <!-- 
     <advanced-filter

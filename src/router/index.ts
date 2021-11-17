@@ -10,6 +10,24 @@ import Settings from "@/views/dashboard/settings/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: "/kyc-email",
+    props: true,
+    name: "KYC Email",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/kyc/components/email-body.vue"
+      ),
+  },
+  {
+    path: "/reference/:id",
+    props: true,
+    name: "Reference Response",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/kyc/components/email-link.vue"
+      ),
+  },
+  {
     path: "/",
     name: "Home",
     component: Home,
@@ -315,6 +333,39 @@ const routes: Array<RouteRecordRaw> = [
           import(
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
+      },
+      {
+        path: "kyc",
+        props: true,
+        name: "KYC",
+        component: () =>
+          import(
+            "@/views/dashboard/settings/kyc/index.vue"
+          ),
+      },
+      {
+        path: "pricebook",
+        name: "PriceBook",
+        component: () =>
+          import("@/views/dashboard/settings/pricebook/index.vue"),
+      },
+      {
+        path: "catalogues",
+        name: "Catalogues",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/index.vue"),
+      },
+      {
+        path: "newcatalogue",
+        name: "New Catalogue",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
+      },
+      {
+        path: "newproduct",
+        name: "New Catalogue",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
       },
     ],
   },
