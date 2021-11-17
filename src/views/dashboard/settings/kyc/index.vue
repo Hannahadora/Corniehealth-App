@@ -309,14 +309,14 @@ export default class KYC extends Vue {
     addOwner = false;
     data: any = { isRegistered: 'Yes' }
 
-    nominees: any = [
+    nominees = [
         {
             name: 'Ademola Emeka', email: 'test@gmail.com', id: 1, phone: '1234567890'
         },
         {
             name: 'Emeka Ademola', email: 'test@example.com', id: 2, phone: '0987654321'
         }
-    ]
+    ] as any[]
 
     toggleEditDialog(nominee: any, index: number) {
         this.nominees[index].newEmail = this.nominees[index].email

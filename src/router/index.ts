@@ -384,6 +384,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
       },
+      {
+        path: "newproduct",
+        name: "New Catalogue",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
+      },
     ],
   },
 ];
