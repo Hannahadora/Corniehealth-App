@@ -86,10 +86,10 @@
 
                 <div class="w-full mb-4">
                     <div class="w-full flex justify-end">
-                        <corniebtn class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
+                        <corniebtn @click="addBloodPressure" class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
                             <span class="font-semibold text-primary-500 flex items-center">
                                 <span class="mx-2"><check-icon /></span> 
-                                <span class="mr-2" @click="addBloodPressure">Add</span>
+                                <span class="mr-2">Add</span>
                             </span>
                         </corniebtn>
                     </div>

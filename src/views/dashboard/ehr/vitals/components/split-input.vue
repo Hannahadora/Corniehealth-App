@@ -2,8 +2,8 @@
   <div class="container-fluid pt-4">
 
       <div class="w-full">
-          <div class="w-12/12 py-1">
-            <span class="font-semibold capitalize">{{ label }}</span>
+          <div class="w-12/12 pt-1">
+            <span class="flex capitalize mb-1 text-black text-sm font-semibold">{{ label }}</span>
           </div>
           <div class="w-full flex items-center">
             <div class="w-4/12 pl-0">
