@@ -94,17 +94,15 @@ const routes: Array<RouteRecordRaw> = [
         path: "clinical",
         props: true,
         name: "Patient",
-        component: () =>
-          import("@/views/dashboard/ehr/landing.vue"),
-          children: [
-            {
-              path: "",
-              props: true,
-              component: () =>
-                import("@/views/dashboard/ehr/landing/index.vue"),
-            },
-            ClinicalsRoute,
-          ]
+        component: () => import("@/views/dashboard/ehr/landing.vue"),
+        children: [
+          {
+            path: "",
+            props: true,
+            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+          },
+          ClinicalsRoute,
+        ],
       },
       ExperienceRoutes,   
       NewSettingsRoutes,   
@@ -114,22 +112,6 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import(
-          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-          //     ),
-          // },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import(
-          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-          //     ),
-          // },
           {
             path: "care-partners",
             name: "Care Partners",
@@ -171,12 +153,7 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-          // },
+
           {
             path: "contact-info",
             name: "Contact Information",
