@@ -2,12 +2,13 @@
   <div class="w-full p-4 overflow-y-scroll h-screen">
     <div class="container-fluid">
        <div class="w-full my-4">
-        <CornieSelect
-          :items="['Follow Up', 'Routine', 'Walk In', 'Check Up', 'Emergency']"
-          :label="'Appointment Type'"
-          v-model="checkinData.type"
-          style="width: 100%"
-        />
+        <main-cornie-select
+                    class="w-full"
+                    :items="appointmentItems"
+                    v-model="appointmentItem"
+                    label="Appointment Types"
+                    >
+                    </main-cornie-select>
       </div>
      <div class="w-full mt-5">
                               <date-time-picker
@@ -38,7 +39,12 @@
         </label>
       </div>
       <div class="w-full my-4">
-         <cornie-input label="Link Forms" placeholder="" class="mb-5 w-full" />
+         <main-cornie-select
+                    class="w-full"
+                    v-model="appointmentItem"
+                    label="Link forms"
+                    >
+                    </main-cornie-select>
       </div>
       <domain-input
             label="Domain Name"
@@ -79,13 +85,14 @@ import ChevronDown from "@/components/icons/chevrondownprimary.vue";
 import DateTimePicker from './components/datetime-picker.vue'
 import ToggleCheck from "@/components/ToogleCheck.vue";
 import PlusIcon from "@/components/icons/plus.vue";
-import CornieSelect from "@/components/cornieselect.vue";
+import MainCornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
+import {appointmentItems} from "./dropdown";
 // import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
 import PractionerSelect from "@/components/practitioner-select.vue";
-import DomainInput from "@/components/domain-input.vue";
+import DomainInput from "@/components/newdomaininput.vue";
 import { Prop, Watch } from "vue-property-decorator";
 
 const visitsStore = namespace("visits");
@@ -103,7 +110,7 @@ const organization = namespace("organization");
     DomainInput,
     DateTimePicker,
     ToggleCheck,
-    CornieSelect,
+    MainCornieSelect,
     TextArea,
     PlusIcon,
     PractionerSelect
@@ -140,6 +147,8 @@ export default class CheckIn extends Vue {
   @organization.State
   organizationInfo: any
 
+  appointmentItems = appointmentItems;
+  appointmentItem= "";
   showDetails = true;
   orgValue = "";
   showBreaks = false;
@@ -305,6 +314,7 @@ export default class CheckIn extends Vue {
       if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
       this.orgValue = this.organizationInfo.domainName;
+      console.log(this.orgValue);
   }
 }
 </script>

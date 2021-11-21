@@ -102,7 +102,7 @@ get activePatientId() {
   
   checkingAttachments(){
      const updatingAttachments = this.attachments.find(c=> c.id ===this.id);
-     console.log(updatingAttachments);
+    //  console.log(updatingAttachments);
      this.title = updatingAttachments.title;
      this.comment = updatingAttachments.comment;
      this.file = updatingAttachments.imageUrl;
