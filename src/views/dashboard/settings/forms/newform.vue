@@ -2,7 +2,7 @@
   <div class="bg-white rounded mb-56 p-5 mt-5">
     <input
       contenteditable="false"
-      v-model="formTitle"
+      v-model="name"
       placholder="New Practice Forms"
       class="
       mb-12
@@ -73,22 +73,24 @@
           <accordion-component title="Identifier" :opened="true">
               <template v-slot:default>
                   <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                      <cornie-input label="Name" class="required w-full" v-model="formTitle" :required="true" placeholder="--Enter--"/>
-                      <cornie-select label="Status" :items="['Draft','Active','Retired']" class="required w-full" :required="true" placeholder="--Select"/>
+                      <cornie-input label="Name" class="required w-full" v-model="name" :required="true" placeholder="--Enter--"/>
+                      <cornie-select label="Status" v-model="status" :items="['Draft','Active','Retired']" class="required w-full" :required="true" placeholder="--Select"/>
                         <div class="mb-2">
                             <label for="experiments" class="flex capitalize text-black mb-1 text-sm font-bold">
                                 Experimental <span class="text-xs text-danger ml-2">*</span>
                             </label>
                             <div class="w-full flex space-x-4 mt-5 mb-3">
                                 <cornie-radio
-                            v-bind:value="'Yes'"
+                            v-bind:value="true"
                             label="Yes"
+                            v-model="experimental"
                             class="text-xs"
                             name="question"
                             id="yes"
                                 />
                                 <cornie-radio
-                                v-bind:value="'No'"
+                                v-bind:value="false"
+                                 v-model="experimental"
                                 label="No"
                                 name="request"
                                 id="no"
@@ -101,12 +103,12 @@
          <accordion-component title="Subject" :opened="true">
               <template v-slot:default>
                   <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                      <cornie-select label="Subject Type" :items="['Appointment Booking','Walk-In Patients','Overall episode experience','Physician encounter/clinical impression','Diagnostic Report','Medication Dispense/Administration','Inpatient discharge','Billing & Payment Collection']" class="required w-full" :required="true" placeholder="--Select"/>
-                      <cornie-input label="Purpose" class="required w-full" :required="true" placeholder="--Enter--"/>
+                      <cornie-select label="Subject Type" v-model="subjectType" :items="['Appointment Booking','Walk-In Patients','Overall episode experience','Physician encounter/clinical impression','Diagnostic Report','Medication Dispense/Administration','Inpatient discharge','Billing & Payment Collection']" class="required w-full" :required="true" placeholder="--Select"/>
+                      <cornie-input label="Purpose" v-model="purpose" class="required w-full" :required="true" placeholder="--Enter--"/>
                        <div class="mb-5">
                        <copyright-picker
-                        v-model:text="inputtext"
-                          v-model:date="data.dateTime"
+                        v-model:text="copyright.name"
+                          v-model:date="copyright.year"
                             label="Copyright"
                             width="w-11/12"
                             class="required mt-5"
@@ -114,14 +116,22 @@
                           />
                       </div>
                        <div class="mb-5">
-                       <date-time-picker
+                        <!-- <div class="w-full">
+                          <label class="flex capitalize mb-1  text-black text-xs font-bold">Approval Date</label>
+                          <input-desc-rounded  :info="''">
+                            <input :value="authPractitioner.firstName +' '+ authPractitioner.lastName" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
+                          </input-desc-rounded>
+                        </div> -->
+                        <date-time-picker
                             label="Approval Date"
                             width="w-11/12"
                             class="required"
-                          />
+                            v-model="approvalDate"
+                          /> 
                       </div>
                        <div class="mb-5">
-                       <date-time-picker
+                       <date-picker
+                            v-model="effectivePeriod"
                             label="Effective Period "
                             :required="true"
                             width="w-11/12"
@@ -134,14 +144,14 @@
           </accordion-component>
       </div>
       <div class="bg-gray-100 w-full rounded h-full py-6 px-3 mt-5">
-          <div class="flex space-x-2 float-right -mt-3 cursor-pointer" @click="addQuestion">
+          <div class="flex space-x-2 float-right -mt-3 cursor-pointer" @click="addSection">
                 <section-icon class="float-right"/> 
                 <p class="float-right text-sm">Add Section</p>
           </div>
       </div>
+
           <draggable
-          v-if="showsection"
-          v-model="questions"
+          v-model="sections"
           item-key="id"
           group="people"
           class="my-2 pb-2 border-0 w-full flex-col rounded-md flex"
@@ -279,7 +289,7 @@
           </draggable>
 
                <draggable
-              v-if="shownewquestion"
+                 v-if="showsection"
           v-model="questions"
           item-key="id"
           group="people"
@@ -532,7 +542,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import IPracticeform, { Question } from "@/types/IPracticeform";
+import IPracticeform, { Question, Section, QuestionGroup,Display,AnswerType } from "@/types/IPracticeform";
 import InfoIcon from "@/components/icons/info.vue";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
@@ -562,11 +572,15 @@ import Tooltip from '@/components/tooltip.vue';
 import TooltipIcon from '@/components/icons/formtip.vue';
 import CopyformIcon from '@/components/icons/formcopy.vue';
 import ViewModal from './viewform.vue';
-//import TooltipIcon from '@/components/icons/formtip.vue';
+import IPractitioner from "@/types/IPractitioner";;
 import SelectOption from "@/components/custom-checkbox.vue";
+import Period from "@/types/IPeriod";
+import DatePicker from "@/components/datepicker.vue"
 
 const practiceform = namespace("practiceform");
 const dropdown = namespace("dropdown");
+const userStore = namespace("user");
+
 
 @Options({
   components: {
@@ -583,6 +597,7 @@ const dropdown = namespace("dropdown");
     PlusIcon,
     MoveIcon,
     AllQuestions,
+    DatePicker,
     ViewModal,
     CancelIcon,
     GroupIcon,
@@ -615,6 +630,9 @@ export default class AddPracticeform extends Vue {
   @practiceform.Action
   getPracticeformById!: (id: string) => IPracticeform;
 
+     @userStore.Getter
+  authPractitioner!: IPractitioner;
+
 showPreviewModal = false;
   loading = false;
   expand = false;
@@ -644,6 +662,8 @@ inputtext="";
   othersType = "";
   habitType = "";
   formType = "";
+
+
   formTitle = "New Practice Forms";
   displayTitle = "Blank Form";
   description = "Kindly tell us about your medical history!";
@@ -659,35 +679,75 @@ showquestion= false;
   checkoption = false;
 checkinput = false;
 onedisplay = false;
- questions: Question[] = [];
  groups: []  = [];
 group: []  = [] as any;
 
-  // questions: Question[] = [
-  //   {
-  //     name: "Others",
-  //     answerOptions: [""],
-  //     question: "Type questions",
-  //     answerType: "paragraph",
-  //     validation:{},
-  //   },
+
+  name = "New Practice Forms";
+  status = "";
+  type =  "";
+  experimental = false;
+  subjectType = "";
+  purpose = "";
+  copyright = { name: "", year: 0 };
+  approvalDate = "";
+  effectivePeriod = {} as Period;
+  code = "";
+  Display: Display = "";
+  AnswerType: AnswerType = [] as any;
+
+
+  // sections: Section[] =[
+  //     {
+  //       items: [
+  //        this.getEmptyQuestion(),
+  //        this.getEmptyQuestionGroup(),
+  //        this.Display
+  //       ]
+  //     } 
   // ];
-  getEmptyQuestion(): Question {
+
+displays: Display = "";
+  sections: Section[] =[];
+  getEmptySection(): Section {
     return {
-      question: "Type question here",
-      name: "Others",
-      answerType: "paragraph",
-      answerOptions: [""],
-      validation:{},
+      items:[
+         this.getEmptyQuestion(),
+         this.getEmptyQuestionGroup(),
+         this.Display
+      ]
     };
   }
-  getEmptyGroup(): Question {
-    return {
-      question: "Type question here",
-      name: "Others",
-      answerType: "paragraph",
+  archivedAt = "";
+
+  questions: Question[] = [
+    {
+        question: "Type question here",
+      name: "Question",
+      answerType: this.AnswerType,
       answerOptions: [""],
-      validation:{},
+      prefix: "",
+
+    },
+  ];
+  getEmptyQuestion(): Question {
+    return {
+       question: "Type question here",
+      name: "Question",
+      answerType: "choice",
+      answerOptions: [""],
+      prefix: "",
+    };
+  }
+ getEmptyQuestionGroup(): QuestionGroup {
+    return {
+       name: "",
+        prefix: "",
+       text: "",
+      items: [
+        this.getEmptyQuestion(),
+        this.Display
+      ],
     };
   }
    
@@ -707,11 +767,16 @@ group: []  = [] as any;
   async setPracticeform() {
     const practiceform = await this.getPracticeformById(this.id);
     if (!practiceform) return;
-    this.formType = practiceform.formType;
-    this.formTitle = practiceform.formTitle;
-    this.displayTitle = practiceform.displayTitle;
-    this.description = practiceform.description;
-    this.questions = practiceform.questions;
+    this.name = practiceform.name;
+    this.status = practiceform.status;
+    this.type = practiceform.type;
+    this.experimental = practiceform.experimental;
+    this.subjectType = practiceform.subjectType;
+    this.purpose = practiceform.purpose;
+    this.copyright = practiceform.copyright;
+    this.approvalDate = practiceform.approvalDate;
+    this.effectivePeriod = practiceform.effectivePeriod;
+    this.code = practiceform.code;
   }
   get payload() {
     return {
@@ -786,22 +851,40 @@ this.checkoption= true;
     // Vue.set<Question>(this.questions,index,value)
     // this.set(this.questions,"question", value )
   }
+  async adddisplay(){
+    const display = this.Display ? this.Display: this.getTemplateDisplay();
+    ///this.displays.push(this.Display);
+  }
+  async addSection(value:string){
+     const section = this.getEmptySection() ? this.getEmptySection(): this.getTemplateSection();
+    this.sections.push(section);
+  }
   async addQuestion(value: string) {
-    this.showsection = true;
-    const question = value == "Others" ? this.getEmptyQuestion(): this.getTemplateQuestion(value);
+    const question = value == "Question" ? this.getEmptyQuestion(): this.getTemplateQuestion(value);
     this.questions.push(question);
   }
 
+getTemplateDisplay(){
+    this.Display
+}
   getTemplateQuestion(name: string) {
     return {
       question: "Type question here",
       name: name,
-      answerType: "paragraph",
+      answerType: this.AnswerType,
       answerOptions: [""],
-      validation:{},
+      prefix: "",
     };
   }
-
+  getTemplateSection() {
+    return {
+      items:[
+         this.getEmptyQuestion(),
+         this.getEmptyQuestionGroup(),
+         this.Display
+      ]
+    };
+  }
 
   async removeQuestion(index: number) {
     this.questions.splice(index, 1);

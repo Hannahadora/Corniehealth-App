@@ -70,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         name: "Blank Form",
         component: () =>
-          import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
+          import("@/views/dashboard/settings/forms/newform.vue"),
       },
       {
         path: "clinical",
@@ -268,7 +268,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "practice-templates",
             name: "Practice Forms/Templates",
             component: () =>
-              import("@/views/dashboard/settings/practiceform/index.vue"),
+            import("@/views/dashboard/settings/forms/index.vue"),
           },
         ],
       },

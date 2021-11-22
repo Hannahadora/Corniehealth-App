@@ -6,10 +6,12 @@ import {
   fetchPracticeforms,
   fetchPracticeformsQuestions,
   fetchPracticeformsTemplates,
+  fetchPracticeformsQuestionnaires,
 } from "./helper";
 
 interface PracticeformState {
   practiceforms: IPracticeform[];
+  practiceformsQuestionnaries: IPracticeform[];
   practiceformstemplates: IPracticeform[];
   practiceformsquestions: IPracticeform[];
 }
@@ -20,10 +22,14 @@ export default {
     practiceforms: [],
     practiceformsquestions: [],
     practiceformstemplates: [],
+    practiceformsQuestionnaries:[],
   },
   mutations: {
     setPracticeforms(state, practiceforms: IPracticeform[]) {
       state.practiceforms = [...practiceforms];
+    },
+    setPracticeformsQuestionnaires(state, practiceformsQuestionnaries: IPracticeform[]) {
+      state.practiceformsQuestionnaries = [...practiceformsQuestionnaries];
     },
     setPracticeformsQuestions(state, practiceformsquestions: IPracticeform[]) {
       state.practiceformsquestions = [...practiceformsquestions];
@@ -52,6 +58,10 @@ export default {
     async fetchPracticeforms(ctx) {
       const practiceforms = await fetchPracticeforms();
       ctx.commit("setPracticeforms", practiceforms);
+    },
+    async fetchPracticeformsQuestionnaires(ctx) {
+      const practiceformsQuestionnaries = await fetchPracticeformsQuestionnaires();
+      ctx.commit("setPracticeformsQuestionnaires", practiceformsQuestionnaries);
     },
     async fetchPracticeformsQuestions(ctx) {
       const practiceformsquestions = await fetchPracticeformsQuestions();

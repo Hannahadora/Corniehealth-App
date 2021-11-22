@@ -20,10 +20,10 @@
           <!-- <forms-empty-state
               
           /> -->
-          <forms-empty-state
+          <practiceform-empty-state
                 v-if="empty"
           />
-          <forms-existing-state
+          <practiceform-existing-state
         
           v-else
 
@@ -33,39 +33,39 @@
   </div>
 </template>
 <script lang="ts">
-import ITask from "@/types/ITask";
+import IPracticeform from "@/types/IPracticeform";
 import { Options, Vue } from "vue-class-component";
-import FormsEmptyState from "./emptyState.vue";
-import FormsExistingState from "./existingState.vue";
+import PracticeformEmptyState from "./emptyState.vue";
+import PracticeformExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const task = namespace("task");
+const practiceform = namespace("practiceform");
 
 @Options({
-  name: "FormsIndex",
+  name: "PracticeformIndex",
   components: {
-    FormsEmptyState,
-    FormsExistingState,
+    PracticeformEmptyState,
+    PracticeformExistingState,
   },
 })
-export default class TasksIndex extends Vue {
-  addTask = false;
-  TaskToUpdate = {} as ITask;
+export default class PracticeformIndex extends Vue {
+  PracticeformToUpdate = {} as IPracticeform;
 
   get empty() {
-    return this.tasks.length < 1;
+    return this.practiceforms.length < 1;
   }
 
- @task.State
-  tasks!: ITask[];
+ @practiceform.State
+  practiceforms!: IPracticeform[];
 
-  @task.Action
-  fetchTasks!: () => Promise<void>;
+  @practiceform.Action
+  fetchPracticeforms!: () => Promise<void>;
 
 
-created() {
-  this.fetchTasks()
-    if (this.tasks.length < 1) this.fetchTasks();
+  created() {
+  this.fetchPracticeforms()
+    if (this.practiceforms.length < 1) this.fetchPracticeforms();
   }
+
 }
 </script>
