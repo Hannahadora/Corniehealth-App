@@ -40,6 +40,8 @@ import condition from "./condition";
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
 
+import AppointmentRoomStore from "./appointmentroom"
+
 
 export default createStore({
   modules: {
@@ -83,6 +85,8 @@ export default createStore({
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
-    careplan: CareplanStore
+    careplan: CareplanStore,
+
+    AppointmentRoom: AppointmentRoomStore
   },
 } as StoreOptions<any>);

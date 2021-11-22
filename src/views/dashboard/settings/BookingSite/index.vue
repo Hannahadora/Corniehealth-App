@@ -18,11 +18,12 @@
         <functions />
         <job-level />
         <designations />
-         <functions />
-        <job-level />
-        <designations />
         <functions />
         <add-location />
+        <job-level />
+        <designations />
+        <add-locationn />
+        <add-reminder />
       </tabs>
     </div>
   </main>
@@ -31,10 +32,14 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Tabs from "./tabs.vue";
-import Functions from "./functions/Functions.vue";
+import Functions from "./appointmentrooms/Functions.vue";
 import Designations from "./designations/Designations.vue";
 import JobLevel from "./joblevel/JobLevel.vue";
 import AddLocation from "./addLocation.vue";
+import AddLocationn from "./addLocationn.vue";
+import AddReminder from "./addreminder/JobLevel.vue";
+
+
 
 
 @Options({
@@ -44,11 +49,13 @@ import AddLocation from "./addLocation.vue";
     Functions,
     Designations,
     JobLevel,
-    AddLocation
+    AddLocation,
+    AddLocationn,
+    AddReminder,
   },
 })
 export default class BookingSite extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation"];
+  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation", "New Reminder"];
   currentTab = 0;
 }
 </script>

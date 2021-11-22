@@ -88,27 +88,17 @@ export default class CarePartnersExistingState extends Vue {
 
   rawHeaders = [
     {
-      title: "ROOM NAME",
+      title: "Function Name",
       key: "name",
       show: true,
     },
     {
-      title: "ROOM NUMBER",
+      title: "Hierarchy",
       key: "hierarchy",
       show: true,
     },
     {
-      title: "LOCATION",
-      key: "supervisor",
-      show: true,
-    },
-    {
-      title: "CUSTODIAN",
-      key: "supervisor",
-      show: true,
-    },
-    {
-      title: "STATUS",
+      title: "Supervisory Function",
       key: "supervisor",
       show: true,
     },

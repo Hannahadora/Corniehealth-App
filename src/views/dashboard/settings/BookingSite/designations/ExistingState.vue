@@ -1,43 +1,9 @@
 <template>
-  <div class="w-full pb-7">
-    <div class="flex items-center mb-6">
-      <span class="flex-grow"></span>
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          py-2
-          px-6
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="$router.push({ name: 'New Designation' })"
-      >
-        <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-        New Designation
-      </button>
-    </div>
+<tabs :items="tabLinks" v-model="currentTab"> 
+        <designations-3 />
+        <designations />
+      </tabs>
 
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="updateDesignation(item.id)"
-        >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="removeDesignation(item.id)"
-        >
-          <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
-        </div>
-      </template>
-    </cornie-table>
-  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -59,6 +25,14 @@ import EditIcon from "@/components/icons/edit.vue";
 import { IDesignation } from "@/types/IDesignation";
 import { Prop } from "vue-property-decorator";
 
+import Tabs from "../tabs.vue";
+import Functions from "../appointmentrooms/Functions.vue";
+import Designations from "../designations2/Designations.vue";
+import Designations3 from "../designations3/Designations.vue";
+
+import JobLevel from "../joblevel/JobLevel.vue";
+import AddLocation from "../addLocation.vue";
+
 const designation = namespace("designation");
 
 @Options({
@@ -77,9 +51,19 @@ const designation = namespace("designation");
     EditIcon,
     ColumnFilter,
     TableOptions,
+
+    Tabs,
+    Functions,
+    Designations,
+    Designations3,
+    JobLevel,
+    AddLocation
   },
 })
 export default class DesignationsExistingState extends Vue {
+  tabLinks = ["InApp", "Email Notification"];
+  currentTab = 0;
+
   @Prop({ type: Array, required: true })
   designations!: IDesignation[];
 
