@@ -5,9 +5,21 @@
   >
     <div
       :class="[color]"
-      class="text-xs leading-none rounded-r-xl rounded-l-xl py-1.5"
+      class="
+        text-xs
+        w-full
+        leading-none
+        flex
+        justify-center
+        items-center
+        rounded-r-xl rounded-l-xl
+        py-1.5
+        px-auto
+      "
       :style="{ width }"
-    ></div>
+    >
+      <slot />
+    </div>
   </div>
 </template>
 <script lang="ts">

@@ -4,7 +4,7 @@
             <div class="w-11/12" :class="width">
                 <label
                     v-if="label"
-                    class="flex capitalize mb-1 text-black text-sm font-medium"
+                    class="flex capitalize mb-1 text-black text-sm font-semibold"
                     :for="`${id}-inputfield`"
                     >
                     {{ label }}

@@ -37,6 +37,8 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
+import DetectedIssues from "./detectedissues"
+import Attachments from "./attachment"
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
 
@@ -79,7 +81,8 @@ export default createStore({
     allergy: AllergyStore,
     impression:ImpressionStore,
     history: HistoryStore,
-
+    issues: DetectedIssues,
+    attachments: Attachments,
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,

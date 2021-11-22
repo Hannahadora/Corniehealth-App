@@ -39,10 +39,10 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieCard from "@/components/cornie-card";
 import DeleteIcon from "@/components/icons/cancel.vue";
 import { Prop, PropSync } from "vue-property-decorator";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 
 @Options({
