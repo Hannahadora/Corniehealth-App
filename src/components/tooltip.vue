@@ -3,7 +3,7 @@
     <slot />
     <div class="tooltip flex flex-col">
       <slot name="tooltip">
-        <span class="text">
+        <span class="text text-xs">
           {{ text }}
         </span>
       </slot>
@@ -33,19 +33,17 @@ export default {
   opacity: 1;
 }
 .tooltip {
-  color: #ffffff;
-  text-align: center;
-  padding: 23px;
-  border-radius: 8px;
-  width: 350px;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -180px;
-  opacity: 0;
-  transition: opacity 1s;
-  position: absolute;
-  z-index: 1;
-  background-color: #080056;
+    color: #ffffff;
+    text-align: center;
+    padding: 9px;
+    border-radius: 4px;
+    width: 150px;
+    bottom: 100% ;
+    opacity: 0 ;
+    transition: opacity 1s;
+    position: absolute;
+    z-index: 1;
+    background-color: #080056 ;
 }
 /*.tooltip { 
   color: #ffffff;

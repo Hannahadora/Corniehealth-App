@@ -151,17 +151,6 @@ import Measurable from "./measurable.vue";
 import { Codeable, Timeable } from "@/types/misc";
 import FhirInput from "@/components/fhir-input.vue";
 
-import {
-  verificationStatuses,
-  clinicalStatuses,
-  categories,
-  severities,
-  codes,
-  bodySites,
-  stages,
-  evidenceCodes,
-} from "./drop-downs";
-
 import { namespace } from "vuex-class";
 import IPractitioner from "@/types/IPractitioner";
 import { string } from "yup";
@@ -228,15 +217,6 @@ export default class AddCondition extends Vue {
 
   required = string().required();
 
-  clinicalStatuses = clinicalStatuses;
-  verificationStatuses = verificationStatuses;
-  severities = severities;
-  categories: Codeable[] = [];
-  conditionCodes = codes;
-  bodySites = bodySites;
-  stages = stages;
-  evidenceCodes = evidenceCodes;
-
   loading = false;
   clinicalStatus = "";
   verificationStatus = "";
@@ -262,10 +242,6 @@ export default class AddCondition extends Vue {
   evidenceCode = "";
   evidenceDetail = "";
   evidenceNote = "";
-
-  async loadDropdown() {
-    this.categories = await categories();
-  }
 
   @Watch("authPractitioner")
   practitionerChanged(): void {
@@ -383,7 +359,6 @@ export default class AddCondition extends Vue {
   }
 
   created() {
-    this.loadDropdown();
     this.setAsserter();
   }
 }

@@ -17,7 +17,7 @@
       <span
         class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2"
       >
-        <span class="text-primary font-bold text-sm">Patient History</span>
+        <span class="text-primary font-bold text-sm">Patients Visit History</span>
         <div class="flex items-center">
             <span class="cursor-pointer relative"><cornie-select v-model="option" :items="[ 'All', 'Recent' ]" style="border: none;width: 86px"/></span>
         </div>

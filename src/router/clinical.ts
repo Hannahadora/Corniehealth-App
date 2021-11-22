@@ -56,6 +56,20 @@ export const ClinicalsRoute: RouteRecordRaw = {
           import("@/views/dashboard/ehr/diagnostics/index.vue"),
       },
       {
+        path: "detectedissues",
+        props: true,
+        name: "DetectedIssues",
+        component: () =>
+          import("@/views/dashboard/ehr/detectedissues/index.vue"),
+      },
+      {
+        path: "attachments",
+        props: true,
+        name: "Attachments",
+        component: () =>
+          import("@/views/dashboard/ehr/attachments/index.vue"),
+      },
+      {
         path: "vital-signs",
         props: true,
         name: "Vital Signs",

@@ -5,8 +5,8 @@
     <!-- </div> -->
     <div class="w-full">
         <modal :visible="!practitionerAuthenticated">
-    <auth-modal />
-  </modal>
+            <auth-modal />
+        </modal>
     </div>
 </template>
 

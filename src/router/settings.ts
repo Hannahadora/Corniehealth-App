@@ -181,5 +181,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/medications/markup-settings.vue"),
     },
+    // {
+    //   path: "forms-questionnaires",
+    //   name: "Forms & Questionnaires",
+    //   component: () =>
+    //   import("@/views/dashboard/settings/forms/index.vue"),
+    // },
   ],
 };

@@ -15,6 +15,7 @@ import { Watch } from "vue-property-decorator";
 import { getDatesAsChartLabel, groupData, sortListByDate } from "./chart-filter"
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
+import { getChartData } from "./helper/vitals-chart-helper"
 
 const vitalsStore = namespace('vitals')
 
@@ -114,14 +115,14 @@ export default class BloodChartt extends Vue {
   }
 
   get diastolicChartData() {
-    // if (this.diastolicRaw?.length === 0) return [ ];
-    const data = groupData(this.diastolicRaw, this.order);
+    const data = getChartData(this.diastolicRaw, this.order);
     return data;
   }
 
   get systolicChartData() {
     // if (this.systolicRaw?.length === 0) return [ ];
-    const data = groupData(this.systolicRaw, this.order);
+    const data = getChartData(this.systolicRaw, this.order);
+    // const data = groupData(this.systolicRaw, this.order);
     return data;
   }
 
@@ -194,7 +195,7 @@ export default class BloodChartt extends Vue {
     this.chart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: this.diastolicChartData.labels,
+        labels: this.diastolicChartData?.labels,
         datasets: [
           
           {
@@ -204,7 +205,7 @@ export default class BloodChartt extends Vue {
             },
             label: "Systolic",
             // data: [90, 250, 150, 408, 200, 180],
-            data: this.systolicChartData?.dataSet,
+            data: this.systolicChartData ? this.systolicChartData.dataSet : [],
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
@@ -216,7 +217,7 @@ export default class BloodChartt extends Vue {
             },
             label: "Diastolic",
             // data: [90, 250, 150, 408, 200, 180],
-            data: this.diastolicChartData.dataSet,
+            data: this.diastolicChartData ? this.diastolicChartData.dataSet : [],
             borderColor: "rgba(254, 77, 60, 1)",
             borderWidth: 2,
             tension: 0.1,

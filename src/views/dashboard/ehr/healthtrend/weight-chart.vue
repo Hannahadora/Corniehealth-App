@@ -17,6 +17,7 @@ import { Prop, Watch } from "vue-property-decorator";
 import { formatDate, sortListByDate } from "./chart-filter"
 import { namespace } from "vuex-class";
 import IVital from "@/types/IVital";
+import { getChartData } from "./helper/vitals-chart-helper"
 
 const vitalsStore = namespace('vitals')
 
@@ -51,7 +52,8 @@ export default class WeightChart extends Vue {
   }
 
   get chartData() {
-    const data = groupData(this.raw, this.order);
+    const data = getChartData(this.raw, this.order);
+    // const data = groupData(this.raw, this.order);
     return data;
   }
 
@@ -107,7 +109,7 @@ export default class WeightChart extends Vue {
     this.chart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: this.chartData.labels,
+        labels: this.chartData?.labels,
         datasets: [
           {
             fill: {
@@ -115,7 +117,7 @@ export default class WeightChart extends Vue {
               below: "rgb(0, 0, 255)",
             },
             label: "Patient Weight Stats",
-            data: this.chartData.dataSet,
+            data: this.chartData ? this.chartData.dataSet : [],
             borderColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,

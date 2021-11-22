@@ -1,5 +1,5 @@
 <template>
-  <detail-card more="Manage Appointments"  @add="showAppointment" :showTotal="true" :count="total"  @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)"  title="Appointments">
+  <detail-card more="Manage Appointments"  @add="showAppointment" :showTotal="true" :count="total"  @view:all="$router.push(`/dashboard/provider/clinical/${patientId}/appointments`)"  title="Upcoming Appointment">
        <template #empty>
             <div class="p-8" v-if="patientappointments.length === 0">
               <noappoint-icon class="flex mt-2 justify-center w-full text-center"/>
@@ -227,7 +227,7 @@ get total(){
     }
     async created() {
         await this.fetchByIdAppointments(this.$route.params.id.toString());
-     //  await this.getSlot();
+       await this.getSlot();
     }
 }
 </script>

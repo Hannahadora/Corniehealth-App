@@ -5,9 +5,28 @@ import { SettingsRoute } from "./settings";
 import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
+import { NewSettingsRoutes } from "./newsettings";
 import Settings from "@/views/dashboard/settings/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/kyc-email",
+    props: true,
+    name: "KYC Email",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/kyc/components/email-body.vue"
+      ),
+  },
+  {
+    path: "/reference/:id",
+    props: true,
+    name: "Reference Response",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/kyc/components/email-link.vue"
+      ),
+  },
   {
     path: "/",
     name: "Home",
@@ -75,41 +94,24 @@ const routes: Array<RouteRecordRaw> = [
         path: "clinical",
         props: true,
         name: "Patient",
-        component: () =>
-          import("@/views/dashboard/ehr/landing.vue"),
-          children: [
-            {
-              path: "",
-              props: true,
-              component: () =>
-                import("@/views/dashboard/ehr/landing/index.vue"),
-            },
-            ClinicalsRoute,
-          ]
+        component: () => import("@/views/dashboard/ehr/landing.vue"),
+        children: [
+          {
+            path: "",
+            props: true,
+            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+          },
+          ClinicalsRoute,
+        ],
       },
-      ExperienceRoutes,      
+      ExperienceRoutes,   
+      NewSettingsRoutes,   
       {
         path: "settings/",
         name: "Settings",
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import(
-          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-          //     ),
-          // },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import(
-          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-          //     ),
-          // },
           {
             path: "care-partners",
             name: "Care Partners",
@@ -151,12 +153,7 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-          // },
+
           {
             path: "contact-info",
             name: "Contact Information",
@@ -336,6 +333,39 @@ const routes: Array<RouteRecordRaw> = [
           import(
             "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
           ),
+      },
+      {
+        path: "kyc",
+        props: true,
+        name: "KYC",
+        component: () =>
+          import(
+            "@/views/dashboard/settings/kyc/index.vue"
+          ),
+      },
+      {
+        path: "pricebook",
+        name: "PriceBook",
+        component: () =>
+          import("@/views/dashboard/settings/pricebook/index.vue"),
+      },
+      {
+        path: "catalogues",
+        name: "Catalogues",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/index.vue"),
+      },
+      {
+        path: "newcatalogue",
+        name: "New Catalogue",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
+      },
+      {
+        path: "newproduct",
+        name: "New Catalogue",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
       },
     ],
   },
