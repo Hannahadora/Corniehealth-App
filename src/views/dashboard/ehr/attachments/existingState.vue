@@ -235,6 +235,7 @@ export default class AttachmentExistingState extends Vue {
     this.showAttachmentModal = true;
     //this.stopEvent = true;
     this.currentAttachment = value;
+    console.log(this.currentAttachment);
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;

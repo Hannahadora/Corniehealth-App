@@ -7,20 +7,24 @@
           <cornie-input
             label="Email"
             class=""
+            v-model="email"
             placeholder="--Enter--"
           />
-          <label>Contact information</label> 
-          <span class="d-flex justify-content-space-between"><plus-icon class="text-green-400 fill-current" /></span>
+          <!-- <label>Contact information</label>  -->
+          <!-- <span class="d-flex justify-content-space-between"><plus-icon class="text-green-400 fill-current" /></span> -->
           <phone-input
             class="w-full mt-1 bold"
             style="width: 95%"
+            label="Contact Number"
             v-model:code="DialCode"
-            v-model="PhoneNumber"
+            v-model="contactNumber"
             :rules="requiredRule"
+            type="number"
           />
            <cornie-input
             label="Address"
             class=""
+            v-model="address"
             placeholder="--Enter--"
           />
         </div>
@@ -31,6 +35,7 @@
                           class="w-full text-xs"    
                                 placeholder="Text Area"
                                 :rules="required"
+                                v-model="siteMessage"
                               />
                           </div>
                       </div>         
@@ -107,7 +112,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="apply"
+            @click="applyhour"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -127,6 +132,7 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
@@ -136,17 +142,18 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import PlusIcon from "@/components/icons/add.vue";
-import IFunction from "@/types/IFunction";
+// import IFunction from "@/types/IFunction";
 import { Prop } from "vue-property-decorator";
-import AddFunction from "./add-function.vue";
-import {  Watch } from "vue-property-decorator";
+// import AddFunction from "./add-function.vue";
+import {  Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
 
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 
-const orgFunctions = namespace("OrgFunctions");
+// const orgFunctions = namespace("OrgFunctions");
+const practiceinformations = namespace("practiceinformation");
 const opHours = [
   {
     selected: true,
@@ -209,7 +216,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     CornieSelect,
     CornieInput,
     SortIcon,
-    AddFunction,
+    // AddFunction,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
@@ -229,22 +236,33 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
   },
 })
 export default class CarePartnersExistingState extends Vue {
-  @Prop({ type: Array, default: [], required: true })
-  functions!: IFunction[];
+  // @Prop({ type: Array, default: [], required: true })
+  // functions!: IFunction[];
+
+   @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: String, default: '' })
+  id!: string
 
  @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
+
+  @practiceinformations.Action
+  fetchPracticeInformation!: () => Promise<void>;
+
+@practiceinformations.Action
+  fetchPracticeHour!: () => Promise<void>;
+
  @Watch("all")
   opHours = opHours;
-
+  loading= false;
   all = true;
-  functionToEdit = {} as IFunction;
-  editingFunction = false;
-
-  @orgFunctions.Action
-  removeFunction!: (id: string) => Promise<void>;
+  newArr = [];
+  // editingFunction = false;
   expand=false;
   opened=true;
+<<<<<<< HEAD:src/views/dashboard/settings/OrganisationHierarchy - Copy/functions/ExistingState.vue
   PhoneNumber="";
   rawHeaders = [
     {
@@ -275,6 +293,13 @@ export default class CarePartnersExistingState extends Vue {
   async remove(id: string) {
     await this.removeFunction(id);
   }
+=======
+  email="";
+  address="";
+  siteMessage="";
+  contactNumber="";
+ 
+>>>>>>> 20c691be39192df3bdb31e235ed2ff798b27f93f:src/views/dashboard/settings/BookingSite/functions/ExistingState.vue
   get operationHours() {
     return this.modelValue;
   }
@@ -296,16 +321,86 @@ export default class CarePartnersExistingState extends Vue {
   }
 
   wholeDay = workHours;
-  editFunction(id: string) {
-    const func = this.functions.find((f) => f.id == id);
-    if (!func) return;
-    this.functionToEdit = func;
-    this.editingFunction = true;
+
+   get payload() {
+    return {
+      email: this.email,
+      siteMessage: this.siteMessage,
+      address: this.address,
+      contactNumber: this.contactNumber,
+      id: this.id,
+    };
   }
+
+   async  apply() {
+     this.loading = true
+    // if (this.id) await this.updateIssues()
+     await this.createPracticeform()
+    this.loading = false
+    }
+
+     async  applyhour() {
+     this.loading = true
+    // if (this.id) await this.updateIssues()
+     await this.createPracticehour()
+    this.loading = false
+    }
+  get newaction() {
+    return this.id ? 'Update' : 'Save'
+  }
+   done() {
+    this.$emit("-added");
+    this.show = false;
+  }
+
+  async mappedfunc(){
+   const payload = () => {
+  const obj : any = { }
+  opHours.forEach(i => {
+    obj[i.day.toLowerCase()] = {
+      startDate: i.openTime,
+      endDate: i.closeTime
+    }
+  })
+  return obj;
+}
+  }
+  async createPracticeform(){
+    try {
+      const response = await cornieClient().post('/api/v1/practice-information', this.payload)
+      if (response.success) {
+        window.notify({ msg: 'practice-information  Created', status: 'success' })
+        this.done();
+      }
+    } catch (error) {
+      console.log(error)
+      window.notify({ msg: 'practice-information not Created', status: 'error' })
+    
+    }
+  }
+
+  async createPracticehour(){
+    try {
+      const response = await cornieClient().post('/api/v1/practice-hour', this.mappedfunc())
+      if (response.success) {
+        window.notify({ msg: 'practice-information  Created', status: 'success' })
+        this.done();
+      }
+    } catch (error) {
+      console.log(error)
+      window.notify({ msg: 'practice-information not Created', status: 'error' })
+    
+    }
+  }
+  
 
   created() {
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
+      alert("hello");
+      this.fetchPracticeInformation();
+      this.fetchPracticeHour();
+      // console.log(this.mappedfunc);
   }
 }
 </script>
