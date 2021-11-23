@@ -42,6 +42,7 @@ import Attachments from "./attachment"
 import  PracticeInformations from "./practiceinformation"
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
+import AppointmentTypes from './appointments';
 
 
 export default createStore({
@@ -88,6 +89,7 @@ export default createStore({
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
-    careplan: CareplanStore
+    careplan: CareplanStore,
+    appointments: AppointmentTypes
   },
 } as StoreOptions<any>);

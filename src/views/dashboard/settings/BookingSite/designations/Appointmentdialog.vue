@@ -99,6 +99,7 @@ const visitsStore = namespace("visits");
 const actors = namespace("practitioner");
 const locationsStore = namespace("location");
 const organization = namespace("organization");
+const appointments = namespace("appointments");
 
 @Options({
   components: {
@@ -134,6 +135,9 @@ export default class CheckIn extends Vue {
 
   @visitsStore.Action
   schedulesByPractitioner!: (id: string) => Promise<any>;
+
+  @appointments.Action
+  getappointmentTypes!: () => Promise<void>;
 
   @visitsStore.Action
   checkin!: (body: any) => Promise<any>;
@@ -314,6 +318,7 @@ export default class CheckIn extends Vue {
       if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
       this.orgValue = this.organizationInfo.domainName;
+      this.getappointmentTypes();
       console.log(this.orgValue);
   }
 }

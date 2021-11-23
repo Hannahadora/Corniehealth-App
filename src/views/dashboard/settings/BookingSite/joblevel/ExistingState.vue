@@ -25,7 +25,7 @@
       />
       <cornie-radio :name="name" v-model="type" value="no" label="No" />
     </div>
-    <div class="grid grid-cols-3 field gap-3 mt-4 w-full">
+    <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
       <domain-input
             label="Domain Name"
             placeholder="--Enter--"
