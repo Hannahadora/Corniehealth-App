@@ -1,54 +1,9 @@
 <template>
-<<<<<<< HEAD
 <tabs :items="tabLinks" v-model="currentTab"> 
         <designations-3 />
         <designations />
       </tabs>
 
-=======
-  <div class="w-full pb-7">
-    <div class="flex items-center mb-6">
-      <span class="flex-grow"></span>
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          py-2
-          px-6
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="registerNew = true"
-      >
-        <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-        Add New
-      </button>
-    </div>
-
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="updateDesignation(item.id)"
-        >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="removeDesignation(item.id)"
-        >
-          <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
-        </div>
-      </template>
-    </cornie-table>
-    <side-modal :visible="registerNew" @closesidemodal="closeModal" :header="'New Appointment'">
-        <AppointmentModal  @closesidemodal="closeModal"  />
-      </side-modal>
-  </div>
->>>>>>> 5b2c899a930cd1d1d4bd1b99b17fb15dff9201a3
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -98,7 +53,6 @@ const designation = namespace("designation");
     EditIcon,
     ColumnFilter,
     TableOptions,
-<<<<<<< HEAD
 
     Tabs,
     Functions,
@@ -106,10 +60,6 @@ const designation = namespace("designation");
     Designations3,
     JobLevel,
     AddLocation
-=======
-    AppointmentModal,
-    SideModal
->>>>>>> 5b2c899a930cd1d1d4bd1b99b17fb15dff9201a3
   },
 })
 export default class DesignationsExistingState extends Vue {

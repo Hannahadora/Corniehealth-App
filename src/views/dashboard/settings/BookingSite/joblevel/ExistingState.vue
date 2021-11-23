@@ -1,6 +1,5 @@
 <template>
   <div class="w-full pb-7">
-<<<<<<< HEAD
     <div style="height: 400px">
       <accordion-component
         class="shadow rounded-lg border-none text-primary mt-5"
@@ -332,23 +331,6 @@
       </accordion-component>
     </div>
     <add-level v-model="editingLevel" :level="levelForEdit" />
-=======
-    <span
-        class="
-          flex
-          mt-5
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-          booking-font
-        "
-      >
-        Booking Site Control
-      </span>
->>>>>>> 5b2c899a930cd1d1d4bd1b99b17fb15dff9201a3
   </div>
  <div class="grid grid-cols-3 gap-2 mt-4 w-1/2">
       <cornie-radio
@@ -389,8 +371,6 @@ import { namespace } from "vuex-class";
 
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieRadio from "@/components/cornieradio.vue";
 
 import CornieSelect from "@/components/cornieselect.vue";
 import CalendarIcon from "@/components/icons/acalendar.vue";
@@ -410,8 +390,6 @@ const level = namespace("OrgLevels");
 
     AccordionComponent,
     CustomCheckbox,
-    CornieInput,
-    CornieRadio,
     CornieSelect,
     CalendarIcon
   },
@@ -474,21 +452,8 @@ export default class ExistingState extends Vue {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
 input[type="time"]::-webkit-calendar-picker-indicator {
   background: none;
   display: none;
-=======
-.booking-font{
-  font-size: 20px;
-}
-
-.field{
-  align-items: end;
-}
-
-.input-color{
-  background-color: red !important;
->>>>>>> 5b2c899a930cd1d1d4bd1b99b17fb15dff9201a3
 }
 </style>

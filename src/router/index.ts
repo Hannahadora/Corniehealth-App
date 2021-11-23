@@ -8,6 +8,8 @@ import { ExperienceRoutes } from "./experience";
 import { NewSettingsRoutes } from "./newsettings";
 import Settings from "@/views/dashboard/settings/index.vue";
 
+import { InPatientRoutes } from "./in-patient";
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/kyc-email",
@@ -104,7 +106,8 @@ const routes: Array<RouteRecordRaw> = [
           ClinicalsRoute,
         ],
       },
-      ExperienceRoutes,   
+      ExperienceRoutes,
+      InPatientRoutes,   
       NewSettingsRoutes,   
       {
         path: "settings/",
