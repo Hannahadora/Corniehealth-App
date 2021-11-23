@@ -9,10 +9,7 @@ interface IPracticeInformationState {
   practiceHour: IPracticeHour[],
 }
 
-// interface IPracticeHourState {
-//   // practiceInformation: IPracticeInformation[],
-//   practiceHour: IPracticeHour[],
-// }
+
 
 
 export default {
@@ -32,13 +29,7 @@ export default {
       const practiceSet = new ObjectSet([...state.practiceInformation, ...practiceInformation], "id");
       state.practiceInformation = [...practiceSet];
     },
-    // deleteImpression(state, id: string) {
-    //   const index = state.impressions.findIndex((impression) => impression.id == id);
-    //   if (index < 0) return;
-    //   const impressions = [...state.impressions];
-    //   impressions.splice(index, 1);
-    //   state.impressions = [...impressions];
-    // },
+  
   },
   actions: {
     async fetchPracticeInformation(ctx) {
@@ -46,7 +37,6 @@ export default {
       ctx.commit("setPracticeInformation", practiceInformation);
     },
     async fetchPracticeHour(ctx) {
-      alert("hour");
       const practiceHour = await fetchPracticeHour();
       ctx.commit("setPracticeHour", practiceHour);
     },
@@ -55,11 +45,6 @@ export default {
       return ctx.state.practiceInformation.find((practiceInformation) => practiceInformation.id == id);
     },
     
-    // async deleteImpression(ctx, id: string) {
-    //   const deleted = await deleteImpression(id);
-    //   if (!deleted) return false;
-    //   ctx.commit("deleteImpression", id);
-    //   return true;
-    // },
+    
   },
 } as StoreOptions<IPracticeInformationState>;

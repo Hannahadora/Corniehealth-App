@@ -1,5 +1,5 @@
 import { cornieClient } from "@/plugins/http";
-// import IPracticeInformation from "@/types/IPracticeInformation";
+import IPracticeInformation from "@/types/IPracticeInformation";
 
 export async function fetchPracticeInformation() {
     try {
@@ -10,7 +10,7 @@ export async function fetchPracticeInformation() {
       } catch (error) {
         console.log(error);
       }
-        // return [] as IPracticeInformation[];
+        return [] as IPracticeInformation[];
 }
 
 export async function fetchPracticeHour() {

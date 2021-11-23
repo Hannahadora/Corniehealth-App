@@ -13,13 +13,3 @@ export async function getappointmentTypes() {
         return [] as IAppointmentTypes[];
 }
 
-// export async function getappointmentTypes() {
-//     try {
-//       const response = await cornieClient().get(`/api/v1/catalogue-service/fees`);
-  
-//       return response.data;
-//     } catch (error) {
-//       notify({ msg: "There was an error loading ", status: "error" });
-//     }
-//     return {};
-//   }
