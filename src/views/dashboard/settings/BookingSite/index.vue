@@ -18,10 +18,10 @@
         <functions />
         <job-level />
         <designations />
-        <functions />
+        <functions2 />
         <add-location />
-        <job-level />
-        <designations />
+        <job-level2 />
+        <designations2 />
         <add-locationn />
         <add-reminder />
       </tabs>
@@ -32,9 +32,10 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Tabs from "./tabs.vue";
+import Functions2 from "./appointmentrooms/Functions.vue";
 import Functions from "./appointmentrooms/Functions.vue";
-import Designations from "./designations/Designations.vue";
-import JobLevel from "./joblevel/JobLevel.vue";
+import Designations2 from "./designations/Designations.vue";
+import JobLevel2 from "./joblevel/JobLevel.vue";
 import AddLocation from "./addLocation.vue";
 import AddLocationn from "./addLocationn.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
@@ -46,9 +47,9 @@ import AddReminder from "./addreminder/JobLevel.vue";
   name: "Booking Site",
   components: {
     Tabs,
-    Functions,
-    Designations,
-    JobLevel,
+    Functions2,
+    Designations2,
+    JobLevel2,
     AddLocation,
     AddLocationn,
     AddReminder,
