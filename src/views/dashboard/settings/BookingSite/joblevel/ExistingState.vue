@@ -25,30 +25,28 @@
       />
       <cornie-radio :name="name" v-model="type" value="no" label="No" />
     </div>
-    <div class="grid grid-cols-3 field gap-3 mt-4 w-full">
-          <cornie-input
-            class="w-full mb-6"
-            label=" URL:"
-            placeholder="http:practiceform"
-            v-model="functionName"
-            :rules="required"
-          />
-          <cornie-input
-            class="w-11 mb-5 input-color"
+    <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
+      <domain-input
+            label="Domain Name"
             placeholder="--Enter--"
-            v-model="functionName"
-            :rules="required"
+            :rules="requiredRule"
+             :modelValue="orgValue"
+            
           />
     </div>
+    <div class="grid grid-cols-3 field gap-3 mt-4 2-full">
+      </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import DomainInput from "@/components/newdomaininput.vue";
 import { Prop } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
+import CopyformIcon from '@/components/icons/formcopy.vue';
 import EditIcon from "@/components/icons/edit.vue";
 import AddLevel from "./add-level.vue";
 import { namespace } from "vuex-class";
@@ -64,6 +62,8 @@ const level = namespace("OrgLevels");
     DeleteIcon,
     EditIcon,
     AddLevel,
+    DomainInput,
+    CopyformIcon
   },
 })
 export default class ExistingState extends Vue {

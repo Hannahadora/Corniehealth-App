@@ -44,7 +44,6 @@
       </template>
     </empty-state> -->
     <existing-state :functions="functions" />
-    <add-function v-model="addFunction" />
   </main>
 </template>
 
@@ -52,7 +51,6 @@
 import { Vue, Options } from "vue-class-component";
 import EmptyState from "@/components/CornieEmptyState.vue";
 import ExistingState from "./ExistingState.vue";
-import AddFunction from "./add-function.vue";
 import { namespace } from "vuex-class";
 import IFunction from "@/types/IFunction";
 
@@ -62,7 +60,7 @@ const orgFunctions = namespace("OrgFunctions");
   name: "Functions",
   components: {
     EmptyState,
-    AddFunction,
+    // AddFunction,
     ExistingState,
   },
 })
