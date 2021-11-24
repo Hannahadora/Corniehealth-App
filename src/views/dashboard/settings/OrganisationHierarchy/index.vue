@@ -12,7 +12,7 @@
           mx-auto
         "
       >
-        Organization Hierarchy
+        Organization Hierarchys
       </span>
       <tabs :items="tabLinks" v-model="currentTab"> 
         <functions />

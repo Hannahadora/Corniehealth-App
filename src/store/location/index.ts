@@ -30,6 +30,7 @@ export default {
   actions: {
     async fetchLocations(ctx) {
       const locations = await fetchLocations();
+      console.log("locations from state", locations);
       ctx.commit("setLocations", locations);
     },
     async getLocationById(ctx, id: string) {

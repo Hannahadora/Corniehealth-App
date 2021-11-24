@@ -45,6 +45,8 @@ import CareplanStore from "./careplan";
 import CatalogueStore from "./catalogues"
 import AppointmentTypes from './appointments';
 
+import AppointmentRoomStore from "./appointmentroom"
+
 
 export default createStore({
   modules: {
@@ -91,6 +93,8 @@ export default createStore({
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
+
+    AppointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,
     appointments: AppointmentTypes
   },

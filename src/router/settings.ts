@@ -166,6 +166,21 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/BookingSite/index.vue"),
     },
+    
+    {
+      path: "markup",
+      props: true,
+      name: "Markup",
+      component: () =>
+        import("@/views/dashboard/medications/Index.vue"),
+    },
+    {
+      path: "markup-settings",
+      props: true,
+      name: "Markup Settings",
+      component: () =>
+        import("@/views/dashboard/medications/markup-settings.vue"),
+    },
     // {
     //   path: "forms-questionnaires",
     //   name: "Forms & Questionnaires",

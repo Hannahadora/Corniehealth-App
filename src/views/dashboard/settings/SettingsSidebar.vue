@@ -39,13 +39,13 @@
             <div
               class="flex flex-col mt-1 text-gray-500"
               :class="{ hidden: open != i }"
-                >
+            >
               <s-bar-link
                 :name="item.name"
                 :to="mapUrl(item.to)"
                 v-for="(item, index) in setting"
                 :key="index"
-                >
+              >
                 <template v-slot="{ active }">
                   <keep-alive>
                     <component
@@ -186,13 +186,28 @@ export default class Settings extends Vue {
       // },
     ];
   }
+  get Pricing() {
+    return [
+      {
+        name: "Markup and Discounts",
+        to: "markup",
+        icon: "roles-icon",
+      },
+      // {
+      //   name: "Markup Settings",
+      //   to: "markup-settings",
+      //   icon: "bank-icon",
+      // },
+    ];
+  }
 
   get settings() {
     const provider = {
       Organization: this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
-      "PRACTICE MANAGEMENT"  : this.filter(this.PracticeManagement),
+      "PRACTICE MANAGEMENT": this.filter(this.PracticeManagement),
+      PRICING: this.filter(this.Pricing),
     };
     const hmo = {
       Organization: this.filter(this.organization),
