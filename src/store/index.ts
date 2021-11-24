@@ -37,9 +37,13 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
+import DetectedIssues from "./detectedissues"
+import Attachments from "./attachment"
+import  PracticeInformations from "./practiceinformation"
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
 import CatalogueStore from "./catalogues"
+import AppointmentTypes from './appointments';
 
 
 export default createStore({
@@ -67,6 +71,7 @@ export default createStore({
 
     shifts: ShiftsStore,
     practiceform: PracticeformStore,
+    practiceinformation: PracticeInformations,
     appointment: AppointmentStore,
     request: RequestStore,
     otherrequest: OtherrequestStore,
@@ -80,11 +85,13 @@ export default createStore({
     allergy: AllergyStore,
     impression:ImpressionStore,
     history: HistoryStore,
-
+    issues: DetectedIssues,
+    attachments: Attachments,
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
     catalogues: CatalogueStore,
+    appointments: AppointmentTypes
   },
 } as StoreOptions<any>);

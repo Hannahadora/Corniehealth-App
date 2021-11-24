@@ -3,7 +3,7 @@
     <div class="flex justify-items-end">
       <span class="flex-grow"></span>
     </div>
-    <empty-state heading="No function recorded" v-if="isEmpty">
+    <!-- <empty-state heading="No function recorded">
       <template #icon>
         <img src="@/assets/img/functions.svg" class="inline-block mr-2" />
       </template>
@@ -42,9 +42,8 @@
           </button>
         </div>
       </template>
-    </empty-state>
-    <existing-state :functions="functions" v-else />
-    <add-function v-model="addFunction" />
+    </empty-state> -->
+    <existing-state :functions="functions" />
   </main>
 </template>
 
@@ -52,7 +51,6 @@
 import { Vue, Options } from "vue-class-component";
 import EmptyState from "@/components/CornieEmptyState.vue";
 import ExistingState from "./ExistingState.vue";
-import AddFunction from "./add-function.vue";
 import { namespace } from "vuex-class";
 import IFunction from "@/types/IFunction";
 
@@ -62,7 +60,7 @@ const orgFunctions = namespace("OrgFunctions");
   name: "Functions",
   components: {
     EmptyState,
-    AddFunction,
+    // AddFunction,
     ExistingState,
   },
 })
