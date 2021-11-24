@@ -8,11 +8,11 @@
             </div>
 
             <div class="w-full my-8">
-                <cornie-input :label="'Name'" style="width: 100%"/>
+                <cornie-input :label="'Name'" v-model="owner.name" style="width: 100%"/>
             </div>
 
             <div class="w-full my-8">
-                <cornie-input :label="'Email Address'" style="width: 100%"/>
+                <cornie-input :label="'Percentage'" v-model="owner.percentage" style="width: 100%"/>
             </div>
 
             <div class="w-full pb-10 pt-14 flex justify-between">
@@ -20,7 +20,10 @@
                     Cancel
                 </cornie-button>
 
-                <cornie-button class="rounded-full px-12 py-2 font-semibold text-white cursor-pointer" style="background: #FE4D3C">
+                <cornie-button 
+                    @click="onSave"
+                    class="rounded-full px-12 py-2 font-semibold text-white cursor-pointer"
+                     style="background: #FE4D3C">
                     Save
                 </cornie-button>
             </div>
@@ -28,10 +31,11 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import ArrowLeft from '@/components/icons/arrowleft.vue'
 import CornieInput from "@/components/cornieinput.vue"
+import { IBeneficialOwner } from '../index.vue';
 
 @Options({
     components: {
@@ -40,6 +44,16 @@ import CornieInput from "@/components/cornieinput.vue"
     }
 })
 export default class NominateRefree extends Vue {
+
+    owner = { } as IBeneficialOwner;
+
+    onSave() {
+        if (!this.owner.name) return false;
+        this.$emit('ownerAdded', this.owner);
+        this.closeModal()
+        this.owner = { name: '', percentage: 0 } as IBeneficialOwner;
+    }
+
     closeModal() {
         this.$emit('close')
     }

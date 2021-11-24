@@ -72,6 +72,9 @@ export default class Functions extends Vue {
   @orgFunctions.State
   functions!: IFunction[];
 
+  //   @orgFunctions.State
+  // functions2!: IFunction[];
+
   @orgFunctions.Action
   fetchFunctions!: () => Promise<void>;
 

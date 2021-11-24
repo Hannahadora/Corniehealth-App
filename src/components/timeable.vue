@@ -1,7 +1,7 @@
 <template>
   <div class="block w-full mt-4">
     <span
-      class="flex capitalize mb-1 text-black text-sm font-medium items-center"
+      class="flex capitalize mb-1 text-black text-sm font-semibold items-center"
     >
      
       {{label}}

@@ -4,6 +4,7 @@
           :title="allaction + ' '+ 'Allergy' " 
           class=""
           >
+          <p class="grey-text">Fields with * are required</p>
         <v-form ref="form">
           <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" :opened="true">
                 <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
@@ -11,7 +12,7 @@
                     reference="http://hl7.org/fhir/ValueSet/allergyintolerance-clinical"
                      class="w-full"
                       v-model="clinicalStatus"
-                    label="clinical status"
+                    label="clinical status *"
                      placeholder="Select"
                 />
                     <!-- <main-cornie-select
@@ -25,7 +26,7 @@
                      <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergyintolerance-verification"
                      class="w-full"
-                      label="verification status"
+                      label="verification status *"
                       v-model="verificationStatus"
                       placeholder="Select"
                 />
@@ -41,7 +42,7 @@
                     reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
                      class="required w-full"
                       v-model="type"
-                      label="type"
+                      label="type *"
                       placeholder="Select"
                 />
 
@@ -58,7 +59,7 @@
                     reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
                      class="required w-full"
                      v-model="category"
-                      label="category"
+                      label="category *"
                     placeholder="Select"
                 />
                     <!-- <cornie-select
@@ -73,7 +74,7 @@
                        <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
                      class="required w-full"
-                     label="criticality"
+                     label="criticality *"
                       v-model="criticality"
                     placeholder="Select"
                 />
@@ -89,7 +90,7 @@
                         <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
                      class="required w-full"
-                     label="code"
+                     label="code *"
                       v-model="code"
                     placeholder="Select"
                 />
@@ -148,7 +149,7 @@
                                   <date-time-picker
                                     v-model:date="lastOccurence"
                                     v-model:time="data.dateTime"
-                                    label="last occurence"
+                                    label="last occurence *"
                                     width="w-11/12"
                                     class="required"
                                   />
@@ -196,12 +197,12 @@
                     </div>
                    
                       <div>
-                        <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Note</label>
+                        <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Notes</label>
                           <div class="my-2  w-full">
                                 <Textarea
                                 class="w-full text-xs"
                                 v-model="note"
-                                placeholder="Text Area"
+                                placeholder="Placeholder"
                                 :rules="required"
                               />
                           </div>
@@ -213,7 +214,7 @@
                  <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/substance-code"
                      class="required w-full"
-                      label="substance"
+                      label="substance *"
                       v-model="reaction.substance"
                       placeholder="select"
                 />
@@ -229,7 +230,7 @@
                        <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/clinical-findings"
                      class="w-full mb-2"
-                      label="manifestation"
+                      label="manifestation *"
                       v-model="reaction.manifestation"
                       placeholder="select"
                 />
@@ -246,13 +247,13 @@
                        <date-time-picker
                             v-model:date="date"
                             v-model:time="data.reactionTime"
-                            label="Onset"
+                            label="Onset *" 
                             width="w-11/12"
                             class="required"
                           />
                       </div>
                     <div class="mb-2">
-                      <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold">SEVERITY
+                      <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold">SEVERITY *
                         <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
                       </label>
                         <div class="w-full flex space-x-4 mt-5 mb-3">
@@ -284,7 +285,7 @@
                      <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/route-codes"
                      class="w-full mb-2"
-                       label="Exposure Route"
+                       label="Exposure Route *"
                         v-model="reaction.exposureRoute"
                         placeholder="select"
                 />
@@ -299,12 +300,12 @@
                       </cornie-select> -->
                   </div>
                       <div>
-                        <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Note</label>
+                        <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Notes</label>
                           <div class="my-2  w-full">
                                 <Textarea
                                 class="w-full text-xs"
                                 v-model="reaction.note"
-                                placeholder="Text Area"
+                                placeholder="Placeholder"
                                 :rules="required"
                               />
                           </div>

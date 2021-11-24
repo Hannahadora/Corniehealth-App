@@ -59,22 +59,30 @@
         </ul>
       </div>
       <div class="w-full">
-       <cornie-btn
-            class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2 "
-             :disabled="!emailVerified"
+        <cornie-btn
+          class="
+            font-semibold
+            rounded-full
+            bg-danger
+            mt-3
+            w-full
+            text-white
+            p-2
+          "
+          :disabled="!emailVerified"
           :loading="loading"
           type="submit"
           :class="{ 'bg-gray-600': !emailVerified || !valid }"
-            >
-            Create Account
-          </cornie-btn>
+        >
+          Create Account
+        </cornie-btn>
       </div>
     </form>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Prop,PropSync } from "vue-property-decorator";
+import { Prop, PropSync } from "vue-property-decorator";
 import store from "@/store/";
 import { cornieClient, quantumClient } from "@/plugins/http";
 import PasswordInput from "@/components/PasswordInput.vue";
@@ -82,6 +90,7 @@ import EllipseIcon from "@/components/icons/ellipse.vue";
 import TickIcon from "@/components/icons/tick.vue";
 import { namespace } from "vuex-class";
 import { fetchCornieData } from "@/plugins/auth";
+import { ErrorResponse } from "@/lib/http";
 const user = namespace("user");
 type CreatedUser = { id: string; email: string };
 @Options({
@@ -101,12 +110,9 @@ export default class ActivateAccount extends Vue {
   @Prop({ required: false, default: false })
   emailVerified!: boolean;
 
-
   @PropSync("user", { required: false })
   userSync!: CreatedUser;
   user = {} as CreatedUser;
-
-
 
   password = "";
   confirmation = "";
@@ -118,7 +124,7 @@ export default class ActivateAccount extends Vue {
   @user.State
   cornieData!: any;
 
- setUser(payload: any) {
+  setUser(payload: any) {
     this.userSync = {
       id: payload.userId,
       email: payload.email,
@@ -205,17 +211,21 @@ export default class ActivateAccount extends Vue {
         "/auth/account/activate/",
         this.payload
       );
-      
-      if (!data.success){
-         this.showText = true; 
-         return window.notify({ msg: errMsg });
+
+      if (!data.success) {
+        this.showText = true;
+        return window.notify({ msg: errMsg });
       }
       store.commit("user/setLoginInfo", data);
+      await this.saveCornieData();
       this.$router.replace("/dashboard");
-      this.saveCornieData();
     } catch (error) {
-
-       window.notify({ msg: "Account not activated" });
+      if (error instanceof ErrorResponse) {
+        const msg = error.response.data.message;
+        window.notify({ msg });
+      } else {
+        window.notify({ msg: "Account not activated" });
+      }
     }
   }
 }

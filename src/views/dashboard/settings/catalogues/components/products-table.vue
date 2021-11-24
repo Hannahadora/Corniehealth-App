@@ -7,7 +7,7 @@
             >
                 <template #name="{ item }">
                     <div class="text-no-wrap flex items-center uppercase text-xs " style="white-space:nowrap">
-                        <Avatar /> 
+                        <Avatar :src="item.image" /> 
                         <span class="ml-2">{{ item.name }}</span>
                     </div>
                 </template>
@@ -36,6 +36,7 @@
                     <span class="ml-3 text-xs">Edit</span>
                     </table-action>
                     <table-action
+                    @click="() => $router.push({ name: 'Medication', params: { catalogueId: 1} })"
                     >
                     <add-icon class="text-primary fill-current" />
                     <span class="ml-3 text-xs">Add Variant</span>
@@ -52,7 +53,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 
 import { Options, Vue } from 'vue-class-component';
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -63,6 +64,10 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import AnalyticsIcon from "@/components/icons/analytics.vue"
 import EditIcon from "@/components/icons/edit-purple.vue"
 import DeactivateIcon from "@/components/icons/deactivate.vue"
+import { namespace } from 'vuex-class';
+import { ICatalogueProduct } from '@/types/ICatalogue';
+import { Prop } from 'vue-property-decorator';
+
 
 @Options({
     components: {
@@ -77,6 +82,8 @@ import DeactivateIcon from "@/components/icons/deactivate.vue"
     }
 })
 export default class ProductsTable extends Vue {
+  
+
     headers = [
     {
       title: "Name",
@@ -120,29 +127,11 @@ export default class ProductsTable extends Vue {
     },
   ];
 
-  get items() {
-    return [
-      {
-          name: 'Adder All',
-          itemCode: 'XXXXXX',
-          category: 'XXXXXX',
-          description: 'ADHD Uses',
-          brand: 'XXXXXX',
-          availability: '10 in 2 variants',
-          status: "active",
-          lastUpdated: '22/10/2021'
-      },
-      {
-          name: 'Adder All',
-          itemCode: 'XXXXXX',
-          category: 'XXXXXX',
-          description: 'ADHD Uses',
-          brand: 'XXXXXX',
-          availability: '10 in 2 variants',
-          status: "inactive",
-          lastUpdated: '22/10/2021'
-      }
-    ]
+  @Prop({ type: Array, fault: [ ] })
+  items!: ICatalogueProduct[];
+
+  async created() {
+      
   }
 }
 </script>

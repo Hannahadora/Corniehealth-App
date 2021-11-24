@@ -98,7 +98,7 @@
                     placeholder="--Select--"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </cornie-select>
                   <cornie-input
@@ -124,7 +124,7 @@
                     v-model="excecutionPeriod"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </date-picker>
                   <cornie-select
@@ -134,7 +134,7 @@
                     placeholder="--Select--"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </cornie-select>
                   <div>
@@ -143,7 +143,7 @@
                       class="uppercase flex mb-1 text-xs font-semibold"
                     >
                       owner
-                      <question-icon class="ml-1"/>
+                      <info-icon class="text-primary fill-current" />
                     </label>
                     <input
                       class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
@@ -156,7 +156,9 @@
                       for="location"
                       class="uppercase flex mb-1 text-xs font-semibold"
                     >
-                      location   <question-icon class="ml-1"/>
+                      location
+                      <info-icon class="text-primary fill-current" />   
+                      <!-- <question-icon class="ml-1"/> -->
                     </label>
                     <input
                       class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
@@ -168,7 +170,7 @@
                   <div>
                     <DateTimePicker :label="'start DATE & Time'" :visible="datePickerVissibility.first">
                       <template v-slot:labelicon>
-                        <question-icon />
+                        <info-icon class="text-primary fill-current" />
                       </template>
                       <template #date>
                         <span>
@@ -211,7 +213,7 @@
                   <div>
                     <DateTimePicker :label="'end DATE & Time'" :visible="datePickerVissibility.second">
                       <template v-slot:labelicon>
-                        <question-icon />
+                        <info-icon class="text-primary fill-current" />
                       </template>
                       <template #date>
                         <span>
@@ -253,7 +255,7 @@
                     placeholder="--Select--"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </cornie-select>
                 </div>
@@ -328,7 +330,10 @@
                   <div class="block">
                     <label class="flex uppercase mb-2 text-xs font-bold">
                       Repitition
-                      <span class="ml-1"><question-icon /></span>
+                      <span class="ml-1">
+                        <info-icon class="text-primary fill-current" />
+                        <!-- <question-icon /> -->
+                        </span>
                     </label>
                     <div class="w-full flex space-x-4 mb-3">
                       <cornie-radio
