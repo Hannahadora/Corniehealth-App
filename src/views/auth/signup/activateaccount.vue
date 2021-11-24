@@ -90,6 +90,7 @@ import EllipseIcon from "@/components/icons/ellipse.vue";
 import TickIcon from "@/components/icons/tick.vue";
 import { namespace } from "vuex-class";
 import { fetchCornieData } from "@/plugins/auth";
+import { ErrorResponse } from "@/lib/http";
 const user = namespace("user");
 type CreatedUser = { id: string; email: string };
 @Options({
@@ -219,7 +220,12 @@ export default class ActivateAccount extends Vue {
       await this.saveCornieData();
       this.$router.replace("/dashboard");
     } catch (error) {
-      window.notify({ msg: "Account not activated" });
+      if (error instanceof ErrorResponse) {
+        const msg = error.response.data.message;
+        window.notify({ msg });
+      } else {
+        window.notify({ msg: "Account not activated" });
+      }
     }
   }
 }
