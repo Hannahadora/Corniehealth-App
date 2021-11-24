@@ -10,31 +10,36 @@
                         <div class="w-full flex flex-wrap py-4">
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" v-model="reqBody.instantiatesCanonical" class="form-radio h-4 w-4" :value="'planned'" >
+                                    <input type="radio" class="form-radio h-4 w-4" :value="'planned'" >
+                                    <!-- <input type="radio" v-model="reqBody.instantiatesCanonical" class="form-radio h-4 w-4" :value="'planned'" > -->
                                     <span class="ml-2 text-sm">Plan Definition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'active'" >
+                                    <input type="radio" class="form-radio h-4 w-4" :value="'active'" >
+                                    <!-- <input type="radio" v-model="reqBody.instantiatesCanonical" class="form-radio h-4 w-4" :value="'active'" > -->
                                     <span class="ml-2 text-sm">ActivityDefinition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'reserved'" >
+                                    <input type="radio" class="form-radio h-4 w-4" :value="'measure'" >
+                                    <!-- <input type="radio" v-model="reqBody.instantiatesCanonical" class="form-radio h-4 w-4" :value="'measure'" > -->
                                     <span class="ml-2 text-sm">Measure</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'completed'" >
+                                    <input type="radio" class="form-radio h-4 w-4" :value="'operation'" >
+                                    <!-- <input type="radio" v-model="reqBody.instantiatesCanonical" class="form-radio h-4 w-4" :value="'operation'" > -->
                                     <span class="ml-2 text-sm">Operation Definition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" v-model="reqBody.detail.instantiatesCanonical" class="form-radio h-4 w-4" :value="'completed'" >
+                                    <input type="radio" class="form-radio h-4 w-4" :value="'questionaire'" >
+                                    <!-- <input type="radio" v-model="reqBody.instantiatesCanonical" class="form-radio h-4 w-4" :value="'questionaire'" > -->
                                     <span class="ml-2 text-sm">Questionnaire</span>
                                 </label>
                             </div>
@@ -310,19 +315,19 @@
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input v-model="reqBody.detail.instantiatesCanonical" type="radio" class="form-radio h-4 w-4" :value="'reserved'" >
+                                    <input v-model="reqBody.detail.instantiatesCanonical" type="radio" class="form-radio h-4 w-4" :value="'measure'" >
                                     <span class="ml-2 text-sm">Measure</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input v-model="reqBody.detail.instantiatesCanonical" type="radio" class="form-radio h-4 w-4" :value="'completed'" >
+                                    <input v-model="reqBody.detail.instantiatesCanonical" type="radio" class="form-radio h-4 w-4" :value="'operation'" >
                                     <span class="ml-2 text-sm">Operation Definition</span>
                                 </label>
                             </div>
                             <div class="mx-3">
                                 <label class="inline-flex items-center">
-                                    <input v-model="reqBody.detail.instantiatesCanonical" type="radio" class="form-radio h-4 w-4" :value="'completed'" >
+                                    <input v-model="reqBody.detail.instantiatesCanonical" type="radio" class="form-radio h-4 w-4" :value="'questionaire'" >
                                     <span class="ml-2 text-sm">Questionnaire</span>
                                 </label>
                             </div>
@@ -554,7 +559,7 @@ export default class NewPlan extends Vue {
         // "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "practitionerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "organizationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "instantiatesUri": "",
+        "instantiatesUri": "dssss",
         "basedOn": "d25cc910-0830-40cf-a0c8-7c303f381b29",
         "replaces": "d25cc910-0830-40cf-a0c8-7c303f381b29",
         "partOf": "d25cc910-0830-40cf-a0c8-7c303f381b29",
@@ -576,7 +581,7 @@ export default class NewPlan extends Vue {
         "outcome": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "detail": {
             "kind": "d25cc910-0830-40cf-a0c8-7c303f381b29",
-            "instantiatesCanonical": "",
+            // "instantiatesCanonical": "stirn",
             "instantiatesUri": "",
             "code": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             "reasonCode": "",

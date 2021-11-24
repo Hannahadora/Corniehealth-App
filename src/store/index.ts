@@ -42,6 +42,7 @@ import Attachments from "./attachment"
 import  PracticeInformations from "./practiceinformation"
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
+import CatalogueStore from "./catalogues"
 import AppointmentTypes from './appointments';
 
 import AppointmentRoomStore from "./appointmentroom"
@@ -94,6 +95,7 @@ export default createStore({
     careplan: CareplanStore,
 
     AppointmentRoom: AppointmentRoomStore,
+    catalogues: CatalogueStore,
     appointments: AppointmentTypes
   },
 } as StoreOptions<any>);

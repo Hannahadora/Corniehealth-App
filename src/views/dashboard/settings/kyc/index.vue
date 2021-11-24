@@ -4,52 +4,42 @@
             <div class="w-full py-4" style="border-bottom: 1px solid #C2C7D6">
                 <p class="header">KYC</p>
             </div>
-
+            
             <div class="w-full">
-                <form action="">
-
-                    
+                <!-- <form> -->
                     <div class="w-full flex flex-wrap items-center pt-6 pb-8">
                         <p class="normal-text mr-4">Is this practice registered?</p>
                         <div class="mx-5 -mb-2">
-                            <!-- <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio h-5 w-4 text-danger" :value="'planned'" >
-                                <span class="ml-2 noraml-text">Yes</span>
-                            </label> -->
-                            <cornie-radio v-model="data.isRegistered" :label="'Yes'" value="Yes" />
+                            <cornie-radio v-model="data.practiceRegister" :label="'Yes'" value="Yes" />
                         </div>
                         <div class="mx-5 -mb-2">
-                            <!-- <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio h-4 w-4" :value="'active'" >
-                                <span class="ml-2 normal-text">No</span>
-                            </label> -->
-                            <cornie-radio v-model="data.isRegistered" :label="'No'" value="No" />
+                            <cornie-radio v-model="data.practiceRegister" :label="'No'" value="No" />
                         </div>
                     </div>
 
-                    <div class="w-full section-card px-4 my-6" v-if="data.isRegistered == 'Yes'">
+                    <div class="w-full section-card px-4 my-6" v-if="data.practiceRegister == 'Yes'">
                         <collapse-section :title="'Incorporation Details'" :height="200">
                             <template #form>
                                 <div class="w-full flex items-center  mb-6">
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Incorporated Name'" />
+                                        <cornie-input v-model="data.incoporatedName" :label="'Incorporated Name'" />
                                     </div>
                                     <div class="w-4/12">
-                                        <cornie-input :label="'RC Number'" />
+                                        <cornie-input v-model="data.rcNumber" :label="'RC Number'" />
                                     </div>
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Certificate of Incorporation'" />
+                                        <cornie-input v-model="data.certificateOfIncoporation" :label="'Certificate of Incorporation'" />
                                     </div>
                                 </div>
                                 <div class="w-full flex items-center my-6">
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Form CAC 1.1'" />
+                                        <cornie-input v-model="data.formCAC" :label="'Form CAC 1.1'" />
                                     </div>
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Memorandum & Articles of Association'" />
+                                        <cornie-input v-model="data.memorandumAndArticleOfAssociation" :label="'Memorandum & Articles of Association'" />
                                     </div>
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Tax Identification Number'" />
+                                        <cornie-input v-model="data.taxIdentificationNumber" :label="'Tax Identification Number'" />
                                     </div>
                                 </div>
                             </template>
@@ -64,29 +54,32 @@
                                         <template #form>
                                             <div class="w-full flex items-center  mb-6">
                                                 <div class="w-4/12">
-                                                    <cornie-input :label="'Full Name'" />
+                                                    <cornie-input v-model="director.fullName" :label="'Full Name'" />
                                                 </div>
                                                 <div class="w-4/12">
                                                     <div class="w-11/12">
-                                                        <date-picker :label="'Date of Birth'" />
+                                                        <date-picker v-model="director.dateOfBirth" :label="'Date of Birth'" />
                                                     </div>
                                                 </div>
                                                 <div class="w-4/12">
-                                                    <cornie-input :label="'Nationality'" />
+                                                    <cornie-input v-model="director.nationality" :label="'Nationality'" />
                                                 </div>
                                             </div>
                                             
                                             <div class="w-full flex items-center my-6">
                                                 <div class="w-4/12">
-                                                    <cornie-input :label="'Email Address'" />
+                                                    <cornie-input v-model="director.emailAddress" :label="'Email Address'" />
                                                 </div>
                                                 <div class="w-4/12">
                                                     <div class="w-11/12">
-                                                        <phone-input :label="'PhoneNumber'" />
+                                                        <phone-input 
+                                                            v-model="director.phone"
+                                                            v-model:code="director.dialCode"
+                                                            :label="'Phone Number'" />
                                                     </div>
                                                 </div>
                                                 <div class="w-4/12">
-                                                    <cornie-input :label="'Tax Identification Number'" />
+                                                    <cornie-input :label="'Tax Identification Number'" v-model="director.taxIdentificationNumber" />
                                                 </div>
                                             </div>
                                             <div class="w-full flex items-center  mb-6">
@@ -94,21 +87,21 @@
                                                     <cornie-select :items="[ 'Nigerian Bank Identification Number (BVN)', 'International Passport', 'National Identitiy Number (NIN)', 'Driver\'s License', 'Voter\'s Card']" :label="'Identification Document'" />
                                                 </div>
                                                 <div class="w-4/12">
-                                                    <file-picker :label="'Identification Document Number'" />
+                                                    <cornie-input  v-model="director.identificationDocumentNumber" :label="'Identification Document Number'" />
                                                 </div>
                                                 <div class="w-4/12">
-                                                    <file-picker :label="'Upload Identitification Document '" />
+                                                    <file-picker @uploaded="idFileUploaded" :label="'Upload Identitification Document '" />
                                                 </div>
                                             </div>
                                             <div class="w-full flex items-center  mb-6">
                                                 <div class="w-4/12 -mb-4">
-                                                    <cornie-select style="z-index:1000" :items="[ 'Medical Practice Licence', 'Pharmacy Practice Licence', 'Radiology Practice Licence', 'Pathology Practice Licence', 'Not Applicable']" :label="'Practice Licence Document'" />
+                                                    <cornie-select v-model="director.practiceLicenseDocument" style="z-index:1000" :items="[ 'Medical Practice Licence', 'Pharmacy Practice Licence', 'Radiology Practice Licence', 'Pathology Practice Licence', 'Not Applicable']" :label="'Practice Licence Document'" />
                                                 </div>
                                                 <div class="w-4/12">
-                                                    <cornie-input :label="'Practice Licence Number'" />
+                                                    <cornie-input v-model="director.practiceLicenseNumber" :label="'Practice Licence Number'" />
                                                 </div>
                                                 <div class="w-4/12">
-                                                    <file-picker :label="'Upload Practice Licence Document'" />
+                                                    <file-picker @uploaded="practiceLicenceUploaded" :label="'Upload Practice Licence Document'" />
                                                 </div>
                                             </div>
                                         </template>
@@ -123,29 +116,29 @@
                             <template #form>
                                 <div class="w-full flex items-center  mb-6">
                                     <div class="w-4/12 -mb-4">
-                                        <cornie-select :items="[ 'Nigeria']" :label="'Country'" />
+                                        <cornie-select v-model="data.country" :items="[ 'Nigeria']" :label="'Country'" />
                                     </div>
                                     <div class="w-4/12 -mb-4">
-                                        <cornie-select :items="[ 'Lagos']" :label="'State of Region'" />
+                                        <cornie-select v-model="data.stateRegion" :items="[ 'Lagos']" :label="'State of Region'" />
                                     </div>
                                     <div class="w-4/12 -mb-4">
-                                        <cornie-select :items="[ 'Ikeja']" :label="'City'" />
+                                        <cornie-select v-model="data.city" :items="[ 'Ikeja']" :label="'City'" />
                                     </div>
                                 </div>
                                 <div class="w-full flex items-center  mb-6">
                                     <div class="w-4/12">
-                                        <cornie-input :label="'ZIP or Post Code'" />
+                                        <cornie-input v-model="data.zipCode" :label="'ZIP or Post Code'" />
                                     </div>
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Address'" />
+                                        <cornie-input v-model="data.address" :label="'Address'" />
                                     </div>
                                     <div class="w-4/12">
-                                        <cornie-input :label="'Apartment or House Number'" />
+                                        <cornie-input v-model="data.apartment" :label="'Apartment or House Number'" />
                                     </div>
                                 </div>
                                 <div class="w-full flex items-start  mb-6">
                                     <div class="w-4/12">
-                                        <file-picker :label="'Please upload a proof of address *'" />
+                                        <file-picker @uploaded="addrssProofUploaded" :label="'Please upload a proof of address *'" />
                                     </div>
                                     <div class="w-8/12">
                                         <div class="w-full upload-desc p-3">
@@ -165,10 +158,22 @@
                         </collapse-section>
                     </div>
 
-                    <div class="w-full section-card px-4 my-6" v-if="data.isRegistered == 'Yes'">
-                        <collapse-section :title="'Beneficial Owners'" :showAddExisting="true" @add="() => addOwner = true" :showAdd="true" :buttonText="'Select existing dirctor'" :height="150">
+                    <div class="w-full section-card px-4 my-6" v-if="data.practiceRegister == 'Yes'">
+                        <collapse-section :title="'Beneficial Owners'" :showAddExisting="true" @add="() => addOwner = true" :showAdd="true" :buttonText="'Select existing dirctor'" :height="owners?.length <= 0 ? 45 : ( 52 * owners?.length) + 40">
                             <template #form>
-                                <div class="w-full flex pt-4">
+                                <div class="w-full flex" v-for="(owner, index) in owners" :key="index">
+                                    <div class="w-4/12 py-3 px-2" style="border: 1px solid #C2C7D6">
+                                        <span class="normal-text">{{ owner?.name }}</span>
+                                    </div>
+                                    <div class="w-4/12 py-3 px-2 flex justify-end" style="border: 1px solid #C2C7D6">
+                                        {{ owner.percentage}}%
+                                    </div>
+                                    <div class="w-4/12 py-3 px-2 flex justify-end" style="border: 1px solid #C2C7D6">
+                                        <span><delete-icon /></span>
+                                        <span class="text-sm font-normal mx-2">Delete</span>
+                                    </div>
+                                </div>
+                                <!-- <div class="w-full flex">
                                     <div class="w-4/12 py-3 px-2" style="border: 1px solid #C2C7D6">
                                         <span class="normal-text">Ademola Emeka</span>
                                     </div>
@@ -179,25 +184,13 @@
                                         <span><delete-icon /></span>
                                         <span class="text-sm font-normal mx-2">Delete</span>
                                     </div>
-                                </div>
-                                <div class="w-full flex">
-                                    <div class="w-4/12 py-3 px-2" style="border: 1px solid #C2C7D6">
-                                        <span class="normal-text">Ademola Emeka</span>
-                                    </div>
-                                    <div class="w-4/12 py-3 px-2 flex justify-end" style="border: 1px solid #C2C7D6">
-                                        10%
-                                    </div>
-                                    <div class="w-4/12 py-3 px-2 flex justify-end" style="border: 1px solid #C2C7D6">
-                                        <span><delete-icon /></span>
-                                        <span class="text-sm font-normal mx-2">Delete</span>
-                                    </div>
-                                </div>
+                                </div> -->
                             </template>
                         </collapse-section>
                     </div>
 
                     <div class="w-full section-card px-4 my-6">
-                        <collapse-section :title="'Nominate Referees'" @add="() => nominateRefree = true" :showAddExisting="true" :overflow="nominees.findIndex(i => i.showEditEmail || i.showEditPhone) >= 0" :showAdd="true" :buttonText="'Select existing dirctor'" :height="170">
+                        <collapse-section :title="'Nominate Referees'" @add="() => nominateRefree = true" :showAddExisting="true" :overflow="nominees.findIndex(i => i.showEditEmail || i.showEditPhone) >= 0" :showAdd="true" :buttonText="'Select existing dirctor'" :height="nominees?.length <= 0 ? 45 : ( 52 * nominees?.length) + 40">
                             <template #form>
                                 <div class="w-full flex" v-for="(nominee, index) in nominees" :key="index">
                                     <div class=" py-3 px-2" style="border: 1px solid #C2C7D6;width:30%">
@@ -246,31 +239,31 @@
 
 
                     <div class="w-full py-10 flex justify-end">
-                        <cornie-button class="rounded-full mr-6 px-8 font-semibold cursor-pointer py-1" style="border: 1px solid #080056; color: #080056">
+                        <cornie-button @click.prevent="() => $router.go(-1)" class="rounded-full mr-6 px-8 font-semibold cursor-pointer py-1" style="border: 1px solid #080056; color: #080056">
                             Cancel
                         </cornie-button>
 
-                        <cornie-button class="rounded-full px-8 font-semibold cursor-pointer py-1 text-white" style="background: #FE4D3C">
+                        <cornie-button  @click="onSave" :loading="loading" class="rounded-full px-8 font-semibold cursor-pointer py-1 text-white" style="background: #FE4D3C">
                             Save
                         </cornie-button>
                     </div>
 
-                </form>
+                <!-- </form> -->
             </div>
         </div>
 
         <modal :visible="nominateRefree">
-            <nominate-refree  @close="() => nominateRefree = false"/>
+            <nominate-refree @refadded="refNominated" @close="() => nominateRefree = false"/>
         </modal>
 
         <modal :visible="addOwner">
-            <beneficial-owner  @close="() => addOwner = false"/>
+            <beneficial-owner @ownerAdded="ownerAdded"  @close="() => addOwner = false"/>
         </modal>
     </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, setup } from 'vue-class-component';
 import CollapseSection from './components/collapse-section.vue'
 import CornieInput from "@/components/cornieinput.vue"
 import DatePicker from "@/components/datepicker.vue"
@@ -285,6 +278,13 @@ import BeneficialOwner from "./components/beneficial-owner.vue"
 import FilePicker from "./components/choose-file.vue"
 import CornieRadio from "@/components/cornieradio.vue"
 import EditIcon from "@/components/icons/edit-purple.vue"
+import { cornieClient } from '@/plugins/http';
+import { useHandleImage } from "@/composables/useHandleImage";
+
+export interface IBeneficialOwner {
+    name: string,
+    percentage: number | string,
+}
 
 @Options({
     components: {
@@ -307,16 +307,122 @@ import EditIcon from "@/components/icons/edit-purple.vue"
 export default class KYC extends Vue {
     nominateRefree = false;
     addOwner = false;
-    data: any = { isRegistered: 'Yes' }
+    loading = false;
+    data: any = { practiceRegister: 'Yes' }
 
-    nominees = [
-        {
-            name: 'Ademola Emeka', email: 'test@gmail.com', id: 1, phone: '1234567890'
-        },
-        {
-            name: 'Emeka Ademola', email: 'test@example.com', id: 2, phone: '0987654321'
+    uploadedIdentificationDocument = setup(() => useHandleImage());
+
+    uploadedPracticeLicenseDocument = setup(() => useHandleImage());
+    
+    // uploadedPracticeLicenseDocument = setup(() => useHandleImage());
+
+    proofOfAddressUpload = setup(() => useHandleImage());
+
+    director: any = { dialCode: '+234' }
+    
+    idFileUploaded(fileUrl: string) {
+        this.director.uploadedIdentificationDocument = fileUrl;
+    }
+
+    practiceLicenceUploaded(fileUrl: string) {
+        this.director.uploadedPracticeLicenseDocument = fileUrl;
+    }
+
+    addrssProofUploaded(fileUrl: string) {
+        this.data.proofOfAddressUpload = fileUrl;
+    }
+
+    nominees = [ ] as any[]
+
+    owners = [ ] as IBeneficialOwner[];
+
+    refNominated(data: any) {
+        this.nominees?.push(data);
+    }
+
+    ownerAdded(data: any) {
+        this.owners?.push(data);
+    }
+
+    async onSave() {
+        this.director.phoneNumber = `${this.director.dialCode}${this.director.phone}`;
+
+        this.data.practiceRegister = this.data.practiceRegister === "Yes" ? true : false;
+
+        this.data.particularOfDirectors = [ this.director ]
+        this.data.beneficailOwners = this.owners;
+        this.data.nominateReferess = this.nominees.map((nominee: any) => {
+            nominee.emailAddress = nominee.email;
+            nominee.phonenNumber = nominee.phone;
+            return nominee;
+        });
+        
+        if (!this.data?.id) {
+            this.createKYC(this.data);
+        } else {
+            this.updateKYC(this.data);
         }
-    ] as any[]
+    }
+
+    async createKYC(body: any) {
+        try {
+            const { data } = await cornieClient().post('/api/v1/kyc', body);
+            if (data?.id) {
+                window.notify({ msg: "KYC updated successfully", status: "success" });
+            }
+            this.loading = false;
+            console.log(data, "KYC Response");
+        } catch (error) {
+            console.log(error)
+            this.loading = false;
+            window.notify({ msg: "KYC update failed", status: "error" });
+        }
+    }
+
+    async updateKYC(body: any) {
+        try {
+            const { data } = await cornieClient().put(`/api/v1/kyc/${body.id}`, body);
+            if (data?.id) {
+                window.notify({ msg: "KYC updated successfully", status: "success" });
+            }
+            this.loading = false;
+            console.log(data, "KYC Response");
+        } catch (error) {
+            console.log(error)
+            this.loading = false;
+            window.notify({ msg: "KYC update failed", status: "error" });
+        }
+    }
+
+    async getKYCData() {
+        try {
+            const { data } = await cornieClient().get('/api/v1/kyc');
+            console.log(data, "KYC GET Response");
+
+            this.nominees = data.nominateReferess ? data.nominateReferess?.map((nominee: any) => {
+                nominee.email = nominee.emailAddress;
+                nominee.phone = nominee.phonenNumber;
+                return nominee;
+            }) : [];
+            
+            this.owners = data.beneficailOwners ? data.beneficailOwners : [];
+
+            if (data?.particularOfDirectors?.length > 0) {
+                const firstIitem = data?.particularOfDirectors[0];
+                this.director = {
+                    ...firstIitem,
+                    phone: firstIitem?.phoneNumber
+                }
+            }
+
+            this.data = {
+                ...data,
+                practiceRegister: data.practiceRegister ? 'Yes' : 'No'
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     toggleEditDialog(nominee: any, index: number) {
         this.nominees[index].newEmail = this.nominees[index].email
@@ -336,6 +442,10 @@ export default class KYC extends Vue {
     updateNomineePhone(index: number) {
         this.nominees[index].phone = this.nominees[index].newPhone
         this.nominees[index].showEditPhone = false
+    }
+
+    async created() {
+        await this.getKYCData()
     }
 }
 </script>
