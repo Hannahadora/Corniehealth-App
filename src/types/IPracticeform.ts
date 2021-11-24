@@ -26,14 +26,14 @@ export default interface IPracticeform {
   updatedBy?: Practitioner;
 }
 
-export interface items {
-  question:string;
-  name:string;
-  answerType:string;
-  answerOptions:[string];
-  prefix:string;
+// export interface items {
+//   question:string;
+//   name:string;
+//   answerType:string;
+//   answerOptions:[string];
+//   prefix:string;
 
- }
+//  }
  export type AnswerType =
   | "boolean"
   | "decimal"
@@ -44,7 +44,7 @@ export interface items {
   | "string"
   | "text"
   | "url"
-  | "choice"
+  | "Choice"
   | "openChoice"
   | "attachment"
   | "reference"
@@ -54,7 +54,16 @@ export interface items {
   id?: string;
   question: string;
   answerType: AnswerType;
-  answerOptions?: string[];
+  answerOptions?: Array<string>;
+  name: string;
+  prefix: string;
+}
+
+export interface Questionmain {
+  id?: string;
+  question: string;
+  answerType: AnswerType;
+  answerOptions?: Array<string>;
   name: string;
   prefix: string;
 }
@@ -62,10 +71,12 @@ export interface QuestionGroup {
   name: string;
   prefix: string;
   text: string;
-  items: Array<Question | Display>;
+  items: Array<Questionmain | Displaymain>;
 }
 
 export type Display = string;
+
+export type Displaymain = string; 
 
 export interface Section {
   items: Array<QuestionGroup | Question | Display>;

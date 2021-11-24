@@ -605,7 +605,7 @@ get allPerformer() {
     this.location = response[0].data;
   }
   async fetchPracticeForms() {
-    const AllForms = cornieClient().get("/api/v1/practice-form");
+    const AllForms = cornieClient().get("/api/v1/practice-form/surveys");
     const response = await Promise.all([AllForms]);
     this.practiceform = response[0].data;
   }

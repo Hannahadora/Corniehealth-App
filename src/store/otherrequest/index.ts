@@ -48,12 +48,10 @@ export default {
   actions: {
     async fetchOtherrequestsById(ctx, patientId: string){
       const otherrequests = await fetchOtherrequestsById(patientId);
-      console.log('otherforrequestsstest', otherrequests);
       ctx.commit("setPatientRequests", otherrequests);
     },
     async fetchOtherrequests(ctx) {
       const otherrequests = await fetchOtherrequests();
-      console.log('otherallrequestss', otherrequests);
       ctx.commit("updatedOtherrequests", otherrequests);
     },
     async getPatients(ctx) {
