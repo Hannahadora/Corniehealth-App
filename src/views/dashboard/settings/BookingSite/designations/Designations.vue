@@ -1,6 +1,6 @@
 <template>
   <main class="p-6">
-    <!-- <empty-state
+    <empty-state
       heading="No designation recorded"
       subheading="Add new designation"
       class="mt-6"
@@ -30,11 +30,9 @@
         <AppointmentModal  @closesidemodal="closeModal"  />
       </side-modal>
       </template>
-    </empty-state> -->
+    </empty-state>
 
-    <!-- <existing-state v-else :designations="designations" /> -->
-    <existing-state  />
-   
+    <existing-state v-else :designations="designations" />
   </main>
 </template>
 
