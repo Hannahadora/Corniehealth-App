@@ -9,7 +9,7 @@
             <div class="w-6/12">
                 <div class="w-11/12">
                     <label class="file-picker flex flex-col w-full rounded-full">
-                        <input type="file"/>
+                        <input type="file" @change="fileSelected"/>
                         <p class="flex items-center justify-between">
                             <span><i class="fa fa-cloud-upload"></i> Choose file</span>
                             <span class="mr-3"><upload-icon /></span>
@@ -19,7 +19,7 @@
             </div>
             <div class="w-6/12">
                 <div class="w-11/12">
-                    <uploaded-file />
+                    <uploaded-file :fileName="fileName" />
                 </div>
             </div>
         </div>
@@ -27,10 +27,11 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, Vue, setup } from "vue-class-component";
 import UploadIcon from "@/components/icons/upload.vue"
 import UploadedFile from "./uploadd-file.vue"
 import { Prop } from "vue-property-decorator";
+import { useHandleImage } from "@/composables/useHandleImage";
 
 @Options({
     components: {
@@ -41,6 +42,24 @@ import { Prop } from "vue-property-decorator";
 export default class FilePicker extends Vue {
     @Prop({ type: String, default: '' })
     label!: string;
+
+    rawFile: any = { }
+
+    get fileName() {
+        if (!this.rawFile || !this.rawFile?.name) return 'No file';
+        if (this.rawFile?.name?.length < 5) return this.rawFile.name;
+        const splitted = this.rawFile?.name.split('');
+        return `${splitted[0]}...${splitted.slice(splitted?.length - 4), splitted?.length - 1}`
+    }
+
+    file = setup(() => useHandleImage());
+
+    async fileSelected(e: any) {
+        this.rawFile = e.target.files[0];
+
+        await this.file.onChange(e);
+        this.$emit('uploaded', this.file.url);
+    }
 }
 </script>
 

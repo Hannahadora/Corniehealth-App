@@ -70,14 +70,15 @@
       <span class="w-full bg-danger">
           <span class="flex justify-end w-full m4-5">
             <cornie-btn
-              class="m-5 p-2 px-12 font-semibold"
+              class="m-5 rounded-full px-12 font-semibold"
               style="color: #080056;border: 1px solid #080056"
             >
               Export
             </cornie-btn>
 
             <cornie-btn
-              class="bg-danger px-10 text-white my-5 mx-4 p-2 font-semibold"
+              class="bg-danger px-10 text-white my-5 mx-4 py-1 rounded-full font-semibold"
+              @click="createNew"
             >
               Create New
             </cornie-btn>
@@ -89,7 +90,7 @@
         </div>
 
         <div class="p-2" v-if="activeTab === 1">
-          <services-table />
+          <services-table :items="serviceItems" />
         </div>
     </div>
 
@@ -122,8 +123,9 @@ import ProductsIcon from "./componnts/products-icon.vue"
 import ServicesIcon from "./componnts/services-icon.vue"
 import ProductsTable from "./componnts/products-table.vue"
 import ServicesTable from "./componnts/services-table.vue"
+import ICatalogueService from "@/types/ICatalogue";
 
-const careplan = namespace('careplan')
+const catalogue = namespace('catalogues')
 
 @Options({
   name: "EHRPatients",
@@ -154,11 +156,12 @@ const careplan = namespace('careplan')
   },
 })
 export default class ExistingState extends Vue {
-  @careplan.Action
-  getCarePlans!: (patientId: string) => Promise<void>;
+  @catalogue.Action
+  getServices!: () => Promise<void>;
 
-  @careplan.State
-  careplans!: ICarePlan[]
+  @catalogue.State
+  services!: ICatalogueService[];
+
 
   headers = [
     {
@@ -200,19 +203,23 @@ export default class ExistingState extends Vue {
 
   activeTab = 0;
 
-  get items() {
-    return [
-        {
-        id: "1",
-        identifier: "XXXXX",
-        recorded: "1/2/3000",
-        title: "title",
-        address: "address",
-        author: `Author`,
-        schedule: "Schedule",
-        performer: "Performer",
+  get serviceItems() {
+    if (this.services?.length <= 0) return [ ];
+    return this.services?.map(service => {
+      return {
+        id: service.id,
+        name: service.name,
+        itemCode: service.itemCode,
+        category: service.category,
+        description: service.description,
+        subCategory: service.subcategory,
+        status: service.status,
+        lastUpdated: new Date(service.updatedAt || Date.now()).toLocaleDateString(),
+        discountLimit: service.discountLimit,
+        unitOfSales: 'Drum',
+        unitPrice: service.cost,
       }
-    ]
+    })
   }
 
   get activePatientId() {
@@ -220,9 +227,13 @@ export default class ExistingState extends Vue {
       return id;
   }
 
+  createNew() {
+    if (this.activeTab === 0) this.$router.push({ name: 'New Product'})
+    if (this.activeTab === 1) this.$router.push({ name: 'New Service'})
+  }
+
   async created() {
-    await this.getCarePlans(this.$route.params.id.toString());
-    console.log(this.careplans, 'CARE PLANS');
+    if (this.services?.length <= 0) await this.getServices(); 
     
   }
 

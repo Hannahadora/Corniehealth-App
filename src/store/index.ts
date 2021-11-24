@@ -39,6 +39,7 @@ import designation from "./hierarchy/designation";
 import condition from "./condition";
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
+import CatalogueStore from "./catalogues"
 
 
 export default createStore({
@@ -83,6 +84,7 @@ export default createStore({
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
-    careplan: CareplanStore
+    careplan: CareplanStore,
+    catalogues: CatalogueStore,
   },
 } as StoreOptions<any>);

@@ -4,7 +4,6 @@
             <cornie-table
                 v-model="items"
                 :columns="headers"
-                @filter="filterAdvanced = true"
             >
                 <template #name="{ item }">
                     <div class="text-no-wrap flex items-center uppercase text-xs " style="white-space:nowrap">
@@ -33,6 +32,7 @@
                     <span class="ml-3 text-xs">Edit</span>
                     </table-action>
                     <table-action
+                      @click="() => $router.push({ name: 'Medication', params: { catalogueId: 1} })"
                     >
                     <add-icon class="text-primary fill-current" />
                     <span class="ml-3 text-xs">Add Variant</span>
