@@ -10,15 +10,6 @@ import Settings from "@/views/dashboard/settings/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/kyc-email",
-    props: true,
-    name: "KYC Email",
-    component: () =>
-      import(
-        "@/views/dashboard/settings/kyc/components/email-body.vue"
-      ),
-  },
-  {
     path: "/reference/:id",
     props: true,
     name: "Reference Response",
@@ -344,6 +335,15 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
       {
+        path: "kyc-link",
+        props: true,
+        name: "KYC Link",
+        component: () =>
+          import(
+            "@/views/dashboard/settings/kyc/components/email-link.vue"
+          ),
+      },
+      {
         path: "pricebook",
         name: "PriceBook",
         component: () =>
@@ -356,14 +356,20 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/catalogues/index.vue"),
       },
       {
-        path: "newcatalogue",
-        name: "New Catalogue",
+        path: "newservice/:serviceId?",
+        name: "New Service",
         component: () =>
           import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
       },
       {
         path: "newproduct",
-        name: "New Catalogue",
+        name: "New Product",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
+      },
+      {
+        path: "addvariant/:catalogueId",
+        name: "Medication",
         component: () =>
           import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
       },

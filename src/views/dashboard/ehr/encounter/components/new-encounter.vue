@@ -6,66 +6,24 @@
             <basic-info>
                 <template #form>
 
-                    <div class="w-full" style="overflow-y:scroll; height: 550px">
-                                            <div class="w-full flex items-center mb-3 mt-5">
+                <div class="w-full" style="overflow-y:scroll; height: 550px">
+                    <div class="w-full flex mb-3 mt-5">
                         <div class="w-6/12">
                             <cornie-select :label="'Status'" v-model="encounter.status"  :items="[ 'active', 'inactive' ]"/>
-                            <!-- <cornie-select :label="'Status'" v-model="encounter.status"  :items="[ 'planned', 'arrived', 'in-progress', 'onleave', 'cancelled', 'finished' ]"/> -->
                         </div>
                         <div class="w-6/12">
                             <cornie-select :label="'Type'" v-model="encounter.type"  :items="['Annual diabetes mellitus screening', 'Bone drilling/bone marrow punction in clinic', 'Infant colon screening - 60 minutes' ]"/>
                         </div>
                     </div>
-                    <!-- <div class="w-full mb-3 mt-3 mb-6">
+
+                    <div class="w-full flex  mt-3">
                         <div class="w-6/12">
-                            <div class="w-full">
-                                <div class="md w-12/12">
-                                    <div class="md w-full">
-                                        <div class="md w-full">
-                                            <p>
-                                                <span class="mr-2">Arrived</span> 
-                                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
-                                            </p>
-                                        </div>
-                                        <div class="md w-full my-2" style="height: 20px;border-left: 1px dashed #878E99;">
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="md w-12/12">
-                                    <div class="md w-full">
-                                        <div class="md w-full">
-                                            <p>
-                                                <span class="mr-2">Inpatient</span> 
-                                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div> -->
-
-                    <div class="w-full flex items-center mt-3">
-                        <div class="w-6/12 -mt-4">
                             <cornie-select :label="'Class'" v-model="encounterClass"  :items="['inpatient', 'outpatient', 'ambulatory', 'emmergency' ]"/>
                         </div>
                         <div class="w-6/12">
                             <cornie-select :label="'Service Type'" v-model="encounter.serviceType"  :items="['Cardiology', 'Aged Care Assessment', 'Friendly Visiting', 'Personal Alarms/Alerts', 'Acupuncture', 'Aromatherapy', 'Bowen Therapy']"/>
                         </div>
                     </div>
-
-                    <!-- <div class="w-full mb-8 -mt-3 ">
-                        <div class="w-6/12">
-                            <p class="text-base font-semibold">Class History</p>
-                            <p>
-                                <span class="mr-2">Inpatient</span> 
-                                <span class="text-gray-400">(29/04/2021, 09:00 - 29/04/2021, 09:30)</span>
-                            </p>
-                        </div>
-                    </div> -->
 
                     <div class="w-full flex items-center my-3">
                         <div class="w-6/12">
@@ -130,7 +88,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center mb-3 mt-6">
+                    <div class="w-full flex mb-3 mt-6">
                         <div class="w-6/12">
                             <cornie-select :label="'Reason Reference'" v-model="encounter.episodeId"  :items="[ 'Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Decreased hair growth' ]"/>
                         </div>
@@ -139,9 +97,9 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center my-3">
+                    <div class="w-full flex my-3">
                         <div class="w-6/12">
-                            <cornie-input :label="'Length'" />
+                            <cornie-input :label="'Length'" :disabled="true" placeholder="--Autoloaded--" />
                         </div>
                         <div class="w-6/12">
                             <cornie-select :label="'Reference'" v-model="encounter.episodeId"  :items="[ 'Anxiety disorder of childhood OR adolescence', 'Choroidal hemorrhage', 'Decreased hair growth' ]"/>
@@ -155,7 +113,7 @@
             <service-provider style="margin: 2rem 0">
                 <template #form>
                     <div class="w-full" style="overflow-y:scroll; height: 350px">
-                        <div class="w-full flex items-center mb-3 mt-5">
+                        <div class="w-full flex  mb-3 mt-5">
                         <div class="w-6/12">
                             <auto-complete :label="'Provider\'s name'" :items="[ 'Provider 1', 'Provider 2' ]" />
                         </div>
@@ -164,7 +122,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center my-3">
+                    <div class="w-full flex my-3">
                         
                         <div class="w-6/12">
                             <p class="text-xs font-semibold uppercase">Status</p>
@@ -257,9 +215,9 @@
 
             <hospital-info style="margin: 2rem 0">
                 <template #form>
-                    <div class="w-full flex items-center mb-3 mt-9">
+                    <div class="w-full flex mb-3 mt-4">
                         
-                        <div class="w-6/12 -mt-4">
+                        <div class="w-6/12">
                             <cornie-select :label="'Origin'" v-model="encounter.origin.id"  :items="locationList"/>
                         </div>
                         <div class="w-6/12">
@@ -267,9 +225,9 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center mb-3 mt-3">
+                    <div class="w-full flex mb-3 mt-3">
                         
-                        <div class="w-6/12 -mt-4">
+                        <div class="w-6/12">
                             <cornie-select :label="'Room'" v-model="encounter.origin.id"  :items="locationList"/>
                         </div>
                         <div class="w-6/12">
@@ -277,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center mb-3 mt-3">
+                    <div class="w-full flex mb-3 mt-3">
                         
                         <div class="w-6/12">
                             <cornie-select :label="'Admit Source'" v-model="encounter.readmission"  :items="['Admit source' ]"/>
@@ -289,13 +247,13 @@
                         
                     </div>
 
-                    <div class="w-full flex items-center mb-3 mt-3">
-                        <div class="w-6/12 -mt-5">
+                    <div class="w-full flex mb-3 mt-3">
+                        <div class="w-6/12 ">
                             <cornie-select :label="'Diet Preference'" v-model="encounter.dietPreference"  :items="diets"/>
                             <!-- <label for="" class="font-bold uppercase text-xs mb-1">Diet Preference</label>
                             <select-boxes>
                                 <div class="w-full border rounded px-2 absolute bg-white" style="z-index:1000">
-                                    <a class="text-gray-700 block py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
+                                    <a class="text-gray-700 block py-2 text-sm flex" role="menuitem" tabindex="-1" id="menu-item-0"
                                     >
                                         <span><input type="checkbox" class="h-4 w-4" name="" id="" ></span>
                                         <span class="mx-2 text-lg">Fufu</span>
@@ -309,7 +267,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center mb-3 mt-3">
+                    <div class="w-full flex mb-3 mt-3">
                         <div class="w-6/12">
                             <cornie-select :label="'Special Arrangement'"  :items="arrangements"/>
                         </div>
@@ -318,7 +276,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full flex items-center mb-3 mt-3">
+                    <div class="w-full flex mb-3 mt-3">
                         <div class="w-6/12">
                             <cornie-select :label="'Discharge Disposition'" v-model="encounter.dischargeDisposition"  :items="dispositions"/>
                         </div>
