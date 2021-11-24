@@ -1,7 +1,5 @@
 <template>
-      <tabs :items="tabLinks" v-model="currentTab"> 
         <functions />
-      </tabs>
 </template>
 
 <script lang="ts">
@@ -20,7 +18,7 @@ import Functions from "./Functionsme.vue";
   },
 })
 export default class BookingSite extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation", "New Reminder"];
+  tabLinks = ["Practice", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation", "New Reminder"];
   currentTab = 0;
 }
 </script>
