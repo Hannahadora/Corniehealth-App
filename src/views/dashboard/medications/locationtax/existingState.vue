@@ -1,35 +1,13 @@
 <template>
   <div class="w-full pb-80">
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Upcoming</a></li>    
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Active</a></li>
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">History</a></li>
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Location</a></li>    
+        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Tax</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="medications">   
           <div>
             <span class="flex justify-end w-full mb-8">
-                <button
-                    @click="$router.push('/dashboard/provider/experience/schedules')"
-                    type="button"
-                    class="
-                    outline-primary
-                    rounded-full
-                    text-black
-                  mt-5
-                      py-2
-                      pr-12
-                      pl-12
-                      px-3
-                      mr-4
-                      mb-5
-                    focus:outline-none
-                    hover:bg-primary
-                    hover:text-white
-                    "
-                >
-                    My Slots
-                </button>
               <button
                 class="
                   bg-danger
@@ -45,9 +23,9 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="$router.push('/dashboard/provider/experience/add-task')"
+                @click="$router.push('/dashboard/provider/medications/add-location')"
               >
-                New Task
+                Add New
               </button>
               
             </span>
@@ -96,7 +74,7 @@
           </div>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
-          <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0 ">
+          <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0">
               <img src="@/assets/img/task.svg" />
               <h3 class="text-center mt-5">
                   There’s currently no active task!<br />
@@ -145,27 +123,6 @@
             </div>
           <div>
             <span class="flex justify-end w-full mb-8">
-                <button
-                    @click="$router.push('/dashboard/provider/experience/schedules')"
-                    type="button"
-                    class="
-                    outline-primary
-                    rounded-full
-                    text-black
-                  mt-5
-                      py-2
-                      pr-12
-                      pl-12
-                      px-3
-                      mr-4
-                      mb-5
-                    focus:outline-none
-                    hover:bg-primary
-                    hover:text-white
-                    "
-                >
-                    My Slots
-                </button>
               <button
                 class="
                   bg-danger
@@ -181,13 +138,13 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="$router.push('/dashboard/provider/experience/add-task')"
+                 @click="$router.push('/dashboard/provider/medications/add-tax')"
               >
-                New Task
+                Add New
               </button>
               
             </span>
-            <cornie-table :columns="rawHeaders" v-model="sortTasks">
+            <cornie-table :columns="rawHeaders2" v-model="sortTasks">
                 <template #actions="{ item }">
                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
                     <newview-icon  class="text-yellow-500 fill-current"/>
@@ -230,145 +187,6 @@
                 </template>
             </cornie-table>
           </div>
-        </div>
-        <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="referrals">
-           <div class="w-full flex flex-col justify-center items-center h-96" v-if="History.length < 0 ">
-              <img src="@/assets/img/task.svg" />
-              <h3 class="text-center mt-5">
-                  There’s currently no history task!<br />
-                  Adding a task...
-              </h3>
-                  <span class="flex justify-center w-full">
-              <button
-                  @click="$router.push('/dashboard/provider/experience/schedules')"
-                  type="button"
-                  class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                  "
-              >
-                  My Slots
-              </button>
-              <button
-                  class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  py-2
-                  px-3
-                  pl-12
-                  pr-12
-                  font-semibold
-                  focus:outline-none
-                  hover:opacity-90
-                  "
-                  @click="$router.push('/dashboard/provider/experience/add-task')"
-              >
-                  New Tasks
-              </button>
-                  </span>
-            </div>
-          <div v-else>
-            <span class="flex justify-end w-full mb-8">
-                <button
-                    @click="$router.push('/dashboard/provider/experience/schedules')"
-                    type="button"
-                    class="
-                    outline-primary
-                    rounded-full
-                    text-black
-                  mt-5
-                      py-2
-                      pr-12
-                      pl-12
-                      px-3
-                      mr-4
-                      mb-5
-                    focus:outline-none
-                    hover:bg-primary
-                    hover:text-white
-                    "
-                >
-                    My Slots
-                </button>
-              <button
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  py-2
-                  pr-12
-                  pl-12
-                  px-3
-                  mb-5
-                  font-semibold
-                  focus:outline-none
-                  hover:opacity-90
-                "
-                @click="$router.push('/dashboard/provider/experience/add-task')"
-              >
-                New Task
-              </button>
-              
-            </span>
-            <cornie-table :columns="rawHeaders" v-model="History">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
-                    <newview-icon  class="text-yellow-500 fill-current"/>
-                    <span class="ml-3 text-xs">View</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
-                    <update-icon />
-                    <span class="ml-3 text-xs">Update</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <timeline-icon />
-                    <span class="ml-3 text-xs">View Timeline</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Appointment</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                      <note-icon class="text-yellow-600 fill-current" />
-                      <span class="ml-3 text-xs">Make Notes</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <message-icon class="text-green-500 fill-current" />
-                      <span class="ml-3 text-xs">Messages</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                      <danger-icon/>
-                      <span class="ml-3 text-xs">Cancel</span>
-                  </div>
-                </template>
-                <template #excecutionPeriod="{ item }">
-                  <div class="flex items-center">
-                    <span>{{item.excecutionPeriod.start}} - {{item.excecutionPeriod.end}} </span>
-                  </div>
-                </template>
-                <template #status="{ item }">
-                    <div class="container">
-                      <span class="p-2 px-3 rounded-full text-black" :class="{ 'text-red-300 bg-red-50': item.status === 'Cancelled' || 'Stopped' || 'Failed' || 'Entered in Error' || 'Rejected',   'text-green-300 bg-green-50': item.status === 'Ready'|| 'Completed' || 'Requested' ||'Received'||'Accepted',  'text-yellow-300 bg-yellow-50': item.status === 'Draft' || 'In Progress' || 'On Hold',}">{{ item.status }}</span>
-                    </div>
-                </template>
-            </cornie-table>
-          </div>
-        </div>
-        <div class="tab-pane" v-if="selected == 4"  :class="{'active' :  selected === 4  }" id="requests">
-
         </div>
     </div>
     <notes-add
@@ -467,105 +285,69 @@ export default class TaskExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Date", key: "createdAt", show: true },
+    { title: "location name", key: "location", show: true },
     {
-      title: "identifier | Group identifier",
-      key: "id",
+      title: "address",
+      key: "address",
       show: true,
     },
     {
-      title: "code | priority",
-      key: "priority",
+      title: "country",
+      key: "country",
       show: true,
     },
     {
-      title: "intent | subject",
-      key: "intent",
+      title: "state",
+      key: "state",
       show: true,
     },
      {
-      title: "Recipient",
-      key: "recipient",
+      title: "hours of operation",
+      key: "hours",
       show: true,
-    },
-    {
-      title: "owner(s)",
-      key: "owner",
-      show: true,
-    },
-     {
-      title: "status | business status",
-      key: "status",
-      show: true,
-    },
-    {
-      title: "Code",
-      key: "code",
-      show: false,
-    },
-    {
-      title: "Reason Reference",
-      key: "reasonReference",
-      show: false,
-    },
-    {
-      title: "Period",
-      key: "excecutionPeriod",
-      show: false,
-    },
-    {
-      title: "Priority",
-      key: "priority",
-      show: false,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: false,
-    },
-    {
-      title: "Note",
-      kwy: "note",
-      show: false,
-    },
-     {
-      title: "Focus",
-      kwy: "focus",
-      show: false,
-    },
-     {
-      title: "Encounter",
-      kwy: "encounter",
-      show: false,
-    },
-     {
-      title: "Repitition",
-      kwy: "repitition",
-      show: false,
-    },
-     {
-      title: "Input Type",
-      kwy: "inputType",
-      show: false,
-    },
-     {
-      title: "Input Value",
-      kwy: "inputValue",
-      show: false,
-    },
-     {
-      title: "Output Type",
-      kwy: "outputType",
-      show: false,
-    },
-     {
-      title: "Output Value",
-      kwy: "outputValue",
-      show: false,
     },
 
   ];
+  rawHeaders2 = [
+    { title: "identifier", key: "keydisplay", show: true },
+    {
+      title: "authority",
+      key: "authority",
+      show: true,
+    },
+    {
+      title: "code",
+      key: "code",
+      show: true,
+    },
+    {
+      title: "tin",
+      key: "tin",
+      show: true,
+    },
+     {
+      title: "locations",
+      key: "locations",
+      show: true,
+    },
+ {
+      title: "TAX",
+      key: "tax",
+      show: true,
+    },
+    {
+      title: "TOTAL TAX rate",
+      key: "rate",
+      show: true,
+    },
+     {
+      title: "status",
+      key: "status",
+      show: true,
+    },
 
+
+  ];
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -592,6 +374,18 @@ export default class TaskExistingState extends Vue {
         ...task,
          action: task.id,
          keydisplay: "XXXXXXX",
+         location:"General  Hospital",
+         address:"12, Idowu Martin  Street, Victoria Island, Lagos",
+         country:"Nigeria",
+         state:"Abuja",
+         hours:"hours of operation",
+         authority:"Federal Inland Revenue Service",
+         code:"FIRS",
+         tax:"VAT",
+         rate:"7.5%",
+         locations:"2"
+
+
         };
     });
     if (!this.query) return tasks;

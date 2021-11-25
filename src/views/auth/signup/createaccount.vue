@@ -88,7 +88,7 @@
             <div class="cursor-pointer">
               <div class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer"   @mouseleave="isVisible2 = false" @keydown.enter="isVisible2 = !isVisible2" :class="{'bg-danger-100': checked2 == true}" @click="checkValue2">
                 <chevron-down-icon class="text-white -mt-7 mb-3 stroke-current ml-14" v-if="checked2"/>
-                  <ul  class="dropdown-menu  bg-white rounded w-50 h-80 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible2">
+                  <ul  class="dropdown-menu  z-10 bg-white rounded w-50 h-80 absolute text-gray-700 p-2 -mt-2 border-2" v-show="isVisible2">
                     <li class="list-none items-center flex text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2">
                       <span class="flex item-center"> <cornie-radio name="provider" id="hospital"  class="col-span-2 mb-3" style="z-index:1"/><p> Hospital</p> </span>
                     </li>

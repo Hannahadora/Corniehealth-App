@@ -201,7 +201,7 @@ export default class CorniDashboardeSideBar extends Vue {
         },
          {
           name: "Location & Tax",
-         to: {name:"Location & Tax"},
+          to: {name: "Location & Tax"},
           hasSubsection: false,
         },
         {
@@ -213,9 +213,7 @@ export default class CorniDashboardeSideBar extends Vue {
           name: "Pricebook",
           to: "pricebook",
           hasSubsection: false,
-        },
-        { name: "Requests/Prescriptions", to: "requests", hasSubsection: false },
-        { name: "Dispense", to: "dispense", hasSubsection: false },
+        }
       ],
     },
    

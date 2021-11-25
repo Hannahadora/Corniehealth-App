@@ -37,21 +37,23 @@
                   </div>
                    <div  class="mb-2">
                         <p>Date</p>
-                        <span class="text-gray-400 text-xs">{{payload.approvalDate}}</span>
+                        <span class="text-gray-400 text-xs">{{new Date(payload.effectivePeriod.start).toLocaleDateString()}}</span>
                    </div>
                     <div  class="mb-2">
                         <p>Last Review Date</p>
-                        <span class="text-gray-400 text-xs">{{payload.effectivePeriod}}</span>
+                        <span class="text-gray-400 text-xs">{{ new Date(payload.effectivePeriod.end).toLocaleDateString()}}</span>
                    </div>
               </div>
               <div class="mt-4">
                    <div  class="mb-2">
                         <p>Publisher</p>
-                        <span class="text-gray-400 text-xs">{{authPractitioner.firstName +' '+ authPractitioner.lastName}}</span>
+                        <span class="text-gray-400 text-xs" v-if="authPractitioner">{{authPractitioner.firstName +' '+ authPractitioner.lastName}}</span>
+                        <span class="text-gray-400 text-xs" v-else>N/A</span>
                    </div>
                     <div  class="mb-2">
                         <p>Contact</p>
-                        <span class="text-gray-400 text-xs">{{authPractitioner.phone.dialCode +' '+ authPractitioner.phone.number}}</span>
+                        <span class="text-gray-400 text-xs" v-if="authPractitioner">{{authPractitioner.phone.dialCode +' '+ authPractitioner.phone.number}}</span>
+                         <span class="text-gray-400 text-xs" v-else>N/A</span>
                    </div>
                     <div  class="mb-2">
                         <p>Approval Date</p>
@@ -148,18 +150,14 @@
            <span class="flex justify-end w-full">
       <cornie-btn
         @click="show = false"
-        class="border-primary border-2  mr-3  pl-8 pr-8 rounded-xl text-primary"
+        class="border-primary border-2  mr-3  pl-4 pr-4 rounded-xl text-primary"
       >
         Cancel
       </cornie-btn>
-              <cornie-btn
-                :loading="loading"
-                @click="submit"
-                type="submit"
-                class="bg-danger rounded-full font-semibold text-white border-2 pl-8 pr-8 px-3  mr-3"
-              >
-                Submit
-              </cornie-btn>
+               <cornie-btn  :loading="loading"
+            @click="submit" class="text-white bg-danger  pl-4 pr-4 px-3 rounded-xl">
+       Save
+      </cornie-btn>
            </span>
     </template>
  
