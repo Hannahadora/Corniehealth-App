@@ -63,23 +63,21 @@
 
           </div>
       </div>
-      <div>
-          <div v-for="(input, id) in payload.sections" :key="`${id}`">
+       <div>
+          <div v-for="(input, id) in sectionsPayload" :key="`${id}`">
             <div v-for="(newinput, index) in input.items[1]" :key="`${index}`">
               <accordion-component class="capitalize" :title="newinput.prefix +' '+ newinput.text" :opened="true">
                   <template v-slot:default>
                     <div v-for="(anewinput, index) in newinput.items[index]" :key="`${index}`">
-                        <div class="mt-5" v-if="anewinput.answerType == 'Open Choice'">
+                        <div class="mt-5" v-if="anewinput.answerType == 'openChoice'">
                             <p class="text-black font-semibold text-sm mb-5">{{anewinput.prefix +' '+ anewinput.text}}</p>
                             <div v-for="(bnewinput, index) in anewinput.answerOptions" :key="`${index}`">
                                 <div class="mb-4">
                                     <select-option :label="bnewinput"/>
                                 </div>
-                                <!-- <select-option label="Maybe" class="mb-2"/>
-                                <select-option label="No"/> -->
                             </div>
                         </div>
-                        <div class="mt-5" v-if="anewinput.answerType == 'Choice'">
+                        <div class="mt-5" v-if="anewinput.answerType == 'choice'">
                               <p class="text-black font-semibold text-sm mb-5">{{anewinput.prefix +' '+ anewinput.text}}</p>
                               <div v-for="(bnewinput, index) in anewinput.answerOptions" :key="`${index}`">
                                 <div class="mb-4">
@@ -104,20 +102,18 @@
               </accordion-component>
             </div>
           </div>
-           <div v-for="(input, id) in payload.sections" :key="`${id}`">
+           <div v-for="(input, id) in sectionsPayload" :key="`${id}`">
               <div v-for="(newinput, index) in input.items[0]" :key="`${index}`">
                  
-                        <div class="mt-5" v-if="newinput.answerType == 'Open Choice'">
+                        <div class="mt-5" v-if="newinput.answerType == 'openChoice'">
                             <p class="text-black font-semibold text-sm mb-5">{{newinput.prefix +' '+ newinput.text}}</p>
                             <div v-for="(bnewinput, index) in newinput.answerOptions" :key="`${index}`">
                                 <div class="mb-4">
                                     <select-option :label="bnewinput"/>
                                 </div>
-                                <!-- <select-option label="Maybe" class="mb-2"/>
-                                <select-option label="No"/> -->
                             </div>
                         </div>
-                        <div class="mt-5" v-if="newinput.answerType == 'Choice'">
+                        <div class="mt-5" v-if="newinput.answerType == 'choice'">
                               <p class="text-black font-semibold text-sm mb-5">{{newinput.prefix +' '+ newinput.text}}</p>
                               <div v-for="(bnewinput, index) in newinput.answerOptions" :key="`${index}`">
                                 <div class="mb-4">
@@ -127,7 +123,7 @@
                               </div>
                               
                           </div>
-                          <div class="mt-5" v-if="newinput.answerType == 'Text'">
+                          <div class="mt-5" v-if="newinput.answerType == 'text'">
                               <p class="text-black font-semibold text-sm mb-5">{{newinput.prefix +' '+ newinput.text}}</p>
                                   <p class="text-sm">
                                       {{newinput.answerOptions}} 
@@ -135,7 +131,7 @@
                           </div>
               </div>
            </div>
-           <div v-for="(input, id) in payload.sections" :key="`${id}`">
+           <div v-for="(input, id) in sectionsPayload" :key="`${id}`">
               <div v-for="(newinput, index) in input.items[2]" :key="`${index}`">
                
                 <cornie-textarea :label="newinput.display" class="w-full" placeholder="Start Typing"/>
@@ -147,7 +143,7 @@
 
  
     <template #actions>
-           <span class="flex justify-end w-full">
+           <span class="flex justify-end">
       <cornie-btn
         @click="show = false"
         class="border-primary border-2  mr-3  pl-4 pr-4 rounded-xl text-primary"
@@ -155,7 +151,7 @@
         Cancel
       </cornie-btn>
                <cornie-btn  :loading="loading"
-            @click="submit" class="text-white bg-danger  pl-4 pr-4 px-3 rounded-xl">
+            @click="submit" class="text-white bg-danger  pl-4 pr-4 px-6 rounded-xl">
        Save
       </cornie-btn>
            </span>
@@ -182,67 +178,15 @@ import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
-import DEdit from "@/components/icons/aedit.vue";
-import RangeSlider from "@/components/range.vue";
-import CDelete from "@/components/icons/adelete.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
-import IconInput from "@/components/IconInput.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
-//import CornieDatePicker from "./components/datepicker.vue";
-import CornieDateRangePicker from "@/components/daterangepicker.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import SelectOption from "@/components/custom-checkbox.vue";
-//import DatePicker from "./components/datetime-picker.vue";
-import { string } from "yup";
-import Measurable from "@/components/measurable.vue";
-//import EncounterSelect from "./encounter-select.vue";
-import IOtherrequest from "@/types/IOtherrequest";
-  import { IPatient } from "@/types/IPatient";
-//import DateTimePicker from './components/datetime-picker.vue'
 import { namespace } from 'vuex-class'
 import IPractitioner from "@/types/IPractitioner";
-import FhirInput from "@/components/fhir-input.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/yelloweye.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import TimelineIcon from "@/components/icons/timeline.vue";
-import DangerIcon from "@/components/icons/danger.vue";
-import ShareIcon from "@/components/icons/share.vue";
-import CheckinIcon from "@/components/icons/newcheckin.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
-import CheckoutIcon from "@/components/icons/newcheckout.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
-import MessageIcon from "@/components/icons/message.vue";
-import CalenderIcon from "@/components/icons/newcalender.vue";
-import SendIcon from "@/components/icons/send.vue";
+import SelectOption from "@/components/custom-checkbox.vue";
 
-
-const patients = namespace("patients");
 const userStore = namespace("user");
-const otherrequest = namespace('otherrequest')
-const dropdown = namespace("dropdown");
-const OrgStore = namespace("OrgStore");
-
-const measurable = {
-  unit: "",
-  min: 0,
-  max: 0,
-  string: "",
-};
-const emptyOtherrequest: IOtherrequest = {
-  basicInfo: {},
-  requestInfo: {},
-  subject: {},
-  performer: {},
-  forms: {},
-  request: {
-    range: [20,50]
-  },
-};
-
 
 @Options({
   name: "viewForm",
@@ -250,40 +194,13 @@ const emptyOtherrequest: IOtherrequest = {
     ...CornieCard,
     CornieIconBtn,
      CancelIcon,
-    CalenderIcon,
-    CheckinIcon,
-    NewviewIcon,
     CornieTextarea,
-    UpdateIcon,
-    TimelineIcon,
-    ShareIcon,
-    DangerIcon,
     PlusIcon,
-    SelectOption,
-    SendIcon,
-    SearchIcon,
-    MessageIcon,
-    CheckoutIcon,
-    IconInput,
-    DeleteIcon,
-    EyeIcon,
-    EditIcon,
-    NoteIcon,
-    FhirInput,
     ArrowLeftIcon,
-   // EncounterSelect,
     Avatar,
-   // DatePicker,
-    CDelete,
-    RangeSlider,
-    DEdit,
-    Measurable,
     InfoIcon,
-    //CornieDatePicker,
-    CornieDateRangePicker,
     BigDialog,
     CornieNuminput,
- //   DateTimePicker,
     AccordionComponent,
     Textarea,
     CornieInput,
@@ -291,6 +208,7 @@ const emptyOtherrequest: IOtherrequest = {
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
+    SelectOption,
     MainCornieSelect
   },
 })
@@ -304,6 +222,8 @@ export default class ViewForm extends Vue {
   @Prop({ type: Array, default: [] })
   payload!: object;
   
+@Prop({type: Array, default: []})
+sectionsPayload!: object;
 
   @userStore.Getter
   authPractitioner!: IPractitioner;
@@ -329,8 +249,6 @@ loading= false;
     this.loading = false;
   }
      async createPracticeform() {
-   // this.displayTitle = this.formTitle;
-   // this.formType = this.displayTitle;
     try {
       const response = await cornieClient().post(
         "/api/v1/practice-form",
@@ -338,7 +256,7 @@ loading= false;
       );
       if (response.success) {
         window.notify({ msg: "Practice form created", status: "success" });
-       // this.$router.push("/dashboard/provider/settings/practice-templates");
+        this.$router.push("/dashboard/provider/settings/practise-management/forms-questionnaires");
       } else {
         window.notify({ msg: response.errors!.summary, status: "error" });
        // this.$router.push("/dashboard/provider/settings/practice-templates");

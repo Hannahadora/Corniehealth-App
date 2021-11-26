@@ -36,7 +36,7 @@
                 :items="['Draft', 'Active', 'Retired']"
                 class="required w-full"
                 :required="true"
-                placeholder="--Select"
+                placeholder="--Select--"
               />
               <div class="mb-2">
                 <label
@@ -84,7 +84,7 @@
                 ]"
                 class="required w-full"
                 :required="true"
-                placeholder="--Select"
+                placeholder="--Select--"
               />
               <cornie-input
                 label="Purpose"
@@ -127,7 +127,7 @@
                   'Inpatient discharge',
                   'Billing & Payment Collection',
                 ]"
-                placeholder="--Select"
+                placeholder="--Select--"
                 v-model="code"
               />
             </div>
@@ -289,18 +289,18 @@
                                           'Date & Time',
                                           'Time',
                                           'String',
-                                          'Text',
+                                          'text',
                                           'Url',
-                                          'Choice',
-                                          'Open Choice',
+                                          'choice',
+                                          'openChoice',
                                           'Attachment',
                                           'Reference',
                                           'Quantity',
                                         ]"
-                                        placeholder="--Select"
+                                        placeholder="--Select--"
                                       />
                                     </div>
-                                    <div v-if="questions[index].answerType =='Open Choice'">
+                                    <div v-if="questions[index].answerType =='openChoice'">
                                       <div class="mt-4" v-for="(input, id) in questionoptionsothers" :key="`${id}`">
                                         <span class="flex item-center mb-2">
                                           <select-option/>
@@ -329,7 +329,7 @@
                                         "
                                         @click="addOptionothers(questionoptionsothers,index)">Add new option</span>
                                     </div>
-                                    <div v-if="questions[index].answerType =='Text'">
+                                    <div v-if="questions[index].answerType =='text'">
                                       <div class="mt-4" v-for="(input, id) in questionoptionsothers" :key="`${id}`">
                                         <div class="mt-5">
                                           <input
@@ -354,7 +354,7 @@
                                         </div>
                                       </div>
                                     </div>
-                                    <div v-if="questions[index].answerType == 'Choice'">
+                                    <div v-if="questions[index].answerType == 'choice'">
                                       <div class="mt-4" v-for="(input, id) in questionoptionsothers" :key="`${id}`">
                                         <span
                                           class="flex item-center mb-4"
@@ -517,6 +517,7 @@
                     class="h-11/12 pb-10"
                     :element="element"
                     :index="index"
+                    v-model="mainquestions[index].name"
                     @anotherdisplay="addmaindisplay"
                     editabetitle="Questions (s)"
                     :opened="true"
@@ -536,7 +537,7 @@
                               class="required"
                               :required="true"
                               v-model="mainquestions[index].prefix"
-                              placeholder="--Enter--"
+                              placeholder="e.g 2."
                             />
                             <cornie-input
                               label="Question Text"
@@ -557,18 +558,18 @@
                                 'Date & Time',
                                 'Time',
                                 'String',
-                                'Text',
+                                'text',
                                 'Url',
-                                'Choice',
-                                'Open Choice',
+                                'choice',
+                                'openChoice',
                                 'Attachment',
                                 'Reference',
                                 'Quantity',
                               ]"
-                              placeholder="--Select"
+                              placeholder="--Select--"
                             />
                           </div>
-                         <div v-if="mainquestions[index].answerType =='Open Choice'">
+                         <div v-if="mainquestions[index].answerType =='openChoice'">
                                       <div class="mt-4" v-for="(input, id) in questionoptionmainothers" :key="`${id}`">
                                         <span class="flex item-center mb-2">
                                           <select-option/>
@@ -597,7 +598,7 @@
                                         "
                                         @click="addMainOptionOthers(questionoptionmainothers,index)">Add new option</span>
                           </div>
-                          <div v-if="mainquestions[index].answerType == 'Text'">
+                          <div v-if="mainquestions[index].answerType == 'text'">
                             <div class="mt-4" v-for="(input, id) in questionoptionmainothers" :key="`${id}`">
                               <div class="mt-5">
                                 <input
@@ -622,18 +623,18 @@
                               </div>
                             </div>
                           </div>
-                          <div v-if="mainquestions[index].answerType == 'Choice'">
+                          <div v-if="mainquestions[index].answerType == 'choice'">
                             <div class="mt-4" v-for="(input, id) in questionoptionmainothers" :key="`${id}`">
                               <span
                                 class="flex item-center mb-4"
                               >
                                 <cornie-radio name="question"/>
                                 <span  class="text-sm w-full">
-                                  <spanaddMainRadioOptionOthers
+                                  <span
                                     contenteditable="true"
                                     class="text-sm w-full"
                                     @keyup.delete="id = -1" @input="setInputMain($event,index,id)">Option
-                                  </spanaddMainRadioOptionOthers>
+                                  </span>
                                     <div class="border-b-2 border-gray-200 w-full pt-3" v-if="id >= 0">
                                       <cancel-icon
                                         class="
@@ -648,7 +649,7 @@
                               </span>
                             </div>
                               <span class="cursor-pointer text-danger mr-2 text-xs float-left"
-                                @click="(questionoptionmainothers,index)">Add new option</span>
+                                @click="addMainOptionOthers(questionoptionmainothers,index)">Add new option</span>
                           </div>
                            <div class="mt-32 flex space-x-4 w-full">
                                       <tooltip
@@ -777,7 +778,20 @@
           Cancel
         </button>
 
+            <button v-if="id" :loading="loading"
+            @click="submit" class=" bg-danger
+            rounded-full
+            font-semibold
+            text-white
+            mt-5
+            pr-12
+            pl-12
+            focus:outline-none
+            hover:opacity-90">
+       Update
+      </button>
         <button
+        v-else
           @click="showPreview"
           class="
             bg-danger
@@ -796,7 +810,7 @@
       </span>
     </div>
   </div>
-  <view-modal v-model="showPreviewModal" :payload="payload"/>
+  <view-modal v-model="showPreviewModal" :payload="payload" :sectionsPayload="sections"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -911,7 +925,7 @@ export default class AddPracticeform extends Vue {
 
 
   firstnum = 1;
-  answerOption = "Open Choice";
+  answerOption = "openChoice";
   isVisible = "";
   questionoptionsothers = [""] as any;
   questionoptionmainothers = [""] as any;
@@ -931,12 +945,10 @@ export default class AddPracticeform extends Vue {
   checkoption = false;
   checkinput = false;
   onedisplay = false;
-  //  groups: []  = [];
-  // group: []  = [] as any;
-
+  
   name = "New Practice Forms";
   status = "";
-  type = "questionnaire";
+  type = "survey";
   experimental = false;
   subjectType = "";
   purpose = "";
@@ -949,15 +961,6 @@ export default class AddPracticeform extends Vue {
   AnswerType: AnswerType = [] as any;
   cancel = false;
 
-  // sections: Section[] =[
-  //     {
-  //       items: [
-  //        this.getEmptyQuestion(),
-  //        this.getEmptyQuestionGroup(),
-  //        this.Display
-  //       ]
-  //     }
-  // ];
   maindisplays: any[] = [];
   getEmptyMainDisplay(): Displaymain {
     return this.display;
@@ -971,9 +974,6 @@ export default class AddPracticeform extends Vue {
   getEmptySection(): Section {
     return {
       items: [
-        // this.questions as any,
-        // this.groups as any,
-        // this.display,
          this.mainquestions as any,
         this.groups as any,
         this.maindisplays as any,
@@ -981,42 +981,22 @@ export default class AddPracticeform extends Vue {
     };
   }
 
-  // groups: QuestionGroup[] = [
-  //   {
-  //       name: "",
-  //         prefix: "",
-  //        text: "",
-  //       items: [
-  //         this.getEmptyQuestion(),
-  //         this.Display
-  //       ],
-  //   }
-  // ];
   groups: QuestionGroup[] = [];
   getEmptyQuestionGroup(): QuestionGroup {
     return {
-      name: "",
+      name: "Group",
       prefix: "",
       text: "",
       items: [ this.questions as any, this.displays as any],
     };
   }
-  // questions: Question[] = [
-  //   {
-  //       question: "Type question here",
-  //     name: "Question",
-  //     answerType: this.AnswerType,
-  //     answerOptions: [""],
-  //     prefix: "",
 
-  //   },
-  // ];
   mainquestions: Questionmain[] = [];
   getEmptyMainQuestion(): Questionmain {
     return {
       question: "Type question here",
       name: "Question",
-      answerType: "Choice",
+      answerType: "choice",
       answerOptions: [],
       prefix: "",
     };
@@ -1026,7 +1006,7 @@ export default class AddPracticeform extends Vue {
     return {
       question: "Type question here",
       name: "Question",
-      answerType: "Choice",
+      answerType: "choice",
       answerOptions: [],
       prefix: "",
     };
@@ -1044,6 +1024,9 @@ export default class AddPracticeform extends Vue {
   }
 
 
+  // get updatedGroups(){
+  //   return this.groups = this.sections[0].items[0]
+  // }
   async setPracticeform() {
     const practiceform = await this.getPracticeformById(this.id);
     if (!practiceform) return;
@@ -1058,8 +1041,15 @@ export default class AddPracticeform extends Vue {
     this.effectivePeriod = practiceform.effectivePeriod;
     this.code = practiceform.code;
     this.sections = practiceform.sections;
+    console.log(practiceform.sections[0].items[1]);
+    (this.groups as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[1]))];
+     (this.mainquestions as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[0]))];
+      (this.maindisplays as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[2]))]; 
+      (this.questions as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[0]))];
+      const filterQuestion = (practiceform.sections[0].items[0]);
   }
   get payload() {
+    const sections = JSON.parse(JSON.stringify(this.sections));
     return {
       name: this.name,
       status: this.status,
@@ -1070,10 +1060,47 @@ export default class AddPracticeform extends Vue {
       copyright: this.copyright,
       effectivePeriod: this.effectivePeriod,
       code: this.code,
-      sections: this.sections,
+      sections: sections.map(this.processSection),
     };
   }
 
+  processQuestionGroup(questionGroup:any){
+    if(!questionGroup.items) return questionGroup;
+    const items = questionGroup.items || [];
+    let sanitize:any = [];
+    console.log(items);
+    items.forEach((item:any) => {
+      if(!Array.isArray(item)){
+        sanitize.push(item);
+      }else{
+        if(item.length){
+          sanitize = [...sanitize, ...item]
+         
+        }
+      }
+    });
+
+    questionGroup.items = JSON.parse(JSON.stringify(sanitize));
+    return questionGroup;
+  }
+  processSection(section:any){
+    const items = section.items || [];
+    let sanitize:any = [];
+    console.log(items);
+    items.forEach((item:any) => {
+      if(!Array.isArray(item)){
+        sanitize.push(item);
+      }else{
+        if(item.length){
+          sanitize = [...sanitize, ...item]
+          sanitize = sanitize.map(this.processQuestionGroup);
+        }
+      }
+    });
+
+    section.items = JSON.parse(JSON.stringify(sanitize));
+    return section;
+  }
   get allaction() {
     return this.id ? "Edit" : "Add a";
   }
@@ -1155,7 +1182,7 @@ export default class AddPracticeform extends Vue {
   getTemplateMainQuestion(name: string) {
     return {
       question: "Type question here",
-      name: name,
+      name: "Question",
       answerType: this.AnswerType,
       answerOptions: [],
       prefix: "",
@@ -1164,7 +1191,7 @@ export default class AddPracticeform extends Vue {
   getTemplateQuestion(name: string) {
     return {
       question: "Type question here",
-      name: name,
+      name: "Question",
       answerType: this.AnswerType,
       answerOptions: [],
       prefix: "",

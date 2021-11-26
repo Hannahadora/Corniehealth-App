@@ -18,7 +18,7 @@
               <cornie-input disabled label="Updated By" class="w-full mb-4" v-model="updatedBy"/>
               <cornie-input disabled label="Date Last Updated" class="w-full mb-4" v-model="dateUpdated"/>
           
-              <cornie-select :label="'New Status'" v-model="status" :items="['Active', 'On-Hold','Revoked','Completed','Draft','Do Not Perform','Unknown','Entered-in-Error']" style="width: 100%" />
+              <cornie-select :label="'New Status'" v-model="status"  :items="['Draft', 'Active', 'Retired']" style="width: 100%" />
             </div>
           </div>
         </div>
@@ -135,12 +135,12 @@ status = "";
 
  async updateStatus() {
    const id = this.id;
-    const url = `/api/v1/requests/${id}`;
+    const url = `/api/v1/practice-form/status/${id}`;
     const body = {
        status: this.status,
     }
     try {
-      const response = await cornieClient().put(url, body);
+      const response = await cornieClient().patch(url, body);
       if (response.success){
           window.notify({ msg: "Status Updated", status: "success" });
         this.done();
@@ -156,7 +156,7 @@ status = "";
  
  
  done() {
-    this.$emit("medicationAdded");
+    this.$emit("statusadded");
     this.show = false;
   }
   async apply() {

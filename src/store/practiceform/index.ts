@@ -78,6 +78,13 @@ export default {
         (practiceform) => practiceform.id == id
       );
     },
+    async getPracticeformQuestionnairesById(ctx, id: string) {
+      if (ctx.state.practiceformsQuestionnaries.length < 1)
+        await ctx.dispatch("fetchPracticeformsQuestionnaires");
+      return ctx.state.practiceformsQuestionnaries.find(
+        (practiceformsQuestionnarie) => practiceformsQuestionnarie.id == id
+      );
+    },
     async deletePracticeform(ctx, id: string) {
       const deleted = await deletePracticeform(id);
       if (!deleted) return false;

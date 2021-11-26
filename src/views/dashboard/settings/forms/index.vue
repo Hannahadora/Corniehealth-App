@@ -20,12 +20,12 @@
           <!-- <forms-empty-state
               
           /> -->
-          <practiceform-empty-state
+          <!-- <practiceform-empty-state
                 v-if="empty"
-          />
+          /> -->
           <practiceform-existing-state
         
-          v-else
+        
 
           />
       </span>
@@ -58,13 +58,22 @@ export default class PracticeformIndex extends Vue {
  @practiceform.State
   practiceforms!: IPracticeform[];
 
+ @practiceform.State
+  practiceformsQuestionnaries!: IPracticeform[];
+
   @practiceform.Action
   fetchPracticeforms!: () => Promise<void>;
 
+  @practiceform.Action
+  fetchPracticeformsQuestionnaires!: () => Promise<void>;
 
   created() {
-  this.fetchPracticeforms()
-    if (this.practiceforms.length < 1) this.fetchPracticeforms();
+  this.fetchPracticeforms();
+  this.fetchPracticeformsQuestionnaires();
+    if (this.practiceforms.length < 1 || this.practiceformsQuestionnaries.length < 1){
+      this.fetchPracticeforms(); 
+       this.fetchPracticeformsQuestionnaires();
+    } 
   }
 
 }

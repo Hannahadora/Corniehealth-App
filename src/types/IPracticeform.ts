@@ -19,6 +19,7 @@ export default interface IPracticeform {
   updatedById?: string;
   approverId?: string;
   sections: Section[];
+  groups: QuestionGroup[];
   archivedAt?: string;
 
   createdBy?: Practitioner;
@@ -44,7 +45,7 @@ export default interface IPracticeform {
   | "string"
   | "text"
   | "url"
-  | "Choice"
+  | "choice"
   | "openChoice"
   | "attachment"
   | "reference"
