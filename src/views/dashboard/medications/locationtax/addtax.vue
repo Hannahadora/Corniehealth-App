@@ -17,7 +17,7 @@
      <span
       class="flex w-full mt-3   border-b-2 border-gray-200 -mb-2 font-bold text-lg text-primary py-2 mx-auto"
     >
-      Add Task
+      Add Tax
     </span>
       <form  @submit.prevent="submit">
           <div class="mb-32 pb-72">

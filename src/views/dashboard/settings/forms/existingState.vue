@@ -308,7 +308,7 @@ update="";
     { title: "Date Created", key: "createdAt", show: true },
     {
       title: "Last Modified",
-      key: "id",
+      key: "updatedAt",
       show: true,
     },
     {

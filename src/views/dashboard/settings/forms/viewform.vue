@@ -87,7 +87,7 @@
                               </div>
                               
                           </div>
-                          <div class="mt-5" v-if="anewinput.answerType == 'Text'">
+                          <div class="mt-5" v-if="anewinput.answerType == 'text'">
                               <p class="text-black font-semibold text-sm mb-5">{{anewinput.prefix +' '+ anewinput.text}}</p>
                                   <p class="text-sm">
                                       {{anewinput.answerOptions}} 
@@ -150,8 +150,10 @@
       >
         Cancel
       </cornie-btn>
-               <cornie-btn  :loading="loading"
-            @click="submit" class="text-white bg-danger  pl-4 pr-4 px-6 rounded-xl">
+               <cornie-btn
+               :loading="loading"
+               type="submit"
+            @click="submit" class="text-white bg-danger  pl-4 pr-4 px-6 rounded-xl mr-4">
        Save
       </cornie-btn>
            </span>

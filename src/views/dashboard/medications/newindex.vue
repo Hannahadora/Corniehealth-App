@@ -6,7 +6,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 @Options({
-  name: "PatientsExperience",
+  name: "Medications",
   components: {},
 })
 export default class Settings extends Vue {}

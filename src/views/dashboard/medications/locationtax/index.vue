@@ -14,7 +14,7 @@
           py-2
         "
       >
-       Tasks
+       Location & Tax
       </span>
       <span class="w-full h-screen">
           <tasks-empty-state

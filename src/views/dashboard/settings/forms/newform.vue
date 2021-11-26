@@ -25,7 +25,7 @@
             <div class="w-full grid grid-cols-3 gap-4 mt-5">
               <cornie-input
                 label="Name"
-                class="required w-full"
+                class="w-full"
                 v-model="name"
                 :required="true"
                 placeholder="--Enter--"
@@ -34,7 +34,7 @@
                 label="Status"
                 v-model="status"
                 :items="['Draft', 'Active', 'Retired']"
-                class="required w-full"
+                class="w-full"
                 :required="true"
                 placeholder="--Select--"
               />
@@ -82,14 +82,14 @@
                   'Inpatient discharge',
                   'Billing & Payment Collection',
                 ]"
-                class="required w-full"
+                class="w-full"
                 :required="true"
                 placeholder="--Select--"
               />
               <cornie-input
                 label="Purpose"
                 v-model="purpose"
-                class="required w-full"
+                class="w-full"
                 :required="true"
                 placeholder="--Enter--"
               />
@@ -111,12 +111,12 @@
                   label="Effective Period "
                   :required="true"
                   width="w-11/12"
-                  class="required -mt-1.5"
+                  class="-mt-1.5"
                 />
               </div>
               <cornie-select
                 label="Code"
-                class="required w-full"
+                class="w-full"
                 :items="[
                   'Appointment Booking',
                   'Walk-In Patients',
@@ -757,8 +757,8 @@
       </draggable>
 
       <span class="flex justify-end w-full">
-        <button
-          @click="$router.push('/dashboard/provider/experience/tasks')"
+        <cornie-btn
+          @click="$router.push('/dashboard/provider/settings/practise-management/forms-questionnaires')"
           type="button"
           class="
             outline-primary
@@ -766,31 +766,31 @@
             text-black
             mt-5
             mr-3
-            py-2
-            pr-14
-            pl-14
-            px-3
+            py-1
+            pr-4
+            pl-4
+            px-1
             focus:outline-none
             hover:bg-primary
             hover:text-white
           "
         >
           Cancel
-        </button>
+        </cornie-btn>
 
-            <button v-if="id" :loading="loading"
+            <cornie-btn v-if="id" :loading="loading"
             @click="submit" class=" bg-danger
             rounded-full
             font-semibold
             text-white
             mt-5
-            pr-12
-            pl-12
+            pr-5
+            pl-5
             focus:outline-none
             hover:opacity-90">
        Update
-      </button>
-        <button
+      </cornie-btn>
+        <cornie-btn
         v-else
           @click="showPreview"
           class="
@@ -799,14 +799,17 @@
             font-semibold
             text-white
             mt-5
-            pr-5
-            pl-5
+            mr-3
+            py-1
+            pr-2
+            pl-2
+            px-1
             focus:outline-none
             hover:opacity-90
           "
         >
           Preview | Submit
-        </button>
+        </cornie-btn>
       </span>
     </div>
   </div>
@@ -1247,7 +1250,7 @@ optionText="";
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Practice form updated", status: "success" });
-       // this.$router.push("/dashboard/provider/settings/practice-templates");
+           this.$router.push("/dashboard/provider/settings/practise-management/forms-questionnaires");
       }
     } catch (error) {
       window.notify({ msg: "Practice form not updated", status: "error" });

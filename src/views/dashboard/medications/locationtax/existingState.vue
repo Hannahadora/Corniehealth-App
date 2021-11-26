@@ -23,7 +23,7 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                @click="$router.push('/dashboard/provider/medications/add-location')"
+                 @click="$router.push('add-location')"
               >
                 Add New
               </button>
