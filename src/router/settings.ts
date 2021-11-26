@@ -172,7 +172,7 @@ export const SettingsRoute: RouteRecordRaw = {
       props: true,
       name: "Markup",
       component: () =>
-        import("@/views/dashboard/medications/Index.vue"),
+        import("@/views/dashboard/medications/index.vue"),
     },
     {
       path: "markup-settings",
