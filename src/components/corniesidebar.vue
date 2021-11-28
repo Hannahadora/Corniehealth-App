@@ -199,11 +199,6 @@ export default class CorniDashboardeSideBar extends Vue {
           to: "catologue",
           hasSubsection: false,
         },
-         {
-          name: "Location & Tax",
-          to: {name: "Location & Tax"},
-          hasSubsection: false,
-        },
         {
           name: "Inventory",
           to: "inventory",
