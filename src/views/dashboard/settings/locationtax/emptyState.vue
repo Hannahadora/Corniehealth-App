@@ -32,8 +32,8 @@
          <div class="w-full flex flex-col justify-center items-center h-96">
               <img src="@/assets/img/task.svg" />
               <h3 class="text-center mt-5">
-                  There’s currently no active task!<br />
-                  Adding a task...
+                  There’s currently no active tax!<br />
+                  Adding a tax...
               </h3>
                   <span class="flex justify-center w-full">
               <button
