@@ -143,7 +143,6 @@
           <p class="float-right text-sm">Add Section</p>
         </div>
       </div>
-
       <draggable
         v-model="sections"
         item-key="id"

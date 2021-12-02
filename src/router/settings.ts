@@ -26,8 +26,8 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/AccountSecurity/index.vue"),
     },
     {
-      path: "bank-accounts",
-      name: "Bank & Accounts",
+      path: "accounts",
+      name: "Bank And Accounts",
       component: () =>
         import("@/views/dashboard/settings/bankaccounts/index.vue"),
     },

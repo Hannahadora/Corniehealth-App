@@ -6,7 +6,6 @@ import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import { NewSettingsRoutes } from "./newsettings";
-import {MedicationRoutes} from "./medication";
 import Settings from "@/views/dashboard/settings/index.vue";
 
 import { InPatientRoutes } from "./in-patient";
@@ -99,7 +98,6 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       ExperienceRoutes, 
-      MedicationRoutes,   
       InPatientRoutes,   
       NewSettingsRoutes,   
       {
@@ -121,8 +119,8 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/AccountSecurity/index.vue"),
           },
           {
-            path: "bank-accounts",
-            name: "Bank & Accounts",
+            path: "accounts",
+            name: "Bank And Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
           },
