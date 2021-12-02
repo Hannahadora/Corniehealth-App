@@ -167,13 +167,13 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/BookingSite/index.vue"),
     },
     
-    {
-      path: "markup",
-      props: true,
-      name: "Markup",
-      component: () =>
-        import("@/views/dashboard/medications/index.vue"),
-    },
+    // {
+    //   path: "markup",
+    //   props: true,
+    //   name: "Markup",
+    //   component: () =>
+    //     import("@/views/dashboard/medications/index.vue"),
+    // },
     {
       path: "markup-settings",
       props: true,
