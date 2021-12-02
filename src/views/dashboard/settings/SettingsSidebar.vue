@@ -133,7 +133,7 @@ export default class Settings extends Vue {
         to: "org-hierarchy",
         icon: "hierarchy-icon",
       },
-      { name: "Bank & Accounts", to: "bank-accounts", icon: "bank-icon" },
+      { name: "Bank And Accounts", to: "accounts", icon: "bank-icon" },
     ];
   }
 

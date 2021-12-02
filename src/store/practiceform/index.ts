@@ -6,10 +6,12 @@ import {
   fetchPracticeforms,
   fetchPracticeformsQuestions,
   fetchPracticeformsTemplates,
+  fetchPracticeformsQuestionnaires,
 } from "./helper";
 
 interface PracticeformState {
   practiceforms: IPracticeform[];
+  practiceformsQuestionnaries: IPracticeform[];
   practiceformstemplates: IPracticeform[];
   practiceformsquestions: IPracticeform[];
 }
@@ -20,10 +22,14 @@ export default {
     practiceforms: [],
     practiceformsquestions: [],
     practiceformstemplates: [],
+    practiceformsQuestionnaries:[],
   },
   mutations: {
     setPracticeforms(state, practiceforms: IPracticeform[]) {
       state.practiceforms = [...practiceforms];
+    },
+    setPracticeformsQuestionnaires(state, practiceformsQuestionnaries: IPracticeform[]) {
+      state.practiceformsQuestionnaries = [...practiceformsQuestionnaries];
     },
     setPracticeformsQuestions(state, practiceformsquestions: IPracticeform[]) {
       state.practiceformsquestions = [...practiceformsquestions];
@@ -53,6 +59,10 @@ export default {
       const practiceforms = await fetchPracticeforms();
       ctx.commit("setPracticeforms", practiceforms);
     },
+    async fetchPracticeformsQuestionnaires(ctx) {
+      const practiceformsQuestionnaries = await fetchPracticeformsQuestionnaires();
+      ctx.commit("setPracticeformsQuestionnaires", practiceformsQuestionnaries);
+    },
     async fetchPracticeformsQuestions(ctx) {
       const practiceformsquestions = await fetchPracticeformsQuestions();
       ctx.commit("setPracticeformsQuestions", practiceformsquestions);
@@ -66,6 +76,13 @@ export default {
         await ctx.dispatch("fetchPracticeforms");
       return ctx.state.practiceforms.find(
         (practiceform) => practiceform.id == id
+      );
+    },
+    async getPracticeformQuestionnairesById(ctx, id: string) {
+      if (ctx.state.practiceformsQuestionnaries.length < 1)
+        await ctx.dispatch("fetchPracticeformsQuestionnaires");
+      return ctx.state.practiceformsQuestionnaries.find(
+        (practiceformsQuestionnarie) => practiceformsQuestionnarie.id == id
       );
     },
     async deletePracticeform(ctx, id: string) {

@@ -26,8 +26,8 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/AccountSecurity/index.vue"),
     },
     {
-      path: "bank-accounts",
-      name: "Bank & Accounts",
+      path: "accounts",
+      name: "Bank And Accounts",
       component: () =>
         import("@/views/dashboard/settings/bankaccounts/index.vue"),
     },
@@ -152,7 +152,7 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "practice-templates",
       name: "Practice Forms/Templates",
       component: () =>
-        import("@/views/dashboard/settings/practiceform/index.vue"),
+        import("@/views/dashboard/settings/forms/index.vue"),
     },
     // {
     //   path: "org-hierarchy",
@@ -167,13 +167,13 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/BookingSite/index.vue"),
     },
     
-    {
-      path: "markup",
-      props: true,
-      name: "Markup",
-      component: () =>
-        import("@/views/dashboard/medications/Index.vue"),
-    },
+    // {
+    //   path: "markup",
+    //   props: true,
+    //   name: "Markup",
+    //   component: () =>
+    //     import("@/views/dashboard/medications/index.vue"),
+    // },
     {
       path: "markup-settings",
       props: true,

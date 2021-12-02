@@ -136,6 +136,7 @@ export default class DatePicker extends Vue {
     return defaultRule;
   }
 
+
   @Watch("date")
   changed() {
     this.visible = false;

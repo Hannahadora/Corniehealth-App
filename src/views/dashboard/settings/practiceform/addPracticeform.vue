@@ -325,6 +325,8 @@ export default class AddPracticeform extends Vue {
   @practiceform.Action
   getPracticeformById!: (id: string) => IPracticeform;
 
+  
+
   loading = false;
   expand = false;
   displayValidation= false;
@@ -359,17 +361,17 @@ export default class AddPracticeform extends Vue {
       name: "Others",
       answerOptions: [""],
       question: "Type questions",
-      answerType: "paragraph",
-      validation:{},
+      answerType: "choice",
+       prefix: "",
     },
   ];
   getEmptyQuestion(): Question {
     return {
       question: "Type question here",
       name: "Others",
-      answerType: "paragraph",
+      answerType: "choice",
       answerOptions: [""],
-      validation:{},
+        prefix: "",
     };
   }
 
@@ -449,7 +451,7 @@ export default class AddPracticeform extends Vue {
     return {
       question: "Type question here",
       name: name,
-      answerType: "paragraph",
+      answerType: this.AnswerType,
       answerOptions: [""],
       validation:{},
     };

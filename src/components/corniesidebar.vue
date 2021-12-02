@@ -192,14 +192,26 @@ export default class CorniDashboardeSideBar extends Vue {
       name: "Medications",
       to: "medications",
       icon: "pill-icon",
-      hasSubsection: false,
+       hasSubsection: true,
+      children: [
+        {
+          name: "Catalogue",
+          to: "catologue",
+          hasSubsection: false,
+        },
+        {
+          name: "Inventory",
+          to: "inventory",
+          hasSubsection: false,
+        },
+        {
+          name: "Pricebook",
+          to: "pricebook",
+          hasSubsection: false,
+        }
+      ],
     },
-    {
-      name: "Certificates",
-      to: "certificates",
-      icon: "medal-icon",
-      hasSubsection: false,
-    },
+   
     {
       name: "Bills & Payments",
       to: "bills",

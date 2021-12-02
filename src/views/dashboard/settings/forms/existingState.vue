@@ -7,7 +7,26 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Forms">   
-          <div>
+           <div class="w-full flex flex-col justify-center items-center h-full mt-40" v-if="empty2">
+             <img src="@/assets/img/Forms.svg" />
+              <h3 class="text-center mt-5">
+                 You have no practice form to display.
+              </h3>
+                  <span class="flex justify-center w-full">
+                    <div class="dropdown inline-block relative">
+                        <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
+                        <span class="mr-1">Create New </span>
+                        <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
+                        </button>
+                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+                        <li class="">
+                            <Select v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></Select>
+                        </li>
+                        </ul>
+                    </div>
+                </span>
+            </div>
+          <div v-else>
             <span class="flex justify-end w-full mb-8">
                <div class="dropdown inline-block relative z-10">
                         <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
@@ -21,9 +40,9 @@
                         </ul>
                     </div>
             </span>
-            <cornie-table :columns="rawHeaders" v-model="Upcoming">
+            <cornie-table :columns="rawHeaders" v-model="items">
                 <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push(`/dashboard/provider/settings/practise-management/add-new-form/${item.id}`)">
                     <edit-icon  class="text-primary fill-current"/>
                     <span class="ml-3 text-xs">Edit </span>
                   </div>
@@ -35,7 +54,7 @@
                     <link-icon />
                     <span class="ml-3 text-xs">Link To</span>
                   </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item.id)">
                     <update-icon />
                     <span class="ml-3 text-xs">Update Status</span>
                   </div>
@@ -43,7 +62,7 @@
                     <share-icon />
                     <span class="ml-3 text-xs">Share</span>
                   </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
+                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="archive(item.id)">
                     <archive-icon class="text-green-400 fill-current"/>
                     <span class="ml-3 text-xs">Archive</span>
                   </div>
@@ -66,63 +85,82 @@
           </div>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Questionnaires">
-              <div>
-            <span class="flex justify-end w-full mb-8">
-               <div class="dropdown inline-block relative z-10">
+            <div class="w-full flex flex-col justify-center items-center h-full mt-40" v-if="empty">
+             <img src="@/assets/img/Forms.svg" />
+              <h3 class="text-center mt-5">
+                You have no satisfactory surveys to display.
+              </h3>
+                  <span class="flex justify-center w-full">
+                    <div class="dropdown inline-block relative">
                         <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
                         <span class="mr-1">Create New </span>
                         <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
                         </button>
-                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1" style="margin-left: -60px;">
+                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
                         <li class="">
                             <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
                         </li>
                         </ul>
                     </div>
-            </span>
-            <cornie-table :columns="rawHeaders2" v-model="Upcoming">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <edit-icon  class="text-primary fill-current"/>
-                    <span class="ml-3 text-xs">Edit </span>
-                  </div>
-                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <newview-icon  class="text-yellow-500 fill-current"/>
-                    <span class="ml-3 text-xs">View</span>
-                  </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <link-icon />
-                    <span class="ml-3 text-xs">Link To</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <update-icon />
-                    <span class="ml-3 text-xs">Update Status</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <share-icon />
-                    <span class="ml-3 text-xs">Share</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
-                    <archive-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Archive</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                      <delete-icon/>
-                      <span class="ml-3 text-xs">Delete</span>
-                  </div>
-                </template>
-                <template #excecutionPeriod="{ item }">
-                  <div class="flex items-center">
-                    <span>{{item.excecutionPeriod.start}} - {{item.excecutionPeriod.end}} </span>
-                  </div>
-                </template>
-                <template #status="{ item }">
-                    <div class="container">
-                      <span class="p-2 px-3 rounded-full text-black" >{{ item.status }}</span>
-                    </div>
-                </template>
-            </cornie-table>
-          </div>
+                </span>
+            </div>
+            <div v-else>
+                <span class="flex justify-end w-full mb-8">
+                  <div class="dropdown inline-block relative z-10">
+                            <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
+                            <span class="mr-1">Create New </span>
+                            <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
+                            </button>
+                            <ul class="dropdown-menu absolute hidden text-gray-700 pt-1" style="margin-left: -60px;">
+                            <li class="">
+                                <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
+                            </li>
+                            </ul>
+                        </div>
+                </span>
+                <cornie-table :columns="rawHeaders2" v-model="items2">
+                    <template #actions="{ item }">
+                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/provider/settings/practise-management/add-questionnaires/${item.id}`)">
+                        <edit-icon  class="text-primary fill-current"/>
+                        <span class="ml-3 text-xs">Edit </span>
+                      </div>
+                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                        <newview-icon  class="text-yellow-500 fill-current"/>
+                        <span class="ml-3 text-xs">View</span>
+                      </div>
+                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                        <link-icon />
+                        <span class="ml-3 text-xs">Link To</span>
+                      </div>
+                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item.id)">
+                        <update-icon />
+                        <span class="ml-3 text-xs">Update Status</span>
+                      </div>
+                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                        <share-icon />
+                        <span class="ml-3 text-xs">Share</span>
+                      </div>
+                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="archive(item.id)">
+                        <archive-icon class="text-green-400 fill-current"/>
+                        <span class="ml-3 text-xs">Archive</span>
+                      </div>
+                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+                          <delete-icon/>
+                          <span class="ml-3 text-xs">Delete</span>
+                      </div>
+                    </template>
+                    <template #excecutionPeriod="{ item }">
+                      <div class="flex items-center">
+                        <span>{{item.excecutionPeriod.start}} - {{item.excecutionPeriod.end}} </span>
+                      </div>
+                    </template>
+                    <template #status="{ item }">
+                        <div class="container">
+                          <span class="p-2 px-3 rounded-full text-black" >{{ item.status }}</span>
+                        </div>
+                    </template>
+                </cornie-table>
+           </div>
         </div>
         <!-- <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="Satisfaction">
          
@@ -133,6 +171,14 @@
       :taskId="taskId"
         v-model="showNotes"
     />
+    <status-modal
+          @statusadded="stautsadded"
+            :id="formId" 
+            :surveyId="surveyId"
+           :updatedBy="updatedBy" 
+            :dateUpdated="update"
+        :currentStatus="currentStatus" 
+          v-model="showStatusModal"/>
   </div>
 </template>
 <script lang="ts">
@@ -158,7 +204,6 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import Select from "@/components/formselect.vue";
 import SelectSurvey from "@/components/surveyselect.vue";
-import ITask from "@/types/ITask";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -172,9 +217,14 @@ import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
+import IPracticeform from "@/types/IPracticeform";
 import { cornieClient } from "@/plugins/http";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-const task = namespace("task");
+import IPractitioner from "@/types/IPractitioner";
+import StatusModal from "./status.vue";
+
+const practiceform = namespace("practiceform");
+const userStore = namespace("user");
 
 @Options({
   components: {
@@ -194,6 +244,7 @@ const task = namespace("task");
     Select,
     PlusIcon,
     SearchIcon,
+    StatusModal,
   //  CloseIcon,
     MessageIcon,
     PrintIcon,
@@ -213,7 +264,7 @@ const task = namespace("task");
   },
   
 })
-export default class TaskExistingState extends Vue {
+export default class PracticeformExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
@@ -222,13 +273,34 @@ export default class TaskExistingState extends Vue {
   showNotes = false;
   taskId="";
   tasknotes=[];
+  showStatusModal = false;
+  formId = "";
+  surveyId  = "";
+updatedBy= "";
+currentStatus="";
+update="";
+
+  
+ @practiceform.State
+  practiceforms!: IPracticeform[];
+
+ @practiceform.State
+  practiceformsQuestionnaries!: IPracticeform[];
+
+  @practiceform.Action
+  fetchPracticeforms!: () => Promise<void>;
+
+  @practiceform.Action
+  fetchPracticeformsQuestionnaires!: () => Promise<void>;
 
 
-  @task.State
-  tasks!: ITask[];
+  @practiceform.Action
+  deletePracticeform!: (id: string) => Promise<boolean>;
 
-  @task.Action
-  deleteTask!: (id: string) => Promise<boolean>;
+
+  @userStore.Getter
+  authPractitioner!: IPractitioner;
+
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -236,22 +308,22 @@ export default class TaskExistingState extends Vue {
     { title: "Date Created", key: "createdAt", show: true },
     {
       title: "Last Modified",
-      key: "id",
+      key: "updatedAt",
       show: true,
     },
     {
       title: "Name | Subject Type",
-      key: "priority",
+      key: "subjectType",
       show: true,
     },
     {
       title: "Title",
-      key: "intent",
+      key: "name",
       show: true,
     },
      {
       title: "Responses",
-      key: "recipient",
+      key: "responses",
       show: true,
     },
      {
@@ -336,12 +408,12 @@ export default class TaskExistingState extends Vue {
     },
     {
       title: "Name",
-      key: "priority",
+      key: "code",
       show: true,
     },
     {
       title: "Title",
-      key: "intent",
+      key: "name",
       show: true,
     },
          {
@@ -351,78 +423,44 @@ export default class TaskExistingState extends Vue {
     },
      {
       title: "Experimental",
-      key: "recipient",
+      key: "experimental",
       show: true,
     },
 
     {
       title: "Subject Type",
-      key: "code",
+      key: "subjectType",
       show: true,
     },
     {
-      title: "Reason Reference",
-      key: "reasonReference",
+      title: "Type",
+      key: "type",
       show: false,
     },
     {
-      title: "Period",
-      key: "excecutionPeriod",
+      title: "Purpose",
+      key: "purpose",
       show: false,
     },
     {
-      title: "Priority",
-      key: "priority",
+      title: "Updated At",
+      key: "updatedAt",
       show: false,
     },
     {
-      title: "Description",
-      key: "description",
+      title: "Created At",
+      key: "createdAt",
       show: false,
     },
-    {
-      title: "Note",
-      kwy: "note",
-      show: false,
-    },
-     {
-      title: "Focus",
-      kwy: "focus",
-      show: false,
-    },
-     {
-      title: "Encounter",
-      kwy: "encounter",
-      show: false,
-    },
-     {
-      title: "Repitition",
-      kwy: "repitition",
-      show: false,
-    },
-     {
-      title: "Input Type",
-      kwy: "inputType",
-      show: false,
-    },
-     {
-      title: "Input Value",
-      kwy: "inputValue",
-      show: false,
-    },
-     {
-      title: "Output Type",
-      kwy: "outputType",
-      show: false,
-    },
-     {
-      title: "Output Value",
-      kwy: "outputValue",
-      show: false,
-    },
-
+   
   ];
 
+ get empty() {
+    return  this.practiceformsQuestionnaries.length < 1;
+  }
+  get empty2() {
+    return this.practiceforms.length < 1;
+  }
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -433,45 +471,100 @@ export default class TaskExistingState extends Vue {
   }
   
 
-
+newexperiment = "";
   get items() {
-    const tasks = this.tasks.map((task) => {
-       (task as any).excecutionPeriod.start = new Date(
-         (task as any).excecutionPeriod.start 
+    const practiceforms = this.practiceforms.map((practiceform) => {
+       (practiceform as any).createdAt = new Date(
+         (practiceform as any).createdAt 
        ).toLocaleDateString("en-US");
-         (task as any).excecutionPeriod.end = new Date(
-         (task as any).excecutionPeriod.end 
+       (practiceform as any).updatedAt = new Date(
+         (practiceform as any).updatedAt 
        ).toLocaleDateString("en-US");
-         (task as any).createdAt= new Date(
-         (task as any).createdAt
-       ).toLocaleDateString("en-US");
+       if(practiceform.experimental == true){
+        this.newexperiment = "Yes"
+       }else{
+          this.newexperiment = "No"
+       }
+            this.updatedBy = this.authPractitioner.firstName +' '+ this.authPractitioner.lastName;
+      this.currentStatus = practiceform.status;
+       this.update= (practiceform as any).createdAt;
+       // const practioner = this.stringifyPractioners(practiceform.createdBy);
+      //  const updatedpractioner = this.stringifyUpdatedPractioners(practiceform.updatedBy);
         return {
-        ...task,
-         action: task.id,
-         keydisplay: "XXXXXXX",
+        ...practiceform,
+      //    createdBy: practioner,
+       //   updatedBy: updatedpractioner,
+          action: practiceform.id,
+          experimental: this.newexperiment,
         };
     });
-    if (!this.query) return tasks;
-    return search.searchObjectArray(tasks, this.query);
+    if (!this.query) return practiceforms;
+    return search.searchObjectArray(practiceforms, this.query);
   }
- async makeNotes(id: string) {
-    this.taskId = id;
-    this.showNotes = true;
-    this.fetchNotes();
+  get items2() {
+    const practiceforms = this.practiceformsQuestionnaries.map((practiceform) => {
+       (practiceform as any).createdAt = new Date(
+         (practiceform as any).createdAt 
+       ).toLocaleDateString("en-US");
+       (practiceform as any).updatedAt = new Date(
+         (practiceform as any).updatedAt 
+       ).toLocaleDateString("en-US");
+        if(practiceform.experimental == true){
+        this.newexperiment = "Yes"
+       }else{
+          this.newexperiment = "No"
+       }
+        this.updatedBy = this.authPractitioner.firstName +' '+ this.authPractitioner.lastName;
+      this.currentStatus = practiceform.status;
+       this.update= (practiceform as any).createdAt;
+       // const practioner = this.stringifyPractioners(practiceform.createdBy);
+      //  const updatedpractioner = this.stringifyUpdatedPractioners(practiceform.updatedBy);
+        return {
+        ...practiceform,
+      //    createdBy: practioner,
+       //   updatedBy: updatedpractioner,
+          action: practiceform.id,
+            experimental: this.newexperiment,
+        };
+    });
+    if (!this.query) return practiceforms;
+    return search.searchObjectArray(practiceforms, this.query);
   }
+  stautsadded(){
+    this.fetchPracticeforms();
+    this.fetchPracticeformsQuestionnaires();
+  }
+
  select(i:number) {
       this.selected = i;
     }
- 
-  async deleteItem(id: string) {
+   async  archive(value:string){
+    const url = `/api/v1/practice-form/archive/${value}`;
+    try {
+      const response = await cornieClient().patch(url,{});
+      if (response.success == true){
+          window.notify({ msg: "Practice form Archived", status: "success" });
+          this.stautsadded();
+      } 
+    } catch (error) {
+      console.log(error);
+        window.notify({ msg: "Practice form  not Archived", status: "error" });
+      this.loading = false;
+    }
+    }
+   async showStatus(value:string){
+    this.showStatusModal = true;
+    this.formId = value;
+  }
+ async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this task",
-      title: "Delete task"
+      message: "You are about to delete this practice form",
+      title: "Delete Practice Form"
     });
     if (!confirmed) return;
 
-    if (await this.deleteTask(id)) window.notify({ msg: "Task cancelled", status: "success" });
-    else window.notify({ msg: "Task not cancelled", status: "error" });
+    if (await this.deletePracticeform(id)) window.notify({ msg: "Practice form deleted", status: "success" });
+    else window.notify({ msg: "Practice form not deleted", status: "error" });
   }
  
  
@@ -488,16 +581,11 @@ export default class TaskExistingState extends Vue {
      const history =  this.items.filter((c) => new Date(c.endDateTime).toLocaleDateString() > new Date().toLocaleDateString() );
       return history
     }
-    async fetchNotes() {
-    const id = this.taskId;
-      const AllNotes = cornieClient().get(`/api/v1/task/getNotesByTaskId/${id}`);
-      const response = await Promise.all([AllNotes]);
-      this.tasknotes = response[0].data;
-    }
- 
+  
      async created() {
        this.History;
-        this.fetchNotes();
+      this.fetchPracticeformsQuestionnaires();
+      this.fetchPracticeforms();
     }
 
 }
