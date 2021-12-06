@@ -10,47 +10,71 @@
        </cornie-card-title>
         <cornie-card-text class="flex-grow scrollable">
           <div>
-               <multi-select
+             <!-- <Multiselect
+    v-model="value"
+     mode="tags"
+    placeholder="--Select Outlets--"
+  :closeOnSelect="true"
+  :searchable="true"
+  :createTag="true"
+  :options="allCurrency"
+/>  -->
+            <div>    
+                <span class="text-sm font-semibold mb-1">Location</span>       
+                 <Multiselect
+               v-model="value"
+                mode="tags"
+                :closeOnSelect="true"
+                :searchable="true"
+                :createTag="true"
+                :options="[
+                    { value: 'All Outlets',  },
+                    { value: 'Outlets 1', },
+                    { value: 'Outlets 2', },
+                    ]"
+                label="value"
                 placeholder="--Select Outlets--"
                 class="w-full"
-                label="Outlets"
-                :items="allCurrency"
-                v-model="currency"
-              />
+               
+              >
+              <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                <div class="multiselect-tag is-user">
+                    {{option.value }}
+                    <span
+                    v-if="!disabled"
+                    class="multiselect-tag-remove"
+                    @mousedown.prevent="handleTagRemove(option, $event)"
+                    >
+                    <span class="multiselect-tag-remove-icon"></span>
+                    </span>
+                </div>
+                </template>
+
+
+              </Multiselect> 
+            </div>
               <cornie-select
                 placeholder="--Select--"
                 class="w-full"
                 label="Base Currency"
-                :items="allCurrency"
+                :items="allCurrencyNew"
                 v-model="currency"
               />
               <cornie-select
                 placeholder="--Select--"
                 class="w-full"
                 label="Currency"
-                :items="allCurrency"
+                :items="allCurrencyNew"
                 v-model="currency"
               />
-            <!-- <label for="Currency" class="font-bold text-base uppercase mb-4">
-              Currency
-            </label>
-            <orgSelect name="select" id="Currency" v-model="Currency">
-              <option v-for="(Currency, i) in Currencies" :key="i" :value="Currency.code">
-                {{ Currency.code }}
-              </option>
-            </orgSelect> -->
           </div>
-           <div class="w-full">
-            <cornie-input
-            class="w-full"
-            disabled
-            placeholder="--Enter--"
-              id="exchangeRate"
-              label="Exchange rate"
-              v-model="exchangeRate"
-            />
+           <div class="">
+               <span class="text-sm font-semibold mb-1">Exchange rate</span>       
+                <div class="bg-blue-100 text-black p-3 rounded flex font-semibold mt-5 text-sm">
+                  68
+                </div>
            </div>
-            <div class="bg-blue-100 text-black p-4 text-center flex font-semibold justify-center mt-5 text-sm">
+            <div class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm">
                 1 CY ~= 68 NGN
             </div>
         </cornie-card-text>  
@@ -66,56 +90,6 @@
                     @click="apply" class="text-white bg-danger px-3 rounded-xl">
               Save
               </cornie-btn>
-          <!-- <span>
-            <button
-              class="
-                border border-blue-800
-                mr-8
-                rounded-3xl
-                px-6
-                py-2
-                placeholder-gray-400
-                focus:outline-none
-                focus:shadow-outline-blue
-                focus:border-blue-300
-                transition
-                duration-150
-                ease-in-out
-                sm:text-sm
-                sm:leading-5
-                cursor-pointer
-              "
-              @click="show = false"
-            >
-              Cancel
-            </button>
-          </span>
-          <span>
-            <button
-              type="submit"
-              class="
-                px-6
-                py-2
-                text-white
-                appearance-none
-                border-none
-                bg-pink-600
-                rounded-3xl
-                placeholder-gray-400
-                focus:outline-none
-                focus:shadow-outline-blue
-                focus:border-blue-300
-                transition
-                duration-150
-                ease-in-out
-                sm:text-sm
-                sm:leading-5
-                cursor-pointer
-              "
-            >
-              Save
-            </button>
-          </span> -->
         </cornie-card-text>
            </cornie-card>
          
@@ -139,8 +113,8 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import { findLastKey } from "lodash";
 import { namespace } from "vuex-class";
 import ICurrency from "@/types/ICurrency";
-import MultiSelect from "./multipleselect.vue";
-
+//import MultiSelect from "./multipleselect.vue";
+import Multiselect from '@vueform/multiselect'
 
 const currency = namespace("currency");
 @Options({
@@ -155,7 +129,7 @@ const currency = namespace("currency");
     CornieSelect,
     CornieDialog,
     CancelIcon,
-    MultiSelect
+    Multiselect
   },
 })
 export default class NewExchangeRate extends Vue {
@@ -182,8 +156,13 @@ export default class NewExchangeRate extends Vue {
       exchangeRate ="";
       Currencies = [];
 loading=false;
-
+ value = null;
  
+       options = [
+          'Batman',
+          'Robin',
+          'Joker',
+        ]
    get activePatientId() {
       const id = this.$route?.params?.id as string;
       return id;
@@ -218,6 +197,15 @@ loading=false;
     this.show = false;
   }
   get allCurrency() {
+     if (!this.Currencies || this.Currencies.length === 0) return [ ];
+     return this.Currencies.map((i:any) => {
+         return {
+             value: i.code,
+             label: i.code,
+         }
+     })
+  }
+    get allCurrencyNew() {
      if (!this.Currencies || this.Currencies.length === 0) return [ ];
      return this.Currencies.map((i:any) => {
          return {
@@ -276,3 +264,92 @@ loading=false;
 }
 
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
+<style>
+.multiselect {
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    border: var(--ms-border-width,1px) solid var(--ms-border-color,#d1d5db);
+    border-radius: var(--ms-radius,4px);
+    background: var(--ms-bg,#fff);
+    font-size: var(--ms-font-size,1rem);
+    min-height: calc(var(--ms-border-width, 1px)*2 + var(--ms-font-size, 1rem)*var(--ms-line-height, 1.375) + var(--ms-py, .5rem)*2);
+}
+.multiselect-tags {
+    flex-grow: 1;
+    position: absolute;
+    top: 50px;
+    flex-shrink: 1;
+    display: flex;
+    flex-wrap: wrap;
+    margin: var(--ms-tag-my,.25rem) 0 0;
+    padding-left: var(--ms-py,.5rem);
+    align-items: center;
+}
+  .multiselect-tag.is-user {
+    padding: 5px 12px;
+    border-radius: 22px;
+    background: #080056;
+    margin: 3px 3px 8px;
+    position: relative;
+    left: -10px;
+}
+/* .multiselect-clear-icon {
+    -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
+    mask-image: url("/components/icons/chevrondownprimary.vue");
+    background-color: #080056;
+    display: inline-block;
+    transition: .3s;
+} */
+.multiselect-placeholder {
+    font-size: 0.8em;
+    font-weight: 400;
+    font-style: italic;
+    color: #667499;
+}
+.multiselect-caret {
+    transform: rotate(0deg);
+    transition: transform .3s;
+   -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+    mask-image: url("../../../../../assets/img/Chevron.png");
+    background-color: #080056;
+    margin: 0 var(--ms-px,.875rem) 0 0;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    flex-grow: 0;
+    pointer-events: none;
+}
+  .multiselect-tag.is-user img {
+    width: 18px;
+    border-radius: 50%;
+    height: 18px;
+    margin-right: 8px;
+    border: 2px solid #ffffffbf;
+  }
+
+  .multiselect-tag.is-user i:before {
+    color: #ffffff;
+    border-radius: 50%;;
+  }
+.multiselect-tag-remove {
+    display: flex;
+    align-items: center;
+    border: 1px solid #fff;
+    background: #fff;
+    border-radius: 50%;
+    color: #080056;
+    justify-content: center;
+    padding: 0.77px;
+    margin: var(--ms-tag-remove-my,0) var(--ms-tag-remove-mx,.5rem);
+}
+
+</style>

@@ -3,89 +3,14 @@
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Payments</a></li>    
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Collection</a></li>
-         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Currency Convention</a></li> 
+         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Currency Conversion</a></li> 
     </ul>
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Payments">   
           <Payments/>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Collection">
-            <div class="w-full flex flex-col justify-center items-center h-full mt-40" v-if="empty">
-             <img src="@/assets/img/Forms.svg" />
-              <h3 class="text-center mt-5">
-                You have no satisfactory surveys to display.
-              </h3>
-                  <span class="flex justify-center w-full">
-                    <div class="dropdown inline-block relative">
-                        <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
-                        <span class="mr-1">Create New </span>
-                        <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
-                        </button>
-                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                        <li class="">
-                            <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
-                        </li>
-                        </ul>
-                    </div>
-                </span>
-            </div>
-            <div v-else>
-                <span class="flex justify-end w-full mb-8">
-                  <div class="dropdown inline-block relative z-10">
-                            <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
-                            <span class="mr-1">Create New </span>
-                            <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
-                            </button>
-                            <ul class="dropdown-menu absolute hidden text-gray-700 pt-1" style="margin-left: -60px;">
-                            <li class="">
-                                <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
-                            </li>
-                            </ul>
-                        </div>
-                </span>
-                <cornie-table :columns="rawHeaders2" v-model="items2">
-                    <template #actions="{ item }">
-                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/provider/settings/practise-management/add-questionnaires/${item.id}`)">
-                        <edit-icon  class="text-primary fill-current"/>
-                        <span class="ml-3 text-xs">Edit </span>
-                      </div>
-                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                        <newview-icon  class="text-yellow-500 fill-current"/>
-                        <span class="ml-3 text-xs">View</span>
-                      </div>
-                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                        <link-icon />
-                        <span class="ml-3 text-xs">Link To</span>
-                      </div>
-                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item.id)">
-                        <update-icon />
-                        <span class="ml-3 text-xs">Update Status</span>
-                      </div>
-                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                        <share-icon />
-                        <span class="ml-3 text-xs">Share</span>
-                      </div>
-                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="archive(item.id)">
-                        <archive-icon class="text-green-400 fill-current"/>
-                        <span class="ml-3 text-xs">Archive</span>
-                      </div>
-                      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                          <delete-icon/>
-                          <span class="ml-3 text-xs">Delete</span>
-                      </div>
-                    </template>
-                    <template #excecutionPeriod="{ item }">
-                      <div class="flex items-center">
-                        <span>{{item.excecutionPeriod.start}} - {{item.excecutionPeriod.end}} </span>
-                      </div>
-                    </template>
-                    <template #status="{ item }">
-                        <div class="container">
-                          <span class="p-2 px-3 rounded-full text-black" >{{ item.status }}</span>
-                        </div>
-                    </template>
-                </cornie-table>
-           </div>
+            <Collections/>
         </div>
         <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="Currency Convention">
           <currency-conversion/>
@@ -136,6 +61,7 @@ import IPractitioner from "@/types/IPractitioner";
 // import StatusModal from "./status.vue";
 import Payments from "./payments/index.vue";
 import CurrencyConversion from "./conversion/index.vue";
+import Collections from "./collections/index.vue";
 
 const practiceform = namespace("practiceform");
 const userStore = namespace("user");
@@ -144,6 +70,7 @@ const userStore = namespace("user");
   components: {
     Table,
     CancelIcon,
+    Collections,
     SortIcon,
     CheckinIcon,
     NewviewIcon,
