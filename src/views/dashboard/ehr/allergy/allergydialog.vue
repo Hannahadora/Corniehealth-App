@@ -15,14 +15,6 @@
                     label="clinical status *"
                      placeholder="Select"
                 />
-                    <!-- <main-cornie-select
-                    class="w-full"
-                    :items="['Active','Inactive','Resolved']"
-                    v-model="clinicalStatus"
-                    label="clinical status"
-                     placeholder="Select"
-                    >
-                    </main-cornie-select> -->
                      <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergyintolerance-verification"
                      class="w-full"
@@ -30,14 +22,6 @@
                       v-model="verificationStatus"
                       placeholder="Select"
                 />
-                    <!-- <cornie-select
-                    class="w-full"
-                      :items="['Unconfirmed','Confirmed','Refuted','Entered in Error']"
-                      label="verification status"
-                      v-model="verificationStatus"
-                      placeholder="Select"
-                    >
-                    </cornie-select> -->
                       <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
                      class="required w-full"
@@ -46,15 +30,6 @@
                       placeholder="Select"
                 />
 
-                    <!-- <main-cornie-select
-                    class="required w-full"
-                      :rules="required"
-                      :items="['Allergy','Intolerance']"
-                      v-model="type"
-                      label="type"
-                      placeholder="Select"
-                    >
-                    </main-cornie-select> -->
                       <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
                      class="required w-full"
@@ -62,15 +37,6 @@
                       label="category *"
                     placeholder="Select"
                 />
-                    <!-- <cornie-select
-                    class="required w-full"
-                      :rules="required"
-                      :items="['Food','Medication','Environment','Biologic',]"
-                      v-model="category"
-                      label="category"
-                    placeholder="Select"
-                    >
-                    </cornie-select> -->
                        <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
                      class="required w-full"
@@ -78,15 +44,6 @@
                       v-model="criticality"
                     placeholder="Select"
                 />
-                    <!-- <cornie-select
-                    class="required w-full"
-                      :rules="required"
-                      :items="['Low Risk','High Risk','Unable to Assess Risk',]"
-                      label="criticality"
-                      v-model="criticality"
-                    placeholder="Select"
-                    >
-                    </cornie-select> -->
                         <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
                      class="required w-full"
@@ -94,15 +51,6 @@
                       v-model="code"
                     placeholder="Select"
                 />
-                    <!-- <cornie-select
-                    class="required w-full"
-                      :rules="required"
-                      :items="['Hemoglobin Okaloosa','Ornithine racemase','Ferrocyanide salt','Berberine','Heptachlor','Coumachlor','Hemoglobin Nagoya','Nitrilase','	Free protein S','Guanosine']"
-                      label="code"
-                      v-model="code"
-                    placeholder="Select"
-                    >
-                    </cornie-select> -->
                   <div>
                      <encounter-select
                       class="w-full"
@@ -157,43 +105,6 @@
                               </div>
                         
                           </div>
-                        <!-- <div class="mb-3">
-                          <label for="ecounter" class="flex uppercase text-black mb-1 text-xs font-bold">last occurence
-                            <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                          </label>
-                          <DateTimePicker class="w-full">
-                                  <template v-slot:labelicon>
-                                    <question-icon />
-                                  </template>
-                                  <template #date>
-                                    <span>
-                                      {{
-                                        new Date(
-                                          data.occurenceDate ?? Date.now(),
-                                        ).toLocaleDateString()
-                                      }}
-                                    </span>
-                                  </template>
-                                  <template #time>
-                                    <span>{{ data.occurenceTime }}</span>
-                                  </template>
-                                  <template #input>
-                                    <v-date-picker
-                                      name="eeee"
-                                      v-model="data.occurenceDate"
-                                      style="z-index: 9000; width: 100%;"
-                                    ></v-date-picker>
-                                    <label class="block uppercase my-1 text-xs font-bold">
-                                      Time
-                                    </label>
-                                    <input
-                                      v-model="data.occurenceTime"
-                                      type="time"
-                                      class="w-full border rounded-md p-2"
-                                    />
-                                  </template>
-                                </DateTimePicker>
-                        </div> -->
                     </div>
                    
                       <div>
@@ -218,15 +129,6 @@
                       v-model="reaction.substance"
                       placeholder="select"
                 />
-                    <!-- <cornie-select
-                      class="required w-full mb-2"
-                      :rules="required"
-                      :items="['Hemoglobin Okaloosa','	Ferrocyanide salt','Berberine','Blood group antigen IH','Heptachlor','Coumachlor','	Codeine phosphate','Arsenic-76','Enzyme variant','Fibrinogen San Juan','Acylcarnitine hydrolase','Immunoglobulin pentamer','Carminic acid','Vegetable textile fiber','Nitrilase','Free protein S','Guanosine','Hemoglobin Jianghua','	2-oxoglutarate synthase','Oil of calamus','	Coal tar extract','Lytic antibody','Urethan','Carbamate kinase']"
-                      label="substance"
-                      v-model="reaction.substance"
-                      placeholder="select"
-                    >
-                    </cornie-select> -->
                        <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/clinical-findings"
                      class="w-full mb-2"
@@ -234,14 +136,6 @@
                       v-model="reaction.manifestation"
                       placeholder="select"
                 />
-                    <!-- <cornie-select
-                    class="w-full mb-2"
-                      :items="['Clinical finding','Anxiety disorder of childhood OR adolescence','Choroidal hemorrhage','Spontaneous abortion with laceration of cervix','Homoiothermia','Decreased hair growth','Chronic pharyngitis','Normal peripheral vision','Superficial foreign body of scrotum without major open wound but with infection','Abnormal bladder continence','	Gonococcal meningitis','Severe manic bipolar I disorder without psychotic features','	Accident-prone']"
-                      label="manifestation"
-                      v-model="reaction.manifestation"
-                      placeholder="select"
-                    >
-                    </cornie-select> -->
                     <cornie-input label="description" class="mb-5 mt-2 w-full" placeholder="enter"   v-model="reaction.description" />
                     <div class="mb-5">
                        <date-time-picker
@@ -289,15 +183,6 @@
                         v-model="reaction.exposureRoute"
                         placeholder="select"
                 />
-                      <!-- <cornie-select
-                        class="required w-full mb-2"
-                        :rules="required"
-                        :items="['Route of administration values','Topical route','Otic route','Intra-articular route','Per vagina','Oral route','Subcutaneous route','Per rectum','Intraluminal route','Sublingual route','Intraperitoneal route','Transdermal route','Nasal route','Intravenous route','Buccal route','Ophthalmic route','Intra-arterial route','Intramedullary route','Intrauterine route','Intrathecal route','Intramuscular route','Urethral route','Gastrostomy route','Jejunostomy route','Nasogastric route','Dental use','Endocervical use','Endosinusial use','Endotracheopulmonary use','Extra-amniotic use','Gastroenteral use','Gingival use','Intraamniotic use','Intrabursal use','Intracardiac use','Intracavernous use','Intracervical route','Intracoronary use','Intradermal use']"
-                        label="Exposure Route"
-                        v-model="reaction.exposureRoute"
-                        placeholder="select"
-                      >
-                      </cornie-select> -->
                   </div>
                       <div>
                         <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Notes</label>

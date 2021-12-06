@@ -4,20 +4,26 @@
             <h3 class="text-center text-black mt-5">No collection account recorded</h3>
             <h4 class="text-black text-center">Add new account</h4>
             <button
-            class="
+                class="
                 bg-danger
                 rounded-full
+                text-sm
                 text-white
+                mb-5
                 mt-5
                 py-2
-                px-3
+                pl-6
+                pr-6
+                px-4
+                pb-2
                 focus:outline-none
                 hover:opacity-90
-            "
-            @click="showNewExchangeRateModal = true"
+                flex
+                "
+                @click="showNewExchangeRateModal = true"
             >
-            <bank-add-icon class="mt-1 mr-2"/> 
-            New Exchange Rate
+                <span class="text-xl -mt-1.5 mr-2">+ </span> 
+                New Exchange Rate
             </button>
             <new-exchange-rate v-model="showNewExchangeRateModal" />
     </div>
@@ -58,6 +64,7 @@
                 pl-6
                 pr-6
                 px-4
+                pb-1
                 focus:outline-none
                 hover:opacity-90
                 flex
