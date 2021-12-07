@@ -280,6 +280,9 @@
                                         v-model="questions[index].answerType"
                                         class="required w-full"
                                         :items="[
+                                        'choice',
+                                          'openChoice',
+                                          'text',
                                           'Boolean',
                                           'Decimal',
                                           'Integer',
@@ -287,10 +290,7 @@
                                           'Date & Time',
                                           'Time',
                                           'String',
-                                          'text',
                                           'Url',
-                                          'choice',
-                                          'openChoice',
                                           'Attachment',
                                           'Reference',
                                           'Quantity',
@@ -549,6 +549,9 @@
                               v-model="mainquestions[index].answerType"
                               class="required w-full"
                               :items="[
+                              'choice',
+                                'openChoice',
+                                'text',
                                 'Boolean',
                                 'Decimal',
                                 'Integer',
@@ -556,10 +559,7 @@
                                 'Date & Time',
                                 'Time',
                                 'String',
-                                'text',
                                 'Url',
-                                'choice',
-                                'openChoice',
                                 'Attachment',
                                 'Reference',
                                 'Quantity',

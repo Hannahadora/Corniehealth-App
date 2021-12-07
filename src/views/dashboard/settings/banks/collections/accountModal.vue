@@ -17,16 +17,17 @@
                 :items="['Kuda']"
                 placeholder="--Auto-generated from profile--"
                 /> -->
-                <cornie-input disabled label="Business Name" placeholder="--Auto-generated from profile--" class="w-full mb-4" />
+                <cornie-input disabled label="Business Name" v-model="businessName" placeholder="--Auto-generated from profile--" class="w-full mb-4" />
                  <cornie-select
                 label="Bank"
                 class="mb-4 w-full"
-                :items="['Access Bank']"
+                :items="allTheBanks"
+                v-model="bank"
                 placeholder="--Select Preferred Bank--"
                 />
-                <cornie-input label="Account Number" placeholder="--Enter Account Numebr--" class="w-full mb-4" />
+                <cornie-input label="Account Number" @input.prevent="fetchAccountName" v-model="accountNumber" placeholder="--Enter Account Numebr--" class="w-full mb-4" />
                
-                 <cornie-input disabled label="Account Name" placeholder="--Autoloaded--" class="w-full mb-4" />
+                 <cornie-input disabled label="Account Name" v-model="accountName" placeholder="--Autoloaded--" class="w-full mb-4" />
                <div v-if="error" class="flex space-x-4 -mt-2 justify-between w-full">
                 <p class="float-left text-xs">Name does not match.</p>
                   <fail-icon class="float-right"/>
@@ -99,7 +100,7 @@ import { flatten } from "@/plugins/utils";
 
 
 @Options({
-  name: "nubanmodal",
+  name: "accountmodal",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -153,11 +154,32 @@ status = "";
   loading = false;
   expand = false;
   isVisible = "";
+
+  businessName = "";
+  bank =  "";
+  accountNumber =  "";
+  accountName = "";
+  AllBanks = [];
+
+  orgInfo = [] as any;
  
  error= false;
 
   required = string().required();
 
+  get BusinessName(){
+    this.businessName = this.orgInfo.name;
+  return this.businessName = this.orgInfo.name;
+  }
+  get allTheBanks() {
+     if (!this.AllBanks || this.AllBanks.length === 0) return [ ];
+     return this.AllBanks.map((i: any) => {
+         return {
+             code: i.code,
+             display: i.name,
+         }
+     })
+ }
 
  async updateStatus() {
    const id = this.id;
@@ -178,8 +200,46 @@ status = "";
       this.loading = false;
     }
   }
-
- 
+  async fetchOrgInfo() {
+      try {
+        const response = await cornieClient().get(
+          "/api/v1/organization/myOrg/get"
+        );
+        this.orgInfo = response.data || {};
+      } catch (error) {
+        window.notify({ msg: "Could not fetch organization", status: "error" });
+      }
+    }
+     async fetchDropDown() {
+        try {
+        const response = await cornieClient().get(
+          "https://api.paystack.co/bank"
+        );
+        this.AllBanks = response.data || {};
+      } catch (error) {
+        window.notify({ msg: "Could not banks", status: "error" });
+      }
+    }
+    async fetchAccountName() {
+      const TOKEN = 'pk_test_29d8f85ecdfac9b7bc572cae9d1965062d44356a';
+      const BASEURL =  'https://api.paystack.co';
+      const ENDPOINT = '/items/ITEM_NAME';
+        try {
+        const response = await cornieClient().get(
+          `https://api.paystack.co/bank/resolve?account_number=${this.accountNumber}&bank_code=${this.bank}`,{
+            headers: {
+                Authorization: 'Bearer pk_test_29d8f85ecdfac9b7bc572cae9d1965062d44356a',
+            }
+          });
+        console.log(response,"Error is here");
+        this.accountName = response.data.account_name || {};
+        if(response.data.status == false){
+          window.notify({ msg: response.data.message, status: "error" });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
  
  done() {
     this.$emit("medicationAdded");
@@ -194,7 +254,8 @@ status = "";
   }
  
   async created() {
-   
+   this.fetchOrgInfo();
+   this.fetchDropDown();
   }
 }
 </script>

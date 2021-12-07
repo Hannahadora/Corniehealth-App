@@ -7,6 +7,26 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Accounts">   
+              <div class="w-full h-2/3 mt-8 flex flex-col justify-center items-center" v-if="empty3">
+             <img src="@/assets/img/nobank.svg" class="" />
+              <h4 class="text-black text-center">Add new account</h4>
+              <button
+                class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  mt-5
+                  py-2
+                  px-3
+                  focus:outline-none
+                  hover:opacity-90
+                "
+                 @click="showAccountModal = true"
+              >
+                <span class="text-xl -mt-1.5 mr-2">+ </span> 
+                            New  Account
+              </button>
+        </div>
              <div class="w-full pb-80" >
                 <div class="w-full mt-5">
                         <span class="flex justify-end">
@@ -69,7 +89,7 @@
              </div>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Associations">
-          <div class="w-full h-2/3 mt-8 flex flex-col justify-center items-center" v-if="empty3">
+          <div class="w-full h-2/3 mt-8 flex flex-col justify-center items-center" v-if="empty">
             <img src="@/assets/img/tracking.svg" />
             <h3 class="text-center text-black mt-5">You have not associated accounts with your locations (Warehouse | Outlets | Stores | <br> etc.). To associate accounts, click on New Location to start.</h3>
             <button
@@ -204,11 +224,11 @@ import AuthorizeIcon from "@/components/icons/authorize.vue";
 import TransactIcon from "@/components/icons/transact.vue";
 import EyeIcon from "@/components/icons/eye-yellow.vue";
 import PayIcon from "@/components/icons/pay.vue";
-import ITask from "@/types/ITask";
+import ICollection from "@/types/ICollection";
 import AccountModal from "./accountModal.vue"
 import LocationModal from "./locationModal.vue"
 
-const task = namespace("task");
+const collections = namespace("collections");
 
 @Options({
   components: {
@@ -243,15 +263,21 @@ export default class Payments extends Vue {
   
   selected = 1;
   query = "";
+  orgId="";
+  orgInfo = [] as any;
 
-  @task.State
-  tasks!: ITask[];
+  @collections.Action
+  fetchCollectionAccounts!: (orgId: string) => Promise<void>;
 
-  @task.Action
-  deleteTask!: (id: string) => Promise<boolean>;
+  @collections.State
+  collectionAccounts!: ICollection[];
 
-  @task.Action
-  fetchTasks!: () => Promise<void>;
+  @collections.Action
+  deleteCollectionAccount!: (id: string) => Promise<boolean>;
+
+get empty() {
+    return  this.collectionAccounts.length < 1;
+  }
 
   select(i:number) {
       this.selected = i;
@@ -294,19 +320,13 @@ export default class Payments extends Vue {
   ];
 
   get items() {
-    const tasks = this.tasks.map((task) => {
-       (task as any).excecutionPeriod.start = new Date(
-         (task as any).excecutionPeriod.start 
-       ).toLocaleDateString("en-US");
-         (task as any).excecutionPeriod.end = new Date(
-         (task as any).excecutionPeriod.end 
-       ).toLocaleDateString("en-US");
-         (task as any).createdAt= new Date(
-         (task as any).createdAt
+    const collectionAccounts = this.collectionAccounts.map((collectionAccount) => {
+         (collectionAccount as any).createdAt= new Date(
+         (collectionAccount as any).createdAt
        ).toLocaleDateString("en-US");
         return {
-        ...task,
-         action: task.id,
+        ...collectionAccount,
+         action: collectionAccount.id,
          keydisplay: "XXXXXXX",
          name:"Paystack Cloudenly/XYZ Co.Ltd.",
          nuban:"100023567",
@@ -315,34 +335,45 @@ export default class Payments extends Vue {
 
         };
     });
-    if (!this.query) return tasks;
-    return search.searchObjectArray(tasks, this.query);
+    if (!this.query) return collectionAccounts;
+    return search.searchObjectArray(collectionAccounts, this.query);
   }
-   get items2() {
-    const tasks = this.tasks.map((task) => {
-       (task as any).excecutionPeriod.start = new Date(
-         (task as any).excecutionPeriod.start 
-       ).toLocaleDateString("en-US");
-         (task as any).excecutionPeriod.end = new Date(
-         (task as any).excecutionPeriod.end 
-       ).toLocaleDateString("en-US");
-         (task as any).createdAt= new Date(
-         (task as any).createdAt
-       ).toLocaleDateString("en-US");
-        return {
-        ...task,
-         action: task.id,
-         keydisplay: "XXXXXXX",
-         location:"Apapa Center",
-        };
-    });
-    if (!this.query) return tasks;
-    return search.searchObjectArray(tasks, this.query);
-  }
-  created() {
-  this.fetchTasks()
-    if (this.tasks.length < 1) this.fetchTasks();
-  }
+  //  get items2() {
+  //   const tasks = this.tasks.map((task) => {
+  //      (task as any).excecutionPeriod.start = new Date(
+  //        (task as any).excecutionPeriod.start 
+  //      ).toLocaleDateString("en-US");
+  //        (task as any).excecutionPeriod.end = new Date(
+  //        (task as any).excecutionPeriod.end 
+  //      ).toLocaleDateString("en-US");
+  //        (task as any).createdAt= new Date(
+  //        (task as any).createdAt
+  //      ).toLocaleDateString("en-US");
+  //       return {
+  //       ...task,
+  //        action: task.id,
+  //        keydisplay: "XXXXXXX",
+  //        location:"Apapa Center",
+  //       };
+  //   });
+  //   if (!this.query) return tasks;
+  //   return search.searchObjectArray(tasks, this.query);
+  // }
+   async fetchOrgInfo() {
+      try {
+        const response = await cornieClient().get(
+          "/api/v1/organization/myOrg/get"
+        );
+        this.orgInfo = response.data || {};
+        this.orgId = response.data.id;
+      } catch (error) {
+        window.notify({ msg: "Could not fetch organization", status: "error" });
+      }
+    }
+ async created() {
+   await this.fetchOrgInfo();
+   await this.fetchCollectionAccounts(this.orgId);
+ }
 }
 </script>
 <style>

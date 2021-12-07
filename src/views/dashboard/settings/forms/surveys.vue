@@ -281,6 +281,9 @@
                                         v-model="questions[index].answerType"
                                         class="required w-full"
                                         :items="[
+                                        'choice',
+                                          'openChoice',
+                                          'text',
                                           'Boolean',
                                           'Decimal',
                                           'Integer',
@@ -288,10 +291,7 @@
                                           'Date & Time',
                                           'Time',
                                           'String',
-                                          'text',
                                           'Url',
-                                          'choice',
-                                          'openChoice',
                                           'Attachment',
                                           'Reference',
                                           'Quantity',
@@ -549,21 +549,21 @@
                               v-model="mainquestions[index].answerType"
                               class="required w-full"
                               :items="[
-                                'Boolean',
-                                'Decimal',
-                                'Integer',
-                                'Date',
-                                'Date & Time',
-                                'Time',
-                                'String',
-                                'text',
-                                'Url',
-                                'choice',
-                                'openChoice',
-                                'Attachment',
-                                'Reference',
-                                'Quantity',
-                              ]"
+                                        'choice',
+                                          'openChoice',
+                                          'text',
+                                          'Boolean',
+                                          'Decimal',
+                                          'Integer',
+                                          'Date',
+                                          'Date & Time',
+                                          'Time',
+                                          'String',
+                                          'Url',
+                                          'Attachment',
+                                          'Reference',
+                                          'Quantity',
+                                        ]"
                               placeholder="--Select"
                             />
                           </div>

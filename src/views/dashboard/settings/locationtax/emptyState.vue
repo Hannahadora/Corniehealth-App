@@ -22,7 +22,7 @@
         focus:outline-none
         hover:opacity-90
       "
-      @click="$router.push('add-location')"
+        @click="$router.push('/dashboard/provider/settings/add-location')"
     >
       New Location
     </button>
@@ -37,26 +37,6 @@
               </h3>
                   <span class="flex justify-center w-full">
               <button
-                  @click="$router.push('/dashboard/provider/experience/schedules')"
-                  type="button"
-                  class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                  "
-              >
-                  My Slots
-              </button>
-              <button
                   class="
                   bg-danger
                   rounded-full
@@ -70,9 +50,9 @@
                   focus:outline-none
                   hover:opacity-90
                   "
-                  @click="$router.push('/dashboard/provider/experience/add-task')"
+                  @click="$router.push('/dashboard/settings/practise-management/add-tax')"
               >
-                  New Tasks
+                  New Tax
               </button>
                   </span>
             </div>
