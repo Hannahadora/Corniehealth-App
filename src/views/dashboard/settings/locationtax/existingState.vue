@@ -23,7 +23,7 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                 @click="$router.push('add-location')"
+                 @click="$router.push('/dashboard/provider/settings/add-location')"
               >
                 Add New
               </button>
@@ -77,30 +77,11 @@
           <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0">
               <img src="@/assets/img/task.svg" />
               <h3 class="text-center mt-5">
-                  There’s currently no active task!<br />
-                  Adding a task...
+                  There’s currently no active tax!<br />
+                  Adding a tax...
               </h3>
                   <span class="flex justify-center w-full">
-              <button
-                  @click="$router.push('/dashboard/provider/experience/schedules')"
-                  type="button"
-                  class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                  "
-              >
-                  My Slots
-              </button>
+             
               <button
                   class="
                   bg-danger
@@ -115,13 +96,13 @@
                   focus:outline-none
                   hover:opacity-90
                   "
-                  @click="$router.push('/dashboard/provider/experience/add-task')"
+                 @click="$router.push('/dashboard/settings/practise-management/add-tax')"
               >
-                  New Tasks
+                  New Tax
               </button>
                   </span>
             </div>
-          <div>
+          <div v-else>
             <span class="flex justify-end w-full mb-8">
               <button
                 class="
@@ -138,7 +119,7 @@
                   focus:outline-none
                   hover:opacity-90
                 "
-                 @click="$router.push('/dashboard/provider/medications/add-tax')"
+               @click="$router.push('/dashboard/settings/practise-management/add-tax')"
               >
                 Add New
               </button>

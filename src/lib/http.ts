@@ -68,6 +68,7 @@ interface Errors {
 }
 
 export class JSONClient implements HttpClient {
+  create: any;
   constructor(private headers: IndexableObject, private baseUrl: string = "") {}
 
   appendHeaders(headers: IndexableObject) {
