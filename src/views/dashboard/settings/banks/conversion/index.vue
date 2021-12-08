@@ -1,62 +1,105 @@
 <template>
-  <div
-    class="w-full h-2/3 mt-8 flex flex-col justify-center items-center"
-    v-if="empty3"
-  >
-    <img src="@/assets/img/nocurrency.svg" />
-    <h3 class="text-center text-black mt-5">No collection account recorded</h3>
-    <h4 class="text-black text-center">Add new account</h4>
-    <button
-      class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
-      @click="showNewExchangeRateModal = true"
-    >
-      <bank-add-icon class="mt-1 mr-2" />
-      New Exchange Rate
-    </button>
-    <new-exchange-rate v-model="showNewExchangeRateModal" />
-  </div>
-  <div class="w-full pb-80" v-else>
-    <div class="w-full mt-5">
-      <span class="flex justify-end">
-        <button
-          class="border-primary rounded-full text-primary outline-primary mt-5 text-sm mb-5 py-2 px-3 pl-6 pr-6 focus:outline-none hover:opacity-90 flex mr-6"
-          @click="showDefaultCurrencyModal = true"
-        >
-          Set Default Currecncy
-        </button>
-        <button
-          class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 pl-6 pr-6 px-4 focus:outline-none hover:opacity-90 flex"
-          @click="showNewExchangeRateModal = true"
-        >
-          <span class="text-xl -mt-1.5 mr-2">+ </span>
-          New Exchange Rate
-        </button>
-      </span>
-      <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
-        <template #actions="{ item }">
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showRateModal(item.id)"
-          >
-            <eye-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">View & Edit</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)"
-          >
-            <delete-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Delete</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)"
-          >
-            <close-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Deactivate Account</span>
-          </div>
-        </template>
-      </cornie-table>
+    <div class="w-full h-2/3 mt-8 flex flex-col justify-center items-center" v-if="empty3">
+            <img src="@/assets/img/nocurrency.svg" />
+            <h3 class="text-center text-black mt-5">No collection account recorded</h3>
+            <h4 class="text-black text-center">Add new account</h4>
+            <button
+                class="
+                bg-danger
+                rounded-full
+                text-sm
+                text-white
+                mb-5
+                mt-5
+                py-2
+                pl-6
+                pr-6
+                px-4
+                pb-2
+                focus:outline-none
+                hover:opacity-90
+                flex
+                "
+                @click="showNewExchangeRateModal = true"
+            >
+                <span class="text-xl -mt-1.5 mr-2">+ </span> 
+                New Exchange Rate
+            </button>
+            <new-exchange-rate v-model="showNewExchangeRateModal" />
+    </div>
+  <div class="w-full pb-80"  v-else>
+        <div class="w-full mt-5">
+            <span class="flex justify-end">
+            <button
+                class="
+                border-primary
+                rounded-full
+                text-primary
+                outline-primary
+                mt-5
+                text-sm
+                mb-5
+                py-2
+                px-3
+                    pl-6
+                pr-6
+                focus:outline-none
+                hover:opacity-90
+                flex
+                mr-6
+                "
+                @click="showDefaultCurrencyModal = true"
+            > 
+                Set  Default Currecncy
+            </button>
+            <button
+                class="
+                bg-danger
+                rounded-full
+                text-sm
+                text-white
+                mb-5
+                mt-5
+                py-2
+                pl-6
+                pr-6
+                px-4
+                pb-1
+                focus:outline-none
+                hover:opacity-90
+                flex
+                "
+                @click="showNewExchangeRateModal = true"
+            >
+                <span class="text-xl -mt-1.5 mr-2">+ </span> 
+                New Exchange Rate
+            </button>
+            </span>
+            <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
+            <template #actions="{ item }">
+                <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="showRateModal(item.id)"
+                >
+                <eye-icon class="text-yellow-500 fill-current" />
+                <span class="ml-3 text-xs">View & Edit</span>
+                </div>
+                <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="deleteItem(item.id)"
+                >
+                <delete-icon class="text-yellow-500 fill-current" />
+                <span class="ml-3 text-xs">Delete</span>
+                </div>
+                <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="deleteItem(item.id)"
+                >
+                <close-icon class="text-yellow-500 fill-current" />
+                <span class="ml-3 text-xs">Deactivate Account</span>
+                </div>
+            </template>
+            </cornie-table>
 
       <default-currency v-model="showDefaultCurrencyModal" />
       <new-exchange-rate

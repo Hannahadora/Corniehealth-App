@@ -1,8 +1,7 @@
 export default interface ICollection {
-  accountName: string;
-  accountNumber: string;
+  id?:string;
+  businessName: string;
   bank: string;
-  paymentCategories: string;
-  location: string;
-  status: string;
+  accountNumber: string;
+  accountName: string;
 }

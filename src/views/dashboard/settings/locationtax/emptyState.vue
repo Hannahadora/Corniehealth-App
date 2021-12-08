@@ -22,51 +22,57 @@
         </li>
       </ul>
     </ul>
-    <div class="tab-content">
-      <div
-        class="tab-pane"
-        v-if="selected == 1"
-        :class="{ active: selected === 1 }"
-        id="Location"
-      >
-        <div class="w-full flex flex-col justify-center items-center h-96">
-          <img src="@/assets/img/empty-location.svg" />
-          <h3 class="text-center mt-5">You have no locations</h3>
-          <button
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
-            @click="$router.push('add-location')"
-          >
-            New Location
-          </button>
+    </ul>
+      <div class="tab-content">
+        <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Location">     
+            <div class="w-full flex flex-col justify-center items-center h-96">
+             <img src="@/assets/img/empty-location.svg" />
+    <h3 class="text-center mt-5">You have no locations</h3>
+    <button
+      class="
+        bg-danger
+        rounded-full
+        text-white
+        mt-5
+        py-2
+        px-3
+        focus:outline-none
+        hover:opacity-90
+      "
+        @click="$router.push('/dashboard/provider/settings/add-location')"
+    >
+      New Location
+    </button>
+            </div>
         </div>
-      </div>
-      <div
-        class="tab-pane"
-        v-if="selected == 2"
-        :class="{ active: selected === 2 }"
-        id="Tax"
-      >
-        <div class="w-full flex flex-col justify-center items-center h-96">
-          <img src="@/assets/img/task.svg" />
-          <h3 class="text-center mt-5">
-            There’s currently no active tax!<br />
-            Adding a tax...
-          </h3>
-          <span class="flex justify-center w-full">
-            <button
-              @click="$router.push('/dashboard/provider/experience/schedules')"
-              type="button"
-              class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
-            >
-              My Slots
-            </button>
-            <button
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
-              @click="$router.push('/dashboard/provider/experience/add-task')"
-            >
-              New Tasks
-            </button>
-          </span>
+        <div class="tab-pane" v-if="selected == 2" :class="{'active' :  selected === 2  }" id="Tax">
+         <div class="w-full flex flex-col justify-center items-center h-96">
+              <img src="@/assets/img/task.svg" />
+              <h3 class="text-center mt-5">
+                  There’s currently no active tax!<br />
+                  Adding a tax...
+              </h3>
+                  <span class="flex justify-center w-full">
+              <button
+                  class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  mt-5
+                  py-2
+                  px-3
+                  pl-12
+                  pr-12
+                  font-semibold
+                  focus:outline-none
+                  hover:opacity-90
+                  "
+                  @click="$router.push('/dashboard/settings/practise-management/add-tax')"
+              >
+                  New Tax
+              </button>
+                  </span>
+            </div>
         </div>
       </div>
     </div>

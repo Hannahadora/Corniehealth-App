@@ -25,7 +25,6 @@
                 v-model="status"
                 :items="['Draft', 'Active', 'Retired']"
                 class="w-full"
-                :required="true"
                 placeholder="--Select"
               />
               <div class="mb-2">
@@ -93,19 +92,14 @@
                   :required="true"
                 />
               </div>
-              <cornie-input
-                disabled
-                label="Approval Date"
-                placeholder="Autofilled"
-                class="w-full mb-4"
-              />
-
+              <!-- <cornie-input disabled label="Approval Date"  placeholder="Autofilled" class="w-full mb-4" />
+             -->
               <div class="mb-5">
                 <date-range-picker
                   v-model="effectivePeriod"
                   label="Effective Period "
                   :required="true"
-                  width="w-11/12"
+                  width="w-full"
                   class="required -mt-1.5"
                 />
               </div>
@@ -264,6 +258,9 @@
                                         v-model="questions[index].answerType"
                                         class="required w-full"
                                         :items="[
+                                        'choice',
+                                          'openChoice',
+                                          'text',
                                           'Boolean',
                                           'Decimal',
                                           'Integer',
@@ -271,10 +268,7 @@
                                           'Date & Time',
                                           'Time',
                                           'String',
-                                          'text',
                                           'Url',
-                                          'choice',
-                                          'openChoice',
                                           'Attachment',
                                           'Reference',
                                           'Quantity',
@@ -558,21 +552,21 @@
                               v-model="mainquestions[index].answerType"
                               class="required w-full"
                               :items="[
-                                'Boolean',
-                                'Decimal',
-                                'Integer',
-                                'Date',
-                                'Date & Time',
-                                'Time',
-                                'String',
-                                'text',
-                                'Url',
-                                'choice',
-                                'openChoice',
-                                'Attachment',
-                                'Reference',
-                                'Quantity',
-                              ]"
+                                        'choice',
+                                          'openChoice',
+                                          'text',
+                                          'Boolean',
+                                          'Decimal',
+                                          'Integer',
+                                          'Date',
+                                          'Date & Time',
+                                          'Time',
+                                          'String',
+                                          'Url',
+                                          'Attachment',
+                                          'Reference',
+                                          'Quantity',
+                                        ]"
                               placeholder="--Select"
                             />
                           </div>
@@ -1067,10 +1061,10 @@ export default class AddPracticeform extends Vue {
   processQuestionGroup(questionGroup: any) {
     if (!questionGroup.items) return questionGroup;
     const items = questionGroup.items || [];
-    let sanitize: any = [];
-    console.log(items);
-    items.forEach((item: any) => {
-      if (!Array.isArray(item)) {
+    let sanitize:any = [];
+    items.forEach((item:any) => {
+
+      if(!Array.isArray(item)){
         sanitize.push(item);
       } else {
         if (item.length) {
@@ -1084,10 +1078,9 @@ export default class AddPracticeform extends Vue {
   }
   processSection(section: any) {
     const items = section.items || [];
-    let sanitize: any = [];
-    console.log(items);
-    items.forEach((item: any) => {
-      if (!Array.isArray(item)) {
+    let sanitize:any = [];
+    items.forEach((item:any) => {
+      if(!Array.isArray(item)){
         sanitize.push(item);
       } else {
         if (item.length) {

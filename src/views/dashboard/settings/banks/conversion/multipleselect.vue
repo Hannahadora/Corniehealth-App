@@ -40,12 +40,21 @@
                   v-else
                   :placeholder="$attrs.placeholder"
                   disabled
-                  :value="displayVal"
-                  class="p-1 pl-2 bg-transparent multi-input appearance-none outline-none w-full text-gray-800"
+                :value="displayVal"
+                    :class="{'multi-input': Boolean(!$slots.item)}"
+                  class="
+                    p-1
+                    pl-2
+                    bg-transparent
+                    appearance-none
+                    outline-none
+                    w-full
+                    text-gray-800
+                  "
                   @change="handleChange"
                 />
-                <span>
-                  <multi-close />
+                <span class="multiclose">
+                    <multi-close v-if="Boolean(!$slots.item)"/>
                 </span>
 
                 <div
@@ -181,6 +190,12 @@ export default class CornieSelect extends Vue {
 }
 </script>
 <style scoped>
+.multiclose{
+    position: relative;
+    top: 57px;
+    right: 30px;
+
+}
 .top-100 {
   top: 100%;
 }

@@ -43,6 +43,10 @@
                 @click="
                   $router.push(`/dashboard/experience/add-task/${item.id}`)
                 "
+<<<<<<< HEAD
+=======
+                 @click="$router.push('/dashboard/provider/settings/add-location')"
+>>>>>>> ab8d5b4f87abb9681d1411f76d985e26d37571d2
               >
                 <newview-icon class="text-yellow-500 fill-current" />
                 <span class="ml-3 text-xs">View</span>
@@ -126,6 +130,7 @@
             </template>
           </cornie-table>
         </div>
+<<<<<<< HEAD
       </div>
       <div
         class="tab-pane"
@@ -198,6 +203,55 @@
                 @click="
                   $router.push('/dashboard/provider/experience/add-appointment')
                 "
+=======
+        <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
+          <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0">
+              <img src="@/assets/img/task.svg" />
+              <h3 class="text-center mt-5">
+                  There’s currently no active tax!<br />
+                  Adding a tax...
+              </h3>
+                  <span class="flex justify-center w-full">
+             
+              <button
+                  class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  mt-5
+                  py-2
+                  px-3
+                  pl-12
+                  pr-12
+                  font-semibold
+                  focus:outline-none
+                  hover:opacity-90
+                  "
+                 @click="$router.push('/dashboard/settings/practise-management/add-tax')"
+              >
+                  New Tax
+              </button>
+                  </span>
+            </div>
+          <div v-else>
+            <span class="flex justify-end w-full mb-8">
+              <button
+                class="
+                  bg-danger
+                  rounded-full
+                  text-white
+                  mt-5
+                  py-2
+                  pr-12
+                  pl-12
+                  px-3
+                  mb-5
+                  font-semibold
+                  focus:outline-none
+                  hover:opacity-90
+                "
+               @click="$router.push('/dashboard/settings/practise-management/add-tax')"
+>>>>>>> ab8d5b4f87abb9681d1411f76d985e26d37571d2
               >
                 <plus-icon class="text-green-400 fill-current" />
                 <span class="ml-3 text-xs">Add Appointment</span>
