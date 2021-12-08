@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block capitalize mb-1 text-sm text-black font-medium">
+    <label class="block capitalize mb-1 text-sm text-black font-semibold">
       {{ label }}
     </label>
     <field

@@ -16,7 +16,16 @@
         <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
           <span>
             <div
-              class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
+              @click="open = open == i ? -1 : i"
+              class="
+                w-full
+                cursor-pointer
+                justify-between
+                flex
+                xl:pr-4
+                md:pr-2
+                items-center
+              "
             >
               <h2
                 @click="open = open == i ? -1 : i"
@@ -39,13 +48,13 @@
             <div
               class="flex flex-col mt-1 text-gray-500"
               :class="{ hidden: open != i }"
-                >
+            >
               <s-bar-link
                 :name="item.name"
                 :to="mapUrl(item.to)"
                 v-for="(item, index) in setting"
                 :key="index"
-                >
+              >
                 <template v-slot="{ active }">
                   <keep-alive>
                     <component
@@ -192,7 +201,7 @@ export default class Settings extends Vue {
       Organization: this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
-      "PRACTICE MANAGEMENT"  : this.filter(this.PracticeManagement),
+      "PRACTICE MANAGEMENT": this.filter(this.PracticeManagement),
     };
     const hmo = {
       Organization: this.filter(this.organization),
