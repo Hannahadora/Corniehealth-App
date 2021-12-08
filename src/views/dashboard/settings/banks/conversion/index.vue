@@ -93,7 +93,7 @@
                 </div>
                 <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.id)"
+               
                 >
                 <close-icon class="text-yellow-500 fill-current" />
                 <span class="ml-3 text-xs">Deactivate Account</span>
@@ -125,7 +125,7 @@ import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
 import defaultCurrency from "./defaultCurrency.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
+import CloseIcon from "@/components/icons/danger.vue";
 import Select from "@/components/formselect.vue";
 import SelectSurvey from "@/components/surveyselect.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
@@ -141,7 +141,6 @@ import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
-import IPracticeform from "@/types/IPracticeform";
 import { cornieClient } from "@/plugins/http";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import IPractitioner from "@/types/IPractitioner";
@@ -149,6 +148,7 @@ import ICurrency from "@/types/ICurrency";
 
 const currency = namespace("currency");
 const practitioner = namespace("practitioner");
+const userStore = namespace("user");
 
 @Options({
   components: {
@@ -156,6 +156,7 @@ const practitioner = namespace("practitioner");
     CancelIcon,
     SortIcon,
     CheckinIcon,
+    CloseIcon,
     NewviewIcon,
     UpdateIcon,
     ChevronDownIcon,
@@ -194,7 +195,8 @@ export default class PracticeformExistingState extends Vue {
   showNewExchangeRateModal = false;
   showDefaultCurrencyModal = false;
   currencyId= "";
-  
+    orgInfo = [] as any;
+
  @currency.State
   currencys!: ICurrency[];
 
@@ -209,6 +211,9 @@ export default class PracticeformExistingState extends Vue {
 
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
+
+ @userStore.Getter
+  authPractitioner!: IPractitioner;
 
   getKeyValue = getTableKeyValue;
   
@@ -226,7 +231,7 @@ export default class PracticeformExistingState extends Vue {
       key: "exchangeRate",
        show: true,
     },
-    { title: "Outlets(s)", key: "outlets" , show: true,},
+    { title: "Location", key: "outlets" , show: true,},
      { title: "LAST UPDATED", key: "updatedAt" , show: true,},
      { title: "LAST UPDATED BY", key: "updatedByUser" , show: true,},
     // Displaying Icon in the header - <table-setting-icon/>
@@ -248,7 +253,7 @@ export default class PracticeformExistingState extends Vue {
         return {
         ...currency,
          action: currency.id,
-         outlets:"All Locations Selected",
+         outlets:"Market",
         updatedByUser:this.getUser(currency.updatedByUser)
         };
     });
@@ -263,7 +268,16 @@ export default class PracticeformExistingState extends Vue {
           return (a.createdAt < b.createdAt) ? 1 : -1;
         });
       }
+ async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this currency conversion",
+      title: "Delete currency conversion"
+    });
+    if (!confirmed) return;
 
+    if (await this.deleteCurrency(id)) window.notify({ msg: "Currency Conversion deleted", status: "success" });
+    else window.notify({ msg: "Currency Conversion not deleted", status: "error" });
+  }
 async showRateModal(value:string){
   this.showNewExchangeRateModal = true;
   this.currencyId = value;
@@ -271,13 +285,22 @@ async showRateModal(value:string){
  select(i:number) {
       this.selected = i;
     }
-    getUser(id:string){
-     const pt = this.practitioners.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : '';
+    getUser(id:string){  
+    return this.authPractitioner.user.firstName +' '+ this.authPractitioner.user.lastName;
     }
   get empty3() {
     return this.currencys.length < 1;
   }
+  async fetchOrgInfo() {
+      try {
+        const response = await cornieClient().get(
+          "/api/v1/organization/myOrg/get"
+        );
+        this.orgInfo = response.data || {};
+      } catch (error) {
+        window.notify({ msg: "Could not fetch organization", status: "error" });
+      }
+    }
 
      async created() {
      this.fetchPractitioners();

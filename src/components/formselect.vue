@@ -19,7 +19,6 @@
           max-h-52
           overflow-y-auto
           bg-white
-          z-10
           px-1
           p-4
           w-52

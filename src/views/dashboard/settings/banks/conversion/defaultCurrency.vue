@@ -124,6 +124,7 @@ loading=false;
   }
 
  async submit() {
+   this.loading = true;
       try {
         console.log(this.payload);
         const response = await cornieClient().post(
@@ -131,6 +132,7 @@ loading=false;
           this.payload
         );
         if (response.success) {
+          this.loading= false;
            window.notify({ msg: "Currency conversion added", status: "success" });
            this.show = false;
         }

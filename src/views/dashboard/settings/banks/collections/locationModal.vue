@@ -14,22 +14,19 @@
                 <cornie-select
                 label="Location"
                 class="mb-4 w-full"
-                :items="['Apapa Center']"
+                v-model="location"
+                :items="allLocation"
                 placeholder="--Select Location--"
                 />
                 <div>    
                     <span class="text-sm font-semibold mb-1">Pay Categories</span>       
                     <Multiselect
-                    v-model="value"
+                    v-model="paymentCategories"
                     mode="tags"
                     :closeOnSelect="true"
                     :searchable="true"
                     :createTag="true"
-                    :options="[
-                        { value: 'Invoice',  },
-                        { value: 'Credit Notes', },
-                        { value: 'Quotes', },
-                        ]"
+                    :options="['Invoice', 'Credit Notes', 'Quotes']"
                     label="value"
                     placeholder="--Select--"
                     class="w-full"
@@ -54,26 +51,21 @@
                 <div>    
                     <span class="text-sm font-semibold mb-1">Account</span>       
                     <Multiselect
-                    v-model="value2"
+                    v-model="accounts"
                     mode="tags"
-                    :closeOnSelect="true"
-                    :hideSelectedTag ="false"
-                    :searchable="true"
-                    :createTag="true"
-                    :options="[
-                        { value: 'GTB | 3456789009',answerOption:false,index:0},
-                        { value: 'UBA | 0987654345',answerOption:false,index:1},
-                        { value: 'GTB | 3456789010',answerOption:false,index:2},
-                        { value: 'GTB | 3456789011',answerOption:false,index:3},
-                        ]"
-              
+                  :hide-selected="false"
+                  id="field-id"
+                    :options="allAccounts"
+                    value-prop="code"
+                    trackBy="code"
+                    label="code"
                     placeholder="--Select--"
                     class="w-full"
                 
                 >
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
-                        {{option.value }}
+                        {{option.display }}
                         <span
                         v-if="!disabled"
                         class="multiselect-tag-remove"
@@ -84,14 +76,18 @@
                     </div>
                     </template> 
                     <template v-slot:option="{ option }">
-                        <select-option v-model="option.answerOption"/> <span class="w-full text-sm">{{option.value }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="defaultText">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="defaultText = true" >Set a default</span> 
+                        <select-option  name="defaultaccount" :id="option.code"/> <span class="w-full text-sm">{{option.display }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="option.code == defaultAccount">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="setDefault(option.code)">Set as default</span> 
                     </template>
                     </Multiselect> 
                 </div>
+                 <div class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2" v-for="(input, index) in accounts" :key="`${index}`">
+                <p class="float-left text-sm">{{input.name}}</p>
+                  <correct-icon class="float-right"/>
+              </div>
             </div>
-            <div>
-                <p class="text-sm text-danger font-semibold cursor-pointer">
-                   <span class="text-danger text-lg">+</span> Add Locatioon
+           <div>
+                <p class="mt-4 text-sm text-danger font-semibold cursor-pointer" v-if="accountName"  @click="addAccount">
+                   <span class="text-danger text-lg">+</span> Add Location
                 </p>
             </div>
           </div>
@@ -137,12 +133,17 @@ import BluecheckIcon from "@/components/icons/bluecheck.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import { string } from "yup";
-import { flatten } from "@/plugins/utils";
+import ICollection from "@/types/ICollection";
 import Multiselect from '@vueform/multiselect'
+import { namespace } from "vuex-class";
+import IAssociate from "@/types/IAssociate";
 
+
+ const  associations = namespace("associations"); 
+const collections = namespace("collections");
 
 @Options({
-  name: "nubanmodal",
+  name: "associationModal",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -165,7 +166,7 @@ MultiSelectsearch
 
   },
 })
-export default class Medication extends Vue {
+export default class AssociaitonModal extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -176,14 +177,6 @@ export default class Medication extends Vue {
   displayNubanTable!: boolean;
 
 
-   @Prop({ type: String, default: "" })
-  updatedBy!: string;
-
-@Prop({ type: String, default: "" })
-  currentStatus!: string;
-
-  @Prop({ type: String, default: "" })
-  dateUpdated!: string;
 
 status = "";
   loading = false;
@@ -193,48 +186,175 @@ status = "";
   value2=null;
   accountoption=false;
  
+    location = '';
+    paymentCategories = [];
+    accounts = [];
+    defaultAccount ="";
+    actualaccounts=[] as any;
+    accountName="";
+
+    orgLocation = [];
+    PaymentOptions=[];
+    allBanks = [];
+      orgId="";
+  orgInfo = [] as any;
+indexid="";
  error= false;
  defaultText= false;
 
   required = string().required();
 
+ @collections.Action
+  fetchCollectionAccounts!: (orgId: string) => Promise<void>;
 
- async updateStatus() {
-   const id = this.id;
-    const url = `/api/v1/requests/${id}`;
-    const body = {
-       status: this.status,
+  @collections.State
+  collectionAccounts!: ICollection[];
+
+@associations.Action
+  getAssociationById!: (id: string) => IAssociate
+
+ @Watch('id')
+  idChanged() {
+    this.setAccount()
+  }
+ get newaccounts (){
+       return {
+          name: this.accountName
+       }
+     } 
+    addAccount(){
+        this.actualaccounts.push(this.newaccounts);
     }
+setDefault(index:any){
+  for (var i = 0; i < this.allAccounts.length; i++) {
+       if(this.accounts[i] == index){
+        this.defaultAccount = index;
+         this.defaultText = true;
+        }
+     }
+  // if(this.accounts == index){
+
+  //   this.defaultAccount = index;
+  //   this.defaultText = true;
+  // }
+}
+async setAccount() {
+    const assoication = await this.getAssociationById(this.id)
+    if (!assoication) return
+    this.location = assoication.location
+    this.paymentCategories = assoication.paymentCategories
+    this.accounts = assoication.accounts
+    this.defaultAccount = assoication.defaultAccount
+  }
+
+  get payload() {
+        return {
+          location: this.location,
+          paymentCategories: this.paymentCategories,
+          accounts: this.accounts,
+          defaultAccount: this.defaultAccount,
+        };
+    }
+ 
+  get allLocation() {
+     if (!this.orgLocation || this.orgLocation.length === 0) return [ ];
+     return this.orgLocation.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.name,
+         }
+     })
+ }
+ get allAccounts() {
+     if (!this.collectionAccounts || this.collectionAccounts.length === 0) return [ ];
+     return this.collectionAccounts.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.accountName,
+         }
+     })
+ }
+  async fetchOrgInfo() {
+      try {
+        const response = await cornieClient().get(
+          "/api/v1/organization/myOrg/get"
+        );
+        this.orgInfo = response.data || {};
+        this.orgId = response.data.id;
+      } catch (error) {
+        window.notify({ msg: "Could not fetch organization", status: "error" });
+      }
+    }
+   async fetchLocation() {
+    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+    const response = await Promise.all([AllLocation]);
+    this.orgLocation = response[0].data;
+  }
+  async fetchDropDown() {
+        try {
+        const response = await cornieClient().get(
+          "/api/v1/payments/getPaymentsCategories/all"
+        );
+        const response2 = await cornieClient().get(
+          "/api/v1/payments/getAllBanks/all"
+        );
+        this.PaymentOptions = response.data || {};
+        this.allBanks = response2.data || {};
+      } catch (error) {
+        window.notify({ msg: "Could not fetch payment dropdowns", status: "error" });
+      }
+  }
+  async createAccount() {
     try {
-      const response = await cornieClient().put(url, body);
+      const response = await cornieClient().post(
+        "/api/v1/collection/associations",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({ msg: "Collection Associations Created", status: "success" });
+        this.done();
+      } else {
+        window.notify({ msg: response.errors!.summary, status: "error" });
+       // this.$router.push("/dashboard/provider/settings/practice-templates");
+      }
+    } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      // window.notify({ msg: "Collection Account not Created", status: "error" });
+     // this.$router.push("/dashboard/provider/settings/practice-templates");
+    }
+  }
+   async updateAccount() {
+   const id = this.id;
+    const url = `/api/v1/collection/associations/${id}`;
+    try {
+      const response = await cornieClient().put(url, this.payload);
       if (response.success){
-          window.notify({ msg: "Status Updated", status: "success" });
+          window.notify({ msg: "Collection Associations Updated", status: "success" });
         this.done();
       }
    
-    } catch (error) {
-      console.log(error);
-        window.notify({ msg: "Status Not Updated", status: "error" });
+    } catch (error:any) {
+        window.notify({ msg: error.response.message, status: "error" });
       this.loading = false;
     }
   }
-
- 
  
  done() {
-    this.$emit("medicationAdded");
+    this.$emit("accountAdded");
     this.show = false;
   }
   async apply() {
-   // this.loading = true;
-     //await this.updateStatus()
-     this.displayNubanTable = true;
-        this.show = false;
-  //  this.loading = false;
+   this.loading = true;
+    if (this.id) await this.updateAccount()
+    else await this.createAccount()
+    this.loading = false;
   }
  
   async created() {
-   
+  await this.fetchLocation();
+  await this.fetchDropDown();
+  await this.fetchOrgInfo();
+    await this.fetchCollectionAccounts(this.orgId);
   }
 }
 </script>

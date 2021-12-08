@@ -3,7 +3,7 @@
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title  class="w-full">
           <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Add Collection Account</h2>
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">{{action}} Collection Account</h2>
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
       </cornie-card-title>
@@ -17,7 +17,7 @@
                 :items="['Kuda']"
                 placeholder="--Auto-generated from profile--"
                 /> -->
-                <cornie-input disabled label="Business Name" v-model="businessName" placeholder="--Auto-generated from profile--" class="w-full mb-4" />
+                <cornie-input disabled label="Business Name" v-model="BusinessName" placeholder="--Auto-generated from profile--" class="w-full mb-4" />
                  <cornie-select
                 label="Bank"
                 class="mb-4 w-full"
@@ -25,21 +25,21 @@
                 v-model="bank"
                 placeholder="--Select Preferred Bank--"
                 />
-                <cornie-input label="Account Number" @input.prevent="fetchAccountName" v-model="accountNumber" placeholder="--Enter Account Numebr--" class="w-full mb-4" />
+                <cornie-input label="Account Number" @change="fetchAccountName" v-model="accountNumber" placeholder="--Enter Account Numebr--" class="w-full mb-4" />
                
-                 <cornie-input disabled label="Account Name" v-model="accountName" placeholder="--Autoloaded--" class="w-full mb-4" />
+                 <cornie-input disabled label="Account Name" v-model="accountName" :placeholder="placeholder" class="w-full mb-4" />
                <div v-if="error" class="flex space-x-4 -mt-2 justify-between w-full">
                 <p class="float-left text-xs">Name does not match.</p>
                   <fail-icon class="float-right"/>
               </div>
 
-              <div class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2">
-                <p class="float-left text-sm">Scelloo Limited Nigeria</p>
+              <div class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2" v-for="(input, index) in accounts" :key="`${index}`">
+                <p class="float-left text-sm">{{input.name}}</p>
                   <correct-icon class="float-right"/>
               </div>
             </div>
             <div>
-                <p class="mt-4 text-sm text-danger font-semibold cursor-pointer">
+                <p class="mt-4 text-sm text-danger font-semibold cursor-pointer" v-if="accountName"  @click="addAccount">
                    <span class="text-danger text-lg">+</span> Add Account
                 </p>
             </div>
@@ -56,7 +56,7 @@
             </cornie-btn>
             <cornie-btn  :loading="loading"
                   @click="apply" class="text-white bg-danger px-3 rounded-xl">
-            Save
+            {{newaction}}
             </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -95,9 +95,11 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import { flatten } from "@/plugins/utils";
+import { namespace } from "vuex-class";
+import ICollection from "@/types/ICollection";
 
 
+const collections = namespace("collections");
 
 @Options({
   name: "accountmodal",
@@ -130,7 +132,7 @@ import { flatten } from "@/plugins/utils";
     MainCornieSelect
   },
 })
-export default class Medication extends Vue {
+export default class accountModal extends Vue {
 @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -140,15 +142,8 @@ export default class Medication extends Vue {
   @Prop({ type: Boolean, default: false })
   displayNubanTable!: boolean;
 
-
-   @Prop({ type: String, default: "" })
-  updatedBy!: string;
-
-   @Prop({ type: String, default: "" })
-  currentStatus!: string;
-
-  @Prop({ type: String, default: "" })
-  dateUpdated!: string;
+@collections.Action
+  getCollectionAccountById!: (id: string) => ICollection
 
 status = "";
   loading = false;
@@ -159,13 +154,46 @@ status = "";
   bank =  "";
   accountNumber =  "";
   accountName = "";
+  bankname="";
   AllBanks = [];
+placeholder = "--Autofilled Account Name--";
+accounts = [] as any;
+
 
   orgInfo = [] as any;
  
  error= false;
 
   required = string().required();
+
+  
+@Watch('id')
+  idChanged() {
+    this.setAccount()
+  }
+ get newaction() {
+    return this.id ? 'Update' : 'Save'
+  }
+get action() {
+    return this.id ? 'Edit' : 'Add'
+  }
+async setAccount() {
+    const collectionAccount = await this.getCollectionAccountById(this.id)
+    if (!collectionAccount) return
+    this.businessName = collectionAccount.businessName
+    this.bank = collectionAccount.bank
+    this.accountNumber = collectionAccount.accountNumber
+    this.accountName = collectionAccount.accountName
+  }
+
+  get payload() {
+        return {
+          businessName: this.BusinessName,
+          bank: this.bank,
+          accountNumber: this.accountNumber,
+          accountName: this.accountName,
+        };
+    }
 
   get BusinessName(){
     this.businessName = this.orgInfo.name;
@@ -181,22 +209,18 @@ status = "";
      })
  }
 
- async updateStatus() {
+ async updateAccount() {
    const id = this.id;
-    const url = `/api/v1/requests/${id}`;
-    const body = {
-       status: this.status,
-    }
+    const url = `/api/v1/collection/account/${id}`;
     try {
-      const response = await cornieClient().put(url, body);
+      const response = await cornieClient().put(url, this.payload);
       if (response.success){
-          window.notify({ msg: "Status Updated", status: "success" });
+          window.notify({ msg: "Collection account Updated", status: "success" });
         this.done();
       }
    
-    } catch (error) {
-      console.log(error);
-        window.notify({ msg: "Status Not Updated", status: "error" });
+    } catch (error:any) {
+        window.notify({ msg: error.response.message, status: "error" });
       this.loading = false;
     }
   }
@@ -217,40 +241,70 @@ status = "";
         );
         this.AllBanks = response.data || {};
       } catch (error) {
-        window.notify({ msg: "Could not banks", status: "error" });
+        window.notify({ msg: "Could not fetch banks", status: "error" });
       }
     }
     async fetchAccountName() {
-      const TOKEN = 'pk_test_29d8f85ecdfac9b7bc572cae9d1965062d44356a';
-      const BASEURL =  'https://api.paystack.co';
-      const ENDPOINT = '/items/ITEM_NAME';
+     const body = {
+       account: this.accountNumber,
+        bank: this.bank,
+      }
         try {
         const response = await cornieClient().get(
-          `https://api.paystack.co/bank/resolve?account_number=${this.accountNumber}&bank_code=${this.bank}`,{
-            headers: {
-                Authorization: 'Bearer pk_test_29d8f85ecdfac9b7bc572cae9d1965062d44356a',
-            }
-          });
-        console.log(response,"Error is here");
-        this.accountName = response.data.account_name || {};
-        if(response.data.status == false){
-          window.notify({ msg: response.data.message, status: "error" });
+          '/api/v1/collection/account/bank/resolve-account/',body
+        );
+          this.placeholder = "Loading..."
+        if(response.success == true){
+          this.placeholder = "";
+          this.accountName = response.data.accountName || {};
+        }else{
+              window.notify({ msg: response.data.message, status: "error" });
         }
-      } catch (error) {
-        console.log(error);
+        
+      } catch (error: any) {
+        console.log(error)
+          window.notify({ msg: error.response.data.message, status: "error" });
+        //window.notify({ msg: error.response[0].success, status: "error" });
       }
     }
+     get newaccounts (){
+       return {
+          name: this.accountName
+       }
+     } 
+    addAccount(){
+        this.accounts.push(this.newaccounts);
+    }
+
+  async createAccount() {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/collection/account",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({ msg: "Collection Account Created", status: "success" });
+        this.done();
+      } else {
+        window.notify({ msg: response.errors!.summary, status: "error" });
+       // this.$router.push("/dashboard/provider/settings/practice-templates");
+      }
+    } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      // window.notify({ msg: "Collection Account not Created", status: "error" });
+     // this.$router.push("/dashboard/provider/settings/practice-templates");
+    }
+  }
  
  done() {
-    this.$emit("medicationAdded");
+    this.$emit("accountAdded");
     this.show = false;
   }
   async apply() {
-   // this.loading = true;
-     //await this.updateStatus()
-     this.displayNubanTable = true;
-        this.show = false;
-  //  this.loading = false;
+   this.loading = true;
+    if (this.id) await this.updateAccount()
+    else await this.createAccount()
+    this.loading = false;
   }
  
   async created() {

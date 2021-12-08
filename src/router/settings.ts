@@ -25,11 +25,23 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/AccountSecurity/index.vue"),
     },
+    // {
+    //   path: "accounts",
+    //   name: "Bank And Accounts",
+    //   component: () =>
+    //     import("@/views/dashboard/settings/bankaccounts/index.vue"),
+    // },
     {
-      path: "accounts",
-      name: "Bank And Accounts",
+      path: "bank-accounts",
+      name: "Bank & Accounts",
       component: () =>
-        import("@/views/dashboard/settings/bankaccounts/index.vue"),
+        import("@/views/dashboard/settings/banks/index.vue"),
+    },
+    {
+      path: "transaction-history",
+      name: "Transaction history",
+      component: () =>
+        import("@/views/dashboard/settings/banks/payments/history.vue"),
     },
     {
       path: "add-payment-account/:id?",

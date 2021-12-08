@@ -1,8 +1,8 @@
 <template>
   <router-link
-    active-class="p-3 bg-primary rounded-full text-white"
+    active-class="p-3 bg-blue-50 rounded-full text-black"
     :to="to"
-    class="text-sm p-2 mb-1 font-semibold flex items-center text-semibold"
+    class="text-xs p-3 mb-1  font-medium flex items-center"
   >
     <span class="mr-2 flex">
       <slot name="default" :active="active" />

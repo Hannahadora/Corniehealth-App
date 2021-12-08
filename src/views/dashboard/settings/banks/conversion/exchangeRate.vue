@@ -19,40 +19,13 @@
   :createTag="true"
   :options="allCurrency"
 />  -->
-            <div>    
-                <span class="text-sm font-semibold mb-1">Location</span>       
-                 <Multiselect
-               v-model="value"
-                mode="tags"
-                :closeOnSelect="true"
-                :searchable="true"
-                :createTag="true"
-                :options="[
-                    { value: 'All Outlets',  },
-                    { value: 'Outlets 1', },
-                    { value: 'Outlets 2', },
-                    ]"
-                label="value"
-                placeholder="--Select Outlets--"
-                class="w-full"
-               
-              >
-              <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                <div class="multiselect-tag is-user">
-                    {{option.value }}
-                    <span
-                    v-if="!disabled"
-                    class="multiselect-tag-remove"
-                    @mousedown.prevent="handleTagRemove(option, $event)"
-                    >
-                    <span class="multiselect-tag-remove-icon"></span>
-                    </span>
-                </div>
-                </template>
-
-
-              </Multiselect> 
-            </div>
+              <cornie-select
+                label="Location"
+                class="mb-4 w-full"
+                v-model="location"
+                :items="allLocation"
+                placeholder="--Select Location--"
+                />
               <cornie-select
                 placeholder="--Select--"
                 class="w-full"
@@ -68,12 +41,14 @@
                 v-model="currency"
               />
           </div>
-           <div class="">
+           <cornie-input disabled v-if="id" label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" />
+             <cornie-input v-else label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" />
+           <!-- <div class="">
                <span class="text-sm font-semibold mb-1">Exchange rate</span>       
                 <div class="bg-blue-100 text-black p-3 rounded flex font-semibold mt-5 text-sm">
                   68
                 </div>
-           </div>
+           </div> -->
             <div class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm">
                 1 CY ~= 68 NGN
             </div>
@@ -110,13 +85,14 @@ import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
-import { findLastKey } from "lodash";
 import { namespace } from "vuex-class";
 import ICurrency from "@/types/ICurrency";
 //import MultiSelect from "./multipleselect.vue";
 import Multiselect from '@vueform/multiselect'
 
 const currency = namespace("currency");
+
+
 @Options({
   name: "NewExchangeRate",
   components: {
@@ -147,6 +123,7 @@ export default class NewExchangeRate extends Vue {
   available!: object;
 
 
+
 @Watch('id')
   idChanged() {
     this.setCurrency()
@@ -157,7 +134,8 @@ export default class NewExchangeRate extends Vue {
       Currencies = [];
 loading=false;
  value = null;
- 
+ location='';
+ orgLocation = [];
        options = [
           'Batman',
           'Robin',
@@ -176,7 +154,7 @@ loading=false;
   async setCurrency() {
     const currency = await this.getCurrencyById(this.id)
     if (!currency) return
-     this.currency = currency.currency;
+     this.currency = currency.code;
     this.exchangeRate = currency.exchangeRate;
   }
  
@@ -187,7 +165,15 @@ loading=false;
         exchangeRate:this.exchangeRate
     }
   }
-
+  get allLocation() {
+     if (!this.orgLocation || this.orgLocation.length === 0) return [ ];
+     return this.orgLocation.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.name,
+         }
+     })
+ }
  get newaction() {
     return this.id ? 'Update' : 'New'
   }
@@ -257,8 +243,14 @@ loading=false;
       const response = await Promise.all([worldCurrencies])
       this.Currencies = response[0].data;
     }
+      async fetchLocation() {
+    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+    const response = await Promise.all([AllLocation]);
+    this.orgLocation = response[0].data;
+  }
   created() {
     this.fetchDropDown();
+    this.fetchLocation();
      
   }
 }

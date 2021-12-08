@@ -28,7 +28,7 @@
             </div>
           <div v-else>
             <span class="flex justify-end w-full mb-8">
-               <div class="dropdown inline-block relative z-10">
+               <div class="dropdown inline-block relative">
                         <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
                         <span class="mr-1">Create New </span>
                         <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
@@ -106,7 +106,7 @@
             </div>
             <div v-else>
                 <span class="flex justify-end w-full mb-8">
-                  <div class="dropdown inline-block relative z-10">
+                  <div class="dropdown inline-block relative">
                             <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
                             <span class="mr-1">Create New </span>
                             <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>

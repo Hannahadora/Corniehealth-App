@@ -21,6 +21,7 @@ import UserSettingsStore from "./usersettings";
 
 import OrgStore from "./organization";
 import CollectionStore from "./collection";
+import AssociationStore from "./associate";
 import VisitsStore from "./visits";
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
@@ -98,5 +99,6 @@ export default createStore({
     catalogues: CatalogueStore,
     appointments: AppointmentTypes,
     collections: CollectionStore,
+    association: AssociationStore,
   },
 } as StoreOptions<any>);

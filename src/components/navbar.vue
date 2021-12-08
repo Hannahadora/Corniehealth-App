@@ -20,44 +20,20 @@
         <ul
           class="
             dropdown-menu
-            p-2
+            p-4
             bg-white
-            rounded-md
-            w-80
+            rounded
+            w-auto
+            justify-center
             h-auto
-            right-10
+            right-32
             absolute
             -mt-2
             z-10
             shadow-md
             hidden
           "
-        >
-          <li
-            class="border-b border-primary cursor-pointer mb-3"
-            @click="$router.push({ name: 'Settings' })"
-          >
-            <cornie-btn
-              class="
-                font-semibold
-                rounded-full
-                mb-5
-                border-primary border-2
-                pl-4
-                pr-4
-                p-1
-                hover:bg-primary
-                hover:text-white
-                mt-2
-                w-full
-                text-primary
-              "
-            >
-              <span class="inline-flex justify-center">
-                <settings-icon class="mr-2 mt-0.5" /> Go to all settings</span
-              >
-            </cornie-btn>
-          </li>
+        >     
           <li
             @click="$router.push('/dashboard/settings/org-info')"
             class="
@@ -65,9 +41,9 @@
               list-none
               items-center
               flex
+              font-medium
               text-sm
-              font-semibold
-              text-gray-700
+              text-black
               hover:bg-gray-100
               hover:text-gray-900
               cursor-pointer
@@ -77,107 +53,94 @@
               py-2
             "
           >
-            <span class="flex item-center"
-              ><org-icon />
-              <p class="ml-2">Organization Information</p></span
+
+              <p class="ml-2">Account Info</p>
+          </li>
+          <li
+            @click="$router.push('/dashboard/settings/user')"
+            class="
+              mb-3
+              list-none
+              items-center
+              flex
+               font-medium
+              text-sm
+              text-black
+              hover:bg-gray-100
+              hover:text-gray-900
+              cursor-pointer
+              my-1
+              -m-2
+              p-5
+              py-2
+            "
+          >
+              <p class="ml-2">Users & Security</p>
+          </li>
+          <li
+            class="
+              mb-3
+              list-none
+              items-center
+              flex
+               font-medium
+              text-sm
+              text-black
+              hover:bg-gray-100
+              hover:text-gray-900
+              cursor-pointer
+              my-1
+              -m-2
+              p-5
+              py-2
+            "
+          >
+              <p class="ml-2">Commercial</p>
+          </li>
+          <li
+            @click="$router.push('/dashboard/settings/practise-management')"
+            class="
+              mb-3
+              list-none
+              items-center
+              flex
+               font-medium
+              text-sm
+              text-black
+              hover:bg-gray-100
+              hover:text-gray-900
+              cursor-pointer
+              my-1
+              -m-2
+              p-5
+              py-2
+            "
+          >
+         
+              <p class="ml-2">Practice Management</p>
+       
+          </li>
+             <li
+            class="cursor-pointer mb-3"
+            @click="showSettings"
+          >
+            <cornie-btn
+              class="
+                font-semibold
+                rounded-full
+                mb-1
+                bg-primary
+                mt-2
+                w-full
+                text-white
+              "
             >
+              <span class="inline-flex justify-center text-sm">
+               View all settings  <settings-white-icon class="ml-2 mt-0.5" /></span
+              >
+            </cornie-btn>
           </li>
-          <li
-            @click="$router.push('/dashboard/settings/contact-info')"
-            class="
-              mb-3
-              list-none
-              items-center
-              flex
-              text-sm
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100
-              hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex">
-              <contact-icon />
-              <p class="ml-2">Contact Information</p>
-            </div>
-          </li>
-          <li
-            @click="$router.push('/dashboard/settings/org-hierarchy')"
-            class="
-              mb-3
-              list-none
-              items-center
-              flex
-              text-sm
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100
-              hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex">
-              <hierarchy-icon />
-              <p class="ml-2">Organization Hierarchy</p>
-            </div>
-          </li>
-          <li
-            @click="$router.push('/dashboard/settings/practitioners')"
-            class="
-              mb-3
-              list-none
-              items-center
-              flex
-              text-sm
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100
-              hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex">
-              <practitioner-icon />
-              <p class="ml-2">Practitioner</p>
-            </div>
-          </li>
-          <li
-            class="
-              cursor-pointer
-              list-none
-              items-center
-              flex
-              text-sm
-              mb-3
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100
-              hover:text-gray-900
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-            <div class="flex">
-              <approval-icon />
-              <p class="ml-2">Approval</p>
-            </div>
-          </li>
-          <li
+          <!-- <li
            @click="$router.push('/dashboard/settings/practise-management/forms-questionnaires')"
             class="
               cursor-pointer
@@ -248,7 +211,7 @@
               <bank-icon />
               <p class="ml-2">Bank & Accounts</p>
             </div>
-          </li>
+          </li> -->
         </ul>
       </div>
     </span>
@@ -610,11 +573,13 @@
       </span>
     </div>
   </nav>
+  <settings-modal v-model="showSettingsModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ArrowLeftIcon from "./icons/arrowleft.vue";
 import SettingsIcon from "./icons/settings.vue";
+import SettingsWhiteIcon from "./icons/settingswhite.vue";
 import BellIcon from "./icons/bell.vue";
 import ChevronDown from "./icons/chevrondownprimary.vue";
 import { namespace } from "vuex-class";
@@ -629,6 +594,8 @@ import FormIcon from "@/components/icons/questionnaire.vue";
 import store from "@/store";
 import IPractitioner from "@/types/IPractitioner";
 import BankIcon from "@/components/icons/bank.vue";
+import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue"
+
 const account = namespace("user");
 @Options({
   components: {
@@ -636,6 +603,7 @@ const account = namespace("user");
     ChevronDown,
     BankIcon,
     SettingsIcon,
+    SettingsWhiteIcon,
     FormIcon,
     BellIcon,
     OrgIcon,
@@ -643,9 +611,12 @@ const account = namespace("user");
     HierarchyIcon,
     PractitionerIcon,
     ApprovalIcon,
+    SettingsModal,
   },
 })
 export default class NavBar extends Vue {
+  showSettingsModal= false;
+
   get routeName() {
     return this.$route.name;
   }
@@ -662,7 +633,9 @@ export default class NavBar extends Vue {
   get profilePhoto() {
     return this.cornieUser?.image;
   }
-
+showSettings(){
+  this.showSettingsModal = true;
+}
   get designation() {
     if (!this.authPractitioner) return "Root";
     return this.authPractitioner.jobDesignation || this.authPractitioner.type;
