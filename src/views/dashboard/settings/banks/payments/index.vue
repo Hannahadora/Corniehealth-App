@@ -9,6 +9,7 @@
         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Virtual NUBAN Accounts</a></li>    
         <!-- <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Direct Debit</a></li> -->
     </ul>
+
     <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="NUBAN">   
           <p class="mt-5 text-sm">
@@ -225,6 +226,7 @@
     </div>
   </div>
   <nuban-modal v-model="showNubanModal" :displayNubanTable="true" />
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";

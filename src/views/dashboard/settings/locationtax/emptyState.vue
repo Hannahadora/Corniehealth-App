@@ -22,7 +22,7 @@
         </li>
       </ul>
     </ul>
-    </ul>
+    <!-- </ul> -->
       <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Location">     
             <div class="w-full flex flex-col justify-center items-center h-96">
@@ -75,8 +75,9 @@
             </div>
         </div>
       </div>
+
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
