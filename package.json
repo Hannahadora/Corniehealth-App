@@ -78,6 +78,6 @@
   "hooks": {
     "pre-commit": "yarn lint"
   }
-},
+}
 
 }
