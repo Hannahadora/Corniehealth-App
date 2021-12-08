@@ -44,8 +44,8 @@
               font-medium
               text-sm
               text-black
-              hover:bg-gray-100
-              hover:text-gray-900
+              hover:bg-blue-100
+              rounded-full
               cursor-pointer
               my-1
               -m-2
@@ -57,7 +57,7 @@
               <p class="ml-2">Account Info</p>
           </li>
           <li
-            @click="$router.push('/dashboard/settings/user')"
+            @click="$router.push('/dashboard/user')"
             class="
               mb-3
               list-none
@@ -66,8 +66,8 @@
                font-medium
               text-sm
               text-black
-              hover:bg-gray-100
-              hover:text-gray-900
+              hover:bg-blue-100
+              rounded-full
               cursor-pointer
               my-1
               -m-2
@@ -85,9 +85,9 @@
               flex
                font-medium
               text-sm
-              text-black
-              hover:bg-gray-100
-              hover:text-gray-900
+             text-black
+              hover:bg-blue-100
+              rounded-full
               cursor-pointer
               my-1
               -m-2
@@ -98,7 +98,7 @@
               <p class="ml-2">Commercial</p>
           </li>
           <li
-            @click="$router.push('/dashboard/settings/practise-management')"
+            @click="$router.push('/dashboard/settings/practise-management/forms-questionnaires')"
             class="
               mb-3
               list-none
@@ -106,9 +106,9 @@
               flex
                font-medium
               text-sm
-              text-black
-              hover:bg-gray-100
-              hover:text-gray-900
+            text-black
+              hover:bg-blue-100
+              rounded-full
               cursor-pointer
               my-1
               -m-2
