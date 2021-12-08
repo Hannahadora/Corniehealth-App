@@ -20,6 +20,8 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
+      line_gray: "#C5C4D4",
+      jet_black: "#14171F",
 
       danger: "#FE4D3C",
 
@@ -30,6 +32,7 @@ module.exports = {
       "fiery-rose": "#FF5964",
       squash: "#F7B538",
       "blue-yonder": "#6F6C93",
+      "blue-yonder-2": "#667499",
       "white-cotton-ball": "#F5F4FA",
       black: colors.black,
       white: colors.white,
@@ -175,7 +178,9 @@ module.exports = {
       4: "4px",
       8: "8px",
     },
+
     boxShadow: {
+      card: "0px 1px 2px rgba(46, 41, 78, 0.02), 0px 4px 8px rgba(46, 41, 78, 0.08)",
       sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
       DEFAULT:
         "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
@@ -283,6 +288,7 @@ module.exports = {
       ],
     },
     fontSize: {
+      xxs: ["10px", { lineHeight: "1rem" }],
       xs: ["0.75rem", { lineHeight: "1rem" }],
       sm: ["0.875rem", { lineHeight: "1.25rem" }],
       base: ["1rem", { lineHeight: "1.5rem" }],

@@ -1,28 +1,31 @@
 <template>
   <div class="overflow-y-auto">
-    <modal :visible="visible" class="mx-14 h-3/4 w-4/12 p-0 overflow-y-auto">
-      <div
+    <modal :visible="visible" class="mx-14 h-3/4 w-4/12  overflow-y-auto py-4 px-2">
+      <!-- <div
         class="flex bg-primary w-full h-3/4 overflow-y-auto rounded-t-lg p-2"
       >
         <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-white cursor-pointer"
+    
+        </span>
+      </div> -->
+      <div class="w-full p-3">
+        <div class="flex items-center gap-2 mb-12">
+      <arrow-left-icon
+            class="stroke-current text-primary cursor-pointer"
             @click="show = false"
           />
-        </span>
-      </div>
-      <div class="w-full p-3">
-        <h2 class="text-primary font-bold text-xl" v-if="isUpdate">
-          Update Contact
+          <div class="border h-5"/>
+   <h2 class="text-primary font-bold text-2xl" >
+        {{isUpdate ? "Edit My Contact" : "Add Contact"}}  
         </h2>
-        <h2 class="text-primary font-bold text-xl" v-else>Add Contact</h2>
-        <small class="block" v-if="isUpdate">update contact...</small>
-        <small class="block" v-else>Add a new contact...</small>
-        <span class="flex items-center mt-3">
+        </div>
+     
+
+        <span class="flex items-center mt-3 mb-12">
           <cornie-avatar-field v-model="image" />
         </span>
         <v-form @submit="submit">
-          <div class="mt-2 grid grid-cols-2 p-1 gap-y-2">
+          <div class="mt-2 grid grid-cols-2 p-1 gap-y-2 gap-3">
             <cornie-input
               :rules="requiredRule"
               label="First Name"
@@ -77,7 +80,7 @@
           </div>
           <div class="flex justify-end w-full mt-4 mb-3">
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded-full mt-5 py-1 px-4 border border-primary focus:outline-none font-bold  hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
@@ -85,7 +88,7 @@
             <cornie-btn
               :loading="loading"
               type="submit"
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+              class="bg-danger rounded-full text-white mt-5 py-1 px-4 font-bold focus:outline-none hover:opacity-90 w-1/3"
             >
               Save
             </cornie-btn>

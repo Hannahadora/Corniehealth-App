@@ -1,13 +1,13 @@
 <template>
   <div class="w-full">
     <div
-      class="h-11 w-full flex items-center justify-between px-3 border-2"
+      class="h-11 w-full flex items-center justify-between px-3 border-1 border-t-0 border-line_gray"
       :class="{
-        'border-0 bg-primary border-primary': expanded,
+        'border-0  text-base text-jet_black font-bold': expanded,
         'rounded-t-xl': first && expanded,
       }"
     >
-      <div class="font-semibold" :class="{ 'text-white': expanded }">
+      <div class="font-semibold" :class="{ 'text-jet_black': expanded }">
         {{ title }}
       </div>
       <span class="flex items-center">
