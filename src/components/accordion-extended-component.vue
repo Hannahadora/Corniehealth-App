@@ -2,7 +2,16 @@
   <div class="bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-full">
     <div class="w-full">
       <div
-        class="h-11 w-full border-b-2 flex items-center justify-between"
+        @click="handle"
+        class="
+          h-11
+          w-full
+          border-b-2
+          cursor-pointer
+          flex
+          items-center
+          justify-between
+        "
         :class="{
           'bg-white': expand,
           'rounded-t-xl': first && expand,
@@ -74,6 +83,10 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: String, default: "" })
   titledescription!: string;
 
+  handle() {
+    if (this.expand) this.hide();
+    else this.expanded();
+  }
   created() {
     this.expand = Boolean(this.modelValue);
   }

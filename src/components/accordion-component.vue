@@ -1,7 +1,17 @@
 <template>
   <div class="w-full">
     <div
-      class="h-11 w-full flex items-center justify-between px-3 border-1 border-t-0 border-line_gray"
+      @click="handle"
+      class="
+        cursor-pointer
+        h-11
+        w-full
+        flex
+        items-center
+        justify-between
+        px-3
+        border-2
+      "
       :class="{
         'border-0  text-base text-jet_black font-bold': expanded,
         'rounded-t-xl': first && expanded,
@@ -76,7 +86,10 @@ export default class AccordionComponent extends Vue {
   updateVisibility() {
     this.expanded = this.modelValue;
   }
-
+  handle() {
+    if (this.expanded) this.hide();
+    else this.expand();
+  }
   created() {
     this.expanded = Boolean(this.modelValue);
   }

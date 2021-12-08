@@ -198,6 +198,7 @@ export default {
         website: this.Website,
         incorporationStatus: this.IncorporationStatus,
         email: this.EmailAddress,
+        reference: this.ReferenceOrganization,
       };
     },
   },
@@ -265,7 +266,8 @@ export default {
       this.ProviderProfile = data.providerProfile || "";
       this.IncorporationType = data.incorporationType || "";
       this.Website = data.website || "";
-      this.IncStatus = data.incorporationStatus || "";
+      this.IncorporationStatus = data.incorporationStatus || "";
+      this.ReferenceOrganization = data.reference || "";
     },
   },
 };

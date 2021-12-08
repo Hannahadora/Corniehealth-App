@@ -16,7 +16,16 @@
         <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
           <span>
             <div
-              class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
+              @click="open = open == i ? -1 : i"
+              class="
+                w-full
+                cursor-pointer
+                justify-between
+                flex
+                xl:pr-4
+                md:pr-2
+                items-center
+              "
             >
               <h2
                 @click="open = open == i ? -1 : i"
