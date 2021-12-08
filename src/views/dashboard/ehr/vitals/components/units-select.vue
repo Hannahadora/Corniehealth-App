@@ -14,7 +14,9 @@
                 {{ label }}
               </template>
               <span class="text-danger ml-1" v-if="required"> * </span>
-              <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+              <span class="ml-1 mb-1" v-if="$slots.labelicon"
+                ><slot name="labelicon"
+              /></span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -38,27 +40,12 @@
                   placeholder="Select"
                   disabled
                   :value="displayVal"
-                  class="
-                    p-1
-                    pl-1
-                    bg-transparent
-                    appearance-none
-                    outline-none
-                    w-full
-                    text-gray-800
-                  "
+                  class="p-1 pl-1 bg-transparent appearance-none outline-none w-full text-gray-800"
                   @change="handleChange"
                 />
 
                 <div
-                  class="
-                    text-gray-300
-                    py-1
-                    
-                    flex
-                    items-center
-                    border-gray-200
-                  "
+                  class="text-gray-300 py-1 flex items-center border-gray-200"
                 >
                   <chevron-down-icon />
                 </div>
@@ -70,48 +57,21 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              w-full
-              lef-0
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            class="absolute shadow bg-white top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <div
                 v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
                   <slot name="item" v-bind:item="item" />
                 </template>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                  "
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
                 >
                   {{ item.display || item }}
                 </div>
@@ -127,7 +87,7 @@
 import { clickOutside } from "@/plugins/utils";
 import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync,Watch } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
 
@@ -194,24 +154,23 @@ export default class CornieSelect extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return `select-${id}`;
   }
-  
- @Watch("items")
-  update(){
-     this.$emit("change")
-     
+
+  @Watch("items")
+  update() {
+    this.$emit("change");
   }
-  
-//    @Watch("modelValue")
-// updateSubject(){
-//      this.$emit("changesubject")
-//   }
-//    @Watch("modelValue")
-//   updateRequester(){
-//      this.$emit("changerequest")
-//   }
-//   updatePerformer(){
-//      this.$emit("changeperformer")
-//   }
+
+  //    @Watch("modelValue")
+  // updateSubject(){
+  //      this.$emit("changesubject")
+  //   }
+  //    @Watch("modelValue")
+  //   updateRequester(){
+  //      this.$emit("changerequest")
+  //   }
+  //   updatePerformer(){
+  //      this.$emit("changeperformer")
+  //   }
 
   mounted() {
     clickOutside(this.id, () => {

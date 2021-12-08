@@ -1,30 +1,10 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-      overflow-auto
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
   >
     <div class="w-full p-2">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-5
-          text-xl text-primary
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
       >
         Markup & Discounts
       </span>
@@ -35,7 +15,8 @@
           </cornie-btn> -->
           <cornie-btn
             @click="
-              $router.push(`/dashboard/provider/settings/markup-settings`)" 
+              $router.push(`/dashboard/provider/settings/markup-settings`)
+            "
             class="bg-danger text-white m-5 pr-5 pl-5"
           >
             Edit
@@ -97,7 +78,7 @@
     </div>
     <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
     <!-- <registration-dialog v-model="registerNew" /> -->
-    <add-function/>
+    <add-function />
     <advanced-filter
       v-model:filtered="filteredPatients"
       v-model="filterAdvanced"
@@ -127,11 +108,8 @@ import CheckinIcon from "@/components/icons/checkin.vue";
 import CheckInDialog from "./dialogs/checkin-dialog.vue";
 import AdvancedFilter from "./dialogs/advanced-filter.vue";
 
-
 import AddFunction from "./add-function.vue";
-import MarkupSettings from "./markup-settings.vue"
-
-
+import MarkupSettings from "./markup-settings.vue";
 
 const patients = namespace("patients");
 @Options({
@@ -154,7 +132,7 @@ const patients = namespace("patients");
     CornieTable,
     AdvancedFilter,
 
-    AddFunction,    
+    AddFunction,
     MarkupSettings,
   },
 })

@@ -109,16 +109,7 @@
         </div>
         <span
           @click="() => (showFullHeight = !showFullHeight)"
-          class="
-            text-danger
-            more
-            font-bold
-            cursor-pointer
-            p-5
-            text-sm
-            flex
-            justify-center
-          "
+          class="text-danger more font-bold cursor-pointer p-5 text-sm flex justify-center"
           >{{ showFullHeight ? "See less" : "See more" }}</span
         >
       </div>
@@ -140,14 +131,7 @@
                 type="search"
                 v-model="query"
                 placeholder="Search"
-                class="
-                  rounded-full
-                  w-full
-                  border-2
-                  py-2
-                  px-8
-                  focus:outline-none
-                "
+                class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
               >
                 <template v-slot:prepend>
                   <search-icon />

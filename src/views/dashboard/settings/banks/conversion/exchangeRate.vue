@@ -1,37 +1,41 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-5/6">
     <cornie-card height="100%" class="flex flex-col">
-       <cornie-card-title  class="w-full"> 
-          <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary -mt-1">{{newaction}} Exchange Rate</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-          </div>
-          
-       </cornie-card-title>
-        <cornie-card-text class="flex-grow scrollable">
-          <div>
-               <multi-select
-                placeholder="--Select Outlets--"
-                class="w-full"
-                label="Outlets"
-                :items="allCurrency"
-                v-model="currency"
-              />
-              <cornie-select
-                placeholder="--Select--"
-                class="w-full"
-                label="Base Currency"
-                :items="allCurrency"
-                v-model="currency"
-              />
-              <cornie-select
-                placeholder="--Select--"
-                class="w-full"
-                label="Currency"
-                :items="allCurrency"
-                v-model="currency"
-              />
-            <!-- <label for="Currency" class="font-bold text-base uppercase mb-4">
+      <cornie-card-title class="w-full">
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary -mt-1">
+            {{ newaction }} Exchange Rate
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+        <div>
+          <multi-select
+            placeholder="--Select Outlets--"
+            class="w-full"
+            label="Outlets"
+            :items="allCurrency"
+            v-model="currency"
+          />
+          <cornie-select
+            placeholder="--Select--"
+            class="w-full"
+            label="Base Currency"
+            :items="allCurrency"
+            v-model="currency"
+          />
+          <cornie-select
+            placeholder="--Select--"
+            class="w-full"
+            label="Currency"
+            :items="allCurrency"
+            v-model="currency"
+          />
+          <!-- <label for="Currency" class="font-bold text-base uppercase mb-4">
               Currency
             </label>
             <orgSelect name="select" id="Currency" v-model="Currency">
@@ -39,33 +43,38 @@
                 {{ Currency.code }}
               </option>
             </orgSelect> -->
-          </div>
-           <div class="w-full">
-            <cornie-input
+        </div>
+        <div class="w-full">
+          <cornie-input
             class="w-full"
             disabled
             placeholder="--Enter--"
-              id="exchangeRate"
-              label="Exchange rate"
-              v-model="exchangeRate"
-            />
-           </div>
-            <div class="bg-blue-100 text-black p-4 text-center flex font-semibold justify-center mt-5 text-sm">
-                1 CY ~= 68 NGN
-            </div>
-        </cornie-card-text>  
-           <cornie-card>
+            id="exchangeRate"
+            label="Exchange rate"
+            v-model="exchangeRate"
+          />
+        </div>
+        <div
+          class="bg-blue-100 text-black p-4 text-center flex font-semibold justify-center mt-5 text-sm"
+        >
+          1 CY ~= 68 NGN
+        </div>
+      </cornie-card-text>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
-                <cornie-btn
-                @click="show = false"
-                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-              >
-                Cancel
-              </cornie-btn>
-              <cornie-btn  :loading="loading"
-                    @click="apply" class="text-white bg-danger px-3 rounded-xl">
-              Save
-              </cornie-btn>
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-3 rounded-xl"
+          >
+            Save
+          </cornie-btn>
           <!-- <span>
             <button
               class="
@@ -117,9 +126,7 @@
             </button>
           </span> -->
         </cornie-card-text>
-           </cornie-card>
-         
-        
+      </cornie-card>
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -141,138 +148,132 @@ import { namespace } from "vuex-class";
 import ICurrency from "@/types/ICurrency";
 import MultiSelect from "./multipleselect.vue";
 
-
 const currency = namespace("currency");
 @Options({
   name: "NewExchangeRate",
   components: {
     ...CornieCard,
-      Textarea,
-      CornieIconBtn,
-      ArrowLeftIcon,
+    Textarea,
+    CornieIconBtn,
+    ArrowLeftIcon,
     Modal,
     CornieInput,
     CornieSelect,
     CornieDialog,
     CancelIcon,
-    MultiSelect
+    MultiSelect,
   },
 })
 export default class NewExchangeRate extends Vue {
-
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @currency.Action
-  getCurrencyById!: (id: string) => ICurrency
+  getCurrencyById!: (id: string) => ICurrency;
 
-  @Prop({ type: Array,  default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   available!: object;
 
-
-@Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setCurrency()
+    this.setCurrency();
   }
 
- currency= "";
-      exchangeRate ="";
-      Currencies = [];
-loading=false;
+  currency = "";
+  exchangeRate = "";
+  Currencies = [];
+  loading = false;
 
- 
-   get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
-  async  apply() {
-     this.loading = true
-    if (this.id) await this.updateCurrency()
-    else await this.createCurrency()
-    this.loading = false
-    }
+  async apply() {
+    this.loading = true;
+    if (this.id) await this.updateCurrency();
+    else await this.createCurrency();
+    this.loading = false;
+  }
   async setCurrency() {
-    const currency = await this.getCurrencyById(this.id)
-    if (!currency) return
-     this.currency = currency.currency;
+    const currency = await this.getCurrencyById(this.id);
+    if (!currency) return;
+    this.currency = currency.currency;
     this.exchangeRate = currency.exchangeRate;
   }
- 
 
   get payload() {
     return {
-       code:this.currency,
-        exchangeRate:this.exchangeRate
-    }
+      code: this.currency,
+      exchangeRate: this.exchangeRate,
+    };
   }
 
- get newaction() {
-    return this.id ? 'Update' : 'New'
+  get newaction() {
+    return this.id ? "Update" : "New";
   }
 
-   done() {
+  done() {
     this.$emit("currency-added");
     this.show = false;
   }
   get allCurrency() {
-     if (!this.Currencies || this.Currencies.length === 0) return [ ];
-     return this.Currencies.map((i:any) => {
-         return {
-             code: i.code,
-             display: i.code,
-         }
-     })
+    if (!this.Currencies || this.Currencies.length === 0) return [];
+    return this.Currencies.map((i: any) => {
+      return {
+        code: i.code,
+        display: i.code,
+      };
+    });
   }
-  
+
   async createCurrency() {
-      try {
-        console.log(this.payload);
-        const response = await cornieClient().post(
-          "/api/v1/currency",
-          this.payload
-        );
-        if (response.success) {
-          window.notify({ msg: 'Currency conversion added', status: 'success' })
-          this.done();
-        }
-      } catch (error) {
-        console.error(error);
-         window.notify({ msg: 'Currency conversion not added', status: 'error' })
-      }
-    }
-
-  async updateCurrency(){
-    const url = `/api/v1/currency/${this.id}`
-    const payload = {
-       ...this.payload,
-      }
     try {
-      const response = await cornieClient().put(url, payload)
-      if (response.success) {
-        window.notify({ msg: 'Currency conversion  updated', status: 'success' })
-      this.done();
-
-      }
-    } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: 'error' })
-    }
-    }
-
-
- async fetchDropDown() {
-      const worldCurrencies = cornieClient().get(
-        "/api/v1/currency/getCurrencies/world"
+      console.log(this.payload);
+      const response = await cornieClient().post(
+        "/api/v1/currency",
+        this.payload
       );
-      const response = await Promise.all([worldCurrencies])
-      this.Currencies = response[0].data;
+      if (response.success) {
+        window.notify({ msg: "Currency conversion added", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      console.error(error);
+      window.notify({ msg: "Currency conversion not added", status: "error" });
     }
+  }
+
+  async updateCurrency() {
+    const url = `/api/v1/currency/${this.id}`;
+    const payload = {
+      ...this.payload,
+    };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "Currency conversion  updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+  async fetchDropDown() {
+    const worldCurrencies = cornieClient().get(
+      "/api/v1/currency/getCurrencies/world"
+    );
+    const response = await Promise.all([worldCurrencies]);
+    this.Currencies = response[0].data;
+  }
   created() {
     this.fetchDropDown();
-     
   }
 }
-
 </script>

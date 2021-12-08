@@ -1,476 +1,486 @@
 <template>
   <div class="w-full">
-        <div class="mb-8">
-            <span class="flex justify-end w-full">
-                <button
-                    @click="share"
-                    type="button"
-                    class="
-                    outline-primary
-                    rounded-full
-                    text-primary
-                    mt-5
-                    mr-3
-                    flex
-                    py-2
-                    pr-10
-                    pl-10
-                    px-3
-                    focus:outline-none
-                    hover:bg-primary
-                    hover:text-white
-                    "
-                >
-                <share-icon class="mr-3"/>
-                    Share
-                </button>
-                 <button
-                @click="print"
-                type="button"
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  pr-14
-                  pl-14
-                  focus:outline-none
-                  hover:opacity-90
-                "
-              >
-                Print
-              </button>
-            </span>
-       </div>
-       <div id="printMe" class="printMe">
-
-          <p class="text-primary mt-5 mb-8 font-bold">View Request</p>
-          <div class="mt-5 pb-76 mb-44 bg-white w-full h-full shadow-md p-4 rounded" >  
-              <div class="mt-3"> 
-                <div class="flex space-x-8">
-                  <avatar class="mr-2 w-16 h-16" :src="img.placeholder" />
-                  <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
-                  <div>
-                    <p class="text-lg mb-3 text-primary font-bold">
-                      CornieHealth
-                    </p>
-                    <p class="text-sm text-gray font-medium">
-                      XXXXXX
-                    </p>
-                  </div>
-                </div>     
-                      <div>
-                          <span
-                              class="
-                                  flex
-                                  border-b-2
-                                  border-dark-100
-                                  w-full
-                                  text-lg text-dark
-                                  py-2
-                                  mx-auto
-                                  font-semibold
-                                  col-span-full
-                                  mb-4
-                                  mt-5
-                              "
-                              >
-                              Request Info
-                          </span>
-                          <div class="w-full flex space-x-2">
-                              <input
-                              checked
-                                type="checkbox"
-                                class="bg-danger focus-within:bg-danger px-6 shadow"
-                              />
-                              <p class="text-xs mt-1">Virtual</p>
-                          </div>
-                          <div class="grid grid-cols-3 gap-4 mt-5">
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Status</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestInfo.statusReason }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Requisition ID</label>
-                                  <div class="text-sm text-black">{{ basedOn }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Authored On</label>
-                                  <div class="text-sm text-black">{{ basedOn }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Encounter</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestDetails.encounter }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Priority</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestInfo.priority }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Reason Ref</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestDetails.reasonReference }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Reason Code</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestDetails.reasonCode }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Intent</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestInfo.intent }}</div>
-                              </div>
-
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Performer</label>
-                                  <div class="text-sm text-black">{{ requestModel.medicationAdministration.performer }}</div>
-                              </div>
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Based On</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestDetails.basedOn }}</div>
-                              </div>
-
-                              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Do Not Perform</label>
-                                  <div class="text-sm text-black">{{ requestModel.requestInfo.doNotPerform }}</div>
-                              </div>
-                          </div>
-                      </div>
-
-                        <div>
-                          <span
-                              class="
-                                  flex
-                                  border-b-2
-                                  border-dark-100
-                                  w-full
-                                  text-lg text-dark
-                                  py-2
-                                  mx-auto
-                                  font-semibold
-                                  col-span-full
-                                  mb-4
-                                  mt-5
-                              "
-                              >
-                              Participants
-                          </span>
-                          <div class="w-full flex space-x-2">
-                              <input
-                              checked
-                                type="checkbox"
-                                class="bg-danger focus-within:bg-danger px-6 shadow"
-                              />
-                              <p class="text-xs mt-1">In-Patient</p>
-                          </div>
-                          <div class="grid grid-cols-4 gap-4 mt-8">
-                              <div class="bg-white shadow-md p-3">
-                                  <p class="text-lg text-primary font-bold">Patient</p>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Patient Name:</p>
-                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.name }}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">MRN Number:</p>
-                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.mrn }}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Gender:</p>
-                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.gender }}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Age:</p>
-                                    <p class="text-sm font-bold text-primary">{{ selectedPatientData.dob }}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Address:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Email:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Mobile:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Payment Option:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-
-
-                              </div>
-                              <div class="bg-white shadow-md p-3">
-                                  <p class="text-lg text-primary font-bold">Requester</p>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Practitioner Name:</p>
-                                    <p class="text-sm font-bold text-primary">{{ selectedPractionerData.name }}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Practitioner ID:</p>
-                                    <p class="text-sm font-bold text-primary">{{requestModel.medicationAdministration.performer}}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Facility Name:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Address:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Email:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Mobile:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                              </div>
-                              <div class="bg-white shadow-md p-3">
-                                  <p class="text-lg text-primary font-bold">Dispenser</p>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Performer Type:</p>
-                                    <p class="text-sm font-bold text-primary">{{requestModel.medicationAdministration.performerType}}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Performer</p>
-                                    <p class="text-sm font-bold text-primary">{{requestModel.medicationAdministration.performer}}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Corniehealth ID:</p>
-                                    <p class="text-sm font-bold text-primary">{{ requestModel.userId}}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Address:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Email:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Mobile:</p>
-                                    <p class="text-sm font-bold text-primary">xxxxxx</p>
-                                  </div>
-                              </div>
-                              <div class="bg-white shadow-md p-3">
-                                  <p class="text-lg text-primary font-bold">Performer</p>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Dispenser Type:</p>
-                                    <p class="text-sm font-bold text-primary">{{ requestModel.performer.dispenserType }}</p>
-                                  </div>
-                                  <div class="flex space-x-4 mt-5">
-                                    <p class="text-sm text-gray-400 font-light">Dispenser:</p>
-                                    <p class="text-sm font-bold text-primary">{{ requestModel.performer.dispenser }}</p>
-                                  </div>
-                              </div>
-
-                          </div>
-                      </div>
-                    
-                      <div class="mt-10">
-                          <span
-                              class="
-                                  flex
-                                  border-b-2
-                                  border-dark-100
-                                  w-full
-                                  text-lg text-dark
-                                  py-2
-                                  mx-auto
-                                  font-semibold
-                                  col-span-full
-                                  mb-4
-                                  mt-5
-                              "
-                              >
-                          Medication
-                          </span>
-                          <cornie-table :columns="rawHeaders" v-model="items">
-                              <template #actions="{ item }">
-                                  <div class="flex items-center hover:bg-gray-50 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
-                                  <newview-icon  class="text-yellow-500 fill-current"/>
-                                  <span class="ml-3 text-xs">View</span>
-                                  </div>
-                                  <div class="flex items-center hover:bg-gray-50 p-3 cursor-pointer">
-                                  <update-icon />
-                                  <span class="ml-3 text-xs">Update</span>
-                                  </div>
-                                  <div class="flex items-center hover:bg-gray-50 p-3 cursor-pointer">
-                                  <plus-icon class="text-primary fill-current"/>
-                                  <span class="ml-3 text-xs">Add Appointment</span>
-                                  </div>
-                                  <div class="flex items-center hover:bg-gray-50 p-3 cursor-pointer">
-                                  <plus-icon class="text-green-500 fill-current"/>
-                                  <span class="ml-3 text-xs">Add Task</span>
-                                  </div>
-                                  <div class="flex items-center hover:bg-gray-50 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                                  <note-icon class="text-purple-700 fill-current"/>
-                                  <span class="ml-3 text-xs">Make Notes</span>
-                                  </div>
-                                  <div class="flex items-center hover:bg-gray-50 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                                  <message-icon class="text-blue-700 fill-current"/>
-                                  <span class="ml-3 text-xs">Message</span>
-                                  </div>
-                              </template>
-                          </cornie-table>
-                          <div class="flex space-x-4 mt-8">
-                            <div class="flex space-x-2">
-                                <input
-                                checked
-                                  type="checkbox"
-                                  class="bg-danger focus-within:bg-danger px-6 shadow"
-                                />
-                                <p class="text-xs mt-1">Refill</p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <input
-                                checked
-                                  type="checkbox"
-                                  class="bg-danger focus-within:bg-danger px-6 shadow"
-                                />
-                                <p class="text-xs mt-1">Substitution Allowed</p>
-                            </div>
-                          </div>
-                      </div> 
-      
-                      <div>
-                          <span
-                              class="
-                                  flex
-                                  border-b-2
-                                  border-dark-100
-                                  w-full
-                                  text-lg text-dark
-                                  py-2
-                                  mx-auto
-                                  font-semibold
-                                  col-span-full
-                                  mb-4
-                                  mt-5
-                              "
-                              >
-                          Other Info
-                          </span> 
-                          <span
-                              class="
-                                  flex
-                                  border-b-2
-                                  border-dark-100
-                                  w-full
-                                  text-sm text-gray-500
-                                  py-2
-                                  mx-auto
-                                  font-semibold
-                                  col-span-full
-                                  mb-4
-                                  mt-5
-                              "
-                              >
-                          Known Medication Allergies
-                          </span> 
-                          <div class="w-full">
-                              <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                                  <div class="border-r-2">
-                                      <div class="mb-8 p-2">
-                                          <p class="text-sm text-black">Aspirin</p>
-                                      </div>
-                                      <div class="p-2">
-                                          <p class="text-sm text-black">Codeine</p>
-                                      </div>
-                                  </div>
-                                  <div class="border-r-2">
-                                      <div class="mb-8 p-2">
-                                          <p class="text-sm text-black">Penicillin</p>
-                                      </div>
-                                      <div class="p-2">
-                                          <p class="text-sm text-black">Aspirin</p>
-                                      </div>
-                                  </div>
-                                  <div>
-                                      <div class="mb-8 p-2">
-                                          <p class="text-sm text-black">Codeine</p>
-                                      </div>
-                                      <div class="p-2">
-                                          <p class="text-sm text-black">Penicillin</p>
-                                      </div>
-                                  </div>     
-                              </div>
-                          </div>
-                      </div>
-                      <div class="mt-5">
-                          <span
-                              class="
-                                  flex
-                                  border-b-2
-                                  border-dark-100
-                                  w-full
-                                text-sm text-gray-500
-                                  py-2
-                                  mx-auto
-                                  font-semibold
-                                  col-span-full
-                                  mb-4
-                                  mt-5
-                              "
-                              >
-                          Other Known Health Conditions
-                          </span> 
-                          <div class="w-full">
-                              <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                                  <div class="border-r-2">
-                                      <div class="mb-8 p-2">
-                                          <p class="text-sm text-black">Depression</p>
-                                      </div>
-                                  <div class="p-2">
-                                      <p class="text-sm text-black">Asthma</p>
-                                  </div>
-                                  </div>
-                                  <div class="border-r-2">
-                                      <div class="mb-8 p-2">
-                                          <p class="text-sm text-black">Depression</p>
-                                      </div>
-                                  <div class="p-2">
-                                      <p class="text-sm text-black">Diabetes</p>
-                                  </div>
-                                  </div>
-                                  <div>
-                                      <div class="mb-8 p-2">
-                                          <p class="text-sm text-black">Seizures</p>
-                                      </div>
-                                  <div class="p-2">
-                                      <p class="text-sm text-black">Diabetes</p>
-                                  </div>
-                                  </div>     
-                              </div>
-                          </div>
-                      </div>
-
-                      <div class="w-full grid grid-cols-3 gap-4">
-                        <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Affix Label?</label>
-                                  <div class="text-sm text-black">{{ requestModel.fufillment.affixLabel }}</div>
-                          </div>
-                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Substituion Permitted?</label>
-                                  <div class="text-sm text-black">{{ requestModel.fufillment.nonSafetyCapRequest }}</div>
-                          </div>
-                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Non-Safety Cap Request? </label>
-                                  <div class="text-sm text-black">{{ requestModel.fufillment.nonSafetyCapRequest }}</div>
-                          </div>
-                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Priority Shipping?</label>
-                                  <div class="text-sm text-black">{{ requestModel.fufillment.priorityShipping }}</div>
-                          </div>
-                          <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
-                                  <label class="block text-gray-500 mb-1 text-xs font-light">Prior Medication</label>
-                                  <div class="text-sm text-black">{{ basedOn }}</div>
-                          </div>
-                      </div>
-              </div>
+    <div class="mb-8">
+      <span class="flex justify-end w-full">
+        <button
+          @click="share"
+          type="button"
+          class="outline-primary rounded-full text-primary mt-5 mr-3 flex py-2 pr-10 pl-10 px-3 focus:outline-none hover:bg-primary hover:text-white"
+        >
+          <share-icon class="mr-3" />
+          Share
+        </button>
+        <button
+          @click="print"
+          type="button"
+          class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
+        >
+          Print
+        </button>
+      </span>
+    </div>
+    <div id="printMe" class="printMe">
+      <p class="text-primary mt-5 mb-8 font-bold">View Request</p>
+      <div
+        class="mt-5 pb-76 mb-44 bg-white w-full h-full shadow-md p-4 rounded"
+      >
+        <div class="mt-3">
+          <div class="flex space-x-8">
+            <avatar class="mr-2 w-16 h-16" :src="img.placeholder" />
+            <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
+            <div>
+              <p class="text-lg mb-3 text-primary font-bold">CornieHealth</p>
+              <p class="text-sm text-gray font-medium">XXXXXX</p>
+            </div>
           </div>
-       </div>
+          <div>
+            <span
+              class="flex border-b-2 border-dark-100 w-full text-lg text-dark py-2 mx-auto font-semibold col-span-full mb-4 mt-5"
+            >
+              Request Info
+            </span>
+            <div class="w-full flex space-x-2">
+              <input
+                checked
+                type="checkbox"
+                class="bg-danger focus-within:bg-danger px-6 shadow"
+              />
+              <p class="text-xs mt-1">Virtual</p>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mt-5">
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Status</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestInfo.statusReason }}
+                </div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Requisition ID</label
+                >
+                <div class="text-sm text-black">{{ basedOn }}</div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Authored On</label
+                >
+                <div class="text-sm text-black">{{ basedOn }}</div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Encounter</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestDetails.encounter }}
+                </div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Priority</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestInfo.priority }}
+                </div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Reason Ref</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestDetails.reasonReference }}
+                </div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Reason Code</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestDetails.reasonCode }}
+                </div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Intent</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestInfo.intent }}
+                </div>
+              </div>
+
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Performer</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.medicationAdministration.performer }}
+                </div>
+              </div>
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Based On</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestDetails.basedOn }}
+                </div>
+              </div>
+
+              <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+                <label class="block text-gray-500 mb-1 text-xs font-light"
+                  >Do Not Perform</label
+                >
+                <div class="text-sm text-black">
+                  {{ requestModel.requestInfo.doNotPerform }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span
+              class="flex border-b-2 border-dark-100 w-full text-lg text-dark py-2 mx-auto font-semibold col-span-full mb-4 mt-5"
+            >
+              Participants
+            </span>
+            <div class="w-full flex space-x-2">
+              <input
+                checked
+                type="checkbox"
+                class="bg-danger focus-within:bg-danger px-6 shadow"
+              />
+              <p class="text-xs mt-1">In-Patient</p>
+            </div>
+            <div class="grid grid-cols-4 gap-4 mt-8">
+              <div class="bg-white shadow-md p-3">
+                <p class="text-lg text-primary font-bold">Patient</p>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Patient Name:</p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ selectedPatientData.name }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">MRN Number:</p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ selectedPatientData.mrn }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Gender:</p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ selectedPatientData.gender }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Age:</p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ selectedPatientData.dob }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Address:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Email:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Mobile:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">
+                    Payment Option:
+                  </p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+              </div>
+              <div class="bg-white shadow-md p-3">
+                <p class="text-lg text-primary font-bold">Requester</p>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">
+                    Practitioner Name:
+                  </p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ selectedPractionerData.name }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">
+                    Practitioner ID:
+                  </p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ requestModel.medicationAdministration.performer }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Facility Name:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Address:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Email:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Mobile:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+              </div>
+              <div class="bg-white shadow-md p-3">
+                <p class="text-lg text-primary font-bold">Dispenser</p>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">
+                    Performer Type:
+                  </p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ requestModel.medicationAdministration.performerType }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Performer</p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ requestModel.medicationAdministration.performer }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">
+                    Corniehealth ID:
+                  </p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ requestModel.userId }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Address:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Email:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Mobile:</p>
+                  <p class="text-sm font-bold text-primary">xxxxxx</p>
+                </div>
+              </div>
+              <div class="bg-white shadow-md p-3">
+                <p class="text-lg text-primary font-bold">Performer</p>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">
+                    Dispenser Type:
+                  </p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ requestModel.performer.dispenserType }}
+                  </p>
+                </div>
+                <div class="flex space-x-4 mt-5">
+                  <p class="text-sm text-gray-400 font-light">Dispenser:</p>
+                  <p class="text-sm font-bold text-primary">
+                    {{ requestModel.performer.dispenser }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <span
+              class="flex border-b-2 border-dark-100 w-full text-lg text-dark py-2 mx-auto font-semibold col-span-full mb-4 mt-5"
+            >
+              Medication
+            </span>
+            <cornie-table :columns="rawHeaders" v-model="items">
+              <template #actions="{ item }">
+                <div
+                  class="flex items-center hover:bg-gray-50 p-3 cursor-pointer"
+                  @click="
+                    $router.push(
+                      `/dashboard/experience/edit-request/${item.id}`
+                    )
+                  "
+                >
+                  <newview-icon class="text-yellow-500 fill-current" />
+                  <span class="ml-3 text-xs">View</span>
+                </div>
+                <div
+                  class="flex items-center hover:bg-gray-50 p-3 cursor-pointer"
+                >
+                  <update-icon />
+                  <span class="ml-3 text-xs">Update</span>
+                </div>
+                <div
+                  class="flex items-center hover:bg-gray-50 p-3 cursor-pointer"
+                >
+                  <plus-icon class="text-primary fill-current" />
+                  <span class="ml-3 text-xs">Add Appointment</span>
+                </div>
+                <div
+                  class="flex items-center hover:bg-gray-50 p-3 cursor-pointer"
+                >
+                  <plus-icon class="text-green-500 fill-current" />
+                  <span class="ml-3 text-xs">Add Task</span>
+                </div>
+                <div
+                  class="flex items-center hover:bg-gray-50 p-3 cursor-pointer"
+                  @click="makeNotes(item.id)"
+                >
+                  <note-icon class="text-purple-700 fill-current" />
+                  <span class="ml-3 text-xs">Make Notes</span>
+                </div>
+                <div
+                  class="flex items-center hover:bg-gray-50 p-3 cursor-pointer"
+                  @click="deleteItem(item.id)"
+                >
+                  <message-icon class="text-blue-700 fill-current" />
+                  <span class="ml-3 text-xs">Message</span>
+                </div>
+              </template>
+            </cornie-table>
+            <div class="flex space-x-4 mt-8">
+              <div class="flex space-x-2">
+                <input
+                  checked
+                  type="checkbox"
+                  class="bg-danger focus-within:bg-danger px-6 shadow"
+                />
+                <p class="text-xs mt-1">Refill</p>
+              </div>
+              <div class="flex space-x-2">
+                <input
+                  checked
+                  type="checkbox"
+                  class="bg-danger focus-within:bg-danger px-6 shadow"
+                />
+                <p class="text-xs mt-1">Substitution Allowed</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span
+              class="flex border-b-2 border-dark-100 w-full text-lg text-dark py-2 mx-auto font-semibold col-span-full mb-4 mt-5"
+            >
+              Other Info
+            </span>
+            <span
+              class="flex border-b-2 border-dark-100 w-full text-sm text-gray-500 py-2 mx-auto font-semibold col-span-full mb-4 mt-5"
+            >
+              Known Medication Allergies
+            </span>
+            <div class="w-full">
+              <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                <div class="border-r-2">
+                  <div class="mb-8 p-2">
+                    <p class="text-sm text-black">Aspirin</p>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-sm text-black">Codeine</p>
+                  </div>
+                </div>
+                <div class="border-r-2">
+                  <div class="mb-8 p-2">
+                    <p class="text-sm text-black">Penicillin</p>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-sm text-black">Aspirin</p>
+                  </div>
+                </div>
+                <div>
+                  <div class="mb-8 p-2">
+                    <p class="text-sm text-black">Codeine</p>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-sm text-black">Penicillin</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5">
+            <span
+              class="flex border-b-2 border-dark-100 w-full text-sm text-gray-500 py-2 mx-auto font-semibold col-span-full mb-4 mt-5"
+            >
+              Other Known Health Conditions
+            </span>
+            <div class="w-full">
+              <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                <div class="border-r-2">
+                  <div class="mb-8 p-2">
+                    <p class="text-sm text-black">Depression</p>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-sm text-black">Asthma</p>
+                  </div>
+                </div>
+                <div class="border-r-2">
+                  <div class="mb-8 p-2">
+                    <p class="text-sm text-black">Depression</p>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-sm text-black">Diabetes</p>
+                  </div>
+                </div>
+                <div>
+                  <div class="mb-8 p-2">
+                    <p class="text-sm text-black">Seizures</p>
+                  </div>
+                  <div class="p-2">
+                    <p class="text-sm text-black">Diabetes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full grid grid-cols-3 gap-4">
+            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+              <label class="block text-gray-500 mb-1 text-xs font-light"
+                >Affix Label?</label
+              >
+              <div class="text-sm text-black">
+                {{ requestModel.fufillment.affixLabel }}
+              </div>
+            </div>
+            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+              <label class="block text-gray-500 mb-1 text-xs font-light"
+                >Substituion Permitted?</label
+              >
+              <div class="text-sm text-black">
+                {{ requestModel.fufillment.nonSafetyCapRequest }}
+              </div>
+            </div>
+            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+              <label class="block text-gray-500 mb-1 text-xs font-light"
+                >Non-Safety Cap Request?
+              </label>
+              <div class="text-sm text-black">
+                {{ requestModel.fufillment.nonSafetyCapRequest }}
+              </div>
+            </div>
+            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+              <label class="block text-gray-500 mb-1 text-xs font-light"
+                >Priority Shipping?</label
+              >
+              <div class="text-sm text-black">
+                {{ requestModel.fufillment.priorityShipping }}
+              </div>
+            </div>
+            <div class="border-gray-100 border-2 py-3 px-2 mt-3 rounded-md">
+              <label class="block text-gray-500 mb-1 text-xs font-light"
+                >Prior Medication</label
+              >
+              <div class="text-sm text-black">{{ basedOn }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -540,8 +550,6 @@ const emptyRequest: IRequest = {
   fufillment: {},
   history: {},
   Medications: Array(),
-
-
 };
 
 @Options({
@@ -598,14 +606,13 @@ export default class ViewRequest extends Vue {
   // @Prop({ type: Object, required: false, default: { ...emptyRequest} })
   // request!: IRequest;
 
- @request.State
+  @request.State
   requests!: any[];
 
   @request.Action
   fetchRequests!: () => Promise<void>;
 
-
- requestModel = {...emptyRequest} as IRequest;
+  requestModel = { ...emptyRequest } as IRequest;
 
   @request.Action
   getRequestById!: (id: string) => IRequest;
@@ -615,44 +622,38 @@ export default class ViewRequest extends Vue {
   //   this.requestModel = JSON.parse(JSON.stringify({ ...request }));
   // }
 
-
-
-
   @request.Mutation
   updatedRequests!: any;
-
 
   loading = false;
   expand = false;
   selected = 1;
   isVisible = "";
-  query="";
+  query = "";
   startdate = "";
   enddate = "";
   rule = true;
   opened = true;
   openedR = true;
   openedS = true;
-  checked= false;
- tabstatus = false;
- tabsubject = false;
- tabparticipants = false;
- tabbg = false;
- tabmed = false;
- tabhealth= false;
- tabother = false;
- img = setup(() => useHandleImage());
+  checked = false;
+  tabstatus = false;
+  tabsubject = false;
+  tabparticipants = false;
+  tabbg = false;
+  tabmed = false;
+  tabhealth = false;
+  tabother = false;
+  img = setup(() => useHandleImage());
 
-
-  
   Practitioners = [];
   Devices = [];
   Patients: any[] = [];
   roles = [];
 
-  newPractitioners =[];
+  newPractitioners = [];
   newDevices = [];
-  newPatients =[];
+  newPatients = [];
   newRoles = [];
 
   roleFilter = false;
@@ -661,16 +662,29 @@ export default class ViewRequest extends Vue {
   patientFilter = false;
   availableFilter = false;
   participantitem = "";
-selectedPatient : any = { };
-selectedPractitioner: any = { };
-  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
+  selectedPatient: any = {};
+  selectedPractitioner: any = {};
+  months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "Auust",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  patients=[];
-  practitioners=[];
-patientName="";
-performername="";
+  patients = [];
+  practitioners = [];
+  patientName = "";
+  performername = "";
 
- getKeyValue = getTableKeyValue;
+  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     { title: "medication code", key: "code", show: true },
@@ -704,47 +718,46 @@ performername="";
       key: "course",
       show: true,
     },
-     {
+    {
       title: "substitution?",
       key: "substitution",
       show: false,
     },
-     {
+    {
       title: "reason code",
       key: "reasoncode",
       show: false,
     },
-     {
+    {
       title: "refill?",
       key: "refill",
       show: false,
     },
-     {
+    {
       title: "dispense interval",
       key: "interval",
       show: false,
     },
-     {
+    {
       title: "validity period",
       key: "period",
       show: false,
     },
-     {
+    {
       title: "no of refill",
       key: "refillno",
       show: false,
     },
-     {
+    {
       title: "quantity",
       key: "qunatity",
       show: false,
     },
-     {
+    {
       title: "supply duration",
       key: "duration",
       show: false,
     },
-   
   ];
 
   get headers() {
@@ -756,24 +769,23 @@ performername="";
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-get Medications(){
-      return this.requests.map((c) => c.Medications[0]);
-    }
+  get Medications() {
+    return this.requests.map((c) => c.Medications[0]);
+  }
   get items() {
-
     const requests = this.Medications.map((request) => {
-       (request as any).createdAt = new Date(
-         (request as any).createdAt 
-       ).toLocaleDateString("en-US");
-        (request as any).medicationDetails.duration.start = new Date(
-         (request as any).medicationDetails.duration.start 
-       ).toLocaleDateString("en-US");
-        (request as any).medicationDetails.duration.end = new Date(
-         (request as any).medicationDetails.duration.end 
-       ).toLocaleDateString("en-US");
-        return {
+      (request as any).createdAt = new Date(
+        (request as any).createdAt
+      ).toLocaleDateString("en-US");
+      (request as any).medicationDetails.duration.start = new Date(
+        (request as any).medicationDetails.duration.start
+      ).toLocaleDateString("en-US");
+      (request as any).medicationDetails.duration.end = new Date(
+        (request as any).medicationDetails.duration.end
+      ).toLocaleDateString("en-US");
+      return {
         ...request,
-        code:request.medicationDetails.medicationCode,
+        code: request.medicationDetails.medicationCode,
         name: request.medicationDetails.medicationReference,
         strength: "xxxxxx",
         quantity: request.medicationDetails.quantity,
@@ -782,77 +794,80 @@ get Medications(){
         interval: request.refillInfo.dispenseInterval,
         period: request.medicationDetails.createdAt,
         refillno: request.refillInfo.quantity,
-        duration:request.medicationDetails.duration.start +'-'+ request.medicationDetails.duration.end,
-        dosage:request.medicationDetails.dosageInstruction,
-
+        duration:
+          request.medicationDetails.duration.start +
+          "-" +
+          request.medicationDetails.duration.end,
+        dosage: request.medicationDetails.dosageInstruction,
 
         //  action: request.id,
         //  keydisplay: "XXXXXXX",
-        //  Participants: singleParticipantlength 
-        };
+        //  Participants: singleParticipantlength
+      };
     });
     if (!this.query) return requests;
     return search.searchObjectArray(requests, this.query);
   }
- get PatientName() {
+  get PatientName() {
     const id = this.requestModel.subject.subject;
     const pt = this.patients.find((i: any) => i.id === id);
-    this.selectedPatient = pt ? pt : { };
+    this.selectedPatient = pt ? pt : {};
 
     return pt;
   }
-  get PractitionerName(){
-     const id = this.requestModel.medicationAdministration.performer; 
+  get PractitionerName() {
+    const id = this.requestModel.medicationAdministration.performer;
     const pt = this.practitioners.find((i: any) => i.id === id);
-        this.selectedPractitioner = pt ? pt : { };
-         return pt;
+    this.selectedPractitioner = pt ? pt : {};
+    return pt;
   }
- get selectedPatientData() {
+  get selectedPatientData() {
     const data = this.selectedPatient;
     return {
       gender: data.gender,
-      name:data.firstname +' '+ data.lastname,
-      dob: Math.floor(( Date.now() - new Date(data.dateOfBirth).getTime()) / 3.15576e+10),
+      name: data.firstname + " " + data.lastname,
+      dob: Math.floor(
+        (Date.now() - new Date(data.dateOfBirth).getTime()) / 3.15576e10
+      ),
       mrn: data.mrn,
-    }
+    };
   }
   get selectedPractionerData() {
     const data = this.selectedPractitioner;
     return {
-      name:data.firstName +' '+ data.lastName,
-      
-    }
+      name: data.firstName + " " + data.lastName,
+    };
   }
 
   @Watch("id")
   idChanged() {
     this.setRequest();
   }
- 
-     async print () {
-      // Pass the element id here
-      window.print();
-    }
+
+  async print() {
+    // Pass the element id here
+    window.print();
+  }
 
   async setRequest() {
-    const request = await this.getRequestById(this.id)
-    if (!request) return
-    this.requestModel =  ({...request}) ;
+    const request = await this.getRequestById(this.id);
+    if (!request) return;
+    this.requestModel = { ...request };
     this.requestModel.Medications = request.Medications;
   }
 
-   async fetchPatients() {
+  async fetchPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patients = response[0].data;
   }
-   async fetchPractitioner() {
+  async fetchPractitioner() {
     const AllPractitioner = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractitioner]);
     this.practitioners = response[0].data;
   }
   async created() {
-      this.setRequest();
+    this.setRequest();
     this.fetchPatients();
     this.fetchPractitioner();
   }
@@ -876,36 +891,36 @@ get Medications(){
 /* Large checkboxes */
 
 input[type="checkbox"] {
-    height: 22px;
-    width: 22px;
+  height: 22px;
+  width: 22px;
 }
 
 input[type="checkbox"]:before {
-    width: 24px;
-    border: hidden;
-    height: 20px;
+  width: 24px;
+  border: hidden;
+  height: 20px;
 }
 
 input[type="checkbox"]:after {
-    top: -20px;
-    width: 22px;
-    height: 22px;
+  top: -20px;
+  width: 22px;
+  height: 22px;
 }
 
 input[type="checkbox"]:checked:after {
-   background-image: url("../../../../assets/tick.svg");
-    background-color: #FE4D3C;
+  background-image: url("../../../../assets/tick.svg");
+  background-color: #fe4d3c;
 }
 input[type="checkbox"]:after {
-    position: relative;
-    display: block;
-    left: 0px;
-    content: "";
-    background: white;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 3px;
-    text-align: center;
-    border: 1px solid #FE4D3C;
+  position: relative;
+  display: block;
+  left: 0px;
+  content: "";
+  background: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 3px;
+  text-align: center;
+  border: 1px solid #fe4d3c;
 }
 </style>

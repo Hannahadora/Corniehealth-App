@@ -10,16 +10,7 @@
     >
       <div v-show="isVisible" class="absolute pt-2 mt-2 z-10 -left-16">
         <div
-          class="
-            relative
-            py-2
-            p-1
-            bg-white
-            border border-gray-200
-            rounded-md
-            block
-            shadow-xl
-          "
+          class="relative py-2 p-1 bg-white border border-gray-200 rounded-md block shadow-xl"
         >
           <div class="relative p-1">
             <slot />

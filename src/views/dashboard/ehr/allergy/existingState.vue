@@ -3,20 +3,7 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            pr-12
-            pl-12
-            px-3
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
           @click="showAllergy('false')"
         >
           New Allergy
@@ -33,7 +20,8 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)">
+            @click="deleteItem(item.id)"
+          >
             <plus-icon class="text-green-400 fill-current" />
             <span class="ml-3 text-xs">Add Occurrence</span>
           </div>
@@ -140,7 +128,6 @@ const allergy = namespace("allergy");
   },
 })
 export default class AllergyExistingState extends Vue {
-
   showColumnFilter = false;
   showModal = false;
   loading = false;
@@ -150,10 +137,10 @@ export default class AllergyExistingState extends Vue {
   showAllergyModal = false;
   allergyId = "";
   tasknotes = [];
-substance="";
+  substance = "";
   // @Prop({ type: Array, default: [] })
   // allergys!: IAllergy[];
-     medicationMapper = (code:string) => ""
+  medicationMapper = (code: string) => "";
 
   @allergy.State
   allergys!: IAllergy[];
@@ -290,12 +277,14 @@ substance="";
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-    async createMapper(){
-        this.medicationMapper = await mapDisplay("http://hl7.org/fhir/ValueSet/substance-code");
-    }
+  async createMapper() {
+    this.medicationMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/substance-code"
+    );
+  }
 
   get items() {
-    const allergys = this.allergys.map((allergy:any) => {
+    const allergys = this.allergys.map((allergy: any) => {
       (allergy as any).onSet.onsetPeriod.start = new Date(
         (allergy as any).onSet.onsetPeriod.start
       ).toLocaleDateString("en-US");
@@ -306,7 +295,6 @@ substance="";
         (allergy as any).createdAt
       ).toLocaleDateString("en-US");
 
-     
       return {
         ...allergy,
         action: allergy.id,
@@ -314,14 +302,14 @@ substance="";
         onsetPeriod:
           allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
         asserter: this.getPractitionerName(allergy.onSet.asserter),
-        product:  this.medicationMapper(allergy.reaction.substance),
-       // type: mapDisplay(allergy.type),
+        product: this.medicationMapper(allergy.reaction.substance),
+        // type: mapDisplay(allergy.type),
       };
     });
     if (!this.query) return allergys;
     return search.searchObjectArray(allergys, this.query);
   }
-  
+
   getPractitionerName(id: string) {
     const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
@@ -331,10 +319,10 @@ substance="";
     //this.stopEvent = true;
     this.allergyId = value;
   }
-   get patientId() {
-       return this.$route.params.id as string;
-     }
-stripQuote(val: string) {
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+  stripQuote(val: string) {
     return val.replaceAll('"', "");
   }
   allergyAdded() {

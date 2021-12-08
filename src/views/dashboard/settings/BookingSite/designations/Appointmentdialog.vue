@@ -1,27 +1,25 @@
 <template>
   <div class="w-full p-4 overflow-y-scroll h-screen">
     <div class="container-fluid">
-       <div class="w-full my-4">
+      <div class="w-full my-4">
         <main-cornie-select
-                    class="w-full"
-                    :items="appointmentItems"
-                    v-model="appointmentItem"
-                    label="Appointment Types"
-                    >
-                    </main-cornie-select>
+          class="w-full"
+          :items="appointmentItems"
+          v-model="appointmentItem"
+          label="Appointment Types"
+        >
+        </main-cornie-select>
       </div>
-     <div class="w-full mt-5">
-                              <date-time-picker
-                                
-                                v-model:time="data.dateTime"
-                                label="Duration"
-                                width="full"
-                              />
-                            
-                          </div>
+      <div class="w-full mt-5">
+        <date-time-picker
+          v-model:time="data.dateTime"
+          label="Duration"
+          width="full"
+        />
+      </div>
 
       <div class="w-full my-4">
-         <cornie-input label="Appointment Fee"   class="mb-5 w-full" />
+        <cornie-input label="Appointment Fee" class="mb-5 w-full" />
       </div>
 
       <div class="w-full my-5">
@@ -30,29 +28,25 @@
             <span class="uppercase font-semibold">Practioner</span>
           </span>
           <span>
-           <practioner-select
-                    class="w-full mb-2"
-                      label="Author"
-                    >
-            </practioner-select> 
+            <practioner-select class="w-full mb-2" label="Author">
+            </practioner-select>
           </span>
         </label>
       </div>
       <div class="w-full my-4">
-         <main-cornie-select
-                    class="w-full"
-                    v-model="appointmentItem"
-                    label="Link forms"
-                    >
-                    </main-cornie-select>
+        <main-cornie-select
+          class="w-full"
+          v-model="appointmentItem"
+          label="Link forms"
+        >
+        </main-cornie-select>
       </div>
       <domain-input
-            label="Domain Name"
-            placeholder="--Enter--"
-            :rules="requiredRule"
-             :modelValue="orgValue"
-            
-          />
+        label="Domain Name"
+        placeholder="--Enter--"
+        :rules="requiredRule"
+        :modelValue="orgValue"
+      />
     </div>
 
     <div class="w-full mb-3 mt-8">
@@ -82,13 +76,13 @@ import { namespace } from "vuex-class";
 import CustomDropdown from "@/components/cornieselect.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import ChevronDown from "@/components/icons/chevrondownprimary.vue";
-import DateTimePicker from './components/datetime-picker.vue'
+import DateTimePicker from "./components/datetime-picker.vue";
 import ToggleCheck from "@/components/ToogleCheck.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
-import {appointmentItems} from "./dropdown";
+import { appointmentItems } from "./dropdown";
 // import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
 import PractionerSelect from "@/components/practitioner-select.vue";
@@ -114,7 +108,7 @@ const appointments = namespace("appointments");
     MainCornieSelect,
     TextArea,
     PlusIcon,
-    PractionerSelect
+    PractionerSelect,
   },
 })
 export default class CheckIn extends Vue {
@@ -144,15 +138,15 @@ export default class CheckIn extends Vue {
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
-  
-   @organization.Action
-    fetchOrgInfo!: () => Promise<void>
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
 
   @organization.State
-  organizationInfo: any
+  organizationInfo: any;
 
   appointmentItems = appointmentItems;
-  appointmentItem= "";
+  appointmentItem = "";
   showDetails = true;
   orgValue = "";
   showBreaks = false;
@@ -160,7 +154,7 @@ export default class CheckIn extends Vue {
   loading = false;
   date = new Date();
 
-  arr = [ ] as any[];
+  arr = [] as any[];
 
   data: any = {};
   selectedActors: any[] = [];
@@ -315,11 +309,11 @@ export default class CheckIn extends Vue {
       await this.fetchLocations();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-      if (!this.organizationInfo || this.organizationInfo.length === 0)
+    if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
-      this.orgValue = this.organizationInfo.domainName;
-      this.getappointmentTypes();
-      console.log(this.orgValue);
+    this.orgValue = this.organizationInfo.domainName;
+    this.getappointmentTypes();
+    console.log(this.orgValue);
   }
 }
 </script>

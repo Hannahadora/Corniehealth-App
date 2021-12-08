@@ -63,9 +63,8 @@ const userStore = namespace("user");
 })
 export default class AddAttachment extends Vue {
   @Prop({ type: Boolean, default: false })
-
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
   modelValue!: boolean;
 
   @PropSync("modelValue")
@@ -78,10 +77,10 @@ export default class AddAttachment extends Vue {
   @attachments.State
   attachments!: any[];
 
-   @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
-  @Watch('id')
+  @Watch("id")
   idChanged() {
     this.checkingAttachments();
     // this.setIssues()
@@ -92,20 +91,18 @@ export default class AddAttachment extends Vue {
   file = "";
   comment = "";
 
-  
-
-get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      console.log(id);
-      return id;     
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    console.log(id);
+    return id;
   }
-  
-  checkingAttachments(){
-     const updatingAttachments = this.attachments.find(c=> c.id ===this.id);
+
+  checkingAttachments() {
+    const updatingAttachments = this.attachments.find((c) => c.id === this.id);
     //  console.log(updatingAttachments);
-     this.title = updatingAttachments.title;
-     this.comment = updatingAttachments.comment;
-     this.file = updatingAttachments.imageUrl;
+    this.title = updatingAttachments.title;
+    this.comment = updatingAttachments.comment;
+    this.file = updatingAttachments.imageUrl;
     //  this.issuesModel = { ...updatingissues}
     //  this.issuesModel.identifier = updatingissues.
     //  this.data.startDate = new Date(updatingissues.identified.identifiedPeriod.start);
@@ -124,7 +121,7 @@ get activePatientId() {
       fileSize: this.fileInfo.fileSize,
     };
   }
-  
+
   async validate() {
     const { valid } = await (this.$refs.form as any).validate();
     return valid && Boolean(this.file);
@@ -134,46 +131,46 @@ get activePatientId() {
     this.show = false;
   }
 
-  async  submit() {
-     this.loading = true
-    if (this.id) await this.updateAttachments()
-     await this.createAttachment()
-    this.loading = false
-    }
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.updateAttachments();
+    await this.createAttachment();
+    this.loading = false;
+  }
 
-  async createAttachment(){
+  async createAttachment() {
     const valid = await this.validate();
     if (!valid) return;
     try {
-      const response = await cornieClient().post('/api/v1/attachment', this.payload)
+      const response = await cornieClient().post(
+        "/api/v1/attachment",
+        this.payload
+      );
       if (response.success) {
-        window.notify({ msg: 'Attachment is Created', status: 'success' })
+        window.notify({ msg: "Attachment is Created", status: "success" });
         this.done();
       }
     } catch (error) {
-      console.log(error)
-      window.notify({ msg: 'Attachment not Created', status: 'error' })
-    
+      console.log(error);
+      window.notify({ msg: "Attachment not Created", status: "error" });
     }
   }
 
   async updateAttachments() {
-    const url = `/api/v1/attachment/${this.id}`
+    const url = `/api/v1/attachment/${this.id}`;
     try {
-      const response = await cornieClient().put(url, this.payload)
+      const response = await cornieClient().put(url, this.payload);
       if (response.success) {
-        window.notify({ msg: 'Attachments  updated', status: 'success' })
-      this.done();
-
+        window.notify({ msg: "Attachments  updated", status: "success" });
+        this.done();
       }
     } catch (error) {
-      window.notify({ msg: 'Attachments not  updated', status: 'error' })
+      window.notify({ msg: "Attachments not  updated", status: "error" });
     }
   }
   // async submit() {
   //   // if (this.id) await this.updateAttachments();
 
   //   }
-
 }
 </script>

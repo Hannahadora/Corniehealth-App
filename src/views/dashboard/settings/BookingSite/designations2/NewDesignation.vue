@@ -109,32 +109,12 @@
         <div class="flex justify-items-end py-6 border-t-2">
           <span class="flex-grow"></span>
           <button
-            class="
-              outline-primary
-              rounded-full
-              text-black
-              mr-2
-              py-2
-              px-6
-              border border-primary
-              focus:outline-none
-              outline
-              hover:bg-primary
-              hover:text-white
-            "
+            class="outline-primary rounded-full text-black mr-2 py-2 px-6 border border-primary focus:outline-none outline hover:bg-primary hover:text-white"
           >
             Cancel
           </button>
           <cornie-btn
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              py-2
-              px-6
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
             type="submit"
             :loading="loading"
           >

@@ -16,9 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
     name: "Reference Response",
     component: () =>
-      import(
-        "@/views/dashboard/settings/kyc/components/email-link.vue"
-      ),
+      import("@/views/dashboard/settings/kyc/components/email-link.vue"),
   },
   {
     path: "/",
@@ -80,8 +78,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "add-practice-form-template/:id?",
         props: true,
         name: "Blank Form",
-        component: () =>
-          import("@/views/dashboard/settings/forms/newform.vue"),
+        component: () => import("@/views/dashboard/settings/forms/newform.vue"),
       },
       {
         path: "clinical",
@@ -97,9 +94,9 @@ const routes: Array<RouteRecordRaw> = [
           ClinicalsRoute,
         ],
       },
-      ExperienceRoutes, 
-      InPatientRoutes,   
-      NewSettingsRoutes,   
+      ExperienceRoutes,
+      InPatientRoutes,
+      NewSettingsRoutes,
       {
         path: "settings/",
         name: "Settings",
@@ -257,7 +254,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "practice-templates",
             name: "Practice Forms/Templates",
             component: () =>
-            import("@/views/dashboard/settings/forms/index.vue"),
+              import("@/views/dashboard/settings/forms/index.vue"),
           },
         ],
       },
@@ -332,19 +329,14 @@ const routes: Array<RouteRecordRaw> = [
         path: "kyc",
         props: true,
         name: "KYC",
-        component: () =>
-          import(
-            "@/views/dashboard/settings/kyc/index.vue"
-          ),
+        component: () => import("@/views/dashboard/settings/kyc/index.vue"),
       },
       {
         path: "kyc-link",
         props: true,
         name: "KYC Link",
         component: () =>
-          import(
-            "@/views/dashboard/settings/kyc/components/email-link.vue"
-          ),
+          import("@/views/dashboard/settings/kyc/components/email-link.vue"),
       },
       {
         path: "pricebook",
@@ -362,19 +354,25 @@ const routes: Array<RouteRecordRaw> = [
         path: "newservice/:serviceId?",
         name: "New Service",
         component: () =>
-          import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
+          import(
+            "@/views/dashboard/settings/catalogues/components/new-service.vue"
+          ),
       },
       {
         path: "newproduct",
         name: "New Product",
         component: () =>
-          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
+          import(
+            "@/views/dashboard/settings/catalogues/components/new-products.vue"
+          ),
       },
       {
         path: "addvariant/:catalogueId",
         name: "Medication",
         component: () =>
-          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
+          import(
+            "@/views/dashboard/settings/catalogues/components/new-products.vue"
+          ),
       },
     ],
   },

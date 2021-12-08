@@ -494,22 +494,7 @@ video {
       <!-- accordion-tab  -->
       <div class="group outline-none accordion-section acc" tabindex="1">
         <div
-          class="
-            group group-focus:bg-blue-800
-            bg-gray-50
-            flex
-            justify-between
-            px-4
-            py-3
-            items-center
-            text-gray-900
-            transition
-            ease
-            duration-500
-            cursor-pointer
-            pr-10
-            relative
-          "
+          class="group group-focus:bg-blue-800 bg-gray-50 flex justify-between px-4 py-3 items-center text-gray-900 transition ease duration-500 cursor-pointer pr-10 relative"
         >
           <div
             class="group-focus:text-white transition ease duration-500 group"
@@ -517,41 +502,13 @@ video {
             Title for Tab - 1
           </div>
           <div
-            class="
-              h-8
-              w-8
-              border border-gray-700
-              rounded-full
-              items-center
-              inline-flex
-              justify-center
-              transform
-              transition
-              ease
-              duration-500
-              group-focus:text-white group-focus:-rotate-180
-              absolute
-              top-0
-              right-0
-              mb-auto
-              ml-auto
-              mt-2
-              mr-2
-            "
+            class="h-8 w-8 border border-gray-700 rounded-full items-center inline-flex justify-center transform transition ease duration-500 group-focus:text-white group-focus:-rotate-180 absolute top-0 right-0 mb-auto ml-auto mt-2 mr-2"
           >
             <i class="fa fa-chevron-down"></i>
           </div>
         </div>
         <div
-          class="
-            group-focus:max-h-screen
-            max-h-0
-            bg-gray-50
-            px-4
-            overflow-hidden
-            ease
-            duration-500
-          "
+          class="group-focus:max-h-screen max-h-0 bg-gray-50 px-4 overflow-hidden ease duration-500"
         >
           <p class="p-2 text-gray-900 text-justify">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat,
@@ -566,62 +523,19 @@ video {
       <!-- accordion-tab  -->
       <div class="group outline-none accordion-section acc" tabindex="2">
         <div
-          class="
-            group group-focus:bg-blue-800
-            bg-gray-50
-            flex
-            justify-between
-            px-4
-            py-3
-            items-center
-            text-gray-900
-            transition
-            ease
-            duration-500
-            cursor-pointer
-            pr-10
-            relative
-          "
+          class="group group-focus:bg-blue-800 bg-gray-50 flex justify-between px-4 py-3 items-center text-gray-900 transition ease duration-500 cursor-pointer pr-10 relative"
         >
           <div class="group-focus:text-white transition ease duration-500">
             Title for Tab - 2
           </div>
           <div
-            class="
-              h-8
-              w-8
-              border border-gray-700
-              rounded-full
-              items-center
-              inline-flex
-              justify-center
-              transform
-              transition
-              ease
-              duration-500
-              group-focus:text-white group-focus:-rotate-180
-              absolute
-              top-0
-              right-0
-              mb-auto
-              ml-auto
-              mt-2
-              mr-2
-            "
+            class="h-8 w-8 border border-gray-700 rounded-full items-center inline-flex justify-center transform transition ease duration-500 group-focus:text-white group-focus:-rotate-180 absolute top-0 right-0 mb-auto ml-auto mt-2 mr-2"
           >
             <i class="fa fa-chevron-down"></i>
           </div>
         </div>
         <div
-          class="
-            group-focus:max-h-screen
-            max-h-0
-            bg-gray-50
-            px-4
-            overflow-hidden
-            ease
-            duration-500
-          "
+          class="group-focus:max-h-screen max-h-0 bg-gray-50 px-4 overflow-hidden ease duration-500"
         >
           <p class="p-2 text-gray-900 text-justify">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat,
@@ -635,22 +549,7 @@ video {
       <!-- accordion-tab  -->
       <div class="group outline-none accordion-section acc" tabindex="3">
         <div
-          class="
-            group group-focus:bg-blue-800
-            bg-gray-50
-            flex
-            justify-between
-            px-4
-            py-3
-            items-center
-            text-gray-900
-            transition
-            ease
-            duration-500
-            cursor-pointer
-            pr-10
-            relative
-          "
+          class="group group-focus:bg-blue-800 bg-gray-50 flex justify-between px-4 py-3 items-center text-gray-900 transition ease duration-500 cursor-pointer pr-10 relative"
         >
           <div
             class="group-focus:text-white transition ease duration-500 group"
@@ -658,41 +557,13 @@ video {
             Title for Tab - 3
           </div>
           <div
-            class="
-              h-8
-              w-8
-              border border-gray-700
-              rounded-full
-              items-center
-              inline-flex
-              justify-center
-              transform
-              transition
-              ease
-              duration-500
-              group-focus:text-white group-focus:-rotate-180
-              absolute
-              top-0
-              right-0
-              mb-auto
-              ml-auto
-              mt-2
-              mr-2
-            "
+            class="h-8 w-8 border border-gray-700 rounded-full items-center inline-flex justify-center transform transition ease duration-500 group-focus:text-white group-focus:-rotate-180 absolute top-0 right-0 mb-auto ml-auto mt-2 mr-2"
           >
             <i class="fa fa-chevron-down"></i>
           </div>
         </div>
         <div
-          class="
-            group-focus:max-h-screen
-            max-h-0
-            bg-gray-50
-            px-4
-            overflow-hidden
-            ease
-            duration-500
-          "
+          class="group-focus:max-h-screen max-h-0 bg-gray-50 px-4 overflow-hidden ease duration-500"
         >
           <p class="p-2 text-gray-900 text-justify">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat,

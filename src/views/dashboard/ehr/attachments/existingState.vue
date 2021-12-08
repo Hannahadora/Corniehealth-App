@@ -3,20 +3,7 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            pr-12
-            pl-12
-            px-3
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
           @click="showAttachment('false')"
         >
           New Attachments
@@ -145,12 +132,11 @@ export default class AttachmentExistingState extends Vue {
   showAttachmentModal = false;
   attachmentId = "";
   tasknotes = [];
-  timeFormat= "";
-  formattedTime="";
+  timeFormat = "";
+  formattedTime = "";
 
   @Prop({ type: Array, default: [] })
   attachments!: IAttachment[];
-  
 
   // @allergy.State
   // allergys!: IAllergy[];
@@ -206,12 +192,14 @@ export default class AttachmentExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  currentAttachment: any =null;
+  currentAttachment: any = null;
   get items() {
     const attachments = this.attachments.map((attachment) => {
-       this.timeFormat = (attachment as any).createdAt.split("T");
-       console.log(this.timeFormat);
-      this.formattedTime = new Date( this.timeFormat).toLocaleTimeString("en-US");
+      this.timeFormat = (attachment as any).createdAt.split("T");
+      console.log(this.timeFormat);
+      this.formattedTime = new Date(this.timeFormat).toLocaleTimeString(
+        "en-US"
+      );
       (attachment as any).createdAt = new Date(
         (attachment as any).createdAt
       ).toLocaleDateString("en-US");
@@ -267,7 +255,7 @@ export default class AttachmentExistingState extends Vue {
   async created() {
     // this.getPractitioners();
     this.sortAttachment;
-    alert('fetch');
+    alert("fetch");
     await this.fetchAttachment(this.activePatientId);
   }
 }

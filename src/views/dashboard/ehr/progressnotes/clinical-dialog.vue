@@ -14,7 +14,7 @@
               {{ title }}
             </h2>
           </div>
-          <dots-horizontal-icon class="mr-7" @click="isShow"/>
+          <dots-horizontal-icon class="mr-7" @click="isShow" />
           <delete-icon
             class="text-danger fill-current cursor-pointer"
             @click="show = false"
@@ -45,7 +45,6 @@ import { Prop, PropSync } from "vue-property-decorator";
 
 import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
 
-
 @Options({
   name: "ClinicalDialog",
   components: {
@@ -53,7 +52,7 @@ import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
     CornieDialog,
     ArrowLeftIcon,
     DeleteIcon,
-    DotsHorizontalIcon
+    DotsHorizontalIcon,
   },
 })
 export default class AddCondition extends Vue {
@@ -63,8 +62,7 @@ export default class AddCondition extends Vue {
   @PropSync("modelValue")
   show!: boolean;
 
-    addingProgressnote2 = false;
-
+  addingProgressnote2 = false;
 
   @Prop({ type: String, default: "" })
   title!: string;

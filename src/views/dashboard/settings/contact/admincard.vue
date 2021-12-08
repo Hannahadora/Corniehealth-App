@@ -29,16 +29,7 @@
       </span>
     </div>
     <button
-      class="
-        bg-danger
-        rounded-full
-        text-white
-        py-2
-        px-3
-        my-auto
-        focus:outline-none
-        hover:opacity-90
-      "
+      class="bg-danger rounded-full text-white py-2 px-3 my-auto focus:outline-none hover:opacity-90"
       @click="editingContact = true"
     >
       Edit My Info

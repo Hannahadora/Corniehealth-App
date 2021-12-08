@@ -14,7 +14,10 @@
               {{ title }}
             </h2>
           </div>
-          <dots-horizontal-icon class="mr-7" @click="addingProgressnote = true" />
+          <dots-horizontal-icon
+            class="mr-7"
+            @click="addingProgressnote = true"
+          />
           <delete-icon
             class="text-danger fill-current cursor-pointer"
             @click="show = false"
@@ -48,7 +51,10 @@
               {{ title }}
             </h2>
           </div>
-          <dots-horizontal-icon class="mr-7" @click="addingProgressnote = true" />
+          <dots-horizontal-icon
+            class="mr-7"
+            @click="addingProgressnote = true"
+          />
           <delete-icon
             class="text-danger fill-current cursor-pointer"
             @click="show = false"
@@ -78,7 +84,6 @@ import { Prop, PropSync } from "vue-property-decorator";
 
 import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
 
-
 @Options({
   name: "TopDialog",
   components: {
@@ -86,7 +91,7 @@ import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
     CornieDialog,
     ArrowLeftIcon,
     DeleteIcon,
-    DotsHorizontalIcon
+    DotsHorizontalIcon,
   },
 })
 export default class AddCondition extends Vue {

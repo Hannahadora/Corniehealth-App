@@ -49,7 +49,7 @@ import Period from "@/types/IPeriod";
   },
 })
 export default class CornieDatePicker extends Vue {
- @Prop({type: String, default:  { start: null, end: null }})
+  @Prop({ type: String, default: { start: null, end: null } })
   modelValue!: String;
 
   @PropSync("modelValue")

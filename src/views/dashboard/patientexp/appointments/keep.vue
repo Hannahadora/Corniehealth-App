@@ -35,13 +35,7 @@
           <div class="relative bottom-2">
             <icon-input
               autocomplete="off"
-              class="
-                border border-gray-200
-                h-10
-                w-full
-                rounded-full
-                focus:outline-none
-              "
+              class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
               type="search"
               placeholder="Search"
               v-bind="$attrs"
@@ -55,7 +49,7 @@
         </div>
         <div>
           <div class="bg-gray-100">
-            <div  v-if="practitionerFilter">
+            <div v-if="practitionerFilter">
               <div v-for="(input, index) in practitioners" :key="index">
                 <div class="flex justify-between space-x-7 w-full mt-2 p-3">
                   <div class="w-full dflex space-x-4">
@@ -65,7 +59,11 @@
                         v-if="input.image"
                         :src="input.image"
                       />
-                      <avatar class="mr-2" v-else src="@assets/img/placeholder.png" />
+                      <avatar
+                        class="mr-2"
+                        v-else
+                        src="@assets/img/placeholder.png"
+                      />
                     </div>
                     <div class="w-full">
                       <p class="text-xs text-dark font-semibold">
@@ -79,14 +77,24 @@
                     </div>
                   </div>
                   <p
-                    class="cursor-pointer  text-xs text-danger"
-                    @click="showAvailable(input.id,input.firstName,input.lastName)"
+                    class="cursor-pointer text-xs text-danger"
+                    @click="
+                      showAvailable(input.id, input.firstName, input.lastName)
+                    "
                   >
                     View Availability
                   </p>
                   <p
-                    class="cursor-pointer  text-xs text-danger"
-                    @click="showProfile(input.id,input.firstName,input.lastName,input.type,input.activeState)"
+                    class="cursor-pointer text-xs text-danger"
+                    @click="
+                      showProfile(
+                        input.id,
+                        input.firstName,
+                        input.lastName,
+                        input.type,
+                        input.activeState
+                      )
+                    "
                   >
                     View Profile
                   </p>
@@ -95,7 +103,8 @@
                     :value="input"
                     @input="changed(input.id)"
                     name="practioner"
-                    class="bg-danger  focus-within:bg-danger px-6 shadow"/>
+                    class="bg-danger focus-within:bg-danger px-6 shadow"
+                  />
                 </div>
                 <div class="w-full p-3" v-if="singleId == input.id">
                   <cornie-select
@@ -118,7 +127,7 @@
                   >
                   </cornie-select>
                   <date-picker
-                  class="w-full mb-5"
+                    class="w-full mb-5"
                     label="period"
                     v-model="Practitioners.period"
                     :rules="required"
@@ -136,37 +145,23 @@
                     label="consultation medium"
                     placeholder="--Select--"
                   >
-                    </cornie-select>
+                  </cornie-select>
                 </div>
               </div>
             </div>
           </div>
-           <!-- <div v-if="practitionerFilter.length < 0">
+          <!-- <div v-if="practitionerFilter.length < 0">
               <span class="text-center py-3 px-5">No Practitioner. Please select a slot.</span>
             </div> -->
           <div class="bg-gray-100" v-if="deviceFilter">
             <div v-for="(input, index) in devices" :key="index">
               <div
-                class="
-                  grid grid-cols-2
-                  w-full
-                  justify-between
-                  gap-4
-                  mt-2
-                  p-3
-                "
+                class="grid grid-cols-2 w-full justify-between gap-4 mt-2 p-3"
               >
                 <div class="dflex space-x-4">
                   <div class="w-10 h-10">
                     <avatar
-                      class="
-                        mr-2
-                        object-cover object-center
-                        w-full
-                        h-full
-                        visible
-                        group-hover:hidden
-                      "
+                      class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
                       src="@/assets/img/placeholder.png"
                     />
                   </div>
@@ -179,62 +174,66 @@
                     </p>
                   </div>
                 </div>
-                 <cornie-radio
+                <cornie-radio
                   v-model="indexvalue"
                   :value="input"
                   @input="changed(input.id)"
                   name="device"
-                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"/>
+                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                />
               </div>
-                <div class="w-full p-3" v-if="singleId == input.id">
-                  <cornie-select
-                    :onChange="setValue"
-                    class="required w-full"
-                    :rules="required"
-                    :items="['Type']"
-                    v-model="Devices.type"
-                    label="TYPE"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="['Required', 'Information Only', 'Optional']"
-                    v-model="Devices.required"
-                    label="required"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <date-picker
+              <div class="w-full p-3" v-if="singleId == input.id">
+                <cornie-select
+                  :onChange="setValue"
+                  class="required w-full"
+                  :rules="required"
+                  :items="['Type']"
+                  v-model="Devices.type"
+                  label="TYPE"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required w-full"
+                  :rules="required"
+                  :items="['Required', 'Information Only', 'Optional']"
+                  v-model="Devices.required"
+                  label="required"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <date-picker
                   class="w-full mb-5"
-                    label="period"
-                    v-model="Devices.period"
-                    :rules="required"
-                  />
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="[
-                      'Out-Patient',
-                      ' In-Patient',
-                      ' Virtual',
-                      'HomeCare',
-                    ]"
-                    v-model="Devices.consultationMedium"
-                    label="consultation medium"
-                    placeholder="--Select--"
-                  >
-                    </cornie-select>
-                </div>
+                  label="period"
+                  v-model="Devices.period"
+                  :rules="required"
+                />
+                <cornie-select
+                  class="required w-full"
+                  :rules="required"
+                  :items="[
+                    'Out-Patient',
+                    ' In-Patient',
+                    ' Virtual',
+                    'HomeCare',
+                  ]"
+                  v-model="Devices.consultationMedium"
+                  label="consultation medium"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+              </div>
             </div>
           </div>
-          <div class="bg-gray-100"  v-if="roleFilter">
+          <div class="bg-gray-100" v-if="roleFilter">
             <div v-for="(input, index) in roles" :key="index">
               <div class="grid grid-cols-2 gap-4 w-full col-span-full p-3">
                 <div class="dflex space-x-4">
                   <div class="w-10 h-10">
-                    <avatar class="mr-2" :src="'@/assets/img/placeholder.png'" />
+                    <avatar
+                      class="mr-2"
+                      :src="'@/assets/img/placeholder.png'"
+                    />
                   </div>
                   <div class="w-full">
                     <p class="text-xs text-dark font-semibold">
@@ -245,13 +244,14 @@
                     </p>
                   </div>
                 </div>
-                 <cornie-radio
+                <cornie-radio
                   v-model="indexvalue"
                   :value="input"
                   @input="changed(input.id)"
                   name="role"
-                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"/>
-               <!-- <input
+                  class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
+                />
+                <!-- <input
                   v-model="indexvalue"
                   :value="input"
                   @input="changed(input.id)"
@@ -261,12 +261,15 @@
               </div>
             </div>
           </div>
-          <div class="bg-gray-100"  v-if="patientFilter">
+          <div class="bg-gray-100" v-if="patientFilter">
             <div v-for="(input, index) in patients" :key="index">
               <div class="flex space-x-10 w-full justify-between p-3">
                 <div class="dflex space-x-4">
                   <div class="w-10 h-10">
-                    <avatar class="mr-2" src="../../../../assets/img/placeholder.png" />
+                    <avatar
+                      class="mr-2"
+                      src="../../../../assets/img/placeholder.png"
+                    />
                   </div>
                   <div class="w-full">
                     <p class="text-xs text-dark font-semibold">
@@ -274,53 +277,54 @@
                     </p>
                   </div>
                 </div>
-                  <cornie-radio
+                <cornie-radio
                   v-model="indexvalue"
                   :value="input"
                   @input="changed(input.id)"
                   name="patients"
-                  class="bg-danger float-right  focus-within:bg-danger px-6 shadow"/>
+                  class="bg-danger float-right focus-within:bg-danger px-6 shadow"
+                />
               </div>
               <div class="w-full p-3" v-if="singleId == input.id">
-                  <cornie-select
-                    :onChange="setValue"
-                    class="required w-full"
-                    :rules="required"
-                    :items="['Type']"
-                    v-model="Patients.type"
-                    label="TYPE"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="['Required', 'Information Only', 'Optional']"
-                    v-model="Patients.required"
-                    label="required"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <date-picker
+                <cornie-select
+                  :onChange="setValue"
+                  class="required w-full"
+                  :rules="required"
+                  :items="['Type']"
+                  v-model="Patients.type"
+                  label="TYPE"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required w-full"
+                  :rules="required"
+                  :items="['Required', 'Information Only', 'Optional']"
+                  v-model="Patients.required"
+                  label="required"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <date-picker
                   class="w-full mb-5"
-                    label="period"
-                    v-model="Patients.period"
-                    :rules="required"
-                  />
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="[
-                      'Out-Patient',
-                      ' In-Patient',
-                      ' Virtual',
-                      'HomeCare',
-                    ]"
-                    v-model="Patients.consultationMedium"
-                    label="consultation medium"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
+                  label="period"
+                  v-model="Patients.period"
+                  :rules="required"
+                />
+                <cornie-select
+                  class="required w-full"
+                  :rules="required"
+                  :items="[
+                    'Out-Patient',
+                    ' In-Patient',
+                    ' Virtual',
+                    'HomeCare',
+                  ]"
+                  v-model="Patients.consultationMedium"
+                  label="consultation medium"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
               </div>
             </div>
           </div>
@@ -363,156 +367,80 @@
         </div>-->
         <div class="flex justify-end w-full mt-auto" v-if="practitionerFilter">
           <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
           >
             Cancel
           </button>
           <button
             @click="apply('Practitioner')"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Add
           </button>
         </div>
         <div class="flex justify-end w-full mt-auto" v-if="deviceFilter">
           <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
           >
             Cancel
           </button>
           <button
             @click="apply('Device')"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Add
           </button>
         </div>
         <div class="flex justify-end w-full mt-auto" v-if="roleFilter">
           <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
           >
             Cancel
           </button>
           <button
             @click="apply('Role')"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Add
           </button>
         </div>
         <div class="flex justify-end w-full mt-auto" v-if="patientFilter">
           <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
           >
             Cancel
           </button>
           <button
             @click="apply('Patient')"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Add
           </button>
         </div>
       </div>
     </modal>
-    <availability v-model:visible="availableFilter" :name="practitionername" :practitionerId="singleId" :availability="practitioners"/>
-    <profile v-model:visible="profileFilter" :profile="practitioners" :name="practitionername" :activeState="activeState" :type="practitionerType" :profileId="singleId" />
+    <availability
+      v-model:visible="availableFilter"
+      :name="practitionername"
+      :practitionerId="singleId"
+      :availability="practitioners"
+    />
+    <profile
+      v-model:visible="profileFilter"
+      :profile="practitioners"
+      :name="practitionername"
+      :activeState="activeState"
+      :type="practitionerType"
+      :profileId="singleId"
+    />
   </div>
 </template>
 <script>
-import { setup} from "vue-class-component";
+import { setup } from "vue-class-component";
 import Modal from "@/components/practitionermodal.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import DragIcon from "@/components/icons/draggable.vue";
@@ -527,10 +455,9 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieCheckbox from "@/components/corniecheckbox.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import DatePicker from "@/components/daterangepicker.vue";
-import CornieRadio from '@/components/cornieradio.vue';
+import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 const copy = (original) => JSON.parse(JSON.stringify(original));
-
 
 export default {
   name: "actors",
@@ -547,7 +474,7 @@ export default {
     SearchIcon,
     Profile,
     Avatar,
-    CornieRadio
+    CornieRadio,
   },
   props: {
     visible: {
@@ -555,7 +482,7 @@ export default {
       required: true,
       default: false,
     },
-    showPartcipants:{
+    showPartcipants: {
       type: Boolean,
     },
     columns: {
@@ -573,7 +500,7 @@ export default {
       required: true,
       default: () => [],
     },
-     appointmentId: {
+    appointmentId: {
       type: String,
     },
     practitioners: {
@@ -581,68 +508,66 @@ export default {
       required: true,
       default: () => [],
     },
-     devices: {
+    devices: {
       type: Array,
     },
-     roles: {
+    roles: {
       type: Array,
     },
-     patients: {
+    patients: {
       type: Array,
     },
-
-    
   },
   data() {
     return {
-      selected:0,
-      participantDetail:{
-          consultationMedium : "",
-          period:"",
-          required:""
+      selected: 0,
+      participantDetail: {
+        consultationMedium: "",
+        period: "",
+        required: "",
       },
-  // Patients: {
-  //     id: "",
-  //     type: "",
-  //     required: "",
-  //     consultationMedium: "",
-  //     period : "",
-  //     firstname: "",
-  //     lastname: "",
-  //     gender: "",
-  //     dateOfBirth: "",
-  //     accountType: "",
-  //     mrn: "",
+      // Patients: {
+      //     id: "",
+      //     type: "",
+      //     required: "",
+      //     consultationMedium: "",
+      //     period : "",
+      //     firstname: "",
+      //     lastname: "",
+      //     gender: "",
+      //     dateOfBirth: "",
+      //     accountType: "",
+      //     mrn: "",
 
-  //   },
-  //   Practitioners: {
-  //         id: "",
-  //         type: "",
-  //         required: "",
-  //         consultationMedium: "",
-  //         period :"",
-  //       },
-  //       Devices:{
-  //         id: "",
-  //       type: "",
-  //       required: "",
-  //       consultationMedium: "",
-  //       period :  "",
-  //     },
-      activeState:"",
-      practitionerType:"",
+      //   },
+      //   Practitioners: {
+      //         id: "",
+      //         type: "",
+      //         required: "",
+      //         consultationMedium: "",
+      //         period :"",
+      //       },
+      //       Devices:{
+      //         id: "",
+      //       type: "",
+      //       required: "",
+      //       consultationMedium: "",
+      //       period :  "",
+      //     },
+      activeState: "",
+      practitionerType: "",
       columnsProxy: [],
       indexvalue: [],
       valueid: [],
-      type:'Patient',
-      singleId:"",
+      type: "Patient",
+      singleId: "",
       availableFilter: false,
-      practitionername:"",
-      profileFilter:false,
-      practitionerFilter:true,
-      deviceFilter:false,
-      patientFilter:false,
-      roleFilter:false,
+      practitionername: "",
+      profileFilter: false,
+      practitionerFilter: true,
+      deviceFilter: false,
+      patientFilter: false,
+      roleFilter: false,
       practitionerId: "",
     };
   },
@@ -653,11 +578,9 @@ export default {
     visible() {
       const active = this.preferred.length > 0 ? this.preferred : this.columns;
       //this.columnsProxy = copy([...active]);
-        
     },
   },
   computed: {
-   
     show: {
       get() {
         return this.visible;
@@ -666,75 +589,83 @@ export default {
         this.$emit("update:visible", val);
       },
     },
-     setValue() {
-    if (this.type == "Practitioner") {
-      this.practitionerFilter = true;
+    setValue() {
+      if (this.type == "Practitioner") {
+        this.practitionerFilter = true;
         this.patientFilter = false;
-         this.deviceFilter = false;
-          this.roleFilter = false;
-    } else if (this.type == "Patient") {
-      this.patientFilter = true;
-      this.deviceFilter = false;
-      this.roleFilter = false;
-    this.practitionerFilter = false;
-    }else if(this.type == 'Device'){
-       this.deviceFilter = true;
+        this.deviceFilter = false;
+        this.roleFilter = false;
+      } else if (this.type == "Patient") {
+        this.patientFilter = true;
+        this.deviceFilter = false;
+        this.roleFilter = false;
+        this.practitionerFilter = false;
+      } else if (this.type == "Device") {
+        this.deviceFilter = true;
         this.practitionerFilter = false;
         this.patientFilter = false;
-         this.roleFilter = false;
-    }else if(this.type == 'Practitioner Role'){
+        this.roleFilter = false;
+      } else if (this.type == "Practitioner Role") {
         this.roleFilter = true;
-          this.practitionerFilter = false;
+        this.practitionerFilter = false;
         this.patientFilter = false;
-              this.deviceFilter = false;
-    }
-    return this.type;
-     }
+        this.deviceFilter = false;
+      }
+      return this.type;
+    },
   },
   methods: {
     apply(value) {
-      this.$emit("update:preferred",  copy([...this.indexvalue]), this.valueid,value,this.type,this.Practitioners, this.Patients, this.Devices);
+      this.$emit(
+        "update:preferred",
+        copy([...this.indexvalue]),
+        this.valueid,
+        value,
+        this.type,
+        this.Practitioners,
+        this.Patients,
+        this.Devices
+      );
       this.indexvalue = [];
       this.valueid = [];
       this.value = [];
       this.show = false;
-     
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
       this.showPartcipants = false;
     },
-    showAvailable(value,firstname,lastname){
+    showAvailable(value, firstname, lastname) {
       this.singleId = value;
       this.availableFilter = true;
-      this.practitionername = firstname +' '+ lastname
+      this.practitionername = firstname + " " + lastname;
     },
-    showProfile(value,firstname,lastname,type,state){
+    showProfile(value, firstname, lastname, type, state) {
       this.singleId = value;
       this.profileFilter = true;
-      this.practitionername = firstname +' '+ lastname;
+      this.practitionername = firstname + " " + lastname;
       this.practitionerType = type;
       this.activeState = state;
-
     },
-     select(i) {
+    select(i) {
       this.selected = i;
     },
-    changed(index){
-      if(this.setValue == 'Practitioner'){
-          this.singleId = index;
+    changed(index) {
+      if (this.setValue == "Practitioner") {
+        this.singleId = index;
       }
-       this.singleId = index;
+      this.singleId = index;
       this.valueid.push(index);
     },
-     async viewAppointemnt() {
+    async viewAppointemnt() {
       try {
         const response = await cornieClient().get(
-          '/api/v1/appointment', this.appointmentId
+          "/api/v1/appointment",
+          this.appointmentId
         );
         if (response.success) {
-        this.columnsProxy = response.data
+          this.columnsProxy = response.data;
         }
       } catch (error) {
         this.show = false;
@@ -752,42 +683,42 @@ export default {
 .dflex {
   display: -webkit-box;
 }
-.hide{
+.hide {
   display: none;
 }
 /* Large checkboxes */
 
 input[type="checkbox"] {
-    height: 22px;
-    width: 22px;
+  height: 22px;
+  width: 22px;
 }
 
 input[type="checkbox"]:before {
-    width: 24px;
-    border: hidden;
-    height: 20px;
+  width: 24px;
+  border: hidden;
+  height: 20px;
 }
 
 input[type="checkbox"]:after {
-    top: -20px;
-    width: 22px;
-    height: 22px;
+  top: -20px;
+  width: 22px;
+  height: 22px;
 }
 
 input[type="checkbox"]:checked:after {
-   background-image: url("../../../../assets/tick.svg");
-    background-color: #FE4D3C;
+  background-image: url("../../../../assets/tick.svg");
+  background-color: #fe4d3c;
 }
 input[type="checkbox"]:after {
-    position: relative;
-    display: block;
-    left: 0px;
-    content: "";
-    background: white;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 3px;
-    text-align: center;
-    border: 1px solid #FE4D3C;
+  position: relative;
+  display: block;
+  left: 0px;
+  content: "";
+  background: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 3px;
+  text-align: center;
+  border: 1px solid #fe4d3c;
 }
 </style>

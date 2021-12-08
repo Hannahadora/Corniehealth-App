@@ -30,15 +30,7 @@
         <div class="grid grid-cols-2 text-center gap-3 mt-5">
           <cornie-input v-model="complaint" label="Chief Complaint" />
           <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
           >
             <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
               <path
@@ -52,31 +44,12 @@
 
         <div class="relative text-gray-700">
           <input
-            class="
-              w-full
-              h-10
-              pl-3
-              pr-8
-              text-base
-              focus:outline-none
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            "
+            class="w-full h-10 pl-3 pr-8 text-base focus:outline-none placeholder-gray-600 border rounded-lg focus:shadow-outline"
             type="text"
             placeholder="Regular input"
           />
           <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
           >
             <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
               <path
@@ -232,7 +205,7 @@
 
         <!-- <Range /> -->
 
-    <!-- <div class="range-slider">
+        <!-- <div class="range-slider">
     <input type="range" min="0" max="180" step="1" v-model="sliderMax"  class="mr-10"/>
     <input
       type="number"
@@ -245,7 +218,7 @@
     </div> -->
 
         <div class="grid grid-cols-2 gap-3 mt-3">
-          <div class="relative z-10 mt-5">         
+          <div class="relative z-10 mt-5">
             <!-- <div
               class="
                 grid grid-cols-3
@@ -265,7 +238,6 @@
 
             <vue-slider v-model="value"></vue-slider>
 
-
             <!-- <div class="relative pt-1 mt-5">
             
               <div>
@@ -282,20 +254,7 @@
         <h3 class="text-sm font-bold">General WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -309,20 +268,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -346,20 +292,7 @@
         <h3 class="text-sm font-bold">HEENT WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -373,20 +306,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -410,20 +330,7 @@
         <h3 class="text-sm font-bold">Skin WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -437,20 +344,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -474,20 +368,7 @@
         <h3 class="text-sm font-bold">Neck WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -501,20 +382,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -538,20 +406,7 @@
         <h3 class="text-sm">Extremities</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -565,20 +420,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -609,32 +451,13 @@
             Diagnostics Result
           </label>
           <input
-            class="
-              w-full
-              h-10
-              pl-3
-              pr-8
-              text-base
-              focus:outline-none
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            "
+            class="w-full h-10 pl-3 pr-8 text-base focus:outline-none placeholder-gray-600 border rounded-lg focus:shadow-outline"
             id="Diagnostics-Result"
             type="text"
             placeholder="Regular input"
           />
           <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
           >
             <add-icon class="mt-8" style="color: red" />
           </div>
@@ -910,7 +733,7 @@ export default class AddProgresNote extends Vue {
   generalNote = "";
   heentNormal = "";
   heentAbnormal = "";
-  heentNote = "";  
+  heentNote = "";
   skinNormal = "";
   skinAbnormal = "";
   skinNote = "";
@@ -1026,7 +849,7 @@ export default class AddProgresNote extends Vue {
       neckNormal: this.neckNormal,
       neckAbnormal: this.neckAbnormal,
       neckNote: this.neckNote,
-      
+
       // type: this.stageType,
       // category: this.category,
       // summary: this.stageSummary,
@@ -1061,7 +884,7 @@ export default class AddProgresNote extends Vue {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
       return console.log('form is invalid');
-    } 
+    }
     try {
       const { data } = await cornieClient().post(
         "/api/v1/progress-notes",
@@ -1092,9 +915,6 @@ export default class AddProgresNote extends Vue {
   this.loadDropdown();
     this.setAsserter();
 }
-
-
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -3,15 +3,7 @@
     <div class="flex items-center mb-6">
       <span class="flex-grow"></span>
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          py-2
-          px-6
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
         @click="registerNew = true"
       >
         <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
@@ -37,9 +29,13 @@
         </div>
       </template>
     </cornie-table>
-    <side-modal :visible="registerNew" @closesidemodal="closeModal" :header="'New Appointment'">
-        <AppointmentModal  @closesidemodal="closeModal"  />
-      </side-modal>
+    <side-modal
+      :visible="registerNew"
+      @closesidemodal="closeModal"
+      :header="'New Appointment'"
+    >
+      <AppointmentModal @closesidemodal="closeModal" />
+    </side-modal>
   </div>
 </template>
 <script lang="ts">
@@ -83,13 +79,13 @@ const designation = namespace("designation");
     ColumnFilter,
     TableOptions,
     AppointmentModal,
-    SideModal
+    SideModal,
   },
 })
 export default class DesignationsExistingState extends Vue {
   @Prop({ type: Array, required: true })
   designations!: IDesignation[];
-  registerNew=false;
+  registerNew = false;
 
   // appointmentId ="";
   rawHeaders = [
@@ -128,7 +124,7 @@ export default class DesignationsExistingState extends Vue {
   @designation.Action
   deleteDesignation!: (id: string) => Promise<void>;
 
-   closeModal() {
+  closeModal() {
     this.registerNew = false;
     // this.selectedTeamId = "";
   }

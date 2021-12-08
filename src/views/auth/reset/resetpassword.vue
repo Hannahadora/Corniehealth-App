@@ -1,8 +1,8 @@
 <template>
-   <auth>
-            <password-reset  v-if="step === 1"/>
-            <security-question v-if="step === 2"/>
-          </auth>
+  <auth>
+    <password-reset v-if="step === 1" />
+    <security-question v-if="step === 2" />
+  </auth>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -18,7 +18,7 @@ type CreatedUser = { id: string; email: string };
     PasswordReset,
     SecurityQuestion,
     Confirmation,
-    Auth
+    Auth,
   },
 })
 export default class SignUp extends Vue {

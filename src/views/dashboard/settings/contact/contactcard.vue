@@ -1,15 +1,6 @@
 <template>
   <div
-    class="
-      text-black
-      flex flex-row
-      rounded-lg
-      items-stretch
-      cursor-pointer
-      overflow-x-hidden
-      justify-between
-      border
-    "
+    class="text-black flex flex-row rounded-lg items-stretch cursor-pointer overflow-x-hidden justify-between border"
   >
     <span class="flex items-center p-2">
       <img class="h-10 w-10 rounded-full mr-1" :src="contact.image" />
@@ -26,17 +17,7 @@
       </div>
     </span>
     <div
-      class="
-        justify-center
-        items-center
-        flex
-        rounded-r-lg
-        bg-gray-300
-        opacity-0
-        hover:opacity-100
-        flex-grow
-        px-3
-      "
+      class="justify-center items-center flex rounded-r-lg bg-gray-300 opacity-0 hover:opacity-100 flex-grow px-3"
     >
       <edit-icon class="mr-3" @click="editContact" />
       <delete-icon @click="removeContact" class="text-danger fill-current" />

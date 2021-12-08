@@ -1,45 +1,35 @@
 <template>
   <main>
-      <div class="mb-5 p-3 border-l-none -mt-6 w-full ">
-        <span
-            class="
-            flex
-            border-b-2
-            w-full
-            font-bold
-            text-xl text-primary
-            py-2
-            mb-5
-            mx-auto
-            "
-        >
+    <div class="mb-5 p-3 border-l-none -mt-6 w-full">
+      <span
+        class="flex border-b-2 w-full font-bold text-xl text-primary py-2 mb-5 mx-auto"
+      >
         Health Trend
-        </span>
-        <div class="w-full h-full">
-            <div class="w-full grid grid-cols-2 gap-4">
-                <!-- <blood-chartt/>
+      </span>
+      <div class="w-full h-full">
+        <div class="w-full grid grid-cols-2 gap-4">
+          <!-- <blood-chartt/>
                 <weight-chartt title="Weight"/> -->
-            </div>
-            <div class="w-full grid grid-cols-3 gap-4">
-                <!-- <appointment-chart /> -->
-                <!-- <medication-cardd/>
+        </div>
+        <div class="w-full grid grid-cols-3 gap-4">
+          <!-- <appointment-chart /> -->
+          <!-- <medication-cardd/>
                 <condition-cardd/>
                 <allergy-cardd/>
                 <diagnostic-cardd/>
                 <procedure-cardd/>
                 <note-cardd/> -->
-                <!-- <appointment-card/>
+          <!-- <appointment-card/>
                 <medication-card/>
                 <medication-card/> -->
+        </div>
 
-            </div>
-
-            <div class="w-full grid">
-                <!-- <appointment-cardd/>
+        <div class="w-full grid">
+          <!-- <appointment-cardd/>
                 <history-cardd/> -->
-            </div>
         </div>
       </div>
+    </div>
   </main>
 </template>
 
@@ -68,7 +58,6 @@ import NoteCard from "./noteCard.vue";
 import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
 
-
 //for empty state
 // import conditionCardd from "./conditionCardd.vue";
 // import AllergyCardd from "./allergyCardd.vue";
@@ -77,14 +66,6 @@ import HistoryCard from "./historyCard.vue";
 // import NoteCardd from "./noteCardd.vue";
 // import AppointmentCardd from "./appointmentCardd.vue";
 // import HistoryCardd from "./historyCardd.vue";
-
-
-
-
-
-
-
-
 
 import RegistrationChart from "./registration-chart.vue";
 import ChartCard from "./chart-card.vue";
@@ -125,7 +106,6 @@ export default {
     // AppointmentCardd,
     HistoryCard,
     // HistoryCardd,
-    
   },
   setup() {
     const { url, placeholder, onChange } = useHandleImage();
@@ -147,12 +127,8 @@ export default {
       };
     },
   },
-  async created() {
-   
-  },
-  methods: {
-    
-  },
+  async created() {},
+  methods: {},
 };
 </script>
 

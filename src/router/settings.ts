@@ -151,8 +151,7 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "practice-templates",
       name: "Practice Forms/Templates",
-      component: () =>
-        import("@/views/dashboard/settings/forms/index.vue"),
+      component: () => import("@/views/dashboard/settings/forms/index.vue"),
     },
     // {
     //   path: "org-hierarchy",
@@ -166,7 +165,7 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/BookingSite/index.vue"),
     },
-    
+
     // {
     //   path: "markup",
     //   props: true,

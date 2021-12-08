@@ -5,7 +5,9 @@ import IVital from "@/types/IVital";
 
 export async function getVitals(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/vitals/patient/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/vitals/patient/${patientId}`
+    );
 
     return response.data;
   } catch (error) {
@@ -16,7 +18,9 @@ export async function getVitals(patientId: string) {
 
 export async function getEncounters(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/encounter/patient/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/encounter/patient/${patientId}`
+    );
 
     return response.data;
   } catch (error) {
@@ -27,8 +31,10 @@ export async function getEncounters(patientId: string) {
 
 export async function getEpisodes(patientId: string) {
   try {
-    // const response = await cornieClient().get(`/api/v1/encounter/episode`);    
-    const response = await cornieClient().get(`/api/v1/encounter/episode/${patientId}`);
+    // const response = await cornieClient().get(`/api/v1/encounter/episode`);
+    const response = await cornieClient().get(
+      `/api/v1/encounter/episode/${patientId}`
+    );
 
     return response.data;
   } catch (error) {
@@ -40,8 +46,9 @@ export async function getEpisodes(patientId: string) {
 export async function createVital(body: IVital) {
   try {
     const response = await cornieClient().post(`/api/v1/vitals`, body);
-    
-    if (response?.data?.id) notify({ msg: "Vitals recorded successfully", status: "success" });
+
+    if (response?.data?.id)
+      notify({ msg: "Vitals recorded successfully", status: "success" });
     return response.data as boolean;
   } catch (error) {
     notify({ msg: "Vitals recording failed", status: "error" });
@@ -54,7 +61,7 @@ export async function createEncounter(body: IEncounter) {
     const response = await cornieClient().post(`/api/v1/encounter`, body);
     notify({ msg: "Encounter recorded successfully", status: "success" });
 
-    return response.data
+    return response.data;
   } catch (error) {
     console.log(error);
     notify({ msg: "Operation failed", status: "error" });
@@ -63,8 +70,12 @@ export async function createEncounter(body: IEncounter) {
 
 export async function createEpisode(body: IEpisode) {
   try {
-    const response = await cornieClient().post(`/api/v1/encounter/episode`, body);
-    if (response?.data?.id) notify({ msg: "Episode created successfully", status: "success" });
+    const response = await cornieClient().post(
+      `/api/v1/encounter/episode`,
+      body
+    );
+    if (response?.data?.id)
+      notify({ msg: "Episode created successfully", status: "success" });
     return response.data as boolean;
   } catch (error) {
     console.log(error);
@@ -74,8 +85,11 @@ export async function createEpisode(body: IEpisode) {
 
 export async function updateVitalStatus(body: any, vitalId: string) {
   try {
-    const response = await cornieClient().put(`/api/v1/vitals/status/${vitalId}`, body);
-    
+    const response = await cornieClient().put(
+      `/api/v1/vitals/status/${vitalId}`,
+      body
+    );
+
     notify({ msg: "Vitals status updated successfully", status: "success" });
 
     return response.data as boolean;
@@ -87,8 +101,11 @@ export async function updateVitalStatus(body: any, vitalId: string) {
 
 export async function updateEncounterStatus(body: any, patientId: string) {
   try {
-    const response = await cornieClient().patch(`/api/v1/encounter/status/${patientId}`, body);
-    
+    const response = await cornieClient().patch(
+      `/api/v1/encounter/status/${patientId}`,
+      body
+    );
+
     notify({ msg: "Encounter status updated successfully", status: "success" });
 
     return response.data as boolean;
@@ -100,8 +117,11 @@ export async function updateEncounterStatus(body: any, patientId: string) {
 
 export async function updateEpisodeStatus(body: any, patientId: string) {
   try {
-    const response = await cornieClient().put(`/api/v1/encounter/episode/status/${patientId}`, body);
-    
+    const response = await cornieClient().put(
+      `/api/v1/encounter/episode/status/${patientId}`,
+      body
+    );
+
     notify({ msg: "Episode status updated successfully", status: "success" });
 
     return response.data as boolean;

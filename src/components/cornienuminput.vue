@@ -13,29 +13,21 @@
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
-        class="flex   border-1 border-gray-300 rounded-md"
+        class="flex border-1 border-gray-300 rounded-md"
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
         }"
       >
         <div
-          class="
-            border-r-2
-            rounded-lg
-            p-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-r-2 rounded-lg p-2 bg-white flex items-center justify-center"
           style="border-top-right-radius: 0; border-bottom-right-radius: 0"
           v-if="$slots.prepend"
         >
           <slot name="prepend" />
         </div>
         <input
-            type="number"
+          type="number"
           class="p-2 rounded-lg w-full focus:outline-none"
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
@@ -97,7 +89,7 @@ export default class DInput extends Vue {
   color: #667499;
   font-style: italic;
 }
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-inner-spin-button {
   opacity: 1;
   justify-content: center;
 }

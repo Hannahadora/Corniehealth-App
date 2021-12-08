@@ -2,30 +2,13 @@
   <div class="h-screen flex justify-center">
     <div class="w-full mx-5">
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
         Contact Information (Root Admin)
       </span>
       <admin-card class="my-4" />
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-          mt-2
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto mt-2"
       >
         Other Contacts
       </span>

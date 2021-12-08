@@ -26,19 +26,7 @@
         <div
           v-if="visible"
           :class="{ 'right-0 min-w-max': right, 'left-0 min-w-max': left }"
-          class="
-            origin-top-right
-            absolute
-            mt-2
-            w-full
-            rounded-md
-            shadow-lg
-            bg-white
-            z-20
-            ring-1 ring-black ring-opacity-5
-            divide-y divide-gray-100
-            focus:outline-none
-          "
+          class="origin-top-right absolute mt-2 w-full rounded-md shadow-lg bg-white z-20 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           tabindex="-1"

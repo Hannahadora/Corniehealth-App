@@ -2,28 +2,16 @@
   <span class="block w-11/12">
     <label class="flex capitalize mb-2 text-black text-sm font-bold">
       {{ label }}
-        <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+      <span class="ml-1 mb-1" v-if="$slots.labelicon"
+        ><slot name="labelicon"
+      /></span>
     </label>
     <Field :name="inputName" v-slot="{ meta, handleChange, errorMessage }">
       <div class="relative" :id="inputName" style="width: 100%">
         <div @click="toggleDropdown">
           <button
             type="button"
-            class="
-              flex
-              items-center
-              w-full
-border-1 border-gray-300 rounded-md
-              shadow-sm
-              p-1
-          py-2.5
-              bg-white
-              text-sm
-              font-medium
-              text-gray-700
-              hover:bg-gray-50
-              focus:outline-none
-            "
+            class="flex items-center w-full border-1 border-gray-300 rounded-md shadow-sm p-1 py-2.5 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
             id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"
@@ -39,20 +27,7 @@ border-1 border-gray-300 rounded-md
 
         <div
           v-if="datePickerVissible"
-          class="
-            origin-top-right
-            absolute
-            right-0
-            mt-2
-            w-full
-            rounded-md
-            z-50
-            shadow-lg
-            bg-white
-            ring-1 ring-black ring-opacity-5
-            divide-y divide-gray-100
-            focus:outline-none
-          "
+          class="origin-top-right absolute right-0 mt-2 w-full rounded-md z-50 shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
@@ -123,7 +98,6 @@ export default class DRangePicker extends Vue {
 
   @Prop({ type: String, default: "" })
   labelicon: any;
-
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

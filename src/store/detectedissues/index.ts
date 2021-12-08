@@ -29,7 +29,7 @@ export default {
     // },
   },
   actions: {
-    async fetchIssues(ctx,patientId:string) {
+    async fetchIssues(ctx, patientId: string) {
       const issues = await fetchIssues(patientId);
       ctx.commit("setIssues", issues);
     },

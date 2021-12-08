@@ -1,10 +1,15 @@
 import { IAdminNote, IHospitalisation } from "@/types/IHospitalisation";
 import { IPatient } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { getHospitalisations, createHospitalisation, createAdminNote, updateHospitalisation  } from "./helper";
+import {
+  getHospitalisations,
+  createHospitalisation,
+  createAdminNote,
+  updateHospitalisation,
+} from "./helper";
 
 interface SchedulesStore {
-  patientHospitalisations: IHospitalisation[],
+  patientHospitalisations: IHospitalisation[];
 }
 
 export default {
@@ -14,9 +19,8 @@ export default {
   },
 
   mutations: {
-
     setPatientHospitalizations(state, items) {
-      if (items && items.length > 0) state.patientHospitalisations = [ ...items ];
+      if (items && items.length > 0) state.patientHospitalisations = [...items];
     },
 
     addNewItem(state, data) {
@@ -25,16 +29,20 @@ export default {
       }
     },
 
-    addNote(state, data) {      
-      if (data) {        
-        const index = state.patientHospitalisations.findIndex(hospitalisation => hospitalisation.id === data.hospitalizationId);
-        state.patientHospitalisations[index]?.notes?.unshift(data); 
+    addNote(state, data) {
+      if (data) {
+        const index = state.patientHospitalisations.findIndex(
+          (hospitalisation) => hospitalisation.id === data.hospitalizationId
+        );
+        state.patientHospitalisations[index]?.notes?.unshift(data);
       }
     },
 
     updateHospitalisation(state, data) {
       if (data) {
-        const index = state.patientHospitalisations.findIndex(hospitalisation => hospitalisation.id === data.id);
+        const index = state.patientHospitalisations.findIndex(
+          (hospitalisation) => hospitalisation.id === data.id
+        );
         if (index >= 0) state.patientHospitalisations[index] = { ...data };
       }
     },
@@ -44,7 +52,7 @@ export default {
     //   if (index >= 0) state.visits[index].status = payload.status;
 
     //   const inPatientsVisits = state.patientVisits.findIndex((i: any) => i.id === payload.id);
-      
+
     //   if (inPatientsVisits >= 0) state.patientVisits[inPatientsVisits].status = payload.status;
     // },
   },
@@ -56,26 +64,26 @@ export default {
     },
 
     async createHospitalisation(ctx, body) {
-      const res = await createHospitalisation(body)
+      const res = await createHospitalisation(body);
       if (!res) return false;
-      ctx.commit("addNewItem", res)
+      ctx.commit("addNewItem", res);
       return res as boolean;
     },
 
     async createAdminNote(ctx, body: IAdminNote) {
-      const res = await createAdminNote(body)
+      const res = await createAdminNote(body);
       console.log(res, "NEW NOTE");
       if (!res) return false;
-      
-      ctx.commit("addNote", res)
+
+      ctx.commit("addNote", res);
       return res as boolean;
     },
 
     async updateHospitalisation(ctx, body: IHospitalisation) {
-      const res = await updateHospitalisation(body)
+      const res = await updateHospitalisation(body);
       if (!res) return false;
-      ctx.commit("updateHospitalisation", res)
+      ctx.commit("updateHospitalisation", res);
       return res as boolean;
-    }
+    },
   },
-} as StoreOptions<SchedulesStore>
+} as StoreOptions<SchedulesStore>;

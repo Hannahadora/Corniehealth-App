@@ -35,7 +35,7 @@ export default interface IPracticeform {
 //   prefix:string;
 
 //  }
- export type AnswerType =
+export type AnswerType =
   | "boolean"
   | "decimal"
   | "integer"
@@ -51,7 +51,7 @@ export default interface IPracticeform {
   | "reference"
   | "quantity";
 
- export interface Question {
+export interface Question {
   id?: string;
   question: string;
   answerType: AnswerType;
@@ -77,7 +77,7 @@ export interface QuestionGroup {
 
 export type Display = string;
 
-export type Displaymain = string; 
+export type Displaymain = string;
 
 export interface Section {
   items: Array<QuestionGroup | Question | Display>;

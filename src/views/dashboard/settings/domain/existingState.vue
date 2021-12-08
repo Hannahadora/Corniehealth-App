@@ -1,59 +1,33 @@
 <template>
   <div class="w-full">
     <span class="flex justify-end w-full">
-    <button
-        class="
-          outline-primary
-          rounded-full
-          text-black
-          mt-5
-          mr-3
-          py-2
-          pr-10
-          pl-10
-          px-3
-          focus:outline-none
-          hover:bg-primary
-          hover:text-white
-
-        "
+      <button
+        class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-10 pl-10 px-3 focus:outline-none hover:bg-primary hover:text-white"
         @click="$router.push('send-invite')"
       >
         + Invite
       </button>
 
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          pr-5
-          pl-5
-          px-3
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
         @click="$router.push('add-domain')"
       >
         Create New Domain
       </button>
-      
     </span>
-   <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="$router.push(`add-domain/${item.id}`)"
+          @click="$router.push(`add-domain/${item.id}`)"
         >
-           <span class="mr-3 text-2xl bold text-primary">+</span> Rename
+          <span class="mr-3 text-2xl bold text-primary">+</span> Rename
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <delete-icon/>
+          <delete-icon />
           <span class="ml-3 text-xs">Remove</span>
         </div>
       </template>
@@ -109,7 +83,7 @@
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
     /> -->
-   <!-- <show-confrim  v-model:visible="showModal"  yes="Proceed" no="Cancel" title="Delete Domain" message="Are you sure you want to remove this domain? This action cannot be undone."/>-->
+    <!-- <show-confrim  v-model:visible="showModal"  yes="Proceed" no="Cancel" title="Delete Domain" message="Are you sure you want to remove this domain? This action cannot be undone."/>-->
   </div>
 </template>
 <script lang="ts">
@@ -133,7 +107,6 @@ import EyeIcon from "@/components/icons/eye.vue";
 import { namespace } from "vuex-class";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 
-
 const domain = namespace("domain");
 
 @Options({
@@ -150,9 +123,8 @@ const domain = namespace("domain");
     TableOptions,
     DeleteIcon,
     EyeIcon,
-    CornieTable
+    CornieTable,
   },
-  
 })
 export default class DomainExistingState extends Vue {
   showColumnFilter = false;
@@ -196,40 +168,37 @@ export default class DomainExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
-
 
   get items() {
     const domains = this.domains.map((domain) => {
-       (domain as any).createdAt = new Date(
-         (domain as any).createdAt 
-       ).toLocaleDateString("en-US");
-        (domain as any).action = domain.id;
-        return {
+      (domain as any).createdAt = new Date(
+        (domain as any).createdAt
+      ).toLocaleDateString("en-US");
+      (domain as any).action = domain.id;
+      return {
         ...domain,
-        };
+      };
     });
-    
+
     if (!this.query) return domains;
     return search.searchObjectArray(domains, this.query);
   }
- 
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this domain",
-      title: "Delete Domain Name"
+      title: "Delete Domain Name",
     });
     if (!confirmed) return;
 
-    if (await this.deleteDomain(id)) window.notify({ msg: "Domain deleted", status: "error" });
+    if (await this.deleteDomain(id))
+      window.notify({ msg: "Domain deleted", status: "error" });
     else window.notify({ msg: "Domain not deleted", status: "error" });
   }
- 
-
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

@@ -1,11 +1,7 @@
 <template>
   <div class="h-screen flex justify-center">
     <empty-state v-if="empty" />
-    <current-state
-    
-@currency-added="currencyadded"
-    v-else
-    />
+    <current-state @currency-added="currencyadded" v-else />
   </div>
 </template>
 
@@ -28,13 +24,13 @@ import { cornieClient } from "@/plugins/http";
 })
 export default class CurrencyConversion extends Vue {
   showNewExchangeRateModal = false;
-show=false;
- addAccount = false;
+  show = false;
+  addAccount = false;
   get empty() {
     return this.currencys.length < 1;
   }
 
-   @currency.State
+  @currency.State
   currencys!: ICurrency[];
 
   @currency.Action
@@ -45,15 +41,15 @@ show=false;
 
   currencyadded() {
     this.show = false;
- this.currencys;
-  this.fetchCurrencys();
+    this.currencys;
+    this.fetchCurrencys();
   }
-mounted() {
+  mounted() {
     this.fetchCurrencys();
   }
 
-created() {
-   this.fetchCurrencys();
+  created() {
+    this.fetchCurrencys();
     if (this.currencys.length < 1) this.fetchCurrencys();
   }
 

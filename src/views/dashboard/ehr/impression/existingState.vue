@@ -1,84 +1,91 @@
 <template>
   <div class="w-full pb-80">
-       <div>
-            <span class="flex justify-end w-full mb-8">
-              <button
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  py-2
-                  pr-12
-                  pl-12
-                  px-3
-                  mb-5
-                  font-semibold
-                  focus:outline-none
-                  hover:opacity-90
-                "
-                @click="showImpression('false')"
-              >
-                New Impression
-              </button>
-              
-            </span>
-            <cornie-table :columns="rawHeaders" v-model="items">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <newview-icon  class="text-yellow-500 fill-current"/>
-                    <span class="ml-3 text-xs">View</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showImpression(item.id)">
-                      <edit-icon class="text-purple-600 fill-current" />
-                      <span class="ml-3 text-xs">Edit</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
-                      <update-icon class="text-purple-800 fill-current" />
-                      <span class="ml-3 text-xs">Update Status</span>
-                  </div>
-                    <div class="flex items-center hover:bg-gray-100 p-3  cursor-pointer" @click="showStatus(item.id)">
-                      <update-icon class="text-purple-800 fill-current" />
-                      <span class="ml-3 text-xs">Update Prognosis</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Occurrence</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Condition</span>
-                  </div>
-                   <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
+    <div>
+      <span class="flex justify-end w-full mb-8">
+        <button
+          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+          @click="showImpression('false')"
+        >
+          New Impression
+        </button>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="items">
+        <template #actions="{ item }">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showImpression(item.id)"
+          >
+            <edit-icon class="text-purple-600 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showStatus(item.id)"
+          >
+            <update-icon class="text-purple-800 fill-current" />
+            <span class="ml-3 text-xs">Update Status</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showStatus(item.id)"
+          >
+            <update-icon class="text-purple-800 fill-current" />
+            <span class="ml-3 text-xs">Update Prognosis</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="
+              $router.push('/dashboard/provider/experience/add-appointment')
+            "
+          >
+            <plus-icon class="text-green-400 fill-current" />
+            <span class="ml-3 text-xs">Add Occurrence</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="
+              $router.push('/dashboard/provider/experience/add-appointment')
+            "
+          >
+            <plus-icon class="text-green-400 fill-current" />
+            <span class="ml-3 text-xs">Add Condition</span>
+          </div>
+          <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
                       <cancel-icon />
                       <span class="ml-3 text-xs"
                       >Cancel</span>
                     </div> -->
-                </template>
-            </cornie-table>
-        </div>
-    
-      <impression-modal 
-       v-if="impressionId == 'false'"
-        :columns="practitioner"
-           @impression-added="impressionAdded"
-          @update:preferred="showImpression"
-          v-model="showImpressionModal"/>
+        </template>
+      </cornie-table>
+    </div>
 
-     <impression-modal
-     v-else 
-     :id="impressionId" 
-        :columns="practitioner"
-          @update:preferred="showImpression"
-          v-model="showImpressionModal"/>
-     <status-modal
-            :id="impressionId" 
-           :updatedBy="updatedBy" 
-        :currentStatus="currentStatus" 
-        :updateDate="update"
-          @update:preferred="showStatus"
-          v-model="showStatusModal"/>
-        
+    <impression-modal
+      v-if="impressionId == 'false'"
+      :columns="practitioner"
+      @impression-added="impressionAdded"
+      @update:preferred="showImpression"
+      v-model="showImpressionModal"
+    />
+
+    <impression-modal
+      v-else
+      :id="impressionId"
+      :columns="practitioner"
+      @update:preferred="showImpression"
+      v-model="showImpressionModal"
+    />
+    <status-modal
+      :id="impressionId"
+      :updatedBy="updatedBy"
+      :currentStatus="currentStatus"
+      :updateDate="update"
+      @update:preferred="showStatus"
+      v-model="showStatusModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -115,7 +122,7 @@ import MessageIcon from "@/components/icons/message.vue";
 import ImpressionModal from "./impressionDialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
- import StatusModal from "./status.vue";
+import StatusModal from "./status.vue";
 
 const impression = namespace("impression");
 
@@ -147,9 +154,8 @@ const impression = namespace("impression");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
   },
-  
 })
 export default class ImpressionExistingState extends Vue {
   showColumnFilter = false;
@@ -158,13 +164,13 @@ export default class ImpressionExistingState extends Vue {
   query = "";
   selected = 1;
   showNotes = false;
-  showImpressionModal= false;
-  showStatusModal=false;
-  impressionId="";
-  tasknotes=[];
-updatedBy= "";
-currentStatus="";
-update ="";
+  showImpressionModal = false;
+  showStatusModal = false;
+  impressionId = "";
+  tasknotes = [];
+  updatedBy = "";
+  currentStatus = "";
+  update = "";
 
   // @Prop({ type: Array, default: [] })
   // impressions!: IImpression[];
@@ -178,7 +184,6 @@ update ="";
   @impression.Action
   fetchImpressions!: (patientId: string) => Promise<void>;
 
-
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
@@ -187,18 +192,18 @@ update ="";
       key: "id",
       show: true,
     },
-     { title: "Recorded", key: "createdAt", show: true },
+    { title: "Recorded", key: "createdAt", show: true },
     {
       title: "problem",
       key: "problem",
       show: true,
     },
-     {
+    {
       title: "investigation type",
       key: "investigation",
       show: true,
     },
-     {
+    {
       title: "finding code",
       key: "code",
       show: false,
@@ -228,7 +233,7 @@ update ="";
       key: "onsetPeriod",
       show: false,
     },
-     {
+    {
       title: "description",
       key: "description",
       show: false,
@@ -273,7 +278,6 @@ update ="";
     //   kwy: "outputValue",
     //   show: false,
     // },
-
   ];
 
   get headers() {
@@ -285,92 +289,90 @@ update ="";
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-
   get items() {
     const impressions = this.impressions?.map((impression) => {
-         (impression as any).createdAt= new Date(
-         (impression as any).createdAt
-       ).toLocaleDateString("en-US");
-       (impression as any).updatedAt= new Date(
-         (impression as any).updatedAt
-       ).toLocaleDateString("en-US");
-          this.updatedBy = impression.effective.assessor;
+      (impression as any).createdAt = new Date(
+        (impression as any).createdAt
+      ).toLocaleDateString("en-US");
+      (impression as any).updatedAt = new Date(
+        (impression as any).updatedAt
+      ).toLocaleDateString("en-US");
+      this.updatedBy = impression.effective.assessor;
       this.currentStatus = impression.status;
-        this.update = impression.updatedAt;
-        return {
+      this.update = impression.updatedAt;
+      return {
         ...impression,
-         action: impression.id,
-         keydisplay: "XXXXXXX",
-         problem: impression.effective.problem,
-         investigation: impression.investigation.item,
-         prognosis: impression.findings.prognosis,
+        action: impression.id,
+        keydisplay: "XXXXXXX",
+        problem: impression.effective.problem,
+        investigation: impression.investigation.item,
+        prognosis: impression.findings.prognosis,
         assessor: impression.effective.assessor,
-        };
+      };
     });
 
     if (!this.query) return impressions;
     return search.searchObjectArray(impressions, this.query);
   }
 
-  async showStatus(value:string){
+  async showStatus(value: string) {
     this.showStatusModal = true;
     this.impressionId = value;
   }
 
-  async showImpression(value:string){
-      this.showImpressionModal = true;
-      //this.stopEvent = true;
-      this.impressionId = value;
+  async showImpression(value: string) {
+    this.showImpressionModal = true;
+    //this.stopEvent = true;
+    this.impressionId = value;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
-
 
   impressionAdded() {
- this.impressions;
-  this.fetchImpressions(this.activePatientId);
+    this.impressions;
+    this.fetchImpressions(this.activePatientId);
   }
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this impression",
-      title: "Delete impression"
+      title: "Delete impression",
     });
     if (!confirmed) return;
 
-    if (await this.deleteImpression(id)) window.notify({ msg: "impression cancelled", status: "success" });
+    if (await this.deleteImpression(id))
+      window.notify({ msg: "impression cancelled", status: "success" });
     else window.notify({ msg: "Impression not cancelled", status: "error" });
   }
- 
-      get sortImpressions (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-   
-     created() {
-          this.sortImpressions;
-          this.fetchImpressions(this.activePatientId);
-    }
 
+  get sortImpressions() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+
+  created() {
+    this.sortImpressions;
+    this.fetchImpressions(this.activePatientId);
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 .status-accepted {
-      background: #F3FCF8;
-      color: #35BA83;    
-  }
-.status-inactive {
-      background: #FFF1F0;
-      color: #FE4D3C;
+  background: #f3fcf8;
+  color: #35ba83;
 }
-.status-warning{
-  background: #FEFAF0;
-  color: #F7B538;
+.status-inactive {
+  background: #fff1f0;
+  color: #fe4d3c;
+}
+.status-warning {
+  background: #fefaf0;
+  color: #f7b538;
 }
 </style>

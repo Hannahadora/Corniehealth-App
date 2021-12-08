@@ -3,20 +3,7 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            pr-12
-            pl-12
-            px-3
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
           @click="showAllergy('false')"
         >
           New Risk Assessment
@@ -253,7 +240,7 @@ export default class AllergyExistingState extends Vue {
       key: "id",
       show: true,
     },
-    
+
     {
       title: "Code",
       key: "code",
@@ -324,7 +311,6 @@ export default class AllergyExistingState extends Vue {
       kwy: "lastOccurence",
       show: false,
     },
-    
   ];
 
   get headers() {
@@ -369,9 +355,9 @@ export default class AllergyExistingState extends Vue {
     //this.stopEvent = true;
     this.allergyId = value;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
 
   allergyAdded() {

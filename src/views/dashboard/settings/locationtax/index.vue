@@ -1,30 +1,16 @@
 <template>
-  <div class="flex justify-center  bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
+  <div
+    class="flex justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
+  >
     <div class="w-full">
-    <span
-        class="
-          flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2
-        "
+      <span
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-       Location & Tax
+        Location & Tax
       </span>
       <span class="w-full h-screen">
-          <tasks-empty-state
-                v-if="empty"
-          />
-          <tasks-existing-state
-        
-          v-else
-
-          />
+        <tasks-empty-state v-if="empty" />
+        <tasks-existing-state v-else />
       </span>
     </div>
   </div>
@@ -53,15 +39,14 @@ export default class TasksIndex extends Vue {
     return this.tasks.length < 1;
   }
 
- @task.State
+  @task.State
   tasks!: ITask[];
 
   @task.Action
   fetchTasks!: () => Promise<void>;
 
-
-created() {
-  this.fetchTasks()
+  created() {
+    this.fetchTasks();
     if (this.tasks.length < 1) this.fetchTasks();
   }
 }

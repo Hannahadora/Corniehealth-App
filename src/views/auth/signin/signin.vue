@@ -6,35 +6,14 @@
         <p class="text-black mb-10">Login to your corniehealth account</p>
         <cornie-btn
           @click="login = true"
-          class="
-            font-semibold
-            rounded-full
-            bg-danger
-            mt-3
-            w-full
-            text-white
-            p-2
-          "
+          class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
           type="button"
         >
           Continue with Email
         </cornie-btn>
         <span class="w-full text-center block my-1">or</span>
         <cornie-btn
-          class="
-            font-semibold
-            rounded-full
-            mb-5
-            py-1
-            px-3
-            border-primary border-2
-            hover:bg-primary
-            hover:text-white
-            mt-2
-            w-full
-            text-primary
-            p-2
-          "
+          class="font-semibold rounded-full mb-5 py-1 px-3 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2"
         >
           <span class="inline-flex justify-center pb-1"
             ><quantum-icon class="mr-2 pt-1" /></span
@@ -95,17 +74,7 @@
         </span>
         <cornie-btn
           :loading="loading"
-          class="
-            font-semibold
-            rounded-full
-            bg-danger
-            mt-3
-            mb-5
-            w-full
-            text-white
-            py-1
-            px-3
-          "
+          class="font-semibold rounded-full bg-danger mt-3 mb-5 w-full text-white py-1 px-3"
           type="submit"
         >
           Login

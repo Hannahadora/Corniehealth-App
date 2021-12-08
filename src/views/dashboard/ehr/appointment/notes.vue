@@ -1,20 +1,17 @@
 <template>
-     <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-
       <cornie-card-title>
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
         </cornie-icon-btn>
-           <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
+        <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
       </cornie-card-title>
 
-        <cornie-card-text class="flex-grow scrollable">
-        <p class="text-sm mt-2">
-         Some subtext if necessary
-        </p>
-        <div class="my-2  w-full  flex">
-            <Textarea
+      <cornie-card-text class="flex-grow scrollable">
+        <p class="text-sm mt-2">Some subtext if necessary</p>
+        <div class="my-2 w-full flex">
+          <Textarea
             label="Notes"
             v-model="notes"
             placeholder="--Enter--"
@@ -23,45 +20,33 @@
           />
           <span></span>
         </div>
-        <span class="text-danger cursor-pointer"  @click="apply">Add</span>
+        <span class="text-danger cursor-pointer" @click="apply">Add</span>
         <div
-            class="w-full flex space-x-4 mb-3"
-            v-for="(item, index) in appointmentNotes"
-            :key="index"
-          >
-            <div>
-              <note-icon class="mt-3" />
-            </div>
-            <div>
-              <span class="text-gray-400 text-xs">
-                {{ new Date(item.createdAt).toDateString() }}
-              </span>
-              <p class="text-gray-400 text-xs">{{ item.text }}</p>
-            </div>
+          class="w-full flex space-x-4 mb-3"
+          v-for="(item, index) in appointmentNotes"
+          :key="index"
+        >
+          <div>
+            <note-icon class="mt-3" />
           </div>
-        </cornie-card-text>
-          <cornie-card>
+          <div>
+            <span class="text-gray-400 text-xs">
+              {{ new Date(item.createdAt).toDateString() }}
+            </span>
+            <p class="text-gray-400 text-xs">{{ item.text }}</p>
+          </div>
+        </div>
+      </cornie-card-text>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
-        <div class="flex justify-end w-full mt-auto">
-          <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
-            @click="show = false"
-          >
-            Close
-          </button>
-         <!-- <cornie-btn
+          <div class="flex justify-end w-full mt-auto">
+            <button
+              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              @click="show = false"
+            >
+              Close
+            </button>
+            <!-- <cornie-btn
             @click="apply"
             :loading="loading"
             type="submit"
@@ -79,15 +64,11 @@
           >
             Save
           </cornie-btn>-->
-        </div>
+          </div>
         </cornie-card-text>
-          </cornie-card>
-     
-    
+      </cornie-card>
     </cornie-card>
   </cornie-dialog>
-
- 
 </template>
 <script>
 import Modal from "@/components/practitionermodal.vue";
@@ -104,7 +85,6 @@ import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import Textarea from "@/components/textarea.vue";
 import { cornieClient } from "@/plugins/http";
-
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -154,16 +134,15 @@ export default {
       required: true,
       default: () => [],
     },
-    
   },
   data() {
     return {
       columnsProxy: [],
       practitioners: [],
       loading: false,
-      notes:'',
+      notes: "",
       availableFilter: false,
-      profileFilter:false,
+      profileFilter: false,
     };
   },
   watch: {
@@ -186,33 +165,36 @@ export default {
     },
   },
   methods: {
-   async apply() {
-     this.loading = true;
-        try {
-        const response = await cornieClient().post("/api/v1/appointment/notes", {text:this.notes, appointmentId:this.appointmentId});
+    async apply() {
+      this.loading = true;
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/appointment/notes",
+          { text: this.notes, appointmentId: this.appointmentId }
+        );
         if (response.success) {
-            window.notify({ msg: "Notes created", status: "success" });
-            this.loading = false;
-           this.show = false;
-        }
-        } catch (error) {
+          window.notify({ msg: "Notes created", status: "success" });
           this.loading = false;
-         this.show = false;
-          console.log(error);
-        window.notify({ msg: "Notes not created", status: "error" });
+          this.show = false;
         }
+      } catch (error) {
+        this.loading = false;
+        this.show = false;
+        console.log(error);
+        window.notify({ msg: "Notes not created", status: "error" });
+      }
     },
-   
+
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    showAvailable(){
+    showAvailable() {
       this.availableFilter = true;
     },
-    showProfile(){
-        this.profileFilter = true;
-    }
+    showProfile() {
+      this.profileFilter = true;
+    },
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);

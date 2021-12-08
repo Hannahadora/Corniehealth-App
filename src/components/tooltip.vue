@@ -33,17 +33,17 @@ export default {
   opacity: 1;
 }
 .tooltip {
-    color: #ffffff;
-    text-align: center;
-    padding: 9px;
-    border-radius: 4px;
-    width: 150px;
-    bottom: 100% ;
-    opacity: 0 ;
-    transition: opacity 1s;
-    position: absolute;
-    z-index: 1;
-    background-color: #080056 ;
+  color: #ffffff;
+  text-align: center;
+  padding: 9px;
+  border-radius: 4px;
+  width: 150px;
+  bottom: 100%;
+  opacity: 0;
+  transition: opacity 1s;
+  position: absolute;
+  z-index: 1;
+  background-color: #080056;
 }
 /*.tooltip { 
   color: #ffffff;

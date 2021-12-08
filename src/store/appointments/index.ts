@@ -3,7 +3,7 @@ import { StoreOptions } from "vuex";
 import { getappointmentTypes } from "./helper";
 
 interface AppointmentTypes {
-  appointments: IAppointmentTypes[],
+  appointments: IAppointmentTypes[];
 }
 
 export default {
@@ -13,9 +13,8 @@ export default {
   },
 
   mutations: {
-
     setPatientPlans(state, items) {
-      if (items && items.length > 0) state.appointments = [ ...items ];
+      if (items && items.length > 0) state.appointments = [...items];
     },
   },
 
@@ -24,6 +23,5 @@ export default {
       const response = await getappointmentTypes();
       ctx.commit("setPatientPlans", response);
     },
-
   },
-} as StoreOptions<AppointmentTypes>
+} as StoreOptions<AppointmentTypes>;

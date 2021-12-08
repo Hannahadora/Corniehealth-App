@@ -3,7 +3,9 @@ import Ihistory from "@/types/Ihistory";
 
 export async function fetchHistorys(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/family-history/findAllByPatient/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/family-history/findAllByPatient/${patientId}`
+    );
     if (response.success) {
       return response.data;
     }
@@ -15,7 +17,9 @@ export async function fetchHistorys(patientId: string) {
 
 export async function deleteHistory(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/family-history/${id}`);
+    const response = await cornieClient().delete(
+      `/api/v1/family-history/${id}`
+    );
     if (response.success) {
       return true;
     }

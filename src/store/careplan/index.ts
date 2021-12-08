@@ -3,7 +3,7 @@ import { StoreOptions } from "vuex";
 import { createCarePlan, getCarePlans, updateCarePlan } from "./helper";
 
 interface CareplanStore {
-  patientCarePlans: ICarePlan[],
+  patientCarePlans: ICarePlan[];
 }
 
 export default {
@@ -13,9 +13,8 @@ export default {
   },
 
   mutations: {
-
     setPatientPlans(state, items) {
-      if (items && items.length > 0) state.patientCarePlans = [ ...items ];
+      if (items && items.length > 0) state.patientCarePlans = [...items];
     },
 
     addNewItem(state, data) {
@@ -36,7 +35,7 @@ export default {
     //   if (index >= 0) state.visits[index].status = payload.status;
 
     //   const inPatientsVisits = state.patientVisits.findIndex((i: any) => i.id === payload.id);
-      
+
     //   if (inPatientsVisits >= 0) state.patientVisits[inPatientsVisits].status = payload.status;
     // },
   },
@@ -48,17 +47,17 @@ export default {
     },
 
     async createCarePlan(ctx, body) {
-      const res = await createCarePlan(body)
+      const res = await createCarePlan(body);
       if (!res) return false;
-      ctx.commit("addNewItem", res)
+      ctx.commit("addNewItem", res);
       return res as boolean;
     },
 
     async updateCarePlan(ctx, body: any) {
-      const res = await updateCarePlan(body)
+      const res = await updateCarePlan(body);
       if (!res) return false;
-    //   ctx.commit("updateHospitalisation", res)
+      //   ctx.commit("updateHospitalisation", res)
       return res as boolean;
-    }
+    },
   },
-} as StoreOptions<CareplanStore>
+} as StoreOptions<CareplanStore>;

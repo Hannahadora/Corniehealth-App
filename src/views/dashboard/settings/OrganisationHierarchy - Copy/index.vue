@@ -2,19 +2,11 @@
   <main class="p-6">
     <div>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
         Organization Hierarchy
       </span>
-      <tabs :items="tabLinks" v-model="currentTab"> 
+      <tabs :items="tabLinks" v-model="currentTab">
         <functions />
         <job-level />
         <designations />
@@ -36,7 +28,7 @@ import JobLevel from "./joblevel/JobLevel.vue";
     Tabs,
     Functions,
     Designations,
-    JobLevel
+    JobLevel,
   },
 })
 export default class OrganisationHierarchy extends Vue {
@@ -45,5 +37,4 @@ export default class OrganisationHierarchy extends Vue {
 }
 </script>
 
-<style>
-</style>
+<style></style>

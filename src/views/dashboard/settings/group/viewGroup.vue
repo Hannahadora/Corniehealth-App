@@ -1,105 +1,148 @@
 <template>
-<div class="bg-white rounded p-5 mt-5">
-<span class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto">
-   View a Group
-</span>
-  <div class="w-full h-screen">
-    <form class="mt-5 w-full" @submit.prevent="submit">
+  <div class="bg-white rounded p-5 mt-5">
+    <span
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+    >
+      View a Group
+    </span>
+    <div class="w-full h-screen">
+      <form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-37">
-            <div class="w-full grid grid-cols-3 gap-5 p-5">
-
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">State</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ state }}</div>
-                </span>
-              <!--  <span>
+          <div class="w-full grid grid-cols-3 gap-5 p-5">
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >State</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ state }}
+              </div>
+            </span>
+            <!--  <span>
                     <label class="block uppercase mb-1 text-xs font-bold">Status</label>
                     <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ status }}</div>
                 </span>-->
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Type</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ type }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Name</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ name }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Managing Entity</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ managingEntity }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Characteristics Code</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ characteristicsCode }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Value Codeable Concept</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ valueCodeableConcept }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Value Boolean</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ valueBoolean }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Value Quantity</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ valueQuantity }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Value Range</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ valueRange }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Value Reference</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ valueRef }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Exclude</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ exclude }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Period</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ period }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Member Period</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ memberPeriod }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Member Status</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ memberStatus }}</div>
-                </span>
-                <span>
-                    <label class="block uppercase mb-1 text-xs font-bold">Member Entity</label>
-                    <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">{{ memberEntity }}</div>
-                </span>
-                
-            </div>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold">Type</label>
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ type }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold">Name</label>
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ name }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Managing Entity</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ managingEntity }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Characteristics Code</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ characteristicsCode }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Value Codeable Concept</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ valueCodeableConcept }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Value Boolean</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ valueBoolean }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Value Quantity</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ valueQuantity }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Value Range</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ valueRange }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Value Reference</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ valueRef }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Exclude</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ exclude }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Period</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ period }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Member Period</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ memberPeriod }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Member Status</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ memberStatus }}
+              </div>
+            </span>
+            <span>
+              <label class="block uppercase mb-1 text-xs font-bold"
+                >Member Entity</label
+              >
+              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+                {{ memberEntity }}
+              </div>
+            </span>
+          </div>
         </div>
         <span class="flex justify-end w-full">
-        <cornie-btn
-        @click="$router.push('/dashboard/provider/settings/group')"
-        type="button"
-        class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5   
-            px-4
-            py-2
-            pr-10
-            pl-10
-            focus:outline-none
-            hover:opacity-90
-            "
-        >
+          <cornie-btn
+            @click="$router.push('/dashboard/provider/settings/group')"
+            type="button"
+            class="bg-danger rounded-full text-white mt-5 px-4 py-2 pr-10 pl-10 focus:outline-none hover:opacity-90"
+          >
             Close
-        </cornie-btn>
-
-        
+          </cornie-btn>
         </span>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -125,7 +168,6 @@ import Period from "@/types/IPeriod";
 const group = namespace("group");
 const dropdown = namespace("dropdown");
 
-
 @Options({
   components: {
     CornieInput,
@@ -149,13 +191,10 @@ export default class AddGroup extends Vue {
   @Prop({ type: Boolean, default: "" })
   expand!: boolean;
 
-  
   @group.Action
   getGroupById!: (id: string) => IGroup;
 
   loading = false;
-
-
 
   state = "";
   status = false;
@@ -177,11 +216,11 @@ export default class AddGroup extends Vue {
   memberEntity = "";
 
   aoption = "Active";
-options = [
-  {text: 'Active' , value: true},
-  {text: 'Inactive' , value: false},
-];
-items = ['Active', 'Inactive'];
+  options = [
+    { text: "Active", value: true },
+    { text: "Inactive", value: false },
+  ];
+  items = ["Active", "Inactive"];
 
   required = string().required();
 
@@ -189,11 +228,11 @@ items = ['Active', 'Inactive'];
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-@Watch("id")
+  @Watch("id")
   idChanged() {
     this.setGroup();
   }
- async setGroup() {
+  async setGroup() {
     const group = await this.getGroupById(this.id);
     if (!group) return;
     this.state = group.state;
@@ -214,50 +253,47 @@ items = ['Active', 'Inactive'];
     this.memberPeriod = group.memberPeriod;
     this.memberStatus = group.memberStatus;
     this.memberEntity = group.memberEntity;
-
- }
-   get payload() {
+  }
+  get payload() {
     return {
-        state:  this.state,
-        status:  this.status,
-        type: this.type,
-        name:  this.name ,
-        code:  this.code ,
-        quantity:  this.quantity ,
-        managingEntity:  this.managingEntity ,
-        characteristicsCode:  this.characteristicsCode ,
-        valueCodeableConcept:  this.valueCodeableConcept ,
-        valueBoolean:  this.valueBoolean ,
-        valueQuantity:  this.valueQuantity ,
-        valueRange:  this.valueRange ,
-        valueRef:  this.valueRef ,
-        exclude:  this.exclude ,
-        period:  this.period ,
-        memberPeriod:  this.memberPeriod ,
-        memberStatus:  this.memberStatus ,
-        memberEntity:  this.memberEntity ,
-    }
-   }
-
-    async setValue(value:string){
-        if(value == 'Active'){
-          this.status = true
-        }else{
-          this.status = false
-        }
-    }
-   
-  
-  async created() {
-    this.setGroup();
-     const data = await this.getDropdowns("groups");
-    this.dropdowns = data;
+      state: this.state,
+      status: this.status,
+      type: this.type,
+      name: this.name,
+      code: this.code,
+      quantity: this.quantity,
+      managingEntity: this.managingEntity,
+      characteristicsCode: this.characteristicsCode,
+      valueCodeableConcept: this.valueCodeableConcept,
+      valueBoolean: this.valueBoolean,
+      valueQuantity: this.valueQuantity,
+      valueRange: this.valueRange,
+      valueRef: this.valueRef,
+      exclude: this.exclude,
+      period: this.period,
+      memberPeriod: this.memberPeriod,
+      memberStatus: this.memberStatus,
+      memberEntity: this.memberEntity,
+    };
   }
 
+  async setValue(value: string) {
+    if (value == "Active") {
+      this.status = true;
+    } else {
+      this.status = false;
+    }
+  }
+
+  async created() {
+    this.setGroup();
+    const data = await this.getDropdowns("groups");
+    this.dropdowns = data;
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

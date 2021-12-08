@@ -61,23 +61,7 @@
         <div class="my-8 flex justify-end">
           <span>
             <button
-              class="
-                border border-blue-800
-                mr-8
-                rounded-3xl
-                px-6
-                py-2
-                placeholder-gray-400
-                focus:outline-none
-                focus:shadow-outline-blue
-                focus:border-blue-300
-                transition
-                duration-150
-                ease-in-out
-                sm:text-sm
-                sm:leading-5
-                cursor-pointer
-              "
+              class="border border-blue-800 mr-8 rounded-3xl px-6 py-2 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
               @click="show = false"
             >
               Cancel
@@ -86,25 +70,7 @@
           <span>
             <button
               type="submit"
-              class="
-                px-6
-                py-2
-                text-white
-                appearance-none
-                border-none
-                bg-pink-600
-                rounded-3xl
-                placeholder-gray-400
-                focus:outline-none
-                focus:shadow-outline-blue
-                focus:border-blue-300
-                transition
-                duration-150
-                ease-in-out
-                sm:text-sm
-                sm:leading-5
-                cursor-pointer
-              "
+              class="px-6 py-2 text-white appearance-none border-none bg-pink-600 rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
             >
               Apply
             </button>

@@ -37,30 +37,15 @@
                 </span>
                 <input
                   v-else
-                 :placeholder="$attrs.placeholder"
+                  :placeholder="$attrs.placeholder"
                   disabled
                   :value="displayVal"
-                  class="
-                    p-1
-                    pl-2
-                    bg-transparent
-                    appearance-none
-                    outline-none
-                    w-full
-                    text-gray-800
-                  "
+                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
                   @change="handleChange"
                 />
 
                 <div
-                  class="
-                    text-gray-300
-                    py-1
-                    pr-1
-                    flex
-                    items-center
-                    border-gray-200
-                  "
+                  class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
                 >
                   <chevron-down-icon />
                 </div>
@@ -72,63 +57,28 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              w-full
-              lef-0
-              border border-gray-400
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            class="absolute shadow bg-white top-100 z-40 w-full lef-0 border border-gray-400 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <div
                 v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
                   <slot name="item" v-bind:item="item" />
                 </template>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    justify-between
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                    capitalize
-                  "
+                  class="flex w-full items-center p-2 justify-between pl-2 border-transparent border-l-2 relative capitalize"
                 >
-            
-                        <span class="flex flex-col">
-
-                               {{ item.display || item }}
-                        </span>
-                        <span class="flex flex-col">
-                           <span class="text-xs text-gray-500">{{lefttext}}</span> 
-                        </span>
-              
-              
-              
+                  <span class="flex flex-col">
+                    {{ item.display || item }}
+                  </span>
+                  <span class="flex flex-col">
+                    <span class="text-xs text-gray-500">{{ lefttext }}</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -176,7 +126,7 @@ export default class CornieSelect extends Vue {
   @Prop({ type: String })
   label!: string;
 
-@Prop({ type: String })
+  @Prop({ type: String })
   lefttext!: string;
 
   @Prop({ type: String, default: "" })

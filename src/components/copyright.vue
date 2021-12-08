@@ -4,7 +4,7 @@
       <template #text>
         <span>
           <input
-          contenteditable="true"
+            contenteditable="true"
             type="text"
             v-model="textSync"
             placeholder="--Enter--"

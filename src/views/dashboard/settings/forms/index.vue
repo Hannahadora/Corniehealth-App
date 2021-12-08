@@ -1,33 +1,21 @@
 <template>
-  <div class="flex justify-center  bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
+  <div
+    class="flex justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
+  >
     <div class="w-full">
-    <span
-        class="
-          flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2
-        "
+      <span
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-       Forms & Questionnaires
+        Forms & Questionnaires
       </span>
       <span class="w-full h-screen">
-          <!-- <forms-empty-state
+        <!-- <forms-empty-state
               
           /> -->
-          <!-- <practiceform-empty-state
+        <!-- <practiceform-empty-state
                 v-if="empty"
           /> -->
-          <practiceform-existing-state
-        
-        
-
-          />
+        <practiceform-existing-state />
       </span>
     </div>
   </div>
@@ -55,10 +43,10 @@ export default class PracticeformIndex extends Vue {
     return this.practiceforms.length < 1;
   }
 
- @practiceform.State
+  @practiceform.State
   practiceforms!: IPracticeform[];
 
- @practiceform.State
+  @practiceform.State
   practiceformsQuestionnaries!: IPracticeform[];
 
   @practiceform.Action
@@ -68,13 +56,15 @@ export default class PracticeformIndex extends Vue {
   fetchPracticeformsQuestionnaires!: () => Promise<void>;
 
   created() {
-  this.fetchPracticeforms();
-  this.fetchPracticeformsQuestionnaires();
-    if (this.practiceforms.length < 1 || this.practiceformsQuestionnaries.length < 1){
-      this.fetchPracticeforms(); 
-       this.fetchPracticeformsQuestionnaires();
-    } 
+    this.fetchPracticeforms();
+    this.fetchPracticeformsQuestionnaires();
+    if (
+      this.practiceforms.length < 1 ||
+      this.practiceformsQuestionnaries.length < 1
+    ) {
+      this.fetchPracticeforms();
+      this.fetchPracticeformsQuestionnaires();
+    }
   }
-
 }
 </script>

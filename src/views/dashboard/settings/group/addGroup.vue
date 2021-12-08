@@ -1,38 +1,30 @@
 <template>
   <div class="bg-white rounded p-5 mt-5">
     <span
-      class="
-        flex
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
       {{ allaction }} Group
     </span>
     <div class="w-full h-screen overflow-auto">
       <form class="mt-5 w-full" @submit.prevent="submit">
         <div class="border mb-44">
-          <accordion-component title="Basic info" v-model="opened" :opened="true">
+          <accordion-component
+            title="Basic info"
+            v-model="opened"
+            :opened="true"
+          >
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-5 p-5">
-                <cornie-input
-                  label="Identifier"
-                  placeholder="XXXX"
-                  disabled
-                />
+                <cornie-input label="Identifier" placeholder="XXXX" disabled />
                 <cornie-select
                   :rules="required"
                   :items="['state']"
                   v-model="state"
                   label="State"
                   placeholder="--Select--"
-                >                 
+                >
                 </cornie-select>
-               
+
                 <cornie-select
                   :onChange="setValue(options.text)"
                   :items="items"
@@ -42,7 +34,7 @@
                   placeholder="--Select--"
                 >
                 </cornie-select>
-                
+
                 <!-- <cornie-select
                   :rules="required"
                   :items="['type']"
@@ -51,7 +43,7 @@
                   placeholder="--Select--"
                 >
                 </cornie-select> -->
-                 <fhir-input
+                <fhir-input
                   reference="http://hl7.org/fhir/ValueSet/group-type"
                   class="w-auto"
                   :rules="required"
@@ -83,24 +75,18 @@
                 ></cornie-select> -->
                 <cornie-select
                   :rules="required"
-                  :items="['Organization', 'RelatedPerson', 'Practitioner', 'PractitionerRole']"
+                  :items="[
+                    'Organization',
+                    'RelatedPerson',
+                    'Practitioner',
+                    'PractitionerRole',
+                  ]"
                   v-model="managingEntity"
                   label="Managing Entity"
                   placeholder="--Select--"
                 ></cornie-select>
                 <span
-                  class="
-                    flex
-                    border-b-2
-                    w-full
-                    text-sm text-dark
-                    py-2
-                    mx-auto
-                    font-semibold
-                    col-span-full
-                    mb-2
-                    mt-4
-                  "
+                  class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4"
                 >
                   Charateristics
                 </span>
@@ -123,7 +109,7 @@
                   placeholder="--Select--"
                 >
                 </cornie-select> -->
-                   <cornie-select
+                <cornie-select
                   :rules="required"
                   :items="['True', 'False']"
                   v-model="valueBoolean"
@@ -143,8 +129,8 @@
                   placeholder="--Select--"
                 >
                 </cornie-select> -->
-                 <cornie-input
-                 :rules="required"
+                <cornie-input
+                  :rules="required"
                   label="Value Quantity"
                   placeholder="--Enter the quantity--"
                   v-model="valueQuantity"
@@ -166,7 +152,7 @@
                   placeholder="--Select--"
                 >
                 </cornie-select> -->
-                 <cornie-select
+                <cornie-select
                   :rules="required"
                   :items="['True', 'False']"
                   v-model="exclude"
@@ -190,8 +176,8 @@
           </accordion-component>
           <accordion-component title="Member" v-model="openedT">
             <template v-slot:default>
-            <div class="col-span-full mb-5">
-             <!-- <div>
+              <div class="col-span-full mb-5">
+                <!-- <div>
                 <div class="grid grid-cols-7 gap-2 col-span-full mb-4" v-for="(input, index) in groupmembers" :key="`-${index}`">
                   <div>
                     <p class="text-xs text-dark font-semibold">{{ input.name }}</p>
@@ -201,7 +187,7 @@
                   <c-delete @click="removeGroupMember(index, groupmembers)" class="cursor-pointer"/>
                 </div>
               </div>-->
-            </div>
+              </div>
               <div class="w-full grid grid-cols-3 gap-5 p-5">
                 <!-- <cornie-select
                   :rules="required"
@@ -211,9 +197,14 @@
                   placeholder="--Select--"
                 >             
                 </cornie-select> -->
-                   <cornie-select
+                <cornie-select
                   :rules="required"
-                  :items="['Organization', 'RelatedPerson', 'Practitioner', 'PractitionerRole']"
+                  :items="[
+                    'Organization',
+                    'RelatedPerson',
+                    'Practitioner',
+                    'PractitionerRole',
+                  ]"
                   v-model="managingEntity"
                   label="Managing Entity"
                   placeholder="--Select--"
@@ -252,20 +243,7 @@
           <button
             @click="$router.push('/dashboard/provider/settings/group')"
             type="button"
-            class="
-              outline-primary
-              rounded-full
-              text-black
-              mt-5
-              mr-3
-              py-2
-              pr-8
-              pl-8
-              px-3
-              focus:outline-none
-              hover:bg-primary
-              hover:text-white
-            "
+            class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white"
           >
             Cancel
           </button>
@@ -273,16 +251,7 @@
           <cornie-btn
             :loading="loading"
             type="submit"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              pr-10
-              pl-10
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
           >
             Save
           </cornie-btn>
@@ -316,7 +285,6 @@ import Period from "@/types/IPeriod";
 
 import FhirInput from "@/components/fhir-input.vue";
 
-
 const group = namespace("group");
 const dropdown = namespace("dropdown");
 
@@ -340,7 +308,6 @@ const dropdown = namespace("dropdown");
     PhoneInput,
     DatePicker,
     AccordionComponent,
-
 
     FhirInput,
   },
@@ -373,8 +340,8 @@ export default class AddGroup extends Vue {
   exclude = "";
   period = {} as Period;
   memberPeriod = "";
- // period: { start: "2011/12/15", end: "2017/12/19" };
- // memberPeriod: { start: "2011/12/15", end: "2017/12/19" };
+  // period: { start: "2011/12/15", end: "2017/12/19" };
+  // memberPeriod: { start: "2011/12/15", end: "2017/12/19" };
   memberStatus = "";
   memberEntity = "";
   aoption = "Active";
@@ -471,12 +438,14 @@ export default class AddGroup extends Vue {
     this.loading = false;
   }
   async createGroup() {
-     this.payload.memberPeriod = new Date(this.payload.memberPeriod).toISOString()
+    this.payload.memberPeriod = new Date(
+      this.payload.memberPeriod
+    ).toISOString();
     try {
       const response = await cornieClient().post("/api/v1/group", this.payload);
       if (response.success) {
         window.notify({ msg: "Group created", status: "success" });
-        this.$router.push('/dashboard/provider/settings/group')
+        this.$router.push("/dashboard/provider/settings/group");
       }
     } catch (error) {
       window.notify({ msg: "Group not created", status: "error" });
@@ -491,7 +460,7 @@ export default class AddGroup extends Vue {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Group updated", status: "success" });
-        this.$router.push('/dashboard/provider/settings/group')
+        this.$router.push("/dashboard/provider/settings/group");
       }
     } catch (error) {
       window.notify({ msg: "Group not updated", status: "error" });

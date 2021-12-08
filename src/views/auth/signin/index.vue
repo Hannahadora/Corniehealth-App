@@ -1,20 +1,23 @@
 <template>
   <auth>
     <template v-slot:text>
-      <div v-if="userCreated && showText" :userCreated="userCreated"  :user="user" :showText="showText">
+      <div
+        v-if="userCreated && showText"
+        :userCreated="userCreated"
+        :user="user"
+        :showText="showText"
+      >
         <h2 class="text-3xl font-bold mb-3 text-white">
           You’ve successfully created an account
         </h2>
-        <p class="text-white">
-         Login to your account to get started
-        </p>
+        <p class="text-white">Login to your account to get started</p>
       </div>
     </template>
     <template v-if="loggedIn">
       <two-factor v-if="twoFactor" />
       <recommendation v-else />
     </template>
-    <sign-in v-else @logged-in="loggedIn = true"/>
+    <sign-in v-else @logged-in="loggedIn = true" />
   </auth>
 </template>
 <script lang="ts">
@@ -42,15 +45,15 @@ const user = namespace("user");
 export default class BaseSignIn extends Vue {
   loggedIn = false;
 
-  @Prop({type: Boolean, default: "" })
+  @Prop({ type: Boolean, default: "" })
   showText!: boolean;
-  
+
   @PropSync("user", { required: false })
   userSync!: CreatedUser;
-   user = {} as CreatedUser;
+  user = {} as CreatedUser;
 
   userCreated = false;
-  
+
   @user.State
   cornieData!: any;
 
@@ -61,7 +64,6 @@ export default class BaseSignIn extends Vue {
   userChanged(user: CreatedUser) {
     if (user.id) this.userCreated = true;
   }
-
 
   get twoFactor() {
     return (

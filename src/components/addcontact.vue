@@ -34,24 +34,7 @@
                 <input
                   type="text"
                   id="fName"
-                  class="
-                    appearance-none
-                    w-full
-                    my-4
-                    px-3
-                    py-2
-                    border border-gray-300
-                    rounded-md
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:shadow-outline-blue
-                    focus:border-blue-300
-                    transition
-                    duration-150
-                    ease-in-out
-                    sm:text-sm
-                    sm:leading-5
-                  "
+                  class="appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   placeholder="First Name"
                   v-model="fName"
                 />
@@ -66,24 +49,7 @@
                 <input
                   type="text"
                   id="lName"
-                  class="
-                    appearance-none
-                    w-full
-                    my-4
-                    px-3
-                    py-2
-                    border border-gray-300
-                    rounded-md
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:shadow-outline-blue
-                    focus:border-blue-300
-                    transition
-                    duration-150
-                    ease-in-out
-                    sm:text-sm
-                    sm:leading-5
-                  "
+                  class="appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   placeholder="Last Name"
                   v-model="lName"
                 />
@@ -100,24 +66,7 @@
                 <input
                   type="text"
                   id="fName"
-                  class="
-                    appearance-none
-                    w-full
-                    my-4
-                    px-3
-                    py-2
-                    border border-gray-300
-                    rounded-md
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:shadow-outline-blue
-                    focus:border-blue-300
-                    transition
-                    duration-150
-                    ease-in-out
-                    sm:text-sm
-                    sm:leading-5
-                  "
+                  class="appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   placeholder="First Name"
                   v-model="fName"
                 />
@@ -130,22 +79,7 @@
                 </label>
                 <br />
                 <select
-                  class="
-                    border border-gray-300
-                    my-4
-                    px-3
-                    py-2
-                    rounded-l-md
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:shadow-outline-blue
-                    focus:border-blue-300
-                    transition
-                    duration-150
-                    ease-in-out
-                    sm:text-sm
-                    sm:leading-5
-                  "
+                  class="border border-gray-300 my-4 px-3 py-2 rounded-l-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -164,24 +98,7 @@
                 <input
                   type="text"
                   id="fName"
-                  class="
-                    appearance-none
-                    w-full
-                    my-4
-                    px-3
-                    py-2
-                    border border-gray-300
-                    rounded-md
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:shadow-outline-blue
-                    focus:border-blue-300
-                    transition
-                    duration-150
-                    ease-in-out
-                    sm:text-sm
-                    sm:leading-5
-                  "
+                  class="appearance-none w-full my-4 px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   placeholder="First Name"
                   v-model="fName"
                 />

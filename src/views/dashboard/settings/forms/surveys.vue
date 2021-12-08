@@ -4,17 +4,7 @@
       contenteditable="false"
       v-model="name"
       placholder="Questionnaires"
-      class="
-        mb-12
-        flex
-        float-left
-        border-0 border-b-2
-        w-full
-        font-bold
-        text-lg text-primary
-        py-2
-        mx-auto
-      "
+      class="mb-12 flex float-left border-0 border-b-2 w-full font-bold text-lg text-primary py-2 mx-auto"
       type="text"
       @input="display($event)"
     />
@@ -103,8 +93,13 @@
                   :required="true"
                 />
               </div>
-              <cornie-input disabled label="Approval Date"  placeholder="Autofilled" class="w-full mb-4" />
-            
+              <cornie-input
+                disabled
+                label="Approval Date"
+                placeholder="Autofilled"
+                class="w-full mb-4"
+              />
+
               <div class="mb-5">
                 <date-range-picker
                   v-model="effectivePeriod"
@@ -228,20 +223,12 @@
                           v-model="questions"
                           item-key="id"
                           group="people"
-                          class="
-                            my-2
-                            pb-20
-                            border-0
-                            w-full
-                            flex-col
-                            rounded-md
-                            flex
-                          "
+                          class="my-2 pb-20 border-0 w-full flex-col rounded-md flex"
                         >
                           <template #item="{ element, index }">
                             <accordion-component
                               class="h-11/12 pb-10"
-                                v-model="questions[index].name"
+                              v-model="questions[index].name"
                               :element="element"
                               :index="index"
                               @anotherdisplay="adddisplay"
@@ -256,12 +243,7 @@
                                 <div class="flex space-x-9 mt-5 w-full">
                                   <div class="w-full">
                                     <div
-                                      class="
-                                        w-full
-                                        grid grid-cols-3
-                                        col-span-full
-                                        mt-3
-                                      "
+                                      class="w-full grid grid-cols-3 col-span-full mt-3"
                                     >
                                       <cornie-input
                                         label="Prefix"
@@ -300,99 +282,144 @@
                                         placeholder="--Select"
                                       />
                                     </div>
-                                    <div v-if="questions[index].answerType =='openChoice'">
-                                      <div class="mt-4" v-for="(input, id) in questionoptionsothers" :key="`${id}`">
+                                    <div
+                                      v-if="
+                                        questions[index].answerType ==
+                                        'openChoice'
+                                      "
+                                    >
+                                      <div
+                                        class="mt-4"
+                                        v-for="(
+                                          input, id
+                                        ) in questionoptionsothers"
+                                        :key="`${id}`"
+                                      >
                                         <span class="flex item-center mb-2">
-                                          <select-option/>
+                                          <select-option />
                                           <span class="text-sm w-full">
-                                            <span contenteditable="true"  class="text-sm mt-2 w-full" @keyup.delete="id = -1" @input="setInput($event,index,id)">Option
+                                            <span
+                                              contenteditable="true"
+                                              class="text-sm mt-2 w-full"
+                                              @keyup.delete="id = -1"
+                                              @input="
+                                                setInput($event, index, id)
+                                              "
+                                              >Option
                                             </span>
-                                            <div class="border-b-2 border-gray-200 w-full pt-3" v-if="id >= 0" >
-                                              <cancel-icon class="
-                                                  float-right
-                                                  -mt-3
-                                                  cursor-pointer
+                                            <div
+                                              class="border-b-2 border-gray-200 w-full pt-3"
+                                              v-if="id >= 0"
+                                            >
+                                              <cancel-icon
+                                                class="float-right -mt-3 cursor-pointer"
+                                                @click="
+                                                  questionoptionsothers.splice(
+                                                    id,
+                                                    1
+                                                  )
                                                 "
-                                                @click="questionoptionsothers.splice(id, 1)"
                                               />
                                             </div>
                                           </span>
                                         </span>
                                       </div>
                                       <span
-                                        class="
-                                          cursor-pointer
-                                          text-danger
-                                          mr-2
-                                          text-xs
-                                          float-left
+                                        class="cursor-pointer text-danger mr-2 text-xs float-left"
+                                        @click="
+                                          addOptionothers(
+                                            questionoptionsothers,
+                                            index
+                                          )
                                         "
-                                        @click="addOptionothers(questionoptionsothers,index)">Add new option</span>
+                                        >Add new option</span
+                                      >
                                     </div>
-                                    <div v-if="questions[index].answerType =='text'">
-                                      <div class="mt-4" v-for="(input, id) in questionoptionsothers" :key="`${id}`">
+                                    <div
+                                      v-if="
+                                        questions[index].answerType == 'text'
+                                      "
+                                    >
+                                      <div
+                                        class="mt-4"
+                                        v-for="(
+                                          input, id
+                                        ) in questionoptionsothers"
+                                        :key="`${id}`"
+                                      >
                                         <div class="mt-5">
                                           <input
                                             type="text"
-                                            class="
-                                              border-b-2 border-gray-100
-                                              w-full
-                                              mt-5
+                                            class="border-b-2 border-gray-100 w-full mt-5"
+                                            v-model="
+                                              questions[index].answerOptions
                                             "
-                                            v-model="questions[index].answerOptions"
                                             placeholder="Enter text..."
                                           />
                                           <input
                                             type="text"
-                                            class="
-                                              border-b-2 border-gray-100
-                                              w-full
-                                              mt-5
-                                            "
-                                           
+                                            class="border-b-2 border-gray-100 w-full mt-5"
                                           />
                                         </div>
                                       </div>
                                     </div>
-                                    <div v-if="questions[index].answerType == 'choice'">
-                                      <div class="mt-4" v-for="(input, id) in questionoptionsothers" :key="`${id}`">
-                                        <span
-                                          class="flex item-center mb-4"
-                                        >
-                                          <cornie-radio name="question"/>
+                                    <div
+                                      v-if="
+                                        questions[index].answerType == 'choice'
+                                      "
+                                    >
+                                      <div
+                                        class="mt-4"
+                                        v-for="(
+                                          input, id
+                                        ) in questionoptionsothers"
+                                        :key="`${id}`"
+                                      >
+                                        <span class="flex item-center mb-4">
+                                          <cornie-radio name="question" />
                                           <span class="text-sm w-full">
-                                              <span
-                                                contenteditable="true"
-                                                class="text-sm w-full"
-                                                 @input="setInput($event,index,id)">Option
-                                              </span>
-                                                <div class="border-b-2 border-gray-200 w-full pt-3" v-if="id >= 0">
-                                                  <cancel-icon
-                                                    class="
-                                                      float-right
-                                                      -mt-3
-                                                      cursor-pointer
-                                                    "
-                                                    @click="questionoptionsothers.splice(id, 1)"
-                                                  />
-                                                </div>
+                                            <span
+                                              contenteditable="true"
+                                              class="text-sm w-full"
+                                              @input="
+                                                setInput($event, index, id)
+                                              "
+                                              >Option
+                                            </span>
+                                            <div
+                                              class="border-b-2 border-gray-200 w-full pt-3"
+                                              v-if="id >= 0"
+                                            >
+                                              <cancel-icon
+                                                class="float-right -mt-3 cursor-pointer"
+                                                @click="
+                                                  questionoptionsothers.splice(
+                                                    id,
+                                                    1
+                                                  )
+                                                "
+                                              />
+                                            </div>
                                           </span>
                                         </span>
                                       </div>
-                                        <span class="cursor-pointer text-danger mr-2 text-xs float-left"
-                                          @click="addOptionothers(questionoptionsothers,index)">Add new option</span>
+                                      <span
+                                        class="cursor-pointer text-danger mr-2 text-xs float-left"
+                                        @click="
+                                          addOptionothers(
+                                            questionoptionsothers,
+                                            index
+                                          )
+                                        "
+                                        >Add new option</span
+                                      >
                                     </div>
                                     <div class="mt-32 flex space-x-4 w-full">
                                       <tooltip
                                         text="Answer is optional & not visible to the patients"
                                       >
                                         <div
-                                          class="
-                                            text-black text-sm
-                                            font-bold
-                                            flex
-                                            space-x-2
-                                          "
+                                          class="text-black text-sm font-bold flex space-x-2"
                                         >
                                           <span>Answer</span>
                                           <tooltip-icon
@@ -402,23 +429,16 @@
                                         </div>
                                       </tooltip>
                                       <div
-                                      v-if="!showanswer"
-                                       @click="showanswer = true"
-                                        class="
-                                          text-black
-                                          w-full
-                                          flex
-                                          space-x-2
-                                          text-sm
-                                          cursor-pointer
-                                        "
+                                        v-if="!showanswer"
+                                        @click="showanswer = true"
+                                        class="text-black w-full flex space-x-2 text-sm cursor-pointer"
                                       >
-                                        <question-icon/><span>Add</span>
+                                        <question-icon /><span>Add</span>
                                       </div>
                                     </div>
                                     <div v-if="showanswer" class="mt-2">
                                       <div class="grid grid-cols-3 gap-4">
-                                          <cornie-select
+                                        <cornie-select
                                           class="required w-full"
                                           v-model="questions[index].question"
                                           :items="[
@@ -434,7 +454,7 @@
                                       <copyform-icon class="float-right" />
                                       <delete-icon
                                         class="float-right cursor-pointer"
-                                         @click="questions.splice(index, 1)"
+                                        @click="questions.splice(index, 1)"
                                       />
                                     </div>
                                   </div>
@@ -448,15 +468,7 @@
                           v-model="displays"
                           item-key="id"
                           group="people"
-                          class="
-                            my-2
-                            pb-20
-                            border-0
-                            w-full
-                            flex-col
-                            rounded-md
-                            flex
-                          "
+                          class="my-2 pb-20 border-0 w-full flex-col rounded-md flex"
                         >
                           <template #item="{ element, index }">
                             <accordion-component
@@ -478,11 +490,7 @@
                                       <cornie-input
                                         label="text"
                                         v-model="displays[index].display"
-                                        class="
-                                          border-b-2 border-gray-100
-                                          w-full
-                                          mt-5
-                                        "
+                                        class="border-b-2 border-gray-100 w-full mt-5"
                                         :required="true"
                                         placeholder="Enter text..."
                                       />
@@ -499,7 +507,7 @@
                         <copyform-icon class="float-right" />
                         <delete-icon
                           class="float-right cursor-pointer"
-                             @click="groups.splice(index, 1)"
+                          @click="groups.splice(index, 1)"
                         />
                       </div>
                     </template>
@@ -542,7 +550,7 @@
                               label="Question Text"
                               class="required ml-3"
                               :required="true"
-                             v-model="mainquestions[index].text" 
+                              v-model="mainquestions[index].text"
                               placeholder="--Enter--"
                             />
                             <cornie-select
@@ -568,143 +576,151 @@
                               placeholder="--Select"
                             />
                           </div>
-                         <div v-if="mainquestions[index].answerType =='openChoice'">
-                                      <div class="mt-4" v-for="(input, id) in questionoptionmainothers" :key="`${id}`">
-                                        <span class="flex item-center mb-2">
-                                          <select-option/>
-                                          <span class="text-sm w-full">
-                                            <span contenteditable="true"  class="text-sm mt-2 w-full" @keyup.delete="id = -1" @input="setInputMain($event,index,id)">Option
-                                            </span>
-                                              <div class="border-b-2 border-gray-200 w-full pt-3" v-if="id >= 0" >
-                                                <cancel-icon class="
-                                                    float-right
-                                                    -mt-3
-                                                    cursor-pointer
-                                                  "
-                                                  @click="questionoptionmainothers.splice(id, 1)"
-                                                />
-                                              </div>
-                                          </span>
-                                        </span>
-                                      </div>
-                                      <span
-                                        class="
-                                          cursor-pointer
-                                          text-danger
-                                          mr-2
-                                          text-xs
-                                          float-left
-                                        "
-                                        @click="addMainOptionOthers(questionoptionmainothers,index)">Add new option</span>
+                          <div
+                            v-if="
+                              mainquestions[index].answerType == 'openChoice'
+                            "
+                          >
+                            <div
+                              class="mt-4"
+                              v-for="(input, id) in questionoptionmainothers"
+                              :key="`${id}`"
+                            >
+                              <span class="flex item-center mb-2">
+                                <select-option />
+                                <span class="text-sm w-full">
+                                  <span
+                                    contenteditable="true"
+                                    class="text-sm mt-2 w-full"
+                                    @keyup.delete="id = -1"
+                                    @input="setInputMain($event, index, id)"
+                                    >Option
+                                  </span>
+                                  <div
+                                    class="border-b-2 border-gray-200 w-full pt-3"
+                                    v-if="id >= 0"
+                                  >
+                                    <cancel-icon
+                                      class="float-right -mt-3 cursor-pointer"
+                                      @click="
+                                        questionoptionmainothers.splice(id, 1)
+                                      "
+                                    />
+                                  </div>
+                                </span>
+                              </span>
+                            </div>
+                            <span
+                              class="cursor-pointer text-danger mr-2 text-xs float-left"
+                              @click="
+                                addMainOptionOthers(
+                                  questionoptionmainothers,
+                                  index
+                                )
+                              "
+                              >Add new option</span
+                            >
                           </div>
                           <div v-if="mainquestions[index].answerType == 'text'">
-                            <div class="mt-4" v-for="(input, id) in questionoptionmainothers" :key="`${id}`">
+                            <div
+                              class="mt-4"
+                              v-for="(input, id) in questionoptionmainothers"
+                              :key="`${id}`"
+                            >
                               <div class="mt-5">
                                 <input
                                   type="text"
-                                  class="
-                                    border-b-2 border-gray-100
-                                    w-full
-                                    mt-5
-                                  "
+                                  class="border-b-2 border-gray-100 w-full mt-5"
                                   v-model="mainquestions[index].answerOptions"
                                   placeholder="Enter text..."
                                 />
                                 <input
                                   type="text"
-                                  class="
-                                    border-b-2 border-gray-100
-                                    w-full
-                                    mt-5
-                                  "
-                                  
+                                  class="border-b-2 border-gray-100 w-full mt-5"
                                 />
                               </div>
                             </div>
                           </div>
-                          <div v-if="mainquestions[index].answerType == 'choice'">
-                            <div class="mt-4" v-for="(input, id) in questionoptionmainothers" :key="`${id}`">
-                              <span
-                                class="flex item-center mb-4"
-                              >
-                                <cornie-radio name="question"/>
-                                <span  class="text-sm w-full">
+                          <div
+                            v-if="mainquestions[index].answerType == 'choice'"
+                          >
+                            <div
+                              class="mt-4"
+                              v-for="(input, id) in questionoptionmainothers"
+                              :key="`${id}`"
+                            >
+                              <span class="flex item-center mb-4">
+                                <cornie-radio name="question" />
+                                <span class="text-sm w-full">
                                   <span
                                     contenteditable="true"
                                     class="text-sm w-full"
-                                    @keyup.delete="id = -1" @input="setInputMain($event,index,id)">Option
+                                    @keyup.delete="id = -1"
+                                    @input="setInputMain($event, index, id)"
+                                    >Option
                                   </span>
-                                    <div class="border-b-2 border-gray-200 w-full pt-3" v-if="id >= 0">
-                                      <cancel-icon
-                                        class="
-                                          float-right
-                                          -mt-3
-                                          cursor-pointer
-                                        "
-                                        @click="questionoptionmainothers.splice(id, 1)"
-                                      />
-                                    </div>
+                                  <div
+                                    class="border-b-2 border-gray-200 w-full pt-3"
+                                    v-if="id >= 0"
+                                  >
+                                    <cancel-icon
+                                      class="float-right -mt-3 cursor-pointer"
+                                      @click="
+                                        questionoptionmainothers.splice(id, 1)
+                                      "
+                                    />
+                                  </div>
                                 </span>
                               </span>
                             </div>
-                              <span class="cursor-pointer text-danger mr-2 text-xs float-left"
-                                @click="addMainOptionOthers(questionoptionmainothers,index)">Add new option</span>
+                            <span
+                              class="cursor-pointer text-danger mr-2 text-xs float-left"
+                              @click="
+                                addMainOptionOthers(
+                                  questionoptionmainothers,
+                                  index
+                                )
+                              "
+                              >Add new option</span
+                            >
                           </div>
-                           <div class="mt-32 flex space-x-4 w-full">
-                                      <tooltip
-                                        text="Answer is optional & not visible to the patients"
-                                      >
-                                        <div
-                                          class="
-                                            text-black text-sm
-                                            font-bold
-                                            flex
-                                            space-x-2
-                                          "
-                                        >
-                                          <span>Answer</span>
-                                          <tooltip-icon
-                                            class="cursor-pointer"
-                                          />
-                                          <template></template>
-                                        </div>
-                                      </tooltip>
-                                      <div
-                                      v-if="!showmainanswer"
-                                       @click="showmainanswer = true"
-                                        class="
-                                          text-black
-                                          w-full
-                                          flex
-                                          space-x-2
-                                          text-sm
-                                          cursor-pointer
-                                        "
-                                      >
-                                        <question-icon/><span>Add</span>
-                                      </div>
-                            </div>
-                            <div v-if="showmainanswer" class="mt-2">
-                              <div class="grid grid-cols-3 gap-4">
-                                  <cornie-select
-                                  class="required w-full"
-                                  v-model="mainquestions[index].question"
-                                  :items="[
-                                    'Draft',
-                                    'Active',
-                                    'Retired',
-                                  ]"
-                                  placeholder="--Select--"
-                                />
+                          <div class="mt-32 flex space-x-4 w-full">
+                            <tooltip
+                              text="Answer is optional & not visible to the patients"
+                            >
+                              <div
+                                class="text-black text-sm font-bold flex space-x-2"
+                              >
+                                <span>Answer</span>
+                                <tooltip-icon class="cursor-pointer" />
+                                <template></template>
                               </div>
+                            </tooltip>
+                            <div
+                              v-if="!showmainanswer"
+                              @click="showmainanswer = true"
+                              class="text-black w-full flex space-x-2 text-sm cursor-pointer"
+                            >
+                              <question-icon /><span>Add</span>
                             </div>
+                          </div>
+                          <div v-if="showmainanswer" class="mt-2">
+                            <div class="grid grid-cols-3 gap-4">
+                              <cornie-select
+                                class="required w-full"
+                                v-model="mainquestions[index].question"
+                                :items="['Draft', 'Active', 'Retired']"
+                                placeholder="--Select--"
+                              />
+                            </div>
+                          </div>
                           <div class="flex space-x-4 float-right">
                             <copyform-icon class="float-right" />
                             <delete-icon
                               class="float-right cursor-pointer"
-                                @click="mainquestions.splice(index, 1)"
+                              @click="mainquestions.splice(index, 1)"
                             />
-                          </div> 
+                          </div>
                         </div>
                         <div></div>
                       </div>
@@ -757,61 +773,39 @@
 
       <span class="flex justify-end w-full">
         <button
-          @click="$router.push('/dashboard/provider/settings/practise-management/forms-questionnaires')"
-          type="button"
-          class="
-            outline-primary
-            rounded-full
-            text-black
-            mt-5
-            mr-3
-            py-1
-            pr-12
-            pl-12
-            px-3
-            focus:outline-none
-            hover:bg-primary
-            hover:text-white
+          @click="
+            $router.push(
+              '/dashboard/provider/settings/practise-management/forms-questionnaires'
+            )
           "
+          type="button"
+          class="outline-primary rounded-full text-black mt-5 mr-3 py-1 pr-12 pl-12 px-3 focus:outline-none hover:bg-primary hover:text-white"
         >
           Cancel
         </button>
-        <cornie-btn v-if="id" :loading="loading"
-            @click="submit" class=" bg-danger
-            rounded-full
-            font-semibold
-            text-white
-            mt-5
-            pr-5
-            pl-5
-            focus:outline-none
-            hover:opacity-90">
-       Update
-      </cornie-btn>
         <cornie-btn
-        v-else
+          v-if="id"
+          :loading="loading"
+          @click="submit"
+          class="bg-danger rounded-full font-semibold text-white mt-5 pr-5 pl-5 focus:outline-none hover:opacity-90"
+        >
+          Update
+        </cornie-btn>
+        <cornie-btn
+          v-else
           @click="showPreview"
-          class="
-            bg-danger
-            rounded-full
-            font-semibold
-            text-white
-            mt-5
-            mr-3
-            py-1
-            pr-2
-            pl-2
-            px-1
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full font-semibold text-white mt-5 mr-3 py-1 pr-2 pl-2 px-1 focus:outline-none hover:opacity-90"
         >
           Preview | Submit
         </cornie-btn>
       </span>
     </div>
   </div>
-  <view-modal v-model="showPreviewModal" :payload="payload" :sectionsPayload="sections"/>
+  <view-modal
+    v-model="showPreviewModal"
+    :payload="payload"
+    :sectionsPayload="sections"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -827,11 +821,11 @@ import IPracticeform, {
   Display,
   AnswerType,
   Questionmain,
-  Displaymain
+  Displaymain,
 } from "@/types/IPracticeform";
 import InfoIcon from "@/components/icons/info.vue";
 import { cornieClient } from "@/plugins/http";
-import { namespace} from "vuex-class";
+import { namespace } from "vuex-class";
 import { string } from "yup";
 import Select from "@/components/newautocomplete.vue";
 import { Prop, Watch, PropSync } from "vue-property-decorator";
@@ -920,14 +914,12 @@ export default class AddPracticeform extends Vue {
   @practiceform.Action
   getPracticeformQuestionnairesById!: (id: string) => IPracticeform;
 
-
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
   showPreviewModal = false;
   loading = false;
   expand = false;
-
 
   firstnum = 1;
   answerOption = "openChoice";
@@ -938,7 +930,6 @@ export default class AddPracticeform extends Vue {
   data: any = {
     days: [],
   };
-
 
   showoption = false;
   showquestion = false;
@@ -984,13 +975,12 @@ export default class AddPracticeform extends Vue {
         // this.questions as any,
         // this.groups as any,
         // this.display,
-         this.mainquestions as any,
+        this.mainquestions as any,
         this.groups as any,
         this.maindisplays as any,
       ],
     };
   }
-
 
   groups: QuestionGroup[] = [];
   getEmptyQuestionGroup(): QuestionGroup {
@@ -998,7 +988,7 @@ export default class AddPracticeform extends Vue {
       name: "Group",
       prefix: "",
       text: "",
-      items: [ this.questions as any, this.displays as any],
+      items: [this.questions as any, this.displays as any],
     };
   }
 
@@ -1034,7 +1024,6 @@ export default class AddPracticeform extends Vue {
     this.setPracticeform();
   }
 
-
   async setPracticeform() {
     const practiceform = await this.getPracticeformQuestionnairesById(this.id);
     if (!practiceform) return;
@@ -1049,9 +1038,15 @@ export default class AddPracticeform extends Vue {
     this.effectivePeriod = practiceform.effectivePeriod;
     this.code = practiceform.code;
     this.sections = practiceform.sections;
-    (this.groups as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[1]))];
-    (this.mainquestions as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[0]))];
-    (this.maindisplays as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[2]))];
+    (this.groups as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[1])),
+    ];
+    (this.mainquestions as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[0])),
+    ];
+    (this.maindisplays as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[2])),
+    ];
   }
   get payload() {
     const sections = JSON.parse(JSON.stringify(this.sections));
@@ -1069,19 +1064,17 @@ export default class AddPracticeform extends Vue {
     };
   }
 
-  processQuestionGroup(questionGroup:any){
-    if(!questionGroup.items) return questionGroup;
+  processQuestionGroup(questionGroup: any) {
+    if (!questionGroup.items) return questionGroup;
     const items = questionGroup.items || [];
-    let sanitize:any = [];
+    let sanitize: any = [];
     console.log(items);
-    items.forEach((item:any) => {
-
-      if(!Array.isArray(item)){
+    items.forEach((item: any) => {
+      if (!Array.isArray(item)) {
         sanitize.push(item);
-      }else{
-        if(item.length){
-          sanitize = [...sanitize, ...item]
-         
+      } else {
+        if (item.length) {
+          sanitize = [...sanitize, ...item];
         }
       }
     });
@@ -1089,16 +1082,16 @@ export default class AddPracticeform extends Vue {
     questionGroup.items = JSON.parse(JSON.stringify(sanitize));
     return questionGroup;
   }
-  processSection(section:any){
+  processSection(section: any) {
     const items = section.items || [];
-    let sanitize:any = [];
+    let sanitize: any = [];
     console.log(items);
-    items.forEach((item:any) => {
-      if(!Array.isArray(item)){
+    items.forEach((item: any) => {
+      if (!Array.isArray(item)) {
         sanitize.push(item);
-      }else{
-        if(item.length){
-          sanitize = [...sanitize, ...item]
+      } else {
+        if (item.length) {
+          sanitize = [...sanitize, ...item];
           sanitize = sanitize.map(this.processQuestionGroup);
         }
       }
@@ -1115,22 +1108,22 @@ export default class AddPracticeform extends Vue {
   }
 
   addOptionothers(question: any, index: number) {
-   // this.showoption = true;
+    // this.showoption = true;
     this.questionoptionsothers.push(question);
     //this.questions[index].answerOptions?.push(this.newanswer);
   }
 
-  addMainOptionOthers(question: any, index: number){
+  addMainOptionOthers(question: any, index: number) {
     this.questionoptionmainothers.push(question);
   }
 
-  addMainRadioOptionOthers(question: any){
+  addMainRadioOptionOthers(question: any) {
     this.questionoptionmainothers.push(question);
   }
 
- addOptionRadioothers(question: any, index: number){
-   this.questionoptionsothers.push(question);
- }
+  addOptionRadioothers(question: any, index: number) {
+    this.questionoptionsothers.push(question);
+  }
   async ashowquestions(index: string, e: any) {
     let value = e.target.value;
     // Vue.set<Question>(this.questions,index,value)
@@ -1138,12 +1131,12 @@ export default class AddPracticeform extends Vue {
   }
   async addgroup() {
     const group = this.getEmptyQuestionGroup()
-      ? this.getEmptyQuestionGroup() 
+      ? this.getEmptyQuestionGroup()
       : this.getTemplateGroup();
     this.groups.push(group);
   }
   async adddisplay() {
-     const display = this.getEmptyDisplay()
+    const display = this.getEmptyDisplay()
       ? this.getEmptyDisplay()
       : this.getTemplateDisplay();
     this.displays.push(display);
@@ -1175,7 +1168,7 @@ export default class AddPracticeform extends Vue {
     this.questions.push(question);
   }
 
- getTemplateMainDisplay() {
+  getTemplateMainDisplay() {
     return {
       display: this.display,
     };
@@ -1223,21 +1216,21 @@ export default class AddPracticeform extends Vue {
   async removeQuestion(index: number) {
     this.questions.splice(index, 1);
   }
-optionText="";
+  optionText = "";
 
-  async setInput(e:any,index:number,id:number){
+  async setInput(e: any, index: number, id: number) {
     const newanswer = e.target.innerText;
-    const options = this.questions[index].answerOptions || []; 
+    const options = this.questions[index].answerOptions || [];
     options[id] = newanswer;
     this.questions[index].answerOptions = options;
   }
-  async setInputMain(e:any,index:number,id:number){
+  async setInputMain(e: any, index: number, id: number) {
     const newanswer = e.target.innerText;
-     const options = this.mainquestions[index].answerOptions || []; 
+    const options = this.mainquestions[index].answerOptions || [];
     options[id] = newanswer;
     this.mainquestions[index].answerOptions = options;
-   // this.questions[index].answerOptions?.push(this.newanswer)
-   // questions[index].answerOptions.push($event.target.innerText)
+    // this.questions[index].answerOptions?.push(this.newanswer)
+    // questions[index].answerOptions.push($event.target.innerText)
   }
 
   async submit() {
@@ -1253,11 +1246,13 @@ optionText="";
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Practice form updated", status: "success" });
-       this.$router.push("/dashboard/provider/settings/practise-management/forms-questionnaires");
+        this.$router.push(
+          "/dashboard/provider/settings/practise-management/forms-questionnaires"
+        );
       }
     } catch (error) {
       window.notify({ msg: "Practice form not updated", status: "error" });
-     // this.$router.push("/dashboard/provider/settings/practice-templates");
+      // this.$router.push("/dashboard/provider/settings/practice-templates");
     }
   }
 

@@ -76,13 +76,12 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: timeable })
   timeable!: ITimeable;
 
-  type:  "period" | "date-time" = "date-time";
+  type: "period" | "date-time" = "date-time";
 
   setType() {
     const timeable = this.timeable;
     if (timeable.date || timeable.time) this.type = "date-time";
     else if (timeable.startDate || timeable.endDate) this.type = "period";
-    
   }
 
   mounted() {

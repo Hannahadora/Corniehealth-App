@@ -1,15 +1,7 @@
 <template>
   <div class="w-full mx-5">
     <span
-      class="
-        flex
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >Add Collection Account
     </span>
     <form class="w-full mt-5" @submit.prevent="submit">
@@ -30,28 +22,12 @@
       </div>
       <span class="flex full-width mb-2 justify-end">
         <button
-          class="
-            rounded-full
-            font-semibold
-            p-2
-            text-primary
-            border border-primary
-            w-1/4
-            mr-3
-          "
+          class="rounded-full font-semibold p-2 text-primary border border-primary w-1/4 mr-3"
         >
           Cancel
         </button>
         <button
-          class="
-            w-1/4
-            rounded-full
-            font-semibold
-            p-2
-            text-white
-            border
-            bg-danger
-          "
+          class="w-1/4 rounded-full font-semibold p-2 text-white border bg-danger"
           type="submit"
         >
           Save

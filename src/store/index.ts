@@ -37,16 +37,15 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
-import DetectedIssues from "./detectedissues"
-import Attachments from "./attachment"
-import  PracticeInformations from "./practiceinformation"
+import DetectedIssues from "./detectedissues";
+import Attachments from "./attachment";
+import PracticeInformations from "./practiceinformation";
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
-import CatalogueStore from "./catalogues"
-import AppointmentTypes from './appointments';
+import CatalogueStore from "./catalogues";
+import AppointmentTypes from "./appointments";
 
-import AppointmentRoomStore from "./appointmentroom"
-
+import AppointmentRoomStore from "./appointmentroom";
 
 export default createStore({
   modules: {
@@ -85,7 +84,7 @@ export default createStore({
     organization: OrgStore,
     task: TaskStore,
     allergy: AllergyStore,
-    impression:ImpressionStore,
+    impression: ImpressionStore,
     history: HistoryStore,
     issues: DetectedIssues,
     attachments: Attachments,
@@ -96,6 +95,6 @@ export default createStore({
 
     AppointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,
-    appointments: AppointmentTypes
+    appointments: AppointmentTypes,
   },
 } as StoreOptions<any>);

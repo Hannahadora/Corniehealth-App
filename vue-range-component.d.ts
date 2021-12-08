@@ -1,1 +1,1 @@
-declare module 'vue-range-component';
+declare module "vue-range-component";

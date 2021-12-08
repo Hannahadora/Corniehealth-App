@@ -17,11 +17,11 @@ import { Prop } from "vue-property-decorator";
 
 @Options({})
 export default class EmptyState extends Vue {
-    @Prop()
-    heading!: string;
+  @Prop()
+  heading!: string;
 
-    @Prop()
-    subheading!: string;
+  @Prop()
+  subheading!: string;
 }
 </script>
 
@@ -31,7 +31,7 @@ export default class EmptyState extends Vue {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column 
+  flex-direction: column;
 }
 img {
   margin: 0;

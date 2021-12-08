@@ -45,12 +45,11 @@ export default {
       required: true,
       default: false,
     },
-
   },
   data() {
     return {};
   },
-  
+
   computed: {
     show: {
       get() {

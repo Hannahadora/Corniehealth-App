@@ -1,41 +1,24 @@
 <template>
   <div class="w-full pb-7">
     <span
-        class="
-          flex
-          mt-5
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-          booking-font
-        "
-      >
-        Booking Site Control
-      </span>
+      class="flex mt-5 border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto booking-font"
+    >
+      Booking Site Control
+    </span>
   </div>
- <div class="grid grid-cols-3 gap-2 mt-4 w-1/2">
-      <cornie-radio
-        :name="name"
-        v-model="type"
-        label="Yes"
-        value="yes"
-      />
-      <cornie-radio :name="name" v-model="type" value="no" label="No" />
-    </div>
-    <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
-      <domain-input
-            label="Domain Name"
-            placeholder="--Enter--"
-            :rules="requiredRule"
-             :modelValue="orgValue"
-            
-          />
-    </div>
-    <div class="grid grid-cols-3 field gap-3 mt-4 2-full">
-      </div>
+  <div class="grid grid-cols-3 gap-2 mt-4 w-1/2">
+    <cornie-radio :name="name" v-model="type" label="Yes" value="yes" />
+    <cornie-radio :name="name" v-model="type" value="no" label="No" />
+  </div>
+  <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
+    <domain-input
+      label="Domain Name"
+      placeholder="--Enter--"
+      :rules="requiredRule"
+      :modelValue="orgValue"
+    />
+  </div>
+  <div class="grid grid-cols-3 field gap-3 mt-4 2-full"></div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -46,7 +29,7 @@ import DomainInput from "@/components/newdomaininput.vue";
 import { Prop } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
-import CopyformIcon from '@/components/icons/formcopy.vue';
+import CopyformIcon from "@/components/icons/formcopy.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import AddLevel from "./add-level.vue";
 import { namespace } from "vuex-class";
@@ -63,7 +46,7 @@ const level = namespace("OrgLevels");
     EditIcon,
     AddLevel,
     DomainInput,
-    CopyformIcon
+    CopyformIcon,
   },
 })
 export default class ExistingState extends Vue {
@@ -123,15 +106,15 @@ export default class ExistingState extends Vue {
 </script>
 
 <style scoped>
-.booking-font{
+.booking-font {
   font-size: 20px;
 }
 
-.field{
+.field {
   align-items: end;
 }
 
-.input-color{
+.input-color {
   background-color: red !important;
 }
 </style>

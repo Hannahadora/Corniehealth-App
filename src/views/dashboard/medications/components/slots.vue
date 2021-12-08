@@ -1,58 +1,106 @@
 <template>
-    <div class="container">
-        <div class="w-full">
-              <div class="container-fluid">
-                <cornie-table :columns="headers" v-model="items" @filter="showFilterPane">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <eye-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="() => $router.push({ name: 'Edit Slot', query: { slotId: item.id } })">View </span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <edit-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="() => $router.push({ name: 'Edit Slot', query: { slotId: item.id, scheduleId: item.scheduleId, startTime: new Date(`${item.date}, ${item.time?.split(' - ')[0]}`),  endTime: new Date(`${item.date}, ${item.time?.split(' - ')[1]}`) } })">Update </span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <share-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs">Share </span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <delete-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="removeSlot(item.id)">Delete </span>
-                  </div>
-                  
-                </template>
-                  
-              </cornie-table>
-              </div>
+  <div class="container">
+    <div class="w-full">
+      <div class="container-fluid">
+        <cornie-table
+          :columns="headers"
+          v-model="items"
+          @filter="showFilterPane"
+        >
+          <template #actions="{ item }">
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              style="width: 200px"
+            >
+              <eye-icon class="mr-3 mt-1" />
+              <span
+                class="ml-3 text-xs"
+                @click="
+                  () =>
+                    $router.push({
+                      name: 'Edit Slot',
+                      query: { slotId: item.id },
+                    })
+                "
+                >View
+              </span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              style="width: 200px"
+            >
+              <edit-icon class="mr-3 mt-1" />
+              <span
+                class="ml-3 text-xs"
+                @click="
+                  () =>
+                    $router.push({
+                      name: 'Edit Slot',
+                      query: {
+                        slotId: item.id,
+                        scheduleId: item.scheduleId,
+                        startTime: new Date(
+                          `${item.date}, ${item.time?.split(' - ')[0]}`
+                        ),
+                        endTime: new Date(
+                          `${item.date}, ${item.time?.split(' - ')[1]}`
+                        ),
+                      },
+                    })
+                "
+                >Update
+              </span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              style="width: 200px"
+            >
+              <share-icon class="mr-3 mt-1" />
+              <span class="ml-3 text-xs">Share </span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              style="width: 200px"
+            >
+              <delete-icon class="mr-3 mt-1" />
+              <span class="ml-3 text-xs" @click="removeSlot(item.id)"
+                >Delete
+              </span>
+            </div>
+          </template>
+        </cornie-table>
+      </div>
 
-              <side-modal :visible="showFilter" @closesidemodal="() => showFilter = false">
-                <advanced-filter @applyfilter="applyFilter" />
-              </side-modal>
-              </div>
+      <side-modal
+        :visible="showFilter"
+        @closesidemodal="() => (showFilter = false)"
+      >
+        <advanced-filter @applyfilter="applyFilter" />
+      </side-modal>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import utilservice from '../helper/util'
-import dateHelper from '../helper/date-helper'
-import AddIcon from '@/components/icons/add.vue'
-import { Options, Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import utilservice from "../helper/util";
+import dateHelper from "../helper/date-helper";
+import AddIcon from "@/components/icons/add.vue";
+import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import slotService from '../../visits/helper/slot-service';
-import AdvancedFilter from './advanced-filter.vue'
-import SideModal from '../components/side-modal.vue';
-import CornieSelect from "@/components/cornieselect.vue"
-import { namespace } from 'vuex-class';
-import ISchedule from '@/types/ISchedule';
+import slotService from "../../visits/helper/slot-service";
+import AdvancedFilter from "./advanced-filter.vue";
+import SideModal from "../components/side-modal.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import { namespace } from "vuex-class";
+import ISchedule from "@/types/ISchedule";
 import EyeIcon from "@/components/icons/eye.vue";
-import EditIcon from '@/components/icons/edit.vue'
-import ShareIcon from '@/components/icons/share.vue'
-import DeleteIcon from '@/components/icons/delete.vue'
+import EditIcon from "@/components/icons/edit.vue";
+import ShareIcon from "@/components/icons/share.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
 
-const practitionersStore = namespace('practitioner')
-const schedulesStore = namespace('schedules')
+const practitionersStore = namespace("practitioner");
+const schedulesStore = namespace("schedules");
 
 @Options({
   components: {
@@ -67,19 +115,17 @@ const schedulesStore = namespace('schedules')
     DeleteIcon,
   },
 })
-
 export default class Availability extends Vue {
-    @schedulesStore.State
-    schedules!: ISchedule[]
+  @schedulesStore.State
+  schedules!: ISchedule[];
 
-    @schedulesStore.Action
-    getSchedules!: () => Promise<void>;
-    
+  @schedulesStore.Action
+  getSchedules!: () => Promise<void>;
 
-    @schedulesStore.Action
-    deleteSlot!: (id: string) => Promise<boolean>;
-    
-    headers = [
+  @schedulesStore.Action
+  deleteSlot!: (id: string) => Promise<boolean>;
+
+  headers = [
     {
       title: "Identifier",
       key: "id",
@@ -96,7 +142,7 @@ export default class Availability extends Vue {
       show: true,
     },
     { title: "Time", key: "time", show: true },
-    
+
     {
       title: "Booking CutOff",
       key: "bookingCutOff",
@@ -112,15 +158,14 @@ export default class Availability extends Vue {
       key: "status",
       show: true,
     },
-    
   ];
 
-  slots: any = [ ]
+  slots: any = [];
 
   get items() {
-    if (!this.slots || this.slots.length === 0) return [ ];
+    if (!this.slots || this.slots.length === 0) return [];
     // if (!this.schedules || this.schedules.length === 0) return [ ];
-    // const slots = slotService.getFixedSlots(this.schedules).map((slot: any) => {      
+    // const slots = slotService.getFixedSlots(this.schedules).map((slot: any) => {
     //   return {
     //     ...slot,
     //     time: `${slot.startTime} - ${slot.endTime}`
@@ -129,17 +174,19 @@ export default class Availability extends Vue {
     const slots = this.slots.map((slot: any) => {
       return {
         ...slot,
-        time: `${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}`
-      }
-    })
+        time: `${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(
+          0,
+          5
+        )}`,
+      };
+    });
     console.log(slots, "SLLLTS");
     return slots;
-    
   }
 
   constructDate(slot: any) {
     console.log(slot, "SLLOT");
-    
+
     return new Date(`${slot.startDate}, ${slot.startTime}`);
   }
 
@@ -165,17 +212,18 @@ export default class Availability extends Vue {
   async created() {
     if (!this.schedules) await this.getSchedules();
     console.log(this.schedules, "SChedules");
-    const res = await slotService.getPractitionersSlots("87e846a3-bac0-43b9-a4db-0b2605426c42");
+    const res = await slotService.getPractitionersSlots(
+      "87e846a3-bac0-43b9-a4db-0b2605426c42"
+    );
     this.slots = res.data ?? [];
     console.log(this.slots, "this slots");
-    
   }
 }
 </script>
 
 <style scoped>
 .book-bg {
-  background-color: #FFF0F1 !important;
+  background-color: #fff0f1 !important;
 }
 
 .selected {

@@ -1,31 +1,11 @@
 <template>
   <div class="w-full overflow-auto mb-5">
     <div
-      class="
-        flex-col
-        justify-center
-        bg-white
-        shadow-md
-        p-3
-        mt-2
-        mb-2
-        rounded
-        w-full
-        overflow-auto
-      "
+      class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
     >
       <div class="w-full p-2">
         <span
-          class="
-            flex flex-col
-            w-full
-            justify-center
-            border-b-2
-            font-bold
-            mb-5
-            text-xl text-primary
-            py-2
-          "
+          class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
         >
           Dashboards
         </span>
@@ -37,8 +17,8 @@
       <visits-chart />
       <billings-chart />
       <medication-chart />
-      
-       <diagnostics-chart />
+
+      <diagnostics-chart />
       <!-- <chart-card height="439px" title="Diagnostics" /> -->
       <referral-chart />
     </div>
