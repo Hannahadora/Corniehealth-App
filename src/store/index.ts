@@ -20,7 +20,7 @@ import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
 
 import OrgStore from "./organization";
-
+import CollectionStore from "./collection";
 import VisitsStore from "./visits";
 import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
@@ -37,8 +37,15 @@ import VitalsStore from "./vitals";
 import ProcedureStore from "./procedure";
 import designation from "./hierarchy/designation";
 import condition from "./condition";
+import DetectedIssues from "./detectedissues"
+import Attachments from "./attachment"
+import  PracticeInformations from "./practiceinformation"
 import hospitalisationStore from "./hospitalisation";
 import CareplanStore from "./careplan";
+import CatalogueStore from "./catalogues"
+import AppointmentTypes from './appointments';
+
+import AppointmentRoomStore from "./appointmentroom"
 
 
 export default createStore({
@@ -66,6 +73,7 @@ export default createStore({
 
     shifts: ShiftsStore,
     practiceform: PracticeformStore,
+    practiceinformation: PracticeInformations,
     appointment: AppointmentStore,
     request: RequestStore,
     otherrequest: OtherrequestStore,
@@ -79,10 +87,16 @@ export default createStore({
     allergy: AllergyStore,
     impression:ImpressionStore,
     history: HistoryStore,
-
+    issues: DetectedIssues,
+    attachments: Attachments,
     vitals: VitalsStore,
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
-    careplan: CareplanStore
+    careplan: CareplanStore,
+
+    AppointmentRoom: AppointmentRoomStore,
+    catalogues: CatalogueStore,
+    appointments: AppointmentTypes,
+    collections: CollectionStore,
   },
 } as StoreOptions<any>);

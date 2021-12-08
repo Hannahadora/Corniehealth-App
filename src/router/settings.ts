@@ -26,8 +26,8 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/AccountSecurity/index.vue"),
     },
     {
-      path: "bank-accounts",
-      name: "Bank & Accounts",
+      path: "accounts",
+      name: "Bank And Accounts",
       component: () =>
         import("@/views/dashboard/settings/bankaccounts/index.vue"),
     },
@@ -152,8 +152,20 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "practice-templates",
       name: "Practice Forms/Templates",
       component: () =>
-        import("@/views/dashboard/settings/practiceform/index.vue"),
+        import("@/views/dashboard/settings/forms/index.vue"),
     },
+    // {
+    //   path: "locationTax",
+    //   name: "Location & Tax",
+    //   component: () =>
+    //     import("@/views/dashboard/settings/locationtax/index.vue"),
+    // },
+    // {
+    //   path: "add-location",
+    //   name: "Add Location",
+    //   component: () =>
+    //     import("@/views/dashboard/settings/locationtax/addLocation.vue"),
+    // },
     // {
     //   path: "org-hierarchy",
     //   name: "Organization Hierarchy",
@@ -165,6 +177,21 @@ export const SettingsRoute: RouteRecordRaw = {
       name: "Booking Site",
       component: () =>
         import("@/views/dashboard/settings/BookingSite/index.vue"),
+    },
+    
+    // {
+    //   path: "markup",
+    //   props: true,
+    //   name: "Markup",
+    //   component: () =>
+    //     import("@/views/dashboard/medications/index.vue"),
+    // },
+    {
+      path: "markup-settings",
+      props: true,
+      name: "Markup Settings",
+      component: () =>
+        import("@/views/dashboard/medications/markup-settings.vue"),
     },
     // {
     //   path: "forms-questionnaires",

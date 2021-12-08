@@ -8,16 +8,9 @@ import { ExperienceRoutes } from "./experience";
 import { NewSettingsRoutes } from "./newsettings";
 import Settings from "@/views/dashboard/settings/index.vue";
 
+import { InPatientRoutes } from "./in-patient";
+
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/kyc-email",
-    props: true,
-    name: "KYC Email",
-    component: () =>
-      import(
-        "@/views/dashboard/settings/kyc/components/email-body.vue"
-      ),
-  },
   {
     path: "/reference/:id",
     props: true,
@@ -88,25 +81,24 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         name: "Blank Form",
         component: () =>
-          import("@/views/dashboard/settings/practiceform/addPracticeform.vue"),
+          import("@/views/dashboard/settings/forms/newform.vue"),
       },
       {
         path: "clinical",
         props: true,
         name: "Patient",
-        component: () =>
-          import("@/views/dashboard/ehr/landing.vue"),
-          children: [
-            {
-              path: "",
-              props: true,
-              component: () =>
-                import("@/views/dashboard/ehr/landing/index.vue"),
-            },
-            ClinicalsRoute,
-          ]
+        component: () => import("@/views/dashboard/ehr/landing.vue"),
+        children: [
+          {
+            path: "",
+            props: true,
+            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
+          },
+          ClinicalsRoute,
+        ],
       },
-      ExperienceRoutes,   
+      ExperienceRoutes, 
+      InPatientRoutes,   
       NewSettingsRoutes,   
       {
         path: "settings/",
@@ -114,22 +106,6 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import(
-          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-          //     ),
-          // },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import(
-          //       "@/views/dashboard/settings/OrganisationHierarchy/index.vue"
-          //     ),
-          // },
           {
             path: "care-partners",
             name: "Care Partners",
@@ -143,8 +119,8 @@ const routes: Array<RouteRecordRaw> = [
               import("@/views/dashboard/settings/AccountSecurity/index.vue"),
           },
           {
-            path: "bank-accounts",
-            name: "Bank & Accounts",
+            path: "accounts",
+            name: "Bank And Accounts",
             component: () =>
               import("@/views/dashboard/settings/bankaccounts/index.vue"),
           },
@@ -171,12 +147,7 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
               ),
           },
-          // {
-          //   path: "org-hierarchy",
-          //   name: "Organization Hierarchy",
-          //   component: () =>
-          //     import("@/views/dashboard/settings/org-hierarchy/index.vue"),
-          // },
+
           {
             path: "contact-info",
             name: "Contact Information",
@@ -286,7 +257,7 @@ const routes: Array<RouteRecordRaw> = [
             path: "practice-templates",
             name: "Practice Forms/Templates",
             component: () =>
-              import("@/views/dashboard/settings/practiceform/index.vue"),
+            import("@/views/dashboard/settings/forms/index.vue"),
           },
         ],
       },
@@ -367,6 +338,15 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
       {
+        path: "kyc-link",
+        props: true,
+        name: "KYC Link",
+        component: () =>
+          import(
+            "@/views/dashboard/settings/kyc/components/email-link.vue"
+          ),
+      },
+      {
         path: "pricebook",
         name: "PriceBook",
         component: () =>
@@ -379,14 +359,20 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboard/settings/catalogues/index.vue"),
       },
       {
-        path: "newcatalogue",
-        name: "New Catalogue",
+        path: "newservice/:serviceId?",
+        name: "New Service",
         component: () =>
           import("@/views/dashboard/settings/catalogues/components/new-service.vue"),
       },
       {
         path: "newproduct",
-        name: "New Catalogue",
+        name: "New Product",
+        component: () =>
+          import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
+      },
+      {
+        path: "addvariant/:catalogueId",
+        name: "Medication",
         component: () =>
           import("@/views/dashboard/settings/catalogues/components/new-products.vue"),
       },

@@ -4,4 +4,5 @@ export default interface ICurrency {
   conversion: string;
   createdAt: string;
   exchangeRate: string;
+  updatedByUser:string;
 }

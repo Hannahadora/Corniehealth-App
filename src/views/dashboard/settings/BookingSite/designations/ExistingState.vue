@@ -12,10 +12,10 @@
           focus:outline-none
           hover:opacity-90
         "
-        @click="$router.push({ name: 'New Designation' })"
+        @click="registerNew = true"
       >
         <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-        New Designation
+        Add New
       </button>
     </div>
 
@@ -37,6 +37,9 @@
         </div>
       </template>
     </cornie-table>
+    <side-modal :visible="registerNew" @closesidemodal="closeModal" :header="'New Appointment'">
+        <AppointmentModal  @closesidemodal="closeModal"  />
+      </side-modal>
   </div>
 </template>
 <script lang="ts">
@@ -51,6 +54,8 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import AppointmentModal from "./Appointmentdialog.vue";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
@@ -77,31 +82,45 @@ const designation = namespace("designation");
     EditIcon,
     ColumnFilter,
     TableOptions,
+    AppointmentModal,
+    SideModal
   },
 })
 export default class DesignationsExistingState extends Vue {
   @Prop({ type: Array, required: true })
   designations!: IDesignation[];
+  registerNew=false;
 
+  // appointmentId ="";
   rawHeaders = [
     {
-      title: "Title",
-      key: "name",
+      title: "Appointment Type",
+      key: "appointment type",
       show: true,
     },
     {
-      title: "Job Level",
-      key: "jobLevel",
+      title: "Duration",
+      key: "duration",
       show: true,
     },
     {
-      title: "Function",
-      key: "jobFunction",
+      title: "Link forms",
+      key: "link forms",
       show: true,
     },
     {
-      title: "Reporting To",
-      key: "supervisor",
+      title: "Practioners",
+      key: "practioners",
+      show: true,
+    },
+    {
+      title: "Booking site links",
+      key: "booking site links",
+      show: true,
+    },
+    {
+      title: "Status",
+      key: "status",
       show: true,
     },
   ];
@@ -109,6 +128,10 @@ export default class DesignationsExistingState extends Vue {
   @designation.Action
   deleteDesignation!: (id: string) => Promise<void>;
 
+   closeModal() {
+    this.registerNew = false;
+    // this.selectedTeamId = "";
+  }
   get items() {
     return this.designations.map((designation) => ({
       ...designation,

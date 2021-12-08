@@ -57,6 +57,12 @@
               <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
             </div>
           </template>
+          <template #dataCount-header>
+              <div class="text-no-wrap flex uppercase text-xs" style="white-space:nowrap">Data Count</div>
+          </template>
+          <template #recordType-header>
+              <div class="text-no-wrap flex uppercase text-xs" style="white-space:nowrap">Record Type</div>
+          </template>
           <template #actions="{ item }">
             <table-action
                @click="viewVital(item.id)"
@@ -112,7 +118,7 @@
               </div>
 
               <div class="w-full my-6">
-                <input-desc-rounded :label="'Last Date Updated'" :info="''">
+                <input-desc-rounded :label="'Date Last Updated'" :info="''">
                   <input :value="selectedVital.updatedAt" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
                 </input-desc-rounded>
               </div>
@@ -121,11 +127,11 @@
             </div>
 
             <div class="w-full flex flex justify-end mt-12">
-                <corniebtn class="text-primary p-2 cancel-btn rounded-full px-8 mx-2 cursor-pointer">
+                <corniebtn class="text-primary cancel-btn flex items-center rounded-full px-8 mx-2 cursor-pointer">
                     <span class="font-semibold">Cancel</span>
                 </corniebtn>
 
-                <CornieBtn :loading="loading" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer">
+                <CornieBtn :loading="loading" class="bg-danger rounded-full px-8 mx-2 cursor-pointer">
                     <span class="text-white font-semibold" @click="updateStatus">Update</span>
                 </CornieBtn>
             </div>
@@ -403,4 +409,5 @@ export default class ExistingState extends Vue {
   box-sizing: border-box;
   border-radius: 124px;
 }
+
 </style>

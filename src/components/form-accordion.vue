@@ -3,7 +3,8 @@
   <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between">
-            <div contenteditable="true" class="flex space-x-4 cursor-pointer font-bold text-sm text-black uppercase mb-1" v-if="editabetitle" :class="{ 'text-black': expand }">
+            <div contenteditable="true" :value="editabetitle" 
+    @input="$emit('update:modelValue', $event.target.innerText)"  class="flex space-x-4 cursor-pointer font-bold text-sm text-black uppercase mb-1" v-if="editabetitle" :class="{ 'text-black': expand }">
                 <edit-icon class="mr-3"/> {{ editabetitle }}
             </div>
             <div class="font-bold text-sm text-black uppercase mb-1" v-else :class="{ 'text-black': expand }">

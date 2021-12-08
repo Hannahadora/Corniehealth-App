@@ -13,7 +13,7 @@
           py-2
         "
       >
-        Vital SIgns
+        Vital Signs
       </span>
     </div>
     <div class="w-8/12 mx-auto flex justify-center items-center flex-col mb-12">

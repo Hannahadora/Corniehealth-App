@@ -98,7 +98,7 @@
                     placeholder="--Select--"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </cornie-select>
                   <cornie-input
@@ -124,7 +124,7 @@
                     v-model="excecutionPeriod"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </date-picker>
                   <cornie-select
@@ -134,7 +134,7 @@
                     placeholder="--Select--"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </cornie-select>
                   <div>
@@ -143,7 +143,7 @@
                       class="uppercase flex mb-1 text-xs font-semibold"
                     >
                       owner
-                      <question-icon class="ml-1"/>
+                      <info-icon class="text-primary fill-current" />
                     </label>
                     <input
                       class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
@@ -151,24 +151,47 @@
                       :value="orgName"
                     />
                   </div>
-                  <div>
+                  <cornie-select
+                    v-if="allLocation.length === 0"
+                  class="required w-full"
+                  :rules="required"
+                    :items="['No Location Available']"
+                    v-model="location"
+                  label="location"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                v-else
+                  class="required w-full"
+                  :rules="required"
+                    :items="allLocation"
+                    v-model="location"
+                  label="location"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+
+                  <!-- <div>
                     <label
                       for="location"
                       class="uppercase flex mb-1 text-xs font-semibold"
                     >
-                      location   <question-icon class="ml-1"/>
+                      location
+                      <info-icon class="text-primary fill-current" />   
+                   
                     </label>
                     <input
                       class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                       disabled
                       :value="locationInfo.address"
                     />
-                  </div>
+                  </div> -->
 
                   <div>
                     <DateTimePicker :label="'start DATE & Time'" :visible="datePickerVissibility.first">
                       <template v-slot:labelicon>
-                        <question-icon />
+                        <info-icon class="text-primary fill-current" />
                       </template>
                       <template #date>
                         <span>
@@ -211,7 +234,7 @@
                   <div>
                     <DateTimePicker :label="'end DATE & Time'" :visible="datePickerVissibility.second">
                       <template v-slot:labelicon>
-                        <question-icon />
+                        <info-icon class="text-primary fill-current" />
                       </template>
                       <template #date>
                         <span>
@@ -245,15 +268,13 @@
                     </DateTimePicker>
                   </div>
                   <cornie-select
-                  v-for="item in recipientDropdown"
-                  :key= item
-                  :items="[item.firstName + item.lastName]"
+                  :items="allReceipients"
                     v-model="recipient"
                     label="recipient"
                     placeholder="--Select--"
                   >
                     <template v-slot:labelicon>
-                      <question-icon />
+                      <info-icon class="text-primary fill-current" />
                     </template>
                   </cornie-select>
                 </div>
@@ -328,7 +349,10 @@
                   <div class="block">
                     <label class="flex uppercase mb-2 text-xs font-bold">
                       Repitition
-                      <span class="ml-1"><question-icon /></span>
+                      <span class="ml-1">
+                        <info-icon class="text-primary fill-current" />
+                        <!-- <question-icon /> -->
+                        </span>
                     </label>
                     <div class="w-full flex space-x-4 mb-3">
                       <cornie-radio
@@ -532,7 +556,7 @@ locationInfo = [];
     healthcares: [],
     devices: [],
   }
-  recipientDropdown = "";
+  recipientDropdown = [];
 
   activityDefinition = ''
   description = ''
@@ -646,7 +670,7 @@ locationInfo = [];
       statusReason: this.statusReason,
       businessStatus: this.businessStatus,
       code: this.code,
-       status: this.status,
+     //  status: this.status,
       for: this.for,
       performerType: this.performerType,
       owner: this.owner,
@@ -696,7 +720,6 @@ locationInfo = [];
     const body = {
       ...this.payload,
       for: this.forType,
-      location: this.orgAddress,
       owner: this.organizationInfo.name,
       startDateTime:this.startDateTime,
       endDateTime: this.endDateTime ,
@@ -731,7 +754,24 @@ locationInfo = [];
       window.notify({ msg: 'Task not updated', status: 'error' })
     }
   }
-  
+  get allReceipients() {
+     if (!this.recipientDropdown || this.recipientDropdown.length === 0) return [ ];
+     return this.recipientDropdown.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.firstName +' '+ i.lastName,
+         }
+     })
+ }
+  get allLocation() {
+     if (!this.locationInfo || this.locationInfo.length === 0) return [ ];
+     return this.locationInfo.map((i: any) => {
+         return {
+             code: i.id,
+             display: i.name,
+         }
+     })
+ }
   async setOrg(){
      this.orgName = this.organizationInfo.name;
     //this.orgAddress = this.organizationInfo.identifier;
@@ -740,7 +780,7 @@ locationInfo = [];
    async getLocations() {
     const AllLocations = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
     const response = await Promise.all([AllLocations]);
-    this.locationInfo = response[0].data[0];
+    this.locationInfo = response[0].data;
     this.orgAddress = response[0].data[0].id;
   }
   async getPractitioners() {

@@ -895,24 +895,7 @@ rawHeadersRequest = [
     if (!this.query) return requests;
     return search.searchObjectArray(requests, this.query);
   }
-//medication end
 
-// async createMedication() {
-//         this.payload.requestId = this.requestId;
-      
-//       try {
-//         const response = await cornieClient().post("/api/v1/requests/medications", this.payload);
-//         if (response.success) {
-//             window.notify({ msg: "Medication Added Successfully", status: "success" });
-//             this.loading = false;
-//             this.show = false;
-//         }
-//         } catch (error) {
-//         window.notify({ msg: error, status: "error" });
-//                   this.loading = false;
-//          this.show = false;
-//         }
-//   }
  async showStatus(value:string){
     this.showStatusModal = true;
     this.requestId = value;

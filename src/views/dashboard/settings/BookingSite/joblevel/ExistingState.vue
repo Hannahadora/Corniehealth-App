@@ -1,41 +1,52 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full mb-5">
-      <cornie-btn
-        class="bg-danger py-2 text-white m-5"
-        @click="editingLevel = true"
+    <span
+        class="
+          flex
+          mt-5
+          border-b-2
+          w-full
+          font-semibold
+          text-xl text-primary
+          py-2
+          mx-auto
+          booking-font
+        "
       >
-        <plus-icon class="mr-2 fill-current text-white" />
-        New Job Level
-      </cornie-btn>
-    </span>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="editLevel(item.id)"
-        >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="remove(item.id)"
-        >
-          <delete-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
-        </div>
-      </template>
-    </cornie-table>
-    <add-level v-model="editingLevel" :level="levelForEdit" />
+        Booking Site Control
+      </span>
   </div>
+ <div class="grid grid-cols-3 gap-2 mt-4 w-1/2">
+      <cornie-radio
+        :name="name"
+        v-model="type"
+        label="Yes"
+        value="yes"
+      />
+      <cornie-radio :name="name" v-model="type" value="no" label="No" />
+    </div>
+    <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
+      <domain-input
+            label="Domain Name"
+            placeholder="--Enter--"
+            :rules="requiredRule"
+             :modelValue="orgValue"
+            
+          />
+    </div>
+    <div class="grid grid-cols-3 field gap-3 mt-4 2-full">
+      </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import DomainInput from "@/components/newdomaininput.vue";
 import { Prop } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
+import CopyformIcon from '@/components/icons/formcopy.vue';
 import EditIcon from "@/components/icons/edit.vue";
 import AddLevel from "./add-level.vue";
 import { namespace } from "vuex-class";
@@ -46,9 +57,13 @@ const level = namespace("OrgLevels");
   name: "JobLevelExistingState",
   components: {
     CornieTable,
+    CornieRadio,
+    CornieInput,
     DeleteIcon,
     EditIcon,
     AddLevel,
+    DomainInput,
+    CopyformIcon
   },
 })
 export default class ExistingState extends Vue {
@@ -106,3 +121,17 @@ export default class ExistingState extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.booking-font{
+  font-size: 20px;
+}
+
+.field{
+  align-items: end;
+}
+
+.input-color{
+  background-color: red !important;
+}
+</style>

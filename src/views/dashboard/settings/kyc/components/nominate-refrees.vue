@@ -8,15 +8,18 @@
             </div>
 
             <div class="w-full my-8">
-                <cornie-input :label="'Name'" style="width: 100%"/>
+                <cornie-input :label="'Name'" v-model="referee.name" style="width: 100%"/>
             </div>
 
             <div class="w-full my-8">
-                <cornie-input :label="'Email Address'" style="width: 100%"/>
+                <cornie-input :label="'Email Address'" v-model="referee.email" style="width: 100%"/>
             </div>
 
             <div class="w-full my-8">
-                <cornie-phone :label="'Phone Number'" />
+                <cornie-phone :label="'Phone Number'"
+                    v-model="referee.phone"
+                    v-model:code="referee.dialCode"
+                 />
             </div>
 
             <div class="w-full pb-10 pt-14 flex justify-between">
@@ -24,7 +27,11 @@
                     Cancel
                 </cornie-button>
 
-                <cornie-button class="rounded-full px-12 py-2 font-semibold text-white cursor-pointer" style="background: #FE4D3C">
+                <cornie-button 
+                    class="rounded-full px-12 py-2 font-semibold text-white cursor-pointer" 
+                    style="background: #FE4D3C"
+                    @click="onSave"
+                >
                     Save
                 </cornie-button>
             </div>
@@ -32,7 +39,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import ArrowLeft from '@/components/icons/arrowleft.vue'
 import CornieInput from "@/components/cornieinput.vue"
@@ -46,6 +53,16 @@ import CorniePhone from "@/components/phone-input.vue"
     }
 })
 export default class NominateRefree extends Vue {
+
+    referee: any = { dialCode: '+234' }
+
+    onSave() {
+        if (!this.referee?.name) return false;
+        this.$emit('refadded', { name: this.referee.name, email: this.referee.email, phone: `${this.referee.dialCode}${this.referee.phone}`});
+        this.closeModal()
+        this.referee = { name: '', email: '', phone: '' } as any;
+    }
+
     closeModal() {
         this.$emit('close')
     }

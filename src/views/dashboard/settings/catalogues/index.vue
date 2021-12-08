@@ -50,8 +50,8 @@
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between card p-3 bg-red">
             <div class="w-full">
-              <p class="inactive">Total Number of Items</p>
-              <p class="card-number">40</p>
+              <p class="inactive">Number of Product Items</p>
+              <p class="card-number">{{ productItems?.length }}</p>
             </div>
             <products-icon />
           </div>
@@ -59,8 +59,8 @@
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between card p-3 bg-red">
             <div class="w-full">
-              <p class="inactive">Total Number of Items</p>
-              <p class="card-number">40</p>
+              <p class="inactive">Number of Service Items</p>
+              <p class="card-number">{{ serviceItems?.length }}</p>
             </div>
             <services-icon />
           </div>
@@ -70,14 +70,15 @@
       <span class="w-full bg-danger">
           <span class="flex justify-end w-full m4-5">
             <cornie-btn
-              class="m-5 p-2 px-12 font-semibold"
+              class="m-5 px-12 font-semibold rounded-full"
               style="color: #080056;border: 1px solid #080056"
             >
               Export
             </cornie-btn>
 
             <cornie-btn
-              class="bg-danger px-10 text-white my-5 mx-4 p-2 font-semibold"
+              class="bg-danger px-10 text-white my-5 mx-4 rounded-full p-1 font-semibold"
+              @click="createNew"
             >
               Create New
             </cornie-btn>
@@ -85,11 +86,11 @@
         </span>
 
         <div class="p-2" v-if="activeTab === 0">
-          <products-table />
+          <products-table :items="productItems" />
         </div>
 
         <div class="p-2" v-if="activeTab === 1">
-          <services-table />
+          <services-table :items="serviceItems" />
         </div>
     </div>
 
@@ -122,8 +123,9 @@ import ServicesIcon from "./components/services-icon.vue"
 import ProductsTable from "./components/products-table.vue"
 import ServicesTable from "./components/services-table.vue"
 import TotalIcon from "./components/total-icon.vue"
+import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 
-const careplan = namespace('careplan')
+const catalogue = namespace('catalogues')
 
 @Options({
   name: "EHRPatients",
@@ -154,76 +156,62 @@ const careplan = namespace('careplan')
   },
 })
 export default class ExistingState extends Vue {
-  @careplan.Action
-  getCarePlans!: (patientId: string) => Promise<void>;
+  @catalogue.Action
+  getServices!: () => Promise<void>;
 
-  @careplan.State
-  careplans!: ICarePlan[]
+  @catalogue.State
+  services!: ICatalogueService[];
 
-  headers = [
-    {
-      title: "Identifier",
-      key: "identifier",
-      show: true,
-    },
-    {
-      title: "Recorded",
-      key: "recorded",
-      show: true,
-    },
-    {
-      title: "Intent | Title",
-      key: "title",
-      show: true,
-    },
-    {
-      title: "Addresses",
-      key: "address",
-      show: true,
-    },
-    {
-      title: "Author",
-      key: "author",
-      show: true,
-    },
-    {
-      title: "Schedule",
-      key: "schedule",
-      show: true,
-    },
-    {
-      title: "Performer",
-      key: "performer",
-      show: true,
-    },
-  ];
+  @catalogue.State
+  products!: ICatalogueProduct[]
+
+  @catalogue.Action
+  getProducts!: () => Promise<void>;
 
   activeTab = 0;
 
-  get items() {
-    return [
-        {
-        id: "1",
-        identifier: "XXXXX",
-        recorded: "1/2/3000",
-        title: "title",
-        address: "address",
-        author: `Author`,
-        schedule: "Schedule",
-        performer: "Performer",
+  get serviceItems() {
+    if (this.services?.length <= 0) return [ ];
+    return this.services?.map(service => {
+      return {
+        id: service.id,
+        name: service.name,
+        itemCode: service.itemCode,
+        category: service.category,
+        description: service.description,
+        subCategory: service.subcategory,
+        status: service.status,
+        lastUpdated: new Date(service.updatedAt || Date.now()).toLocaleDateString()
       }
-    ]
+    })
   }
 
-  get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get productItems() {
+    if (this.products?.length <= 0) return [ ];
+    return this.products?.map(product => {
+      return {
+        id: product.id,
+        name: product.genericName,
+        itemCode: product.inventory.itemCode,
+        category: product.category,
+        description: product.description,
+        subCategory: 'product',
+        brand: product.brand,
+        availability: '10 in 2 variants',
+        status: product.status,
+        lastUpdated: new Date(product.updatedAt || Date.now()).toLocaleDateString()
+      }
+    })
+  }
+
+  createNew() {
+    if (this.activeTab === 0) this.$router.push({ name: 'New Product'})
+    if (this.activeTab === 1) this.$router.push({ name: 'New Service'})
   }
 
   async created() {
-    await this.getCarePlans(this.$route.params.id.toString());
-    console.log(this.careplans, 'CARE PLANS');
-    
+    if (this.services?.length <= 0) await this.getServices();
+    if (this.products?.length <= 0) await this.getProducts();  
   }
 
 }

@@ -26,5 +26,35 @@ export const NewSettingsRoutes: RouteRecordRaw = {
         component: () =>
           import("@/views/dashboard/settings/forms/surveys.vue"),
       },
+      {
+        path: "locationTax",
+        name: "Location & Tax",
+        component: () =>
+          import("@/views/dashboard/settings/locationtax/index.vue"),
+      },
+      {
+        path: "add-location",
+        name: "Add Location",
+        component: () =>
+          import("@/views/dashboard/settings/locationtax/addLocation.vue"),
+      },
+      {
+        path: "add-tax",
+        name: "Add Tax",
+        component: () =>
+          import("@/views/dashboard/settings/locationtax/addtax.vue"),
+      },
+      {
+        path: "bank-accounts",
+        name: "Bank & Accounts",
+        component: () =>
+          import("@/views/dashboard/settings/banks/index.vue"),
+      },
+      {
+        path: "transaction-history",
+        name: "Transaction history",
+        component: () =>
+          import("@/views/dashboard/settings/banks/payments/history.vue"),
+      },
   ],
 };

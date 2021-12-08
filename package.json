@@ -12,6 +12,7 @@
         "@popperjs/core": "^2.9.2",
         "@scelloo/cloudenly-ui": "^0.2.6",
         "@types/chart.js": "^2.9.34",
+        "@vueform/multiselect": "^2.2.1",
         "aos": "^2.3.4",
         "chart.js": "^3.5.1",
         "core-js": "^3.6.5",

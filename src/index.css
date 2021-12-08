@@ -156,6 +156,17 @@ input[type="checkbox"]:after {
     border-width: 1.5px;
 }
 
+.multi-input {
+    justify-content: center;
+    position: relative;
+    top: 50px;
+    padding-left: 15px;
+    color: #fff;
+    background: #080056;
+    border-radius: 30px;
+    width: 90px;
+}
+
 .slider-tooltip {
     position: absolute;
     display: block;
@@ -245,7 +256,7 @@ input[type="checkbox"]:checked:after {
     color: #000;
     position: relative;
     font-weight: 700;
-    background-color: transparent;
+    /* background-color: transparent; */
     top: 2px;
     transition: none 0s ease 0s;
     -moz-transition: none 0s ease 0s;

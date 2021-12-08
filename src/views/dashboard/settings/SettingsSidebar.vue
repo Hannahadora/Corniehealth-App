@@ -142,7 +142,7 @@ export default class Settings extends Vue {
         to: "org-hierarchy",
         icon: "hierarchy-icon",
       },
-      { name: "Bank & Accounts", to: "bank-accounts", icon: "bank-icon" },
+      { name: "Bank And Accounts", to: "accounts", icon: "bank-icon" },
     ];
   }
 
@@ -195,6 +195,20 @@ export default class Settings extends Vue {
       // },
     ];
   }
+  get Pricing() {
+    return [
+      {
+        name: "Markup and Discounts",
+        to: "markup",
+        icon: "roles-icon",
+      },
+      // {
+      //   name: "Markup Settings",
+      //   to: "markup-settings",
+      //   icon: "bank-icon",
+      // },
+    ];
+  }
 
   get settings() {
     const provider = {
@@ -202,6 +216,7 @@ export default class Settings extends Vue {
       "Users & Security": this.filter(this.userSecurity),
       HEALTHCARE: this.filter(this.healthCare),
       "PRACTICE MANAGEMENT": this.filter(this.PracticeManagement),
+      PRICING: this.filter(this.Pricing),
     };
     const hmo = {
       Organization: this.filter(this.organization),

@@ -12,16 +12,16 @@
             <div class="container-fluid">
                 <div class="w-full flex my-5">
                     <div class="w-5/12">
-                        <CornieInput label="Organization or domain Name"  placeholder="--Enter--" />
+                        <CornieInput label="Organization or domain Name" v-model="domain"  placeholder="--Enter--" />
                     </div>
                     <div class="w-5/12 ml-3">
-                        <CornieInput label="email address"  placeholder="--Enter--" />
+                        <CornieInput label="email address" v-model="email" placeholder="--Enter--" />
                     </div>
                 </div>
 
                 <div class="w-full my-8">
                     <div class="w-5/12">
-                        <CornieInput label="Organization or domain Name"  placeholder="--Enter--" />
+                        <CornieInput label="Password" v-model="password" placeholder="--Enter--" />
                     </div>
                 </div>
             </div>
@@ -47,12 +47,15 @@
 import { Options, Vue } from 'vue-class-component';
 import CornieInput from '@/components/cornieinput.vue'
 
+
 @Options({
     components: {
         CornieInput,
     }
 })
 export default class CreateDomain extends Vue {
-    
+  email=""; 
+  orgDomain="";
+  password=""; 
 }
 </script>

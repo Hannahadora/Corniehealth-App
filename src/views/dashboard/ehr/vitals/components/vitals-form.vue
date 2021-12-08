@@ -2,9 +2,9 @@
   <div class="container-fluid p-4">
       <div class="w-full">
 
-        <basic-info :title="'Basic Info'" :show="true">
+        <CollapseSection :title="'Basic Info'"  :show="true" :height="280" :overflow="true" :underlined="true" class="mb-5">
             <template #form>
-                <div class="w-full flex items-center py-3 mt-3">
+                <div class="w-full flex items-center">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <input-desc-rounded :label="'Temperature'">
@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                <div class="w-full flex items-center ">
+                <div class="w-full flex items-center mt-2">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <input-desc-rounded :label="'Respiratory Rate'" :info="'rpm'">
@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="w-full flex items-center py-3">
+                <div class="w-full flex items-center py-3 mt-2">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <input-desc-rounded :label="'Height'">
@@ -58,16 +58,16 @@
                     </div>
                 </div>
             </template>
-        </basic-info>
+        </CollapseSection>
 
-        <basic-info :title="'Blood Pressure'">
+        <CollapseSection :title="'Blood Pressure'" :overflow="true" :underlined="true" class="my-5" :height="collectedPressures?.length <= 0 ? 150 : 210">
             <template #form>
-                <div class="w-full flex items-center py-3 mt-3">
+                <div class="w-full flex items-center -mt-5">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <split-input :label="'Blood Pressure (Systolic)'"  >
                                 <template #list>
-                                    <cornie-select v-model="bloodPressure.position" :items="['Staning_Left', 'Standing_Right']" style="width: 100%;border-radius: 8px 0 0 8px" />
+                                    <cornie-select v-model="bloodPressure.position" :items="['Standing_Left', 'Standing_Right']" style="width: 100%;border-radius: 8px 0 0 8px" />
                                 </template>
                                 <template #input>
                                     <input-with-desc :info="'mmHg'">
@@ -117,11 +117,11 @@
 
                 </div>
             </template>
-        </basic-info>
+        </CollapseSection>
 
-        <basic-info :title="'Habits'">
+        <CollapseSection :title="'Habits'" :underlined="true" class="my-6" :height="vitalData.habits?.length <= 0 ? 150 : 250">
             <template #form>
-                <div class="w-full flex items-center py-3 mt-3">
+                <div class="w-full flex items-center -mt-5">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <split-input :label="'Habits'"  >
@@ -143,10 +143,10 @@
 
                 <div class="w-full mb-4">
                     <div class="w-full flex justify-end">
-                        <corniebtn class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
+                        <corniebtn @click="addHabit" class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
                             <span class="font-semibold text-primary-500 flex items-center">
                                 <span class="mx-2"><check-icon /></span> 
-                                <span class="mr-2" @click="addHabit">Add</span>
+                                <span class="mr-2">Add</span>
                             </span>
                         </corniebtn>
                     </div>
@@ -170,11 +170,11 @@
 
                 </div>
             </template>
-        </basic-info>
+        </CollapseSection>
 
-        <basic-info :title="'Physical Examination'">
+        <CollapseSection :title="'Physical Examination'" :overflow="true" :underlined="true" class="my-6" :height="vitalData.physicals?.length <= 0 ? 150 : 250">
             <template #form>
-                <div class="w-full flex items-center py-3 mt-3">
+                <div class="w-full flex items-center -mt-5">
                     <div class="w-6/12">
                         <div class="w-11/12">
                             <split-input :label="'Physical Examination'"  >
@@ -189,17 +189,17 @@
                     </div>
                     <div class="w-6/12">
                         <input-desc-rounded :label="'Comment'" :info="''">
-                            <input type="text" class="p-2 border w-100 w-full" style="border-radius: 0 8px 8px 0">
+                            <input type="text" v-model="examComment" class="p-2 border w-100 w-full" style="border-radius: 0 8px 8px 0">
                         </input-desc-rounded>
                     </div>
                 </div>
 
                 <div class="w-full mb-4">
                     <div class="w-full flex justify-end">
-                        <corniebtn class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
+                        <corniebtn @click="addPhysical" class="p-2 rounded-full px-8 mx-4 cursor-pointer" style="border: 1px solid #080056;">
                             <span class="font-semibold text-primary-500 flex items-center">
                                 <span class="mx-2"><check-icon /></span> 
-                                <span class="mr-2" @click="addPhysical">Add</span>
+                                <span class="mr-2">Add</span>
                             </span>
                         </corniebtn>
                     </div>
@@ -214,20 +214,20 @@
                                     <span class="text-gray-400">{{ record.value }}</span>
                                 </div>
                                 <div class="w-4/12  flex items-center justify-center">
-                                    <span class="mx-2"><edit-icon /></span>
-                                    <span class="mx-2"><delete-icon @click="removePhysical" /></span>
+                                    <span class="mx-2 cursor-pointer"><edit-icon /></span>
+                                    <span class="mx-2 cursor-pointer"><delete-icon @click="removePhysical" /></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </template>
-        </basic-info>
+        </CollapseSection>
 
         <div class="w-full mt-12"  v-if="!selectedVital?.id">
             <div class="w-full pb-8 flex flex justify-end">
                 <corniebtn class="p-2 rounded-full px-8 mx-4 cursor-pointer flex items-center" style="border: 1px solid #080056;">
-                    <span class="font-semibold text-primary-500" @click="() => $emit('closesidemodal')">Cancel</span>
+                    <span class="font-semibold text-primary-500" @click="onCancel">Cancel</span>
                 </corniebtn>
 
                 <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4">
@@ -266,6 +266,7 @@ import { Prop, Watch } from "vue-property-decorator";
 import IEncounter from "@/types/IEncounter";
 import { Item } from "@/types/IUpdateModel";
 import UnitsSelect from "./units-select.vue"
+import CollapseSection from "@/views/dashboard/settings/catalogues/components/dropdown.vue"
 
 const vitalsStore = namespace("vitals");
 const userStore = namespace("user");
@@ -275,6 +276,7 @@ interface Pressures {
     pressure: string,
     date: string,
     time: string,
+    
 }
 
 @Options({
@@ -298,6 +300,7 @@ interface Pressures {
     InputDescRounded,
     SelectWithDesc,
     CheckIcon,
+    CollapseSection,
   },
 })
 
@@ -335,6 +338,7 @@ export default class VitalsForm extends Vue {
   systolic = "";
   diastolic = "";
   loading = false;
+  examComment = "";
   
   data: any  = {
     identifier: "string",
@@ -369,15 +373,15 @@ export default class VitalsForm extends Vue {
   vitalData: IVital = {
     weight: {
         unit: 'Kg',
-        value: 70
+        // value: 0
     },
     height: {
         unit: 'cm',
-        value: 170
+        // value: 170
     },
     temperature: {
         unit: 'fahrenheit',
-        value: 50
+        // value: 50
     },
     comments: '',
     habits: [ ] as IHabit[],
@@ -391,7 +395,7 @@ export default class VitalsForm extends Vue {
     patientId: this.$route?.params?.id,
     // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
     practitionerId: this.practitionerId,
-    pulse: 78,
+    // pulse: 78,
 
   } as IVital;
 
@@ -410,7 +414,7 @@ export default class VitalsForm extends Vue {
   }
 
   removeHabit(index: number) {
-      this.vitalData.habits.splice(index, 1);
+    this.vitalData.habits.splice(index, 1);
   }
 
   removePhysical(index: number) {
@@ -428,16 +432,54 @@ resetBloodPressure() {
     }
 }
 
+resetVitalData() {
+    this.vitalData = {
+        weight: {
+            unit: 'Kg',
+            // value: 0
+        },
+        height: {
+            unit: 'cm',
+            // value: 170
+        },
+        temperature: {
+            unit: 'fahrenheit',
+            // value: 50
+        },
+        comments: '',
+        habits: [ ] as IHabit[],
+        physicals: [ ] as IHabit[],
+        bloodPressure: [ ] as IBloodPressure[],
+
+        date: new Date().toISOString(),
+        type: "Type",
+        status: "active",
+        encounterId: "c5903ec6-20ac-47ee-b652-a562e5df7379",
+        patientId: this.$route?.params?.id,
+        // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
+        practitionerId: this.practitionerId,
+        // pulse: 78,
+
+    } as IVital;
+}
+
+onCancel() {
+    this.$emit('closesidemodal')
+    this.resetVitalData();
+}
+
 addHabit() {
     if (!this.habit.value || !this.habit.key) return false;
     this.vitalData.habits.push(this.habit);
     this.habit = { } as IHabit;
+    this.vitalData.comments = ""
 }
 
 addPhysical() {    
     if (!this.physical.value || !this.physical.key) return false;
     this.vitalData.physicals.push(this.physical);
     this.physical = { } as IHabit;
+    this.examComment = ""
 }
 
   addBloodPressure() {
@@ -448,6 +490,7 @@ addPhysical() {
         date: new Date().toLocaleDateString(),
         time: new Date().toTimeString().substring(0, 5),
     })
+    
 
     this.bloodPressure.type = "systolic";
     this.vitalData.bloodPressure.push(this.bloodPressure)
@@ -459,8 +502,8 @@ addPhysical() {
             value: +this.diastolic
         }
     })
-      
-    console.log(this.vitalData, "DATA");
+      this.diastolic = '';
+      this.bloodPressure.measurement.value = 0;
     
 
   }
@@ -481,10 +524,10 @@ addPhysical() {
         this.getVitals(this.patientId)
         this.loading = false;
         this.$emit('closesidemodal')
+        this.resetVitalData();
     } catch (error) {
         this.loading = false;
         console.log(error);
-        
     }
   }
 

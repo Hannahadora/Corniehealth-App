@@ -20,7 +20,7 @@
                         </button>
                         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
                         <li class="">
-                            <Select v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></Select>
+                            <Select v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></Select>
                         </li>
                         </ul>
                     </div>
@@ -41,7 +41,7 @@
                         </button>
                         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
                         <li class="">
-                            <select-survey v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></select-survey>
+                            <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
                         </li>
                         </ul>
                     </div>

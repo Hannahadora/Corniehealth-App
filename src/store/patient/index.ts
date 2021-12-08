@@ -48,7 +48,6 @@ export default {
     },
     async fetchPatients(ctx) {
       const patients = await fetchPatients();
-      console.log("patients", patients);
       ctx.commit("addPatients", patients);
     },
     async deletePatient(ctx, id: string) {

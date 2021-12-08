@@ -5,7 +5,7 @@
                 <p class="flex items-center justify-between">
                     <span class="flex items-center">
                         <span class="mr-"><pdf-icon /></span>
-                        <span>Dfile.pdf</span>
+                        <span>{{ fileName }}</span>
                     </span>
                     <span class="flex items-center">
                         <span class="mx-2">
@@ -20,10 +20,11 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import DownloadIcon from "@/components/icons/download.vue"
 import PdfIcon from "@/components/icons/pdf.vue"
+import { Prop } from "vue-property-decorator";
 
 @Options({
     components: {
@@ -32,7 +33,8 @@ import PdfIcon from "@/components/icons/pdf.vue"
     }
 })
 export default class UploadedFile extends Vue {
-    
+    @Prop({ type: String, default: 'no file'})
+    fileName!: string;
 }
 </script>
 
