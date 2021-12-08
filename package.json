@@ -14,6 +14,7 @@
     "@popperjs/core": "^2.9.2",
     "@scelloo/cloudenly-ui": "^0.2.6",
     "@types/chart.js": "^2.9.34",
+    "@vueform/multiselect": "^2.2.1",
     "aos": "^2.3.4",
     "chart.js": "^3.5.1",
     "core-js": "^3.6.5",
@@ -45,10 +46,10 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
     "@commitlint/cli": "^14.1.0",
     "@commitlint/config-conventional": "^14.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "^4.5.13",
@@ -75,9 +76,8 @@
     ]
   },
   "husky": {
-  "hooks": {
-    "pre-commit": "yarn lint"
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
   }
-}
-
 }
