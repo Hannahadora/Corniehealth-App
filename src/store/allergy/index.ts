@@ -1,12 +1,17 @@
 import ObjectSet from "@/lib/objectset";
 import IAllergy from "@/types/IAllergy";
 import { StoreOptions } from "vuex";
-import { deleteAllergy, fetchAllergys, getPractitioners,fetchAllAllergys } from "./helper";
+import {
+  deleteAllergy,
+  fetchAllergys,
+  getPractitioners,
+  fetchAllAllergys,
+} from "./helper";
 
 interface AllergyState {
   allergys: IAllergy[];
   allallergys: IAllergy[];
-  practitioners: any[],
+  practitioners: any[];
 }
 
 export default {
@@ -20,11 +25,11 @@ export default {
     setAllAllergys(state, allergys: any) {
       state.allallergys = [...allergys.result];
     },
-    setAllergys(state, allergys:IAllergy[]) {
+    setAllergys(state, allergys: IAllergy[]) {
       state.allergys = [...allergys];
     },
     setPractitioners(state, pts) {
-      if (pts && pts.length > 0) state.practitioners = [ ...pts ];
+      if (pts && pts.length > 0) state.practitioners = [...pts];
     },
     updateAllergys(state, allergys: IAllergy[]) {
       const allergySet = new ObjectSet([...state.allergys, ...allergys], "id");
@@ -43,12 +48,12 @@ export default {
       const allergys = await fetchAllAllergys();
       ctx.commit("setAllAllergys", allergys);
     },
-    async fetchAllergys(ctx,patientId:string) {
+    async fetchAllergys(ctx, patientId: string) {
       const allergys = await fetchAllergys(patientId);
       ctx.commit("setAllergys", allergys);
     },
     async getPractitioners(ctx) {
-      const pts = await getPractitioners();      
+      const pts = await getPractitioners();
       ctx.commit("setPractitioners", pts);
     },
     async getAllergyById(ctx, id: string) {

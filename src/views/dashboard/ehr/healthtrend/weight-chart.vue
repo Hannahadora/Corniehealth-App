@@ -1,7 +1,9 @@
 <template>
   <chart-card height="343px" title="Weight" @ordered="onOrder">
-     <p class="text-primary font-bold text-sm -mt-5 mb-3">{{ average }}<span class="font-light">kg</span></p>
-    <canvas ref="registration_chart" style="margin: auto;width:100%"></canvas>
+    <p class="text-primary font-bold text-sm -mt-5 mb-3">
+      {{ average }}<span class="font-light">kg</span>
+    </p>
+    <canvas ref="registration_chart" style="margin: auto; width: 100%"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -9,17 +11,16 @@ import { Options, Vue } from "vue-class-component";
 import ChartCard from "./chart-card.vue";
 import Chart from "chart.js/auto";
 
-
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
 import { getDatesAsChartLabel, groupData } from "./chart-filter";
 import { Prop, Watch } from "vue-property-decorator";
-import { formatDate, sortListByDate } from "./chart-filter"
+import { formatDate, sortListByDate } from "./chart-filter";
 import { namespace } from "vuex-class";
 import IVital from "@/types/IVital";
-import { getChartData } from "./helper/vitals-chart-helper"
+import { getChartData } from "./helper/vitals-chart-helper";
 
-const vitalsStore = namespace('vitals')
+const vitalsStore = namespace("vitals");
 
 @Options({
   name: "BloodChart",
@@ -39,7 +40,7 @@ export default class WeightChart extends Vue {
   get sortedVitals() {
     return sortListByDate(this.raw);
   }
- filter = false;
+  filter = false;
 
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
@@ -58,8 +59,8 @@ export default class WeightChart extends Vue {
   }
 
   get average() {
-    const values = this.raw?.map(a => a.count);
-    if (values?.length === 0) return 0
+    const values = this.raw?.map((a) => a.count);
+    if (values?.length === 0) return 0;
     return (values.reduce((a, b) => a + b) / values?.length).toFixed(1);
   }
 
@@ -75,16 +76,18 @@ export default class WeightChart extends Vue {
         `api/v1/vitals/weight-stats/${patientId}`
       );
       this.raw = response.data?.map((item: any) => {
-        return { count: item.value, date: item.date }
+        return { count: item.value, date: item.date };
       });
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
-      window.notify({ msg: "Failed to fetch weight chart data", status: "error" });
+      window.notify({
+        msg: "Failed to fetch weight chart data",
+        status: "error",
+      });
     }
   }
   async created() {
     await this.fetchData(this.$route.params.id.toString());
-    
   }
 
   @Watch("chartData")
@@ -104,7 +107,7 @@ export default class WeightChart extends Vue {
   mountChart() {
     const ctx: any = this.$refs.registration_chart;
     // ctx.height = this.height;
-        ctx.height = 200;
+    ctx.height = 200;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
@@ -163,10 +166,6 @@ export default class WeightChart extends Vue {
     });
   }
 
-
-
-
-
   // chart!: Chart;
 
   // mounted() {
@@ -182,7 +181,7 @@ export default class WeightChart extends Vue {
   //     data: {
   //       labels: ["02-Jans", "03-Jan", "11:00", "04-Jan"],
   //       datasets: [
-  //         {  
+  //         {
   //            fill: {
   //               target: 'origin',
   //               above: 'rgb(219 248 230)',   // Area will be red above the origin

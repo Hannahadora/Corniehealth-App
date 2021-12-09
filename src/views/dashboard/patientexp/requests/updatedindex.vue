@@ -1,30 +1,16 @@
 <template>
-  <div class="flex justify-center  bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
+  <div
+    class="flex justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
+  >
     <div class="w-full">
-    <span
-        class="
-          flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2
-        "
+      <span
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-       Requests
+        Requests
       </span>
       <span class="w-full h-screen">
-          <requests-empty-state
-                v-if="empty"
-          />
-          <requests-existing-state
-        
-          v-else
-
-          />
+        <requests-empty-state v-if="empty" />
+        <requests-existing-state v-else />
       </span>
     </div>
   </div>
@@ -53,15 +39,14 @@ export default class RequestIndex extends Vue {
     return this.requests.length < 1;
   }
 
- @request.State
+  @request.State
   requests!: IRequest[];
 
   @request.Action
   fetchRequests!: () => Promise<void>;
 
-
-created() {
-  this.fetchRequests()
+  created() {
+    this.fetchRequests();
     if (this.requests.length < 1) this.fetchRequests();
   }
 }

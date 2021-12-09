@@ -1,14 +1,8 @@
-   <template>
+<template>
   <cornie-card class="flex flex-col">
     <cornie-card-text>
       <h1
-        class="
-          font-extrabold
-          text-lg text-primary
-          border-b-2 border-gray
-          py-3
-          mx-3
-        "
+        class="font-extrabold text-lg text-primary border-b-2 border-gray py-3 mx-3"
       >
         Progress Notes
       </h1>

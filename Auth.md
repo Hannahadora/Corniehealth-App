@@ -1,8 +1,6 @@
-
 # Cornie Health Auth
 
 Authentication flow and endpoints for Cornie Health
-
 
 ## API Reference
 
@@ -13,21 +11,24 @@ Authentication flow and endpoints for Cornie Health
 ```
 
 Request Body
+
 ```json
 {
-    "lname": "Core",
-    "fname": "App",
-    "dialCode": "234",
-    "phoneNo": "7053052215",
-    "email": "mail.soft0re@mail.com",
+  "lname": "Core",
+  "fname": "App",
+  "dialCode": "234",
+  "phoneNo": "7053052215",
+  "email": "mail.soft0re@mail.com"
 }
 ```
+
 Response
+
 ```json
 {
-    "success": true,
-    "userId": "a22b2363-2511-4ff3-b2a4-55c983535879",
-    "email": "terv.ewee@1nknjojoss.com"
+  "success": true,
+  "userId": "a22b2363-2511-4ff3-b2a4-55c983535879",
+  "email": "terv.ewee@1nknjojoss.com"
 }
 ```
 
@@ -38,20 +39,24 @@ Response
 ```
 
 Request Body
+
 ```json
 {
-    "userId": "13b2f3ea-092f-4a47-95ff-bc451a4d4f0e",
-    "emailVerificationCode": "277474"
+  "userId": "13b2f3ea-092f-4a47-95ff-bc451a4d4f0e",
+  "emailVerificationCode": "277474"
 }
 ```
+
 200 Response
+
 ```json
 {
-    "success": true,
-   
+  "success": true
 }
 ```
+
 ​
+
 #### Activate account and set password
 
 ```http
@@ -59,14 +64,17 @@ Request Body
 ```
 
 Request Body
+
 ```json
- {
-	"userId": "13b2f3ea-092f-4a47-95ff-bc451a4d4f0e", 
-    "emailVerificationCode": "277474",
-    "password":"12345678"
+{
+  "userId": "13b2f3ea-092f-4a47-95ff-bc451a4d4f0e",
+  "emailVerificationCode": "277474",
+  "password": "12345678"
 }
 ```
+
 200 Response
+
 ```json
 {
     "emailVerified": true,
@@ -109,18 +117,18 @@ Request Body
         "alias": "cloudenly",
         "dialCode": "234",
         "phoneNo": "081301297150",
-        "email": "terv.software@gmail.com", 
-      
+        "email": "terv.software@gmail.com",
+
         "TIN": "4567757",
         "iso2": "NG",
-        "orgSize": "500", 
- 
+        "orgSize": "500",
+
         "isSuspended": false,
-        "isBlocked": false, 
+        "isBlocked": false,
         "hasCoCeoOrgStructure": true,
-        "hasTwoFactorAuth": false, 
+        "hasTwoFactorAuth": false,
         "enabledSecurityQuestion": false,
-       
+
         "rcNumber": "2345",
         "businessNature": null,
         "isASolutionPartner": null,
@@ -142,8 +150,8 @@ Request Body
         }
     },
     "user": {
-        "id": "7d9befdf-240c-407a-a78d-4e6ad486d3b5", 
-        "isActive": true, 
+        "id": "7d9befdf-240c-407a-a78d-4e6ad486d3b5",
+        "isActive": true,
         "isRoot": true,
         "hasAccount": true,
         "isOrg": true,
@@ -151,7 +159,7 @@ Request Body
         "level": "46daa94d-9aed-4647-b1e8-16fdb61aa29e",
         "reportingTo": "7d9befdf-240c-407a-a78d-4e6ad486d3b5",
         "dottedReportingTo": null,
-        "designation": "bf22b220-db3a-4984-9170-72584b27292e", 
+        "designation": "bf22b220-db3a-4984-9170-72584b27292e",
         "fname": "Terver",
         "lname": "Timothy",
         "phoneNo": "08068808424",
@@ -173,9 +181,9 @@ Request Body
         "alternatePhoneNo": "09092026396",
         "referrerCode": null,
         "referralCode": null,
-        
-      
-          
+
+
+
         "roles": {
             "humanar": {
                 "roleId": "71a4f521-791c-44b9-9458-f40d4af64901",
@@ -184,15 +192,16 @@ Request Body
                 "isSuperAdmin": true
             }
         },
-        
-        
-         
+
+
+
     },
- 
-  
+
+
     ]
 }
 ```
+
 #### Resend email verification code
 
 ```http
@@ -200,18 +209,21 @@ Request Body
 ```
 
 Request Body
+
 ```json
 {
-    "userId": "13b2f3ea-092f-4a47-95ff-bc451a4d4f0e"
+  "userId": "13b2f3ea-092f-4a47-95ff-bc451a4d4f0e"
 }
 ```
+
 200 Response
+
 ```json
 {
-    "success": true,
-   
+  "success": true
 }
 ```
+
 #### Log user in
 
 ```http
@@ -219,14 +231,16 @@ Request Body
 ```
 
 Request Body
+
 ```json
 {
-  
-    "email": "account@mail.com",
-    "authPassword": "12@345",
+  "email": "account@mail.com",
+  "authPassword": "12@345"
 }
 ```
+
 200 Response
+
 ```
 {
     "emailVerified": true,
@@ -269,18 +283,18 @@ Request Body
         "alias": "cloudenly",
         "dialCode": "234",
         "phoneNo": "081301297150",
-        "email": "terv.software@gmail.com", 
-      
+        "email": "terv.software@gmail.com",
+
         "TIN": "4567757",
         "iso2": "NG",
-        "orgSize": "500", 
- 
+        "orgSize": "500",
+
         "isSuspended": false,
-        "isBlocked": false, 
+        "isBlocked": false,
         "hasCoCeoOrgStructure": true,
-        "hasTwoFactorAuth": false, 
+        "hasTwoFactorAuth": false,
         "enabledSecurityQuestion": false,
-       
+
         "rcNumber": "2345",
         "businessNature": null,
         "isASolutionPartner": null,
@@ -302,8 +316,8 @@ Request Body
         }
     },
     "user": {
-        "id": "7d9befdf-240c-407a-a78d-4e6ad486d3b5", 
-        "isActive": true, 
+        "id": "7d9befdf-240c-407a-a78d-4e6ad486d3b5",
+        "isActive": true,
         "isRoot": true,
         "hasAccount": true,
         "isOrg": true,
@@ -311,7 +325,7 @@ Request Body
         "level": "46daa94d-9aed-4647-b1e8-16fdb61aa29e",
         "reportingTo": "7d9befdf-240c-407a-a78d-4e6ad486d3b5",
         "dottedReportingTo": null,
-        "designation": "bf22b220-db3a-4984-9170-72584b27292e", 
+        "designation": "bf22b220-db3a-4984-9170-72584b27292e",
         "fname": "Terver",
         "lname": "Timothy",
         "phoneNo": "08068808424",
@@ -333,9 +347,9 @@ Request Body
         "alternatePhoneNo": "09092026396",
         "referrerCode": null,
         "referralCode": null,
-        
-      
-          
+
+
+
         "roles": {
             "humanar": {
                 "roleId": "71a4f521-791c-44b9-9458-f40d4af64901",
@@ -344,15 +358,16 @@ Request Body
                 "isSuperAdmin": true
             }
         },
-        
-        
-         
+
+
+
     },
- 
-  
+
+
     ]
 }
 ```
+
 #### Turn on 2FA
 
 ```http
@@ -360,6 +375,7 @@ Request Body
 ```
 
 Request Body
+
 ```json
 {
   "userId": "4d2686f4-38d7-4916-81ee-793606f670bb",
@@ -368,6 +384,7 @@ Request Body
 ```
 
 200 Response
+
 ```json
 {}
 ```
@@ -379,6 +396,7 @@ Request Body
 ```
 
 Request Body
+
 ```json
 {
   "userId": "4d2686f4-38d7-4916-81ee-793606f670bb",
@@ -387,6 +405,7 @@ Request Body
 ```
 
 200 Response
+
 ```json
 {}
 ```
@@ -398,6 +417,7 @@ Request Body
 ```
 
 Request Body
+
 ```json
 {
   "userId": "7d9befdf-240c-407a-a78d-4e6ad486d3b5",
@@ -407,6 +427,7 @@ Request Body
 ```
 
 200 Response
+
 ```json
 {}
 ```

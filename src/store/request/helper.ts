@@ -14,7 +14,9 @@ export async function fetchRequests() {
 }
 export async function fetchOtherrequestsById(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/requests/findByPatientSubject/all/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/requests/findByPatientSubject/all/${patientId}`
+    );
     if (response.success) {
       return response.data;
     }
@@ -37,23 +39,22 @@ export async function deleteRequest(id: string) {
 }
 export async function getPatients() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/patient"
-    );
+    const response = await cornieClient().get("/api/v1/patient");
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error fetching patients", status: "error" });
   }
-  return { };
+  return {};
 }
 export async function getPractitioners() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/practitioner"
-    );
+    const response = await cornieClient().get("/api/v1/practitioner");
     return response.data;
   } catch (error) {
-    notify({ msg: "There was an error fetching practitoners", status: "error" });
+    notify({
+      msg: "There was an error fetching practitoners",
+      status: "error",
+    });
   }
-  return { };
+  return {};
 }

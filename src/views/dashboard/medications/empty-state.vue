@@ -2,13 +2,7 @@
   <cornie-card class="flex flex-col" height="100%">
     <cornie-card-text>
       <h1
-        class="
-          font-extrabold
-          text-lg text-primary
-          border-b-2 border-gray
-          py-3
-          mx-3
-        "
+        class="font-extrabold text-lg text-primary border-b-2 border-gray py-3 mx-3"
       >
         Markup & Discounts
       </h1>

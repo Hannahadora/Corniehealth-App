@@ -5,136 +5,175 @@
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
         </cornie-icon-btn>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Medication</h2>
+        <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Medication</h2>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-         <span class="text-danger text-xs p-3 uppercase float-right font-semibold mb-4">{{medications.length}} added</span>
-       <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Medication Details" v-model="openedS">
-               <div class="w-full mt-5 pb-5">
-                  <cornie-select
-                  class="w-full"
-                  :items="['code']"
-                  v-model="medication.medicationDetails.medicationCode"
-                  label="medication code"
-                  placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="w-full"
-                    :items="['reason']"
-                    label="medication reference"
-                    v-model="medication.medicationDetails.medicationReference"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="['Continuous','Acute','Seasonal']"
-                    v-model="medication.medicationDetails.courseOfTherapyType"
-                    label="course of therapy type"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="['reason']"
-                    v-model="medication.medicationDetails.dosageInstruction"
-                    label="dosage instruction"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                   <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="['reason']"
-                    label="initial fill"
-                    v-model="medication.medicationDetails.initialFill"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                   <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="[0,2,4]"
-                    label="quantity"
-                    v-model="medication.medicationDetails.quantity"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <date-picker  placeholder="autofill" label="Duration" v-model="medication.medicationDetails.duration"  class="mb-5 w-full"/>
-                </div>
-        </accordion-component>
-        <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Refill Info" v-model="openedS">
-              <div class="w-full mt-5 pb-5">
-                <date-picker  placeholder="autofill" v-model="medication.refillInfo.dispenseInterval" label="dispense interval"  class="w-full mb-5 required"
-                    :rules="required"/>
+          <span
+            class="text-danger text-xs p-3 uppercase float-right font-semibold mb-4"
+            >{{ medications.length }} added</span
+          >
+          <accordion-component
+            class="shadow-none rounded-none border-none text-primary"
+            title="Medication Details"
+            v-model="openedS"
+          >
+            <div class="w-full mt-5 pb-5">
+              <cornie-select
+                class="w-full"
+                :items="['code']"
+                v-model="medication.medicationDetails.medicationCode"
+                label="medication code"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="w-full"
+                :items="['reason']"
+                label="medication reference"
+                v-model="medication.medicationDetails.medicationReference"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="['Continuous', 'Acute', 'Seasonal']"
+                v-model="medication.medicationDetails.courseOfTherapyType"
+                label="course of therapy type"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="['reason']"
+                v-model="medication.medicationDetails.dosageInstruction"
+                label="dosage instruction"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="['reason']"
+                label="initial fill"
+                v-model="medication.medicationDetails.initialFill"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="[0, 2, 4]"
+                label="quantity"
+                v-model="medication.medicationDetails.quantity"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <date-picker
+                placeholder="autofill"
+                label="Duration"
+                v-model="medication.medicationDetails.duration"
+                class="mb-5 w-full"
+              />
+            </div>
+          </accordion-component>
+          <accordion-component
+            class="shadow-none rounded-none border-none text-primary"
+            title="Refill Info"
+            v-model="openedS"
+          >
+            <div class="w-full mt-5 pb-5">
+              <date-picker
+                placeholder="autofill"
+                v-model="medication.refillInfo.dispenseInterval"
+                label="dispense interval"
+                class="w-full mb-5 required"
+                :rules="required"
+              />
 
-                  <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="[7,9,9]"
-                    v-model="medication.refillInfo.numberOfRepeatsAllowed"
-                    label="number of repeats allowed"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="[8,5,8]"
-                    v-model="medication.refillInfo.quantity"
-                    label="quantity"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="required w-full"
-                    :rules="required"
-                    :items="[5,3,9]"
-                    v-model="medication.refillInfo.expectedSupplyDuration"
-                    label="expected supply duration"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-        </accordion-component>
-        <accordion-component class="shadow-none rounded-none  border-none  text-primary" title="Substitution Allowed" v-model="openedS">
-              <div class="w-full mt-5 pb-5">
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="['reason']"
-                    label="Code"
-                    v-model="medication.substitutionAllowed.code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                   class="w-full"
-                    :items="['reason']"
-                    label="reason"
-                     v-model="medication.substitutionAllowed.reason"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                </div>
-        </accordion-component>
-       <span class="text-danger text-xs p-3 uppercase float-right font-semibold  cursor-pointer" @click="addMedication">Add</span>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="[7, 9, 9]"
+                v-model="medication.refillInfo.numberOfRepeatsAllowed"
+                label="number of repeats allowed"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="[8, 5, 8]"
+                v-model="medication.refillInfo.quantity"
+                label="quantity"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="[5, 3, 9]"
+                v-model="medication.refillInfo.expectedSupplyDuration"
+                label="expected supply duration"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+            </div>
+          </accordion-component>
+          <accordion-component
+            class="shadow-none rounded-none border-none text-primary"
+            title="Substitution Allowed"
+            v-model="openedS"
+          >
+            <div class="w-full mt-5 pb-5">
+              <cornie-select
+                class="required w-full"
+                :rules="required"
+                :items="['reason']"
+                label="Code"
+                v-model="medication.substitutionAllowed.code"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+              <cornie-select
+                class="w-full"
+                :items="['reason']"
+                label="reason"
+                v-model="medication.substitutionAllowed.reason"
+                placeholder="--Select--"
+              >
+              </cornie-select>
+            </div>
+          </accordion-component>
+          <span
+            class="text-danger text-xs p-3 uppercase float-right font-semibold cursor-pointer"
+            @click="addMedication"
+            >Add</span
+          >
 
-      <div v-for="(input, index) in updatedmedications" :key="`-${index}`">
-        <div class="mt-10 mb-1">   
-          <div class="grid grid-cols-2 p-3">
-            <p class="text-sm font-semibold text-black">{{input.medicationDetails.medicationCode}}</p>
-            <div class="w-full flex flex-wrap float-right justify-between">
-              <span><d-edit class="text-primary fill-current ml-20 cursor-pointer" @click="editMedication(input.id,index)"/></span> 
-              <span><c-delete class=" text-danger fill-current cursor-pointer" @click="removeMedication(input.id,index,medications)"/></span> 
+          <div v-for="(input, index) in updatedmedications" :key="`-${index}`">
+            <div class="mt-10 mb-1">
+              <div class="grid grid-cols-2 p-3">
+                <p class="text-sm font-semibold text-black">
+                  {{ input.medicationDetails.medicationCode }}
+                </p>
+                <div class="w-full flex flex-wrap float-right justify-between">
+                  <span
+                    ><d-edit
+                      class="text-primary fill-current ml-20 cursor-pointer"
+                      @click="editMedication(input.id, index)"
+                  /></span>
+                  <span
+                    ><c-delete
+                      class="text-danger fill-current cursor-pointer"
+                      @click="removeMedication(input.id, index, medications)"
+                  /></span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
         </v-form>
       </cornie-card-text>
       <cornie-card>
@@ -181,30 +220,30 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "./accordion-medication-list.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
-import { duration } from 'moment';
-import IRequest ,{ Medications } from "@/types/IRequest";
+import { duration } from "moment";
+import IRequest, { Medications } from "@/types/IRequest";
 
 const emptyMedication: Medications = {
-   // requestId: "",
-     medicationDetails:{
-          medicationCode: "",
-          medicationReference: "",
-          courseOfTherapyType: "",
-          dosageInstruction: "",
-          initialFill: "",
-          quantity: 0,
-          duration: { start: "", end: "" }
-        },
-         refillInfo:{
-            dispenseInterval: {} as Period,
-            numberOfRepeatsAllowed: 0,
-            quantity: 0,
-            expectedSupplyDuration: 0,
-          },
-          substitutionAllowed:{
-              code: "",
-              reason: "",
-          },
+  // requestId: "",
+  medicationDetails: {
+    medicationCode: "",
+    medicationReference: "",
+    courseOfTherapyType: "",
+    dosageInstruction: "",
+    initialFill: "",
+    quantity: 0,
+    duration: { start: "", end: "" },
+  },
+  refillInfo: {
+    dispenseInterval: {} as Period,
+    numberOfRepeatsAllowed: 0,
+    quantity: 0,
+    expectedSupplyDuration: 0,
+  },
+  substitutionAllowed: {
+    code: "",
+    reason: "",
+  },
 };
 
 @Options({
@@ -233,55 +272,55 @@ export default class Medication extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: Array,  default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   available!: object;
 
- @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: "" })
   taskId!: string;
 
- @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: "" })
   requestId!: string;
 
-loading=  false;
-notes='';
-availableFilter= false;
-profileFilter=false;
-updatedmedications=[];
- newmedications=[];
- // medication =[];
+  loading = false;
+  notes = "";
+  availableFilter = false;
+  profileFilter = false;
+  updatedmedications = [];
+  newmedications = [];
+  // medication =[];
 
- medication = { ...emptyMedication };
-   medications: Medications[] = [];
+  medication = { ...emptyMedication };
+  medications: Medications[] = [];
   async apply() {
-    this.loading = true
-   await this.editMedication();
-    this.loading = false
+    this.loading = true;
+    await this.editMedication();
+    this.loading = false;
   }
   // async setRequest() {
   //    this.medication = JSON.parse(JSON.stringify({ ...this.request }));
   // }
-   get payload() {
-     const model = JSON.parse(JSON.stringify({ ...this.medications }));
+  get payload() {
+    const model = JSON.parse(JSON.stringify({ ...this.medications }));
     return model;
   }
-    addMedication(){
-      this.medications.push({ ...this.medication });
-      window.notify({ msg: "Medication Added", status: "success" });
-    }
-    removeMedication(id:string,index:number){
-      this.medications.splice(index, 1);
-    }
-    async fetchMedication() {
+  addMedication() {
+    this.medications.push({ ...this.medication });
+    window.notify({ msg: "Medication Added", status: "success" });
+  }
+  removeMedication(id: string, index: number) {
+    this.medications.splice(index, 1);
+  }
+  async fetchMedication() {
     const id = this.requestId;
-      const AllNotes = cornieClient().get(`/api/v1/requests/medications/${id}`);
-      const response = await Promise.all([AllNotes]);
-      this.updatedmedications = response[0].data;
-    }
+    const AllNotes = cornieClient().get(`/api/v1/requests/medications/${id}`);
+    const response = await Promise.all([AllNotes]);
+    this.updatedmedications = response[0].data;
+  }
 
-async editMedication() {
+  async editMedication() {
     const id = this.requestId;
     const url = `/api/v1/requests/medications/${id}`;
-    const payload = this.payload ;
+    const payload = this.payload;
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
@@ -292,10 +331,8 @@ async editMedication() {
       window.notify({ msg: "Medication not Updated", status: "error" });
     }
   }
- 
-  created() {
- 
-  }
+
+  created() {}
 }
 </script>
 

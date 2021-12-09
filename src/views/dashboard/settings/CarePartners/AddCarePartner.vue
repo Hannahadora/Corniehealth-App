@@ -6,9 +6,7 @@
       </icon-btn>
     </card-title>
     <card-text class="mx-3 border-b-2 pb-6">
-      <p class="text-xl text-primary mb-1 font-extrabold">
-        New Care Partner
-      </p>
+      <p class="text-xl text-primary mb-1 font-extrabold">New Care Partner</p>
       <p class="mb-4">
         Select or manually input care partner details for invite
       </p>
@@ -89,37 +87,14 @@
           <button
             @click="close"
             type="button"
-            class="
-              outline-primary
-              rounded-full
-              text-black
-              mt-5
-              mr-3
-              py-2
-              pr-8
-              pl-8
-              px-3
-              focus:outline-none
-              hover:bg-primary
-              hover:text-white
-              border-primary border-2
-            "
+            class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white border-primary border-2"
           >
             Cancel
           </button>
           <cornie-btn
             :loading="loading"
             type="submit"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              pr-10
-              pl-10
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
           >
             Invite
           </cornie-btn>

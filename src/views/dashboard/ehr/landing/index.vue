@@ -1,46 +1,37 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-      overflow-auto
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
   >
     <div class="w-full p-2">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-5
-          text-xl text-primary
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
       >
         Patients
       </span>
       <!-- <registration-chart class="w-full" :height="100" /> -->
-      
     </div>
 
     <div class="w-full border-b-4 curved flex mb-8">
-        <div class="container-fluid flex font-semibold text-lg">
-            <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
-            @click="() => activeTab = 0"
-            >All Patients</a>
-            <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
-            @click="() => activeTab = 1"
-            >Active Visits</a>
-        </div>
+      <div class="container-fluid flex font-semibold text-lg">
+        <a
+          class="px-4 py-2 active-tab cursor-pointer"
+          :class="{
+            'active-color text-dark': activeTab === 0,
+            'text-gray-500': activeTab !== 0,
+          }"
+          @click="() => (activeTab = 0)"
+          >All Patients</a
+        >
+        <a
+          class="px-4 py-2 active-tab cursor-pointer"
+          :class="{
+            'active-color': activeTab === 1,
+            'text-gray-500': activeTab !== 1,
+          }"
+          @click="() => (activeTab = 1)"
+          >Active Visits</a
+        >
+      </div>
     </div>
 
     <div class="p-2" v-if="activeTab === 0">
@@ -56,11 +47,7 @@
           </div>
         </template>
         <template #actions="{ item }">
-          <table-action
-            @click="
-              goToEHR(item.id)
-            "
-          >
+          <table-action @click="goToEHR(item.id)">
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">ViewChart</span>
           </table-action>
@@ -117,19 +104,11 @@
           </div>
         </template>
         <template #actions="{ item }">
-          <table-action
-            @click="
-              () => showAuthModal = true
-            "
-          >
+          <table-action @click="() => (showAuthModal = true)">
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View Chart</span>
           </table-action>
-          <table-action
-            @click="
-              goToEHR(item.id)
-            "
-          >
+          <table-action @click="goToEHR(item.id)">
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View patient details</span>
           </table-action>
@@ -206,17 +185,33 @@
       <template #title>
         <div class="w-full">
           <div class="container p-6 content-con">
-            <p class="text-primary text-2xl font-semibold pb-3">Welcome Back, Dr. Obi	</p>
-            <span style="color:#667499" class="text-secondary text-base">Search a patient to continue	</span>
+            <p class="text-primary text-2xl font-semibold pb-3">
+              Welcome Back, Dr. Obi
+            </p>
+            <span style="color: #667499" class="text-secondary text-base"
+              >Search a patient to continue
+            </span>
 
             <div class="w-full py-4">
               <!-- <search-dropdown :results="searchList" /> -->
-              <search-input class="p-2" :placehoder="'Search by patient name, mrn, email, unique ID'" v-model="query" />
+              <search-input
+                class="p-2"
+                :placehoder="'Search by patient name, mrn, email, unique ID'"
+                v-model="query"
+              />
             </div>
             <div class="w-full pt-2 pb-8">
-              <button class="bg-red-500 p-2 rounded-full w-full cursor-pointer" @click="searchForPatient">
-                <span class="text-white font-semibold">{{ loading ? 'Searching' : 'Search' }}</span>
-                <div class="loadingio-spinner-rolling-pciy0fvd3t mt-auto" v-if="loading">
+              <button
+                class="bg-red-500 p-2 rounded-full w-full cursor-pointer"
+                @click="searchForPatient"
+              >
+                <span class="text-white font-semibold">{{
+                  loading ? "Searching" : "Search"
+                }}</span>
+                <div
+                  class="loadingio-spinner-rolling-pciy0fvd3t mt-auto"
+                  v-if="loading"
+                >
                   <div class="ldio-s45rszdrvn">
                     <div></div>
                   </div>
@@ -224,20 +219,36 @@
               </button>
             </div>
 
-            <div class="w-full flex justify-around items-center mb-5" >
-              <div class="w-5/12" style="border-bottom: 1px dashed #C2C7D6;"></div>
+            <div class="w-full flex justify-around items-center mb-5">
+              <div
+                class="w-5/12"
+                style="border-bottom: 1px dashed #c2c7d6"
+              ></div>
               <div class="w-1/12"><span>Or</span></div>
-              <div class="w-5/12" style="border-bottom: 1px dashed #C2C7D6;"></div>
+              <div
+                class="w-5/12"
+                style="border-bottom: 1px dashed #c2c7d6"
+              ></div>
             </div>
 
             <div class="w-full flex flex justify-around">
-                <corniebtn class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
-                    <span class="font-semibold text-white" @click="closeAndViewAll">View all patients</span>
-                </corniebtn>
+              <corniebtn
+                class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer"
+              >
+                <span class="font-semibold text-white" @click="closeAndViewAll"
+                  >View all patients</span
+                >
+              </corniebtn>
 
-                <corniebtn class="bg-white primary-border p-2 rounded-full px-8 mx-4 cursor-pointer">
-                    <span class="text-primary-500 font-semibold " @click="viewActiveVisits">Go to active visits</span>
-                </corniebtn>
+              <corniebtn
+                class="bg-white primary-border p-2 rounded-full px-8 mx-4 cursor-pointer"
+              >
+                <span
+                  class="text-primary-500 font-semibold"
+                  @click="viewActiveVisits"
+                  >Go to active visits</span
+                >
+              </corniebtn>
             </div>
           </div>
         </div>
@@ -261,11 +272,11 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import AdvancedFilter from "../../patientexp/patients/dialogs/advanced-filter.vue";
-import Modal from "@/components/modal.vue"
+import Modal from "@/components/modal.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
-import SearchInput from "@/components/search-input.vue"
-import SearchDropdown from '../careteam/components/search-dropdown.vue'
-import ehrHelper from "./helper/ehr-service"
+import SearchInput from "@/components/search-input.vue";
+import SearchDropdown from "../careteam/components/search-dropdown.vue";
+import ehrHelper from "./helper/ehr-service";
 import User from "@/types/user";
 import IPractitioner from "@/types/IPractitioner";
 
@@ -336,10 +347,10 @@ export default class ExistingState extends Vue {
   showSearchModal = false;
   activeTab = 0;
   query = "";
-  searchResults: IPatient[] = [ ];
+  searchResults: IPatient[] = [];
   loading = false;
-  activeVisits: IPatient[] = [ ];
-  patientId = ""
+  activeVisits: IPatient[] = [];
+  patientId = "";
   time: any;
 
   headers = [
@@ -376,15 +387,17 @@ export default class ExistingState extends Vue {
   ];
 
   get items() {
-    return this.patients.map(patient => {
+    return this.patients.map((patient) => {
       // console.log(, "contact info");
-      const contact = patient?.contactInfo?.find(contact => contact.phone?.number);
+      const contact = patient?.contactInfo?.find(
+        (contact) => contact.phone?.number
+      );
       return {
         ...patient,
         name: `${patient.firstname} ${patient.lastname}`,
-        phone: `${ contact?.phone?.dialCode}${contact?.phone?.number}`,
-        email: contact?.email
-      }
+        phone: `${contact?.phone?.dialCode}${contact?.phone?.number}`,
+        email: contact?.email,
+      };
     });
   }
 
@@ -392,9 +405,9 @@ export default class ExistingState extends Vue {
     return this.searchResults.map((patient: any) => {
       return {
         code: patient.id,
-        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`
-      }
-    })
+        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`,
+      };
+    });
   }
 
   goToEHR(patientId: string) {
@@ -402,7 +415,7 @@ export default class ExistingState extends Vue {
       this.patientId = patientId;
       this.showAuthModal = true;
     } else {
-      this.$router.push({ name: 'Health Trend', params: { id: patientId  }})
+      this.$router.push({ name: "Health Trend", params: { id: patientId } });
     }
   }
 
@@ -457,7 +470,7 @@ export default class ExistingState extends Vue {
   //     this.loading = true;
   //     const verified = await ehrHelper.authenticateUser({ email: this.authPractitioner?.email, authPassword: this.password, accountId: this.domain ? this.domain : ""})
   //     this.password = "";
-      
+
   //     this.loading = false;
   //     if (verified) {
   //       this.showAuthModal = false;
@@ -480,86 +493,93 @@ export default class ExistingState extends Vue {
       this.loading = true;
       const data = await ehrHelper.searchPatient(this.query);
       this.loading = false;
-      if (data && data.length > 0) {        
-        this.$router.push(`/dashboard/provider/clinical/${data[0].id}/health-trend`)
-        // this.searchResults = data;        
+      if (data && data.length > 0) {
+        this.$router.push(
+          `/dashboard/provider/clinical/${data[0].id}/health-trend`
+        );
+        // this.searchResults = data;
       } else {
         window.notify({ msg: "No match found", status: "info" });
       }
     } catch (error) {
       this.loading = false;
       console.log(error);
-      
     }
   }
 
   logout() {
-    this.updatePractitionerAuthStatus(false)
+    this.updatePractitionerAuthStatus(false);
   }
 
   resetTimer() {
     clearTimeout(this.time);
-    this.time = setTimeout(this.logout, 180000)
+    this.time = setTimeout(this.logout, 180000);
   }
 
-    mounted() {
-      window.onload = this.resetTimer;
-      // DOM Events
-      document.onmousemove = this.resetTimer;
-      document.onkeydown = this.resetTimer;
-    }
+  mounted() {
+    window.onload = this.resetTimer;
+    // DOM Events
+    document.onmousemove = this.resetTimer;
+    document.onkeydown = this.resetTimer;
+  }
 
   async created() {
-    
     if (!this.practitionerAuthenticated) this.showAuthModal = true;
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();
     this.visits?.map((visit: any) => {
       if (visit.practitioners?.length === 0) {
-        visit.practitioners.push({ id: "87e846a3-bac0-43b9-a4db-0b2605426c42" })
+        visit.practitioners.push({
+          id: "87e846a3-bac0-43b9-a4db-0b2605426c42",
+        });
       }
       return visit;
-    })
-    const activeVisits = ehrHelper.getActiveVisits(this.visits, this.user.id, this.patients);
+    });
+    const activeVisits = ehrHelper.getActiveVisits(
+      this.visits,
+      this.user.id,
+      this.patients
+    );
     this.activeVisits = activeVisits?.map((visit: any) => {
-      const patient = this.patients?.find(patient => patient.id === visit.id);
-      const contact = patient?.contactInfo?.find(contact => contact.phone?.number);
-      const data: any = { ...patient }
+      const patient = this.patients?.find((patient) => patient.id === visit.id);
+      const contact = patient?.contactInfo?.find(
+        (contact) => contact.phone?.number
+      );
+      const data: any = { ...patient };
       if (patient?.id) {
-        data.phone = `${ contact?.phone?.dialCode}${contact?.phone?.number}`,
-        data.email = contact?.email
+        (data.phone = `${contact?.phone?.dialCode}${contact?.phone?.number}`),
+          (data.email = contact?.email);
       }
       console.log(activeVisits, "ACTIVE");
-      
+
       return patient?.id ? patient : visit;
-    })
+    });
   }
 }
 </script>
 
 <style scoped>
 .active-tab {
-    border-bottom-width: 4px;
-    margin-bottom: -0.22rem;
+  border-bottom-width: 4px;
+  margin-bottom: -0.22rem;
 }
 
 .active-color {
-    border-color: #FE4D3C;
+  border-color: #fe4d3c;
 }
 
 .status-active {
-    background: #F3FCF8;
-    color: #35BA83;
-    
+  background: #f3fcf8;
+  color: #35ba83;
 }
 
 .status-inactive {
-    background: #FFF1F0;
-    color: #FE4D3C;
+  background: #fff1f0;
+  color: #fe4d3c;
 }
 
 .border-b-4 {
-    border-bottom: 4px solid #F0F4FE;
+  border-bottom: 4px solid #f0f4fe;
 }
 
 .content-con {

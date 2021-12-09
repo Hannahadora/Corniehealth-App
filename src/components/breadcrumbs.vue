@@ -4,7 +4,11 @@
       <three-dot-icon />
     </router-link>
     <span class="flex items-center">
-      <span v-for="(page, i) in pages.all" :key="i" class="flex items-center ml-2">
+      <span
+        v-for="(page, i) in pages.all"
+        :key="i"
+        class="flex items-center ml-2"
+      >
         <chevrons-right-icon class="" />
         <router-link
           :to="page.path"

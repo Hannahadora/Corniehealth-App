@@ -1,13 +1,12 @@
 <template>
   <!-- component -->
   <div>
-  <div :class="classes" >
-    <div v-bind="$attrs" class="rounded-lg opacity-100">
-       
+    <div :class="classes">
+      <div v-bind="$attrs" class="rounded-lg opacity-100">
         <slot></slot>
+      </div>
     </div>
-  </div>
-  <span @click="show = false" class="mdi mdi-close text-xl cursor-pointer" />
+    <span @click="show = false" class="mdi mdi-close text-xl cursor-pointer" />
   </div>
 </template>
 <script lang="ts">
@@ -26,16 +25,16 @@ export default class Modal extends Vue {
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
   }
-   get() {
-    return this.show = false;
-    }
-    
-      set(val: string) {
-        this.$emit("update:visible", val);
-      }
-   
-  closeModal () {
-      this.isActive = false;
+  get() {
+    return (this.show = false);
+  }
+
+  set(val: string) {
+    this.$emit("update:visible", val);
+  }
+
+  closeModal() {
+    this.isActive = false;
   }
 }
 </script>

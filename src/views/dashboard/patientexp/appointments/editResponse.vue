@@ -1,16 +1,7 @@
 <template>
   <div class="w-full h-full bg-white rounded-md p-5">
     <span
-      class="
-        flex flex-col
-        w-full
-        justify-center
-        border-b-2
-        font-bold
-        mb-10
-        text-xl text-primary
-        py-2
-      "
+      class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
     >
       Edit Response
     </span>
@@ -70,20 +61,7 @@
                   $router.push('/dashboard/provider/experience/appointments')
                 "
                 type="button"
-                class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                "
+                class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
               >
                 Cancel
               </button>
@@ -91,16 +69,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  pr-14
-                  pl-14
-                  focus:outline-none
-                  hover:opacity-90
-                "
+                class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
               >
                 Save
               </cornie-btn>
@@ -143,7 +112,7 @@ const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
 const emptyPractitioners: Practitioners = {
-   id:"",
+  id: "",
   type: "",
   required: "",
   consultationMedium: "",
@@ -152,7 +121,7 @@ const emptyPractitioners: Practitioners = {
 };
 
 const emptyPatients: Patients = {
-   id:"",
+  id: "",
   type: "",
   required: "",
   consultationMedium: "",
@@ -166,7 +135,7 @@ const emptyPatients: Patients = {
   mrn: "",
 };
 const emptyDevices: Devices = {
-   id:"",
+  id: "",
   type: "",
   required: "",
   consultationMedium: "",

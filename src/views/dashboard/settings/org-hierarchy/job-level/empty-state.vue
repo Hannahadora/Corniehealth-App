@@ -5,16 +5,7 @@
     </template>
     <template v-slot:actions>
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          px-5
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 px-5 focus:outline-none hover:opacity-90"
       >
         <span class="flex items-center w-full h-full justify-between">
           <add-icon class="fill-current text-white mr-3" />

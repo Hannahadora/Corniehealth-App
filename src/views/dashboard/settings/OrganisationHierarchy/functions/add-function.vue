@@ -40,34 +40,14 @@
           <div class="flex justify-end">
             <span
               @click="show = false"
-              class="
-                border-primary border-2
-                rounded-full
-                text-black
-                mr-2
-                py-1
-                px-2
-                focus:outline-none
-                outline
-                hover:bg-primary
-                hover:text-white
-                cursor-pointer
-              "
+              class="border-primary border-2 rounded-full text-black mr-2 py-1 px-2 focus:outline-none outline hover:bg-primary hover:text-white cursor-pointer"
             >
               Cancel
             </span>
             <cornie-btn
               type="submit"
               :loading="loading"
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                py-1
-                px-6
-                focus:outline-none
-                hover:opacity-90
-              "
+              class="bg-danger rounded-full text-white py-1 px-6 focus:outline-none hover:opacity-90"
             >
               Save
             </cornie-btn>

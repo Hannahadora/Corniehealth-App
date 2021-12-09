@@ -28,18 +28,7 @@
               <corniebtn :loading="false">
                 <a
                   @click="() => (show = false)"
-                  class="
-                    cursor-pointer
-                    bg-white
-                    focus:outline-none
-                    text-gray-500
-                    border
-                    mr-6
-                    font-bold
-                    py-2
-                    px-4
-                    rounded-full
-                  "
+                  class="cursor-pointer bg-white focus:outline-none text-gray-500 border mr-6 font-bold py-2 px-4 rounded-full"
                 >
                   Cancel
                 </a>
@@ -48,16 +37,7 @@
                 <a
                   @click="() => (show = false)"
                   style="background: #fe4d3c"
-                  class="
-                    text-white
-                    hover:bg-blue-700
-                    cursor-pointer
-                    focus:outline-none
-                    font-bold
-                    py-2
-                    px-4
-                    rounded-full
-                  "
+                  class="text-white hover:bg-blue-700 cursor-pointer focus:outline-none font-bold py-2 px-4 rounded-full"
                 >
                   Save
                 </a>

@@ -27,17 +27,37 @@
 
         <div class="grid grid-cols-2 text-center gap-3 mt-5">
           <cornie-input v-model="stageChiefComplaint" label="Chief Complaint" />
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
-  </div>
+          <div
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
+          >
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+              <path
+                d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
+                clip-rule="evenodd"
+                fill-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
         </div>
 
-<div class="relative text-gray-700">
-  <input class="w-full h-10 pl-3 pr-8 text-base focus:outline-none  placeholder-gray-600 border rounded-lg focus:shadow-outline" type="text" placeholder="Regular input"/>
-  <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
-  </div>
-</div>
+        <div class="relative text-gray-700">
+          <input
+            class="w-full h-10 pl-3 pr-8 text-base focus:outline-none placeholder-gray-600 border rounded-lg focus:shadow-outline"
+            type="text"
+            placeholder="Regular input"
+          />
+          <div
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
+          >
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+              <path
+                d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
+                clip-rule="evenodd"
+                fill-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+        </div>
 
         <div class="flex items-center justify-between mt-3 mb-2">
           <h3 class="text-sm">History of Present Sickness (HPI)</h3>
@@ -173,17 +193,15 @@
             </div> -->
         </div>
       </accordion-component>
-        
 
       <accordion-component
         class="shadow-none rounded-none border-none text-primary mt-5 mb-5"
         title="Objective"
       >
         <!-- <vue-range-slider v-model="value"></vue-range-slider> -->
-            <!-- <CustomRangeSlider/> -->
+        <!-- <CustomRangeSlider/> -->
 
-            <Range />
-
+        <Range />
 
         <div class="grid grid-cols-2 gap-3 mt-3">
           <div class="relative z-10 mt-5">
@@ -203,13 +221,7 @@
             />
 
             <div
-              class="
-                grid grid-cols-3
-                gap-40
-                w-full
-                justify-content-between
-                content-center
-              "
+              class="grid grid-cols-3 gap-40 w-full justify-content-between content-center"
             >
               <p
                 class="text-xs text-black mb-2 font-bold"
@@ -219,11 +231,9 @@
               </p>
             </div>
 
-<vue-slider v-model="value"></vue-slider>
+            <vue-slider v-model="value"></vue-slider>
 
-
-
-<!-- 
+            <!-- 
 
 <input id="rangeInput" type="range" list="tickmarks" min="0" max="100">
 
@@ -241,20 +251,14 @@
   <option value="100" label="100%"></option>
 </datalist> -->
 
-
-
-
-<!-- most basic, used for Knobs demo
+            <!-- most basic, used for Knobs demo
 <div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
   <input type="range" min="0" max="100" step="5" value="75" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
   <output></output>
   <div class='range-slider__progress'></div>
 </div> -->
 
-
-
-
-<!-- <form>
+            <!-- <form>
   <div>
     <input id="rangeInput2" type="range" min="0" max="200" oninput="amount.value=rangeInput.value" />
     <input id="amount" type="number" value="100" min="0" max="200" oninput="rangeInput.value=amount.value" />
@@ -279,22 +283,9 @@
   <option value="100" label="100%"></option>
 </datalist> -->
 
-
-
-
-
             <div class="relative pt-1 mt-5">
               <div
-                class="
-                  overflow-hidden
-                  h-1
-                  mb-4
-                  text-xs
-                  flex
-                  rounded
-                  bg-gray-200
-                  cursor-pointer
-                "
+                class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
               >
                 <!-- <div  :style="{width: `${width}%`}" aria-valuenow="25" aria-valuemin="0"  aria-valuemax="100" class="progress cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"> -->
                 <div
@@ -302,17 +293,7 @@
                   aria-valuenow="25"
                   aria-valuemin="0"
                   aria-valuemax="100"
-                  class="
-                    progress
-                    cursor-pointer
-                    shadow-none
-                    flex flex-col
-                    text-center
-                    whitespace-nowrap
-                    text-white
-                    justify-center
-                    bg-danger
-                  "
+                  class="progress cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"
                 >
                   <div class="icon-wrap"></div>
                 </div>
@@ -450,7 +431,6 @@ import TimeablePicker from "./timeable.vue";
 import TimeablePicker2 from "./timeable2.vue";
 import Measurable from "./measurable.vue";
 
-
 import {
   verificationStatuses,
   clinicalStatuses,
@@ -473,7 +453,6 @@ import DateTimePicker2 from "./date-time-picker.vue";
 import AddIcon from "@/components/icons/add.vue";
 import Range from "@/components/range.vue";
 
-
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
 // import { VueRangeSlider} from 'vue-range-component'
@@ -486,7 +465,6 @@ import Range from "@/components/range.vue";
 // import 'vue-slider-component/theme/default.css'
 
 //  import CustomRangeSlider from "./CustomRangeSlider.vue";
-
 
 const user = namespace("user");
 
@@ -651,8 +629,6 @@ export default class AddCondition extends Vue {
     };
   }
 
-  
-
   async submit() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
@@ -667,13 +643,6 @@ export default class AddCondition extends Vue {
     }
   }
 
-
-
-
-
-
-
-
   created() {
     this.loadDropdown();
     this.setAsserter();
@@ -681,6 +650,4 @@ export default class AddCondition extends Vue {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

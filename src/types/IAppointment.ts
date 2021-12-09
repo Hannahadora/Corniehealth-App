@@ -24,60 +24,59 @@ export default interface IAppointment {
   Devices: Devices[];
   Patients: Patients[];
   Locations: Location[];
-  HealthCare:HealthCare[];
+  HealthCare: HealthCare[];
   appointmentId: string;
   comment: string;
   status: string;
 }
-export interface Practitioners{
-  id?: string,
-  type: string,
-  required: string,
-  consultationMedium: string,
+export interface Practitioners {
+  id?: string;
+  type: string;
+  required: string;
+  consultationMedium: string;
   period: Period;
-  practitionerId: string,
+  practitionerId: string;
 }
-export interface Devices{
-  id?: string,
-  type: string,
-  required: string,
-  consultationMedium: string,
+export interface Devices {
+  id?: string;
+  type: string;
+  required: string;
+  consultationMedium: string;
   period: Period;
-  deviceId: string,
+  deviceId: string;
 }
 export interface Patients {
-  id?: string,
-  type: string,
-  required: string,
-  consultationMedium: string,
-  period: Period,
-  patientId: string,
-  firstname: string,
-  lastname: string,
-  gender: string,
-  dateOfBirth: string,
-  accountType: string,
-  mrn: string,
-}
-export interface Location{
-  id?: string,
-  type: string,
-  required: string,
-  consultationMedium: string,
+  id?: string;
+  type: string;
+  required: string;
+  consultationMedium: string;
   period: Period;
-  deviceId: string,
+  patientId: string;
+  firstname: string;
+  lastname: string;
+  gender: string;
+  dateOfBirth: string;
+  accountType: string;
+  mrn: string;
 }
-export interface HealthCare{
-  id?: string,
-  type: string,
-  required: string,
-  consultationMedium: string,
+export interface Location {
+  id?: string;
+  type: string;
+  required: string;
+  consultationMedium: string;
   period: Period;
-  deviceId: string,
+  deviceId: string;
+}
+export interface HealthCare {
+  id?: string;
+  type: string;
+  required: string;
+  consultationMedium: string;
+  period: Period;
+  deviceId: string;
 }
 export interface ParticipantDetail {
   required: string;
   consultationMedium: string;
   period: Period;
 }
-

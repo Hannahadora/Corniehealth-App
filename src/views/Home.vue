@@ -1,41 +1,13 @@
 <template>
   <div class="home">
     <nav
-      class="
-        top-0
-        sticky
-        z-50
-        w-full
-        flex
-        bg-light-blue
-        flex-wrap
-        items-center
-        justify-between
-        px-2
-        py-3
-      "
+      class="top-0 sticky z-50 w-full flex bg-light-blue flex-wrap items-center justify-between px-2 py-3"
     >
       <div
-        class="
-          container
-          px-4
-          mx-auto
-          flex flex-wrap
-          items-center
-          justify-between
-        "
+        class="container px-4 mx-auto flex flex-wrap items-center justify-between"
       >
         <div
-          class="
-            w-full
-            relative
-            flex
-            justify-between
-            lg:w-auto
-            lg:static
-            lg:block
-            lg:justify-start
-          "
+          class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start"
         >
           <svg
             width="172"
@@ -65,117 +37,47 @@
               fill="#080056"
             />
           </svg>
-              <button
-                  @click="$router.push('/signup')"
-                class="
-                  flex
-                  lg:hidden
-                  md:hidden
-                    bg-danger
-                    text-white
-                    pl-8
-                    pr-8
-                    active:bg-gray-700
-                    text-sm
-                    font-medium
-                    px-12
-                    py-4
-                    rounded-full
-                    shadow
-                    hover:shadow-lg
-                    outline-none
-                    focus:outline-none
-                    mr-1
-                    mb-1
-                  "
-                  type="button"
-                  style="transition: all 0.15s ease 0s"
-               >
-               Sign Up
-              </button>
+          <button
+            @click="$router.push('/signup')"
+            class="flex lg:hidden md:hidden bg-danger text-white pl-8 pr-8 active:bg-gray-700 text-sm font-medium px-12 py-4 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+            type="button"
+            style="transition: all 0.15s ease 0s"
+          >
+            Sign Up
+          </button>
         </div>
         <div
-          class="
-            flex
-            flex-grow
-            items-center
-            lg:bg-transparent
-            lg:shadow-none
-          "
+          class="flex flex-grow items-center lg:bg-transparent lg:shadow-none"
           id="example-navbar-warning"
         >
           <ul class="lg:flex flex-col lg:flex-row list-none lg:ml-auto hidden">
             <li class="flex items-center">
-               <button 
-              @click="$router.push('/login')"
-               class="
-                  outline-primary
-                    text-primary
-                    pl-16
-                    pr-16
-                    active:bg-gray-700
-                    text-sm
-                    font-medium
-                    px-5
-                    py-2
-                    rounded-full
-                    shadow
-                    hover:shadow-lg  
-                    outline-none
-                    focus:outline-none
-                    mr-1
-                    mb-1
-                  "
-                  type="button"
-                  style="transition: all 0.15s ease 0s"
-          >
-            Login
-          </button>
-            </li>
-            <li class="flex items-center">
-                <button
-                  @click="$router.push('/signup')"
-                class="
-                    bg-danger
-                    text-white
-                    pl-16
-                    pr-16
-                    active:bg-gray-700
-                    text-sm
-                    font-medium
-                    px-6
-                    py-3
-                    rounded-full
-                    shadow
-                    hover:shadow-lg
-                    outline-none
-                    focus:outline-none
-                    mr-1
-                    mb-1
-                  "
-                  type="button"
-                  style="transition: all 0.15s ease 0s"
-          >
-            Sign Up
+              <button
+                @click="$router.push('/login')"
+                class="outline-primary text-primary pl-16 pr-16 active:bg-gray-700 text-sm font-medium px-5 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                type="button"
+                style="transition: all 0.15s ease 0s"
+              >
+                Login
               </button>
             </li>
-        
+            <li class="flex items-center">
+              <button
+                @click="$router.push('/signup')"
+                class="bg-danger text-white pl-16 pr-16 active:bg-gray-700 text-sm font-medium px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                type="button"
+                style="transition: all 0.15s ease 0s"
+              >
+                Sign Up
+              </button>
+            </li>
           </ul>
         </div>
       </div>
     </nav>
     <main>
       <div
-        class="
-          relative
-          pt-32
-          pb-20
-          bg-light-blue
-          flex
-          content-center
-          items-center
-          justify-center
-        "
+        class="relative pt-32 pb-20 bg-light-blue flex content-center items-center justify-center"
         style="min-height: 85vh"
       >
         <div class="container relative mx-auto">
@@ -205,24 +107,7 @@
                 </p>
                 <a
                   href="#stayInformed"
-                  class="
-                    bg-danger
-                    text-white
-                    pl-16
-                    pr-16
-                    active:bg-gray-700
-                    text-sm
-                    font-medium
-                    px-6
-                    py-3
-                    rounded-full
-                    shadow
-                    hover:shadow-lg
-                    outline-none
-                    focus:outline-none
-                    mr-1
-                    mb-1
-                  "
+                  class="bg-danger text-white pl-16 pr-16 active:bg-gray-700 text-sm font-medium px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                   type="button"
                   style="transition: all 0.15s ease 0s"
                 >
@@ -237,20 +122,7 @@
         <div class="container mx-auto px-4">
           <div class="flex flex-wrap items-center mt-32" data-aos="fade-up">
             <div
-              class="
-                w-full
-                lg:mt-0
-                md:mt-0
-                mt-60
-                md:w-5/12
-                md:order-first
-                sm:order-last
-                order-last
-                lg:order-first
-                px-4
-                mr-auto
-                ml-auto
-              "
+              class="w-full lg:mt-0 md:mt-0 mt-60 md:w-5/12 md:order-first sm:order-last order-last lg:order-first px-4 mr-auto ml-auto"
             >
               <div class="bg-red-10 text-danger rounded w-10/12 py-0 px-2">
                 <span class="font-bold uppercase text-vs"
@@ -259,16 +131,7 @@
                 >
               </div>
               <h3
-                class="
-                  lg:text-3xl
-                  md:text-3xl
-                  text-xl
-                  mb-2
-                  mt-3
-                  font-bold
-                  text-primary
-                  leading-normal
-                "
+                class="lg:text-3xl md:text-3xl text-xl mb-2 mt-3 font-bold text-primary leading-normal"
               >
                 Drive Operational Efficiency
               </h3>
@@ -284,17 +147,7 @@
                 <img alt="..." src="@/assets/img/slots.svg" />
                 <img
                   alt="..."
-                  class="
-                    w-sm
-                    absolute
-                    lg:-bottom-24
-                    md:-bottom-24
-                    -bottom-56
-                    z-10
-                    left-3
-                    md:left-10
-                    lg:left-10
-                  "
+                  class="w-sm absolute lg:-bottom-24 md:-bottom-24 -bottom-56 z-10 left-3 md:left-10 lg:left-10"
                   src="@/assets/img/actors.svg"
                 />
               </div>
@@ -316,14 +169,7 @@
                   >
                 </div>
                 <h3
-                  class="
-                    text-3xl
-                    mb-2
-                    mt-3
-                    font-bold
-                    text-primary
-                    leading-normal
-                  "
+                  class="text-3xl mb-2 mt-3 font-bold text-primary leading-normal"
                 >
                   Better Healthcare for All
                 </h3>
@@ -346,17 +192,7 @@
           >
             <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-0 px-4">
               <div
-                class="
-                  relative
-                  flex flex-col
-                  min-w-0
-                  break-words
-                  bg-white
-                  w-full
-                  mb-8
-                  shadow-md
-                  rounded-lg
-                "
+                class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-md rounded-lg"
               >
                 <div class="px-3 py-1 flex-auto">
                   <div class="flex mt-2 justify-start mb-5">
@@ -451,17 +287,7 @@
             </div>
             <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-0 px-4">
               <div
-                class="
-                  relative
-                  flex flex-col
-                  min-w-0
-                  break-words
-                  bg-white
-                  w-full
-                  mb-8
-                  shadow-md
-                  rounded-lg
-                "
+                class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-md rounded-lg"
               >
                 <div class="px-3 py-1 flex-auto">
                   <div class="fle mt-2 justify-start mb-5">
@@ -555,17 +381,7 @@
             </div>
             <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-0 px-4">
               <div
-                class="
-                  relative
-                  flex flex-col
-                  min-w-0
-                  break-words
-                  bg-white
-                  w-full
-                  mb-8
-                  shadow-md
-                  rounded-lg
-                "
+                class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-md rounded-lg"
               >
                 <div class="px-3 py-1 flex-auto">
                   <div class="flex mt-2 justify-start mb-5">
@@ -660,17 +476,7 @@
             </div>
             <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-0 px-4">
               <div
-                class="
-                  relative
-                  flex flex-col
-                  min-w-0
-                  break-words
-                  bg-white
-                  w-full
-                  mb-8
-                  shadow-md
-                  rounded-lg
-                "
+                class="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-md rounded-lg"
               >
                 <div class="px-3 py-1 flex-auto">
                   <div class="flex justify-start mt-2 mb-5">
@@ -778,15 +584,7 @@
             </div>
           </div>
           <div
-            class="
-              flex flex-wrap
-              justify-center
-              lg:space-x-10
-              md:space-x-10
-              space-x-2
-              text-center
-              mb-7
-            "
+            class="flex flex-wrap justify-center lg:space-x-10 md:space-x-10 space-x-2 text-center mb-7"
           >
             <div>
               <span class="flex item-center mb-2">
@@ -835,26 +633,7 @@
           </div>
           <div class="flex justify-center text-center">
             <button
-              class="
-                bg-danger
-                text-white
-                pl-16
-                pr-16
-                block
-                w-96
-                active:bg-gray-700
-                text-sm
-                font-medium
-                px-6
-                py-3
-                rounded-full
-                shadow
-                hover:shadow-lg
-                outline-none
-                focus:outline-none
-                mr-1
-                mb-1
-              "
+              class="bg-danger text-white pl-16 pr-16 block w-96 active:bg-gray-700 text-sm font-medium px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
               type="button"
               style="transition: all 0.15s ease 0s"
             >
@@ -1041,7 +820,7 @@ input[type="checkbox"]:after {
 .outline-primary {
   border: 2px solid #080056;
 }
-.bg-red-10{
-  background: #FFFAFA;
+.bg-red-10 {
+  background: #fffafa;
 }
 </style>

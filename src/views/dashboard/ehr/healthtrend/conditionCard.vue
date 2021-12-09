@@ -7,14 +7,7 @@
     @add="$router.push('condition')"
   >
     <div
-      class="
-        w-full
-        grid grid-cols-3
-        gap-1
-        text-sm
-        pb-2
-        border-b border-gray-200
-      "
+      class="w-full grid grid-cols-3 gap-1 text-sm pb-2 border-b border-gray-200"
       v-for="(item, i) in items"
       :key="i"
     >

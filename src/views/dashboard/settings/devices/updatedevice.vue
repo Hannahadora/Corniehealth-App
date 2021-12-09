@@ -1,15 +1,7 @@
 <template>
   <div class="w-full mx-5">
     <span
-      class="
-        flex
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
       Add a New Device
     </span>
@@ -23,16 +15,7 @@
         />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto"
       >
         UDI CARRIER
       </span>
@@ -95,16 +78,7 @@
         />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto"
       >
         Device Name
       </span>
@@ -125,16 +99,7 @@
         />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto"
       >
         Specialization
       </span>
@@ -149,16 +114,7 @@
         />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto"
       >
         Version
       </span>
@@ -171,16 +127,7 @@
         <cornie-input label="value" v-model="deviceModel.version.value" />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto"
       >
         Property
       </span>
@@ -214,43 +161,17 @@
         <cornie-input label="parent" v-model="deviceModel.property.parent" />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mt-4
-          mx-auto
-          mb-3
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto mb-3"
       />
       <span class="flex full-width mb-2 justify-end">
         <button
-          class="
-            rounded-full
-            font-semibold
-            p-2
-            text-primary
-            border border-primary
-            w-1/4
-            mr-3
-          "
+          class="rounded-full font-semibold p-2 text-primary border border-primary w-1/4 mr-3"
           @click="done"
         >
           Revert Changes
         </button>
         <button
-          class="
-            w-1/4
-            rounded-full
-            font-semibold
-            p-2
-            text-white
-            border
-            bg-danger
-          "
+          class="w-1/4 rounded-full font-semibold p-2 text-white border bg-danger"
           type="submit"
         >
           {{ action }} Device

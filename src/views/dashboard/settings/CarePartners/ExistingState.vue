@@ -2,16 +2,7 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          px-3
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
         @click="showAddCarePartners = true"
       >
         Add a Care Partner
@@ -19,7 +10,10 @@
     </span>
     <cornie-table :columns="headers" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deletePartner(item.id)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deletePartner(item.id)"
+        >
           <delete-icon />
           <span class="ml-3 text-xs">Delete</span>
         </div>
@@ -86,32 +80,32 @@ export default class CarePartnersExistingState extends Vue {
     {
       title: "Organisation Name",
       key: "name",
-   //   orderBy: (a: ICarePartner, b: ICarePartner) => a.name < b.name ? -1 : 1,
-      show: true
+      //   orderBy: (a: ICarePartner, b: ICarePartner) => a.name < b.name ? -1 : 1,
+      show: true,
     },
     {
       title: "Organisation Type",
       key: "organisationType",
-   //   orderBy: (a: ICarePartner, b: ICarePartner) => a.organisationType < b.organisationType ? -1 : 1,
-      show: true
+      //   orderBy: (a: ICarePartner, b: ICarePartner) => a.organisationType < b.organisationType ? -1 : 1,
+      show: true,
     },
     {
       title: "Address",
       key: "address",
-     // orderBy: (a: ICarePartner, b: ICarePartner) => (a.address as string) < (b.address as string) ? -1 : 1,
-      show: true
+      // orderBy: (a: ICarePartner, b: ICarePartner) => (a.address as string) < (b.address as string) ? -1 : 1,
+      show: true,
     },
     {
       title: "Email",
       key: "email",
-   //   orderBy: (a: ICarePartner, b: ICarePartner) => a.email < b.email ? -1 : 1,
-      show: true
+      //   orderBy: (a: ICarePartner, b: ICarePartner) => a.email < b.email ? -1 : 1,
+      show: true,
     },
     {
       title: "Phone",
       key: "phone",
-   //   orderBy: (a: ICarePartner, b: ICarePartner) => (a.phone as string) < (b.phone as string) ? -1 : 1,
-      show: true
+      //   orderBy: (a: ICarePartner, b: ICarePartner) => (a.phone as string) < (b.phone as string) ? -1 : 1,
+      show: true,
     },
   ];
 
@@ -134,8 +128,9 @@ export default class CarePartnersExistingState extends Vue {
     });
     if (!confirmed) return;
     const partner = this.carePartners.find((element) => element.id == id);
-    if (partner && (await this.delete(partner))) notify({msg: "Care partner deleted", status: "success"});
-    else notify({msg: "Care partner not deleted", status: "error"});
+    if (partner && (await this.delete(partner)))
+      notify({ msg: "Care partner deleted", status: "success" });
+    else notify({ msg: "Care partner not deleted", status: "error" });
   }
 }
 </script>

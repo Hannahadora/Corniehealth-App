@@ -14,15 +14,7 @@
         :is="!hasChild ? 'router-link' : 'span'"
         :to="to"
         active-class="py-1 px-2 rounded-2xl bg-danger"
-        class="
-          hover:bg-light-blue-600
-          hover:opacity-50
-          pa-2
-          w-full
-          cursor-pointer
-          flex
-          items-center
-        "
+        class="hover:bg-light-blue-600 hover:opacity-50 pa-2 w-full cursor-pointer flex items-center"
         :class="{
           'justify-center': !hovered,
           'rounded-2xl py-1 bg-danger': active && hasChild && !expand,
@@ -50,7 +42,10 @@
     <span
       v-if="expand && hasChild"
       class="flex flex-col items-start pl-0 border-t-2 mt-2 experience-links-con"
-      :class="{ 'experience-links-con-max': showFullHeight, 'experience-links-con-min': !showFullHeight }"
+      :class="{
+        'experience-links-con-max': showFullHeight,
+        'experience-links-con-min': !showFullHeight,
+      }"
     >
       <router-link
         v-for="(child, i) in children"
@@ -62,7 +57,12 @@
         {{ child.name }}
       </router-link>
     </span>
-    <span v-if="hasSubsection && expand" @click="() => showFullHeight = !showFullHeight" class="px-3 pb-3 more cursor-pointer">{{ showFullHeight ? 'See less' : 'See more' }}</span>
+    <span
+      v-if="hasSubsection && expand"
+      @click="() => (showFullHeight = !showFullHeight)"
+      class="px-3 pb-3 more cursor-pointer"
+      >{{ showFullHeight ? "See less" : "See more" }}</span
+    >
   </div>
 </template>
 <script lang="ts">
@@ -143,13 +143,13 @@ export default class SidebarLink extends Vue {
 .experience-links-con-max {
   height: 405px;
   overflow: hidden;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 .experience-links-con-min {
   height: 180px;
   overflow: hidden;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 .more {

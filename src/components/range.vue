@@ -1,5 +1,4 @@
 <template>
-  
   <!-- <input
     type="range"
     min="0"
@@ -20,7 +19,14 @@
   <div class="range-slider">
     <!-- <input type="range" min="0" max="180" step="1" v-model="sliderMin">
     <input type="number" min="0" max="180" step="1" v-model="sliderMin" class="minnumber"> -->
-    <input type="range" min="0" max="180" step="1" v-model="sliderMax"  class="mr-10"/>
+    <input
+      type="range"
+      min="0"
+      max="180"
+      step="1"
+      v-model="sliderMax"
+      class="mr-10"
+    />
     <input
       type="number"
       min="0"

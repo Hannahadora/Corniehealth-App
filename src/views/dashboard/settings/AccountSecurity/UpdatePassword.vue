@@ -5,21 +5,8 @@
         <label for="currentPassword" class="font-bold text-base uppercase mb-5">
           Current Password
         </label>
-       <password-input
-          class="
-            appearance-none
-            w-full
-            px-3
-            py-2
-            border border-gray-300
-            rounded-md
-            placeholder-gray-400
-            focus:outline-none
-            focus:shadow-outline-blue
-            focus:border-blue-300
-            sm:text-sm
-            sm:leading-5
-          "
+        <password-input
+          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
           placeholder="Enter Password"
           v-model="currentPassword"
         />
@@ -31,23 +18,7 @@
           New Password
         </label>
         <password-input
-          class="
-            appearance-none
-            w-full
-            px-3
-            py-2
-            border border-gray-300
-            rounded-md
-            placeholder-gray-400
-            focus:outline-none
-            focus:shadow-outline-blue
-            focus:border-blue-300
-            transition
-            duration-150
-            ease-in-out
-            sm:text-sm
-            sm:leading-5
-          "
+          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           placeholder="Enter Password"
           v-model="newPassword"
         />
@@ -57,23 +28,7 @@
           Confirm Password
         </label>
         <password-input
-          class="
-            appearance-none
-            w-full
-            px-3
-            py-2
-            border border-gray-300
-            rounded-md
-            placeholder-gray-400
-            focus:outline-none
-            focus:shadow-outline-blue
-            focus:border-blue-300
-            transition
-            duration-150
-            ease-in-out
-            sm:text-sm
-            sm:leading-5
-          "
+          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           placeholder="Confirm New Password"
           v-model="ConfirmPassword"
         />
@@ -83,25 +38,7 @@
       <button
         type="submit"
         @click="updatePassword()"
-        class="
-          my-10
-          px-6
-          py-2
-          text-white
-          appearance-none
-          border-none
-          bg-danger
-          rounded-3xl
-          placeholder-gray-400
-          focus:outline-none
-          focus:shadow-outline-blue
-          focus:border-blue-300
-          transition
-          duration-150
-          ease-in-out
-          sm:text-sm
-          sm:leading-5
-        "
+        class="my-10 px-6 py-2 text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         Save
       </button>
@@ -110,9 +47,9 @@
 </template>
 
 <script>
-import PasswordInput from "@/components/PasswordInput.vue"
-import { quantumClient } from "@/plugins/http"
-import store from "@/store"
+import PasswordInput from "@/components/PasswordInput.vue";
+import { quantumClient } from "@/plugins/http";
+import store from "@/store";
 
 export default {
   name: "UpdatePassword",

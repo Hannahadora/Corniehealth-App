@@ -5,17 +5,7 @@
   >
     <div
       :class="[color]"
-      class="
-        text-xs
-        w-full
-        leading-none
-        flex
-        justify-center
-        items-center
-        rounded-r-xl rounded-l-xl
-        py-1.5
-        px-auto
-      "
+      class="text-xs w-full leading-none flex justify-center items-center rounded-r-xl rounded-l-xl py-1.5 px-auto"
       :style="{ width }"
     >
       <slot />

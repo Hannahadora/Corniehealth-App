@@ -21,28 +21,26 @@
     </div> -->
     <Table :columns="rawHeaders" v-model="items" class="tableu rounded-xl mt-5">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3  pr-12cursor-pointer"
-           @click="
-              $router.push(`addroles/${item.id}`)
-            "
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 pr-12cursor-pointer"
+          @click="$router.push(`addroles/${item.id}`)"
         >
           <eye-icon class="mr-1 mt-1" />
-          <span class="text-xs"
-          >View</span>
+          <span class="text-xs">View</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 pr-9 cursor-pointer"
-          @click="
-            $router.push(`addroles/${item.id}`)
-          "
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 pr-9 cursor-pointer"
+          @click="$router.push(`addroles/${item.id}`)"
         >
           <edit-icon class="mr-2 1mt-1" />
-          <span class="text-xs"
-          >Edit</span>
+          <span class="text-xs">Edit</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 pr-12 cursor-pointer" @click="remove(item.id)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 pr-12 cursor-pointer"
+          @click="remove(item.id)"
+        >
           <delete-icon class="mr-2" />
-          <span class="text-xs"
-          >Delete</span>
+          <span class="text-xs">Delete</span>
         </div>
       </template>
       <!-- <template #name="{ item }">
@@ -50,7 +48,7 @@
               {{ item }}
           </span>
       </template> -->
-    <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5"> -->
+      <!-- <Table :headers="headers" :items="items" class="tableu rounded-xl mt-5"> -->
       <!-- <template #actions="{ item }">
       <template v-slot:item="{ item }">
         <span>
@@ -148,18 +146,18 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import { Prop } from "vue-property-decorator";
-import EditIcon from '@/components/icons/edit.vue'
+import EditIcon from "@/components/icons/edit.vue";
 
 const roles = namespace("roles");
 
 interface IRole {
-    name: string,
-    description: string,
-    isDefault: boolean,
-    isSuperAdmin: boolean,
-    id: string,
-    createdAt: Date,
-    updatedAt: Date,
+  name: string;
+  description: string;
+  isDefault: boolean;
+  isSuperAdmin: boolean;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Options({
@@ -245,16 +243,16 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     const practitioners = this.roles.map((role) => {
-    //   const opHours = this.stringifyOperationHours(
-    //     practitioner.hoursOfOperation
-    //   );
+      //   const opHours = this.stringifyOperationHours(
+      //     practitioner.hoursOfOperation
+      //   );
       return {
         ...role,
         action: role.id,
         members: "",
         createdAt: new Date(role.createdAt).toLocaleDateString(),
         updatedAt: new Date(role.updatedAt).toLocaleDateString(),
-        
+
         // hoursOfOperation: opHours,
       };
     });
@@ -270,16 +268,17 @@ export default class PractitionerExistingState extends Vue {
 
   async remove(id: string) {
     const confirmed = await window.confirmAction({
-      message: "Are you sure you want to delete this group? This action cannot be undone.",
+      message:
+        "Are you sure you want to delete this group? This action cannot be undone.",
     });
     if (!confirmed) return;
 
     try {
-        const response = await this.deleteRole(id);
-        if (response) window.notify({ msg: "Role deleted", status: "success" });
+      const response = await this.deleteRole(id);
+      if (response) window.notify({ msg: "Role deleted", status: "success" });
     } catch (error) {
-        window.notify({ msg: "Role not deleted", status: "error" });
-        console.log(error)
+      window.notify({ msg: "Role not deleted", status: "error" });
+      console.log(error);
     }
   }
 }

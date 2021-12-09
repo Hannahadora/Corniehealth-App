@@ -5,7 +5,7 @@ import { deleteAllergy, fetchAllergys, getPractitioners } from "./helper";
 
 interface AllergyState {
   allergys: IAllergy[];
-  practitioners: any[],
+  practitioners: any[];
 }
 
 export default {
@@ -19,7 +19,7 @@ export default {
       state.allergys = [...allergys];
     },
     setPractitioners(state, pts) {
-      if (pts && pts.length > 0) state.practitioners = [ ...pts ];
+      if (pts && pts.length > 0) state.practitioners = [...pts];
     },
     updateAllergys(state, allergys: IAllergy[]) {
       const allergySet = new ObjectSet([...state.allergys, ...allergys], "id");
@@ -34,12 +34,12 @@ export default {
     },
   },
   actions: {
-    async fetchAllergys(ctx,patientId:string) {
+    async fetchAllergys(ctx, patientId: string) {
       const allergys = await fetchAllergys(patientId);
       ctx.commit("setAllergys", allergys);
     },
     async getPractitioners(ctx) {
-      const pts = await getPractitioners();      
+      const pts = await getPractitioners();
       ctx.commit("setPractitioners", pts);
     },
     async getAllergyById(ctx, id: string) {

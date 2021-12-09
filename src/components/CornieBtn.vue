@@ -1,17 +1,17 @@
 <template>
-  <button
-    ref="btn"
-    class="
-      relative
-      rounded-3xl
-    "
-    :disabled="loading"
-  >
-    <div :class="{invisible: loading}" class="px-3 py-2 pl-8 pr-8 flex items-center justify-center w-full h-full">
+  <button ref="btn" class="relative rounded-3xl" :disabled="loading">
+    <div
+      :class="{ invisible: loading }"
+      class="px-3 py-2 pl-8 pr-8 flex items-center justify-center w-full h-full"
+    >
       <slot />
     </div>
-    <div v-if="loading" class="absolute w-full h-full flex items-center justify-center" style="top: 0; left: 0; right: 0; bottom: 0;" >
-      <cornie-circular-progress :color="loadingColor"/>
+    <div
+      v-if="loading"
+      class="absolute w-full h-full flex items-center justify-center"
+      style="top: 0; left: 0; right: 0; bottom: 0"
+    >
+      <cornie-circular-progress :color="loadingColor" />
     </div>
   </button>
 </template>
@@ -24,14 +24,14 @@ import CornieCircularProgress from "./CornieCircularProgress.vue";
 @Options({
   name: "cornie-btn",
   components: {
-    CornieCircularProgress
-  }
+    CornieCircularProgress,
+  },
 })
 export default class CornieBtn extends Vue {
   @Prop({ type: Boolean, default: false })
   loading!: boolean;
 
-  @Prop({ type: String, default: "white"})
+  @Prop({ type: String, default: "white" })
   loadingColor!: string;
 
   @Prop()
@@ -40,7 +40,7 @@ export default class CornieBtn extends Vue {
 </script>
 
 <style scoped>
-  .invisible {
-    visibility: hidden;
-  }
+.invisible {
+  visibility: hidden;
+}
 </style>

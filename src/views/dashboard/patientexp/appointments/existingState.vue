@@ -2,19 +2,7 @@
   <div class="w-full">
     <span class="flex justify-end w-full mb-8">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          pr-5
-          pl-5
-          px-3
-          mb-5
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 focus:outline-none hover:opacity-90"
         @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
         Create Appointment
@@ -38,7 +26,10 @@
           <update-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Update</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinPane(item.id)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showCheckinPane(item.id)"
+        >
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In </span>
         </div>
@@ -53,7 +44,7 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <cancel-icon/>
+          <cancel-icon />
           <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
@@ -80,7 +71,11 @@
       @update:preferred="makeNotes"
       v-model:visible="showNotes"
     />
-    <SideModal :visible="true" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
+    <SideModal
+      :visible="true"
+      :header="'Check-In'"
+      @closesidemodal="() => (showCheckin = false)"
+    >
       <Checkin :item="appment" />
     </SideModal>
     <all-participants
@@ -123,8 +118,8 @@ import AllParticipants from "./participants.vue";
 import PatientDetails from "./policy.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import Checkin from "../../visits/components/checkin.vue"
-import SideModal from "../../schedules/components/side-modal.vue"
+import Checkin from "../../visits/components/checkin.vue";
+import SideModal from "../../schedules/components/side-modal.vue";
 
 const appointment = namespace("appointment");
 const visitsStore = namespace("visits");
@@ -166,8 +161,8 @@ export default class AppointmentExistingState extends Vue {
   loading = false;
   patientName = "";
   patient = [];
-  filterByType: any = [ ]
-  filterByStatus: any = [ ]
+  filterByType: any = [];
+  filterByStatus: any = [];
 
   showPatientModal = false;
   query = "";
@@ -178,9 +173,9 @@ export default class AppointmentExistingState extends Vue {
   singleParticipant = [];
   showCheckin = false;
 
-  statuses = ['All', 'Completed', 'Queue', 'In-Progress'] 
-  types = ['All', 'Emergency', 'Walk-In', 'Follow-Up', 'Routine']
-  
+  statuses = ["All", "Completed", "Queue", "In-Progress"];
+  types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
+
   @appointment.State
   appointments!: IAppointment[];
 
@@ -189,7 +184,6 @@ export default class AppointmentExistingState extends Vue {
 
   @visitsStore.State
   patients!: any[];
-
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -253,28 +247,27 @@ export default class AppointmentExistingState extends Vue {
   ];
   currentAppId = "";
   showCheckinPane(id: string) {
-    alert("cliked")
-    this.currentAppId  = id;
+    alert("cliked");
+    this.currentAppId = id;
     this.showCheckin = true;
   }
 
   get appment() {
-    if (!this.currentAppId) return { };
-    const pt = this.appointments.find((i: any) => i.id === this.currentAppId)
-    return pt ? pt : { }
+    if (!this.currentAppId) return {};
+    const pt = this.appointments.find((i: any) => i.id === this.currentAppId);
+    return pt ? pt : {};
   }
 
   getAppointment(id: string) {
     const pt = this.appointments.find((i: any) => i.id === id);
-    
-    return pt ? pt : { };
+
+    return pt ? pt : {};
   }
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    
-    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
-  
 
   get headers() {
     const preferred =
@@ -284,15 +277,15 @@ export default class AppointmentExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-async  fetchPatients() {
-  try {
-    const response = await cornieClient().get(`/api/v1/patient/`);
-    console.log(response.data);
-  } catch (error) {
-    window.notify({ msg: "Failed to get patients", status: "error" });
+  async fetchPatients() {
+    try {
+      const response = await cornieClient().get(`/api/v1/patient/`);
+      console.log(response.data);
+    } catch (error) {
+      window.notify({ msg: "Failed to get patients", status: "error" });
+    }
+    return [];
   }
-  return [];
-}
 
   // get items() {
   //   if (!this.appointments || this.appointments.length === 0 ) return [];
@@ -392,9 +385,7 @@ async  fetchPatients() {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  async created() {
-    
-  }
+  async created() {}
 }
 </script>
 <style>

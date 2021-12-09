@@ -1,39 +1,28 @@
 <template>
-    <div class="w-full pb-7">
+  <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          px-3
-          pl-10
-          pr-10
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 px-3 pl-10 pr-10 focus:outline-none hover:opacity-90"
         @click="$router.push('add-health-service')"
       >
         Add New
       </button>
     </span>
-      <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-         <div
+        <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-             @click="$router.push(`add-health-service/${item.id}`)"
+          @click="$router.push(`add-health-service/${item.id}`)"
         >
-          <edit-icon class="mr-3 text-yellow-300 fill-current" /> 
+          <edit-icon class="mr-3 text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
-        
+
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <delete-icon/>
+          <delete-icon />
           <span class="ml-3 text-xs">Delete Healthcare</span>
         </div>
       </template>
@@ -111,8 +100,6 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 
-
-
 const healthcare = namespace("healthcare");
 @Options({
   components: {
@@ -131,13 +118,11 @@ const healthcare = namespace("healthcare");
     TableOptions,
   },
 })
-
 export default class HealthcareExistingState extends Vue {
-    showColumnFilter = false;
-    query = "";
-    
-  loading = false;
+  showColumnFilter = false;
+  query = "";
 
+  loading = false;
 
   @healthcare.State
   healthcares!: IHealthcare[];
@@ -145,15 +130,15 @@ export default class HealthcareExistingState extends Vue {
   @healthcare.Action
   deleteHealthcare!: (id: string) => Promise<boolean>;
 
-    getKeyValue = getTableKeyValue;
-    preferredHeaders = [];
-    rawHeaders = [
+  getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
+  rawHeaders = [
     {
       title: "Name",
       key: "name",
       show: true,
     },
-    
+
     {
       title: "Location",
       key: "address",
@@ -174,7 +159,7 @@ export default class HealthcareExistingState extends Vue {
       key: "provisionCode",
       show: true,
     },
-      {
+    {
       title: "Type",
       key: "type",
       show: true,
@@ -184,25 +169,24 @@ export default class HealthcareExistingState extends Vue {
       key: "comment",
       show: false,
     },
-     {
+    {
       title: "Programs",
       key: "programs",
       show: false,
     },
-     {
+    {
       title: "Specialty",
       key: "specialty",
       show: false,
     },
-     {
+    {
       title: "Category",
       key: "category",
       show: false,
     },
-   
   ];
 
-    get headers() {
+  get headers() {
     const preferred =
       this.preferredHeaders.length > 0
         ? this.preferredHeaders
@@ -211,30 +195,29 @@ export default class HealthcareExistingState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-get items() {
+  get items() {
     const healthcares = this.healthcares.map((healthcare) => {
-        return {
+      return {
         ...healthcare,
-         action: healthcare.id,
-        };
+        action: healthcare.id,
+      };
     });
-    
+
     if (!this.query) return healthcares;
     return search.searchObjectArray(healthcares, this.query);
   }
- 
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this healthcare service",
-      title: "Delete Healthcare Servcie"
+      title: "Delete Healthcare Servcie",
     });
     if (!confirmed) return;
 
-    if (await this.deleteHealthcare(id)) window.notify({ msg: "Healthcare service deleted", status: "success" });
-    else window.notify({ msg: "Healthcare service not deleted", status: "error" });
+    if (await this.deleteHealthcare(id))
+      window.notify({ msg: "Healthcare service deleted", status: "success" });
+    else
+      window.notify({ msg: "Healthcare service not deleted", status: "error" });
   }
- 
-
- 
 }
 </script>

@@ -1,49 +1,27 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-      h-screen
-      overflow-auto
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
   >
     <div class="container-fluid" v-if="vitals?.length > 0">
       <div class="w-full p-2">
         <span
-          class="
-            flex flex-col
-            w-full
-            justify-center
-            border-b-2
-            font-bold
-            mb-5
-            text-xl text-primary
-            py-2
-          "
+          class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
         >
           Vital Signs
         </span>
         <!-- <registration-chart class="w-full" :height="100" /> -->
-        
       </div>
 
       <span class="w-full bg-danger">
-          <span class="flex justify-end w-full m4-5">
-            <cornie-btn
-              class="bg-danger text-white m-5 p-2 font-semibold"
-               @click="() => showNewModal = true"
-            >
-              New Vitals
-            </cornie-btn>
-          </span>
+        <span class="flex justify-end w-full m4-5">
+          <cornie-btn
+            class="bg-danger text-white m-5 p-2 font-semibold"
+            @click="() => (showNewModal = true)"
+          >
+            New Vitals
+          </cornie-btn>
         </span>
+      </span>
 
       <div class="p-2">
         <cornie-table
@@ -58,27 +36,31 @@
             </div>
           </template>
           <template #dataCount-header>
-              <div class="text-no-wrap flex uppercase text-xs" style="white-space:nowrap">Data Count</div>
+            <div
+              class="text-no-wrap flex uppercase text-xs"
+              style="white-space: nowrap"
+            >
+              Data Count
+            </div>
           </template>
           <template #recordType-header>
-              <div class="text-no-wrap flex uppercase text-xs" style="white-space:nowrap">Record Type</div>
+            <div
+              class="text-no-wrap flex uppercase text-xs"
+              style="white-space: nowrap"
+            >
+              Record Type
+            </div>
           </template>
           <template #actions="{ item }">
-            <table-action
-               @click="viewVital(item.id)"
-            >
+            <table-action @click="viewVital(item.id)">
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
-            <table-action
-               @click="viewVital(item.id)"
-            >
+            <table-action @click="viewVital(item.id)">
               <edit-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Edit</span>
             </table-action>
-            <table-action
-              @click="openUpdateStatusModal(item.id)"
-            >
+            <table-action @click="openUpdateStatusModal(item.id)">
               <update-icon class="text-primary fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
@@ -88,55 +70,98 @@
     </div>
 
     <div class="w-full" v-else>
-      <empty-state @addnew="() => showNewModal = true" />
+      <empty-state @addnew="() => (showNewModal = true)" />
     </div>
-<!-- 
+    <!-- 
     <advanced-filter
       v-model:filtered="filteredPatients"
       v-model="filterAdvanced"
       :patients="patients"
     /> -->
 
-    <side-modal :visible="showNewModal" :header="'New Request'" :width="990"  @closesidemodal="closeNewModal">
-      <vitals-form  @closesidemodal="() => showNewModal = false" :selectedVital="selectedVital" />
+    <side-modal
+      :visible="showNewModal"
+      :header="'New Request'"
+      :width="990"
+      @closesidemodal="closeNewModal"
+    >
+      <vitals-form
+        @closesidemodal="() => (showNewModal = false)"
+        :selectedVital="selectedVital"
+      />
     </side-modal>
 
-    <side-modal :visible="showUpdateStatusModal" :width="590" :header="'Update Status'" @closesidemodal="closeUpdateModal">
-        <div class="w-full">
-          <div class="container px-6 content-con">
-            <div class="w-full py-3">
-              <div class="w-full my-6">
-                <input-desc-rounded :label="'Current Status'" :info="''">
-                  <input v-model="selectedVital.status" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
-                </input-desc-rounded>
-              </div>
-
-              <div class="w-full my-6">
-                <input-desc-rounded :label="'Updated By'" :info="''">
-                  <input v-model="selectedVital.status" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
-                </input-desc-rounded>
-              </div>
-
-              <div class="w-full my-6">
-                <input-desc-rounded :label="'Date Last Updated'" :info="''">
-                  <input :value="selectedVital.updatedAt" disabled type="text" class="p-2 border w-100 w-full" style="border-radius: 8px">
-                </input-desc-rounded>
-              </div>
-
-              <cornie-select v-model="updateData.status" :label="'New Status'" :items="['Active', 'Inactive']" style="width: 100%" />
+    <side-modal
+      :visible="showUpdateStatusModal"
+      :width="590"
+      :header="'Update Status'"
+      @closesidemodal="closeUpdateModal"
+    >
+      <div class="w-full">
+        <div class="container px-6 content-con">
+          <div class="w-full py-3">
+            <div class="w-full my-6">
+              <input-desc-rounded :label="'Current Status'" :info="''">
+                <input
+                  v-model="selectedVital.status"
+                  disabled
+                  type="text"
+                  class="p-2 border w-100 w-full"
+                  style="border-radius: 8px"
+                />
+              </input-desc-rounded>
             </div>
 
-            <div class="w-full flex flex justify-end mt-12">
-                <corniebtn class="text-primary cancel-btn flex items-center rounded-full px-8 mx-2 cursor-pointer">
-                    <span class="font-semibold">Cancel</span>
-                </corniebtn>
-
-                <CornieBtn :loading="loading" class="bg-danger rounded-full px-8 mx-2 cursor-pointer">
-                    <span class="text-white font-semibold" @click="updateStatus">Update</span>
-                </CornieBtn>
+            <div class="w-full my-6">
+              <input-desc-rounded :label="'Updated By'" :info="''">
+                <input
+                  v-model="selectedVital.status"
+                  disabled
+                  type="text"
+                  class="p-2 border w-100 w-full"
+                  style="border-radius: 8px"
+                />
+              </input-desc-rounded>
             </div>
+
+            <div class="w-full my-6">
+              <input-desc-rounded :label="'Date Last Updated'" :info="''">
+                <input
+                  :value="selectedVital.updatedAt"
+                  disabled
+                  type="text"
+                  class="p-2 border w-100 w-full"
+                  style="border-radius: 8px"
+                />
+              </input-desc-rounded>
+            </div>
+
+            <cornie-select
+              v-model="updateData.status"
+              :label="'New Status'"
+              :items="['Active', 'Inactive']"
+              style="width: 100%"
+            />
+          </div>
+
+          <div class="w-full flex flex justify-end mt-12">
+            <corniebtn
+              class="text-primary cancel-btn flex items-center rounded-full px-8 mx-2 cursor-pointer"
+            >
+              <span class="font-semibold">Cancel</span>
+            </corniebtn>
+
+            <CornieBtn
+              :loading="loading"
+              class="bg-danger rounded-full px-8 mx-2 cursor-pointer"
+            >
+              <span class="text-white font-semibold" @click="updateStatus"
+                >Update</span
+              >
+            </CornieBtn>
           </div>
         </div>
+      </div>
     </side-modal>
   </div>
 </template>
@@ -156,20 +181,20 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import AdvancedFilter from "../../patientexp/patients/dialogs/advanced-filter.vue";
-import Modal from "@/components/modal.vue"
-import SearchInput from "@/components/search-input.vue"
-import SearchDropdown from '../careteam/components/search-dropdown.vue'
+import Modal from "@/components/modal.vue";
+import SearchInput from "@/components/search-input.vue";
+import SearchDropdown from "../careteam/components/search-dropdown.vue";
 import User from "@/types/user";
-import EmptyState from "./components/empty-state.vue"
-import CornieSelect from "@/components/cornieselect.vue"
-import SideModal from "@/views/dashboard/schedules/components/side-modal.vue"
-import VitalsForm from "./components/vitals-form.vue"
-import CornieInput from "@/components/cornieinput.vue"
-import DatePicker from "@/components/datepicker.vue"
+import EmptyState from "./components/empty-state.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
+import VitalsForm from "./components/vitals-form.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import DatePicker from "@/components/datepicker.vue";
 import IVital from "@/types/IVital";
-import InputDescRounded from "./components/input-desc-rounded.vue"
+import InputDescRounded from "./components/input-desc-rounded.vue";
 import IEncounter from "@/types/IEncounter";
-import UpdateIcon from "@/components/icons/update-status-yellow.vue"
+import UpdateIcon from "@/components/icons/update-status-yellow.vue";
 const userStore = namespace("user");
 const vitalsStore = namespace("vitals");
 
@@ -237,9 +262,9 @@ export default class ExistingState extends Vue {
   showSearchModal = false;
   activeTab = 0;
   query = "";
-  searchResults: IPatient[] = [ ];
+  searchResults: IPatient[] = [];
   loading = false;
-  activeVisits: IPatient[] = [ ];
+  activeVisits: IPatient[] = [];
   patientId = "";
   showUpdateStatusModal = false;
   showNewModal = false;
@@ -283,13 +308,13 @@ export default class ExistingState extends Vue {
   ];
 
   updateData: any = {
-    status: this.selectedVital.status ?? ""
-  }
+    status: this.selectedVital.status ?? "",
+  };
 
   selectedVitalId = "";
 
   get items() {
-    return this.vitals?.map(vital => {
+    return this.vitals?.map((vital) => {
       return {
         id: vital.id,
         identifier: "XXXXX",
@@ -299,13 +324,13 @@ export default class ExistingState extends Vue {
         performer: `${vital.practitioner?.lastName} ${vital.practitioner?.firstName}`,
         dataCount: vital.datacount,
         status: vital.status,
-        updatedAt: new Date(vital.updatedAt).toLocaleDateString()
-      }
-    })
+        updatedAt: new Date(vital.updatedAt).toLocaleDateString(),
+      };
+    });
   }
 
-  openUpdateStatusModal(id: string) {    
-    this.showUpdateStatusModal = true
+  openUpdateStatusModal(id: string) {
+    this.showUpdateStatusModal = true;
     this.selectedVitalId = id;
   }
 
@@ -314,10 +339,10 @@ export default class ExistingState extends Vue {
       this.loading = true;
       await this.updateVitalStatus({
         data: this.updateData,
-        vitalId: this.selectedVitalId
-      })
+        vitalId: this.selectedVitalId,
+      });
       this.loading = false;
-      this.showUpdateStatusModal = false
+      this.showUpdateStatusModal = false;
     } catch (error) {
       console.log(error);
       this.loading = false;
@@ -330,7 +355,7 @@ export default class ExistingState extends Vue {
   }
 
   closeNewModal() {
-    this.showNewModal = false
+    this.showNewModal = false;
     this.selectedVitalId = "";
   }
 
@@ -340,56 +365,56 @@ export default class ExistingState extends Vue {
   }
 
   get selectedVital() {
-    if (!this.selectedVitalId) return { } as IVital;
-    const selected =  this.vitals.find(vital => vital.id === this.selectedVitalId);
-    return selected || { } as IVital;
-    
+    if (!this.selectedVitalId) return {} as IVital;
+    const selected = this.vitals.find(
+      (vital) => vital.id === this.selectedVitalId
+    );
+    return selected || ({} as IVital);
   }
 
   get searchList() {
     return this.searchResults.map((patient: any) => {
       return {
         code: patient.id,
-        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`
-      }
-    })
+        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`,
+      };
+    });
   }
 
   get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+    const id = this.$route?.params?.id as string;
+    return id;
   }
 
-  async created() {    
+  async created() {
     await this.getVitals(this.activePatientId);
-    await this.getEncounters(this.activePatientId);    
+    await this.getEncounters(this.activePatientId);
   }
 }
 </script>
 
 <style scoped>
 .active-tab {
-    border-bottom-width: 4px;
-    margin-bottom: -0.22rem;
+  border-bottom-width: 4px;
+  margin-bottom: -0.22rem;
 }
 
 .active-color {
-    border-color: #FE4D3C;
+  border-color: #fe4d3c;
 }
 
 .status-active {
-    background: #F3FCF8;
-    color: #35BA83;
-    
+  background: #f3fcf8;
+  color: #35ba83;
 }
 
 .status-inactive {
-    background: #FFF1F0;
-    color: #FE4D3C;
+  background: #fff1f0;
+  color: #fe4d3c;
 }
 
 .border-b-4 {
-    border-bottom: 4px solid #F0F4FE;
+  border-bottom: 4px solid #f0f4fe;
 }
 
 /* .content-con {
@@ -409,5 +434,4 @@ export default class ExistingState extends Vue {
   box-sizing: border-box;
   border-radius: 124px;
 }
-
 </style>

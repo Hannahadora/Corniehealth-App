@@ -39,8 +39,8 @@ export default {
       return state.cornieData?.practitioner;
     },
     authPractitionerDomain(state) {
-      const corniedata = localStorage.getItem('corniehealthdata') as string;
-      return JSON.parse(corniedata)?.authDomain
+      const corniedata = localStorage.getItem("corniehealthdata") as string;
+      return JSON.parse(corniedata)?.authDomain;
     },
   },
   mutations: {

@@ -1,145 +1,200 @@
 <template>
   <div class="w-full pb-80">
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Medications</a></li>    
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Diagnostics</a></li>
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Referrals</a></li>
-    <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(4)"  :class="{'active' :  selected === 4  }" :aria-selected="selected === 4">Other Requests</a></li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(1)"
+          :class="{ active: selected === 1 }"
+          :aria-selected="selected === 1"
+          >Medications</a
+        >
+      </li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(2)"
+          :class="{ active: selected === 2 }"
+          :aria-selected="selected === 2"
+          >Diagnostics</a
+        >
+      </li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(3)"
+          :class="{ active: selected === 3 }"
+          :aria-selected="selected === 3"
+          >Referrals</a
+        >
+      </li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(4)"
+          :class="{ active: selected === 4 }"
+          :aria-selected="selected === 4"
+          >Other Requests</a
+        >
+      </li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="medications">   
-          <span class="flex justify-end w-full mb-8">
-            <button
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                mt-5
-                py-2
-                pr-5
-                pl-5
-                px-3
-                mb-5
-                font-semibold
-                focus:outline-none
-                hover:opacity-90
+      <div
+        class="tab-pane"
+        v-if="selected == 1"
+        :class="{ active: selected === 1 }"
+        id="medications"
+      >
+        <span class="flex justify-end w-full mb-8">
+          <button
+            class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+            @click="$router.push('/dashboard/provider/experience/add-request')"
+          >
+            New Requests
+          </button>
+        </span>
+        <cornie-table :columns="rawHeaders" v-model="items">
+          <template #actions="{ item }">
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              @click="
+                $router.push(`/dashboard/experience/view-request/${item.id}`)
               "
-              @click="$router.push('/dashboard/provider/experience/add-request')"
             >
-              New Requests
-            </button>
-            
-          </span>
-          <cornie-table :columns="rawHeaders" v-model="items">
-              <template #actions="{ item }">
-                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/view-request/${item.id}`)">
-                  <newview-icon  class="text-blue-700 fill-current"/>
-                  <span class="ml-3 text-xs">View</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-request/${item.id}`)">
-                  <newview-icon  class="text-blue-700 fill-current"/>
-                  <span class="ml-3 text-xs">View & Edit</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <update-icon />
-                  <span class="ml-3 text-xs">Update</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-primary fill-current"/>
-                  <span class="ml-3 text-xs">Add Appointment</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-red-500 fill-current"/>
-                  <span class="ml-3 text-xs">Add Task</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                  <note-icon class="text-green-600 fill-current"/>
-                  <span class="ml-3 text-xs">Add Notes</span>
-                </div>
-              </template>
-              <template #Participants="{ item }">
-                <div class="flex items-center">
-                  <span class="text-xs">{{item.Participants}}</span>
-                  <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
-                </div>
-              </template>
-          </cornie-table>
-        </div>
-        <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
-          <span class="flex justify-end w-full mb-8">
-            <button
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                mt-5
-                py-2
-                pr-5
-                pl-5
-                px-3
-                mb-5
-                font-semibold
-                focus:outline-none
-                hover:opacity-90
+              <newview-icon class="text-blue-700 fill-current" />
+              <span class="ml-3 text-xs">View</span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              @click="
+                $router.push(`/dashboard/experience/edit-request/${item.id}`)
               "
-              @click="$router.push('/dashboard/provider/experience/add-request-reffer')"
             >
-              New Requests
-            </button>
-            
-          </span>
-          <cornie-table :columns="rawHeaders" v-model="items">
-               <template #actions="{ item }">
-                 <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/view-refferal/${item.id}`)">
-                  <newview-icon  class="text-yellow-500 fill-current"/>
-                  <span class="ml-3 text-xs">View</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/edit-refferal/${item.id}`)">
-                  <newview-icon  class="text-yellow-500 fill-current"/>
-                  <span class="ml-3 text-xs">View & Edit</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <update-icon />
-                  <span class="ml-3 text-xs">Update</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-primary fill-current"/>
-                  <span class="ml-3 text-xs">Add Appointment</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                  <plus-icon class="text-red-500 fill-current"/>
-                  <span class="ml-3 text-xs">Add Task</span>
-                </div>
-                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                  <note-icon class="text-green-600 fill-current"/>
-                  <span class="ml-3 text-xs">Add Notes</span>
-                </div>
-              </template>
-              <template #Participants="{ item }">
-                <div class="flex items-center">
-                  <span class="text-xs">{{item.Participants}}</span>
-                  <eye-icon class="cursor-pointer ml-3 " @click="displayParticipants(item.id)"/>
-                </div>
-              </template>
-          </cornie-table>
-        </div>
-        <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="referrals">
-        </div>
-        <div class="tab-pane" v-if="selected == 4"  :class="{'active' :  selected === 4  }" id="requests">
-
-        </div>
+              <newview-icon class="text-blue-700 fill-current" />
+              <span class="ml-3 text-xs">View & Edit</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <update-icon />
+              <span class="ml-3 text-xs">Update</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <plus-icon class="text-primary fill-current" />
+              <span class="ml-3 text-xs">Add Appointment</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <plus-icon class="text-red-500 fill-current" />
+              <span class="ml-3 text-xs">Add Task</span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              @click="makeNotes(item.id)"
+            >
+              <note-icon class="text-green-600 fill-current" />
+              <span class="ml-3 text-xs">Add Notes</span>
+            </div>
+          </template>
+          <template #Participants="{ item }">
+            <div class="flex items-center">
+              <span class="text-xs">{{ item.Participants }}</span>
+              <eye-icon
+                class="cursor-pointer ml-3"
+                @click="displayParticipants(item.id)"
+              />
+            </div>
+          </template>
+        </cornie-table>
+      </div>
+      <div
+        class="tab-pane"
+        v-if="selected == 2"
+        :class="{ active: selected === 2 }"
+        id="diagnotics"
+      >
+        <span class="flex justify-end w-full mb-8">
+          <button
+            class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+            @click="
+              $router.push('/dashboard/provider/experience/add-request-reffer')
+            "
+          >
+            New Requests
+          </button>
+        </span>
+        <cornie-table :columns="rawHeaders" v-model="items">
+          <template #actions="{ item }">
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              @click="
+                $router.push(`/dashboard/experience/view-refferal/${item.id}`)
+              "
+            >
+              <newview-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">View</span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              @click="
+                $router.push(`/dashboard/experience/edit-refferal/${item.id}`)
+              "
+            >
+              <newview-icon class="text-yellow-500 fill-current" />
+              <span class="ml-3 text-xs">View & Edit</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <update-icon />
+              <span class="ml-3 text-xs">Update</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <plus-icon class="text-primary fill-current" />
+              <span class="ml-3 text-xs">Add Appointment</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <plus-icon class="text-red-500 fill-current" />
+              <span class="ml-3 text-xs">Add Task</span>
+            </div>
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              @click="makeNotes(item.id)"
+            >
+              <note-icon class="text-green-600 fill-current" />
+              <span class="ml-3 text-xs">Add Notes</span>
+            </div>
+          </template>
+          <template #Participants="{ item }">
+            <div class="flex items-center">
+              <span class="text-xs">{{ item.Participants }}</span>
+              <eye-icon
+                class="cursor-pointer ml-3"
+                @click="displayParticipants(item.id)"
+              />
+            </div>
+          </template>
+        </cornie-table>
+      </div>
+      <div
+        class="tab-pane"
+        v-if="selected == 3"
+        :class="{ active: selected === 3 }"
+        id="referrals"
+      ></div>
+      <div
+        class="tab-pane"
+        v-if="selected == 4"
+        :class="{ active: selected === 4 }"
+        id="requests"
+      ></div>
     </div>
-      <notes-add
-          :appointmentId="appointmentId"
-          @update:preferred="makeNotes"
-          v-model:visible="showNotes"
-        />
-        <all-participants
-           :appointmentId="appointmentId"
-            :columns="singleParticipant"
-          @update:preferred="displayParticipants"
-          v-model:visible="showPartcipants"
-        />
+    <notes-add
+      :appointmentId="appointmentId"
+      @update:preferred="makeNotes"
+      v-model:visible="showNotes"
+    />
+    <all-participants
+      :appointmentId="appointmentId"
+      :columns="singleParticipant"
+      @update:preferred="displayParticipants"
+      v-model:visible="showPartcipants"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -189,7 +244,7 @@ const appointment = namespace("appointment");
     ThreeDotIcon,
     PlusIcon,
     SearchIcon,
-  //  CloseIcon,
+    //  CloseIcon,
     MessageIcon,
     PrintIcon,
     TableRefreshIcon,
@@ -202,9 +257,8 @@ const appointment = namespace("appointment");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
   },
-  
 })
 export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
@@ -213,9 +267,9 @@ export default class AppointmentExistingState extends Vue {
   query = "";
   selected = 1;
   showNotes = false;
-appointmentId="";
-showPartcipants= false;
-singleParticipant= [];
+  appointmentId = "";
+  showPartcipants = false;
+  singleParticipant = [];
   @appointment.State
   appointments!: IAppointment[];
 
@@ -256,7 +310,6 @@ singleParticipant= [];
       key: "description",
       show: false,
     },
-   
   ];
 
   get headers() {
@@ -268,72 +321,71 @@ singleParticipant= [];
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-
   get items() {
     const appointments = this.appointments.map((appointment) => {
-      const singleParticipantlength = appointment.Practitioners.length + appointment.Devices.length + appointment.Patients.length;
-       (appointment as any).createdAt = new Date(
-         (appointment as any).createdAt 
-       ).toLocaleDateString("en-US");
-        return {
+      const singleParticipantlength =
+        appointment.Practitioners.length +
+        appointment.Devices.length +
+        appointment.Patients.length;
+      (appointment as any).createdAt = new Date(
+        (appointment as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
         ...appointment,
-         action: appointment.id,
-         keydisplay: "XXXXXXX",
-         Participants: singleParticipantlength 
-        };
+        action: appointment.id,
+        keydisplay: "XXXXXXX",
+        Participants: singleParticipantlength,
+      };
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
   }
 
- select(i:number) {
-      this.selected = i;
-    }
- 
+  select(i: number) {
+    this.selected = i;
+  }
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to cancel this appointment",
-      title: "Cancel appointment"
+      title: "Cancel appointment",
     });
     if (!confirmed) return;
 
-    if (await this.deleteAppointment(id)) window.notify({ msg: "Appointment canceled", status: "success" });
+    if (await this.deleteAppointment(id))
+      window.notify({ msg: "Appointment canceled", status: "success" });
     else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
-  async makeNotes(id:string){
+  async makeNotes(id: string) {
     this.appointmentId = id;
     this.showNotes = true;
   }
-  closeModal(){
+  closeModal() {
     this.showPartcipants = false;
   }
-  async displayParticipants(value:string){
+  async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
-     try {
-       const response = await cornieClient().get(
-          `/api/v1/appointment/${value}`
-        );
-        if (response.success) {
-        this.singleParticipant = response.data
-        }
-      } catch (error) {
-        this.loading = false;
-        console.error(error);
+    try {
+      const response = await cornieClient().get(`/api/v1/appointment/${value}`);
+      if (response.success) {
+        this.singleParticipant = response.data;
       }
-  }
-      get sortAppointments (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-     async created() {
+    } catch (error) {
+      this.loading = false;
+      console.error(error);
     }
-
+  }
+  get sortAppointments() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async created() {}
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

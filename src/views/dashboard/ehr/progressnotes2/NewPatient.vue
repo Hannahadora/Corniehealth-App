@@ -21,14 +21,7 @@
       <cornie-card-text :class="{ hidden: !showPatientInformation }">
         <v-form @submit="saveBasic" ref="basic">
           <div
-            class="
-              flex
-              justify-between
-              items-center
-              px-4
-              border-t-2 border-gray
-              pt-5
-            "
+            class="flex justify-between items-center px-4 border-t-2 border-gray pt-5"
           >
             <cornie-avatar-field v-model="image" :readonly="viewOnly" />
             <custom-checkbox

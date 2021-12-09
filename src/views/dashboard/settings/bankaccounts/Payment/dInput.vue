@@ -4,7 +4,7 @@
       label
     }}</label>
     <input
-    type="date"
+      type="date"
       class="rounded-lg border p-2 w-80 focus:outline-none"
       v-model="valueSync"
       v-bind="$attrs"

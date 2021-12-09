@@ -1,12 +1,17 @@
 import ObjectSet from "@/lib/objectset";
 import IAppointment from "@/types/IAppointment";
 import { StoreOptions } from "vuex";
-import { deleteAppointment, fetchAppointments,getPatients,fetchByIdAppointments } from "./helper";
+import {
+  deleteAppointment,
+  fetchAppointments,
+  getPatients,
+  fetchByIdAppointments,
+} from "./helper";
 
 interface AppointmentState {
-  appointments: IAppointment[],
-  patients: any[],
-  patientappointments: IAppointment[],
+  appointments: IAppointment[];
+  patients: any[];
+  patientappointments: IAppointment[];
 }
 
 export default {
@@ -14,18 +19,18 @@ export default {
   state: {
     appointments: [],
     patients: [],
-    patientappointments:[],
+    patientappointments: [],
   },
-  mutations: { 
-    setAppointments(state, appointments: any) {      
+  mutations: {
+    setAppointments(state, appointments: any) {
       state.appointments = [...appointments.result];
     },
-    setPatientAppointment(state, appointments:any) {
-      state.patientappointments = [ ...appointments.result ];
+    setPatientAppointment(state, appointments: any) {
+      state.patientappointments = [...appointments.result];
     },
 
     setPatients(state, pts) {
-      if (pts && pts.length > 0) state.patients = [ ...pts ];
+      if (pts && pts.length > 0) state.patients = [...pts];
     },
     updateAppointments(state, appointments: IAppointment[]) {
       const appointmentSet = new ObjectSet(
@@ -54,7 +59,7 @@ export default {
       ctx.commit("setAppointments", appointments);
     },
     async getPatients(ctx) {
-      const pts = await getPatients();      
+      const pts = await getPatients();
       ctx.commit("setPatients", pts);
     },
     async getAppointmentById(ctx, id: string) {
@@ -63,7 +68,8 @@ export default {
       return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async getAppointmentResponseById(ctx, id: string) {
-      if (ctx.state.appointments.length < 1) await ctx.dispatch("fetchAppointments");
+      if (ctx.state.appointments.length < 1)
+        await ctx.dispatch("fetchAppointments");
       return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async deleteAppointment(ctx, id: string) {

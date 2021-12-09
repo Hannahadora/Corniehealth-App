@@ -1,15 +1,13 @@
 <template>
   <detail-card height="313px" title="Recent Diagnostic Report">
-     <div class="w-full grid grid-cols-1 gap-y-4">
+    <div class="w-full grid grid-cols-1 gap-y-4">
       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
           <avatar :src="photo" />
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladones
-            </span>
+            <span class="font-semibold"> Chlotiladones </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
+              <span class="text-gray-600"> <h3>3 Pills Daily</h3></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -18,7 +16,7 @@
         </div>
         <div class="text-xs text-primary">
           <span class="flex items-center">
-            <chevron-right-icon/>
+            <chevron-right-icon />
             <!-- Details
             <chevron-down-icon
               class="ml-2 stroke-current cursor-pointer text-danger"
@@ -31,11 +29,9 @@
         <div class="w-full flex items-center">
           <avatar :src="photo" />
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
-            </span>
+            <span class="font-semibold"> Chlotiladone </span>
             <span class="">
-              <span class="text-gray-600"> <h3> 3 Pills Daily </h3></span>
+              <span class="text-gray-600"> <h3>3 Pills Daily</h3></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -44,7 +40,7 @@
         </div>
         <div class="text-xs text-primary">
           <span class="flex items-center">
-            <chevron-right-icon/>
+            <chevron-right-icon />
             <!-- Details
             <chevron-down-icon
               class="ml-2 stroke-current cursor-pointer text-danger"
@@ -53,16 +49,16 @@
         </div>
       </div>
 
-        <div class="w-full flex justify-between pb-2 border-b">
+      <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
           <avatar :src="photo" />
           <div class="text-xs flex flex-col">
-            <span class="font-semibold">
-              Chlotiladone
-            </span>
+            <span class="font-semibold"> Chlotiladone </span>
             <span class="">
-              <span class="text-gray-600 text-uppercase"> <h3> MLT John Oyedele </h3></span>
-              <span class="text-gray-600"> <h3> 3 Pills Dailys </h3></span>
+              <span class="text-gray-600 text-uppercase">
+                <h3>MLT John Oyedele</h3></span
+              >
+              <span class="text-gray-600"> <h3>3 Pills Dailys</h3></span>
               <!-- <span class="text-gray-600">
                 | 45 respondent | 45 feedback |
               </span> -->
@@ -71,7 +67,7 @@
         </div>
         <div class="text-xs text-primary">
           <span class="flex items-center">
-            <chevron-right-icon/>
+            <chevron-right-icon />
             <!-- Details
             <chevron-down-icon
               class="ml-2 stroke-current cursor-pointer text-danger"
@@ -89,9 +85,7 @@
           </div>
         </div> -->
         <div class="text-xs text-danger font-semibold">
-          <span class="">
-            View all
-          </span>
+          <span class=""> View all </span>
         </div>
       </div>
     </div>
@@ -104,8 +98,6 @@ import DetailCard from "./detail-card.vue";
 import Avatar from "@/components/avatar.vue";
 import BillIcon from "@/components/icons/ehrbill.vue";
 
-
-
 @Options({
   name: "DiagnosticCard",
   components: {
@@ -115,7 +107,6 @@ import BillIcon from "@/components/icons/ehrbill.vue";
   },
 })
 export default class DiagnosticCard extends Vue {
-    photo = require("@/assets/img/avatar.png");
-
+  photo = require("@/assets/img/avatar.png");
 }
 </script>

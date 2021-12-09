@@ -4,17 +4,7 @@
       contenteditable="true"
       v-model="formTitle"
       placholder="Blank Form"
-      class="
-        flex
-        float-left
-        border-0
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
+      class="flex float-left border-0 border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       type="text"
       @input="display($event)"
     />
@@ -24,21 +14,7 @@
           <div class="dropdown inline-block relative">
             <button
               type="button"
-              class="
-                flex
-                outline-primary
-                rounded-full
-                text-black
-                mt-5
-                mr-3
-                py-2
-                pr-5
-                pl-5
-                px-3
-                focus:outline-none
-                hover:bg-primary
-                hover:text-white
-              "
+              class="flex outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-5 pl-5 px-3 focus:outline-none hover:bg-primary hover:text-white"
             >
               <plus-icon class="mt-1 mr-2" /> Add Question
             </button>
@@ -51,18 +27,7 @@
           <cornie-btn
             :loading="loading"
             type="submit"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-1
-              pr-8
-              pl-8
-              px-2
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white mt-5 py-1 pr-8 pl-8 px-2 focus:outline-none hover:opacity-90"
           >
             Save Form
           </cornie-btn>
@@ -70,13 +35,27 @@
       </div>
       <div class="w-full h-screen">
         <div>
-          <label class="relative top-8 ml-4 font-bold text-black">FORM TITLE: </label>
-          <input contenteditable="true" v-model="formTitle" class="p-2 border rounded-lg w-full pl-32 focus:outline-none  mb-6"  @input="formTitleGet($event)"/>
-         </div>
-         <div>
-          <label class="relative top-8 ml-4 font-bold text-black">DESCRIPTION: </label>
-          <input contenteditable="true" class="p-2 border rounded-lg w-full pl-36 focus:outline-none  mb-6"  @input="DescriptionGet($event)" v-model="description"/>
-         </div>
+          <label class="relative top-8 ml-4 font-bold text-black"
+            >FORM TITLE:
+          </label>
+          <input
+            contenteditable="true"
+            v-model="formTitle"
+            class="p-2 border rounded-lg w-full pl-32 focus:outline-none mb-6"
+            @input="formTitleGet($event)"
+          />
+        </div>
+        <div>
+          <label class="relative top-8 ml-4 font-bold text-black"
+            >DESCRIPTION:
+          </label>
+          <input
+            contenteditable="true"
+            class="p-2 border rounded-lg w-full pl-36 focus:outline-none mb-6"
+            @input="DescriptionGet($event)"
+            v-model="description"
+          />
+        </div>
         <!--- <div  contenteditable="true"  class="rounded-lg border p-2 w-full focus:outline-none mb-8"  >
            DESCRIPTION: Kindly tell us about your medical history!
         </div>-->
@@ -135,14 +114,7 @@
                           </span>
                         </div>
                         <span
-                          class="
-                            cursor-pointer
-                            text-danger
-                            mt-5
-                            mr-2
-                            font-bold
-                            float-left
-                          "
+                          class="cursor-pointer text-danger mt-5 mr-2 font-bold float-left"
                           @click="addOptionothers(questionoptionsothers, index)"
                           >Add option</span
                         >
@@ -168,14 +140,7 @@
                           </span>
                         </div>
                         <span
-                          class="
-                            cursor-pointer
-                            text-danger
-                            mt-5
-                            mr-2
-                            font-bold
-                            float-left
-                          "
+                          class="cursor-pointer text-danger mt-5 mr-2 font-bold float-left"
                           @click="addOptionothers(questionoptionsothers)"
                           >Add option</span
                         >
@@ -188,69 +153,104 @@
                       />
                       <copy-icon class="cursor-pointer mt-5 mr-8 float-right" />
                       <div class="dropdown">
-                        <span class="flex-shrink-0 cursor-pointer mt-5 mr-8 float-right"><three-dot-icon /></span>
-                        <ul class="dropdown-menu w-60 float-right border-2 rounded-md hidden text-gray-700 pt-1">
-                          <li @click="showValidation" class=" list-none
-                            items-center
-                            flex
-                            text-xs
-                            font-semibold
-                            text-gray-700
-                            hover:bg-gray-100
-                            hover:text-gray-900
-                            cursor-pointer
-                            my-1  p-5 py-2">
-                              <response-icon class="mr-3" /> Response Validation
+                        <span
+                          class="flex-shrink-0 cursor-pointer mt-5 mr-8 float-right"
+                          ><three-dot-icon
+                        /></span>
+                        <ul
+                          class="dropdown-menu w-60 float-right border-2 rounded-md hidden text-gray-700 pt-1"
+                        >
+                          <li
+                            @click="showValidation"
+                            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 p-5 py-2"
+                          >
+                            <response-icon class="mr-3" /> Response Validation
                           </li>
                         </ul>
-                     </div>
+                      </div>
                     </div>
-                   <div v-if="displayValidation1" class="w-full grid grid-cols-5 justify-center gap-4 p-5">
-                        <cornie-select
-                         :items="['10','20']"
-                          v-model="questions[index].validation[0]"
-                         placeholder="Length"
-                        > 
-                        </cornie-select>
-                          <cornie-select
-                         :items="['Minimum character count','Maximum character count']"
-                          v-model="questions[index].validation[1]"
-                         placeholder="Minimum character count"
-                        > 
-                        </cornie-select>
-                         <cornie-input
-                          placeholder="Number"
-                          v-model="questions[index].validation[2]"
-                        />
+                    <div
+                      v-if="displayValidation1"
+                      class="w-full grid grid-cols-5 justify-center gap-4 p-5"
+                    >
+                      <cornie-select
+                        :items="['10', '20']"
+                        v-model="questions[index].validation[0]"
+                        placeholder="Length"
+                      >
+                      </cornie-select>
+                      <cornie-select
+                        :items="[
+                          'Minimum character count',
+                          'Maximum character count',
+                        ]"
+                        v-model="questions[index].validation[1]"
+                        placeholder="Minimum character count"
+                      >
+                      </cornie-select>
+                      <cornie-input
+                        placeholder="Number"
+                        v-model="questions[index].validation[2]"
+                      />
                       <cornie-input
                         placeholder="Error text"
                         v-model="questions[index].validation[3]"
                       />
-                      <div class="mt-3 cursor-pointer" @click="removeValidation1(index)">
-                        <svg width="18" height="18" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14 0C21.742 0 28 6.258 28 14C28 21.742 21.742 28 14 28C6.258 28 0 21.742 0 14C0 6.258 6.258 0 14 0ZM19.026 7L14 12.026L8.974 7L7 8.974L12.026 14L7 19.026L8.974 21L14 15.974L19.026 21L21 19.026L15.974 14L21 8.974L19.026 7Z" fill="#080056"/>
+                      <div
+                        class="mt-3 cursor-pointer"
+                        @click="removeValidation1(index)"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 28 28"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M14 0C21.742 0 28 6.258 28 14C28 21.742 21.742 28 14 28C6.258 28 0 21.742 0 14C0 6.258 6.258 0 14 0ZM19.026 7L14 12.026L8.974 7L7 8.974L12.026 14L7 19.026L8.974 21L14 15.974L19.026 21L21 19.026L15.974 14L21 8.974L19.026 7Z"
+                            fill="#080056"
+                          />
                         </svg>
-
                       </div>
                     </div>
-                    <div v-if="displayValidation2" class="w-full grid grid-cols-4 justify-center gap-4 p-5">
-                          <cornie-select
-                         :items="['Select exaclty','Select at least', 'Select at most']"
-                          v-model="questions[index].validation[4]"
-                         placeholder="Select at least"
-                        > 
-                        </cornie-select>
-                         <cornie-input
-                          placeholder="Number"
-                          v-model="questions[index].validation[5]"
-                        />
+                    <div
+                      v-if="displayValidation2"
+                      class="w-full grid grid-cols-4 justify-center gap-4 p-5"
+                    >
+                      <cornie-select
+                        :items="[
+                          'Select exaclty',
+                          'Select at least',
+                          'Select at most',
+                        ]"
+                        v-model="questions[index].validation[4]"
+                        placeholder="Select at least"
+                      >
+                      </cornie-select>
+                      <cornie-input
+                        placeholder="Number"
+                        v-model="questions[index].validation[5]"
+                      />
                       <cornie-input
                         placeholder="Error text"
                         v-model="questions[index].validation[6]"
                       />
-                      <div class="mt-3 cursor-pointer"  @click="removeValidation2">
-                        <svg width="18" height="18" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14 0C21.742 0 28 6.258 28 14C28 21.742 21.742 28 14 28C6.258 28 0 21.742 0 14C0 6.258 6.258 0 14 0ZM19.026 7L14 12.026L8.974 7L7 8.974L12.026 14L7 19.026L8.974 21L14 15.974L19.026 21L21 19.026L15.974 14L21 8.974L19.026 7Z" fill="#080056"/>
+                      <div
+                        class="mt-3 cursor-pointer"
+                        @click="removeValidation2"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 28 28"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M14 0C21.742 0 28 6.258 28 14C28 21.742 21.742 28 14 28C6.258 28 0 21.742 0 14C0 6.258 6.258 0 14 0ZM19.026 7L14 12.026L8.974 7L7 8.974L12.026 14L7 19.026L8.974 21L14 15.974L19.026 21L21 19.026L15.974 14L21 8.974L19.026 7Z"
+                            fill="#080056"
+                          />
                         </svg>
                       </div>
                     </div>
@@ -325,11 +325,9 @@ export default class AddPracticeform extends Vue {
   @practiceform.Action
   getPracticeformById!: (id: string) => IPracticeform;
 
-  
-
   loading = false;
   expand = false;
-  displayValidation= false;
+  displayValidation = false;
   displayValidation2 = false;
   displayValidation1 = false;
 
@@ -362,7 +360,7 @@ export default class AddPracticeform extends Vue {
       answerOptions: [""],
       question: "Type questions",
       answerType: "choice",
-       prefix: "",
+      prefix: "",
     },
   ];
   getEmptyQuestion(): Question {
@@ -371,7 +369,7 @@ export default class AddPracticeform extends Vue {
       name: "Others",
       answerType: "choice",
       answerOptions: [""],
-        prefix: "",
+      prefix: "",
     };
   }
 
@@ -453,20 +451,20 @@ export default class AddPracticeform extends Vue {
       name: name,
       answerType: this.AnswerType,
       answerOptions: [""],
-      validation:{},
+      validation: {},
     };
   }
 
   async removeQuestion(index: number) {
     this.questions.splice(index, 1);
   }
-  async removeValidation1(index:number){
-      this.displayValidation1 = false;
+  async removeValidation1(index: number) {
+    this.displayValidation1 = false;
   }
-  async removeValidation2(){
-      this.displayValidation2 = false;
+  async removeValidation2() {
+    this.displayValidation2 = false;
   }
-  showValidation(){
+  showValidation() {
     this.displayValidation = true;
     this.displayValidation1 = true;
     this.displayValidation2 = true;

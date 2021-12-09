@@ -37,30 +37,15 @@
                 </span>
                 <input
                   v-else
-                 :placeholder="$attrs.placeholder"
+                  :placeholder="$attrs.placeholder"
                   disabled
                   :value="displayVal"
-                  class="
-                    p-1
-                    pl-2
-                    bg-transparent
-                    appearance-none
-                    outline-none
-                    w-full
-                    text-gray-800
-                  "
+                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
                   @change="handleChange"
                 />
 
                 <div
-                  class="
-                    text-gray-300
-                    py-1
-                    pr-1
-                    flex
-                    items-center
-                    border-gray-200
-                  "
+                  class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
                 >
                   <chevron-down-icon />
                 </div>
@@ -72,61 +57,32 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              w-full
-              lef-0
-              border border-gray-400
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            class="absolute shadow bg-white top-100 z-40 w-full lef-0 border border-gray-400 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <div
                 v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
                   <slot name="item" v-bind:item="item" />
                 </template>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                    capitalize
-                  "
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative capitalize"
                 >
                   {{ item.display || item }}
                 </div>
               </div>
 
               <div class="w-full p-2">
-                    <a class="add-btn flex cursor-pointer" @click="onAdd">
-                        <span class="mr-2"><add-icon /></span>
-                        <span>Add New</span>
-                    </a>
-                </div>
+                <a class="add-btn flex cursor-pointer" @click="onAdd">
+                  <span class="mr-2"><add-icon /></span>
+                  <span>Add New</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -141,7 +97,7 @@ import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
-import AddIcon from "@/components/icons/add-orange.vue"
+import AddIcon from "@/components/icons/add-orange.vue";
 
 @Options({
   components: {
@@ -205,8 +161,8 @@ export default class CornieSelect extends Vue {
   }
 
   onAdd() {
-      this.showDatalist = false;
-      this.$emit('add')
+    this.showDatalist = false;
+    this.$emit("add");
   }
 
   get inputName() {
@@ -249,10 +205,10 @@ export default class CornieSelect extends Vue {
 }
 
 .add-btn {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 24px;
-    color: #FE4D3C;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #fe4d3c;
 }
 </style>

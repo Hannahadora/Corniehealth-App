@@ -30,19 +30,22 @@
     <div class="flex justify-between m-3">
       <div class="flex justify-around">
         <p class="text-sm">show</p>
-        <input type="number" class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r">
+        <input
+          type="number"
+          class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
+        />
         <p class="text-sm">per page</p>
       </div>
       <div class="flex justify-around">
         <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
-        <div class="text-xs mr-3 mt-1" style="fontsize:6px;">
-                  <arrow-left-icon />
-                  </div>
+        <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
+          <arrow-left-icon />
+        </div>
 
         <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-        <p class="text-sm mr-3 text-xs">1  2  3 ...  10 </p>
-        <div class="text-xs mt-1" style="fontsize:5px;">
-         <arrow-right-icon />
+        <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
+        <div class="text-xs mt-1" style="fontsize: 5px">
+          <arrow-right-icon />
         </div>
         <!-- <delete-icon class="text-danger fill-current" /> -->
       </div>
@@ -76,17 +79,10 @@ import ArrowRightIcon from "../components/arrow-right.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 
-
-
-
-
 const orgFunctions = namespace("OrgFunctions");
 const patients = namespace("patients");
 const location = namespace("location");
 const AppointmentRoom = namespace("AppointmentRoom");
-
-
-
 
 @Options({
   components: {
@@ -107,7 +103,7 @@ const AppointmentRoom = namespace("AppointmentRoom");
     TableOptions,
 
     ArrowLeftIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
   },
 })
 export default class CarePartnersExistingState extends Vue {
@@ -127,14 +123,13 @@ export default class CarePartnersExistingState extends Vue {
   removeFunction!: (id: string) => Promise<void>;
 
   @AppointmentRoom.Action
-  deleteAppointmentroom!: (id: string) => Promise<void>;  
+  deleteAppointmentroom!: (id: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
 
   @location.Action
   fetchLocations!: () => Promise<void>;
-
 
   rawHeaders = [
     {
@@ -165,19 +160,19 @@ export default class CarePartnersExistingState extends Vue {
   ];
 
   getLocationAddress(id: string) {
-            const pt = this.locations.find((i: any) => i.id === id);
-            return pt;
-    }
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt;
+  }
 
-    etLocationAddress(id: string) {
-            const pt = "-----";
-            return pt;
-    }
+  etLocationAddress(id: string) {
+    const pt = "-----";
+    return pt;
+  }
 
-    // getLocationAddress(id: string) {
-    //         const pt = this.locations.find((i: any) => i.id === id);
-    //         return pt ? pt.address : 'N/A';
-    // }
+  // getLocationAddress(id: string) {
+  //         const pt = this.locations.find((i: any) => i.id === id);
+  //         return pt ? pt.address : 'N/A';
+  // }
 
   get items2() {
     return this.functions.map((f) => ({
@@ -186,7 +181,6 @@ export default class CarePartnersExistingState extends Vue {
       supervisor: f.reportsTo?.name || "N/A",
     }));
   }
-
 
   get items() {
     return this.appointmentrooms.map((f) => ({
@@ -220,10 +214,9 @@ export default class CarePartnersExistingState extends Vue {
     this.roomToEdit = func;
     this.editingFunction = true;
   }
-  
 
   created() {
-    console.log('states', this.locations);
+    console.log("states", this.locations);
     if (!this.locations?.length) this.fetchLocations();
   }
 }

@@ -1,21 +1,13 @@
 <template>
   <div class="h-screen flex justify-center">
-     
-   <span class="w-full">
-      <bank-empty-state
-         v-if="empty"
-         msg="No payment account recorded"
-      />
-      <bank-accounts-existing-state
-           v-else
-            :payments="payments"
-      />
+    <span class="w-full">
+      <bank-empty-state v-if="empty" msg="No payment account recorded" />
+      <bank-accounts-existing-state v-else :payments="payments" />
     </span>
- 
   </div>
 </template>
 
-<script  lang="ts">
+<script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import BankEmptyState from "../emptyState.vue";
 import BankAccountsExistingState from "./existingState.vue";
@@ -28,15 +20,15 @@ const payment = namespace("payment");
 
 @Options({
   components: {
-      BankEmptyState,
+    BankEmptyState,
     BankAccountsExistingState,
     AddPaymentAccount,
   },
 })
 export default class Payment extends Vue {
   addPaymentAccount = false;
- 
-PaymentToUpdate = {} as IPayment;
+
+  PaymentToUpdate = {} as IPayment;
 
   get empty() {
     return this.payments.length < 1;
@@ -51,8 +43,6 @@ PaymentToUpdate = {} as IPayment;
   created() {
     this.fetchPayments();
   }
-
-
 
   // updatePayment(payment: any) {
   //   this.payment = payment;
@@ -74,7 +64,7 @@ PaymentToUpdate = {} as IPayment;
   //     );
   //     if (response.success){
   //         this.payments = [...response.data];
-  //     } 
+  //     }
   //     else console.log(response.message);
   //   } catch (error) {
   //     console.log("failed to fetch payments");
@@ -87,7 +77,5 @@ PaymentToUpdate = {} as IPayment;
   // created() {
   //   this. fetchPayments();
   // }
-  
-};
-
+}
 </script>

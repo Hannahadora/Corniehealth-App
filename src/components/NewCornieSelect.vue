@@ -79,11 +79,9 @@ export default class CornieSelect extends Vue {
     let selectedItem = this.items.find(
       (element: any) => this.itemValue(element) == this.syncedModelValue
     );
-    if(selectedItem != undefined)
-      this.selectItem(selectedItem);
+    if (selectedItem != undefined) this.selectItem(selectedItem);
   }
 }
 </script>
 
-<style>
-</style>
+<style></style>

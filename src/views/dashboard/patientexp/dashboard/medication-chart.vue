@@ -1,6 +1,6 @@
 <template>
   <chart-card height="390px" title="Medication">
-    <canvas ref="chart" style="margin: auto;"></canvas>
+    <canvas ref="chart" style="margin: auto"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -21,38 +21,38 @@ import { Prop, Watch } from "vue-property-decorator";
 export default class MedicationChart extends Vue {
   chart!: Chart;
 
- order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
+  order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
-   get chartData() {
+  get chartData() {
     //const data = groupData(this.raw, this.order);
-     const data = this.rawDataActive
-     const data2 = this.rawDatatotalRequest
-     const data3 = this.rawDataCanceled
-    return {data,data2,data3};
+    const data = this.rawDataActive;
+    const data2 = this.rawDatatotalRequest;
+    const data3 = this.rawDataCanceled;
+    return { data, data2, data3 };
   }
 
   raw: IStat[] = [];
-rawDataActive= 0;
-rawDatatotalRequest= 0;
-rawDataCanceled= 0;
+  rawDataActive = 0;
+  rawDatatotalRequest = 0;
+  rawDataCanceled = 0;
 
   async fetchData() {
     try {
       const response = await cornieClient().get(
         "api/v1/requests/getStats/count"
       );
-      console.log(response.data)
+      console.log(response.data);
       const rawActive = response.data.Active;
       this.rawDataActive = rawActive;
       this.rawDatatotalRequest = response.data.totalRequest;
-      this.rawDataCanceled= response.data.Cancelled;
+      this.rawDataCanceled = response.data.Cancelled;
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
       window.notify({ msg: "Failed to fetch chart data", status: "error" });
     }
   }
-   
- @Watch("chartData")
+
+  @Watch("chartData")
   chartUpdated() {
     this.mountChart();
   }
@@ -69,7 +69,11 @@ rawDataCanceled= 0;
         labels: ["Active Request", "Unfulfilled request", "Total Request"],
         datasets: [
           {
-            data: [this.rawDataActive,this.rawDataCanceled, this.rawDatatotalRequest],
+            data: [
+              this.rawDataActive,
+              this.rawDataCanceled,
+              this.rawDatatotalRequest,
+            ],
             backgroundColor: ["#F7B538", "#35BA83", "#114FF5"],
           },
         ],

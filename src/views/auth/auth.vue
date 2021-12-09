@@ -10,9 +10,9 @@
         <slot name="text" />
       </section>
       <section class="w-full h-full mt-2">
-       <!-- <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
+        <!-- <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white">
         </div>-->
-          <slot />
+        <slot />
       </section>
     </div>
   </div>
@@ -25,82 +25,22 @@ export default class Auth extends Vue {}
 </script>
 <style scoped>
 ::-webkit-scrollbar-thumb {
-    background-color: #080056;
-    height: 0.5rem;
-    display: none;
-    outline: 1px solid slategrey;
+  background-color: #080056;
+  height: 0.5rem;
+  display: none;
+  outline: 1px solid slategrey;
 }
 ::-webkit-scrollbar-track {
-    box-shadow: none;
-    width: 0.75rem;
+  box-shadow: none;
+  width: 0.75rem;
 }
-
 
 .auth {
   background-color: unset;
-    min-width: 100vw;
-    min-height: 100vh;
-    overflow: auto;
-    background-image: none;
-    background-repeat: no-repeat;
-    background-size: 50%;
-}
-.auth-content {
-  grid-template-columns: 25% 65%;
-  column-gap: 15%;
-}
-@media (min-width: 640px) { 
-.auth {
-  background-color: unset;
-    min-width: 100vw;
-    min-height: 100vh;
-    overflow: auto;
-    background-image: none;
-    background-repeat: no-repeat;
-    background-size: 50%;
-}
-.auth-content {
-  grid-template-columns: 25% 65%;
-  column-gap: 15%;
-}
-}
-@media (min-width: 768px) { 
-  .auth {
-    background-color: #e5e5e5;
-    min-width: 100vw;
-    min-height: 100vh;
-    overflow: auto;
-    background-image: url("../../assets/img/bg.png");
-    background-repeat: no-repeat;
-    background-size: 50%;
-  }
-  .auth-content {
-    grid-template-columns: 25% 65%;
-    column-gap: 15%;
-  }
-}
-@media (min-width: 1024px) { 
-  .auth {
-    background-color: #e5e5e5;
-    min-width: 100vw;
-    min-height: 100vh;
-    overflow: auto;
-    background-image: url("../../assets/img/bg.png");
-    background-repeat: no-repeat;
-    background-size: 50%;
-  }
-  .auth-content {
-    grid-template-columns: 25% 65%;
-    column-gap: 15%;
-  }
-}
-@media (min-width: 1280px) { 
-  .auth {
-  background-color: #e5e5e5;
   min-width: 100vw;
   min-height: 100vh;
   overflow: auto;
-  background-image: url("../../assets/img/bg.png");
+  background-image: none;
   background-repeat: no-repeat;
   background-size: 50%;
 }
@@ -108,8 +48,67 @@ export default class Auth extends Vue {}
   grid-template-columns: 25% 65%;
   column-gap: 15%;
 }
+@media (min-width: 640px) {
+  .auth {
+    background-color: unset;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: auto;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
 }
-@media (min-width: 1536px) { 
+@media (min-width: 768px) {
+  .auth {
+    background-color: #e5e5e5;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: auto;
+    background-image: url("../../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
+}
+@media (min-width: 1024px) {
+  .auth {
+    background-color: #e5e5e5;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: auto;
+    background-image: url("../../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
+}
+@media (min-width: 1280px) {
+  .auth {
+    background-color: #e5e5e5;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: auto;
+    background-image: url("../../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-size: 50%;
+  }
+  .auth-content {
+    grid-template-columns: 25% 65%;
+    column-gap: 15%;
+  }
+}
+@media (min-width: 1536px) {
   .auth {
     background-color: #e5e5e5;
     min-width: 100vw;

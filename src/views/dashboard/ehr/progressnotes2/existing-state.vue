@@ -1,30 +1,10 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-      overflow-auto
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
   >
     <div class="w-full p-2">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-5
-          text-xl text-primary
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
       >
         Care Plan
       </span>
@@ -38,7 +18,7 @@
             @click="addingCondition = true"
             class="bg-danger text-white m-5"
           >
-            Register Newn  
+            Register Newn
           </cornie-btn>
         </span>
       </span>
@@ -149,12 +129,11 @@ const patients = namespace("patients");
     CornieTable,
     AdvancedFilter,
 
-    
     AddCondition,
   },
 })
 export default class ExistingState extends Vue {
-   addingCondition = false;
+  addingCondition = false;
   @patients.State
   patients!: IPatient[];
 

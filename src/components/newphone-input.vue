@@ -27,11 +27,18 @@
               }"
               @update:modelValue="handleChange"
             >
-            <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-                  <template v-slot:prepend>
-                    <search-icon />
-                  </template>
-            </icon-input>
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-600 rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-bind="$attrs"
+                v-model="displayVal"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
               <template v-slot:item="{ item }">
                 <span class="flex items-center">
                   {{ item.isoCode }}

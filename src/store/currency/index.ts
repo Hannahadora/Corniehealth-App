@@ -4,7 +4,7 @@ import { StoreOptions } from "vuex";
 import { deleteCurrency, fetchCurrencys } from "./helper";
 
 interface CurrencyState {
-    currencys: ICurrency[];
+  currencys: ICurrency[];
 }
 
 export default {
@@ -17,7 +17,10 @@ export default {
       state.currencys = [...currencys];
     },
     updateCurrencys(state, currencys: ICurrency[]) {
-      const currencySet = new ObjectSet([...state.currencys, ...currencys], "id");
+      const currencySet = new ObjectSet(
+        [...state.currencys, ...currencys],
+        "id"
+      );
       state.currencys = [...currencySet];
     },
     deleteCurrency(state, id: string) {

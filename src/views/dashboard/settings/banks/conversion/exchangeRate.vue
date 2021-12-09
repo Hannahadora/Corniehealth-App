@@ -91,9 +91,7 @@
               Save
               </cornie-btn>
         </cornie-card-text>
-           </cornie-card>
-         
-        
+      </cornie-card>
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -114,6 +112,7 @@ import { findLastKey } from "lodash";
 import { namespace } from "vuex-class";
 import ICurrency from "@/types/ICurrency";
 //import MultiSelect from "./multipleselect.vue";
+//@ts-ignore
 import Multiselect from '@vueform/multiselect'
 
 const currency = namespace("currency");
@@ -121,9 +120,9 @@ const currency = namespace("currency");
   name: "NewExchangeRate",
   components: {
     ...CornieCard,
-      Textarea,
-      CornieIconBtn,
-      ArrowLeftIcon,
+    Textarea,
+    CornieIconBtn,
+    ArrowLeftIcon,
     Modal,
     CornieInput,
     CornieSelect,
@@ -133,23 +132,21 @@ const currency = namespace("currency");
   },
 })
 export default class NewExchangeRate extends Vue {
-
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @currency.Action
-  getCurrencyById!: (id: string) => ICurrency
+  getCurrencyById!: (id: string) => ICurrency;
 
-  @Prop({ type: Array,  default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   available!: object;
 
-
-@Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setCurrency()
+    this.setCurrency();
   }
 
  currency= "";
@@ -167,32 +164,25 @@ loading=false;
       const id = this.$route?.params?.id as string;
       return id;
   }
-  async  apply() {
-     this.loading = true
-    if (this.id) await this.updateCurrency()
-    else await this.createCurrency()
-    this.loading = false
-    }
   async setCurrency() {
-    const currency = await this.getCurrencyById(this.id)
-    if (!currency) return
-     this.currency = currency.currency;
+    const currency = await this.getCurrencyById(this.id);
+    if (!currency) return;
+    this.currency = currency.currency;
     this.exchangeRate = currency.exchangeRate;
   }
- 
 
   get payload() {
     return {
-       code:this.currency,
-        exchangeRate:this.exchangeRate
-    }
+      code: this.currency,
+      exchangeRate: this.exchangeRate,
+    };
   }
 
- get newaction() {
-    return this.id ? 'Update' : 'New'
+  get newaction() {
+    return this.id ? "Update" : "New";
   }
 
-   done() {
+  done() {
     this.$emit("currency-added");
     this.show = false;
   }
@@ -214,55 +204,54 @@ loading=false;
          }
      })
   }
-  
+
   async createCurrency() {
-      try {
-        console.log(this.payload);
-        const response = await cornieClient().post(
-          "/api/v1/currency",
-          this.payload
-        );
-        if (response.success) {
-          window.notify({ msg: 'Currency conversion added', status: 'success' })
-          this.done();
-        }
-      } catch (error) {
-        console.error(error);
-         window.notify({ msg: 'Currency conversion not added', status: 'error' })
-      }
-    }
-
-  async updateCurrency(){
-    const url = `/api/v1/currency/${this.id}`
-    const payload = {
-       ...this.payload,
-      }
     try {
-      const response = await cornieClient().put(url, payload)
-      if (response.success) {
-        window.notify({ msg: 'Currency conversion  updated', status: 'success' })
-      this.done();
-
-      }
-    } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: 'error' })
-    }
-    }
-
-
- async fetchDropDown() {
-      const worldCurrencies = cornieClient().get(
-        "/api/v1/currency/getCurrencies/world"
+      console.log(this.payload);
+      const response = await cornieClient().post(
+        "/api/v1/currency",
+        this.payload
       );
-      const response = await Promise.all([worldCurrencies])
-      this.Currencies = response[0].data;
+      if (response.success) {
+        window.notify({ msg: "Currency conversion added", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      console.error(error);
+      window.notify({ msg: "Currency conversion not added", status: "error" });
     }
+  }
+
+  async updateCurrency() {
+    const url = `/api/v1/currency/${this.id}`;
+    const payload = {
+      ...this.payload,
+    };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "Currency conversion  updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+  async fetchDropDown() {
+    const worldCurrencies = cornieClient().get(
+      "/api/v1/currency/getCurrencies/world"
+    );
+    const response = await Promise.all([worldCurrencies]);
+    this.Currencies = response[0].data;
+  }
   created() {
     this.fetchDropDown();
-     
   }
 }
-
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style>

@@ -7,11 +7,11 @@ interface Range {
 }
 
 export interface Timeable {
-    id?: string;
-    dateTime?: string;
-    age?: string;
-    period?: Period;
-    range?: Range;
-    string?: string;
-    [state: string]: any;
-  }
+  id?: string;
+  dateTime?: string;
+  age?: string;
+  period?: Period;
+  range?: Range;
+  string?: string;
+  [state: string]: any;
+}

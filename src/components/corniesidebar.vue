@@ -1,29 +1,10 @@
 <template>
   <div @mouseover="hovered = true" @mouseleave="hovered = false">
     <div
-      class="
-        flex flex-col
-        py-4
-        px-1
-        items-center
-        min-h-screen
-        h-screen
-        bg-primary
-        shadow-md
-        fixed
-        justify-center
-        w-auto
-      "
+      class="flex flex-col py-4 px-1 items-center min-h-screen h-screen bg-primary shadow-md fixed justify-center w-auto"
     >
       <div
-        class="
-          flex flex-row
-          justify-between
-          border-b-2
-          pb-1
-          items-center
-          border-gray-300
-        "
+        class="flex flex-row justify-between border-b-2 pb-1 items-center border-gray-300"
       >
         <img src="@/assets/img/logo.svg" />
         <h2 class="text-white text-xl font-semibold ml-1" v-if="hovered">
@@ -31,17 +12,7 @@
         </h2>
       </div>
       <div
-        class="
-          mt-5
-          flex
-          h-3/4
-          items-center
-          w-full
-          flex-col
-          justify-between
-          text-white text-lg
-          overflow-y-auto
-        "
+        class="mt-5 flex h-3/4 items-center w-full flex-col justify-between text-white text-lg overflow-y-auto"
       >
         <sidebar-link
           v-for="(link, i) in links"
@@ -61,15 +32,7 @@
         to="support"
         :hovered="hovered"
         text="Feedback & Support"
-        class="
-          mt-auto
-          bg-opacity-20 bg-white
-          text-white
-          py-2
-          rounded-2xl
-          w-full
-          px-3
-        "
+        class="mt-auto bg-opacity-20 bg-white text-white py-2 rounded-2xl w-full px-3"
       >
         <support-icon class="" />
       </sidebar-link>
@@ -192,7 +155,7 @@ export default class CorniDashboardeSideBar extends Vue {
       name: "Medications",
       to: "medications",
       icon: "pill-icon",
-       hasSubsection: true,
+      hasSubsection: true,
       children: [
         {
           name: "Catalogue",
@@ -208,10 +171,10 @@ export default class CorniDashboardeSideBar extends Vue {
           name: "Pricebook",
           to: "pricebook",
           hasSubsection: false,
-        }
+        },
       ],
     },
-   
+
     {
       name: "Bills & Payments",
       to: "bills",

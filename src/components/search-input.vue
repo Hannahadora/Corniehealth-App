@@ -14,19 +14,7 @@
     <div
       v-if="results.length"
       :class="[{ hidden: !show }, background]"
-      class="
-        absolute
-        shadow
-        top-100
-        z-40
-        w-full
-        lef-0
-        rounded
-        max-h-select
-        overflow-y-auto
-        mt-2
-        svelte-5uyqqj
-      "
+      class="absolute shadow top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
     >
       <div class="flex flex-col w-full p-2">
         <div
@@ -34,28 +22,14 @@
           :key="i"
           @click="select(item)"
           :class="[hoverColor]"
-          class="
-            cursor-pointer
-            w-full
-            border-gray-100
-            rounded-xl
-            hover:bg-white-cotton-ball
-          "
+          class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
         >
           <template v-if="Boolean($slots.item)">
             <slot name="item" v-bind:item="item" />
           </template>
           <div
             v-else
-            class="
-              flex
-              w-full
-              items-center
-              p-2
-              pl-2
-              border-transparent border-l-2
-              relative
-            "
+            class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
           >
             {{ item.display || item }}
           </div>

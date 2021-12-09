@@ -2,17 +2,7 @@
   <!-- component -->
   <div
     :class="classes"
-    class="
-      flex
-      items-center
-      fixed
-      left-0
-      bottom-0
-      w-full
-      h-full
-      bg-black bg-opacity-50
-      z-10
-    "
+    class="flex items-center fixed left-0 bottom-0 w-full h-full bg-black bg-opacity-50 z-10"
     v-if="show"
   >
     <div v-bind="$attrs">

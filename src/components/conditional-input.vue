@@ -5,21 +5,7 @@
     </label>
     <span class="flex">
       <select
-        class="
-          border border-gray-300
-          px-3
-          py-2
-          rounded-l-md
-          placeholder-gray-400
-          focus:outline-none
-          focus:shadow-outline-blue
-          focus:border-blue-300
-          transition
-          duration-150
-          ease-in-out
-          sm:text-sm
-          sm:leading-5
-        "
+        class="border border-gray-300 px-3 py-2 rounded-l-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         <option v-for="(item, i) in items" :value="item.code || item" :key="i">
           {{ item.display || item }}

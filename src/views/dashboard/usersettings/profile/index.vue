@@ -1,12 +1,15 @@
 <template>
-    <div class="w-full bg-white  p-4 overflow-y-scroll topest" style="height: 100vh; overflow-y:scroll">
-        <!-- <div class="container-fluid bg-gray-500" style="heigth: 100vh">
+  <div
+    class="w-full bg-white p-4 overflow-y-scroll topest"
+    style="height: 100vh; overflow-y: scroll"
+  >
+    <!-- <div class="container-fluid bg-gray-500" style="heigth: 100vh">
             <EmptyState />
         </div> -->
-        <div class="container-fluid flex" v-if="true">
-            <div class="" style="width: 25%">
-                <div class="container">
-                    <!-- <div class="overflow-hidden bg-white rounded max-w-xs leading-normal">
+    <div class="container-fluid flex" v-if="true">
+      <div class="" style="width: 25%">
+        <div class="container">
+          <!-- <div class="overflow-hidden bg-white rounded max-w-xs leading-normal">
                         <a href="#" class="block group hover:bg-blue p-4">
                             <p class="font-normal text-lg mb-1 text-black">Practitioner Profile</p>
                         </a>
@@ -20,12 +23,12 @@
                             <p class="font-normal text-lg mb-1 text-black">Signature</p>
                         </a>
                     </div> -->
-                    <UserNav />
-                </div>
-            </div>
-            <div class="border-l-2 px-2"  style="width: 75%">
-                <router-view></router-view>
-                <!-- <div class="container-fluid">
+          <UserNav />
+        </div>
+      </div>
+      <div class="border-l-2 px-2" style="width: 75%">
+        <router-view></router-view>
+        <!-- <div class="container-fluid">
                     <div class="w-full border-b-2 curved flex py-2">
                         <div class="container-fluid flex font-semibold text-xl py-2">
                             <h2>Set Up Profile</h2>
@@ -329,7 +332,7 @@
                     </div>
 
                 </div> -->
-                <!-- <div class="w-full mb-12">
+        <!-- <div class="w-full mb-12">
                     <div class="container-fluid my-8 flex justify-end items-center">
                         <corniebtn :loading="false">
                             <router-link :to="{ name: 'Patient Experience Management' }" class="cursor-pointer focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full">
@@ -343,33 +346,30 @@
                         </Button>
                     </div>
                 </div> -->
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import UserNav from './components/user-nav.vue'
+import UserNav from "./components/user-nav.vue";
 
 @Options({
-    components: {
-        UserNav,
-    }
+  components: {
+    UserNav,
+  },
 })
-
-export default class PSecurity extends Vue {
-    
-}
+export default class PSecurity extends Vue {}
 </script>
 <style>
-    /* Hide scrollbar for Chrome, Safari and Opera */
+/* Hide scrollbar for Chrome, Safari and Opera */
 .topest::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .topest {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 </style>

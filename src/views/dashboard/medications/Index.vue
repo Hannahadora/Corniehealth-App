@@ -10,7 +10,6 @@ import { namespace } from "vuex-class";
 import EmptyState from "./empty-state.vue";
 import ExistingState from "./existing-state.vue";
 
-
 const patients = namespace("patients");
 
 @Options({

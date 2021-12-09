@@ -2,15 +2,7 @@
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
         Add a New Healthcare Service
       </span>
@@ -21,9 +13,10 @@
               <cornie-input
                 v-model="identifier"
                 label="Identifier"
-                class="bg-gray-200" disabled
+                class="bg-gray-200"
+                disabled
               />
-        
+
               <cornie-select
                 :rules="required"
                 :items="activeStates"
@@ -37,7 +30,6 @@
                 v-model="providedBy"
                 label="Provided by"
               />
-             
 
               <cornie-select
                 :rules="required"
@@ -67,25 +59,20 @@
                 label="location"
               />
 
+              <cornie-input :rules="required" v-model="name" label="name" />
 
               <cornie-input
                 :rules="required"
-                v-model="name"
-                label="name"
+                v-model="comment"
+                label="comment"
               />
 
-              <cornie-input 
-              :rules="required"
-               v-model="comment"
-                label="comment" 
-                />
+              <cornie-input
+                :rules="required"
+                v-model="extraDetails"
+                label="extra details"
+              />
 
-                <cornie-input 
-              :rules="required"
-               v-model="extraDetails"
-                label="extra details" 
-                />
-            
               <phone-input
                 v-model="phone"
                 :rules="required"
@@ -99,36 +86,40 @@
                 :rules="required"
               />
 
-               <cornie-select
+              <cornie-select
                 :items="activeStates"
                 v-model="provisionCode"
                 label="service provision code"
                 :rules="required"
               />
 
-            <!-- Image Upload  -->
+              <!-- Image Upload  -->
               <span class="flex items-center mt-3">
-                  <avatar class="mr-2" v-if="img.url" :src="img.url" />
-                  <avatar class="mr-2" v-else :src="img.placeholder" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    name="image"
-                    id="file"
-                    @change="img.onChange"
-                    hidden
-                  />
-                  <label for="file" class="text-pink-600 font-bold cursor-pointer">
-                    Upload
-                  </label>
-                </span>
-              
+                <avatar class="mr-2" v-if="img.url" :src="img.url" />
+                <avatar class="mr-2" v-else :src="img.placeholder" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="image"
+                  id="file"
+                  @change="img.onChange"
+                  hidden
+                />
+                <label
+                  for="file"
+                  class="text-pink-600 font-bold cursor-pointer"
+                >
+                  Upload
+                </label>
+              </span>
             </div>
-            <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
-           Eligibility
-        </span>
+            <span
+              class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4"
+            >
+              Eligibility
+            </span>
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
-        <cornie-select
+              <cornie-select
                 :items="['code']"
                 v-model="eligibilityCode"
                 label="Code"
@@ -151,29 +142,34 @@
                 v-model="appointmentRequired"
                 label="appointment required?"
               />
-            </div> 
-             <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
-          Available Time
-        </span>
+            </div>
+            <span
+              class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4"
+            >
+              Available Time
+            </span>
             <div class="mt-3 w-full">
               <operation-hours v-model="hoursOfOperation" />
             </div>
 
-             <span class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4">
-           Not Available
-        </span>
+            <span
+              class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4"
+            >
+              Not Available
+            </span>
             <div class="w-full grid grid-cols-2 gap-5 mt-3">
-            <cornie-input
+              <cornie-input
                 :rules="required"
                 v-model="notAvailableDescription"
                 label="description"
               />
-               <date-picker
-              label="During"
-              v-model="notAvailableDateRange"
-              placeholder="--Enter--" :rules="required"
-            />
-           
+              <date-picker
+                label="During"
+                v-model="notAvailableDateRange"
+                placeholder="--Enter--"
+                :rules="required"
+              />
+
               <cornie-input
                 v-model="availabilityExceptions"
                 label="availability exceptions"
@@ -185,38 +181,20 @@
                 :items="['dental', 'hospice']"
               />
             </div>
-            <span class=" border-t-2 mt-4 flex w-full mb-2 justify-end">
+            <span class="border-t-2 mt-4 flex w-full mb-2 justify-end">
               <button
-                class="
-                  rounded-full
-                  font-semibold
-                  p-2
-                  text-primary
-                  border border-primary
-                  w-1/4
-                  mr-3
-                  mt-4
-                "
+                class="rounded-full font-semibold p-2 text-primary border border-primary w-1/4 mr-3 mt-4"
                 @click="$router.push('health-services')"
               >
-                  Revert Changes
+                Revert Changes
               </button>
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                  class="
-                    bg-danger
-                    rounded-full
-                    text-white
-                    mt-5
-                    pr-10
-                    pl-10
-                    focus:outline-none
-                    hover:opacity-90
-                  "
-                >
-              Save
-            </cornie-btn>
+                class="bg-danger rounded-full text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+              >
+                Save
+              </cornie-btn>
             </span>
           </v-form>
         </div>
@@ -232,7 +210,7 @@ import Modal from "@/components/modal.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Avatar from "@/components/avatar.vue";
 import OperationHours from "@/components/new-operation-hours.vue";
-import IHealthcare, { HoursOfOperation }  from "@/types/IHealthcare";
+import IHealthcare, { HoursOfOperation } from "@/types/IHealthcare";
 import { useHandleImage } from "@/composables/useHandleImage";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
@@ -246,29 +224,27 @@ const dropdown = namespace("dropdown");
 @Options({
   components: {
     CornieInput,
-     Modal,
-     DatePicker,
+    Modal,
+    DatePicker,
     CornieSelect,
     PhoneInput,
     Avatar,
     OperationHours,
   },
 })
-
 export default class AddService extends Vue {
   img = setup(() => useHandleImage());
   @Prop({ type: String, default: "" })
   id!: string;
 
-  
   @healthcare.Action
   getHealthcareById!: (id: string) => IHealthcare;
   dropdowns = {} as IIndexableObject;
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
- loading = false;
-activeStates = ["active", "inactive"]
+  loading = false;
+  activeStates = ["active", "inactive"];
 
   identifier = "";
   name = "";
@@ -296,15 +272,13 @@ activeStates = ["active", "inactive"]
   comment = "";
   hoursOfOperation: HoursOfOperation[] = [];
 
+  required = string().required();
 
-   required = string().required();
-
-
-@Watch("id")
+  @Watch("id")
   idChanged() {
     this.setHealthcare();
   }
- async setHealthcare() {
+  async setHealthcare() {
     const healthcare = await this.getHealthcareById(this.id);
     if (!healthcare) return;
     this.name = healthcare.name;
@@ -331,41 +305,38 @@ activeStates = ["active", "inactive"]
     this.comment = healthcare.comment;
     this.eligibilityCode = healthcare.eligibilityCode;
     this.hoursOfOperation = healthcare.hoursOfOperation;
-   
- }
- 
-   get payload() {
+  }
+
+  get payload() {
     return {
-     name: this.name,
+      name: this.name,
       activeState: this.activeState,
-    eligibilityComment: this.eligibilityComment,
-    provisionCode: this.provisionCode,
-    coverageArea: this.coverageArea ,
-    type: this.type,
-    phone: this.phone ,
-    address: this.address ,
-    characteristics: this.characteristics ,
-    communication: this.communication,
-    photo: this.img.url ,
-    specialty: this.specialty ,
-   referralMethod:  this.referralMethod,
-   appointmentRequired:  this.appointmentRequired,
-    providedBy: this.providedBy,
-   category:  this.category ,
-    notAvailableDescription: this.notAvailableDescription ,
-    notAvailableDateRange: this.notAvailableDateRange,
-   notAvailableChannel: this.notAvailableChannel ,
-    availabilityExceptions: this.availabilityExceptions ,
-   extraDetails:  this.extraDetails,
-   comment:  this.comment ,
-   hoursOfOperation:  this.hoursOfOperation ,
-   eligibilityCode:  this.eligibilityCode 
-   
-    }
-   }
-  
-  
-   async submit() {
+      eligibilityComment: this.eligibilityComment,
+      provisionCode: this.provisionCode,
+      coverageArea: this.coverageArea,
+      type: this.type,
+      phone: this.phone,
+      address: this.address,
+      characteristics: this.characteristics,
+      communication: this.communication,
+      photo: this.img.url,
+      specialty: this.specialty,
+      referralMethod: this.referralMethod,
+      appointmentRequired: this.appointmentRequired,
+      providedBy: this.providedBy,
+      category: this.category,
+      notAvailableDescription: this.notAvailableDescription,
+      notAvailableDateRange: this.notAvailableDateRange,
+      notAvailableChannel: this.notAvailableChannel,
+      availabilityExceptions: this.availabilityExceptions,
+      extraDetails: this.extraDetails,
+      comment: this.comment,
+      hoursOfOperation: this.hoursOfOperation,
+      eligibilityCode: this.eligibilityCode,
+    };
+  }
+
+  async submit() {
     this.loading = true;
     if (this.id) await this.updateHealthcare();
     else await this.createHealthcare();
@@ -373,7 +344,9 @@ activeStates = ["active", "inactive"]
   }
 
   async createHealthcare() {
-    this.payload.notAvailableDateRange = new Date(this.payload.notAvailableDateRange).toISOString()
+    this.payload.notAvailableDateRange = new Date(
+      this.payload.notAvailableDateRange
+    ).toISOString();
 
     try {
       const response = await cornieClient().post(
@@ -381,11 +354,11 @@ activeStates = ["active", "inactive"]
         this.payload
       );
       if (response.success) {
-          window.notify({ msg: "Healthcare service  added", status: "success" });
-            this.$router.push('/dashboard/provider/settings/health-services')
+        window.notify({ msg: "Healthcare service  added", status: "success" });
+        this.$router.push("/dashboard/provider/settings/health-services");
       }
     } catch (error) {
-      window.notify({ msg:"Healthcare service not added", status: "error" });
+      window.notify({ msg: "Healthcare service not added", status: "error" });
     }
   }
   async updateHealthcare() {
@@ -394,31 +367,36 @@ activeStates = ["active", "inactive"]
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        this.$router.push('/dashboard/provider/settings/health-services')
-        window.notify({ msg: "Health care service updated", status: "success" });
+        this.$router.push("/dashboard/provider/settings/health-services");
+        window.notify({
+          msg: "Health care service updated",
+          status: "success",
+        });
       }
     } catch (error) {
-       window.notify({ msg:"Health care service not updated", status: "error" });
+      window.notify({
+        msg: "Health care service not updated",
+        status: "error",
+      });
     }
   }
   async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        console.log(response);
-        this.identifier = response.data.id;
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      console.log(response);
+      this.identifier = response.data.id;
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
     }
+  }
 
   async created() {
     this.setHealthcare();
     this.fetchOrgInfo();
-     const data = await this.getDropdowns("healthCareService");
+    const data = await this.getDropdowns("healthCareService");
     this.dropdowns = data;
   }
-
 }
 </script>

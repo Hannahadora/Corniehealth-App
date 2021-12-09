@@ -2,16 +2,7 @@
   <div class="flex flex-col">
     <h2 class="text-primary text-xl font-bold">Upload File</h2>
     <div
-      class="
-        flex flex-col
-        w-full
-        justify-center
-        items-center
-        border-2 border-dashed
-        rounded-md
-        mt-4
-        p-4
-      "
+      class="flex flex-col w-full justify-center items-center border-2 border-dashed rounded-md mt-4 p-4"
       @dragover.prevent
       @drop.prevent="handleDrop"
       style="min-height: 8rem"
@@ -94,7 +85,7 @@ export default class Uploader extends Vue {
   @PropSync("modelValue")
   fileUrl!: string;
 
-  @Prop({ type: Object})
+  @Prop({ type: Object })
   meta!: any;
   @PropSync("meta")
   metaData!: any;
@@ -105,7 +96,7 @@ export default class Uploader extends Vue {
 
   progress = 0;
 
-  fileInfo = {} ;
+  fileInfo = {};
 
   uploading = false;
 
@@ -125,15 +116,15 @@ export default class Uploader extends Vue {
     this.file = imageFile;
   }
 
-  setmeta(){
+  setmeta() {
     const fileExt = this.file.type;
     const fileSize = this.file.size;
-    const fileInfo = { fileSize, fileExt};
+    const fileInfo = { fileSize, fileExt };
     this.metaData = fileInfo;
   }
-    // showupload(){
-    //   this.$emit('show-parent', this.fileInfo)
-    // }
+  // showupload(){
+  //   this.$emit('show-parent', this.fileInfo)
+  // }
   cancel() {
     this.uploading = false;
     this.xhr?.abort();
@@ -146,7 +137,7 @@ export default class Uploader extends Vue {
     if (url) {
       this.fileUrl = url as string;
       this.setmeta();
-      }
+    }
     this.uploading = false;
     this.progress = 0;
   }

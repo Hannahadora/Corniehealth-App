@@ -1,11 +1,23 @@
 import { IPatient } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { createSlot, getVisits, schedulesByPractitioner, checkin, getPatients, checkout, startEncounter, cancel, noShow, getPatientVisits, updateStatus } from "./helper";
+import {
+  createSlot,
+  getVisits,
+  schedulesByPractitioner,
+  checkin,
+  getPatients,
+  checkout,
+  startEncounter,
+  cancel,
+  noShow,
+  getPatientVisits,
+  updateStatus,
+} from "./helper";
 
 interface SchedulesStore {
-  visits: any[],
-  patients: any[],
-  patientVisits: any[],
+  visits: any[];
+  patients: any[];
+  patientVisits: any[];
 }
 
 export default {
@@ -13,34 +25,36 @@ export default {
   state: {
     visits: [],
     patients: [],
-    patientVisits: [ ],
+    patientVisits: [],
   },
   mutations: {
-
     setVisits(state, visits) {
-      if (visits && visits.length > 0) state.visits = [ ...visits ];
+      if (visits && visits.length > 0) state.visits = [...visits];
     },
 
     setPatientVisits(state, visits) {
-      if (visits && visits.length > 0) state.patientVisits = [ ...visits ];
+      if (visits && visits.length > 0) state.patientVisits = [...visits];
     },
 
     setPatients(state, pts) {
-      if (pts && pts.length > 0) state.patients = [ ...pts ];
+      if (pts && pts.length > 0) state.patients = [...pts];
     },
 
     updateStatus(state, payload) {
       const index = state.visits.findIndex((i: any) => i.id === payload.id);
       if (index >= 0) state.visits[index].status = payload.status;
 
-      const inPatientsVisits = state.patientVisits.findIndex((i: any) => i.id === payload.id);
-      
-      if (inPatientsVisits >= 0) state.patientVisits[inPatientsVisits].status = payload.status;
+      const inPatientsVisits = state.patientVisits.findIndex(
+        (i: any) => i.id === payload.id
+      );
+
+      if (inPatientsVisits >= 0)
+        state.patientVisits[inPatientsVisits].status = payload.status;
     },
 
     addVisit(state, payload) {
-      state.visits.unshift(payload)
-    }
+      state.visits.unshift(payload);
+    },
   },
 
   actions: {
@@ -55,7 +69,7 @@ export default {
     },
 
     async getPatients(ctx) {
-      const pts = await getPatients();      
+      const pts = await getPatients();
       ctx.commit("setPatients", pts);
     },
 
@@ -66,7 +80,7 @@ export default {
 
     async createSlot(ctx, schedule: any) {
       const sch = await createSlot(schedule);
-      if (!sch) return { };
+      if (!sch) return {};
       // ctx.commit("addSchedule", sch);
       return sch;
     },
@@ -113,4 +127,4 @@ export default {
       return sch as boolean;
     },
   },
-} as StoreOptions<SchedulesStore>
+} as StoreOptions<SchedulesStore>;

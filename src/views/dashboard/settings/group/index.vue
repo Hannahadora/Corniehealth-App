@@ -1,28 +1,14 @@
 <template>
   <div class="h-full flex justify-center">
     <div class="w-full">
-    <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+      <span
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
-       Groups
+        Groups
       </span>
       <span class="w-full">
-          <group-empty-state
-                v-if="empty"
-          />
-          <group-existing-state
-        
-          v-else
-
-          />
+        <group-empty-state v-if="empty" />
+        <group-existing-state v-else />
       </span>
     </div>
   </div>
@@ -51,14 +37,13 @@ export default class GroupIndex extends Vue {
     return this.groups.length < 1;
   }
 
- @group.State
+  @group.State
   groups!: IGroup[];
 
   @group.Action
   fetchGroups!: () => Promise<void>;
 
-
-created() {
+  created() {
     if (this.groups.length < 1) this.fetchGroups();
   }
 }
