@@ -1,4 +1,3 @@
-import { IPatient } from '@/types/IPatient'
 import { StoreOptions } from 'vuex'
 import {
 	createSlot,

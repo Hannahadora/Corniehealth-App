@@ -1,5 +1,4 @@
 import { IAdminNote, IHospitalisation } from '@/types/IHospitalisation'
-import { IPatient } from '@/types/IPatient'
 import { StoreOptions } from 'vuex'
 import {
 	getHospitalisations,

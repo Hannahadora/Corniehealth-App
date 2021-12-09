@@ -1,5 +1,3 @@
-import ILocation from './ILocation'
-import { IOrganization } from './IOrganization'
 import { IPatient } from './IPatient'
 import IPractitioner from './IPractitioner'
 

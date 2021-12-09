@@ -1,5 +1,3 @@
-import ObjectSet from '@/lib/objectset'
-import ILocation from '@/types/ILocation'
 import { IOrganization } from '@/types/IOrganization'
 import { StoreOptions } from 'vuex'
 import { fetchOrganization } from './helper'

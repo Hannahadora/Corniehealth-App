@@ -1,6 +1,5 @@
 import { cornieClient } from '@/plugins/http'
 import IAllergy from '@/types/IAllergy'
-import { string } from 'yup/lib/locale'
 import IAppointmentRoom from '@/types/IAppointmentRoom'
 
 export async function fetchAllAllergys() {

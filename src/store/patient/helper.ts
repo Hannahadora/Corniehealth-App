@@ -1,5 +1,4 @@
 import { cornieClient } from '@/plugins/http'
-import { boolean } from 'yup/lib/locale'
 
 export async function fetchPatients() {
 	try {

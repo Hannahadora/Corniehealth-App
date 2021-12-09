@@ -1,6 +1,6 @@
 import { cornieClient } from '@/plugins/http'
 import IPractitioner from '@/types/IPractitioner'
-import ISchedule, { Slot } from '@/types/ISchedule'
+import ISchedule from '@/types/ISchedule'
 
 const minutesFromTimeString = (time: string): number => {
 	const hours = +time.split(':')[0]

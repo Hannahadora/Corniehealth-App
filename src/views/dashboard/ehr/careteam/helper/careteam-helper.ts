@@ -1,4 +1,4 @@
-import { cornieClient, quantumClient } from '@/plugins/http'
+import { cornieClient } from '@/plugins/http'
 import ICareteam from '@/types/ICareteam'
 
 export interface Item {

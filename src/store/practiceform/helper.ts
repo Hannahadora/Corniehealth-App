@@ -1,6 +1,5 @@
 import { cornieClient } from '@/plugins/http'
 import IPracticeform from '@/types/IPracticeform'
-import IQuestionnaires from '@/types/IQuestionnaries'
 
 export async function fetchPracticeforms() {
 	try {

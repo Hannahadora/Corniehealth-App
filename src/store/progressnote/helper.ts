@@ -1,7 +1,5 @@
 import { cornieClient } from '@/plugins/http'
 import IAllergy from '@/types/IAllergy'
-import IProgressnote from '@/types/Iprogressnote'
-import { string } from 'yup/lib/locale'
 
 export async function fetchProgressNote(patientId: string) {
 	try {

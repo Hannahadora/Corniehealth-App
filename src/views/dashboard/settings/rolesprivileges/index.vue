@@ -345,10 +345,7 @@ export default class RolesAndPrivileges extends Vue {
   transferConfirmed = false;
 
   toggleModal() {
-    console.log(
-      this.fetchPractitioners().then((res) => ),
-      "contacts"
-    );
+ 
 
     this.show = !this.show;
   }
