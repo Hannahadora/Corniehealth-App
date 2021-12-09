@@ -117,12 +117,8 @@
                         text-sm
                         text-white
                         mb-5
-                        mt-5
-                        py-2
-                        pl-6
-                        pr-6
-                        px-4
-                        pb-1
+                         mt-5
+                      py-2 px-8
                         focus:outline-none
                         hover:opacity-90
                         flex
@@ -159,8 +155,8 @@
                     <template #pay="{ item }">
                         <div>
                             <span class="bg-green-100 text-green-500 p-1 rounded mr-3 text-xs" v-if="item.paymentCategories[0] == 'Invoice'">{{item.paymentCategories[0]}} </span>
-                            <span class="bg-red-100 text-red-500 p-1 rounded text-xs" v-if="item.paymentCategories[1] == 'Credit Notes'">Credit Notes</span>
-                            <span class="bg-yellow-100 text-yellow-500 p-1 rounded text-xs" v-if="item.paymentCategories[2] == 'Quotes'">Quotes</span>
+                            <span class="bg-red-100 text-red-500 p-1 rounded text-xs" v-if="item.paymentCategories[1] == 'Credit Notes'">{{item.paymentCategories[1]}}</span>
+                            <span class="bg-yellow-100 text-yellow-500 p-1 rounded text-xs" v-if="item.paymentCategories[2] == 'Quotes'">{{item.paymentCategories[2]}}</span>
                         </div>
                     </template>
                     <template #account="{ item }">
@@ -453,5 +449,9 @@ get empty2() {
   position: absolute;
   z-index: 1;
   background-color: #080056;
+}
+.multiselect-option.is-selected.is-pointed {
+    background: #d3d6d5;
+    color: var(--ms-option-color-selected-pointed,#fff);
 }
 </style>
