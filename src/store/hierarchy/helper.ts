@@ -3,11 +3,11 @@ import IFunction from '@/types/IFunction'
 
 export default abstract class OrganizationHierarchyClient {
 	static async createfunction(payload: {
-    name: string;
-    costCenter: string;
-    hierarchyId: string;
-    reportingTo: string;
-  }): Promise<IFunction> {
+		name: string;
+		costCenter: string;
+		hierarchyId: string;
+		reportingTo: string;
+	}): Promise<IFunction> {
 		try {
 			const response = await cornieClient().post(
 				'/api/v1/orgHierarchy/function',
@@ -16,7 +16,7 @@ export default abstract class OrganizationHierarchyClient {
 			if (response.success) return response.data as IFunction
 			return {} as IFunction
 		} catch (e) {
-			console.log(e)
+
 			return {} as IFunction
 		}
 	}
@@ -40,7 +40,7 @@ export async function deleteLevel(id: string) {
 		window.notify({ msg: 'Levell deleted', status: 'success' })
 		return true
 	} catch (error) {
-		console.log(error)
+
 		window.notify({ msg: 'Failed to delete level', status: 'error' })
 		return false
 	}
@@ -51,7 +51,7 @@ export async function fetchCategories() {
 		const { data } = await quantumClient().get('/org/levels/categories')
 		return data.categories
 	} catch (e) {
-		console.log(e)
+
 	}
 	return []
 }

@@ -23,7 +23,7 @@ export async function createProcedure(body: IProcedure) {
 		return response.data as boolean
 	} catch (error) {
 		notify({ msg: 'procedure creation failed', status: 'error' })
-		console.log(error)
+
 	}
 }
 
@@ -38,7 +38,7 @@ export async function updateVitalStatus(body: any, vitalId: string) {
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Vitals status updated failed', status: 'error' })
 	}
 }
@@ -54,7 +54,7 @@ export async function updateProcedure(body: IProcedure, procedureId: string) {
 
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Procedure update failed', status: 'error' })
 	}
 }

@@ -216,7 +216,7 @@ export default class CarePartnersExistingState extends Vue {
   }
 
   created() {
-    console.log("states", this.locations);
+    ;
     if (!this.locations?.length) this.fetchLocations();
   }
 }

@@ -8,7 +8,7 @@ export async function fetchCurrencys() {
 		)
 		if (response.success) return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as ICurrency[]
 }

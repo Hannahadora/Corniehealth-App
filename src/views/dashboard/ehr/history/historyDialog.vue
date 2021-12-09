@@ -610,7 +610,7 @@ export default class AddCondition extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({
         msg: "Medical family history not created",
         status: "error",

@@ -4,11 +4,11 @@ import { StoreOptions } from 'vuex'
 import { fetchPatientConditions } from './helper'
 
 interface ConditionState {
-  conditions: { [state: string]: ICondition[] };
+	conditions: { [state: string]: ICondition[] };
 }
 interface Payload {
-  patientId: string;
-  conditions: ICondition[];
+	patientId: string;
+	conditions: ICondition[];
 }
 export default {
 	namespaced: true,
@@ -28,7 +28,7 @@ export default {
 	actions: {
 		async fetchPatientConditions(ctx, patientId: string) {
 			const conditions = await fetchPatientConditions(patientId)
-			console.log('stateconditions', conditions)
+
 
 			ctx.commit('setPatientConditions', { patientId, conditions })
 		},

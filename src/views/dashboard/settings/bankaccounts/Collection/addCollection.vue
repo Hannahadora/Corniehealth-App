@@ -73,14 +73,14 @@ export default {
     try {
       await this.fetchDropDown();
     } catch (error) {
-      console.log(error);
+      ;
     }
   },
 
   methods: {
     async submit() {
       try {
-        console.log(this.payload);
+        ;
         const response = await cornieClient().post(
           "/api/v1/collection",
           this.payload

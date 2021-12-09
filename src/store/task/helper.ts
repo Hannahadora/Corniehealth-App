@@ -8,7 +8,7 @@ export async function fetchTasks() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as ITask[]
 }

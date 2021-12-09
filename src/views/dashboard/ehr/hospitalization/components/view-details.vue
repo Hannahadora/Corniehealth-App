@@ -234,7 +234,7 @@ export default class DetailsView extends Vue {
 
   async created() {
     if (this.patients?.length === 0) await this.fetchPatients();
-    console.log(this.patients, "Patients");
+    ;
   }
 }
 </script>

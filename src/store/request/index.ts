@@ -10,10 +10,10 @@ import {
 } from './helper'
 
 interface RequestState {
-  requests: IRequest[];
-  patients: any[];
-  practitioners: any[];
-  patientrequests: IRequest[];
+	requests: IRequest[];
+	patients: any[];
+	practitioners: any[];
+	patientrequests: IRequest[];
 }
 
 export default {
@@ -58,7 +58,7 @@ export default {
 		},
 		async fetchRequests(ctx) {
 			const requests = await fetchRequests()
-			console.log('requestttt', requests)
+
 			ctx.commit('updatedRequests', requests)
 		},
 		async getPatients(ctx) {

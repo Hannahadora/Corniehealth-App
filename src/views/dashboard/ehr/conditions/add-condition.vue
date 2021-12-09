@@ -353,7 +353,7 @@ export default class AddCondition extends Vue {
       window.notify({ msg: "Condition created", status: "success" });
       this.show = false;
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Condition not created", status: "error" });
     }
   }

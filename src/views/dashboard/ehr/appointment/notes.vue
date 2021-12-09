@@ -180,7 +180,7 @@ export default {
       } catch (error) {
         this.loading = false;
         this.show = false;
-        console.log(error);
+        ;
         window.notify({ msg: "Notes not created", status: "error" });
       }
     },

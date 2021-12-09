@@ -8,7 +8,7 @@ export async function fetchPracticeInformation() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPracticeInformation[]
 }
@@ -21,7 +21,7 @@ export async function fetchPracticeHour() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	// return [] as IPracticeInformation[];
 }

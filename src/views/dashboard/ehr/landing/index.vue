@@ -164,7 +164,7 @@
                 id="password"
                 v-model="password"
                 class="border rounded"
-              />               
+              />
             </label>
             </div>
             <div class="w-full flex flex justify-end">
@@ -388,7 +388,7 @@ export default class ExistingState extends Vue {
 
   get items() {
     return this.patients.map((patient) => {
-      // console.log(, "contact info");
+      // ;
       const contact = patient?.contactInfo?.find(
         (contact) => contact.phone?.number
       );
@@ -484,7 +484,7 @@ export default class ExistingState extends Vue {
   //     }
   //   } catch (error) {
   //     this.loading = false;
-  //     console.log(error);
+  //     ;
   //   }
   // }
 
@@ -503,7 +503,7 @@ export default class ExistingState extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
 
@@ -550,7 +550,7 @@ export default class ExistingState extends Vue {
         (data.phone = `${contact?.phone?.dialCode}${contact?.phone?.number}`),
           (data.email = contact?.email);
       }
-      console.log(activeVisits, "ACTIVE");
+      ;
 
       return patient?.id ? patient : visit;
     });

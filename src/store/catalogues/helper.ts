@@ -4,48 +4,48 @@ import ICatalogueService, { ICatalogueProduct } from '@/types/ICatalogue'
 export const getServices = async () => {
 	try {
 		const response = await cornieClient().get('/api/v1/catalogue-service/')
-		console.log(response, 'RESPONSE')
+
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 }
 
 export const getProducts = async () => {
 	try {
 		const response = await cornieClient().get('/api/v1/catalogue-product/')
-		console.log(response, 'RESPONSE')
+
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 }
 
 export const createService = async (body: ICatalogueService) => {
 	try {
-		console.log(body, 'BODY')
+
 		const response = await cornieClient().post(
 			'/api/v1/catalogue-service/',
 			body
 		)
-		console.log(response, 'RESPONSE')
+
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 }
 
 export const createProduct = async (body: ICatalogueProduct) => {
 	try {
-		console.log(body, 'BODY')
+
 		const response = await cornieClient().post(
 			'/api/v1/catalogue-product/',
 			body
 		)
-		console.log(response, 'RESPONSE')
+
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 }
 
@@ -63,7 +63,7 @@ export const updateService = async (data: ICatalogueService) => {
 		)
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 }
 
@@ -72,9 +72,9 @@ export const deleteService = async (id: string) => {
 		const response = await cornieClient().delete(
 			`/api/v1/catalogue-service/${id}`
 		)
-		console.log(response, 'RESPONSE')
+
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 }

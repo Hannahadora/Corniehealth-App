@@ -20,21 +20,21 @@ const filterByDate = (schedules: ISchedule[], date: string | Date) => {
 	return schedules.filter((schedule) => {
 		return (
 			new Date(schedule.startDate).getDate() === new Date(date).getDate() &&
-      new Date(schedule.startDate).getMonth() === new Date(date).getMonth() &&
-      new Date(schedule.startDate).getFullYear() ===
-        new Date(date).getFullYear()
+			new Date(schedule.startDate).getMonth() === new Date(date).getMonth() &&
+			new Date(schedule.startDate).getFullYear() ===
+			new Date(date).getFullYear()
 		)
 	})
 }
 
 const filterSlotsByDate = (slots: any, date: string | Date) => {
 	return slots.filter((slot: any) => {
-		console.log(slot.date, 'jdjd', date)
+
 
 		return (
 			new Date(slot.date).getDate() === new Date(date).getDate() &&
-      new Date(slot.date).getMonth() === new Date(date).getMonth() &&
-      new Date(slot.date).getFullYear() === new Date(date).getFullYear()
+			new Date(slot.date).getMonth() === new Date(date).getMonth() &&
+			new Date(slot.date).getFullYear() === new Date(date).getFullYear()
 		)
 	})
 }
@@ -49,8 +49,8 @@ const filterBySlotTime = (
 		const { startTime, startDate, endTime, endDate } = schedule
 		return (
 			constructDate(date, slotStartTime) >=
-        constructDate(startDate, startTime) &&
-      constructDate(date, slotEndTime) <= constructDate(endDate, endTime)
+			constructDate(startDate, startTime) &&
+			constructDate(date, slotEndTime) <= constructDate(endDate, endTime)
 		)
 	})
 }
@@ -139,13 +139,13 @@ export default {
 
 	getAvailableSlots(arrOfSchedules: any[]) {
 		// const futureSchedules = arrOfSchedules.filter((i: any) => new Date(i.startDate) > new Date(Date.now()));
-		console.log(arrOfSchedules, 'arrs')
+
 
 		const futureSchedules = arrOfSchedules.map((i: any) => {
 			i.fullStartDate = new Date(
 				new Date(new Date(i.startDate).toISOString()).setMinutes(
 					new Date(i.startDate).getMinutes() +
-            minutesFromTimeString(i.startTime)
+					minutesFromTimeString(i.startTime)
 				)
 			).toISOString()
 			i.fullEndDate = new Date(
@@ -164,7 +164,7 @@ export default {
 			while (streak) {
 				const slotStart = new Date(i.fullStartDate).setMinutes(
 					new Date(i.startDate).getMinutes() +
-            (i.slotSize + (count > 0 ? 5 : 0)) * count
+					(i.slotSize + (count > 0 ? 5 : 0)) * count
 				)
 				const slotEnd = new Date(slotStart).setMinutes(
 					new Date(slotStart).getMinutes() + i.slotSize
@@ -172,23 +172,23 @@ export default {
 
 				if (
 					new Date(slotEnd).toLocaleString() <
-            new Date(i.fullEndDate).toLocaleString() ||
-          new Date(slotEnd).toLocaleString() ===
-            new Date(i.fullEndDate).toLocaleString()
+					new Date(i.fullEndDate).toLocaleString() ||
+					new Date(slotEnd).toLocaleString() ===
+					new Date(i.fullEndDate).toLocaleString()
 				) {
 					const index = i.breaks.findIndex(
 						(x: any) =>
 							compareTime(x.startTime, i.startDate) >=
-                compareTime(i.startTime, i.startDate) &&
-              compareTime(x.endTime, x.endDate) <=
-                compareTime(i.endTime, i.endDate)
+							compareTime(i.startTime, i.startDate) &&
+							compareTime(x.endTime, x.endDate) <=
+							compareTime(i.endTime, i.endDate)
 					)
 					const indx = i.slots.findIndex(
 						(y: any) =>
 							compareTime(y.startTime, i.startDate) >=
-                compareTime(i.startTime, i.startDate) &&
-              compareTime(y.endTime, y.endDate) <=
-                compareTime(i.endTime, i.endDate)
+							compareTime(i.startTime, i.startDate) &&
+							compareTime(y.endTime, y.endDate) <=
+							compareTime(i.endTime, i.endDate)
 					)
 
 					if (index < 0 && indx < 0) {
@@ -213,15 +213,15 @@ export default {
 				count += 1
 			}
 		})
-		console.log(arrOfSlots, 'SLOTS')
+
 		return arrOfSlots
 	},
 
 	matchDates(date1: string, date2: string) {
 		const result =
-      new Date(date1).getDay() === new Date(date2).getDay() &&
-      new Date(date1).getMonth() === new Date(date2).getMonth() &&
-      new Date(date1).getFullYear() === new Date(date2).getFullYear()
+			new Date(date1).getDay() === new Date(date2).getDay() &&
+			new Date(date1).getMonth() === new Date(date2).getMonth() &&
+			new Date(date1).getFullYear() === new Date(date2).getFullYear()
 		return result
 	},
 
@@ -281,16 +281,15 @@ export default {
 			const slots = await cornieClient().get(
 				`/api/v1/slot/practitioner/${practitionerId}`
 			)
-			console.log(slots, 'p slots')
+
 			if (!slots) return []
 			return slots
 		} catch (error) {
-			console.log(error)
 		}
 	},
 
 	isSlotTime(slots: any, slotTime: string, date: Date | string) {
-		console.log(slots, 'stae')
+
 
 		if (!slots || slots.length === 0) return {}
 		const [startTime, endTime] = slotTime.split(' - ')
@@ -302,7 +301,7 @@ export default {
 			)
 			// && constructDate(date, slot.endTime) <= constructDate(date, slot.endTime)
 		})
-		console.log(slotsForDay, 'for time')
+
 
 		if (!slotForTime) return {}
 		return slotForTime

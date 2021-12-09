@@ -9,7 +9,7 @@ import {
 } from './helper'
 
 interface SchedulesStore {
-  patientHospitalisations: IHospitalisation[];
+	patientHospitalisations: IHospitalisation[];
 }
 
 export default {
@@ -34,7 +34,7 @@ export default {
 				const index = state.patientHospitalisations.findIndex(
 					(hospitalisation) => hospitalisation.id === data.hospitalizationId
 				)
-        state.patientHospitalisations[index]?.notes?.unshift(data)
+				state.patientHospitalisations[index]?.notes?.unshift(data)
 			}
 		},
 
@@ -72,7 +72,7 @@ export default {
 
 		async createAdminNote(ctx, body: IAdminNote) {
 			const res = await createAdminNote(body)
-			console.log(res, 'NEW NOTE')
+
 			if (!res) return false
 
 			ctx.commit('addNote', res)

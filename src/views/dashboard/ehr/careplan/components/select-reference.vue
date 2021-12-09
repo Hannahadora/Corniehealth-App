@@ -232,7 +232,7 @@ export default class SelectRference extends Vue {
     this.localValue = this.value ? this.value : "";
     await this.fetchLocations();
     await this.fetchPractitioners();
-    console.log(this.practitioners, "Practitioners");
+    ;
   }
 }
 </script>

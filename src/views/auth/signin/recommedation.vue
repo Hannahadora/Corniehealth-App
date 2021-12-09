@@ -42,7 +42,7 @@ import TwoFactor from "./twofactor.vue";
 export default class Recommendation extends Vue {
   twoFactor = false;
   clicked() {
-    console.log("Clicked");
+    ;
   }
 }
 </script>

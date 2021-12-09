@@ -384,7 +384,7 @@ export default class AddLocation extends Vue {
   }
 
   async submit2() {
-    console.log("time", this.payload);
+    ;
     this.loading = true;
     if (this.id) await this.updateLocation();
     else await this.createLocation();
@@ -392,7 +392,7 @@ export default class AddLocation extends Vue {
   }
 
   async submit() {
-    console.log("time", this.payload);
+    ;
     this.loading = true;
     this.createLocation();
     this.loading = false;

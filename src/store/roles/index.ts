@@ -12,10 +12,10 @@ import {
 } from './helper'
 
 interface RolesStore {
-  privileges: any[];
-  roles: any[];
-  org: any;
-  practitioners: [];
+	privileges: any[];
+	roles: any[];
+	org: any;
+	practitioners: [];
 }
 
 export default {
@@ -72,8 +72,8 @@ export default {
 		// },
 		async deleteRole(ctx, id: string) {
 			const deleted = await deleteRole(id)
-			console.log(!deleted, 'boolean')
-			console.log(deleted, 'deleted')
+
+
 
 			if (!deleted) return false
 			ctx.commit('removeRole', id)

@@ -20,11 +20,11 @@ export async function getHospitalisations(patientId: string) {
 export async function createHospitalisation(body: IHospitalisation) {
 	try {
 		const response = await cornieClient().post('/api/v1/hospitalization', body)
-		console.log(response, 'Hospitalization')
+
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 
 		// notify({
 		//   msg: "There was an error creating this slot",
@@ -39,11 +39,11 @@ export async function createAdminNote(body: IAdminNote) {
 			'/api/v1/hospitalization/admin_notes',
 			body
 		)
-		console.log(data, 'Note')
+
 
 		return data
 	} catch (error) {
-		console.log(error)
+
 
 		// notify({
 		//   msg: "There was an error creating this slot",
@@ -58,11 +58,11 @@ export async function updateHospitalisation(body: IHospitalisation) {
 			`/api/v1/hospitalization/${body.id}`,
 			body
 		)
-		console.log(response, 'Updated Hospitalisation')
+
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 
 		// notify({
 		//   msg: "There was an error creating this slot",

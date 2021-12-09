@@ -6,7 +6,7 @@ export async function fetchPractitioners() {
 		const response = await cornieClient().get('/api/v1/practitioner')
 		if (response.success) return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPractitioner[]
 }

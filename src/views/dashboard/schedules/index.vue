@@ -514,7 +514,7 @@ export default class PractitionerExistingState extends Vue {
 
   get availabilityItems() {
     if (!this.schedules) return [];
-    console.log(utilservice.slots(), "ALL SLOTS");
+    , "ALL SLOTS");
 
     return utilservice.slots();
   }
@@ -531,7 +531,7 @@ export default class PractitionerExistingState extends Vue {
           ) < 0
       )
       .map((i) => {
-        console.log(i, "i");
+        ;
 
         return {
           code: i.id,
@@ -582,7 +582,7 @@ export default class PractitionerExistingState extends Vue {
       this.getShifts();
     } catch (error) {
       window.notify({ msg: "Shift could not deactivated", status: "error" });
-      console.log(error);
+      ;
     }
   }
 
@@ -598,7 +598,7 @@ export default class PractitionerExistingState extends Vue {
         window.notify({ msg: "Schedule activated", status: "success" });
     } catch (error) {
       window.notify({ msg: "Schedule could not activated", status: "error" });
-      console.log(error);
+      ;
     }
   }
 
@@ -614,7 +614,7 @@ export default class PractitionerExistingState extends Vue {
         window.notify({ msg: "Schedule deactivated", status: "success" });
     } catch (error) {
       window.notify({ msg: "Schedule could not deactivated", status: "error" });
-      console.log(error);
+      ;
     }
   }
 
@@ -635,14 +635,14 @@ export default class PractitionerExistingState extends Vue {
       }
     } catch (error) {
       window.notify({ msg: "Schedule could not deleted", status: "error" });
-      console.log(error);
+      ;
     }
   }
 
   viewSchedule(id: string) {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (schedule) this.selectedSchedule = schedule;
-    console.log(this.selectedSchedule);
+    ;
     this.showActorsPane = true;
     // this.showViewPane = true;
   }
@@ -650,7 +650,7 @@ export default class PractitionerExistingState extends Vue {
   addActor(id: string) {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (schedule) this.selectedSchedule = schedule;
-    console.log(schedule, "selected");
+    ;
 
     this.showAddActorsPane = true;
   }
@@ -670,7 +670,7 @@ export default class PractitionerExistingState extends Vue {
       await this.getSchedules();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-    console.log(this.schedules, "schs");
+    ;
   }
 }
 </script>

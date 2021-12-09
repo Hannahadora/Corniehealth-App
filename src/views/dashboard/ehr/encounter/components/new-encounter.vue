@@ -650,11 +650,11 @@ export default class NewEpisode extends Vue {
       this.encounter.locationId = "d25cc910-0830-40cf-a0c8-7c303f381b29";
 
       const created = await this.createEncounter(this.encounter);
-      console.log(created);
+      ;
 
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }
@@ -662,7 +662,7 @@ export default class NewEpisode extends Vue {
   async created() {
     this.patientId = this.$route.params.id as string;
     if (this.locations?.length <= 0) await this.fetchLocations();
-    console.log(this.locations, "LOCATIONS");
+    ;
   }
 }
 </script>

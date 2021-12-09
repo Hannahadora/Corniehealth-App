@@ -95,7 +95,7 @@
         </corniebtn>
         <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
                     <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save 
+                        Save
                     </a>
                     <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
                 </button> -->
@@ -219,7 +219,7 @@ export default class CheckIn extends Vue {
   onGetSlots() {
     const room = this.rooms.find((i: any) => i.code === this.item.roomId);
     this.checkoutData.roomId = room ? room.code : "";
-    console.log(room, "room");
+    ;
   }
 
   get rooms() {
@@ -256,7 +256,7 @@ export default class CheckIn extends Vue {
       await this.fetchLocations();
     if (!this.appointments || this.appointments.length === 0)
       await this.fetchAppointments();
-    console.log(this.appointments, "WWWW");
+    ;
   }
 }
 </script>

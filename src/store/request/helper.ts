@@ -8,7 +8,7 @@ export async function fetchRequests() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IRequest[]
 }
@@ -21,7 +21,7 @@ export async function fetchOtherrequestsById(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IRequest[]
 }

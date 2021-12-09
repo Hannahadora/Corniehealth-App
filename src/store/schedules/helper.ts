@@ -27,7 +27,7 @@ export async function deleteSchedule(id: string) {
 export async function createSchedule(body: any) {
 	try {
 		const response = await cornieClient().post('/api/v1/schedule', body)
-		console.log(response, 'created schedlue')
+
 
 		return response.data as boolean
 	} catch (error) {
@@ -85,7 +85,7 @@ export async function removePractitioner(body: any, id: any) {
 			`/api/v1/schedule/remove-practitioners/${id}`,
 			body
 		)
-		console.log(response, 'RESPONSE')
+
 
 		return response.success as boolean
 	} catch (error) {

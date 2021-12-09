@@ -53,7 +53,7 @@
             <span class="ml-3 text-xs pr-4">Edit</span>
           </table-action>
           <!-- <table-action
-            
+
           >
             <share-icon class="text-red-500 fill-current" />
             <span class="ml-3 text-xs pr-4">Share</span>
@@ -259,8 +259,8 @@ export default class EHRCareTeam extends Vue {
     const team = this.careteams.find(
       (careteam) => careteam.id === this.selectedTeamId
     );
-    console.log(team, "selected team");
-    console.log(this.selectedTeamId, "selected team");
+    ;
+    ;
     return team;
   }
 
@@ -280,13 +280,13 @@ export default class EHRCareTeam extends Vue {
       this.loading = false;
       if (added?.id) this.addToExisting = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }
 
   onSelect(data: IItem) {
-    console.log(data, "IITEM");
+    ;
     this.existingCareTeamToAddTo = this.careteams.find(
       (careteam) => careteam.id === data.code
     );
@@ -321,11 +321,11 @@ export default class EHRCareTeam extends Vue {
       await this.fetchCareteams();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-    console.log(this.practitioners, "IONERS");
-    console.log(this.careteams, "USER");
+    ;
+    ;
 
     const data = await careteamHelper.searchForCareTeam({ query: "Adult" });
-    console.log(data, "DDDDD");
+    ;
   }
 }
 </script>

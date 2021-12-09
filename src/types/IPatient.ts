@@ -97,7 +97,7 @@ export interface RelatedPerson {
 export interface authorizedPractitioners {
   id?: string;
   patient_authorized_practitioners: string;
-  user: {};
+  user: Record<string, unknown>;
 }
 
 export interface Guarantor extends RelatedPerson {

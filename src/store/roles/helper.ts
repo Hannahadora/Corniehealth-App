@@ -16,7 +16,7 @@ export async function getPractitioner() {
 export async function getRoles() {
 	try {
 		const response = await cornieClient().get('/api/v1/roles/')
-		console.log(response.data, 'roles')
+
 
 		return response.data
 	} catch (error) {
@@ -28,7 +28,7 @@ export async function getRoles() {
 export async function getOrg() {
 	try {
 		const response = await cornieClient().get('/api/v1/organization/myOrg/get')
-		console.log(response.data, 'ORG')
+
 
 		return response.data
 	} catch (error) {
@@ -40,7 +40,7 @@ export async function getOrg() {
 export async function fetchPractitioners() {
 	try {
 		const response = await cornieClient().get('/api/v1/practitioner')
-		console.log(response.data, 'ORG')
+
 
 		return response.data
 	} catch (error) {
@@ -53,7 +53,7 @@ export async function deleteRole(id: string) {
 	try {
 		const response = await cornieClient().delete(`/api/v1/roles/${id}`)
 
-		console.log(response, 'role delete')
+
 
 		return response.success as boolean
 	} catch (error) {
@@ -86,7 +86,7 @@ export async function transferRight(body: any) {
 			'/api/v1/roles/transfer-admin/',
 			body
 		)
-		console.log(response, 'transfer')
+
 		notify({
 			msg: 'Right transfered successfully',
 			status: 'success',

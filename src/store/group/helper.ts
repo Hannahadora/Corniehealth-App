@@ -8,7 +8,7 @@ export async function fetchGroups() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IGroup[]
 }

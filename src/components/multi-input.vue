@@ -46,7 +46,7 @@ export default class MultiInput extends Vue {
   inputChanged() {
     const modelValue = this.model.reduce((prev, curr) => prev + curr.val, "");
     this.$emit("update:modelValue", modelValue);
-    console.log(modelValue);
+    ;
   }
 
   @Watch("length")

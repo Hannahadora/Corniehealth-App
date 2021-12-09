@@ -8,7 +8,7 @@ export async function fetchAppointments() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAppointment[]
 }
@@ -21,7 +21,7 @@ export async function fetchByIdAppointments(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAppointment[]
 }

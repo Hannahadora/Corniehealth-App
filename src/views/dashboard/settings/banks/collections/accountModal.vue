@@ -26,7 +26,7 @@
                 placeholder="--Select Preferred Bank--"
                 />
                 <cornie-input label="Account Number" @input.prevent="fetchAccountName" v-model="accountNumber" placeholder="--Enter Account Numebr--" class="w-full mb-4" />
-               
+
                  <cornie-input disabled label="Account Name" v-model="accountName" placeholder="--Autoloaded--" class="w-full mb-4" />
                <div v-if="error" class="flex space-x-4 -mt-2 justify-between w-full">
                 <p class="float-left text-xs">Name does not match.</p>
@@ -162,7 +162,7 @@ status = "";
   AllBanks = [];
 
   orgInfo = [] as any;
- 
+
  error= false;
 
   required = string().required();
@@ -193,9 +193,9 @@ status = "";
           window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
-   
+
     } catch (error) {
-      console.log(error);
+      ;
         window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
@@ -231,16 +231,16 @@ status = "";
                 Authorization: 'Bearer pk_test_29d8f85ecdfac9b7bc572cae9d1965062d44356a',
             }
           });
-        console.log(response,"Error is here");
+        ;
         this.accountName = response.data.account_name || {};
         if(response.data.status == false){
           window.notify({ msg: response.data.message, status: "error" });
         }
       } catch (error) {
-        console.log(error);
+        ;
       }
     }
- 
+
  done() {
     this.$emit("medicationAdded");
     this.show = false;
@@ -252,7 +252,7 @@ status = "";
         this.show = false;
   //  this.loading = false;
   }
- 
+
   async created() {
    this.fetchOrgInfo();
    this.fetchDropDown();

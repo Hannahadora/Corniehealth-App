@@ -13,21 +13,17 @@ const getPractitionersForSlot = (
 	endDate: string | Date
 ) => {
 	const schs = schedules.filter((i) => {
-		console.log(
-			constructDateFromDateAndTime(i.startDate, i.startTime) >=
-        new Date(startDate) &&
-        constructDateFromDateAndTime(i.endDate, i.endTime) <= new Date(endDate)
-		)
+
 
 		if (
 			constructDateFromDateAndTime(i.startDate, i.startTime) >=
-        new Date(startDate) &&
-      constructDateFromDateAndTime(i.endDate, i.endTime) <= new Date(endDate)
+			new Date(startDate) &&
+			constructDateFromDateAndTime(i.endDate, i.endTime) <= new Date(endDate)
 		) {
 			return i
 		}
 	})
-	console.log(schs)
+
 
 	const arr: any = []
 	schs.forEach((j) => {
@@ -37,7 +33,7 @@ const getPractitionersForSlot = (
 			})
 		}
 	})
-	console.log(arr, 'ARR')
+
 	return arr
 }
 

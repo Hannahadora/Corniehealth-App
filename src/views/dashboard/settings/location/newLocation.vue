@@ -149,7 +149,7 @@ export default {
     try {
       await this.fetchDropDown();
     } catch (error) {
-      console.log(error);
+      ;
     }
   },
   Watch: {
@@ -162,7 +162,7 @@ export default {
   methods: {
     async submit() {
       try {
-        console.log(this.payload);
+        ;
         const response = await cornieClient.post(
           "api/v1/location",
           this.payload

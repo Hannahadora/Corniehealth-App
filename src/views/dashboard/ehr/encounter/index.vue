@@ -479,7 +479,7 @@ export default class ExistingState extends Vue {
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
 
@@ -489,8 +489,8 @@ export default class ExistingState extends Vue {
     if (this.practitioners?.length === 0) await this.fetchPractitioners();
     if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
     if (this.episodes?.length <= 0) await this.getEpisodes(this.patientId);
-    console.log(this.episodes, "EPISODES");
-    console.log(this.encounters, "Encounters");
+    ;
+    ;
   }
 }
 </script>

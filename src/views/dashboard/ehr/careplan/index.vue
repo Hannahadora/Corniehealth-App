@@ -218,7 +218,7 @@ export default class ExistingState extends Vue {
 
   async created() {
     await this.getCarePlans(this.$route.params.id.toString());
-    console.log(this.careplans, "CARE PLANS");
+    ;
   }
 }
 </script>

@@ -96,8 +96,8 @@ export interface clinicalImpressions {
     previous?: string;
     problem?: string;
   };
-  investigation?: {};
-  findings?: {};
+  investigation?: Record<string, unknown>;
+  findings?: Record<string, unknown>;
 }
 
 export interface diagnosticRequests {

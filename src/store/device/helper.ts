@@ -17,7 +17,7 @@ async function fetchRemoteDropdowns() {
 		const resp = await cornieClient().get('/api/v1/devices/dropdowns')
 		return resp.data
 	} catch (error) {
-		console.log('there was an error')
+
 	}
 }
 

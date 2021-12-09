@@ -8,7 +8,7 @@ export async function fetchLocations() {
 		)
 		if (response.success) return response.data
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as ILocation[]
 }

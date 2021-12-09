@@ -6,7 +6,7 @@ export async function getCarePlans(patientId: string) {
 		const response = await cornieClient().get(
 			`/api/v1/care-plan/patient/${patientId}`
 		)
-		console.log(response, 'RRREEESSSPONNNSE')
+
 
 		return response.data
 	} catch (error) {
@@ -18,11 +18,11 @@ export async function getCarePlans(patientId: string) {
 export async function createCarePlan(body: any) {
 	try {
 		const response = await cornieClient().post('/api/v1/care-plan', body)
-		console.log(response, 'CAre Plan')
+
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 
 		// notify({
 		//   msg: "There was an error creating this slot",
@@ -37,11 +37,11 @@ export async function updateCarePlan(body: ICarePlan) {
 			`/api/v1/care-plan/${body.id}`,
 			body
 		)
-		console.log(response, 'Updated Plan')
+
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 
 		// notify({
 		//   msg: "There was an error creating this slot",

@@ -9,7 +9,7 @@ export async function fetchAllAllergys() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAllergy[]
 }
@@ -22,7 +22,7 @@ export async function fetchAllergys(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAllergy[]
 }

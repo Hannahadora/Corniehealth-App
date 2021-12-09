@@ -64,7 +64,7 @@ async function fetchUserData() {
 		])
 		return { quantum: quantum.data, cornie }
 	} catch (error) {
-		console.log('error')
+
 	}
 }
 
@@ -73,7 +73,7 @@ export async function fetchCornieData() {
 		const res = await cornieClient().get('/api/v1/account')
 		return res.success ? res.data : {}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return {}
 }
@@ -104,7 +104,7 @@ async function refreshToken() {
 		const token = data.token
 		store.commit('user/setAuthToken', token)
 	} catch (error) {
-		console.log('Token refresh failed')
+
 	}
 }
 

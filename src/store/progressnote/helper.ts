@@ -12,7 +12,7 @@ export async function fetchProgressNote(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPro[]
 }
@@ -26,7 +26,7 @@ export async function fetchAllergys(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAllergy[]
 }

@@ -9,7 +9,7 @@ export async function fetchPracticeforms() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPracticeform[]
 }
@@ -22,7 +22,7 @@ export async function fetchPracticeformsQuestionnaires() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPracticeform[]
 }
@@ -35,7 +35,7 @@ export async function fetchPracticeformsTemplates() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPracticeform[]
 }
@@ -48,7 +48,7 @@ export async function fetchPracticeformsQuestions() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IPracticeform[]
 }

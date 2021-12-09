@@ -3,9 +3,9 @@ import { IPatient } from '@/types/IPatient'
 import IPractitioner from '@/types/IPractitioner'
 
 interface Credential {
-  email: string;
-  authPassword: string;
-  accountId?: string;
+	email: string;
+	authPassword: string;
+	accountId?: string;
 }
 
 const authenticateUser = async (payload: Credential) => {
@@ -13,11 +13,11 @@ const authenticateUser = async (payload: Credential) => {
 		const {
 			data: { emailVerified },
 		} = await quantumClient().post('/auth/login', payload)
-		console.log(emailVerified, 'confirm data')
+
 
 		return emailVerified ? true : false
 	} catch (error) {
-		console.log(error)
+
 		window.notify({ msg: 'Authentication failed', status: 'error' })
 		return false
 	}
@@ -30,7 +30,7 @@ const searchPatient = async (query: string) => {
 		})
 		return data
 	} catch (error) {
-		console.log(error)
+
 		window.notify({ msg: 'Search failed, please try again', status: 'error' })
 		return false
 	}
@@ -41,13 +41,13 @@ const getActiveVisits = (
 	practitionerId: string,
 	patients: IPatient[]
 ) => {
-	console.log(practitionerId)
+
 
 	if (!visits || visits.length === 0) return []
 	const activeVisists = visits.filter(
 		(visit: any) =>
-      visit.status?.toLowerCase() === 'in-progress' ||
-      visit.status?.toLowerCase() === 'active'
+			visit.status?.toLowerCase() === 'in-progress' ||
+			visit.status?.toLowerCase() === 'active'
 	)
 
 	const activeVisitsForPractitioner = activeVisists

@@ -27,10 +27,10 @@ export default class VisitsChart extends Vue {
         `/api/v1/visit/analytics/stats`,
         { start: start?.toISOString(), end: end?.toISOString() }
       );
-      console.log(data, "VISITS CHART");
+      ;
       // this.chartData = data.
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 

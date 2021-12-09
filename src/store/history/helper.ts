@@ -10,7 +10,7 @@ export async function fetchHistorys(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as Ihistory[]
 }

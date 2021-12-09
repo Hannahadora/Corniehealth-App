@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     saveTwoFactor() {
-      console.log("Two Factor Completely Setup");
+      ;
     },
     async sendCode() {
       const payload = {

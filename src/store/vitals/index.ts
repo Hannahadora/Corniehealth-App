@@ -15,9 +15,9 @@ import {
 } from './helper'
 
 interface VitalsStore {
-  vitals: IVital[];
-  encounters: IEncounter[];
-  episodes: IEpisode[];
+	vitals: IVital[];
+	encounters: IEncounter[];
+	episodes: IEpisode[];
 }
 
 export default {
@@ -83,7 +83,7 @@ export default {
 
 		async getEpisodes(ctx, patientId: string) {
 			const episodes = await getEpisodes(patientId)
-			console.log(episodes, 'ALL EPISODES')
+
 			ctx.commit('setEpisodes', episodes)
 		},
 
@@ -96,7 +96,7 @@ export default {
 
 		async createEncounter(ctx, encounter: IEncounter) {
 			const res = await createEncounter(encounter)
-			console.log(res, 'ENcounter')
+
 
 			if (!res) return {}
 			ctx.commit('addnewEncounter', res)
@@ -122,7 +122,7 @@ export default {
 		},
 
 		async updateStatusOfEncounter(ctx, body: any) {
-			console.log(body, 'BODY')
+
 
 			const res = await updateEncounterStatus(body.data, body.patientId)
 			if (!res) return {}
@@ -134,7 +134,7 @@ export default {
 		},
 
 		async updateEpisodeStatus(ctx, body: any) {
-			console.log(body, 'BODY')
+
 
 			const res = await updateEpisodeStatus(body.data, body.episodeId)
 			if (!res) return {}

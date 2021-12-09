@@ -54,11 +54,11 @@ export async function getPatients() {
 export async function createSlot(body: any) {
 	try {
 		const response = await cornieClient().post('/api/v1/schedule/slot', body)
-		console.log(response, 'slot schedlue')
+
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 
 		// notify({
 		//   msg: "There was an error creating this slot",
@@ -68,10 +68,10 @@ export async function createSlot(body: any) {
 }
 
 export async function checkin(body: any) {
-	console.log('Checking in')
+
 	try {
 		const response = await cornieClient().post('/api/v1/visit/check-in', body)
-		console.log(response, 'visit checkin')
+
 
 		return response.data
 	} catch (error) {
@@ -88,7 +88,7 @@ export async function checkout(id: string) {
 			`/api/v1/visit/check-out/${id}`,
 			{}
 		)
-		console.log(response, 'visit checkout')
+
 
 		return response.data as boolean
 	} catch (error) {
@@ -105,7 +105,7 @@ export async function cancel(id: any) {
 			`/api/v1/visit/cancel/${id}`,
 			{}
 		)
-		console.log(response, 'visit cancel')
+
 
 		return response.data as boolean
 	} catch (error) {
@@ -138,7 +138,7 @@ export async function startEncounter(id: string) {
 			`/api/v1/visit/start-encounter/${id}`,
 			{}
 		)
-		console.log(response, 'visit cancel')
+
 
 		return response.data as boolean
 	} catch (error) {
@@ -155,7 +155,7 @@ export async function updateStatus(body: any) {
 			`/api/v1/visit/update-status/${body.id}`,
 			{ status: body.status }
 		)
-		console.log(response, 'visit cancel')
+
 
 		return response.data as boolean
 	} catch (error) {

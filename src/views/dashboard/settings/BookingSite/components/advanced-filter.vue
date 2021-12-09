@@ -128,7 +128,7 @@ export default class AdvancedFilter extends Vue {
   }
 
   selectActor(actor: IPractitioner) {
-    console.log(this.selectedPractitioners);
+    ;
 
     if (
       this.selectedPractitioners.findIndex(
@@ -153,7 +153,7 @@ export default class AdvancedFilter extends Vue {
 
   async created() {
     if (this.practitioners?.length === 0) await this.fetchPractitioners();
-    console.log(this.practitioners, ":LOADED PRAC");
+    ;
   }
 }
 </script>

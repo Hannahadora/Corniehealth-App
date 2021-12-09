@@ -10,7 +10,7 @@ export async function fetchAllAllergys() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAllergy[]
 }
@@ -23,21 +23,21 @@ export async function fetchAllergys(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAllergy[]
 }
 
 export async function fetchAppointmentrooms() {
-	console.log('response')
+
 	try {
 		const response = await cornieClient().get('/api/v1/appointment-rooms')
 		if (response.success) {
-			console.log(response)
+
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAppointmentRoom[]
 }

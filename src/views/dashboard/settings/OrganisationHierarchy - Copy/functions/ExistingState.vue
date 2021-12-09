@@ -393,7 +393,7 @@ export default class CarePartnersExistingState extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error)
+
       window.notify({ msg: 'practice-information not Created', status: 'error' })
 
     }
@@ -407,7 +407,7 @@ export default class CarePartnersExistingState extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error)
+
       window.notify({ msg: 'practice-information not Created', status: 'error' })
 
     }
@@ -420,7 +420,7 @@ export default class CarePartnersExistingState extends Vue {
       alert("hello");
       this.fetchPracticeInformation();
       this.fetchPracticeHour();
-      // console.log(this.mappedfunc);
+      // ;
   }
 }
 </script>

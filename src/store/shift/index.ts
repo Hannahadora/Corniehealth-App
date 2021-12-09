@@ -12,11 +12,11 @@ import {
 } from './helper'
 
 interface RolesStore {
-  privileges: any[];
-  roles: any[];
-  org: any;
-  practitioners: [];
-  shifts: any[];
+	privileges: any[];
+	roles: any[];
+	org: any;
+	practitioners: [];
+	shifts: any[];
 }
 
 export default {
@@ -66,7 +66,7 @@ export default {
 
 		async getRoles(ctx) {
 			const roles = await getRoles()
-			console.log(roles, 'roles')
+
 
 			ctx.commit('setRoles', roles)
 		},

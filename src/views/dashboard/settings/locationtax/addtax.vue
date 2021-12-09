@@ -389,7 +389,7 @@ export default class AddTask extends Vue {
         this.$router.push("/dashboard/provider/experience/tasks");
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Task not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }

@@ -674,7 +674,7 @@ export default class VitalsForm extends Vue {
       this.resetVitalData();
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
 

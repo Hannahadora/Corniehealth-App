@@ -10,7 +10,7 @@ export async function fetchAttachment(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAttachment[]
 }

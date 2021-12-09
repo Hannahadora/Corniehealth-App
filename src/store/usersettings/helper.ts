@@ -29,7 +29,7 @@ export async function changePassword(body: any) {
 	try {
 		const response = await quantumClient().post('/auth/change-password', body)
 
-		console.log(response, 'change password')
+
 
 		return response.success as boolean
 	} catch (error) {

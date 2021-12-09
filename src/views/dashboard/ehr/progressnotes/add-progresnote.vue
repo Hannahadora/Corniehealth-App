@@ -239,7 +239,7 @@
             <vue-slider v-model="value"></vue-slider>
 
             <!-- <div class="relative pt-1 mt-5">
-            
+
               <div>
                 <div class="flex items-center justify-between">
                   <p class="text-xs font-semibold">0</p>
@@ -880,10 +880,10 @@ export default class AddProgresNote extends Vue {
   // }
 
   async submit() {
-    console.log('payload', this.patientId);
+    ;
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return console.log('form is invalid');
+      return ;
     }
     try {
       const { data } = await cornieClient().post(
@@ -891,10 +891,10 @@ export default class AddProgresNote extends Vue {
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      console.log('success', this.payload2);
+      ;
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      console.log('my error', error);
+      ;
     }
   }
 

@@ -195,7 +195,7 @@
                   v-model="memberEntity"
                   label="entity"
                   placeholder="--Select--"
-                >             
+                >
                 </cornie-select> -->
                 <cornie-select
                   :rules="required"
@@ -470,8 +470,8 @@ export default class AddGroup extends Vue {
     this.setGroup();
     const data = await this.getDropdowns("group");
     this.dropdowns = data;
-    console.log("data");
-    console.log(data);
+    ;
+    ;
   }
 }
 </script>

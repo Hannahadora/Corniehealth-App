@@ -8,7 +8,7 @@ export async function fetchIssues(patientId: string) {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IIssues[]
 }

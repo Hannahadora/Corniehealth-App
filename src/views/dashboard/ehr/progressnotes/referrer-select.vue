@@ -130,7 +130,7 @@ export default class ReferrerSelect extends Vue {
         `/other-requests/findByPatientSubject/all/${this.patientId}`
       );
       this.referrers = data || [];
-      console.log("refereee", this.referrers);
+      ;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching referrers for patient",

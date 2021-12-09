@@ -11,10 +11,10 @@ import {
 import { deleteAppointmentroom, fetchAppointmentrooms } from './helper'
 
 interface AppointmentRoomState {
-  appointmentrooms: IAppointmentRoom[];
-  allergys: IAllergy[];
-  allallergys: IAllergy[];
-  practitioners: any[];
+	appointmentrooms: IAppointmentRoom[];
+	allergys: IAllergy[];
+	allallergys: IAllergy[];
+	practitioners: any[];
 }
 
 export default {
@@ -75,7 +75,7 @@ export default {
 		},
 		async fetchAppointmentrooms(ctx) {
 			const appointmentrooms = await fetchAppointmentrooms()
-			console.log('fromstoreindexfor appointment rooms', appointmentrooms)
+
 			ctx.commit('setAppointmentrooms', appointmentrooms)
 		},
 		async addAppointmentRoom(ctx, appointmentroom: IAppointmentRoom) {

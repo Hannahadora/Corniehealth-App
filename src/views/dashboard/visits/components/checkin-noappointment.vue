@@ -325,7 +325,7 @@ export default class CheckIn extends Vue {
       this.checkinData.scheduleId =
         todaySlots.length > 0 ? todaySlots[0].id : "";
       this.availableSlots = todaySlots.map((schedule: any) => schedule.slots);
-      console.log(this.availableSlots);
+      ;
     });
   }
 
@@ -334,7 +334,7 @@ export default class CheckIn extends Vue {
       this.loading = true;
       // const slot = this.checkinData.slot;
       this.loading = false;
-      console.log("Slot is ", slotId);
+      ;
       if (slotId) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,
@@ -475,7 +475,7 @@ export default class CheckIn extends Vue {
       if (!res || res.length == 0) return;
 
       this.arr = slotService.slots(res, this.date);
-      console.log(this.arr, "AAARRR");
+      ;
     });
   }
 

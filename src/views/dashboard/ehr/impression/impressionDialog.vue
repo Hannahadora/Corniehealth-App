@@ -159,7 +159,7 @@
                      v-if="setType == 'Allergy'"
                      @click="showProblem"
                       class="w-full"
-                      v-model="impressionModel.effective.problem" 
+                      v-model="impressionModel.effective.problem"
                       :value="problemItems.code"
                       label="Problem"
                       placeholder="Select Problem"
@@ -169,7 +169,7 @@
                     v-else
                      @click="showProblem"
                       class="w-full"
-                      v-model="impressionModel.effective.problem" 
+                      v-model="impressionModel.effective.problem"
                      :value="conditionItems.name"
                       label="Problem"
                       placeholder="Select Problem"
@@ -717,7 +717,7 @@ export default class Medication extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({
         msg: "Clinical Impression not Created",
         status: "error",

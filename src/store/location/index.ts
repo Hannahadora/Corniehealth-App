@@ -4,7 +4,7 @@ import { StoreOptions } from 'vuex'
 import { deleteLocation, fetchLocations } from './helper'
 
 interface LocationState {
-  locations: ILocation[];
+	locations: ILocation[];
 }
 
 export default {
@@ -30,7 +30,7 @@ export default {
 	actions: {
 		async fetchLocations(ctx) {
 			const locations = await fetchLocations()
-			console.log('locations from state', locations)
+
 			ctx.commit('setLocations', locations)
 		},
 		async getLocationById(ctx, id: string) {

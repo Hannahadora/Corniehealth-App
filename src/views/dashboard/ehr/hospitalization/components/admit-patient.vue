@@ -290,7 +290,7 @@ export default class AdmitPatient extends Vue {
       }
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
       notify({
         msg: "Patient admission failed",
@@ -307,7 +307,7 @@ export default class AdmitPatient extends Vue {
       this.reqBody.destination = this.authPractitioner.user?.organizationId;
 
       const response = await this.updateHospitalisation(this.reqBody);
-      console.log(response, "UPDATE RESPONSE");
+      ;
       this.loading = false;
       if (response) {
         this.$emit("closesidemodal");
@@ -322,7 +322,7 @@ export default class AdmitPatient extends Vue {
         });
       }
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }
@@ -340,7 +340,7 @@ export default class AdmitPatient extends Vue {
   }
 
   created() {
-    console.log(this.user, "PRACT");
+    ;
   }
 }
 </script>

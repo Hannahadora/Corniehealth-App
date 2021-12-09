@@ -11,7 +11,7 @@ export default abstract class CarePartnersClient {
 			if (response.success) return response.data as ICarePartner
 			return {} as ICarePartner
 		} catch (error) {
-			console.log(error)
+
 			return {} as ICarePartner
 		}
 	}
@@ -22,7 +22,7 @@ export default abstract class CarePartnersClient {
 			if (response.success) return response.data as ICarePartner[]
 			return []
 		} catch (error) {
-			console.log(error)
+
 			return []
 		}
 	}
@@ -36,7 +36,7 @@ export default abstract class CarePartnersClient {
 			if (response.success) return response.data as ICarePartner[]
 			return []
 		} catch (error) {
-			console.log(error)
+
 			return []
 		}
 	}
@@ -48,7 +48,7 @@ export default abstract class CarePartnersClient {
 			)
 			return response.success
 		} catch (error) {
-			console.log(error)
+
 			return false
 		}
 	}

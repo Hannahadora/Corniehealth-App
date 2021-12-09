@@ -8,7 +8,7 @@ export async function getappointmentTypes() {
 			return response.data
 		}
 	} catch (error) {
-		console.log(error)
+
 	}
 	return [] as IAppointmentTypes[]
 }

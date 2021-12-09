@@ -40,7 +40,7 @@
           />
         </div>
       </div>
-      <!-- 
+      <!--
             <div class="w-full flex items-center">
                 <div class="w-6/12">
                     <cornie-select :label="'Room'" :items="rooms" v-model="visitData.room" />
@@ -176,7 +176,7 @@ export default class PatientCheckin extends Vue {
       }
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }
@@ -213,7 +213,7 @@ export default class PatientCheckin extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
 
@@ -221,7 +221,7 @@ export default class PatientCheckin extends Vue {
     if (this.locations?.length <= 0) await this.fetchLocations();
     if (this.patientappointments?.length <= 0)
       await this.fetchByIdAppointments(this.$route.params.id.toString());
-    console.log(this.patientappointments, "appoitmbrb pppuojo");
+    ;
   }
 
   @Watch("appointmentId", { deep: true })
@@ -230,7 +230,7 @@ export default class PatientCheckin extends Vue {
       const appointment = this.patientappointments.find(
         (appointment: IAppointment) => appointment?.id === this.appointmentId
       ) as IAppointment;
-      console.log(appointment, "TARGET");
+      ;
 
       if (appointment?.id) {
         this.visitData.startDate = appointment.period?.start;
@@ -240,7 +240,7 @@ export default class PatientCheckin extends Vue {
         this.visitData.roomId = "d25cc910-0830-40cf-a0c8-7c303f381b29";
         // this.visitData.roomId = appointment?.locationId;
         this.visitData.slotId = appointment?.slot;
-        console.log(this.visitData);
+        ;
       }
     }
   }

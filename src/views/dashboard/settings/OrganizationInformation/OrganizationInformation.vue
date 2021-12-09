@@ -208,7 +208,7 @@ export default {
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
     } catch (error) {
-      console.log(error);
+      ;
     }
   },
   methods: {

@@ -70,11 +70,8 @@ function getUnitData(data: DateStat[], getUnit: (date: Date) => number) {
 		const day = getUnit(d.date)
 
 		const dayCount = Number(d.count)
-		console.log(dayCount, 'DAY COUNT')
-		console.log(map, 'DAY')
 
 		const sum = (map.get(day) || 0) + dayCount
-		console.log(map.get(day), 'SUM')
 
 		map.set(day, sum)
 	})

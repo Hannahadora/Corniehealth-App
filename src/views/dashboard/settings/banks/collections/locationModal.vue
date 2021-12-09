@@ -17,8 +17,8 @@
                 :items="['Apapa Center']"
                 placeholder="--Select Location--"
                 />
-                <div>    
-                    <span class="text-sm font-semibold mb-1">Pay Categories</span>       
+                <div>
+                    <span class="text-sm font-semibold mb-1">Pay Categories</span>
                     <Multiselect
                     v-model="value"
                     mode="tags"
@@ -33,7 +33,7 @@
                     label="value"
                     placeholder="--Select--"
                     class="w-full"
-                
+
                 >
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
@@ -49,10 +49,10 @@
                     </template>
 
 
-                    </Multiselect> 
+                    </Multiselect>
                 </div>
-                <div>    
-                    <span class="text-sm font-semibold mb-1">Account</span>       
+                <div>
+                    <span class="text-sm font-semibold mb-1">Account</span>
                     <Multiselect
                     v-model="value2"
                     mode="tags"
@@ -66,10 +66,10 @@
                         { value: 'GTB | 3456789010',answerOption:false,index:2},
                         { value: 'GTB | 3456789011',answerOption:false,index:3},
                         ]"
-              
+
                     placeholder="--Select--"
                     class="w-full"
-                
+
                 >
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
@@ -82,11 +82,11 @@
                         <span class="multiselect-tag-remove-icon"></span>
                         </span>
                     </div>
-                    </template> 
-                    <template v-slot:option="{ option }">
-                        <select-option v-model="option.answerOption"/> <span class="w-full text-sm">{{option.value }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="defaultText">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="defaultText = true" >Set a default</span> 
                     </template>
-                    </Multiselect> 
+                    <template v-slot:option="{ option }">
+                        <select-option v-model="option.answerOption"/> <span class="w-full text-sm">{{option.value }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="defaultText">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="defaultText = true" >Set a default</span>
+                    </template>
+                    </Multiselect>
                 </div>
             </div>
             <div>
@@ -192,7 +192,7 @@ status = "";
   value=null;
   value2=null;
   accountoption=false;
- 
+
  error= false;
  defaultText= false;
 
@@ -211,16 +211,16 @@ status = "";
           window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
-   
+
     } catch (error) {
-      console.log(error);
+      ;
         window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
   }
 
- 
- 
+
+
  done() {
     this.$emit("medicationAdded");
     this.show = false;
@@ -232,9 +232,9 @@ status = "";
         this.show = false;
   //  this.loading = false;
   }
- 
+
   async created() {
-   
+
   }
 }
 </script>

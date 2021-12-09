@@ -99,13 +99,13 @@ export default class ProgressNotes extends Vue {
   }
 
   async fetchProgressnotes() {
-    console.log("progresssssfff1", this.patientId);
+    ;
     try {
       const { data } = await cornieClient().get(
         `/api/v1/progress-notes/${this.patientId}`
       );
       this.patientProgressNotes = data;
-      console.log("progresssssfff2", this.patientProgressNotes);
+      ;
     } catch (error) {
       window.notify({
         msg: "There was an error when fetching patient's progress notes",
@@ -116,7 +116,7 @@ export default class ProgressNotes extends Vue {
 
   async created() {
     await this.fetchProgressnotes();
-    console.log("zzz", this.patientProgressNotes);
+    ;
     this.categories = await getDropdown(
       "http://hl7.org/fhir/ValueSet/condition-category"
     );

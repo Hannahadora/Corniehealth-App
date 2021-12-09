@@ -52,7 +52,7 @@ export async function createVital(body: IVital) {
 		return response.data as boolean
 	} catch (error) {
 		notify({ msg: 'Vitals recording failed', status: 'error' })
-		console.log(error)
+
 	}
 }
 
@@ -63,7 +63,7 @@ export async function createEncounter(body: IEncounter) {
 
 		return response.data
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Operation failed', status: 'error' })
 	}
 }
@@ -78,7 +78,7 @@ export async function createEpisode(body: IEpisode) {
 			notify({ msg: 'Episode created successfully', status: 'success' })
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Episode creation failed', status: 'error' })
 	}
 }
@@ -94,7 +94,7 @@ export async function updateVitalStatus(body: any, vitalId: string) {
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Vitals status updated failed', status: 'error' })
 	}
 }
@@ -110,7 +110,7 @@ export async function updateEncounterStatus(body: any, patientId: string) {
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Encounter status update failed', status: 'error' })
 	}
 }
@@ -126,7 +126,7 @@ export async function updateEpisodeStatus(body: any, patientId: string) {
 
 		return response.data as boolean
 	} catch (error) {
-		console.log(error)
+
 		notify({ msg: 'Episode status update failed', status: 'error' })
 	}
 }
