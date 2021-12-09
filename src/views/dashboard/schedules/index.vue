@@ -514,8 +514,6 @@ export default class PractitionerExistingState extends Vue {
 
   get availabilityItems() {
     if (!this.schedules) return [];
-    , "ALL SLOTS");
-
     return utilservice.slots();
   }
 

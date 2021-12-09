@@ -51,7 +51,6 @@ export default class Tabs extends Vue {
   }
 
   mounted() {
-    .length);
   }
 }
 </script>
