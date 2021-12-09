@@ -33,7 +33,7 @@ export const SettingsRoute: RouteRecordRaw = {
     // },
     {
       path: "bank-accounts",
-      name: "Bank & Accounts",
+      name: "Billing Accounts",
       component: () =>
         import("@/views/dashboard/settings/banks/index.vue"),
     },
@@ -184,13 +184,7 @@ export const SettingsRoute: RouteRecordRaw = {
     //   component: () =>
     //     import("@/views/dashboard/settings/OrganisationHierarchy/index.vue"),
     // },
-    {
-      path: "booking-site",
-      name: "Booking Site",
-      component: () =>
-        import("@/views/dashboard/settings/BookingSite/index.vue"),
-    },
-    
+   
     // {
     //   path: "markup",
     //   props: true,

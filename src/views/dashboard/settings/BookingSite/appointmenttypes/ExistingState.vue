@@ -1,22 +1,23 @@
 <template>
-  <div class="w-full pb-7">
-    <div class="flex items-center mb-6">
-      <span class="flex-grow"></span>
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          py-2
-          px-6
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="registerNew = true"
-      >
-        <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-        Add New
-      </button>
+<div>
+   <div class="w-full h-2/3 mt-12 flex flex-col justify-center items-center" v-if="empty">
+        <img src="@/assets/type.svg" class="mb-2" />
+          <h4 class="text-black text-center">There are no appointment types on record.</h4>
+          <cornie-btn
+          class="bg-danger py-1 px-5 rounded-full text-white m-5"
+           @click="registerNew = true"
+        >
+          Add New
+        </cornie-btn>
+    </div>
+  <div class="w-full pb-7" v-else>
+    <div class="flex justify-end items-center mb-6">
+     <cornie-btn
+          class="bg-danger py-1 px-5 rounded-full text-white m-5"
+          @click="registerNew = true"
+        >
+          Add New
+        </cornie-btn>
     </div>
 
     <cornie-table :columns="rawHeaders" v-model="items" :check="false">
@@ -37,10 +38,9 @@
         </div>
       </template>
     </cornie-table>
-    <side-modal :visible="registerNew" @closesidemodal="closeModal" :header="'New Appointment'">
-        <AppointmentModal  @closesidemodal="closeModal"  />
-      </side-modal>
   </div>
+</div>
+        <appointment-modal v-model="registerNew" @closesidemodal="closeModal"  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -56,18 +56,21 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import AppointmentModal from "./Appointmentdialog.vue";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
-
+import search from "@/plugins/search";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import { IDesignation } from "@/types/IDesignation";
 import { Prop } from "vue-property-decorator";
+import ITask from "@/types/ITask";
+import { first, getTableKeyValue } from "@/plugins/utils"
 
 const designation = namespace("designation");
+const task = namespace("task");
 
 @Options({
-  name: "DesignationsExistingState",
+  name: "AppoitmentTypesExistingState",
   components: {
     Table,
     SortIcon,
@@ -90,12 +93,17 @@ export default class DesignationsExistingState extends Vue {
   @Prop({ type: Array, required: true })
   designations!: IDesignation[];
   registerNew=false;
+query= "";
+
+  @task.State
+  tasks!: ITask[];
+
 
   // appointmentId ="";
   rawHeaders = [
     {
-      title: "Appointment Type",
-      key: "appointment type",
+      title: "service name",
+      key: "service",
       show: true,
     },
     {
@@ -105,7 +113,7 @@ export default class DesignationsExistingState extends Vue {
     },
     {
       title: "Link forms",
-      key: "link forms",
+      key: "forms",
       show: true,
     },
     {
@@ -115,7 +123,7 @@ export default class DesignationsExistingState extends Vue {
     },
     {
       title: "Booking site links",
-      key: "booking site links",
+      key: "booking",
       show: true,
     },
     {
@@ -132,14 +140,38 @@ export default class DesignationsExistingState extends Vue {
     this.registerNew = false;
     // this.selectedTeamId = "";
   }
-  get items() {
-    return this.designations.map((designation) => ({
-      ...designation,
-      jobLevel: designation?.level?.name || "N/A",
-      jobFunction: designation?.orgFunction?.name,
-      supervisor: designation.reportsTo?.name || "N/A",
-    }));
+    get empty() {
+    return  this.tasks.length < 1;
   }
+  
+ get items() {
+    const tasks = this.tasks.map((task) => {
+         (task as any).createdAt= new Date(
+         (task as any).createdAt
+       ).toLocaleDateString("en-US");
+        return {
+        ...task,
+         action: task.id,
+         keydisplay: "XXXXXXX",
+             service:  "-----",
+      duration:  "-----",
+      forms: "-----",
+      practitioners:"-----",
+      booking:"-----",
+      status:  "Active",
+        };
+    });
+    if (!this.query) return tasks;
+    return search.searchObjectArray(tasks, this.query);
+  }
+  // get items() {
+  //   return this.designations.map((designation) => ({
+  //     ...designation,
+  //     jobLevel: designation?.level?.name || "N/A",
+  //     jobFunction: designation?.orgFunction?.name,
+  //     supervisor: designation.reportsTo?.name || "N/A",
+  //   }));
+  // }
 
   removeDesignation(id: string) {
     this.deleteDesignation(id);

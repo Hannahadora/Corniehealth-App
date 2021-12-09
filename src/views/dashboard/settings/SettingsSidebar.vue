@@ -229,7 +229,6 @@ export default class Settings extends Vue {
         to: "org-hierarchy",
         icon: "hierarchy-icon",
       },
-      { name: "Bank And Accounts", to: "bank-accounts", icon: "bank-icon" },
     ];
   }
 
@@ -261,6 +260,7 @@ export default class Settings extends Vue {
       },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
+       { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
     ];
   }
   get PracticeManagement() {
@@ -272,7 +272,7 @@ export default class Settings extends Vue {
       },
       {
         name: "Booking Site",
-        to: "booking-site",
+        to: "practise-management/booking-site",
         icon: "security-icon",
       },
       //  {

@@ -96,7 +96,7 @@
           </div>
         </div>
         <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
-          <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0 ">
+          <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0" >
               <img src="@/assets/img/task.svg" />
               <h3 class="text-center mt-5">
                   There’s currently no active task!<br />

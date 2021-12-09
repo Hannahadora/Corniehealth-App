@@ -1,48 +1,55 @@
 <template>
-  <main class="p-6">
-    <div>
-      <span
+ <div class="flex justify-center  bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
+    <div class="w-full">
+    <span
         class="
           flex
-          border-b-2
+          flex-col
           w-full
-          font-semibold
-          text-xl text-primary
+          justify-center
+          border-b-2
+          font-bold
+          mb-10
+          text-lg text-primary
           py-2
-          mx-auto
         "
       >
         Booking Site
       </span>
-      <tabs :items="tabLinks" v-model="currentTab"> 
-        <functions />
-        <job-level />
-        <designations />
-        <functions2 />
+      <span class="w-full h-screen">
+        <tabs :items="tabLinks" v-model="currentTab"> 
+        <practice-info />
+        <booking-site />
+        <appointment-types />
+        <appointment-rooms />
         <add-location />
         <job-level2 />
-        <designations2 />
+        <notification-template />
         <add-locationn />
         <add-reminder />
       </tabs>
+      </span>
     </div>
-  </main>
+  </div>
+
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Tabs from "./tabs.vue";
-import Functions from "./functions/Functions.vue";
-import Designations from "./designations/Designations.vue";
-import JobLevel from "./joblevel/JobLevel.vue";
+import PracticeInfo from "./practiceinformation/Functions.vue";
+import AppointmentTypes from "./appointmenttypes/ExistingState.vue";
+import BookingSite from "./bookingsite/ExistingState.vue";
 
 
-import Functions2 from "./appointmentrooms/Functions.vue";
-import Designations2 from "./designations/Designations.vue";
-import JobLevel2 from "./joblevel/JobLevel.vue";
+import AppointmentRooms from "./appointmentrooms/Functions.vue";
+//import Designations2 from "./designations/ExistingState.vue";
+//import JobLevel2 from "./joblevel/JobLevel.vue";
 import AddLocation from "./addLocation.vue";
 import AddLocationn from "./addLocationn.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
+
+import NotificationTemplate from './notificationtemplate/index.vue';
 
 
 
@@ -51,18 +58,19 @@ import AddReminder from "./addreminder/JobLevel.vue";
   name: "Booking Site",
   components: {
     Tabs,
-    Functions,
-    Designations,
-    JobLevel,
-    Functions2,
-    Designations2,
-    JobLevel2,
+    PracticeInfo,
+    AppointmentTypes,
+    BookingSite,
+    AppointmentRooms,
+   // Designations2,
+  //  JobLevel2,
     AddLocation,
+    NotificationTemplate,
     AddLocationn,
     AddReminder,
   },
 })
-export default class BookingSite extends Vue {
+export default class Bookings extends Vue {
   tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation", "New Reminder"];
   currentTab = 0;
 }

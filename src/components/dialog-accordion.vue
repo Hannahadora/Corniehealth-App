@@ -8,8 +8,8 @@
         }"
       >
         <div
-          class="font-bold text-md text-black mb-1"
-          :class="{ 'text-black': expand }"
+          class="font-bold text-md text-primary mb-1"
+          :class="{ 'text-primary': expand }"
         >
           {{ title }}
         </div>

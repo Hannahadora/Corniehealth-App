@@ -5,13 +5,10 @@
         <icon-btn @click="show = false">
           <arrow-left stroke="#ffffff" />
         </icon-btn>
-         <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Consultation Room</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-          </div>
       </cornie-card-title>
-      <cornie-card-text class="flex-grow scrollable">
+      <cornie-card-text class="p-4 flex-grow flex flex-col">
         <v-form class="flex-grow flex flex-col" @submit="submit">
+          <h1 class="text-primary text-xl font-extrabold mb-5">Consultation Room</h1>
           <cornie-input
             class="w-full mb-6"
             label="Room Name"
@@ -40,7 +37,7 @@
               label="Location"
               placeholder="--Select from Locations--"
               v-model="location"
-              :items="['Market','Hospital']"
+              :items="all_locations"
               :rules="required"
             />
           </div>
@@ -59,43 +56,60 @@
             :items="items"
           /> -->
           <div>
-            <h1 class="font-bold mb-2 text-sm">Availability</h1>
-            <p class="text-xs font-semibold">Show Occupied Booked</p>
+            <h1 class="font-extrabold">Availability</h1>
+            <p>Show Occupied Booked</p>
           </div>
           <!-- <custom-checkbox
             label="Automatically create a group for this function"
           /> -->
-          <div class="flex space-x-4 mt-2  mb-4">
-            <div class="">
-          <cornie-radio
+          <div class="flex">
+            <div class="p-2">
+          <custom-checkbox
               label="Yes"
-              name="checkbox"
-              checked
               :readonly="viewOnly"
               v-model="occupiedYes"
             />
             </div>
-                        <div class="">
-          <cornie-radio
+            <!-- <custom-checkbox
               label="No"
-               name="checkbox"
               :readonly="viewOnly"
-              v-model="occupiedYes"
-            />
-            </div>
-    
+              v-model="occupiedNo"
+            /> -->
           </div>
-       
+          <span class="flex-grow"></span>
           <div class="flex justify-end">
-             <cornie-btn
+            <span
               @click="show = false"
-              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+              class="
+                border-primary border-2
+                rounded-full
+                text-black
+                mr-2
+                py-1
+                px-2
+                focus:outline-none
+                outline
+                hover:bg-primary
+                hover:text-white
+                cursor-pointer
+              "
             >
               Cancel
-            </cornie-btn>
-            <cornie-btn  :loading="loading"
-                  type="submit" class="text-white bg-danger px-3 rounded-xl">
-            Save
+            </span>
+            <cornie-btn
+              type="submit"
+              :loading="loading"
+              class="
+                bg-danger
+                rounded-full
+                text-white
+                py-1
+                px-6
+                focus:outline-none
+                hover:opacity-90
+              "
+            >
+              Save
             </cornie-btn>
           </div>
         </v-form>

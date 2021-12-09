@@ -10,7 +10,7 @@
             border-b-4
             cursor-pointer
             hover:bg-gray-300 hover:bg-opacity-20
-            text-sm
+            text-xxs
           "
           :class="syncedValue == index ? ['border-danger'] : ['text-gray-500']"
           @click="syncedValue = index"
@@ -63,3 +63,9 @@ export default class Tabs extends Vue {
   }
 }
 </script>
+<style scoped>
+.text-xxs {
+    font-size: .7rem;
+    line-height: 1rem;
+}
+</style>

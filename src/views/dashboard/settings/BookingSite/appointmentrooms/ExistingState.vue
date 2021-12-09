@@ -1,54 +1,66 @@
 <template>
-  <div class="w-full pb-7">
-    <div class="flex justify-end">
-      <cornie-btn
-        class="bg-danger py-2 text-white m-5"
-        @click="editingFunction = true"
-      >
-        <plus-icon class="mr-2 fill-current text-white" />
-        Add New
-      </cornie-btn>
-    </div>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="editAppointmentRoom(item.id)"
+ <div>
+        <div class="w-full h-2/3 mt-12 flex flex-col justify-center items-center" v-if="empty">
+                <img src="@/assets/rafiki.svg" class="mb-2" />
+                  <h4 class="text-black text-center">There are no rooms on record.</h4>
+                  <cornie-btn
+                  class="bg-danger py-1 px-5 rounded-full text-white m-5"
+                  @click="editingFunction = true"
+                >
+                  Add New
+                </cornie-btn>
+            </div>
+    <div class="w-full pb-7" v-else>
+    
+      <span class="flex justify-end">
+        <cornie-btn
+          class="bg-danger py-1 px-5 rounded-full text-white m-5"
+          @click="editingFunction = true"
         >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
+          Add New
+        </cornie-btn>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="items">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="editAppointmentRoom(item.id)"
+          >
+            <edit-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="remove(item.id)"
+          >
+            <delete-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+        </template>
+      </cornie-table>
+      <div class="flex justify-between m-3">
+        <div class="flex justify-around">
+          <p class="text-sm">show</p>
+          <input type="number" class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r">
+          <p class="text-sm">per page</p>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="remove(item.id)"
-        >
-          <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
-        </div>
-      </template>
-    </cornie-table>
-    <div class="flex justify-between m-3">
-      <div class="flex justify-around">
-        <p class="text-sm">show</p>
-        <input type="number" class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r">
-        <p class="text-sm">per page</p>
-      </div>
-      <div class="flex justify-around">
-        <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
-        <div class="text-xs mr-3 mt-1" style="fontsize:6px;">
-                  <arrow-left-icon />
-                  </div>
+        <div class="flex justify-around">
+          <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
+          <div class="text-xs mr-3 mt-1" style="fontsize:6px;">
+                    <arrow-left-icon />
+                    </div>
 
-        <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-        <p class="text-sm mr-3 text-xs">1  2  3 ...  10 </p>
-        <div class="text-xs mt-1" style="fontsize:5px;">
-         <arrow-right-icon />
+          <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
+          <p class="text-sm mr-3 text-xs">1  2  3 ...  10 </p>
+          <div class="text-xs mt-1" style="fontsize:5px;">
+          <arrow-right-icon />
+          </div>
+          <!-- <delete-icon class="text-danger fill-current" /> -->
         </div>
-        <!-- <delete-icon class="text-danger fill-current" /> -->
       </div>
     </div>
-    <add-function v-model="editingFunction" :edit="roomToEdit" />
-  </div>
+ </div>
+      <add-function v-model="editingFunction" :edit="roomToEdit" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -68,15 +80,15 @@ import PlusIcon from "@/components/icons/add.vue";
 import IFunction from "@/types/IFunction";
 import { Prop } from "vue-property-decorator";
 import AddFunction from "./add-function.vue";
-
+import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
-
-
+import ITask from "@/types/ITask";
+import { first, getTableKeyValue } from "@/plugins/utils";
 
 
 
@@ -84,7 +96,7 @@ const orgFunctions = namespace("OrgFunctions");
 const patients = namespace("patients");
 const location = namespace("location");
 const AppointmentRoom = namespace("AppointmentRoom");
-
+const task = namespace("task");
 
 
 
@@ -110,7 +122,9 @@ const AppointmentRoom = namespace("AppointmentRoom");
     ArrowRightIcon
   },
 })
-export default class CarePartnersExistingState extends Vue {
+export default class apponitmentRooms extends Vue {
+  query = "";
+
   @Prop({ type: Array, default: [], required: true })
   functions!: IFunction[];
 
@@ -119,6 +133,8 @@ export default class CarePartnersExistingState extends Vue {
 
   // functionToEdit = {} as IFunction;
   // editingFunction = false;
+  @task.State
+  tasks!: ITask[];
 
   roomToEdit = {} as IAppointmentRoom;
   editingFunction = false;
@@ -135,7 +151,8 @@ export default class CarePartnersExistingState extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-
+ getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
   rawHeaders = [
     {
       title: "ROOM NAME",
@@ -163,7 +180,19 @@ export default class CarePartnersExistingState extends Vue {
       show: true,
     },
   ];
+  get empty() {
+    return  this.tasks.length < 1;
+  }
 
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "action", image: true }];
+  }
+  
   getLocationAddress(id: string) {
             const pt = this.locations.find((i: any) => i.id === id);
             return pt;
@@ -187,17 +216,25 @@ export default class CarePartnersExistingState extends Vue {
     }));
   }
 
-
-  get items() {
-    return this.appointmentrooms.map((f) => ({
-      ...f,
-      roomName: f.roomName || "N/A",
-      roomNumber: f.roomNumber || "N/A",
-      // Location: f.locationId || "N/A",
-      location: this.getLocationAddress(f.locationId)?.address || "N/A",
-      Status: f.status || "N/A",
-    }));
+ get items() {
+    const tasks = this.tasks.map((task) => {
+         (task as any).createdAt= new Date(
+         (task as any).createdAt
+       ).toLocaleDateString("en-US");
+        return {
+        ...task,
+         action: task.id,
+         keydisplay: "XXXXXXX",
+             roomName:  "-----",
+      roomNumber:  "-----",
+      location: "-----",
+      status:  "Active",
+        };
+    });
+    if (!this.query) return tasks;
+    return search.searchObjectArray(tasks, this.query);
   }
+
 
   // async remove(id: string) {
   //   await this.removeFunction(id);
@@ -223,8 +260,8 @@ export default class CarePartnersExistingState extends Vue {
   
 
   created() {
-    console.log('states', this.locations);
-    if (!this.locations?.length) this.fetchLocations();
+    //console.log('states', this.locations);
+   // if (!this.locations?.length) this.fetchLocations();
   }
 }
 </script>

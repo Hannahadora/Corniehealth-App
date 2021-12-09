@@ -27,6 +27,13 @@ export const NewSettingsRoutes: RouteRecordRaw = {
           import("@/views/dashboard/settings/forms/surveys.vue"),
       },
       {
+        path: "booking-site",
+        name: "Booking Site",
+        component: () =>
+          import("@/views/dashboard/settings/BookingSite/index.vue"),
+      },
+      
+      {
         path: "locationTax",
         name: "Location & Tax",
         component: () =>

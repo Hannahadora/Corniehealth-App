@@ -15,7 +15,6 @@ export async function fetchPracticeInformation() {
 
 export async function fetchPracticeHour() {
   try {
-    alert("helloworld")
       const response = await cornieClient().get(`/api/v1/practice-hour`);
       if (response.success) {
         return response.data;

@@ -17,14 +17,15 @@
                   <div>
                     <div class="w-full mb-3">
                       <date-time-picker
-                        label="last occurence *"
+                        label="last occurence"
                         width="w-11/12"
                         class="required"
+                        required
                       />
                     </div>
                   </div>
                 </div>
-                <div class="pt-8 pl-5 flex" style="">
+                <div class="mt-6.5 pl-5 flex" style="">
                   <cornie-select placeholder="Days" :items="severities" />
                 </div>
               </div>

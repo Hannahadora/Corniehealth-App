@@ -1,6 +1,7 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
+      
       <cornie-card-title  class="w-full">
           <div class="w-full">
             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">{{action}} Collection Account</h2>
@@ -46,6 +47,7 @@
           </div>
         </div>
       </cornie-card-text>
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
          <cornie-btn
@@ -60,6 +62,7 @@
             </cornie-btn>
         </cornie-card-text>
       </cornie-card>
+
     </cornie-card>
   </cornie-dialog>
 </template>

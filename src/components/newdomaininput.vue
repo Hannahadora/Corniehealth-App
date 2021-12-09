@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block capitalize mb-1 text-sm text-black font-medium">
+    <label class="block capitalize mb-1 text-sm text-black font-semibold">
       {{ label }}
     </label>
     <field
@@ -24,7 +24,7 @@
           :disabled="$attrs.disabled"
           @change="handleChange"
           class="
-            rounded-r-md
+            rounded
             appearance-none
             px-3
             py-2
@@ -35,6 +35,7 @@
             focus:border-blue-300
             transition
             duration-150
+            mr-2
             ease-in-out
             sm:text-sm
             sm:leading-5
@@ -49,7 +50,7 @@
             bgcolor
             px-3
             py-2
-            rounded-l-md
+            rounded
             placeholder-white
             focus:outline-none
             focus:shadow-outline-blue

@@ -118,12 +118,12 @@ const routes: Array<RouteRecordRaw> = [
             component: () =>
               import("@/views/dashboard/settings/AccountSecurity/index.vue"),
           },
-          {
-            path: "accounts",
-            name: "Bank And Accounts",
-            component: () =>
-              import("@/views/dashboard/settings/bankaccounts/index.vue"),
-          },
+          // {
+          //   path: "accounts",
+          //   name: "Bank And Accounts",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/bankaccounts/index.vue"),
+          // },
           {
             path: "add-payment-account/:id?",
             props: true,
