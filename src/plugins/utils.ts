@@ -1,109 +1,109 @@
-import ObjectSet from "@/lib/objectset";
-import IPractitioner from "@/types/IPractitioner";
+import ObjectSet from '@/lib/objectset'
+import IPractitioner from '@/types/IPractitioner'
 
 export const first = (num: number, vals: any[]) => {
-  const res = [];
-  for (let index = 0; index < vals.length; index++) {
-    const element = vals[index];
-    res.push(element);
-  }
-  return res;
-};
-
-export function getTableKeyValue(item: any) {
-  const { data, index, ...rest } = item;
-  const key = Object.values(rest)[0] as string;
-  const value = data[key];
-  return {
-    all: data,
-    key,
-    value,
-    index,
-  };
+	const res = []
+	for (let index = 0; index < vals.length; index++) {
+		const element = vals[index]
+		res.push(element)
+	}
+	return res
 }
 
-const isObj = (val: any) => val.constructor.name === "Object";
+export function getTableKeyValue(item: any) {
+	const { data, index, ...rest } = item
+	const key = Object.values(rest)[0] as string
+	const value = data[key]
+	return {
+		all: data,
+		key,
+		value,
+		index,
+	}
+}
+
+const isObj = (val: any) => val.constructor.name === 'Object'
 
 export function flatten(data: any) {
-  let result = {} as IIndexableObject;
-  Object.entries(data).forEach(([key, val]) => {
-    if (isObj(val)) {
-      result = { ...result, ...flatten(val) };
-    } else {
-      if (key) result[key] = val;
-    }
-  });
-  return result;
+	let result = {} as IIndexableObject
+	Object.entries(data).forEach(([key, val]) => {
+		if (isObj(val)) {
+			result = { ...result, ...flatten(val) }
+		} else {
+			if (key) result[key] = val
+		}
+	})
+	return result
 }
 
 export function clickOutside(id: string, callBack: () => void) {
-  document.addEventListener("click", (e) => {
-    const select = document.getElementById(id);
-    let targetElement: any = e.target; // clicked element
-    do {
-      if (targetElement == select || targetElement.id?.includes(id)) {
-        return;
-      }
-      targetElement = (targetElement as any).parentNode;
-    } while (targetElement);
-    callBack();
-  });
+	document.addEventListener('click', (e) => {
+		const select = document.getElementById(id)
+		let targetElement: any = e.target // clicked element
+		do {
+			if (targetElement == select || targetElement.id?.includes(id)) {
+				return
+			}
+			targetElement = (targetElement as any).parentNode
+		} while (targetElement)
+		callBack()
+	})
 }
 
 export function createDate(days: number, months: number, years: number) {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  date.setMonth(date.getMonth() + months);
-  date.setFullYear(date.getFullYear() + years);
-  return date;
+	const date = new Date()
+	date.setDate(date.getDate() + days)
+	date.setMonth(date.getMonth() + months)
+	date.setFullYear(date.getFullYear() + years)
+	return date
 }
 
 export function updateModelField(model: any, field: string, data: any[]) {
-  const fieldData = model[field];
-  const fieldSet = new ObjectSet([...fieldData, ...data], "id");
-  model[field] = [...fieldSet];
-  return model;
+	const fieldData = model[field]
+	const fieldSet = new ObjectSet([...fieldData, ...data], 'id')
+	model[field] = [...fieldSet]
+	return model
 }
 
 export async function getCoordinates(address: string) {
-  const query = new URLSearchParams();
-  query.set("query", address);
-  query.set("limit", "1");
-  query.set("output", "json");
-  query.set("access_key", "3e1333d988d21294663d2939f778ee07");
-  const url = `http://api.positionstack.com/v1/forward?${query.toString()}`;
-  const res = await fetch(url);
-  const resData = await res.json();
-  return resData.data[0];
+	const query = new URLSearchParams()
+	query.set('query', address)
+	query.set('limit', '1')
+	query.set('output', 'json')
+	query.set('access_key', '3e1333d988d21294663d2939f778ee07')
+	const url = `http://api.positionstack.com/v1/forward?${query.toString()}`
+	const res = await fetch(url)
+	const resData = await res.json()
+	return resData.data[0]
 }
 
 export function dateBetween(dateStr: string, start: string, end: string) {
-  const date = new Date(dateStr).getTime();
-  const startDate = new Date(start).getTime();
-  const endDate = new Date(end).getTime();
-  if (start && end) return date > startDate && date < endDate;
-  if (start) return date > startDate;
-  if (end) return date < endDate;
-  return false;
+	const date = new Date(dateStr).getTime()
+	const startDate = new Date(start).getTime()
+	const endDate = new Date(end).getTime()
+	if (start && end) return date > startDate && date < endDate
+	if (start) return date > startDate
+	if (end) return date < endDate
+	return false
 }
 
 export function printPractitioner(practitioner: IPractitioner) {
-  if (!practitioner) return "";
-  const name = `${practitioner.firstName} ${practitioner.lastName}`;
-  const title = printTitle(practitioner.jobDesignation);
-  return `${title} ${name}`;
+	if (!practitioner) return ''
+	const name = `${practitioner.firstName} ${practitioner.lastName}`
+	const title = printTitle(practitioner.jobDesignation)
+	return `${title} ${name}`
 }
 
 function printTitle(designation: string) {
-  if (!designation) return "Pr.";
-  switch (designation.toLowerCase()) {
-    case "doctor":
-      return "Dr.";
-    case "nurse":
-      return "RN.";
-    case "surgeon":
-      return "Sr.";
-    default:
-      return designation;
-  }
+	if (!designation) return 'Pr.'
+	switch (designation.toLowerCase()) {
+		case 'doctor':
+			return 'Dr.'
+		case 'nurse':
+			return 'RN.'
+		case 'surgeon':
+			return 'Sr.'
+		default:
+			return designation
+	}
 }

@@ -1,4 +1,4 @@
-import Period from "./IPeriod";
+import Period from './IPeriod'
 
 export default interface IAppointment {
   appointmentId?: string;

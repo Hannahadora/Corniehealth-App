@@ -1,6 +1,6 @@
-import Period from "./IPeriod";
-import IAllergy from "./IAllergy";
-import Phone from "./IPhone";
+import Period from './IPeriod'
+import IAllergy from './IAllergy'
+import Phone from './IPhone'
 
 export default interface IProgressnote {
   id?: string;

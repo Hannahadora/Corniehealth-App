@@ -1,16 +1,16 @@
-import { cornieClient } from "@/plugins/http";
-import IIssues from "@/types/IIssues";
+import { cornieClient } from '@/plugins/http'
+import IIssues from '@/types/IIssues'
 
 export async function fetchIssues(patientId: string) {
-  try {
-    const response = await cornieClient().get(`/api/v1/detected-issue`);
-    if (response.success) {
-      return response.data;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return [] as IIssues[];
+	try {
+		const response = await cornieClient().get('/api/v1/detected-issue')
+		if (response.success) {
+			return response.data
+		}
+	} catch (error) {
+		console.log(error)
+	}
+	return [] as IIssues[]
 }
 
 // export async function deleteImpression(id: string) {
