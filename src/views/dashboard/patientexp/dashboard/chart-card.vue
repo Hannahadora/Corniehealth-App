@@ -1,16 +1,6 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
     :style="{ height }"
   >
     <div class="w-full p-2">

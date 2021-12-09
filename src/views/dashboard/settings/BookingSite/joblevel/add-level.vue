@@ -48,20 +48,7 @@
             <span class="flex-grow"></span>
             <span
               @click="hide"
-              class="
-                border-primary
-                rounded-full
-                text-black
-                mr-2
-                py-2
-                px-6
-                cursor-pointer
-                border
-                focus:outline-none
-                outline
-                hover:bg-primary
-                hover:text-white
-              "
+              class="border-primary rounded-full text-black mr-2 py-2 px-6 cursor-pointer border focus:outline-none outline hover:bg-primary hover:text-white"
             >
               Cancel
             </span>
@@ -69,15 +56,7 @@
               :loading="loading"
               type="button"
               @click="submit"
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                py-2
-                px-6
-                focus:outline-none
-                hover:opacity-90
-              "
+              class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
             >
               Create a Job Level
             </cornie-btn>

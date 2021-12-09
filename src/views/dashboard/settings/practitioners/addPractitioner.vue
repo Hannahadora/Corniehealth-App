@@ -2,15 +2,7 @@
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
         Add a Practitioner
       </span>
@@ -87,16 +79,7 @@
               />
             </div>
             <span
-              class="
-                flex
-                border-b-2
-                w-full
-                font-semibold
-                text-xl text-primary
-                py-2
-                mt-4
-                mx-auto
-              "
+              class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mt-4 mx-auto"
             >
               Qualification
             </span>
@@ -137,29 +120,13 @@
             </div>
             <span class="flex w-full mt-5 pb-3 justify-end">
               <button
-                class="
-                  rounded-full
-                  font-semibold
-                  p-2
-                  text-primary
-                  border border-primary
-                  w-1/4
-                  mr-3
-                "
+                class="rounded-full font-semibold p-2 text-primary border border-primary w-1/4 mr-3"
                 @click="$router.push('practitioners')"
               >
                 Cancel
               </button>
               <cornie-btn
-                class="
-                  w-1/4
-                  rounded-full
-                  font-semibold
-                  p-2
-                  text-white
-                  border
-                  bg-danger
-                "
+                class="w-1/4 rounded-full font-semibold p-2 text-white border bg-danger"
                 :loading="loading"
                 type="submit"
               >

@@ -1,22 +1,10 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
     :style="{ height }"
   >
     <div class="w-full p-2">
-      <span
-        class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2"
-      >
+      <span class="flex w-full justify-between mb-5 text-xs text-gray-400 py-2">
         <span class="chart-title">{{ title }}</span>
         <div class="flex items-center">
           <span class="mx-2">{{ order }}</span>
@@ -44,8 +32,6 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import DropDown from "@/components/drop-down.vue";
 import { Prop, Watch } from "vue-property-decorator";
 
-
-
 @Options({
   name: "ChartCard",
   components: {
@@ -64,26 +50,25 @@ export default class ChartCard extends Vue {
   @Prop({ type: String, default: "" })
   height!: string;
 
-  @Watch('order')
+  @Watch("order")
   filterUpdated() {
-    this.$emit('ordered', this.order)
+    this.$emit("ordered", this.order);
     this.filter = !this.filter;
   }
 }
 </script>
 
 <style scoped>
-  .chart-title {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 20px;
-    /* identical to box height, or 140% */
+.chart-title {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  /* identical to box height, or 140% */
 
+  /* Greys/Blue Yonder */
 
-    /* Greys/Blue Yonder */
-
-    color: #667499;
-  }
+  color: #667499;
+}
 </style>

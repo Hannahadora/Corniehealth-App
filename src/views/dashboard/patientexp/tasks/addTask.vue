@@ -3,7 +3,7 @@
     <span
       class="flex w-full mt-3 -mb-2 font-bold text-lg text-primary py-2 mx-auto"
     >
-      {{allaction}} Task
+      {{ allaction }} Task
     </span>
     <div>
       <div class="w-full h-screen">
@@ -128,7 +128,16 @@
                     </template>
                   </date-picker>
                   <cornie-select
-                    :items="['Specialized surgeon','Obstetrician','Cardiologist','Gerodontist','Thoracic surgeon','Urologist','Orthodontist','Sanitarian',]"
+                    :items="[
+                      'Specialized surgeon',
+                      'Obstetrician',
+                      'Cardiologist',
+                      'Gerodontist',
+                      'Thoracic surgeon',
+                      'Urologist',
+                      'Orthodontist',
+                      'Sanitarian',
+                    ]"
                     v-model="performerType"
                     label="performer type"
                     placeholder="--Select--"
@@ -153,24 +162,24 @@
                   </div>
                   <cornie-select
                     v-if="allLocation.length === 0"
-                  class="required w-full"
-                  :rules="required"
+                    class="required w-full"
+                    :rules="required"
                     :items="['No Location Available']"
                     v-model="location"
-                  label="location"
-                  placeholder="--Select--"
-                >
-                </cornie-select>
-                <cornie-select
-                v-else
-                  class="required w-full"
-                  :rules="required"
+                    label="location"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    v-else
+                    class="required w-full"
+                    :rules="required"
                     :items="allLocation"
                     v-model="location"
-                  label="location"
-                  placeholder="--Select--"
-                >
-                </cornie-select>
+                    label="location"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
 
                   <!-- <div>
                     <label
@@ -189,7 +198,10 @@
                   </div> -->
 
                   <div>
-                    <DateTimePicker :label="'start DATE & Time'" :visible="datePickerVissibility.first">
+                    <DateTimePicker
+                      :label="'start DATE & Time'"
+                      :visible="datePickerVissibility.first"
+                    >
                       <template v-slot:labelicon>
                         <info-icon class="text-primary fill-current" />
                       </template>
@@ -198,7 +210,7 @@
                           <span>
                             {{
                               new Date(
-                                data.startDate ?? Date.now(),
+                                data.startDate ?? Date.now()
                               ).toLocaleDateString()
                             }}
                           </span>
@@ -212,19 +224,17 @@
                       <template #input>
                         <v-date-picker
                           v-model="data.startDate"
-                          style="
-                            position: relative;
-                            z-index: 9000;
-                            width: 100%;
-                          "
+                          style="position: relative; z-index: 9000; width: 100%"
                         ></v-date-picker>
                         <label class="block uppercase my-1 text-xs font-bold">
                           Time
                         </label>
                         <input
                           v-model="data.startTime"
-                          @change="dateTimePickerUpdated(data.startDate, 'first')"
-                          @input="() => datePickerVissibility.first = true"
+                          @change="
+                            dateTimePickerUpdated(data.startDate, 'first')
+                          "
+                          @input="() => (datePickerVissibility.first = true)"
                           type="time"
                           class="w-full border rounded-md p-2"
                         />
@@ -232,7 +242,10 @@
                     </DateTimePicker>
                   </div>
                   <div>
-                    <DateTimePicker :label="'end DATE & Time'" :visible="datePickerVissibility.second">
+                    <DateTimePicker
+                      :label="'end DATE & Time'"
+                      :visible="datePickerVissibility.second"
+                    >
                       <template v-slot:labelicon>
                         <info-icon class="text-primary fill-current" />
                       </template>
@@ -240,7 +253,7 @@
                         <span>
                           {{
                             new Date(
-                              data.endDate ?? Date.now(),
+                              data.endDate ?? Date.now()
                             ).toLocaleDateString()
                           }}
                         </span>
@@ -252,15 +265,17 @@
                         <v-date-picker
                           name="eeee"
                           v-model="data.endDate"
-                          style="z-index: 9000; width: 100%;"
+                          style="z-index: 9000; width: 100%"
                         ></v-date-picker>
                         <label class="block uppercase my-1 text-xs font-bold">
                           Time
                         </label>
                         <input
                           v-model="data.endTime"
-                          @change="dateTimePickerUpdated(data.startDate, 'second')"
-                          @input="() => datePickerVissibility.second = true"
+                          @change="
+                            dateTimePickerUpdated(data.startDate, 'second')
+                          "
+                          @input="() => (datePickerVissibility.second = true)"
                           type="time"
                           class="w-full border rounded-md p-2"
                         />
@@ -268,7 +283,7 @@
                     </DateTimePicker>
                   </div>
                   <cornie-select
-                  :items="allReceipients"
+                    :items="allReceipients"
                     v-model="recipient"
                     label="recipient"
                     placeholder="--Select--"
@@ -352,7 +367,7 @@
                       <span class="ml-1">
                         <info-icon class="text-primary fill-current" />
                         <!-- <question-icon /> -->
-                        </span>
+                      </span>
                     </label>
                     <div class="w-full flex space-x-4 mb-3">
                       <cornie-radio
@@ -454,7 +469,7 @@
                 type="submit"
                 class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
               >
-                {{newaction}} Task
+                {{ newaction }} Task
               </cornie-btn>
             </span>
           </div>
@@ -464,43 +479,42 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component'
-import AccordionComponent from '@/components/accordion-extended-component.vue'
-import CornieInput from '@/components/cornieinput.vue'
-import CornieRadio from '@/components/cornieradio.vue'
-import CornieSelect from '@/components/cornieselect.vue'
-import Textarea from '@/components/textarea.vue'
-import PhoneInput from '@/components/phone-input.vue'
-import Availability from '@/components/availability.vue'
-import ITask from '@/types/ITask'
-import { cornieClient } from '@/plugins/http'
-import { namespace } from 'vuex-class'
-import { string } from 'yup'
-import { Prop, Watch } from 'vue-property-decorator'
-import PractitionersFilter from '@/components/practitioner.vue'
-import PatientsFilter from '@/components/patient.vue'
-import DevicesFilter from '@/components/device.vue'
-import RolesFilter from '@/components/roles.vue'
-import DEdit from '@/components/icons/aedit.vue'
-import CDelete from '@/components/icons/adelete.vue'
-import CAdd from '@/components/icons/cadd.vue'
-import AddIcon from '@/components/icons/add.vue'
-import InfoIcon from '@/components/icons/info.vue'
-import QuestionIcon from '@/components/icons/question.vue'
-import SingleDatePicker from '@/components/datepicker.vue'
-import DatePicker from '@/components/daterangepicker.vue'
-import Period from '@/types/IPeriod'
-import Avatar from '@/components/avatar.vue'
-import DateTimePicker from './components/datetime-picker.vue'
+import { Options, Vue } from "vue-class-component";
+import AccordionComponent from "@/components/accordion-extended-component.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import Textarea from "@/components/textarea.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import Availability from "@/components/availability.vue";
+import ITask from "@/types/ITask";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import { string } from "yup";
+import { Prop, Watch } from "vue-property-decorator";
+import PractitionersFilter from "@/components/practitioner.vue";
+import PatientsFilter from "@/components/patient.vue";
+import DevicesFilter from "@/components/device.vue";
+import RolesFilter from "@/components/roles.vue";
+import DEdit from "@/components/icons/aedit.vue";
+import CDelete from "@/components/icons/adelete.vue";
+import CAdd from "@/components/icons/cadd.vue";
+import AddIcon from "@/components/icons/add.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import QuestionIcon from "@/components/icons/question.vue";
+import SingleDatePicker from "@/components/datepicker.vue";
+import DatePicker from "@/components/daterangepicker.vue";
+import Period from "@/types/IPeriod";
+import Avatar from "@/components/avatar.vue";
+import DateTimePicker from "./components/datetime-picker.vue";
 import { IOrganization } from "@/types/IOrganization";
-import  ILocation  from "@/types/ILocation";
-import moment from 'moment'
+import ILocation from "@/types/ILocation";
+import moment from "moment";
 
-
-const task = namespace('task')
-const organization = namespace('organization')
-const location = namespace('location')
-const dropdown = namespace('dropdown')
+const task = namespace("task");
+const organization = namespace("organization");
+const location = namespace("location");
+const dropdown = namespace("dropdown");
 
 @Options({
   components: {
@@ -528,78 +542,78 @@ const dropdown = namespace('dropdown')
   },
 })
 export default class AddTask extends Vue {
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @task.Action
-  getTaskById!: (id: string) => ITask
+  getTaskById!: (id: string) => ITask;
 
-  loading = false
-  expand = false
-  isVisible = ''
-  status = ''
-  startdate = ''
-  enddate = ''
-  rule = true
-  opened = true
-  openedR = true
-  openedS = true
-  openedM = false
-  showMedicationModal = false
-orgName = "";
-orgAddress = "";
-locationInfo = [];
+  loading = false;
+  expand = false;
+  isVisible = "";
+  status = "";
+  startdate = "";
+  enddate = "";
+  rule = true;
+  opened = true;
+  openedR = true;
+  openedS = true;
+  openedM = false;
+  showMedicationModal = false;
+  orgName = "";
+  orgAddress = "";
+  locationInfo = [];
   data: any = {
     days: [],
     practitioners: [],
     breaks: [],
     healthcares: [],
     devices: [],
-  }
+  };
   recipientDropdown = [];
 
-  activityDefinition = ''
-  description = ''
-  intent = ''
-  priority = ''
-  statusReason = ''
-  businessStatus = ''
-  code = ''
-  for = ''
-  forType = ''
-  performerType = ''
-  owner = ''
-  location = ''
-  startDateTime = ''
-  endDateTime = ''
-  recipient = ''
-  excecutionPeriod = {} as Period
-  basedOn = ''
-  partOf = ''
-  reasonCode = ''
-  reasonReference = ''
-  note = ''
-  focus = ''
-  encounter = ''
-  repitition = ''
-  inputType = ''
-  inputValue = ''
-  outputType = ''
-  outputValue = ''
+  activityDefinition = "";
+  description = "";
+  intent = "";
+  priority = "";
+  statusReason = "";
+  businessStatus = "";
+  code = "";
+  for = "";
+  forType = "";
+  performerType = "";
+  owner = "";
+  location = "";
+  startDateTime = "";
+  endDateTime = "";
+  recipient = "";
+  excecutionPeriod = {} as Period;
+  basedOn = "";
+  partOf = "";
+  reasonCode = "";
+  reasonReference = "";
+  note = "";
+  focus = "";
+  encounter = "";
+  repitition = "";
+  inputType = "";
+  inputValue = "";
+  outputType = "";
+  outputValue = "";
 
-  items = ['Patient', 'Practitioner', 'Practitioner Role', 'Device']
+  items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
 
   options = [
-    { text: 'Active', value: true },
-    { text: 'Inactive', value: false },
-  ]
+    { text: "Active", value: true },
+    { text: "Inactive", value: false },
+  ];
 
-  required = string().required()
-  dropdowns = {} as IIndexableObject
-  dropdowns2 = {} as IIndexableObject
+  required = string().required();
+  dropdowns = {} as IIndexableObject;
+  dropdowns2 = {} as IIndexableObject;
 
   @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
   @location.State
   locations!: ILocation[];
@@ -610,56 +624,56 @@ locationInfo = [];
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-   @organization.Action
+  @organization.Action
   fetchOrgInfo!: () => Promise<void>;
 
-  @Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setTask()
+    this.setTask();
   }
 
   datePickerVissibility: any = {
     first: false,
     second: false,
-  }
+  };
   dateTimePickerUpdated(date: Date | string, key: string) {
     // alert(date)
     // if (date) {
-      this.datePickerVissibility[key] = false;
+    this.datePickerVissibility[key] = false;
     // }
   }
 
   async setTask() {
-    const task = await this.getTaskById(this.id)
-    if (!task) return
-    this.activityDefinition = task.activityDefinition
-    this.description = task.description
-    this.intent = task.intent
-    this.priority = task.priority
-    this.statusReason = task.statusReason
-    this.businessStatus = task.businessStatus
-    this.code = task.code
-    this.for = task.for
-    this.performerType = task.performerType
-    this.owner = task.owner
-    this.location = task.location
-    this.startDateTime = task.startDateTime
-    this.endDateTime = task.endDateTime
-    this.recipient = task.recipient
-    this.excecutionPeriod = task.excecutionPeriod
-    this.basedOn = task.basedOn
-    this.partOf = task.partOf
-    this.reasonCode = task.reasonCode
-    this.reasonReference = task.reasonReference
-    this.note = task.note
-    this.focus = task.focus
-    this.status = task.status
-    this.encounter = task.encounter
-    this.repitition = task.repitition
-    this.inputType = task.inputType
-    this.inputValue = task.inputValue
-    this.outputType = task.outputType
-    this.outputValue = task.outputValue
+    const task = await this.getTaskById(this.id);
+    if (!task) return;
+    this.activityDefinition = task.activityDefinition;
+    this.description = task.description;
+    this.intent = task.intent;
+    this.priority = task.priority;
+    this.statusReason = task.statusReason;
+    this.businessStatus = task.businessStatus;
+    this.code = task.code;
+    this.for = task.for;
+    this.performerType = task.performerType;
+    this.owner = task.owner;
+    this.location = task.location;
+    this.startDateTime = task.startDateTime;
+    this.endDateTime = task.endDateTime;
+    this.recipient = task.recipient;
+    this.excecutionPeriod = task.excecutionPeriod;
+    this.basedOn = task.basedOn;
+    this.partOf = task.partOf;
+    this.reasonCode = task.reasonCode;
+    this.reasonReference = task.reasonReference;
+    this.note = task.note;
+    this.focus = task.focus;
+    this.status = task.status;
+    this.encounter = task.encounter;
+    this.repitition = task.repitition;
+    this.inputType = task.inputType;
+    this.inputValue = task.inputValue;
+    this.outputType = task.outputType;
+    this.outputValue = task.outputValue;
   }
   get payload() {
     return {
@@ -670,7 +684,7 @@ locationInfo = [];
       statusReason: this.statusReason,
       businessStatus: this.businessStatus,
       code: this.code,
-     //  status: this.status,
+      //  status: this.status,
       for: this.for,
       performerType: this.performerType,
       owner: this.owner,
@@ -691,25 +705,25 @@ locationInfo = [];
       inputValue: this.inputValue,
       outputType: this.outputType,
       outputValue: this.outputValue,
-    }
+    };
   }
   get allaction() {
-    return this.id ? 'Edit' : 'New'
+    return this.id ? "Edit" : "New";
   }
 
- get newaction() {
-    return this.id ? 'Update' : 'Create'
+  get newaction() {
+    return this.id ? "Update" : "Create";
   }
   async submit() {
-    this.loading = true
-    if (this.id) await this.updateTask()
-    else await this.createTask()
-    this.loading = false
+    this.loading = true;
+    if (this.id) await this.updateTask();
+    else await this.createTask();
+    this.loading = false;
   }
   async createTask() {
     moment(this.data.startTime).format("YYYY-MM-DD HH:mm Z");
-     moment( this.data.endTime).format("YYYY-MM-DD HH:mm Z");
-     this.data.startDate = new Date(this.data.startDate).toISOString();
+    moment(this.data.endTime).format("YYYY-MM-DD HH:mm Z");
+    this.data.startDate = new Date(this.data.startDate).toISOString();
     this.data.endDate = new Date(this.data.endDate).toISOString();
     this.startDateTime = this.data.startDate;
     this.endDateTime = this.data.endDate;
@@ -721,64 +735,66 @@ locationInfo = [];
       ...this.payload,
       for: this.forType,
       owner: this.organizationInfo.name,
-      startDateTime:this.startDateTime,
-      endDateTime: this.endDateTime ,
-    }
-    this.payload.excecutionPeriod.start
+      startDateTime: this.startDateTime,
+      endDateTime: this.endDateTime,
+    };
+    this.payload.excecutionPeriod.start;
     // this.payload.for = this.forType;
     try {
-      const response = await cornieClient().post('/api/v1/task', body)
+      const response = await cornieClient().post("/api/v1/task", body);
       if (response.success) {
-        window.notify({ msg: 'Task created', status: 'success' })
-        this.$router.push('/dashboard/provider/experience/tasks')
+        window.notify({ msg: "Task created", status: "success" });
+        this.$router.push("/dashboard/provider/experience/tasks");
       }
     } catch (error) {
-      console.log(error)
-      window.notify({ msg: 'Task not created', status: 'error' })
+      console.log(error);
+      window.notify({ msg: "Task not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
 
   async updateTask() {
-    const url = `/api/v1/task/${this.id}`
+    const url = `/api/v1/task/${this.id}`;
     const payload = {
-       ...this.payload,
-      }
+      ...this.payload,
+    };
     try {
-      const response = await cornieClient().put(url, payload)
+      const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: 'Task updated', status: 'success' })
-        this.$router.push('/dashboard/provider/experience/tasks')
+        window.notify({ msg: "Task updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/tasks");
       }
     } catch (error) {
-      window.notify({ msg: 'Task not updated', status: 'error' })
+      window.notify({ msg: "Task not updated", status: "error" });
     }
   }
   get allReceipients() {
-     if (!this.recipientDropdown || this.recipientDropdown.length === 0) return [ ];
-     return this.recipientDropdown.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.firstName +' '+ i.lastName,
-         }
-     })
- }
-  get allLocation() {
-     if (!this.locationInfo || this.locationInfo.length === 0) return [ ];
-     return this.locationInfo.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.name,
-         }
-     })
- }
-  async setOrg(){
-     this.orgName = this.organizationInfo.name;
-    //this.orgAddress = this.organizationInfo.identifier;
-
+    if (!this.recipientDropdown || this.recipientDropdown.length === 0)
+      return [];
+    return this.recipientDropdown.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.firstName + " " + i.lastName,
+      };
+    });
   }
-   async getLocations() {
-    const AllLocations = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+  get allLocation() {
+    if (!this.locationInfo || this.locationInfo.length === 0) return [];
+    return this.locationInfo.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+  async setOrg() {
+    this.orgName = this.organizationInfo.name;
+    //this.orgAddress = this.organizationInfo.identifier;
+  }
+  async getLocations() {
+    const AllLocations = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
     const response = await Promise.all([AllLocations]);
     this.locationInfo = response[0].data;
     this.orgAddress = response[0].data[0].id;
@@ -796,7 +812,7 @@ locationInfo = [];
     this.getPractitioners();
     this.setOrg();
     this.setTask();
-    const data = await this.getDropdowns('tasks')
+    const data = await this.getDropdowns("tasks");
     this.dropdowns = data;
   }
 }
@@ -812,9 +828,8 @@ locationInfo = [];
   border: 2px solid #080056;
 }
 .required label::after {
-  content: '*';
+  content: "*";
   color: #fe4d3c;
   margin-left: 5px;
 }
-
 </style>

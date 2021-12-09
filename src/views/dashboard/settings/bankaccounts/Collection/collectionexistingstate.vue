@@ -2,17 +2,7 @@
   <div class="w-full mx-5">
     <span class="flex justify-end">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          px-3
-          focus:outline-none
-          hover:opacity-90
-          flex
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 flex"
         @click="$emit('add-account')"
       >
         <span class="mt-2 mr-2"> <bank-add-icon /> </span>

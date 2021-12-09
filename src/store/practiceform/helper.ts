@@ -15,7 +15,9 @@ export async function fetchPracticeforms() {
 }
 export async function fetchPracticeformsQuestionnaires() {
   try {
-    const response = await cornieClient().get("/api/v1/practice-form/questionnaires");
+    const response = await cornieClient().get(
+      "/api/v1/practice-form/questionnaires"
+    );
     if (response.success) {
       return response.data;
     }

@@ -44,7 +44,7 @@
       </template>
     </empty-state> -->
     <!-- <existing-state :functions="functions" v-else /> -->
-        <existing-state :appointmentrooms="appointmentrooms" />
+    <existing-state :appointmentrooms="appointmentrooms" />
 
     <add-function v-model="addFunction" />
   </main>
@@ -59,7 +59,6 @@ import { namespace } from "vuex-class";
 import IFunction from "@/types/IFunction";
 
 import IAppointmentRoom from "@/types/IAppointmentRoom";
-
 
 const orgFunctions = namespace("OrgFunctions");
 const AppointmentRoom = namespace("AppointmentRoom");
@@ -82,7 +81,7 @@ export default class Functions extends Vue {
   appointmentrooms!: IAppointmentRoom[];
 
   @AppointmentRoom.Action
-  fetchAppointmentrooms !: () => Promise<void>;
+  fetchAppointmentrooms!: () => Promise<void>;
 
   @orgFunctions.Action
   fetchFunctions!: () => Promise<void>;

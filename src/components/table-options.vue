@@ -8,19 +8,7 @@
       <button
         @click="isVisible = true"
         type="button"
-        class="
-          inline-flex
-          items-center
-          justify-between
-          px-4
-          py-3
-          font-medium
-          text-gray-700
-          rounded-md
-          focus:outline-none
-          focus:text-brand-900
-          sm:focus:shadow-outline
-        "
+        class="inline-flex items-center justify-between px-4 py-3 font-medium text-gray-700 rounded-md focus:outline-none focus:text-brand-900 sm:focus:shadow-outline"
       >
         <span class="flex-shrink-0"><three-dot-icon /></span>
       </button>
@@ -34,17 +22,7 @@
       >
         <div v-show="isVisible" class="absolute pt-2 z-10 -left-44">
           <div
-            class="
-              relative
-              py-2
-              p-1
-              bg-white
-              border border-gray-200
-              rounded-md
-              block
-              w-56
-              shadow-xl
-            "
+            class="relative py-2 p-1 bg-white border border-gray-200 rounded-md block w-56 shadow-xl"
           >
             <div class="relative p-1">
               <slot />

@@ -3,7 +3,7 @@
     <span
       class="flex capitalize mb-1 text-black text-sm font-medium items-center"
     >
-      {{label}}
+      {{ label }}
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
     <div class="grid grid-cols-3 gap-3 mt-4 w-1/2">
@@ -54,7 +54,7 @@ export default class TimeablePicker extends Vue {
 
   type: "range" | "string" = "range";
 
-@Prop({ type: String })
+  @Prop({ type: String })
   label!: string;
 
   setType() {

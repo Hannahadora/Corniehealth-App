@@ -1,8 +1,19 @@
 <template>
-    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M11 1L17 7M17 7L11 13M17 7H1" stroke="#FE4D3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
+  <svg
+    width="18"
+    height="14"
+    viewBox="0 0 18 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M11 1L17 7M17 7L11 13M17 7H1"
+      stroke="#FE4D3C"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
 </template>
 <script>
 export default {

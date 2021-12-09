@@ -1,7 +1,9 @@
 <template>
   <div class="w-full pb-5 border-b justify-center">
     <form>
-      <h2 class="text-sm mb-5">Enter verification code sent to {{ user.email }}</h2>
+      <h2 class="text-sm mb-5">
+        Enter verification code sent to {{ user.email }}
+      </h2>
       <span class="mt-4 w-full flex">
         <multi-input
           :length="6"
@@ -10,7 +12,11 @@
         />
         <check-icon class="my-auto ml-3" v-if="verifiedSync" />
       </span>
-      <p class="mt-12 text-sm">Didn’t receive code? <span class="cursor-pointer text-danger" @click="resend"> Resend </span> ({{ countDown }}:00)</p>
+      <p class="mt-12 text-sm">
+        Didn’t receive code?
+        <span class="cursor-pointer text-danger" @click="resend"> Resend </span>
+        ({{ countDown }}:00)
+      </p>
     </form>
   </div>
 </template>
@@ -31,7 +37,7 @@ export default class VerifyEmailCode extends Vue {
   @Prop({ required: false, type: Object })
   user!: { id: string; email: string };
 
- @Prop({ type: Function, default: "" })
+  @Prop({ type: Function, default: "" })
   next!: Function;
 
   @Prop({ required: false, type: String })
@@ -68,33 +74,39 @@ export default class VerifyEmailCode extends Vue {
     };
   }
 
-  get idUser(){
+  get idUser() {
     return {
       userId: this.user.id,
     };
   }
 
-  countDownTimer(){
-    if(this.countDown > 0){
+  countDownTimer() {
+    if (this.countDown > 0) {
       setTimeout(() => {
-        this.countDown -=1
-        this.countDownTimer()
-      }, 10000)
+        this.countDown -= 1;
+        this.countDownTimer();
+      }, 10000);
     }
   }
- 
- async resend() {
+
+  async resend() {
     const errMsg = "Email verification code not sent";
     try {
-      const data = await quantumClient().post("/auth/signup/resend-verification/",this.idUser);
+      const data = await quantumClient().post(
+        "/auth/signup/resend-verification/",
+        this.idUser
+      );
       if (data.success) {
         this.countDown = 10;
-         window.notify({ msg: "Email verification code sent", status: "success" });
-      }else{
-         window.notify({ msg: errMsg  });
+        window.notify({
+          msg: "Email verification code sent",
+          status: "success",
+        });
+      } else {
+        window.notify({ msg: errMsg });
       }
     } catch (error) {
-       window.notify({ msg: "Email verification code not sent" });
+      window.notify({ msg: "Email verification code not sent" });
     }
   }
 
@@ -112,16 +124,16 @@ export default class VerifyEmailCode extends Vue {
         this.next();
       } else {
         this.status = "error";
-         window.notify({ msg: errMsg });
+        window.notify({ msg: errMsg });
         setTimeout(() => (this.status = "default"), 5000);
       }
     } catch (error) {
       this.status = "error";
-       window.notify({ msg: errMsg });
+      window.notify({ msg: errMsg });
       setTimeout(() => (this.status = "default"), 5000);
     }
   }
-  async created(){
+  async created() {
     this.countDownTimer();
   }
 }

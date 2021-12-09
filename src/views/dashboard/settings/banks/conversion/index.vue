@@ -101,9 +101,12 @@
             </template>
             </cornie-table>
 
-        
-            <default-currency v-model="showDefaultCurrencyModal" />
-        <new-exchange-rate v-model="showNewExchangeRateModal" @currency-added="currencyadded" :id="currencyId"/>
+      <default-currency v-model="showDefaultCurrencyModal" />
+      <new-exchange-rate
+        v-model="showNewExchangeRateModal"
+        @currency-added="currencyadded"
+        :id="currencyId"
+      />
     </div>
   </div>
 </template>
@@ -170,7 +173,7 @@ const userStore = namespace("user");
     Select,
     PlusIcon,
     SearchIcon,
-  //  CloseIcon,
+    //  CloseIcon,
     MessageIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -182,9 +185,8 @@ const userStore = namespace("user");
     EditIcon,
     CornieTable,
     CardText,
-    CornieDialog
+    CornieDialog,
   },
-  
 })
 export default class PracticeformExistingState extends Vue {
   showColumnFilter = false;
@@ -205,8 +207,8 @@ export default class PracticeformExistingState extends Vue {
 
   @currency.Action
   fetchCurrencys!: () => Promise<void>;
- 
-   @practitioner.State
+
+  @practitioner.State
   practitioners!: IPractitioner[];
 
   @practitioner.Action
@@ -216,20 +218,20 @@ export default class PracticeformExistingState extends Vue {
   authPractitioner!: IPractitioner;
 
   getKeyValue = getTableKeyValue;
-  
+
   preferredHeaders = [];
   rawHeaders = [
     {
       title: "CURRENCY",
       key: "currency",
-       show: true,
+      show: true,
     },
-    { title: "CONVERSION", key: "conversion", show: true, },
+    { title: "CONVERSION", key: "conversion", show: true },
 
     {
       title: "EXCHANGE RATE",
       key: "exchangeRate",
-       show: true,
+      show: true,
     },
     { title: "Location", key: "outlets" , show: true,},
      { title: "LAST UPDATED", key: "updatedAt" , show: true,},
@@ -241,16 +243,15 @@ export default class PracticeformExistingState extends Vue {
     return [...this.rawHeaders, { title: "", value: "action", image: true }];
   }
 
-
   get items() {
     const currencys = this.currencys.map((currency) => {
       (currency as any).createdAt = new Date(
         (currency as any).createdAt
       ).toLocaleDateString("en-US");
-       (currency as any).updatedAt = new Date(
+      (currency as any).updatedAt = new Date(
         (currency as any).updatedAt
       ).toLocaleDateString("en-US");
-        return {
+      return {
         ...currency,
          action: currency.id,
          outlets:"Market",
@@ -302,28 +303,27 @@ async showRateModal(value:string){
       }
     }
 
-     async created() {
-     this.fetchPractitioners();
-       this.fetchCurrencys();
+  async created() {
+    this.fetchPractitioners();
+    this.fetchCurrencys();
     if (this.currencys.length < 1) this.fetchCurrencys();
-    }
-
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 .status-accepted {
-      background: #F3FCF8;
-      color: #35BA83;    
-  }
-.status-inactive {
-      background: #FFF1F0;
-      color: #FE4D3C;
+  background: #f3fcf8;
+  color: #35ba83;
 }
-.status-warning{
-  background: #FEFAF0;
-  color: #F7B538;
+.status-inactive {
+  background: #fff1f0;
+  color: #fe4d3c;
+}
+.status-warning {
+  background: #fefaf0;
+  color: #f7b538;
 }
 </style>

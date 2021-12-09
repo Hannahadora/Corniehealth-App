@@ -22,13 +22,16 @@ export default {
     practiceforms: [],
     practiceformsquestions: [],
     practiceformstemplates: [],
-    practiceformsQuestionnaries:[],
+    practiceformsQuestionnaries: [],
   },
   mutations: {
     setPracticeforms(state, practiceforms: IPracticeform[]) {
       state.practiceforms = [...practiceforms];
     },
-    setPracticeformsQuestionnaires(state, practiceformsQuestionnaries: IPracticeform[]) {
+    setPracticeformsQuestionnaires(
+      state,
+      practiceformsQuestionnaries: IPracticeform[]
+    ) {
       state.practiceformsQuestionnaries = [...practiceformsQuestionnaries];
     },
     setPracticeformsQuestions(state, practiceformsquestions: IPracticeform[]) {
@@ -60,7 +63,8 @@ export default {
       ctx.commit("setPracticeforms", practiceforms);
     },
     async fetchPracticeformsQuestionnaires(ctx) {
-      const practiceformsQuestionnaries = await fetchPracticeformsQuestionnaires();
+      const practiceformsQuestionnaries =
+        await fetchPracticeformsQuestionnaires();
       ctx.commit("setPracticeformsQuestionnaires", practiceformsQuestionnaries);
     },
     async fetchPracticeformsQuestions(ctx) {

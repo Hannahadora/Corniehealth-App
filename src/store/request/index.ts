@@ -1,13 +1,19 @@
 import ObjectSet from "@/lib/objectset";
 import IRequest from "@/types/IRequest";
 import { StoreOptions } from "vuex";
-import { deleteRequest, fetchRequests,getPatients,getPractitioners,fetchOtherrequestsById } from "./helper";
+import {
+  deleteRequest,
+  fetchRequests,
+  getPatients,
+  getPractitioners,
+  fetchOtherrequestsById,
+} from "./helper";
 
 interface RequestState {
   requests: IRequest[];
-  patients: any[],
-  practitioners: any[],
-  patientrequests:IRequest[],
+  patients: any[];
+  practitioners: any[];
+  patientrequests: IRequest[];
 }
 
 export default {
@@ -16,22 +22,22 @@ export default {
     requests: [],
     patients: [],
     practitioners: [],
-    patientrequests:[],
+    patientrequests: [],
   },
   mutations: {
     updatedRequests(state, requests: IRequest[]) {
-      const requestSet = new ObjectSet([...state.requests, ...requests], "id"); 
+      const requestSet = new ObjectSet([...state.requests, ...requests], "id");
       state.requests = [...requestSet];
     },
     setPatientRequests(state, requests: IRequest[]) {
-      const requestSet = new ObjectSet([...state.requests, ...requests], "id"); 
+      const requestSet = new ObjectSet([...state.requests, ...requests], "id");
       state.patientrequests = [...requestSet];
     },
     setPatients(state, pts) {
-      if (pts && pts.length > 0) state.patients = [ ...pts ];
+      if (pts && pts.length > 0) state.patients = [...pts];
     },
     setPractitioners(state, pts) {
-      if (pts && pts.length > 0) state.practitioners = [ ...pts ];
+      if (pts && pts.length > 0) state.practitioners = [...pts];
     },
     updateRequests(state, requests: IRequest[]) {
       const requestSet = new ObjectSet([...state.requests, ...requests], "id");
@@ -52,15 +58,15 @@ export default {
     },
     async fetchRequests(ctx) {
       const requests = await fetchRequests();
-      console.log('requestttt', requests);
+      console.log("requestttt", requests);
       ctx.commit("updatedRequests", requests);
     },
     async getPatients(ctx) {
-      const pts = await getPatients();      
+      const pts = await getPatients();
       ctx.commit("setPatients", pts);
     },
     async getPractitioners(ctx) {
-      const pts = await getPractitioners();      
+      const pts = await getPractitioners();
       ctx.commit("setPractitioners", pts);
     },
     async getRequestById(ctx, id: string) {

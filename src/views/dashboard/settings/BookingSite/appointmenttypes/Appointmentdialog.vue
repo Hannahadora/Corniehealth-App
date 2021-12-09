@@ -101,7 +101,7 @@ import { namespace } from "vuex-class";
 import CustomDropdown from "@/components/cornieselect.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import ChevronDown from "@/components/icons/chevrondownprimary.vue";
-import DateTimePicker from './components/datetime-picker.vue'
+import DateTimePicker from "./components/datetime-picker.vue";
 import ToggleCheck from "@/components/ToogleCheck.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
@@ -150,7 +150,7 @@ const appointments = namespace("appointments");
     MainCornieSelect,
     TextArea,
     PlusIcon,
-    PractionerSelect
+    PractionerSelect,
   },
 })
 export default class CheckIn extends Vue {
@@ -184,15 +184,15 @@ export default class CheckIn extends Vue {
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
-  
-   @organization.Action
-    fetchOrgInfo!: () => Promise<void>
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
 
   @organization.State
-  organizationInfo: any
+  organizationInfo: any;
 
   appointmentItems = appointmentItems;
-  appointmentItem= "";
+  appointmentItem = "";
   showDetails = true;
   orgValue = "";
   showBreaks = false;
@@ -200,7 +200,7 @@ export default class CheckIn extends Vue {
   loading = false;
   date = new Date();
 
-  arr = [ ] as any[];
+  arr = [] as any[];
 
   data: any = {};
   selectedActors: any[] = [];
@@ -355,11 +355,11 @@ export default class CheckIn extends Vue {
       await this.fetchLocations();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-      if (!this.organizationInfo || this.organizationInfo.length === 0)
+    if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
-      this.orgValue = this.organizationInfo.domainName;
-      this.getappointmentTypes();
-      console.log(this.orgValue);
+    this.orgValue = this.organizationInfo.domainName;
+    this.getappointmentTypes();
+    console.log(this.orgValue);
   }
 }
 </script>

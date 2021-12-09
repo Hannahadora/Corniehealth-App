@@ -31,14 +31,14 @@
                   'border-green-400': meta.valid && meta.touched,
                 }"
                 class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
-                style="margin-bottom: 40px;"
+                style="margin-bottom: 40px"
               >
                 <span v-if="Boolean($slots.selected)">
                   <slot name="selected" :item="selectedItem" />
                 </span>
                 <input
                   v-else
-                 :placeholder="$attrs.placeholder"
+                  :placeholder="$attrs.placeholder"
                   disabled
                 :value="displayVal"
                     :class="{'multi-input': Boolean(!$slots.item)}"
@@ -58,14 +58,7 @@
                 </span>
 
                 <div
-                  class="
-                    text-gray-300
-                    py-1
-                    pr-1
-                    flex
-                    items-center
-                    border-gray-200
-                  "
+                  class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
                 >
                   <chevron-down-icon />
                 </div>
@@ -77,52 +70,23 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              w-full
-              lef-0
-              border border-gray-400
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            class="absolute shadow bg-white top-100 z-40 w-full lef-0 border border-gray-400 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <div
                 v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
-              <div v-if="Boolean($slots.item)">
-                <template>
-                  <slot name="item" v-bind:item="item" />
-                </template>
-              </div>
+                <div v-if="Boolean($slots.item)">
+                  <template>
+                    <slot name="item" v-bind:item="item" />
+                  </template>
+                </div>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                    capitalize
-                  "
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative capitalize"
                 >
                   {{ item.display || item }}
                 </div>
@@ -141,13 +105,13 @@ import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
-import MultiClose from "@/components/icons/multiclose.vue"
+import MultiClose from "@/components/icons/multiclose.vue";
 
 @Options({
   components: {
     ChevronDownIcon,
     Field,
-    MultiClose
+    MultiClose,
   },
 })
 export default class CornieSelect extends Vue {

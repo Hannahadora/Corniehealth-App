@@ -1,237 +1,320 @@
 <template>
   <div class="w-full my-2">
-      <div class="container-fluid " v-if="items && items.length === 0 && filterByStatus.length === 0 && filterByType.length === 0 && !selectedStatus">
-        <EmptyState />
-      </div>
-      <div v-else class="container-fluid bg-white sm:p-6">
-       <span
-        class="
-          flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2
-        "
+    <div
+      class="container-fluid"
+      v-if="
+        items &&
+        items.length === 0 &&
+        filterByStatus.length === 0 &&
+        filterByType.length === 0 &&
+        !selectedStatus
+      "
+    >
+      <EmptyState />
+    </div>
+    <div v-else class="container-fluid bg-white sm:p-6">
+      <span
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-       Appointment
+        Appointment
       </span>
 
+      <div class="w-full mt-6">
+        <span class="flex justify-end w-full mb-8">
+          <button
+            class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 focus:outline-none hover:opacity-90"
+            @click="
+              $router.push('/dashboard/provider/experience/add-appointment')
+            "
+          >
+            Create Appointment
+          </button>
+        </span>
+        <div class="w-full pb-7 mb-8">
+          <cornie-table :columns="rawHeaders" v-model="items">
+            <template #appointmentType-header="{}">
+              <span
+                class="cursor-pointer md text-xs uppercase"
+                @click="() => (selectType = !selectType)"
+                >Appointment Type</span
+              >
+              <div class="absolute md" v-if="selectType">
+                <div
+                  style="max-height: 280px; overflow-y: scroll; width: 200px"
+                  class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="menu-button"
+                  tabindex="-1"
+                >
+                  <div class="py-1 md" role="none">
+                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                    <a
+                      class="md text-gray-700 px-4 py-2 text-sm flex items-center"
+                      role="menuitem"
+                      tabindex="-1"
+                      id="menu-item-0"
+                      v-for="(day, index) in types"
+                      :key="index"
+                    >
+                      <span
+                        ><input
+                          type="checkbox"
+                          class="h-4 w-4 md"
+                          name=""
+                          v-model="filterByType"
+                          id=""
+                          :value="day"
+                      /></span>
+                      <span class="mx-2 text-xs md">{{ day }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </template>
 
-        <div class="w-full mt-6">  
-                 <span class="flex justify-end w-full mb-8">
-      <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          pr-5
-          pl-5
-          px-3
-          mb-5
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="$router.push('/dashboard/provider/experience/add-appointment')"
-      >
-        Create Appointment
-      </button>
-    </span>
-            <div class="w-full pb-7 mb-8">
-             <cornie-table :columns="rawHeaders" v-model="items">
-                
-                <template #appointmentType-header="{  }">
-                    <span class="cursor-pointer md text-xs uppercase"  @click="() => selectType = !selectType">Appointment Type</span>
-                    <div class="absolute md" v-if="selectType">
-                      <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                        <div class="py-1 md" role="none">
-                        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a class="md text-gray-700  px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
-                            v-for="(day, index) in types" :key="index"
-                        >
-                            <span><input type="checkbox" class="h-4 w-4 md" name="" v-model="filterByType" id="" :value="day"></span>
-                            <span class="mx-2 text-xs md">{{ day }}</span>
-                        </a>
-                        </div>
-                    </div>
-                    </div>
-                </template>
-                
-                <template #status-header="{  }">
-                    <p class="cursor-pointer md text-xs uppercase" @click="() => filterStatus = !filterStatus">Participant Status</p>
-                    <div class="absolute md" v-if="filterStatus">
-                      <div style="max-height: 280px;overflow-y: scroll;width: 200px" class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                        <div class="py-1 md" role="none">
-                        <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                        <a class="md text-gray-700  px-4 py-2 text-sm flex items-center" role="menuitem" tabindex="-1" id="menu-item-0"
-                            v-for="(day, index) in statuses" :key="index"
-                        >
-                            <span><input type="checkbox" class="h-4 w-4 md" name="" id="" v-model="filterByStatus" :value="day"></span>
-                            <span class="mx-2 text-xs md">{{ day }}</span>
-                        </a>
-                        </div>
-                    </div>
-                    </div>
-                </template>
-                
-                <template #patient="{ item }">
-                    <p class="cursor-pointer" @click="showPatientDetails(onePatientId)">{{ item.patient }}</p>
-                </template>
-                <template #days="{ item }">
-                    <p>{{ item.days.map(i => i.substring(0, 3)).join(', ') }}</p>
-                </template>
-                <template #appointmentType="{ item }">
-                    <span  class="text-xs">{{ item.id ? getAppointment(item.id).appointmentType : '' }}</span>
-                </template>
-                <template #status="{ item }">
-                    <div class="container">
-                    <span class="rounded-full" :class="{ 'status-inactive': item.status === 'inactive', 'status-active': item.status === 'active' }">{{ item.status }}</span>
-                    </div>
-                </template>
-                 <template #Participants="{ item }">
-                    <div class="flex items-center">
-                    <span class="text-xs">{{ item.Participants }}</span>
-                    <eye-icon
-                        class="cursor-pointer ml-3"
-                        @click="displayParticipants(item.id)"
-                    />
-                    
-                    </div>
-                </template>
-                 <template #actions="{ item }">
-                        <div
-                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                        @click="
-                            $router.push(`/dashboard/experience/add-appointment/${item.id}`)
-                        "
-                        >
-                        <newview-icon class="text-yellow-500 fill-current" />
-                        <span class="ml-3 text-xs">View</span>
-                        </div>
-                        <div
-                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                        @click="$router.push(`/dashboard/experience/add-response/${item.id}`)"
-                        >
-                        <update-icon class="text-yellow-300 fill-current" />
-                        <span class="ml-3 text-xs">Update</span>
-                        </div>
-                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinPane(item.id)">
-                        <checkin-icon />
-                        <span class="ml-3 text-xs">Check-In</span>
-                        </div>
-                        <div
-                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                        @click="makeNotes(item.id)"
-                        >
-                        <note-icon class="text-green-300 fill-current" />
-                        <span class="ml-3 text-xs">Make Notes</span>
-                        </div>
-                        <div
-                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                        @click="deleteItem(item.id)"
-                        >
-                        <cancel-icon/>
-                        <span class="ml-3 text-xs">Cancel</span>
-                        </div>
-                </template>
-                </cornie-table>
-                
-                <column-filter
-                :columns="rawHeaders"
-                v-model:preferred="preferredHeaders"
-                v-model:visible="showColumnFilter"
+            <template #status-header="{}">
+              <p
+                class="cursor-pointer md text-xs uppercase"
+                @click="() => (filterStatus = !filterStatus)"
+              >
+                Participant Status
+              </p>
+              <div class="absolute md" v-if="filterStatus">
+                <div
+                  style="max-height: 280px; overflow-y: scroll; width: 200px"
+                  class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="menu-button"
+                  tabindex="-1"
+                >
+                  <div class="py-1 md" role="none">
+                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                    <a
+                      class="md text-gray-700 px-4 py-2 text-sm flex items-center"
+                      role="menuitem"
+                      tabindex="-1"
+                      id="menu-item-0"
+                      v-for="(day, index) in statuses"
+                      :key="index"
+                    >
+                      <span
+                        ><input
+                          type="checkbox"
+                          class="h-4 w-4 md"
+                          name=""
+                          id=""
+                          v-model="filterByStatus"
+                          :value="day"
+                      /></span>
+                      <span class="mx-2 text-xs md">{{ day }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <template #patient="{ item }">
+              <p
+                class="cursor-pointer"
+                @click="showPatientDetails(onePatientId)"
+              >
+                {{ item.patient }}
+              </p>
+            </template>
+            <template #days="{ item }">
+              <p>{{ item.days.map((i) => i.substring(0, 3)).join(", ") }}</p>
+            </template>
+            <template #appointmentType="{ item }">
+              <span class="text-xs">{{
+                item.id ? getAppointment(item.id).appointmentType : ""
+              }}</span>
+            </template>
+            <template #status="{ item }">
+              <div class="container">
+                <span
+                  class="rounded-full"
+                  :class="{
+                    'status-inactive': item.status === 'inactive',
+                    'status-active': item.status === 'active',
+                  }"
+                  >{{ item.status }}</span
+                >
+              </div>
+            </template>
+            <template #Participants="{ item }">
+              <div class="flex items-center">
+                <span class="text-xs">{{ item.Participants }}</span>
+                <eye-icon
+                  class="cursor-pointer ml-3"
+                  @click="displayParticipants(item.id)"
                 />
-           
-                <modal :visible="viewDetails">
-                  <template #title>
-                    <p class="flex items-center justify-between px-2" style="width: 440px">
-                      <span class="font-bold text-danger p-2 text-xl">{{ getPatientName(selectedPatient.id)}}</span> 
-                        <svg
-                            class="cursor-pointer" @click="() => viewDetails = false"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+              </div>
+            </template>
+            <template #actions="{ item }">
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="
+                  $router.push(
+                    `/dashboard/experience/add-appointment/${item.id}`
+                  )
+                "
+              >
+                <newview-icon class="text-yellow-500 fill-current" />
+                <span class="ml-3 text-xs">View</span>
+              </div>
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="
+                  $router.push(`/dashboard/experience/add-response/${item.id}`)
+                "
+              >
+                <update-icon class="text-yellow-300 fill-current" />
+                <span class="ml-3 text-xs">Update</span>
+              </div>
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="showCheckinPane(item.id)"
+              >
+                <checkin-icon />
+                <span class="ml-3 text-xs">Check-In</span>
+              </div>
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="makeNotes(item.id)"
+              >
+                <note-icon class="text-green-300 fill-current" />
+                <span class="ml-3 text-xs">Make Notes</span>
+              </div>
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="deleteItem(item.id)"
+              >
+                <cancel-icon />
+                <span class="ml-3 text-xs">Cancel</span>
+              </div>
+            </template>
+          </cornie-table>
+
+          <column-filter
+            :columns="rawHeaders"
+            v-model:preferred="preferredHeaders"
+            v-model:visible="showColumnFilter"
+          />
+
+          <modal :visible="viewDetails">
+            <template #title>
+              <p
+                class="flex items-center justify-between px-2"
+                style="width: 440px"
+              >
+                <span class="font-bold text-danger p-2 text-xl">{{
+                  getPatientName(selectedPatient.id)
+                }}</span>
+                <svg
+                  class="cursor-pointer"
+                  @click="() => (viewDetails = false)"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10 0C15.53 0 20 4.47 20 10C20 15.53 15.53 20 10 20C4.47 20 0 15.53 0 10C0 4.47 4.47 0 10 0ZM13.59 5L10 8.59L6.41 5L5 6.41L8.59 10L5 13.59L6.41 15L10 11.41L13.59 15L15 13.59L11.41 10L15 6.41L13.59 5Z"
+                    fill="#FF0000"
+                  />
+                </svg>
+              </p>
+            </template>
+            <div class="w-4/12 px-4" style="width: 440px">
+              <div class="w-full flex">
+                <div class="w-6/12">
+                  <div class="w-full">
+                    <div class="w-11/12">
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-sm text-primary"
+                          >MRN No:</span
                         >
-                            <path
-                            d="M10 0C15.53 0 20 4.47 20 10C20 15.53 15.53 20 10 20C4.47 20 0 15.53 0 10C0 4.47 4.47 0 10 0ZM13.59 5L10 8.59L6.41 5L5 6.41L8.59 10L5 13.59L6.41 15L10 11.41L13.59 15L15 13.59L11.41 10L15 6.41L13.59 5Z"
-                            fill="#FF0000"
-                            />
-                        </svg>
-                    </p>
-                  </template>
-                  <div class="w-4/12 px-4" style="width: 440px">
-                    <div class="w-full flex">
-                      <div class="w-6/12">
-                        <div class="w-full">
-                          <div class="w-11/12">
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-sm text-primary">MRN No:</span> 
-                              <span class="ml-2 text-xs">{{ selectedPatientData.mrn }}</span> 
-                            </div>
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-sm text-primary">D.O.B:</span> 
-                              <span class="ml-2 text-xs">{{ selectedPatientData.dob }}</span> 
-                            </div>
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-sm text-primary">Policy Expiry:</span> 
-                              <span class="ml-2 text-xs">XXXXXX</span> 
-                            </div>
-                            <div class="w-full py-2">
-                              <span class="font-semibold text-sm text-primary">Policy No:</span> 
-                              <span class="ml-2 text-xs">XXXXXX</span> 
-                            </div>
-                          </div>
-                        </div>
+                        <span class="ml-2 text-xs">{{
+                          selectedPatientData.mrn
+                        }}</span>
                       </div>
-                      <div class="w-6/12">
-                        <div class="w-full">
-                          <div class="w-11/12">
-                            <div class="py-2 w-full">
-                              <span class="font-semibold text-sm text-primary">Gender:</span> 
-                              <span class="ml-2 text-xs">{{ selectedPatientData.gender }}</span> 
-                            </div>
-                            <div class="py-2 w-full">
-                              <span class="font-semibold text-sm text-primary">Profile Type</span> 
-                              <span class="ml-2 text-xs">XXXX</span> 
-                            </div>
-                            <div class="py-2w-full">
-                              <span class="font-semibold text-primary">Payor</span> 
-                              <span class="ml-2 text-xs">XXXXXX</span> 
-                            </div>
-                          </div>
-                        </div>
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-sm text-primary"
+                          >D.O.B:</span
+                        >
+                        <span class="ml-2 text-xs">{{
+                          selectedPatientData.dob
+                        }}</span>
                       </div>
-                    </div>
-                    <div class="w-full pt-3 pb-6">
-                      <p class="text-center font-normal text-large text-primary">View Policy Coverage</p>
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-sm text-primary"
+                          >Policy Expiry:</span
+                        >
+                        <span class="ml-2 text-xs">XXXXXX</span>
+                      </div>
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-sm text-primary"
+                          >Policy No:</span
+                        >
+                        <span class="ml-2 text-xs">XXXXXX</span>
+                      </div>
                     </div>
                   </div>
-
-                </modal>
-                <all-participants
-                    :appointmentId="appointmentId"
-                    :columns="singleParticipant"
-                    @update:preferred="displayParticipants"
-                    v-model:visible="showPartcipants"
-                    />
-
-                  <SideModal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
-                    <Checkin :item="appment"  @close="() => showCheckin = false" />
-                  </SideModal>
+                </div>
+                <div class="w-6/12">
+                  <div class="w-full">
+                    <div class="w-11/12">
+                      <div class="py-2 w-full">
+                        <span class="font-semibold text-sm text-primary"
+                          >Gender:</span
+                        >
+                        <span class="ml-2 text-xs">{{
+                          selectedPatientData.gender
+                        }}</span>
+                      </div>
+                      <div class="py-2 w-full">
+                        <span class="font-semibold text-sm text-primary"
+                          >Profile Type</span
+                        >
+                        <span class="ml-2 text-xs">XXXX</span>
+                      </div>
+                      <div class="py-2w-full">
+                        <span class="font-semibold text-primary">Payor</span>
+                        <span class="ml-2 text-xs">XXXXXX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full pt-3 pb-6">
+                <p class="text-center font-normal text-large text-primary">
+                  View Policy Coverage
+                </p>
+              </div>
             </div>
+          </modal>
+          <all-participants
+            :appointmentId="appointmentId"
+            :columns="singleParticipant"
+            @update:preferred="displayParticipants"
+            v-model:visible="showPartcipants"
+          />
 
-            <div style="height: 400px">
-
-            </div>
+          <SideModal
+            :visible="showCheckin"
+            :header="'Check-In'"
+            @closesidemodal="() => (showCheckin = false)"
+          >
+            <Checkin :item="appment" @close="() => (showCheckin = false)" />
+          </SideModal>
         </div>
+
+        <div style="height: 400px"></div>
       </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -251,10 +334,10 @@ import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
-import EditIcon from '@/components/icons/edit.vue'
-import AddIcon from '@/components/icons/add.vue'
-import DeactivateIcon from '@/components/icons/deactivate.vue'
-import Button from '@/components/globals/corniebtn.vue'
+import EditIcon from "@/components/icons/edit.vue";
+import AddIcon from "@/components/icons/add.vue";
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+import Button from "@/components/globals/corniebtn.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
@@ -262,16 +345,15 @@ import UpdateIcon from "@/components/icons/update.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import AllParticipants from "./participants.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import Modal from '@/components/modal.vue';
+import Modal from "@/components/modal.vue";
 //import Close from '@/components/icons/close.vue'
-import ArrowRight from '@/components/icons/arrow-right.vue'
-import EncounterIcon from '@/components/icons/encounter.vue'
-import CheckoutIcon from '@/components/icons/checkout.vue'
-import Checkin from "../../visits/components/checkin.vue"
-import SideModal from "../../schedules/components/side-modal.vue"
+import ArrowRight from "@/components/icons/arrow-right.vue";
+import EncounterIcon from "@/components/icons/encounter.vue";
+import CheckoutIcon from "@/components/icons/checkout.vue";
+import Checkin from "../../visits/components/checkin.vue";
+import SideModal from "../../schedules/components/side-modal.vue";
 
-import EmptyState from './emptyState.vue'
-
+import EmptyState from "./emptyState.vue";
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
@@ -307,23 +389,23 @@ const appointment = namespace("appointment");
     EncounterIcon,
     CheckoutIcon,
     SideModal,
-    Checkin
+    Checkin,
   },
 })
 export default class AppoitmentExistingState extends Vue {
   showColumnFilter = false;
   show = false;
-appointmentId = "";
-showPartcipants = false;
+  appointmentId = "";
+  showPartcipants = false;
   query = "";
   search = "";
 
   selectedStatus = 0;
-  filterByType: any = [ ]
-  filterByStatus: any = [ ]
-  completedStatus: any = [  ]
-  currentVisitId = '';
-  onePatientId= "";
+  filterByType: any = [];
+  filterByStatus: any = [];
+  completedStatus: any = [];
+  currentVisitId = "";
+  onePatientId = "";
 
   activeTab = 0;
   showEditPane = false;
@@ -339,13 +421,26 @@ showPartcipants = false;
   timeLineVissible = false;
   viewDetails = false;
 
-  selectedSchedule: any = { };
-singleParticipant = [];
-  selectedVisit : any = { };
-  selectedPatient : any = { };
-  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
+  selectedSchedule: any = {};
+  singleParticipant = [];
+  selectedVisit: any = {};
+  selectedPatient: any = {};
+  months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "Auust",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
- @appointment.Action
+  @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
 
   @appointment.State
@@ -356,8 +451,6 @@ singleParticipant = [];
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
-
- 
 
   @appointment.State
   appointments!: any[];
@@ -426,9 +519,9 @@ singleParticipant = [];
     },
   ];
 
-  types = ['All', 'Emergency', 'Walk-In', 'Follow-Up', 'Routine']
-  statuses = ['All', 'Completed', 'Queue', 'In-Progress']
-  availableSlots: any = [ ]
+  types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
+  statuses = ["All", "Completed", "Queue", "In-Progress"];
+  availableSlots: any = [];
 
   get headers() {
     const preferred =
@@ -439,24 +532,34 @@ singleParticipant = [];
     return [...first(4, headers), { title: "", key: "action", image: true }];
   }
 
-   get appment() {
-    if (!this.currentAppId) return { };
-    const pt = this.appointments.find((i: any) => i.id === this.currentAppId)
-    return pt ? pt : { }
+  get appment() {
+    if (!this.currentAppId) return {};
+    const pt = this.appointments.find((i: any) => i.id === this.currentAppId);
+    return pt ? pt : {};
   }
 
   get items() {
-    if (!this.appointments || this.appointments.length === 0 ) return [];
+    if (!this.appointments || this.appointments.length === 0) return [];
     const filtered = this.appointments.filter((i: any) => {
-        if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
-            return i;
+      if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
+        return i;
       } else {
-          if (this.filterByStatus.includes('All') || this.filterByType.includes('All')) return true;
-        const indexInTypes = this.filterByType.findIndex((j: any) => j.toLowerCase() === this.getAppointment(i.id).appointmentType.toLowerCase());
-        const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
+        if (
+          this.filterByStatus.includes("All") ||
+          this.filterByType.includes("All")
+        )
+          return true;
+        const indexInTypes = this.filterByType.findIndex(
+          (j: any) =>
+            j.toLowerCase() ===
+            this.getAppointment(i.id).appointmentType.toLowerCase()
+        );
+        const indexInStatuses = this.filterByStatus.findIndex(
+          (j: any) => j.toLowerCase() === i.status.toLowerCase()
+        );
         if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
       }
-    })
+    });
 
     const appointments = filtered.map((i: any) => {
       if (i.status === "cancelled" || i.status === "no-show") {
@@ -466,15 +569,12 @@ singleParticipant = [];
       } else {
         i.completedStatus = "In-Progress";
       }
-     
-     const singleParticipantlength =
-        i.Practitioners.length +
-        i.Devices.length +
-        i.Patients.length;
 
-        const pateintId = i.Patients.map((patient:any) =>{
-            this.onePatientId =  patient.patientId;
-       
+      const singleParticipantlength =
+        i.Practitioners.length + i.Devices.length + i.Patients.length;
+
+      const pateintId = i.Patients.map((patient: any) => {
+        this.onePatientId = patient.patientId;
       });
       const patientNewId = this.onePatientId;
       return {
@@ -487,9 +587,14 @@ singleParticipant = [];
         // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
       };
     });
-    if (this.selectedStatus === 1) return appointments.filter((i: any) => i.completedStatus === "Queue");
-    if (this.selectedStatus === 2) return appointments.filter((i) => i.status === "in-progress");
-    if (this.selectedStatus === 3) return appointments.filter((i) => i.status !== "in-progress" && i.status !== "queue");
+    if (this.selectedStatus === 1)
+      return appointments.filter((i: any) => i.completedStatus === "Queue");
+    if (this.selectedStatus === 2)
+      return appointments.filter((i) => i.status === "in-progress");
+    if (this.selectedStatus === 3)
+      return appointments.filter(
+        (i) => i.status !== "in-progress" && i.status !== "queue"
+      );
 
     return appointments;
     // if (!this.query) return shifts;
@@ -498,12 +603,11 @@ singleParticipant = [];
 
   currentAppId = "";
   showCheckinPane(id: string) {
-    this.currentAppId  = id;
+    this.currentAppId = id;
     this.showCheckin = true;
   }
 
-
-async displayParticipants(value: string) {
+  async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
     try {
@@ -531,144 +635,139 @@ async displayParticipants(value: string) {
     const pt = this.patients.find((i: any) => i.id === id);
     console.log(id);
     console.log("id");
-    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    this.selectedPatient = pt ? pt : { };
+    this.selectedPatient = pt ? pt : {};
   }
 
   getActors(id: string) {
     const pt = this.appointments.find((i: any) => i.id === id);
-    
-    return pt ? pt.Practitioners : [ ];
+
+    return pt ? pt.Practitioners : [];
   }
 
   getAppointment(id: string) {
     const pt = this.appointments.find((i: any) => i.id === id);
-    return pt ? pt : { };
+    return pt ? pt : {};
   }
 
-
-
   get selectedPatientData() {
-    if (!this.selectedPatient || !this.selectedPatient.id) return { };
+    if (!this.selectedPatient || !this.selectedPatient.id) return {};
     const data = this.selectedPatient;
     return {
       gender: data.gender,
-      dob: `${new Date(data.dateOfBirth).getDate()} ${this.months[new Date(data.dateOfBirth).getMonth()]}, ${new Date(data.dateOfBirth).getFullYear()}`,
-      mrn: data.mrn
-    }
+      dob: `${new Date(data.dateOfBirth).getDate()} ${
+        this.months[new Date(data.dateOfBirth).getMonth()]
+      }, ${new Date(data.dateOfBirth).getFullYear()}`,
+      mrn: data.mrn,
+    };
   }
 
   showPatientDetails(id: string) {
-    this.setSelectedPatient(id)
+    this.setSelectedPatient(id);
     this.viewDetails = true;
   }
 
-
   async created() {
     this.getPatients();
-   this.fetchAppointments();
-    window.addEventListener('click', (e: any) => {
-      if (!e.target.classList.contains('md')) {
+    this.fetchAppointments();
+    window.addEventListener("click", (e: any) => {
+      if (!e.target.classList.contains("md")) {
         this.selectType = false;
         this.filterStatus = false;
       }
-    })
-
-
+    });
   }
-
 }
 </script>
 
 <style scoped>
-    .active-tab {
-        border-bottom-width: 4px;
-        margin-bottom: -0.22rem;
-    }
+.active-tab {
+  border-bottom-width: 4px;
+  margin-bottom: -0.22rem;
+}
 
-    .active-color {
-        border-color: #FE4D3C;
-    }
+.active-color {
+  border-color: #fe4d3c;
+}
 
-    .status-active {
-      background: #F3FCF8;
-      color: #35BA83;
-      
-    }
+.status-active {
+  background: #f3fcf8;
+  color: #35ba83;
+}
 
-    .status-inactive {
-      background: #FFF1F0;
-      color: #FE4D3C;
-    }
+.status-inactive {
+  background: #fff1f0;
+  color: #fe4d3c;
+}
 
-    .border-b-4 {
-      border-bottom: 4px solid #F0F4FE;
-    }
+.border-b-4 {
+  border-bottom: 4px solid #f0f4fe;
+}
 
-    .h-screen {
-      height: 100vh;
-      overflow: scroll;
-      padding-bottom: 40px;
-      padding-bottom: 24px;
-    }
+.h-screen {
+  height: 100vh;
+  overflow: scroll;
+  padding-bottom: 40px;
+  padding-bottom: 24px;
+}
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .h-screen::-webkit-scrollbar {
-        display: none;
-    }
+/* Hide scrollbar for Chrome, Safari and Opera */
+.h-screen::-webkit-scrollbar {
+  display: none;
+}
 
-    /* Hide scrollbar for IE, Edge and Firefox */
-    .h-screen {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-    }
+/* Hide scrollbar for IE, Edge and Firefox */
+.h-screen {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
 
-    .file-picker {
-        width: 0;
-        height: 0;
-        overflow: hidden;
-    }
+.file-picker {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
 
-    .light-grey-bg {
-      background: #F0F4FE;
-    }
-    /* Large checkboxes */
+.light-grey-bg {
+  background: #f0f4fe;
+}
+/* Large checkboxes */
 
 input[type="checkbox"] {
-    height: 22px;
-    width: 22px;
+  height: 22px;
+  width: 22px;
 }
 
 input[type="checkbox"]:before {
-    width: 24px;
-    border: hidden;
-    height: 20px;
+  width: 24px;
+  border: hidden;
+  height: 20px;
 }
 
 input[type="checkbox"]:after {
-    top: -20px;
-    width: 22px;
-    height: 22px;
+  top: -20px;
+  width: 22px;
+  height: 22px;
 }
 
 input[type="checkbox"].md:checked:after {
-   background-image: url("../../../../assets/tick.svg");
-    background-color: #FE4D3C;
+  background-image: url("../../../../assets/tick.svg");
+  background-color: #fe4d3c;
 }
 input[type="checkbox"].md:after {
-    position: relative;
-    display: block;
-    left: 0px;
-    content: "";
-    background: white;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 3px;
-    text-align: center;
-    border: 1px solid #FE4D3C;
+  position: relative;
+  display: block;
+  left: 0px;
+  content: "";
+  background: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 3px;
+  text-align: center;
+  border: 1px solid #fe4d3c;
 }
 </style>

@@ -14,7 +14,12 @@
         value="date-time"
       /> -->
       <cornie-radio :name="name" v-model="type" value="age" label="Normals" />
-      <cornie-radio :name="name" v-model="type" value="period" label="Abnormal"/>
+      <cornie-radio
+        :name="name"
+        v-model="type"
+        value="period"
+        label="Abnormal"
+      />
     </div>
     <div class="grid grid-cols-2 gap-3 mt-3 w-full">
       <date-time-picker
@@ -45,26 +50,29 @@
         width="w-11/12"
       />
     </div>
-     <cornie-text-area
-          rows="4"
-          v-model="stageNote"
-          label="Notes"
-          class="w-full"
-      />
+    <cornie-text-area
+      rows="4"
+      v-model="stageNote"
+      label="Notes"
+      class="w-full"
+    />
 
-         <span
+    <span
       class="flex capitalize mb-1 text-black text-sm font-semibold items-center"
     >
       Neck WNL
       <!-- <info-icon class="fill-current ml-2 text-primary" /> -->
     </span>
     <div class="grid grid-cols-3 gap-3 mt-2 w-1/2">
-      
       <cornie-radio :name="name" v-model="type" value="age" label="Normal" />
-      <cornie-radio :name="name" v-model="type" value="period" label="Abnormal"/>
+      <cornie-radio
+        :name="name"
+        v-model="type"
+        value="period"
+        label="Abnormal"
+      />
     </div>
     <div class="grid grid-cols-2 gap-3 mt-3 w-full">
-      
       <date-time-picker
         v-model:date="timeable.startDate"
         v-model:time="timeable.startTime"
@@ -80,12 +88,12 @@
         width="w-11/12"
       />
     </div>
-     <cornie-text-area
-          rows="4"
-          v-model="stageNote"
-          label="Notes"
-          class="w-full"
-        />
+    <cornie-text-area
+      rows="4"
+      v-model="stageNote"
+      label="Notes"
+      class="w-full"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -97,7 +105,6 @@ import CornieTooltip from "@/components/CornieTooltip.vue";
 import InfoIcon from "@/components/icons/info.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { ITimeable } from "@/types/ITimeable";
-
 
 import CornieTextArea from "@/components/textarea.vue";
 
@@ -119,8 +126,6 @@ const timeable = {
     DateTimePicker,
     CornieTooltip,
     InfoIcon,
-
-    
 
     CornieTextArea,
   },

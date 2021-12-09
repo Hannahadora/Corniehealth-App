@@ -1,9 +1,14 @@
 import { StoreOptions } from "vuex";
 import IProcedure from "../../types/IProcedure";
-import { getProcedures, createProcedure, updateVitalStatus, updateProcedure } from "./helper";
+import {
+  getProcedures,
+  createProcedure,
+  updateVitalStatus,
+  updateProcedure,
+} from "./helper";
 
 interface ProcedureStore {
-  procedures: IProcedure[],
+  procedures: IProcedure[];
 }
 
 export default {
@@ -12,15 +17,17 @@ export default {
     procedures: [],
   },
   mutations: {
-
     setProcedures(state, procedures) {
-      if (procedures && procedures.length > 0) state.procedures = [ ...procedures ];
+      if (procedures && procedures.length > 0)
+        state.procedures = [...procedures];
     },
 
     updateProcedure(state, payload) {
       if (payload) {
-        const index = state.procedures.findIndex(procedure => procedure.id === payload.id);
-        if (index >= 0) state.procedures[index] = payload
+        const index = state.procedures.findIndex(
+          (procedure) => procedure.id === payload.id
+        );
+        if (index >= 0) state.procedures[index] = payload;
       }
     },
   },
@@ -33,24 +40,27 @@ export default {
 
     async createProcedure(ctx, procedure: IProcedure) {
       const res = await createProcedure(procedure);
-      if (!res) return { };
-      getProcedures(procedure.patientId)
+      if (!res) return {};
+      getProcedures(procedure.patientId);
       return res;
     },
 
     async updateVitalStatus(ctx, body: any) {
       const res = await updateVitalStatus(body.data, body.vitalId);
-      if (!res) return { };
-      ctx.commit("updateVitalStatus", { status: body.data?.status, vitalId: body.vitalId});
+      if (!res) return {};
+      ctx.commit("updateVitalStatus", {
+        status: body.data?.status,
+        vitalId: body.vitalId,
+      });
       return res;
     },
 
     async updateProcedure(ctx, body: IProcedure) {
       const res = await updateProcedure(body, body.id);
-      
-      if (!res) return { };
+
+      if (!res) return {};
       ctx.commit("updateProcedure", res);
       return res;
-    }
+    },
   },
-} as StoreOptions<ProcedureStore>
+} as StoreOptions<ProcedureStore>;

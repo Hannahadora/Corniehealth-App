@@ -55,7 +55,7 @@ import DomainInput from "@/components/newdomaininput.vue";
 import { Prop } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
-import CopyformIcon from '@/components/icons/formcopy.vue';
+import CopyformIcon from "@/components/icons/formcopy.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import ShareIcon from "@/components/icons/newshare.vue";
 import AddLevel from "./add-level.vue";
@@ -135,15 +135,15 @@ export default class ExistingState extends Vue {
 </script>
 
 <style scoped>
-.booking-font{
+.booking-font {
   font-size: 20px;
 }
 
-.field{
+.field {
   align-items: end;
 }
 
-.input-color{
+.input-color {
   background-color: red !important;
 }
 </style>

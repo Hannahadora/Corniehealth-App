@@ -30,8 +30,7 @@
     </empty-state> -->
 
     <!-- <existing-state v-else :designations="designations" /> -->
-    <existing-state  />
-   
+    <existing-state />
   </main>
 </template>
 

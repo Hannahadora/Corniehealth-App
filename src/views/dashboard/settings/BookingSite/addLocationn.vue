@@ -59,11 +59,8 @@ import AutoComplete from "@/components/autocomplete.vue";
 import Textarea from "@/components/textarea.vue";
 import EditIcon from "@/components/icons/aedit.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
-import DateTimePicker from './components/datetime-picker.vue';
+import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
-
-
-
 
 const countries = getCountries();
 
@@ -81,7 +78,7 @@ const location = namespace("location");
     EditIcon,
     CalendarIcon,
     DateTimePicker,
-    CornieTextArea
+    CornieTextArea,
   },
 })
 export default class AddLocationn extends Vue {
@@ -249,5 +246,8 @@ export default class AddLocationn extends Vue {
 </script>
 
 <style scoped>
-input[type="time"]::-webkit-calendar-picker-indicator { background: none; display:none; }
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+  display: none;
+}
 </style>

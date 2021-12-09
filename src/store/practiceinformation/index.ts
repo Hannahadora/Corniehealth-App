@@ -5,18 +5,15 @@ import { StoreOptions } from "vuex";
 import { fetchPracticeInformation, fetchPracticeHour } from "./helper";
 
 interface IPracticeInformationState {
-  practiceInformation: IPracticeInformation[],
-  practiceHour: IPracticeHour[],
+  practiceInformation: IPracticeInformation[];
+  practiceHour: IPracticeHour[];
 }
-
-
-
 
 export default {
   namespaced: true,
   state: {
     practiceInformation: [],
-    practiceHour:[],
+    practiceHour: [],
   },
   mutations: {
     setPracticeInformation(state, practiceInformation: IPracticeInformation[]) {
@@ -25,11 +22,16 @@ export default {
     setPracticeHour(state, practiceHour: IPracticeHour[]) {
       state.practiceHour = [...practiceHour];
     },
-    updatePracticeInformation(state, practiceInformation: IPracticeInformation[]) {
-      const practiceSet = new ObjectSet([...state.practiceInformation, ...practiceInformation], "id");
+    updatePracticeInformation(
+      state,
+      practiceInformation: IPracticeInformation[]
+    ) {
+      const practiceSet = new ObjectSet(
+        [...state.practiceInformation, ...practiceInformation],
+        "id"
+      );
       state.practiceInformation = [...practiceSet];
     },
-  
   },
   actions: {
     async fetchPracticeInformation(ctx) {
@@ -41,10 +43,11 @@ export default {
       ctx.commit("setPracticeHour", practiceHour);
     },
     async getPracticeinformationById(ctx, id: string) {
-      if (ctx.state.practiceInformation.length < 1) await ctx.dispatch("fetchPracticeInformation");
-      return ctx.state.practiceInformation.find((practiceInformation) => practiceInformation.id == id);
+      if (ctx.state.practiceInformation.length < 1)
+        await ctx.dispatch("fetchPracticeInformation");
+      return ctx.state.practiceInformation.find(
+        (practiceInformation) => practiceInformation.id == id
+      );
     },
-    
-    
   },
 } as StoreOptions<IPracticeInformationState>;

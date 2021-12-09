@@ -7,13 +7,7 @@
             <arrow-left-icon />
           </cornie-icon-btn>
           <span
-            class="
-              text-primary
-              font-extrabold
-              text-lg
-              border-l-2 border-gray-100
-              pl-2
-            "
+            class="text-primary font-extrabold text-lg border-l-2 border-gray-100 pl-2"
           >
             Preferred {{ title }}
           </span>

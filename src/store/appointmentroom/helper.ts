@@ -1,11 +1,11 @@
 import { cornieClient } from "@/plugins/http";
 import IAllergy from "@/types/IAllergy";
 import { string } from "yup/lib/locale";
-import IAppointmentRoom from "@/types/IAppointmentRoom"
+import IAppointmentRoom from "@/types/IAppointmentRoom";
 
 export async function fetchAllAllergys() {
   try {
-    const response = await cornieClient().get('/api/v1/allergy');
+    const response = await cornieClient().get("/api/v1/allergy");
     if (response.success) {
       return response.data;
     }
@@ -14,9 +14,11 @@ export async function fetchAllAllergys() {
   }
   return [] as IAllergy[];
 }
-export async function fetchAllergys(patientId:string) {
+export async function fetchAllergys(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/allergy/findAllByPatient/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/allergy/findAllByPatient/${patientId}`
+    );
     if (response.success) {
       return response.data;
     }
@@ -31,7 +33,7 @@ export async function fetchAppointmentrooms() {
   try {
     const response = await cornieClient().get(`/api/v1/appointment-rooms`);
     if (response.success) {
-       console.log(response);
+      console.log(response);
       return response.data;
     }
   } catch (error) {
@@ -41,7 +43,9 @@ export async function fetchAppointmentrooms() {
 }
 export async function deleteAppointmentroom(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/appointment-rooms/${id}`);
+    const response = await cornieClient().delete(
+      `/api/v1/appointment-rooms/${id}`
+    );
     if (response.success) {
       return true;
     }
@@ -64,12 +68,13 @@ export async function deleteAllergy(id: string) {
 }
 export async function getPractitioners() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/practitioner"
-    );
+    const response = await cornieClient().get("/api/v1/practitioner");
     return response.data;
   } catch (error) {
-    notify({ msg: "There was an error fetching practitoners", status: "error" });
+    notify({
+      msg: "There was an error fetching practitoners",
+      status: "error",
+    });
   }
-  return { };
+  return {};
 }

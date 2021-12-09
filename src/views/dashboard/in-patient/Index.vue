@@ -1,6 +1,6 @@
 <template>
-  <empty-state v-if="empty"/>
-  <existing-state v-else/>
+  <empty-state v-if="empty" />
+  <existing-state v-else />
 </template>
 
 <script lang="ts">

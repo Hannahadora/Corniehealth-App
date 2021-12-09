@@ -39,9 +39,23 @@
         </div> -->
         <v-form>
           <div class="grid grid-cols-1 gap-3 mt-2">
-            <cornie-input disabled label="Current Status" v-model="currentStatus"  class="w-full" />
-            <cornie-input disabled label="Updated By" v-model="updatedBy" class="w-full" />
-            <date-picker disabled label="Date Last Updated" v-model="updateDate" />
+            <cornie-input
+              disabled
+              label="Current Status"
+              v-model="currentStatus"
+              class="w-full"
+            />
+            <cornie-input
+              disabled
+              label="Updated By"
+              v-model="updatedBy"
+              class="w-full"
+            />
+            <date-picker
+              disabled
+              label="Date Last Updated"
+              v-model="updateDate"
+            />
             <cornie-select
               label="Update Status"
               :items="statuses"
@@ -58,12 +72,12 @@
         >
           View History
         </cornie-btn> -->
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
         <cornie-btn @click="apply" class="text-white bg-danger px-9 rounded-xl">
           Update
         </cornie-btn>
@@ -80,9 +94,9 @@ import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from '@/components/cornieradio.vue'
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from '@/components/icons/info.vue'
+import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
@@ -103,10 +117,8 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/datepicker.vue";
 import { string } from "yup";
-import DateTimePicker from './components/datetime-picker.vue'
+import DateTimePicker from "./components/datetime-picker.vue";
 import { verificationStatuses, clinicalStatuses } from "./drop-downs";
-
-
 
 @Options({
   name: "statusDialog",
@@ -136,167 +148,160 @@ import { verificationStatuses, clinicalStatuses } from "./drop-downs";
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    MainCornieSelect
+    MainCornieSelect,
   },
 })
 export default class Medication extends Vue {
-@PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   updatedBy!: string;
 
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   currentStatus!: string;
 
-  
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   updateDate!: string;
 
-status = "";
+  status = "";
   loading = false;
   expand = false;
   isVisible = "";
 
- active = "clinical";
+  active = "clinical";
 
   get statuses() {
     return this.active == "clinical" ? clinicalStatuses : verificationStatuses;
   }
   required = string().required();
 
-
- async updateStatus() {
-   const id = this.id;
+  async updateStatus() {
+    const id = this.id;
     const url = `/api/v1/clinical-impressions/${id}`;
     const body = {
-       status: this.status,
-    }
+      status: this.status,
+    };
     try {
       const response = await cornieClient().put(url, body);
-      this.loading= true;
-      if (response.success){
-           this.loading= false;
-          window.notify({ msg: "Status Updated", status: "success" });
+      this.loading = true;
+      if (response.success) {
+        this.loading = false;
+        window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
-   
     } catch (error) {
-     this.loading= false;
-        window.notify({ msg: "Status Not Updated", status: "success" });
+      this.loading = false;
+      window.notify({ msg: "Status Not Updated", status: "success" });
       this.loading = false;
     }
   }
 
- 
- 
- done() {
+  done() {
     this.$emit("allergy-added");
     this.show = false;
   }
   async apply() {
     this.loading = true;
-     await this.updateStatus()
+    await this.updateStatus();
     this.loading = false;
   }
- 
-  async created() {
-   
-  }
+
+  async created() {}
 }
 </script>
 
 <style>
 .bg-gray {
-    background-color: #F6F8F9;
+  background-color: #f6f8f9;
 }
 .icon-wrap {
-   content:counter(step);
+  content: counter(step);
   counter-increment: step;
-    background: #fff;
-    border-radius: 50%;
-        top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-   left: -54em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -54em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap2 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: -7.5em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -7.5em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap3 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: -1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 52em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: -1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 52em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap4 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 42em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 42em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
- .icon-check-mark{
-    top: 1.3em;
-    z-index: 1;
-    left: 5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark {
+  top: 1.3em;
+  z-index: 1;
+  left: 5em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark2{
-       top: 1.3em;
-    z-index: 1;
-    left: 23em;
-    right: 0;
-    position: absolute;
+.icon-check-mark2 {
+  top: 1.3em;
+  z-index: 1;
+  left: 23em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark3{
-      top: 1.3em;
-    z-index: 1;
-    left: 45.5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark3 {
+  top: 1.3em;
+  z-index: 1;
+  left: 45.5em;
+  right: 0;
+  position: absolute;
 }
-.bg-danger-100{
-    background-color: #FE4D3C;
+.bg-danger-100 {
+  background-color: #fe4d3c;
 }
 </style>

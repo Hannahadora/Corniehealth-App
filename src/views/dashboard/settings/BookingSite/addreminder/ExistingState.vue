@@ -32,9 +32,7 @@
             </div>
           </v-form>
           <div class="mt-2 flex justify-end">
-            
             <delete-icon class="mr-2 fill-current text-danger" />
-            
           </div>
         </div>
       </accordion-component>
@@ -52,7 +50,6 @@
             </div>
             <div class="mt-3 w-full flex">
               <div class="pt-6 flex" style="margin-left: 6px">
-                
                 <div class="pt-6 flex w-1/2" style="margin-top: -20px">
                   <div>
                     <div class="w-full mb-3">
@@ -114,7 +111,6 @@ import CalendarIcon from "@/components/icons/acalendar.vue";
 import DateTimePicker from "./datetime-picker.vue";
 import PlusIcon from "@/components/icons/add.vue";
 
-
 const level = namespace("OrgLevels");
 
 @Options({
@@ -132,7 +128,7 @@ const level = namespace("OrgLevels");
     CornieSelect,
     CalendarIcon,
     DateTimePicker,
-    PlusIcon
+    PlusIcon,
   },
 })
 export default class ExistingState extends Vue {

@@ -1,18 +1,7 @@
 <template>
   <div :class="visibility" class="justify-center fixed right-3 top-3 z-20">
     <div
-      class="
-        max-w-md
-        w-full
-        shadow-lg
-        flex
-        items-center
-        sm:w-auto
-        sm:m-4
-        sm:rounded-lg
-        sm:flex-row
-        bg-transparent
-      "
+      class="max-w-md w-full shadow-lg flex items-center sm:w-auto sm:m-4 sm:rounded-lg sm:flex-row bg-transparent"
     >
       <div
         :class="{
@@ -20,15 +9,7 @@
           'bg-success': status == 'success',
           'bg-squash': status != 'error' && status != 'success',
         }"
-        class="
-          flex
-          items-center
-          text-white
-          p-1
-          flex-grow
-          rounded-l-md rounded-r-md
-          pl-3
-        "
+        class="flex items-center text-white p-1 flex-grow rounded-l-md rounded-r-md pl-3"
       >
         <modal-ok-icon v-if="status == 'success'" class="fill-current" />
         <not-allowed-icon v-else-if="status == 'error'" class="fill-current" />

@@ -1,11 +1,28 @@
 <template>
   <div class="w-full pb-80">
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-         <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Location</a></li>    
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Tax</a></li>
+      <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
+        <li class="nav-item cursor-pointer">
+          <a
+            class="nav-link"
+            @click="select(1)"
+            :class="{ active: selected === 1 }"
+            :aria-selected="selected === 1"
+            >Location</a
+          >
+        </li>
+        <li class="nav-item cursor-pointer">
+          <a
+            class="nav-link"
+            @click="select(2)"
+            :class="{ active: selected === 2 }"
+            :aria-selected="selected === 2"
+            >Tax</a
+          >
+        </li>
+      </ul>
     </ul>
-    </ul>
+    <!-- </ul> -->
       <div class="tab-content">
         <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Location">     
             <div class="w-full flex flex-col justify-center items-center h-96">
@@ -58,7 +75,9 @@
             </div>
         </div>
       </div>
-  </div>
+
+    </div>
+  <!-- </div> -->
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -75,16 +94,15 @@ import IconInput from "@/components/IconInput.vue";
   },
 })
 export default class TasksEmptyState extends Vue {
-     selected = 1;
+  selected = 1;
 
-     select(i:number) {
-      this.selected = i;
-    }
- 
+  select(i: number) {
+    this.selected = i;
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

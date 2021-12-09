@@ -1,13 +1,19 @@
 import ObjectSet from "@/lib/objectset";
 import IOtherrequest from "@/types/IOtherrequest";
 import { StoreOptions } from "vuex";
-import { deleteOtherrequest, fetchOtherrequests,getPatients,getPractitioners,fetchOtherrequestsById } from "./helper";
+import {
+  deleteOtherrequest,
+  fetchOtherrequests,
+  getPatients,
+  getPractitioners,
+  fetchOtherrequestsById,
+} from "./helper";
 
 interface OtherrequestState {
-otherrequests: IOtherrequest[];
-  patients: any[],
-  practitioners: any[],
-  patientrequests:IOtherrequest[],
+  otherrequests: IOtherrequest[];
+  patients: any[];
+  practitioners: any[];
+  patientrequests: IOtherrequest[];
 }
 
 export default {
@@ -16,29 +22,40 @@ export default {
     otherrequests: [],
     patients: [],
     practitioners: [],
-    patientrequests:[],
+    patientrequests: [],
   },
   mutations: {
     updatedOtherrequests(state, otherrequests: IOtherrequest[]) {
-      const otherrequestSet = new ObjectSet([...state.otherrequests, ...otherrequests], "id");
+      const otherrequestSet = new ObjectSet(
+        [...state.otherrequests, ...otherrequests],
+        "id"
+      );
       state.otherrequests = [...otherrequestSet];
     },
     setPatientRequests(state, otherrequests: IOtherrequest[]) {
-      const otherrequestSet = new ObjectSet([...state.otherrequests, ...otherrequests], "id");
+      const otherrequestSet = new ObjectSet(
+        [...state.otherrequests, ...otherrequests],
+        "id"
+      );
       state.patientrequests = [...otherrequestSet];
     },
     setPatients(state, pts) {
-      if (pts && pts.length > 0) state.patients = [ ...pts ];
+      if (pts && pts.length > 0) state.patients = [...pts];
     },
     setPractitioners(state, pts) {
-      if (pts && pts.length > 0) state.practitioners = [ ...pts ];
+      if (pts && pts.length > 0) state.practitioners = [...pts];
     },
     updateOtherrequests(state, otherrequests: IOtherrequest[]) {
-      const otherrequestSet = new ObjectSet([...state.otherrequests, ...otherrequests], "id");
+      const otherrequestSet = new ObjectSet(
+        [...state.otherrequests, ...otherrequests],
+        "id"
+      );
       state.otherrequests = [...otherrequestSet];
     },
     deleteOtherrequest(state, id: string) {
-      const index = state.otherrequests.findIndex((otherrequest) => otherrequest.id == id);
+      const index = state.otherrequests.findIndex(
+        (otherrequest) => otherrequest.id == id
+      );
       if (index < 0) return;
       const otherrequests = [...state.otherrequests];
       otherrequests.splice(index, 1);
@@ -46,7 +63,7 @@ export default {
     },
   },
   actions: {
-    async fetchOtherrequestsById(ctx, patientId: string){
+    async fetchOtherrequestsById(ctx, patientId: string) {
       const otherrequests = await fetchOtherrequestsById(patientId);
       ctx.commit("setPatientRequests", otherrequests);
     },
@@ -55,16 +72,19 @@ export default {
       ctx.commit("updatedOtherrequests", otherrequests);
     },
     async getPatients(ctx) {
-      const pts = await getPatients();      
+      const pts = await getPatients();
       ctx.commit("setPatients", pts);
     },
     async getPractitioners(ctx) {
-      const pts = await getPractitioners();      
+      const pts = await getPractitioners();
       ctx.commit("setPractitioners", pts);
     },
     async getOtherrequestById(ctx, id: string) {
-      if (ctx.state.otherrequests.length < 1) await ctx.dispatch("fetchOtherrequests");
-      return ctx.state.otherrequests.find((otherrequest) => otherrequest.id == id);
+      if (ctx.state.otherrequests.length < 1)
+        await ctx.dispatch("fetchOtherrequests");
+      return ctx.state.otherrequests.find(
+        (otherrequest) => otherrequest.id == id
+      );
     },
     async deleteOtherrequest(ctx, id: string) {
       const deleted = await deleteOtherrequest(id);

@@ -1,4 +1,3 @@
-
 export const clinicalStatus = [
   { code: "final", display: "Final	" },
   { code: "preliminary", display: "Preliminary" },
@@ -52,5 +51,3 @@ export const clinicalAction = [
     display: "appropriate indication or diagnosis",
   },
 ];
-
-

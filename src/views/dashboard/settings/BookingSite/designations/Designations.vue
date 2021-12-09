@@ -11,24 +11,19 @@
       </template>
       <template #actions>
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            py-2
-            px-6
-            mt-5
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full text-white py-2 px-6 mt-5 focus:outline-none hover:opacity-90"
           @click="registerNew = true"
         >
           <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
           New Appointment
         </button>
-        <side-modal :visible="registerNew" @closesidemodal="closeModal" :header="'New Appointment'">
-        <AppointmentModal  @closesidemodal="closeModal"  />
-      </side-modal>
+        <side-modal
+          :visible="registerNew"
+          @closesidemodal="closeModal"
+          :header="'New Appointment'"
+        >
+          <AppointmentModal @closesidemodal="closeModal" />
+        </side-modal>
       </template>
     </empty-state>
 
@@ -72,14 +67,14 @@ const designation = namespace("designation");
     CustomCheckbox,
     ExistingState,
     AppointmentModal,
-    SideModal
+    SideModal,
   },
 })
 export default class Designations extends Vue {
   @designation.State
   designations!: IDesignation[];
 
-  registerNew=false;
+  registerNew = false;
   @designation.Action
   fetchDesignations!: () => Promise<void>;
 

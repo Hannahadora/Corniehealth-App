@@ -3,9 +3,7 @@
     <cornie-dialog v-model="show" center>
       <cornie-card width="400px">
         <cornie-card-title>
-          <span class="font-extrabold text-primary">
-            New Progress Note
-          </span>
+          <span class="font-extrabold text-primary"> New Progress Note </span>
           <cornie-spacer />
           <cornie-icon-btn @click="show = false">
             <close-icon />

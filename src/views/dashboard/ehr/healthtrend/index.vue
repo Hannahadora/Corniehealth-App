@@ -2,16 +2,7 @@
   <main>
     <div class="mb-5 p-3 border-l-none -mt-6 w-full">
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-bold
-          text-xl text-primary
-          py-2
-          mb-5
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-bold text-xl text-primary py-2 mb-5 mx-auto"
       >
         Health Trend
       </span>
@@ -50,13 +41,11 @@ import NoteCard from "./noteCard.vue";
 import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
 
-
 //for the empty state
 // import conditionCardd from "./conditionCardd.vue";
 // import DiagnosticCardd from "./diagnosticCardd.vue";
 // import NoteCardd from "./noteCardd.vue";
 // import HistoryCardd from "./historyCardd.vue";
-
 
 import RegistrationChart from "./registration-chart.vue";
 import ChartCard from "./chart-card.vue";
@@ -75,7 +64,6 @@ import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { Prop, Ref } from "vue-property-decorator";
 import EmptyState from "./empty-state.vue";
 import ExistingState from "./existing-state.vue";
-
 
 const patients = namespace("patients");
 import BloodChart from "./bloodChart.vue";

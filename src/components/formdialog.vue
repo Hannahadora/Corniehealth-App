@@ -16,15 +16,15 @@
           </div>
           <div class="flex justify-center" v-if="horizontal">
             <cornie-menu top="30px" right="100%">
-                <template #activator="{ on }">
-                  <icon-btn v-on="on">
-                     <dots-horizontal-icon class="mr-2 cursor-pointer" />
-                  </icon-btn>
-                </template>
-                <card-text>
-                     <slot name="menuactions" />
-                </card-text>
-            </cornie-menu> 
+              <template #activator="{ on }">
+                <icon-btn v-on="on">
+                  <dots-horizontal-icon class="mr-2 cursor-pointer" />
+                </icon-btn>
+              </template>
+              <card-text>
+                <slot name="menuactions" />
+              </card-text>
+            </cornie-menu>
           </div>
           <delete-icon
             class="text-danger fill-current cursor-pointer"
@@ -44,10 +44,9 @@
       </div>
     </cornie-card>
   </cornie-dialog>
- 
 </template>
 <script lang="ts">
-import'./cornie-table/CornieTable';
+import "./cornie-table/CornieTable";
 import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
@@ -59,9 +58,6 @@ import CornieMenu from "@/components/CornieMenu.vue";
 import Card from "@/components/cornie-card/CornieCard.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 
-
-
-
 @Options({
   name: "BigDialog",
   components: {
@@ -71,14 +67,13 @@ import IconBtn from "@/components/CornieIconBtn.vue";
     ArrowLeftIcon,
     DeleteIcon,
     DotsHorizontalIcon,
-      Card,
-      IconBtn,
+    Card,
+    IconBtn,
   },
 })
 export default class AddCondition extends Vue {
-    @Prop({ type: String, default: '' })
-  id!: string
-
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
@@ -97,8 +92,8 @@ export default class AddCondition extends Vue {
 
   showStatus() {
     console.log("fdjkfj");
-        // this method emits the value of newItemEvent
-        this.$emit("view:status");
-    }
+    // this method emits the value of newItemEvent
+    this.$emit("view:status");
+  }
 }
 </script>

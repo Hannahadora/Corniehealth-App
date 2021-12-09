@@ -1,22 +1,14 @@
 <template>
   <div class="h-full flex justify-center">
     <div class="w-full">
-    <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+      <span
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
-       Practice Forms/Templates
+        Practice Forms/Templates
       </span>
       <span class="w-full">
-          <practiceform-empty-state v-if="empty" />
-          <practiceform-existing-state v-else />
+        <practiceform-empty-state v-if="empty" />
+        <practiceform-existing-state v-else />
       </span>
     </div>
   </div>
@@ -44,17 +36,15 @@ export default class PracticeformIndex extends Vue {
     return this.practiceforms.length < 1;
   }
 
- @practiceform.State
+  @practiceform.State
   practiceforms!: IPracticeform[];
 
   @practiceform.Action
   fetchPracticeforms!: () => Promise<void>;
 
-
   created() {
-  this.fetchPracticeforms()
+    this.fetchPracticeforms();
     if (this.practiceforms.length < 1) this.fetchPracticeforms();
   }
-
 }
 </script>

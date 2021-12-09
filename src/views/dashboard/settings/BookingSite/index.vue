@@ -76,5 +76,4 @@ export default class Bookings extends Vue {
 }
 </script>
 
-<style>
-</style>
+<style></style>

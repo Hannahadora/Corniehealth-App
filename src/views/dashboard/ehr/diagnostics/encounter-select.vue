@@ -3,7 +3,7 @@
     <template #item="{ item }">
       <div class="flex justify-between my-1 items-center text-xs">
         <span class="flex flex-col">
-          <span class="text-xs text-gray-300">XXX-XXX-XXX</span> 
+          <span class="text-xs text-gray-300">XXX-XXX-XXX</span>
           <span class="flex items-center">
             <avatar :src="item.practitionerImage" class="mr-1" />
             {{ item.practitioner }}

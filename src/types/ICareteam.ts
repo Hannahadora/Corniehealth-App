@@ -35,13 +35,13 @@ export interface Participants {
 }
 
 export interface Communication {
-  id: string,
-  careTeamId: string,
-  system: string,
-  value: string,
-  use: string,
-  startDate: string,
-  endDate: string,
-  startTime: string,
-  endTime: string
+  id: string;
+  careTeamId: string;
+  system: string;
+  value: string;
+  use: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
 }

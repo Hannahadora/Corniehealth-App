@@ -6,13 +6,7 @@
           <arrow-left-icon />
         </cornie-icon-btn>
         <span
-          class="
-            text-primary
-            font-extrabold
-            text-lg
-            border-l-2 border-gray-100
-            pl-2
-          "
+          class="text-primary font-extrabold text-lg border-l-2 border-gray-100 pl-2"
         >
           Make Notes
         </span>
@@ -20,25 +14,35 @@
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Some subtext if necessary.</p>
         <v-form ref="form">
-          <div class="my-2  w-full ">
+          <div class="my-2 w-full">
             <Textarea
-            class="w-full text-xs"
-            v-model="notes"
-            placeholder="Text Area"
-            :rules="required"
-          />
-          <span></span>
-        </div>
-         <span class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"  @click="save">Add</span>
-        <div class="w-full flex  space-x-4 mb-3"  v-for="(item, index) in tasknotes" :key="index">
+              class="w-full text-xs"
+              v-model="notes"
+              placeholder="Text Area"
+              :rules="required"
+            />
+            <span></span>
+          </div>
+          <span
+            class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"
+            @click="save"
+            >Add</span
+          >
+          <div
+            class="w-full flex space-x-4 mb-3"
+            v-for="(item, index) in tasknotes"
+            :key="index"
+          >
             <div>
-              <note-icon class="mt-3"/>
+              <note-icon class="mt-3" />
             </div>
             <div>
-              <span class="text-gray-400 text-xs">{{ new Date(item.createdAt).toDateString()}}</span>
-              <p class="text-gray-400 text-xs">{{item.text}}</p>
+              <span class="text-gray-400 text-xs">{{
+                new Date(item.createdAt).toDateString()
+              }}</span>
+              <p class="text-gray-400 text-xs">{{ item.text }}</p>
             </div>
-        </div>
+          </div>
         </v-form>
       </cornie-card-text>
       <cornie-card>
@@ -72,7 +76,6 @@ import { Insurance, IPatient } from "@/types/IPatient";
 import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
 
-
 @Options({
   name: "notes",
   components: {
@@ -93,54 +96,56 @@ export default class Notes extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
- @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: "" })
   taskId!: string;
 
-@Prop({ type: Array, default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   tasknotes!: any[];
 
-loading=  false;
-notes='';
-availableFilter= false;
-profileFilter=false;
-tasknote=[];
-newtasknotes=[];
- 
+  loading = false;
+  notes = "";
+  availableFilter = false;
+  profileFilter = false;
+  tasknote = [];
+  newtasknotes = [];
+
   async save() {
-      this.loading = true;
+    this.loading = true;
     await this.submit();
     this.loading = false;
   }
 
- 
   async submit() {
     await this.createNew();
   }
 
-   addNote(){
-      this.tasknotes.push(...this.tasknote);
-    }
+  addNote() {
+    this.tasknotes.push(...this.tasknote);
+  }
 
   async createNew() {
-      try {
-        const response = await cornieClient().post("/api/v1/task/notes", {text:this.notes, taskId:this.taskId});
-        if (response.success) {
-            window.notify({ msg: "Notes created", status: "success" });
-            this.loading = false;
-           //this.show = false;
-           // this.$router.push("/dashboard/provider/experience/tasks");
-        }
-        } catch (error) {
-          this.loading = false;
-         this.show = false;
-          console.log(error);
-        window.notify({ msg: "Notes not created", status: "error" });
-        this.$router.push("/dashboard/provider/experience/tasks");
-        }
+    try {
+      const response = await cornieClient().post("/api/v1/task/notes", {
+        text: this.notes,
+        taskId: this.taskId,
+      });
+      if (response.success) {
+        window.notify({ msg: "Notes created", status: "success" });
+        this.loading = false;
+        //this.show = false;
+        // this.$router.push("/dashboard/provider/experience/tasks");
+      }
+    } catch (error) {
+      this.loading = false;
+      this.show = false;
+      console.log(error);
+      window.notify({ msg: "Notes not created", status: "error" });
+      this.$router.push("/dashboard/provider/experience/tasks");
+    }
   }
 
   async created() {
-  this.tasknotes;
+    this.tasknotes;
   }
 }
 </script>

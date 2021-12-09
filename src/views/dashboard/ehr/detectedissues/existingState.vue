@@ -3,20 +3,7 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            pr-12
-            pl-12
-            px-3
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
           @click="showIssues"
         >
           Register Detected Issues
@@ -56,7 +43,6 @@
         </template> -->
       </cornie-table>
     </div>
-
 
     <issues-modal
       @update:preferred="showIssues"
@@ -101,9 +87,7 @@ import IssuesModal from "./issuesdialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 
-
 const issues = namespace("issues");
-
 
 @Options({
   components: {
@@ -160,8 +144,6 @@ export default class IssuesExistingState extends Vue {
 
   @issues.Action
   getPractitioners!: () => Promise<void>;
-
- 
 
   @issues.Action
   fetchIssues!: (patientId: string) => Promise<void>;
@@ -240,7 +222,7 @@ export default class IssuesExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-   currentIssue: any =null
+  currentIssue: any = null;
   get items() {
     const issues = this.issues.map((issue) => {
       (issue as any).identified.identifiedPeriod.start = new Date(
@@ -255,12 +237,12 @@ export default class IssuesExistingState extends Vue {
       return {
         ...issue,
         date: issue.createdAt,
-        code:issue.code,
-        author:issue.mitigation.author,
-        implicated:issue.identified.implicated,
-        patient:issue.patient
+        code: issue.code,
+        author: issue.mitigation.author,
+        implicated: issue.identified.implicated,
+        patient: issue.patient,
         // onsetPeriod:
-          // issue.onSet.onsetPeriod.start + "-" + issue.onSet.onsetPeriod.end,
+        // issue.onSet.onsetPeriod.start + "-" + issue.onSet.onsetPeriod.end,
         // asserter: this.getPractitionerName(allergy.onSet.asserter),
         // product: issue.reaction.substance,
       };
@@ -278,9 +260,9 @@ export default class IssuesExistingState extends Vue {
     this.currentIssue = issue;
     console.log(this.currentIssue);
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
 
   allergyAdded() {

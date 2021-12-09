@@ -1,29 +1,10 @@
 <template>
   <div
-    class="
-      flex
-      justify-center
-      h-65-screen
-      bg-white
-      shadow-md
-      p-3
-      mb-2
-      rounded
-      w-full
-    "
+    class="flex justify-center h-65-screen bg-white shadow-md p-3 mb-2 rounded w-full"
   >
     <div class="w-full">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-3
-          text-xl text-primary
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-3 text-xl text-primary py-2"
       >
         Condition/Problem
       </span>

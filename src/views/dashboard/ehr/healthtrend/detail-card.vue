@@ -24,15 +24,7 @@
     </div>
     <div
       @click="$emit('view:all')"
-      class="
-        w-full
-        cursor-pointer
-        flex
-        justify-end
-        text-sm
-        font-semibold
-        text-danger
-      "
+      class="w-full cursor-pointer flex justify-end text-sm font-semibold text-danger"
     >
       {{ more }}
     </div>

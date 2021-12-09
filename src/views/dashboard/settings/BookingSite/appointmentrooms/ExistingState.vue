@@ -119,7 +119,7 @@ const task = namespace("task");
     TableOptions,
 
     ArrowLeftIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
   },
 })
 export default class apponitmentRooms extends Vue {
@@ -143,7 +143,7 @@ export default class apponitmentRooms extends Vue {
   removeFunction!: (id: string) => Promise<void>;
 
   @AppointmentRoom.Action
-  deleteAppointmentroom!: (id: string) => Promise<void>;  
+  deleteAppointmentroom!: (id: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -194,19 +194,19 @@ export default class apponitmentRooms extends Vue {
   }
   
   getLocationAddress(id: string) {
-            const pt = this.locations.find((i: any) => i.id === id);
-            return pt;
-    }
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt;
+  }
 
-    etLocationAddress(id: string) {
-            const pt = "-----";
-            return pt;
-    }
+  etLocationAddress(id: string) {
+    const pt = "-----";
+    return pt;
+  }
 
-    // getLocationAddress(id: string) {
-    //         const pt = this.locations.find((i: any) => i.id === id);
-    //         return pt ? pt.address : 'N/A';
-    // }
+  // getLocationAddress(id: string) {
+  //         const pt = this.locations.find((i: any) => i.id === id);
+  //         return pt ? pt.address : 'N/A';
+  // }
 
   get items2() {
     return this.functions.map((f) => ({
@@ -257,7 +257,6 @@ export default class apponitmentRooms extends Vue {
     this.roomToEdit = func;
     this.editingFunction = true;
   }
-  
 
   created() {
     //console.log('states', this.locations);

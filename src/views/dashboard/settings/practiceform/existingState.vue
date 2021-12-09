@@ -3,41 +3,62 @@
     <div class="flex w-full justify-between mt-5 items-center">
       <span class="flex items-center">
         <icon-input
-          class="border border-gray-600 rounded-full focus:outline-none" placeholder="--search--" type="search" v-model="query">
+          class="border border-gray-600 rounded-full focus:outline-none"
+          placeholder="--search--"
+          type="search"
+          v-model="query"
+        >
           <template v-slot:prepend>
             <search-icon />
           </template>
         </icon-input>
       </span>
-       <span class="flex justify-end w-full">
-          <div class="dropdown inline-block relative">
-            <button class="bg-danger rounded-full text-white mt-5 py-2  pr-5 pl-5 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
-              <span class="mr-1">Create New Form </span>
-              <chevron-down-icon class="text-white mb-2 stroke-current mt-1 ml-1"/>
-            </button>
-            <ul class="dropdown-menu absolute hidden z-10 text-gray-700 pt-1">
-              <li class="">
-                   <Select v-model="showDatalist" :items="['Blank form','Demographics Template','Insurance Information Template','New Patient Medical History Template','COVID-19 Screening Template']"></Select>
-              </li>
-            </ul>
-          </div>
-        </span>
+      <span class="flex justify-end w-full">
+        <div class="dropdown inline-block relative">
+          <button
+            class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
+          >
+            <span class="mr-1">Create New Form </span>
+            <chevron-down-icon
+              class="text-white mb-2 stroke-current mt-1 ml-1"
+            />
+          </button>
+          <ul class="dropdown-menu absolute hidden z-10 text-gray-700 pt-1">
+            <li class="">
+              <Select
+                v-model="showDatalist"
+                :items="[
+                  'Blank form',
+                  'Demographics Template',
+                  'Insurance Information Template',
+                  'New Patient Medical History Template',
+                  'COVID-19 Screening Template',
+                ]"
+              ></Select>
+            </li>
+          </ul>
+        </div>
+      </span>
     </div>
-     <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-         <div
+        <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="$router.push(`/dashboard/provider/add-practice-form-template/${item.id}`)"
+          @click="
+            $router.push(
+              `/dashboard/provider/add-practice-form-template/${item.id}`
+            )
+          "
         >
-          <edit-icon class="mr-3 text-yellow-300 fill-current" /> 
+          <edit-icon class="mr-3 text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
-        
+
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <delete-icon/>
+          <delete-icon />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
@@ -127,7 +148,7 @@ import { cornieClient } from "@/plugins/http";
 const practiceform = namespace("practiceform");
 
 @Options({
-  name: 'PracticeformExistingState',
+  name: "PracticeformExistingState",
   components: {
     Select,
     ChevronDownIcon,
@@ -149,9 +170,8 @@ const practiceform = namespace("practiceform");
     EditIcon,
     AccordionComponent,
     WhiteeditIcon,
-    WhitedeleteIcon
+    WhitedeleteIcon,
   },
-  
 })
 export default class PracticeformExistingState extends Vue {
   showColumnFilter = false;
@@ -162,8 +182,8 @@ export default class PracticeformExistingState extends Vue {
   showDeativateModal = false;
   showDatalist = true;
   showSelect = false;
-  paymentId ="";
-@practiceform.State
+  paymentId = "";
+  @practiceform.State
   practiceforms!: IPracticeform[];
 
   @practiceform.Action
@@ -171,7 +191,7 @@ export default class PracticeformExistingState extends Vue {
 
   practionersNames = "";
 
-getKeyValue = getTableKeyValue;
+  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     { title: "Form Name", key: "formTitle", show: true },
@@ -210,63 +230,62 @@ getKeyValue = getTableKeyValue;
     const headers = preferred.filter((header) => header.show);
     return [...first(6, headers), { title: "", value: "action", image: true }];
   }
-  
-
 
   get items() {
     const practiceforms = this.practiceforms.map((practiceform) => {
-       (practiceform as any).createdAt = new Date(
-         (practiceform as any).createdAt 
-       ).toLocaleDateString("en-US");
-       (practiceform as any).updatedAt = new Date(
-         (practiceform as any).updatedAt 
-       ).toLocaleDateString("en-US");
-        const practioner = this.stringifyPractioners(practiceform.createdBy);
-        const updatedpractioner = this.stringifyUpdatedPractioners(practiceform.updatedBy);
-        return {
+      (practiceform as any).createdAt = new Date(
+        (practiceform as any).createdAt
+      ).toLocaleDateString("en-US");
+      (practiceform as any).updatedAt = new Date(
+        (practiceform as any).updatedAt
+      ).toLocaleDateString("en-US");
+      const practioner = this.stringifyPractioners(practiceform.createdBy);
+      const updatedpractioner = this.stringifyUpdatedPractioners(
+        practiceform.updatedBy
+      );
+      return {
         ...practiceform,
-          createdBy: practioner,
-          updatedBy: updatedpractioner,
-          action: practiceform.id,
-        };
+        createdBy: practioner,
+        updatedBy: updatedpractioner,
+        action: practiceform.id,
+      };
     });
     if (!this.query) return practiceforms;
     return search.searchObjectArray(practiceforms, this.query);
   }
 
- stringifyPractioners(createdBy: IPractitioner) {
+  stringifyPractioners(createdBy: IPractitioner) {
     const practioner = createdBy;
     if (!practioner) return "Username";
     return `${practioner.firstName} ${practioner.lastName}`;
   }
- stringifyUpdatedPractioners(updatedBy: IPractitioner) {
+  stringifyUpdatedPractioners(updatedBy: IPractitioner) {
     const practioner = updatedBy;
     if (!practioner) return "Username";
     return `${practioner.firstName} ${practioner.lastName}`;
   }
- 
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this practice form",
-      title: "Delete Practice Form"
+      title: "Delete Practice Form",
     });
     if (!confirmed) return;
 
-    if (await this.deletePracticeform(id)) window.notify({ msg: "Practice form deleted", status: "success" });
+    if (await this.deletePracticeform(id))
+      window.notify({ msg: "Practice form deleted", status: "success" });
     else window.notify({ msg: "Practice form not deleted", status: "error" });
   }
-      get sortFunc (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-   
-
+  get sortFunc() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
 }
 </script>
 <style scoped>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 .dropdown:hover .dropdown-menu {
   display: block;

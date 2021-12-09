@@ -6,13 +6,7 @@
           <arrow-left-icon />
         </cornie-icon-btn>
         <span
-          class="
-            text-primary
-            font-extrabold
-            text-lg
-            border-l-2 border-gray-100
-            pl-2
-          "
+          class="text-primary font-extrabold text-lg border-l-2 border-gray-100 pl-2"
         >
           Make Notes
         </span>
@@ -31,15 +25,7 @@
             <span></span>
           </div>
           <span
-            class="
-              text-danger
-              float-right
-              mb-5
-              font-semibold
-              uppercase
-              text-xs
-              cursor-pointer
-            "
+            class="text-danger float-right mb-5 font-semibold uppercase text-xs cursor-pointer"
             @click="save"
           >
             Add

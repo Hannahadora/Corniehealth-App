@@ -17,7 +17,10 @@ export default {
       state.attachments = [...attachments];
     },
     updateIssues(state, attachments: IAttachment[]) {
-      const attachmentSet = new ObjectSet([...state.attachments, ...attachments], "id");
+      const attachmentSet = new ObjectSet(
+        [...state.attachments, ...attachments],
+        "id"
+      );
       state.attachments = [...attachmentSet];
     },
     // deleteImpression(state, id: string) {
@@ -29,12 +32,13 @@ export default {
     // },
   },
   actions: {
-    async fetchAttachment(ctx,patientId:string) {
+    async fetchAttachment(ctx, patientId: string) {
       const attachments = await fetchAttachment(patientId);
       ctx.commit("setAttachment", attachments);
     },
     async getAttachmentById(ctx, id: string) {
-      if (ctx.state.attachments.length < 1) await ctx.dispatch("fetchAttachment");
+      if (ctx.state.attachments.length < 1)
+        await ctx.dispatch("fetchAttachment");
       return ctx.state.attachments.find((attachments) => attachments.id == id);
     },
     // async deleteImpression(ctx, id: string) {

@@ -2,72 +2,66 @@
   <div class="w-full">
     <span class="flex justify-end w-full">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-2
-          pr-5
-          pl-5
-          px-3
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
         @click="$router.push('/dashboard/provider/add-group')"
       >
         Add a Group
       </button>
-      
     </span>
     <cornie-table :columns="rawHeaders" v-model="sortGroups">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="$router.push(`/dashboard/provider/view-group/${item.id}`)"
+          @click="$router.push(`/dashboard/provider/view-group/${item.id}`)"
         >
           <newview-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="$router.push(`/dashboard/provider/add-group/${item.id}`)"
+          @click="$router.push(`/dashboard/provider/add-group/${item.id}`)"
         >
-          <edit-icon class="mr-3" /> 
+          <edit-icon class="mr-3" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="displayMember(item.id)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="displayMember(item.id)"
+        >
           <span class="mr-3 text-2xl bold text-primary">+</span>
           <span class="ml-3 text-xs">Add Memeber </span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           v-if="item.groupStatusDetails.active == true"
-              @click="showDeactivateGroup(item.id)"
+          @click="showDeactivateGroup(item.id)"
         >
-           <close-icon class="mr-3" />
+          <close-icon class="mr-3" />
           <span class="ml-3 text-xs">Deactivate</span>
         </div>
-         <div
+        <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           v-if="item.groupStatusDetails.active == false"
-              @click="activateGroup(getKeyValue(item).value)"
+          @click="activateGroup(getKeyValue(item).value)"
         >
-           <close-icon class="mr-3" />
+          <close-icon class="mr-3" />
           <span class="ml-3 text-xs">Activate</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <cancel-icon/>
+          <cancel-icon />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
     </cornie-table>
 
-       <member-modal v-model:visible="showMemberModal" :paymentId="paymentId"/>
-        <deactivate-modal v-model:visible="showDeativateModal" :paymentId="paymentId"/>
+    <member-modal v-model:visible="showMemberModal" :paymentId="paymentId" />
+    <deactivate-modal
+      v-model:visible="showDeativateModal"
+      :paymentId="paymentId"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -118,9 +112,8 @@ const group = namespace("group");
     EyeIcon,
     EditIcon,
     MemberModal,
-    DeactivateModal
+    DeactivateModal,
   },
-  
 })
 export default class GroupExistingState extends Vue {
   showColumnFilter = false;
@@ -129,7 +122,7 @@ export default class GroupExistingState extends Vue {
   query = "";
   showMemberModal = false;
   showDeativateModal = false;
-  paymentId ="";
+  paymentId = "";
 
   @group.State
   groups!: IGroup[];
@@ -232,41 +225,38 @@ export default class GroupExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
-
 
   get items() {
     const groups = this.groups.map((group) => {
-       (group as any).period = new Date(
-         (group as any).period 
-       ).toLocaleDateString("en-US");
-       (group as any).memberPeriod = new Date(
-         (group as any).memberPeriod 
-       ).toLocaleDateString("en-US");
+      (group as any).period = new Date(
+        (group as any).period
+      ).toLocaleDateString("en-US");
+      (group as any).memberPeriod = new Date(
+        (group as any).memberPeriod
+      ).toLocaleDateString("en-US");
 
-       
-        return {
+      return {
         ...group,
-         action: group.id,
-        };
+        action: group.id,
+      };
     });
     if (!this.query) return groups;
     return search.searchObjectArray(groups, this.query);
   }
 
- 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this group",
-      title: "Delete Group"
+      title: "Delete Group",
     });
     if (!confirmed) return;
 
-    if (await this.deleteGroup(id)) window.notify({ msg: "Group deleted", status: "error" });
+    if (await this.deleteGroup(id))
+      window.notify({ msg: "Group deleted", status: "error" });
     else window.notify({ msg: "Group not deleted", status: "error" });
   }
-   async displayMember(id: string) {
-     console.log("Hello i m here");
+  async displayMember(id: string) {
+    console.log("Hello i m here");
     const group = await this.groups.find((d) => d.id == id);
     this.showMemberModal = true;
     this.paymentId = id;
@@ -276,38 +266,40 @@ export default class GroupExistingState extends Vue {
     this.showDeativateModal = true;
     this.paymentId = id;
   }
-async activateGroup(id:string) {
-   const confirmed = await window.confirmAction({
+  async activateGroup(id: string) {
+    const confirmed = await window.confirmAction({
       message: "You are about to activate this Group",
-      title: "Activate Group"
+      title: "Activate Group",
     });
     if (!confirmed) {
       return;
-    }else{
-        try {
-          const response = await cornieClient().post(`/api/v1/group/deactivateActivateGroupAccount/${id}`,{});
-          if (response.success) {
-            window.notify({ msg: "Group activated", status: "success" });
-          } 
-        } catch (error) {
-          window.notify({ msg: "Group not activated", status: "error" });
-          console.error(error);
+    } else {
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/group/deactivateActivateGroupAccount/${id}`,
+          {}
+        );
+        if (response.success) {
+          window.notify({ msg: "Group activated", status: "success" });
         }
+      } catch (error) {
+        window.notify({ msg: "Group not activated", status: "error" });
+        console.error(error);
       }
     }
-      get sortGroups (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-     async created() {
-      console.log(this.items);
-    }
-
+  }
+  get sortGroups() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async created() {
+    console.log(this.items);
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

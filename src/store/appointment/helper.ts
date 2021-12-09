@@ -14,7 +14,9 @@ export async function fetchAppointments() {
 }
 export async function fetchByIdAppointments(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/appointment/getAllByPatient/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/appointment/getAllByPatient/${patientId}`
+    );
     if (response.success) {
       return response.data;
     }
@@ -36,13 +38,10 @@ export async function deleteAppointment(id: string) {
 }
 export async function getPatients() {
   try {
-    const response = await cornieClient().get(
-        "/api/v1/patient"
-    );
+    const response = await cornieClient().get("/api/v1/patient");
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error fetching patients", status: "error" });
   }
-  return { };
+  return {};
 }
-

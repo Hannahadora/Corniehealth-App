@@ -3,38 +3,25 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-            @click="showHistory('false')"
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            pr-12
-            pl-12
-            px-3
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+          @click="showHistory('false')"
+          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
           New History
         </button>
       </span>
       <cornie-table :columns="headers" v-model="sortHistory">
         <template #actions="{ item }">
-            <!-- <div
+          <!-- <div
             @click="deleteItem(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-red-800 fill-current" />
             <span class="ml-3 text-xs">Delete</span>
           </div> -->
-           <div
+          <div
             @click="viewHistory(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-             >
+          >
             <new-view-icon class="text-blue-300 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
@@ -55,40 +42,43 @@
         </template>
       </cornie-table>
     </div>
-       <history-modal 
-        v-if="historyId == 'false'" 
-            @history-added="historyAdded"
-        :columns="practitioner"
-          @show:modal="showHistory"
-          v-model="showHistoryModal"/>
+    <history-modal
+      v-if="historyId == 'false'"
+      @history-added="historyAdded"
+      :columns="practitioner"
+      @show:modal="showHistory"
+      v-model="showHistoryModal"
+    />
 
-           <history-modal  
-           v-else
-       :id="historyId" 
-         @history-added="historyAdded"
-        :columns="practitioner"
-          @show:modal="showHistory"
-          v-model="showHistoryModal"/>
+    <history-modal
+      v-else
+      :id="historyId"
+      @history-added="historyAdded"
+      :columns="practitioner"
+      @show:modal="showHistory"
+      v-model="showHistoryModal"
+    />
 
-          
-        <status-modal
-            :id="historyId" 
-           :updatedBy="updatedBy" 
-        :currentStatus="currentStatus" 
-        :dateUpdated="update"
-           @history-added="historyAdded"
-          @update:preferred="showStatus"
-          v-model="showStatusModal"/>
-        
-          <view-modal  
-       :id="historyId" 
-        :updatedBy="updatedBy" 
-        :currentStatus="currentStatus" 
-        :dateUpdated="update"
-       :practitionerId="practitionerId"
-         @history-added="historyAdded"
-          @show:modal="viewHistory"
-          v-model="viewHistoryModal"/>
+    <status-modal
+      :id="historyId"
+      :updatedBy="updatedBy"
+      :currentStatus="currentStatus"
+      :dateUpdated="update"
+      @history-added="historyAdded"
+      @update:preferred="showStatus"
+      v-model="showStatusModal"
+    />
+
+    <view-modal
+      :id="historyId"
+      :updatedBy="updatedBy"
+      :currentStatus="currentStatus"
+      :dateUpdated="update"
+      :practitionerId="practitionerId"
+      @history-added="historyAdded"
+      @show:modal="viewHistory"
+      v-model="viewHistoryModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -127,10 +117,8 @@ const patients = namespace("patients");
   },
 })
 export default class ExistingState extends Vue {
-
-     @patients.State
+  @patients.State
   patients!: IPatient[];
-
 
   @history.State
   historys!: Ihistory[];
@@ -147,16 +135,16 @@ export default class ExistingState extends Vue {
   addingNotes = false;
   recordingAbatement = false;
   viewingCondition = false;
- showHistoryModal= false;
- showStatusModal= false;
- viewHistoryModal= false;
- historyId="";
+  showHistoryModal = false;
+  showStatusModal = false;
+  viewHistoryModal = false;
+  historyId = "";
   loading = false;
   query = "";
-  updatedBy= "";
-currentStatus="";
-update ="";
-practitionerId="";
+  updatedBy = "";
+  currentStatus = "";
+  update = "";
+  practitionerId = "";
 
   headers = [
     {
@@ -196,78 +184,77 @@ practitionerId="";
     //   show: true,
     // },
   ];
- get activepatientId() {
+  get activepatientId() {
     const id = this.$route?.params?.id as string;
-      return id;
+    return id;
   }
 
-    get items() {
+  get items() {
     const historys = this.historys.map((history) => {
-         (history as any).createdAt= new Date(
-         (history as any).createdAt
-       ).toLocaleDateString("en-US");
-       this.practitionerId =  (history as any).practitionerId;
-            this.updatedBy = this.getPatientName(history.patientId as string);
+      (history as any).createdAt = new Date(
+        (history as any).createdAt
+      ).toLocaleDateString("en-US");
+      this.practitionerId = (history as any).practitionerId;
+      this.updatedBy = this.getPatientName(history.patientId as string);
       this.currentStatus = history.basicInfo.status;
-        this.update =  (history as any).updatedAt= new Date(
-         (history as any).updatedAt
-       ).toLocaleDateString("en-US");
-        return {
+      this.update = (history as any).updatedAt = new Date(
+        (history as any).updatedAt
+      ).toLocaleDateString("en-US");
+      return {
         ...history,
-         action: history.id,
-         keydisplay: "XXXXXXX",
-         relationship:history.basicInfo.relationship,
-         condition: history.conditionRelatedPerson.outcome,
+        action: history.id,
+        keydisplay: "XXXXXXX",
+        relationship: history.basicInfo.relationship,
+        condition: history.conditionRelatedPerson.outcome,
         deceased: history.deceased.deceased,
-        status:history.basicInfo.status
-        
-       
-        };
+        status: history.basicInfo.status,
+      };
     });
 
     if (!this.query) return historys;
     return search.searchObjectArray(historys, this.query);
   }
-    getPatientName(id: string) {
-            const pt = this.patients.find((i: any) => i.id === id);
-            return pt ? `${pt.firstname} ${pt.lastname}` : '';
-    }
-    get sortHistory (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-   historyAdded() {
-  this.fetchHistorys(this.activepatientId);
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
+  get sortHistory() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  historyAdded() {
+    this.fetchHistorys(this.activepatientId);
   }
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this Family history",
-      title: "Delete family history"
+      title: "Delete family history",
     });
     if (!confirmed) return;
 
-    if (await this.deleteHistory(id)) window.notify({ msg: "Family history deleted", status: "success" });
+    if (await this.deleteHistory(id))
+      window.notify({ msg: "Family history deleted", status: "success" });
     else window.notify({ msg: "Family history noy deleted", status: "error" });
   }
- 
- async viewHistory(value:string){
- this.viewHistoryModal = true;
- this.historyId = value;
- }
-async showStatus(value:string){
+
+  async viewHistory(value: string) {
+    this.viewHistoryModal = true;
+    this.historyId = value;
+  }
+  async showStatus(value: string) {
     this.showStatusModal = true;
     this.historyId = value;
   }
 
- async showHistory(value:string){
-      this.showHistoryModal = true;
-      this.historyId = value;
+  async showHistory(value: string) {
+    this.showHistoryModal = true;
+    this.historyId = value;
   }
   created() {
-     this.sortHistory;
+    this.sortHistory;
     this.fetchHistorys(this.activepatientId);
-    }
+  }
 }
 </script>

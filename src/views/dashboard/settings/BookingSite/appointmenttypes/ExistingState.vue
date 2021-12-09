@@ -86,7 +86,7 @@ const task = namespace("task");
     ColumnFilter,
     TableOptions,
     AppointmentModal,
-    SideModal
+    SideModal,
   },
 })
 export default class DesignationsExistingState extends Vue {
@@ -136,7 +136,7 @@ query= "";
   @designation.Action
   deleteDesignation!: (id: string) => Promise<void>;
 
-   closeModal() {
+  closeModal() {
     this.registerNew = false;
     // this.selectedTeamId = "";
   }

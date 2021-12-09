@@ -1,28 +1,14 @@
 <template>
   <div class="h-full flex justify-center">
     <div class="w-full">
-    <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+      <span
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
-       Domains
+        Domains
       </span>
       <span class="w-full">
-          <domain-empty-state
-                v-if="empty"
-          />
-          <domain-existing-state
-        
-          v-else
-
-          />
+        <domain-empty-state v-if="empty" />
+        <domain-existing-state v-else />
       </span>
     </div>
   </div>
@@ -44,7 +30,7 @@ const domain = namespace("domain");
     DomainEmptyState,
     DomainExistingState,
     AddDomain,
-    SendInvite
+    SendInvite,
   },
 })
 export default class DomainIndex extends Vue {
@@ -55,15 +41,14 @@ export default class DomainIndex extends Vue {
     return this.domains.length < 1;
   }
 
- @domain.State
+  @domain.State
   domains!: IDomain[];
 
   @domain.Action
   fetchDomains!: () => Promise<void>;
 
-
-created() {
-  this.fetchDomains()
+  created() {
+    this.fetchDomains();
     if (this.domains.length < 1) this.fetchDomains();
   }
 }

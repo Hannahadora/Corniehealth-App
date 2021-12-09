@@ -128,48 +128,95 @@
           type="checkbox"
           class="mr-3"
         />
-        {{ opHour.day }}:
-      </label>
-
-      <div class="flex items-center">
-        <span class="flex">
-          <cornie-select
-            @update:modelValue="changed"
-            v-model="opHour.openTime"
-            :items="wholeDay"
-            class="w-24 mr-1"
-          />
-        </span>
-        <span class="mr-3">to</span>
-        <span class="flex">
-          <cornie-select
-            @update:modelValue="changed"
-            v-model="opHour.closeTime"
-            :items="wholeDay"
-            class="w-24 mr-1"
-          />
-        </span>
       </div>
     </div>
-  </div>
-           <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="applyhour"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>  
-        </accordion-component>
+    <cornie-card>
+      <cornie-card-text class="flex justify-end">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          :loading="loading"
+          @click="apply"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
+          Save
+        </cornie-btn>
+      </cornie-card-text>
+    </cornie-card>
+  </accordion-component>
+  <accordion-component
+    class="shadow-none rounded-none border-none text-primary"
+    title="Practice Hours"
+    expand="true"
+    v-model="opened"
+    :opened="false"
+  >
+    <div class="grid grid-cols-1 mt-4 gap-y-6 w-full">
+      <label class="flex items-center">
+        <input type="checkbox" class="mr-3" v-model="all" />
+        All days
+      </label>
+      <div class="day-grid grid w-full">
+        <span class="font-bold block"></span>
+        <span class="font-bold uppercase text-sm">
+          <span>Start Time</span>
+          <span class="ml-14">End Time</span>
+        </span>
+      </div>
+      <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
+        <label class="flex items-center">
+          <input
+            @change="changed"
+            v-model="opHour.selected"
+            type="checkbox"
+            class="mr-3"
+          />
+          {{ opHour.day }}:
+        </label>
+
+        <div class="flex items-center">
+          <span class="flex">
+            <cornie-select
+              @update:modelValue="changed"
+              v-model="opHour.openTime"
+              :items="wholeDay"
+              class="w-24 mr-1"
+            />
+          </span>
+          <span class="mr-3">to</span>
+          <span class="flex">
+            <cornie-select
+              @update:modelValue="changed"
+              v-model="opHour.closeTime"
+              :items="wholeDay"
+              class="w-24 mr-1"
+            />
+          </span>
+        </div>
+      </div>
+    </div>
+    <cornie-card>
+      <cornie-card-text class="flex justify-end">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          :loading="loading"
+          @click="applyhour"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
+          Save
+        </cornie-btn>
+      </cornie-card-text>
+    </cornie-card>
+  </accordion-component>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -198,7 +245,7 @@ import ViewIcon from "@/components/icons/eyegreen.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
 import { Prop } from "vue-property-decorator";
 // import AddFunction from "./add-function.vue";
-import {  Watch, PropSync } from "vue-property-decorator";
+import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
 import Avatar from "@/components/avatar.vue";
@@ -297,26 +344,26 @@ export default class CarePartnersExistingState extends Vue {
   // @Prop({ type: Array, default: [], required: true })
   // functions!: IFunction[];
 
-   @PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
- @Prop({ type: Array, default: opHours })
+  @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
   @practiceinformations.Action
   fetchPracticeInformation!: () => Promise<void>;
 
-@practiceinformations.Action
+  @practiceinformations.Action
   fetchPracticeHour!: () => Promise<void>;
 
 showEdit = false;
 
  @Watch("all")
   opHours = opHours;
-  loading= false;
+  loading = false;
   all = true;
   newArr = [];
   // editingFunction = false;
@@ -360,7 +407,7 @@ orgInfo=[];
 
   wholeDay = workHours;
 
-   get payload() {
+  get payload() {
     return {
       email: this.email,
       siteMessage: this.siteMessage,
@@ -370,8 +417,8 @@ orgInfo=[];
     };
   }
 
-   async  apply() {
-     this.loading = true
+  async apply() {
+    this.loading = true;
     // if (this.id) await this.updateIssues()
     this.loading = false
     }
@@ -379,47 +426,54 @@ orgInfo=[];
       this.showEdit = true;
     }
 
-     async  applyhour() {
-     this.loading = true
+  async applyhour() {
+    this.loading = true;
     // if (this.id) await this.updateIssues()
-     await this.createPracticehour()
-    this.loading = false
-    }
-  get newaction() {
-    return this.id ? 'Update' : 'Save'
+    await this.createPracticehour();
+    this.loading = false;
   }
-   done() {
+  get newaction() {
+    return this.id ? "Update" : "Save";
+  }
+  done() {
     this.$emit("-added");
     this.show = false;
   }
 
-  async mappedfunc(){
-   const payload = () => {
-  const obj : any = { }
-  opHours.forEach(i => {
-    obj[i.day.toLowerCase()] = {
-      startDate: i.openTime,
-      endDate: i.closeTime
-    }
-  })
-  return obj;
-}
+  async mappedfunc() {
+    const payload = () => {
+      const obj: any = {};
+      opHours.forEach((i) => {
+        obj[i.day.toLowerCase()] = {
+          startDate: i.openTime,
+          endDate: i.closeTime,
+        };
+      });
+      return obj;
+    };
   }
 
-  async createPracticehour(){
+  async createPracticehour() {
     try {
-      const response = await cornieClient().post('/api/v1/practice-hour', this.mappedfunc())
+      const response = await cornieClient().post(
+        "/api/v1/practice-hour",
+        this.mappedfunc()
+      );
       if (response.success) {
-        window.notify({ msg: 'practice-information  Created', status: 'success' })
+        window.notify({
+          msg: "practice-information  Created",
+          status: "success",
+        });
         this.done();
       }
     } catch (error) {
-      console.log(error)
-      window.notify({ msg: 'practice-information not Created', status: 'error' })
-    
+      console.log(error);
+      window.notify({
+        msg: "practice-information not Created",
+        status: "error",
+      });
     }
   }
-  
 
   created() {
     this.fetchOrgInfo();
@@ -437,14 +491,14 @@ orgInfo=[];
   grid-template-columns: 20% 75%;
 }
 
-.small-font{
+.small-font {
   font-size: 10px;
-  color: #14171F;
+  color: #14171f;
 }
 
-.message-font{
+.message-font {
   color: red;
   font-size: 6px;
-  margin-left:6px;
+  margin-left: 6px;
 }
 </style>

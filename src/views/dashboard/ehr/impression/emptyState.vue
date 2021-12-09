@@ -1,35 +1,22 @@
 <template>
-  <div class="w-full pb-80">  
+  <div class="w-full pb-80">
     <div class="w-full flex flex-col justify-center items-center h-96">
-        <img src="@/assets/img/allergy.svg" />
-        <h3 class="text-center mt-5">
-            No Clinical Impression.
-        </h3>
-            <span class="flex justify-center w-full">
+      <img src="@/assets/img/allergy.svg" />
+      <h3 class="text-center mt-5">No Clinical Impression.</h3>
+      <span class="flex justify-center w-full">
         <button
-            class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            px-3
-            pl-12
-            pr-12
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-            "
-            @click="showImpression"
+          class="bg-danger rounded-full text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
+          @click="showImpression"
         >
-           Clinical Impression
+          Clinical Impression
         </button>
-            </span>
+      </span>
     </div>
-         <impression-modal   
-        :columns="practitioner"
-          @update:preferred="showImpression"
-          v-model="showImpressionModal"/>
+    <impression-modal
+      :columns="practitioner"
+      @update:preferred="showImpression"
+      v-model="showImpressionModal"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -49,14 +36,14 @@ import ImpressionModal from "./impressionDialog.vue";
   },
 })
 export default class ImpressionsEmptyState extends Vue {
-   showImpressionModal= false;
- async showImpression(){
-      this.showImpressionModal = true;
+  showImpressionModal = false;
+  async showImpression() {
+    this.showImpressionModal = true;
   }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>

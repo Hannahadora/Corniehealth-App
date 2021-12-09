@@ -514,5 +514,4 @@ export default class Medication extends Vue {
 }
 </script>
 
-<style>
-</style>
+<style></style>

@@ -60,15 +60,7 @@
       </div>
       <div class="w-full">
         <cornie-btn
-          class="
-            font-semibold
-            rounded-full
-            bg-danger
-            mt-3
-            w-full
-            text-white
-            p-2
-          "
+          class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
           :disabled="!emailVerified"
           :loading="loading"
           type="submit"

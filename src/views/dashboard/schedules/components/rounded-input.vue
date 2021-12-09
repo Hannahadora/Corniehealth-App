@@ -12,7 +12,9 @@
         <slot name="label">
           {{ label }}
         </slot>
-         <span class="ml-1 mb-1" v-if='$slots.labelicon'><slot name="labelicon"/></span>
+        <span class="ml-1 mb-1" v-if="$slots.labelicon"
+          ><slot name="labelicon"
+        /></span>
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
@@ -24,14 +26,7 @@
         }"
       >
         <div
-          class="
-            border-r-2
-            rounded-lg
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-r-2 rounded-lg bg-white flex items-center justify-center"
           style="border-top-right-radius: 0; border-bottom-right-radius: 0"
           v-if="$slots.prepend"
         >
@@ -66,15 +61,7 @@
           <slot name="append-inner" />
         </div>
         <div
-          class="
-            border-l-2
-            rounded-lg
-            pr-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-l-2 rounded-lg pr-2 bg-white flex items-center justify-center"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0"
           v-if="$slots.append"
         >

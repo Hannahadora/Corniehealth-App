@@ -26,15 +26,7 @@
         }"
       >
         <div
-          class="
-            border-r-2
-            rounded-lg
-            p-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-r-2 rounded-lg p-2 bg-white flex items-center justify-center"
           style="border-top-right-radius: 0; border-bottom-right-radius: 0"
           v-if="$slots.prepend"
         >
@@ -48,7 +40,7 @@
           <slot name="prepend-inner" />
         </div>
         <input
-       @keypress="onlyNumber"
+          @keypress="onlyNumber"
           class="p-2 rounded-lg w-full focus:outline-none"
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
@@ -72,15 +64,7 @@
           <slot name="append-inner" />
         </div>
         <div
-          class="
-            border-l-2
-            rounded-lg
-            pr-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-l-2 rounded-lg pr-2 bg-white flex items-center justify-center"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0"
           v-if="$slots.append"
         >
@@ -134,13 +118,14 @@ export default class CornieInput extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
   }
- onlyNumber ($event:any) {
-   //console.log($event.keyCode); //keyCodes value
-   let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
-   if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) { // 46 is dot
+  onlyNumber($event: any) {
+    //console.log($event.keyCode); //keyCodes value
+    let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+    if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+      // 46 is dot
       $event.preventDefault();
-   }
-}
+    }
+  }
   @Prop({ type: Object })
   rules!: any;
 }

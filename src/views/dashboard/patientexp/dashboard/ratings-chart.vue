@@ -2,7 +2,7 @@
   <chart-card height="450px" title="Rating">
     <div class="w-full grid rating-grid">
       <span class="block p-3">
-        <canvas id="rating-chart"  style="margin: auto;"></canvas>
+        <canvas id="rating-chart" style="margin: auto"></canvas>
       </span>
       <div class="w-full mt-5 flex flex-col">
         <rating-bar :percent="12" color="warning" title="Neutral Responses" />

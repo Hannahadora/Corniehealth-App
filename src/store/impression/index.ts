@@ -17,11 +17,16 @@ export default {
       state.impressions = [...impressions.result];
     },
     updateImpressions(state, impressions: IImpression[]) {
-      const impressionSet = new ObjectSet([...state.impressions, ...impressions], "id");
+      const impressionSet = new ObjectSet(
+        [...state.impressions, ...impressions],
+        "id"
+      );
       state.impressions = [...impressionSet];
     },
     deleteImpression(state, id: string) {
-      const index = state.impressions.findIndex((impression) => impression.id == id);
+      const index = state.impressions.findIndex(
+        (impression) => impression.id == id
+      );
       if (index < 0) return;
       const impressions = [...state.impressions];
       impressions.splice(index, 1);
@@ -29,13 +34,14 @@ export default {
     },
   },
   actions: {
-    async fetchImpressions(ctx,patientId:string) {
+    async fetchImpressions(ctx, patientId: string) {
       const impressions = await fetchImpressions(patientId);
-      console.log('impression patient', impressions);
+      console.log("impression patient", impressions);
       ctx.commit("setImpressions", impressions);
     },
     async getImpressionById(ctx, id: string) {
-      if (ctx.state.impressions.length < 1) await ctx.dispatch("fetchImpressions");
+      if (ctx.state.impressions.length < 1)
+        await ctx.dispatch("fetchImpressions");
       return ctx.state.impressions.find((impression) => impression.id == id);
     },
     async deleteImpression(ctx, id: string) {

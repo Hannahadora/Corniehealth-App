@@ -148,7 +148,7 @@ export default class DomainInput extends Vue {
 </script>
 
 <style scoped>
-.bgcolor{
-    background-color: #080056;
+.bgcolor {
+  background-color: #080056;
 }
 </style>

@@ -1,8 +1,10 @@
 <template>
   <span class="" :class="[$attrs.width || 'w-full']">
-    <label class="flex capitalize mb-1 -mt-1.5 text-black text-sm font-semibold">
+    <label
+      class="flex capitalize mb-1 -mt-1.5 text-black text-sm font-semibold"
+    >
       {{ label }}
-        <span class="text-danger ml-1" v-if="required"> * </span>
+      <span class="text-danger ml-1" v-if="required"> * </span>
     </label>
     <Field
       v-model="date"
@@ -11,9 +13,7 @@
       v-slot="{ meta, handleChange, errorMessage }"
     >
       <div class="relative" style="width: 100%" :id="inputName">
-        <div
-          class="block w-full"
-        >
+        <div class="block w-full">
           <cornie-input
             class="w-full"
             readonly
@@ -21,14 +21,21 @@
               'border-red-500': Boolean(errorMessage),
               'border-green-400': Boolean(meta.valid),
             }"
-           
           >
             <template #append-inner>
-                <div class="flex space-3 w-full float-left">
-                    <span class="flex text-gray-300 pr-3">| </span> 
-                    <calendar-icon class="cursor-pointer mr-3" @click="toggleDropdown" />  
-                    <input type="text" class="w-10 text-gray-400" contenteditable="true" v-model="inputFieldText">
-                </div>
+              <div class="flex space-3 w-full float-left">
+                <span class="flex text-gray-300 pr-3">| </span>
+                <calendar-icon
+                  class="cursor-pointer mr-3"
+                  @click="toggleDropdown"
+                />
+                <input
+                  type="text"
+                  class="w-10 text-gray-400"
+                  contenteditable="true"
+                  v-model="inputFieldText"
+                />
+              </div>
             </template>
             <template #prepend-inner>
               <slot name="text" />
@@ -38,25 +45,19 @@
         <div
           v-if="visible"
           :class="{ 'right-0 min-w-max': right, 'left-0 min-w-max': left }"
-          class="
-            origin-top-right
-            absolute
-            mt-2
-            w-full
-            rounded-md
-            shadow-lg
-            bg-white
-            z-20
-            ring-1 ring-black ring-opacity-5
-            divide-y divide-gray-100
-            focus:outline-none
-          "
+          class="origin-top-right absolute mt-2 w-full rounded-md shadow-lg bg-white z-20 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           tabindex="-1"
           style="z-index: 999"
         >
-          <input type="number"  class="form-control col-sm-6 numberinput" id="current-year" v-model="currentYear"  @update:modelValue="handleChange"/>
+          <input
+            type="number"
+            class="form-control col-sm-6 numberinput"
+            id="current-year"
+            v-model="currentYear"
+            @update:modelValue="handleChange"
+          />
           <!-- <v-date-picker
             @update:modelValue="handleChange"
             v-model="date"
@@ -122,9 +123,9 @@ export default class DatePicker extends Vue {
 
   @Prop({ type: Boolean, default: false })
   required!: boolean;
-  
+
   visible = false;
- currentYear = new Date().getFullYear();
+  currentYear = new Date().getFullYear();
   toggleDropdown(): void {
     if (this.disabled) return;
     this.visible = !this.visible;
@@ -135,7 +136,6 @@ export default class DatePicker extends Vue {
     if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
-
 
   @Watch("date")
   changed() {
@@ -154,7 +154,7 @@ export default class DatePicker extends Vue {
   label: any;
 
   get inputName() {
-  //  const id = Math.random().toString(36).substring(2, 9);
+    //  const id = Math.random().toString(36).substring(2, 9);
     return this.name;
   }
 
@@ -164,12 +164,12 @@ export default class DatePicker extends Vue {
 }
 </script>
 <style scoped>
-.numberinput{
-    padding: 10px;
-    width: 100%;
-    float: right;
+.numberinput {
+  padding: 10px;
+  width: 100%;
+  float: right;
 }
 .p-2.rounded-lg.w-full {
-margin-left: 40px !important;
+  margin-left: 40px !important;
 }
 </style>

@@ -11,10 +11,10 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-        outline: {
-          primary: '2px solid #080056',
-        }
+      outline: {
+        primary: "2px solid #080056",
       },
+    },
     screens: {
       sm: "640px",
       md: "768px",

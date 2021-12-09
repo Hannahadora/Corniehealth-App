@@ -13,11 +13,16 @@ export async function getVisits() {
 
 export async function getPatientVisits(patientId: string) {
   try {
-    const response = await cornieClient().get(`/api/v1/visit/patient/${patientId}`);
+    const response = await cornieClient().get(
+      `/api/v1/visit/patient/${patientId}`
+    );
 
     return response.data;
   } catch (error) {
-    notify({ msg: "There was an error fetching patient's visits", status: "error" });
+    notify({
+      msg: "There was an error fetching patient's visits",
+      status: "error",
+    });
   }
   return {};
 }

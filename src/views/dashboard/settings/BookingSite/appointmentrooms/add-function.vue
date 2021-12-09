@@ -120,7 +120,6 @@ import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import { quantumClient } from "@/plugins/http";
 
-
 import PractitionerSelect from "../components/practitioner-select.vue";
 import EncounterSelect from "../components/encounter-select.vue";
 import ILocation from "@/types/ILocation";
@@ -129,19 +128,11 @@ import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
-
-
-
-
-
-
-
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 const location = namespace("location");
 const AppointmentRoom = namespace("AppointmentRoom");
-
 
 @Options({
   name: "AddFunction",
@@ -159,13 +150,10 @@ const AppointmentRoom = namespace("AppointmentRoom");
     PractitionerSelect,
     EncounterSelect,
     AutoComplete,
-    CornieRadio
+    CornieRadio,
   },
 })
 export default class AddFunction extends Vue {
-
- 
-
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
@@ -177,7 +165,7 @@ export default class AddFunction extends Vue {
   // @Prop({ type: Object, default: {} })
   // edit!: IFunction;
 
-    @Prop({ type: Object, default: {} })
+  @Prop({ type: Object, default: {} })
   edit!: any;
 
   functionName = "";
@@ -208,13 +196,12 @@ export default class AddFunction extends Vue {
 
   @orgFunctions.Mutation
   setFunctions!: (f: IFunction[]) => Promise<void>;
-  
-  @AppointmentRoom.Mutation
- setAppointmentrooms!: (f: IAppointmentRoom[]) => Promise<void>; 
 
- @AppointmentRoom.Action
- addAppointmentRoom!: (f: IAppointmentRoom) => Promise<void>; 
- 
+  @AppointmentRoom.Mutation
+  setAppointmentrooms!: (f: IAppointmentRoom[]) => Promise<void>;
+
+  @AppointmentRoom.Action
+  addAppointmentRoom!: (f: IAppointmentRoom) => Promise<void>;
 
   @hierarchy.State
   categories!: { id: string; name: string }[];
@@ -230,7 +217,6 @@ export default class AddFunction extends Vue {
   //   this.hierarchy = func.hierarchy || "";
   //   this.supervisoryFunction = func.reportingTo || "";
   // }
-
   editing() {
     if (!this.edit.id) return;
     const func = this.edit;
@@ -239,7 +225,7 @@ export default class AddFunction extends Vue {
     // this.supervisoryFunction = func.reportingTo || "";
   }
 
-get all_locations() {
+  get all_locations() {
     return this.locations.map((location) => ({
       code: location.id,
       display: location.address,
@@ -269,10 +255,10 @@ get all_locations() {
   //   if (this.edit?.id) payload.functionId = this.edit.id;
   //   return payload;
   // }
-get vipName(){
-  return this.occupiedYes? "Yes": "No";
-}
-   get payload() {
+  get vipName() {
+    return this.occupiedYes ? "Yes" : "No";
+  }
+  get payload() {
     const payload: any = {
       roomName: this.roomName,
       roomNumber: this.roomNumber,
@@ -308,10 +294,10 @@ get vipName(){
   // }
 
   async create() {
-   console.log("gggg", this.payload)
+    console.log("gggg", this.payload);
     try {
       const { data } = await cornieClient().post(
-          "/api/v1/appointment-rooms",
+        "/api/v1/appointment-rooms",
         this.payload
       );
       // const { appointmentrooms } = data;
@@ -326,7 +312,7 @@ get vipName(){
   async update() {
     console.log("this.edit.id", this.edit.id);
     const url = `/api/v1/appointment-rooms/${this.edit.id}`;
-    const payload = { ...this.payload, id: this.edit.id }
+    const payload = { ...this.payload, id: this.edit.id };
     try {
       const response = await cornieClient().put(url, payload);
       window.notify({ msg: "Appointment Room", status: "success" });
@@ -371,7 +357,7 @@ get vipName(){
   created() {
     if (!this.categories.length) this.fetchCategories();
     if (!this.functions?.length) this.fetchFunctions();
-    if (!this.locations?.length) this.fetchLocations()
+    if (!this.locations?.length) this.fetchLocations();
   }
 }
 </script>

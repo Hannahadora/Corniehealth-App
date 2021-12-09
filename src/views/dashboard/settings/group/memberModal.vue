@@ -8,18 +8,7 @@
         aria-modal="true"
       >
         <div
-          class="
-            flex
-            items-end
-            justify-center
-            min-h-screen
-            pt-4
-            px-4
-            pb-20
-            text-center
-            sm:block
-            sm:p-0
-          "
+          class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
         >
           <div
             class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
@@ -33,21 +22,7 @@
             >&#8203;</span
           >
           <div
-            class="
-              inline-block
-              align-bottom
-              bg-white
-              rounded-lg
-              text-left
-              overflow-hidden
-              shadow-xl
-              transform
-              transition-all
-              sm:my-8
-              sm:align-middle
-              sm:max-w-sm
-              sm:w-full
-            "
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full"
           >
             <div class="bg-white px-2 pt-3 pb-2 sm:p-3 sm:pb-2">
               <div>
@@ -59,14 +34,14 @@
                     Add a Member
                   </h3>
                   <div class="mt-5">
-                    <div  class="mb-5">
-                        <cornie-select
-                          :rules="required"
-                          :items="['Active', 'Inactive']"
-                          v-model="type"
-                          label="Type"
-                          placeholder="--Select--"
-                          >
+                    <div class="mb-5">
+                      <cornie-select
+                        :rules="required"
+                        :items="['Active', 'Inactive']"
+                        v-model="type"
+                        label="Type"
+                        placeholder="--Select--"
+                      >
                       </cornie-select>
                     </div>
                     <cornie-input
@@ -87,24 +62,7 @@
               <cornie-btn
                 @click="addmember"
                 :loading="loading"
-                class="
-                  w-full
-                  inline-flex
-                  justify-center
-                  rounded-full
-                  border border-transparent
-                  shadow-sm
-                  px-4
-                  py-2
-                  bg-danger
-                  text-base
-                  font-medium
-                  text-white
-                  focus:outline-none
-                  sm:ml-3
-                  sm:w-auto
-                  sm:text-sm
-                "
+                class="w-full inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-danger text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
                 type="submit"
               >
                 Add
@@ -112,23 +70,7 @@
               <button
                 @click="show = false"
                 type="button"
-                class="
-                  mt-3
-                  w-full
-                  inline-flex
-                  justify-center
-                  shadow-sm
-                  px-4
-                  py-2
-                  text-base
-                  font-medium
-                  text-primary
-                  focus:outline-none
-                  sm:mt-0
-                  sm:ml-3
-                  sm:w-auto
-                  sm:text-sm
-                "
+                class="mt-3 w-full inline-flex justify-center shadow-sm px-4 py-2 text-base font-medium text-primary focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               >
                 Cancel
               </button>
@@ -152,9 +94,9 @@ import { cornieClient } from "@/plugins/http";
 import { Options, Vue } from "vue-class-component";
 
 @Options({
-   name: "memberModal",
+  name: "memberModal",
   components: {
-     Modal,
+    Modal,
     CornieInput,
     CornieSelect,
     ArrowLeftIcon,
@@ -181,34 +123,34 @@ export default class memberModal extends Vue {
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
   }
-  get  payload() {
-      return {
-        groupId: this.paymentId,
-        type: this.type,
-        name: this.name,
-      };
-    }
+  get payload() {
+    return {
+      groupId: this.paymentId,
+      type: this.type,
+      name: this.name,
+    };
+  }
 
-   async addmember() {
-      this.loading = true;
-      try {
-        const response = await cornieClient().post(
-          '/api/v1/groupMembers/',this.payload
-        );
-        if (response.success) {
-          this.loading = false;
-          window.notify({ msg: "Member added", status: "success" });
-            this.show = false;
-        } else {
-         window.notify({ msg: response.errors!.summary, status: "error" });
-            this.show = false;
-        }
-      } catch (error) {
+  async addmember() {
+    this.loading = true;
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/groupMembers/",
+        this.payload
+      );
+      if (response.success) {
         this.loading = false;
-        window.notify({ msg: "Member not added", status: "error" });
-            this.show = false;
+        window.notify({ msg: "Member added", status: "success" });
+        this.show = false;
+      } else {
+        window.notify({ msg: response.errors!.summary, status: "error" });
+        this.show = false;
       }
+    } catch (error) {
+      this.loading = false;
+      window.notify({ msg: "Member not added", status: "error" });
+      this.show = false;
     }
-
+  }
 }
 </script>

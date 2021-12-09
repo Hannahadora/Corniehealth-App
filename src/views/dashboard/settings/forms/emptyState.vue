@@ -1,57 +1,121 @@
 <template>
   <div class="w-full pb-80 h-full">
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Practice Forms</a></li>    
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Questionnaires</a></li>
-        <!-- <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Satisfaction Surveys</a></li> -->
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(1)"
+          :class="{ active: selected === 1 }"
+          :aria-selected="selected === 1"
+          >Practice Forms</a
+        >
+      </li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(2)"
+          :class="{ active: selected === 2 }"
+          :aria-selected="selected === 2"
+          >Questionnaires</a
+        >
+      </li>
+      <!-- <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Satisfaction Surveys</a></li> -->
     </ul>
-      <div class="tab-content">
-        <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="Practice Forms">     
-            <div class="w-full flex flex-col justify-center items-center h-full mt-40">
-             <img src="@/assets/img/Forms.svg" />
-              <h3 class="text-center mt-5">
-                 You have no practice form to display.
-              </h3>
-                  <span class="flex justify-center w-full">
-                    <div class="dropdown inline-block relative">
-                        <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
-                        <span class="mr-1">Create New </span>
-                        <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
-                        </button>
-                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                        <li class="">
-                            <Select v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></Select>
-                        </li>
-                        </ul>
-                    </div>
-                </span>
+    <div class="tab-content">
+      <div
+        class="tab-pane"
+        v-if="selected == 1"
+        :class="{ active: selected === 1 }"
+        id="Practice Forms"
+      >
+        <div
+          class="w-full flex flex-col justify-center items-center h-full mt-40"
+        >
+          <img src="@/assets/img/Forms.svg" />
+          <h3 class="text-center mt-5">
+            You have no practice form to display.
+          </h3>
+          <span class="flex justify-center w-full">
+            <div class="dropdown inline-block relative">
+              <button
+                class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
+              >
+                <span class="mr-1">Create New </span>
+                <chevron-down-icon
+                  class="text-white mb-2 stroke-current mt-2 ml-1"
+                />
+              </button>
+              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+                <li class="">
+                  <Select
+                    v-model="showDatalist"
+                    :items="[
+                      'Scheduling Experience',
+                      'Walk-In Experience',
+                      'Patient Visit Experience',
+                      'Physician Consultation Experience',
+                      'Diagnostic Service Experience',
+                      'Pharmacy Service Experience',
+                      'Hospital Stay Experience',
+                      'Billing Support Experience',
+                      'Blank Survey',
+                    ]"
+                  ></Select>
+                </li>
+              </ul>
             </div>
+          </span>
         </div>
-        <div class="tab-pane" v-if="selected == 2" :class="{'active' :  selected === 2  }" id="Questionnaires">
-             <div class="w-full flex flex-col justify-center items-center h-full mt-40">
-             <img src="@/assets/img/Forms.svg" />
-              <h3 class="text-center mt-5">
-                You have no satisfactory surveys to display.
-              </h3>
-                  <span class="flex justify-center w-full">
-                    <div class="dropdown inline-block relative">
-                        <button class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3  pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center">
-                        <span class="mr-1">Create New </span>
-                        <chevron-down-icon class="text-white mb-2 stroke-current mt-2 ml-1"/>
-                        </button>
-                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                        <li class="">
-                            <select-survey v-model="showDatalist" :items="['Scheduling Experience','Walk-In Experience','Patient Visit Experience','Physician Consultation Experience','Diagnostic Service Experience','Pharmacy Service Experience','Hospital Stay Experience','Billing Support Experience','Blank Survey']"></select-survey>
-                        </li>
-                        </ul>
-                    </div>
-                </span>
+      </div>
+      <div
+        class="tab-pane"
+        v-if="selected == 2"
+        :class="{ active: selected === 2 }"
+        id="Questionnaires"
+      >
+        <div
+          class="w-full flex flex-col justify-center items-center h-full mt-40"
+        >
+          <img src="@/assets/img/Forms.svg" />
+          <h3 class="text-center mt-5">
+            You have no satisfactory surveys to display.
+          </h3>
+          <span class="flex justify-center w-full">
+            <div class="dropdown inline-block relative">
+              <button
+                class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
+              >
+                <span class="mr-1">Create New </span>
+                <chevron-down-icon
+                  class="text-white mb-2 stroke-current mt-2 ml-1"
+                />
+              </button>
+              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+                <li class="">
+                  <select-survey
+                    v-model="showDatalist"
+                    :items="[
+                      'Scheduling Experience',
+                      'Walk-In Experience',
+                      'Patient Visit Experience',
+                      'Physician Consultation Experience',
+                      'Diagnostic Service Experience',
+                      'Pharmacy Service Experience',
+                      'Hospital Stay Experience',
+                      'Billing Support Experience',
+                      'Blank Survey',
+                    ]"
+                  ></select-survey>
+                </li>
+              </ul>
             </div>
+          </span>
         </div>
-        <!-- <div class="tab-pane" v-if="selected == 3" :class="{'active' :  selected === 3  }" id="Satisfaction Survey">
+      </div>
+      <!-- <div class="tab-pane" v-if="selected == 3" :class="{'active' :  selected === 3  }" id="Satisfaction Survey">
           
         </div> -->
-      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -72,16 +136,15 @@ import SelectSurvey from "@/components/surveyselect.vue";
   },
 })
 export default class FormsEmptyState extends Vue {
-     selected = 1;
+  selected = 1;
 
-     select(i:number) {
-      this.selected = i;
-    }
- 
+  select(i: number) {
+    this.selected = i;
+  }
 }
 </script>
 <style>
-.outline-primary{
-    border: 2px solid #080056;
+.outline-primary {
+  border: 2px solid #080056;
 }
 </style>
