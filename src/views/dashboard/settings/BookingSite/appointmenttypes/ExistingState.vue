@@ -117,8 +117,8 @@ query= "";
       show: true,
     },
     {
-      title: "Practioners",
-      key: "practioners",
+      title: "Practitioners",
+      key: "practitioners",
       show: true,
     },
     {

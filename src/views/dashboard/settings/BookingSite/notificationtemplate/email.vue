@@ -14,7 +14,7 @@
                        <p class="text-black text-xs mb-3">Dear <span class="text-gray-500 ">(Patient)</span> , </p> 
                          <p class="text-black text-xs mb-5"> You have an appointment with <span class="text-gray-500"> (Dr. physicians name)</span> at <span class="text-gray-500">  (Practice name)</span> on <span class="text-gray-500">(Day)</span>,  <span class="text-gray-500">(Date & Time)</span>. </p>
 
-                            <ul class="text-sm text-gray-500 mb-4">
+                            <ul class="text-sm text-gray-500 mb-4 list-disc p-4">
                                 <li>Appointment Type </li>
                                 <li>  Physicians Name </li>
                                 <li>Practice Name</li>
@@ -30,6 +30,7 @@
                     </div>
                     <div class="mt-3 mb-4 flex justify-end">
                     <button
+                    @click="showBack"
                     class="
                         text-black
                         ml-2
@@ -42,6 +43,7 @@
                     Cancel
                     </button>
                     <button
+                    @click="showAlert"
                     class="
                         bg-primary
                         rounded-full
@@ -79,6 +81,7 @@
 
 
     </div>
+    <new-back-modal v-model="showBackModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -118,12 +121,15 @@ import EditIcon from "@/components/icons/aedit.vue";
 import Tabs from "././../tabs.vue";
 import InfoIcon from "@/components/icons/info.vue";
 import ReferIcon from "@/components/icons/newreset.vue";
+import NewBackModal from "./backModal.vue"
+
 
 @Options({
   components: {
     CornieTable,
     CornieSelect,
     InfoIcon,
+    NewBackModal,
     ReferIcon,
     Tabs,
     CornieInput,
@@ -162,8 +168,15 @@ export default class Inapp extends Vue {
   @Prop({ type: String, default: '' })
   id!: string
 
- 
+  showBackModal= false;
 
+ 
+showAlert(){
+    window.notify({ msg: "Appointment Successfully Confirmed", status: "success" });
+}
+showBack(){
+  this.showBackModal = true;
+}
   created() {
    
   }

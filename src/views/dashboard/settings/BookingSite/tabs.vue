@@ -65,7 +65,7 @@ export default class Tabs extends Vue {
 </script>
 <style scoped>
 .text-xxs {
-    font-size: .7rem;
+    font-size: .8rem;
     line-height: 1rem;
 }
 </style>

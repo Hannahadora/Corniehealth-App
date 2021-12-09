@@ -107,7 +107,7 @@
       </cornie-card>  
         
         </accordion-component>
-  <accordion-component class="shadow-none rounded-none border-none mt-5 text-primary" title="Practice Hours" expand="true" v-model="opened" :opened="true">         
+  <!-- <accordion-component class="shadow-none rounded-none border-none mt-5 text-primary" title="Practice Hours" expand="true" v-model="opened" :opened="true">         
            <div class="grid grid-cols-1 mt-8 gap-y-6 w-full">
     <label class="flex items-center">
       <select-option type="checkbox" class="mr-3" v-model="all" />
@@ -121,7 +121,7 @@
       </span>
     </div>
     <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
-      <label class="flex items-center">
+      <label class="flex items-center"></label>
         <select-option
           @change="changed"
           v-model="opHour.selected"
@@ -147,29 +147,30 @@
         </cornie-btn>
       </cornie-card-text>
     </cornie-card>
-  </accordion-component>
+  </accordion-component> -->
+  
   <accordion-component
     class="shadow-none rounded-none border-none text-primary"
     title="Practice Hours"
     expand="true"
     v-model="opened"
-    :opened="false"
+    :opened="true"
   >
     <div class="grid grid-cols-1 mt-4 gap-y-6 w-full">
-      <label class="flex items-center">
-        <input type="checkbox" class="mr-3" v-model="all" />
+      <label class="flex items-center  text-sm text-black">
+        <select-option type="checkbox" class="mr-3" v-model="all" />
         All days
       </label>
       <div class="day-grid grid w-full">
         <span class="font-bold block"></span>
-        <span class="font-bold uppercase text-sm">
+        <span class="font-medium text-black uppercase text-sm">
           <span>Start Time</span>
           <span class="ml-14">End Time</span>
         </span>
       </div>
       <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
-        <label class="flex items-center">
-          <input
+        <label class="flex items-center  text-sm text-black">
+          <select-option
             @change="changed"
             v-model="opHour.selected"
             type="checkbox"

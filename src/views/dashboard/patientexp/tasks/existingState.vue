@@ -53,83 +53,21 @@
             </button>
           </span>
           <cornie-table :columns="rawHeaders" v-model="Upcoming">
-            
             <template #actions="{ item }">
-              <button class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="
-                  $router.push(`/dashboard/experience/add-task/${item.id}`)">
-                New Task
-              </button>
-              
-            </template>
-            <cornie-table :columns="rawHeaders" v-model="Upcoming">
-                <template #actions="{ item }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
-                    <newview-icon  class="text-yellow-500 fill-current"/>
-                    <span class="ml-3 text-xs">View</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`/dashboard/experience/add-task/${item.id}`)">
-                    <update-icon />
-                    <span class="ml-3 text-xs">Update</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <timeline-icon />
-                    <span class="ml-3 text-xs">View Timeline</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/add-appointment')">
-                    <plus-icon class="text-green-400 fill-current"/>
-                    <span class="ml-3 text-xs">Add Appointment</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="makeNotes(item.id)">
-                      <note-icon class="text-yellow-600 fill-current" />
-                      <span class="ml-3 text-xs">Make Notes</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                      <message-icon class="text-green-500 fill-current" />
-                      <span class="ml-3 text-xs">Messages</span>
-                  </div>
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                      <danger-icon/>
-                      <span class="ml-3 text-xs">Cancel</span>
-                  </div>
-                </template>
-                <template #excecutionPeriod="{ item }">
-                  <div class="flex items-center">
-                    <span>{{item.excecutionPeriod.start}} - {{item.excecutionPeriod.end}} </span>
-                  </div>
-                </template>
-                <template #status="{ item }">
-                    <div class="container">
-                      <span class="p-2 px-3 rounded-full text-black" :class="{ 'text-red-300 bg-red-50': item.status === 'Cancelled' || 'Stopped' || 'Failed' || 'Entered in Error' || 'Rejected',   'text-green-300 bg-green-50': item.status === 'Ready'|| 'Completed' || 'Requested' ||'Received'||'Accepted',  'text-yellow-300 bg-yellow-50': item.status === 'Draft' || 'In Progress' || 'On Hold',}">{{ item.status }}</span>
-                    </div>
-                </template>
-            </cornie-table>
-          </div>
-        </div>
-        <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="diagnotics">
-          <div class="w-full flex flex-col justify-center items-center h-96" v-if="sortTasks.length < 0" >
-              <img src="@/assets/img/task.svg" />
-              <h3 class="text-center mt-5">
-                  There’s currently no active task!<br />
-                  Adding a task...
-              </h3>
-                  <span class="flex justify-center w-full">
-              <button
-                  @click="$router.push('/dashboard/provider/experience/schedules')"
-                  type="button"
-                  class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                  "
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="
+                  $router.push(`/dashboard/experience/add-task/${item.id}`)
+                "
+              >
+                <newview-icon class="text-yellow-500 fill-current" />
+                <span class="ml-3 text-xs">View</span>
+              </div>
+              <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="
+                  $router.push(`/dashboard/experience/add-task/${item.id}`)
+                "
               >
                 <update-icon />
                 <span class="ml-3 text-xs">Update</span>

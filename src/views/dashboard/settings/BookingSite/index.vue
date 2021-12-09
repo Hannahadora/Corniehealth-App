@@ -23,10 +23,10 @@
         <appointment-types />
         <appointment-rooms />
         <add-location />
-        <job-level2 />
+        <calender-preference />
         <notification-template />
         <add-locationn />
-        <add-reminder />
+        <!-- <add-reminder /> -->
       </tabs>
       </span>
     </div>
@@ -48,7 +48,7 @@ import AppointmentRooms from "./appointmentrooms/Functions.vue";
 import AddLocation from "./addLocation.vue";
 import AddLocationn from "./addLocationn.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
-
+import CalenderPreference from "./calender/index.vue"
 import NotificationTemplate from './notificationtemplate/index.vue';
 
 
@@ -65,13 +65,14 @@ import NotificationTemplate from './notificationtemplate/index.vue';
    // Designations2,
   //  JobLevel2,
     AddLocation,
+    CalenderPreference,
     NotificationTemplate,
     AddLocationn,
     AddReminder,
   },
 })
 export default class Bookings extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation", "New Reminder"];
+  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation"];
   currentTab = 0;
 }
 </script>

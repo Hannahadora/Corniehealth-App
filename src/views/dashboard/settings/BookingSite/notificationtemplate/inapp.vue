@@ -18,6 +18,7 @@
                     </div>
                     <div class="mt-3 mb-4 flex justify-end">
                     <button
+                    @click="showBack"
                     class="
                         text-black
                         ml-2
@@ -30,6 +31,7 @@
                     Cancel
                     </button>
                     <button
+                    @click="showAlert"
                     class="
                         bg-primary
                         rounded-full
@@ -67,6 +69,7 @@
 
 
     </div>
+    <new-back-modal v-model="showBackModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -106,6 +109,7 @@ import EditIcon from "@/components/icons/aedit.vue";
 import Tabs from "././../tabs.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import ReferIcon from "@/components/icons/newreset.vue";
+import NewBackModal from "./backModal.vue"
 
 @Options({
   components: {
@@ -118,6 +122,7 @@ import ReferIcon from "@/components/icons/newreset.vue";
     SortIcon,
     SelectOption,
     // AddFunction,
+    NewBackModal,
     InApp,
     Avatar,
     EmailModule,
@@ -150,7 +155,14 @@ export default class Inapp extends Vue {
   @Prop({ type: String, default: '' })
   id!: string
 
+ showBackModal= false;
  
+showAlert(){
+    window.notify({ msg: "Appointment Successfully Confirmed", status: "success" });
+}
+showBack(){
+  this.showBackModal = true;
+}
 
   created() {
    

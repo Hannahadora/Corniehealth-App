@@ -166,7 +166,7 @@ export default class apponitmentRooms extends Vue {
     },
     {
       title: "LOCATION",
-      key: "Location",
+      key: "location",
       show: true,
     },
     {
@@ -228,6 +228,7 @@ export default class apponitmentRooms extends Vue {
              roomName:  "-----",
       roomNumber:  "-----",
       location: "-----",
+      supervisor:"-----",
       status:  "Active",
         };
     });

@@ -40,9 +40,8 @@
           <slot name="prepend-inner" />
         </div>
         <input
-        placeholder="--Enter--"
           v-on:keyup.enter="$emit('keyenter')"
-          class="p-2 rounded-lg w-full focus:outline-none w-full"
+          class="p-2 rounded-lg focus:outline-none w-full"
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
               $slots.prepend,

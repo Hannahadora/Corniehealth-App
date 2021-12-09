@@ -165,20 +165,23 @@
               </div>
             </div>
             <!-- <template #actions> -->
-            <div class="mt-2 flex justify-end">
-              <button
-                class="border-primary border-2 rounded-full text-black ml-2 py-2 px-6 focus:outline-none outline hover:bg-primary hover:text-white"
-              >
-                Cancel
-              </button>
-              <button
-                class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
-                @click="addFunction = true"
-              >
-                <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-                Save
-              </button>
-            </div>
+             <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card> 
             <!-- </template> -->
           </v-form>
         </div>
