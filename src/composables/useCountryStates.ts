@@ -8,7 +8,7 @@ export function useCountryStates() {
 	onBeforeMount(async () => {
 		states.value = await getStates(country.value)
 	})
-	watch(country, async (val, prev) => {
+	watch(country, async (val) => {
 		if (!val) {
 			states.value = []
 		}

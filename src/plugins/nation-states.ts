@@ -5,7 +5,7 @@ export function getCountries() {
 	return countryCodes.map((c) => c.name)
 }
 
-const nigerianStates = [
+export const nigerianStates = [
 	'Abia',
 	'Adamawa',
 	'Akwa Ibom',

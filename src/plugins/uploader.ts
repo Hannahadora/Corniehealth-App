@@ -13,7 +13,7 @@ export async function uploadFile(
 			'http://18.135.196.19:5001/document-management/upload/corniehealth',
 			true
 		)
-		xhr.onload = async (ev) => {
+		xhr.onload = async () => {
 			const status = xhr.status
 			if (status >= 200 && status < 300) {
 				const json = await xhr.response

@@ -345,8 +345,6 @@ export default class RolesAndPrivileges extends Vue {
   transferConfirmed = false;
 
   toggleModal() {
- 
-
     this.show = !this.show;
   }
 

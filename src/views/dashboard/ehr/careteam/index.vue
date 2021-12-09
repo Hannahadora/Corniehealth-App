@@ -272,10 +272,10 @@ export default class EHRCareTeam extends Vue {
       );
       const added = await careteamHelper.addToTeam(
         this.existingCareTeamToAddTo,
-        {
-          code: practitioner?.id ?? "",
-          display: `${practitioner?.firstName} ${practitioner?.lastName}`,
-        }
+        // {
+        //   code: practitioner?.id ?? "",
+        //   display: `${practitioner?.firstName} ${practitioner?.lastName}`,
+        // }
       );
       this.loading = false;
       if (added?.id) this.addToExisting = false;

@@ -28,7 +28,7 @@ const editCareTeam = async (body: any, id: string) => {
 	}
 }
 
-const addToTeam = async (team: any, practitioner: Item) => {
+const addToTeam = async (team: any) => {
 
 	const practitioneData = {
 		id: '87e846a3-bac0-43b9-a4db-0b2605426c42',

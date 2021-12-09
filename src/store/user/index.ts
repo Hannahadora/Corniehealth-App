@@ -38,7 +38,7 @@ export default {
 		authPractitioner(state) {
 			return state.cornieData?.practitioner
 		},
-		authPractitionerDomain(state) {
+		authPractitionerDomain() {
 			const corniedata = localStorage.getItem('corniehealthdata') as string
 			return JSON.parse(corniedata)?.authDomain
 		},

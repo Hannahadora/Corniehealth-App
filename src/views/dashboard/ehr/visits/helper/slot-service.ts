@@ -293,7 +293,7 @@ export default {
 
 
 		if (!slots || slots.length === 0) return {}
-		const [startTime, endTime] = slotTime.split(' - ')
+		const [startTime] = slotTime.split(' - ')
 		const slotsForDay = filterSlotsByDate(slots, date)
 
 		const slotForTime = slotsForDay.find((slot: any) => {

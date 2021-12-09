@@ -30,7 +30,7 @@ export default {
 	},
 	actions: {
 		async fetchIssues(ctx, patientId: string) {
-			const issues = await fetchIssues(patientId)
+			const issues = await fetchIssues()
 			ctx.commit('setIssues', issues)
 		},
 		async getIssuesById(ctx, id: string) {
