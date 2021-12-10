@@ -4,7 +4,7 @@
                 <img src="@/assets/rafiki.svg" class="mb-2" />
                   <h4 class="text-black text-center">There are no rooms on record.</h4>
                   <cornie-btn
-                  class="bg-danger py-1 px-5 rounded-full text-white m-5"
+                  class="bg-danger  px-3 rounded-full text-white m-5"
                   @click="editingFunction = true"
                 >
                   Add New
@@ -14,7 +14,7 @@
     
       <span class="flex justify-end">
         <cornie-btn
-          class="bg-danger py-1 px-5 rounded-full text-white m-5"
+          class="bg-danger  px-3 rounded-full text-white m-5"
           @click="editingFunction = true"
         >
           Add New
@@ -145,6 +145,9 @@ export default class apponitmentRooms extends Vue {
   @AppointmentRoom.Action
   deleteAppointmentroom!: (id: string) => Promise<void>;
 
+  @task.Action
+  fetchTasks!: () => Promise<void>;
+
   @location.State
   locations!: ILocation[];
 
@@ -259,9 +262,9 @@ export default class apponitmentRooms extends Vue {
     this.editingFunction = true;
   }
 
-  created() {
-    //console.log('states', this.locations);
-   // if (!this.locations?.length) this.fetchLocations();
+   created(){
+     this.fetchTasks();
+    if (this.tasks.length < 1) this.fetchTasks();
   }
 }
 </script>

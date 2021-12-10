@@ -14,7 +14,7 @@
     >
       <div class="flex items-center w-full">
         <input
-          :placeholder="placeholder"
+          :placeholder="$attrs.placeholder"
           style="width: 55%"
           :class="{
             'border-red-500': Boolean(errorMessage),
@@ -62,7 +62,7 @@
             sm:leading-5
           "
           disabled
-          placeholder="https://corniehealth.com/"
+           placeholder="corniehealth.com/booking/gp-consultation"
         />
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -151,4 +151,5 @@ export default class DomainInput extends Vue {
 .bgcolor {
   background-color: #080056;
 }
+
 </style>

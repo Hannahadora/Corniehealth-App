@@ -1,31 +1,16 @@
 <template>
- <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Practice Information" expand="true" v-model="opened" :opened="true">
+ <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Performance" expand="true" v-model="opened" :opened="true">
        <div>
           <div class="flex space-x-4 w-full justify-between mt-3">
               <p class="text-sm mt-3 text-black"> The information contained below will appear in the CornieHealth booking site, if you have embedded the link. This information does not 
                 affect <br> other related data in your practice settings
               </p>
-              <div class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer">
-                  <edit-icon class="fill-current text-primary mr-4"/>  Edit
-              </div>
-              <!-- <div v-else class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer" @click="showEditSection">
+              <div  class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer" @click="showEditSection">
                   <edit-icon class="fill-current text-danger mr-4"/>  Edit
-              </div> -->
+              </div>
           </div>
        </div>
-       <div class="grid grid-cols-3 w-full justify-between gap-4 mt-5" >
-           <cornie-input  label="Email"  placeholder="--Enter--" class="w-full mb-4" />
-             <cornie-input  label="Address" placeholder="--Enter--" class="w-full mb-4" />
-               <cornie-input  label="Website"  placeholder="-Enter--" class="w-full mb-4" />
-                 <phone-input
-              v-model:code="code"
-              :rules="requiredRule"
-              label="Contact Numbers"
-              v-model="phone"
-              class="w-full"
-            />
-       </div>
-         <!-- <div class="w-full mt-8 mb-32" v-else>
+         <div class="w-full mt-8 mb-32">
             <div class="float-left">
                   <img
                       class="mr-2"
@@ -74,82 +59,13 @@
                   </cornie-btn>
                 </div>
             </div>
-         </div> -->
-          <div class="w-full mb-12">
-            <label for="ecounter" class="w-full capitalize text-black text-sm font-bold mt-12">Site Message <span class="text-xs text-red-600 font-medium italic">(Max 150 characters)</span></label>
-                <div class="w-full -mt-6">
-                      <Textarea
-                          class="w-full text-xs"    
-                                placeholder="Text Area"
-                                :rules="required"
-                                v-model="siteMessage"
-                              />
-                </div>
-          </div>  
+         </div>
+         
 
-
-           <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>  
-        
+           
         </accordion-component>
-  <!-- <accordion-component class="shadow-none rounded-none border-none mt-5 text-primary" title="Practice Hours" expand="true" v-model="opened" :opened="true">         
-           <div class="grid grid-cols-1 mt-8 gap-y-6 w-full">
-    <label class="flex items-center">
-      <select-option type="checkbox" class="mr-3" v-model="all" />
-      All days
-    </label>
-    <div class="day-grid grid w-full">
-      <span class="font-bold block"></span>
-      <span class="font-light uppercase text-black text-sm">
-        <span>Start Time</span>
-        <span class="ml-14">End Time</span>
-      </span>
-    </div>
-    <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
-      <label class="flex items-center"></label>
-        <select-option
-          @change="changed"
-          v-model="opHour.selected"
-          type="checkbox"
-          class="mr-3"
-        />
-      </div>
-    </div>
-    <cornie-card>
-      <cornie-card-text class="flex justify-end">
-        <cornie-btn
-          @click="show = false"
-          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-        >
-          Cancel
-        </cornie-btn>
-        <cornie-btn
-          :loading="loading"
-          @click="apply"
-          class="text-white bg-danger px-6 rounded-xl"
-        >
-          Save
-        </cornie-btn>
-      </cornie-card-text>
-    </cornie-card>
-  </accordion-component> -->
-  
-  <accordion-component
+ 
+  <!-- <accordion-component
     class="shadow-none rounded-none border-none text-primary"
     title="Practice Hours"
     expand="true"
@@ -188,7 +104,7 @@
               class="w-24 mr-1"
             />
           </span>
-          <span class="mr-3 mb-6">to</span>
+          <span class="mr-3">to</span>
           <span class="flex">
             <cornie-select
               @update:modelValue="changed"
@@ -217,7 +133,7 @@
         </cornie-btn>
       </cornie-card-text>
     </cornie-card>
-  </accordion-component>
+  </accordion-component> -->
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -374,7 +290,7 @@ showEdit = false;
   address="";
   siteMessage="";
   contactNumber="";
-   localSrc = require('../../../../../assets/img/placeholder.png');
+   localSrc = require('../../../../assets/img/placeholder.png');
 orgInfo=[];
 
   get operationHours() {

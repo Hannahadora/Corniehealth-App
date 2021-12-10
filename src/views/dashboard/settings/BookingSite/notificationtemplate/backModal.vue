@@ -1,6 +1,7 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="25%" class="flex flex-col">
+      
       <cornie-card-title  class="w-full">
           <div class="w-full flex space-x-4">
               <div class=" border-r-2 border-gray-200">
@@ -11,6 +12,7 @@
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
       </cornie-card-title>
+
       <cornie-card-text class="flex-grow scrollable">
           <div class="w-full">
                 <p class="text-sm text-black">

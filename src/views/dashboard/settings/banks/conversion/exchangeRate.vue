@@ -31,7 +31,7 @@
                 class="w-full"
                 label="Base Currency"
                 :items="allCurrencyNew"
-                v-model="currency"
+                v-model="basecurrency"
               />
               <cornie-select
                 placeholder="--Select--"
@@ -50,7 +50,7 @@
                 </div>
            </div> -->
             <div class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm">
-                1 CY ~= 68 NGN
+                1 {{basecurrency}} ~= {{exchangeRate}} {{currency}}
             </div>
         </cornie-card-text>  
            <cornie-card>
@@ -62,7 +62,7 @@
                 Cancel
               </cornie-btn>
               <cornie-btn  :loading="loading"
-                    @click="apply" class="text-white bg-danger px-3 rounded-xl">
+                    @click="apply" class="text-white bg-danger px-6 rounded-xl">
               Save
               </cornie-btn>
         </cornie-card-text>
@@ -133,6 +133,7 @@ export default class NewExchangeRate extends Vue {
 loading=false;
  value = null;
  location='';
+ basecurrency="";
  orgLocation = [];
        options = [
           'Batman',
@@ -184,14 +185,25 @@ loading=false;
   }
     get allCurrencyNew() {
      if (!this.Currencies || this.Currencies.length === 0) return [ ];
-     return this.Currencies.map((i:any) => {
+      //const filteritems = this.patientappointments.filter((c) => c !== null);
+      if(this.basecurrency != this.currency){
+        const filteritems = this.Currencies.filter((header:any) => header.code);
+      }
+         return this.Currencies.map((i:any) => {
          return {
              code: i.code,
              display: i.code,
          }
      })
+    
   }
 
+async apply() {
+   this.loading = true;
+    if (this.id) await this.updateCurrency()
+    else await this.createCurrency()
+    this.loading = false;
+  }
   async createCurrency() {
     try {
       console.log(this.payload);

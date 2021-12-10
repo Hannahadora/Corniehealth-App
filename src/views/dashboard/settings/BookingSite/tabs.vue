@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex w-full font-semibold py-2 mx-auto mt-4">
+    <div class="flex w-full font-semibold nav-tabs py-2 mx-auto mt-4">
       <template v-for="(tab, index) in items" :key="`tab-${index}`">
         <span
           class="
@@ -28,6 +28,7 @@
 import { VNode } from "@vue/runtime-core";
 import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
+import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
 
 @Options({
   name: "tab",
@@ -45,6 +46,7 @@ class Tab extends Vue {
   name: "tabs",
   components: {
     Tab,
+    ChevronRightIcon,
   },
 })
 export default class Tabs extends Vue {
@@ -67,5 +69,32 @@ export default class Tabs extends Vue {
 .text-xxs {
     font-size: .8rem;
     line-height: 1rem;
+}
+.nav-tabs{
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    max-width: 2000px;
+    overflow: auto;
+        cursor: pointer;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 2rem;
+    border-color: #ffffff;
+}::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 2rem;
+    border-color: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+    height: 0.5rem;
+    outline: 1px solid white;
+}
+.nav-tabs {
+    border-bottom: 4px solid #ffffff;
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgb(255 255 255 / 30%);
+    width: 0.75rem;
 }
 </style>

@@ -1,47 +1,16 @@
 <template>
-  <div class="h-screen flex justify-center">
-    <div class="bg-white shadow-md p-4" >
-        <div>
-            <div class="flex space-x-4 w-full justify-between mt-3">
-                <p class="text-sm mt-3 text-black">     Patients will be able to see your cancellation notice when they book appointments online and when they recieve appointment notification emails. notification reminder timelines prior to appointment time
-                </p>
-                <div class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer">
-                    <edit-icon class="fill-current text-primary mr-4"/>  Edit
-                </div>
+<div v-if="!hiderating">
+    <div class="grid grid-cols-4 gap-1 w-full justify-center">
+            <img src="../../../../assets/1.svg" alt="image">
+            <img src="../../../../assets/2.svg" alt="image">
+            <img src="../../../../assets/3.svg" alt="image">
+            <div class="border border-gray-300 rounded-md w-60 h-52 cursor-pointer" @click="showUplaod">
+                        <span class="text-xxl text-gray-300 top-40 right-65 font-normal relative">+</span>
             </div>
-        </div>
-        <div class="w-full mb-12">
-            <label for="ecounter" class="w-full capitalize text-black text-sm font-bold mt-12">Message <span class="text-xs text-red-600 font-medium italic">(Max 150 characters)</span></label>
-                <div class="w-full -mt-6">
-                      <Textarea
-                          class="w-full text-xs"    
-                                placeholder="Sta"
-                                :rules="required"
-                                v-model="siteMessage"
-                              />
-                </div>
-        </div>  
-         <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>  
     </div>
-   
- 
-  </div>
+</div>
+   <rating-section :show-rating="shownew" :shownewupladmodal="true" v-else/>
+   <uplaoder-modal v-model="showUplaodModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -54,7 +23,7 @@ import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
-import { getCoordinates } from "@/plugins/utils";
+import { flatten, getCoordinates } from "@/plugins/utils";
 import { getCountries, getStates } from "@/plugins/nation-states";
 import AutoComplete from "@/components/autocomplete.vue";
 import Textarea from "@/components/textarea.vue";
@@ -62,7 +31,8 @@ import EditIcon from "@/components/icons/aedit.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
-import ImageSection from "./image.vue";
+import UplaoderModal from "./uploader.vue"
+import RatingSection from "./rating.vue";
 const countries = getCountries();
 
 const dropdown = namespace("dropdown");
@@ -79,8 +49,9 @@ const location = namespace("location");
     EditIcon,
     CalendarIcon,
     DateTimePicker,
+    RatingSection,
     CornieTextArea,
-    ImageSection,
+    UplaoderModal,
   },
 })
 export default class AddLocationn extends Vue {
@@ -115,6 +86,8 @@ export default class AddLocationn extends Vue {
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
 showImage = false;
+showUplaodModal= false;
+
   dropdowns = {} as IIndexableObject;
 
   required = string().required();
@@ -130,7 +103,10 @@ showImage = false;
   idChanged() {
     this.setLocation();
   }
-
+  hiderating= false;
+shownew(){
+    this.hiderating = true;
+}
   get coordinatesCB() {
     const address = `${this.address}, ${this.state} ${this.country}`;
     return () => getCoordinates(address);
@@ -153,6 +129,9 @@ showImage = false;
   }
 showImageSection(){
   this.showImage = true;
+}
+showUplaod(){
+    this.showUplaodModal  = true;
 }
   async setLocation() {
     const location = await this.getLocationById(this.id);
@@ -253,5 +232,12 @@ showImageSection(){
 input[type="time"]::-webkit-calendar-picker-indicator {
   background: none;
   display: none;
+}
+.right-65{  
+       left: 4.5rem;
+    font-size: 150px;
+}
+.top-40 {
+    top: -2rem;
 }
 </style>

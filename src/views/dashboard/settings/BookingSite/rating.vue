@@ -1,88 +1,22 @@
 <template>
-    <div class="w-full h-2/3 mt-8 flex flex-col justify-center items-center" v-if="empty3">
-            <img src="@/assets/img/nocurrency.svg" />
-            <h3 class="text-center text-black mt-5">No collection account recorded</h3>
-            <h4 class="text-black text-center">Add new account</h4>
-            <button
-                class="
-                bg-danger
-                rounded-full
-                text-sm
-                text-white
-                mb-5
-                mt-5
-                py-2
-                pl-6
-                pr-6
-                px-4
-                pb-2
-                focus:outline-none
-                hover:opacity-90
-                flex
-                "
-                @click="showNewExchangeRateModal = true"
-            >
-                <span class="text-xl -mt-1.5 mr-2">+ </span> 
-                New Exchange Rate
-            </button>
-            <!-- <new-exchange-rate v-model="showNewExchangeRateModal" /> -->
-    </div>
-  <div class="w-full pb-80"  v-else>
+
+  <div class="w-full pb-80" >
         <div class="w-full mt-5">
-            <span class="flex justify-end">
-            <button
-                class="
-                border-primary
-                rounded-full
-                text-primary
-                outline-primary
-                mt-5
-                text-sm
-                mb-5
-                py-2
-                px-3
-                    pl-6
-                pr-6
-                focus:outline-none
-                hover:opacity-90
-                flex
-                mr-6
-                "
-                @click="showDefaultCurrencyModal = true"
-            > 
-                Set  Default Currecncy
-            </button>
-            <button
-                class="
-                bg-danger
-                rounded-full
-                text-sm
-                text-white
-                mb-5
-                mt-5
-                py-2
-                pl-6
-                pr-6
-                px-4
-                pb-1
-                focus:outline-none
-                hover:opacity-90
-                flex
-                "
-                @click="showNewExchangeRateModal = true"
-            >
-                <span class="text-xl -mt-1.5 mr-2">+ </span> 
-                New Exchange Rate
-            </button>
-            </span>
             <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
             <template #actions="{ item }">
                 <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showRateModal(item.id)"
+                @click="showViewModal"
                 >
-                <eye-icon class="text-yellow-500 fill-current" />
-                <span class="ml-3 text-xs">View & Edit</span>
+                <eye-icon class="text-green-500 fill-current" />
+                <span class="ml-3 text-xs">View</span>
+                </div>
+                 <div
+                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                @click="showReplyModal"
+                >
+                <edit-icon class="text-primary fill-current" />
+                <span class="ml-3 text-xs">Reply</span>
                 </div>
                 <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -95,20 +29,25 @@
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                
                 >
-                <close-icon class="text-yellow-500 fill-current" />
-                <span class="ml-3 text-xs">Deactivate Account</span>
+                <close-icon class="text-black fill-current" />
+                <span class="ml-3 text-xs">Blacklist</span>
                 </div>
+            </template>
+            <template #emotion>
+                <cry-icon/>
             </template>
             </cornie-table>
 
-    </div>
-  </div>
       <default-currency v-model="showDefaultCurrencyModal" />
       <new-exchange-rate
         v-model="showNewExchangeRateModal"
         @currency-added="currencyadded"
         :id="currencyId"
       />
+    </div>
+  </div>
+  <reply-modal v-model="showReply"/>
+  <view-modal v-model="showView"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -119,14 +58,12 @@ import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
-import NewExchangeRate from "./exchangeRate.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
-import defaultCurrency from "./defaultCurrency.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import CloseIcon from "@/components/icons/danger.vue";
 import Select from "@/components/formselect.vue";
@@ -135,10 +72,10 @@ import DeleteIcon from "@/components/icons/deleteorange.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import CryIcon from "@/components/icons/cry.vue";
 import TimelineIcon from "@/components/icons/timeline.vue";
 import DangerIcon from "@/components/icons/danger.vue";
 import NoteIcon from "@/components/icons/notes.vue";
-import CheckinIcon from "@/components/icons/checkin.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
@@ -148,6 +85,8 @@ import { cornieClient } from "@/plugins/http";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import IPractitioner from "@/types/IPractitioner";
 import ICurrency from "@/types/ICurrency";
+import ReplyModal from "./allrating/reply.vue";
+import ViewModal from "./allrating/view.vue";
 
 const currency = namespace("currency");
 const practitioner = namespace("practitioner");
@@ -157,18 +96,18 @@ const userStore = namespace("user");
   components: {
     Table,
     CancelIcon,
+    ReplyModal,
+    ViewModal,
     SortIcon,
-    CheckinIcon,
     CloseIcon,
+    CryIcon,
     NewviewIcon,
     UpdateIcon,
     ChevronDownIcon,
     TimelineIcon,
-    NewExchangeRate,
     SelectSurvey,
     NoteIcon,
     ThreeDotIcon,
-    defaultCurrency,
     DangerIcon,
     Select,
     PlusIcon,
@@ -198,7 +137,8 @@ export default class PracticeformExistingState extends Vue {
   showDefaultCurrencyModal = false;
   currencyId= "";
     orgInfo = [] as any;
-
+    showReply= false;
+showView= false;
  @currency.State
   currencys!: ICurrency[];
 
@@ -222,23 +162,26 @@ export default class PracticeformExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "CURRENCY",
-      key: "currency",
+      title: "serial no",
+      key: "serial",
       show: true,
     },
-    { title: "CONVERSION", key: "conversion", show: true },
+    { title: "rating", key: "rating", show: true },
 
     {
-      title: "EXCHANGE RATE",
-      key: "exchangeRate",
+      title: "description",
+      key: "desciption",
       show: true,
     },
-    { title: "Location", key: "outlets" , show: true,},
-     { title: "LAST UPDATED", key: "updatedAt" , show: true,},
-     { title: "LAST UPDATED BY", key: "updatedByUser" , show: true,},
+    { title: "emotion", key: "emotion" , show: true,},
     // Displaying Icon in the header - <table-setting-icon/>
   ];
-
+showReplyModal(){
+    this.showReply = true;
+}
+showViewModal(){
+    this.showView = true;
+}
   get header() {
     return [...this.rawHeaders, { title: "", value: "action", image: true }];
   }
@@ -254,8 +197,10 @@ export default class PracticeformExistingState extends Vue {
       return {
         ...currency,
          action: currency.id,
-         outlets:"Market",
-        updatedByUser:this.getUser(currency.updatedByUser)
+         serial:"1",
+        rating:"3.1",
+        desciption:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nibh a......",
+
         };
     });
     if (!this.query) {
@@ -271,13 +216,13 @@ export default class PracticeformExistingState extends Vue {
       }
  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this currency conversion",
-      title: "Delete currency conversion"
+      message: "Are you sure you want to delete this rating?",
+      title: "Delete Rating"
     });
     if (!confirmed) return;
 
-    if (await this.deleteCurrency(id)) window.notify({ msg: "Currency Conversion deleted", status: "success" });
-    else window.notify({ msg: "Currency Conversion not deleted", status: "error" });
+    if (await this.deleteCurrency(id)) window.notify({ msg: "Rating deleted", status: "success" });
+    else window.notify({ msg: "Rating not deleted", status: "error" });
   }
 async showRateModal(value:string){
   this.showNewExchangeRateModal = true;
@@ -302,9 +247,7 @@ async showRateModal(value:string){
         window.notify({ msg: "Could not fetch organization", status: "error" });
       }
     }
-currencyadded(){
-    this.fetchCurrencys();
-}
+
   async created() {
     this.fetchPractitioners();
     this.fetchCurrencys();

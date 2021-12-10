@@ -165,6 +165,11 @@ export const SettingsRoute: RouteRecordRaw = {
       name: "Practice Forms/Templates",
       component: () => import("@/views/dashboard/settings/forms/index.vue"),
     },
+    {
+      path: "rating",
+      name: "Ratings",
+      component: () => import("@/views/dashboard/settings/BookingSite/rating.vue"),
+    },
     // {
     //   path: "locationTax",
     //   name: "Location & Tax",

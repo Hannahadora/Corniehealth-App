@@ -85,7 +85,7 @@
               Cancel
             </cornie-btn>
             <cornie-btn  :loading="loading"
-                    @click="setSession" class="text-white bg-danger px-3 rounded-xl">
+                    @click="setSession" class="text-white bg-danger px-6 rounded-xl">
           Save
             </cornie-btn>
         </cornie-card-text>
@@ -359,7 +359,6 @@ export default class CheckIn extends Vue {
       await this.fetchOrgInfo();
     this.orgValue = this.organizationInfo.domainName;
     this.getappointmentTypes();
-    console.log(this.orgValue);
   }
 }
 </script>

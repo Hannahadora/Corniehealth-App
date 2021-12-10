@@ -26,7 +26,9 @@
         <calender-preference />
         <notification-template />
         <add-locationn />
-        <!-- <add-reminder /> -->
+        <photo-section/>
+         <rating-section /> 
+         <performance-section/>
       </tabs>
       </span>
     </div>
@@ -40,7 +42,8 @@ import Tabs from "./tabs.vue";
 import PracticeInfo from "./practiceinformation/Functions.vue";
 import AppointmentTypes from "./appointmenttypes/ExistingState.vue";
 import BookingSite from "./bookingsite/ExistingState.vue";
-
+import PhotoSection from "./photo.vue";
+import PerformanceSection from "./performance.vue";
 
 import AppointmentRooms from "./appointmentrooms/Functions.vue";
 //import Designations2 from "./designations/ExistingState.vue";
@@ -50,7 +53,7 @@ import AddLocationn from "./addLocationn.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
 import CalenderPreference from "./calender/index.vue"
 import NotificationTemplate from './notificationtemplate/index.vue';
-
+import RatingSection from "./rating.vue"
 
 
 
@@ -60,19 +63,22 @@ import NotificationTemplate from './notificationtemplate/index.vue';
     Tabs,
     PracticeInfo,
     AppointmentTypes,
+    PhotoSection,
     BookingSite,
+    PerformanceSection,
     AppointmentRooms,
    // Designations2,
   //  JobLevel2,
     AddLocation,
     CalenderPreference,
+    RatingSection,
     NotificationTemplate,
     AddLocationn,
     AddReminder,
   },
 })
 export default class Bookings extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation"];
+  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation","Photos","Rating","Performance"];
   currentTab = 0;
 }
 </script>

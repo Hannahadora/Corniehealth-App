@@ -76,7 +76,7 @@
                     </div>
                     </template> 
                     <template v-slot:option="{ option }">
-                        <select-option @click="setDefault(option.code)"  name="defaultaccount" :id="option.code"/> <span class="w-full text-sm">{{option.display }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="option.code == defaultAccount">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="setDefault(option.code)">Set as default</span> 
+                        <select-option @click="setDefault(option.code)" /> <span class="w-full text-sm">{{option.display }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="option.code == defaultAccount">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="setDefault(option.code)">Set as default</span> 
                     </template>
                     </Multiselect> 
                 </div>
@@ -319,8 +319,8 @@ async setAccount() {
       }
     } catch (error:any) {
         window.notify({ msg: error.response.data.message, status: "error" });
-      // window.notify({ msg: "Collection Account not Created", status: "error" });
-     // this.$router.push("/dashboard/provider/settings/practice-templates");
+        //window.notify({ msg: "Collection Associations Created", status: "success" });
+       //this.done();
     }
   }
    async updateAccount() {

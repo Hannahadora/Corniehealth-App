@@ -4,7 +4,7 @@
         <img src="@/assets/type.svg" class="mb-2" />
           <h4 class="text-black text-center">There are no appointment types on record.</h4>
           <cornie-btn
-          class="bg-danger py-1 px-5 rounded-full text-white m-5"
+          class="bg-danger  px-3 rounded-full text-white m-5"
            @click="registerNew = true"
         >
           Add New
@@ -13,7 +13,7 @@
   <div class="w-full pb-7" v-else>
     <div class="flex justify-end items-center mb-6">
      <cornie-btn
-          class="bg-danger py-1 px-5 rounded-full text-white m-5"
+          class="bg-danger  px-3 rounded-full text-white m-5"
           @click="registerNew = true"
         >
           Add New
@@ -99,6 +99,10 @@ query= "";
   tasks!: ITask[];
 
 
+
+  @task.Action
+  fetchTasks!: () => Promise<void>;
+
   // appointmentId ="";
   rawHeaders = [
     {
@@ -179,6 +183,10 @@ query= "";
 
   updateDesignation(id: string) {
     this.$router.push({ name: "New Designation", params: { id } });
+  }
+  created(){
+     this.fetchTasks();
+    if (this.tasks.length < 1) this.fetchTasks();
   }
 }
 </script>
