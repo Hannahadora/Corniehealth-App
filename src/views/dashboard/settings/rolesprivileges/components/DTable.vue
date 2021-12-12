@@ -278,7 +278,7 @@ export default class PractitionerExistingState extends Vue {
       if (response) window.notify({ msg: "Role deleted", status: "success" });
     } catch (error) {
       window.notify({ msg: "Role not deleted", status: "error" });
-      console.log(error);
+      ;
     }
   }
 }

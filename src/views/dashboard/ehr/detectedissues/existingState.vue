@@ -258,7 +258,7 @@ export default class IssuesExistingState extends Vue {
     this.showIssuesModal = true;
     //this.stopEvent = true;
     this.currentIssue = issue;
-    console.log(this.currentIssue);
+    ;
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;
@@ -291,7 +291,7 @@ export default class IssuesExistingState extends Vue {
     // this.getPractitioners();
     this.sortIssues;
     this.fetchIssues(this.activePatientId);
-    console.log(this.currentIssue);
+    ;
   }
 }
 </script>

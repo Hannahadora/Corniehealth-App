@@ -233,7 +233,7 @@
 
             <vue-slider v-model="value"></vue-slider>
 
-            <!-- 
+            <!--
 
 <input id="rangeInput" type="range" list="tickmarks" min="0" max="100">
 
@@ -882,10 +882,10 @@ export default class AddCondition extends Vue {
   // }
 
   async submit() {
-    console.log("payload", this.payload2);
+    ;
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return console.log("form is invalid");
+      return ;
     }
     try {
       const { data } = await cornieClient().post(
@@ -893,10 +893,10 @@ export default class AddCondition extends Vue {
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      console.log("success", this.payload2);
+      ;
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      console.log("error", error);
+      ;
     }
   }
 

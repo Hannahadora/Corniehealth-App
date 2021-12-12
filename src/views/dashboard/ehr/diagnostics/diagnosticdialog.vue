@@ -787,7 +787,7 @@ export default class Medication extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Request not Created", status: "error" });
     }
   }

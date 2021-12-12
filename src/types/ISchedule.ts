@@ -1,6 +1,6 @@
-import IDevice from "./IDevice";
-import IHealthCareService from "./IHealthcare";
-import IPractitioner from "./IPractitioner";
+import IDevice from './IDevice'
+import IHealthCareService from './IHealthcare'
+import IPractitioner from './IPractitioner'
 
 export default interface ISchedule {
   id: string;

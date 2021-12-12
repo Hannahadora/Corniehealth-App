@@ -156,7 +156,7 @@
           <modal :visible="timeLineVissible">
             <!-- <template #title>
                     <p class="md flex items-center justify-between px2" style="width: 440px">
-                      <span class="md font-lignt text-primary p-2 text-xl">Timeline</span> 
+                      <span class="md font-lignt text-primary p-2 text-xl">Timeline</span>
                       <span class="md text-danger cursor-pointer">
                         <a class="md">
                           See all
@@ -618,7 +618,7 @@ export default class PractitionerExistingState extends Vue {
         });
       }
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }
@@ -685,7 +685,7 @@ export default class PractitionerExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    console.log(pt, id);
+    ;
 
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
@@ -740,7 +740,7 @@ export default class PractitionerExistingState extends Vue {
   viewSchedule(id: string) {
     // const schedule = this.schedules.find((i: any) => i.id === id);
     // if (schedule) this.selectedSchedule = schedule;
-    // console.log(this.selectedSchedule);
+    // ;
     // this.showActorsPane = true;
     // this.showViewPane = true;
   }
@@ -778,10 +778,10 @@ export default class PractitionerExistingState extends Vue {
     }, 5000);
     if (this.patients?.length === 0) await this.getPatients();
     await this.fetchByIdAppointments(this.$route.params.id.toString());
-    console.log(this.patientappointments, "apposhhhh");
+    ;
 
     await this.getPatientVisits(this.$route.params.id.toString());
-    console.log(this.patientVisits, "visits");
+    ;
     window.addEventListener("click", (e: any) => {
       if (!e.target.classList.contains("md")) {
         this.selectType = false;

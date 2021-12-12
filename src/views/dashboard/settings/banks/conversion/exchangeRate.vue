@@ -1,12 +1,12 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-5/6">
     <cornie-card height="100%" class="flex flex-col">
-       <cornie-card-title  class="w-full"> 
+       <cornie-card-title  class="w-full">
           <div class="w-full">
             <h2 class="font-bold float-left text-lg text-primary -mt-1">{{newaction}} Exchange Rate</h2>
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
-          
+
        </cornie-card-title>
         <cornie-card-text class="flex-grow scrollable">
           <div>
@@ -19,8 +19,8 @@
   :createTag="true"
   :options="allCurrency"
 />  -->
-            <div>    
-                <span class="text-sm font-semibold mb-1">Location</span>       
+            <div>
+                <span class="text-sm font-semibold mb-1">Location</span>
                  <Multiselect
                v-model="value"
                 mode="tags"
@@ -35,7 +35,7 @@
                 label="value"
                 placeholder="--Select Outlets--"
                 class="w-full"
-               
+
               >
               <template v-slot:tag="{ option, handleTagRemove, disabled }">
                 <div class="multiselect-tag is-user">
@@ -51,7 +51,7 @@
                 </template>
 
 
-              </Multiselect> 
+              </Multiselect>
             </div>
               <cornie-select
                 placeholder="--Select--"
@@ -69,7 +69,7 @@
               />
           </div>
            <div class="">
-               <span class="text-sm font-semibold mb-1">Exchange rate</span>       
+               <span class="text-sm font-semibold mb-1">Exchange rate</span>
                 <div class="bg-blue-100 text-black p-3 rounded flex font-semibold mt-5 text-sm">
                   68
                 </div>
@@ -77,7 +77,7 @@
             <div class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm">
                 1 CY ~= 68 NGN
             </div>
-        </cornie-card-text>  
+        </cornie-card-text>
            <cornie-card>
         <cornie-card-text class="flex justify-end">
                 <cornie-btn
@@ -154,7 +154,7 @@ export default class NewExchangeRate extends Vue {
       Currencies = [];
 loading=false;
  value = null;
- 
+
        options = [
           'Batman',
           'Robin',
@@ -207,7 +207,7 @@ loading=false;
 
   async createCurrency() {
     try {
-      console.log(this.payload);
+      ;
       const response = await cornieClient().post(
         "/api/v1/currency",
         this.payload

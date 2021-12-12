@@ -545,7 +545,7 @@ export default class AddRequest extends Vue {
         this.$router.push("/dashboard/provider/experience/requests");
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Request not Created", status: "error" });
     }
   }

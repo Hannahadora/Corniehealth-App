@@ -166,7 +166,7 @@
         </corniebtn>
         <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
                     <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save 
+                        Save
                     </a>
                     <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
                 </button> -->
@@ -306,7 +306,7 @@ export default class CheckIn extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
 
@@ -515,14 +515,14 @@ export default class CheckIn extends Vue {
       await this.fetchAppointments();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-    console.log(this.practitioners, "pracs");
-    console.log(this.patients, "pats");
+    ;
+    ;
 
     // this.checkin(req).then((res: any) => {
-    //   console.log(res, "VISIT");
+    //   ;
     // })
     // .catch((err: any) => {
-    //   console.log(err);
+    //   ;
 
     // });
   }

@@ -122,7 +122,7 @@ export default class TwoFactor extends Vue {
 
   async submitSecurityAnswer() {
     // not implemented
-    console.log("Not implemented");
+    ;
   }
 }
 </script>

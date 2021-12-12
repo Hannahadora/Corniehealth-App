@@ -170,7 +170,7 @@ export default class PatientCheckout extends Vue {
       }
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
 
       this.loading = false;
     }

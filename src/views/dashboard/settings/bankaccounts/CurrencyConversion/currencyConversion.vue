@@ -69,9 +69,9 @@ export default class CurrencyConversion extends Vue {
   //     );
   //     if (response.success) {
   //       this.currencies = [...response.data];
-  //     } else console.log(response.errors!.summary);
+  //     } else ;
   //   } catch (error) {
-  //     console.log("failed to fetch payments");
+  //     ;
   //   }
   // }
 

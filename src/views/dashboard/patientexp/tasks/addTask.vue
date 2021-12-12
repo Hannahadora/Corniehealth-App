@@ -187,8 +187,8 @@
                       class="uppercase flex mb-1 text-xs font-semibold"
                     >
                       location
-                      <info-icon class="text-primary fill-current" />   
-                   
+                      <info-icon class="text-primary fill-current" />
+
                     </label>
                     <input
                       class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
@@ -747,7 +747,7 @@ export default class AddTask extends Vue {
         this.$router.push("/dashboard/provider/experience/tasks");
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Task not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }

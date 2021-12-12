@@ -851,7 +851,7 @@ export default class NewProuct extends Vue {
       }
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
       window.notify({
         msg: "There was an error, please check the form and try again",
@@ -862,7 +862,7 @@ export default class NewProuct extends Vue {
 
   async created() {
     if (this.locations?.length <= 0) await this.fetchLocations();
-    console.log(this.locations, "LOCATIONS");
+    ;
   }
 }
 </script>

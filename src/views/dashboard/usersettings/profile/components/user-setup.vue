@@ -421,7 +421,7 @@ export default class USerSetup extends Vue {
         return { code: i.id, display: i.name };
       });
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
   async getDesignations() {
@@ -433,7 +433,7 @@ export default class USerSetup extends Vue {
         return { code: i.id, display: i.name };
       });
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
   async getDepartments() {
@@ -445,7 +445,7 @@ export default class USerSetup extends Vue {
         return { code: i.id, display: i.name };
       });
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 
@@ -479,7 +479,7 @@ export default class USerSetup extends Vue {
       const res = await this.setUserUp(body);
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }
@@ -491,7 +491,7 @@ export default class USerSetup extends Vue {
 
   async created() {
     if (this.roles) await this.getRoles();
-    console.log(this.user, "user");
+    ;
 
     this.getDesignations();
     this.getLevels();

@@ -256,7 +256,7 @@ export default class GroupExistingState extends Vue {
     else window.notify({ msg: "Group not deleted", status: "error" });
   }
   async displayMember(id: string) {
-    console.log("Hello i m here");
+    ;
     const group = await this.groups.find((d) => d.id == id);
     this.showMemberModal = true;
     this.paymentId = id;
@@ -294,7 +294,7 @@ export default class GroupExistingState extends Vue {
     });
   }
   async created() {
-    console.log(this.items);
+    ;
   }
 }
 </script>

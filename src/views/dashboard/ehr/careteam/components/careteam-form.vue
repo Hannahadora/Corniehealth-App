@@ -574,7 +574,7 @@ export default class NewTeam extends Vue {
   }
 
   memberSelected(data: IItem) {
-    console.log(data, "Emitted");
+    ;
     if (!data) return;
     if (this.memberType?.toLowerCase() === "practitioner") {
       this.participant.name = data.display;
@@ -591,9 +591,9 @@ export default class NewTeam extends Vue {
   }
 
   async createTeam() {
-    console.log(this.newTeam, "NEW TEAM");
-    console.log(this.participant, "NEW Participant");
-    console.log(this.communication, "NEW Communication");
+    ;
+    ;
+    ;
 
     try {
       this.loading = true;
@@ -650,7 +650,7 @@ export default class NewTeam extends Vue {
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
 
@@ -673,8 +673,8 @@ export default class NewTeam extends Vue {
       await this.fetchPatients();
     const data = await this.getDropdowns("careTeam");
     this.dropdowns = data;
-    console.log(this.patients, "PPPP");
-    console.log(this.practitioners, "PRPRPRP");
+    ;
+    ;
   }
 }
 </script>

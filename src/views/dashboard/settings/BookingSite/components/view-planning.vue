@@ -263,14 +263,14 @@ export default class EditDetail extends Vue {
       ...this.shift,
       id: this.$route.query.shiftId,
     };
-    console.log(body, "body");
+    ;
     this.loading = true;
     if (!this.$route.query.shiftId) {
       try {
         await this.createShift(body);
         this.$router.push({ name: "Patient Experience Management" });
       } catch (error) {
-        console.log(error);
+        ;
       }
     } else {
       try {
@@ -278,7 +278,7 @@ export default class EditDetail extends Vue {
         await this.updateShift(body);
         this.$router.push({ name: "Patient Experience Management" });
       } catch (error) {
-        console.log(error);
+        ;
       }
     }
     this.loading = false;

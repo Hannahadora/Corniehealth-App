@@ -221,16 +221,16 @@ export default class NewEpisode extends Vue {
     try {
       this.episode.patientId = this.patientId;
       const created = await this.createEpisode(this.episode);
-      console.log(created, "created");
+      ;
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 
   async created() {
     this.patientId = this.$route.params.id as string;
     if (this.requests?.length <= 0) await this.fetchRequests();
-    console.log(this.requests, "REquest");
+    ;
   }
 }
 </script>

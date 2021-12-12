@@ -1,6 +1,3 @@
-import Period from "./IPeriod";
-import IAllergy from "./IAllergy";
-import Phone from "./IPhone";
 
 export default interface IProgressnote {
   id?: string;
@@ -96,8 +93,8 @@ export interface clinicalImpressions {
     previous?: string;
     problem?: string;
   };
-  investigation?: {};
-  findings?: {};
+  investigation?: Record<string, unknown>;
+  findings?: Record<string, unknown>;
 }
 
 export interface diagnosticRequests {

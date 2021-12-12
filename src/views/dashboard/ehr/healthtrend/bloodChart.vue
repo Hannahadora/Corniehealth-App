@@ -193,7 +193,7 @@ export default class BloodChartt extends Vue {
         return { count: record.value, date: record.date };
       });
       this.raw = response.data;
-      console.log(response.data, "RESPONSE");
+      ;
 
       // this.raw = response.data?.map((item: any) => {
       //   return { count: item.value, date: item.date }

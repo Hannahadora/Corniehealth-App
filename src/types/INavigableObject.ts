@@ -1,3 +1,3 @@
-interface INavigableObject {
+ interface INavigableObject {
   to: string;
 }

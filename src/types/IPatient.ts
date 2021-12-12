@@ -1,9 +1,9 @@
-import Period from "./IPeriod";
-import Phone from "./IPhone";
+import Period from './IPeriod'
+import Phone from './IPhone'
 
 export interface Contact {
   id?: string;
-  type: "work" | "home";
+  type: 'work' | 'home';
   patientId: string;
   primaryAddress: string;
   secondaryAddress?: string;
@@ -47,15 +47,15 @@ export interface Provider {
   identifier: string;
   default?: boolean;
   patientId: string;
-  type: "lab" | "pharmacy" | "clinic";
+  type: 'lab' | 'pharmacy' | 'clinic';
 }
 
 export interface PatientPharmacy extends Provider {
-  type: "pharmacy";
+  type: 'pharmacy';
 }
 
 export interface PatientLab extends Provider {
-  type: "lab";
+  type: 'lab';
 }
 
 export interface Insurance {
@@ -77,7 +77,7 @@ export interface RelatedPerson {
   firstname: string;
   middlename?: string;
   lastname: string;
-  gender?: "male" | "female" | "other";
+  gender?: 'male' | 'female' | 'other';
   relationship: string;
   mailingAddress?: string;
   city?: string;
@@ -97,14 +97,14 @@ export interface RelatedPerson {
 export interface authorizedPractitioners {
   id?: string;
   patient_authorized_practitioners: string;
-  user: {};
+  user: Record<string, unknown>;
 }
 
 export interface Guarantor extends RelatedPerson {
-  type: "guarantor";
+  type: 'guarantor';
 }
 export interface EmergencyContact extends RelatedPerson {
-  type: "emergency-contact";
+  type: 'emergency-contact';
 }
 
 // export interface authorizedPractitioners {
@@ -120,8 +120,8 @@ export interface IPatient {
   middlename?: string;
   lastname: string;
   dateOfBirth?: string;
-  gender?: "male" | "female" | "other";
-  maritalStatus?: "single" | "married" | "divorced" | "seperated";
+  gender?: 'male' | 'female' | 'other';
+  maritalStatus?: 'single' | 'married' | 'divorced' | 'seperated';
   multipleBirths?: boolean;
   multipleBirthInteger?: number;
   identityNos?: Identity[];
@@ -132,7 +132,7 @@ export interface IPatient {
   preferredPharmacies?: PatientPharmacy[];
   guarantor?: Guarantor;
   userId?: string;
-  accountType?: "individual" | "family" | "corporate";
+  accountType?: 'individual' | 'family' | 'corporate';
   vip?: boolean;
   insurances?: Insurance[];
   deceased?: boolean;

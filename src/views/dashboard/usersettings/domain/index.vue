@@ -78,7 +78,7 @@ export default class UserDomain extends Vue {
 
   async created() {
     await this.getDomains();
-    console.log(this.domains, "domains");
+    ;
   }
 }
 </script>

@@ -41,7 +41,7 @@ export default class MedicationChart extends Vue {
       const response = await cornieClient().get(
         "api/v1/requests/getStats/count"
       );
-      console.log(response.data);
+      ;
       const rawActive = response.data.Active;
       this.rawDataActive = rawActive;
       this.rawDatatotalRequest = response.data.totalRequest;

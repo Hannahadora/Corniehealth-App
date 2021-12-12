@@ -341,7 +341,7 @@ export default class AppointmentExistingState extends Vue {
   }
 
   onChange(event: any) {
-    console.log(event.target.value);
+    ;
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -380,7 +380,7 @@ export default class AppointmentExistingState extends Vue {
     const values = response[0].data.map(function (e: any) {
       return e.createdAt;
     });
-    console.log(values);
+    ;
     let results = values.map((date: any) => moment(date).format("dddd,DD"));
     this.chartdata = results;
     const count = response[0].data.map((e: any) => e.status.length);

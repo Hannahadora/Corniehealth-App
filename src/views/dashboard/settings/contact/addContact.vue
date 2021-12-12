@@ -5,7 +5,7 @@
         class="flex bg-primary w-full h-3/4 overflow-y-auto rounded-t-lg p-2"
       >
         <span class="block pr-2 border-r-2">
-    
+
         </span>
       </div> -->
       <div class="w-full p-3">
@@ -16,10 +16,10 @@
           />
           <div class="border h-5"/>
    <h2 class="text-primary font-bold text-2xl" >
-        {{isUpdate ? "Edit My Contact" : "Add Contact"}}  
+        {{isUpdate ? "Edit My Contact" : "Add Contact"}}
         </h2>
         </div>
-     
+
 
         <span class="flex items-center mt-3 mb-12">
           <cornie-avatar-field v-model="image" />
@@ -164,13 +164,13 @@ export default class AddContact extends Vue {
 
   @Watch("image")
   imageChanged(val: string) {
-    console.log("Value for image", val);
+    ;
   }
 
   @Watch("visible")
   unsetContacts(val: boolean) {
     if (val) return this.setContact();
-    console.log("Unsetting");
+    ;
     this.fname = "";
     this.lname = "";
     this.gender = "";
