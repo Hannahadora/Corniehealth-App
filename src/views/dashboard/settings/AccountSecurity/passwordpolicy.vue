@@ -51,7 +51,7 @@ export default {
   },
   watch: {
     show(value) {
-      console.log(value);
+      ;
     },
   },
   computed: {

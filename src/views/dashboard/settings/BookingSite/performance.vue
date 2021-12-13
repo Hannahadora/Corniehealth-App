@@ -384,7 +384,7 @@ orgInfo=[];
         this.done();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({
         msg: "practice-information not Created",
         status: "error",

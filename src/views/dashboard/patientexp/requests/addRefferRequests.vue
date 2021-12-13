@@ -559,7 +559,7 @@ export default class AddAppointment extends Vue {
         //this.selected = 1;
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Other Request not Created", status: "error" });
     }
   }

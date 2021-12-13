@@ -177,7 +177,7 @@ export default class AllActors extends Vue {
   actors!: any;
 
   selectPractitioner(actor: any) {
-    console.log(actor, "actor");
+    ;
 
     const index = this.selectedActors.findIndex(
       (participant: any) => participant.code === actor.code
@@ -258,7 +258,7 @@ export default class AllActors extends Vue {
         window.notify({ msg: "Actor could not be added", status: "error" });
       }
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 
@@ -278,7 +278,7 @@ export default class AllActors extends Vue {
         window.notify({ msg: "Actor could not be removed", status: "error" });
       }
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 

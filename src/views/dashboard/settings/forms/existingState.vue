@@ -323,7 +323,7 @@
         </div>
       </div>
       <!-- <div class="tab-pane" v-if="selected == 3"  :class="{'active' :  selected === 3  }" id="Satisfaction">
-         
+
         </div> -->
     </div>
     <notes-add :tasknotes="tasknotes" :taskId="taskId" v-model="showNotes" />
@@ -702,7 +702,7 @@ export default class PracticeformExistingState extends Vue {
         this.stautsadded();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Practice form  not Archived", status: "error" });
       this.loading = false;
     }

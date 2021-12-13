@@ -33,7 +33,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div> -->
 
@@ -565,10 +565,10 @@ export default class Shift extends Vue {
       } else {
         window.notify({ msg: "Error creating slot", status: "error" });
       }
-      console.log(createdSlot, "created slot");
+      ;
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }

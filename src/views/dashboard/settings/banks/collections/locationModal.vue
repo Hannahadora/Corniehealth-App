@@ -18,8 +18,8 @@
                 :items="allLocation"
                 placeholder="--Select Location--"
                 />
-                <div>    
-                    <span class="text-sm font-semibold mb-1">Pay Categories</span>       
+                <div>
+                    <span class="text-sm font-semibold mb-1">Pay Categories</span>
                     <Multiselect
                     v-model="paymentCategories"
                     mode="tags"
@@ -30,7 +30,7 @@
                     label="value"
                     placeholder="--Select--"
                     class="w-full"
-                
+
                 >
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
@@ -46,10 +46,10 @@
                     </template>
 
 
-                    </Multiselect> 
+                    </Multiselect>
                 </div>
-                <div>    
-                    <span class="text-sm font-semibold mb-1">Account</span>       
+                <div>
+                    <span class="text-sm font-semibold mb-1">Account</span>
                     <Multiselect
                     v-model="accounts"
                     mode="tags"
@@ -61,7 +61,7 @@
                     label="code"
                     placeholder="--Select--"
                     class="w-full"
-                
+
                 >
                 <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
@@ -74,11 +74,11 @@
                         <span class="multiselect-tag-remove-icon"></span>
                         </span>
                     </div>
-                    </template> 
+                    </template>
                     <template v-slot:option="{ option }">
                         <select-option @click="setDefault(option.code)" /> <span class="w-full text-sm">{{option.display }}</span>   <span  class="text-xs text-success flex justify-end float-right w-full" v-if="option.code == defaultAccount">Default</span> <span v-else class="text-xs text-danger flex justify-end float-right w-full" @click="setDefault(option.code)">Set as default</span> 
                     </template>
-                    </Multiselect> 
+                    </Multiselect>
                 </div>
                  <div class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2" v-for="(input, index) in accounts" :key="`${index}`">
                 <p class="float-left text-sm">{{input.name}}</p>
@@ -349,7 +349,7 @@ async setAccount() {
     else await this.createAccount()
     this.loading = false;
   }
- 
+
   async created() {
   await this.fetchLocation();
   await this.fetchDropDown();

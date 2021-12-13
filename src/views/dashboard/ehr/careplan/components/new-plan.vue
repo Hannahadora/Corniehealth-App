@@ -893,12 +893,12 @@ export default class NewPlan extends Vue {
 
   contributorSelected(data: any) {
     this.selectedContributor = data;
-    console.log(this.selectedContributor, "SELECTED AUTHOR");
+    ;
   }
 
   outcomeReferenceSelected(data: any) {
     this.outcomeReference = data;
-    console.log(this.outcomeReference, "REFER");
+    ;
   }
 
   async onSave() {
@@ -910,11 +910,11 @@ export default class NewPlan extends Vue {
       if (response?.id) {
         this.$emit("closesidemodal");
       }
-      console.log(this.authPractitioner, "AP");
-      console.log(response);
+      ;
+      ;
       this.loading = false;
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 }

@@ -1,4 +1,4 @@
-import Period from "./IPeriod";
+import Period from './IPeriod'
 
 export interface OnSet {
   onsetPeriodAge: string;
@@ -33,7 +33,7 @@ export interface Born {
 export interface Age {
   age: number;
   estimatedAge: number;
-  ageRangeString: String;
+  ageRangeString: string;
   unitOfMesurement: string;
   ageRangeMin: 0;
   ageRangeMax: 0;

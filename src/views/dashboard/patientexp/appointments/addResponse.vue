@@ -381,7 +381,7 @@ export default class AddResponse extends Vue {
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
       window.notify({
         msg: "Appointment Response not created",
         status: "error",
@@ -398,7 +398,7 @@ export default class AddResponse extends Vue {
         this.singleParticipant = response.data;
       }
     } catch (e) {
-      console.log(e);
+      ;
     }
   }
 

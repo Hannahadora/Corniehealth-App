@@ -325,7 +325,7 @@ export default class CheckIn extends Vue {
       this.checkinData.scheduleId =
         todaySlots.length > 0 ? todaySlots[0].id : "";
       this.availableSlots = todaySlots.map((schedule: any) => schedule.slots);
-      console.log(this.availableSlots);
+      ;
     });
   }
 
@@ -334,7 +334,7 @@ export default class CheckIn extends Vue {
       this.loading = true;
       const slot = this.checkinData.slot;
       this.loading = false;
-      console.log("Slot is ", slot);
+      ;
       if (slot) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,

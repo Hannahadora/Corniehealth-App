@@ -320,7 +320,7 @@ export default class AddPractitioner extends Vue {
       }
     } catch (error) {
       window.notify({ msg: "Practitioner not created", status: "error" });
-      console.log(error);
+      ;
     }
   }
 
@@ -335,7 +335,7 @@ export default class AddPractitioner extends Vue {
       }
     } catch (error) {
       window.notify({ msg: "Practitioner not updated", status: "error" });
-      console.log(error);
+      ;
     }
   }
 

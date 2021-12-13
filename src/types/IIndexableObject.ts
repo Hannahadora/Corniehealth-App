@@ -1,3 +1,3 @@
-interface IIndexableObject {
+ interface IIndexableObject {
   [state: string]: any;
 }

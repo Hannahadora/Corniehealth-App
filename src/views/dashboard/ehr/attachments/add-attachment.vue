@@ -93,13 +93,13 @@ export default class AddAttachment extends Vue {
 
   get activePatientId() {
     const id = this.$route?.params?.id as string;
-    console.log(id);
+    ;
     return id;
   }
 
   checkingAttachments() {
     const updatingAttachments = this.attachments.find((c) => c.id === this.id);
-    //  console.log(updatingAttachments);
+    //  ;
     this.title = updatingAttachments.title;
     this.comment = updatingAttachments.comment;
     this.file = updatingAttachments.imageUrl;
@@ -151,7 +151,7 @@ export default class AddAttachment extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Attachment not Created", status: "error" });
     }
   }

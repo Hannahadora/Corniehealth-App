@@ -1,23 +1,80 @@
 module.exports = {
-  root: true,
-
-  env: {
-    node: true,
-  },
-
-  parserOptions: {
-    parser: "@typescript-eslint/parser",
-  },
-
-  rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-  },
-
-  extends: [
-    "plugin:vue/vue3-essential",
-    "eslint:recommended",
-    "@vue/prettier",
-    "@vue/typescript",
-  ],
-};
+    root: true,
+    env: {
+        browser: true,
+        node: true
+    },
+    extends: [
+        'plugin:vue/vue3-essential',
+        'eslint:recommended',
+        '@vue/typescript/recommended'
+    ],
+    parserOptions: {
+        ecmaVersion: 2020
+    },
+    rules: {
+        'no-console': 'warn',
+        'no-debugger': 'warn',
+        'vue/no-deprecated-slot-attribute': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/ban-ts-ignore': 'off',
+        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/interface-name-prefix': 'off',
+        'no-empty-function': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/camelcase': 'off',
+        'vue/no-v-html': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/no-implicit-any': 'off',
+        'no-empty': 'off',
+        '@typescript-eslint/member-delimiter-style': [
+            'off',
+            {
+                multiline: { delimiter: 'none', requireLast: false },
+                singleline: { delimiter: 'comma', requireLast: false }
+            }
+        ],
+        '@typescript-eslint/no-use-before-define': 'off',
+        'no-tabs': 'off',
+        	"unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+		],
+        'no-var': 'error',
+        'no-use-before-define': 'off',
+        indent: ['error', 'tab', { SwitchCase: 1 }],
+        'no-mixed-spaces-and-tabs': ['off', 'smart-tabs'],
+        semi: ['error', 'never'],
+        quotes: ['error', 'single'],
+        'prefer-const': ['error'],
+        'arrow-parens': ['error', 'always'],
+        'no-return-assign': 'off',
+        curly: 'off',
+        'vue/html-indent': ['warn', 'tab', {
+            attribute: 1,
+            baseIndent: 1,
+            closeBracket: 0,
+            alignAttributesVertically: true,
+            ignores: []
+        }],
+        'vue/no-mutating-props': 'off',
+        'object-property-newline': 'off',
+        'require-atomic-updates': 'off',
+        'require-await': 'off'
+    },
+    overrides: [
+        {
+            files: [
+                '**/__tests__/*.{j,t}s?(x)',
+                '**/tests/unit/**/*.spec.{j,t}s?(x)'
+            ],
+            env: {
+                jest: true
+            }
+        }
+    ],
+    "plugins": ["unused-imports"]
+}

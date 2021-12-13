@@ -747,20 +747,20 @@ export default class PractitionerExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    console.log(pt, id);
+    ;
 
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 
   setSelectedVisit(id: string) {
     const pt = this.visits.find((i: any) => i.id === id);
-    console.log(pt, "PTTT");
+    ;
     this.selectedVisit = pt ? pt : {};
   }
 
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    console.log(pt, "PTTTPPPP");
+    ;
     this.selectedPatient = pt ? pt : {};
   }
 
@@ -784,7 +784,7 @@ export default class PractitionerExistingState extends Vue {
 
   async destroy(id: string) {
     const cancelled = await this.cancel(id);
-    console.log(cancelled, "cancelled");
+    ;
 
     if (cancelled) {
       window.notify({ msg: "Visit Cancelled", status: "success" });
@@ -814,7 +814,7 @@ export default class PractitionerExistingState extends Vue {
   viewSchedule(id: string) {
     // const schedule = this.schedules.find((i: any) => i.id === id);
     // if (schedule) this.selectedSchedule = schedule;
-    // console.log(this.selectedSchedule);
+    // ;
     // this.showActorsPane = true;
     // this.showViewPane = true;
   }
@@ -849,10 +849,10 @@ export default class PractitionerExistingState extends Vue {
     if (!this.patients || this.patients.length === 0) await this.getPatients();
     if (!this.appointments || this.appointments.length === 0)
       await this.fetchAppointments();
-    console.log(this.appointments, "appos");
+    ;
 
     if (!this.visits || this.visits.length === 0) await this.getVisits();
-    console.log(this.visits, "visits");
+    ;
     window.addEventListener("click", (e: any) => {
       if (!e.target.classList.contains("md")) {
         this.selectType = false;

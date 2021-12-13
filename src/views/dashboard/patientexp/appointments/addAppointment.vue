@@ -712,20 +712,20 @@ export default class AddAppointment extends Vue {
         `/api/v1/slot/practitioner/${oneId}`
       );
       if (response.success) {
-        console.log(response);
-        console.log(response.data);
-        console.log("response[0].data");
+        ;
+        ;
+        ;
         this.availableSlots = response.data;
       }
     } catch (error) {
-      console.log(error);
+      ;
     }
 
     // const AllSchedules = cornieClient().get(`/api/v1/slot/practitioner/${oneId}`);
     // const response = await Promise.all([AllSchedules]);
-    // console.log(response);
-    // console.log(response[0].data);
-    //  console.log("response[0].data");
+    // ;
+    // ;
+    //  ;
     // this.availableSlots = response[0].data;
   }
 

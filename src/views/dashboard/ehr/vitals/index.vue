@@ -72,7 +72,7 @@
     <div class="w-full" v-else>
       <empty-state @addnew="() => (showNewModal = true)" />
     </div>
-    <!-- 
+    <!--
     <advanced-filter
       v-model:filtered="filteredPatients"
       v-model="filterAdvanced"
@@ -344,7 +344,7 @@ export default class ExistingState extends Vue {
       this.loading = false;
       this.showUpdateStatusModal = false;
     } catch (error) {
-      console.log(error);
+      ;
       this.loading = false;
     }
   }

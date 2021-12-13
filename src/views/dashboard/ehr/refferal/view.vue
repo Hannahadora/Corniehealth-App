@@ -227,10 +227,10 @@
                   <span class="text-xs text-gray-400 font-medium">Period</span>
                   <p class="text-xs">{{
                        otherrequestModel.request.occurencePeriod.end
-                      
+
                       }}
 
-                     
+
                   </p>
                 </div> -->
         </div>
@@ -670,7 +670,7 @@ export default class ViewReferral extends Vue {
         this.done();
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Request not Created", status: "error" });
     }
   }

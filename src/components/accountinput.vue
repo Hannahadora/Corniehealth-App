@@ -119,7 +119,7 @@ export default class CornieInput extends Vue {
     return this.name || `input-${id}`;
   }
   onlyNumber($event: any) {
-    //console.log($event.keyCode); //keyCodes value
+    //; //keyCodes value
     let keyCode = $event.keyCode ? $event.keyCode : $event.which;
     if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
       // 46 is dot

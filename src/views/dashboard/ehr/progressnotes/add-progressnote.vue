@@ -630,7 +630,7 @@
           >
             <template #item="{ item }">
               <div
-                
+
                 class="w-full flex items-center my-1 justify-between"
               >
                 <div class="flex items-center">
@@ -963,7 +963,7 @@ export default class AddProgressNote extends Vue {
   }
 
   get isShow() {
-    console.log("gdgdg");
+    ;
     return (this.topClick = !this.topClick);
   }
 
@@ -1023,7 +1023,7 @@ export default class AddProgressNote extends Vue {
   }
 
   printId(item = {} as ICondition) {
-    console.log("dddd", this.newitem);
+    ;
     this.myId = item.id;
     this.myItem = this.newitem;
     // // const uuu =  this.items.find((s) => s.id == item.id) || "";
@@ -1032,7 +1032,7 @@ export default class AddProgressNote extends Vue {
   enc: any = [];
   printEncounterId(id: string) {
     this.enc.push(id);
-    console.log("push", this.enc);
+    ;
 
     const newArr = this.enc.filter(function (entry: any) {
       return entry.trim() != "";
@@ -1041,7 +1041,7 @@ export default class AddProgressNote extends Vue {
     //   return el != null;
     // });
 
-    console.log("filtered", newArr);
+    ;
     return newArr;
   }
 
@@ -1326,13 +1326,13 @@ export default class AddProgressNote extends Vue {
   }
 
   async submit() {
-    console.log("payload", this.payload2);
-    console.log("request", this.requests);
-    console.log("conditionId", this.payload2.conditionId);
-    console.log("push", this.enc);
+    ;
+    ;
+    ;
+    ;
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return console.log("form is invalid");
+      return ;
     }
     try {
       const { data } = await cornieClient().post(
@@ -1340,10 +1340,10 @@ export default class AddProgressNote extends Vue {
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      console.log("success", this.payload2);
+      ;
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      console.log("error", error);
+      ;
     }
   }
 
@@ -1366,7 +1366,7 @@ export default class AddProgressNote extends Vue {
         `/other-requests/findByPatientSubject/all/${this.patientId}`
       );
       this.referrers = data || [];
-      console.log("refereee", this.referrers);
+      ;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching referrers for patient",
@@ -1383,7 +1383,7 @@ export default class AddProgressNote extends Vue {
     this.fetchPatientConditions(this.patientId);
     if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
     // this.fetchPatientConditions(this.patientId);
-    console.log(this.encounters, "Encounters");
+    ;
     this.loadDropdown();
     this.setAsserter();
 

@@ -1,7 +1,7 @@
 <template>
           <big-dialog
           v-model="show"
-          :title="allaction + ' '+ 'Allergy' " 
+          :title="allaction + ' '+ 'Allergy' "
           class=""
           >
           <p class="grey-text">Fields with * are required</p>
@@ -101,12 +101,12 @@
                                     width="w-11/12"
                                     class="required"
                                   />
-                                
+
                               </div>
-                        
+
                           </div>
                     </div>
-                   
+
                       <div>
                         <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Notes</label>
                           <div class="my-2  w-full">
@@ -141,7 +141,7 @@
                        <date-time-picker
                             v-model:date="date"
                             v-model:time="data.reactionTime"
-                            label="Onset *" 
+                            label="Onset *"
                             width="w-11/12"
                             class="required"
                           />
@@ -489,7 +489,7 @@ export default class Medication extends Vue {
         // this.show = false;
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Allergy not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }

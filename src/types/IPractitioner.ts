@@ -16,7 +16,7 @@ export default interface IPractitioner {
   address: string;
   user: User;
   domain: string;
-  dateOfBirth: "2021-07-16";
+  dateOfBirth: '2021-07-16';
   image: string;
   jobDesignation: string;
   department: string;

@@ -1,23 +1,23 @@
-import { createStore, StoreOptions } from "vuex";
-import DeviceStore from "./device";
-import UserStore from "./user";
-import Dropdown from "./dropdowns";
-import LocationStore from "./location";
-import ContactStore from "./contact";
+import { createStore, StoreOptions } from 'vuex'
+import DeviceStore from './device'
+import UserStore from './user'
+import Dropdown from './dropdowns'
+import LocationStore from './location'
+import ContactStore from './contact'
 
-import DomainStore from "./domain";
-import PaymentStore from "./payment";
-import CurrencyStore from "./currency";
-import CarePartnersStore from "./CarePartners";
-import practitioner from "./practitioner";
-import HealthcareStore from "./healthcare";
-import CareteamStore from "./careteam";
-import RolesStore from "./roles";
-import GroupteamStore from "./group";
-import PracticeformStore from "./practiceform";
-import AppointmentStore from "./appointment";
-import TaskStore from "./task";
-import UserSettingsStore from "./usersettings";
+import DomainStore from './domain'
+import PaymentStore from './payment'
+import CurrencyStore from './currency'
+import CarePartnersStore from './CarePartners'
+import practitioner from './practitioner'
+import HealthcareStore from './healthcare'
+import CareteamStore from './careteam'
+import RolesStore from './roles'
+import GroupteamStore from './group'
+import PracticeformStore from './practiceform'
+import AppointmentStore from './appointment'
+import TaskStore from './task'
+import UserSettingsStore from './usersettings'
 
 import OrgStore from "./organization";
 import CollectionStore from "./collection";
@@ -46,53 +46,53 @@ import CareplanStore from "./careplan";
 import CatalogueStore from "./catalogues";
 import AppointmentTypes from "./appointments";
 
-import AppointmentRoomStore from "./appointmentroom";
+import AppointmentRoomStore from './appointmentroom'
 
 export default createStore({
-  modules: {
-    user: UserStore,
-    device: DeviceStore,
-    dropdown: Dropdown,
-    location: LocationStore,
-    contact: ContactStore,
-    domain: DomainStore,
-    payment: PaymentStore,
-    currency: CurrencyStore,
-    OrgFunctions,
-    condition,
-    hierarchy: OrganizationHierarchy,
-    designation,
+	modules: {
+		user: UserStore,
+		device: DeviceStore,
+		dropdown: Dropdown,
+		location: LocationStore,
+		contact: ContactStore,
+		domain: DomainStore,
+		payment: PaymentStore,
+		currency: CurrencyStore,
+		OrgFunctions,
+		condition,
+		hierarchy: OrganizationHierarchy,
+		designation,
 
-    CarePartnersStore,
-    practitioner: practitioner,
-    healthcare: HealthcareStore,
-    careteam: CareteamStore,
-    roles: RolesStore,
-    group: GroupteamStore,
-    OrgLevels,
+		CarePartnersStore,
+		practitioner: practitioner,
+		healthcare: HealthcareStore,
+		careteam: CareteamStore,
+		roles: RolesStore,
+		group: GroupteamStore,
+		OrgLevels,
 
-    shifts: ShiftsStore,
-    practiceform: PracticeformStore,
-    practiceinformation: PracticeInformations,
-    appointment: AppointmentStore,
-    request: RequestStore,
-    otherrequest: OtherrequestStore,
+		shifts: ShiftsStore,
+		practiceform: PracticeformStore,
+		practiceinformation: PracticeInformations,
+		appointment: AppointmentStore,
+		request: RequestStore,
+		otherrequest: OtherrequestStore,
 
-    usersettings: UserSettingsStore,
-    schedules: ScheduleStore,
-    visits: VisitsStore,
-    patients: PatientStore,
-    organization: OrgStore,
-    task: TaskStore,
-    allergy: AllergyStore,
-    impression: ImpressionStore,
-    history: HistoryStore,
-    issues: DetectedIssues,
-    attachments: Attachments,
-    vitals: VitalsStore,
-    procedure: ProcedureStore,
-    hospitalisation: hospitalisationStore,
-    careplan: CareplanStore,
+		usersettings: UserSettingsStore,
+		schedules: ScheduleStore,
+		visits: VisitsStore,
+		patients: PatientStore,
+		organization: OrgStore,
+		task: TaskStore,
+		allergy: AllergyStore,
+		impression: ImpressionStore,
+		history: HistoryStore,
+		issues: DetectedIssues,
+		attachments: Attachments,
+		vitals: VitalsStore,
+		procedure: ProcedureStore,
+		hospitalisation: hospitalisationStore,
+		careplan: CareplanStore,
 
     AppointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,

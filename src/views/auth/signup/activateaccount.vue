@@ -190,7 +190,7 @@ export default class ActivateAccount extends Vue {
     try {
       await cornieClient().post("/api/v1/account/set-type", payload);
     } catch (error) {
-      console.log("an error occured", error);
+      ;
     }
   }
 

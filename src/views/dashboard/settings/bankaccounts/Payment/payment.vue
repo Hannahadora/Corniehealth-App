@@ -49,8 +49,8 @@ export default class Payment extends Vue {
   //   this.addAccount = true;
   // }
   // onAddAccount(payload: IPayment){
-  //   console.log(payload);
-  //   console.log("payload", payload);
+  //   ;
+  //   ;
   //   this.payment = payload;
   //   this.addAccount = true;
   // }
@@ -65,9 +65,9 @@ export default class Payment extends Vue {
   //     if (response.success){
   //         this.payments = [...response.data];
   //     }
-  //     else console.log(response.message);
+  //     else ;
   //   } catch (error) {
-  //     console.log("failed to fetch payments");
+  //     ;
   //   }
   // }
   // paymentAdded() {

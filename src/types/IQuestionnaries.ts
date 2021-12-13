@@ -1,4 +1,4 @@
-import IPractitioner from "./IPractitioner";
+import IPractitioner from './IPractitioner'
 
 export default interface IPracticeform {
   id?: string;
@@ -19,5 +19,5 @@ export interface Question {
   name: string;
   answerType: string;
   answerOptions: string[];
-  validation: {};
+  validation: Record<string, unknown>;
 }

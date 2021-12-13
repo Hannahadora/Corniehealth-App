@@ -1,12 +1,12 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-5/6">
     <cornie-card height="100%" class="flex flex-col">
-       <cornie-card-title  class="w-full"> 
+       <cornie-card-title  class="w-full">
           <div class="w-full">
             <h2 class="font-bold float-left text-lg text-primary -mt-1">{{newaction}} Exchange Rate</h2>
             <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
           </div>
-          
+
        </cornie-card-title>
         <cornie-card-text class="flex-grow scrollable">
           <div>
@@ -52,7 +52,7 @@
             <div class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm">
                 1 {{basecurrency}} ~= {{exchangeRate}} {{currency}}
             </div>
-        </cornie-card-text>  
+        </cornie-card-text>
            <cornie-card>
         <cornie-card-text class="flex justify-end">
                 <cornie-btn
@@ -206,7 +206,7 @@ async apply() {
   }
   async createCurrency() {
     try {
-      console.log(this.payload);
+      ;
       const response = await cornieClient().post(
         "/api/v1/currency",
         this.payload

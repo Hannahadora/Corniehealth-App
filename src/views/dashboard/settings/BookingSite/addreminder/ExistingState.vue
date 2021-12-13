@@ -175,7 +175,7 @@ export default class ExistingState extends Vue {
   }
 
   editLevel(id: string) {
-    console.log("Editing ", id);
+    ;
     const level = this.levels.find((level) => level.id == id);
     if (!level) return;
     this.levelForEdit = level;

@@ -162,7 +162,7 @@ export default class AddNotes extends Vue {
         "/api/v1/condition/note",
         this.payload
       );
-      console.log(data);
+      ;
       this.updateCondition(data);
       window.notify({ status: "success", msg: "Note added" });
     } catch (error) {
@@ -174,7 +174,7 @@ export default class AddNotes extends Vue {
   updateCondition(note: ConditionNote) {
     this._notes = [...this._notes, note];
     const notes = this.condition.notes || [];
-    console.log(this.condition.notes);
+    ;
     const noteSet = new ObjectSet([...notes, note], "id");
     const condition: ICondition = JSON.parse(JSON.stringify(this.condition));
     condition.notes = [...noteSet];

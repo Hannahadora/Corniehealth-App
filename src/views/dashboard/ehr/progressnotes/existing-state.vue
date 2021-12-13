@@ -370,7 +370,7 @@ export default class ExistingState extends Vue {
 
   get getLastAppointment() {
     this.lastElement1 = this.patientProgressNotes.slice(-1);
-    // console.log(this.lastElement1);
+    // ;
     const last = new Date(this.lastElement1[0].updatedAt).toLocaleDateString(
       "en-US"
     );
@@ -381,7 +381,7 @@ export default class ExistingState extends Vue {
   //   return this.items?.status;
   // }
   async showStatus(value: string, value2: string, value3: string) {
-    // return console.log("vcvcvc", this.getLastAppointment);
+    // return ;
     this.showStatusModal = true;
     this.requestId = value;
     this.currentStatus = value2;
@@ -435,13 +435,13 @@ export default class ExistingState extends Vue {
   }
 
   async fetchProgressnotes() {
-    console.log("progresssssfff1", this.patientId);
+    ;
     try {
       const { data } = await cornieClient().get(
         `/api/v1/progress-notes/${this.patientId}`
       );
       this.patientProgressNotes = data;
-      console.log("progresssssfff2", this.patientProgressNotes);
+      ;
     } catch (error) {
       window.notify({
         msg: "There was an error when fetching patient's progress notes",
@@ -470,13 +470,13 @@ export default class ExistingState extends Vue {
   // }
 
   // async fetchProgressnotes() {
-  //   console.log('progresssssfff1' , this.patientId);
+  //   ;
   //   try {
   //     const { data } = await cornieClient().get(
   //       `/api/v1/progress-notes/${this.patientId}`
   //     );
   //     this.patientProgressNotes = data;
-  //     console.log('progresssssfff2', data);
+  //     ;
   //   } catch (error) {
   //     window.notify({
   //       msg: "There was an error when fetching patient's progress notes",
@@ -487,7 +487,7 @@ export default class ExistingState extends Vue {
 
   async created() {
     await this.fetchProgressnotes();
-    console.log("zzz", this.patientProgressNotes);
+    ;
     this.categories = await getDropdown(
       "http://hl7.org/fhir/ValueSet/condition-category"
     );

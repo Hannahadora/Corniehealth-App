@@ -159,7 +159,7 @@ export default class AllActors extends Vue {
         window.notify({ msg: "Actor could not be added", status: "error" });
       }
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 
@@ -179,7 +179,7 @@ export default class AllActors extends Vue {
         window.notify({ msg: "Actor could not be removed", status: "error" });
       }
     } catch (error) {
-      console.log(error);
+      ;
     }
   }
 }

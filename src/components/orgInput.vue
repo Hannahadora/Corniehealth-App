@@ -18,7 +18,7 @@ export default {
   },
   watch: {
     modelValueSync(val) {
-      console.log(val);
+      ;
     },
   },
   computed: {

@@ -1,7 +1,5 @@
-import ILocation from "./ILocation";
-import { IOrganization } from "./IOrganization";
-import { IPatient } from "./IPatient";
-import IPractitioner from "./IPractitioner";
+import { IPatient } from './IPatient'
+import IPractitioner from './IPractitioner'
 
 export default interface IVital {
   id: string;

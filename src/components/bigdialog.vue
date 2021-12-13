@@ -91,7 +91,7 @@ export default class AddCondition extends Vue {
   subtext!: string;
 
   showStatus() {
-    console.log("fdjkfj");
+    ;
     // this method emits the value of newItemEvent
     this.$emit("view:status");
   }

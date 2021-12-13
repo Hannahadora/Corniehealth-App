@@ -26,7 +26,7 @@
             v-model="roomNumber"
             :type="number"
           />
-          <!-- <input type="number"   
+          <!-- <input type="number"
           class="w-full mb-6"
             label="Room Number"
             placeholder="--Enter--"
@@ -290,7 +290,7 @@ export default class AddFunction extends Vue {
   // }
 
   async create() {
-    console.log("gggg", this.payload);
+    ;
     try {
       const { data } = await cornieClient().post(
         "/api/v1/appointment-rooms",
@@ -306,7 +306,7 @@ export default class AddFunction extends Vue {
   }
 
   async update() {
-    console.log("this.edit.id", this.edit.id);
+    ;
     const url = `/api/v1/appointment-rooms/${this.edit.id}`;
     const payload = { ...this.payload, id: this.edit.id };
     try {

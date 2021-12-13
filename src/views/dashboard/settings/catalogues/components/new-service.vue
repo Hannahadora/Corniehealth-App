@@ -361,7 +361,7 @@ export default class NwService extends Vue {
         msg: "There was an error, please check the form and try again",
         status: "error",
       });
-      console.log(error);
+      ;
       this.loading = false;
     }
   }

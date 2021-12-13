@@ -1,5 +1,5 @@
-import { RouteRecordRaw } from "vue-router";
-import Settings from "@/views/dashboard/settings/index.vue";
+import { RouteRecordRaw } from 'vue-router'
+import Settings from '@/views/dashboard/settings/index.vue'
 
 export const SettingsRoute: RouteRecordRaw = {
   path: "settings/",

@@ -616,7 +616,7 @@ export default class AppoitmentExistingState extends Vue {
         this.singleParticipant = response.data;
       }
     } catch (e) {
-      console.log(e);
+      ;
     }
   }
   async deleteItem(id: string) {
@@ -633,8 +633,8 @@ export default class AppoitmentExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    console.log(id);
-    console.log("id");
+    ;
+    ;
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 

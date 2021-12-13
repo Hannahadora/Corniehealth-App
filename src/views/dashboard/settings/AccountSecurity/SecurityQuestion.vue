@@ -202,7 +202,7 @@ export default {
       this.securityQuestions.splice(index, 1);
     },
     saveTwoFactor() {
-      console.log("Two Factor Completely Setup");
+      ;
     },
     async sendCode() {
       const payload = {
