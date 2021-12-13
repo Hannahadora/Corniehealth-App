@@ -158,18 +158,18 @@ export default class PracticeformExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "serial no",
+      title: "name",
       key: "serial",
       show: true,
     },
     { title: "rating", key: "rating", show: true },
-
     {
       title: "description",
       key: "desciption",
       show: true,
     },
     { title: "emotion", key: "emotion", show: true },
+     { title: "Comments", key: "comment", show: true },
     // Displaying Icon in the header - <table-setting-icon/>
   ];
   showReplyModal() {
@@ -193,8 +193,9 @@ export default class PracticeformExistingState extends Vue {
       return {
         ...currency,
         action: currency.id,
-        serial: "1",
+        serial: "Ikhide Bright",
         rating: "3.1",
+        comment:"Great Job!",
         desciption:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nibh a......",
       };
