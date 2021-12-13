@@ -1,6 +1,6 @@
-import { IOrganization } from './IOrganization'
-import Period from './IPeriod'
-import IPractitioner from './IPractitioner'
+import { IOrganization } from "./IOrganization"
+import Period from "./IPeriod"
+import IPractitioner from "./IPractitioner"
 
 interface Range {
   unit: string;
@@ -29,7 +29,7 @@ interface IAbatement extends Timeable {
 }
 
 export interface IAssessment {
-  reference: 'Clinical Impression' | 'Diagnostic Reports' | 'Observation';
+  reference: "Clinical Impression" | "Diagnostic Reports" | "Observation";
   id: string;
 }
 
@@ -43,20 +43,20 @@ interface History<T> {
 }
 
 type VerificationStatus =
-  | 'unconfirmed'
-  | 'provisional'
-  | 'differential'
-  | 'confirmed'
-  | 'refuted'
-  | 'entered-in-error';
+  | "unconfirmed"
+  | "provisional"
+  | "differential"
+  | "confirmed"
+  | "refuted"
+  | "entered-in-error";
 
 export type ClinicalStatus =
-  | 'active'
-  | 'recurrence'
-  | 'relapse'
-  | 'inactive'
-  | 'remission'
-  | 'resolved';
+  | "active"
+  | "recurrence"
+  | "relapse"
+  | "inactive"
+  | "remission"
+  | "resolved";
 
 interface IOccurence {
   id?: string;
@@ -66,7 +66,7 @@ interface IOccurence {
   manifestation: string;
   description: string;
   onSet: string;
-  severity: 'Mild' | 'Moderate' | 'Severe';
+  severity: "Mild" | "Moderate" | "Severe";
   exposureRoute: string;
   note: string;
   practitionerId: string;

@@ -1,7 +1,7 @@
-import { IOrigin } from './IEpisode'
-import ILocation from './ILocation'
-import { IOrganization } from './IOrganization'
-import IPractitioner from './IPractitioner'
+import { IOrigin } from "./IEpisode"
+import ILocation from "./ILocation"
+import { IOrganization } from "./IOrganization"
+import IPractitioner from "./IPractitioner"
 
 export default interface IEncounter {
   id: string;

@@ -21,7 +21,7 @@ export interface CornieUser {
   lastName: string;
   organizationId: string;
   image: string;
-  accountType: 'provider' | 'patient';
+  accountType: "provider" | "patient";
   roleId: string;
   phone: {
     number: string;
