@@ -1,9 +1,33 @@
 <template>
   <div class="w-full pb-80">
     <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Payments</a></li>
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Collection</a></li>
-         <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(3)"  :class="{'active' :  selected === 3  }" :aria-selected="selected === 3">Currency Conversion</a></li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(1)"
+          :class="{ active: selected === 1 }"
+          :aria-selected="selected === 1"
+          >Payments</a
+        >
+      </li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(2)"
+          :class="{ active: selected === 2 }"
+          :aria-selected="selected === 2"
+          >Collection</a
+        >
+      </li>
+      <li class="nav-item cursor-pointer">
+        <a
+          class="nav-link"
+          @click="select(3)"
+          :class="{ active: selected === 3 }"
+          :aria-selected="selected === 3"
+          >Currency Conversion</a
+        >
+      </li>
     </ul>
     <div class="tab-content">
       <div
@@ -20,48 +44,7 @@
         :class="{ active: selected === 2 }"
         id="Collection"
       >
-        <div
-          class="w-full flex flex-col justify-center items-center h-full mt-40"
-          v-if="empty"
-        >
-          <img src="@/assets/img/Forms.svg" />
-          <h3 class="text-center mt-5">
-            You have no satisfactory surveys to display.
-          </h3>
-          <span class="flex justify-center w-full">
-            <div class="dropdown inline-block relative">
-              <button
-                class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
-              >
-                <span class="mr-1">Create New </span>
-                <chevron-down-icon
-                  class="text-white mb-2 stroke-current mt-2 ml-1"
-                />
-              </button>
-              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                <li class="">
-                  <select-survey
-                    v-model="showDatalist"
-                    :items="[
-                      'Scheduling Experience',
-                      'Walk-In Experience',
-                      'Patient Visit Experience',
-                      'Physician Consultation Experience',
-                      'Diagnostic Service Experience',
-                      'Pharmacy Service Experience',
-                      'Hospital Stay Experience',
-                      'Billing Support Experience',
-                      'Blank Survey',
-                    ]"
-                  ></select-survey>
-                </li>
-              </ul>
-            </div>
-          </span>
-        </div>
-        <div class="tab-pane" v-if="selected == 2"  :class="{'active' :  selected === 2  }" id="Collection">
-            <Collections/>
-        </div>
+        <Collections />
       </div>
       <div
         class="tab-pane"
@@ -441,7 +424,6 @@ export default class PracticeformExistingState extends Vue {
         this.stautsadded();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Practice form  not Archived", status: "error" });
       this.loading = false;
     }

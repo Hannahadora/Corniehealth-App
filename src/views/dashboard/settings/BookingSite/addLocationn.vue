@@ -1,50 +1,55 @@
 <template>
   <div class="h-screen flex justify-center">
-    <div class="w-full mx-5">
-      <!-- <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
-      >
-        {{ id ? "Update Location" : "Add Location" }}
-      </span> -->
-      <span class="w-full">
-        <div class="w-full h-screen">
-          <v-form class="mt-5 w-full">
-            <div class="w-full"></div>
-            <span class="flex w-full text-xs text-gray-25 py-2 mt-4">
-              Patients will be able to see your cancellation notice when they
-              book appointments online and when they recieve appointment
-              notification emails. notification reminder timelines prior to
-              appointment time
-            </span>
-            <div class="mt-3 w-full">
-              <cornie-text-area rows="4" label="Message" class="w-full" />
-            </div>
-          </v-form>
-          <div class="mt-2 flex justify-end">
-            <button
-              class="border-primary border-2 rounded-full text-black mr-5 py-1 px-4 focus:outline-none outline hover:bg-primary hover:text-white"
-            >
-              Cancel
-            </button>
-            <button
-              class="bg-danger rounded-full text-white py-1 px-4 focus:outline-none hover:opacity-90"
-              @click="addFunction = true"
-            >
-              <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-              Save
-            </button>
+    <div class="bg-white shadow-md p-4">
+      <div>
+        <div class="flex space-x-4 w-full justify-between mt-3">
+          <p class="text-sm mt-3 text-black">
+            Patients will be able to see your cancellation notice when they book
+            appointments online and when they recieve appointment notification
+            emails. notification reminder timelines prior to appointment time
+          </p>
+          <div
+            class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
+          >
+            <edit-icon class="fill-current text-primary mr-4" /> Edit
           </div>
-          <!-- </template> -->
         </div>
-      </span>
+      </div>
+      <div class="w-full mb-12">
+        <label
+          for="ecounter"
+          class="w-full capitalize text-black text-sm font-bold mt-12"
+          >Message
+          <span class="text-xs text-red-600 font-medium italic"
+            >(Max 150 characters)</span
+          ></label
+        >
+        <div class="w-full -mt-6">
+          <Textarea
+            class="w-full text-xs"
+            placeholder="Sta"
+            :rules="required"
+            v-model="siteMessage"
+          />
+        </div>
+      </div>
+      <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card>
     </div>
   </div>
 </template>
@@ -62,11 +67,12 @@ import { Prop, Watch } from "vue-property-decorator";
 import { getCoordinates } from "@/plugins/utils";
 import { getCountries, getStates } from "@/plugins/nation-states";
 import AutoComplete from "@/components/autocomplete.vue";
-
+import Textarea from "@/components/textarea.vue";
+import EditIcon from "@/components/icons/aedit.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
-
+import ImageSection from "./image.vue";
 const countries = getCountries();
 
 const dropdown = namespace("dropdown");
@@ -79,10 +85,12 @@ const location = namespace("location");
     CornieSelect,
     PhoneInput,
     OperationHours,
-
+    Textarea,
+    EditIcon,
     CalendarIcon,
     DateTimePicker,
     CornieTextArea,
+    ImageSection,
   },
 })
 export default class AddLocationn extends Vue {
@@ -116,7 +124,7 @@ export default class AddLocationn extends Vue {
   careOptions = "";
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
-
+  showImage = false;
   dropdowns = {} as IIndexableObject;
 
   required = string().required();
@@ -153,7 +161,9 @@ export default class AddLocationn extends Vue {
     const states = await getStates(country);
     this.states = states;
   }
-
+  showImageSection() {
+    this.showImage = true;
+  }
   async setLocation() {
     const location = await this.getLocationById(this.id);
     if (!location) return;

@@ -1,8 +1,19 @@
 <template>
-  <div class="mt-2 mb-5 rounded-lg bg-white w-full h-full max-h-full">
-    <div class="w-full h-full max-h-full p-2">
-      <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-        <icon-input
+  <cornie-dialog v-model="show" right class="w-4/12 h-full animated fadeIn z-50">
+    <cornie-card height="100%" class="flex flex-col animated fadeInUp">
+      <cornie-card-title class="w-full p-3">
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+        <div class="w-full border-l-2 border-gray-100">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Admin Settings
+          </h2>
+        </div>
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+        <div class="flex flex-col h-full w-full overflow-auto max-h-full">
+          <!-- <icon-input
           autocomplete="off"
           type="search"
           v-model="query"
@@ -12,67 +23,65 @@
           <template v-slot:prepend>
             <search-icon />
           </template>
-        </icon-input>
-        <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
-          <span>
-            <div
-              @click="open = open == i ? -1 : i"
-              class="
-                w-full
-                cursor-pointer
-                justify-between
-                flex
-                xl:pr-4
-                md:pr-2
-                items-center
-              "
-            >
-              <h2
-                @click="open = open == i ? -1 : i"
-                class="font-semibold cursor-pointer uppercase text-sm"
+        </icon-input> -->
+          <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
+            <span>
+              <div
+                class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
               >
-                {{ key }}
-              </h2>
+                <h2
+                  @click="open = open == i ? -1 : i"
+                  class="font-bold cursor-pointer capitalize mb-3 text-sm"
+                >
+                  {{ key }}
+                </h2>
 
-              <chevron-down-icon
-                v-if="open == i"
-                @click="open = -1"
-                class="cursor-pointer"
-              />
-              <chevron-right-icon
-                @click="open = i"
-                v-else
-                class="cursor-pointer"
-              />
-            </div>
-            <div
-              class="flex flex-col mt-1 text-gray-500"
-              :class="{ hidden: open != i }"
-            >
-              <s-bar-link
-                :name="item.name"
-                :to="mapUrl(item.to)"
-                v-for="(item, index) in setting"
-                :key="index"
+                <chevron-down-icon
+                  v-if="open == i"
+                  @click="open = -1"
+                  class="cursor-pointer"
+                />
+                <chevron-right-icon
+                  @click="open = i"
+                  v-else
+                  class="cursor-pointer"
+                />
+              </div>
+              <div
+                class="flex flex-col mt-1 text-black font-light text-xs"
+                :class="{ hidden: open != i }"
               >
-                <template v-slot="{ active }">
-                  <keep-alive>
-                    <component
-                      :is="item.icon"
-                      :class="{ 'fill-current': active }"
-                    ></component>
-                  </keep-alive>
-                </template>
-              </s-bar-link>
-            </div>
-          </span>
+                <s-bar-link
+                  :name="item.name"
+                  :to="mapUrl(item.to)"
+                  v-for="(item, index) in setting"
+                  :key="index"
+                >
+                  <template v-slot="{ active }">
+                    <keep-alive>
+                      <component
+                        :is="item.icon"
+                        :class="{ fill: active }"
+                      ></component>
+                    </keep-alive>
+                  </template>
+                </s-bar-link>
+              </div>
+            </span>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </cornie-card-text>
+    </cornie-card>
+  </cornie-dialog>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieCard from "@/components/cornie-card";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import OrgIcon from "@/components/icons/org.vue";
@@ -90,17 +99,21 @@ import TeamIcon from "@/components/icons/team.vue";
 import RolesIcon from "@/components/icons/roles.vue";
 import ApprovalIcon from "@/components/icons/approval.vue";
 import HealthServiceIcon from "@/components/icons/healthservice.vue";
-import TemplatesIcon from "@/components/icons/templates.vue";
+import TemplatesIcon from "@/components/icons/questionnaire.vue";
 import DevicesIcon from "@/components/icons/devices.vue";
 import PartnersIcon from "@/components/icons/partners.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
+import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
 
 type INav = { name: string; to: string; icon: string };
 
 @Options({
   name: "SettingsSidebar",
   components: {
+    ...CornieCard,
+    CornieIconBtn,
+    ArrowLeftIcon,
+    CornieDialog,
     SBarLink,
     ApprovalIcon,
     ChevronRightIcon,
@@ -126,6 +139,9 @@ type INav = { name: string; to: string; icon: string };
   },
 })
 export default class Settings extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
   query = "";
   open = 0;
   get organization() {
@@ -142,7 +158,6 @@ export default class Settings extends Vue {
         to: "org-hierarchy",
         icon: "hierarchy-icon",
       },
-      { name: "Bank And Accounts", to: "accounts", icon: "bank-icon" },
     ];
   }
 
@@ -172,20 +187,21 @@ export default class Settings extends Vue {
         to: "health-services",
         icon: "health-service-icon",
       },
-      {
-        name: "Practice Forms/Templates",
-        to: "practice-templates",
-        icon: "templates-icon",
-      },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
+      { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
     ];
   }
   get PracticeManagement() {
     return [
       {
+        name: "Forms & Questionnaires",
+        to: "practise-management/forms-questionnaires",
+        icon: "templates-icon",
+      },
+      {
         name: "Booking Site",
-        to: "booking-site",
+        to: "practise-management/booking-site",
         icon: "security-icon",
       },
       //  {
@@ -212,11 +228,11 @@ export default class Settings extends Vue {
 
   get settings() {
     const provider = {
-      Organization: this.filter(this.organization),
+      "Account Info": this.filter(this.organization),
       "Users & Security": this.filter(this.userSecurity),
-      HEALTHCARE: this.filter(this.healthCare),
-      "PRACTICE MANAGEMENT": this.filter(this.PracticeManagement),
-      PRICING: this.filter(this.Pricing),
+      Commercial: this.filter(this.healthCare),
+      "Practise Management": this.filter(this.PracticeManagement),
+      // PRICING: this.filter(this.Pricing),
     };
     const hmo = {
       Organization: this.filter(this.organization),
@@ -237,6 +253,7 @@ export default class Settings extends Vue {
 
   mapUrl(url: string) {
     const settingsBase = this.$router.resolve({ name: "Settings" }).href;
+    //  this.show=false;
     return `${settingsBase}/${url}`.replace("//", "/");
   }
 

@@ -26,10 +26,10 @@ export const SettingsRoute: RouteRecordRaw = {
                 import("@/views/dashboard/settings/AccountSecurity/index.vue"),
         },
         {
-            path: "accounts",
-            name: "Bank And Accounts",
+            path: "bank-accounts",
+            name: "Billing Accounts",
             component: () =>
-                import("@/views/dashboard/settings/bankaccounts/index.vue"),
+                import("@/views/dashboard/settings/banks/index.vue"),
         },
         {
             path: "add-payment-account/:id?",
