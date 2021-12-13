@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue"
 import { StoreOptions } from "vuex"
 import {

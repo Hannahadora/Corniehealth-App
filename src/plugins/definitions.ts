@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import LocalStore from "@/lib/localstore"
 
 type Concept = {
@@ -7,6 +8,7 @@ type Concept = {
   }[];
 };
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const localStore = new LocalStore("corniehealth-dd-cache")
 
 let cache = {} as Concept
