@@ -19,32 +19,32 @@ import AppointmentStore from './appointment'
 import TaskStore from './task'
 import UserSettingsStore from './usersettings'
 
-import OrgStore from "./organization";
-import CollectionStore from "./collection";
-import AssociationStore from "./associate";
-import VisitsStore from "./visits";
-import ShiftsStore from "./shift";
-import ScheduleStore from "./schedules";
-import PatientStore from "./patient";
-import RequestStore from "./request";
-import OtherrequestStore from "./otherrequest";
-import AllergyStore from "./allergy";
-import ImpressionStore from "./impression";
-import HistoryStore from "./history";
-import OrgLevels from "./hierarchy/levels";
-import OrganizationHierarchy from "./hierarchy";
-import OrgFunctions from "./hierarchy/functions";
-import VitalsStore from "./vitals";
-import ProcedureStore from "./procedure";
-import designation from "./hierarchy/designation";
-import condition from "./condition";
-import DetectedIssues from "./detectedissues";
-import Attachments from "./attachment";
-import PracticeInformations from "./practiceinformation";
-import hospitalisationStore from "./hospitalisation";
-import CareplanStore from "./careplan";
-import CatalogueStore from "./catalogues";
-import AppointmentTypes from "./appointments";
+import OrgStore from './organization'
+import CollectionStore from './collection'
+import AssociationStore from './associate'
+import VisitsStore from './visits'
+import ShiftsStore from './shift'
+import ScheduleStore from './schedules'
+import PatientStore from './patient'
+import RequestStore from './request'
+import OtherrequestStore from './otherrequest'
+import AllergyStore from './allergy'
+import ImpressionStore from './impression'
+import HistoryStore from './history'
+import OrgLevels from './hierarchy/levels'
+import OrganizationHierarchy from './hierarchy'
+import OrgFunctions from './hierarchy/functions'
+import VitalsStore from './vitals'
+import ProcedureStore from './procedure'
+import designation from './hierarchy/designation'
+import condition from './condition'
+import DetectedIssues from './detectedissues'
+import Attachments from './attachment'
+import PracticeInformations from './practiceinformation'
+import hospitalisationStore from './hospitalisation'
+import CareplanStore from './careplan'
+import CatalogueStore from './catalogues'
+import AppointmentTypes from './appointments'
 
 import AppointmentRoomStore from './appointmentroom'
 
@@ -94,10 +94,10 @@ export default createStore({
 		hospitalisation: hospitalisationStore,
 		careplan: CareplanStore,
 
-    AppointmentRoom: AppointmentRoomStore,
-    catalogues: CatalogueStore,
-    appointments: AppointmentTypes,
-    collections: CollectionStore,
-    association: AssociationStore,
-  },
-} as StoreOptions<any>);
+		AppointmentRoom: AppointmentRoomStore,
+		catalogues: CatalogueStore,
+		appointments: AppointmentTypes,
+		collections: CollectionStore,
+		association: AssociationStore,
+	},
+} as StoreOptions<any>)

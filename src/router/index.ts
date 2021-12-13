@@ -11,139 +11,139 @@ import Settings from '@/views/dashboard/settings/index.vue'
 import { InPatientRoutes } from './in-patient'
 
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/reference/:id",
-    props: true,
-    name: "Reference Response",
-    component: () =>
-      import("@/views/dashboard/settings/kyc/components/email-link.vue"),
-  },
-  {
-    path: "/",
-    name: "Home",
-    component: Home,
-    // redirect: "/dashboard",
-  },
-  {
-    path: "/signup",
-    name: "Sign Up",
-    component: () => import("@/views/auth/signup/signup.vue"),
-  },
-  {
-    path: "/roles",
-    name: "Test",
-    component: () =>
-      import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
-  },
-  {
-    path: "/login",
-    name: "Sign In",
-    alias: "/signin",
-    component: () => import("@/views/auth/signin/index.vue"),
-  },
-  //reset password
-  {
-    path: "/reset/password",
-    name: "Reset Password",
-    component: () => import("@/views/auth/reset/resetpassword.vue"),
-  },
-  {
-    path: "/dashboard/:type",
-    name: "Dashboard",
-    component: Dashboard,
-    redirect: (to) => `${to.path}/home`.replace("//", "/"),
-    meta: { requiresAuth: true },
-    children: [
-      {
-        path: "home",
-        name: "Experience Dashboard",
-        component: () =>
-          import("@/views/dashboard/patientexp/dashboard/Index.vue"),
-      },
-      {
-        path: "add-group/:id?",
-        props: true,
-        name: "Add a New Group",
-        component: () =>
-          import("@/views/dashboard/settings/group/addGroup.vue"),
-      },
-      {
-        path: "view-group/:id?",
-        props: true,
-        name: "View Group Details",
-        component: () =>
-          import("@/views/dashboard/settings/group/viewGroup.vue"),
-      },
-      {
-        path: "add-practice-form-template/:id?",
-        props: true,
-        name: "Blank Form",
-        component: () => import("@/views/dashboard/settings/forms/newform.vue"),
-      },
-      {
-        path: "clinical",
-        props: true,
-        name: "Patient",
-        component: () => import("@/views/dashboard/ehr/landing.vue"),
-        children: [
-          {
-            path: "",
-            props: true,
-            component: () => import("@/views/dashboard/ehr/landing/index.vue"),
-          },
-          ClinicalsRoute,
-        ],
-      },
-      ExperienceRoutes,
-      InPatientRoutes,
-      NewSettingsRoutes,
-      {
-        path: "settings/",
-        name: "Settings",
-        component: Settings,
-        redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
-        children: [
-          {
-            path: "care-partners",
-            name: "Care Partners",
-            component: () =>
-              import("@/views/dashboard/settings/CarePartners/index.vue"),
-          },
-          {
-            path: "account-security",
-            name: "Account Security",
-            component: () =>
-              import("@/views/dashboard/settings/AccountSecurity/index.vue"),
-          },
-          // {
-          //   path: "accounts",
-          //   name: "Bank And Accounts",
-          //   component: () =>
-          //     import("@/views/dashboard/settings/bankaccounts/index.vue"),
-          // },
-          {
-            path: "add-payment-account/:id?",
-            props: true,
-            name: "New Payment Account",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue"
-              ),
-          },
-          {
-            path: "devices",
-            name: "Devices",
-            component: () =>
-              import("@/views/dashboard/settings/devices/index.vue"),
-          },
-          {
-            path: "org-info",
-            name: "Organization Information",
-            component: () =>
-              import(
-                "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
-              ),
-          },
+	{
+		path: '/reference/:id',
+		props: true,
+		name: 'Reference Response',
+		component: () =>
+			import('@/views/dashboard/settings/kyc/components/email-link.vue'),
+	},
+	{
+		path: '/',
+		name: 'Home',
+		component: Home,
+		// redirect: "/dashboard",
+	},
+	{
+		path: '/signup',
+		name: 'Sign Up',
+		component: () => import('@/views/auth/signup/signup.vue'),
+	},
+	{
+		path: '/roles',
+		name: 'Test',
+		component: () =>
+			import('@/views/dashboard/settings/rolesprivileges/role-form.vue'),
+	},
+	{
+		path: '/login',
+		name: 'Sign In',
+		alias: '/signin',
+		component: () => import('@/views/auth/signin/index.vue'),
+	},
+	//reset password
+	{
+		path: '/reset/password',
+		name: 'Reset Password',
+		component: () => import('@/views/auth/reset/resetpassword.vue'),
+	},
+	{
+		path: '/dashboard/:type',
+		name: 'Dashboard',
+		component: Dashboard,
+		redirect: (to) => `${to.path}/home`.replace('//', '/'),
+		meta: { requiresAuth: true },
+		children: [
+			{
+				path: 'home',
+				name: 'Experience Dashboard',
+				component: () =>
+					import('@/views/dashboard/patientexp/dashboard/Index.vue'),
+			},
+			{
+				path: 'add-group/:id?',
+				props: true,
+				name: 'Add a New Group',
+				component: () =>
+					import('@/views/dashboard/settings/group/addGroup.vue'),
+			},
+			{
+				path: 'view-group/:id?',
+				props: true,
+				name: 'View Group Details',
+				component: () =>
+					import('@/views/dashboard/settings/group/viewGroup.vue'),
+			},
+			{
+				path: 'add-practice-form-template/:id?',
+				props: true,
+				name: 'Blank Form',
+				component: () => import('@/views/dashboard/settings/forms/newform.vue'),
+			},
+			{
+				path: 'clinical',
+				props: true,
+				name: 'Patient',
+				component: () => import('@/views/dashboard/ehr/landing.vue'),
+				children: [
+					{
+						path: '',
+						props: true,
+						component: () => import('@/views/dashboard/ehr/landing/index.vue'),
+					},
+					ClinicalsRoute,
+				],
+			},
+			ExperienceRoutes,
+			InPatientRoutes,
+			NewSettingsRoutes,
+			{
+				path: 'settings/',
+				name: 'Settings',
+				component: Settings,
+				redirect: (to) => `${to.path}/org-info`.replace('//', '/'),
+				children: [
+					{
+						path: 'care-partners',
+						name: 'Care Partners',
+						component: () =>
+							import('@/views/dashboard/settings/CarePartners/index.vue'),
+					},
+					{
+						path: 'account-security',
+						name: 'Account Security',
+						component: () =>
+							import('@/views/dashboard/settings/AccountSecurity/index.vue'),
+					},
+					// {
+					//   path: "accounts",
+					//   name: "Bank And Accounts",
+					//   component: () =>
+					//     import("@/views/dashboard/settings/bankaccounts/index.vue"),
+					// },
+					{
+						path: 'add-payment-account/:id?',
+						props: true,
+						name: 'New Payment Account',
+						component: () =>
+							import(
+								'@/views/dashboard/settings/bankaccounts/Payment/addPaymentAccount.vue'
+							),
+					},
+					{
+						path: 'devices',
+						name: 'Devices',
+						component: () =>
+							import('@/views/dashboard/settings/devices/index.vue'),
+					},
+					{
+						path: 'org-info',
+						name: 'Organization Information',
+						component: () =>
+							import(
+								'@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue'
+							),
+					},
 
 					{
 						path: 'contact-info',

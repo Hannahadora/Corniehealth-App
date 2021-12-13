@@ -1,6 +1,5 @@
 <template>
   <auth>
-    <!--<verify-activate v-if="userCreated" :user="user" />-->
     <create-account v-model:user="user" />
   </auth>
 </template>

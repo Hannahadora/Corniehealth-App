@@ -28,13 +28,9 @@
       </div>
     </div>
   </div>
-
-
-
-
   <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12" v-else>
     <div
-      class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 pb-40 relative right-32 lg:right-0 xl:right-0 md:right-0 "
+      class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 pb-40 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg"
     >
       <h2 class="font-bold text-2xl p-6">Join Corniehealth</h2>
       <v-form class="w-full p-6" @submit="submit">
@@ -111,7 +107,7 @@
                 Patient account (Individual or Group), Provider account (Hospital, Laboratory, Pharmacy, Opticians, Dental or EMT) and Payer account
                 "
                 >
-                </Tooltip>patient
+                </Tooltip>
               </div>
             </span>
           </div>
@@ -133,7 +129,7 @@
                   v-show="isVisible"
                 >
                   <li
-                    class="list-none items-center flex text-xs font-semibold text-gray-700  hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
+                    class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
                   >
                     <span class="flex item-center">
                       <cornie-radio
@@ -205,7 +201,7 @@
             </div>
             <div class="cursor-pointer">
               <div
-                class="bg rounded-md p-10 h-32 w-32 cursor-pointer"
+                class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer"
                 @mouseleave="isVisible2 = false"
                 @keydown.enter="isVisible2 = !isVisible2"
                 :class="{ 'bg-danger-100': checked2 == true }"
