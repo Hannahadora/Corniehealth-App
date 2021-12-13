@@ -6,12 +6,25 @@
         manage your payments.
       </h3>
       <ul class="nav nav-tabs nav-tabs-bottom widget_categories mt-8">
-        <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(1)"  :class="{'active' :  selected === 1  }" :aria-selected="selected === 1">Virtual NUBAN Accounts</a></li>    
+        <li class="nav-item cursor-pointer">
+          <a
+            class="nav-link"
+            @click="select(1)"
+            :class="{ active: selected === 1 }"
+            :aria-selected="selected === 1"
+            >Virtual NUBAN Accounts</a
+          >
+        </li>
         <!-- <li class="nav-item cursor-pointer"><a class="nav-link" @click="select(2)"  :class="{'active' :  selected === 2  }" :aria-selected="selected === 2">Direct Debit</a></li> -->
-    </ul>
+      </ul>
 
-    <div class="tab-content">
-        <div class="tab-pane" v-if="selected == 1" :class="{'active' :  selected === 1  }" id="NUBAN">   
+      <div class="tab-content">
+        <div
+          class="tab-pane"
+          v-if="selected == 1"
+          :class="{ active: selected === 1 }"
+          id="NUBAN"
+        >
           <p class="mt-5 text-sm">
             The virtual account helps you process payroll and supplier payments
             on Cloudenly independent of your regular bank accounts. You need to
@@ -61,7 +74,7 @@
           <div>
             <span class="flex justify-end w-full mb-8">
               <button
-                class="flex space-x-3 bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+                class="flex space-x-3 bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 focus:outline-none hover:opacity-90"
                 @click="showModal"
               >
                 <span class="text-white mr-4">+</span> Create New
@@ -223,9 +236,9 @@
             </div>
           </div>
         </div> -->
+      </div>
     </div>
-  </div>
-  <nuban-modal v-model="showNubanModal" :displayNubanTable="true" />
+    <nuban-modal v-model="showNubanModal" :displayNubanTable="true" />
   </div>
 </template>
 <script lang="ts">

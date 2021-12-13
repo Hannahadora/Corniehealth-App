@@ -17,14 +17,15 @@
                   <div>
                     <div class="w-full mb-3">
                       <date-time-picker
-                        label="last occurence *"
+                        label="last occurence"
                         width="w-11/12"
                         class="required"
+                        required
                       />
                     </div>
                   </div>
                 </div>
-                <div class="pt-8 pl-5 flex" style="">
+                <div class="mt-6.5 pl-5 flex" style="">
                   <cornie-select placeholder="Days" :items="severities" />
                 </div>
               </div>
@@ -67,23 +68,23 @@
               </div>
             </div>
           </v-form>
-          <div class="mt-2 flex justify-end">
-            <delete-icon class="mr-2 fill-current text-danger" />
-            <!-- <button
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                py-2
-                px-6
-                focus:outline-none
-                hover:opacity-90
-              "
-            >
-              <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-              Save
-            </button> -->
-          </div>
+          <cornie-card>
+            <cornie-card-text class="flex justify-end">
+              <cornie-btn
+                @click="show = false"
+                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+              >
+                Cancel
+              </cornie-btn>
+              <cornie-btn
+                :loading="loading"
+                @click="apply"
+                class="text-white bg-danger px-6 rounded-xl"
+              >
+                Save
+              </cornie-btn>
+            </cornie-card-text>
+          </cornie-card>
         </div>
       </accordion-component>
     </div>
@@ -174,7 +175,6 @@ export default class ExistingState extends Vue {
   }
 
   editLevel(id: string) {
-    ;
     const level = this.levels.find((level) => level.id == id);
     if (!level) return;
     this.levelForEdit = level;

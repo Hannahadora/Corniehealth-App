@@ -334,7 +334,6 @@ export default class CheckIn extends Vue {
       this.loading = true;
       const slot = this.checkinData.slot;
       this.loading = false;
-      ;
       if (slot) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,

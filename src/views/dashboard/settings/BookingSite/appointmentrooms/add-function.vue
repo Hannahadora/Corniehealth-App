@@ -5,12 +5,18 @@
         <icon-btn @click="show = false">
           <arrow-left stroke="#ffffff" />
         </icon-btn>
-      </cornie-card-title>
-      <cornie-card-text class="p-4 flex-grow flex flex-col">
-        <v-form class="flex-grow flex flex-col" @submit="submit">
-          <h1 class="text-primary text-xl font-extrabold mb-5">
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             Consultation Room
-          </h1>
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+        <v-form class="flex-grow flex flex-col" @submit="submit">
           <cornie-input
             class="w-full mb-6"
             label="Room Name"
@@ -39,7 +45,7 @@
               label="Location"
               placeholder="--Select from Locations--"
               v-model="location"
-              :items="all_locations"
+              :items="['Market', 'Hospital']"
               :rules="required"
             />
           </div>
@@ -58,38 +64,43 @@
             :items="items"
           /> -->
           <div>
-            <h1 class="font-extrabold">Availability</h1>
-            <p>Show Occupied Booked</p>
+            <h1 class="font-bold mb-2 text-sm">Availability</h1>
+            <p class="text-xs font-semibold">Show Occupied Booked</p>
           </div>
           <!-- <custom-checkbox
             label="Automatically create a group for this function"
           /> -->
-          <div class="flex">
-            <div class="p-2">
-              <custom-checkbox
+          <div class="flex space-x-4 mt-2 mb-4">
+            <div class="">
+              <cornie-radio
                 label="Yes"
+                name="checkbox"
+                checked
                 :readonly="viewOnly"
                 v-model="occupiedYes"
               />
             </div>
-            <!-- <custom-checkbox
-              label="No"
-              :readonly="viewOnly"
-              v-model="occupiedNo"
-            /> -->
+            <div class="">
+              <cornie-radio
+                label="No"
+                name="checkbox"
+                :readonly="viewOnly"
+                v-model="occupiedYes"
+              />
+            </div>
           </div>
-          <span class="flex-grow"></span>
+
           <div class="flex justify-end">
-            <span
+            <cornie-btn
               @click="show = false"
-              class="border-primary border-2 rounded-full text-black mr-2 py-1 px-2 focus:outline-none outline hover:bg-primary hover:text-white cursor-pointer"
+              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
             >
               Cancel
-            </span>
+            </cornie-btn>
             <cornie-btn
-              type="submit"
               :loading="loading"
-              class="bg-danger rounded-full text-white py-1 px-6 focus:outline-none hover:opacity-90"
+              type="submit"
+              class="text-white bg-danger px-3 rounded-xl"
             >
               Save
             </cornie-btn>
@@ -290,7 +301,6 @@ export default class AddFunction extends Vue {
   // }
 
   async create() {
-    ;
     try {
       const { data } = await cornieClient().post(
         "/api/v1/appointment-rooms",
@@ -306,7 +316,6 @@ export default class AddFunction extends Vue {
   }
 
   async update() {
-    ;
     const url = `/api/v1/appointment-rooms/${this.edit.id}`;
     const payload = { ...this.payload, id: this.edit.id };
     try {
