@@ -1,16 +1,14 @@
 <template>
   <div class="h-full flex justify-center">
     <div class="w-full">
-    <span class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto">
-       Care Teams
-    </span>
+      <span
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+      >
+        Care Teams
+      </span>
       <span class="w-full">
-          <careteam-empty-state
-                v-if="empty"
-          />
-          <careteam-existing-state
-          v-else
-          />
+        <careteam-empty-state v-if="empty" />
+        <careteam-existing-state v-else />
       </span>
     </div>
   </div>
@@ -41,15 +39,14 @@ export default class CareteamIndex extends Vue {
     return this.careteams.length < 1;
   }
 
- @careteam.State
+  @careteam.State
   careteams!: ICareteam[];
 
   @careteam.Action
   fetchCareteams!: () => Promise<void>;
 
-
-created() {
-  this.fetchCareteams();
+  created() {
+    this.fetchCareteams();
     if (this.careteams.length < 1) this.fetchCareteams();
   }
 }

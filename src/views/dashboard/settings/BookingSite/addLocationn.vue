@@ -17,69 +17,32 @@
       <span class="w-full">
         <div class="w-full h-screen">
           <v-form class="mt-5 w-full">
-            <div class="w-full">
-            </div>
-            <span
-              class="
-                flex
-                w-full
-                text-xs text-gray-25
-                py-2
-                mt-4
-              "
-            >
-              Patients will be able to see your cancellation notice when they book appointments online and when they recieve appointment notification emails. notification reminder timelines prior to appointment time
+            <div class="w-full"></div>
+            <span class="flex w-full text-xs text-gray-25 py-2 mt-4">
+              Patients will be able to see your cancellation notice when they
+              book appointments online and when they recieve appointment
+              notification emails. notification reminder timelines prior to
+              appointment time
             </span>
             <div class="mt-3 w-full">
-              
-        <cornie-text-area
-          rows="4"
-          label="Message"
-          class="w-full"
-        />
-
-         
+              <cornie-text-area rows="4" label="Message" class="w-full" />
             </div>
-
-        
           </v-form>
-        <div class="mt-2 flex justify-end">
-             <button
-            class="
-              border-primary border-2
-              rounded-full
-              text-black
-              mr-5
-              py-1
-              px-4
-              focus:outline-none
-              outline
-              hover:bg-primary
-              hover:text-white
-            "
-          >
-            Cancel
-          </button>
-          <button
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              py-1
-              px-4
-              focus:outline-none
-              hover:opacity-90
-            "
-            @click="addFunction = true"
-          >
-            <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
-            Save
-          </button>
-       
-        </div>
-      <!-- </template> -->
-
-
+          <div class="mt-2 flex justify-end">
+            <button
+              class="border-primary border-2 rounded-full text-black mr-5 py-1 px-4 focus:outline-none outline hover:bg-primary hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              class="bg-danger rounded-full text-white py-1 px-4 focus:outline-none hover:opacity-90"
+              @click="addFunction = true"
+            >
+              <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
+              Save
+            </button>
+          </div>
+          <!-- </template> -->
         </div>
       </span>
     </div>
@@ -101,11 +64,8 @@ import { getCountries, getStates } from "@/plugins/nation-states";
 import AutoComplete from "@/components/autocomplete.vue";
 
 import CalendarIcon from "@/components/icons/calendar.vue";
-import DateTimePicker from './components/datetime-picker.vue';
+import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
-
-
-
 
 const countries = getCountries();
 
@@ -122,7 +82,7 @@ const location = namespace("location");
 
     CalendarIcon,
     DateTimePicker,
-    CornieTextArea
+    CornieTextArea,
   },
 })
 export default class AddLocationn extends Vue {
@@ -290,5 +250,8 @@ export default class AddLocationn extends Vue {
 </script>
 
 <style scoped>
-input[type="time"]::-webkit-calendar-picker-indicator { background: none; display:none; }
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+  display: none;
+}
 </style>

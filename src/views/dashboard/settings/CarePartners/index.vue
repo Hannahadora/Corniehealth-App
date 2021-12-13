@@ -2,15 +2,7 @@
   <main class="p-6">
     <div>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
         Care Partners
       </span>
@@ -20,16 +12,7 @@
         </template>
         <template #actions>
           <button
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
             @click="showAddCarePartners = true"
           >
             Add a Care Partner
@@ -41,7 +24,7 @@
       </template>
     </div>
     <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
-      <add-care-partners @close="showAddCarePartners = false"/>
+      <add-care-partners @close="showAddCarePartners = false" />
     </cornie-dialog>
   </main>
 </template>
@@ -49,38 +32,37 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import EmptyState from "@/components/CornieEmptyState.vue";
-import { namespace } from "vuex-class"
+import { namespace } from "vuex-class";
 import ICarePartner from "@/types/ICarePartner";
-import ExistingState from "./ExistingState.vue"
-import AddCarePartners from "./AddCarePartner.vue"
-import CornieDialog from "@/components/CornieDialog.vue"
+import ExistingState from "./ExistingState.vue";
+import AddCarePartners from "./AddCarePartner.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
 
-const CarePartnersStore = namespace("CarePartnersStore")
+const CarePartnersStore = namespace("CarePartnersStore");
 
 @Options({
   components: {
     EmptyState,
     ExistingState,
     AddCarePartners,
-    CornieDialog
+    CornieDialog,
   },
 })
 export default class CarePartners extends Vue {
-
-  showAddCarePartners = false
+  showAddCarePartners = false;
 
   @CarePartnersStore.State
   carePartners!: ICarePartner[];
 
   @CarePartnersStore.Action
-  get!: () => Promise<void>
+  get!: () => Promise<void>;
 
   get empty() {
     return this.carePartners.length == 0;
   }
 
   mounted() {
-    this.get()
+    this.get();
   }
 }
 </script>

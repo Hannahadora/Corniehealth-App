@@ -60,15 +60,7 @@
       </div>
       <div class="w-full">
         <cornie-btn
-          class="
-            font-semibold
-            rounded-full
-            bg-danger
-            mt-3
-            w-full
-            text-white
-            p-2
-          "
+          class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
           :disabled="!emailVerified"
           :loading="loading"
           type="submit"
@@ -198,7 +190,7 @@ export default class ActivateAccount extends Vue {
     try {
       await cornieClient().post("/api/v1/account/set-type", payload);
     } catch (error) {
-      console.log("an error occured", error);
+      ;
     }
   }
 

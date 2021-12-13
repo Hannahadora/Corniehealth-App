@@ -2,6 +2,5 @@
 **/*.vue
 
 // eslint-disable-next-line to ignore the next line.
- Console.log("This line esline does not check")
+
  /* eslint-disable */
-Console.log("The entire file ignores the eslint check")

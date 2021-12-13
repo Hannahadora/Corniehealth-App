@@ -10,17 +10,17 @@ export default class ObjectSet implements Iterable<any> {
   private data!: any[];
 
   constructor(values: any[], key: any) {
-    this.data = [];
-    const map = new Map();
-    values.forEach((value: IIndexableObject) => {
-      map.set(value[key], value);
-    }, this);
-    this.data = [...map.values()];
+  	this.data = []
+  	const map = new Map()
+  	values.forEach((value: IIndexableObject) => {
+  		map.set(value[key], value)
+  	}, this)
+  	this.data = [...map.values()]
   }
 
   *[Symbol.iterator]() {
-    for (const val of this.data) {
-      yield val;
-    }
+  	for (const val of this.data) {
+  		yield val
+  	}
   }
 }

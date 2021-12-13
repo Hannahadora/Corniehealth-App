@@ -1,42 +1,52 @@
 <template>
-    <div class="container">
-        <div class="w-full">
-              <div class="container-fluid">
-                <cornie-table :columns="headers" v-model="items" @filter="showFilterPane">
-                <template #actions="{ }">
-                  <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" style="width:200px">
-                    <add-icon class="mr-3 mt-1" />
-                    <span class="ml-3 text-xs" @click="goToCreateSlot()">Create slot</span>
-                  </div>
-                  
-                </template>
-                  
-              </cornie-table>
-              </div>
+  <div class="container">
+    <div class="w-full">
+      <div class="container-fluid">
+        <cornie-table
+          :columns="headers"
+          v-model="items"
+          @filter="showFilterPane"
+        >
+          <template #actions="{}">
+            <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              style="width: 200px"
+            >
+              <add-icon class="mr-3 mt-1" />
+              <span class="ml-3 text-xs" @click="goToCreateSlot()"
+                >Create slot</span
+              >
+            </div>
+          </template>
+        </cornie-table>
+      </div>
 
-              <side-modal :visible="showFilter" @closesidemodal="() => showFilter = false">
-                <advanced-filter @applyfilter="applyFilter" />
-              </side-modal>
-              </div>
+      <side-modal
+        :visible="showFilter"
+        @closesidemodal="() => (showFilter = false)"
+      >
+        <advanced-filter @applyfilter="applyFilter" />
+      </side-modal>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import utilservice from '../helper/util'
-import dateHelper from '../helper/date-helper'
-import AddIcon from '@/components/icons/add.vue'
-import { Options, Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import utilservice from "../helper/util";
+import dateHelper from "../helper/date-helper";
+import AddIcon from "@/components/icons/add.vue";
+import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import slotService from '../../visits/helper/slot-service';
-import AdvancedFilter from './advanced-filter.vue'
-import SideModal from '../components/side-modal.vue';
-import CornieSelect from "@/components/cornieselect.vue"
-import { namespace } from 'vuex-class';
-import ISchedule from '@/types/ISchedule';
+import slotService from "../../visits/helper/slot-service";
+import AdvancedFilter from "./advanced-filter.vue";
+import SideModal from "../components/side-modal.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import { namespace } from "vuex-class";
+import ISchedule from "@/types/ISchedule";
 
-const practitionersStore = namespace('practitioner')
-const schedulesStore = namespace('schedules')
+const practitionersStore = namespace("practitioner");
+const schedulesStore = namespace("schedules");
 
 @Options({
   components: {
@@ -49,15 +59,14 @@ const schedulesStore = namespace('schedules')
     SelectedLocation,
   },
 })
-
 export default class Availability extends Vue {
-    @schedulesStore.Action
-    schedules!: ISchedule[]
+  @schedulesStore.Action
+  schedules!: ISchedule[];
 
-    @schedulesStore.State
-    getSchedules!: () => Promise<void>;
-    
-    rawHeaders = [
+  @schedulesStore.State
+  getSchedules!: () => Promise<void>;
+
+  rawHeaders = [
     {
       title: "Identifier",
       key: "id",
@@ -74,7 +83,7 @@ export default class Availability extends Vue {
       show: true,
     },
     { title: "Time", key: "time", show: true },
-    
+
     {
       title: "Booking CutOff",
       key: "bookingCutOff",
@@ -85,7 +94,6 @@ export default class Availability extends Vue {
       key: "status",
       show: true,
     },
-    
   ];
 
   async created() {
@@ -96,7 +104,7 @@ export default class Availability extends Vue {
 
 <style scoped>
 .book-bg {
-  background-color: #FFF0F1 !important;
+  background-color: #fff0f1 !important;
 }
 
 .selected {

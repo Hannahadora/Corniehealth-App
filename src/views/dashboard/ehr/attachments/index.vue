@@ -2,16 +2,7 @@
   <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded w-full">
     <div class="w-full">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-primary
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
         Attachment
       </span>
@@ -52,11 +43,10 @@ export default class AttachmentIndex extends Vue {
   get empty() {
     return this.attachments.length < 1;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
-
 
   @attachments.State
   attachments!: IAttachment[];

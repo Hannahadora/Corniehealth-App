@@ -1,30 +1,56 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-      <cornie-card-title  class="w-full">
-          <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Virtual NUBAN Account</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-          </div>
+      <cornie-card-title class="w-full">
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Virtual NUBAN Account
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-              <div class="w-full">
-          <div class="container  content-con">
+        <div class="w-full">
+          <div class="container content-con">
             <div class="w-full py-3">
-               <cornie-input label="First Name" placeholder="--Enter First Name--" class="w-full mb-4" />
-              <cornie-input  label="Last Name"  placeholder="--Enter Last Name--" class="w-full mb-4" />
-              <cornie-input  label="Email Address"  placeholder="--Enter Email Address--" class="w-full mb-4" />
-              <cornie-input  label="Phone Number"  placeholder="--Enter Phone Number--" class="w-full mb-4" />
-                <cornie-select
+              <cornie-input
+                label="First Name"
+                placeholder="--Enter First Name--"
+                class="w-full mb-4"
+              />
+              <cornie-input
+                label="Last Name"
+                placeholder="--Enter Last Name--"
+                class="w-full mb-4"
+              />
+              <cornie-input
+                label="Email Address"
+                placeholder="--Enter Email Address--"
+                class="w-full mb-4"
+              />
+              <cornie-input
+                label="Phone Number"
+                placeholder="--Enter Phone Number--"
+                class="w-full mb-4"
+              />
+              <cornie-select
                 label="Preferred Bank"
                 class="mb-4 w-full"
                 :items="['Kuda']"
                 placeholder="--Select Preferred Bank--"
-                />
-              <cornie-input  label="BVN"  placeholder="----Enter BVN--" class="w-full mb-4" />
+              />
+              <cornie-input
+                label="BVN"
+                placeholder="----Enter BVN--"
+                class="w-full mb-4"
+              />
             </div>
             <p class="mt-4 text-xs">
-                This account will be deactivated if not used within 3 months.  You can deactivate this account at any time in the future.
+              This account will be deactivated if not used within 3 months. You
+              can deactivate this account at any time in the future.
             </p>
           </div>
         </div>
@@ -36,7 +62,7 @@
             @click="apply"
             class="text-white bg-danger px-6 font-semibold text-sm rounded-xl"
           >
-           Generate NUBAN
+            Generate NUBAN
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -51,9 +77,9 @@ import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from '@/components/cornieradio.vue'
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from '@/components/icons/info.vue'
+import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
@@ -75,8 +101,6 @@ import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
 import { flatten } from "@/plugins/utils";
-
-
 
 @Options({
   name: "nubanmodal",
@@ -105,11 +129,11 @@ import { flatten } from "@/plugins/utils";
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    MainCornieSelect
+    MainCornieSelect,
   },
 })
 export default class Medication extends Vue {
-@PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
@@ -118,154 +142,145 @@ export default class Medication extends Vue {
   @Prop({ type: Boolean, default: false })
   displayNubanTable!: boolean;
 
-
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   updatedBy!: string;
 
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   currentStatus!: string;
 
   @Prop({ type: String, default: "" })
   dateUpdated!: string;
 
-status = "";
+  status = "";
   loading = false;
   expand = false;
   isVisible = "";
 
-
   required = string().required();
 
-
- async updateStatus() {
-   const id = this.id;
+  async updateStatus() {
+    const id = this.id;
     const url = `/api/v1/requests/${id}`;
     const body = {
-       status: this.status,
-    }
+      status: this.status,
+    };
     try {
       const response = await cornieClient().put(url, body);
-      if (response.success){
-          window.notify({ msg: "Status Updated", status: "success" });
+      if (response.success) {
+        window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
-   
     } catch (error) {
-      console.log(error);
-        window.notify({ msg: "Status Not Updated", status: "error" });
+      ;
+      window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
   }
 
- 
- 
- done() {
+  done() {
     this.$emit("medicationAdded");
     this.show = false;
   }
   async apply() {
-   // this.loading = true;
-     //await this.updateStatus()
-     this.displayNubanTable = true;
-        this.show = false;
-  //  this.loading = false;
+    // this.loading = true;
+    //await this.updateStatus()
+    this.displayNubanTable = true;
+    this.show = false;
+    //  this.loading = false;
   }
- 
-  async created() {
-   
-  }
+
+  async created() {}
 }
 </script>
 
 <style>
-
 .bg-gray {
-    background-color: #F6F8F9;
+  background-color: #f6f8f9;
 }
 .icon-wrap {
-   content:counter(step);
+  content: counter(step);
   counter-increment: step;
-    background: #fff;
-    border-radius: 50%;
-        top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-   left: -54em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -54em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap2 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: -7.5em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -7.5em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap3 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: -1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 52em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: -1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 52em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap4 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 42em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 42em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
- .icon-check-mark{
-    top: 1.3em;
-    z-index: 1;
-    left: 5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark {
+  top: 1.3em;
+  z-index: 1;
+  left: 5em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark2{
-       top: 1.3em;
-    z-index: 1;
-    left: 23em;
-    right: 0;
-    position: absolute;
+.icon-check-mark2 {
+  top: 1.3em;
+  z-index: 1;
+  left: 23em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark3{
-      top: 1.3em;
-    z-index: 1;
-    left: 45.5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark3 {
+  top: 1.3em;
+  z-index: 1;
+  left: 45.5em;
+  right: 0;
+  position: absolute;
 }
-.bg-danger-100{
-    background-color: #FE4D3C;
+.bg-danger-100 {
+  background-color: #fe4d3c;
 }
 </style>

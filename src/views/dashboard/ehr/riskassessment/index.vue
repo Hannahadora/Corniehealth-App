@@ -1,17 +1,10 @@
 <template>
-  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded-3xl w-full">
+  <div
+    class="flex justify-center bg-white shadow-md p-3 mb-2 rounded-3xl w-full"
+  >
     <div class="w-full">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-xl text-dye
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-dye py-2"
       >
         Allergy & Intolerance
       </span>
@@ -56,11 +49,10 @@ export default class RiskIndex extends Vue {
   get empty() {
     return this.allergys.length < 1;
   }
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
-
 
   @allergy.State
   allergys!: IAllergy[];

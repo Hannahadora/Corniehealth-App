@@ -2,15 +2,7 @@
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
       >
         Healthcare Services
       </span>
@@ -38,22 +30,21 @@ const healthcare = namespace("healthcare");
   },
 })
 export default class HealthcareIndex extends Vue {
-   addHealthcare = false;
+  addHealthcare = false;
   HealthcareToUpdate = {} as IHealthcare;
 
   get empty() {
     return this.healthcares.length < 1;
   }
 
- @healthcare.State
+  @healthcare.State
   healthcares!: IHealthcare[];
 
   @healthcare.Action
   fetchHealthcares!: () => Promise<void>;
 
-
-created() {
-  this.fetchHealthcares();
+  created() {
+    this.fetchHealthcares();
     if (this.healthcares.length < 1) this.fetchHealthcares();
   }
 }

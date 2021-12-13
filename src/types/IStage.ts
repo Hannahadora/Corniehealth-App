@@ -1,4 +1,4 @@
 export default interface IStage {
-    id?: string,
-    reference?: string
-  }
+  id?: string;
+  reference?: string;
+}

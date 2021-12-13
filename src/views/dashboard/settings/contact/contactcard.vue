@@ -1,44 +1,25 @@
 <template>
   <div
-    class="
-      text-black
-      flex flex-row
-      rounded-lg
-      items-stretch
-      cursor-pointer
-      overflow-x-hidden
-      justify-between
-      border
-    "
+    class="text-black flex flex-row rounded-lg items-stretch cursor-pointer overflow-x-hidden justify-between shadow-card"
   >
-    <span class="flex items-center p-2">
-      <img class="h-10 w-10 rounded-full mr-1" :src="contact.image" />
-      <div class="text-black">
-        <div class="font-semibold capitalize">
+    <span class="flex items-center py-4 px-2">
+      <img class="h-11 w-11 rounded-full mr-1" :src="contact.image" />
+      <div >
+        <div class="font-semibold capitalize text-jet_black text-sm">
           {{ contact.fname }} {{ contact.lname }}
         </div>
-        <div class="text-black italic text-sm font-semibold">
+        <div class="text-black italic text-xs font-medium">
           {{ contact.email }}
-        </div>
-        <div class="text-blue-900 italic text-xs font-semibold">
+        </div>  
+        <div class="text-blue-yonder italic text-xxs font-medium">
           {{ contact.state }}, {{ contact.country }}
         </div>
       </div>
     </span>
     <div
-      class="
-        justify-center
-        items-center
-        flex
-        rounded-r-lg
-        bg-gray-300
-        opacity-0
-        hover:opacity-100
-        flex-grow
-        px-3
-      "
+      class="justify-center items-center flex rounded-r-lg bg-gray-300 opacity-0 hover:opacity-100 flex-grow px-5"
     >
-      <edit-icon class="mr-3" @click="editContact" />
+      <edit-icon class="mr-6 text-primary" @click="editContact" />
       <delete-icon @click="removeContact" class="text-danger fill-current" />
     </div>
     <add-contact

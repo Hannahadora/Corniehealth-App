@@ -2,46 +2,21 @@
   <div class="w-full mx-5">
     <span class="flex justify-end">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          text-sm
-          mb-5
-          py-2
-          px-3
-          focus:outline-none
-          hover:opacity-90
-          flex
-          mr-6
-        "
+        class="bg-danger rounded-full text-white mt-5 text-sm mb-5 py-2 px-3 focus:outline-none hover:opacity-90 flex mr-6"
         @click="showDefaultCurrencyModal = true"
       >
-   <bank-add-icon class="mt-1 mr-2" /> 
+        <bank-add-icon class="mt-1 mr-2" />
         Set Default Currecncy
       </button>
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-sm
-          text-white
-          mb-5
-          mt-5
-          py-2
-          px-3
-          focus:outline-none
-          hover:opacity-90
-          flex
-        "
+        class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 px-3 focus:outline-none hover:opacity-90 flex"
         @click="showNewExchangeRateModal = true"
       >
-    <bank-add-icon class="mt-1 mr-2"/> 
+        <bank-add-icon class="mt-1 mr-2" />
         New Exchange Rate
       </button>
     </span>
-       <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
+    <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -67,9 +42,12 @@
       </template>
     </cornie-table>
 
-  
     <default-currency v-model="showDefaultCurrencyModal" />
-  <new-exchange-rate v-model="showNewExchangeRateModal" @currency-added="currencyadded" :id="currencyId"/>
+    <new-exchange-rate
+      v-model="showNewExchangeRateModal"
+      @currency-added="currencyadded"
+      :id="currencyId"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -111,24 +89,21 @@ const currency = namespace("currency");
     defaultCurrency,
     DeleteIcon,
     EyeIcon,
-    CloseIcon
+    CloseIcon,
   },
 })
 export default class currentState extends Vue {
-
-   @currency.State
+  @currency.State
   currencys!: ICurrency[];
 
   @currency.Action
   deleteCurrency!: (id: string) => Promise<boolean>;
 
-
-
   @currency.Action
   fetchCurrencys!: () => Promise<void>;
 
   query = "";
-currencyId="";
+  currencyId = "";
   showNewExchangeRateModal = false;
   showDefaultCurrencyModal = false;
 
@@ -137,16 +112,16 @@ currencyId="";
     {
       title: "CURRENCY",
       key: "currency",
-       show: true,
+      show: true,
     },
-    { title: "CONVERSION", key: "conversion", show: true, },
+    { title: "CONVERSION", key: "conversion", show: true },
 
     {
       title: "EXCHANGE RATE",
       key: "exchangeRate",
-       show: true,
+      show: true,
     },
-    { title: "CREATED", key: "createdAt" , show: true,},
+    { title: "CREATED", key: "createdAt", show: true },
     // Displaying Icon in the header - <table-setting-icon/>
   ];
 
@@ -154,16 +129,15 @@ currencyId="";
     return [...this.rawHeaders, { title: "", value: "action", image: true }];
   }
 
-
   get items() {
     const currencys = this.currencys.map((currency) => {
       (currency as any).createdAt = new Date(
         (currency as any).createdAt
       ).toLocaleDateString("en-US");
-        return {
+      return {
         ...currency,
-         action: currency.id,
-        };
+        action: currency.id,
+      };
     });
     if (!this.query) {
       return currencys;
@@ -171,25 +145,26 @@ currencyId="";
       return search.searchObjectArray(currencys, this.query);
     }
   }
-     get sortCurrency (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
-       async deleteItem(id: string) {
+  get sortCurrency() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this currency",
-      title: "Delete Currency"
+      title: "Delete Currency",
     });
     if (!confirmed) return;
 
-    if (await this.deleteCurrency(id)) window.notify({ msg: "Currency Deleted", status: "success" });
+    if (await this.deleteCurrency(id))
+      window.notify({ msg: "Currency Deleted", status: "success" });
     else window.notify({ msg: "Currency Not Deleted", status: "error" });
   }
-async showRateModal(value:string){
-  this.showNewExchangeRateModal = true;
-  this.currencyId = value;
-}
+  async showRateModal(value: string) {
+    this.showNewExchangeRateModal = true;
+    this.currencyId = value;
+  }
   getKeyValue(item: any) {
     const { data, index, ...rest } = item;
     const key = Object.values(rest)[0] as string;
@@ -201,11 +176,11 @@ async showRateModal(value:string){
     };
   }
 
-currencyadded(){
-this.fetchCurrencys();
-}
- created(){
-   this.fetchCurrencys();
- }
+  currencyadded() {
+    this.fetchCurrencys();
+  }
+  created() {
+    this.fetchCurrencys();
+  }
 }
 </script>

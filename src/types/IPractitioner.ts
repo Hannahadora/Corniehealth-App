@@ -1,4 +1,4 @@
-import Period from "./IPeriod";
+import Period from './IPeriod'
 
 export default interface IPractitioner {
   name: string;
@@ -14,7 +14,7 @@ export default interface IPractitioner {
   };
   address: string;
   domain: string;
-  dateOfBirth: "2021-07-16";
+  dateOfBirth: '2021-07-16';
   image: string;
   jobDesignation: string;
   department: string;

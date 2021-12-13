@@ -18,7 +18,7 @@
         <div class="text-xs p-1 flex-grow">
           <slot />
         </div>
-        <div class="tooltip-pointer bg-primary rounded" ref="tooltipPointer"/>
+        <div class="tooltip-pointer bg-primary rounded" ref="tooltipPointer" />
       </div>
     </div>
   </span>

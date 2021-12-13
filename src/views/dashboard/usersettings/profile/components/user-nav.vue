@@ -2,36 +2,34 @@
   <div class="mt-2 mb-5 rounded-lg bg-white w-full h-full max-h-full">
     <div class="w-full h-full max-h-full p-2">
       <div class="flex flex-col h-full w-full overflow-auto max-h-full pr-2">
-        <div class="mt-3 my-4" v-for="(setting, key) in settings" :key="key"
-          
-        >
+        <div class="mt-3 my-4" v-for="(setting, key) in settings" :key="key">
           <span>
-            <div
-              class="w-full justify-between flex items-center"
-            >
+            <div class="w-full justify-between flex items-center">
               <router-link
                 :to="setting.to"
                 exact-active-class="live-link"
-                :class="{ 'live-link': setting.to.includes('domain') && route.path.includes('domain')}"
-                class="font-semibold cursor-pointer capitalize w-full flex text-sm text-gray-500 "
+                :class="{
+                  'live-link':
+                    setting.to.includes('domain') &&
+                    route.path.includes('domain'),
+                }"
+                class="font-semibold cursor-pointer capitalize w-full flex text-sm text-gray-500"
               >
                 <span class="mr-2" v-if="key === 0"> <PractitionerIcon /></span>
                 <span class="mr-2" v-if="key === 1"> <DomainIcon /></span>
                 <span class="mr-2" v-if="key === 2"> <SecurityIcon /></span>
-                <span class="mr-2 w-1/12" v-if="key === 3"> <TemplatesIcon /></span>
+                <span class="mr-2 w-1/12" v-if="key === 3">
+                  <TemplatesIcon
+                /></span>
                 <span class="flex justify-between w-11/12">
-                     {{ setting.name }}
-                    <chevron-right-icon
-                        class="cursor-pointer text-white-500 ml-auto white stroke-current"
-                    />    
+                  {{ setting.name }}
+                  <chevron-right-icon
+                    class="cursor-pointer text-white-500 ml-auto white stroke-current"
+                  />
                 </span>
               </router-link>
-              
             </div>
-            <div
-              class="flex flex-col mt-1 text-gray-500"
-            >
-            </div>
+            <div class="flex flex-col mt-1 text-gray-500"></div>
           </span>
         </div>
       </div>
@@ -61,7 +59,7 @@ import DevicesIcon from "@/components/icons/devices.vue";
 import PartnersIcon from "@/components/icons/partners.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-import { useRoute} from 'vue-router'
+import { useRoute } from "vue-router";
 
 type INav = { name: string; to: string; icon: string };
 
@@ -96,23 +94,23 @@ export default class Settings extends Vue {
   open = 0;
 
   route: any = useRoute();
-//   get organization() {
-//     return [
-//       { name: "Organization Information", to: "org-info", icon: "org-icon" },
-//       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
-//       {
-//         name: "Location Hierarchy",
-//         to: "location",
-//         icon: "location-icon",
-//       },
-//       {
-//         name: "Organization Hierarchy",
-//         to: "org-hierarchy",
-//         icon: "hierarchy-icon",
-//       },
-//       { name: "Bank & Accounts", to: "bank-accounts", icon: "bank-icon" },
-//     ];
-//   }
+  //   get organization() {
+  //     return [
+  //       { name: "Organization Information", to: "org-info", icon: "org-icon" },
+  //       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
+  //       {
+  //         name: "Location Hierarchy",
+  //         to: "location",
+  //         icon: "location-icon",
+  //       },
+  //       {
+  //         name: "Organization Hierarchy",
+  //         to: "org-hierarchy",
+  //         icon: "hierarchy-icon",
+  //       },
+  //       { name: "Bank & Accounts", to: "bank-accounts", icon: "bank-icon" },
+  //     ];
+  //   }
 
   get userSecurity() {
     return [
@@ -152,23 +150,27 @@ export default class Settings extends Vue {
 
   get settings() {
     return [
-        {
-          name: "Practitioner Profile",
-          to: "/dashboard/provider/user",
-          icon: "security-icon",
-        },
-        {
-          name: "Domains",
-          to: "/dashboard/provider/user/domains",
-          icon: "security-icon",
-        },
-        {
-          name: "User Security",
-          to: "/dashboard/providerr/user/security",
-          icon: "security-icon",
-        },
-        { name: "Signature", to: "/dashboard/provider/user/signature", icon: "domain-icon" },
-      ];
+      {
+        name: "Practitioner Profile",
+        to: "/dashboard/provider/user",
+        icon: "security-icon",
+      },
+      {
+        name: "Domains",
+        to: "/dashboard/provider/user/domains",
+        icon: "security-icon",
+      },
+      {
+        name: "User Security",
+        to: "/dashboard/providerr/user/security",
+        icon: "security-icon",
+      },
+      {
+        name: "Signature",
+        to: "/dashboard/provider/user/signature",
+        icon: "domain-icon",
+      },
+    ];
   }
 
   mapUrl(url: string) {
@@ -185,10 +187,10 @@ export default class Settings extends Vue {
 }
 </script>
 <style scoped>
-    .live-link {
-        background: #080056;
-        border-radius: 124px;
-        color: white;
-        padding: .8rem 1rem;
-    }
+.live-link {
+  background: #080056;
+  border-radius: 124px;
+  color: white;
+  padding: 0.8rem 1rem;
+}
 </style>

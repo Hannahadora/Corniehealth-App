@@ -58,8 +58,6 @@ export default class Tabs extends Vue {
     return index == this.syncedValue;
   }
 
-  mounted() {
-    console.log(this.$slots.default!().length);
-  }
+  mounted() {}
 }
 </script>

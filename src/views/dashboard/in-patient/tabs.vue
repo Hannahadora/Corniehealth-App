@@ -3,15 +3,7 @@
     <div class="flex w-full font-semibold py-2 mx-auto mt-4">
       <template v-for="(tab, index) in items" :key="`tab-${index}`">
         <span
-          class="
-            flex
-            px-3
-            py-2
-            border-b-4
-            cursor-pointer
-            hover:bg-gray-300 hover:bg-opacity-20
-            text-sm
-          "
+          class="flex px-3 py-2 border-b-4 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 text-sm"
           :class="syncedValue == index ? ['border-danger'] : ['text-gray-500']"
           @click="syncedValue = index"
         >
@@ -59,7 +51,6 @@ export default class Tabs extends Vue {
   }
 
   mounted() {
-    console.log(this.$slots.default!().length);
   }
 }
 </script>

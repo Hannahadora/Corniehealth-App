@@ -29,7 +29,7 @@
       </template>
     </empty-state> -->
     <!-- <existing-state :levels="levels" v-else /> -->
-        <existing-state :levels="levels" />
+    <existing-state :levels="levels" />
 
     <add-level v-model="addLevel" />
   </main>
@@ -43,7 +43,6 @@ import ExistingState from "./ExistingState.vue";
 import { namespace } from "vuex-class";
 import { LevelCollection } from "@/types/ILevel";
 
-
 const level = namespace("OrgLevels");
 
 @Options({
@@ -52,7 +51,7 @@ const level = namespace("OrgLevels");
     EmptyState,
     AddLevel,
     ExistingState,
-},
+  },
 })
 export default class Functions extends Vue {
   addLevel = false;

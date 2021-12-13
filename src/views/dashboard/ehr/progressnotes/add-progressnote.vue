@@ -80,15 +80,7 @@
             </template>
           </auto-complete>
           <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
           >
             <!-- <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
               <path
@@ -118,15 +110,7 @@
             placeholder="Regular input"
           /> -->
           <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
           >
             <!-- <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
               <path
@@ -181,7 +165,11 @@
           <h3 class="text-sm">Allergies</h3>
           <dots-horizontal-icon class="mr-7" />
         </div>
-        <div class="flex items-center justify-between mt-3 mb-5"  v-for="(item,index) in patientAllergy" :key="index">
+        <div
+          class="flex items-center justify-between mt-3 mb-5"
+          v-for="(item, index) in patientAllergy"
+          :key="index"
+        >
           <div class="grid grid-cols-2 gap-2">
             <div class="grid grid-cols-2 gap-2">
               <p class="text-xs text-black font-bold">1. Asthma</p>
@@ -212,8 +200,7 @@
           </div>
         </div>
 
-
-          <div class="flex items-center justify-between mt-3 mb-5">
+        <div class="flex items-center justify-between mt-3 mb-5">
           <div class="grid grid-cols-2 gap-2">
             <div class="grid grid-cols-2 gap-2">
               <p class="text-xs text-black font-bold">1. Asthma</p>
@@ -243,8 +230,6 @@
             </p>
           </div>
         </div>
-
-
 
         <div class="flex items-center justify-between mt-5">
           <h3 class="text-sm">Medications</h3>
@@ -330,7 +315,6 @@
         <div class="grid grid-cols-2 gap-3 mt-3">
           <div class="relative z-10 mt-5">
             <vue-slider v-model="value"></vue-slider>
-
           </div>
         </div>
         <!-- <cornie-radio
@@ -342,20 +326,7 @@
         <h3 class="text-sm font-bold">General WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -368,20 +339,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -405,20 +363,7 @@
         <h3 class="text-sm font-bold">HEENT WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -432,20 +377,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -469,20 +401,7 @@
         <h3 class="text-sm font-bold">Skin WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -496,20 +415,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -533,20 +439,7 @@
         <h3 class="text-sm font-bold">Neck WNL</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -560,20 +453,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -597,20 +477,7 @@
         <h3 class="text-sm">Extremities</h3>
         <ul class="flex">
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -624,20 +491,7 @@
             </div>
           </li>
           <li
-            class="
-              list-none
-              items-center
-              flex
-              text-xs
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
+            class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
           >
             <div class="flex item-center">
               <cornie-radio
@@ -668,32 +522,13 @@
             Diagnostics Result
           </label>
           <input
-            class="
-              w-full
-              h-10
-              pl-3
-              pr-8
-              text-base
-              focus:outline-none
-              placeholder-gray-600
-              border
-              rounded-lg
-              focus:shadow-outline
-            "
+            class="w-full h-10 pl-3 pr-8 text-base focus:outline-none placeholder-gray-600 border rounded-lg focus:shadow-outline"
             id="Diagnostics-Result"
             type="text"
             placeholder="Regular input"
           />
           <div
-            class="
-              absolute
-              inset-y-0
-              right-0
-              flex
-              items-center
-              px-2
-              pointer-events-none
-            "
+            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
           >
             <add-icon class="mt-8" style="color: red" />
           </div>
@@ -762,16 +597,13 @@
             @click="printEncounterId(referenceEncounter)"
           />
 
-           <referrer-select
+          <referrer-select
             v-model="referenceEncounter2"
             label="Referral Request"
             @click="printEncounterId(referenceEncounter2)"
           />
 
-
-
-
-           <!-- <auto-complete :items="items2" v-model="encounter">
+          <!-- <auto-complete :items="items2" v-model="encounter">
     <template #item="{ item }">
       <div class="flex justify-between my-1 items-center text-xs">
         <span class="flex flex-col">
@@ -798,7 +630,7 @@
           >
             <template #item="{ item }">
               <div
-                
+
                 class="w-full flex items-center my-1 justify-between"
               >
                 <div class="flex items-center">
@@ -922,11 +754,7 @@ import Condition from "yup/lib/Condition";
 import { IClinicalImpression } from "@/types/ClinicalImpression";
 import ReferrerSelect from "./referrer-select.vue";
 
-import  IAllergy  from "@/types/IAllergy";
-
-
-
-
+import IAllergy from "@/types/IAllergy";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -938,7 +766,6 @@ import IEncounter from "@/types/IEncounter";
 const request = namespace("request");
 const otherrequest = namespace("otherrequest");
 const allergy = namespace("allergy");
-
 
 // import "vue-range-component/dist/vue-range-slider.js";
 // import * as VueRangeSlider from "vue-range-component";
@@ -972,7 +799,6 @@ const measurable = {
   string: "",
 };
 
-
 const emptyRequest: IRequest = {
   requestInfo: {},
   requestDetails: {},
@@ -981,9 +807,7 @@ const emptyRequest: IRequest = {
   medicationAdministration: {},
   fufillment: {},
   history: {},
-  Medications: []
-
-
+  Medications: [],
 };
 
 @Options({
@@ -1012,17 +836,16 @@ const emptyRequest: IRequest = {
 
     CornieRadio,
     ConditionSelect,
-    ReferrerSelect
+    ReferrerSelect,
 
     // CustomRangeSlider
 
     // VueSlider
   },
 })
-export default class AddProgressNote extends Vue { 
+export default class AddProgressNote extends Vue {
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<ICondition>;
-
 
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
@@ -1046,7 +869,7 @@ export default class AddProgressNote extends Vue {
 
   @vital.Action
   getEncounters!: (patientId: string) => Promise<void>;
-  
+
   @request.State
   requests!: any[];
 
@@ -1059,9 +882,8 @@ export default class AddProgressNote extends Vue {
   // @otherrequest.Action
   // fetchOtherrequests!: () => Promise<void>;
 
-   @otherrequest.Action
+  @otherrequest.Action
   fetchOtherrequestsById!: (patientId: string) => Promise<void>;
-
 
   @request.State
   patients!: any[];
@@ -1075,12 +897,12 @@ export default class AddProgressNote extends Vue {
   @request.Action
   getPractitioners!: () => Promise<void>;
 
-  select(i:number) {
-      this.selected = i;
-    }
+  select(i: number) {
+    this.selected = i;
+  }
 
-@allergy.Action
-  getAllergyById!: (id: string) => IAllergy
+  @allergy.Action
+  getAllergyById!: (id: string) => IAllergy;
 
   rawClinicalImpressions: IClinicalImpression[] = [];
 
@@ -1109,7 +931,6 @@ export default class AddProgressNote extends Vue {
   referenceEncounter = "";
   referenceEncounter2 = "";
 
-
   asserter = "";
   theCondition = "";
 
@@ -1129,7 +950,7 @@ export default class AddProgressNote extends Vue {
   evidenceNote = "";
   // item: any = {};
 
-   item = {} as ICondition;
+  item = {} as ICondition;
 
   // patientProgressNotes = [] as IProgressnote[];
 
@@ -1142,7 +963,7 @@ export default class AddProgressNote extends Vue {
   }
 
   get isShow() {
-    console.log("gdgdg");
+    ;
     return (this.topClick = !this.topClick);
   }
 
@@ -1151,10 +972,9 @@ export default class AddProgressNote extends Vue {
     this.setAsserter();
   }
 
-  
-@Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setAllergy()
+    this.setAllergy();
   }
 
   async setAsserter() {
@@ -1178,7 +998,7 @@ export default class AddProgressNote extends Vue {
 
   _categories = [] as Codeable[];
 
-   @allergy.Action
+  @allergy.Action
   fetchAllergys!: (patientId: string) => Promise<void>;
 
   get patientConditions() {
@@ -1202,8 +1022,8 @@ export default class AddProgressNote extends Vue {
     return severities.find((s) => s.code == severity)?.display || "";
   }
 
-  printId(  item = {} as ICondition) {
-    console.log("dddd", this.newitem);
+  printId(item = {} as ICondition) {
+    ;
     this.myId = item.id;
     this.myItem = this.newitem;
     // // const uuu =  this.items.find((s) => s.id == item.id) || "";
@@ -1212,30 +1032,32 @@ export default class AddProgressNote extends Vue {
   enc: any = [];
   printEncounterId(id: string) {
     this.enc.push(id);
-    console.log("push", this.enc);
+    ;
 
-const newArr = this.enc.filter(function(entry: any) { return entry.trim() != ''; })
-// var filtered = this.enc.filter(function (el: any) {
-//   return el != null;
-// });
+    const newArr = this.enc.filter(function (entry: any) {
+      return entry.trim() != "";
+    });
+    // var filtered = this.enc.filter(function (el: any) {
+    //   return el != null;
+    // });
 
-console.log("filtered", newArr);
+    ;
     return newArr;
   }
 
-    referrers: any = [];
+  referrers: any = [];
 
-async setAllergy() {
-    const allergy = await this.getAllergyById(this.id)
-    if (!allergy) return
-    this.clinicalStatus = allergy.clinicalStatus
-    this.verificationStatus = allergy.verificationStatus
+  async setAllergy() {
+    const allergy = await this.getAllergyById(this.id);
+    if (!allergy) return;
+    this.clinicalStatus = allergy.clinicalStatus;
+    this.verificationStatus = allergy.verificationStatus;
     // this.type = allergy.type
     //  this.category = allergy.category
     // this.criticality = allergy.criticality
     // this.code = allergy.code
     // this.onSet = allergy.onSet
-    // this.reaction = allergy.reaction  
+    // this.reaction = allergy.reaction
   }
   get items() {
     const items = this.patientConditions.map((condition) => ({
@@ -1255,7 +1077,7 @@ async setAllergy() {
     return items;
   }
 
-   get items2() {
+  get items2() {
     const items = this.patientConditions.map((condition) => ({
       ...condition,
       original: condition,
@@ -1345,55 +1167,70 @@ async setAllergy() {
   sliderMax = "";
   topClick = false;
   showColumnFilter = false;
-  showMedicationModal= false;
-  showEditMedicationModal= false;
+  showMedicationModal = false;
+  showEditMedicationModal = false;
   // show = false;
-   selected = 1;
-requestId = "";
-showPartcipants = false;
+  selected = 1;
+  requestId = "";
+  showPartcipants = false;
   query = "";
   search = "";
 
   selectedStatus = 0;
-  filterByStatus: any = [ ]
-  completeStatus: any = [  ]
-  currentVisitId = '';
-  onePatientId= "";
+  filterByStatus: any = [];
+  completeStatus: any = [];
+  currentVisitId = "";
+  onePatientId = "";
   showNotes = false;
-  taskId="";
+  taskId = "";
   activeTab = 0;
-  showOthersNotes=false;
+  showOthersNotes = false;
   selectType = false;
   filterStatus = false;
-  showStatusModal=false;
-  showOtherStatusModal=false;
+  showStatusModal = false;
+  showOtherStatusModal = false;
   viewDetails = false;
-requestnotes=[];
-otherrequestnotes=[];
-  selectedSchedule: any = { };
-singleParticipant = [];
-  selectedVisit : any = { };
-  selectedPatient : any = { };
-  months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auust', 'September', 'October', 'November', 'December' ]
-updatedBy= "";
-currentStatus="";
-update="";
-otherupdatedBy = "";
-othercurrentStatus = "";
-otherupdate="";
- request: IRequest = emptyRequest;
+  requestnotes = [];
+  otherrequestnotes = [];
+  selectedSchedule: any = {};
+  singleParticipant = [];
+  selectedVisit: any = {};
+  selectedPatient: any = {};
+  months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "Auust",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  updatedBy = "";
+  currentStatus = "";
+  update = "";
+  otherupdatedBy = "";
+  othercurrentStatus = "";
+  otherupdate = "";
+  request: IRequest = emptyRequest;
 
-    get itemsrequest() {
-    if (!this.requests || this.requests.length === 0 ) return [];
+  get itemsrequest() {
+    if (!this.requests || this.requests.length === 0) return [];
     const filtered = this.requests.filter((i: any) => {
-        if (this.filterByStatus.length === 0) {
-            return i;
+      if (this.filterByStatus.length === 0) {
+        return i;
       } else {
-          if (this.filterByStatus.includes('Show All')) return true;
-        const indexInStatuses = this.filterByStatus.findIndex((j: any) => j.toLowerCase() === i.status.toLowerCase());
+        if (this.filterByStatus.includes("Show All")) return true;
+        const indexInStatuses = this.filterByStatus.findIndex(
+          (j: any) => j.toLowerCase() === i.status.toLowerCase()
+        );
         if (indexInStatuses >= 0) return true;
       }
-    })
+    });
 
     const requests = filtered.map((i: any) => {
       if (i.status === "cancelled" || i.status === "no-show") {
@@ -1403,67 +1240,70 @@ otherupdate="";
       } else {
         i.completeStatus = "Stopped";
       }
-         (i as any).createdAt = new Date(
-         (i as any).createdAt 
-       ).toDateString();
+      (i as any).createdAt = new Date((i as any).createdAt).toDateString();
 
-  (i as any).updatedAt = new Date(
-         (i as any).updatedAt
-       ).toDateString();
-        this.onePatientId =  i.subject.subject;
-        this.updatedBy = this.getPatientName(i.requestDetails.requester);
+      (i as any).updatedAt = new Date((i as any).updatedAt).toDateString();
+      this.onePatientId = i.subject.subject;
+      this.updatedBy = this.getPatientName(i.requestDetails.requester);
       this.currentStatus = i.status;
-      this.update= i.updatedAt
+      this.update = i.updatedAt;
       return {
         ...i,
         action: i.id,
         patientsubject: this.getPatientName(i.subject.subject),
         patientrequester: this.getPatientName(i.requestDetails.requester),
         practitionerdispenser: this.getPractitionerName(i.performer.dispenser),
-        practitionerperformer: this.getPractitionerName(i.medicationAdministration.performer),
+        practitionerperformer: this.getPractitionerName(
+          i.medicationAdministration.performer
+        ),
         status: i.status,
         // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
       };
     });
-    if (this.selectedStatus === 1) return requests.filter((i: any) => i.completeStatus === "On-Hold");
-    if (this.selectedStatus === 2) return requests.filter((i) => i.status === "Stopped");
-    if (this.selectedStatus === 3) return requests.filter((i) => i.status !== "Stopped" && i.status !== "On-Hold");
+    if (this.selectedStatus === 1)
+      return requests.filter((i: any) => i.completeStatus === "On-Hold");
+    if (this.selectedStatus === 2)
+      return requests.filter((i) => i.status === "Stopped");
+    if (this.selectedStatus === 3)
+      return requests.filter(
+        (i) => i.status !== "Stopped" && i.status !== "On-Hold"
+      );
 
     return requests;
   }
 
-   getPatientName(id: string) {
+  getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    return pt ? `${pt.firstname} ${pt.lastname}` : '';
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
-getPractitionerName(id: string){
-   const pt = this.practitioners.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : '';
-}
+  getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    this.selectedPatient = pt ? pt : { };
+    this.selectedPatient = pt ? pt : {};
   }
-
-  
 
   getRequest(id: string) {
     const pt = this.requests.find((i: any) => i.id === id);
-    return pt ? pt : { };
+    return pt ? pt : {};
   }
 
   get selectedPatientData() {
-    if (!this.selectedPatient || !this.selectedPatient.id) return { };
+    if (!this.selectedPatient || !this.selectedPatient.id) return {};
     const data = this.selectedPatient;
     return {
       gender: data.gender,
-      dob: `${new Date(data.dateOfBirth).getDate()} ${this.months[new Date(data.dateOfBirth).getMonth()]}, ${new Date(data.dateOfBirth).getFullYear()}`,
-      mrn: data.mrn
-    }
+      dob: `${new Date(data.dateOfBirth).getDate()} ${
+        this.months[new Date(data.dateOfBirth).getMonth()]
+      }, ${new Date(data.dateOfBirth).getFullYear()}`,
+      mrn: data.mrn,
+    };
   }
 
   showPatientDetails(id: string) {
-    this.setSelectedPatient(id)
+    this.setSelectedPatient(id);
     this.viewDetails = true;
   }
 
@@ -1473,8 +1313,10 @@ getPractitionerName(id: string){
     if (this.heent.note && this.heent.value) data.heent = this.heent;
     if (this.skin.note && this.skin.value) data.skin = this.skin;
     if (this.neck.note && this.neck.value) data.neck = this.neck;
-    if (this.extremities.note && this.extremities.value) data.extremities = this.extremities;
-    if (this.extremities.note && this.extremities.value) data.extremities = this.extremities;
+    if (this.extremities.note && this.extremities.value)
+      data.extremities = this.extremities;
+    if (this.extremities.note && this.extremities.value)
+      data.extremities = this.extremities;
 
     data.patientId = this.patientId;
     data.conditionId = this.myId;
@@ -1483,15 +1325,14 @@ getPractitionerName(id: string){
     return data;
   }
 
-
   async submit() {
-    console.log("payload", this.payload2);
-    console.log("request", this.requests);
-    console.log("conditionId", this.payload2.conditionId);
-    console.log("push", this.enc);
+    ;
+    ;
+    ;
+    ;
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return console.log("form is invalid");
+      return ;
     }
     try {
       const { data } = await cornieClient().post(
@@ -1499,14 +1340,14 @@ getPractitionerName(id: string){
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      console.log("success", this.payload2);
+      ;
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      console.log("error", error);
+      ;
     }
   }
 
-    async fetchClinicalImpressions() {
+  async fetchClinicalImpressions() {
     try {
       const { data } = await cornieClient().get(
         `/api/v1/clinical-impressions/findAllByPatient/${this.patientId}`
@@ -1525,7 +1366,7 @@ getPractitionerName(id: string){
         `/other-requests/findByPatientSubject/all/${this.patientId}`
       );
       this.referrers = data || [];
-      console.log('refereee', this.referrers);
+      ;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching referrers for patient",
@@ -1542,32 +1383,29 @@ getPractitionerName(id: string){
     this.fetchPatientConditions(this.patientId);
     if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
     // this.fetchPatientConditions(this.patientId);
-    console.log(this.encounters, "Encounters");
+    ;
     this.loadDropdown();
     this.setAsserter();
 
     // if (!this.patients || this.patients.length === 0) await this.getPatients();
     // if (!this.requests || this.requests.length === 0) await this.fetchRequests();
     //  if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
-          // if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequestsById(this.patientId);
+    // if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequestsById(this.patientId);
 
-     
     // if (!this.requests || this.requests.length === 0) await this.getPatients();
     // window.addEventListener('click', (e: any) => {
     //   if (!e.target.classList.contains('md')) {
     //     this.filterStatus = false;
     //   }
     // })
-              this.fetchClinicalImpressions();
+    this.fetchClinicalImpressions();
     this.fetchReferrer();
-        if (!this.fetchAllergys || this.fetchAllergys.length === 0) 
-        {
-         const patientAllergy = await this.fetchAllergys(this.patientId);
-         return this.patientAllergy = patientAllergy;
-        }
+    if (!this.fetchAllergys || this.fetchAllergys.length === 0) {
+      const patientAllergy = await this.fetchAllergys(this.patientId);
+      return (this.patientAllergy = patientAllergy);
+    }
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

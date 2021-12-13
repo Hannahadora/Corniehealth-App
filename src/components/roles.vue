@@ -12,86 +12,67 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Practioners Roles</h2>
+        <h2 class="font-bold text-lg text-primary ml-3 -mt-2">
+          Practioners Roles
+        </h2>
       </div>
       <div class="flex flex-col p-3">
-        <p class="text-sm mt-2">
-          Select preferred roles
-        </p>
-         <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
+        <p class="text-sm mt-2">Select preferred roles</p>
+        <icon-input
+          autocomplete="off"
+          class="border border-gray-600 rounded-full focus:outline-none"
+          type="search"
+          placeholder="Search"
+          v-bind="$attrs"
+          v-model="displayVal"
+        >
+          <template v-slot:prepend>
+            <search-icon />
+          </template>
         </icon-input>
         <div class="my-2 border-2 w-full flex-col rounded-md flex">
-          <div v-for="(item,index) in columnsProxy" :key="index">
-
-            <span
-              class="items-center w-full flex space-x-2"
-             >
+          <div v-for="(item, index) in columnsProxy" :key="index">
+            <span class="items-center w-full flex space-x-2">
               <label class="my-5 p-3 border-gray-200 flex">
-                   <input
-                    v-model="indexvalue" :value="item"
-                    type="checkbox"
-                    @input="changed(item.id)"
-                    name="indexValue"
-                    class="bg-danger focus-within:bg-danger px-6 shadow"
-                    />
+                <input
+                  v-model="indexvalue"
+                  :value="item"
+                  type="checkbox"
+                  @input="changed(item.id)"
+                  name="indexValue"
+                  class="bg-danger focus-within:bg-danger px-6 shadow"
+                />
               </label>
-                <span class="block">
-                   <span class="text-xs font-bold float-left pl-3">{{item.name}}
-                        <br>
-                   <span class="text-xs text-gray-300 font-bold">{{ item.description }}</span>
+              <span class="block">
+                <span class="text-xs font-bold float-left pl-3"
+                  >{{ item.name }}
+                  <br />
+                  <span class="text-xs text-gray-300 font-bold">{{
+                    item.description
+                  }}</span>
                 </span>
-                </span>
+              </span>
             </span>
           </div>
-  
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
           >
             Cancel
           </button>
           <button
             @click="apply"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Add
           </button>
         </div>
       </div>
     </modal>
-       <availability
-            v-model:visible="availableFilter"
-        />
-        <profile
-            v-model:visible="profileFilter"
-        />
+    <availability v-model:visible="availableFilter" />
+    <profile v-model:visible="profileFilter" />
   </div>
 </template>
 <script>
@@ -103,7 +84,6 @@ import IconInput from "@/components/IconInput.vue";
 import Availability from "@/components/availability.vue";
 import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
-
 
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
@@ -117,7 +97,7 @@ export default {
     Availability,
     IconInput,
     SearchIcon,
-    Profile
+    Profile,
   },
   props: {
     visible: {
@@ -140,7 +120,6 @@ export default {
       required: true,
       default: () => [],
     },
-    
   },
   data() {
     return {
@@ -149,7 +128,7 @@ export default {
       valueid: [],
       practitioners: [],
       availableFilter: false,
-      profileFilter:false
+      profileFilter: false,
     };
   },
   watch: {
@@ -180,9 +159,9 @@ export default {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    changed(index){
+    changed(index) {
       this.valueid.push(index);
-    }
+    },
   },
   mounted() {
     this.columnsProxy = copy([...this.indexvalue]);

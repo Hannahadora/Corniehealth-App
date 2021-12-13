@@ -1,6 +1,6 @@
 <template>
   <chart-card height="390px" title="Active Visits">
-    <canvas ref="chart" style="margin: auto;"></canvas>
+    <canvas ref="chart" style="margin: auto"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -18,17 +18,19 @@ import { cornieClient } from "@/plugins/http";
 export default class VisitsChart extends Vue {
   chart!: Chart;
 
-   date = new Date();
-   chartData: number[] = [ ]
+  date = new Date();
+  chartData: number[] = [];
 
   async getChartData(start: Date, end: Date) {
     try {
-      const { data } = await cornieClient().get(`/api/v1/visit/analytics/stats`, { start: start?.toISOString(), end: end?.toISOString()})
-      console.log(data, "VISITS CHART");
+      const { data } = await cornieClient().get(
+        `/api/v1/visit/analytics/stats`,
+        { start: start?.toISOString(), end: end?.toISOString() }
+      );
+      ;
       // this.chartData = data.
     } catch (error) {
-      console.log(error);
-      
+      ;
     }
   }
 
@@ -83,8 +85,8 @@ export default class VisitsChart extends Vue {
   }
 
   async created() {
-    const startDate = new Date(new Date().setDate(new Date().getDate() - 365))
-    await this.getChartData(startDate, this.date)
+    const startDate = new Date(new Date().setDate(new Date().getDate() - 365));
+    await this.getChartData(startDate, this.date);
   }
 }
 </script>

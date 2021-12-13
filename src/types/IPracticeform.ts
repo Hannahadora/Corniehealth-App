@@ -1,5 +1,5 @@
-import Period from "./IPeriod";
-import Practitioner from "./IPractitioner";
+import Period from './IPeriod'
+import Practitioner from './IPractitioner'
 
 export default interface IPracticeform {
   id?: string;
@@ -35,23 +35,23 @@ export default interface IPracticeform {
 //   prefix:string;
 
 //  }
- export type AnswerType =
-  | "boolean"
-  | "decimal"
-  | "integer"
-  | "date"
-  | "datetime"
-  | "time"
-  | "string"
-  | "text"
-  | "url"
-  | "choice"
-  | "openChoice"
-  | "attachment"
-  | "reference"
-  | "quantity";
+export type AnswerType =
+  | 'boolean'
+  | 'decimal'
+  | 'integer'
+  | 'date'
+  | 'datetime'
+  | 'time'
+  | 'string'
+  | 'text'
+  | 'url'
+  | 'choice'
+  | 'openChoice'
+  | 'attachment'
+  | 'reference'
+  | 'quantity';
 
- export interface Question {
+export interface Question {
   id?: string;
   question: string;
   answerType: AnswerType;
@@ -77,10 +77,10 @@ export interface QuestionGroup {
 
 export type Display = string;
 
-export type Displaymain = string; 
+export type Displaymain = string;
 
 export interface Section {
   items: Array<QuestionGroup | Question | Display>;
 }
 
-export type FormType = "questionnaire" | "survey";
+export type FormType = 'questionnaire' | 'survey';

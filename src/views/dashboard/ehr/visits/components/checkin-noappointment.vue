@@ -54,18 +54,7 @@
               </template>
               <div
                 style="max-height: 350px; overflow-y: scroll; z-index: 99999"
-                class="
-                  origin-top-right
-                  absolute
-                  right-0
-                  mt-2
-                  w-full
-                  rounded-md
-                  shadow-lg
-                  bg-white
-                  ring-1 ring-black ring-opacity-5
-                  focus:outline-none
-                "
+                class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="menu-button"
@@ -216,7 +205,7 @@ import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
-import MultiSelect from "@/views/dashboard/schedules/components/apply-to.vue"
+import MultiSelect from "@/views/dashboard/schedules/components/apply-to.vue";
 import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
 import { Prop, Watch } from "vue-property-decorator";
@@ -270,7 +259,7 @@ export default class CheckIn extends Vue {
   loading = false;
   date = new Date();
 
-  arr = [ ] as any[];
+  arr = [] as any[];
 
   data: any = {};
   selectedActors: any[] = [];
@@ -336,7 +325,7 @@ export default class CheckIn extends Vue {
       this.checkinData.scheduleId =
         todaySlots.length > 0 ? todaySlots[0].id : "";
       this.availableSlots = todaySlots.map((schedule: any) => schedule.slots);
-      console.log(this.availableSlots);
+      ;
     });
   }
 
@@ -345,7 +334,7 @@ export default class CheckIn extends Vue {
       this.loading = true;
       const slot = this.checkinData.slot;
       this.loading = false;
-      console.log("Slot is ", slot);
+      ;
       if (slot) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,

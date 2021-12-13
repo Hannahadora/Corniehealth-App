@@ -1,7 +1,7 @@
 <template>
           <big-dialog
           v-model="show"
-          :title="allaction + ' '+ 'Allergy' " 
+          :title="allaction + ' '+ 'Allergy' "
           class=""
           >
           <p class="grey-text">Fields with * are required</p>
@@ -101,12 +101,12 @@
                                     width="w-11/12"
                                     class="required"
                                   />
-                                
+
                               </div>
-                        
+
                           </div>
                     </div>
-                   
+
                       <div>
                         <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Notes</label>
                           <div class="my-2  w-full">
@@ -141,7 +141,7 @@
                        <date-time-picker
                             v-model:date="date"
                             v-model:time="data.reactionTime"
-                            label="Onset *" 
+                            label="Onset *"
                             width="w-11/12"
                             class="required"
                           />
@@ -219,9 +219,9 @@ import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from '@/components/cornieradio.vue'
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from '@/components/icons/info.vue';
+import InfoIcon from "@/components/icons/info.vue";
 import BigDialog from "@/components/bigdialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
@@ -243,15 +243,15 @@ import DatePicker from "@/components/datepicker.vue";
 import Period from "@/types/IPeriod";
 import FhirInput from "@/components/fhir-input.vue";
 import { IOrganization } from "@/types/IOrganization";
-import IAllergy ,{ OnSet,Reaction } from "@/types/IAllergy";
- import IPractitioner from "@/types/IPractitioner";
-import DateTimePicker from './components/datetime-picker.vue'
-import { namespace } from 'vuex-class'
+import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
+import IPractitioner from "@/types/IPractitioner";
+import DateTimePicker from "./components/datetime-picker.vue";
+import { namespace } from "vuex-class";
 
-const allergy = namespace('allergy')
+const allergy = namespace("allergy");
 const organization = namespace("organization");
 const timeable = {
-    age: "",
+  age: "",
   startDate: "",
   startTime: "",
   endDate: "",
@@ -267,26 +267,26 @@ const measurable = {
   string: "",
 };
 const emptyOnSet: OnSet = {
-          onsetDateTime: "",
-          onsetAge: "",
-          onsetPeriod: {} as Period,
-          onsetRange: [20,50],
-          onsetString: "",
-          recordedDate: "",
-        recorder: "",
-         asserter: "",
-          lastOccurence: "",
-           note: ""
+  onsetDateTime: "",
+  onsetAge: "",
+  onsetPeriod: {} as Period,
+  onsetRange: [20, 50],
+  onsetString: "",
+  recordedDate: "",
+  recorder: "",
+  asserter: "",
+  lastOccurence: "",
+  note: "",
 };
 
 const emptyReaction: Reaction = {
-          substance: "",
-          manifestation: "",
-          description: "",
-          onset: "",
-          severity: "",
-          exposureRoute: "",
-        note: "",
+  substance: "",
+  manifestation: "",
+  description: "",
+  onset: "",
+  severity: "",
+  exposureRoute: "",
+  note: "",
 };
 
 @Options({
@@ -317,26 +317,24 @@ const emptyReaction: Reaction = {
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    MainCornieSelect
+    MainCornieSelect,
   },
 })
 export default class Medication extends Vue {
-    @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
-   @Prop({ type: String, default: '' })
-  id!: string
-
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @PropSync("modelValue")
   show!: boolean;
 
   @allergy.Action
-  getAllergyById!: (id: string) => IAllergy
+  getAllergyById!: (id: string) => IAllergy;
 
-  @Prop({ type: Array,  default: () => [] })
+  @Prop({ type: Array, default: () => [] })
   available!: object;
-
 
   @organization.State
   organizationInfo!: IOrganization;
@@ -344,98 +342,97 @@ export default class Medication extends Vue {
   @organization.Action
   fetchOrgInfo!: () => Promise<void>;
 
-
- @allergy.State
+  @allergy.State
   practitioners!: any[];
-
 
   @allergy.Action
   getPractitioners!: () => Promise<void>;
 
-@Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setAllergy()
+    this.setAllergy();
   }
 
-practitioner!: IPractitioner;
-asserterName = "";
-clinicalStatus= "";
-verificationStatus = "";
-type = "";
-category="";
-criticality="";
-code = "";
-encounter="";
-  onsetDateTime= "";
-          onsetAge = "";
-          onsetPeriod = {} as Period;
-          onsetRange = [20,50];
-          onsetString=  "";
-          recordedDate= "";
+  practitioner!: IPractitioner;
+  asserterName = "";
+  clinicalStatus = "";
+  verificationStatus = "";
+  type = "";
+  category = "";
+  criticality = "";
+  code = "";
+  encounter = "";
+  onsetDateTime = "";
+  onsetAge = "";
+  onsetPeriod = {} as Period;
+  onsetRange = [20, 50];
+  onsetString = "";
+  recordedDate = "";
 
-        recorder= "";
-         asserter= "";
-          lastOccurence= "";
-           note = "";
-date="";
-onSet={...emptyOnSet};
-reaction={...emptyReaction};
-switchshow = false;
-value=  [20, 40];
- data: any = {
+  recorder = "";
+  asserter = "";
+  lastOccurence = "";
+  note = "";
+  date = "";
+  onSet = { ...emptyOnSet };
+  reaction = { ...emptyReaction };
+  switchshow = false;
+  value = [20, 40];
+  data: any = {
     days: [],
+  };
+
+  onsettimeable = { ...timeable };
+  onsetmeasurable = { ...measurable };
+  get format() {
+    return `${this.onSet.onsetRange}`;
   }
 
-  onsettimeable = {...timeable};
-onsetmeasurable = {...measurable};
-get format() {
-        return `${this.onSet.onsetRange}`
-  }
+  loading = false;
+  notes = "";
+  availableFilter = false;
+  profileFilter = false;
 
-loading=  false;
-notes='';
-availableFilter= false;
-profileFilter=false;
-
-get onsetnew(){
-  return{
-    onsetDateTime: this.onsettimeable.date,
-    onsetAge: this.onsettimeable.age,
-    onsetPeriod: {start:this.onsettimeable.startDate,end:this.onsettimeable.endDate },
-    onsetRange: [this.onsetmeasurable.min,this.onsetmeasurable.max],
-    onsetString: this.onsetmeasurable.string,
-    recordedDate: this.date,
+  get onsetnew() {
+    return {
+      onsetDateTime: this.onsettimeable.date,
+      onsetAge: this.onsettimeable.age,
+      onsetPeriod: {
+        start: this.onsettimeable.startDate,
+        end: this.onsettimeable.endDate,
+      },
+      onsetRange: [this.onsetmeasurable.min, this.onsetmeasurable.max],
+      onsetString: this.onsetmeasurable.string,
+      recordedDate: this.date,
       recorder: this.recorder,
-        asserter: this.asserter,
-          lastOccurence: this.lastOccurence,
-           note: this.note,
+      asserter: this.asserter,
+      lastOccurence: this.lastOccurence,
+      note: this.note,
+    };
   }
-}
- get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
 
-  async  apply() {
+  async apply() {
     //   this.$emit("update:preferred",  [...this.medications]);
-     this.loading = true
-    if (this.id) await this.updateAllergy()
-    else await this.createAllergy()
-    this.loading = false
-    }
+    this.loading = true;
+    if (this.id) await this.updateAllergy();
+    else await this.createAllergy();
+    this.loading = false;
+  }
   async setAllergy() {
-    const allergy = await this.getAllergyById(this.id)
-    if (!allergy) return
-    this.clinicalStatus = allergy.clinicalStatus
-    this.verificationStatus = allergy.verificationStatus
-    this.type = allergy.type
-     this.category = allergy.category
-    this.criticality = allergy.criticality
-    this.code = allergy.code
-    this.onSet = allergy.onSet
-    this.reaction = allergy.reaction
-
-  
+    const allergy = await this.getAllergyById(this.id);
+    if (!allergy) return;
+    this.clinicalStatus = allergy.clinicalStatus;
+    this.verificationStatus = allergy.verificationStatus;
+    this.type = allergy.type;
+    this.category = allergy.category;
+    this.criticality = allergy.criticality;
+    this.code = allergy.code;
+    this.onSet = allergy.onSet;
+    this.reaction = allergy.reaction;
   }
   get payload() {
     return {
@@ -447,79 +444,79 @@ get onsetnew(){
       criticality: this.criticality,
       code: this.code,
       onSet: this.onsetnew,
-       reaction: this.reaction,
-    }
+      reaction: this.reaction,
+    };
   }
- get allaction() {
-    return this.id ? 'Edit' : 'New'
+  get allaction() {
+    return this.id ? "Edit" : "New";
   }
 
- get newaction() {
-    return this.id ? 'Update' : 'Save'
+  get newaction() {
+    return this.id ? "Update" : "Save";
   }
-   async selected() {
-     const orgId = this.organizationInfo.id;
+  async selected() {
+    const orgId = this.organizationInfo.id;
     this.getPractitionerName(orgId);
   }
-  getPractitionerName(id: string){
-   const pt = this.practitioners.find((i: any) => i.organizationId === id);
-   this.asserter = pt.id
-    this.recorder =  `${pt.firstName} ${pt.lastName}`;
-    this.asserterName =  `${pt.firstName} ${pt.lastName}`;
-    return pt ? `${pt.firstName} ${pt.lastName}` : '';
+  getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.organizationId === id);
+    this.asserter = pt.id;
+    this.recorder = `${pt.firstName} ${pt.lastName}`;
+    this.asserterName = `${pt.firstName} ${pt.lastName}`;
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
-   done() {
+  done() {
     this.$emit("allergy-added");
     this.show = false;
   }
 
- async createAllergy() {
-  // this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
-   // this.payload.onSet.onsetDateTime = new Date( this.onsettimeable.time).toISOString();
-  //  this.payload.onSet.onsetPeriod.start = new Date(this.data.startDate).toISOString();
+  async createAllergy() {
+    // this.payload.onSet.recordedDate = new Date(this.payload.onSet.recordedDate).toISOString();
+    // this.payload.onSet.onsetDateTime = new Date( this.onsettimeable.time).toISOString();
+    //  this.payload.onSet.onsetPeriod.start = new Date(this.data.startDate).toISOString();
     // this.payload.onSet.onsetPeriod.end = new Date(this.data.endDate).toISOString();
     ///  this.payload.onSet.lastOccurence = this.data.occurenceDate;
-     this.payload.reaction.onset = new Date(this.date).toISOString();
+    this.payload.reaction.onset = new Date(this.date).toISOString();
 
     try {
-      const response = await cornieClient().post('/api/v1/allergy', this.payload)
+      const response = await cornieClient().post(
+        "/api/v1/allergy",
+        this.payload
+      );
       if (response.success) {
-        window.notify({ msg: 'Allergy created', status: 'success' })
+        window.notify({ msg: "Allergy created", status: "success" });
         this.done();
         // this.show = false;
       }
     } catch (error) {
-      console.log(error)
-      window.notify({ msg: "Allergy not created", status: 'error' })
+      ;
+      window.notify({ msg: "Allergy not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
 
   async updateAllergy() {
-    const url = `/api/v1/allergy/${this.id}`
+    const url = `/api/v1/allergy/${this.id}`;
     const payload = {
-       ...this.payload,
-      }
+      ...this.payload,
+    };
     try {
-      const response = await cornieClient().put(url, payload)
+      const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: 'Allergy updated', status: 'success' })
-        this.$router.push('/dashboard/provider/clinical/allergy')
-          this.show = false;
+        window.notify({ msg: "Allergy updated", status: "success" });
+        this.$router.push("/dashboard/provider/clinical/allergy");
+        this.show = false;
       }
     } catch (error) {
-      window.notify({ msg: 'Allergy not updated', status: 'error' })
+      window.notify({ msg: "Allergy not updated", status: "error" });
     }
   }
   created() {
-      this.setAllergy();
-      this.getPractitioners();
-      if (!this.organizationInfo) this.fetchOrgInfo();
+    this.setAllergy();
+    this.getPractitioners();
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>
 
-<style>
-
-
-</style>
+<style></style>

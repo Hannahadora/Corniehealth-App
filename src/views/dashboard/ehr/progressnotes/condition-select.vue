@@ -38,7 +38,6 @@ import Condition from "yup/lib/Condition";
 
 const practitioners = namespace("practitioner");
 
-
 @Options({
   name: "ConditionSelect",
   components: {
@@ -47,8 +46,7 @@ const practitioners = namespace("practitioner");
   },
 })
 export default class ConditionSelect extends Vue {
-
-   @condition.Action
+  @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<ICondition>;
 
   femCondition!: ICondition;
@@ -56,8 +54,7 @@ export default class ConditionSelect extends Vue {
   // @patients.Action
   // findPatient!: (patientId: string) => Promise<IPatient>;
 
-
-@Prop({ type: [], default: [], required: true })
+  @Prop({ type: [], default: [], required: true })
   NewfemCondition!: any;
 
   //  @Prop({ type: Object, required: true })
@@ -69,21 +66,19 @@ export default class ConditionSelect extends Vue {
   @PropSync("modelValue")
   practitioner!: string;
 
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   patientId!: string;
 
   @practitioners.State
   practitioners!: IPractitioner[];
 
-
   // @condition.State
   // patientConditions!: ICondition[];
 
-  
-   get items() {
-    const current_condition =  this.NewfemCondition
-     return current_condition;
-     }
+  get items() {
+    const current_condition = this.NewfemCondition;
+    return current_condition;
+  }
 
   @practitioners.Action
   fetchPractitioners!: () => Promise<void>;
@@ -104,7 +99,7 @@ export default class ConditionSelect extends Vue {
     }));
   }
 
-   @condition.State
+  @condition.State
   conditions!: { [state: string]: ICondition[] };
 
   // get patientId() {
@@ -115,9 +110,8 @@ export default class ConditionSelect extends Vue {
     return this.conditions[this.patientId] || [];
   }
 
-
-  get MyConditions(){
-       return this.fetchPatientConditions(this.patientId);
+  get MyConditions() {
+    return this.fetchPatientConditions(this.patientId);
   }
 
   get items3() {
@@ -127,12 +121,11 @@ export default class ConditionSelect extends Vue {
     }));
   }
 
-  async  created() {
+  async created() {
     this.femCondition = await this.fetchPatientConditions(this.patientId);
     if (!this.practitioners?.length) this.fetchPractitioners();
-      // this.patient = await this.findPatient(this.patientId)
-      console.log('fem', this.NewfemCondition)
-
+    // this.patient = await this.findPatient(this.patientId)
+    ;
   }
 }
 </script>

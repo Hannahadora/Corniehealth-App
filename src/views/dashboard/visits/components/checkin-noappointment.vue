@@ -54,18 +54,7 @@
               </template>
               <div
                 style="max-height: 350px; overflow-y: scroll; z-index: 99999"
-                class="
-                  origin-top-right
-                  absolute
-                  right-0
-                  mt-2
-                  w-full
-                  rounded-md
-                  shadow-lg
-                  bg-white
-                  ring-1 ring-black ring-opacity-5
-                  focus:outline-none
-                "
+                class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="menu-button"
@@ -125,7 +114,6 @@
           v-model="checkinData.slot"
           style="width: 100%; font-size: 13px"
         />
-        
       </div>
 
       <div class="w-full my-4">
@@ -314,9 +302,9 @@ export default class CheckIn extends Vue {
 
   selectPractitioner(actor: any, index: number) {
     if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
-      this.checkinData.practitioner = actor.code
+      this.checkinData.practitioner = actor.code;
       this.getSlots(actor.code);
-      this.testSlots(actor.code)
+      this.testSlots(actor.code);
       this.selectedActors.push(actor);
     } else {
       this.selectedActors.splice(index, 1);
@@ -337,17 +325,16 @@ export default class CheckIn extends Vue {
       this.checkinData.scheduleId =
         todaySlots.length > 0 ? todaySlots[0].id : "";
       this.availableSlots = todaySlots.map((schedule: any) => schedule.slots);
-      console.log(this.availableSlots);
+      ;
     });
   }
-
 
   async setSession(slotId: string) {
     try {
       this.loading = true;
       // const slot = this.checkinData.slot;
       this.loading = false;
-      console.log("Slot is ", slotId);
+      ;
       if (slotId) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,
@@ -379,37 +366,38 @@ export default class CheckIn extends Vue {
     return slot ?? null;
   }
 
-
   async processCheckin() {
-
-    const slot = this.slotDoesExist(this.checkinData.slot);    
+    const slot = this.slotDoesExist(this.checkinData.slot);
 
     let createdSlot;
     if (!slot) {
-      
-        const index = this.checkinData.slot?.split('_')[1]
-        const scheduleData = this.arr[index]
-        // const scheduleData = this.arr.find((item: any) => item.scheduleId === this.checkinData.slot)        
-        
-        try {
-          createdSlot = await this.createSlot({
-              "scheduleId": this.checkinData?.slot?.split('_')[0],
-              startTime: new Date(scheduleData.startTime).toLocaleTimeString().substring(0, 5),
-              endTime: new Date(scheduleData.endTime).toLocaleTimeString().substring(0, 5),
-              "status": "active",
-              "active": true,
-              date: this.date,
-              practitionerId: this.checkinData.practitioner
-          })
-        } catch (error) {
-          window.notify({ msg: "Error checking-in patient", status: "error" });
-        }
+      const index = this.checkinData.slot?.split("_")[1];
+      const scheduleData = this.arr[index];
+      // const scheduleData = this.arr.find((item: any) => item.scheduleId === this.checkinData.slot)
 
-        if (createdSlot?.id) await this.setSession(createdSlot.id);
+      try {
+        createdSlot = await this.createSlot({
+          scheduleId: this.checkinData?.slot?.split("_")[0],
+          startTime: new Date(scheduleData.startTime)
+            .toLocaleTimeString()
+            .substring(0, 5),
+          endTime: new Date(scheduleData.endTime)
+            .toLocaleTimeString()
+            .substring(0, 5),
+          status: "active",
+          active: true,
+          date: this.date,
+          practitionerId: this.checkinData.practitioner,
+        });
+      } catch (error) {
+        window.notify({ msg: "Error checking-in patient", status: "error" });
+      }
+
+      if (createdSlot?.id) await this.setSession(createdSlot.id);
     }
 
     if (slot?.id) await this.setSession(slot.id);
- }
+  }
 
   get selectedPractitioners() {
     if (!this.selectedActors || this.selectedActors.length === 0)
@@ -463,37 +451,40 @@ export default class CheckIn extends Vue {
   arr = [] as any[];
 
   get newSlots() {
-    if (this.arr?.length <= 0) return [ ];
+    if (this.arr?.length <= 0) return [];
     const slots = this.arr.map((item: any, index: number) => {
-      return { 
+      return {
         code: item.id ? item.id : `${item.scheduleId}_${index}`,
-        display: `${new Date(item.startTime).toLocaleDateString()}, ${new Date(item.startTime).toLocaleTimeString()?.substring(0, 5)} - ${new Date(item.endTime).toLocaleDateString()}, ${new Date(item.endTime).toLocaleTimeString()?.substring(0, 5)}`
-      }
-    })
+        display: `${new Date(item.startTime).toLocaleDateString()}, ${new Date(
+          item.startTime
+        )
+          .toLocaleTimeString()
+          ?.substring(0, 5)} - ${new Date(
+          item.endTime
+        ).toLocaleDateString()}, ${new Date(item.endTime)
+          .toLocaleTimeString()
+          ?.substring(0, 5)}`,
+      };
+    });
     return slots;
   }
 
   testSlots(id: string) {
-     this.arr = [ ]
-    this.schedulesByPractitioner(id).then(res => {  
-            
-        if (!res || res.length == 0) return ;
+    this.arr = [];
+    this.schedulesByPractitioner(id).then((res) => {
+      if (!res || res.length == 0) return;
 
-        this.arr = slotService.slots(res, this.date)
-        console.log(this.arr, "AAARRR");
-        
-        
-    })
- }
-     
-  @Watch('date', { immediate: true, deep: true })
-  updateArr() {
-    if (this.checkinData.practitioner) {
-      this.testSlots(this.checkinData.practitioner)
-    }
-    
+      this.arr = slotService.slots(res, this.date);
+      ;
+    });
   }
 
+  @Watch("date", { immediate: true, deep: true })
+  updateArr() {
+    if (this.checkinData.practitioner) {
+      this.testSlots(this.checkinData.practitioner);
+    }
+  }
 
   async created() {
     if (!this.locations || this.locations.length === 0)

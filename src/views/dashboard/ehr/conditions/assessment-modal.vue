@@ -48,18 +48,7 @@
       </div>
       <cornie-card-text class="overflow-y-auto flex-col">
         <div
-          class="
-            flex
-            items-center
-            cursor-pointer
-            hover:bg-gray-100
-            rounded-md
-            justify-between
-            py-2
-            my-1
-            text-sm
-            px-2
-          "
+          class="flex items-center cursor-pointer hover:bg-gray-100 rounded-md justify-between py-2 my-1 text-sm px-2"
           :class="{ 'bg-gray-200': isSelected(item) }"
           v-for="(item, i) in items"
           :key="i"

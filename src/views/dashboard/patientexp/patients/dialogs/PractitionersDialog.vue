@@ -7,13 +7,7 @@
             <arrow-left-icon />
           </cornie-icon-btn>
           <span
-            class="
-              text-primary
-              font-extrabold
-              text-lg
-              border-l-2 border-gray-100
-              pl-2
-            "
+            class="text-primary font-extrabold text-lg border-l-2 border-gray-100 pl-2"
           >
             General Practitioners
           </span>
@@ -250,7 +244,7 @@ export default class PractitionersDialog extends Vue {
         status: "success",
       });
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: `Practitioner not added`, status: "error" });
     }
   }

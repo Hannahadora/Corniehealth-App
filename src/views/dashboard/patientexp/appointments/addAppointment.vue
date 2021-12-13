@@ -10,21 +10,10 @@
       <div class="w-full">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
-               <accordion-component title="Add Participants" v-model="openedR">
+            <accordion-component title="Add Participants" v-model="openedR">
               <template v-slot:default>
                 <div
-                  class="
-                    float-left
-                    flex
-                    cursor-pointer
-                    p-5
-                    mb-5
-                    space-x-4
-                    mt-3
-                    text-xs text-danger
-                    uppercase
-                    font-semibold
-                  "
+                  class="float-left flex cursor-pointer p-5 mb-5 space-x-4 mt-3 text-xs text-danger uppercase font-semibold"
                   @click="displayParticipants()"
                 >
                   add actor(s)
@@ -33,11 +22,23 @@
                 <div class="w-full">
                   <div>
                     <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                      <div class="border-r-2" v-for="(input, index) in newPractitioners" :key="index">
+                      <div
+                        class="border-r-2"
+                        v-for="(input, index) in newPractitioners"
+                        :key="index"
+                      >
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
-                            <avatar class="mr-2" v-if="input.image" :src="input.image" />
-                               <avatar class="mr-2" v-else :src="img.placeholder" />
+                            <avatar
+                              class="mr-2"
+                              v-if="input.image"
+                              :src="input.image"
+                            />
+                            <avatar
+                              class="mr-2"
+                              v-else
+                              :src="img.placeholder"
+                            />
                             <div>
                               <p class="text-xs text-dark font-semibold">
                                 {{ input.firstName }}
@@ -56,16 +57,20 @@
                           </span>
                         </div>
                       </div>
-                      <div class="border-r-2" v-for="(input, index) in newDevices" :key="index">
+                      <div
+                        class="border-r-2"
+                        v-for="(input, index) in newDevices"
+                        :key="index"
+                      >
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
-                              <avatar class="mr-2"  :src="img.placeholder" />
+                            <avatar class="mr-2" :src="img.placeholder" />
                             <div>
                               <p class="text-xs text-dark font-semibold">
                                 {{ input.deviceName.name }}
                               </p>
                               <p class="text-xs text-gray font-light">
-                                 {{ valueDevice }}
+                                {{ valueDevice }}
                               </p>
                             </div>
                           </div>
@@ -77,17 +82,29 @@
                           </span>
                         </div>
                       </div>
-                      <div  class="border-r-2" v-for="(input, index) in newRoles" :key="index">
+                      <div
+                        class="border-r-2"
+                        v-for="(input, index) in newRoles"
+                        :key="index"
+                      >
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
-                            <avatar class="mr-2" v-if="input.image" :src="input.image" />
-                              <avatar class="mr-2" v-else :src="img.placeholder" />
+                            <avatar
+                              class="mr-2"
+                              v-if="input.image"
+                              :src="input.image"
+                            />
+                            <avatar
+                              class="mr-2"
+                              v-else
+                              :src="img.placeholder"
+                            />
                             <div>
                               <p class="text-xs text-dark font-semibold">
                                 {{ input.name }}
                               </p>
                               <p class="text-xs text-gray font-light">
-                                  {{ valueRole }}
+                                {{ valueRole }}
                               </p>
                             </div>
                           </div>
@@ -99,17 +116,29 @@
                           </span>
                         </div>
                       </div>
-                      <div class="border-r-2" v-for="(input, index) in newPatients" :key="index">
+                      <div
+                        class="border-r-2"
+                        v-for="(input, index) in newPatients"
+                        :key="index"
+                      >
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
-                            <avatar class="mr-2" v-if="input.profilePhoto" :src="input.profilePhoto" />
-                            <avatar class="mr-2" v-else :src="img.placeholder" />
+                            <avatar
+                              class="mr-2"
+                              v-if="input.profilePhoto"
+                              :src="input.profilePhoto"
+                            />
+                            <avatar
+                              class="mr-2"
+                              v-else
+                              :src="img.placeholder"
+                            />
                             <div>
                               <p class="text-xs text-dark font-semibold">
                                 {{ input.firstname }} {{ input.lastname }}
                               </p>
                               <p class="text-xs text-gray font-light">
-                                  {{ valuePatient }}
+                                {{ valuePatient }}
                               </p>
                             </div>
                           </div>
@@ -122,9 +151,8 @@
                         </div>
                       </div>
                     </div>
-                  </div>          
+                  </div>
                 </div>
-            
               </template>
             </accordion-component>
             <accordion-component title="Appointment Details" v-model="opened">
@@ -182,7 +210,14 @@
                   </cornie-select>
                   <cornie-select
                     :rules="required"
-                    :items="['Refferal','Condition','Procedure','Observation','Immunization', 'Recommendation']"
+                    :items="[
+                      'Refferal',
+                      'Condition',
+                      'Procedure',
+                      'Observation',
+                      'Immunization',
+                      'Recommendation',
+                    ]"
                     v-model="reasonRef"
                     label="reason reference"
                     placeholder="--Select--"
@@ -210,23 +245,26 @@
                     <label class="block uppercase mb-1 text-xs font-bold">
                       slot
                     </label>
-                    <span class="text-gray-600 cursor-pointer text-xs" @click="showSlots">
+                    <span
+                      class="text-gray-600 cursor-pointer text-xs"
+                      @click="showSlots"
+                    >
                       Choose Slot</span
                     >
                   </div>
-                 <div  class="w-11/12">
-                      <single-date-picker
-                        label="start date"
-                        v-model="period.start"
-                        :rules="required"
-                      />
+                  <div class="w-11/12">
+                    <single-date-picker
+                      label="start date"
+                      v-model="period.start"
+                      :rules="required"
+                    />
                   </div>
-                  <div  class="w-11/12">
-                  <single-date-picker
-                    label="end date"
-                   v-model="period.end"
-                    :rules="required"
-                  />
+                  <div class="w-11/12">
+                    <single-date-picker
+                      label="end date"
+                      v-model="period.end"
+                      :rules="required"
+                    />
                   </div>
                   <cornie-input
                     label="duration (minutes)"
@@ -262,20 +300,7 @@
                   $router.push('/dashboard/provider/experience/appointments')
                 "
                 type="button"
-                class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                "
+                class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
               >
                 Cancel
               </button>
@@ -283,16 +308,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  pr-14
-                  pl-14
-                  focus:outline-none
-                  hover:opacity-90
-                "
+                class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
               >
                 Save
               </cornie-btn>
@@ -307,23 +323,29 @@
           @update:preferred="displayParticipants"
           v-model:visible="showActors"
         />
-        <all-slots  
-        :columns="availableSlots"
+        <all-slots
+          :columns="availableSlots"
           @update:preferred="showSlots"
-          v-model:visible="displaySlots"/>
+          v-model:visible="displaySlots"
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Options,  setup,Vue } from "vue-class-component";
+import { Options, setup, Vue } from "vue-class-component";
 import AccordionComponent from "@/components/accordion-extended-component.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Availability from "@/components/availability.vue";
-import IAppointment, { ParticipantDetail, Practitioners, Patients, Devices } from "@/types/IAppointment";
+import IAppointment, {
+  ParticipantDetail,
+  Practitioners,
+  Patients,
+  Devices,
+} from "@/types/IAppointment";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
@@ -350,39 +372,34 @@ const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
 
 const emptyPractitioners: Practitioners = {
-   id:"",
+  id: "",
   type: "",
   required: "",
   consultationMedium: "",
-  period : {} as Period,
-  practitionerId:"",
-
-
+  period: {} as Period,
+  practitionerId: "",
 };
 const emptyPatients: Patients = {
-  id:"",
+  id: "",
   type: "",
   required: "",
   consultationMedium: "",
-  period : {} as Period,
-  patientId:"",
+  period: {} as Period,
+  patientId: "",
   firstname: "",
   lastname: "",
   gender: "",
   dateOfBirth: "",
   accountType: "",
   mrn: "",
-
 };
 const emptyDevices: Devices = {
-   id:"",
+  id: "",
   type: "",
   required: "",
   consultationMedium: "",
-  period : {} as Period,
+  period: {} as Period,
   deviceId: "",
-
-
 };
 const emptyParticipant: ParticipantDetail = {
   period: {} as Period,
@@ -419,7 +436,7 @@ export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-actorTypeValue = "";
+  actorTypeValue = "";
 
   @appointment.Action
   getAppointmentById!: (id: string) => IAppointment;
@@ -436,8 +453,8 @@ actorTypeValue = "";
   availableSlots = [];
   actor = "";
   type = "";
-  practitionerId="";
- img = setup(() => useHandleImage());
+  practitionerId = "";
+  img = setup(() => useHandleImage());
 
   serviceCategory = "";
   locationId = null;
@@ -462,7 +479,7 @@ actorTypeValue = "";
   patients: Patients[] = [];
   roles = [];
 
-  newPractitioners  = [];
+  newPractitioners = [];
   newActors = [];
   newDevices = [];
   newPatients = [];
@@ -479,12 +496,11 @@ actorTypeValue = "";
   valuePatient = "";
   valueRole = "";
   valueDevice = "";
-  
+
   practitioner = [];
   device = [];
   patient = [];
   role = [];
-
 
   availability: any[] = [];
   availabilities = Array();
@@ -543,7 +559,7 @@ actorTypeValue = "";
       reasonRef: this.reasonRef,
       priority: this.priority,
       description: this.description,
-       slot: this.slot,
+      slot: this.slot,
       basedOn: this.basedOn,
       duration: this.duration,
       comments: this.comments,
@@ -551,9 +567,8 @@ actorTypeValue = "";
       Devices: this.devices,
       period: this.period,
       Patients: this.patients,
-      Practitioners:this.practitioners
-    } 
-  
+      Practitioners: this.practitioners,
+    };
   }
   get allaction() {
     return this.id ? "Edit" : "Create";
@@ -567,35 +582,44 @@ actorTypeValue = "";
     this.practitioners = id;
     this.practitionerFilter = false;
   }
-  async showSlots(slots: any){
+  async showSlots(slots: any) {
     this.displaySlots = true;
     this.period.start = slots.startDate;
     this.period.end = slots.endDate;
-    this.duration = slots.startTime +'-'+ slots.endTime;
+    this.duration = slots.startTime + "-" + slots.endTime;
     this.slot = slots.id;
     this.getSlots();
-   // this.practitioner = slots.practitioners;
+    // this.practitioner = slots.practitioners;
   }
-  async displayParticipants(valueforpractitioner:any,valueforpatient:any,valuefordevice:any,typevalue: string,incomingpractioner:any,incomingpatient:any,incomingdevice:any,apractitionerId:string,) {
+  async displayParticipants(
+    valueforpractitioner: any,
+    valueforpatient: any,
+    valuefordevice: any,
+    typevalue: string,
+    incomingpractioner: any,
+    incomingpatient: any,
+    incomingdevice: any,
+    apractitionerId: string
+  ) {
     // this.newPractitioners .push({ ...this.practitioners });
     //  this.newActors = value;
-      this.showActors = true;
-      
+    this.showActors = true;
+
     if (typevalue == "Practitioner") {
-     this.newPractitioners = valueforpractitioner;
-     this.valuePractioner = typevalue;
-     this.practitionerId = apractitionerId;
-    // this.newPractitioner.push(...value);
+      this.newPractitioners = valueforpractitioner;
+      this.valuePractioner = typevalue;
+      this.practitionerId = apractitionerId;
+      // this.newPractitioner.push(...value);
       this.practitioners = incomingpractioner;
-    } 
+    }
     if (typevalue == "Patient") {
-     this.newPatients = valueforpatient;
-     this.valuePatient = typevalue;
-     // this.newPatient.push(...value);
+      this.newPatients = valueforpatient;
+      this.valuePatient = typevalue;
+      // this.newPatient.push(...value);
       this.patients = incomingpatient;
-    } 
-     if (typevalue == "Device") {
-       this.valueDevice = typevalue;
+    }
+    if (typevalue == "Device") {
+      this.valueDevice = typevalue;
       this.newDevices = valuefordevice;
       this.devices = incomingdevice;
     }
@@ -680,30 +704,31 @@ actorTypeValue = "";
       window.notify({ msg: "Appointment not updated", status: "error" });
     }
   }
-    
-    async getSlots() {
-       const oneId = this.practitionerId;
-       try {
-        const response = await cornieClient().get(`/api/v1/slot/practitioner/${oneId}`);
-        if (response.success) {
-          console.log(response);
-        console.log(response.data);
-         console.log("response[0].data");
+
+  async getSlots() {
+    const oneId = this.practitionerId;
+    try {
+      const response = await cornieClient().get(
+        `/api/v1/slot/practitioner/${oneId}`
+      );
+      if (response.success) {
+        ;
+        ;
+        ;
         this.availableSlots = response.data;
-        }
-      } catch (error) {
-        console.log(error);
       }
-    
-        // const AllSchedules = cornieClient().get(`/api/v1/slot/practitioner/${oneId}`);
-        // const response = await Promise.all([AllSchedules]);
-        // console.log(response);
-        // console.log(response[0].data);
-        //  console.log("response[0].data");
-        // this.availableSlots = response[0].data;
+    } catch (error) {
+      ;
+    }
+
+    // const AllSchedules = cornieClient().get(`/api/v1/slot/practitioner/${oneId}`);
+    // const response = await Promise.all([AllSchedules]);
+    // ;
+    // ;
+    //  ;
+    // this.availableSlots = response[0].data;
   }
 
-   
   async fetchPractitioners() {
     const AllPractitioners = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractitioners]);
@@ -725,7 +750,7 @@ actorTypeValue = "";
     this.patient = response[0].data;
   }
   async created() {
-  //  this.getSlots();
+    //  this.getSlots();
     this.setAppointment();
     this.fetchPractitioners();
     this.fetchDevices();

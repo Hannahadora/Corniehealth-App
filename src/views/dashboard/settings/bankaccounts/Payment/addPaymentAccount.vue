@@ -1,15 +1,7 @@
 <template>
   <div class="w-full">
     <span
-      class="
-        flex
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
       {{ action }} Payment Account
     </span>
@@ -73,24 +65,23 @@
       <div class="border-b-2 mb-10">
         <div class="select-box my-6">
           <div>
-             <cornie-select
-                    :items="PaymentsCategories"
-                    v-model="PaymentCategories"
-                  label="categories"
-                  placeholder="select"
-                >
-                </cornie-select>
-          
+            <cornie-select
+              :items="PaymentsCategories"
+              v-model="PaymentCategories"
+              label="categories"
+              placeholder="select"
+            >
+            </cornie-select>
           </div>
 
           <div>
             <cornie-select
-                    :items="allLocation"
-                    v-model="location"
-                  label="locations"
-                  placeholder="select"
-                >
-                </cornie-select>
+              :items="allLocation"
+              v-model="location"
+              label="locations"
+              placeholder="select"
+            >
+            </cornie-select>
           </div>
         </div>
 
@@ -118,7 +109,7 @@
               placeholder="Enter "
               v-model="accountNumber"
             /> -->
-              <account-input
+            <account-input
               id="accountNumber"
               placeholder="Enter"
               v-model="accountNumber"
@@ -126,15 +117,17 @@
           </div>
 
           <div>
-            <label for="accountName" class="font-bold text-base capitalize mb-4">
+            <label
+              for="accountName"
+              class="font-bold text-base capitalize mb-4"
+            >
               account nAME
             </label>
-              <cornie-input
+            <cornie-input
               id="accountName"
               placeholder="Enter "
               v-model="accountName"
             />
-          
           </div>
         </div>
 
@@ -151,23 +144,7 @@
         <span>
           <button
             @click="$router.push('bank-accounts')"
-            class="
-              border border-blue-800
-              mr-8
-              rounded-3xl
-              px-6
-              py-2
-              placeholder-gray-400
-              focus:outline-none
-              focus:shadow-outline-blue
-              focus:border-blue-300
-              transition
-              duration-150
-              ease-in-out
-              sm:text-sm
-              sm:leading-5
-              cursor-pointer
-            "
+            class="border border-blue-800 mr-8 rounded-3xl px-6 py-2 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
           >
             Cancel
           </button>
@@ -175,19 +152,8 @@
         <span>
           <cornie-btn
             :loading="loading"
-             type="submit"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-      
-              pr-10
-              pl-10
-              py-1
-              px-5
-              focus:outline-none
-              hover:opacity-90
-            "
+            type="submit"
+            class="bg-danger rounded-full text-white pr-10 pl-10 py-1 px-5 focus:outline-none hover:opacity-90"
           >
             Activate Account
           </cornie-btn>
@@ -205,7 +171,7 @@ import AccountInput from "@/components/accountinput.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieSelect from "@/components/cornieselect.vue";
-import responseVue from '@/components/icons/response.vue';
+import responseVue from "@/components/icons/response.vue";
 
 export default {
   name: "AddPaymentAccount",
@@ -215,7 +181,7 @@ export default {
     OrgInput,
     AccountInput,
     CornieInput,
-    CornieSelect
+    CornieSelect,
   },
   props: {
     id: {
@@ -236,7 +202,7 @@ export default {
       bank: "",
       location: "",
       self: null,
-      locations:[],
+      locations: [],
     };
   },
   computed: {
@@ -252,14 +218,14 @@ export default {
       return this.id ? "Update" : "Add";
     },
     allLocation() {
-     if (!this.locations || this.locations.length === 0) return [ ];
-     return this.locations.map((i) => {
-         return {
-             code: i.id,
-             display: i.name,
-         }
-     })
-   },
+      if (!this.locations || this.locations.length === 0) return [];
+      return this.locations.map((i) => {
+        return {
+          code: i.id,
+          display: i.name,
+        };
+      });
+    },
   },
 
   //  fetching of the dropdown data
@@ -267,9 +233,9 @@ export default {
     this.setPayment();
     try {
       await this.fetchDropDown();
-      await  this.fetchLocation();
+      await this.fetchLocation();
     } catch (error) {
-      console.log(error);
+      ;
     }
   },
 
@@ -293,11 +259,13 @@ export default {
       this.bank = payment.bank;
     },
     async fetchLocation() {
-    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
-    const response = await Promise.all([AllLocation]);
-    console.log("response")
-     console.log(response)
-    this.locations = response[0].data;
+      const AllLocation = cornieClient().get(
+        "/api/v1/location/myOrg/getMyOrgLocations"
+      );
+      const response = await Promise.all([AllLocation]);
+      ;
+      ;
+      this.locations = response[0].data;
     },
 
     //Add Organization Payment Account
@@ -318,7 +286,7 @@ export default {
         );
         if (response.success)
           window.notify({ msg: "Payment account created", status: "success" });
-           this.$router.push('/dashboard/provider/settings/bank-accounts')
+        this.$router.push("/dashboard/provider/settings/bank-accounts");
       } catch (error) {
         window.notify({ msg: error.response.data.message, status: "error" });
       }
@@ -327,11 +295,12 @@ export default {
       this.loading = true;
       try {
         const response = await cornieClient().put(
-          `/api/v1/payments/${this.id}`,this.payload
+          `/api/v1/payments/${this.id}`,
+          this.payload
         );
         if (response.success)
           window.notify({ msg: "Payment account updated", status: "success" });
-             this.$router.push('/dashboard/provider/settings/bank-accounts')
+        this.$router.push("/dashboard/provider/settings/bank-accounts");
       } catch (error) {
         window.notify({ msg: "Payment account not updated", status: "error" });
         console.error(error);

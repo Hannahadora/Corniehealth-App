@@ -11,9 +11,7 @@
             >
               {{ label }}
             </label>
-            <div
-              v-bind="$attrs"
-            >
+            <div v-bind="$attrs">
               <span v-if="Boolean($slots.selected)">
                 <slot name="selected" :item="selectedItem" />
               </span>
@@ -33,30 +31,23 @@
                 "
               /> -->
               <div class="w-full">
-                  <span class="flex items-center w-full">
-                    <icon-input
+                <span class="flex items-center w-full">
+                  <icon-input
                     :width="'w-full'"
                     class="border border-gray-600 rounded-full focus:outline-none"
                     type="search"
                     v-model="search"
-                    >
+                  >
                     <template v-slot:prepend>
-                        <search-icon />
+                      <search-icon />
                     </template>
-                    </icon-input>
+                  </icon-input>
                 </span>
               </div>
 
               <div
-                class="
-                  text-gray-300
-                  py-1
-                  pr-1
-                  flex
-                  items-center
-                  border-gray-200
-                "
-                style="position:absolute;right:1rem;top:1rem"
+                class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
+                style="position: absolute; right: 1rem; top: 1rem"
               >
                 <chevron-down-icon />
               </div>
@@ -64,48 +55,21 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              w-full
-              lef-0
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            class="absolute shadow bg-white top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <div
                 v-for="(item, i) in filteredItems"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
                   <slot name="item" v-bind:item="item" />
                 </template>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                  "
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
                 >
                   {{ item.display || item }}
                 </div>
@@ -151,12 +115,13 @@ export default class CornieSelect extends Vue {
   showDatalist = false;
   id = "";
 
-  search = '';
-  
+  search = "";
 
   get filteredItems() {
-      if (!this.search) return this.items;
-      return this.items.filter(i => i.display && i.display.toLowerCase().includes(this.search))
+    if (!this.search) return this.items;
+    return this.items.filter(
+      (i) => i.display && i.display.toLowerCase().includes(this.search)
+    );
   }
 
   get displayVal() {

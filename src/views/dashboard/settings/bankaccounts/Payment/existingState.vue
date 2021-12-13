@@ -2,23 +2,10 @@
   <div class="w-full">
     <span class="flex justify-end">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-5
-          py-3
-          px-3
-          pl-5
-          pr-5
-          mb-5
-          focus:outline-none
-          hover:opacity-90
-          flex
-        "
+        class="bg-danger rounded-full text-white mt-5 py-3 px-3 pl-5 pr-5 mb-5 focus:outline-none hover:opacity-90 flex"
         @click="$router.push('add-payment-account')"
       >
-         <bank-add-icon class="mt-1 mr-2"/> 
+        <bank-add-icon class="mt-1 mr-2" />
         New Account
       </button>
     </span>
@@ -47,10 +34,7 @@
         </div>
       </template>
     </cornie-table>
-    <deactivate-modal
-      v-model="showDeativateModal"
-      :paymentId="paymentId"
-    />
+    <deactivate-modal v-model="showDeativateModal" :paymentId="paymentId" />
   </div>
 </template>
 <script lang="ts">
@@ -152,14 +136,14 @@ export default class BankAccountsExistingState extends Vue {
       (payment as any).more = payment.id;
       return payment;
     });
-     if (!this.query) return payments;
+    if (!this.query) return payments;
     return search.searchObjectArray(payments, this.query);
   }
-    get sortPayments (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
+  get sortPayments() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -168,14 +152,15 @@ export default class BankAccountsExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deletePayment(id))  window.notify({ msg: "Payment account  deleted", status: "success" });
-    else   window.notify({ msg: "Payment account not deleted", status: "error" });
+    if (await this.deletePayment(id))
+      window.notify({ msg: "Payment account  deleted", status: "success" });
+    else window.notify({ msg: "Payment account not deleted", status: "error" });
   }
 
   updatePayment(id: string) {
     const payment = this.payments.find((d) => d.id == id);
     this.$emit("add-account", payment);
-    console.log(payment);
+    ;
   }
 
   public showDeactivate(id: string): void {

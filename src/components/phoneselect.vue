@@ -23,82 +23,47 @@
                 placeholder=""
                 disabled
                 :value="displayVal"
-                class="
-                  bg-transparent
-                  p-1
-                  pl-2
-                  appearance-none
-                  outline-none
-                  w-full
-                  text-gray-800
-                "
+                class="bg-transparent p-1 pl-2 appearance-none outline-none w-full text-gray-800"
               />
 
               <div
-                class="
-                  text-gray-300
-                  py-1
-                  pr-1
-                  flex
-                  items-center
-                  border-gray-200
-                "
+                class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
               >
                 <chevron-down-icon />
               </div>
             </div>
           </div>
           <div
-            :class="{ hidden: !showDatalist}"
-            class="
-              absolute
-              shadow
-              bg-white
-              top-100
-              z-40
-              left-0
-              rounded  
-              w-custom
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            :class="{ hidden: !showDatalist }"
+            class="absolute shadow bg-white top-100 z-40 left-0 rounded w-custom max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
-             <span class="mb-2 rounded-full">
-          <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-          </icon-input>
-          </span>
+              <span class="mb-2 rounded-full">
+                <icon-input
+                  autocomplete="off"
+                  class="border border-gray-600 rounded-full focus:outline-none"
+                  type="search"
+                  placeholder="Search"
+                  v-bind="$attrs"
+                  v-model="displayVal"
+                >
+                  <template v-slot:prepend>
+                    <search-icon />
+                  </template>
+                </icon-input>
+              </span>
               <div
                 v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-auto
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-auto border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
                   <slot name="item" v-bind:item="item" />
                 </template>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                  "
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
                 >
                   {{ item.display || item }}
                 </div>
@@ -124,7 +89,7 @@ import SearchIcon from "./icons/search.vue";
   components: {
     ChevronDownIcon,
     IconInput,
-    SearchIcon
+    SearchIcon,
   },
 })
 export default class CornieSelect extends Vue {
@@ -133,7 +98,6 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: String, default: "" })
   modelValue!: string;
-
 
   @PropSync("modelValue")
   modelValueSync!: string;
@@ -186,7 +150,7 @@ export default class CornieSelect extends Vue {
 .max-h-select {
   max-height: 300px;
 }
-.w-custom{
-    width: max-content;
- }
+.w-custom {
+  width: max-content;
+}
 </style>

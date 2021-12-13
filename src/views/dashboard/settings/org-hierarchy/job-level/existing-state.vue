@@ -2,16 +2,7 @@
   <div class="w-full">
     <span class="flex justify-end w-full">
       <button
-        class="
-          bg-danger
-          rounded-full
-          text-white
-          mt-2
-          py-2
-          px-5
-          focus:outline-none
-          hover:opacity-90
-        "
+        class="bg-danger rounded-full text-white mt-2 py-2 px-5 focus:outline-none hover:opacity-90"
       >
         <span class="flex items-center w-full h-full justify-between">
           <add-icon class="fill-current text-white mr-3" />

@@ -41,31 +41,13 @@
                   v-model="istReminder.days"
                   placeholder="30"
                   max="366"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
                 <input
                   type="text"
                   readonly
                   placeholder="Days"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
               </div>
 
@@ -75,31 +57,13 @@
                   v-model="istReminder.weeks"
                   placeholder="30"
                   max="52"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
                 <input
                   type="text"
                   readonly
                   placeholder="Weeks"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
               </div>
             </div>
@@ -124,31 +88,13 @@
                   v-model="secondReminder.days"
                   placeholder="30"
                   max="366"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
                 <input
                   type="text"
                   readonly
                   placeholder="Days"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
               </div>
 
@@ -158,31 +104,13 @@
                   v-model="secondReminder.weeks"
                   max="52"
                   placeholder="30"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
                 <input
                   type="text"
                   readonly
                   placeholder="Weeks"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
               </div>
             </div>
@@ -210,31 +138,13 @@
                   v-model="thirdReminder.days"
                   placeholder="30"
                   max="366"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
                 <input
                   type="text"
                   readonly
                   placeholder="Days"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
               </div>
 
@@ -244,61 +154,25 @@
                   v-model="thirdReminder.weeks"
                   placeholder="30"
                   max="52"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
                 <input
                   type="text"
                   readonly
                   placeholder="Weeks"
-                  class="
-                    text-center
-                    placeholder-black
-                    font-bold font-black
-                    outline-none
-                    border border-blue-lighter
-                    rounded-md
-                    h-12
-                    w-12
-                  "
+                  class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12"
                 />
               </div>
             </div>
             <!-- <template #actions> -->
             <div class="mt-2 flex justify-end">
               <button
-                class="
-                  border-primary border-2
-                  rounded-full
-                  text-black
-                  ml-2
-                  py-2
-                  px-6
-                  focus:outline-none
-                  outline
-                  hover:bg-primary hover:text-white
-                "
+                class="border-primary border-2 rounded-full text-black ml-2 py-2 px-6 focus:outline-none outline hover:bg-primary hover:text-white"
               >
                 Cancel
               </button>
               <button
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  py-2
-                  px-6
-                  focus:outline-none
-                  hover:opacity-90
-                "
+                class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
                 @click="addFunction = true"
               >
                 <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
@@ -348,8 +222,7 @@ const location = namespace("location");
   },
 })
 export default class AddLocation extends Vue {
- 
-  get istReminder() {    
+  get istReminder() {
     return {
       days: 0,
       weeks: 0,
@@ -380,11 +253,9 @@ export default class AddLocation extends Vue {
 
   loading = false;
 
-  
-
-// days = 0;
-//       weeks: 0,
-//       time: "",
+  // days = 0;
+  //       weeks: 0,
+  //       time: "",
   name = "";
   locationStatus = "";
   operationalStatus = "";
@@ -472,14 +343,14 @@ export default class AddLocation extends Vue {
     this.openTo = location.openTo;
     this.hoursOfOperation = location.hoursOfOperation;
   }
-  becomeNumber(val:string) {
+  becomeNumber(val: string) {
     return Number(val);
   }
   get payload() {
     this.istReminder.days = Number(this.istReminder.days);
     this.istReminder.weeks = Number(this.istReminder.weeks);
     this.secondReminder.days = Number(this.secondReminder.days);
-    this.secondReminder.weeks = Number(this.secondReminder.weeks);    
+    this.secondReminder.weeks = Number(this.secondReminder.weeks);
     this.thirdReminder.days = Number(this.thirdReminder.days);
     this.thirdReminder.weeks = Number(this.thirdReminder.weeks);
     return {
@@ -513,7 +384,7 @@ export default class AddLocation extends Vue {
   }
 
   async submit2() {
-    console.log("time", this.payload);
+    ;
     this.loading = true;
     if (this.id) await this.updateLocation();
     else await this.createLocation();
@@ -521,7 +392,7 @@ export default class AddLocation extends Vue {
   }
 
   async submit() {
-    console.log("time", this.payload);
+    ;
     this.loading = true;
     this.createLocation();
     this.loading = false;

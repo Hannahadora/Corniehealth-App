@@ -10,33 +10,14 @@
       <template #actions>
         <div class="mt-2">
           <button
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              py-2
-              px-6
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
             @click="addFunction = true"
           >
             <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
             New Function
           </button>
           <button
-            class="
-              border-primary border-2
-              rounded-full
-              text-black
-              ml-2
-              py-2
-              px-6
-              focus:outline-none
-              outline
-              hover:bg-primary
-              hover:text-white
-            "
+            class="border-primary border-2 rounded-full text-black ml-2 py-2 px-6 focus:outline-none outline hover:bg-primary hover:text-white"
           >
             View Org. Structure
           </button>

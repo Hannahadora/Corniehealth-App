@@ -1,25 +1,22 @@
 <template>
-   <span class="relative">
+  <span class="relative">
     <div class="bg-white rounded-t p-1 shadow">
-      <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"  type="search" placeholder="Search" v-bind="$attrs" v-model="displayVal">
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
+      <icon-input
+        autocomplete="off"
+        class="border border-gray-600 rounded-full focus:outline-none"
+        type="search"
+        placeholder="Search"
+        v-bind="$attrs"
+        v-model="displayVal"
+      >
+        <template v-slot:prepend>
+          <search-icon />
+        </template>
       </icon-input>
       <div
         :class="{ hidden: showDatalist }"
-        class="
-          flex flex-col
-          max-h-52
-          overflow-y-auto
-          bg-white
-          z-10
-          px-1
-          p-4
-          w-52
-          py-2
-        "
-          >
+        class="flex flex-col max-h-52 overflow-y-auto bg-white z-10 px-1 p-4 w-52 py-2"
+      >
         <div
           class="flex flex-row px-1 divide-y-2 divide-solid cursor-pointer hover:bg-gray-100 rounded-full"
           v-for="(item, i) in filteredItems"
@@ -47,7 +44,7 @@ import SearchIcon from "@/components/icons/search.vue";
   components: {
     CornieInput,
     IconInput,
-    SearchIcon
+    SearchIcon,
   },
 })
 export default class AutoComplete extends Vue {
@@ -82,25 +79,27 @@ export default class AutoComplete extends Vue {
       this.showDatalist = false;
       this.modelValueSync = item.code || item;
     });
-     if(item == 'Blank form'){
-            this.$router.push({path: '/dashboard/provider/add-practice-form-template' })
-        }
+    if (item == "Blank form") {
+      this.$router.push({
+        path: "/dashboard/provider/add-practice-form-template",
+      });
+    }
 
-     if(item == 'Others'){
-            this.$emit('createdquestions','Others');
-        }
-     if(item == 'Habits'){
-            this.$emit('createdquestions','Habits');
-        }
-     if(item == 'Diet Template'){
-            this.$emit('createdquestions', 'Diet');
-        }
-     if(item == 'Exercise'){
-            this.$emit('createdquestions', 'Exercise');
-        }
-     if(item == 'Sleep'){
-            this.$emit('createdquestions', 'Sleep');
-        }
+    if (item == "Others") {
+      this.$emit("createdquestions", "Others");
+    }
+    if (item == "Habits") {
+      this.$emit("createdquestions", "Habits");
+    }
+    if (item == "Diet Template") {
+      this.$emit("createdquestions", "Diet");
+    }
+    if (item == "Exercise") {
+      this.$emit("createdquestions", "Exercise");
+    }
+    if (item == "Sleep") {
+      this.$emit("createdquestions", "Sleep");
+    }
   }
 }
 </script>

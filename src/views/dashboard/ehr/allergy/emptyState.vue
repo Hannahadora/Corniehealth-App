@@ -8,28 +8,14 @@
       </h3>
       <span class="flex justify-center w-full">
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            px-3
-            pl-12
-            pr-12
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+          class="bg-danger rounded-full text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
           @click="showAllergy"
         >
           New Allergy
         </button>
       </span>
     </div>
-    <allergy-modal
-      v-model="showAllergyModal"
-    />
+    <allergy-modal v-model="showAllergyModal" />
   </div>
 </template>
 <script lang="ts">

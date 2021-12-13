@@ -1,15 +1,7 @@
 <template>
   <div class="w-full mx-5">
     <span
-      class="
-        flex
-        border-b-2
-        w-full
-        font-semibold
-        text-xl text-primary
-        py-2
-        mx-auto
-      "
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
       Add a New Location
     </span>
@@ -54,16 +46,7 @@
         <d-select v-model="physicalType" label="Physical Type" />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-black
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-black py-2 mt-4 mx-auto"
       >
         Position
       </span>
@@ -79,43 +62,18 @@
         <d-select v-model="partOf" label="Part Of" />
       </span>
       <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-black
-          py-2
-          mt-4
-          mx-auto
-        "
+        class="flex border-b-2 w-full font-semibold text-xl text-black py-2 mt-4 mx-auto"
       >
         Hours Of Operation
       </span>
       <span class="flex w-full mt-4 mb-2 justify-end">
         <button
-          class="
-            rounded-full
-            font-semibold
-            p-2
-            text-primary
-            border border-primary
-            w-1/4
-            mr-3
-          "
+          class="rounded-full font-semibold p-2 text-primary border border-primary w-1/4 mr-3"
         >
           Revert Changes
         </button>
         <button
-          class="
-            w-1/4
-            rounded-full
-            font-semibold
-            p-2
-            text-white
-            border
-            bg-danger
-          "
+          class="w-1/4 rounded-full font-semibold p-2 text-white border bg-danger"
           type="submit"
         >
           Add Location
@@ -191,7 +149,7 @@ export default {
     try {
       await this.fetchDropDown();
     } catch (error) {
-      console.log(error);
+      ;
     }
   },
   Watch: {
@@ -204,7 +162,7 @@ export default {
   methods: {
     async submit() {
       try {
-        console.log(this.payload);
+        ;
         const response = await cornieClient.post(
           "api/v1/location",
           this.payload

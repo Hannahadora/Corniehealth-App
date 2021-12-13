@@ -7,7 +7,7 @@
     v-model="valueSync"
     class="mb-5"
   >
-    <div v-bind="$attrs" class="w-11/12">
+    <div v-bind="$attrs" class="w-full">
       <label class="flex capitalize mb-1 text-black text-sm font-semibold">
         <slot name="label">
           {{ label }}
@@ -26,15 +26,7 @@
         }"
       >
         <div
-          class="
-            border-r-2
-            rounded-lg
-            p-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-r-2 rounded-lg p-2 bg-white flex items-center justify-center"
           style="border-top-right-radius: 0; border-bottom-right-radius: 0"
           v-if="$slots.prepend"
         >
@@ -48,8 +40,9 @@
           <slot name="prepend-inner" />
         </div>
         <input
+        placeholder="--Enter--"
           v-on:keyup.enter="$emit('keyenter')"
-          class="p-2 rounded-lg w-full focus:outline-none"
+          class="p-2 rounded-lg w-full focus:outline-none w-full"
           :style="{
             'border-top-left-radius: 0; border-bottom-left-radius: 0':
               $slots.prepend,
@@ -72,15 +65,7 @@
           <slot name="append-inner" />
         </div>
         <div
-          class="
-            border-l-2
-            rounded-lg
-            pr-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-l-2 rounded-lg pr-2 bg-white flex items-center justify-center"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0"
           v-if="$slots.append"
         >

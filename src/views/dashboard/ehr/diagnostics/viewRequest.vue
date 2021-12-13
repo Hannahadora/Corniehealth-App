@@ -1,33 +1,57 @@
 <template>
   <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-      <cornie-card-title  class="w-full">
-          <cornie-icon-btn @click="show = false">
-            <arrow-left-icon />
-          </cornie-icon-btn>
-          <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">View Request</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-          </div>
+      <cornie-card-title class="w-full">
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            View Request
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-          <div class="grid grid-cols-3 gap-4 border-b border-dashed">
-              <div class="w-full">
-                <avatar   :src="authPractitioner.image"/>  
-              </div>
-                <div>
-                    <p class="text-primary font-semibold">Dr. {{authPractitioner.firstName +' '+ authPractitioner.lastName}}</p>
-                    <p><span class="font-weight-bold">ID: </span> {{authPractitioner.id}}</p>
-                    <p>{{authPractitioner.jobDesignation}}</p>
-                </div>
-                 <div>
-                    <p class="text-primary font-semibold">Dr. {{authPractitioner.firstName +' '+ authPractitioner.lastName}}</p>
-                    <p><span class="font-weight-bold">Address: </span> {{authPractitioner.address}}</p>
-                    <p><span class="font-weight-bold">Email: </span> {{authPractitioner.email}}</p>
-                     <p><span class="font-weight-bold">Phone: </span> {{authPractitioner.phone.dialCode + authPractitioner.phone.number}}</p>
-                </div>
+        <div class="grid grid-cols-3 gap-4 border-b border-dashed">
+          <div class="w-full">
+            <avatar :src="authPractitioner.image" />
           </div>
-
+          <div>
+            <p class="text-primary font-semibold">
+              Dr.
+              {{ authPractitioner.firstName + " " + authPractitioner.lastName }}
+            </p>
+            <p>
+              <span class="font-weight-bold">ID: </span>
+              {{ authPractitioner.id }}
+            </p>
+            <p>{{ authPractitioner.jobDesignation }}</p>
+          </div>
+          <div>
+            <p class="text-primary font-semibold">
+              Dr.
+              {{ authPractitioner.firstName + " " + authPractitioner.lastName }}
+            </p>
+            <p>
+              <span class="font-weight-bold">Address: </span>
+              {{ authPractitioner.address }}
+            </p>
+            <p>
+              <span class="font-weight-bold">Email: </span>
+              {{ authPractitioner.email }}
+            </p>
+            <p>
+              <span class="font-weight-bold">Phone: </span>
+              {{
+                authPractitioner.phone.dialCode + authPractitioner.phone.number
+              }}
+            </p>
+          </div>
+        </div>
       </cornie-card-text>
       <cornie-card>
         <cornie-card-text class="flex justify-end">
@@ -42,7 +66,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            {{newaction}} Request
+            {{ newaction }} Request
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -57,9 +81,9 @@ import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from '@/components/cornieradio.vue'
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from '@/components/icons/info.vue'
+import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
@@ -82,17 +106,14 @@ import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
 import Avatar from "@/components/avatar.vue";
 import IRequest from "@/types/IRequest";
-import DateTimePicker from './components/datetime-picker.vue'
-import { namespace } from 'vuex-class'
+import DateTimePicker from "./components/datetime-picker.vue";
+import { namespace } from "vuex-class";
 import IPractitioner from "@/types/IPractitioner";
 const userStore = namespace("user");
 
-const request = namespace('request')
+const request = namespace("request");
 const dropdown = namespace("dropdown");
 const patients = namespace("patients");
-
-
-
 
 @Options({
   name: "requestDialog",
@@ -123,16 +144,16 @@ const patients = namespace("patients");
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    MainCornieSelect
+    MainCornieSelect,
   },
 })
 export default class Medication extends Vue {
-@PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
- @userStore.Action
+  @userStore.Action
   updatePractitionerAuthStatus!: () => Promise<void>;
 
   @request.State
@@ -141,13 +162,13 @@ export default class Medication extends Vue {
   @request.State
   practitioners!: any[];
 
-    @request.State
+  @request.State
   patients!: any[];
 
   @request.Action
   deleteRequest!: (id: string) => Promise<boolean>;
 
- @request.Action
+  @request.Action
   getPatients!: () => Promise<void>;
 
   @request.Action
@@ -156,45 +177,43 @@ export default class Medication extends Vue {
   @request.Action
   fetchRequests!: () => Promise<void>;
 
-
   @patients.Action
   fetchPatients!: () => Promise<void>;
 
-   @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   @request.Mutation
   updatedRequests!: any;
 
- checked = false;
+  checked = false;
   checked2 = false;
   checked3 = false;
-  step=1;
- width_percent= 33.33;
-  width= 33.33;
+  step = 1;
+  width_percent = 33.33;
+  width = 33.33;
 
   loading = false;
   expand = false;
   isVisible = "";
   startdate = "";
   enddate = "";
-  selected=1;
+  selected = 1;
   rule = true;
   opened = true;
   openedR = true;
   openedS = true;
   openedM = false;
   showMedicationModal = false;
-  localSrc = require('../../../../assets/img/placeholder.png');
+  localSrc = require("../../../../assets/img/placeholder.png");
 
-  patient=[];
-  practitioner=[];
+  patient = [];
+  practitioner = [];
 
-dispenser="";
-subject="";
-requester="";
-performer="";
-
+  dispenser = "";
+  subject = "";
+  requester = "";
+  performer = "";
 
   preferredHeaders = [];
   items = ["Patient", "Practitioner", "Practitioner Role", "Device"];
@@ -211,76 +230,74 @@ performer="";
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-
-@Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setRequest()
+    this.setRequest();
   }
-@request.Action
+  @request.Action
   getRequestById!: (id: string) => IRequest;
 
   get PatientName() {
-            const id = this.$route.params.id;
-            const pt = this.patients.find((i: any) => i.id === id);
-           return {
-             ...pt
-           }
-        }
+    const id = this.$route.params.id;
+    const pt = this.patients.find((i: any) => i.id === id);
+    return {
+      ...pt,
+    };
+  }
 
- select(i:number) {
-      this.selected = i;
-    }
- async  next() {
-      this.step = this.step + 1;
-      this.width += this.width_percent;
-    }
+  select(i: number) {
+    this.selected = i;
+  }
+  async next() {
+    this.step = this.step + 1;
+    this.width += this.width_percent;
+  }
 
-   async  back() {
-      this.step >= 0 && (this.step -= 1);
-      this.width -= this.width_percent;
-    }
-
+  async back() {
+    this.step >= 0 && (this.step -= 1);
+    this.width -= this.width_percent;
+  }
 
   requestModel = {} as IRequest;
 
   async setRequest() {
-    const request = await this.getRequestById(this.id)
-    if (!request) return
-    this.requestModel =  (request) ;
- //   this.requestModel.medications = request.medications;
+    const request = await this.getRequestById(this.id);
+    if (!request) return;
+    this.requestModel = request;
+    //   this.requestModel.medications = request.medications;
   }
- get newaction() {
-    return this.id ? 'Update' : 'Create New'
+  get newaction() {
+    return this.id ? "Update" : "Create New";
   }
 
   get allaction() {
     return this.id ? "Edit" : "New";
   }
-get allPerformer() {
-     if (!this.practitioner || this.practitioner.length === 0) return [ ];
-     return this.practitioner.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.firstName +' '+ i.lastName,
-         }
-     })
- }
- get allRequester() {
-     if (!this.patient || this.patient.length === 0) return [ ];
-     return this.patient.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.firstname +' '+ i.lastname,
-         }
-     })
- }
+  get allPerformer() {
+    if (!this.practitioner || this.practitioner.length === 0) return [];
+    return this.practitioner.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.firstName + " " + i.lastName,
+      };
+    });
+  }
+  get allRequester() {
+    if (!this.patient || this.patient.length === 0) return [];
+    return this.patient.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.firstname + " " + i.lastname,
+      };
+    });
+  }
 
   async fetchAllPatients() {
     const AllPateints = cornieClient().get("/api/v1/patient");
     const response = await Promise.all([AllPateints]);
     this.patient = response[0].data;
   }
- async fetchPractitioner() {
+  async fetchPractitioner() {
     const AllPractitioner = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractitioner]);
     this.practitioner = response[0].data;
@@ -288,7 +305,7 @@ get allPerformer() {
 
   async created() {
     this.setRequest();
-  //  this.setRequestModel();
+    //  this.setRequestModel();
     this.fetchPatients();
     this.fetchAllPatients();
     this.fetchPractitioner();
@@ -301,94 +318,93 @@ get allPerformer() {
 </script>
 
 <style>
-
 .bg-gray {
-    background-color: #F6F8F9;
+  background-color: #f6f8f9;
 }
 .icon-wrap {
-   content:counter(step);
+  content: counter(step);
   counter-increment: step;
-    background: #fff;
-    border-radius: 50%;
-        top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-   left: -54em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -54em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap2 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: -7.5em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -7.5em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap3 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: -1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 52em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: -1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 52em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap4 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 42em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 42em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
- .icon-check-mark{
-    top: 1.3em;
-    z-index: 1;
-    left: 5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark {
+  top: 1.3em;
+  z-index: 1;
+  left: 5em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark2{
-       top: 1.3em;
-    z-index: 1;
-    left: 23em;
-    right: 0;
-    position: absolute;
+.icon-check-mark2 {
+  top: 1.3em;
+  z-index: 1;
+  left: 23em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark3{
-      top: 1.3em;
-    z-index: 1;
-    left: 45.5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark3 {
+  top: 1.3em;
+  z-index: 1;
+  left: 45.5em;
+  right: 0;
+  position: absolute;
 }
-.bg-danger-100{
-    background-color: #FE4D3C;
+.bg-danger-100 {
+  background-color: #fe4d3c;
 }
 </style>

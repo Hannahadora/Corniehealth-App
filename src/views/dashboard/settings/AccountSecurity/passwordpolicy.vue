@@ -22,9 +22,13 @@
         <li class="pb-3">Must be at least 8 characters</li>
       </ul>
       <div class="px-4 py-3 sm:px-6 border-t-2 sm:flex sm:flex-row-reverse">
-          <button   @click="show = false" class="rounded-full border border-transparent shadow-sm pl-8  pr-8 px-4 py-2 bg-danger text-base  font-medium text-white focus:outline-none sm:ml-3 sm:w-autosm:text-sm" type="button">
-            Ok
-          </button>
+        <button
+          @click="show = false"
+          class="rounded-full border border-transparent shadow-sm pl-8 pr-8 px-4 py-2 bg-danger text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-autosm:text-sm"
+          type="button"
+        >
+          Ok
+        </button>
       </div>
     </div>
   </modal>
@@ -47,7 +51,7 @@ export default {
   },
   watch: {
     show(value) {
-      console.log(value);
+      ;
     },
   },
   computed: {

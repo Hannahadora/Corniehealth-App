@@ -4,28 +4,13 @@
       <div class="w-full">
         <span class="flex flex-col w-full font-semibold py-2 mx-auto pb-4">
           <span
-            class="
-              flex
-              border-b-2
-              w-full
-              font-semibold
-              text-xl text-primary
-              py-2
-              mx-auto
-            "
+            class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
           >
             Organization Hierarchy
           </span>
           <span class="flex w-full font-semibold py-2 mx-auto mt-4">
             <span
-              class="
-                flex
-                px-3
-                py-2
-                border-b-4
-                cursor-pointer
-                hover:bg-gray-300 hover:bg-opacity-20
-              "
+              class="flex px-3 py-2 border-b-4 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20"
               @click="active = i"
               v-for="(tab, i) in tabs"
               :key="i"

@@ -12,14 +12,12 @@
             @click="show = false"
           />
         </span>
-          <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
+        <h2 class="font-bold text-lg text-primary ml-3 -mt-2">Make Notes</h2>
       </div>
       <div class="flex flex-col p-3">
-        <p class="text-sm mt-2">
-         Some subtext if necessary
-        </p>
-        <div class="my-2  w-full  flex">
-            <Textarea
+        <p class="text-sm mt-2">Some subtext if necessary</p>
+        <div class="my-2 w-full flex">
+          <Textarea
             label="Notes"
             v-model="notes"
             placeholder="--Enter--"
@@ -29,19 +27,7 @@
         </div>
         <div class="flex justify-end w-full mt-auto">
           <button
-            class="
-              rounded-full
-              mt-5
-              py-2
-              px-3
-              border border-primary
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-              mr-2
-              text-primary
-              font-semibold
-            "
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
           >
             Cancel
@@ -50,24 +36,13 @@
             @click="apply"
             :loading="loading"
             type="submit"
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              mt-5
-              py-2
-              px-3
-              focus:outline-none
-              hover:opacity-90
-              w-1/3
-            "
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Save
           </cornie-btn>
         </div>
       </div>
     </modal>
-  
   </div>
 </template>
 <script>
@@ -95,7 +70,7 @@ export default {
     Availability,
     IconInput,
     SearchIcon,
-    Profile
+    Profile,
   },
   props: {
     visible: {
@@ -121,16 +96,15 @@ export default {
       required: true,
       default: () => [],
     },
-    
   },
   data() {
     return {
       columnsProxy: [],
       practitioners: [],
       loading: false,
-      notes:'',
+      notes: "",
       availableFilter: false,
-      profileFilter:false,
+      profileFilter: false,
     };
   },
   watch: {
@@ -153,34 +127,37 @@ export default {
     },
   },
   methods: {
-   async apply() {
-     this.loading = true;
-        try {
-        const response = await cornieClient().post("/api/v1/task/notes", {text:this.notes, taskId:this.taskId});
+    async apply() {
+      this.loading = true;
+      try {
+        const response = await cornieClient().post("/api/v1/task/notes", {
+          text: this.notes,
+          taskId: this.taskId,
+        });
         if (response.success) {
-            window.notify({ msg: "Notes created", status: "success" });
-            this.loading = false;
-           this.show = false;
-            this.$router.push("/dashboard/provider/experience/tasks");
-        }
-        } catch (error) {
+          window.notify({ msg: "Notes created", status: "success" });
           this.loading = false;
-         this.show = false;
-          console.log(error);
+          this.show = false;
+          this.$router.push("/dashboard/provider/experience/tasks");
+        }
+      } catch (error) {
+        this.loading = false;
+        this.show = false;
+        ;
         window.notify({ msg: "Notes not created", status: "error" });
         this.$router.push("/dashboard/provider/experience/tasks");
-        }
+      }
     },
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
       this.show = false;
     },
-    showAvailable(){
+    showAvailable() {
       this.availableFilter = true;
     },
-    showProfile(){
-        this.profileFilter = true;
-    }
+    showProfile() {
+      this.profileFilter = true;
+    },
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);

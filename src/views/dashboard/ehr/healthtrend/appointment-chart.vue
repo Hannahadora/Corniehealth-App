@@ -1,6 +1,8 @@
 <template>
   <chart-card height="439px" title="">
-    <h3 class="text-primary font-bold text-sm -mt-5 mb-3">Current Medications</h3>
+    <h3 class="text-primary font-bold text-sm -mt-5 mb-3">
+      Current Medications
+    </h3>
     <canvas ref="chart"></canvas>
   </chart-card>
 </template>

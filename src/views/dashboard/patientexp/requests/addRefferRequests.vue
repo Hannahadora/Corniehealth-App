@@ -339,20 +339,7 @@
                   $router.push('/dashboard/provider/experience/appointments')
                 "
                 type="button"
-                class="
-                  outline-primary
-                  rounded-full
-                  text-black
-                  mt-5
-                  mr-3
-                  py-2
-                  pr-14
-                  pl-14
-                  px-3
-                  focus:outline-none
-                  hover:bg-primary
-                  hover:text-white
-                "
+                class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
               >
                 Cancel
               </button>
@@ -360,16 +347,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="
-                  bg-danger
-                  rounded-full
-                  text-white
-                  mt-5
-                  pr-14
-                  pl-14
-                  focus:outline-none
-                  hover:opacity-90
-                "
+                class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
               >
                 Save
               </cornie-btn>
@@ -409,7 +387,6 @@ import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import CornieDateRangePicker from "@/components/daterangepicker.vue";
 import Avatar from "@/components/avatar.vue";
 import TimePicker from "@/components/Timepicker.vue";
-
 
 const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
@@ -582,7 +559,7 @@ export default class AddAppointment extends Vue {
         //this.selected = 1;
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Other Request not Created", status: "error" });
     }
   }
@@ -644,5 +621,4 @@ input[type="range"]::-webkit-slider-thumb {
   height: 24px;
   -webkit-appearance: none;
 }
-
 </style>

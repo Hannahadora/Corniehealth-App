@@ -5,7 +5,9 @@
         <cornie-icon-btn @click="show = false" class="mr-2">
           <arrow-left-icon />
         </cornie-icon-btn>
-        <span class="font-extrabold text-primary"> Patient Registrationss </span>
+        <span class="font-extrabold text-primary">
+          Patient Registrationss
+        </span>
       </cornie-card-title>
       <cornie-card-text>
         <span class="text-sm mb-3 flex">

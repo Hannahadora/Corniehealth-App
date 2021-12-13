@@ -1,5 +1,5 @@
 <template>
-<!-- <p>fgfgfgf</p><p>{{otherrequests}}</p> -->
+  <!-- <p>fgfgfgf</p><p>{{otherrequests}}</p> -->
   <auto-complete :items="items">
     <template #item="{ item }">
       <div class="flex justify-between my-1 items-center text-xs">
@@ -33,7 +33,6 @@ import { printPractitioner } from "@/plugins/utils";
 
 const otherrequest = namespace("otherrequest");
 
-
 @Options({
   name: "EncounterSelect",
   components: {
@@ -57,29 +56,29 @@ export default class ReferrerSelect extends Vue {
   @otherrequest.State
   otherrequests!: any[];
 
-@Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   patientId!: string;
 
-//   @otherrequest.Action
-//   fetchOtherrequests!: () => Promise<void>;
+  //   @otherrequest.Action
+  //   fetchOtherrequests!: () => Promise<void>;
 
   @otherrequest.Action
   fetchOtherrequestsById!: (patientId: string) => Promise<void>;
 
-//   get patientId() {
-//     return this.$route.params.id;
-//   }
+  //   get patientId() {
+  //     return this.$route.params.id;
+  //   }
 
-//   get itemss() {
-//     return this.encounters.map((encounter) => ({
-//       ...encounter,
-//       code: encounter.id,
-//       display: this.printEncounter(encounter),
-//       practitioner: printPractitioner(encounter.practitioner),
-//       practitionerImage: encounter?.practitioner?.image,
-//       time: this.printEncounterTime(encounter),
-//     }));
-//   }
+  //   get itemss() {
+  //     return this.encounters.map((encounter) => ({
+  //       ...encounter,
+  //       code: encounter.id,
+  //       display: this.printEncounter(encounter),
+  //       practitioner: printPractitioner(encounter.practitioner),
+  //       practitionerImage: encounter?.practitioner?.image,
+  //       time: this.printEncounterTime(encounter),
+  //     }));
+  //   }
 
   get items() {
     // return this.otherrequests
@@ -92,11 +91,11 @@ export default class ReferrerSelect extends Vue {
     return this.otherrequests.map((request) => ({
       ...request,
       priority: request.id,
-        code: request.id,
-    //   display: this.printEncounter(encounter),
-    //   practitioner: printPractitioner(encounter.practitioner),
-    //   practitionerImage: encounter?.practitioner?.image,
-    //   time: this.printEncounterTime(encounter),
+      code: request.id,
+      //   display: this.printEncounter(encounter),
+      //   practitioner: printPractitioner(encounter.practitioner),
+      //   practitionerImage: encounter?.practitioner?.image,
+      //   time: this.printEncounterTime(encounter),
     }));
   }
 
@@ -131,7 +130,7 @@ export default class ReferrerSelect extends Vue {
         `/other-requests/findByPatientSubject/all/${this.patientId}`
       );
       this.referrers = data || [];
-      console.log('refereee', this.referrers);
+      ;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching referrers for patient",
@@ -144,9 +143,8 @@ export default class ReferrerSelect extends Vue {
     this.fetchEncounters();
     this.fetchReferrer();
     // if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
-    if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequestsById(this.patientId);
-
-
+    if (!this.otherrequests || this.otherrequests.length === 0)
+      await this.fetchOtherrequestsById(this.patientId);
   }
 }
 </script>

@@ -13,11 +13,11 @@
         border-2
       "
       :class="{
-        'border-0 bg-primary border-primary': expanded,
+        'border-0  text-base text-jet_black font-bold': expanded,
         'rounded-t-xl': first && expanded,
       }"
     >
-      <div class="font-semibold" :class="{ 'text-white': expanded }">
+      <div class="font-semibold" :class="{ 'text-jet_black': expanded }">
         {{ title }}
       </div>
       <span class="flex items-center">

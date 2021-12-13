@@ -1,48 +1,38 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-      h-screen
-      overflow-auto
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
   >
     <div class="container-fluid" v-if="true">
       <div class="w-full p-2">
         <span
-          class="
-            flex flex-col
-            w-full
-            justify-center
-            border-b-2
-            font-bold
-            mb-5
-            text-xl text-primary
-            py-2
-          "
+          class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
         >
           Episodes | Encounter
         </span>
         <!-- <registration-chart class="w-full" :height="100" /> -->
-        
       </div>
 
       <div class="w-full border-b-4 curved flex mb-8">
-          <div class="container-fluid flex font-semibold text-lg">
-              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color': activeTab === 1, 'text-gray-500': activeTab !== 1 }"
-              @click="() => activeTab = 1"
-              >Encounters</a>
-              <a class="px-4 py-2 active-tab cursor-pointer" :class="{ 'active-color text-dark': activeTab === 0, 'text-gray-500': activeTab !== 0 }"
-              @click="() => activeTab = 0"
-              >Episodes</a>
-          </div>
+        <div class="container-fluid flex font-semibold text-lg">
+          <a
+            class="px-4 py-2 active-tab cursor-pointer"
+            :class="{
+              'active-color': activeTab === 1,
+              'text-gray-500': activeTab !== 1,
+            }"
+            @click="() => (activeTab = 1)"
+            >Encounters</a
+          >
+          <a
+            class="px-4 py-2 active-tab cursor-pointer"
+            :class="{
+              'active-color text-dark': activeTab === 0,
+              'text-gray-500': activeTab !== 0,
+            }"
+            @click="() => (activeTab = 0)"
+            >Episodes</a
+          >
+        </div>
       </div>
 
       <div class="w-full">
@@ -50,15 +40,15 @@
           <span class="flex justify-end w-full m4-5" v-if="activeTab === 1">
             <cornie-btn
               class="bg-danger text-white m-5 p-2 font-semibold"
-               @click="() => showNewEncounterModal = true"
+              @click="() => (showNewEncounterModal = true)"
             >
               New Encounter
             </cornie-btn>
           </span>
-          <span class="flex justify-end w-full m4-5"  v-if="activeTab === 0">
+          <span class="flex justify-end w-full m4-5" v-if="activeTab === 0">
             <cornie-btn
               class="bg-danger text-white m-5 p-2 font-semibold"
-              @click="() => showNewEpisodeModal = true"
+              @click="() => (showNewEpisodeModal = true)"
             >
               New Episode
             </cornie-btn>
@@ -78,43 +68,36 @@
               <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
             </div>
           </template>
-          <template #actions="{  }">
-            <table-action
-            >
+          <template #actions="{}">
+            <table-action>
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <update-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <add-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Admit Patient</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Status History</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Class History</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <cancel-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Cancel</span>
             </table-action>
-            
           </template>
         </cornie-table>
       </div>
 
-      <div class="p-2"  v-if="activeTab === 1">
+      <div class="p-2" v-if="activeTab === 1">
         <cornie-table
           v-model="items"
           :columns="rawHeaders"
@@ -127,38 +110,30 @@
             </div>
           </template>
           <template #actions="{ item }">
-            <table-action
-            >
+            <table-action>
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
-            <table-action
-            @click="showUpdateModal(item)"
-            >
+            <table-action @click="showUpdateModal(item)">
               <update-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <add-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Admit Patient</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Status History</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View Class History</span>
             </table-action>
-            <table-action
-            >
+            <table-action>
               <cancel-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Cancel</span>
             </table-action>
-            
           </template>
         </cornie-table>
       </div>
@@ -168,23 +143,45 @@
       <empty-state />
     </div>
 
-    <side-modal :visible="showNewEncounterModal" :width="990" @closesidemodal="() => showNewEncounterModal = false" :header="'New Encounter'">
+    <side-modal
+      :visible="showNewEncounterModal"
+      :width="990"
+      @closesidemodal="() => (showNewEncounterModal = false)"
+      :header="'New Encounter'"
+    >
       <new-encounter />
     </side-modal>
 
-    <side-modal :visible="showNewEpisodeModal" :width="990" @closesidemodal="() => showNewEpisodeModal = false" :header="'New Episode'">
+    <side-modal
+      :visible="showNewEpisodeModal"
+      :width="990"
+      @closesidemodal="() => (showNewEpisodeModal = false)"
+      :header="'New Episode'"
+    >
       <new-episode :items="practitioners" />
     </side-modal>
 
-    <side-modal :visible="showUpdateStatusModal" :width="590" :header="'Update Status'" @closesidemodal="closeUpdateModal">
-        
-        <update-status :updateData="updateData" @changed="newStatusSelected" @closesidemodal="closeUpdateModal">
-          <template #submit>
-            <CornieBtn :loading="loading" class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer" @click="updateEncounterStatus">
-              <span class="text-white font-semibold">Update</span>
-            </CornieBtn>
-          </template>
-        </update-status>
+    <side-modal
+      :visible="showUpdateStatusModal"
+      :width="590"
+      :header="'Update Status'"
+      @closesidemodal="closeUpdateModal"
+    >
+      <update-status
+        :updateData="updateData"
+        @changed="newStatusSelected"
+        @closesidemodal="closeUpdateModal"
+      >
+        <template #submit>
+          <CornieBtn
+            :loading="loading"
+            class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer"
+            @click="updateEncounterStatus"
+          >
+            <span class="text-white font-semibold">Update</span>
+          </CornieBtn>
+        </template>
+      </update-status>
     </side-modal>
   </div>
 </template>
@@ -204,28 +201,28 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import AdvancedFilter from "../../patientexp/patients/dialogs/advanced-filter.vue";
-import Modal from "@/components/modal.vue"
-import SearchInput from "@/components/search-input.vue"
-import SearchDropdown from '../careteam/components/search-dropdown.vue'
+import Modal from "@/components/modal.vue";
+import SearchInput from "@/components/search-input.vue";
+import SearchDropdown from "../careteam/components/search-dropdown.vue";
 import User from "@/types/user";
-import EmptyState from "./components/empty-state.vue"
-import CornieSelect from "@/components/cornieselect.vue"
-import SideModal from "@/views/dashboard/schedules/components/side-modal.vue"
-import VitalsForm from "./components/vitals-form.vue"
-import UpdateIcon from "@/components/icons/newupdate.vue"
-import AddIcon from "@/components/icons/add.vue"
+import EmptyState from "./components/empty-state.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
+import VitalsForm from "./components/vitals-form.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+import AddIcon from "@/components/icons/add.vue";
 import NewEncounter from "./components/new-encounter.vue";
 import NewEpisode from "./components/new-episode.vue";
 import IEncounter from "@/types/IEncounter";
 import IEpisode from "@/types/IEpisode";
-import UpdateStatus from "./components/update-status.vue"
+import UpdateStatus from "./components/update-status.vue";
 import IUpdateStatus, { Item } from "@/types/IUpdateModel";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
-const practitioner  = namespace('practitioner');
-const vital  = namespace('vitals');
+const practitioner = namespace("practitioner");
+const vital = namespace("vitals");
 
 @Options({
   name: "EHRPatients",
@@ -257,7 +254,6 @@ const vital  = namespace('vitals');
   },
 })
 export default class ExistingState extends Vue {
-
   @visitsStore.State
   visits!: any;
 
@@ -301,20 +297,20 @@ export default class ExistingState extends Vue {
   showSearchModal = false;
   activeTab = 1;
   query = "";
-  searchResults: IPatient[] = [ ];
+  searchResults: IPatient[] = [];
   loading = false;
   showUpdateStatusModal = false;
-  activeVisits: IPatient[] = [ ];
+  activeVisits: IPatient[] = [];
   patientId = "";
-  selectedEncounterId = ""
+  selectedEncounterId = "";
 
-  newStatus = '';
-  encounterStatus: Item[] = [ 
-    { code: 'active', display: 'Active' },
-    { code: 'inactive', display: 'Inactive'}
-  ]
+  newStatus = "";
+  encounterStatus: Item[] = [
+    { code: "active", display: "Active" },
+    { code: "inactive", display: "Inactive" },
+  ];
 
-  updateData = { } as IUpdateStatus;
+  updateData = {} as IUpdateStatus;
 
   headers = [
     {
@@ -398,8 +394,8 @@ export default class ExistingState extends Vue {
   ];
 
   get items() {
-    if (this.encounters?.length === 0) return [ ];
-    return this.encounters.map(encounter => {
+    if (this.encounters?.length === 0) return [];
+    return this.encounters.map((encounter) => {
       return {
         id: encounter.id,
         identifier: encounter.id,
@@ -413,13 +409,13 @@ export default class ExistingState extends Vue {
         practitioner: `${encounter?.practitioner?.firstName} ${encounter?.practitioner?.lastName}`,
         basedOn: "Based On",
         status: encounter.status,
-      }
-    })
+      };
+    });
   }
 
   get episodesList() {
-    if (this.episodes?.length === 0) return [ ];
-    return this.episodes.map(episode => {
+    if (this.episodes?.length === 0) return [];
+    return this.episodes.map((episode) => {
       return {
         identifier: episode.id,
         recorded: new Date(episode.createdAt).toLocaleDateString(),
@@ -430,40 +426,42 @@ export default class ExistingState extends Vue {
         episodes: "episode",
         // practitioner: `${episode?.practitioner?.firstName} ${episode?.practitioner?.lastName}`,
         status: episode.status,
-        encounters: this.encounters?.filter(encounter => encounter.episodeId === episode.id).length
-      }
-    })
+        encounters: this.encounters?.filter(
+          (encounter) => encounter.episodeId === episode.id
+        ).length,
+      };
+    });
   }
 
   get searchList() {
     return this.searchResults.map((patient: any) => {
       return {
         code: patient.id,
-        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`
-      }
-    })
+        display: `${patient.lastname} ${patient.middlename} ${patient.firstname}`,
+      };
+    });
   }
 
   get practitionersList() {
-    if (this.practitioners?.length === 0) return [ ];
+    if (this.practitioners?.length === 0) return [];
     return this.practitioners;
   }
 
   closeUpdateModal() {
     this.showUpdateStatusModal = false;
-    this.newStatus = '';
-    this.selectedEncounterId = '';
+    this.newStatus = "";
+    this.selectedEncounterId = "";
   }
 
   showUpdateModal(item: IEncounter) {
     this.selectedEncounterId = item?.id;
-    alert(item.id)
+    alert(item.id);
     this.updateData = {
       currentStatus: item.status,
       lastUpdated: "",
       updatedBy: "",
-      statuses: this.encounterStatus
-    }
+      statuses: this.encounterStatus,
+    };
     this.showUpdateStatusModal = true;
   }
 
@@ -477,51 +475,48 @@ export default class ExistingState extends Vue {
       const response = await this.updateStatusOfEncounter({
         data: { status: this.newStatus },
         patientId: this.selectedEncounterId,
-      })
+      });
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      console.log(error);
+      ;
     }
   }
-
 
   async created() {
     this.patientId = this.$route.params.id as string;
 
     if (this.practitioners?.length === 0) await this.fetchPractitioners();
-    if (this.encounters?.length === 0) await this.getEncounters(this.patientId)
-    if (this.episodes?.length <= 0) await this.getEpisodes(this.patientId)
-    console.log(this.episodes, "EPISODES");
-    console.log(this.encounters, "Encounters");
-    
+    if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
+    if (this.episodes?.length <= 0) await this.getEpisodes(this.patientId);
+    ;
+    ;
   }
 }
 </script>
 
 <style scoped>
 .active-tab {
-    border-bottom-width: 4px;
-    margin-bottom: -0.22rem;
+  border-bottom-width: 4px;
+  margin-bottom: -0.22rem;
 }
 
 .active-color {
-    border-color: #FE4D3C;
+  border-color: #fe4d3c;
 }
 
 .status-active {
-    background: #F3FCF8;
-    color: #35BA83;
-    
+  background: #f3fcf8;
+  color: #35ba83;
 }
 
 .status-inactive {
-    background: #FFF1F0;
-    color: #FE4D3C;
+  background: #fff1f0;
+  color: #fe4d3c;
 }
 
 .border-b-4 {
-    border-bottom: 4px solid #F0F4FE;
+  border-bottom: 4px solid #f0f4fe;
 }
 
 .content-con {

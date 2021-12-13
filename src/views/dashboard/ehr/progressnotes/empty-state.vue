@@ -29,7 +29,6 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import AddCondition from "./add-condition.vue";
 import AddProgressNote from "./add-progressnote.vue";
 
-
 @Options({
   name: "ConditionEmptyState",
   components: {

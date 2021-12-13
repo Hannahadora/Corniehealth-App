@@ -313,23 +313,7 @@
               <!-- <cornie-input class="w-full"  v-model="onSet.recorder" disabled/>  -->
 
               <input
-                class="
-                  appearance-none
-                  w-full
-                  border border-gray-100
-                  bg-gray-100
-                  px-3
-                  py-3
-                  rounded-md
-                  placeholder-white
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm sm:leading-5
-                "
+                class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                 disabled
                 :value="onSet.recorder"
               />
@@ -365,23 +349,7 @@
               </label>
               <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
               <input
-                class="
-                  appearance-none
-                  w-full
-                  border border-gray-100
-                  bg-gray-100
-                  px-3
-                  py-3
-                  rounded-md
-                  placeholder-white
-                  focus:outline-none
-                  focus:shadow-outline-blue
-                  focus:border-blue-300
-                  transition
-                  duration-150
-                  ease-in-out
-                  sm:text-sm sm:leading-5
-                "
+                class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                 disabled
                 :value="asserterName"
               />
@@ -909,7 +877,7 @@ export default class Medication extends Vue {
         // this.show = false;
       }
     } catch (error) {
-      console.log(error);
+      ;
       window.notify({ msg: "Allergy not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
@@ -939,5 +907,4 @@ export default class Medication extends Vue {
 }
 </script>
 
-<style>
-</style>
+<style></style>

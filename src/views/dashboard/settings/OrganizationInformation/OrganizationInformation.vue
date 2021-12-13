@@ -106,23 +106,7 @@
           <span>
             <button
               @click="revertChanges"
-              class="
-                border border-primary
-                mr-8
-                rounded-3xl
-                px-6
-                py-2
-                placeholder-gray-400
-                focus:outline-none
-                focus:shadow-outline-blue
-                focus:border-blue-300
-                transition
-                duration-150
-                ease-in-out
-                sm:text-sm
-                sm:leading-5
-                cursor-pointer
-              "
+              class="border border-primary mr-8 rounded-3xl px-6 py-2 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
             >
               Revert Changes
             </button>
@@ -131,25 +115,7 @@
             <cornie-btn
               type="submit"
               :loading="loading"
-              class="
-                px-6
-                py-2
-                text-white
-                appearance-none
-                border-none
-                bg-danger
-                rounded-3xl
-                placeholder-gray-400
-                focus:outline-none
-                focus:shadow-outline-blue
-                focus:border-blue-300
-                transition
-                duration-150
-                ease-in-out
-                sm:text-sm
-                sm:leading-5
-                cursor-pointer
-              "
+              class="px-6 py-2 text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
             >
               Save Changes
             </cornie-btn>
@@ -242,7 +208,7 @@ export default {
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
     } catch (error) {
-      console.log(error);
+      ;
     }
   },
   methods: {

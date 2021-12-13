@@ -88,7 +88,11 @@ export default class Settings extends Vue {
   query = "";
   get experiencemanagement() {
     return [
-      { name: "Experience Management", to: "experience-management", icon: "org-icon" },
+      {
+        name: "Experience Management",
+        to: "experience-management",
+        icon: "org-icon",
+      },
       { name: "Patient Registration", icon: "contact-icon" },
       {
         name: "Shifts",
