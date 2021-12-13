@@ -82,7 +82,7 @@
             v-model="IncorporationType"
           />
           <phone-input
-            class="w-full mt-1"
+            class="w-full"
             label="Phone Number"
             v-model:code="DialCode"
             v-model="PhoneNumber"
@@ -102,24 +102,13 @@
           />
         </div>
 
-        <div class="my-8 flex justify-end">
-          <span>
-            <button
-              @click="revertChanges"
-              class="border border-primary mr-8 rounded-3xl px-6 py-2 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
-            >
-              Revert Changes
-            </button>
-          </span>
-          <span>
-            <cornie-btn
-              type="submit"
-              :loading="loading"
-              class="px-6 py-2 text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 cursor-pointer"
-            >
-              Save Changes
-            </cornie-btn>
-          </span>
+        <div class="my-8 flex items-center gap-x-4 justify-end">
+          <cornie-btn class="border border-primary">
+            Revert Changes
+          </cornie-btn>
+          <cornie-btn :loading="loading" class="bg-danger text-white px-2">
+            Save Changes
+          </cornie-btn>
         </div>
       </v-form>
     </section>
@@ -207,9 +196,7 @@ export default {
       const dropdown = this.fetchDropDown();
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   },
   methods: {
     ...mapActions("organization", ["fetchOrgInfo"]),
