@@ -55,6 +55,7 @@
             <main-cornie-select
                         class="w-full mb-4"
                         v-model="appointmentItem"
+                        :items="['Blank Survey']"
                         label="Link forms"
                             placeholder="--Link from forms--"
                         >

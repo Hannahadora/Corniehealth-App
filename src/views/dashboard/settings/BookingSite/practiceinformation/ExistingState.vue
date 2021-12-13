@@ -5,15 +5,15 @@
               <p class="text-sm mt-3 text-black"> The information contained below will appear in the CornieHealth booking site, if you have embedded the link. This information does not 
                 affect <br> other related data in your practice settings
               </p>
-              <div class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer">
+              <div class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer" v-if="showEdit">
                   <edit-icon class="fill-current text-primary mr-4"/>  Edit
               </div>
-              <!-- <div v-else class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer" @click="showEditSection">
+               <div v-else class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer" @click="showEditSection">
                   <edit-icon class="fill-current text-danger mr-4"/>  Edit
-              </div> -->
+              </div> 
           </div>
        </div>
-       <div class="grid grid-cols-3 w-full justify-between gap-4 mt-5" >
+       <div class="grid grid-cols-3 w-full justify-between gap-4 mt-5" v-if="showEdit">
            <cornie-input  label="Email"  placeholder="--Enter--" class="w-full mb-4" />
              <cornie-input  label="Address" placeholder="--Enter--" class="w-full mb-4" />
                <cornie-input  label="Website"  placeholder="-Enter--" class="w-full mb-4" />
@@ -25,7 +25,7 @@
               class="w-full"
             />
        </div>
-         <!-- <div class="w-full mt-8 mb-32" v-else>
+          <div class="w-full mt-8 mb-32" v-else>
             <div class="float-left">
                   <img
                       class="mr-2"
@@ -74,7 +74,7 @@
                   </cornie-btn>
                 </div>
             </div>
-         </div> -->
+         </div> 
           <div class="w-full mb-12">
             <label for="ecounter" class="w-full capitalize text-black text-sm font-bold mt-12">Site Message <span class="text-xs text-red-600 font-medium italic">(Max 150 characters)</span></label>
                 <div class="w-full -mt-6">

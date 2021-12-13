@@ -41,8 +41,8 @@
                 v-model="currency"
               />
           </div>
-           <cornie-input disabled v-if="id" label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" />
-             <cornie-input v-else label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" />
+           <!-- <cornie-input disabled v-if="id" label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" /> -->
+             <cornie-input  label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" />
            <!-- <div class="">
                <span class="text-sm font-semibold mb-1">Exchange rate</span>       
                 <div class="bg-blue-100 text-black p-3 rounded flex font-semibold mt-5 text-sm">

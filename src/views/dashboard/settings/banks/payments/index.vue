@@ -61,7 +61,7 @@
           <div>
             <span class="flex justify-end w-full mb-8">
               <button
-                class="flex space-x-3 bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+                class="flex space-x-3 bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5  focus:outline-none hover:opacity-90"
                 @click="showModal"
               >
                 <span class="text-white mr-4">+</span> Create New

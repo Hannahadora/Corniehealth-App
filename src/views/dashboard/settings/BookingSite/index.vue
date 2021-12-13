@@ -28,7 +28,7 @@
         <add-locationn />
         <photo-section/>
          <rating-section /> 
-         <performance-section/>
+         <!-- <performance-section/> -->
       </tabs>
       </span>
     </div>
@@ -78,7 +78,7 @@ import RatingSection from "./rating.vue"
   },
 })
 export default class Bookings extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation","Photos","Rating","Performance"];
+  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation","Photos","Rating"];
   currentTab = 0;
 }
 </script>
