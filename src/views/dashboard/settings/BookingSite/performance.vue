@@ -1,70 +1,83 @@
 <template>
- <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Performance" expand="true" v-model="opened" :opened="true">
-       <div>
-          <div class="flex space-x-4 w-full justify-between mt-3">
-              <p class="text-sm mt-3 text-black"> The information contained below will appear in the CornieHealth booking site, if you have embedded the link. This information does not 
-                affect <br> other related data in your practice settings
-              </p>
-              <div  class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer" @click="showEditSection">
-                  <edit-icon class="fill-current text-danger mr-4"/>  Edit
-              </div>
-          </div>
-       </div>
-         <div class="w-full mt-8 mb-32">
-            <div class="float-left">
-                  <img
-                      class="mr-2"
-                      v-if="orgInfo.image"
-                      :src="orgInfo.image"
-                      />
-                  <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
-                  <div class="flex space-x-4 mt-2">
+  <accordion-component
+    class="shadow-none rounded-none border-none text-primary"
+    title="Performance"
+    expand="true"
+    v-model="opened"
+    :opened="true"
+  >
+    <div>
+      <div class="flex space-x-4 w-full justify-between mt-3">
+        <p class="text-sm mt-3 text-black">
+          The information contained below will appear in the CornieHealth
+          booking site, if you have embedded the link. This information does not
+          affect <br />
+          other related data in your practice settings
+        </p>
+        <div
+          class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer"
+          @click="showEditSection"
+        >
+          <edit-icon class="fill-current text-danger mr-4" /> Edit
+        </div>
+      </div>
+    </div>
+    <div class="w-full mt-8 mb-32">
+      <div class="float-left">
+        <img class="mr-2" v-if="orgInfo.image" :src="orgInfo.image" />
+        <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
+        <div class="flex space-x-4 mt-2">
+          <div class="text-gray-300 text-xs">Active Since:</div>
+          <div class="text-blue-600 font-bold text-xs">31st May, 2021</div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <star-icon />
+          <span class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
+            >Get Verified</span
+          >
+          <span
+            class="text-xs text-green-600 bg-green-100 rounded-full"
+            v-if="verified"
+            >Verified</span
+          >
+        </div>
+      </div>
+      <div class="float-right">
+        <p class="text-sm text-black mb-1">
+          57 Campbell Street, Lagos Island. Lagos
+        </p>
+        <p class="text-sm text-black mb-1">+234 802 290 8484</p>
+        <p class="text-sm text-black mb-1">Info@saintnicholashospital.com</p>
+        <p class="text-sm text-black mb-1">www.nicholashospital.org</p>
+        <div class="flex space-x-4 mt-2">
+          <span class="text-gray-300 text-xs"
+            >Total Ratings:
+            <span class="text-blue-600 font-bold text-xs">16</span>
+          </span>
+          <span class="text-gray-300 text-xs"
+            >Patients Seen:
+            <span class="text-blue-600 font-bold text-xs">24</span>
+          </span>
+        </div>
+        <div class="mt-10">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            <view-icon class="mr-2" /> View
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            <share-icon class="mr-2" /> Share
+          </cornie-btn>
+        </div>
+      </div>
+    </div>
+  </accordion-component>
 
-                    <div class="text-gray-300 text-xs">Active Since: 
-                    </div>
-                      <div class="text-blue-600 font-bold text-xs">31st May, 2021</div>
-                  </div>
-                <div class="flex space-x-4 mt-2">
-                  <star-icon/>
-                  <span class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2">Get Verified</span>
-                    <span class="text-xs text-green-600 bg-green-100 rounded-full" v-if="verified">Verified</span>
-                </div>
-            </div>
-            <div class=" float-right">
-              <p class="text-sm text-black mb-1">57 Campbell Street, Lagos Island. Lagos</p>
-              <p class="text-sm text-black mb-1">+234 802 290 8484</p>
-              <p class="text-sm text-black mb-1">Info@saintnicholashospital.com</p>
-              <p class="text-sm text-black mb-1">www.nicholashospital.org</p>
-              <div class="flex space-x-4 mt-2">
-                <span class="text-gray-300 text-xs">Total Ratings: 
-                        <span class="text-blue-600 font-bold text-xs">16</span>
-                  </span>
-                  <span class="text-gray-300 text-xs">Patients Seen: 
-                        <span class="text-blue-600 font-bold text-xs">24</span>
-                  </span>
-                </div>
-                <div class="mt-10">
-                   <cornie-btn
-                    @click="show = false"
-                    class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-                  >
-                   <view-icon class="mr-2"/> View
-                  </cornie-btn>
-                  <cornie-btn
-                    :loading="loading"
-                    @click="apply"
-                    class="text-white bg-danger px-6 rounded-xl"
-                  >
-                   <share-icon class="mr-2"/> Share
-                  </cornie-btn>
-                </div>
-            </div>
-         </div>
-         
-
-           
-        </accordion-component>
- 
   <!-- <accordion-component
     class="shadow-none rounded-none border-none text-primary"
     title="Practice Hours"
@@ -254,7 +267,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     AccordionComponent,
     Textarea,
     ViewIcon,
-    Field
+    Field,
   },
 })
 export default class CarePartnersExistingState extends Vue {
@@ -276,22 +289,22 @@ export default class CarePartnersExistingState extends Vue {
   @practiceinformations.Action
   fetchPracticeHour!: () => Promise<void>;
 
-showEdit = false;
+  showEdit = false;
 
- @Watch("all")
+  @Watch("all")
   opHours = opHours;
   loading = false;
   all = true;
   newArr = [];
   // editingFunction = false;
-  expand=false;
-  opened=true;
-  email="";
-  address="";
-  siteMessage="";
-  contactNumber="";
-   localSrc = require('../../../../assets/img/placeholder.png');
-orgInfo=[];
+  expand = false;
+  opened = true;
+  email = "";
+  address = "";
+  siteMessage = "";
+  contactNumber = "";
+  localSrc = require("../../../../assets/img/placeholder.png");
+  orgInfo = [];
 
   get operationHours() {
     return this.modelValue;
@@ -303,16 +316,16 @@ orgInfo=[];
   changed() {
     this.operationHours = this.operationHours;
   }
-    async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        this.orgInfo = response.data || {};
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
+  async fetchOrgInfo() {
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
     }
+  }
   allWeek(all: boolean) {
     if (!all) return;
     const opHours = [...this.operationHours].map((opHour) => ({
@@ -337,11 +350,11 @@ orgInfo=[];
   async apply() {
     this.loading = true;
     // if (this.id) await this.updateIssues()
-    this.loading = false
-    }
-    showEditSection(){
-      this.showEdit = true;
-    }
+    this.loading = false;
+  }
+  showEditSection() {
+    this.showEdit = true;
+  }
 
   async applyhour() {
     this.loading = true;
@@ -384,7 +397,6 @@ orgInfo=[];
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({
         msg: "practice-information not Created",
         status: "error",
@@ -396,9 +408,9 @@ orgInfo=[];
     this.fetchOrgInfo();
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
-      this.fetchPracticeInformation();
-      this.fetchPracticeHour();
-      // console.log(this.mappedfunc);
+    this.fetchPracticeInformation();
+    this.fetchPracticeHour();
+    // console.log(this.mappedfunc);
   }
 }
 </script>

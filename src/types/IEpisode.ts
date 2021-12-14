@@ -1,4 +1,4 @@
-import IPractitioner from './IPractitioner'
+import IPractitioner from "./IPractitioner"
 
 export default interface IEpisode {
   id: string;

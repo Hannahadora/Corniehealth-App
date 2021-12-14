@@ -1,50 +1,50 @@
 <template>
   <div class="w-full pb-7 h-full">
     <div class="bg-white p-3 shadow-md">
-        <span
-            class="
-              flex
-              mt-5
-              border-b-2
-              w-full
-              font-bold
-            text-primary
-              py-2
-              mx-auto
-              text-sm
-            "
-          >
-            Booking Site Control
-          </span>
-          <div class="mt-10 p-5">
-            <span class="text-xs text-black font-semibold">Enable Booking Site:</span>
-            <div class="flex space-x-3 mt-4 w-1/2">
-              <cornie-radio
-                name="bookingsite"
-                v-model="type"
-                label="Yes"
-                value="yes"
-                checked
-              />
-              <cornie-radio name="bookingsite2" v-model="type" value="No" label="No" />
-            </div>
-          </div>
-            <div class="grid grid-cols-2 field gap-3 w-full p-5">
-              <domain-input
-                    label="URL:"
-                    placeholder="--Enter--"
-                    :rules="requiredRule"
-                    :modelValue="orgValue"   
-                />
-                <div class="flex space-x-4 w-full">
-                  <span class="flex space-x-1 text-sm font-semibold text-primary"><copyform-icon/> <span>Copy</span></span>
-                  <span class="flex space-x-1 text-sm font-semibold text-primary"><share-icon class="fill-current text-primary"/> <span>Share</span> </span>
-                </div>
-            </div>
-            <div class="grid grid-cols-3 field gap-3 mt-4 2-full">
-              </div>
+      <span
+        class="flex mt-5 border-b-2 w-full font-bold text-primary py-2 mx-auto text-sm"
+      >
+        Booking Site Control
+      </span>
+      <div class="mt-10 p-5">
+        <span class="text-xs text-black font-semibold"
+          >Enable Booking Site:</span
+        >
+        <div class="flex space-x-3 mt-4 w-1/2">
+          <cornie-radio
+            name="bookingsite"
+            v-model="type"
+            label="Yes"
+            value="yes"
+            checked
+          />
+          <cornie-radio
+            name="bookingsite2"
+            v-model="type"
+            value="No"
+            label="No"
+          />
+        </div>
       </div>
+      <div class="grid grid-cols-2 field gap-3 w-full p-5">
+        <domain-input
+          label="URL:"
+          placeholder="--Enter--"
+          :rules="requiredRule"
+          :modelValue="orgValue"
+        />
+        <div class="flex space-x-4 w-full">
+          <span class="flex space-x-1 text-sm font-semibold text-primary"
+            ><copyform-icon /> <span>Copy</span></span
+          >
+          <span class="flex space-x-1 text-sm font-semibold text-primary"
+            ><share-icon class="fill-current text-primary" /> <span>Share</span>
+          </span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 field gap-3 mt-4 2-full"></div>
     </div>
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -74,7 +74,7 @@ const level = namespace("OrgLevels");
     AddLevel,
     DomainInput,
     ShareIcon,
-    CopyformIcon
+    CopyformIcon,
   },
 })
 export default class ExistingState extends Vue {
@@ -121,7 +121,6 @@ export default class ExistingState extends Vue {
   }
 
   editLevel(id: string) {
-    ;
     const level = this.levels.find((level) => level.id == id);
     if (!level) return;
     this.levelForEdit = level;

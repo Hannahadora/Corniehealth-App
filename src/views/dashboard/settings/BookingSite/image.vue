@@ -1,16 +1,22 @@
 <template>
-<div v-if="!hiderating">
+  <div v-if="!hiderating">
     <div class="grid grid-cols-4 gap-1 w-full justify-center">
-            <img src="../../../../assets/1.svg" alt="image">
-            <img src="../../../../assets/2.svg" alt="image">
-            <img src="../../../../assets/3.svg" alt="image">
-            <div class="border border-gray-300 rounded-md w-60 h-52 cursor-pointer" @click="showUplaod">
-                        <span class="text-xxl text-gray-300 top-40 right-65 font-normal relative">+</span>
-            </div>
+      <img src="../../../../assets/1.svg" alt="image" />
+      <img src="../../../../assets/2.svg" alt="image" />
+      <img src="../../../../assets/3.svg" alt="image" />
+      <div
+        class="border border-gray-300 rounded-md w-60 h-52 cursor-pointer"
+        @click="showUplaod"
+      >
+        <span
+          class="text-xxl text-gray-300 top-40 right-65 font-normal relative"
+          >+</span
+        >
+      </div>
     </div>
-</div>
-   <rating-section :show-rating="shownew" :shownewupladmodal="true" v-else/>
-   <uplaoder-modal v-model="showUplaodModal"/>
+  </div>
+  <rating-section :show-rating="shownew" :shownewupladmodal="true" v-else />
+  <uplaoder-modal v-model="showUplaodModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -31,7 +37,7 @@ import EditIcon from "@/components/icons/aedit.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
-import UplaoderModal from "./uploader.vue"
+import UplaoderModal from "./uploader.vue";
 import RatingSection from "./rating.vue";
 const countries = getCountries();
 
@@ -85,8 +91,8 @@ export default class AddLocationn extends Vue {
   careOptions = "";
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
-showImage = false;
-showUplaodModal= false;
+  showImage = false;
+  showUplaodModal = false;
 
   dropdowns = {} as IIndexableObject;
 
@@ -103,10 +109,10 @@ showUplaodModal= false;
   idChanged() {
     this.setLocation();
   }
-  hiderating= false;
-shownew(){
+  hiderating = false;
+  shownew() {
     this.hiderating = true;
-}
+  }
   get coordinatesCB() {
     const address = `${this.address}, ${this.state} ${this.country}`;
     return () => getCoordinates(address);
@@ -127,12 +133,12 @@ shownew(){
     const states = await getStates(country);
     this.states = states;
   }
-showImageSection(){
-  this.showImage = true;
-}
-showUplaod(){
-    this.showUplaodModal  = true;
-}
+  showImageSection() {
+    this.showImage = true;
+  }
+  showUplaod() {
+    this.showUplaodModal = true;
+  }
   async setLocation() {
     const location = await this.getLocationById(this.id);
     if (!location) return;
@@ -233,11 +239,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   background: none;
   display: none;
 }
-.right-65{  
-       left: 4.5rem;
-    font-size: 150px;
+.right-65 {
+  left: 4.5rem;
+  font-size: 150px;
 }
 .top-40 {
-    top: -2rem;
+  top: -2rem;
 }
 </style>

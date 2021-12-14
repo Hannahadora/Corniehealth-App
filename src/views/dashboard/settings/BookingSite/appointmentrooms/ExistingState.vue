@@ -1,20 +1,22 @@
 <template>
- <div>
-        <div class="w-full h-2/3 mt-12 flex flex-col justify-center items-center" v-if="empty">
-                <img src="@/assets/rafiki.svg" class="mb-2" />
-                  <h4 class="text-black text-center">There are no rooms on record.</h4>
-                  <cornie-btn
-                  class="bg-danger  px-3 rounded-full text-white m-5"
-                  @click="editingFunction = true"
-                >
-                  Add New
-                </cornie-btn>
-            </div>
+  <div>
+    <div
+      class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+      v-if="empty"
+    >
+      <img src="@/assets/rafiki.svg" class="mb-2" />
+      <h4 class="text-black text-center">There are no rooms on record.</h4>
+      <cornie-btn
+        class="bg-danger px-3 rounded-full text-white m-5"
+        @click="editingFunction = true"
+      >
+        Add New
+      </cornie-btn>
+    </div>
     <div class="w-full pb-7" v-else>
-    
       <span class="flex justify-end">
         <cornie-btn
-          class="bg-danger  px-3 rounded-full text-white m-5"
+          class="bg-danger px-3 rounded-full text-white m-5"
           @click="editingFunction = true"
         >
           Add New
@@ -41,26 +43,36 @@
       <div class="flex justify-between m-3">
         <div class="flex justify-around">
           <p class="text-sm">show</p>
-          <input type="number" class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r">
+          <input
+            type="number"
+            class="
+              w-12
+              mr-2
+              ml-2
+              outline-none
+              border border-blue-lighter
+              rounded-r
+            "
+          />
           <p class="text-sm">per page</p>
         </div>
         <div class="flex justify-around">
           <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
-          <div class="text-xs mr-3 mt-1" style="fontsize:6px;">
-                    <arrow-left-icon />
-                    </div>
+          <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
+            <arrow-left-icon />
+          </div>
 
           <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-          <p class="text-sm mr-3 text-xs">1  2  3 ...  10 </p>
-          <div class="text-xs mt-1" style="fontsize:5px;">
-          <arrow-right-icon />
+          <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
+          <div class="text-xs mt-1" style="fontsize: 5px">
+            <arrow-right-icon />
           </div>
           <!-- <delete-icon class="text-danger fill-current" /> -->
         </div>
       </div>
     </div>
- </div>
-      <add-function v-model="editingFunction" :edit="roomToEdit" />
+  </div>
+  <add-function v-model="editingFunction" :edit="roomToEdit" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -90,15 +102,11 @@ import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import ITask from "@/types/ITask";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-
-
 const orgFunctions = namespace("OrgFunctions");
 const patients = namespace("patients");
 const location = namespace("location");
 const AppointmentRoom = namespace("AppointmentRoom");
 const task = namespace("task");
-
-
 
 @Options({
   components: {
@@ -154,7 +162,7 @@ export default class apponitmentRooms extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
- getKeyValue = getTableKeyValue;
+  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
@@ -184,7 +192,7 @@ export default class apponitmentRooms extends Vue {
     },
   ];
   get empty() {
-    return  this.tasks.length < 1;
+    return this.tasks.length < 1;
   }
 
   get headers() {
@@ -195,7 +203,7 @@ export default class apponitmentRooms extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
-  
+
   getLocationAddress(id: string) {
     const pt = this.locations.find((i: any) => i.id === id);
     return pt;
@@ -219,26 +227,25 @@ export default class apponitmentRooms extends Vue {
     }));
   }
 
- get items() {
+  get items() {
     const tasks = this.tasks.map((task) => {
-         (task as any).createdAt= new Date(
-         (task as any).createdAt
-       ).toLocaleDateString("en-US");
-        return {
+      (task as any).createdAt = new Date(
+        (task as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
         ...task,
-         action: task.id,
-         keydisplay: "XXXXXXX",
-             roomName:  "-----",
-      roomNumber:  "-----",
-      location: "-----",
-      supervisor:"-----",
-      status:  "Active",
-        };
+        action: task.id,
+        keydisplay: "XXXXXXX",
+        roomName: "-----",
+        roomNumber: "-----",
+        location: "-----",
+        supervisor: "-----",
+        status: "Active",
+      };
     });
     if (!this.query) return tasks;
     return search.searchObjectArray(tasks, this.query);
   }
-
 
   // async remove(id: string) {
   //   await this.removeFunction(id);
@@ -262,8 +269,8 @@ export default class apponitmentRooms extends Vue {
     this.editingFunction = true;
   }
 
-   created(){
-     this.fetchTasks();
+  created() {
+    this.fetchTasks();
     if (this.tasks.length < 1) this.fetchTasks();
   }
 }

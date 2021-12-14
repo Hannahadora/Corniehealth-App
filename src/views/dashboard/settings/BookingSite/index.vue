@@ -1,39 +1,30 @@
 <template>
- <div class="flex justify-center  bg-white shadow-md p-3 mt-2 mb-2 rounded w-full">
+  <div
+    class="flex justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
+  >
     <div class="w-full">
-    <span
-        class="
-          flex
-          flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-10
-          text-lg text-primary
-          py-2
-        "
+      <span
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-lg text-primary py-2"
       >
         Booking Site
       </span>
       <span class="w-full h-screen">
-        <tabs :items="tabLinks" v-model="currentTab"> 
-        <practice-info />
-        <booking-site />
-        <appointment-types />
-        <appointment-rooms />
-        <add-location />
-        <calender-preference />
-        <notification-template />
-        <add-locationn />
-        <photo-section/>
-         <rating-section /> 
-         <!-- <performance-section/> -->
-      </tabs>
+        <tabs :items="tabLinks" v-model="currentTab">
+          <practice-info />
+          <booking-site />
+          <appointment-types />
+          <appointment-rooms />
+          <add-location />
+          <calender-preference />
+          <notification-template />
+          <add-locationn />
+          <photo-section />
+          <rating-section />
+          <!-- <performance-section/> -->
+        </tabs>
       </span>
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
@@ -51,11 +42,9 @@ import AppointmentRooms from "./appointmentrooms/Functions.vue";
 import AddLocation from "./addLocation.vue";
 import AddLocationn from "./addLocationn.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
-import CalenderPreference from "./calender/index.vue"
-import NotificationTemplate from './notificationtemplate/index.vue';
-import RatingSection from "./rating.vue"
-
-
+import CalenderPreference from "./calender/index.vue";
+import NotificationTemplate from "./notificationtemplate/index.vue";
+import RatingSection from "./rating.vue";
 
 @Options({
   name: "Booking Site",
@@ -67,8 +56,8 @@ import RatingSection from "./rating.vue"
     BookingSite,
     PerformanceSection,
     AppointmentRooms,
-   // Designations2,
-  //  JobLevel2,
+    // Designations2,
+    //  JobLevel2,
     AddLocation,
     CalenderPreference,
     RatingSection,
@@ -78,7 +67,18 @@ import RatingSection from "./rating.vue"
   },
 })
 export default class Bookings extends Vue {
-  tabLinks = ["Practice Information", "Booking Site", "Appointment Types", "Appointment Rooms", "Reminders", "Calender & Preferences", "Notification Templates", "Cancellation","Photos","Rating"];
+  tabLinks = [
+    "Practice Information",
+    "Booking Site",
+    "Appointment Types",
+    "Appointment Rooms",
+    "Reminders",
+    "Calender & Preferences",
+    "Notification Templates",
+    "Cancellation",
+    "Photos",
+    "Rating",
+  ];
   currentTab = 0;
 }
 </script>

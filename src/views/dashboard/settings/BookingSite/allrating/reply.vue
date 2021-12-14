@@ -1,43 +1,50 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-      
-      <cornie-card-title  class="w-full">
-          <div class="w-full flex space-x-4">
-              <div class=" border-r-2 border-gray-200">
-
-             <arrow-left-icon class="cursor-pointer mr-2"  @click="show = false"/>
-              </div>
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Reply</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
+      <cornie-card-title class="w-full">
+        <div class="w-full flex space-x-4">
+          <div class="border-r-2 border-gray-200">
+            <arrow-left-icon
+              class="cursor-pointer mr-2"
+              @click="show = false"
+            />
           </div>
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Reply
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-            <div class="w-full">
-              <Textarea
-                          class="w-full text-xs"    
-                                placeholder="Type here"
-                                :rules="required"
-                                v-model="siteMessage"
-                              />
-            </div>
+        <div class="w-full">
+          <Textarea
+            class="w-full text-xs"
+            placeholder="Type here"
+            :rules="required"
+            v-model="siteMessage"
+          />
+        </div>
       </cornie-card-text>
 
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-         <cornie-btn
-              @click="show = false"
-              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-            >
-              Close
-            </cornie-btn>
-            <cornie-btn  :loading="loading"
-                  class="text-white bg-danger px-3 rounded-xl">
-           Send
-            </cornie-btn>
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Close
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            class="text-white bg-danger px-3 rounded-xl"
+          >
+            Send
+          </cornie-btn>
         </cornie-card-text>
       </cornie-card>
-
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -49,9 +56,9 @@ import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from '@/components/cornieradio.vue'
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from '@/components/icons/info.vue'
+import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
@@ -75,7 +82,6 @@ import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
 import { namespace } from "vuex-class";
 import ICollection from "@/types/ICollection";
-
 
 const collections = namespace("collections");
 
@@ -107,11 +113,11 @@ const collections = namespace("collections");
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    MainCornieSelect
+    MainCornieSelect,
   },
 })
 export default class accountModal extends Vue {
-@PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
@@ -120,139 +126,134 @@ export default class accountModal extends Vue {
   @Prop({ type: Boolean, default: false })
   displayNubanTable!: boolean;
 
-@collections.Action
-  getCollectionAccountById!: (id: string) => ICollection
+  @collections.Action
+  getCollectionAccountById!: (id: string) => ICollection;
 
-status = "";
+  status = "";
   loading = false;
   expand = false;
   isVisible = "";
 
   businessName = "";
-  bank =  "";
-  accountNumber =  "";
+  bank = "";
+  accountNumber = "";
   accountName = "";
-  bankname="";
+  bankname = "";
   AllBanks = [];
-placeholder = "--Autofilled Account Name--";
-accounts = [] as any;
-
+  placeholder = "--Autofilled Account Name--";
+  accounts = [] as any;
 
   orgInfo = [] as any;
- 
- error= false;
+
+  error = false;
 
   required = string().required();
 
-  
-@Watch('id')
+  @Watch("id")
   idChanged() {
-    this.setAccount()
+    this.setAccount();
   }
- get newaction() {
-    return this.id ? 'Update' : 'Save'
+  get newaction() {
+    return this.id ? "Update" : "Save";
   }
-get action() {
-    return this.id ? 'Edit' : 'Add'
+  get action() {
+    return this.id ? "Edit" : "Add";
   }
-async setAccount() {
-    const collectionAccount = await this.getCollectionAccountById(this.id)
-    if (!collectionAccount) return
-    this.businessName = collectionAccount.businessName
-    this.bank = collectionAccount.bank
-    this.accountNumber = collectionAccount.accountNumber
-    this.accountName = collectionAccount.accountName
+  async setAccount() {
+    const collectionAccount = await this.getCollectionAccountById(this.id);
+    if (!collectionAccount) return;
+    this.businessName = collectionAccount.businessName;
+    this.bank = collectionAccount.bank;
+    this.accountNumber = collectionAccount.accountNumber;
+    this.accountName = collectionAccount.accountName;
   }
 
   get payload() {
-        return {
-          businessName: this.BusinessName,
-          bank: this.bank,
-          accountNumber: this.accountNumber,
-          accountName: this.accountName,
-        };
-    }
+    return {
+      businessName: this.BusinessName,
+      bank: this.bank,
+      accountNumber: this.accountNumber,
+      accountName: this.accountName,
+    };
+  }
 
-  get BusinessName(){
+  get BusinessName() {
     this.businessName = this.orgInfo.name;
-  return this.businessName = this.orgInfo.name;
+    return (this.businessName = this.orgInfo.name);
   }
   get allTheBanks() {
-     if (!this.AllBanks || this.AllBanks.length === 0) return [ ];
-     return this.AllBanks.map((i: any) => {
-         return {
-             code: i.code,
-             display: i.name,
-         }
-     })
- }
+    if (!this.AllBanks || this.AllBanks.length === 0) return [];
+    return this.AllBanks.map((i: any) => {
+      return {
+        code: i.code,
+        display: i.name,
+      };
+    });
+  }
 
- async updateAccount() {
-   const id = this.id;
+  async updateAccount() {
+    const id = this.id;
     const url = `/api/v1/collection/account/${id}`;
     try {
       const response = await cornieClient().put(url, this.payload);
-      if (response.success){
-          window.notify({ msg: "Collection account Updated", status: "success" });
+      if (response.success) {
+        window.notify({ msg: "Collection account Updated", status: "success" });
         this.done();
       }
-   
-    } catch (error:any) {
-        window.notify({ msg: error.response.message, status: "error" });
+    } catch (error: any) {
+      window.notify({ msg: error.response.message, status: "error" });
       this.loading = false;
     }
   }
   async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        this.orgInfo = response.data || {};
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
     }
-     async fetchDropDown() {
-        try {
-        const response = await cornieClient().get(
-          "https://api.paystack.co/bank"
-        );
-        this.AllBanks = response.data || {};
-      } catch (error) {
-        window.notify({ msg: "Could not fetch banks", status: "error" });
-      }
+  }
+  async fetchDropDown() {
+    try {
+      const response = await cornieClient().get("https://api.paystack.co/bank");
+      this.AllBanks = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch banks", status: "error" });
     }
-    async fetchAccountName() {
-     const body = {
-       account: this.accountNumber,
-        bank: this.bank,
+  }
+  async fetchAccountName() {
+    const body = {
+      account: this.accountNumber,
+      bank: this.bank,
+    };
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/collection/account/bank/resolve-account/",
+        body
+      );
+      this.placeholder = "Loading...";
+      if (response.success == true) {
+        this.placeholder = "";
+        this.accountName = response.data.accountName || {};
+      } else {
+        window.notify({ msg: response.data.message, status: "error" });
       }
-        try {
-        const response = await cornieClient().get(
-          '/api/v1/collection/account/bank/resolve-account/',body
-        );
-          this.placeholder = "Loading..."
-        if(response.success == true){
-          this.placeholder = "";
-          this.accountName = response.data.accountName || {};
-        }else{
-              window.notify({ msg: response.data.message, status: "error" });
-        }
-        
-      } catch (error: any) {
-        console.log(error)
-          window.notify({ msg: error.response.data.message, status: "error" });
-        //window.notify({ msg: error.response[0].success, status: "error" });
-      }
+    } catch (error: any) {
+      console.log(error);
+      window.notify({ msg: error.response.data.message, status: "error" });
+      //window.notify({ msg: error.response[0].success, status: "error" });
     }
-     get newaccounts (){
-       return {
-          name: this.accountName
-       }
-     } 
-    addAccount(){
-        this.accounts.push(this.newaccounts);
-    }
+  }
+  get newaccounts() {
+    return {
+      name: this.accountName,
+    };
+  }
+  addAccount() {
+    this.accounts.push(this.newaccounts);
+  }
 
   async createAccount() {
     try {
@@ -265,122 +266,121 @@ async setAccount() {
         this.done();
       } else {
         window.notify({ msg: response.errors!.summary, status: "error" });
-       // this.$router.push("/dashboard/provider/settings/practice-templates");
+        // this.$router.push("/dashboard/provider/settings/practice-templates");
       }
-    } catch (error:any) {
-        window.notify({ msg: error.response.data.message, status: "error" });
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
       // window.notify({ msg: "Collection Account not Created", status: "error" });
-     // this.$router.push("/dashboard/provider/settings/practice-templates");
+      // this.$router.push("/dashboard/provider/settings/practice-templates");
     }
   }
- 
- done() {
+
+  done() {
     this.$emit("accountAdded");
     this.show = false;
   }
   async apply() {
-   this.loading = true;
-    if (this.id) await this.updateAccount()
-    else await this.createAccount()
+    this.loading = true;
+    if (this.id) await this.updateAccount();
+    else await this.createAccount();
     this.loading = false;
   }
- 
+
   async created() {
-   this.fetchOrgInfo();
-   this.fetchDropDown();
+    this.fetchOrgInfo();
+    this.fetchDropDown();
   }
 }
 </script>
 
 <style>
-
 .bg-gray {
-    background-color: #F6F8F9;
+  background-color: #f6f8f9;
 }
 .icon-wrap {
-   content:counter(step);
+  content: counter(step);
   counter-increment: step;
-    background: #fff;
-    border-radius: 50%;
-        top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-   left: -54em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -54em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap2 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: -7.5em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -7.5em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap3 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: -1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 52em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: -1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 52em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
 .icon-wrap4 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #FE4D3C;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 42em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 42em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
 }
- .icon-check-mark{
-    top: 1.3em;
-    z-index: 1;
-    left: 5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark {
+  top: 1.3em;
+  z-index: 1;
+  left: 5em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark2{
-       top: 1.3em;
-    z-index: 1;
-    left: 23em;
-    right: 0;
-    position: absolute;
+.icon-check-mark2 {
+  top: 1.3em;
+  z-index: 1;
+  left: 23em;
+  right: 0;
+  position: absolute;
 }
-.icon-check-mark3{
-      top: 1.3em;
-    z-index: 1;
-    left: 45.5em;
-    right: 0;
-    position: absolute;
+.icon-check-mark3 {
+  top: 1.3em;
+  z-index: 1;
+  left: 45.5em;
+  right: 0;
+  position: absolute;
 }
-.bg-danger-100{
-    background-color: #FE4D3C;
+.bg-danger-100 {
+  background-color: #fe4d3c;
 }
 </style>

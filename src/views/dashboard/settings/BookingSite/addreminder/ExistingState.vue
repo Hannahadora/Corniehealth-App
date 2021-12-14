@@ -68,23 +68,23 @@
               </div>
             </div>
           </v-form>
-            <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>  
+          <cornie-card>
+            <cornie-card-text class="flex justify-end">
+              <cornie-btn
+                @click="show = false"
+                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+              >
+                Cancel
+              </cornie-btn>
+              <cornie-btn
+                :loading="loading"
+                @click="apply"
+                class="text-white bg-danger px-6 rounded-xl"
+              >
+                Save
+              </cornie-btn>
+            </cornie-card-text>
+          </cornie-card>
         </div>
       </accordion-component>
     </div>
@@ -175,7 +175,6 @@ export default class ExistingState extends Vue {
   }
 
   editLevel(id: string) {
-    ;
     const level = this.levels.find((level) => level.id == id);
     if (!level) return;
     this.levelForEdit = level;

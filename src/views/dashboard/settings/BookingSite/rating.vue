@@ -1,42 +1,38 @@
 <template>
-
-  <div class="w-full pb-80" >
-        <div class="w-full mt-5">
-            <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
-            <template #actions="{ item }">
-                <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showViewModal"
-                >
-                <eye-icon class="text-green-500 fill-current" />
-                <span class="ml-3 text-xs">View</span>
-                </div>
-                 <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showReplyModal"
-                >
-                <edit-icon class="text-primary fill-current" />
-                <span class="ml-3 text-xs">Reply</span>
-                </div>
-                <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.id)"
-                >
-                <delete-icon class="text-yellow-500 fill-current" />
-                <span class="ml-3 text-xs">Delete</span>
-                </div>
-                <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-               
-                >
-                <close-icon class="text-black fill-current" />
-                <span class="ml-3 text-xs">Blacklist</span>
-                </div>
-            </template>
-            <template #emotion>
-                <cry-icon/>
-            </template>
-            </cornie-table>
+  <div class="w-full pb-80">
+    <div class="w-full mt-5">
+      <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showViewModal"
+          >
+            <eye-icon class="text-green-500 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showReplyModal"
+          >
+            <edit-icon class="text-primary fill-current" />
+            <span class="ml-3 text-xs">Reply</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="deleteItem(item.id)"
+          >
+            <delete-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <close-icon class="text-black fill-current" />
+            <span class="ml-3 text-xs">Blacklist</span>
+          </div>
+        </template>
+        <template #emotion>
+          <cry-icon />
+        </template>
+      </cornie-table>
 
       <default-currency v-model="showDefaultCurrencyModal" />
       <new-exchange-rate
@@ -46,8 +42,8 @@
       />
     </div>
   </div>
-  <reply-modal v-model="showReply"/>
-  <view-modal v-model="showView"/>
+  <reply-modal v-model="showReply" />
+  <view-modal v-model="showView" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -135,11 +131,11 @@ export default class PracticeformExistingState extends Vue {
   selected = 1;
   showNewExchangeRateModal = false;
   showDefaultCurrencyModal = false;
-  currencyId= "";
-    orgInfo = [] as any;
-    showReply= false;
-showView= false;
- @currency.State
+  currencyId = "";
+  orgInfo = [] as any;
+  showReply = false;
+  showView = false;
+  @currency.State
   currencys!: ICurrency[];
 
   @currency.Action
@@ -154,7 +150,7 @@ showView= false;
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
- @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   getKeyValue = getTableKeyValue;
@@ -162,26 +158,26 @@ showView= false;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "serial no",
+      title: "name",
       key: "serial",
       show: true,
     },
     { title: "rating", key: "rating", show: true },
-
     {
       title: "description",
       key: "desciption",
       show: true,
     },
-    { title: "emotion", key: "emotion" , show: true,},
+    { title: "emotion", key: "emotion", show: true },
+     { title: "Comments", key: "comment", show: true },
     // Displaying Icon in the header - <table-setting-icon/>
   ];
-showReplyModal(){
+  showReplyModal() {
     this.showReply = true;
-}
-showViewModal(){
+  }
+  showViewModal() {
     this.showView = true;
-}
+  }
   get header() {
     return [...this.rawHeaders, { title: "", value: "action", image: true }];
   }
@@ -196,12 +192,13 @@ showViewModal(){
       ).toLocaleDateString("en-US");
       return {
         ...currency,
-         action: currency.id,
-         serial:"1",
-        rating:"3.1",
-        desciption:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nibh a......",
-
-        };
+        action: currency.id,
+        serial: "Ikhide Bright",
+        rating: "3.1",
+        comment:"Great Job!",
+        desciption:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nibh a......",
+      };
     });
     if (!this.query) {
       return currencys;
@@ -209,44 +206,49 @@ showViewModal(){
       return search.searchObjectArray(currencys, this.query);
     }
   }
-     get sortCurrency (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
- async deleteItem(id: string) {
+  get sortCurrency() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "Are you sure you want to delete this rating?",
-      title: "Delete Rating"
+      title: "Delete Rating",
     });
     if (!confirmed) return;
 
-    if (await this.deleteCurrency(id)) window.notify({ msg: "Rating deleted", status: "success" });
+    if (await this.deleteCurrency(id))
+      window.notify({ msg: "Rating deleted", status: "success" });
     else window.notify({ msg: "Rating not deleted", status: "error" });
   }
-async showRateModal(value:string){
-  this.showNewExchangeRateModal = true;
-  this.currencyId = value;
-}
- select(i:number) {
-      this.selected = i;
-    }
-    getUser(id:string){  
-    return this.authPractitioner.user.firstName +' '+ this.authPractitioner.user.lastName;
-    }
+  async showRateModal(value: string) {
+    this.showNewExchangeRateModal = true;
+    this.currencyId = value;
+  }
+  select(i: number) {
+    this.selected = i;
+  }
+  getUser(id: string) {
+    return (
+      this.authPractitioner.user.firstName +
+      " " +
+      this.authPractitioner.user.lastName
+    );
+  }
   get empty3() {
     return this.currencys.length < 1;
   }
   async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        this.orgInfo = response.data || {};
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
     }
+  }
 
   async created() {
     this.fetchPractitioners();

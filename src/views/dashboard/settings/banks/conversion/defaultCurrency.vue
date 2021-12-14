@@ -125,22 +125,21 @@ export default class defaultCurrency extends Vue {
     return this.id ? "Update" : "New";
   }
 
- async submit() {
-   this.loading = true;
-      try {
-        console.log(this.payload);
-        const response = await cornieClient().post(
-          "/api/v1/currency/setDefault",
-          this.payload
-        );
-        if (response.success) {
-          this.loading= false;
-           window.notify({ msg: "Currency conversion added", status: "success" });
-           this.show = false;
-        }
-      } catch (error) {
-           window.notify({ msg: "Currency conversion not added", status: "error" });
+  async submit() {
+    this.loading = true;
+    try {
+      console.log(this.payload);
+      const response = await cornieClient().post(
+        "/api/v1/currency/setDefault",
+        this.payload
+      );
+      if (response.success) {
+        this.loading = false;
+        window.notify({ msg: "Currency conversion added", status: "success" });
+        this.show = false;
       }
+    } finally {
+    }
   }
 
   // fetching select dropdown

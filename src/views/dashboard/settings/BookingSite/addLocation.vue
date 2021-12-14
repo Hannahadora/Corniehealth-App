@@ -165,23 +165,23 @@
               </div>
             </div>
             <!-- <template #actions> -->
-             <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card> 
+            <cornie-card>
+              <cornie-card-text class="flex justify-end">
+                <cornie-btn
+                  @click="show = false"
+                  class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+                >
+                  Cancel
+                </cornie-btn>
+                <cornie-btn
+                  :loading="loading"
+                  @click="apply"
+                  class="text-white bg-danger px-6 rounded-xl"
+                >
+                  Save
+                </cornie-btn>
+              </cornie-card-text>
+            </cornie-card>
             <!-- </template> -->
           </v-form>
         </div>
@@ -387,7 +387,6 @@ export default class AddLocation extends Vue {
   }
 
   async submit2() {
-    ;
     this.loading = true;
     if (this.id) await this.updateLocation();
     else await this.createLocation();
@@ -395,7 +394,6 @@ export default class AddLocation extends Vue {
   }
 
   async submit() {
-    ;
     this.loading = true;
     this.createLocation();
     this.loading = false;

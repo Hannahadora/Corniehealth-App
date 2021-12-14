@@ -2,7 +2,14 @@
   <nav class="p-5 flex min-w-full items-center w-full border-b-2 h-14">
     <span
       @click="$router.back()"
-      class="flex items-center justify-items-center pr-2 border-r-2 cursor-pointer"
+      class="
+        flex
+        items-center
+        justify-items-center
+        pr-2
+        border-r-2
+        cursor-pointer
+      "
     >
       <arrow-left-icon />
     </span>
@@ -26,7 +33,7 @@
             shadow-md
             hidden
           "
-        >     
+        >
           <li
             @click="$router.push('/dashboard/settings/org-info')"
             class="
@@ -35,8 +42,7 @@
               items-center
               flex
               font-medium
-              text-sm
-              text-black
+              text-sm text-black
               hover:bg-blue-100
               rounded-full
               cursor-pointer
@@ -46,8 +52,7 @@
               py-2
             "
           >
-
-              <p class="ml-2">Account Info</p>
+            <p class="ml-2">Account Info</p>
           </li>
           <li
             @click="$router.push('/dashboard/user')"
@@ -56,9 +61,8 @@
               list-none
               items-center
               flex
-               font-medium
-              text-sm
-              text-black
+              font-medium
+              text-sm text-black
               hover:bg-blue-100
               rounded-full
               cursor-pointer
@@ -68,7 +72,7 @@
               py-2
             "
           >
-              <p class="ml-2">Users & Security</p>
+            <p class="ml-2">Users & Security</p>
           </li>
           <li
             class="
@@ -76,9 +80,8 @@
               list-none
               items-center
               flex
-               font-medium
-              text-sm
-             text-black
+              font-medium
+              text-sm text-black
               hover:bg-blue-100
               rounded-full
               cursor-pointer
@@ -88,102 +91,8 @@
               py-2
             "
           >
-              <p class="ml-2">Commercial</p>
+            <p class="ml-2">Commercial</p>
           </li>
-          <li
-            @click="$router.push('/dashboard/settings/practise-management/forms-questionnaires')"
-            class="
-              mb-3
-              list-none
-              items-center
-              flex
-               font-medium
-              text-sm
-            text-black
-              hover:bg-blue-100
-              rounded-full
-              cursor-pointer
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-          >
-         
-              <p class="ml-2">Practice Management</p>
-       
-          </li>
-             <li
-            class="cursor-pointer mb-3"
-            @click="showSettings"
-          >
-            <cornie-btn
-              class="
-                font-semibold
-                rounded-full
-                mb-1
-                bg-primary
-                mt-2
-                w-full
-                text-white
-              "
-            >
-              <span class="inline-flex justify-center text-sm">
-               View all settings  <settings-white-icon class="ml-2 mt-0.5" /></span
-              >
-            </cornie-btn>
-          </li>
-          <!-- <li
-           @click="$router.push('/dashboard/settings/practise-management/forms-questionnaires')"
-            class="
-              cursor-pointer
-              list-none
-              items-center
-              flex
-              text-sm
-              mb-3
-              font-semibold
-              text-gray-700
-              hover:bg-gray-100
-              hover:text-gray-900
-              my-1
-              -m-2
-              p-5
-              py-2
-            "
-            class="cursor-pointer list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 my-1 -m-2 p-5 py-2"
-          >
-            <div class="flex">
-              <form-icon />
-              <p class="ml-2">Forms & Questionnaires</p>
-            </div>
-          </li>
-          <li
-            @click="
-              $router.push(
-                '/dashboard/settings/practise-management/locationTax'
-              )
-            "
-            class="cursor-pointer list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 my-1 -m-2 p-5 py-2"
-          >
-            <div class="flex">
-              <form-icon />
-              <p class="ml-2">Location & Tax</p>
-            </div>
-          </li>
-          <li
-            @click="
-              $router.push(
-                '/dashboard/settings/practise-management/bank-accounts'
-              )
-            "
-            class="cursor-pointer list-none items-center flex text-sm mb-3 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 my-1 -m-2 p-5 py-2"
-          >
-            <div class="flex">
-              <bank-icon />
-              <p class="ml-2">Bank & Accounts</p>
-            </div>
-          </li> -->
         </ul>
       </div>
     </span>
@@ -191,10 +100,32 @@
       <div class="dropdown">
         <bell-icon class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-80 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden"
+          class="
+            dropdown-menu
+            p-2
+            bg-white
+            rounded-md
+            w-80
+            h-auto
+            right-10
+            absolute
+            -mt-2
+            z-10
+            shadow-md
+            hidden
+          "
         >
           <li
-            class="border-b border-primary grid grid-cols-2 m-3 pb-2 gap-20 col-span-full cursor-pointer list-none"
+            class="
+              border-b border-primary
+              grid grid-cols-2
+              m-3
+              pb-2
+              gap-20
+              col-span-full
+              cursor-pointer
+              list-none
+            "
           >
             <p class="text-1xl font-bold">Notifications</p>
             <p class="text-blue-400 text-xs -right-7 relative">Mark as read</p>
@@ -249,17 +180,40 @@
     </span>
     <span class="w-10 h-10 relative ml-5">
       <div
-        class="group w-full h-full rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer"
+        class="
+          group
+          w-full
+          h-full
+          rounded-full
+          overflow-hidden
+          shadow-inner
+          text-center
+          bg-purple
+          table
+          cursor-pointer
+        "
       >
         <img
           v-if="profilePhoto"
           :src="profilePhoto"
-          class="object-cover object-center w-full h-full visible group-hover:hidden"
+          class="
+            object-cover object-center
+            w-full
+            h-full
+            visible
+            group-hover:hidden
+          "
         />
         <img
           v-else
           src="@/assets/img/placeholder.png"
-          class="object-cover object-center w-full h-full visible group-hover:hidden"
+          class="
+            object-cover object-center
+            w-full
+            h-full
+            visible
+            group-hover:hidden
+          "
         />
         <span>
           <svg
@@ -287,7 +241,20 @@
       <span class="ml-1 mt-2">
         <chevron-down class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden"
+          class="
+            dropdown-menu
+            p-2
+            bg-white
+            rounded-md
+            w-96
+            h-auto
+            right-10
+            absolute
+            -mt-2
+            z-10
+            shadow-md
+            hidden
+          "
         >
           <li class="float-right mr-1">
             <settings-icon
@@ -298,17 +265,41 @@
           <li class="list-none -mb-3 mt-2 -m-2 p-5 flex justify-center">
             <span class="w-10 h-10 relative justify-center">
               <div
-                class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple cursor-pointer"
+                class="
+                  group
+                  w-10
+                  flex
+                  justify-center
+                  h-full
+                  mb-4
+                  rounded-full
+                  overflow-hidden
+                  shadow-inner
+                  text-center
+                  bg-purple
+                  cursor-pointer
+                "
               >
                 <img
                   v-if="profilePhoto"
                   :src="profilePhoto"
-                  class="object-cover object-center w-full h-full visible group-hover:hidden"
+                  class="
+                    object-cover object-center
+                    w-full
+                    h-full
+                    visible
+                    group-hover:hidden
+                  "
                 />
                 <img
                   v-else
                   src="@/assets/img/placeholder.png"
-                  class="object-cover object-center w-fullh-full visible group-hover:hidden"
+                  class="
+                    object-cover object-center
+                    w-fullh-full
+                    visible
+                    group-hover:hidden
+                  "
                 />
                 <span>
                   <svg
@@ -358,7 +349,16 @@
                 <div class="flex items-center justify-between">
                   <h2 class="text-gray-600 text-lg">Reddington Hospitals</h2>
                   <span
-                    class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
+                    class="
+                      p-2
+                      text-xs
+                      font-semibold
+                      leading-none
+                      text-green-300
+                      bg-green-50
+                      rounded-full
+                      flex-shrink-0
+                    "
                     >Current Domain</span
                   >
                 </div>
@@ -380,7 +380,15 @@
                 <div class="flex items-center justify-between">
                   <h2 class="text-gray-600 text-lg">Evercare Hospital Lekki</h2>
                   <span
-                    class="p-2 text-sm font-semibold leading-none text-danger rounded-full flex-shrink-0"
+                    class="
+                      p-2
+                      text-sm
+                      font-semibold
+                      leading-none
+                      text-danger
+                      rounded-full
+                      flex-shrink-0
+                    "
                     >Switch</span
                   >
                 </div>
@@ -402,7 +410,15 @@
                 <div class="flex items-center justify-between">
                   <h2 class="text-gray-600 text-lg">St. Nicholas Hospital</h2>
                   <span
-                    class="p-2 text-sm font-semibold leading-none text-danger rounded-full flex-shrink-0"
+                    class="
+                      p-2
+                      text-sm
+                      font-semibold
+                      leading-none
+                      text-danger
+                      rounded-full
+                      flex-shrink-0
+                    "
                     >Switch</span
                   >
                 </div>
@@ -438,7 +454,7 @@
       </span>
     </div>
   </nav>
-  <settings-modal v-model="showSettingsModal"/>
+  <settings-modal v-model="showSettingsModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -459,7 +475,7 @@ import FormIcon from "@/components/icons/questionnaire.vue";
 import store from "@/store";
 import IPractitioner from "@/types/IPractitioner";
 import BankIcon from "@/components/icons/bank.vue";
-import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue"
+import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
 
 const account = namespace("user");
 @Options({
@@ -480,7 +496,7 @@ const account = namespace("user");
   },
 })
 export default class NavBar extends Vue {
-  showSettingsModal= false;
+  showSettingsModal = false;
 
   get routeName() {
     return this.$route.name;
@@ -498,9 +514,9 @@ export default class NavBar extends Vue {
   get profilePhoto() {
     return this.cornieUser?.image;
   }
-showSettings(){
-  this.showSettingsModal = true;
-}
+  showSettings() {
+    this.showSettingsModal = true;
+  }
   get designation() {
     if (!this.authPractitioner) return "Root";
     return this.authPractitioner.jobDesignation || this.authPractitioner.type;

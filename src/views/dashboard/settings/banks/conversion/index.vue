@@ -1,114 +1,111 @@
 <template>
-    <div class="w-full h-2/3 mt-8 flex flex-col justify-center items-center" v-if="empty3">
-            <img src="@/assets/img/nocurrency.svg" />
-            <h3 class="text-center text-black mt-5">No collection account recorded</h3>
-            <h4 class="text-black text-center">Add new account</h4>
-            <button
-                class="
-                bg-danger
-                rounded-full
-                text-sm
-                text-white
-                mb-5
-                mt-5
-                py-2
-                pl-6
-                pr-6
-                px-4
-                pb-2
-                focus:outline-none
-                hover:opacity-90
-                flex
-                "
-                @click="showNewExchangeRateModal = true"
-            >
-                <span class="text-xl -mt-1.5 mr-2">+ </span> 
-                New Exchange Rate
-            </button>
-            <!-- <new-exchange-rate v-model="showNewExchangeRateModal" /> -->
-    </div>
-  <div class="w-full pb-80"  v-else>
-        <div class="w-full mt-5">
-            <span class="flex justify-end">
-            <button
-                class="
-                border-primary
-                rounded-full
-                text-primary
-                outline-primary
-                mt-5
-                text-sm
-                mb-5
-                py-2
-                px-3
-                    pl-6
-                pr-6
-                focus:outline-none
-                hover:opacity-90
-                flex
-                mr-6
-                "
-                @click="showDefaultCurrencyModal = true"
-            > 
-                Set  Default Currecncy
-            </button>
-            <button
-                class="
-                bg-danger
-                rounded-full
-                text-sm
-                text-white
-                mb-5
-                mt-5
-                py-2
-                pl-6
-                pr-6
-                px-4
-                pb-1
-                focus:outline-none
-                hover:opacity-90
-                flex
-                "
-                @click="showNewExchangeRateModal = true"
-            >
-                <span class="text-xl -mt-1.5 mr-2">+ </span> 
-                New Exchange Rate
-            </button>
-            </span>
-            <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
-            <template #actions="{ item }">
-                <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showRateModal(item.id)"
-                >
-                <eye-icon class="text-yellow-500 fill-current" />
-                <span class="ml-3 text-xs">View & Edit</span>
-                </div>
-                <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.id)"
-                >
-                <delete-icon class="text-yellow-500 fill-current" />
-                <span class="ml-3 text-xs">Delete</span>
-                </div>
-                <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-               
-                >
-                <close-icon class="text-yellow-500 fill-current" />
-                <span class="ml-3 text-xs">Deactivate Account</span>
-                </div>
-            </template>
-            </cornie-table>
-
+  <div
+    class="w-full h-2/3 mt-8 flex flex-col justify-center items-center"
+    v-if="empty3"
+  >
+    <img src="@/assets/img/nocurrency.svg" />
+    <h3 class="text-center text-black mt-5">No collection account recorded</h3>
+    <h4 class="text-black text-center">Add new account</h4>
+    <button
+      class="
+        bg-danger
+        rounded-full
+        text-sm text-white
+        mb-5
+        mt-5
+        py-2
+        pl-6
+        pr-6
+        px-4
+        pb-2
+        focus:outline-none
+        hover:opacity-90
+        flex
+      "
+      @click="showNewExchangeRateModal = true"
+    >
+      <span class="text-xl -mt-1.5 mr-2">+ </span>
+      New Exchange Rate
+    </button>
+    <!-- <new-exchange-rate v-model="showNewExchangeRateModal" /> -->
+  </div>
+  <div class="w-full pb-80" v-else>
+    <div class="w-full mt-5">
+      <span class="flex justify-end">
+        <button
+          class="
+            border-primary
+            rounded-full
+            text-primary
+            outline-primary
+            mt-5
+            text-sm
+            mb-5
+            py-2
+            px-3
+            pl-6
+            pr-6
+            focus:outline-none
+            hover:opacity-90
+            flex
+            mr-6
+          "
+          @click="showDefaultCurrencyModal = true"
+        >
+          Set Default Currecncy
+        </button>
+        <button
+          class="
+            bg-danger
+            rounded-full
+            text-sm text-white
+            mb-5
+            mt-5
+            py-2
+            pl-6
+            pr-6
+            px-4
+            pb-1
+            focus:outline-none
+            hover:opacity-90
+            flex
+          "
+          @click="showNewExchangeRateModal = true"
+        >
+          <span class="text-xl -mt-1.5 mr-2">+ </span>
+          New Exchange Rate
+        </button>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showRateModal(item.id)"
+          >
+            <eye-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View & Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="deleteItem(item.id)"
+          >
+            <delete-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <close-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Deactivate Account</span>
+          </div>
+        </template>
+      </cornie-table>
     </div>
   </div>
-      <default-currency v-model="showDefaultCurrencyModal" />
-      <new-exchange-rate
-        v-model="showNewExchangeRateModal"
-        @currency-added="currencyadded"
-        :id="currencyId"
-      />
+  <default-currency v-model="showDefaultCurrencyModal" />
+  <new-exchange-rate
+    v-model="showNewExchangeRateModal"
+    @currency-added="currencyadded"
+    :id="currencyId"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -196,10 +193,10 @@ export default class PracticeformExistingState extends Vue {
   selected = 1;
   showNewExchangeRateModal = false;
   showDefaultCurrencyModal = false;
-  currencyId= "";
-    orgInfo = [] as any;
+  currencyId = "";
+  orgInfo = [] as any;
 
- @currency.State
+  @currency.State
   currencys!: ICurrency[];
 
   @currency.Action
@@ -214,7 +211,7 @@ export default class PracticeformExistingState extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
- @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   getKeyValue = getTableKeyValue;
@@ -233,9 +230,9 @@ export default class PracticeformExistingState extends Vue {
       key: "exchangeRate",
       show: true,
     },
-    { title: "Location", key: "outlets" , show: true,},
-     { title: "LAST UPDATED", key: "updatedAt" , show: true,},
-     { title: "LAST UPDATED BY", key: "updatedByUser" , show: true,},
+    { title: "Location", key: "outlets", show: true },
+    { title: "LAST UPDATED", key: "updatedAt", show: true },
+    { title: "LAST UPDATED BY", key: "updatedByUser", show: true },
     // Displaying Icon in the header - <table-setting-icon/>
   ];
 
@@ -253,10 +250,10 @@ export default class PracticeformExistingState extends Vue {
       ).toLocaleDateString("en-US");
       return {
         ...currency,
-         action: currency.id,
-         outlets:"Market",
-        updatedByUser:this.getUser(currency.updatedByUser)
-        };
+        action: currency.id,
+        outlets: "Market",
+        updatedByUser: this.getUser(currency.updatedByUser),
+      };
     });
     if (!this.query) {
       return currencys;
@@ -264,47 +261,58 @@ export default class PracticeformExistingState extends Vue {
       return search.searchObjectArray(currencys, this.query);
     }
   }
-     get sortCurrency (){
-        return this.items.slice().sort(function(a, b){
-          return (a.createdAt < b.createdAt) ? 1 : -1;
-        });
-      }
- async deleteItem(id: string) {
+  get sortCurrency() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this currency conversion",
-      title: "Delete currency conversion"
+      title: "Delete currency conversion",
     });
     if (!confirmed) return;
 
-    if (await this.deleteCurrency(id)) window.notify({ msg: "Currency Conversion deleted", status: "success" });
-    else window.notify({ msg: "Currency Conversion not deleted", status: "error" });
+    if (await this.deleteCurrency(id))
+      window.notify({ msg: "Currency Conversion deleted", status: "success" });
+    else
+      window.notify({
+        msg: "Currency Conversion not deleted",
+        status: "error",
+      });
   }
-async showRateModal(value:string){
-  this.showNewExchangeRateModal = true;
-  this.currencyId = value;
-}
- select(i:number) {
-      this.selected = i;
-    }
-    getUser(id:string){  
-    return this.authPractitioner.user.firstName +' '+ this.authPractitioner.user.lastName;
-    }
+
+  async showRateModal(value: string) {
+    this.showNewExchangeRateModal = true;
+    this.currencyId = value;
+  }
+  select(i: number) {
+    this.selected = i;
+  }
+  getUser(id: string) {
+    return (
+      this.authPractitioner.user.firstName +
+      " " +
+      this.authPractitioner.user.lastName
+    );
+  }
   get empty3() {
     return this.currencys.length < 1;
   }
   async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        this.orgInfo = response.data || {};
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
     }
-currencyadded(){
+  }
+  currencyadded() {
     this.fetchCurrencys();
-}
+  }
   async created() {
     this.fetchPractitioners();
     this.fetchCurrencys();

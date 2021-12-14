@@ -1,5 +1,5 @@
 export default interface ICollection {
-  id?:string;
+  id?: string;
   businessName: string;
   bank: string;
   accountNumber: string;

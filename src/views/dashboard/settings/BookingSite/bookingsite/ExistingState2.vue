@@ -10,13 +10,7 @@
           <v-form>
             <div class="mt-3 w-full flex">
               <div
-                class="
-                  text-xs text-gray-25
-                  py-10
-                  px-10
-                  inline-block
-                  align-middle
-                "
+                class="text-xs text-gray-25 py-10 px-10 inline-block align-middle"
               >
                 Online Booking Requirements:
               </div>
@@ -49,13 +43,7 @@
               </div>
 
               <div
-                class="
-                  text-xs text-gray-25
-                  py-10
-                  px-9
-                  inline-block
-                  align-middle
-                "
+                class="text-xs text-gray-25 py-10 px-9 inline-block align-middle"
               >
                 Ahead
               </div>
@@ -63,13 +51,7 @@
 
             <div class="mt-3 w-full flex">
               <div
-                class="
-                  text-xs text-gray-25
-                  py-6
-                  px-10
-                  inline-block
-                  align-middle
-                "
+                class="text-xs text-gray-25 py-6 px-10 inline-block align-middle"
               >
                 Show Availability:
               </div>
@@ -191,31 +173,12 @@
           </v-form>
           <div class="mt-2 flex justify-end">
             <button
-              class="
-                border-primary border-2
-                rounded-full
-                text-black
-                ml-2
-                py-2
-                px-6
-                mx-4
-                focus:outline-none
-                outline
-                hover:bg-primary hover:text-white
-              "
+              class="border-primary border-2 rounded-full text-black ml-2 py-2 px-6 mx-4 focus:outline-none outline hover:bg-primary hover:text-white"
             >
               Cancel
             </button>
             <button
-              class="
-                bg-danger
-                rounded-full
-                text-white
-                py-2
-                px-6
-                focus:outline-none
-                hover:opacity-90
-              "
+              class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
             >
               <img src="@/assets/img/plus.svg" class="inline-block mr-2" />
               Save
@@ -261,12 +224,7 @@
             <div class="flex my-3">
               <div class="mr-2">
                 <cornie-radio
-                  class="
-                    icon-check-mark3
-                    rounded-full
-                    color-danger
-                    text-danger-25
-                  "
+                  class="icon-check-mark3 rounded-full color-danger text-danger-25"
                   label="yes"
                   modelValue="true"
                 />
@@ -322,7 +280,7 @@
                 label="no"
                 modelValue="true"
               />
-              <!--            
+              <!--
             <custom-checkbox label="Yes" />
             <custom-checkbox label="No" /> -->
             </div>
@@ -332,26 +290,19 @@
     </div>
     <add-level v-model="editingLevel" :level="levelForEdit" />
   </div>
- <div class="grid grid-cols-3 gap-2 mt-4 w-1/2">
-      <cornie-radio
-        :name="name"
-        v-model="type"
-        label="Yes"
-        value="yes"
-      />
-      <cornie-radio :name="name" v-model="type" value="no" label="No" />
-    </div>
-    <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
-      <domain-input
-            label="Domain Name"
-            placeholder="--Enter--"
-            :rules="requiredRule"
-             :modelValue="orgValue"
-            
-          />
-    </div>
-    <div class="grid grid-cols-3 field gap-3 mt-4 2-full">
-      </div>
+  <div class="grid grid-cols-3 gap-2 mt-4 w-1/2">
+    <cornie-radio :name="name" v-model="type" label="Yes" value="yes" />
+    <cornie-radio :name="name" v-model="type" value="no" label="No" />
+  </div>
+  <div class="grid grid-cols-2 field gap-3 mt-4 w-full">
+    <domain-input
+      label="Domain Name"
+      placeholder="--Enter--"
+      :rules="requiredRule"
+      :modelValue="orgValue"
+    />
+  </div>
+  <div class="grid grid-cols-3 field gap-3 mt-4 2-full"></div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -362,7 +313,7 @@ import DomainInput from "@/components/newdomaininput.vue";
 import { Prop } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
-import CopyformIcon from '@/components/icons/formcopy.vue';
+import CopyformIcon from "@/components/icons/formcopy.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import AddLevel from "./add-level.vue";
 import { namespace } from "vuex-class";
@@ -372,7 +323,6 @@ import CustomCheckbox from "@/components/custom-checkbox.vue";
 
 import CornieSelect from "@/components/cornieselect.vue";
 import CalendarIcon from "@/components/icons/acalendar.vue";
-
 
 const level = namespace("OrgLevels");
 
@@ -391,7 +341,7 @@ const level = namespace("OrgLevels");
     CornieSelect,
     CalendarIcon,
     DomainInput,
-    CopyformIcon
+    CopyformIcon,
   },
 })
 export default class ExistingState extends Vue {

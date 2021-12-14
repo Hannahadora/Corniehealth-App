@@ -1,46 +1,51 @@
 <template>
-<div>
-   <div class="w-full h-2/3 mt-12 flex flex-col justify-center items-center" v-if="empty">
-        <img src="@/assets/type.svg" class="mb-2" />
-          <h4 class="text-black text-center">There are no appointment types on record.</h4>
-          <cornie-btn
-          class="bg-danger  px-3 rounded-full text-white m-5"
-           @click="registerNew = true"
-        >
-          Add New
-        </cornie-btn>
+  <div>
+    <div
+      class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+      v-if="empty"
+    >
+      <img src="@/assets/type.svg" class="mb-2" />
+      <h4 class="text-black text-center">
+        There are no appointment types on record.
+      </h4>
+      <cornie-btn
+        class="bg-danger px-3 rounded-full text-white m-5"
+        @click="registerNew = true"
+      >
+        Add New
+      </cornie-btn>
     </div>
-  <div class="w-full pb-7" v-else>
-    <div class="flex justify-end items-center mb-6">
-     <cornie-btn
-          class="bg-danger  px-3 rounded-full text-white m-5"
+    <div class="w-full pb-7" v-else>
+      <div class="flex justify-end items-center mb-6">
+        <cornie-btn
+          class="bg-danger px-3 rounded-full text-white m-5"
           @click="registerNew = true"
         >
           Add New
         </cornie-btn>
-    </div>
+      </div>
 
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="updateDesignation(item.id)"
-        >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="removeDesignation(item.id)"
-        >
-          <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
-        </div>
-      </template>
-    </cornie-table>
+      <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="updateDesignation(item.id)"
+          >
+            <edit-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="removeDesignation(item.id)"
+          >
+            <delete-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+        </template>
+      </cornie-table>
+    </div>
   </div>
-</div>
-        <appointment-modal v-model="registerNew" @closesidemodal="closeModal"  />
+  <appointment-modal v-model="registerNew" @closesidemodal="closeModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -64,7 +69,7 @@ import EditIcon from "@/components/icons/edit.vue";
 import { IDesignation } from "@/types/IDesignation";
 import { Prop } from "vue-property-decorator";
 import ITask from "@/types/ITask";
-import { first, getTableKeyValue } from "@/plugins/utils"
+import { first, getTableKeyValue } from "@/plugins/utils";
 
 const designation = namespace("designation");
 const task = namespace("task");
@@ -92,13 +97,11 @@ const task = namespace("task");
 export default class DesignationsExistingState extends Vue {
   @Prop({ type: Array, required: true })
   designations!: IDesignation[];
-  registerNew=false;
-query= "";
+  registerNew = false;
+  query = "";
 
   @task.State
   tasks!: ITask[];
-
-
 
   @task.Action
   fetchTasks!: () => Promise<void>;
@@ -144,26 +147,26 @@ query= "";
     this.registerNew = false;
     // this.selectedTeamId = "";
   }
-    get empty() {
-    return  this.tasks.length < 1;
+  get empty() {
+    return this.tasks.length < 1;
   }
-  
- get items() {
+
+  get items() {
     const tasks = this.tasks.map((task) => {
-         (task as any).createdAt= new Date(
-         (task as any).createdAt
-       ).toLocaleDateString("en-US");
-        return {
+      (task as any).createdAt = new Date(
+        (task as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
         ...task,
-         action: task.id,
-         keydisplay: "XXXXXXX",
-             service:  "-----",
-      duration:  "-----",
-      forms: "-----",
-      practitioners:"-----",
-      booking:"-----",
-      status:  "Active",
-        };
+        action: task.id,
+        keydisplay: "XXXXXXX",
+        service: "-----",
+        duration: "-----",
+        forms: "-----",
+        practitioners: "-----",
+        booking: "-----",
+        status: "Active",
+      };
     });
     if (!this.query) return tasks;
     return search.searchObjectArray(tasks, this.query);
@@ -184,8 +187,8 @@ query= "";
   updateDesignation(id: string) {
     this.$router.push({ name: "New Designation", params: { id } });
   }
-  created(){
-     this.fetchTasks();
+  created() {
+    this.fetchTasks();
     if (this.tasks.length < 1) this.fetchTasks();
   }
 }

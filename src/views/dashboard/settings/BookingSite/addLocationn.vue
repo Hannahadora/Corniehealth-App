@@ -1,27 +1,39 @@
 <template>
   <div class="h-screen flex justify-center">
-    <div class="bg-white shadow-md p-4" >
-        <div>
-            <div class="flex space-x-4 w-full justify-between mt-3">
-                <p class="text-sm mt-3 text-black">     Patients will be able to see your cancellation notice when they book appointments online and when they recieve appointment notification emails. notification reminder timelines prior to appointment time
-                </p>
-                <div class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer">
-                    <edit-icon class="fill-current text-primary mr-4"/>  Edit
-                </div>
-            </div>
+    <div class="bg-white shadow-md p-4">
+      <div>
+        <div class="flex space-x-4 w-full justify-between mt-3">
+          <p class="text-sm mt-3 text-black">
+            Patients will be able to see your cancellation notice when they book
+            appointments online and when they recieve appointment notification
+            emails. notification reminder timelines prior to appointment time
+          </p>
+          <div
+            class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
+          >
+            <edit-icon class="fill-current text-primary mr-4" /> Edit
+          </div>
         </div>
-        <div class="w-full mb-12">
-            <label for="ecounter" class="w-full capitalize text-black text-sm font-bold mt-12">Message <span class="text-xs text-red-600 font-medium italic">(Max 150 characters)</span></label>
-                <div class="w-full -mt-6">
-                      <Textarea
-                          class="w-full text-xs"    
-                                placeholder="Sta"
-                                :rules="required"
-                                v-model="siteMessage"
-                              />
-                </div>
-        </div>  
-         <cornie-card>
+      </div>
+      <div class="w-full mb-12">
+        <label
+          for="ecounter"
+          class="w-full capitalize text-black text-sm font-bold mt-12"
+          >Message
+          <span class="text-xs text-red-600 font-medium italic"
+            >(Max 150 characters)</span
+          ></label
+        >
+        <div class="w-full -mt-6">
+          <Textarea
+            class="w-full text-xs"
+            placeholder="Sta"
+            :rules="required"
+            v-model="siteMessage"
+          />
+        </div>
+      </div>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
@@ -37,10 +49,10 @@
             Save
           </cornie-btn>
         </cornie-card-text>
-      </cornie-card>  
+      </cornie-card>
     </div>
-   
- 
+
+
   </div>
 </template>
 <script lang="ts">
@@ -114,7 +126,7 @@ export default class AddLocationn extends Vue {
   careOptions = "";
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
-showImage = false;
+  showImage = false;
   dropdowns = {} as IIndexableObject;
 
   required = string().required();
@@ -151,9 +163,9 @@ showImage = false;
     const states = await getStates(country);
     this.states = states;
   }
-showImageSection(){
-  this.showImage = true;
-}
+  showImageSection() {
+    this.showImage = true;
+  }
   async setLocation() {
     const location = await this.getLocationById(this.id);
     if (!location) return;

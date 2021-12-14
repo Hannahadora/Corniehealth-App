@@ -1,75 +1,59 @@
 <template>
-    <div class="w-full">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="p-5 mt-8">
-                <div class="flex justify-between p-1 -mb-4">
-                    <newview-icon class="text-primary-500 fill-current" />
-                    <div class="flex justify-between text-xs" >
-                    <refer-icon class="mr-2"/> Reset      
-                    <edit-icon class="text-primary fill-current ml-5 -mt-1 pt-1 mr-2" /> Edit
-                    </div>
-                </div>
-                <div class="my-4 bg-blue-50 border border-gray-300 px-4 py-4 rounded-md" >
-                    <div>
-                       <p class="text-black text-xs mb-3">Dear <span class="text-gray-500 ">(Patient)</span> , </p> 
-                         <p class="text-black text-xs mb-5"> You have an appointment with <span class="text-gray-500"> (Dr. physicians name)</span> at <span class="text-gray-500">  (Practice name)</span> on <span class="text-gray-500">(Day)</span>,  <span class="text-gray-500">(Date & Time)</span>. </p>
-
-                           <p class="text-black text-xs">Kindly confirm availability.</p> 
-                    </div>
-                    <div class="mt-3 mb-4 flex justify-end">
-                    <button
-                    @click="showBack"
-                    class="
-                        text-black
-                        ml-2
-                        px-5
-                        mx-3
-                        font-semibold
-                        text-sm
-                    "
-                    >
-                    Cancel
-                    </button>
-                    <button
-                    @click="showAlert"
-                    class="
-                        bg-primary
-                        rounded-full
-                        text-white
-                        py-2
-                        px-5
-                        text-sm
-                        font-semibold
-                        focus:outline-none
-                        hover:opacity-90
-                    "
-                    >
-                    Confirm
-                    </button>
-                </div>
-                </div>
-                <div class="mt-12 flex justify-end">
-                    <button
-                    class="
-                        bg-danger
-                        rounded-full
-                        text-white
-                        py-2 text-sm
-                        px-8
-                        focus:outline-none
-                        hover:opacity-90
-                    "
-                    >
-                    <!-- <img src="@/assets/img/plus.svg" class="inline-block mr-2" /> -->
-                    Save
-                    </button>
-                </div>
-            </div>
+  <div class="w-full">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="p-5 mt-8">
+        <div class="flex justify-between p-1 -mb-4">
+          <newview-icon class="text-primary-500 fill-current" />
+          <div class="flex justify-between text-xs">
+            <refer-icon class="mr-2" /> Reset
+            <edit-icon class="text-primary fill-current ml-5 -mt-1 pt-1 mr-2" />
+            Edit
+          </div>
         </div>
+        <div
+          class="my-4 bg-blue-50 border border-gray-300 px-4 py-4 rounded-md"
+        >
+          <div>
+            <p class="text-black text-xs mb-3">
+              Dear <span class="text-gray-500">(Patient)</span> ,
+            </p>
+            <p class="text-black text-xs mb-5">
+              You have an appointment with
+              <span class="text-gray-500"> (Dr. physicians name)</span> at
+              <span class="text-gray-500"> (Practice name)</span> on
+              <span class="text-gray-500">(Day)</span>,
+              <span class="text-gray-500">(Date & Time)</span>.
+            </p>
 
-
+            <p class="text-black text-xs">Kindly confirm availability.</p>
+          </div>
+          <div class="mt-3 mb-4 flex justify-end">
+            <button
+              @click="showBack"
+              class="text-black ml-2 px-5 mx-3 font-semibold text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              @click="showAlert"
+              class="bg-primary rounded-full text-white py-2 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+        <div class="mt-12 flex justify-end">
+          <button
+            class="bg-danger rounded-full text-white py-2 text-sm px-8 focus:outline-none hover:opacity-90"
+          >
+            <!-- <img src="@/assets/img/plus.svg" class="inline-block mr-2" /> -->
+            Save
+          </button>
+        </div>
+      </div>
     </div>
-    <new-back-modal v-model="showBackModal"/>
+  </div>
+  <new-back-modal v-model="showBackModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -98,9 +82,9 @@ import ViewIcon from "@/components/icons/eyegreen.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
 import { Prop } from "vue-property-decorator";
 import InApp from "./inapp.vue";
-import EmailModule from "./email.vue"
+import EmailModule from "./email.vue";
 // import AddFunction from "./add-function.vue";
-import {  Watch, PropSync } from "vue-property-decorator";
+import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
 import Avatar from "@/components/avatar.vue";
@@ -109,7 +93,7 @@ import EditIcon from "@/components/icons/aedit.vue";
 import Tabs from "././../tabs.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import ReferIcon from "@/components/icons/newreset.vue";
-import NewBackModal from "./backModal.vue"
+import NewBackModal from "./backModal.vue";
 
 @Options({
   components: {
@@ -144,29 +128,29 @@ import NewBackModal from "./backModal.vue"
     AccordionComponent,
     Textarea,
     ViewIcon,
-    Field
+    Field,
   },
 })
 export default class Inapp extends Vue {
-
-   @PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
- showBackModal= false;
- 
-showAlert(){
-    window.notify({ msg: "Appointment Successfully Confirmed", status: "success" });
-}
-showBack(){
-  this.showBackModal = true;
-}
+  showBackModal = false;
 
-  created() {
-   
+  showAlert() {
+    window.notify({
+      msg: "Appointment Successfully Confirmed",
+      status: "success",
+    });
   }
+  showBack() {
+    this.showBackModal = true;
+  }
+
+  created() {}
 }
 </script>
 
@@ -175,14 +159,14 @@ showBack(){
   grid-template-columns: 20% 75%;
 }
 
-.small-font{
+.small-font {
   font-size: 10px;
-  color: #14171F;
+  color: #14171f;
 }
 
-.message-font{
+.message-font {
   color: red;
   font-size: 6px;
-  margin-left:6px;
+  margin-left: 6px;
 }
 </style>

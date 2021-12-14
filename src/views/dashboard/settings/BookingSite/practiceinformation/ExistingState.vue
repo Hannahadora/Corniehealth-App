@@ -1,113 +1,149 @@
 <template>
- <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Practice Information" expand="true" v-model="opened" :opened="true">
-       <div>
-          <div class="flex space-x-4 w-full justify-between mt-3">
-              <p class="text-sm mt-3 text-black"> The information contained below will appear in the CornieHealth booking site, if you have embedded the link. This information does not 
-                affect <br> other related data in your practice settings
-              </p>
-              <div class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer" v-if="showEdit">
-                  <edit-icon class="fill-current text-primary mr-4"/>  Edit
-              </div>
-               <div v-else class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer" @click="showEditSection">
-                  <edit-icon class="fill-current text-danger mr-4"/>  Edit
-              </div> 
-          </div>
-       </div>
-       <div class="grid grid-cols-3 w-full justify-between gap-4 mt-5" v-if="showEdit">
-           <cornie-input  label="Email"  placeholder="--Enter--" class="w-full mb-4" />
-             <cornie-input  label="Address" placeholder="--Enter--" class="w-full mb-4" />
-               <cornie-input  label="Website"  placeholder="-Enter--" class="w-full mb-4" />
-                 <phone-input
-              v-model:code="code"
-              :rules="requiredRule"
-              label="Contact Numbers"
-              v-model="phone"
-              class="w-full"
-            />
-       </div>
-          <div class="w-full mt-8 mb-32" v-else>
-            <div class="float-left">
-                  <img
-                      class="mr-2"
-                      v-if="orgInfo.image"
-                      :src="orgInfo.image"
-                      />
-                  <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
-                  <div class="flex space-x-4 mt-2">
-
-                    <div class="text-gray-300 text-xs">Active Since: 
-                    </div>
-                      <div class="text-blue-600 font-bold text-xs">31st May, 2021</div>
-                  </div>
-                <div class="flex space-x-4 mt-2">
-                  <star-icon/>
-                  <span class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2">Get Verified</span>
-                    <span class="text-xs text-green-600 bg-green-100 rounded-full" v-if="verified">Verified</span>
-                </div>
-            </div>
-            <div class=" float-right">
-              <p class="text-sm text-black mb-1">57 Campbell Street, Lagos Island. Lagos</p>
-              <p class="text-sm text-black mb-1">+234 802 290 8484</p>
-              <p class="text-sm text-black mb-1">Info@saintnicholashospital.com</p>
-              <p class="text-sm text-black mb-1">www.nicholashospital.org</p>
-              <div class="flex space-x-4 mt-2">
-                <span class="text-gray-300 text-xs">Total Ratings: 
-                        <span class="text-blue-600 font-bold text-xs">16</span>
-                  </span>
-                  <span class="text-gray-300 text-xs">Patients Seen: 
-                        <span class="text-blue-600 font-bold text-xs">24</span>
-                  </span>
-                </div>
-                <div class="mt-10">
-                   <cornie-btn
-                    @click="show = false"
-                    class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-                  >
-                   <view-icon class="mr-2"/> View
-                  </cornie-btn>
-                  <cornie-btn
-                    :loading="loading"
-                    @click="apply"
-                    class="text-white bg-danger px-6 rounded-xl"
-                  >
-                   <share-icon class="mr-2"/> Share
-                  </cornie-btn>
-                </div>
-            </div>
-         </div> 
-          <div class="w-full mb-12">
-            <label for="ecounter" class="w-full capitalize text-black text-sm font-bold mt-12">Site Message <span class="text-xs text-red-600 font-medium italic">(Max 150 characters)</span></label>
-                <div class="w-full -mt-6">
-                      <Textarea
-                          class="w-full text-xs"    
-                                placeholder="Text Area"
-                                :rules="required"
-                                v-model="siteMessage"
-                              />
-                </div>
-          </div>  
-
-
-           <cornie-card>
-        <cornie-card-text class="flex justify-end">
+  <accordion-component
+    class="shadow-none rounded-none border-none text-primary"
+    title="Practice Information"
+    expand="true"
+    v-model="opened"
+    :opened="true"
+  >
+    <div>
+      <div class="flex space-x-4 w-full justify-between mt-3">
+        <p class="text-sm mt-3 text-black">
+          The information contained below will appear in the CornieHealth
+          booking site, if you have embedded the link. This information does not
+          affect <br />
+          other related data in your practice settings
+        </p>
+        <div
+          class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
+          v-if="showEdit"
+        >
+          <edit-icon class="fill-current text-primary mr-4" /> Edit
+        </div>
+        <div
+          v-else
+          class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer"
+          @click="showEditSection"
+        >
+          <edit-icon class="fill-current text-danger mr-4" /> Edit
+        </div>
+      </div>
+    </div>
+    <div
+      class="grid grid-cols-3 w-full justify-between gap-4 mt-5"
+      v-if="showEdit"
+    >
+      <cornie-input label="Email" placeholder="--Enter--" class="w-full mb-4" />
+      <cornie-input
+        label="Address"
+        placeholder="--Enter--"
+        class="w-full mb-4"
+      />
+      <cornie-input
+        label="Website"
+        placeholder="-Enter--"
+        class="w-full mb-4"
+      />
+      <phone-input
+        v-model:code="code"
+        :rules="requiredRule"
+        label="Contact Numbers"
+        v-model="phone"
+        class="w-full"
+      />
+    </div>
+    <div class="w-full mt-8 mb-32" v-else>
+      <div class="float-left">
+        <img class="mr-2" v-if="orgInfo.image" :src="orgInfo.image" />
+        <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
+        <div class="flex space-x-4 mt-2">
+          <div class="text-gray-300 text-xs">Active Since:</div>
+          <div class="text-blue-600 font-bold text-xs">31st May, 2021</div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <star-icon />
+          <span class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
+            >Get Verified</span
+          >
+          <span
+            class="text-xs text-green-600 bg-green-100 rounded-full"
+            v-if="verified"
+            >Verified</span
+          >
+        </div>
+      </div>
+      <div class="float-right">
+        <p class="text-sm text-black mb-1">
+          57 Campbell Street, Lagos Island. Lagos
+        </p>
+        <p class="text-sm text-black mb-1">+234 802 290 8484</p>
+        <p class="text-sm text-black mb-1">Info@saintnicholashospital.com</p>
+        <p class="text-sm text-black mb-1">www.nicholashospital.org</p>
+        <div class="flex space-x-4 mt-2">
+          <span class="text-gray-300 text-xs"
+            >Total Ratings:
+            <span class="text-blue-600 font-bold text-xs">16</span>
+          </span>
+          <span class="text-gray-300 text-xs"
+            >Patients Seen:
+            <span class="text-blue-600 font-bold text-xs">24</span>
+          </span>
+        </div>
+        <div class="mt-10">
           <cornie-btn
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
-            Cancel
+            <view-icon class="mr-2" /> View
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Save
+            <share-icon class="mr-2" /> Share
           </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>  
-        
-        </accordion-component>
-  <!-- <accordion-component class="shadow-none rounded-none border-none mt-5 text-primary" title="Practice Hours" expand="true" v-model="opened" :opened="true">         
+        </div>
+      </div>
+    </div>
+    <div class="w-full mb-12">
+      <label
+        for="ecounter"
+        class="w-full capitalize text-black text-sm font-bold mt-12"
+        >Site Message
+        <span class="text-xs text-red-600 font-medium italic"
+          >(Max 150 characters)</span
+        ></label
+      >
+      <div class="w-full -mt-6">
+        <Textarea
+          class="w-full text-xs"
+          placeholder="Text Area"
+          :rules="required"
+          v-model="siteMessage"
+        />
+      </div>
+    </div>
+
+    <cornie-card>
+      <cornie-card-text class="flex justify-end">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          :loading="loading"
+          @click="apply"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
+          Save
+        </cornie-btn>
+      </cornie-card-text>
+    </cornie-card>
+  </accordion-component>
+  <!-- <accordion-component class="shadow-none rounded-none border-none mt-5 text-primary" title="Practice Hours" expand="true" v-model="opened" :opened="true">
            <div class="grid grid-cols-1 mt-8 gap-y-6 w-full">
     <label class="flex items-center">
       <select-option type="checkbox" class="mr-3" v-model="all" />
@@ -148,7 +184,6 @@
       </cornie-card-text>
     </cornie-card>
   </accordion-component> -->
-  
   <accordion-component
     class="shadow-none rounded-none border-none text-primary"
     title="Practice Hours"
@@ -157,7 +192,7 @@
     :opened="true"
   >
     <div class="grid grid-cols-1 mt-4 gap-y-6 w-full">
-      <label class="flex items-center  text-sm text-black">
+      <label class="flex items-center text-sm text-black">
         <select-option type="checkbox" class="mr-3" v-model="all" />
         All days
       </label>
@@ -169,7 +204,7 @@
         </span>
       </div>
       <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
-        <label class="flex items-center  text-sm text-black">
+        <label class="flex items-center text-sm text-black">
           <select-option
             @change="changed"
             v-model="opHour.selected"
@@ -338,7 +373,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     AccordionComponent,
     Textarea,
     ViewIcon,
-    Field
+    Field,
   },
 })
 export default class CarePartnersExistingState extends Vue {
@@ -360,22 +395,22 @@ export default class CarePartnersExistingState extends Vue {
   @practiceinformations.Action
   fetchPracticeHour!: () => Promise<void>;
 
-showEdit = false;
+  showEdit = false;
 
- @Watch("all")
+  @Watch("all")
   opHours = opHours;
   loading = false;
   all = true;
   newArr = [];
   // editingFunction = false;
-  expand=false;
-  opened=true;
-  email="";
-  address="";
-  siteMessage="";
-  contactNumber="";
-   localSrc = require('../../../../../assets/img/placeholder.png');
-orgInfo=[];
+  expand = false;
+  opened = true;
+  email = "";
+  address = "";
+  siteMessage = "";
+  contactNumber = "";
+  localSrc = require("../../../../../assets/img/placeholder.png");
+  orgInfo = [];
 
   get operationHours() {
     return this.modelValue;
@@ -387,16 +422,16 @@ orgInfo=[];
   changed() {
     this.operationHours = this.operationHours;
   }
-    async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        this.orgInfo = response.data || {};
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
+  async fetchOrgInfo() {
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
     }
+  }
   allWeek(all: boolean) {
     if (!all) return;
     const opHours = [...this.operationHours].map((opHour) => ({
@@ -421,11 +456,11 @@ orgInfo=[];
   async apply() {
     this.loading = true;
     // if (this.id) await this.updateIssues()
-    this.loading = false
-    }
-    showEditSection(){
-      this.showEdit = true;
-    }
+    this.loading = false;
+  }
+  showEditSection() {
+    this.showEdit = true;
+  }
 
   async applyhour() {
     this.loading = true;
@@ -480,9 +515,9 @@ orgInfo=[];
     this.fetchOrgInfo();
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
-      this.fetchPracticeInformation();
-      this.fetchPracticeHour();
-      // console.log(this.mappedfunc);
+    this.fetchPracticeInformation();
+    this.fetchPracticeHour();
+    // console.log(this.mappedfunc);
   }
 }
 </script>

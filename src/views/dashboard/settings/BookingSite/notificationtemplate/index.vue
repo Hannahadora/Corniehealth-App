@@ -1,10 +1,10 @@
 <template>
-    <div class="w-full bg-white shadow">
-        <tabs :items="tabLinks" v-model="currentTab" class="p-3"> 
-            <in-app/>
-            <email-module/>
-      </tabs>
-    </div>
+  <div class="w-full bg-white shadow">
+    <tabs :items="tabLinks" v-model="currentTab" class="p-3">
+      <in-app />
+      <email-module />
+    </tabs>
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -33,9 +33,9 @@ import ViewIcon from "@/components/icons/eyegreen.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
 import { Prop } from "vue-property-decorator";
 import InApp from "./inapp.vue";
-import EmailModule from "./email.vue"
+import EmailModule from "./email.vue";
 // import AddFunction from "./add-function.vue";
-import {  Watch, PropSync } from "vue-property-decorator";
+import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
 import Avatar from "@/components/avatar.vue";
@@ -73,25 +73,20 @@ import Tabs from "././../tabs.vue";
     AccordionComponent,
     Textarea,
     ViewIcon,
-    Field
+    Field,
   },
 })
 export default class NotificationTemplate extends Vue {
-
-
-   @PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
- tabLinks = ["InApp", "Email Notification"];
+  tabLinks = ["InApp", "Email Notification"];
   currentTab = 0;
 
-
-
-  created() {
-  }
+  created() {}
 }
 </script>
 
@@ -100,14 +95,14 @@ export default class NotificationTemplate extends Vue {
   grid-template-columns: 20% 75%;
 }
 
-.small-font{
+.small-font {
   font-size: 10px;
-  color: #14171F;
+  color: #14171f;
 }
 
-.message-font{
+.message-font {
   color: red;
   font-size: 6px;
-  margin-left:6px;
+  margin-left: 6px;
 }
 </style>

@@ -1,16 +1,20 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-5/6">
     <cornie-card height="100%" class="flex flex-col">
-       <cornie-card-title  class="w-full">
-          <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary -mt-1">{{newaction}} Exchange Rate</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-          </div>
-
-       </cornie-card-title>
-        <cornie-card-text class="flex-grow scrollable">
-          <div>
-             <!-- <Multiselect
+      <cornie-card-title class="w-full">
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary -mt-1">
+            {{ newaction }} Exchange Rate
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+        <div>
+          <!-- <Multiselect
     v-model="value"
      mode="tags"
     placeholder="--Select Outlets--"
@@ -19,52 +23,73 @@
   :createTag="true"
   :options="allCurrency"
 />  -->
-              <cornie-select
-                label="Location"
-                class="mb-4 w-full"
-                v-model="location"
-                :items="allLocation"
-                placeholder="--Select Location--"
-                />
-              <cornie-select
-                placeholder="--Select--"
-                class="w-full"
-                label="Base Currency"
-                :items="allCurrencyNew"
-                v-model="basecurrency"
-              />
-              <cornie-select
-                placeholder="--Select--"
-                class="w-full"
-                label="Currency"
-                :items="allCurrencyNew"
-                v-model="currency"
-              />
-          </div>
-           <!-- <cornie-input disabled v-if="id" label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" /> -->
-             <cornie-input  label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" />
-           <!-- <div class="">
-               <span class="text-sm font-semibold mb-1">Exchange rate</span>       
+          <cornie-select
+            label="Location"
+            class="mb-4 w-full"
+            v-model="location"
+            :items="allLocation"
+            placeholder="--Select Location--"
+          />
+          <cornie-select
+            placeholder="--Select--"
+            class="w-full"
+            label="Base Currency"
+            :items="allCurrencyNew"
+            v-model="basecurrency"
+          />
+          <cornie-select
+            placeholder="--Select--"
+            class="w-full"
+            label="Currency"
+            :items="allCurrencyNew"
+            v-model="currency"
+          />
+        </div>
+        <!-- <cornie-input disabled v-if="id" label="Exchange rate" v-model="exchangeRate" placeholder="Enter Exchange Rate" class="w-full mb-4" /> -->
+        <cornie-input
+          label="Exchange rate"
+          v-model="exchangeRate"
+          placeholder="Enter Exchange Rate"
+          class="w-full mb-4"
+        />
+        <!-- <div class="">
+               <span class="text-sm font-semibold mb-1">Exchange rate</span>
                 <div class="bg-blue-100 text-black p-3 rounded flex font-semibold mt-5 text-sm">
                   68
                 </div>
            </div> -->
-            <div class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm">
-                1 {{basecurrency}} ~= {{exchangeRate}} {{currency}}
-            </div>
-        </cornie-card-text>
-           <cornie-card>
+        <div
+          class="
+            bg-blue-100
+            text-black
+            p-3
+            text-center
+            rounded
+            flex
+            font-semibold
+            justify-center
+            mt-5
+            text-sm
+          "
+        >
+          1 {{ basecurrency }} ~= {{ exchangeRate }} {{ currency }}
+        </div>
+      </cornie-card-text>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
-                <cornie-btn
-                @click="show = false"
-                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-              >
-                Cancel
-              </cornie-btn>
-              <cornie-btn  :loading="loading"
-                    @click="apply" class="text-white bg-danger px-6 rounded-xl">
-              Save
-              </cornie-btn>
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
@@ -87,10 +112,9 @@ import { namespace } from "vuex-class";
 import ICurrency from "@/types/ICurrency";
 //import MultiSelect from "./multipleselect.vue";
 //@ts-ignore
-import Multiselect from '@vueform/multiselect'
+import Multiselect from "@vueform/multiselect";
 
 const currency = namespace("currency");
-
 
 @Options({
   name: "NewExchangeRate",
@@ -104,7 +128,7 @@ const currency = namespace("currency");
     CornieSelect,
     CornieDialog,
     CancelIcon,
-    Multiselect
+    Multiselect,
   },
 })
 export default class NewExchangeRate extends Vue {
@@ -120,34 +144,28 @@ export default class NewExchangeRate extends Vue {
   @Prop({ type: Array, default: () => [] })
   available!: object;
 
-
-
-@Watch('id')
+  @Watch("id")
   idChanged() {
     this.setCurrency();
   }
 
- currency= "";
-      exchangeRate ="";
-      Currencies = [];
-loading=false;
- value = null;
- location='';
- basecurrency="";
- orgLocation = [];
-       options = [
-          'Batman',
-          'Robin',
-          'Joker',
-        ]
-   get activePatientId() {
-      const id = this.$route?.params?.id as string;
-      return id;
+  currency = "";
+  exchangeRate = "";
+  Currencies = [];
+  loading = false;
+  value = null;
+  location = "";
+  basecurrency = "";
+  orgLocation = [];
+  options = ["Batman", "Robin", "Joker"];
+  get activePatientId() {
+    const id = this.$route?.params?.id as string;
+    return id;
   }
   async setCurrency() {
-    const currency = await this.getCurrencyById(this.id)
-    if (!currency) return
-     this.currency = currency.code;
+    const currency = await this.getCurrencyById(this.id);
+    if (!currency) return;
+    this.currency = currency.code;
     this.exchangeRate = currency.exchangeRate;
   }
 
@@ -158,16 +176,16 @@ loading=false;
     };
   }
   get allLocation() {
-     if (!this.orgLocation || this.orgLocation.length === 0) return [ ];
-     return this.orgLocation.map((i: any) => {
-         return {
-             code: i.id,
-             display: i.name,
-         }
-     })
- }
- get newaction() {
-    return this.id ? 'Update' : 'New'
+    if (!this.orgLocation || this.orgLocation.length === 0) return [];
+    return this.orgLocation.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+  get newaction() {
+    return this.id ? "Update" : "New";
   }
 
   done() {
@@ -175,38 +193,36 @@ loading=false;
     this.show = false;
   }
   get allCurrency() {
-     if (!this.Currencies || this.Currencies.length === 0) return [ ];
-     return this.Currencies.map((i:any) => {
-         return {
-             value: i.code,
-             label: i.code,
-         }
-     })
+    if (!this.Currencies || this.Currencies.length === 0) return [];
+    return this.Currencies.map((i: any) => {
+      return {
+        value: i.code,
+        label: i.code,
+      };
+    });
   }
-    get allCurrencyNew() {
-     if (!this.Currencies || this.Currencies.length === 0) return [ ];
-      //const filteritems = this.patientappointments.filter((c) => c !== null);
-      if(this.basecurrency != this.currency){
-        const filteritems = this.Currencies.filter((header:any) => header.code);
-      }
-         return this.Currencies.map((i:any) => {
-         return {
-             code: i.code,
-             display: i.code,
-         }
-     })
-    
+  get allCurrencyNew() {
+    if (!this.Currencies || this.Currencies.length === 0) return [];
+    //const filteritems = this.patientappointments.filter((c) => c !== null);
+    if (this.basecurrency != this.currency) {
+      const filteritems = this.Currencies.filter((header: any) => header.code);
+    }
+    return this.Currencies.map((i: any) => {
+      return {
+        code: i.code,
+        display: i.code,
+      };
+    });
   }
 
-async apply() {
-   this.loading = true;
-    if (this.id) await this.updateCurrency()
-    else await this.createCurrency()
+  async apply() {
+    this.loading = true;
+    if (this.id) await this.updateCurrency();
+    else await this.createCurrency();
     this.loading = false;
   }
   async createCurrency() {
     try {
-      ;
       const response = await cornieClient().post(
         "/api/v1/currency",
         this.payload
@@ -240,63 +256,67 @@ async apply() {
     }
   }
 
-
- async fetchDropDown() {
-      const worldCurrencies = cornieClient().get(
-        "/api/v1/currency/getCurrencies/world"
-      );
-      const response = await Promise.all([worldCurrencies])
-      this.Currencies = response[0].data;
-    }
-      async fetchLocation() {
-    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
+  async fetchDropDown() {
+    const worldCurrencies = cornieClient().get(
+      "/api/v1/currency/getCurrencies/world"
+    );
+    const response = await Promise.all([worldCurrencies]);
+    this.Currencies = response[0].data;
+  }
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
     const response = await Promise.all([AllLocation]);
     this.orgLocation = response[0].data;
   }
+
   created() {
     this.fetchDropDown();
     this.fetchLocation();
-     
   }
 }
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style>
 .multiselect {
-    position: relative;
-    margin: 0 auto;
-    margin-bottom: 50px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    box-sizing: border-box;
-    cursor: pointer;
-    outline: none;
-    border: var(--ms-border-width,1px) solid var(--ms-border-color,#d1d5db);
-    border-radius: var(--ms-radius,4px);
-    background: var(--ms-bg,#fff);
-    font-size: var(--ms-font-size,1rem);
-    min-height: calc(var(--ms-border-width, 1px)*2 + var(--ms-font-size, 1rem)*var(--ms-line-height, 1.375) + var(--ms-py, .5rem)*2);
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+  border-radius: var(--ms-radius, 4px);
+  background: var(--ms-bg, #fff);
+  font-size: var(--ms-font-size, 1rem);
+  min-height: calc(
+    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+  );
 }
 .multiselect-tags {
-    flex-grow: 1;
-    position: absolute;
-    top: 50px;
-    flex-shrink: 1;
-    display: flex;
-    flex-wrap: wrap;
-    margin: var(--ms-tag-my,.25rem) 0 0;
-    padding-left: var(--ms-py,.5rem);
-    align-items: center;
+  flex-grow: 1;
+  position: absolute;
+  top: 50px;
+  flex-shrink: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin: var(--ms-tag-my, 0.25rem) 0 0;
+  padding-left: var(--ms-py, 0.5rem);
+  align-items: center;
 }
-  .multiselect-tag.is-user {
-    padding: 5px 12px;
-    border-radius: 22px;
-    background: #080056;
-    margin: 3px 3px 8px;
-    position: relative;
-    left: -10px;
+.multiselect-tag.is-user {
+  padding: 5px 12px;
+  border-radius: 22px;
+  background: #080056;
+  margin: 3px 3px 8px;
+  position: relative;
+  left: -10px;
 }
 /* .multiselect-clear-icon {
     -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
@@ -306,46 +326,45 @@ async apply() {
     transition: .3s;
 } */
 .multiselect-placeholder {
-    font-size: 0.8em;
-    font-weight: 400;
-    font-style: italic;
-    color: #667499;
+  font-size: 0.8em;
+  font-weight: 400;
+  font-style: italic;
+  color: #667499;
 }
 .multiselect-caret {
-    transform: rotate(0deg);
-    transition: transform .3s;
-   -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
-    mask-image: url("../../../../../assets/img/Chevron.png");
-    background-color: #080056;
-    margin: 0 var(--ms-px,.875rem) 0 0;
-    position: relative;
-    z-index: 10;
-    flex-shrink: 0;
-    flex-grow: 0;
-    pointer-events: none;
+  transform: rotate(0deg);
+  transition: transform 0.3s;
+  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+  mask-image: url("../../../../../assets/img/Chevron.png");
+  background-color: #080056;
+  margin: 0 var(--ms-px, 0.875rem) 0 0;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  flex-grow: 0;
+  pointer-events: none;
 }
-  .multiselect-tag.is-user img {
-    width: 18px;
-    border-radius: 50%;
-    height: 18px;
-    margin-right: 8px;
-    border: 2px solid #ffffffbf;
-  }
+.multiselect-tag.is-user img {
+  width: 18px;
+  border-radius: 50%;
+  height: 18px;
+  margin-right: 8px;
+  border: 2px solid #ffffffbf;
+}
 
-  .multiselect-tag.is-user i:before {
-    color: #ffffff;
-    border-radius: 50%;;
-  }
+.multiselect-tag.is-user i:before {
+  color: #ffffff;
+  border-radius: 50%;
+}
 .multiselect-tag-remove {
-    display: flex;
-    align-items: center;
-    border: 1px solid #fff;
-    background: #fff;
-    border-radius: 50%;
-    color: #080056;
-    justify-content: center;
-    padding: 0.77px;
-    margin: var(--ms-tag-remove-my,0) var(--ms-tag-remove-mx,.5rem);
+  display: flex;
+  align-items: center;
+  border: 1px solid #fff;
+  background: #fff;
+  border-radius: 50%;
+  color: #080056;
+  justify-content: center;
+  padding: 0.77px;
+  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
 }
-
 </style>

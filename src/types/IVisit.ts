@@ -1,5 +1,5 @@
-import ILocation from './ILocation'
-import { IPatient } from './IPatient'
+import ILocation from "./ILocation"
+import { IPatient } from "./IPatient"
 
 export default interface IVisit {
   id: string;

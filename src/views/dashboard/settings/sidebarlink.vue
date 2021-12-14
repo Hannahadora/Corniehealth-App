@@ -2,7 +2,7 @@
   <router-link
     active-class="p-3 bg-blue-50 rounded-full text-black"
     :to="to"
-    class="text-xs p-3 mb-1  font-medium flex items-center"
+    class="text-xs p-3 mb-1 font-medium flex items-center"
   >
     <span class="mr-2 flex">
       <slot name="default" :active="active" />

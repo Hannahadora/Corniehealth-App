@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen flex justify-center">
-     <div class="bg-white w-full shadow-md p-4" >
-      <image-section/>
+    <div class="bg-white w-full shadow-md p-4">
+      <image-section />
     </div>
   </div>
 </template>
@@ -76,7 +76,7 @@ export default class AddLocationn extends Vue {
   careOptions = "";
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
-showImage = false;
+  showImage = false;
   dropdowns = {} as IIndexableObject;
 
   required = string().required();
@@ -113,9 +113,9 @@ showImage = false;
     const states = await getStates(country);
     this.states = states;
   }
-showImageSection(){
-  this.showImage = true;
-}
+  showImageSection() {
+    this.showImage = true;
+  }
   async setLocation() {
     const location = await this.getLocationById(this.id);
     if (!location) return;

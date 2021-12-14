@@ -1,98 +1,108 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-        <cornie-card-title  class="w-full">
-          <div class="w-full">
-            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">New Appointment</h2>
-            <cancel-icon class="float-right cursor-pointer" @click="show = false"/>
-          </div>
-        </cornie-card-title>
+      <cornie-card-title class="w-full">
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            New Appointment
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
 
-    
-   <cornie-card-text class="flex-grow scrollable">
+      <cornie-card-text class="flex-grow scrollable">
         <div>
-      
-            <main-cornie-select
-                        class="w-full mb-4"
-                        :items="appointmentItems"
-                        v-model="appointmentItem"
-                        label="Practitioners"
-                        placeholder="--Select from Practitioners--"
-                        >
-              </main-cornie-select>
-              <main-cornie-select
-                        class="w-full mb-4"
-                        :items="appointmentItems"
-                        v-model="appointmentItem"
-                        label="Service Name"
-                        placeholder="--Select--"
-                        >
-              </main-cornie-select>
+          <main-cornie-select
+            class="w-full mb-4"
+            :items="appointmentItems"
+            v-model="appointmentItem"
+            label="Practitioners"
+            placeholder="--Select from Practitioners--"
+          >
+          </main-cornie-select>
+          <main-cornie-select
+            class="w-full mb-4"
+            :items="appointmentItems"
+            v-model="appointmentItem"
+            label="Service Name"
+            placeholder="--Select--"
+          >
+          </main-cornie-select>
+        </div>
+
+        <date-time-picker
+          class="w-full mb-4"
+          v-model:time="data.dateTime"
+          label="Duration"
+          width="full"
+        />
+
+        <cornie-input
+          disabled
+          label="Appointment Fee"
+          placeholder="--Autoloaded--"
+          class="mb-4 mt-5 w-full"
+        />
+
+        <div class="w-full mt-5">
+          <span class="text-sm font-semibold mb-3"
+            >Appointment Confirmation</span
+          >
+          <div class="grid grid-cols-2 gap-4 mt-3 mb-5">
+            <cornie-radio name="confirm" checked label="Pay to Confirm" />
+            <cornie-radio name="confirm" label="Confirm and pay later" />
+            <cornie-radio name="confirm" label="Either" />
           </div>
-       
-                      <date-time-picker
-                                    class="w-full mb-4"       
-                                    v-model:time="data.dateTime"
-                                    label="Duration"
-                                    width="full"
-                                  />
-                                
-         
+        </div>
 
-       
-            <cornie-input disabled label="Appointment Fee" placeholder="--Autoloaded--"  class="mb-4 mt-5 w-full" />
-       
-          <div class="w-full mt-5">
-            <span class="text-sm font-semibold mb-3">Appointment Confirmation</span>
-            <div class="grid grid-cols-2 gap-4 mt-3 mb-5">
-              <cornie-radio name="confirm" checked label="Pay to Confirm"/>
-              <cornie-radio name="confirm"  label="Confirm and pay later"/>
-                <cornie-radio name="confirm"  label="Either"/>
-            </div>
-          </div>
+        <main-cornie-select
+          class="w-full mb-4"
+          v-model="appointmentItem"
+          :items="['Blank Survey']"
+          label="Link forms"
+          placeholder="--Link from forms--"
+        >
+        </main-cornie-select>
 
-      
-            <main-cornie-select
-                        class="w-full mb-4"
-                        v-model="appointmentItem"
-                        :items="['Blank Survey']"
-                        label="Link forms"
-                            placeholder="--Link from forms--"
-                        >
-                        </main-cornie-select>
-        
-          <domain-input
-                label="Booking Site Link"
-                placeholder="--Enter--"
-                :rules="requiredRule"
-                :modelValue="orgValue"
-                class="mb-4"
-                
-              />
-                  <div class="flex space-x-4 w-full mt-3">
-                  <span class="flex space-x-1 text-sm font-semibold text-primary"><copyform-icon/> <span>Copy</span></span>
-                  <span class="flex space-x-1 text-sm font-semibold text-primary"><share-icon class="fill-current text-primary"/> <span>Share</span> </span>
-                </div>
-       
-   </cornie-card-text>
+        <domain-input
+          label="Booking Site Link"
+          placeholder="--Enter--"
+          :rules="requiredRule"
+          :modelValue="orgValue"
+          class="mb-4"
+        />
+        <div class="flex space-x-4 w-full mt-3">
+          <span class="flex space-x-1 text-sm font-semibold text-primary"
+            ><copyform-icon /> <span>Copy</span></span
+          >
+          <span class="flex space-x-1 text-sm font-semibold text-primary"
+            ><share-icon class="fill-current text-primary" /> <span>Share</span>
+          </span>
+        </div>
+      </cornie-card-text>
 
-    
-        <cornie-card>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
-         <cornie-btn
-              @click="show = false"
-              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-            >
-              Cancel
-            </cornie-btn>
-            <cornie-btn  :loading="loading"
-                    @click="setSession" class="text-white bg-danger px-6 rounded-xl">
-          Save
-            </cornie-btn>
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="setSession"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
         </cornie-card-text>
       </cornie-card>
-      </cornie-card>
-  </cornie-dialog>   
+    </cornie-card>
+  </cornie-dialog>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -108,7 +118,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
-import {appointmentItems} from "./dropdown";
+import { appointmentItems } from "./dropdown";
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -116,11 +126,11 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import IPractitioner from "@/types/IPractitioner";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import PractionerSelect from "@/components/practitioner-select.vue";
-import CornieRadio from '@/components/cornieradio.vue'
+import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import DomainInput from "@/components/newdomaininput.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CopyformIcon from '@/components/icons/formcopy.vue';
+import CopyformIcon from "@/components/icons/formcopy.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import ShareIcon from "@/components/icons/newshare.vue";
 
@@ -155,7 +165,6 @@ const appointments = namespace("appointments");
   },
 })
 export default class CheckIn extends Vue {
-
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -276,7 +285,6 @@ export default class CheckIn extends Vue {
       this.loading = true;
       const slot = this.checkinData.slot;
       this.loading = false;
-      ;
       if (slot) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,

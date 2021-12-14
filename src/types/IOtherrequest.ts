@@ -1,4 +1,4 @@
-import Period from './IPeriod'
+import Period from "./IPeriod"
 
 interface BasicInfo {
   activityDefinition?: string;

@@ -3,15 +3,7 @@
     <div class="flex w-full font-semibold nav-tabs py-2 mx-auto mt-4">
       <template v-for="(tab, index) in items" :key="`tab-${index}`">
         <span
-          class="
-            flex
-            px-3
-            py-2
-            border-b-4
-            cursor-pointer
-            hover:bg-gray-300 hover:bg-opacity-20
-            text-xxs
-          "
+          class="flex px-3 py-2 border-b-4 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 text-xxs"
           :class="syncedValue == index ? ['border-danger'] : ['text-gray-500']"
           @click="syncedValue = index"
         >
@@ -65,34 +57,35 @@ export default class Tabs extends Vue {
 </script>
 <style scoped>
 .text-xxs {
-    font-size: .8rem;
-    line-height: 1rem;
-}
-.nav-tabs{
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    max-width: 2000px;
-    overflow: auto;
-        cursor: pointer;
-}
-::-webkit-scrollbar-thumb {
-    background-color: #ffffff;
-    border-radius: 2rem;
-    border-color: #ffffff;
-}::-webkit-scrollbar-thumb {
-    background-color: #ffffff;
-    border-radius: 2rem;
-    border-color: #ffffff;
-}
-::-webkit-scrollbar-thumb {
-    height: 0.5rem;
-    outline: 1px solid white;
+  font-size: 0.8rem;
+  line-height: 1rem;
 }
 .nav-tabs {
-    border-bottom: 4px solid #ffffff;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  max-width: 2000px;
+  overflow: auto;
+  cursor: pointer;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  border-radius: 2rem;
+  border-color: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  border-radius: 2rem;
+  border-color: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  height: 0.5rem;
+  outline: 1px solid white;
+}
+.nav-tabs {
+  border-bottom: 4px solid #ffffff;
 }
 ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgb(255 255 255 / 30%);
-    width: 0.75rem;
+  box-shadow: inset 0 0 6px rgb(255 255 255 / 30%);
+  width: 0.75rem;
 }
 </style>
