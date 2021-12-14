@@ -1,7 +1,10 @@
 <template>
-  <span class="w-11/12">
-    <label class="flex capitalize mb-1 text-black text-sm font-semibold">
-      {{ label }}
+  <span class="w-full">
+    <label class="flex space-x-55 justify-between w-full capitalize mb-1 text-black text-sm font-semibold">
+     <span class="float-left">
+        {{ label }}
+     </span>
+      <add-icon class="float-right cursor-pointer" @click="$emit('addnumbers')" v-if="add"/>
     </label>
     <field
       :name="inputName"
@@ -74,6 +77,7 @@ import IconInput from "@/components/IconInput.vue";
 import CornieSelect from "./phoneselect.vue";
 import CornieInput from "./cornieinput.vue";
 import SearchIcon from "@/components/icons/search.vue";
+import AddIcon from "@/views/dashboard/ehr/hospitalization/components/add-icon.vue";
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -86,6 +90,7 @@ const phoneRegex =
     CornieInput,
     SearchIcon,
     IconInput,
+    AddIcon,
   },
 })
 export default class PhoneInput extends Vue {
@@ -95,7 +100,10 @@ export default class PhoneInput extends Vue {
   @PropSync("modelValue")
   valueSync!: string;
 
-  @Prop({ type: String })
+  @Prop({ type: Boolean })
+  add!: boolean;
+
+   @Prop({ type: String })
   code!: string;
 
   @PropSync("code", { default: "+234" })

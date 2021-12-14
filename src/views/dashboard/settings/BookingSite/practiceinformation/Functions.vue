@@ -74,24 +74,18 @@ const AppointmentRoom = namespace("AppointmentRoom");
 export default class Functions extends Vue {
   addFunction = false;
 
-  @orgFunctions.State
-  functions!: IFunction[];
-
   @AppointmentRoom.State
   appointmentrooms!: IAppointmentRoom[];
 
   @AppointmentRoom.Action
   fetchAppointmentrooms!: () => Promise<void>;
 
-  @orgFunctions.Action
-  fetchFunctions!: () => Promise<void>;
 
   get isEmpty() {
-    return this.functions.length < 1;
+    return this.appointmentrooms.length < 1;
   }
 
   created() {
-    if (!this.functions?.length) this.fetchFunctions();
     if (!this.appointmentrooms?.length) this.fetchAppointmentrooms();
   }
 }
