@@ -125,7 +125,6 @@ import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
 const hierarchy = namespace("hierarchy");
-const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 const location = namespace("location");
 const AppointmentRoom = namespace("AppointmentRoom");
@@ -183,15 +182,6 @@ export default class AddFunction extends Vue {
 
   @location.Action
   fetchLocations!: () => Promise<void>;
-
-  @orgFunctions.State
-  functions!: IFunction[];
-
-  @orgFunctions.Action
-  fetchFunctions!: () => Promise<void>;
-
-  @orgFunctions.Mutation
-  setFunctions!: (f: IFunction[]) => Promise<void>;
 
   @AppointmentRoom.Mutation
   setAppointmentrooms!: (f: IAppointmentRoom[]) => Promise<void>;
@@ -274,20 +264,6 @@ export default class AddFunction extends Vue {
     this.loading = false;
   }
 
-  // async create2() {
-  //   try {
-  //     const { data } = await quantumClient().post(
-  //       "/org/functions",
-  //       this.payload
-  //     );
-  //     const { orgFunction } = data;
-  //     this.setFunctions([orgFunction]);
-  //     window.notify({ msg: "Function created", status: "success" });
-  //   } catch (error) {
-  //     console.error(error);
-  //     window.notify({ msg: "Function not created", status: "error" });
-  //   }
-  // }
 
   async create() {
     console.log("gggg", this.payload);
@@ -352,7 +328,6 @@ export default class AddFunction extends Vue {
 
   created() {
     if (!this.categories.length) this.fetchCategories();
-    if (!this.functions?.length) this.fetchFunctions();
     if (!this.locations?.length) this.fetchLocations();
   }
 }
