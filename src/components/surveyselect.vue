@@ -14,8 +14,17 @@
       </icon-input>
       <div
         :class="{ hidden: showDatalist }"
-        class="flex flex-col max-h-52 overflow-y-auto bg-white z-10 px-1 p-4 w-52 py-2"
-      >
+        class="
+          flex flex-col
+          max-h-52
+          overflow-y-auto
+          bg-white
+          px-1
+          p-4
+          w-52
+          py-2
+        "
+          >
         <div
           class="flex flex-row px-1 divide-y-2 divide-solid cursor-pointer hover:bg-gray-100 rounded-full"
           v-for="(item, i) in processedItems"

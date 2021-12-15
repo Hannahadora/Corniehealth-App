@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block capitalize mb-1 text-sm text-black font-medium">
+    <label class="block capitalize mb-1 text-sm text-black font-semibold">
       {{ label }}
     </label>
     <field
@@ -14,7 +14,7 @@
     >
       <div class="flex items-center w-full">
         <input
-          :placeholder="placeholder"
+          :placeholder="$attrs.placeholder"
           style="width: 55%"
           :class="{
             'border-red-500': Boolean(errorMessage),
@@ -23,14 +23,46 @@
           }"
           :disabled="$attrs.disabled"
           @change="handleChange"
-          class="rounded-r-md appearance-none px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+          class="
+            rounded
+            appearance-none
+            px-3
+            py-2
+            border border-gray-300
+            placeholder-gray-400
+            focus:outline-none
+            focus:shadow-outline-blue
+            focus:border-blue-300
+            transition
+            duration-150
+            mr-2
+            ease-in-out
+            sm:text-sm
+            sm:leading-5
+          "
           v-model="valueSync"
         />
         <input
           style="width: 50%"
-          class="appearance-none border border-gray-300 bgcolor px-3 py-2 rounded-l-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+          class="
+            appearance-none
+            border border-gray-300
+            bgcolor
+            px-3
+            py-2
+            rounded
+            placeholder-white
+            focus:outline-none
+            focus:shadow-outline-blue
+            focus:border-blue-300
+            transition
+            duration-150
+            ease-in-out
+            sm:text-sm
+            sm:leading-5
+          "
           disabled
-          placeholder="https://corniehealth.com/"
+           placeholder="corniehealth.com/booking/gp-consultation"
         />
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -119,4 +151,5 @@ export default class DomainInput extends Vue {
 .bgcolor {
   background-color: #080056;
 }
+
 </style>

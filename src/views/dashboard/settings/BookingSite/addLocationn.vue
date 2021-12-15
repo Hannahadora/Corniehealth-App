@@ -51,6 +51,8 @@
         </cornie-card-text>
       </cornie-card>
     </div>
+
+
   </div>
 </template>
 <script lang="ts">

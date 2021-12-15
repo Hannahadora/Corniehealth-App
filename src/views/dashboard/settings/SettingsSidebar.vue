@@ -194,6 +194,11 @@ export default class Settings extends Vue {
   }
   get PracticeManagement() {
     return [
+        {
+        name: "Forms & Questionnaires",
+        to: "practise-management/forms-questionnaires",
+        icon: "templates-icon",
+      },
       {
         name: "Forms & Questionnaires",
         to: "practise-management/forms-questionnaires",
@@ -255,6 +260,7 @@ export default class Settings extends Vue {
     const settingsBase = this.$router.resolve({ name: "Settings" }).href;
     //  this.show=false;
     return `${settingsBase}/${url}`.replace("//", "/");
+
   }
 
   filter(navs: INav[]) {
