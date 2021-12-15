@@ -1,7 +1,7 @@
 <template>
   <span class="flex items-center relative">
     <label class="radio-container text-xs">
-      <span class="block pt-0 text-black font-medium">
+      <span class="block pt-0 text-primary font-medium">
         {{ label }}
       </span>
       <input

@@ -5,7 +5,7 @@
       :key="i"
       maxlength="1"
       :class="[customClass]"
-      class="max-w-rem rounded mb-2 border py-2 text-center focus:outline-none"
+      class=" max-w-xs w-20 rounded mb-2 border py-4 px-6 text-center focus:outline-none"
       placeholder="--"
       @keydown="keyPressed(i - 1)"
       :ref="`input${i - 1}`"

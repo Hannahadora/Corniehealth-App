@@ -1,7 +1,7 @@
 <template>
   <div class="w-full pb-5 border-b justify-center">
     <form>
-      <h2 class="text-sm mb-5">
+      <h2 class="text-sm mb-8 mt-4">
         Enter verification code sent to {{ user.email }}
       </h2>
       <span class="mt-4 w-full flex">
