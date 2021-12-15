@@ -45,7 +45,7 @@
       </cornie-table>
     </div>
   </div>
-  <appointment-modal v-model="registerNew" @closesidemodal="closeModal" />
+  <appointment-modal v-model="registerNew" @type-added="typeadded" @closesidemodal="closeModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -68,11 +68,11 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import { IDesignation } from "@/types/IDesignation";
 import { Prop } from "vue-property-decorator";
-import ITask from "@/types/ITask";
+import IAppointmentTypes from "@/types/IAppointmentTypes";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 const designation = namespace("designation");
-const task = namespace("task");
+const appointmentType = namespace("appointmentType");
 
 @Options({
   name: "AppoitmentTypesExistingState",
@@ -94,17 +94,18 @@ const task = namespace("task");
     SideModal,
   },
 })
-export default class DesignationsExistingState extends Vue {
+export default class AppointmentTypes extends Vue {
   @Prop({ type: Array, required: true })
   designations!: IDesignation[];
+
   registerNew = false;
   query = "";
 
-  @task.State
-  tasks!: ITask[];
+  @appointmentType.State
+  appointmentTypes!: IAppointmentTypes[];
 
-  @task.Action
-  fetchTasks!: () => Promise<void>;
+  @appointmentType.Action
+  fetchappointmentTypes!: () => Promise<void>;
 
   // appointmentId ="";
   rawHeaders = [
@@ -148,17 +149,19 @@ export default class DesignationsExistingState extends Vue {
     // this.selectedTeamId = "";
   }
   get empty() {
-    return this.tasks.length < 1;
+    return this.appointmentTypes.length < 1;
   }
-
+ async typeadded(){
+   this.fetchappointmentTypes;
+ }
   get items() {
-    const tasks = this.tasks.map((task) => {
-      (task as any).createdAt = new Date(
-        (task as any).createdAt
+    const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
+      (appointmentType as any).createdAt = new Date(
+        (appointmentType as any).createdAt
       ).toLocaleDateString("en-US");
       return {
-        ...task,
-        action: task.id,
+        ...appointmentType,
+        action: appointmentType.id,
         keydisplay: "XXXXXXX",
         service: "-----",
         duration: "-----",
@@ -168,8 +171,8 @@ export default class DesignationsExistingState extends Vue {
         status: "Active",
       };
     });
-    if (!this.query) return tasks;
-    return search.searchObjectArray(tasks, this.query);
+    if (!this.query) return appointmentTypes;
+    return search.searchObjectArray(appointmentTypes, this.query);
   }
   // get items() {
   //   return this.designations.map((designation) => ({
@@ -180,16 +183,9 @@ export default class DesignationsExistingState extends Vue {
   //   }));
   // }
 
-  removeDesignation(id: string) {
-    this.deleteDesignation(id);
-  }
-
-  updateDesignation(id: string) {
-    this.$router.push({ name: "New Designation", params: { id } });
-  }
   created() {
-    this.fetchTasks();
-    if (this.tasks.length < 1) this.fetchTasks();
+    this.fetchappointmentTypes();
+    
   }
 }
 </script>

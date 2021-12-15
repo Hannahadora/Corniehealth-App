@@ -1,7 +1,8 @@
 import { cornieClient } from "@/plugins/http"
 import IPracticeInformation from "@/types/IPracticeInformation"
+import IPracticeHour from "@/types/IPracticeHours"
 
-export async function fetchPracticeInformation() {
+export async function fetchPracticeInformations() {
     try {
         const response = await cornieClient().get("/api/v1/practice-information")
         if (response.success) {
@@ -13,7 +14,7 @@ export async function fetchPracticeInformation() {
     return [] as IPracticeInformation[]
 }
 
-export async function fetchPracticeHour() {
+export async function fetchPracticeHours() {
     try {
         const response = await cornieClient().get("/api/v1/practice-hour")
         if (response.success) {
@@ -22,4 +23,5 @@ export async function fetchPracticeHour() {
     } catch (error) {
 
     }
+    return [] as IPracticeHour[]
 }

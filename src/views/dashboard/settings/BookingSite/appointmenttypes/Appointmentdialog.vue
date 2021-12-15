@@ -14,28 +14,29 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-        <div>
+        <main-cornie-select
+          class="w-full mb-5"
+          v-model="serviceId"
+          @click="setFee(serviceId)"
+          :items="allServiceName"
+          label="Service Name"
+          placeholder="--Autoloaded--"
+        >
+        </main-cornie-select>
           <main-cornie-select
-            class="w-full mb-4"
-            :items="appointmentItems"
-            v-model="appointmentItem"
+            class="w-full mb-5"
+            :items="allPractitioner"
+            v-model="singlePractitioner"
+            @click="sendPractioner"
             label="Practitioners"
             placeholder="--Select from Practitioners--"
           >
           </main-cornie-select>
-          <main-cornie-select
-            class="w-full mb-4"
-            :items="appointmentItems"
-            v-model="appointmentItem"
-            label="Service Name"
-            placeholder="--Select--"
-          >
-          </main-cornie-select>
-        </div>
+      
 
-        <date-time-picker
-          class="w-full mb-4"
-          v-model:time="data.dateTime"
+        <date-picker
+          class="w-full mb-8"
+          v-model="duration"
           label="Duration"
           width="full"
         />
@@ -44,24 +45,26 @@
           disabled
           label="Appointment Fee"
           placeholder="--Autoloaded--"
-          class="mb-4 mt-5 w-full"
+          class="mb-8 w-full"
+          v-model="fee"
         />
 
-        <div class="w-full mt-5">
+        <div class="w-full mt-5 mb-8">
           <span class="text-sm font-semibold mb-3"
             >Appointment Confirmation</span
           >
           <div class="grid grid-cols-2 gap-4 mt-3 mb-5">
-            <cornie-radio name="confirm" checked label="Pay to Confirm" />
-            <cornie-radio name="confirm" label="Confirm and pay later" />
-            <cornie-radio name="confirm" label="Either" />
+            <cornie-radio name="confirm" value="Pay to Confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
+            <cornie-radio name="confirm" value="Confirm and pay later" v-model="appointmentConfirmation" label="Confirm and pay later" />
+            <cornie-radio name="confirm" value="Either" v-model="appointmentConfirmation" label="Either" />
           </div>
         </div>
 
         <main-cornie-select
-          class="w-full mb-4"
-          v-model="appointmentItem"
-          :items="['Blank Survey']"
+          class="w-full mb-5"
+          v-model="singleform"
+          :items="allForms"
+           @click="sendForm"
           label="Link forms"
           placeholder="--Link from forms--"
         >
@@ -72,7 +75,8 @@
           placeholder="--Enter--"
           :rules="requiredRule"
           :modelValue="orgValue"
-          class="mb-4"
+          v-model="bookingSiteLink"
+          class="mb-6"
         />
         <div class="flex space-x-4 w-full mt-3">
           <span class="flex space-x-1 text-sm font-semibold text-primary"
@@ -94,7 +98,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="setSession"
+            @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -118,7 +122,6 @@ import PlusIcon from "@/components/icons/plus.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
-import { appointmentItems } from "./dropdown";
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -133,12 +136,15 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CopyformIcon from "@/components/icons/formcopy.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import ShareIcon from "@/components/icons/newshare.vue";
+import DatePicker from "@/components/daterangepicker.vue";
+import { cornieClient } from "@/plugins/http";
+import Period from "@/types/IPeriod";
+import IAppointmentTypes from "@/types/IAppointmentTypes";
+import ICatalogueService from "@/types/ICatalogue";
 
-const visitsStore = namespace("visits");
-const actors = namespace("practitioner");
-const locationsStore = namespace("location");
 const organization = namespace("organization");
-const appointments = namespace("appointments");
+const appointmentType = namespace("appointmentType");
+const catalogues = namespace("catalogues");
 
 @Options({
   components: {
@@ -157,6 +163,7 @@ const appointments = namespace("appointments");
     ShareIcon,
     DomainInput,
     DateTimePicker,
+    DatePicker,
     ToggleCheck,
     MainCornieSelect,
     TextArea,
@@ -164,36 +171,21 @@ const appointments = namespace("appointments");
     PractionerSelect,
   },
 })
-export default class CheckIn extends Vue {
+export default class AppointmentTypeDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop()
-  patientId!: any;
+  @Prop({ type: String, default: "" })
+  id!: string;
 
-  @locationsStore.Action
-  fetchLocations!: () => Promise<void>;
+  @catalogues.Action
+  getServices!: () => Promise<void>;
 
-  @locationsStore.State
-  locations!: ILocation[];
+  @catalogues.State
+  services!: ICatalogueService[];
 
-  @actors.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  @actors.State
-  practitioners!: IPractitioner[];
-
-  @visitsStore.Action
-  schedulesByPractitioner!: (id: string) => Promise<any>;
-
-  @appointments.Action
-  getappointmentTypes!: () => Promise<void>;
-
-  @visitsStore.Action
-  checkin!: (body: any) => Promise<any>;
-
-  @visitsStore.Action
-  createSlot!: (body: any) => Promise<any>;
+ @appointmentType.Action
+  getAppointmentTypeById!: (id: string) => IAppointmentTypes;
 
   @organization.Action
   fetchOrgInfo!: () => Promise<void>;
@@ -201,7 +193,7 @@ export default class CheckIn extends Vue {
   @organization.State
   organizationInfo: any;
 
-  appointmentItems = appointmentItems;
+
   appointmentItem = "";
   showDetails = true;
   orgValue = "";
@@ -210,164 +202,171 @@ export default class CheckIn extends Vue {
   loading = false;
   date = new Date();
 
+
+
+  duration = {} as Period;
+  singlePractitioner ="";
+  singleform = "";
+  practitioners =  [""];
+  fee=0 ;
+  linkForms = [""];
+  bookingSiteLink = "";
+  serviceId=  "";
+  serviceName = "";
+  appointmentConfirmation = "Pay to Confirm";
+
+  practitioner = [];
+  practiceform = [];
+
   arr = [] as any[];
 
   data: any = {};
   selectedActors: any[] = [];
   availableSlots: any[] = [];
 
-  activeStates: any = [
-    { display: "Yes", value: "yes" },
-    { display: "No", value: "no" },
-  ];
-
-  waitList: any = [
-    { display: "Yes", value: "yes" },
-    { display: "No", value: "no" },
-  ];
-
-  slotOccurence: any = [
-    { display: "Do not repeat", code: "do not repeat" },
-    { display: "Every day", code: "every day" },
-    { display: "Every week", code: "every week" },
-    { display: "Every month", code: "every month" },
-    { display: "Every forever", code: "every forever" },
-    { display: "Custom", code: "Custom" },
-  ];
-
-  ends: any = [
-    { display: "Never", code: "never" },
-    { display: "On", code: "" },
-    { display: "After", code: "" },
-  ];
-
-  days: any = [
-    { display: "Monday", code: true },
-    { display: "Tuesday", code: false },
-    { display: "Wednesday", code: false },
-    { display: "Thursday", code: false },
-    { display: "Friday", code: false },
-    { display: "Saturday", code: false },
-    { display: "Sunday", code: false },
-  ];
-
-  checkinData: any = { time: new Date().toTimeString().substring(0, 5) };
-
-  selectPractitioner(actor: any, index: number) {
-    if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
-      // this.getSlots(actor.code);
-      this.selectedActors.push(actor);
-    } else {
-      this.selectedActors.splice(index, 1);
-    }
+ @Watch("id")
+  idChanged() {
+    this.setAppointmentType();
   }
 
-  refreshSlots() {
-    if (this.selectedActors.length > 0) {
-      // this.getSlots(this.selectedActors[0].id);
-    }
+
+    async setAppointmentType() {
+    const appointmentType = await this.getAppointmentTypeById(this.id);
+    if (!appointmentType) return;
+    this.duration = appointmentType.duration;
+    this.practitioners = appointmentType.practitioners;
+    this.linkForms = appointmentType.linkForms;
+    this.bookingSiteLink = appointmentType.bookingSiteLink;
+    this.serviceId = appointmentType.serviceId;
+    this.appointmentConfirmation = appointmentType.appointmentConfirmation;
   }
 
-  // getSlots(id: string) {
-  //   this.schedulesByPractitioner(id).then((res) => {
-  //     const todaySlots = res.filter((i: any) =>
-  //       // slotService.matchDates(this.visitDate.toString(), i.startDate)
-  //     );
-  //     this.checkinData.scheduleId =
-  //       todaySlots.length > 0 ? todaySlots[0].id : "";
-  //     this.availableSlots = todaySlots.map((schedule: any) => schedule.slots);
-  //     ;
-  //   });
-  // }
-
-  async setSession() {
-    try {
-      this.loading = true;
-      const slot = this.checkinData.slot;
-      this.loading = false;
-      if (slot) {
-        const checkedIn = await this.checkin({
-          patientId: this.patientId,
-          type: this.checkinData.type,
-          status: "In-progress",
-          roomId: this.checkinData.room,
-          notes: this.checkinData.notes,
-          slotId: slot,
-          // "practitioners": this.selectedActors.map(i => i.id)
-        });
-        // const orgValue = this.organizationInfo.domainValue;
-        if (checkedIn && checkedIn) {
-          window.notify({ msg: "Patient Check-in", status: "success" });
-          this.$emit("close");
-        } else {
-          window.notify({ msg: "Patient check-in failed", status: "error" });
-        }
-      } else {
-        window.notify({ msg: "Error checking-in patient", status: "error" });
-      }
-    } catch (error) {
-      this.loading = false;
-    }
+  get payload() {
+    const filteritems = this.practitioners.filter((c) => c !== "");
+     const filteritems2 = this.linkForms.filter((c) => c !== "");
+    return {
+      duration: this.duration,
+      practitioners: filteritems,
+      linkForms: filteritems2,
+      bookingSiteLink: this.bookingSiteLink,
+      serviceId: this.serviceId,
+      appointmentConfirmation: this.appointmentConfirmation,
+    };
   }
 
-  get selectedPractitioners() {
-    if (!this.selectedActors || this.selectedActors.length === 0)
-      return "Select";
-    let str = this.selectedActors[0].display;
-    if (this.selectedActors.length > 1) return `${str}...`;
-    return str;
-  }
-
-  get allActors() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners.map((i) => {
+  get allPractitioner() {
+    if (!this.practitioner || this.practitioner.length === 0) return [];
+    return this.practitioner.map((i: any) => {
       return {
         code: i.id,
-        display: `${i.firstName} ${i.lastName}`,
-        type: i.type,
+        display: i.firstName + " " + i.lastName,
       };
     });
   }
 
-  get rooms() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i) => {
-      return { code: i.id, display: i.name };
+  sendPractioner(){
+  
+    this.practitioners.push(this.singlePractitioner);
+  }
+sendForm(){
+  this.linkForms.push(this.singleform);
+}
+  get allForms() {
+    if (!this.practiceform || this.practiceform.length === 0) return [];
+    return this.practiceform.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.code,
+      };
     });
   }
+   get allServiceName() {
+    if (!this.services || this.services.length === 0) return [];
+    return this.services.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+setFee(id:string){
+ const pt = this.services.find((i: any) => i.id === id);
+    return pt ? this.fee = pt.cost : "";
+}
+  done() {
+    this.$emit("type-added");
+    this.show = false;
+  }
 
-  get slots() {
-    const slot = {
-      endTime: "07:40:00",
-      hasWaitList: false,
-      id: "da503880-26b3-4bc7-bc64-87b36ab569d4",
-      lastReset: null,
-      scheduleId: "130f9ef7-a8e5-4471-994f-62cf6df912d5",
-      startTime: "07:10:00",
+  async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+
+   async fetchPracticeForms() {
+    const AllForms = cornieClient().get("/api/v1/practice-form/surveys");
+    const response = await Promise.all([AllForms]);
+    this.practiceform = response[0].data;
+  }
+
+  async apply() {
+    this.loading = true;
+    if (this.id) await this.updateAppointmentType();
+    else await this.createAppointmentType();
+    this.loading = false;
+  }
+  async createAppointmentType() {
+    //this.serviceId = this.organizationInfo.id;
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/appointment-types",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({
+          msg: "Appointment Type Created",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      ;
+      window.notify({
+        msg: "Appointment Type not Created",
+        status: "error",
+      });
+    }
+  }
+  async updateAppointmentType() {
+    const url = `/api/v1/appointment-types/${this.id}`;
+    const payload = {
+      ...this.payload,
     };
-    return [
-      {
-        code: slot.id,
-        display: `${slot.startTime} - ${slot.endTime}`,
-      },
-    ];
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "Appointment Type  updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({
+        msg: "Appointment Type not  updated",
+        status: "error",
+      });
+    }
   }
-
-  get visitDate() {
-    if (!this.date) return new Date(Date.now());
-    const x = new Date(`${new Date(this.date).toISOString()}`);
-    return x;
-  }
-
   async created() {
-    if (!this.locations || this.locations.length === 0)
-      await this.fetchLocations();
-    if (!this.practitioners || this.practitioners.length === 0)
-      await this.fetchPractitioners();
+     await this.fetchPractitioner();
+     await this.fetchPracticeForms();
+     await this.getServices();
     if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
     this.orgValue = this.organizationInfo.domainName;
-    this.getappointmentTypes();
+    //this.appointmentTypes();
   }
 }
 </script>

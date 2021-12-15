@@ -13,20 +13,21 @@
         <div class="flex space-x-3 mt-4 w-1/2">
           <cornie-radio
             name="bookingsite"
-            v-model="type"
+            @click="apply"
+            v-model="enabled"
             label="Yes"
-            value="yes"
+            :value="true"
             checked
           />
           <cornie-radio
-            name="bookingsite2"
-            v-model="type"
-            value="No"
+            name="bookingsite"
+            v-model="enabled"
+            :value="false"
             label="No"
           />
         </div>
       </div>
-      <div class="grid grid-cols-2 field gap-3 w-full p-5">
+      <div class="grid grid-cols-2 field gap-3 w-full p-5" v-if="enabled">
         <domain-input
           label="URL:"
           placeholder="--Enter--"
@@ -54,6 +55,7 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DomainInput from "@/components/newdomaininput.vue";
 import { Prop } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
+import { cornieClient } from "@/plugins/http";
 import DeleteIcon from "@/components/icons/delete.vue";
 import CopyformIcon from "@/components/icons/formcopy.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -64,7 +66,7 @@ import { namespace } from "vuex-class";
 const level = namespace("OrgLevels");
 
 @Options({
-  name: "JobLevelExistingState",
+  name: "bookingsite",
   components: {
     CornieTable,
     CornieRadio,
@@ -80,55 +82,61 @@ const level = namespace("OrgLevels");
 export default class ExistingState extends Vue {
   @Prop({ type: Array, default: [], required: true })
   levels!: LevelCollection[];
+  id="";
 
   levelForEdit = {} as LevelCollection;
   editingLevel = false;
   type = "";
-
-  @level.Action
-  removeLevel!: (id: string) => Promise<void>;
-
-  rawHeaders = [
-    {
-      title: "Category",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "Level ID",
-      key: "levelId",
-      show: true,
-    },
-    {
-      title: "Description/Tag",
-      key: "tags",
-      show: true,
-    },
-  ];
-
-  get items() {
-    return this.levels.map((level: any) => ({
-      category: level.category?.name,
-      levelId: level.name,
-      tags: this.printTags(level.tags),
-      id: level.id,
-    }));
+  orgInfo = [] as any;
+enabled = false;
+loading = false;
+orgvalue = "";
+ get payload() {
+    return {
+      id: this.id,
+      enabled: this.enabled,
+    };
+  }
+ async fetchOrgInfo() {
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
+    }
+  }
+  async apply() {
+    this.loading = true;
+    await this.createBookingSite();
+    this.loading = false;
   }
 
-  printTags(tags: Tag[]) {
-    const tagNames = tags.map((tag) => tag.name);
-    return tagNames.join(", ");
+
+  async createBookingSite() {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/booking-site",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({
+          msg: "Booking Site Enabled",
+          status: "success",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      window.notify({
+        msg: "Booking Site not Enabled",
+        status: "error",
+      });
+    }
   }
 
-  editLevel(id: string) {
-    const level = this.levels.find((level) => level.id == id);
-    if (!level) return;
-    this.levelForEdit = level;
-    this.editingLevel = true;
-  }
-
-  remove(id: string) {
-    this.removeLevel(id);
+  created(){
+    this.fetchOrgInfo();
   }
 }
 </script>

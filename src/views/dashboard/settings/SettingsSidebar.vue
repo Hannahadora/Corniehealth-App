@@ -13,17 +13,6 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <div class="flex flex-col h-full w-full overflow-auto max-h-full">
-          <!-- <icon-input
-          autocomplete="off"
-          type="search"
-          v-model="query"
-          placeholder="Search"
-          class="rounded-full w-full border-2 focus:outline-none"
-        >
-          <template v-slot:prepend>
-            <search-icon />
-          </template>
-        </icon-input> -->
           <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
             <span>
               <div

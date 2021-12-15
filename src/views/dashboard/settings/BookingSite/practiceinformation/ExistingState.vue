@@ -63,7 +63,7 @@
         <cornie-input
           label="Website"
           v-model="website"
-          placeholder="-Enter--"
+          placeholder="https://corniehealth.com"
           class="w-full mb-4"
         />
         <div>
@@ -76,8 +76,10 @@
             v-model="contactNumber"
             class="w-full"
           />
-          <div class="flex space-x-6 w-full bg-primary rounded-full text-white p-3" v-for="(item, index) in phonenumbers" :key="index">
-             <span>{{item.number}}</span> <cancel-icon/>
+          <div class="grid grid-cols-2 gap-4 mt-3">
+            <div class="flex space-x-6 w-full bg-primary rounded-full text-white p-1  px-4" v-for="(item, index) in phonenumbers" :key="index">
+              <span>{{item.number}}</span> <cancel-icon class="mt-1 cursor-pointer"  @click="removenumber(index)"/>
+            </div>
           </div>
         </div>
       </div>
@@ -109,7 +111,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="apply"
+            @click="apply()"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -123,7 +125,7 @@
         <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-300 text-xs">Active Since:</div>
-          <div class="text-blue-600 font-bold text-xs">31st May, 2021</div>
+          <div class="text-blue-600 font-bold text-xs"> {{ new Date(orgInfo.createdAt).toLocaleDateString("en-US", dateoptions)  }}</div>
         </div>
         <div class="flex space-x-4 mt-2">
           <star-icon />
@@ -139,11 +141,13 @@
       </div>
       <div class="float-right">
         <p class="text-sm text-black mb-1">
-          57 Campbell Street, Lagos Island. Lagos
+           {{ orgInfo.address }}
         </p>
-        <p class="text-sm text-black mb-1">+234 802 290 8484</p>
-        <p class="text-sm text-black mb-1">Info@saintnicholashospital.com</p>
-        <p class="text-sm text-black mb-1">www.nicholashospital.org</p>
+        <!-- <p class="text-sm text-black mb-1"> {{
+                authPractitioner.phone.dialCode + authPractitioner.phone.number
+              }}</p> -->
+        <!-- <p class="text-sm text-black mb-1"> {{ authPractitioner.email }}</p> -->
+        <p class="text-sm text-black mb-1">{{orgInfo.website}}</p>
         <div class="flex space-x-4 mt-2">
           <span class="text-gray-300 text-xs"
             >Total Ratings:
@@ -156,14 +160,11 @@
         </div>
         <div class="mt-10">
           <cornie-btn
-            @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             <view-icon class="mr-2" /> View
           </cornie-btn>
           <cornie-btn
-            :loading="loading"
-            @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
             <share-icon class="mr-2" /> Share
@@ -173,7 +174,7 @@
     </div>
   </accordion-component>
   <accordion-component
-    class="shadow-none rounded-none border-none mt-32 text-primary"
+    class="shadow-none rounded-none pb-14 mb-32 border-none mt-32 text-primary"
     title="Practice Hours"
     expand="true"
     v-model="opened"
@@ -273,15 +274,17 @@ import { string } from "yup";
 import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
+import IPhone from "@/types/IPhone";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/aedit.vue";
-
+import IPractitioner from "@/types/IPractitioner";
+const userStore = namespace("user");
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
-const practiceinformations = namespace("practiceinformation");
+const practiceinformation = namespace("practiceinformation");
 const opHours = [
   {
     selected: true,
@@ -380,11 +383,14 @@ export default class CarePartnersExistingState extends Vue {
   @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
-  @practiceinformations.Action
-  fetchPracticeInformation!: () => Promise<void>;
+  @practiceinformation.Action
+  fetchPracticeInformations!: () => Promise<void>;
 
-  @practiceinformations.Action
-  fetchPracticeHour!: () => Promise<void>;
+ @userStore.Getter
+  authPractitioner!: IPractitioner;
+
+  @practiceinformation.Action
+  fetchPracticeHours!: () => Promise<void>;
 
   showEdit = false;
 
@@ -405,8 +411,36 @@ export default class CarePartnersExistingState extends Vue {
   localSrc = require("../../../../../assets/img/placeholder.png");
   orgInfo = [];
   dialCode = "+234";
+ dateoptions = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
 
  phoneRule = string().matches(phoneRegex, "A valid phone number is required");
+
+ removenumber(index:number){
+     this.phonenumbers.splice(index, 1);
+  }
+   async reset(){
+    this.contactNumber = "";
+  }
+
+addNumbers(){
+  if(this.contactNumber == ''){
+     window.notify({msg: "Please input a contact number",status: "error",});
+  }else{
+    this.phonenumbers.push(this.phone);
+   this.reset();
+  }
+}
+  get phone(): IPhone {
+    return {
+      dialCode: this.dialCode,
+      number: this.contactNumber,
+    };
+  }
 
   get operationHours() {
     return this.modelValue;
@@ -444,14 +478,14 @@ export default class CarePartnersExistingState extends Vue {
       email: this.email,
       siteMessage: this.siteMessage,
       address: this.address,
-      contactNumber: this.contactNumber,
-      id: this.id,
+      website: this.website,
+      contactNumbers: this.phonenumbers,
     };
   }
 
   async apply() {
     this.loading = true;
-    // if (this.id) await this.updateIssues()
+    await this.createPracticeInfromation();
     this.loading = false;
   }
   showEditSection() {
@@ -460,7 +494,6 @@ export default class CarePartnersExistingState extends Vue {
 
   async applyhour() {
     this.loading = true;
-    // if (this.id) await this.updateIssues()
     await this.createPracticehour();
     this.loading = false;
   }
@@ -468,8 +501,9 @@ export default class CarePartnersExistingState extends Vue {
     return this.id ? "Update" : "Save";
   }
   done() {
-    this.$emit("-added");
+    this.$emit("added");
     this.show = false;
+     this.showEdit = false;
   }
 
   async mappedfunc() {
@@ -484,13 +518,28 @@ export default class CarePartnersExistingState extends Vue {
       return obj;
     };
   }
-addNumbers(){
-  if(this.contactNumber == ''){
-     window.notify({msg: "Please input a contact number",status: "error",});
-  }else{
-    this.phonenumbers.push(this.contactNumber);
+
+ async createPracticeInfromation() {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/practice-information",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({
+          msg: "Practice Information  Created",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      console.log(error);
+      window.notify({
+        msg: "Practice Information not Created",
+        status: "error",
+      });
+    }
   }
-}
   async createPracticehour() {
     try {
       const response = await cornieClient().post(
@@ -499,7 +548,7 @@ addNumbers(){
       );
       if (response.success) {
         window.notify({
-          msg: "practice-information  Created",
+          msg: "Practice Hour  Created",
           status: "success",
         });
         this.done();
@@ -507,7 +556,7 @@ addNumbers(){
     } catch (error) {
       console.log(error);
       window.notify({
-        msg: "practice-information not Created",
+        msg: "Practice Hour not Created",
         status: "error",
       });
     }
@@ -517,8 +566,9 @@ addNumbers(){
     this.fetchOrgInfo();
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
-    this.fetchPracticeInformation();
-    this.fetchPracticeHour();
+    this.fetchPracticeInformations();
+    this.fetchPracticeHours();
+    this.authPractitioner;
     // console.log(this.mappedfunc);
   }
 }

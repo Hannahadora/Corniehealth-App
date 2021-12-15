@@ -1,20 +1,53 @@
 <template>
-  <div class="h-screen flex justify-center">
-    <div class="w-full mx-5">
-      <!-- <span
-        class="
-          flex
-          border-b-2
-          w-full
-          font-semibold
-          text-xl text-primary
-          py-2
-          mx-auto
-        "
-      >
-        {{ id ? "Update Location" : "Add Location" }}
-      </span> -->
-      <span class="w-full">
+  <div class="h-full  w-full">
+      <div class="bg-gray-100 rounded-md w-full p-5">
+          <span class="text-black text-xs float-left w-full -mt-2">Specify notification reminder timelines prior to appointment time.</span>
+          <span class="text-black text-xs float-right flex cursor-pointer  -mt-4" @click="AddReminder"> <add-blue-icon class="mr-2"/> Add Reminder</span>
+      </div>
+       <accordion-component class="pb-10 capitalize" editabetitle="Reminder me to..." :opened="true">
+                 <div class="flex pt-5 mt-4">
+                    <p class="lbl mt-2 flex capitalize text-black mb-1 text-sm">All - day</p>
+                    <label class="switch">
+                        <input
+                        name="category"
+                        type="checkbox"
+                        @input="selected"
+                        v-model="switchshow"
+                        value="2"
+                        />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-2 gap-4 w-full">
+                    <div class="flex space-x-4 w-full">
+                        <div class="w-full">
+                            <span class="text-black text-sm capitalize font-semibold">{{new Date(data.startDate).toLocaleDateString("en-US", dateoptions)}}</span>
+                            <date-time-picker
+                                v-model:date="data.startDate"
+                                v-model:time="data.startTime"
+                                class="w-full"
+                            />
+                        </div>
+                        <cornie-select
+                        class="w-full mt-3"
+                        v-model="format"
+                        :items="['Does not repeat','Custom']"
+                        placeholder="--Link from forms--"
+                        />
+                    </div>
+
+                </div>
+                 <div class="flex space-x-4 mb-5 pb-14 mt-5 float-right">
+                    <copyform-icon class="float-right" />
+                    <delete-icon
+                    class="float-right cursor-pointer"
+                    @click="questions.splice(index, 1)"
+                    />
+                </div>
+       </accordion-component>
+    <!-- <div class="w-full">
+
+      <div class="w-full">
         <div class="w-full h-screen">
           <v-form class="mt-5 w-full" @submit="submit">
             <div class="w-full grid grid-cols-2 gap-5"></div>
@@ -164,7 +197,6 @@
                 />
               </div>
             </div>
-            <!-- <template #actions> -->
             <cornie-card>
               <cornie-card-text class="flex justify-end">
                 <cornie-btn
@@ -182,11 +214,10 @@
                 </cornie-btn>
               </cornie-card-text>
             </cornie-card>
-            <!-- </template> -->
           </v-form>
         </div>
-      </span>
-    </div>
+      </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
@@ -194,18 +225,20 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "./new-operation-hours.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { string } from "yup";
+import DeleteIcon from "@/components/icons/deleteorange.vue";
+import CopyformIcon from "@/components/icons/formcopy.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import { Prop, Watch } from "vue-property-decorator";
 import { getCoordinates } from "@/plugins/utils";
 import { getCountries, getStates } from "@/plugins/nation-states";
 import AutoComplete from "@/components/autocomplete.vue";
-
+import AddBlueIcon from "@/components/icons/addblue.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
-import DateTimePicker from "./components/datetime-picker.vue";
+import DateTimePicker from "@/components/datetime-picker.vue";
 
 const countries = getCountries();
 
@@ -216,15 +249,24 @@ const location = namespace("location");
   components: {
     CornieInput,
     AutoComplete,
+    AddBlueIcon,
     CornieSelect,
     PhoneInput,
-    OperationHours,
-
+    AccordionComponent,
+    DeleteIcon,
+    CopyformIcon,
     CalendarIcon,
     DateTimePicker,
   },
 })
 export default class AddLocation extends Vue {
+   dateoptions = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+  
   get istReminder() {
     return {
       days: 0,
@@ -256,9 +298,18 @@ export default class AddLocation extends Vue {
 
   loading = false;
 
-  // days = 0;
-  //       weeks: 0,
-  //       time: "",
+   data: any = {
+    date: "",
+    dateTime: "",
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+  };
+reminders = [] as any;
+reminder = [] as any;
+
+
   name = "";
   locationStatus = "";
   operationalStatus = "";
@@ -319,6 +370,9 @@ export default class AddLocation extends Vue {
     this.states = states;
   }
 
+    AddReminder(){
+        this.reminder.push(this.reminders)
+    }
   async setLocation() {
     const location = await this.getLocationById(this.id);
     if (!location) return;
@@ -432,9 +486,14 @@ export default class AddLocation extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 input[type="time"]::-webkit-calendar-picker-indicator {
   background: none;
   display: none;
 }
+:focus-visible {
+    outline: none !important;
+  
+}
+
 </style>

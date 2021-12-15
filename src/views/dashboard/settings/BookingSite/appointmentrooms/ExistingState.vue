@@ -8,7 +8,7 @@
       <h4 class="text-black text-center">There are no rooms on record.</h4>
       <cornie-btn
         class="bg-danger px-3 rounded-full text-white m-5"
-        @click="editingFunction = true"
+        @click="showRoom = true"
       >
         Add New
       </cornie-btn>
@@ -17,7 +17,7 @@
       <span class="flex justify-end">
         <cornie-btn
           class="bg-danger px-3 rounded-full text-white m-5"
-          @click="editingFunction = true"
+          @click="showRoom = true"
         >
           Add New
         </cornie-btn>
@@ -26,14 +26,14 @@
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="editAppointmentRoom(item.id)"
+            @click="showAppointmentRoom(item.id)"
           >
-            <edit-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
+            <edit-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="remove(item.id)"
+            @click="deleteItem(item.id)"
           >
             <delete-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Delete</span>
@@ -72,7 +72,8 @@
       </div>
     </div>
   </div>
-  <add-function v-model="editingFunction" :edit="roomToEdit" />
+  <room-dialog v-model="showRoom" :id="roomId"  @room-added="roomAdded"/>
+
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -89,9 +90,8 @@ import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
-import IFunction from "@/types/IFunction";
-import { Prop } from "vue-property-decorator";
-import AddFunction from "./add-function.vue";
+import { cornieClient } from "@/plugins/http";
+import RoomDialog from "./appoitmentRoomDialog.vue";
 import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -99,20 +99,18 @@ import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import ITask from "@/types/ITask";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-const orgFunctions = namespace("OrgFunctions");
-const patients = namespace("patients");
+
 const location = namespace("location");
-const AppointmentRoom = namespace("AppointmentRoom");
-const task = namespace("task");
+const appointmentRoom = namespace("appointmentRoom");
+
 
 @Options({
   components: {
     CornieTable,
     SortIcon,
-    AddFunction,
+    RoomDialog,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
@@ -131,36 +129,35 @@ const task = namespace("task");
   },
 })
 export default class apponitmentRooms extends Vue {
+
   query = "";
+  roomId= "";
+showRoom= false;
+practitioner = [] as any;
+location = [] as any;
+updatedBy = "";
+currentStatus= "";
+showStatusModal = false;
 
-  @Prop({ type: Array, default: [], required: true })
-  functions!: IFunction[];
-
-  @Prop({ type: Array, default: [], required: true })
+  @appointmentRoom.State
   appointmentrooms!: IAppointmentRoom[];
 
-  // functionToEdit = {} as IFunction;
-  // editingFunction = false;
-  @task.State
-  tasks!: ITask[];
+  @appointmentRoom.Action
+  deleteAppointmentroom!: (id: string) => Promise<boolean>;
 
-  roomToEdit = {} as IAppointmentRoom;
-  editingFunction = false;
-
-  @orgFunctions.Action
-  removeFunction!: (id: string) => Promise<void>;
-
-  @AppointmentRoom.Action
-  deleteAppointmentroom!: (id: string) => Promise<void>;
-
-  @task.Action
-  fetchTasks!: () => Promise<void>;
+  @appointmentRoom.Action
+  fetchAppointmentrooms!: () => Promise<void>;
 
   @location.State
   locations!: ILocation[];
 
   @location.Action
   fetchLocations!: () => Promise<void>;
+
+showAppointmentRoom(value:string){
+  this.showRoom = true;
+  this.roomId = value;
+}
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -182,19 +179,21 @@ export default class apponitmentRooms extends Vue {
     },
     {
       title: "CUSTODIAN",
-      key: "supervisor",
+      key: "custodian",
       show: true,
     },
     {
       title: "STATUS",
-      key: "Status",
+      key: "status",
       show: true,
     },
   ];
   get empty() {
-    return this.tasks.length < 1;
+    return this.appointmentrooms.length < 1;
   }
-
+   roomAdded(){
+     this.fetchAppointmentrooms();
+  }
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -204,74 +203,63 @@ export default class apponitmentRooms extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
-  getLocationAddress(id: string) {
-    const pt = this.locations.find((i: any) => i.id === id);
-    return pt;
-  }
-
-  etLocationAddress(id: string) {
-    const pt = "-----";
-    return pt;
-  }
-
-  // getLocationAddress(id: string) {
-  //         const pt = this.locations.find((i: any) => i.id === id);
-  //         return pt ? pt.address : 'N/A';
-  // }
-
-  get items2() {
-    return this.functions.map((f) => ({
-      ...f,
-      hierarchy: f.hierarchy || "N/A",
-      supervisor: f.reportsTo?.name || "N/A",
-    }));
-  }
-
   get items() {
-    const tasks = this.tasks.map((task) => {
-      (task as any).createdAt = new Date(
-        (task as any).createdAt
+    const appointmentrooms = this.appointmentrooms.map((appointmentroom) => {
+      (appointmentroom as any).createdAt = new Date(
+        (appointmentroom as any).createdAt
       ).toLocaleDateString("en-US");
       return {
-        ...task,
-        action: task.id,
+        ...appointmentroom,
+        action: appointmentroom.id,
         keydisplay: "XXXXXXX",
-        roomName: "-----",
-        roomNumber: "-----",
-        location: "-----",
-        supervisor: "-----",
-        status: "Active",
+         location: this.getLocationName(appointmentroom.locationId),
+         custodian: this.getCustodianName(appointmentroom.custodian),
+        
       };
     });
-    if (!this.query) return tasks;
-    return search.searchObjectArray(tasks, this.query);
+    if (!this.query) return appointmentrooms;
+    return search.searchObjectArray(appointmentrooms, this.query);
+  }
+   getCustodianName(id: string) {
+    const pt = this.practitioner.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+   getLocationName(id: string) {
+    const pt = this.location.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
   }
 
-  // async remove(id: string) {
-  //   await this.removeFunction(id);
-  // }
+   async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this appointment room",
+      title: "Delete request",
+    });
+    if (!confirmed) return;
 
-  async remove(id: string) {
-    await this.deleteAppointmentroom(id);
+    if (await this.deleteAppointmentroom(id))
+      window.notify({ msg: "Appoinment room not deleted", status: "error" });
+    else window.notify({ msg: "Appoinment room deleted", status: "success" }); 
   }
 
-  // editFunction(id: string) {
-  //   const func = this.functions.find((f) => f.id == id);
-  //   if (!func) return;
-  //   this.functionToEdit = func;
-  //   this.editingFunction = true;
-  // }
-
-  editAppointmentRoom(id: string) {
-    const func = this.appointmentrooms.find((f: any) => f.id == id);
-    if (!func) return;
-    this.roomToEdit = func;
-    this.editingFunction = true;
+ async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+    const response = await Promise.all([AllLocation]);
+    this.location = response[0].data;
   }
 
-  created() {
-    this.fetchTasks();
-    if (this.tasks.length < 1) this.fetchTasks();
+  async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+ 
+  async created() {
+    await this.fetchAppointmentrooms();
+    await this.fetchLocation();
+    await this.fetchPractitioner();
+    if (this.appointmentrooms.length < 1) this.fetchAppointmentrooms();
   }
 }
 </script>
