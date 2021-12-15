@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
+    class="flex justify-center bg-white mb-32 shadow-md p-3 mt-2 rounded w-full"
   >
     <div class="w-full">
       <span
@@ -14,10 +14,10 @@
           <booking-site />
           <appointment-types />
           <appointment-rooms />
-          <add-location />
+          <reminder-section />
           <calender-preference />
           <notification-template />
-          <add-locationn />
+          <cancel-section />
           <photo-section />
           <rating-section />
           <!-- <performance-section/> -->
@@ -30,17 +30,17 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import Tabs from "./tabs.vue";
-import PracticeInfo from "./practiceinformation/Functions.vue";
+import PracticeInfo from "./practiceinformation/ExistingState.vue";
 import AppointmentTypes from "./appointmenttypes/ExistingState.vue";
 import BookingSite from "./bookingsite/ExistingState.vue";
 import PhotoSection from "./photo.vue";
 import PerformanceSection from "./performance.vue";
 
-import AppointmentRooms from "./appointmentrooms/Functions.vue";
+import AppointmentRooms from "./appointmentrooms/ExistingState.vue";
 //import Designations2 from "./designations/ExistingState.vue";
 //import JobLevel2 from "./joblevel/JobLevel.vue";
-import AddLocation from "./addLocation.vue";
-import AddLocationn from "./addLocationn.vue";
+import ReminderSection from "./reminder/index.vue";
+import CancelSection from "./cancel/index.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
 import CalenderPreference from "./calender/index.vue";
 import NotificationTemplate from "./notificationtemplate/index.vue";
@@ -58,11 +58,11 @@ import RatingSection from "./rating.vue";
     AppointmentRooms,
     // Designations2,
     //  JobLevel2,
-    AddLocation,
+    ReminderSection,
     CalenderPreference,
     RatingSection,
     NotificationTemplate,
-    AddLocationn,
+    CancelSection,
     AddReminder,
   },
 })

@@ -49,7 +49,7 @@
                   v-model:date="data.date"
                   v-model:time="data.dateTime"
                   label="Date/Time"
-                  width="full"
+                  class="w-full"
                 />
               </div>
               <div class="w-full mt-5">

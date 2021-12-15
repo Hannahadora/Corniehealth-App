@@ -1,17 +1,12 @@
+import Period from "./IPeriod";
+
 export default interface IAppointmentTypes {
-  id: string;
-  image: string;
-  category: string;
-  subcategory: string;
-  name: string;
-  description: string;
-  itemCode: string;
-  serviceUOM: string;
-  quantity: 0;
-  cost: string;
-  markup: 0;
-  discountLimit: 0;
-  applyVat: true;
-  status: string;
-  organizationId: string;
+  id?: string;
+  duration: Period,
+  practitioners: Array<string>,
+  linkForms: Array<string>,
+  bookingSiteLink: string,
+  serviceId: string,
+  appointmentConfirmation: string,
+
 }

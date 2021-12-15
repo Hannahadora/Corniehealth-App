@@ -3,7 +3,7 @@
    <Transition name="slide-fade">
   <div
     :class="classes"
-    class="animated fadeIn fixed z-50 pin shadow-inner flex items-center left-0 bottom-0 w-full h-full bg-black bg-opacity-50"
+    class="animated fadeIn fixed z-10 pin shadow-inner flex items-center left-0 bottom-0 w-full h-full bg-black bg-opacity-50"
     v-if="show"
   >
     <div v-bind="$attrs" class="animated fadeInUp fixed">

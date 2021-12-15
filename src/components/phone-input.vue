@@ -4,7 +4,7 @@
      <span class="float-left">
         {{ label }}
      </span>
-      <add-icon class="float-right cursor-pointer" @click="$emit('addnumbers')" v-if="add"/>
+      <add-blue-icon class="float-right cursor-pointer fill-current text-primary" @click="$emit('addnumbers')" v-if="add"/>
     </label>
     <field
       :name="inputName"
@@ -77,6 +77,7 @@ import IconInput from "@/components/IconInput.vue";
 import CornieSelect from "./phoneselect.vue";
 import CornieInput from "./cornieinput.vue";
 import SearchIcon from "@/components/icons/search.vue";
+import AddBlueIcon from "@/components/icons/addblue.vue";
 import AddIcon from "@/views/dashboard/ehr/hospitalization/components/add-icon.vue";
 
 const phoneRegex =
@@ -90,6 +91,7 @@ const phoneRegex =
     CornieInput,
     SearchIcon,
     IconInput,
+    AddBlueIcon,
     AddIcon,
   },
 })
