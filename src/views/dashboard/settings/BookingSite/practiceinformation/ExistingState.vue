@@ -15,42 +15,107 @@
           other related data in your practice settings
         </p>
         <div
-          class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
+          class="
+            flex
+            space-x-4
+            text-primary
+            font-semibold
+            text-sm
+            mt-3
+            cursor-pointer
+          "
           v-if="showEdit"
+          @click="showEdit = false"
         >
           <edit-icon class="fill-current text-primary mr-4" /> Edit
         </div>
         <div
           v-else
-          class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer"
+          class="
+            flex
+            space-x-4
+            text-danger
+            font-semibold
+            text-sm
+            mt-3
+            cursor-pointer
+          "
           @click="showEditSection"
         >
           <edit-icon class="fill-current text-danger mr-4" /> Edit
         </div>
       </div>
     </div>
-    <div
-      class="grid grid-cols-3 w-full justify-between gap-4 mt-5"
-      v-if="showEdit"
-    >
-      <cornie-input label="Email" placeholder="--Enter--" class="w-full mb-4" />
-      <cornie-input
-        label="Address"
-        placeholder="--Enter--"
-        class="w-full mb-4"
-      />
-      <cornie-input
-        label="Website"
-        placeholder="-Enter--"
-        class="w-full mb-4"
-      />
-      <phone-input
-        v-model:code="code"
-        :rules="requiredRule"
-        label="Contact Numbers"
-        v-model="phone"
-        class="w-full"
-      />
+    <div v-if="showEdit" class="w-full">
+      <div class="grid grid-cols-3 w-full justify-between gap-4 mt-5">
+        <cornie-input
+          label="Email"
+          v-model="email"
+          placeholder="--Enter--"
+          class="w-full mb-4"
+        />
+        <cornie-input
+          label="Address"
+          v-model="address"
+          placeholder="--Enter--"
+          class="w-full mb-4"
+        />
+        <cornie-input
+          label="Website"
+          v-model="website"
+          placeholder="-Enter--"
+          class="w-full mb-4"
+        />
+        <div>
+          <phone-input
+          :add="true"
+          @addnumbers="addNumbers"
+            v-model:code="dialCode"
+            :rules="phoneRule"
+            label="Contact Numbers"
+            v-model="contactNumber"
+            class="w-full"
+          />
+          <div class="flex space-x-6 w-full bg-primary rounded-full text-white p-3" v-for="(item, index) in phonenumbers" :key="index">
+             <span>{{item.number}}</span> <cancel-icon/>
+          </div>
+        </div>
+      </div>
+      <div class="w-full mb-12">
+        <label
+          for="ecounter"
+          class="w-full capitalize text-black text-sm font-bold mt-12"
+          >Site Message
+          <span class="text-xs text-red-600 font-medium italic"
+            >(Max 150 characters)</span
+          ></label
+        >
+        <div class="w-full -mt-6">
+          <Textarea
+            class="w-full text-xs"
+            placeholder="Text Area"
+            :rules="required"
+            v-model="siteMessage"
+          />
+        </div>
+      </div>
+      <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card>
     </div>
     <div class="w-full mt-8 mb-32" v-else>
       <div class="float-left">
@@ -106,86 +171,9 @@
         </div>
       </div>
     </div>
-    <div class="w-full mb-12">
-      <label
-        for="ecounter"
-        class="w-full capitalize text-black text-sm font-bold mt-12"
-        >Site Message
-        <span class="text-xs text-red-600 font-medium italic"
-          >(Max 150 characters)</span
-        ></label
-      >
-      <div class="w-full -mt-6">
-        <Textarea
-          class="w-full text-xs"
-          placeholder="Text Area"
-          :rules="required"
-          v-model="siteMessage"
-        />
-      </div>
-    </div>
-
-    <cornie-card>
-      <cornie-card-text class="flex justify-end">
-        <cornie-btn
-          @click="show = false"
-          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-        >
-          Cancel
-        </cornie-btn>
-        <cornie-btn
-          :loading="loading"
-          @click="apply"
-          class="text-white bg-danger px-6 rounded-xl"
-        >
-          Save
-        </cornie-btn>
-      </cornie-card-text>
-    </cornie-card>
   </accordion-component>
-  <!-- <accordion-component class="shadow-none rounded-none border-none mt-5 text-primary" title="Practice Hours" expand="true" v-model="opened" :opened="true">
-           <div class="grid grid-cols-1 mt-8 gap-y-6 w-full">
-    <label class="flex items-center">
-      <select-option type="checkbox" class="mr-3" v-model="all" />
-      All days
-    </label>
-    <div class="day-grid grid w-full">
-      <span class="font-bold block"></span>
-      <span class="font-light uppercase text-black text-sm">
-        <span>Start Time</span>
-        <span class="ml-14">End Time</span>
-      </span>
-    </div>
-    <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
-      <label class="flex items-center"></label>
-        <select-option
-          @change="changed"
-          v-model="opHour.selected"
-          type="checkbox"
-          class="mr-3"
-        />
-      </div>
-    </div>
-    <cornie-card>
-      <cornie-card-text class="flex justify-end">
-        <cornie-btn
-          @click="show = false"
-          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-        >
-          Cancel
-        </cornie-btn>
-        <cornie-btn
-          :loading="loading"
-          @click="apply"
-          class="text-white bg-danger px-6 rounded-xl"
-        >
-          Save
-        </cornie-btn>
-      </cornie-card-text>
-    </cornie-card>
-  </accordion-component> -->
   <accordion-component
-    class="shadow-none rounded-none border-none text-primary"
+    class="shadow-none rounded-none border-none mt-32 text-primary"
     title="Practice Hours"
     expand="true"
     v-model="opened"
@@ -280,7 +268,8 @@ import ShareIcon from "@/components/icons/sharewhite.vue";
 import ViewIcon from "@/components/icons/eyegreen.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
 import { Prop } from "vue-property-decorator";
-// import AddFunction from "./add-function.vue";
+import CancelIcon from "@/components/icons/whitecancel.vue";
+import { string } from "yup";
 import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
@@ -288,7 +277,10 @@ import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/aedit.vue";
 
-// const orgFunctions = namespace("OrgFunctions");
+
+const phoneRegex =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 const practiceinformations = namespace("practiceinformation");
 const opHours = [
   {
@@ -356,6 +348,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     // AddFunction,
     Avatar,
     ThreeDotIcon,
+    CancelIcon,
     SearchIcon,
     PrintIcon,
     CornieBtn,
@@ -377,8 +370,6 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
   },
 })
 export default class CarePartnersExistingState extends Vue {
-  // @Prop({ type: Array, default: [], required: true })
-  // functions!: IFunction[];
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -407,10 +398,15 @@ export default class CarePartnersExistingState extends Vue {
   opened = true;
   email = "";
   address = "";
+  phonenumbers = [] as any;
+  website="";
   siteMessage = "";
   contactNumber = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
   orgInfo = [];
+  dialCode = "+234";
+
+ phoneRule = string().matches(phoneRegex, "A valid phone number is required");
 
   get operationHours() {
     return this.modelValue;
@@ -488,7 +484,13 @@ export default class CarePartnersExistingState extends Vue {
       return obj;
     };
   }
-
+addNumbers(){
+  if(this.contactNumber == ''){
+     window.notify({msg: "Please input a contact number",status: "error",});
+  }else{
+    this.phonenumbers.push(this.contactNumber);
+  }
+}
   async createPracticehour() {
     try {
       const response = await cornieClient().post(

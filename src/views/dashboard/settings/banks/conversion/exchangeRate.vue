@@ -30,13 +30,14 @@
             :items="allLocation"
             placeholder="--Select Location--"
           />
-          <cornie-select
+          <!-- <cornie-select
             placeholder="--Select--"
             class="w-full"
-            label="Base Currency"
+            label="Default Currency"
             :items="allCurrencyNew"
             v-model="basecurrency"
-          />
+          /> -->
+           <cornie-input disabled  label="Default Currency" v-model="defaultCurrency" placeholder="--Autofilled--" class="w-full mb-4" />
           <cornie-select
             placeholder="--Select--"
             class="w-full"
