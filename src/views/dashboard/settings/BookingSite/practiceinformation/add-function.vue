@@ -26,7 +26,7 @@
             v-model="roomNumber"
             :type="number"
           />
-          <!-- <input type="number"   
+          <!-- <input type="number"
           class="w-full mb-6"
             label="Room Number"
             placeholder="--Enter--"

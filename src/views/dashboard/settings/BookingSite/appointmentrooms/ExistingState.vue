@@ -45,7 +45,14 @@
           <p class="text-sm">show</p>
           <input
             type="number"
-            class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
+            class="
+              w-12
+              mr-2
+              ml-2
+              outline-none
+              border border-blue-lighter
+              rounded-r
+            "
           />
           <p class="text-sm">per page</p>
         </div>

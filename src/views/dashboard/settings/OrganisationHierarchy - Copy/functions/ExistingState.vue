@@ -165,7 +165,7 @@ import PlusIcon from "@/components/icons/add.vue";
 // import IFunction from "@/types/IFunction";
 import { Prop } from "vue-property-decorator";
 // import AddFunction from "./add-function.vue";
-import {  Watch, PropSync } from "vue-property-decorator";
+import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
 
@@ -252,74 +252,41 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     TableOptions,
     AccordionComponent,
     Textarea,
-    Field
+    Field,
   },
 })
 export default class CarePartnersExistingState extends Vue {
   // @Prop({ type: Array, default: [], required: true })
   // functions!: IFunction[];
 
-   @PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: String, default: '' })
-  id!: string
+  @Prop({ type: String, default: "" })
+  id!: string;
 
- @Prop({ type: Array, default: opHours })
+  @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
   @practiceinformations.Action
   fetchPracticeInformation!: () => Promise<void>;
 
-@practiceinformations.Action
+  @practiceinformations.Action
   fetchPracticeHour!: () => Promise<void>;
 
- @Watch("all")
+  @Watch("all")
   opHours = opHours;
-  loading= false;
+  loading = false;
   all = true;
   newArr = [];
   // editingFunction = false;
-  expand=false;
-  opened=true;
-<<<<<<< HEAD:src/views/dashboard/settings/OrganisationHierarchy - Copy/functions/ExistingState.vue
-  PhoneNumber="";
-  rawHeaders = [
-    {
-      title: "Function Name",
-      key: "name",
-      show: true,
-    },
-    {
-      title: "Hierarchy",
-      key: "hierarchy",
-      show: true,
-    },
-    {
-      title: "Supervisory Function",
-      key: "supervisor",
-      show: true,
-    },
-  ];
+  expand = false;
+  opened = true;
+  email = "";
+  address = "";
+  siteMessage = "";
+  contactNumber = "";
 
-  get items() {
-    return this.functions.map((f) => ({
-      ...f,
-      hierarchy: f.hierarchy || "N/A",
-      supervisor: f.reportsTo?.name || "N/A",
-    }));
-  }
-
-  async remove(id: string) {
-    await this.removeFunction(id);
-  }
-=======
-  email="";
-  address="";
-  siteMessage="";
-  contactNumber="";
-
->>>>>>> 20c691be39192df3bdb31e235ed2ff798b27f93f:src/views/dashboard/settings/BookingSite/functions/ExistingState.vue
   get operationHours() {
     return this.modelValue;
   }
@@ -342,7 +309,7 @@ export default class CarePartnersExistingState extends Vue {
 
   wholeDay = workHours;
 
-   get payload() {
+  get payload() {
     return {
       email: this.email,
       siteMessage: this.siteMessage,
@@ -352,75 +319,88 @@ export default class CarePartnersExistingState extends Vue {
     };
   }
 
-   async  apply() {
-     this.loading = true
+  async apply() {
+    this.loading = true;
     // if (this.id) await this.updateIssues()
-     await this.createPracticeform()
-    this.loading = false
-    }
-
-     async  applyhour() {
-     this.loading = true
-    // if (this.id) await this.updateIssues()
-     await this.createPracticehour()
-    this.loading = false
-    }
-  get newaction() {
-    return this.id ? 'Update' : 'Save'
+    await this.createPracticeform();
+    this.loading = false;
   }
-   done() {
+
+  async applyhour() {
+    this.loading = true;
+    // if (this.id) await this.updateIssues()
+    await this.createPracticehour();
+    this.loading = false;
+  }
+  get newaction() {
+    return this.id ? "Update" : "Save";
+  }
+  done() {
     this.$emit("-added");
     this.show = false;
   }
 
-  async mappedfunc(){
-   const payload = () => {
-  const obj : any = { }
-  opHours.forEach(i => {
-    obj[i.day.toLowerCase()] = {
-      startDate: i.openTime,
-      endDate: i.closeTime
-    }
-  })
-  return obj;
-}
+  async mappedfunc() {
+    const payload = () => {
+      const obj: any = {};
+      opHours.forEach((i) => {
+        obj[i.day.toLowerCase()] = {
+          startDate: i.openTime,
+          endDate: i.closeTime,
+        };
+      });
+      return obj;
+    };
   }
-  async createPracticeform(){
+  async createPracticeform() {
     try {
-      const response = await cornieClient().post('/api/v1/practice-information', this.payload)
+      const response = await cornieClient().post(
+        "/api/v1/practice-information",
+        this.payload
+      );
       if (response.success) {
-        window.notify({ msg: 'practice-information  Created', status: 'success' })
+        window.notify({
+          msg: "practice-information  Created",
+          status: "success",
+        });
         this.done();
       }
     } catch (error) {
-
-      window.notify({ msg: 'practice-information not Created', status: 'error' })
-
+      window.notify({
+        msg: "practice-information not Created",
+        status: "error",
+      });
     }
   }
 
-  async createPracticehour(){
+  async createPracticehour() {
     try {
-      const response = await cornieClient().post('/api/v1/practice-hour', this.mappedfunc())
+      const response = await cornieClient().post(
+        "/api/v1/practice-hour",
+        this.mappedfunc()
+      );
       if (response.success) {
-        window.notify({ msg: 'practice-information  Created', status: 'success' })
+        window.notify({
+          msg: "practice-information  Created",
+          status: "success",
+        });
         this.done();
       }
     } catch (error) {
-
-      window.notify({ msg: 'practice-information not Created', status: 'error' })
-
+      window.notify({
+        msg: "practice-information not Created",
+        status: "error",
+      });
     }
   }
-
 
   created() {
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
-      alert("hello");
-      this.fetchPracticeInformation();
-      this.fetchPracticeHour();
-      // ;
+    alert("hello");
+    this.fetchPracticeInformation();
+    this.fetchPracticeHour();
+    // ;
   }
 }
 </script>

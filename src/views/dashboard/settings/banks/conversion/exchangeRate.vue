@@ -54,13 +54,24 @@
           class="w-full mb-4"
         />
         <!-- <div class="">
-               <span class="text-sm font-semibold mb-1">Exchange rate</span>       
+               <span class="text-sm font-semibold mb-1">Exchange rate</span>
                 <div class="bg-blue-100 text-black p-3 rounded flex font-semibold mt-5 text-sm">
                   68
                 </div>
            </div> -->
         <div
-          class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm"
+          class="
+            bg-blue-100
+            text-black
+            p-3
+            text-center
+            rounded
+            flex
+            font-semibold
+            justify-center
+            mt-5
+            text-sm
+          "
         >
           1 {{ basecurrency }} ~= {{ exchangeRate }} {{ currency }}
         </div>
@@ -260,6 +271,7 @@ export default class NewExchangeRate extends Vue {
     const response = await Promise.all([AllLocation]);
     this.orgLocation = response[0].data;
   }
+
   created() {
     this.fetchDropDown();
     this.fetchLocation();

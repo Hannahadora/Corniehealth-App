@@ -138,8 +138,7 @@ export default class defaultCurrency extends Vue {
         window.notify({ msg: "Currency conversion added", status: "success" });
         this.show = false;
       }
-    } catch (error) {
-      window.notify({ msg: "Currency conversion not added", status: "error" });
+    } finally {
     }
   }
 

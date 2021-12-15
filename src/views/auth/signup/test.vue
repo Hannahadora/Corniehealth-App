@@ -28,16 +28,13 @@
       </div>
     </div>
   </div>
-
-
-
-
   <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12" v-else>
     <div
-      class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 pb-40 relative right-32 lg:right-0 xl:right-0 md:right-0 "
+      class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 pb-40 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg"
     >
+      <h2 class="font-bold text-2xl p-6">Join Corniehealth</h2>
       <v-form class="w-full p-6" @submit="submit">
-        <!-- <div>
+        <div>
           <check-icon
             class="icon-check-mark bg-white rounded-full"
             v-if="width == 50 || width == 75 || width == 100"
@@ -80,11 +77,11 @@
           >
             Password
           </p>
-        </div> -->
+        </div>
 
         <div class="" v-if="step == 1">
           <!-- component -->
-          <!-- <div class="relative pt-1">
+          <div class="relative pt-1">
             <div
               class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
             >
@@ -98,25 +95,41 @@
                 <div class="icon-wrap"></div>
               </div>
             </div>
-          </div> -->
-        <p class="text-jet_black text-base mb-10 text-center opacity-70">Choose how you want to sign up and continue.</p>
-
+          </div>
+          <div class="cursor-pointer">
+            <span class="flex mt-2 mb-5"
+              >Choose your account type
+              <info-icon class="ml-4 mt-1 dropdown cursor-pointer" />
+              <div class="">
+                <Tooltip
+                  class="text-white text-sm dropdown-menu"
+                  text="Account type is dependent on the type of services you want to receive/render. 
+                Patient account (Individual or Group), Provider account (Hospital, Laboratory, Pharmacy, Opticians, Dental or EMT) and Payer account
+                "
+                >
+                </Tooltip>
+              </div>
+            </span>
+          </div>
           <div class="grid grid-cols-3 gap-4 mb-32">
             <div class="cursor-pointer">
               <div
-                class="bg-gray-100 rounded-md p-10 h-28 grid place-items-center w-40 cursor-pointer"
+                class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer"
                 @mouseleave="isVisible = false"
                 @keydown.enter="isVisible = !isVisible"
                 :class="{ 'bg-danger-100 , dropdown': checked == true }"
                 @click="checkValue"
               >
-         
+                <chevron-down-icon
+                  class="text-white -mt-7 mb-3 stroke-current ml-14"
+                  v-if="checked"
+                />
                 <ul
                   class="bg-white rounded w-40 h-24 absolute text-gray-700 p-2 -mt-2 border-2"
                   v-show="isVisible"
                 >
                   <li
-                    class="list-none items-center flex text-xs font-semibold text-gray-700  hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
+                    class="list-none items-center flex text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
                   >
                     <span class="flex item-center">
                       <cornie-radio
@@ -148,10 +161,10 @@
                   value="patient"
                   v-model="accountType"
                 />
-                <div class="grid place-items-center">
+                <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center ml-2"
                     :class="{ hidden: checked == true }"
                     width="28"
                     height="28"
@@ -160,12 +173,12 @@
                   >
                     <path
                       d="M14.0003 14.0003C17.6837 14.0003 20.667 11.017 20.667 7.33366C20.667 3.65033 17.6837 0.666992 14.0003 0.666992C10.317 0.666992 7.33366 3.65033 7.33366 7.33366C7.33366 11.017 10.317 14.0003 14.0003 14.0003ZM14.0003 17.3337C9.55032 17.3337 0.666992 19.567 0.666992 24.0003V27.3337H27.3337V24.0003C27.3337 19.567 18.4503 17.3337 14.0003 17.3337Z"
-                      fill="#080056"
+                      fill="#1F1514"
                     />
                   </svg>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center ml-2"
                     v-if="checked"
                     width="28"
                     height="28"
@@ -178,7 +191,7 @@
                     />
                   </svg>
                   <p
-                    class="font-semibold text-center mt-2 text-primary"
+                    class="font-semibold text-center mt-2"
                     :class="{ 'text-white': checked == true }"
                   >
                     Patient
@@ -188,13 +201,16 @@
             </div>
             <div class="cursor-pointer">
               <div
-                class="bg-gray-100 rounded-md p-10 h-28 grid place-items-center w-40 cursor-pointer"
+                class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer"
                 @mouseleave="isVisible2 = false"
                 @keydown.enter="isVisible2 = !isVisible2"
                 :class="{ 'bg-danger-100': checked2 == true }"
                 @click="checkValue2"
               >
-    
+                <chevron-down-icon
+                  class="text-white -mt-7 mb-3 stroke-current ml-14"
+                  v-if="checked2"
+                />
                 <ul
                   class="dropdown-menu z-10 bg-white rounded w-50 h-80 absolute text-gray-700 p-2 -mt-2 border-2"
                   v-show="isVisible2"
@@ -280,10 +296,10 @@
                   value="provider"
                   v-model="accountType"
                 />
-                <div class="grid place-items-center">
+                <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center ml-2"
                     :class="{ hidden: checked2 == true }"
                     width="31"
                     height="30"
@@ -292,12 +308,12 @@
                   >
                     <path
                       d="M27.1667 0H3.83333C2 0 0.516667 1.5 0.516667 3.33333L0.5 26.6667C0.5 28.5 2 30 3.83333 30H27.1667C29 30 30.5 28.5 30.5 26.6667V3.33333C30.5 1.5 29 0 27.1667 0ZM25.5 18.3333H18.8333V25H12.1667V18.3333H5.5V11.6667H12.1667V5H18.8333V11.6667H25.5V18.3333Z"
-                      fill="#080056"
+                      fill="#1F1514"
                     />
                   </svg>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center ml-2"
                     v-if="checked2"
                     width="31"
                     height="30"
@@ -311,7 +327,7 @@
                     />
                   </svg>
                   <p
-                    class="font-semibold text-center mt-2 text-primary"
+                    class="font-semibold text-center mt-2"
                     :class="{ 'text-white': checked2 == true }"
                   >
                     Provider
@@ -320,7 +336,7 @@
               </div>
             </div>
             <div
-              class="bg-gray-100 rounded-md p-10 h-28 grid place-items-center w-40 cursor-pointer"
+              class="bg-gray-100 rounded-md p-10 h-32 w-32 cursor-pointer"
               :class="{ 'bg-danger-100': checked3 == true }"
               @click="checkValue3"
             >
@@ -331,10 +347,10 @@
                 value="payer"
                 v-model="accountType"
               />
-              <div class="grid place-items-center">
+              <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="justify-center "
+                  class="justify-center ml-2"
                   :class="{ hidden: checked3 == true }"
                   width="34"
                   height="30"
@@ -343,12 +359,12 @@
                 >
                   <path
                     d="M16.9997 6.66667V0H0.333008V30H33.6663V6.66667H16.9997ZM6.99967 26.6667H3.66634V23.3333H6.99967V26.6667ZM6.99967 20H3.66634V16.6667H6.99967V20ZM6.99967 13.3333H3.66634V10H6.99967V13.3333ZM6.99967 6.66667H3.66634V3.33333H6.99967V6.66667ZM13.6663 26.6667H10.333V23.3333H13.6663V26.6667ZM13.6663 20H10.333V16.6667H13.6663V20ZM13.6663 13.3333H10.333V10H13.6663V13.3333ZM13.6663 6.66667H10.333V3.33333H13.6663V6.66667ZM30.333 26.6667H16.9997V23.3333H20.333V20H16.9997V16.6667H20.333V13.3333H16.9997V10H30.333V26.6667ZM26.9997 13.3333H23.6663V16.6667H26.9997V13.3333ZM26.9997 20H23.6663V23.3333H26.9997V20Z"
-                    fill="#080056"
+                    fill="#1F1514"
                   />
                 </svg>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="justify-center "
+                  class="justify-center ml-2"
                   v-if="checked3"
                   width="34"
                   height="30"
@@ -361,7 +377,7 @@
                   />
                 </svg>
                 <p
-                  class="font-semibold text-center mt-2 text-primary"
+                  class="font-semibold text-center mt-2"
                   :class="{ 'text-white': checked3 == true }"
                 >
                   Payer
@@ -370,20 +386,18 @@
             </div>
           </div>
           <cornie-btn
-            class="font-semibold rounded-full  mt-3 w-full  p-2"
-            :class="[
-                checked == true || checked2 == true || checked3 == true ?  'bg-danger-100 text-white': 'text-gray-400 bg-gray-200'
-            ]"
+            class="font-semibold rounded-full bg-gray-500 mt-3 w-full text-white p-2"
+            :class="{
+              'bg-danger-100':
+                checked == true || checked2 == true || checked3 == true,
+            }"
             @click="next"
           >
-            Continue
+            Next
           </cornie-btn>
         </div>
         <div class="" v-if="step == 2">
           <!-- component -->
-          <h1 class="text-primary font-bold text-4xl mb-8">
-            Create an account
-          </h1>
           <div class="relative pt-1">
             <div
               class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
@@ -449,10 +463,7 @@
         </div>
         <div class="" :user="user" v-if="step == 3 && userCreated">
           <!-- component -->
-                  <h1 class="text-primary font-bold text-4xl mb-8">
-            Create an account
-          </h1>
-          <div class="relative pt-1 mb-8">
+          <div class="relative pt-1">
             <div
               class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
               @click="back"
@@ -505,9 +516,9 @@
           />
         </div>
       </v-form>
-      <span class="w-full flex justify-center items-center text-sm text-center mt-2 ">
+      <span class="w-full flex text-sm mt-2 pb-5">
         Already have an account?
-        <router-link class="ml-1 text-danger" to="/login"> Sign In </router-link>
+        <router-link class="ml-1 text-danger" to="/login"> Login </router-link>
       </span>
     </div>
   </div>
