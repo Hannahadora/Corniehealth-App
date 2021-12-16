@@ -29,12 +29,9 @@
     </div>
   </div>
 
-
-
-
   <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12" v-else>
     <div
-      class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 pb-40 relative right-32 lg:right-0 xl:right-0 md:right-0 "
+      class="w-80 lg:w-full xl:w-full md:w-full h-full block p-4 pb-40 relative right-32 lg:right-0 xl:right-0 md:right-0"
     >
       <v-form class="w-full p-6" @submit="submit">
         <!-- <div>
@@ -99,7 +96,9 @@
               </div>
             </div>
           </div> -->
-        <p class="text-jet_black text-base mb-10 text-center opacity-70">Choose how you want to sign up and continue.</p>
+          <p class="text-jet_black text-base mb-10 text-center opacity-70">
+            Choose how you want to sign up and continue.
+          </p>
 
           <div class="grid grid-cols-3 gap-4 mb-32">
             <div class="cursor-pointer">
@@ -110,13 +109,12 @@
                 :class="{ 'bg-danger-100 , dropdown': checked == true }"
                 @click="checkValue"
               >
-         
                 <ul
                   class="bg-white rounded w-40 h-24 absolute text-gray-700 p-2 -mt-2 border-2"
                   v-show="isVisible"
                 >
                   <li
-                    class="list-none items-center flex text-xs font-semibold text-gray-700  hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
+                    class="list-none items-center flex text-xs font-semibold text-gray-700 hover:text-gray-900 cursor-pointer my-1 -m-2 p-5 py-2"
                   >
                     <span class="flex item-center">
                       <cornie-radio
@@ -151,7 +149,7 @@
                 <div class="grid place-items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center"
                     :class="{ hidden: checked == true }"
                     width="28"
                     height="28"
@@ -165,7 +163,7 @@
                   </svg>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center"
                     v-if="checked"
                     width="28"
                     height="28"
@@ -194,7 +192,6 @@
                 :class="{ 'bg-danger-100': checked2 == true }"
                 @click="checkValue2"
               >
-    
                 <ul
                   class="dropdown-menu z-10 bg-white rounded w-50 h-80 absolute text-gray-700 p-2 -mt-2 border-2"
                   v-show="isVisible2"
@@ -283,7 +280,7 @@
                 <div class="grid place-items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center"
                     :class="{ hidden: checked2 == true }"
                     width="31"
                     height="30"
@@ -297,7 +294,7 @@
                   </svg>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="justify-center "
+                    class="justify-center"
                     v-if="checked2"
                     width="31"
                     height="30"
@@ -334,7 +331,7 @@
               <div class="grid place-items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="justify-center "
+                  class="justify-center"
                   :class="{ hidden: checked3 == true }"
                   width="34"
                   height="30"
@@ -348,7 +345,7 @@
                 </svg>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="justify-center "
+                  class="justify-center"
                   v-if="checked3"
                   width="34"
                   height="30"
@@ -370,9 +367,11 @@
             </div>
           </div>
           <cornie-btn
-            class="font-semibold rounded-full  mt-3 w-full  p-2"
+            class="font-semibold rounded-full mt-3 w-full p-2"
             :class="[
-                checked == true || checked2 == true || checked3 == true ?  'bg-danger-100 text-white': 'text-gray-400 bg-gray-200'
+              checked == true || checked2 == true || checked3 == true
+                ? 'bg-danger-100 text-white'
+                : 'text-gray-400 bg-gray-200',
             ]"
             @click="next"
           >
@@ -449,7 +448,7 @@
         </div>
         <div class="" :user="user" v-if="step == 3 && userCreated">
           <!-- component -->
-                  <h1 class="text-primary font-bold text-4xl mb-8">
+          <h1 class="text-primary font-bold text-4xl mb-8">
             Create an account
           </h1>
           <div class="relative pt-1 mb-8">
@@ -505,9 +504,13 @@
           />
         </div>
       </v-form>
-      <span class="w-full flex justify-center items-center text-sm text-center mt-2 ">
+      <span
+        class="w-full flex justify-center items-center text-sm text-center mt-2"
+      >
         Already have an account?
-        <router-link class="ml-1 text-danger" to="/login"> Sign In </router-link>
+        <router-link class="ml-1 text-danger" to="/login">
+          Sign In
+        </router-link>
       </span>
     </div>
   </div>
@@ -811,6 +814,4 @@ input[type="radio"]:checked {
 }
 </style>
 
-
-
-//  
+//

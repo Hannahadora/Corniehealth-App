@@ -882,10 +882,9 @@ export default class AddCondition extends Vue {
   // }
 
   async submit() {
-    ;
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return ;
+      return;
     }
     try {
       const { data } = await cornieClient().post(
@@ -893,10 +892,8 @@ export default class AddCondition extends Vue {
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      ;
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      ;
     }
   }
 

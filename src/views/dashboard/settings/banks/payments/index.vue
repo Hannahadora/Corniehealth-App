@@ -2,8 +2,7 @@
   <div class="bg-white rounded mb-56 p-5 mt-5">
     <div class="">
       <h3 class="text-primary font-bold border-b-2 border-gray-200 pb-4">
-        You can activate the Virtual NUBAN Account to
-        manage your payments.
+        You can activate the Virtual NUBAN Account to manage your payments.
       </h3>
       <ul class="nav nav-tabs nav-tabs-bottom widget_categories mt-8">
         <li class="nav-item cursor-pointer">

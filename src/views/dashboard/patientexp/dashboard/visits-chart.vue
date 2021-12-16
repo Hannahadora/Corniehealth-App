@@ -27,11 +27,8 @@ export default class VisitsChart extends Vue {
         `/api/v1/visit/analytics/stats`,
         { start: start?.toISOString(), end: end?.toISOString() }
       );
-      ;
       // this.chartData = data.
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   mounted() {

@@ -138,7 +138,6 @@ export default class Notes extends Vue {
     } catch (error) {
       this.loading = false;
       this.show = false;
-      ;
       window.notify({ msg: "Notes not created", status: "error" });
       this.$router.push("/dashboard/provider/experience/tasks");
     }

@@ -668,7 +668,6 @@ export default class Availability extends Vue {
     //     this.selectedSlots.splice(index, 1)
     //   }
     // }
-    ;
   }
 
   get availableSlots() {
@@ -681,7 +680,6 @@ export default class Availability extends Vue {
   }
 
   async applyFilter(filterOpions: any) {
-    ;
     this.showFilter = false;
     this.showFilter = false;
     this.filterOptions = filterOpions;
@@ -692,8 +690,6 @@ export default class Availability extends Vue {
     const response: any = await slotService.getPractitionersSlots(
       filterOpions.byPractitioners[0]
     );
-    ;
-
     this.filteredSlots = response?.data;
   }
 

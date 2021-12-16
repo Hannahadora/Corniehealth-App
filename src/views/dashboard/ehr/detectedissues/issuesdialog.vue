@@ -443,7 +443,6 @@ export default class DetectedIssue extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Detected issue not Created", status: "error" });
     }
   }
@@ -465,7 +464,6 @@ export default class DetectedIssue extends Vue {
     if (!this.organizationInfo) this.fetchOrgInfo();
     // this.setIssues();
     // this.checkingissues();
-    ;
     //
     // this.setDetectedIssue();
   }

@@ -126,9 +126,7 @@ export default {
     },
   },
   methods: {
-    saveTwoFactor() {
-      ;
-    },
+    saveTwoFactor() {},
     async sendCode() {
       const payload = {
         userId: store.state.user.user.id,

@@ -244,7 +244,6 @@ export default class PractitionersDialog extends Vue {
         status: "success",
       });
     } catch (error) {
-      ;
       window.notify({ msg: `Practitioner not added`, status: "error" });
     }
   }

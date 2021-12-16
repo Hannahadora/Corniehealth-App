@@ -1,5 +1,5 @@
-import { IPatient } from "./IPatient"
-import IPractitioner from "./IPractitioner"
+import { IPatient } from "./IPatient";
+import IPractitioner from "./IPractitioner";
 
 export default interface IVital {
   id: string;

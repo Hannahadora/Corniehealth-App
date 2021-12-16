@@ -55,12 +55,10 @@ export default class AppointmentList extends Vue {
 
   selectItem(item: any) {
     this.$emit("selected", item);
-    ;
   }
 
   async created() {
     await this.fetchByIdAppointments(this.$route.params.id.toString());
-    ;
   }
 }
 </script>

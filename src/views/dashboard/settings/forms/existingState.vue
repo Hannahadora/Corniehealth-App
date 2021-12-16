@@ -702,7 +702,6 @@ export default class PracticeformExistingState extends Vue {
         this.stautsadded();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Practice form  not Archived", status: "error" });
       this.loading = false;
     }

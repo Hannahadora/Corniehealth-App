@@ -45,7 +45,11 @@
       </cornie-table>
     </div>
   </div>
-  <appointment-modal v-model="registerNew" @type-added="typeadded" @closesidemodal="closeModal" />
+  <appointment-modal
+    v-model="registerNew"
+    @type-added="typeadded"
+    @closesidemodal="closeModal"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -151,9 +155,9 @@ export default class AppointmentTypes extends Vue {
   get empty() {
     return this.appointmentTypes.length < 1;
   }
- async typeadded(){
-   this.fetchappointmentTypes;
- }
+  async typeadded() {
+    this.fetchappointmentTypes;
+  }
   get items() {
     const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
       (appointmentType as any).createdAt = new Date(
@@ -185,7 +189,6 @@ export default class AppointmentTypes extends Vue {
 
   created() {
     this.fetchappointmentTypes();
-    
   }
 }
 </script>

@@ -1,4 +1,4 @@
 /* eslint-disable unused-imports/no-unused-vars */
- interface IIndexableObject {
+interface IIndexableObject {
   [state: string]: any;
 }

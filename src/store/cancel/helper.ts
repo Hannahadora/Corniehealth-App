@@ -5,15 +5,11 @@ export async function fetchCancels() {
     try {
         const response = await cornieClient().get(
             "/api/v1/cancellations/findForUser/me"
-        )
+        );
 
         if (response.success) {
-            return response.data
+            return response.data;
         }
-    } catch (error) {
-
-    }
-    return [] as ICancel[]
+    } catch (error) {}
+    return [] as ICancel[];
 }
-
-

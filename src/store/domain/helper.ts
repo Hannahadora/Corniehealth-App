@@ -1,29 +1,27 @@
-import { cornieClient } from "@/plugins/http"
-import IDomain from "@/types/IDomain"
+import { cornieClient } from "@/plugins/http";
+import IDomain from "@/types/IDomain";
 
 export async function fetchDomains() {
     try {
         const response = await cornieClient().get(
             "/api/v1/domain/myOrg/getMyOrgdomains"
-        )
+        );
 
         if (response.success) {
-            return response.data
+            return response.data;
         }
-    } catch (error) {
-
-    }
-    return [] as IDomain[]
+    } catch (error) {}
+    return [] as IDomain[];
 }
 
 export async function deleteDomain(id: string) {
     try {
-        const response = await cornieClient().delete(`/api/v1/domain/${id}`)
+        const response = await cornieClient().delete(`/api/v1/domain/${id}`);
         if (response.success) {
-            return true
+            return true;
         }
     } catch (error) {
-        return false
+        return false;
     }
-    return false
+    return false;
 }

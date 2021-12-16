@@ -342,13 +342,10 @@ export default class Shift extends Vue {
   async created() {
     await this.fetchHealthcares();
     if (!this.shifts || this.shifts.length === 0) await this.getShifts();
-    ;
     if (this.$route.query.shiftId) {
       const shift = this.shifts.find(
         (i: any) => i.id === this.$route.query.shiftId
       );
-      ;
-
       if (shift) {
         if (this.shift.schedule) this.selectSchedule(this.shift.schedule);
         this.shift = shift;
@@ -362,7 +359,6 @@ export default class Shift extends Vue {
                   : false,
             };
           });
-          ;
         }
       }
     }
@@ -402,23 +398,18 @@ export default class Shift extends Vue {
         })
         .map((i: any) => i.text),
     };
-    ;
     this.loading = true;
     if (!this.$route.query.shiftId) {
       try {
         await this.createShift(body);
         this.$router.push({ name: "Patient Experience Management" });
-      } catch (error) {
-        ;
-      }
+      } catch (error) {}
     } else {
       try {
         this.loading = true;
         await this.updateShift(body);
         this.$router.push({ name: "Patient Experience Management" });
-      } catch (error) {
-        ;
-      }
+      } catch (error) {}
     }
     this.loading = false;
   }

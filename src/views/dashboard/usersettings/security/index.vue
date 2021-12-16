@@ -353,7 +353,6 @@ export default class UserSecurity extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      ;
     }
   }
 }

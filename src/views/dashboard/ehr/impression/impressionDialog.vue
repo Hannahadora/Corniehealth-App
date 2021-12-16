@@ -717,7 +717,6 @@ export default class Medication extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({
         msg: "Clinical Impression not Created",
         status: "error",

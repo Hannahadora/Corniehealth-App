@@ -17,9 +17,7 @@ export default {
     type: String,
   },
   watch: {
-    modelValueSync(val) {
-      ;
-    },
+    modelValueSync(val) {},
   },
   computed: {
     modelValueSync: {

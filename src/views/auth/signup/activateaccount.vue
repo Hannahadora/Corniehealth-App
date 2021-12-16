@@ -189,9 +189,7 @@ export default class ActivateAccount extends Vue {
     const payload = this.cornieData;
     try {
       await cornieClient().post("/api/v1/account/set-type", payload);
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   async submit() {

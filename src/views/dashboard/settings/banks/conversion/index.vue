@@ -7,21 +7,7 @@
     <h3 class="text-center text-black mt-5">No collection account recorded</h3>
     <h4 class="text-black text-center">Add new account</h4>
     <button
-      class="
-        bg-danger
-        rounded-full
-        text-sm text-white
-        mb-5
-        mt-5
-        py-2
-        pl-6
-        pr-6
-        px-4
-        pb-2
-        focus:outline-none
-        hover:opacity-90
-        flex
-      "
+      class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 pl-6 pr-6 px-4 pb-2 focus:outline-none hover:opacity-90 flex"
       @click="showNewExchangeRateModal = true"
     >
       <span class="text-xl -mt-1.5 mr-2">+ </span>
@@ -33,43 +19,13 @@
     <div class="w-full mt-5">
       <span class="flex justify-end">
         <button
-          class="
-            border-primary
-            rounded-full
-            text-primary
-            outline-primary
-            mt-5
-            text-sm
-            mb-5
-            py-2
-            px-3
-            pl-6
-            pr-6
-            focus:outline-none
-            hover:opacity-90
-            flex
-            mr-6
-          "
+          class="border-primary rounded-full text-primary outline-primary mt-5 text-sm mb-5 py-2 px-3 pl-6 pr-6 focus:outline-none hover:opacity-90 flex mr-6"
           @click="showDefaultCurrencyModal = true"
         >
           Set Default Currecncy
         </button>
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-sm text-white
-            mb-5
-            mt-5
-            py-2
-            pl-6
-            pr-6
-            px-4
-            pb-1
-            focus:outline-none
-            hover:opacity-90
-            flex
-          "
+          class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 pl-6 pr-6 px-4 pb-1 focus:outline-none hover:opacity-90 flex"
           @click="showNewExchangeRateModal = true"
         >
           <span class="text-xl -mt-1.5 mr-2">+ </span>

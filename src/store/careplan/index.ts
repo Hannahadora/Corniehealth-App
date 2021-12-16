@@ -1,6 +1,6 @@
-import ICarePlan from "@/types/ICarePlan"
-import { StoreOptions } from "vuex"
-import { createCarePlan, getCarePlans, updateCarePlan } from "./helper"
+import ICarePlan from "@/types/ICarePlan";
+import { StoreOptions } from "vuex";
+import { createCarePlan, getCarePlans, updateCarePlan } from "./helper";
 
 interface CareplanStore {
   patientCarePlans: ICarePlan[];
@@ -14,12 +14,12 @@ export default {
 
     mutations: {
         setPatientPlans(state, items) {
-            if (items && items.length > 0) state.patientCarePlans = [...items]
+            if (items && items.length > 0) state.patientCarePlans = [...items];
         },
 
         addNewItem(state, data) {
             if (data) {
-                state.patientCarePlans.unshift(data)
+                state.patientCarePlans.unshift(data);
             }
         },
 
@@ -36,28 +36,28 @@ export default {
 
         //   const inPatientsVisits = state.patientVisits.findIndex((i: any) => i.id === payload.id);
 
-        //   if (inPatientsVisits >= 0) state.patientVisits[inPatientsVisits].status = payload.status;
-        // },
+    //   if (inPatientsVisits >= 0) state.patientVisits[inPatientsVisits].status = payload.status;
+    // },
     },
 
     actions: {
         async getCarePlans(ctx, patientId: string) {
-            const response = await getCarePlans(patientId)
-            ctx.commit("setPatientPlans", response)
+            const response = await getCarePlans(patientId);
+            ctx.commit("setPatientPlans", response);
         },
 
         async createCarePlan(ctx, body) {
-            const res = await createCarePlan(body)
-            if (!res) return false
-            ctx.commit("addNewItem", res)
-            return res as boolean
+            const res = await createCarePlan(body);
+            if (!res) return false;
+            ctx.commit("addNewItem", res);
+            return res as boolean;
         },
 
         async updateCarePlan(ctx, body: any) {
-            const res = await updateCarePlan(body)
-            if (!res) return false
+            const res = await updateCarePlan(body);
+            if (!res) return false;
             //   ctx.commit("updateHospitalisation", res)
-            return res as boolean
+            return res as boolean;
         },
     },
-} as StoreOptions<CareplanStore>
+} as StoreOptions<CareplanStore>;

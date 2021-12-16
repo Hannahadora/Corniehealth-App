@@ -196,7 +196,6 @@ export default class AttachmentExistingState extends Vue {
   get items() {
     const attachments = this.attachments.map((attachment) => {
       this.timeFormat = (attachment as any).createdAt.split("T");
-      ;
       this.formattedTime = new Date(this.timeFormat).toLocaleTimeString(
         "en-US"
       );
@@ -223,7 +222,6 @@ export default class AttachmentExistingState extends Vue {
     this.showAttachmentModal = true;
     //this.stopEvent = true;
     this.currentAttachment = value;
-    ;
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;

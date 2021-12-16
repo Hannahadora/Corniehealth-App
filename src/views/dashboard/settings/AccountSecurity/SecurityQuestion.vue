@@ -201,9 +201,7 @@ export default {
     removeQuestion(index) {
       this.securityQuestions.splice(index, 1);
     },
-    saveTwoFactor() {
-      ;
-    },
+    saveTwoFactor() {},
     async sendCode() {
       const payload = {
         userId: store.state.user.user.id,

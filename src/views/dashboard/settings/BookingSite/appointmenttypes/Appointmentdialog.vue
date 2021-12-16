@@ -23,16 +23,15 @@
           placeholder="--Autoloaded--"
         >
         </main-cornie-select>
-          <main-cornie-select
-            class="w-full mb-5"
-            :items="allPractitioner"
-            v-model="singlePractitioner"
-            @click="sendPractioner"
-            label="Practitioners"
-            placeholder="--Select from Practitioners--"
-          >
-          </main-cornie-select>
-      
+        <main-cornie-select
+          class="w-full mb-5"
+          :items="allPractitioner"
+          v-model="singlePractitioner"
+          @click="sendPractioner"
+          label="Practitioners"
+          placeholder="--Select from Practitioners--"
+        >
+        </main-cornie-select>
 
         <date-picker
           class="w-full mb-8"
@@ -54,9 +53,25 @@
             >Appointment Confirmation</span
           >
           <div class="grid grid-cols-2 gap-4 mt-3 mb-5">
-            <cornie-radio name="confirm" value="Pay to Confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
-            <cornie-radio name="confirm" value="Confirm and pay later" v-model="appointmentConfirmation" label="Confirm and pay later" />
-            <cornie-radio name="confirm" value="Either" v-model="appointmentConfirmation" label="Either" />
+            <cornie-radio
+              name="confirm"
+              value="Pay to Confirm"
+              v-model="appointmentConfirmation"
+              checked
+              label="Pay to Confirm"
+            />
+            <cornie-radio
+              name="confirm"
+              value="Confirm and pay later"
+              v-model="appointmentConfirmation"
+              label="Confirm and pay later"
+            />
+            <cornie-radio
+              name="confirm"
+              value="Either"
+              v-model="appointmentConfirmation"
+              label="Either"
+            />
           </div>
         </div>
 
@@ -64,7 +79,7 @@
           class="w-full mb-5"
           v-model="singleform"
           :items="allForms"
-           @click="sendForm"
+          @click="sendForm"
           label="Link forms"
           placeholder="--Link from forms--"
         >
@@ -184,7 +199,7 @@ export default class AppointmentTypeDialog extends Vue {
   @catalogues.State
   services!: ICatalogueService[];
 
- @appointmentType.Action
+  @appointmentType.Action
   getAppointmentTypeById!: (id: string) => IAppointmentTypes;
 
   @organization.Action
@@ -192,7 +207,6 @@ export default class AppointmentTypeDialog extends Vue {
 
   @organization.State
   organizationInfo: any;
-
 
   appointmentItem = "";
   showDetails = true;
@@ -202,16 +216,14 @@ export default class AppointmentTypeDialog extends Vue {
   loading = false;
   date = new Date();
 
-
-
   duration = {} as Period;
-  singlePractitioner ="";
+  singlePractitioner = "";
   singleform = "";
-  practitioners =  [""];
-  fee=0 ;
+  practitioners = [""];
+  fee = 0;
   linkForms = [""];
   bookingSiteLink = "";
-  serviceId=  "";
+  serviceId = "";
   serviceName = "";
   appointmentConfirmation = "Pay to Confirm";
 
@@ -224,13 +236,12 @@ export default class AppointmentTypeDialog extends Vue {
   selectedActors: any[] = [];
   availableSlots: any[] = [];
 
- @Watch("id")
+  @Watch("id")
   idChanged() {
     this.setAppointmentType();
   }
 
-
-    async setAppointmentType() {
+  async setAppointmentType() {
     const appointmentType = await this.getAppointmentTypeById(this.id);
     if (!appointmentType) return;
     this.duration = appointmentType.duration;
@@ -243,7 +254,7 @@ export default class AppointmentTypeDialog extends Vue {
 
   get payload() {
     const filteritems = this.practitioners.filter((c) => c !== "");
-     const filteritems2 = this.linkForms.filter((c) => c !== "");
+    const filteritems2 = this.linkForms.filter((c) => c !== "");
     return {
       duration: this.duration,
       practitioners: filteritems,
@@ -264,13 +275,12 @@ export default class AppointmentTypeDialog extends Vue {
     });
   }
 
-  sendPractioner(){
-  
+  sendPractioner() {
     this.practitioners.push(this.singlePractitioner);
   }
-sendForm(){
-  this.linkForms.push(this.singleform);
-}
+  sendForm() {
+    this.linkForms.push(this.singleform);
+  }
   get allForms() {
     if (!this.practiceform || this.practiceform.length === 0) return [];
     return this.practiceform.map((i: any) => {
@@ -280,7 +290,7 @@ sendForm(){
       };
     });
   }
-   get allServiceName() {
+  get allServiceName() {
     if (!this.services || this.services.length === 0) return [];
     return this.services.map((i: any) => {
       return {
@@ -289,10 +299,10 @@ sendForm(){
       };
     });
   }
-setFee(id:string){
- const pt = this.services.find((i: any) => i.id === id);
-    return pt ? this.fee = pt.cost : "";
-}
+  setFee(id: string) {
+    const pt = this.services.find((i: any) => i.id === id);
+    return pt ? (this.fee = pt.cost) : "";
+  }
   done() {
     this.$emit("type-added");
     this.show = false;
@@ -304,7 +314,7 @@ setFee(id:string){
     this.practitioner = response[0].data;
   }
 
-   async fetchPracticeForms() {
+  async fetchPracticeForms() {
     const AllForms = cornieClient().get("/api/v1/practice-form/surveys");
     const response = await Promise.all([AllForms]);
     this.practiceform = response[0].data;
@@ -331,7 +341,6 @@ setFee(id:string){
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({
         msg: "Appointment Type not Created",
         status: "error",
@@ -360,9 +369,9 @@ setFee(id:string){
     }
   }
   async created() {
-     await this.fetchPractitioner();
-     await this.fetchPracticeForms();
-     await this.getServices();
+    await this.fetchPractitioner();
+    await this.fetchPracticeForms();
+    await this.getServices();
     if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
     this.orgValue = this.organizationInfo.domainName;

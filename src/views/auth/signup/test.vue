@@ -822,6 +822,4 @@ input[type="radio"]:checked {
 }
 </style>
 
-
-
-//  
+//

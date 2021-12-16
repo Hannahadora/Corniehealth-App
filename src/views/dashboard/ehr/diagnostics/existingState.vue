@@ -427,8 +427,6 @@ export default class DiagnosticExistingState extends Vue {
   }
   getPractitionerName(id: string) {
     const pt = this.practitioners.find((i: any) => i.id === id);
-    ;
-    ;
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
 

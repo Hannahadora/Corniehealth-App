@@ -207,9 +207,7 @@ export default {
       const dropdown = this.fetchDropDown();
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   },
   methods: {
     ...mapActions("organization", ["fetchOrgInfo"]),

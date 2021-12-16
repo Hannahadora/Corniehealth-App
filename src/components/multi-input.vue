@@ -5,7 +5,7 @@
       :key="i"
       maxlength="1"
       :class="[customClass]"
-      class=" max-w-xs w-20 rounded mb-2 border py-4 px-6 text-center focus:outline-none"
+      class="max-w-xs w-20 rounded mb-2 border py-4 px-6 text-center focus:outline-none"
       placeholder="--"
       @keydown="keyPressed(i - 1)"
       :ref="`input${i - 1}`"
@@ -46,7 +46,6 @@ export default class MultiInput extends Vue {
   inputChanged() {
     const modelValue = this.model.reduce((prev, curr) => prev + curr.val, "");
     this.$emit("update:modelValue", modelValue);
-    ;
   }
 
   @Watch("length")

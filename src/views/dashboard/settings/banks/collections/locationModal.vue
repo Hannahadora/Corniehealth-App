@@ -80,25 +80,13 @@
                     <select-option @click="setDefault(option.code)" />
                     <span class="w-full text-sm">{{ option.display }}</span>
                     <span
-                      class="
-                        text-xs text-success
-                        flex
-                        justify-end
-                        float-right
-                        w-full
-                      "
+                      class="text-xs text-success flex justify-end float-right w-full"
                       v-if="option.code == defaultAccount"
                       >Default</span
                     >
                     <span
                       v-else
-                      class="
-                        text-xs text-danger
-                        flex
-                        justify-end
-                        float-right
-                        w-full
-                      "
+                      class="text-xs text-danger flex justify-end float-right w-full"
                       @click="setDefault(option.code)"
                       >Set as default</span
                     >
@@ -106,16 +94,7 @@
                 </Multiselect>
               </div>
               <div
-                class="
-                  flex
-                  space-x-4
-                  justify-between
-                  w-full
-                  mt-8
-                  border-gray-200
-                  pb-8
-                  border-b-2
-                "
+                class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2"
                 v-for="(input, index) in accounts"
                 :key="`${index}`"
               >

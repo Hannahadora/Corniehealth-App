@@ -82,22 +82,22 @@ const level = namespace("OrgLevels");
 export default class ExistingState extends Vue {
   @Prop({ type: Array, default: [], required: true })
   levels!: LevelCollection[];
-  id="";
+  id = "";
 
   levelForEdit = {} as LevelCollection;
   editingLevel = false;
   type = "";
   orgInfo = [] as any;
-enabled = false;
-loading = false;
-orgvalue = "";
- get payload() {
+  enabled = false;
+  loading = false;
+  orgvalue = "";
+  get payload() {
     return {
       id: this.id,
       enabled: this.enabled,
     };
   }
- async fetchOrgInfo() {
+  async fetchOrgInfo() {
     try {
       const response = await cornieClient().get(
         "/api/v1/organization/myOrg/get"
@@ -112,7 +112,6 @@ orgvalue = "";
     await this.createBookingSite();
     this.loading = false;
   }
-
 
   async createBookingSite() {
     try {
@@ -135,7 +134,7 @@ orgvalue = "";
     }
   }
 
-  created(){
+  created() {
     this.fetchOrgInfo();
   }
 }

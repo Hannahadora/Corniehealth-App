@@ -290,7 +290,6 @@ export default class AddFunction extends Vue {
   // }
 
   async create() {
-    ;
     try {
       const { data } = await cornieClient().post(
         "/api/v1/appointment-rooms",
@@ -306,7 +305,6 @@ export default class AddFunction extends Vue {
   }
 
   async update() {
-    ;
     const url = `/api/v1/appointment-rooms/${this.edit.id}`;
     const payload = { ...this.payload, id: this.edit.id };
     try {

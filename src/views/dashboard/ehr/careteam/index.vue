@@ -259,8 +259,6 @@ export default class EHRCareTeam extends Vue {
     const team = this.careteams.find(
       (careteam) => careteam.id === this.selectedTeamId
     );
-    ;
-    ;
     return team;
   }
 
@@ -271,7 +269,7 @@ export default class EHRCareTeam extends Vue {
         (practitioner: any) => practitioner?.user?.id === this.user.id
       );
       const added = await careteamHelper.addToTeam(
-        this.existingCareTeamToAddTo,
+        this.existingCareTeamToAddTo
         // {
         //   code: practitioner?.id ?? "",
         //   display: `${practitioner?.firstName} ${practitioner?.lastName}`,
@@ -280,13 +278,11 @@ export default class EHRCareTeam extends Vue {
       this.loading = false;
       if (added?.id) this.addToExisting = false;
     } catch (error) {
-      ;
       this.loading = false;
     }
   }
 
   onSelect(data: IItem) {
-    ;
     this.existingCareTeamToAddTo = this.careteams.find(
       (careteam) => careteam.id === data.code
     );
@@ -321,11 +317,7 @@ export default class EHRCareTeam extends Vue {
       await this.fetchCareteams();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-    ;
-    ;
-
     const data = await careteamHelper.searchForCareTeam({ query: "Adult" });
-    ;
   }
 }
 </script>

@@ -159,7 +159,7 @@ export default class CorniDashboardeSideBar extends Vue {
       children: [
         {
           name: "Markup",
-          to: "markup",
+          to: "/dashboard/provider/settings/markup",
           hasSubsection: false,
         },
         {

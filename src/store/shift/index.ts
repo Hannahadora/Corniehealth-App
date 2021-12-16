@@ -1,4 +1,4 @@
-import { StoreOptions } from "vuex"
+import { StoreOptions } from "vuex";
 import {
     getShifts,
     getRoles,
@@ -9,14 +9,14 @@ import {
     updateShift,
     activateShift,
     destroyShift,
-} from "./helper"
+} from "./helper";
 
 interface RolesStore {
-	privileges: any[];
-	roles: any[];
-	org: any;
-	practitioners: [];
-	shifts: any[];
+  privileges: any[];
+  roles: any[];
+  org: any;
+  practitioners: [];
+  shifts: any[];
 }
 
 export default {
@@ -30,90 +30,89 @@ export default {
     },
     mutations: {
         setShifts(state, shifts) {
-            if (shifts) state.shifts = [...shifts]
+            if (shifts) state.shifts = [...shifts];
         },
 
         setRoles(state, roles) {
-            if (roles) state.roles = [...roles]
+            if (roles) state.roles = [...roles];
         },
 
         setOrg(state, org) {
-            if (org) state.org = org
+            if (org) state.org = org;
         },
 
         setPractitioners(state, prs) {
-            if (prs) state.practitioners = prs
+            if (prs) state.practitioners = prs;
         },
 
         removeShift(state, shiftId) {
             if (shiftId) {
-                const roles = state.shifts.filter(i => i.id !== shiftId)
-                state.roles = [...roles]
+                const roles = state.shifts.filter(i => i.id !== shiftId);
+                state.roles = [...roles];
             }
         },
     },
 
     actions: {
         async getShifts(ctx) {
-            const shifts = await getShifts()
-            ctx.commit("setShifts", shifts)
+            const shifts = await getShifts();
+            ctx.commit("setShifts", shifts);
         },
 
         async getOrg(ctx) {
-            const org = await getOrg()
-            ctx.commit("setOrg", org)
+            const org = await getOrg();
+            ctx.commit("setOrg", org);
         },
 
         async getRoles(ctx) {
-            const roles = await getRoles()
+            const roles = await getRoles();
 
-
-            ctx.commit("setRoles", roles)
+            ctx.commit("setRoles", roles);
         },
 
         async deleteShift(ctx, id: string) {
-            const deleted = await deleteShift(id)
+            const deleted = await deleteShift(id);
 
-            if (!deleted) return false
+            if (!deleted) return false;
             // ctx.commit("removeShift", id);
-            return true
+            return true;
         },
 
         async destroyShift(ctx, id: string) {
-            const deleted = await destroyShift(id)
+            const deleted = await destroyShift(id);
 
-            if (!deleted) return false
-            ctx.commit("removeShift", id)
-            return true
+            if (!deleted) return false;
+            ctx.commit("removeShift", id);
+            return true;
         },
 
         async activateShift(ctx, id: string) {
-            const deleted = await activateShift(id)
+            const deleted = await activateShift(id);
 
-            if (!deleted) return false
+            if (!deleted) return false;
             // ctx.commit("removeShift", id);
-            return true
+            return true;
         },
 
         async createShift(ctx, shift: any) {
-            const deleted = await createShift(shift)
-            if (!deleted) return false
+            const deleted = await createShift(shift);
+            if (!deleted) return false;
             // ctx.commit("removeRole", id);
-            return true
+            return true;
         },
 
         async updateShift(ctx, shift: any) {
-            const deleted = await updateShift(shift, shift.id)
-            if (!deleted) return false
+            const deleted = await updateShift(shift, shift.id);
+            if (!deleted) return false;
             // ctx.commit("removeRole", id);
-            return true
+            return true;
         },
 
         async transferRight(ctx, body: any) {
-            const deleted = await transferRight(body)
-            if (!deleted) return false
+            const deleted = await transferRight(body);
+            if (!deleted) return false;
             // ctx.commit("removeRole", id);
-            return true
+            return true;
         },
     },
-} as StoreOptions<RolesStore>
+} as StoreOptions<RolesStore>;

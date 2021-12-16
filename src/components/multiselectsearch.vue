@@ -140,8 +140,6 @@ export default class MySelect extends Vue {
   get filteredItems() {
     if (this.items.length <= 0) return [];
     if (!this.filterText) return this.items;
-    ;
-
     return this.items.filter((i: any) => {
       return this.optionLabel
         ? i[this.optionLabel] &&

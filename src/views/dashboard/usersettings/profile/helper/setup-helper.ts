@@ -1,7 +1,7 @@
-import IPractitioner from "@/types/IPractitioner"
+import IPractitioner from "@/types/IPractitioner";
 
 const constructPractitionerData = (practitioner: IPractitioner) => {
-    if (!practitioner?.id) return {}
+    if (!practitioner?.id) return {};
     const {
         gender,
         address,
@@ -10,7 +10,7 @@ const constructPractitionerData = (practitioner: IPractitioner) => {
         jobDesignation,
         qualificationCode,
         qualificationIssuer,
-    } = practitioner
+    } = practitioner;
     return {
         gender,
         address,
@@ -34,9 +34,9 @@ const constructPractitionerData = (practitioner: IPractitioner) => {
         qualificationIdentifier: practitioner.qualificationIdentifier
             ? practitioner.qualificationIdentifier
             : "",
-    }
-}
+    };
+};
 
 export default {
     constructPractitionerData,
-}
+};

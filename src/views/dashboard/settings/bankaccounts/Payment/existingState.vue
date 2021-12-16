@@ -160,7 +160,6 @@ export default class BankAccountsExistingState extends Vue {
   updatePayment(id: string) {
     const payment = this.payments.find((d) => d.id == id);
     this.$emit("add-account", payment);
-    ;
   }
 
   public showDeactivate(id: string): void {

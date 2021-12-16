@@ -168,7 +168,6 @@ export default class Medication extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }

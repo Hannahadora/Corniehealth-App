@@ -420,9 +420,7 @@ export default class USerSetup extends Vue {
       this.levels = levels.map((i: any) => {
         return { code: i.id, display: i.name };
       });
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
   async getDesignations() {
     try {
@@ -432,9 +430,7 @@ export default class USerSetup extends Vue {
       this.designations = designations.map((i: any) => {
         return { code: i.id, display: i.name };
       });
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
   async getDepartments() {
     try {
@@ -444,9 +440,7 @@ export default class USerSetup extends Vue {
       this.functions = functions.map((i: any) => {
         return { code: i.id, display: i.name };
       });
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   get accessRoles() {
@@ -479,7 +473,6 @@ export default class USerSetup extends Vue {
       const res = await this.setUserUp(body);
       this.loading = false;
     } catch (error) {
-      ;
       this.loading = false;
     }
   }
@@ -491,8 +484,6 @@ export default class USerSetup extends Vue {
 
   async created() {
     if (this.roles) await this.getRoles();
-    ;
-
     this.getDesignations();
     this.getLevels();
     this.getDepartments();

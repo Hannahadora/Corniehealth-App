@@ -50,9 +50,7 @@ export default {
     },
   },
   watch: {
-    show(value) {
-      ;
-    },
+    show(value) {},
   },
   computed: {
     show: {
