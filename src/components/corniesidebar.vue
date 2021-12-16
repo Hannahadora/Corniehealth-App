@@ -158,6 +158,11 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: true,
       children: [
         {
+          name: "Markup",
+          to: "markup",
+          hasSubsection: false,
+        },
+        {
           name: "Catalogue",
           to: "catologue",
           hasSubsection: false,
