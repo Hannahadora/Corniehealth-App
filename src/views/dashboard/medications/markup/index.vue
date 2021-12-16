@@ -5,9 +5,18 @@
     Markup & Discount
   </span>
 
+      <div class="w-full py-4 flex justify-end"   v-if="tableData.length">
+         <button
+      class="bg-danger text-base font-bold rounded-full text-white py-4 px-24"
+      @click="$router.push('/dashboard/provider/settings/markup-settings')"
+    >
+      Edit
+    </button>
+      </div>
+
   <div
     class="flex items-center flex-col justify-center h-full gap-8"
-    v-if="false"
+    v-if="!tableData.length"
   >
     <img src="@/assets/img/bro.png" />
     <span class="text-center">
@@ -26,10 +35,13 @@
   <div v-else>
     <cornie-table v-model="items" :columns="headers"> </cornie-table>
 
-    <div class="flex flex-col">
-      <span class="font-bold text-sm">Allow location admins to modify</span>
-         <cornie-radio name="confirm" value="pay-to-confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
-            <cornie-radio name="confirm" value="pay-later" v-model="appointmentConfirmation" label="Confirm and pay later" />
+    <div class="flex flex-col gap-4 mt-8">
+      <span class="font-bold text-sm text-jet_black">Allow location admins to modify</span>
+      <div class="flex gap-4">
+ <cornie-radio name="confirm" :value="true" v-model="tableData.locationAdminsCanSetForLocations" checked label="Yes" />
+            <cornie-radio name="confirm" :value="false" v-model="tableData.locationAdminsCanSetForLocations  " label="No" />
+      </div>
+        
     </div>
   </div>
 </template>
