@@ -873,7 +873,6 @@ export default class Referral extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Request not Created", status: "error" });
     }
   }

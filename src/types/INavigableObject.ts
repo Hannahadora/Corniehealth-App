@@ -1,4 +1,4 @@
 /* eslint-disable unused-imports/no-unused-vars */
- interface INavigableObject {
+interface INavigableObject {
   to: string;
 }

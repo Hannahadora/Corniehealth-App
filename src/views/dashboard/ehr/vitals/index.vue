@@ -344,7 +344,6 @@ export default class ExistingState extends Vue {
       this.loading = false;
       this.showUpdateStatusModal = false;
     } catch (error) {
-      ;
       this.loading = false;
     }
   }

@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from "vue-router"
+import { RouteRecordRaw } from "vue-router";
 
 export const UserRoute: RouteRecordRaw = {
     path: "user",
@@ -53,4 +53,4 @@ export const UserRoute: RouteRecordRaw = {
                 import("@/views/dashboard/usersettings/signature/index.vue"),
         },
     ],
-}
+};

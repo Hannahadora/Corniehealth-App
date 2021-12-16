@@ -584,9 +584,7 @@ export default class KYC extends Vue {
         window.notify({ msg: "KYC updated successfully", status: "success" });
       }
       this.loading = false;
-      ;
     } catch (error) {
-      ;
       this.loading = false;
       window.notify({ msg: "KYC update failed", status: "error" });
     }
@@ -599,9 +597,7 @@ export default class KYC extends Vue {
         window.notify({ msg: "KYC updated successfully", status: "success" });
       }
       this.loading = false;
-      ;
     } catch (error) {
-      ;
       this.loading = false;
       window.notify({ msg: "KYC update failed", status: "error" });
     }
@@ -610,8 +606,6 @@ export default class KYC extends Vue {
   async getKYCData() {
     try {
       const { data } = await cornieClient().get("/api/v1/kyc");
-      ;
-
       this.nominees = data.nominateReferess
         ? data.nominateReferess?.map((nominee: any) => {
             nominee.email = nominee.emailAddress;
@@ -634,9 +628,7 @@ export default class KYC extends Vue {
         ...data,
         practiceRegister: data.practiceRegister ? "Yes" : "No",
       };
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   toggleEditDialog(nominee: any, index: number) {

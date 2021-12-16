@@ -183,7 +183,6 @@ export default class Status extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Status Not Updated", status: "success" });
       this.loading = false;
     }

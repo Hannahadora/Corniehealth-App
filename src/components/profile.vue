@@ -86,10 +86,7 @@
         </cornie-card-text>
       </cornie-card>
 
-
       @scelloo/cloudenly-ui": "^0.2.6",
-
-      
     </cornie-card>
   </cornie-dialog>
 </template>

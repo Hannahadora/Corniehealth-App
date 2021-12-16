@@ -139,7 +139,6 @@ export default class NewNote extends Vue {
         });
       }
     } catch (error) {
-      ;
       this.loading = false;
     }
   }

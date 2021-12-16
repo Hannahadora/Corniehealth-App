@@ -503,7 +503,6 @@ export default class ExistingState extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      ;
     }
   }
 
@@ -550,8 +549,6 @@ export default class ExistingState extends Vue {
         (data.phone = `${contact?.phone?.dialCode}${contact?.phone?.number}`),
           (data.email = contact?.email);
       }
-      ;
-
       return patient?.id ? patient : visit;
     });
   }

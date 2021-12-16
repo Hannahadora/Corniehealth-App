@@ -23,46 +23,14 @@
           }"
           :disabled="$attrs.disabled"
           @change="handleChange"
-          class="
-            rounded
-            appearance-none
-            px-3
-            py-2
-            border border-gray-300
-            placeholder-gray-400
-            focus:outline-none
-            focus:shadow-outline-blue
-            focus:border-blue-300
-            transition
-            duration-150
-            mr-2
-            ease-in-out
-            sm:text-sm
-            sm:leading-5
-          "
+          class="rounded appearance-none px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 mr-2 ease-in-out sm:text-sm sm:leading-5"
           v-model="valueSync"
         />
         <input
           style="width: 50%"
-          class="
-            appearance-none
-            border border-gray-300
-            bgcolor
-            px-3
-            py-2
-            rounded
-            placeholder-white
-            focus:outline-none
-            focus:shadow-outline-blue
-            focus:border-blue-300
-            transition
-            duration-150
-            ease-in-out
-            sm:text-sm
-            sm:leading-5
-          "
+          class="appearance-none border border-gray-300 bgcolor px-3 py-2 rounded placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           disabled
-           placeholder="corniehealth.com/booking/gp-consultation"
+          placeholder="corniehealth.com/booking/gp-consultation"
         />
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -151,5 +119,4 @@ export default class DomainInput extends Vue {
 .bgcolor {
   background-color: #080056;
 }
-
 </style>

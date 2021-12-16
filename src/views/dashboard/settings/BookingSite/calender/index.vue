@@ -7,7 +7,7 @@
     >
       <div>
         <v-form>
-           <div class="w-full mt-8">
+          <div class="w-full mt-8">
             <div class="flex space-x-10 w-full">
               <span class="text-sm text-black mt-3"
                 >Online Booking Requirements:</span
@@ -16,13 +16,13 @@
                 <cornie-select
                   placeholder="10"
                   class="w-20"
-                  :items="['1', '2','3','4','5','6','7','8','9', '10']"
+                  :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
                   v-model="onlineBookingRequirements.no"
                 />
                 <cornie-select
                   placeholder="Days"
                   class="w-20"
-                  :items="['Days', 'Weeks','Months']"
+                  :items="['Days', 'Weeks', 'Months']"
                   v-model="onlineBookingRequirements.type"
                 />
               </div>
@@ -36,20 +36,20 @@
                 <cornie-select
                   placeholder="10"
                   class="w-20"
-                  :items="['1', '2','3','4','5','6','7','8','9', '10']"
+                  :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
                   v-model="showAvailability.no"
                 />
                 <cornie-select
                   placeholder="Days"
                   class="w-20"
-                      :items="['Days', 'Weeks','Months']"
-                    v-model="showAvailability.type"
+                  :items="['Days', 'Weeks', 'Months']"
+                  v-model="showAvailability.type"
                 />
               </div>
               <span class="text-sm text-black mt-3">Ahead</span>
             </div>
           </div>
-           <div class="w-full mt-8">
+          <div class="w-full mt-8">
             <div class="flex space-x-10">
               <span class="text-sm text-black">Booking Notification:</span>
               <span class="text-sm text-danger font-semibold"
@@ -62,8 +62,19 @@
                   >Practice Email:</span
                 >
                 <div class="flex space-x-4 w-full mt-3">
-                  <cornie-radio label="Yes" value="Yes" v-model="bookingNotification.practiceEmail" checked name="email" />
-                  <cornie-radio label="No" value="No" v-model="bookingNotification.practiceEmail" name="email" />
+                  <cornie-radio
+                    label="Yes"
+                    value="Yes"
+                    v-model="bookingNotification.practiceEmail"
+                    checked
+                    name="email"
+                  />
+                  <cornie-radio
+                    label="No"
+                    value="No"
+                    v-model="bookingNotification.practiceEmail"
+                    name="email"
+                  />
                 </div>
               </div>
               <div>
@@ -71,8 +82,19 @@
                   >All added Participants:</span
                 >
                 <div class="flex space-x-4 w-full mt-3">
-                  <cornie-radio label="Yes" value="Yes" v-model="bookingNotification.allAddedParticipants" checked name="notify" />
-                  <cornie-radio label="No" value="No" v-model="bookingNotification.allAddedParticipants" name="notify" />
+                  <cornie-radio
+                    label="Yes"
+                    value="Yes"
+                    v-model="bookingNotification.allAddedParticipants"
+                    checked
+                    name="notify"
+                  />
+                  <cornie-radio
+                    label="No"
+                    value="No"
+                    v-model="bookingNotification.allAddedParticipants"
+                    name="notify"
+                  />
                 </div>
               </div>
             </div>
@@ -118,8 +140,19 @@
                   >Show cancelled appointment in calendar</span
                 >
                 <div class="flex space-x-4 mt-4">
-                  <cornie-radio lablel="Yes" value="Yes" v-model="showCancelledAppointmentInCalendar" checked name="cancel" />
-                  <cornie-radio lablel="No" value="No" v-model="showCancelledAppointmentInCalendar" name="cancel" />
+                  <cornie-radio
+                    lablel="Yes"
+                    value="Yes"
+                    v-model="showCancelledAppointmentInCalendar"
+                    checked
+                    name="cancel"
+                  />
+                  <cornie-radio
+                    lablel="No"
+                    value="No"
+                    v-model="showCancelledAppointmentInCalendar"
+                    name="cancel"
+                  />
                 </div>
               </div>
             </div>
@@ -136,8 +169,19 @@
                   >Show waitlist in calendar</span
                 >
                 <div class="flex space-x-4 mt-4">
-                  <cornie-radio lablel="Yes" value="Yes" v-model="showWaitlistInCalendar" checked name="calendar" />
-                  <cornie-radio lablel="No" value="No" v-model="showWaitlistInCalendar" name="calendar" />
+                  <cornie-radio
+                    lablel="Yes"
+                    value="Yes"
+                    v-model="showWaitlistInCalendar"
+                    checked
+                    name="calendar"
+                  />
+                  <cornie-radio
+                    lablel="No"
+                    value="No"
+                    v-model="showWaitlistInCalendar"
+                    name="calendar"
+                  />
                 </div>
               </div>
             </div>
@@ -167,7 +211,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import { Prop,PropSync,Watch } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -206,74 +250,72 @@ const prefrence = namespace("prefrence");
   },
 })
 export default class CalenderExistingState extends Vue {
-
- @PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
- @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   id!: string;
 
- @calendar.State
+  @calendar.State
   calendars!: ICalendar;
 
-@calendar.Action
+  @calendar.Action
   getCalendarById!: (id: string) => ICalendar;
 
   @calendar.Action
   fetchCalendars!: () => ICalendar;
 
-
   data: any = {};
-loading= false;
+  loading = false;
   onlineBookingRequirements = {
-        no: 0,
-        type:""
-    };
-    showAvailability = {
-        no: 0,
-        type:""
-    };
-    bookingNotification = {
-        practiceEmail: "Yes",
-        allAddedParticipants: "Yes",
-    };
-      appointmentTimeHoldLimit =  "";
-    showCancelledAppointmentInCalendar =  "";
-    waitlistThreshhold = ""
-    showWaitlistInCalendar = "";
+    no: 0,
+    type: "",
+  };
+  showAvailability = {
+    no: 0,
+    type: "",
+  };
+  bookingNotification = {
+    practiceEmail: "Yes",
+    allAddedParticipants: "Yes",
+  };
+  appointmentTimeHoldLimit = "";
+  showCancelledAppointmentInCalendar = "";
+  waitlistThreshhold = "";
+  showWaitlistInCalendar = "";
 
- @Watch("CalendarId")
+  @Watch("CalendarId")
   idChanged() {
     this.setCalendar();
   }
-  get CalendarId(){
-    return  this.calendars.id;
+  get CalendarId() {
+    return this.calendars.id;
   }
-    async setCalendar() {
-      const calendar = await this.getCalendarById(this.CalendarId as any);
-      if (!calendar) return;
+  async setCalendar() {
+    const calendar = await this.getCalendarById(this.CalendarId as any);
+    if (!calendar) return;
     this.onlineBookingRequirements.no = calendar.onlineBookingRequirements.no;
-     this.onlineBookingRequirements.type = calendar.onlineBookingRequirements.type;
+    this.onlineBookingRequirements.type =
+      calendar.onlineBookingRequirements.type;
     this.showAvailability = calendar.showAvailability;
     this.bookingNotification = calendar.bookingNotification;
   }
 
-   get payload() {
+  get payload() {
     return {
       onlineBookingRequirements: this.onlineBookingRequirements,
       showAvailability: this.showAvailability,
       bookingNotification: this.bookingNotification,
-
     };
   }
 
-get payload2() {
+  get payload2() {
     return {
       appointmentTimeHoldLimit: this.appointmentTimeHoldLimit,
-      showCancelledAppointmentInCalendar: this.showCancelledAppointmentInCalendar,
+      showCancelledAppointmentInCalendar:
+        this.showCancelledAppointmentInCalendar,
       waitlistThreshhold: this.waitlistThreshhold,
-      showWaitlistInCalendar: this.showWaitlistInCalendar
-
+      showWaitlistInCalendar: this.showWaitlistInCalendar,
     };
   }
   severities = ["Every Day", "Every Week", "Custom"];
@@ -294,11 +336,11 @@ get payload2() {
       show: true,
     },
   ];
-done() {
+  done() {
     this.$emit("room-added");
     this.show = false;
   }
- async createCalendar() {
+  async createCalendar() {
     try {
       const { data } = await cornieClient().post(
         "/api/v1/calendar",
@@ -310,8 +352,8 @@ done() {
       window.notify({ msg: "Calendar not saved", status: "error" });
     }
   }
-   async createPrefrence() {
-     this.appointmentTimeHoldLimit = this.data.startDate;
+  async createPrefrence() {
+    this.appointmentTimeHoldLimit = this.data.startDate;
     try {
       const { data } = await cornieClient().post(
         "/api/v1/prefrences",
@@ -323,8 +365,8 @@ done() {
       window.notify({ msg: "Prefrence not saved", status: "error" });
     }
   }
-   async updateCalendar() {
-      const url = `/api/v1calendar`;
+  async updateCalendar() {
+    const url = `/api/v1calendar`;
     const payload = {
       ...this.payload,
     };
@@ -346,22 +388,21 @@ done() {
   }
   async submit() {
     this.loading = true;
-     await this.createPrefrence();
+    await this.createPrefrence();
     this.loading = false;
   }
- async apply() {
+  async apply() {
     this.loading = true;
-     await this.createCalendar();
+    await this.createCalendar();
     // if (this.calendars) await this.updateCalendar();
     // else await this.createCalendar();
     this.loading = false;
   }
 
-async created(){
-  await this.fetchCalendars();
-   await this.setCalendar();
-}
-
+  async created() {
+    await this.fetchCalendars();
+    await this.setCalendar();
+  }
 }
 </script>
 

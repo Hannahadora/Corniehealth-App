@@ -747,20 +747,16 @@ export default class PractitionerExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    ;
-
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 
   setSelectedVisit(id: string) {
     const pt = this.visits.find((i: any) => i.id === id);
-    ;
     this.selectedVisit = pt ? pt : {};
   }
 
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    ;
     this.selectedPatient = pt ? pt : {};
   }
 
@@ -784,8 +780,6 @@ export default class PractitionerExistingState extends Vue {
 
   async destroy(id: string) {
     const cancelled = await this.cancel(id);
-    ;
-
     if (cancelled) {
       window.notify({ msg: "Visit Cancelled", status: "success" });
     }
@@ -849,10 +843,7 @@ export default class PractitionerExistingState extends Vue {
     if (!this.patients || this.patients.length === 0) await this.getPatients();
     if (!this.appointments || this.appointments.length === 0)
       await this.fetchAppointments();
-    ;
-
     if (!this.visits || this.visits.length === 0) await this.getVisits();
-    ;
     window.addEventListener("click", (e: any) => {
       if (!e.target.classList.contains("md")) {
         this.selectType = false;

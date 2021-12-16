@@ -205,7 +205,6 @@ export default class ProcedureCard extends Vue {
 
   async created() {
     await this.getProcedures(this.$route.params.id.toString());
-    ;
   }
 }
 </script>

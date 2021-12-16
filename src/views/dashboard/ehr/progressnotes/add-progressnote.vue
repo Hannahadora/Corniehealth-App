@@ -963,7 +963,6 @@ export default class AddProgressNote extends Vue {
   }
 
   get isShow() {
-    ;
     return (this.topClick = !this.topClick);
   }
 
@@ -1023,7 +1022,6 @@ export default class AddProgressNote extends Vue {
   }
 
   printId(item = {} as ICondition) {
-    ;
     this.myId = item.id;
     this.myItem = this.newitem;
     // // const uuu =  this.items.find((s) => s.id == item.id) || "";
@@ -1032,8 +1030,6 @@ export default class AddProgressNote extends Vue {
   enc: any = [];
   printEncounterId(id: string) {
     this.enc.push(id);
-    ;
-
     const newArr = this.enc.filter(function (entry: any) {
       return entry.trim() != "";
     });
@@ -1041,7 +1037,6 @@ export default class AddProgressNote extends Vue {
     //   return el != null;
     // });
 
-    ;
     return newArr;
   }
 
@@ -1326,13 +1321,9 @@ export default class AddProgressNote extends Vue {
   }
 
   async submit() {
-    ;
-    ;
-    ;
-    ;
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) {
-      return ;
+      return;
     }
     try {
       const { data } = await cornieClient().post(
@@ -1340,10 +1331,8 @@ export default class AddProgressNote extends Vue {
         this.payload2
       );
       window.notify({ msg: "Progress notes Created", status: "success" });
-      ;
     } catch (error) {
       window.notify({ msg: "Progress note not created", status: "error" });
-      ;
     }
   }
 
@@ -1366,7 +1355,6 @@ export default class AddProgressNote extends Vue {
         `/other-requests/findByPatientSubject/all/${this.patientId}`
       );
       this.referrers = data || [];
-      ;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching referrers for patient",
@@ -1383,7 +1371,6 @@ export default class AddProgressNote extends Vue {
     this.fetchPatientConditions(this.patientId);
     if (this.encounters?.length === 0) await this.getEncounters(this.patientId);
     // this.fetchPatientConditions(this.patientId);
-    ;
     this.loadDropdown();
     this.setAsserter();
 

@@ -574,7 +574,6 @@ export default class NewTeam extends Vue {
   }
 
   memberSelected(data: IItem) {
-    ;
     if (!data) return;
     if (this.memberType?.toLowerCase() === "practitioner") {
       this.participant.name = data.display;
@@ -591,10 +590,6 @@ export default class NewTeam extends Vue {
   }
 
   async createTeam() {
-    ;
-    ;
-    ;
-
     try {
       this.loading = true;
       if (!this.careTeam?.id) {
@@ -650,7 +645,6 @@ export default class NewTeam extends Vue {
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      ;
     }
   }
 
@@ -673,8 +667,6 @@ export default class NewTeam extends Vue {
       await this.fetchPatients();
     const data = await this.getDropdowns("careTeam");
     this.dropdowns = data;
-    ;
-    ;
   }
 }
 </script>

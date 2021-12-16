@@ -1,50 +1,65 @@
 <template>
-  <div class="h-full  w-full">
-      <div class="bg-gray-100 rounded-md w-full p-5">
-          <span class="text-black text-xs float-left w-full -mt-2">Specify notification reminder timelines prior to appointment time.</span>
-          <span class="text-black text-xs float-right flex cursor-pointer  -mt-4" @click="AddReminder"> <add-blue-icon class="mr-2"/> Add Reminder</span>
+  <div class="h-full w-full">
+    <div class="bg-gray-100 rounded-md w-full p-5">
+      <span class="text-black text-xs float-left w-full -mt-2"
+        >Specify notification reminder timelines prior to appointment
+        time.</span
+      >
+      <span
+        class="text-black text-xs float-right flex cursor-pointer -mt-4"
+        @click="AddReminder"
+      >
+        <add-blue-icon class="mr-2" /> Add Reminder</span
+      >
+    </div>
+    <accordion-component
+      class="pb-10 capitalize"
+      editabetitle="Reminder me to..."
+      :opened="true"
+    >
+      <div class="flex pt-5 mt-4">
+        <p class="lbl mt-2 flex capitalize text-black mb-1 text-sm">
+          All - day
+        </p>
+        <label class="switch">
+          <input
+            name="category"
+            type="checkbox"
+            @input="selected"
+            v-model="switchshow"
+            value="2"
+          />
+          <span class="slider round"></span>
+        </label>
       </div>
-       <accordion-component class="pb-10 capitalize" editabetitle="Reminder me to..." :opened="true">
-                 <div class="flex pt-5 mt-4">
-                    <p class="lbl mt-2 flex capitalize text-black mb-1 text-sm">All - day</p>
-                    <label class="switch">
-                        <input
-                        name="category"
-                        type="checkbox"
-                        @input="selected"
-                        v-model="switchshow"
-                        value="2"
-                        />
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="grid grid-cols-2 gap-4 w-full">
-                    <div class="flex space-x-4 w-full">
-                        <div class="w-full">
-                            <span class="text-black text-sm capitalize font-semibold">{{new Date(data.startDate).toLocaleDateString("en-US", dateoptions)}}</span>
-                            <date-time-picker
-                                v-model:date="data.startDate"
-                                v-model:time="data.startTime"
-                                class="w-full"
-                            />
-                        </div>
-                        <cornie-select
-                        class="w-full mt-3"
-                        v-model="format"
-                        :items="['Does not repeat','Custom']"
-                        placeholder="--Link from forms--"
-                        />
-                    </div>
-
-                </div>
-                 <div class="flex space-x-4 mb-5 pb-14 mt-5 float-right">
-                    <copyform-icon class="float-right" />
-                    <delete-icon
-                    class="float-right cursor-pointer"
-                    @click="questions.splice(index, 1)"
-                    />
-                </div>
-       </accordion-component>
+      <div class="grid grid-cols-2 gap-4 w-full">
+        <div class="flex space-x-4 w-full">
+          <div class="w-full">
+            <span class="text-black text-sm capitalize font-semibold">{{
+              new Date(data.startDate).toLocaleDateString("en-US", dateoptions)
+            }}</span>
+            <date-time-picker
+              v-model:date="data.startDate"
+              v-model:time="data.startTime"
+              class="w-full"
+            />
+          </div>
+          <cornie-select
+            class="w-full mt-3"
+            v-model="format"
+            :items="['Does not repeat', 'Custom']"
+            placeholder="--Link from forms--"
+          />
+        </div>
+      </div>
+      <div class="flex space-x-4 mb-5 pb-14 mt-5 float-right">
+        <copyform-icon class="float-right" />
+        <delete-icon
+          class="float-right cursor-pointer"
+          @click="questions.splice(index, 1)"
+        />
+      </div>
+    </accordion-component>
     <!-- <div class="w-full">
 
       <div class="w-full">
@@ -260,13 +275,13 @@ const location = namespace("location");
   },
 })
 export default class AddLocation extends Vue {
-   dateoptions = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
-  
+  dateoptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
   get istReminder() {
     return {
       days: 0,
@@ -298,7 +313,7 @@ export default class AddLocation extends Vue {
 
   loading = false;
 
-   data: any = {
+  data: any = {
     date: "",
     dateTime: "",
     startDate: "",
@@ -306,9 +321,8 @@ export default class AddLocation extends Vue {
     endDate: "",
     endTime: "",
   };
-reminders = [] as any;
-reminder = [] as any;
-
+  reminders = [] as any;
+  reminder = [] as any;
 
   name = "";
   locationStatus = "";
@@ -370,9 +384,9 @@ reminder = [] as any;
     this.states = states;
   }
 
-    AddReminder(){
-        this.reminder.push(this.reminders)
-    }
+  AddReminder() {
+    this.reminder.push(this.reminders);
+  }
   async setLocation() {
     const location = await this.getLocationById(this.id);
     if (!location) return;
@@ -492,8 +506,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   display: none;
 }
 :focus-visible {
-    outline: none !important;
-  
+  outline: none !important;
 }
-
 </style>

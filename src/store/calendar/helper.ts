@@ -5,15 +5,11 @@ export async function fetchCalendars() {
     try {
         const response = await cornieClient().get(
             "/api/v1/calendar/findForUser/me"
-        )
+        );
 
         if (response.success) {
-            return response.data
+            return response.data;
         }
-    } catch (error) {
-
-    }
-    return [] as ICalendar[]
+    } catch (error) {}
+    return [] as ICalendar[];
 }
-
-

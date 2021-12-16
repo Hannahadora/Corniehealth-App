@@ -148,11 +148,8 @@ export default class ServicesTable extends Vue {
       });
       if (confirmed) {
         const response = await this.deleteService(serviceId);
-        ;
       }
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 }
 </script>

@@ -15,15 +15,7 @@
           other related data in your practice settings
         </p>
         <div
-          class="
-            flex
-            space-x-4
-            text-primary
-            font-semibold
-            text-sm
-            mt-3
-            cursor-pointer
-          "
+          class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
           v-if="showEdit"
           @click="showEdit = false"
         >
@@ -31,15 +23,7 @@
         </div>
         <div
           v-else
-          class="
-            flex
-            space-x-4
-            text-danger
-            font-semibold
-            text-sm
-            mt-3
-            cursor-pointer
-          "
+          class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer"
           @click="showEditSection"
         >
           <edit-icon class="fill-current text-danger mr-4" /> Edit
@@ -68,8 +52,8 @@
         />
         <div>
           <phone-input
-          :add="true"
-          @addnumbers="addNumbers"
+            :add="true"
+            @addnumbers="addNumbers"
             v-model:code="dialCode"
             :rules="phoneRule"
             label="Contact Numbers"
@@ -77,8 +61,16 @@
             class="w-full"
           />
           <div class="grid grid-cols-2 gap-4 mt-3">
-            <div class="flex space-x-6 w-full bg-primary rounded-full text-white p-1  px-4" v-for="(item, index) in phonenumbers" :key="index">
-              <span>{{item.number}}</span> <cancel-icon class="mt-1 cursor-pointer"  @click="removenumber(index)"/>
+            <div
+              class="flex space-x-6 w-full bg-primary rounded-full text-white p-1 px-4"
+              v-for="(item, index) in phonenumbers"
+              :key="index"
+            >
+              <span>{{ item.number }}</span>
+              <cancel-icon
+                class="mt-1 cursor-pointer"
+                @click="removenumber(index)"
+              />
             </div>
           </div>
         </div>
@@ -125,7 +117,14 @@
         <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-300 text-xs">Active Since:</div>
-          <div class="text-blue-600 font-bold text-xs"> {{ new Date(orgInfo.createdAt).toLocaleDateString("en-US", dateoptions)  }}</div>
+          <div class="text-blue-600 font-bold text-xs">
+            {{
+              new Date(orgInfo.createdAt).toLocaleDateString(
+                "en-US",
+                dateoptions
+              )
+            }}
+          </div>
         </div>
         <div class="flex space-x-4 mt-2">
           <star-icon />
@@ -141,13 +140,13 @@
       </div>
       <div class="float-right">
         <p class="text-sm text-black mb-1">
-           {{ orgInfo.address }}
+          {{ orgInfo.address }}
         </p>
         <!-- <p class="text-sm text-black mb-1"> {{
                 authPractitioner.phone.dialCode + authPractitioner.phone.number
               }}</p> -->
         <!-- <p class="text-sm text-black mb-1"> {{ authPractitioner.email }}</p> -->
-        <p class="text-sm text-black mb-1">{{orgInfo.website}}</p>
+        <p class="text-sm text-black mb-1">{{ orgInfo.website }}</p>
         <div class="flex space-x-4 mt-2">
           <span class="text-gray-300 text-xs"
             >Total Ratings:
@@ -164,9 +163,7 @@
           >
             <view-icon class="mr-2" /> View
           </cornie-btn>
-          <cornie-btn
-            class="text-white bg-danger px-6 rounded-xl"
-          >
+          <cornie-btn class="text-white bg-danger px-6 rounded-xl">
             <share-icon class="mr-2" /> Share
           </cornie-btn>
         </div>
@@ -373,7 +370,6 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
   },
 })
 export default class CarePartnersExistingState extends Vue {
-
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -386,7 +382,7 @@ export default class CarePartnersExistingState extends Vue {
   @practiceinformation.Action
   fetchPracticeInformations!: () => Promise<void>;
 
- @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   @practiceinformation.Action
@@ -405,36 +401,36 @@ export default class CarePartnersExistingState extends Vue {
   email = "";
   address = "";
   phonenumbers = [] as any;
-  website="";
+  website = "";
   siteMessage = "";
   contactNumber = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
   orgInfo = [];
   dialCode = "+234";
- dateoptions = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
+  dateoptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
 
- phoneRule = string().matches(phoneRegex, "A valid phone number is required");
+  phoneRule = string().matches(phoneRegex, "A valid phone number is required");
 
- removenumber(index:number){
-     this.phonenumbers.splice(index, 1);
+  removenumber(index: number) {
+    this.phonenumbers.splice(index, 1);
   }
-   async reset(){
+  async reset() {
     this.contactNumber = "";
   }
 
-addNumbers(){
-  if(this.contactNumber == ''){
-     window.notify({msg: "Please input a contact number",status: "error",});
-  }else{
-    this.phonenumbers.push(this.phone);
-   this.reset();
+  addNumbers() {
+    if (this.contactNumber == "") {
+      window.notify({ msg: "Please input a contact number", status: "error" });
+    } else {
+      this.phonenumbers.push(this.phone);
+      this.reset();
+    }
   }
-}
   get phone(): IPhone {
     return {
       dialCode: this.dialCode,
@@ -503,7 +499,7 @@ addNumbers(){
   done() {
     this.$emit("added");
     this.show = false;
-     this.showEdit = false;
+    this.showEdit = false;
   }
 
   async mappedfunc() {
@@ -519,7 +515,7 @@ addNumbers(){
     };
   }
 
- async createPracticeInfromation() {
+  async createPracticeInfromation() {
     try {
       const response = await cornieClient().post(
         "/api/v1/practice-information",

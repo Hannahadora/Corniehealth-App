@@ -258,7 +258,7 @@
                                         v-model="questions[index].answerType"
                                         class="required w-full"
                                         :items="[
-                                        'choice',
+                                          'choice',
                                           'openChoice',
                                           'text',
                                           'Boolean',
@@ -552,21 +552,21 @@
                               v-model="mainquestions[index].answerType"
                               class="required w-full"
                               :items="[
-                                        'choice',
-                                          'openChoice',
-                                          'text',
-                                          'Boolean',
-                                          'Decimal',
-                                          'Integer',
-                                          'Date',
-                                          'Date & Time',
-                                          'Time',
-                                          'String',
-                                          'Url',
-                                          'Attachment',
-                                          'Reference',
-                                          'Quantity',
-                                        ]"
+                                'choice',
+                                'openChoice',
+                                'text',
+                                'Boolean',
+                                'Decimal',
+                                'Integer',
+                                'Date',
+                                'Date & Time',
+                                'Time',
+                                'String',
+                                'Url',
+                                'Attachment',
+                                'Reference',
+                                'Quantity',
+                              ]"
                               placeholder="--Select"
                             />
                           </div>
@@ -1061,10 +1061,9 @@ export default class AddPracticeform extends Vue {
   processQuestionGroup(questionGroup: any) {
     if (!questionGroup.items) return questionGroup;
     const items = questionGroup.items || [];
-    let sanitize:any = [];
-    items.forEach((item:any) => {
-
-      if(!Array.isArray(item)){
+    let sanitize: any = [];
+    items.forEach((item: any) => {
+      if (!Array.isArray(item)) {
         sanitize.push(item);
       } else {
         if (item.length) {
@@ -1078,9 +1077,9 @@ export default class AddPracticeform extends Vue {
   }
   processSection(section: any) {
     const items = section.items || [];
-    let sanitize:any = [];
-    items.forEach((item:any) => {
-      if(!Array.isArray(item)){
+    let sanitize: any = [];
+    items.forEach((item: any) => {
+      if (!Array.isArray(item)) {
         sanitize.push(item);
       } else {
         if (item.length) {

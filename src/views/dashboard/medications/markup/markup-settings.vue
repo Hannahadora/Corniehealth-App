@@ -1,109 +1,107 @@
 <template>
-  <cornie-dialog right class="w-full h-full">
-    <cornie-card height="100%" class="flex flex-col h-full bg-white">
-      <cornie-card-title class="">
-        <icon-btn @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
-      </cornie-card-title>
+  <span
+    class="flex flex-col w-full justify-center border-b border-grays font-bold mb-5 text-xl text-primary m-2 pb-2"
+  >
+    Markup & Discount Settings
+  </span>
 
-      <div
-        class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
+  <div
+    class="flex-col justify-center bg-white p-3 mt-2 mb-2 rounded w-full overflow-auto"
+  >
+    <div class="w-full mt-4 grid grid-cols-3 gap-5">
+      <cornie-input
+        class="w-full mb-6"
+        label="Sample Unit Cost (NGN)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
       >
-        <div class="w-full p-2">
-          <span
-            class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
-          >
-            Markup & Discount Settings
-          </span>
-        </div>
-        <div class="w-full mt-4 grid grid-cols-3 gap-5">
-          <cornie-input
-            class="w-full mb-6"
-            label="Sample Unit Cost (NGN)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
-          <cornie-input
-            class="w-full mb-6"
-            label="Percentage Markup (%)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
-          <cornie-input
-            class="w-full mb-6"
-            label="Maximum Allowable Discount (%)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
+      </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Percentage Markup (%)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Maximum Allowable Discount (%)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
 
-          <cornie-input
-            class="w-full mb-6"
-            label="Recommended Sales Price (NGN)"
-            placeholder="--Enter--"
-            :rules="required"
-            :readonly="readonly"
-          >
-          </cornie-input>
-          <cornie-input
-            class="w-full mb-6"
-            label="Margin (NGN)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
-          <cornie-input
-            class="w-full mb-6"
-            label="Margin (%)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Recommended Sales Price (NGN)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+        :readonly="readonly"
+      >
+      </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Margin (NGN)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Margin (%)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
 
-          <cornie-input
-            class="w-full mb-6"
-            label="Discounted Sales Price (NGN)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
-          <cornie-input
-            class="w-full mb-6"
-            label="Discounted Margin (NGN)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
-          <cornie-input
-            class="w-full mb-6"
-            label="Discounted Margin (%)"
-            placeholder="--Enter--"
-            :rules="required"
-          >
-          </cornie-input>
-        </div>
-        <div class="w-full">
-          <span class="flex justify-end w-full mb-1">
-            <cornie-btn
-              class="text-primary border border-primary m-5 pr-8 pl-8"
-              @click="$router.push(`/dashboard/provider/settings/markup`)"
-            >
-              Cancel
-            </cornie-btn>
-            <cornie-btn
-              @click="$router.push(`/dashboard/provider/settings/markup`)"
-              class="bg-danger text-white m-5 pr-8 pl-8"
-            >
-              Save
-            </cornie-btn>
-          </span>
-        </div>
-      </div>
-    </cornie-card>
-  </cornie-dialog>
+      <cornie-input
+        class="w-full mb-6"
+        label="Discounted Sales Price (NGN)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Discounted Margin (NGN)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
+      <cornie-input
+        class="w-full mb-6"
+        label="Discounted Margin (%)"
+        placeholder="--Autoloaded--"
+        disabled
+        :rules="required"
+      >
+      </cornie-input>
+    </div>
+    <div class="w-full">
+      <span class="flex justify-end w-full mb-1">
+        <cornie-btn
+          class="text-primary border border-primary m-5 px-9 font-bold"
+          @click="$router.push(`/dashboard/provider/settings/markup`)"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          @click="$router.push(`/dashboard/provider/settings/markup`)"
+          class="bg-danger text-white m-5 px-9 font-bold"
+        >
+          Save
+        </cornie-btn>
+      </span>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -120,13 +118,13 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
-import RegistrationDialog from "./registration-dialog.vue";
-import RegistrationChart from "./registration-chart.vue";
+import RegistrationDialog from "../registration-dialog.vue";
+import RegistrationChart from "../registration-chart.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
-import CheckInDialog from "./dialogs/checkin-dialog.vue";
-import AdvancedFilter from "./dialogs/advanced-filter.vue";
+import CheckInDialog from "../dialogs/checkin-dialog.vue";
+import AdvancedFilter from "../dialogs/advanced-filter.vue";
 
-import AddFunction from "./add-function.vue";
+import AddFunction from "../add-function.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 

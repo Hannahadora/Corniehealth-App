@@ -92,7 +92,7 @@
               type="submit"
               class="text-white bg-danger px-3 rounded-xl"
             >
-              {{newaction}}
+              {{ newaction }}
             </cornie-btn>
           </div>
         </v-form>
@@ -119,7 +119,6 @@ import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
-
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
@@ -141,10 +140,10 @@ const appointmentRoom = namespace("appointmentRoom");
   },
 })
 export default class AppointmentRoomDialog extends Vue {
- @PropSync("modelValue", { type: Boolean, default: false })
+  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
- @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   id!: string;
 
   required = string().required();
@@ -161,10 +160,8 @@ export default class AppointmentRoomDialog extends Vue {
   location = [];
   practitioner = [];
 
-
-@appointmentRoom.Action
+  @appointmentRoom.Action
   getAppointmentRoomById!: (id: string) => IAppointmentRoom;
-
 
   @appointmentRoom.Mutation
   setAppointmentrooms!: (f: IAppointmentRoom[]) => Promise<void>;
@@ -175,7 +172,6 @@ export default class AppointmentRoomDialog extends Vue {
   @user.Getter
   cornieUser!: CornieUser;
 
-
   async submit() {
     this.loading = true;
     if (this.id) await this.updateAppointmentRoom();
@@ -183,7 +179,7 @@ export default class AppointmentRoomDialog extends Vue {
     this.loading = false;
   }
 
- @Watch("id")
+  @Watch("id")
   idChanged() {
     this.setAppointmentRoom();
   }
@@ -191,8 +187,7 @@ export default class AppointmentRoomDialog extends Vue {
     return this.id ? "Update" : "Save";
   }
 
-
-    async setAppointmentRoom() {
+  async setAppointmentRoom() {
     const appointmentRoom = await this.getAppointmentRoomById(this.id);
     if (!appointmentRoom) return;
     this.roomName = appointmentRoom.roomName;
@@ -201,7 +196,6 @@ export default class AppointmentRoomDialog extends Vue {
     this.locationId = appointmentRoom.locationId;
     this.availability = appointmentRoom.availability;
     this.status = appointmentRoom.status;
-  
   }
 
   get payload() {
@@ -214,7 +208,7 @@ export default class AppointmentRoomDialog extends Vue {
       status: this.status,
     };
   }
-done() {
+  done() {
     this.$emit("room-added");
     this.show = false;
   }
@@ -252,7 +246,7 @@ done() {
       });
     }
   }
-    get allLocation() {
+  get allLocation() {
     if (!this.location || this.location.length === 0) return [];
     return this.location.map((i: any) => {
       return {
@@ -283,11 +277,11 @@ done() {
     const response = await Promise.all([AllPractitioner]);
     this.practitioner = response[0].data;
   }
- 
+
   @hierarchy.Action
   fetchCategories!: () => Promise<void>;
 
- async created() {
+  async created() {
     await this.fetchPractitioner();
     await this.fetchLocation();
   }

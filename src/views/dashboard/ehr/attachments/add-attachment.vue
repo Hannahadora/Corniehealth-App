@@ -93,7 +93,6 @@ export default class AddAttachment extends Vue {
 
   get activePatientId() {
     const id = this.$route?.params?.id as string;
-    ;
     return id;
   }
 
@@ -151,7 +150,6 @@ export default class AddAttachment extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Attachment not Created", status: "error" });
     }
   }

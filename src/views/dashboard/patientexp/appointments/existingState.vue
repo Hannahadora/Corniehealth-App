@@ -280,7 +280,6 @@ export default class AppointmentExistingState extends Vue {
   async fetchPatients() {
     try {
       const response = await cornieClient().get(`/api/v1/patient/`);
-      ;
     } catch (error) {
       window.notify({ msg: "Failed to get patients", status: "error" });
     }
@@ -376,9 +375,7 @@ export default class AppointmentExistingState extends Vue {
       if (response.success) {
         this.singleParticipant = response.data;
       }
-    } catch (e) {
-      ;
-    }
+    } catch (e) {}
   }
   get sortAppointments() {
     return this.items.slice().sort(function (a, b) {

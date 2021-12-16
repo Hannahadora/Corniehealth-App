@@ -37,7 +37,13 @@
             :items="allCurrencyNew"
             v-model="basecurrency"
           /> -->
-           <cornie-input disabled  label="Default Currency" v-model="defaultCurrency" placeholder="--Autofilled--" class="w-full mb-4" />
+          <cornie-input
+            disabled
+            label="Default Currency"
+            v-model="defaultCurrency"
+            placeholder="--Autofilled--"
+            class="w-full mb-4"
+          />
           <cornie-select
             placeholder="--Select--"
             class="w-full"
@@ -60,18 +66,7 @@
                 </div>
            </div> -->
         <div
-          class="
-            bg-blue-100
-            text-black
-            p-3
-            text-center
-            rounded
-            flex
-            font-semibold
-            justify-center
-            mt-5
-            text-sm
-          "
+          class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm"
         >
           1 {{ basecurrency }} ~= {{ exchangeRate }} {{ currency }}
         </div>

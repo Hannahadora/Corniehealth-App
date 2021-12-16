@@ -1,4 +1,3 @@
-
 export default interface IProgressnote {
   id?: string;
   conditionId?: string;

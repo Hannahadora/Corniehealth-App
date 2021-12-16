@@ -45,14 +45,7 @@
           <p class="text-sm">show</p>
           <input
             type="number"
-            class="
-              w-12
-              mr-2
-              ml-2
-              outline-none
-              border border-blue-lighter
-              rounded-r
-            "
+            class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
           />
           <p class="text-sm">per page</p>
         </div>
@@ -72,8 +65,7 @@
       </div>
     </div>
   </div>
-  <room-dialog v-model="showRoom" :id="roomId"  @room-added="roomAdded"/>
-
+  <room-dialog v-model="showRoom" :id="roomId" @room-added="roomAdded" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -101,10 +93,8 @@ import IAppointmentRoom from "@/types/IAppointmentRoom";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-
 const location = namespace("location");
 const appointmentRoom = namespace("appointmentRoom");
-
 
 @Options({
   components: {
@@ -129,15 +119,14 @@ const appointmentRoom = namespace("appointmentRoom");
   },
 })
 export default class apponitmentRooms extends Vue {
-
   query = "";
-  roomId= "";
-showRoom= false;
-practitioner = [] as any;
-location = [] as any;
-updatedBy = "";
-currentStatus= "";
-showStatusModal = false;
+  roomId = "";
+  showRoom = false;
+  practitioner = [] as any;
+  location = [] as any;
+  updatedBy = "";
+  currentStatus = "";
+  showStatusModal = false;
 
   @appointmentRoom.State
   appointmentrooms!: IAppointmentRoom[];
@@ -154,10 +143,10 @@ showStatusModal = false;
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-showAppointmentRoom(value:string){
-  this.showRoom = true;
-  this.roomId = value;
-}
+  showAppointmentRoom(value: string) {
+    this.showRoom = true;
+    this.roomId = value;
+  }
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -191,8 +180,8 @@ showAppointmentRoom(value:string){
   get empty() {
     return this.appointmentrooms.length < 1;
   }
-   roomAdded(){
-     this.fetchAppointmentrooms();
+  roomAdded() {
+    this.fetchAppointmentrooms();
   }
   get headers() {
     const preferred =
@@ -212,24 +201,23 @@ showAppointmentRoom(value:string){
         ...appointmentroom,
         action: appointmentroom.id,
         keydisplay: "XXXXXXX",
-         location: this.getLocationName(appointmentroom.locationId),
-         custodian: this.getCustodianName(appointmentroom.custodian),
-        
+        location: this.getLocationName(appointmentroom.locationId),
+        custodian: this.getCustodianName(appointmentroom.custodian),
       };
     });
     if (!this.query) return appointmentrooms;
     return search.searchObjectArray(appointmentrooms, this.query);
   }
-   getCustodianName(id: string) {
+  getCustodianName(id: string) {
     const pt = this.practitioner.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
-   getLocationName(id: string) {
+  getLocationName(id: string) {
     const pt = this.location.find((i: any) => i.id === id);
     return pt ? `${pt.name}` : "";
   }
 
-   async deleteItem(id: string) {
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this appointment room",
       title: "Delete request",
@@ -238,10 +226,10 @@ showAppointmentRoom(value:string){
 
     if (await this.deleteAppointmentroom(id))
       window.notify({ msg: "Appoinment room not deleted", status: "error" });
-    else window.notify({ msg: "Appoinment room deleted", status: "success" }); 
+    else window.notify({ msg: "Appoinment room deleted", status: "success" });
   }
 
- async fetchLocation() {
+  async fetchLocation() {
     const AllLocation = cornieClient().get(
       "/api/v1/location/myOrg/getMyOrgLocations"
     );
@@ -254,7 +242,7 @@ showAppointmentRoom(value:string){
     const response = await Promise.all([AllPractitioner]);
     this.practitioner = response[0].data;
   }
- 
+
   async created() {
     await this.fetchAppointmentrooms();
     await this.fetchLocation();

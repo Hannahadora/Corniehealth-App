@@ -48,17 +48,7 @@
             </button>
             <button
               @click="showAlert"
-              class="
-                bg-primary
-                rounded-full
-                text-white
-                py-2
-                px-5
-                text-sm
-                font-semibold
-                focus:outline-none
-                hover:opacity-90
-              "
+              class="bg-primary rounded-full text-white py-2 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
             >
               Confirm
             </button>
@@ -66,16 +56,7 @@
         </div>
         <div class="mt-12 flex justify-end">
           <button
-            class="
-              bg-danger
-              rounded-full
-              text-white
-              py-2
-              text-sm
-              px-8
-              focus:outline-none
-              hover:opacity-90
-            "
+            class="bg-danger rounded-full text-white py-2 text-sm px-8 focus:outline-none hover:opacity-90"
           >
             <!-- <img src="@/assets/img/plus.svg" class="inline-block mr-2" /> -->
             Save

@@ -126,8 +126,6 @@ export default class UserSignature extends Vue {
   file: any = {};
 
   async updateSignature(e: any) {
-    ;
-
     try {
       this.loading = true;
       await this.postSignature({
@@ -143,7 +141,6 @@ export default class UserSignature extends Vue {
       });
     } catch (error) {
       this.loading = false;
-      ;
     }
   }
 }

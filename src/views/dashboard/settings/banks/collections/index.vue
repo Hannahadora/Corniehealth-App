@@ -35,18 +35,7 @@
             <img src="@/assets/img/nobank.svg" class="mb-2" />
             <h4 class="text-black text-center">Add new account</h4>
             <button
-              class="
-                bg-danger
-                rounded-full
-                text-white text-sm
-                mt-5
-                py-2
-                px-8
-                focus:outline-none
-                hover:opacity-90
-                flex
-                space-x-2
-              "
+              class="bg-danger rounded-full text-white text-sm mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
               @click="showAccountModal = true"
             >
               <span class="text-xl -mt-0.5">+ </span>
@@ -57,19 +46,7 @@
             <div class="w-full mt-5">
               <span class="flex justify-end">
                 <button
-                  class="
-                    bg-danger
-                    rounded-full
-                    text-sm text-white
-                    mb-5
-                    mt-5
-                    py-2
-                    px-8
-                    focus:outline-none
-                    hover:opacity-90
-                    flex
-                    space-x-2
-                  "
+                  class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
                   @click="showAccountModal = true"
                 >
                   <span class="text-xl -mt-1.5 mr-2">+ </span>
@@ -83,26 +60,14 @@
               >
                 <template #actions="{ item }">
                   <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="showAccount(item.id)"
                   >
                     <d-edit class="text-primary fill-current" />
                     <span class="ml-3 text-xs">View & Edit</span>
                   </div>
                   <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="deleteItem(item.id)"
                   >
                     >
@@ -110,13 +75,7 @@
                     <span class="ml-3 text-xs">Deactivate</span>
                   </div>
                   <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="deleteItem(item.id)"
                   >
                     <delete-icon class="text-yellow-500 fill-current" />
@@ -154,18 +113,7 @@
               etc.). To associate accounts, click on New Location to start.
             </h3>
             <button
-              class="
-                bg-danger
-                rounded-full
-                text-white text-sm
-                mt-5
-                py-2
-                px-8
-                focus:outline-none
-                hover:opacity-90
-                flex
-                space-x-2
-              "
+              class="bg-danger rounded-full text-white text-sm mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
               @click="showLocationAccount = true"
             >
               <span class="text-xl -mt-0.5">+ </span>
@@ -176,18 +124,7 @@
             <div class="w-full mt-5">
               <span class="flex justify-end">
                 <button
-                  class="
-                    bg-danger
-                    rounded-full
-                    text-sm text-white
-                    mb-5
-                    mt-5
-                    py-2
-                    px-8
-                    focus:outline-none
-                    hover:opacity-90
-                    flex
-                  "
+                  class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex"
                   @click="showLocationAccount = true"
                 >
                   <span class="text-xl -mt-1.5 mr-2">+ </span>
@@ -200,39 +137,21 @@
               >
                 <template #actions="{ item }">
                   <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="showModal(item.id)"
                   >
                     <d-edit class="text-primary fill-current" />
                     <span class="ml-3 text-xs">View & Edit</span>
                   </div>
                   <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="deleteItem2(item.id)"
                   >
                     <delete-icon class="text-yellow-500 fill-current" />
                     <span class="ml-3 text-xs">Delete</span>
                   </div>
                   <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                   >
                     <close-icon class="text-yellow-500 fill-current" />
                     <span class="ml-3 text-xs">Deactivate Account</span>
@@ -241,14 +160,7 @@
                 <template #pay="{ item }">
                   <div>
                     <span
-                      class="
-                        bg-green-100
-                        text-green-500
-                        p-1
-                        rounded
-                        mr-3
-                        text-xs
-                      "
+                      class="bg-green-100 text-green-500 p-1 rounded mr-3 text-xs"
                       v-if="item.paymentCategories[0] == 'Invoice'"
                       >{{ item.paymentCategories[0] }}
                     </span>

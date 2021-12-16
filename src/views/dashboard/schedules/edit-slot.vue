@@ -565,10 +565,8 @@ export default class Shift extends Vue {
       } else {
         window.notify({ msg: "Error creating slot", status: "error" });
       }
-      ;
       this.loading = false;
     } catch (error) {
-      ;
       this.loading = false;
     }
   }

@@ -318,7 +318,6 @@ export default class PractitionerExistingState extends Vue {
       this.getShifts();
     } catch (error) {
       window.notify({ msg: "Shift could not deactivated", status: "error" });
-      ;
     }
   }
 
@@ -335,7 +334,6 @@ export default class PractitionerExistingState extends Vue {
       this.getShifts();
     } catch (error) {
       window.notify({ msg: "Shift could not activated", status: "error" });
-      ;
     }
   }
 
@@ -352,7 +350,6 @@ export default class PractitionerExistingState extends Vue {
       this.getShifts();
     } catch (error) {
       window.notify({ msg: "Shift could not deleted", status: "error" });
-      ;
     }
   }
 

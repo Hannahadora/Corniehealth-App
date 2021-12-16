@@ -1,10 +1,16 @@
 <template>
   <span class="w-full">
-    <label class="flex space-x-55 justify-between w-full capitalize mb-1 text-black text-sm font-semibold">
-     <span class="float-left">
+    <label
+      class="flex space-x-55 justify-between w-full capitalize mb-1 text-black text-sm font-semibold"
+    >
+      <span class="float-left">
         {{ label }}
-     </span>
-      <add-blue-icon class="float-right cursor-pointer fill-current text-primary" @click="$emit('addnumbers')" v-if="add"/>
+      </span>
+      <add-blue-icon
+        class="float-right cursor-pointer fill-current text-primary"
+        @click="$emit('addnumbers')"
+        v-if="add"
+      />
     </label>
     <field
       :name="inputName"
@@ -105,7 +111,7 @@ export default class PhoneInput extends Vue {
   @Prop({ type: Boolean })
   add!: boolean;
 
-   @Prop({ type: String })
+  @Prop({ type: String })
   code!: string;
 
   @PropSync("code", { default: "+234" })

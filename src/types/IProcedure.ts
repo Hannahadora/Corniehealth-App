@@ -1,8 +1,8 @@
-import IDevice from "@/types/IDevice"
-import IGroup from "./IGroup"
-import ILocation from "./ILocation"
-import { IPatient } from "./IPatient"
-import IPractitioner from "./IPractitioner"
+import IDevice from "@/types/IDevice";
+import IGroup from "./IGroup";
+import ILocation from "./ILocation";
+import { IPatient } from "./IPatient";
+import IPractitioner from "./IPractitioner";
 
 export default interface IProcedure {
   id: string;

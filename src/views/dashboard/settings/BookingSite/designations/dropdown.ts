@@ -7,4 +7,4 @@ export const appointmentItems = [
     },
     { code: "routine", display: "Routine appointment- default if not valued" },
     { code: "walkin", display: "A previously unscheduled" },
-]
+];
