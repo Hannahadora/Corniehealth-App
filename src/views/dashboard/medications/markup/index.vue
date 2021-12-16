@@ -28,12 +28,15 @@
 
     <div class="flex flex-col">
       <span class="font-bold text-sm">Allow location admins to modify</span>
+         <cornie-radio name="confirm" value="pay-to-confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
+            <cornie-radio name="confirm" value="pay-later" v-model="appointmentConfirmation" label="Confirm and pay later" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import CornieRadio from "@/components/cornieradio.vue";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { Options, Vue } from "vue-class-component";
@@ -43,7 +46,7 @@ const user = namespace("user");
 @Options({
   name: "mark ",
   components: {
-    CornieTable,
+    CornieTable, CornieRadio,
   },
 })
 // ​/

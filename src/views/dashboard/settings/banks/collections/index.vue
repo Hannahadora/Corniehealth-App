@@ -132,9 +132,8 @@
                 </button>
               </span>
               <cornie-table
-                :columns="rawHeaders2"
+                :columns="rawHeadersAssociate"
                 v-model="items2"
-                :check="false"
               >
                 <template #actions="{ item }">
                   <div
@@ -338,7 +337,7 @@ export default class Payments extends Vue {
       show: true,
     },
   ];
-  rawHeaders2 = [
+  rawHeadersAssociate = [
     { title: "Location Name", key: "location", show: true },
     { title: "Pay Categories", key: "pay", show: true },
     {
@@ -379,6 +378,7 @@ export default class Payments extends Vue {
         ...association,
         action: association.id,
         keydisplay: "XXXXXXX",
+        account: this.getBankName(association.defaultAccount)
       };
     });
     if (!this.query) return associations;

@@ -193,11 +193,6 @@ export default class Settings extends Vue {
         icon: "templates-icon",
       },
       {
-        name: "Forms & Questionnaires",
-        to: "practise-management/forms-questionnaires",
-        icon: "templates-icon",
-      },
-      {
         name: "Booking Site",
         to: "practise-management/booking-site",
         icon: "security-icon",
