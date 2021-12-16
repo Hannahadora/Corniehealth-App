@@ -183,11 +183,6 @@ export default class Settings extends Vue {
   }
   get PracticeManagement() {
     return [
-        {
-        name: "Forms & Questionnaires",
-        to: "practise-management/forms-questionnaires",
-        icon: "templates-icon",
-      },
       {
         name: "Forms & Questionnaires",
         to: "practise-management/forms-questionnaires",

@@ -93,6 +93,25 @@
           >
             <p class="ml-2">Commercial</p>
           </li>
+                <li
+            @click="
+              $router.push(
+                '/dashboard/settings/practise-management/forms-questionnaires'
+              )
+            "
+            class="mb-3 list-none items-center flex font-medium text-sm text-black hover:bg-blue-100 rounded-full cursor-pointer my-1 -m-2 p-5 py-2"
+          >
+            <p class="ml-2">Practice Management</p>
+          </li>
+          <li class="cursor-pointer mb-3" @click="showSettings">
+            <cornie-btn
+              class="font-semibold rounded-full mb-1 bg-primary mt-2 w-full text-white"
+            >
+              <span class="inline-flex justify-center text-sm">
+                View all settings <settings-white-icon class="ml-2 mt-0.5"
+              /></span>
+            </cornie-btn>
+          </li>
         </ul>
       </div>
     </span>

@@ -54,9 +54,9 @@
             >Appointment Confirmation</span
           >
           <div class="grid grid-cols-2 gap-4 mt-3 mb-5">
-            <cornie-radio name="confirm" value="Pay to Confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
-            <cornie-radio name="confirm" value="Confirm and pay later" v-model="appointmentConfirmation" label="Confirm and pay later" />
-            <cornie-radio name="confirm" value="Either" v-model="appointmentConfirmation" label="Either" />
+            <cornie-radio name="confirm" value="pay-to-confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
+            <cornie-radio name="confirm" value="pay-later" v-model="appointmentConfirmation" label="Confirm and pay later" />
+            <cornie-radio name="confirm" value="either" v-model="appointmentConfirmation" label="Either" />
           </div>
         </div>
 
