@@ -257,7 +257,7 @@
                                         v-model="questions[index].answerType"
                                         class="required w-full"
                                         :items="[
-                                        'choice',
+                                          'choice',
                                           'openChoice',
                                           'text',
                                           'Boolean',
@@ -552,7 +552,7 @@
                               v-model="mainquestions[index].answerType"
                               class="required w-full"
                               :items="[
-                              'choice',
+                                'choice',
                                 'openChoice',
                                 'text',
                                 'Boolean',
@@ -1028,11 +1028,19 @@ export default class AddPracticeform extends Vue {
     this.effectivePeriod = practiceform.effectivePeriod;
     this.code = practiceform.code;
     this.sections = practiceform.sections;
-    (this.groups as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[1]))];
-     (this.mainquestions as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[0]))];
-      (this.maindisplays as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[2]))]; 
-      (this.questions as any) = [JSON.parse(JSON.stringify(practiceform.sections[0].items[0]))];
-      const filterQuestion = (practiceform.sections[0].items[0]);
+    (this.groups as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[1])),
+    ];
+    (this.mainquestions as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[0])),
+    ];
+    (this.maindisplays as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[2])),
+    ];
+    (this.questions as any) = [
+      JSON.parse(JSON.stringify(practiceform.sections[0].items[0])),
+    ];
+    const filterQuestion = practiceform.sections[0].items[0];
   }
   get payload() {
     const sections = JSON.parse(JSON.stringify(this.sections));
@@ -1053,9 +1061,9 @@ export default class AddPracticeform extends Vue {
   processQuestionGroup(questionGroup: any) {
     if (!questionGroup.items) return questionGroup;
     const items = questionGroup.items || [];
-    let sanitize:any = [];
-    items.forEach((item:any) => {
-      if(!Array.isArray(item)){
+    let sanitize: any = [];
+    items.forEach((item: any) => {
+      if (!Array.isArray(item)) {
         sanitize.push(item);
       } else {
         if (item.length) {
@@ -1069,9 +1077,9 @@ export default class AddPracticeform extends Vue {
   }
   processSection(section: any) {
     const items = section.items || [];
-    let sanitize:any = [];
-    items.forEach((item:any) => {
-      if(!Array.isArray(item)){
+    let sanitize: any = [];
+    items.forEach((item: any) => {
+      if (!Array.isArray(item)) {
         sanitize.push(item);
       } else {
         if (item.length) {

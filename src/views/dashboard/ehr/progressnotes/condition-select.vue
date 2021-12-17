@@ -125,7 +125,6 @@ export default class ConditionSelect extends Vue {
     this.femCondition = await this.fetchPatientConditions(this.patientId);
     if (!this.practitioners?.length) this.fetchPractitioners();
     // this.patient = await this.findPatient(this.patientId)
-    ;
   }
 }
 </script>

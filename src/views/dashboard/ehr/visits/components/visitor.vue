@@ -78,7 +78,6 @@ export default class CheckIn extends Vue {
 
   async created() {
     if (this.patients?.length === 0) await this.getPatients();
-    ;
   }
 }
 </script>

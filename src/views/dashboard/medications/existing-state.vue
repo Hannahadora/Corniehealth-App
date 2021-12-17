@@ -109,7 +109,7 @@ import CheckInDialog from "./dialogs/checkin-dialog.vue";
 import AdvancedFilter from "./dialogs/advanced-filter.vue";
 
 import AddFunction from "./add-function.vue";
-import MarkupSettings from "./markup-settings.vue";
+import MarkupSettings from "./markup/markup-settings.vue";
 
 const patients = namespace("patients");
 @Options({

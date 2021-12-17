@@ -28,8 +28,7 @@ export const SettingsRoute: RouteRecordRaw = {
         {
             path: "bank-accounts",
             name: "Billing Accounts",
-            component: () =>
-                import("@/views/dashboard/settings/banks/index.vue"),
+            component: () => import("@/views/dashboard/settings/banks/index.vue"),
         },
         {
             path: "add-payment-account/:id?",
@@ -154,11 +153,17 @@ export const SettingsRoute: RouteRecordRaw = {
             component: () => import("@/views/dashboard/settings/forms/index.vue"),
         },
         {
+            path: "markup",
+            props: true,
+            name: "Markup",
+            component: () => import("@/views/dashboard/medications/markup/index.vue"),
+        },
+        {
             path: "markup-settings",
             props: true,
             name: "Markup Settings",
             component: () =>
-                import("@/views/dashboard/medications/markup-settings.vue"),
+                import("@/views/dashboard/medications/markup/markup-settings.vue"),
         },
     ],
 };

@@ -1,6 +1,9 @@
 <template>
   <div class="overflow-y-auto">
-    <modal :visible="visible" class="mx-14 h-3/4 w-4/12  overflow-y-auto py-4 px-2">
+    <modal
+      :visible="visible"
+      class="mx-14 h-3/4 w-4/12 overflow-y-auto py-4 px-2"
+    >
       <!-- <div
         class="flex bg-primary w-full h-3/4 overflow-y-auto rounded-t-lg p-2"
       >
@@ -10,16 +13,15 @@
       </div> -->
       <div class="w-full p-3">
         <div class="flex items-center gap-2 mb-12">
-      <arrow-left-icon
+          <arrow-left-icon
             class="stroke-current text-primary cursor-pointer"
             @click="show = false"
           />
-          <div class="border h-5"/>
-   <h2 class="text-primary font-bold text-2xl" >
-        {{isUpdate ? "Edit My Contact" : "Add Contact"}}
-        </h2>
+          <div class="border h-5" />
+          <h2 class="text-primary font-bold text-2xl">
+            {{ isUpdate ? "Edit My Contact" : "Add Contact" }}
+          </h2>
         </div>
-
 
         <span class="flex items-center mt-3 mb-12">
           <cornie-avatar-field v-model="image" />
@@ -80,7 +82,7 @@
           </div>
           <div class="flex justify-end w-full mt-4 mb-3">
             <button
-              class="rounded-full mt-5 py-1 px-4 border border-primary focus:outline-none font-bold  hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded-full mt-5 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
@@ -163,14 +165,11 @@ export default class AddContact extends Vue {
   image = "";
 
   @Watch("image")
-  imageChanged(val: string) {
-    ;
-  }
+  imageChanged(val: string) {}
 
   @Watch("visible")
   unsetContacts(val: boolean) {
     if (val) return this.setContact();
-    ;
     this.fname = "";
     this.lname = "";
     this.gender = "";

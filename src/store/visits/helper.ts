@@ -1,84 +1,79 @@
-import { cornieClient } from "@/plugins/http"
+import { cornieClient } from "@/plugins/http";
 
 export async function getVisits() {
     try {
-        const response = await cornieClient().get("/api/v1/visit")
+        const response = await cornieClient().get("/api/v1/visit");
 
-        return response.data
+        return response.data;
     } catch (error) {
-        notify({ msg: "There was an error fetching visits", status: "error" })
+        notify({ msg: "There was an error fetching visits", status: "error" });
     }
-    return {}
+    return {};
 }
 
 export async function getPatientVisits(patientId: string) {
     try {
         const response = await cornieClient().get(
             `/api/v1/visit/patient/${patientId}`
-        )
+        );
 
-        return response.data
+        return response.data;
     } catch (error) {
         notify({
             msg: "There was an error fetching patient's visits",
             status: "error",
-        })
+        });
     }
-    return {}
+    return {};
 }
 
 export async function schedulesByPractitioner(id: string) {
     try {
         const response = await cornieClient().get(
             `/api/v1/schedule/practitioner/${id}`
-        )
+        );
 
-        return response.data
+        return response.data;
     } catch (error) {
-        notify({ msg: "There was an error fetching slots", status: "error" })
+        notify({ msg: "There was an error fetching slots", status: "error" });
     }
-    return {}
+    return {};
 }
 
 export async function getPatients() {
     try {
-        const response = await cornieClient().get("/api/v1/patient")
+        const response = await cornieClient().get("/api/v1/patient");
 
-        return response.data
+        return response.data;
     } catch (error) {
-        notify({ msg: "There was an error fetching slots", status: "error" })
+        notify({ msg: "There was an error fetching slots", status: "error" });
     }
-    return {}
+    return {};
 }
 
 export async function createSlot(body: any) {
     try {
-        const response = await cornieClient().post("/api/v1/schedule/slot", body)
+        const response = await cornieClient().post("/api/v1/schedule/slot", body);
 
-
-        return response.data as boolean
+        return response.data as boolean;
     } catch (error) {
-
-
-        // notify({
-        //   msg: "There was an error creating this slot",
-        //   status: "error"
-        // });
+    // notify({
+    //   msg: "There was an error creating this slot",
+    //   status: "error"
+    // });
     }
 }
 
 export async function checkin(body: any) {
-
     try {
-        const response = await cornieClient().post("/api/v1/visit/check-in", body)
+        const response = await cornieClient().post("/api/v1/visit/check-in", body);
 
-
-        return response.data
+        return response.data;
     } catch (error) {
         notify({
             msg: "There was an error checking in this visit",
             status: "error",
-        })
+        });
     }
 }
 
@@ -87,15 +82,14 @@ export async function checkout(id: string) {
         const response = await cornieClient().post(
             `/api/v1/visit/check-out/${id}`,
             {}
-        )
+        );
 
-
-        return response.data as boolean
+        return response.data as boolean;
     } catch (error) {
         notify({
             msg: "There was an error checking out this visit",
             status: "error",
-        })
+        });
     }
 }
 
@@ -104,15 +98,14 @@ export async function cancel(id: any) {
         const response = await cornieClient().post(
             `/api/v1/visit/cancel/${id}`,
             {}
-        )
+        );
 
-
-        return response.data as boolean
+        return response.data as boolean;
     } catch (error) {
         notify({
             msg: "There was an error canceling this visit",
             status: "error",
-        })
+        });
     }
 }
 
@@ -121,14 +114,14 @@ export async function noShow(id: string) {
         const response = await cornieClient().post(
             `/api/v1/visit/no-show/${id}`,
             {}
-        )
+        );
 
-        return response.data as boolean
+        return response.data as boolean;
     } catch (error) {
         notify({
             msg: "There was an error marking this visit as no-show",
             status: "error",
-        })
+        });
     }
 }
 
@@ -137,15 +130,14 @@ export async function startEncounter(id: string) {
         const response = await cornieClient().post(
             `/api/v1/visit/start-encounter/${id}`,
             {}
-        )
+        );
 
-
-        return response.data as boolean
+        return response.data as boolean;
     } catch (error) {
         notify({
             msg: "There was an error starting this encounter",
             status: "error",
-        })
+        });
     }
 }
 
@@ -154,14 +146,13 @@ export async function updateStatus(body: any) {
         const response = await cornieClient().post(
             `/api/v1/visit/update-status/${body.id}`,
             { status: body.status }
-        )
+        );
 
-
-        return response.data as boolean
+        return response.data as boolean;
     } catch (error) {
         notify({
             msg: "There was an error updating status",
             status: "error",
-        })
+        });
     }
 }

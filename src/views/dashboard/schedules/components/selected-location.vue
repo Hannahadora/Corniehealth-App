@@ -75,8 +75,6 @@ export default class ActorsList extends Vue {
   selectedItem: IItem = {} as IItem;
 
   get initials() {
-    ;
-
     if (!this.selectedItem || !this.selectedItem?.display) return "";
     const wordsInName = this.selectedItem?.display?.split(" ");
     if (wordsInName?.length <= 1) return wordsInName[0][0];

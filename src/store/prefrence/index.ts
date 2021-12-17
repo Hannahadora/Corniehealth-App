@@ -1,9 +1,9 @@
-import IPrefrence from "@/types/IPrefrence"
-import { StoreOptions } from "vuex"
-import { fetchPrefrences } from "./helper"
+import IPrefrence from "@/types/IPrefrence";
+import { StoreOptions } from "vuex";
+import { fetchPrefrences } from "./helper";
 
 interface PrefrenceState {
-    prefrences: IPrefrence[];
+  prefrences: IPrefrence[];
 }
 
 export default {
@@ -18,8 +18,8 @@ export default {
     },
     actions: {
         async fetchPrefrences(ctx) {
-            const prefrences = await fetchPrefrences()
-            ctx.commit("setPrefrences", prefrences)
+            const prefrences = await fetchPrefrences();
+            ctx.commit("setPrefrences", prefrences);
         },
         getPrefrenceById(ctx, id: string) {
             return ctx.state.prefrences.find(
@@ -27,4 +27,4 @@ export default {
             )
         },
     },
-} as StoreOptions<PrefrenceState>
+} as StoreOptions<PrefrenceState>;

@@ -169,7 +169,7 @@ export default class PracticeformExistingState extends Vue {
       show: true,
     },
     { title: "emotion", key: "emotion", show: true },
-     { title: "Comments", key: "comment", show: true },
+    { title: "Comments", key: "comment", show: true },
     // Displaying Icon in the header - <table-setting-icon/>
   ];
   showReplyModal() {
@@ -195,7 +195,7 @@ export default class PracticeformExistingState extends Vue {
         action: currency.id,
         serial: "Ikhide Bright",
         rating: "3.1",
-        comment:"Great Job!",
+        comment: "Great Job!",
         desciption:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nibh a......",
       };

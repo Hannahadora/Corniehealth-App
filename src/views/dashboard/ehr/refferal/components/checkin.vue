@@ -306,7 +306,6 @@ export default class CheckIn extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      ;
     }
   }
 
@@ -515,8 +514,6 @@ export default class CheckIn extends Vue {
       await this.fetchAppointments();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-    ;
-    ;
 
     // this.checkin(req).then((res: any) => {
     //   ;

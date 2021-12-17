@@ -84,7 +84,6 @@ export default class CheckIn extends Vue {
   async created() {
     if (!this.appointments || this.appointments.length === 0)
       await this.fetchAppointments();
-    ;
   }
 }
 </script>

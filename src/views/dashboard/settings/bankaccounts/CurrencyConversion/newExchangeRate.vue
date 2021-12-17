@@ -209,7 +209,6 @@ export default class NewExchangeRate extends Vue {
 
   async createCurrency() {
     try {
-      ;
       const response = await cornieClient().post(
         "/api/v1/currency",
         this.payload

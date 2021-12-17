@@ -484,7 +484,6 @@ export default class Medication extends Vue {
         // this.show = false;
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Allergy not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }

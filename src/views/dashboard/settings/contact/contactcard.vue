@@ -4,13 +4,13 @@
   >
     <span class="flex items-center py-4 px-2">
       <img class="h-11 w-11 rounded-full mr-1" :src="contact.image" />
-      <div >
+      <div>
         <div class="font-semibold capitalize text-jet_black text-sm">
           {{ contact.fname }} {{ contact.lname }}
         </div>
         <div class="text-black italic text-xs font-medium">
           {{ contact.email }}
-        </div>  
+        </div>
         <div class="text-blue-yonder italic text-xxs font-medium">
           {{ contact.state }}, {{ contact.country }}
         </div>

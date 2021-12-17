@@ -264,7 +264,6 @@ export default class AddFunction extends Vue {
     this.loading = false;
   }
 
-
   async create() {
     console.log("gggg", this.payload);
     try {

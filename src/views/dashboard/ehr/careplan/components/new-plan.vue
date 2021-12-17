@@ -893,12 +893,10 @@ export default class NewPlan extends Vue {
 
   contributorSelected(data: any) {
     this.selectedContributor = data;
-    ;
   }
 
   outcomeReferenceSelected(data: any) {
     this.outcomeReference = data;
-    ;
   }
 
   async onSave() {
@@ -910,12 +908,8 @@ export default class NewPlan extends Vue {
       if (response?.id) {
         this.$emit("closesidemodal");
       }
-      ;
-      ;
       this.loading = false;
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 }
 </script>

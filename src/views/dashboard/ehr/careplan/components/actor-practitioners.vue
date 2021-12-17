@@ -63,7 +63,6 @@ export default class Practitioners extends Vue {
 
   async created() {
     await this.fetchPractitioners();
-    ;
   }
 }
 </script>

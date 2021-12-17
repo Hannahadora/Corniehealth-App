@@ -1,5 +1,9 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full animated fadeIn z-50">
+  <cornie-dialog
+    v-model="show"
+    right
+    class="w-4/12 h-full animated fadeIn z-50"
+  >
     <cornie-card height="100%" class="flex flex-col animated fadeInUp">
       <cornie-card-title class="w-full p-3">
         <cornie-icon-btn @click="show = false">
@@ -244,7 +248,6 @@ export default class Settings extends Vue {
     const settingsBase = this.$router.resolve({ name: "Settings" }).href;
     //  this.show=false;
     return `${settingsBase}/${url}`.replace("//", "/");
-
   }
 
   filter(navs: INav[]) {

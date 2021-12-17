@@ -93,7 +93,7 @@ export default class Cancellation extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
- @cancel.Action
+  @cancel.Action
   fetchCancels!: () => Promise<void>;
 
  @cancel.State
@@ -102,7 +102,7 @@ export default class Cancellation extends Vue {
   @cancel.Action
   getCancelById!: (id: string) => ICancel;
 
-@Watch("canceId")
+  @Watch("canceId")
   idChanged() {
     this.setCancel();
   }
@@ -161,8 +161,8 @@ cancelId= "";
   }
 
   async created() {
-      await this.setCancel();
-      await this.fetchCancels();
+    await this.setCancel();
+    await this.fetchCancels();
   }
 }
 </script>

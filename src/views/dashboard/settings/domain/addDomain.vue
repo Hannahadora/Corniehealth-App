@@ -147,13 +147,10 @@ export default class AddDomain extends Vue {
       );
       if (response.success == true) {
         this.result = response.errors!.summary;
-        ;
       } else {
         this.result = response.errors!.summary;
       }
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   async updateDomain() {
@@ -179,9 +176,7 @@ export default class AddDomain extends Vue {
     this.setDomain();
     try {
       await this.fetchRoles();
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   //  fetching of the dropdown data

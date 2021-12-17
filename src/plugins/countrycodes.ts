@@ -1458,4 +1458,4 @@ export const countryCodes = [
         isoCode: "ZW",
         flag: "https://www.countryflags.io/ZW/flat/64.png",
     },
-]
+];

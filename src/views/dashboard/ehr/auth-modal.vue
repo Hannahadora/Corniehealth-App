@@ -97,7 +97,6 @@ export default class AuthModal extends Vue {
       }
     } catch (error) {
       this.loading = false;
-      ;
     }
   }
 

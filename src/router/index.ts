@@ -1,14 +1,14 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
-import Home from "../views/Home.vue"
-import Dashboard from "../views/dashboard/dashboard.vue"
-import { SettingsRoute } from "./settings"
-import { ClinicalsRoute } from "./clinical"
-import { UserRoute } from "./user"
-import { ExperienceRoutes } from "./experience"
-import { NewSettingsRoutes } from "./newsettings"
-import Settings from "@/views/dashboard/settings/index.vue"
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import Home from "../views/Home.vue";
+import Dashboard from "../views/dashboard/dashboard.vue";
+import { SettingsRoute } from "./settings";
+import { ClinicalsRoute } from "./clinical";
+import { UserRoute } from "./user";
+import { ExperienceRoutes } from "./experience";
+import { NewSettingsRoutes } from "./newsettings";
+import Settings from "@/views/dashboard/settings/index.vue";
 
-import { InPatientRoutes } from "./in-patient"
+import { InPatientRoutes } from "./in-patient";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/",
         name: "Home",
         component: Home,
-        // redirect: "/dashboard",
+    // redirect: "/dashboard",
     },
     {
         path: "/signup",
@@ -376,13 +376,13 @@ const routes: Array<RouteRecordRaw> = [
             },
         ],
     },
-]
+];
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
-    scrollBehavior( ) {
-        return { left: 0, top: 0 }
+    scrollBehavior() {
+        return { left: 0, top: 0 };
     },
-})
-export default router
+});
+export default router;

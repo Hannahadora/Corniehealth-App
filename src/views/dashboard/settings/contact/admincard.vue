@@ -1,10 +1,12 @@
 <template>
-  <div class="w-full flex p-3  shadow-card rounded-lg align-center justify-between">
-    <div class="flex w-3/5 border-r-2  items-center pr-12">
+  <div
+    class="w-full flex p-3 shadow-card rounded-lg align-center justify-between"
+  >
+    <div class="flex w-3/5 border-r-2 items-center pr-12">
       <avatar class="h-20 w-20 mr-7" :src="image" />
 
       <span class="flex flex-col mr-10">
-        <span class="text-blue-yonder  text-xs font-bold uppercase block"
+        <span class="text-blue-yonder text-xs font-bold uppercase block"
           >Name</span
         >
         <span class="text-sm capitalize text-blue-yonder-2"
@@ -18,33 +20,35 @@
       </span>
 
       <span class="flex flex-col">
-        <span class="text-blue-yonder  text-xs font-bold uppercase block"
+        <span class="text-blue-yonder text-xs font-bold uppercase block"
           >Phone</span
         >
-        <span class="text-sm text-blue-yonder-2">{{ contact.phone|| 'Nill' }}</span>
+        <span class="text-sm text-blue-yonder-2">{{
+          contact.phone || "Nill"
+        }}</span>
 
-        <span class="text-blue-yonder  text-xs font-bold uppercase block mt-2">
+        <span class="text-blue-yonder text-xs font-bold uppercase block mt-2">
           Address
         </span>
-        <span class="text-sm text-blue-yonder-2">{{ contact.state || 'Nill' }}, {{ contact.country || 'Nill' }}</span>
+        <span class="text-sm text-blue-yonder-2"
+          >{{ contact.state || "Nill" }}, {{ contact.country || "Nill" }}</span
+        >
       </span>
     </div>
 
     <div class="flex justify-between items-center w-2/5 ml-8">
       <div class="flex items-center">
-    <TransferIcon class="text-primary mr-4"/>
-    <span class="text-sm text-primary">Transfer Ownership</span>
+        <TransferIcon class="text-primary mr-4" />
+        <span class="text-sm text-primary">Transfer Ownership</span>
       </div>
-  
-    <button
-      class="bg-primary text-sm ml-6 font-bold rounded-full text-white py-2 px-8 my-auto focus:outline-none hover:opacity-90"
-      @click="editingContact = true"
-    >
-    Edit My Contact
-    </button>
+
+      <button
+        class="bg-primary text-sm ml-6 font-bold rounded-full text-white py-2 px-8 my-auto focus:outline-none hover:opacity-90"
+        @click="editingContact = true"
+      >
+        Edit My Contact
+      </button>
     </div>
-
-
 
     <add-contact
       v-if="contact.id && editingContact"

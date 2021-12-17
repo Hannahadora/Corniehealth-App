@@ -217,7 +217,6 @@ export default class LocOrg extends Vue {
   async created() {
     this.localValue = this.value ? this.value : "";
     await this.fetchLocations();
-    ;
   }
 }
 </script>

@@ -1,215 +1,259 @@
 <template>
-          <big-dialog
-          v-model="show"
-          :title="allaction + ' '+ 'Allergy' "
-          class=""
-          >
-          <p class="grey-text">Fields with * are required</p>
-        <v-form ref="form">
-          <accordion-component class="shadow-none rounded-none border-none  text-primary" title="Basic Info" :opened="true">
-                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
-                   <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergyintolerance-clinical"
-                     class="w-full"
-                      v-model="clinicalStatus"
-                    label="clinical status *"
-                     placeholder="Select"
-                />
-                     <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergyintolerance-verification"
-                     class="w-full"
-                      label="verification status *"
-                      v-model="verificationStatus"
-                      placeholder="Select"
-                />
-                      <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
-                     class="required w-full"
-                      v-model="type"
-                      label="type *"
-                      placeholder="Select"
-                />
+  <big-dialog v-model="show" :title="allaction + ' ' + 'Allergy'" class="">
+    <p class="grey-text">Fields with * are required</p>
+    <v-form ref="form">
+      <accordion-component
+        class="shadow-none rounded-none border-none text-primary"
+        title="Basic Info"
+        :opened="true"
+      >
+        <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergyintolerance-clinical"
+            class="w-full"
+            v-model="clinicalStatus"
+            label="clinical status *"
+            placeholder="Select"
+          />
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergyintolerance-verification"
+            class="w-full"
+            label="verification status *"
+            v-model="verificationStatus"
+            placeholder="Select"
+          />
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
+            class="required w-full"
+            v-model="type"
+            label="type *"
+            placeholder="Select"
+          />
 
-                      <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
-                     class="required w-full"
-                     v-model="category"
-                      label="category *"
-                    placeholder="Select"
-                />
-                       <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
-                     class="required w-full"
-                     label="criticality *"
-                      v-model="criticality"
-                    placeholder="Select"
-                />
-                        <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
-                     class="required w-full"
-                     label="code *"
-                      v-model="code"
-                    placeholder="Select"
-                />
-                  <div>
-                     <encounter-select
-                      class="w-full"
-                        v-model="encounter"
-                      :rules="required"
-                       placeholder="Select Encounter"
-                      label="Reference Encounter"
-                    />
-                  </div>
-                  </div>
-          </accordion-component>
-          <accordion-component class="shadow-none rounded-none border-none  text-primary" title="OnSet" v-model="openedS">
-                <div class="w-full mt-5 pb-5">
-                   <timeable-picker v-model="onsettimeable" class="w-full" label="Deceased Date/Age" />
-                    <measurable v-model="onsetmeasurable" class="w-full" label="Deceased Range/String" />
-                        <div class="flex pt-5 mt-4 border-t-2">
-                            <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">add asserter</p>
-                            <label class="switch">
-                              <input
-                                name="category"
-                                type="checkbox"
-                                @input="selected"
-                                v-model="switchshow"
-                                value="2"
-                              />
-                              <span class="slider round"></span>
-                            </label>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                        <div class="mb-3 mt-2">
-                          <label for="ecounter" class="flex capitalize mb-1 text-sm text-black font-medium">asserter
-                            <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                          </label>
-                          <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
-                          <input
-                          class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                          disabled
-                          :value="asserterName"
-                        />
-                        </div>
-                          <div>
-                              <div class="w-full mb-3">
-                                  <date-time-picker
-                                    v-model:date="lastOccurence"
-                                    v-model:time="data.dateTime"
-                                    label="last occurence *"
-                                    width="w-11/12"
-                                    class="required"
-                                  />
-
-                              </div>
-
-                          </div>
-                    </div>
-
-                      <div>
-                        <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold">Notes</label>
-                          <div class="my-2  w-full">
-                                <Textarea
-                                class="w-full text-xs"
-                                v-model="note"
-                                placeholder="Placeholder"
-                                :rules="required"
-                              />
-                          </div>
-                      </div>
-                  </div>
-          </accordion-component>
-          <accordion-component class="shadow-none rounded-none  border-none  text-primary" title="Reaction" v-model="openedS">
-                <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
-                 <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/substance-code"
-                     class="required w-full"
-                      label="substance *"
-                      v-model="reaction.substance"
-                      placeholder="select"
-                />
-                       <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/clinical-findings"
-                     class="w-full mb-2"
-                      label="manifestation *"
-                      v-model="reaction.manifestation"
-                      placeholder="select"
-                />
-                    <cornie-input label="description" class="mb-5 mt-2 w-full" placeholder="enter"   v-model="reaction.description" />
-                    <div class="mb-5">
-                       <date-time-picker
-                            v-model:date="date"
-                            v-model:time="data.reactionTime"
-                            label="Onset *"
-                            width="w-11/12"
-                            class="required"
-                          />
-                      </div>
-                    <div class="mb-2">
-                      <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold">SEVERITY *
-                        <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
-                      </label>
-                        <div class="w-full flex space-x-4 mt-5 mb-3">
-                        <cornie-radio
-                          v-bind:value="'Mid'"
-                          label="Mid"
-                          class="text-xs"
-                          name="request"
-                          id="pickup"
-                          v-model="reaction.severity"
-                        />
-                        <cornie-radio
-                          v-bind:value="'Medium'"
-                          label="Medium"
-                          name="request"
-                          id="patientadress"
-                          checked
-                          v-model="reaction.severity"
-                        />
-                        <cornie-radio
-                          v-bind:value="'Severe'"
-                          label="Severe"
-                          name="request"
-                          id="homeaddress"
-                          v-model="reaction.severity"
-                        />
-                      </div>
-                    </div>
-                     <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/route-codes"
-                     class="w-full mb-2"
-                       label="Exposure Route *"
-                        v-model="reaction.exposureRoute"
-                        placeholder="select"
-                />
-                  </div>
-                      <div>
-                        <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold">Notes</label>
-                          <div class="my-2  w-full">
-                                <Textarea
-                                class="w-full text-xs"
-                                v-model="reaction.note"
-                                placeholder="Placeholder"
-                                :rules="required"
-                              />
-                          </div>
-                      </div>
-          </accordion-component>
-        </v-form>
-         <template #actions>
-            <cornie-btn
-              @click="show = false"
-              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
+            class="required w-full"
+            v-model="category"
+            label="category *"
+            placeholder="Select"
+          />
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
+            class="required w-full"
+            label="criticality *"
+            v-model="criticality"
+            placeholder="Select"
+          />
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
+            class="required w-full"
+            label="code *"
+            v-model="code"
+            placeholder="Select"
+          />
+          <div>
+            <encounter-select
+              class="w-full"
+              v-model="encounter"
+              :rules="required"
+              placeholder="Select Encounter"
+              label="Reference Encounter"
+            />
+          </div>
+        </div>
+      </accordion-component>
+      <accordion-component
+        class="shadow-none rounded-none border-none text-primary"
+        title="OnSet"
+        v-model="openedS"
+      >
+        <div class="w-full mt-5 pb-5">
+          <timeable-picker
+            v-model="onsettimeable"
+            class="w-full"
+            label="Deceased Date/Age"
+          />
+          <measurable
+            v-model="onsetmeasurable"
+            class="w-full"
+            label="Deceased Range/String"
+          />
+          <div class="flex pt-5 mt-4 border-t-2">
+            <p
+              class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold"
             >
-              Cancel
-            </cornie-btn>
-            <cornie-btn  :loading="loading"
-                  @click="apply" class="text-white bg-danger px-3 rounded-xl">
-            Save
-            </cornie-btn>
-          </template>
-        </big-dialog>
+              add asserter
+            </p>
+            <label class="switch">
+              <input
+                name="category"
+                type="checkbox"
+                @input="selected"
+                v-model="switchshow"
+                value="2"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="mb-3 mt-2">
+              <label
+                for="ecounter"
+                class="flex capitalize mb-1 text-sm text-black font-medium"
+                >asserter
+                <span class="ml-2">
+                  <info-icon class="text-primary fill-current"
+                /></span>
+              </label>
+              <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
+              <input
+                class="appearance-none w-full border border-gray-100 bg-gray-100 px-3 py-3 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                disabled
+                :value="asserterName"
+              />
+            </div>
+            <div>
+              <div class="w-full mb-3">
+                <date-time-picker
+                  v-model:date="lastOccurence"
+                  v-model:time="data.dateTime"
+                  label="last occurence *"
+                  width="w-11/12"
+                  class="required"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label
+              for="ecounter"
+              class="flex uppercase mb-1 text-black text-xs font-bold"
+              >Notes</label
+            >
+            <div class="my-2 w-full">
+              <Textarea
+                class="w-full text-xs"
+                v-model="note"
+                placeholder="Placeholder"
+                :rules="required"
+              />
+            </div>
+          </div>
+        </div>
+      </accordion-component>
+      <accordion-component
+        class="shadow-none rounded-none border-none text-primary"
+        title="Reaction"
+        v-model="openedS"
+      >
+        <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/substance-code"
+            class="required w-full"
+            label="substance *"
+            v-model="reaction.substance"
+            placeholder="select"
+          />
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/clinical-findings"
+            class="w-full mb-2"
+            label="manifestation *"
+            v-model="reaction.manifestation"
+            placeholder="select"
+          />
+          <cornie-input
+            label="description"
+            class="mb-5 mt-2 w-full"
+            placeholder="enter"
+            v-model="reaction.description"
+          />
+          <div class="mb-5">
+            <date-time-picker
+              v-model:date="date"
+              v-model:time="data.reactionTime"
+              label="Onset *"
+              width="w-11/12"
+              class="required"
+            />
+          </div>
+          <div class="mb-2">
+            <label
+              for="SEVERITY"
+              class="flex uppercase text-black mb-1 text-xs font-bold"
+              >SEVERITY *
+              <span class="ml-2">
+                <info-icon class="text-primary fill-current"
+              /></span>
+            </label>
+            <div class="w-full flex space-x-4 mt-5 mb-3">
+              <cornie-radio
+                v-bind:value="'Mid'"
+                label="Mid"
+                class="text-xs"
+                name="request"
+                id="pickup"
+                v-model="reaction.severity"
+              />
+              <cornie-radio
+                v-bind:value="'Medium'"
+                label="Medium"
+                name="request"
+                id="patientadress"
+                checked
+                v-model="reaction.severity"
+              />
+              <cornie-radio
+                v-bind:value="'Severe'"
+                label="Severe"
+                name="request"
+                id="homeaddress"
+                v-model="reaction.severity"
+              />
+            </div>
+          </div>
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/route-codes"
+            class="w-full mb-2"
+            label="Exposure Route *"
+            v-model="reaction.exposureRoute"
+            placeholder="select"
+          />
+        </div>
+        <div>
+          <label
+            for="ecounter"
+            class="flex text-black uppercase mb-1 text-xs font-bold"
+            >Notes</label
+          >
+          <div class="my-2 w-full">
+            <Textarea
+              class="w-full text-xs"
+              v-model="reaction.note"
+              placeholder="Placeholder"
+              :rules="required"
+            />
+          </div>
+        </div>
+      </accordion-component>
+    </v-form>
+    <template #actions>
+      <cornie-btn
+        @click="show = false"
+        class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+      >
+        Cancel
+      </cornie-btn>
+      <cornie-btn
+        :loading="loading"
+        @click="apply"
+        class="text-white bg-danger px-3 rounded-xl"
+      >
+        Save
+      </cornie-btn>
+    </template>
+  </big-dialog>
 </template>
 
 <script lang="ts">
@@ -489,7 +533,6 @@ export default class Medication extends Vue {
         // this.show = false;
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Allergy not created", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }

@@ -22,6 +22,7 @@
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
+          'bg-gray-100': disabled,
           ...errorClasses,
         }"
       >

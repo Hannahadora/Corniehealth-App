@@ -1,4 +1,4 @@
-import { StoreOptions } from "vuex"
+import { StoreOptions } from "vuex";
 import {
     createSlot,
     getVisits,
@@ -11,7 +11,7 @@ import {
     noShow,
     getPatientVisits,
     updateStatus,
-} from "./helper"
+} from "./helper";
 
 interface SchedulesStore {
   visits: any[];
@@ -28,102 +28,102 @@ export default {
     },
     mutations: {
         setVisits(state, visits) {
-            if (visits && visits.length > 0) state.visits = [...visits]
+            if (visits && visits.length > 0) state.visits = [...visits];
         },
 
         setPatientVisits(state, visits) {
-            if (visits && visits.length > 0) state.patientVisits = [...visits]
+            if (visits && visits.length > 0) state.patientVisits = [...visits];
         },
 
         setPatients(state, pts) {
-            if (pts && pts.length > 0) state.patients = [...pts]
+            if (pts && pts.length > 0) state.patients = [...pts];
         },
 
         updateStatus(state, payload) {
-            const index = state.visits.findIndex((i: any) => i.id === payload.id)
-            if (index >= 0) state.visits[index].status = payload.status
+            const index = state.visits.findIndex((i: any) => i.id === payload.id);
+            if (index >= 0) state.visits[index].status = payload.status;
 
             const inPatientsVisits = state.patientVisits.findIndex(
                 (i: any) => i.id === payload.id
-            )
+            );
 
             if (inPatientsVisits >= 0)
-                state.patientVisits[inPatientsVisits].status = payload.status
+                state.patientVisits[inPatientsVisits].status = payload.status;
         },
 
         addVisit(state, payload) {
-            state.visits.unshift(payload)
+            state.visits.unshift(payload);
         },
     },
 
     actions: {
         async getVisits(ctx) {
-            const visits = await getVisits()
-            ctx.commit("setVisits", visits)
+            const visits = await getVisits();
+            ctx.commit("setVisits", visits);
         },
 
         async getPatientVisits(ctx, id: string) {
-            const visits = await getPatientVisits(id)
-            ctx.commit("setPatientVisits", visits)
+            const visits = await getPatientVisits(id);
+            ctx.commit("setPatientVisits", visits);
         },
 
         async getPatients(ctx) {
-            const pts = await getPatients()
-            ctx.commit("setPatients", pts)
+            const pts = await getPatients();
+            ctx.commit("setPatients", pts);
         },
 
         async schedulesByPractitioner(ctx, id: string) {
-            const schedules = await schedulesByPractitioner(id)
-            return schedules
+            const schedules = await schedulesByPractitioner(id);
+            return schedules;
         },
 
         async createSlot(ctx, schedule: any) {
-            const sch = await createSlot(schedule)
-            if (!sch) return {}
+            const sch = await createSlot(schedule);
+            if (!sch) return {};
             // ctx.commit("addSchedule", sch);
-            return sch
+            return sch;
         },
 
         async checkin(ctx, schedule: any) {
-            const sch = await checkin(schedule)
-            if (!sch) return false
-            ctx.commit("addVisit", sch)
-            return sch
+            const sch = await checkin(schedule);
+            if (!sch) return false;
+            ctx.commit("addVisit", sch);
+            return sch;
         },
 
         async checkout(ctx, id: string) {
-            const sch = await checkout(id)
-            if (!sch) return false
-            ctx.commit("updateStatus", { id, status: "completed" })
-            return sch as boolean
+            const sch = await checkout(id);
+            if (!sch) return false;
+            ctx.commit("updateStatus", { id, status: "completed" });
+            return sch as boolean;
         },
 
         async startEncounter(ctx, id: string) {
-            const sch = await startEncounter(id)
-            if (!sch) return false
+            const sch = await startEncounter(id);
+            if (!sch) return false;
             // ctx.commit("addSchedule", sch);
-            return sch
+            return sch;
         },
 
         async cancel(ctx, id: string) {
-            const sch = await cancel(id)
-            if (!sch) return false
-            ctx.commit("updateStatus", { id, status: "cancelled" })
-            return sch
+            const sch = await cancel(id);
+            if (!sch) return false;
+            ctx.commit("updateStatus", { id, status: "cancelled" });
+            return sch;
         },
 
         async noShow(ctx, id: string) {
-            const sch = await noShow(id)
-            if (!sch) return false
-            ctx.commit("updateStatus", { id, status: "no-show" })
-            return sch
+            const sch = await noShow(id);
+            if (!sch) return false;
+            ctx.commit("updateStatus", { id, status: "no-show" });
+            return sch;
         },
 
         async updateVisitStatus(ctx, body: any) {
-            const sch = await updateStatus(body)
-            if (!sch) return false
-            ctx.commit("updateStatus", { id: body.id, status: body.status })
-            return sch as boolean
+            const sch = await updateStatus(body);
+            if (!sch) return false;
+            ctx.commit("updateStatus", { id: body.id, status: body.status });
+            return sch as boolean;
         },
     },
-} as StoreOptions<SchedulesStore>
+} as StoreOptions<SchedulesStore>;

@@ -1,7 +1,7 @@
-import { rememberLogin } from "@/plugins/auth"
-import IPractitioner from "@/types/IPractitioner"
-import User, { CornieUser } from "@/types/user"
-import { StoreOptions } from "vuex"
+import { rememberLogin } from "@/plugins/auth";
+import IPractitioner from "@/types/IPractitioner";
+import User, { CornieUser } from "@/types/user";
+import { StoreOptions } from "vuex";
 
 interface UserState {
   user: User;
@@ -30,50 +30,50 @@ export default {
     },
     getters: {
         accountType(state) {
-            return state.cornieData?.user?.accountType
+            return state.cornieData?.user?.accountType;
         },
         cornieUser(state) {
-            return state.cornieData?.user
+            return state.cornieData?.user;
         },
         authPractitioner(state) {
-            return state.cornieData?.practitioner
+            return state.cornieData?.practitioner;
         },
         authPractitionerDomain() {
-            const corniedata = localStorage.getItem("corniehealthdata") as string
-            return JSON.parse(corniedata)?.authDomain
+            const corniedata = localStorage.getItem("corniehealthdata") as string;
+            return JSON.parse(corniedata)?.authDomain;
         },
     },
     mutations: {
         setCornieData(state, payload) {
-            state.cornieData = { ...state.cornieData, ...payload }
+            state.cornieData = { ...state.cornieData, ...payload };
         },
         setAuthToken(state, token) {
-            state.authToken = token
-            state.authTime = new Date()
-            rememberLogin(token)
+            state.authToken = token;
+            state.authTime = new Date();
+            rememberLogin(token);
         },
         setAuthDomain(state, domain: string) {
-            state.domain = domain
+            state.domain = domain;
         },
         setLoginInfo(state, payload) {
-            state.user = payload.user
+            state.user = payload.user;
 
-            state.authTime = new Date()
-            rememberLogin(payload.token)
+            state.authTime = new Date();
+            rememberLogin(payload.token);
 
-            state.emailVerified = payload.emailVerified
-            state.requiresTwoFactorAuth = payload.requiresTwoFactorAuth
-            state.requiresSecurityQuestion = payload.requiresSecurityQuestion
-            state.authToken = payload.token
+            state.emailVerified = payload.emailVerified;
+            state.requiresTwoFactorAuth = payload.requiresTwoFactorAuth;
+            state.requiresSecurityQuestion = payload.requiresSecurityQuestion;
+            state.authToken = payload.token;
         },
 
         updatePractitionerAuthStatus(state, payload) {
-            state.practitionerAuthenticated = payload
+            state.practitionerAuthenticated = payload;
         },
     },
     actions: {
         async updatePractitionerAuthStatus({ commit }, authenticated) {
-            commit("updatePractitionerAuthStatus", authenticated)
+            commit("updatePractitionerAuthStatus", authenticated);
         },
     },
-} as StoreOptions<UserState>
+} as StoreOptions<UserState>;

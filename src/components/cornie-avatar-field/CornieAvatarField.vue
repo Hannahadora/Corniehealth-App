@@ -1,6 +1,6 @@
 <template>
   <div class="image-upload flex items-center">
-    <avatar class="mr-2 h-20 w-20"  v-if="url" :src="url" />
+    <avatar class="mr-2 h-20 w-20" v-if="url" :src="url" />
     <avatar class="mr-2 h-20 w-20" v-else :src="placeholder" />
     <br />
     <input

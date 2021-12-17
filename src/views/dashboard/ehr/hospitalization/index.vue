@@ -391,7 +391,6 @@ export default class ExistingState extends Vue {
   }
 
   showTimeline(item: IHospitalisation) {
-    ;
     this.timelineVissible = true;
   }
 
@@ -419,7 +418,6 @@ export default class ExistingState extends Vue {
 
   async created() {
     await this.getHospitalisations(this.$route.params.id.toString());
-    ;
   }
 }
 </script>

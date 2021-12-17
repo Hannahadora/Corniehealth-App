@@ -1038,14 +1038,11 @@ export default class Shift extends Vue {
           }`
         : "",
     };
-    ;
     this.loading = true;
     try {
       if (!this.$route.params.scheduleId) {
         try {
           const created = await this.createSchedule(body);
-          ;
-
           if (created) {
             notify({
               msg: "Schedule created successfully",
@@ -1059,7 +1056,6 @@ export default class Shift extends Vue {
             });
           }
         } catch (error) {
-          ;
           notify({
             msg: "Schedule creation failed",
             status: "error",
@@ -1087,9 +1083,7 @@ export default class Shift extends Vue {
           });
         }
       }
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
     this.loading = false;
   }
 }

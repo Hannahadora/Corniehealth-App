@@ -5,15 +5,11 @@ export async function fetchPrefrences() {
     try {
         const response = await cornieClient().get(
             "/api/v1/prefrences/findForUser/me"
-        )
+        );
 
         if (response.success) {
-            return response.data
+            return response.data;
         }
-    } catch (error) {
-
-    }
-    return [] as IPrefrence[]
+    } catch (error) {}
+    return [] as IPrefrence[];
 }
-
-

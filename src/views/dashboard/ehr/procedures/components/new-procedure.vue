@@ -563,11 +563,9 @@ export default class NewProcedure extends Vue {
       this.procedure.patientId = this.patientId;
       this.procedure.locationId = "d25cc910-0830-40cf-a0c8-7c303f381b29";
       const response = await this.createProcedure(this.procedure);
-      ;
       this.loading = false;
       this.$emit("closesidemodal");
     } catch (error) {
-      ;
       this.loading = false;
     }
   }
@@ -578,12 +576,9 @@ export default class NewProcedure extends Vue {
 
       this.loading = true;
       const response = await this.updateProcedure(reqBody);
-      ;
-
       this.loading = false;
       this.$emit("closesidemodal");
     } catch (error) {
-      ;
       this.loading = false;
     }
   }
@@ -594,8 +589,6 @@ export default class NewProcedure extends Vue {
     await this.fetchLocations();
 
     if (this.devices?.length <= 0) await this.fetchDevices();
-    ;
-
     // await this.get
     this.fetchPractitioners();
   }
@@ -603,7 +596,6 @@ export default class NewProcedure extends Vue {
   @Watch("item")
   updateProcedureData() {
     this.procedure = helperFunctions.mapSelectedProcedure(this.item);
-    ;
   }
 }
 </script>

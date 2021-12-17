@@ -340,9 +340,7 @@ export default class AppointmentExistingState extends Vue {
     return search.searchObjectArray(appointments, this.query);
   }
 
-  onChange(event: any) {
-    ;
-  }
+  onChange(event: any) {}
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to cancel this appointment",
@@ -380,7 +378,6 @@ export default class AppointmentExistingState extends Vue {
     const values = response[0].data.map(function (e: any) {
       return e.createdAt;
     });
-    ;
     let results = values.map((date: any) => moment(date).format("dddd,DD"));
     this.chartdata = results;
     const count = response[0].data.map((e: any) => e.status.length);

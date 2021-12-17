@@ -1,9 +1,9 @@
-import { JSONClient } from "@/lib/http"
-import localstore from "./localstore"
-import store from "@/store"
+import { JSONClient } from "@/lib/http";
+import localstore from "./localstore";
+import store from "@/store";
 
 const authToken = (): string =>
-    store.state.user.authToken || localstore.get("authToken")
+    store.state.user.authToken || localstore.get("authToken");
 
 export const quantumClient = () =>
     new JSONClient(
@@ -12,9 +12,9 @@ export const quantumClient = () =>
             Authorization: authToken(),
         },
         "http://18.132.188.41:7000"
-    )
+    );
 
-const cornieUrl = "https://corniehealth.herokuapp.com"
+const cornieUrl = "https://corniehealth.herokuapp.com";
 
 export const cornieClient = () =>
     new JSONClient(
@@ -23,4 +23,4 @@ export const cornieClient = () =>
             Authorization: authToken(),
         },
         cornieUrl
-    )
+    );

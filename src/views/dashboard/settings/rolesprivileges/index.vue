@@ -363,7 +363,6 @@ export default class RolesAndPrivileges extends Vue {
 
   itemSelected(item: any) {
     this.transferToContact = item;
-    ;
   }
 
   get allContacts() {
@@ -386,7 +385,6 @@ export default class RolesAndPrivileges extends Vue {
       this.transfering = false;
     } catch (error) {
       this.transfering = false;
-      ;
     }
   }
 
@@ -395,10 +393,7 @@ export default class RolesAndPrivileges extends Vue {
     await this.getRoles();
     await this.fetchPractitioners();
     this.user.role = this.roles.find((i: any) => i.isSuperAdmin);
-    ;
-    this.fetchPractitioners().then((res: any) => {
-      ;
-    });
+    this.fetchPractitioners().then((res: any) => {});
   }
 }
 </script>

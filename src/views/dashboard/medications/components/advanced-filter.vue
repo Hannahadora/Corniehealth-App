@@ -128,8 +128,6 @@ export default class AdvancedFilter extends Vue {
   }
 
   selectActor(actor: IPractitioner) {
-    ;
-
     if (
       this.selectedPractitioners.findIndex(
         (practitioner) => practitioner.id === actor.id
@@ -153,7 +151,6 @@ export default class AdvancedFilter extends Vue {
 
   async created() {
     if (this.practitioners?.length === 0) await this.fetchPractitioners();
-    ;
   }
 }
 </script>

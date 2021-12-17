@@ -389,7 +389,6 @@ export default class AddCondition extends Vue {
   onsetString = "";
 
   async showNewStatus() {
-    ;
     this.showNewStatusModal = true;
   }
 

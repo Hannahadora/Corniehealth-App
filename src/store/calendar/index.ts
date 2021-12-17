@@ -1,6 +1,6 @@
-import ICalendar from "@/types/ICalendar"
-import { StoreOptions } from "vuex"
-import { fetchCalendars } from "./helper"
+import ICalendar from "@/types/ICalendar";
+import { StoreOptions } from "vuex";
+import { fetchCalendars } from "./helper";
 
 interface CalendarState {
   calendars: ICalendar[];
@@ -18,8 +18,8 @@ export default {
     },
     actions: {
         async fetchCalendars(ctx) {
-            const calendars = await fetchCalendars()
-            ctx.commit("setCalendars", calendars)
+            const calendars = await fetchCalendars();
+            ctx.commit("setCalendars", calendars);
         },
         getCalendarById(ctx, id: string) {
             return ctx.state.calendars.find(
@@ -27,4 +27,4 @@ export default {
             )
         },
     },
-} as StoreOptions<CalendarState>
+} as StoreOptions<CalendarState>;
