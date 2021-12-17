@@ -16,11 +16,11 @@ export default {
         practiceHours: [],
     },
     mutations: {
-        setPracticeInformations(state, practiceInformations: IPracticeInformation[]) {
-            state.practiceInformations = practiceInformations
+        setPracticeInformations(state, practiceInformations: any) {
+            state.practiceInformations = [practiceInformations]
         },
-        setPracticeHours(state, practiceHours: IPracticeHour[]) {
-            state.practiceHours = practiceHours
+        setPracticeHours(state, practiceHours: any) {
+            state.practiceHours = [practiceHours]
         },
         updatePracticeInformations(state, practiceInformations: IPracticeInformation[]) {
             const practiceInformationSet = new ObjectSet([...state.practiceInformations, ...practiceInformations], "id")
@@ -41,13 +41,15 @@ export default {
             const practiceHours = await fetchPracticeHours()
             ctx.commit("setPracticeHours", practiceHours)
         },
-        async getPracticeinformationById(ctx, id: string) {
-            if (ctx.state.practiceInformations.length < 1) await ctx.dispatch("setPracticeInformations")
-            return ctx.state.practiceInformations.find(practiceInformation => practiceInformation.id == id)
+        getPracticeinformationById(ctx, id: string) {
+            return ctx.state.practiceInformations.find(
+                practiceInformation => practiceInformation.id == id
+            )
         },
-        async getPracticeHourById(ctx, id: string) {
-            if (ctx.state.practiceHours.length < 1) await ctx.dispatch("setPracticeHours")
-            return ctx.state.practiceHours.find(practiceHour => practiceHour.id == id)
+        getPracticeHourById(ctx, id: string) {
+            return ctx.state.practiceHours.find(
+                practiceHour => practiceHour.id == id
+            )
         },
     },
 } as StoreOptions<IPracticeInformationState>

@@ -1,39 +1,14 @@
 <template>
-  <div class="bg-white rounded mb-56 p-5 mt-5">
-    <div class="-mt-10">
-      <ul class="nav nav-tabs nav-tabs-bottom widget_categories mt-8">
-        <li class="nav-item cursor-pointer">
-          <a
-            class="nav-link"
-            @click="select(1)"
-            :class="{ active: selected === 1 }"
-            :aria-selected="selected === 1"
-            >Accounts</a
-          >
-        </li>
-        <li class="nav-item cursor-pointer">
-          <a
-            class="nav-link"
-            @click="select(2)"
-            :class="{ active: selected === 2 }"
-            :aria-selected="selected === 2"
-            >Associations</a
-          >
-        </li>
-      </ul>
-      <div class="tab-content">
-        <div
-          class="tab-pane"
-          v-if="selected == 1"
-          :class="{ active: selected === 1 }"
-          id="Accounts"
-        >
-          <div
-            class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+ <div
+            class="w-full h-2/3 mt-8 flex flex-col justify-center items-center"
             v-if="empty"
           >
-            <img src="@/assets/img/nobank.svg" class="mb-2" />
-            <h4 class="text-black text-center">Add new account</h4>
+            <img src="@/assets/img/tracking.svg" />
+            <h3 class="text-center text-black mt-5">
+              You have not associated accounts with your locations (Warehouse |
+              Outlets | Stores | <br />
+              etc.). To associate accounts, click on New Location to start.
+            </h3>
             <button
               class="
                 bg-danger
@@ -47,10 +22,10 @@
                 flex
                 space-x-2
               "
-              @click="showAccountModal = true"
+              @click="showLocationAccount = true"
             >
               <span class="text-xl -mt-0.5">+ </span>
-              <span class="mt-1"> New Account</span>
+              <span class="mt-1"> New Location</span>
             </button>
           </div>
           <div class="w-full pb-80" v-else>
@@ -68,18 +43,16 @@
                     focus:outline-none
                     hover:opacity-90
                     flex
-                    space-x-2
                   "
-                  @click="showAccountModal = true"
+                  @click="showLocationAccount = true"
                 >
                   <span class="text-xl -mt-1.5 mr-2">+ </span>
-                  New Account
+                  New Location
                 </button>
               </span>
               <cornie-table
                 :columns="rawHeaders"
                 v-model="items"
-                :check="false"
               >
                 <template #actions="{ item }">
                   <div
@@ -90,7 +63,7 @@
                       p-3
                       cursor-pointer
                     "
-                    @click="showAccount(item.id)"
+                    @click="showModal(item.id)"
                   >
                     <d-edit class="text-primary fill-current" />
                     <span class="ml-3 text-xs">View & Edit</span>
@@ -105,9 +78,8 @@
                     "
                     @click="deleteItem(item.id)"
                   >
-                    >
-                    <close-icon class="text-yellow-500 fill-current" />
-                    <span class="ml-3 text-xs">Deactivate</span>
+                    <delete-icon class="text-yellow-500 fill-current" />
+                    <span class="ml-3 text-xs">Delete</span>
                   </div>
                   <div
                     class="
@@ -117,42 +89,26 @@
                       p-3
                       cursor-pointer
                     "
-                    @click="deleteItem(item.id)"
                   >
-                    <delete-icon class="text-yellow-500 fill-current" />
-                    <span class="ml-3 text-xs">Delete Account</span>
+                    <close-icon class="text-yellow-500 fill-current" />
+                    <span class="ml-3 text-xs">Deactivate Account</span>
                   </div>
                 </template>
-                <template #status>
-                  <span class="bg-green-400 rounded-xl text-sm"></span>
+                <template #pay="{ item }">
+                    <!-- <span class="bg-green-100 text-green-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Credit Notes'">{{item.paymentCategories.join()}}</span>
+                    <span class="bg-red-100 text-red-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Quotes'">{{item.paymentCategories.join()}}</span>
+                    <span class="bg-yellow-100 text-yellow-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Invoice'">{{item.paymentCategories.join()}}</span> -->
+                    <div class=""  v-for="(input, index) in item.paymentCategories" :key="index">
+                          <span class="bg-green-100 text-green-700 p-2 rounded-md" v-if="input == 'Credit Notes'">{{input}}</span>
+                        <span class="bg-red-100 text-red-700 p-2 rounded-md" v-if="input == 'Quotes'">{{input}}</span>
+                        <span class="bg-yellow-100 text-yellow-700 p-2 rounded-md" v-if="input == 'Invoice'">{{input}}</span>
+                    </div>
                 </template>
+             
+              
               </cornie-table>
-
-              <default-currency v-model="showDefaultCurrencyModal" />
-              <new-exchange-rate
-                v-model="showNewExchangeRateModal"
-                @currency-added="currencyadded"
-                :id="currencyId"
-              />
             </div>
           </div>
-        </div>
-        <div
-          class="tab-pane"
-          v-if="selected == 2"
-          :class="{ active: selected === 2 }"
-          id="Associations"
-        >
-         <associate-section/>
-        </div>
-      </div>
-    </div>
-  </div>
-  <account-modal
-    v-model="showAccountModal"
-    @accountAdded="accountAdded"
-    :id="accountId"
-  />
   <location-modal
     v-model="showLocationAccount"
     @accountAdded="accountAdded"
@@ -173,7 +129,7 @@ import Select from "@/components/newautocomplete.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import DEdit from "@/components/icons/aedit.vue";
 import { Prop, Watch, PropSync } from "vue-property-decorator";
-import AssociateSection from './associateIndex.vue'
+// import NubanModal from './nubanmodal.vue'
 import search from "@/plugins/search";
 import CloseIcon from "@/components/icons/danger.vue";
 import { namespace } from "vuex-class";
@@ -199,7 +155,6 @@ const association = namespace("association");
     DEdit,
     CornieCheckbox,
     LocationModal,
-    AssociateSection,
     AccountModal,
     CornieInput,
     AuthorizeIcon,
@@ -230,15 +185,13 @@ export default class Payments extends Vue {
   AllBanks = [] as any;
   accountId = "";
   associationId = "";
+orgLocation = [] as any;
 
-  @collections.Action
+ @collections.Action
   fetchCollectionAccounts!: (orgId: string) => Promise<void>;
 
   @collections.State
   collectionAccounts!: ICollection[];
-
-  @collections.Action
-  deleteCollectionAccount!: (id: string) => Promise<boolean>;
 
   @association.Action
   fetchAssociations!: (orgId: string) => Promise<void>;
@@ -250,9 +203,8 @@ export default class Payments extends Vue {
   deleteAssociation!: (id: string) => Promise<boolean>;
 
   get empty() {
-    return this.collectionAccounts.length < 1;
+    return this.associations.length < 1;
   }
-
   select(i: number) {
     this.selected = i;
   }
@@ -260,52 +212,50 @@ export default class Payments extends Vue {
     this.showLocationAccount = true;
     this.associationId = id;
   }
+
   rawHeaders = [
-    { title: "", key: "status", show: true },
-    { title: "ACCOUNT NAME", key: "accountName", show: true },
+    { title: "Location Name", key: "location", show: true },
+    { title: "Pay Categories", key: "pay", show: true },
     {
-      title: "Virtual NUBAN Account Number",
-      key: "accountNumber",
+      title: "Accounts",
+      key: "account",
       show: true,
     },
     {
-      title: "Bank Name",
-      key: "bank",
-      show: true,
-    },
-    {
-      title: "ACCOUNT NUMBER",
-      key: "accountNumber",
+      title: "Default",
+      key: "default",
       show: true,
     },
   ];
 
 
   get items() {
-    const collectionAccounts = this.collectionAccounts.map(
-      (collectionAccount) => {
-        (collectionAccount as any).createdAt = new Date(
-          (collectionAccount as any).createdAt
-        ).toLocaleDateString("en-US");
-        return {
-          ...collectionAccount,
-          action: collectionAccount.id,
-          keydisplay: "XXXXXXX",
-          bank: this.getBankName(collectionAccount.bank),
-        };
-      }
-    );
-    if (!this.query) return collectionAccounts;
-    return search.searchObjectArray(collectionAccounts, this.query);
+    const associations = this.associations.map((association) => {
+      (association as any).createdAt = new Date(
+        (association as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...association,
+        action: association.id,
+        keydisplay: "XXXXXXX",
+        default: this.getBankName(association.defaultAccount),
+        location: this.getLocation(association.location),
+      
+      };
+    });
+    if (!this.query) return associations;
+    return search.searchObjectArray(associations, this.query);
   }
-
+  getPaymentCategoreis(value:any){
+      return value;
+  }
   getLocation(id: string) {
-    const pt = this.AllBanks.find((i: any) => i.code === id);
+    const pt = this.orgLocation.find((i: any) => i.id === id);
     return pt ? `${pt.name}` : "";
   }
   getBankName(id: string) {
-    const pt = this.AllBanks.find((i: any) => i.code === id);
-    return pt ? `${pt.name}` : "";
+    const pt = this.collectionAccounts.find((i: any) => i.id === id);
+    return pt ? `${pt.accountName}` : "";
   }
   showAccount(id: string) {
     this.showAccountModal = true;
@@ -330,23 +280,18 @@ export default class Payments extends Vue {
       window.notify({ msg: "Could not fetch banks", status: "error" });
     }
   }
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+    const response = await Promise.all([AllLocation]);
+    this.orgLocation = response[0].data;
+  }
   accountAdded() {
-    this.fetchCollectionAccounts(this.orgId);
     this.fetchAssociations(this.orgId);
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this collection account",
-      title: "Delete collection account",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteCollectionAccount(id))
-      window.notify({ msg: "Collection account deleted", status: "success" });
-    else
-      window.notify({ msg: "Collection account not deleted", status: "error" });
-  }
-  async deleteItem2(id: string) {
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this collection association",
       title: "Delete collection association",
@@ -367,9 +312,10 @@ export default class Payments extends Vue {
 
   async created() {
     await this.fetchOrgInfo();
-    await this.fetchCollectionAccounts(this.orgId);
     await this.fetchAssociations(this.orgId);
     await this.fetchDropDown();
+    await this.fetchCollectionAccounts(this.orgId);
+    await this.fetchLocation();
   }
 }
 </script>

@@ -12,8 +12,8 @@ export default {
         calendars: [],
     },
     mutations: {
-        setCalendars(state, calendars: ICalendar[]) {
-            state.calendars = calendars
+        setCalendars(state, calendars: any) {
+            state.calendars = [calendars]
         },
     },
     actions: {
@@ -21,9 +21,10 @@ export default {
             const calendars = await fetchCalendars()
             ctx.commit("setCalendars", calendars)
         },
-        async getCalendarById(ctx, id: string) {
-            if (ctx.state.calendars.length < 1) await ctx.dispatch("fetchCalendars")
-            return ctx.state.calendars.find(calendar => calendar.id == id)
+        getCalendarById(ctx, id: string) {
+            return ctx.state.calendars.find(
+                calendar => calendar.id == id
+            )
         },
     },
 } as StoreOptions<CalendarState>

@@ -12,8 +12,8 @@ export default {
         prefrences: [],
     },
     mutations: {
-        setPrefrences(state, prefrences: IPrefrence[]) {
-            state.prefrences = [...prefrences]
+        setPrefrences(state, prefrences: any) {
+            state.prefrences = [prefrences]
         },
     },
     actions: {
@@ -21,9 +21,10 @@ export default {
             const prefrences = await fetchPrefrences()
             ctx.commit("setPrefrences", prefrences)
         },
-        async getPrefrenceById(ctx, id: string) {
-            if (ctx.state.prefrences.length < 1) await ctx.dispatch("fetchPrefrences")
-            return ctx.state.prefrences.find(prefrence => prefrence.id == id)
+        getPrefrenceById(ctx, id: string) {
+            return ctx.state.prefrences.find(
+                prefrence => prefrence.id == id
+            )
         },
     },
 } as StoreOptions<PrefrenceState>

@@ -279,6 +279,8 @@ import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/aedit.vue";
 import IPractitioner from "@/types/IPractitioner";
+import IPracticeInformation from "@/types/IPracticeInformation";
+import IPracticeHour from "@/types/IPracticeHours";
 const userStore = namespace("user");
 
 const phoneRegex =
@@ -383,19 +385,35 @@ export default class CarePartnersExistingState extends Vue {
   @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
+
+@practiceinformation.State
+  practiceInformations!: IPracticeInformation[];
+
   @practiceinformation.Action
   fetchPracticeInformations!: () => Promise<void>;
+
+   @practiceinformation.Action
+  getPracticeinformationById!: (id: string) => IPracticeInformation;
+
 
  @userStore.Getter
   authPractitioner!: IPractitioner;
 
+  @practiceinformation.State
+  practiceHours!: IPracticeHour[];
+
   @practiceinformation.Action
   fetchPracticeHours!: () => Promise<void>;
 
-  showEdit = false;
+   @practiceinformation.Action
+  getPracticeHourById!: (id: string) => IPracticeHour;
 
-  @Watch("all")
-  opHours = opHours;
+   hoursModel = {} as IPracticeHour;
+
+  showEdit = false;
+  informationId = "";
+  hourId = "";
+    opHours = opHours;
   loading = false;
   all = true;
   newArr = [];
@@ -417,7 +435,59 @@ export default class CarePartnersExistingState extends Vue {
         month: "long",
         day: "numeric",
       }
+  monday = {
+    startDate: "",
+    endDate: "",
+  };
+  tuesday = {
+    startDate: "",
+    endDate: "",
+  };
+  wednesday = {
+    startDate: "",
+    endDate: "",
+  };
+  thursday = {
+    startDate: "",
+    endDate: "",
+  };
+  friday= {
+    startDate: "",
+    endDate: "",
+  };
+  saturday = {
+    startDate: "",
+    endDate: "",
+  };
+  sunday = {
+    startDate: "",
+    endDate: "",
+  };
 
+
+  @Watch("informationId")
+    idChanged() {
+    this.setPracticeInformation();
+    this.setPracticeHour();
+  }
+ async setPracticeInformation() {
+    const practice = await this.getPracticeinformationById(this.items as any);
+    if (!practice) return;
+    this.email = practice.email;
+    this.siteMessage = practice.siteMessage;
+    this.address = practice.address;
+    this.website = practice.website;
+    this.phonenumbers = practice.contactNumbers;
+  }
+  async setPracticeHour() {
+    const hour = await this.getPracticeHourById(this.items2 as any);
+    if (!hour) return;
+    this.hoursModel = hour;
+   
+  }
+async setImpressionModel() {
+    this.hoursModel = JSON.parse(JSON.stringify({ ...opHours }));
+  }
  phoneRule = string().matches(phoneRegex, "A valid phone number is required");
 
  removenumber(index:number){
@@ -435,6 +505,17 @@ addNumbers(){
    this.reset();
   }
 }
+ get items() {
+     return this.practiceInformations.map((practiceInformation) => {
+      return this.informationId = practiceInformation.id as string;
+    });  
+  }
+
+  get items2() {
+     return this.practiceHours.map((practiceHour) => {
+      return this.hourId = practiceHour.id as string;
+    });  
+  }
   get phone(): IPhone {
     return {
       dialCode: this.dialCode,
@@ -562,8 +643,11 @@ addNumbers(){
     }
   }
 
-  created() {
-    this.fetchOrgInfo();
+  async created() {
+    await this.fetchOrgInfo();
+    await this.setImpressionModel();
+    await this.setPracticeHour();
+    await this.setPracticeInformation();
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
     this.fetchPracticeInformations();
