@@ -52,7 +52,7 @@
           />
         </div>
       </div>
-      <div class="flex space-x-4 mb-5 pb-14 mt-5 float-right">
+      <div class="flex space-x-4 mb-12 pb-14 mt-5 float-right">
         <copyform-icon class="float-right" />
         <delete-icon
           class="float-right cursor-pointer"

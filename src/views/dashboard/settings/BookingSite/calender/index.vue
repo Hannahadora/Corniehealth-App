@@ -227,6 +227,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CalendarIcon from "@/components/icons/acalendar.vue";
 import DateTimePicker from "@/components/datetime-picker.vue";
 import PlusIcon from "@/components/icons/add.vue";
+import search from "@/plugins/search";
 
 const level = namespace("OrgLevels");
 const calendar = namespace("calendar");
@@ -256,8 +257,8 @@ export default class CalenderExistingState extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @calendar.State
-  calendars!: ICalendar;
+ @calendar.State
+  calendars!: ICalendar[];
 
   @calendar.Action
   getCalendarById!: (id: string) => ICalendar;
@@ -265,8 +266,20 @@ export default class CalenderExistingState extends Vue {
   @calendar.Action
   fetchCalendars!: () => ICalendar;
 
+@prefrence.State
+  prefrences!: IPrefrence[];
+
+@prefrence.Action
+  getPrefrenceById!: (id: string) => IPrefrence;
+
+  @prefrence.Action
+  fetchPrefrences!: () => IPrefrence;
+
   data: any = {};
-  loading = false;
+   query = "";
+   CalendarId = "";
+   preferenceId = "";
+loading= false;
   onlineBookingRequirements = {
     no: 0,
     type: "",
@@ -287,13 +300,23 @@ export default class CalenderExistingState extends Vue {
   @Watch("CalendarId")
   idChanged() {
     this.setCalendar();
+    this.setPreference();
   }
-  get CalendarId() {
-    return this.calendars.id;
+
+    async setPreference() {
+      const preference = await this.getPrefrenceById(this.items2 as any);
+      if (!preference) return;
+      this.appointmentTimeHoldLimit = preference.appointmentTimeHoldLimit;
+      this.showCancelledAppointmentInCalendar = preference.showCancelledAppointmentInCalendar;
+      this.waitlistThreshhold = preference.waitlistThreshhold;
+      this.showWaitlistInCalendar = preference.showWaitlistInCalendar;
+      this.appointmentTimeHoldLimit = preference.appointmentTimeHoldLimit;
+
   }
+
   async setCalendar() {
-    const calendar = await this.getCalendarById(this.CalendarId as any);
-    if (!calendar) return;
+      const calendar = await this.getCalendarById(this.items as any);
+      if (!calendar) return;
     this.onlineBookingRequirements.no = calendar.onlineBookingRequirements.no;
     this.onlineBookingRequirements.type =
       calendar.onlineBookingRequirements.type;
@@ -318,25 +341,19 @@ export default class CalenderExistingState extends Vue {
       showWaitlistInCalendar: this.showWaitlistInCalendar,
     };
   }
-  severities = ["Every Day", "Every Week", "Custom"];
-  rawHeaders = [
-    {
-      title: "Category",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "Level ID",
-      key: "levelId",
-      show: true,
-    },
-    {
-      title: "Description/Tag",
-      key: "tags",
-      show: true,
-    },
-  ];
-  done() {
+
+   get items() {
+     return this.calendars.map((calendar) => {
+      return this.CalendarId = calendar.id as string;
+    });  
+  }
+  get items2() {
+     return this.prefrences.map((prefrence) => {
+      return this.preferenceId = prefrence.id as string;
+    });  
+  }
+
+done() {
     this.$emit("room-added");
     this.show = false;
   }
@@ -399,10 +416,13 @@ export default class CalenderExistingState extends Vue {
     this.loading = false;
   }
 
-  async created() {
-    await this.fetchCalendars();
-    await this.setCalendar();
-  }
+async created(){
+  await this.fetchCalendars();
+   await this.setCalendar();
+   await this.setPreference();
+   await this.fetchPrefrences();
+}
+
 }
 </script>
 

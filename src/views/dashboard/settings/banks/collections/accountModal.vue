@@ -59,23 +59,16 @@
                 <fail-icon class="float-right" />
               </div>
 
-              <div
-                class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2"
-                v-for="(input, index) in accounts"
-                :key="`${index}`"
-              >
-                <p class="float-left text-sm">{{ input.name }}</p>
-                <correct-icon class="float-right" />
-              </div>
+          
             </div>
             <div>
-              <p
+              <!-- <p
                 class="mt-4 text-sm text-danger font-semibold cursor-pointer"
                 v-if="accountName"
                 @click="addAccount"
               >
                 <span class="text-danger text-lg">+</span> Add Account
-              </p>
+              </p> -->
             </div>
           </div>
         </div>

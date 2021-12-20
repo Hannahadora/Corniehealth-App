@@ -23,21 +23,39 @@
           placeholder="--Autoloaded--"
         >
         </main-cornie-select>
-        <main-cornie-select
-          class="w-full mb-5"
-          :items="allPractitioner"
-          v-model="singlePractitioner"
-          @click="sendPractioner"
-          label="Practitioners"
-          placeholder="--Select from Practitioners--"
-        >
-        </main-cornie-select>
-
+         <main-cornie-select
+         v-if="this.id"
+            class="w-full mb-5"
+            :items="allPractitioner"
+            v-model="singlePractitioner"
+            label="Practitioners"
+            placeholder="--Select from Practitioners--"
+          >
+          </main-cornie-select>
+          <main-cornie-select
+          v-else
+            class="w-full mb-5"
+            :items="allPractitioner"
+            v-model="singlePractitioner"
+            @click="sendPractioner"
+            label="Practitioners"
+            placeholder="--Select from Practitioners--"
+          >
+          </main-cornie-select>
+      
+<!-- 
         <date-picker
           class="w-full mb-8"
           v-model="duration"
           label="Duration"
           width="full"
+        /> -->
+          <cornie-input
+          disabled
+          label="Duration"
+          placeholder="--Autoloaded--"
+          class="mb-8 w-full"
+          v-model="duration"
         />
 
         <cornie-input
@@ -60,6 +78,16 @@
         </div>
 
         <main-cornie-select
+        v-if="this.id"
+          class="w-full mb-5"
+          v-model="singleform"
+          :items="allForms"
+          label="Link forms"
+          placeholder="--Link from forms--"
+        >
+        </main-cornie-select>
+         <main-cornie-select
+         v-else
           class="w-full mb-5"
           v-model="singleform"
           :items="allForms"
@@ -200,8 +228,8 @@ export default class AppointmentTypeDialog extends Vue {
   loading = false;
   date = new Date();
 
-  duration = {} as Period;
-  singlePractitioner = "";
+  duration = "";
+  singlePractitioner =[""];
   singleform = "";
   practitioners = [""];
   fee = 0;
@@ -213,7 +241,7 @@ export default class AppointmentTypeDialog extends Vue {
 
   practitioner = [];
   practiceform = [];
-
+serviceFees = [] as any;
   arr = [] as any[];
 
   data: any = {};
@@ -228,7 +256,6 @@ export default class AppointmentTypeDialog extends Vue {
   async setAppointmentType() {
     const appointmentType = await this.getAppointmentTypeById(this.id);
     if (!appointmentType) return;
-    this.duration = appointmentType.duration;
     this.practitioners = appointmentType.practitioners;
     this.linkForms = appointmentType.linkForms;
     this.bookingSiteLink = appointmentType.bookingSiteLink;
@@ -237,12 +264,12 @@ export default class AppointmentTypeDialog extends Vue {
   }
 
   get payload() {
-    const filteritems = this.practitioners.filter((c) => c !== "");
-    const filteritems2 = this.linkForms.filter((c) => c !== "");
+    const filteritems = this.practitioners.filter((c) => c !== '');
+    const filteritems2 = this.linkForms.filter((c) => c !== '');
     return {
       duration: this.duration,
-      practitioners: filteritems,
-      linkForms: filteritems2,
+      practitioners: this.apractitioner,
+      linkForms: this.alinkForms,
       bookingSiteLink: this.bookingSiteLink,
       serviceId: this.serviceId,
       appointmentConfirmation: this.appointmentConfirmation,
@@ -259,8 +286,9 @@ export default class AppointmentTypeDialog extends Vue {
     });
   }
 
-  sendPractioner() {
-    this.practitioners.push(this.singlePractitioner);
+  sendPractioner(){
+  
+    this.practitioners.push(this.singlePractitioner as any);
   }
   sendForm() {
     this.linkForms.push(this.singleform);
@@ -283,10 +311,10 @@ export default class AppointmentTypeDialog extends Vue {
       };
     });
   }
-  setFee(id: string) {
-    const pt = this.services.find((i: any) => i.id === id);
-    return pt ? (this.fee = pt.cost) : "";
-  }
+setFee(id:string){
+ const pt = this.serviceFees.find((i: any) => i.id === id);
+    return pt ? this.fee = pt.fee : "", this.duration = pt.serviceUOM;
+}
   done() {
     this.$emit("type-added");
     this.show = false;
@@ -302,6 +330,11 @@ export default class AppointmentTypeDialog extends Vue {
     const AllForms = cornieClient().get("/api/v1/practice-form/surveys");
     const response = await Promise.all([AllForms]);
     this.practiceform = response[0].data;
+  }
+  async fetchServiceFess() {
+    const AllForms = cornieClient().get("/api/v1/catalogue-service/fees");
+    const response = await Promise.all([AllForms]);
+    this.serviceFees = response[0].data;
   }
 
   async apply() {
@@ -331,10 +364,24 @@ export default class AppointmentTypeDialog extends Vue {
       });
     }
   }
+  get filterItems(){
+    return this.practitioners.filter((c:any) => c !== null);
+  }
+  get filterItems2(){
+    return this.linkForms.filter((c:any) => c !== null);
+  }
+  apractitioner = ["d4249dec-f3ab-444f-867d-5710e3c6891a"]
+  alinkForms = ["046c3d84-78d6-4162-b530-81b9175971de"]
   async updateAppointmentType() {
     const url = `/api/v1/appointment-types/${this.id}`;
+
     const payload = {
-      ...this.payload,
+      duration: this.duration,
+      practitioners: this.apractitioner,
+      linkForms: this.alinkForms,
+      bookingSiteLink: this.bookingSiteLink,
+      serviceId: this.serviceId,
+      appointmentConfirmation: this.appointmentConfirmation,
     };
     try {
       const response = await cornieClient().put(url, payload);
@@ -359,6 +406,7 @@ export default class AppointmentTypeDialog extends Vue {
     if (!this.organizationInfo || this.organizationInfo.length === 0)
       await this.fetchOrgInfo();
     this.orgValue = this.organizationInfo.domainName;
+    await this.fetchServiceFess();
     //this.appointmentTypes();
   }
 }

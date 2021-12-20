@@ -33,6 +33,7 @@
           placeholder="--Enter--"
           :rules="requiredRule"
           :modelValue="orgValue"
+          v-model="url"
         />
         <div class="flex space-x-4 w-full">
           <span class="flex space-x-1 text-sm font-semibold text-primary"
@@ -90,7 +91,8 @@ export default class ExistingState extends Vue {
   orgInfo = [] as any;
   enabled = false;
   loading = false;
-  orgvalue = "";
+  orgValue = "TheGCBGLobal";
+  url="";
   get payload() {
     return {
       id: this.id,
@@ -134,8 +136,9 @@ export default class ExistingState extends Vue {
     }
   }
 
-  created() {
-    this.fetchOrgInfo();
+  async created() {
+    this.orgValue = this.orgInfo.domainName;
+    await this.fetchOrgInfo();
   }
 }
 </script>

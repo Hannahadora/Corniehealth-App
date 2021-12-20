@@ -29,14 +29,14 @@
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="updateDesignation(item.id)"
+            @click="showTypeModal(item.id)"
           >
             <edit-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="removeDesignation(item.id)"
+            @click="deleteItem(item.id)"
           >
             <delete-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Delete</span>
@@ -45,11 +45,7 @@
       </cornie-table>
     </div>
   </div>
-  <appointment-modal
-    v-model="registerNew"
-    @type-added="typeadded"
-    @closesidemodal="closeModal"
-  />
+  <appointment-modal :id="typeId" v-model="registerNew" @type-added="typeadded" @closesidemodal="closeModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -74,9 +70,14 @@ import { IDesignation } from "@/types/IDesignation";
 import { Prop } from "vue-property-decorator";
 import IAppointmentTypes from "@/types/IAppointmentTypes";
 import { first, getTableKeyValue } from "@/plugins/utils";
+import ICatalogueService from "@/types/ICatalogue";
+import { cornieClient } from "@/plugins/http";
+import IPractitioner from "@/types/IPractitioner";
+const userStore = namespace("user");
 
 const designation = namespace("designation");
 const appointmentType = namespace("appointmentType");
+const catalogues = namespace("catalogues");
 
 @Options({
   name: "AppoitmentTypesExistingState",
@@ -104,12 +105,26 @@ export default class AppointmentTypes extends Vue {
 
   registerNew = false;
   query = "";
+practitioner = [] as any;
+typeId= "";
 
   @appointmentType.State
   appointmentTypes!: IAppointmentTypes[];
 
   @appointmentType.Action
   fetchappointmentTypes!: () => Promise<void>;
+
+    @appointmentType.Action
+  deleteAppointmentType!: (id: string) => Promise<boolean>;
+
+ @catalogues.Action
+  getServices!: () => Promise<void>;
+
+  @catalogues.State
+  services!: ICatalogueService[];
+
+ @userStore.Getter
+  authPractitioner!: IPractitioner;
 
   // appointmentId ="";
   rawHeaders = [
@@ -155,9 +170,9 @@ export default class AppointmentTypes extends Vue {
   get empty() {
     return this.appointmentTypes.length < 1;
   }
-  async typeadded() {
-    this.fetchappointmentTypes;
-  }
+ async typeadded(){
+   await this.fetchappointmentTypes();
+ }
   get items() {
     const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
       (appointmentType as any).createdAt = new Date(
@@ -167,10 +182,10 @@ export default class AppointmentTypes extends Vue {
         ...appointmentType,
         action: appointmentType.id,
         keydisplay: "XXXXXXX",
-        service: "-----",
-        duration: "-----",
+        service: this.getServiceName(appointmentType.serviceId),
+        duration: this.getDuration(appointmentType.serviceId),
         forms: "-----",
-        practitioners: "-----",
+        practitioners: this.authPractitioner.firstName +' '+ this.authPractitioner.lastName,
         booking: "-----",
         status: "Active",
       };
@@ -178,17 +193,48 @@ export default class AppointmentTypes extends Vue {
     if (!this.query) return appointmentTypes;
     return search.searchObjectArray(appointmentTypes, this.query);
   }
-  // get items() {
-  //   return this.designations.map((designation) => ({
-  //     ...designation,
-  //     jobLevel: designation?.level?.name || "N/A",
-  //     jobFunction: designation?.orgFunction?.name,
-  //     supervisor: designation.reportsTo?.name || "N/A",
-  //   }));
-  // }
+  showTypeModal(value:string){
+    this.registerNew = true;
+    this.typeId = value;
+  }
+   async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this appointment type",
+      title: "Delete request",
+    });
+    if (!confirmed) return;
 
-  created() {
-    this.fetchappointmentTypes();
+    if (await this.deleteAppointmentType(id))
+      window.notify({ msg: "Appoinment type deleted", status: "success" });
+    else window.notify({ msg: "Appoinment type not deleted", status: "error" }); 
+  }
+ getDuration(id:string){
+ const pt = this.services.find((i: any) => i.id === id);
+    return pt ? `${pt.serviceUOM}` : "";
+
+ }
+ 
+ getServiceName(id:string){
+ const pt = this.services.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+
+ }
+  getPractitionerName(id:string){
+ const pt = this.practitioner.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName}  ${pt.lastName}` : "";
+
+ }
+ 
+  async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+  async created() {
+    await this.fetchappointmentTypes();
+      await this.getServices();
+      await this.fetchPractitioner();
+    
   }
 }
 </script>
