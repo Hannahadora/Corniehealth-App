@@ -97,6 +97,7 @@ import DevicesIcon from "@/components/icons/devices.vue";
 import PartnersIcon from "@/components/icons/partners.vue";
 import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
 import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
+import MarkupIcon from "@/components/icons/markup.vue";
 
 type INav = { name: string; to: string; icon: string };
 
@@ -129,6 +130,7 @@ type INav = { name: string; to: string; icon: string };
     DevicesIcon,
     TeamIcon,
     PartnersIcon,
+    MarkupIcon,
   },
 })
 export default class Settings extends Vue {
@@ -180,6 +182,7 @@ export default class Settings extends Vue {
         to: "health-services",
         icon: "health-service-icon",
       },
+      { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
       { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
