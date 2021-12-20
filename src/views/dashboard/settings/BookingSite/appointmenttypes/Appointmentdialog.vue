@@ -43,12 +43,19 @@
           >
           </main-cornie-select>
       
-
+<!-- 
         <date-picker
           class="w-full mb-8"
           v-model="duration"
           label="Duration"
           width="full"
+        /> -->
+          <cornie-input
+          disabled
+          label="Duration"
+          placeholder="--Autoloaded--"
+          class="mb-8 w-full"
+          v-model="duration"
         />
 
         <cornie-input
@@ -221,7 +228,7 @@ export default class AppointmentTypeDialog extends Vue {
   loading = false;
   date = new Date();
 
-  duration = {} as Period;
+  duration = "";
   singlePractitioner =[""];
   singleform = "";
   practitioners = [""];
@@ -249,7 +256,6 @@ serviceFees = [] as any;
   async setAppointmentType() {
     const appointmentType = await this.getAppointmentTypeById(this.id);
     if (!appointmentType) return;
-    this.duration = appointmentType.duration;
     this.practitioners = appointmentType.practitioners;
     this.linkForms = appointmentType.linkForms;
     this.bookingSiteLink = appointmentType.bookingSiteLink;
@@ -258,12 +264,12 @@ serviceFees = [] as any;
   }
 
   get payload() {
-    const filteritems = this.practitioners.filter((c) => c !== "");
-    const filteritems2 = this.linkForms.filter((c) => c !== "");
+    const filteritems = this.practitioners.filter((c) => c !== '');
+    const filteritems2 = this.linkForms.filter((c) => c !== '');
     return {
       duration: this.duration,
-      practitioners: filteritems,
-      linkForms: filteritems2,
+      practitioners: this.apractitioner,
+      linkForms: this.alinkForms,
       bookingSiteLink: this.bookingSiteLink,
       serviceId: this.serviceId,
       appointmentConfirmation: this.appointmentConfirmation,
@@ -307,7 +313,7 @@ serviceFees = [] as any;
   }
 setFee(id:string){
  const pt = this.serviceFees.find((i: any) => i.id === id);
-    return pt ? this.fee = pt.fee : "";
+    return pt ? this.fee = pt.fee : "", this.duration = pt.serviceUOM;
 }
   done() {
     this.$emit("type-added");

@@ -420,6 +420,7 @@ export default class CarePartnersExistingState extends Vue {
   address = "";
   phonenumbers = [] as any;
   website = "";
+
   siteMessage = "";
   contactNumber = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
@@ -501,7 +502,7 @@ async setImpressionModel() {
       this.reset();
     }
   }
-}
+
  get items() {
      return this.practiceInformations.map((practiceInformation) => {
       return this.informationId = practiceInformation.id as string;

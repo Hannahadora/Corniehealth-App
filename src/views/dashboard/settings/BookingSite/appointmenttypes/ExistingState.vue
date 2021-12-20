@@ -183,7 +183,7 @@ typeId= "";
         action: appointmentType.id,
         keydisplay: "XXXXXXX",
         service: this.getServiceName(appointmentType.serviceId),
-        duration: "-----",
+        duration: this.getDuration(appointmentType.serviceId),
         forms: "-----",
         practitioners: this.authPractitioner.firstName +' '+ this.authPractitioner.lastName,
         booking: "-----",
@@ -199,16 +199,20 @@ typeId= "";
   }
    async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this appointment room",
+      message: "You are about to delete this appointment type",
       title: "Delete request",
     });
     if (!confirmed) return;
 
     if (await this.deleteAppointmentType(id))
-      window.notify({ msg: "Appoinment type not deleted", status: "error" });
-    else window.notify({ msg: "Appoinment type deleted", status: "success" }); 
+      window.notify({ msg: "Appoinment type deleted", status: "success" });
+    else window.notify({ msg: "Appoinment type not deleted", status: "error" }); 
   }
+ getDuration(id:string){
+ const pt = this.services.find((i: any) => i.id === id);
+    return pt ? `${pt.serviceUOM}` : "";
 
+ }
  
  getServiceName(id:string){
  const pt = this.services.find((i: any) => i.id === id);
