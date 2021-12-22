@@ -1,8 +1,8 @@
-import ObjectSet from "@/lib/objectset"
-import { LevelCollection } from "@/types/ILevel"
-import { CornieUser } from "@/types/user"
-import { StoreOptions } from "vuex"
-import { deleteLevel, getOrgLevels } from "./helper"
+import ObjectSet from "@/lib/objectset";
+import { LevelCollection } from "@/types/ILevel";
+import { CornieUser } from "@/types/user";
+import { StoreOptions } from "vuex";
+import { deleteLevel, getOrgLevels } from "./helper";
 
 interface LevelState {
   levels: LevelCollection[];
@@ -15,28 +15,28 @@ export default {
     },
     mutations: {
         addLevels(state, payload: LevelCollection[]) {
-            const levelsSet = new ObjectSet([...state.levels, ...payload], "id")
-            state.levels = [...levelsSet]
+            const levelsSet = new ObjectSet([...state.levels, ...payload], "id");
+            state.levels = [...levelsSet];
         },
         updateLevel(state, payload: LevelCollection) {
-            const levelsSet = new ObjectSet([...state.levels, payload], "id")
-            state.levels = [...levelsSet]
+            const levelsSet = new ObjectSet([...state.levels, payload], "id");
+            state.levels = [...levelsSet];
         },
         remove(state, id: string) {
-            state.levels = state.levels.filter(level => level.id != id)
+            state.levels = state.levels.filter(level => level.id != id);
         },
     },
     actions: {
         async fetchLevels(ctx) {
             const { organizationId } = ctx.rootGetters[
                 "user/cornieUser"
-            ] as CornieUser
-            const levels = await getOrgLevels(organizationId)
-            ctx.commit("addLevels", levels)
+            ] as CornieUser;
+            const levels = await getOrgLevels(organizationId);
+            ctx.commit("addLevels", levels);
         },
         async removeLevel(ctx, id: string) {
-            const removed = await deleteLevel(id)
-            if (removed) ctx.commit("remove", id)
+            const removed = await deleteLevel(id);
+            if (removed) ctx.commit("remove", id);
         },
     },
-} as StoreOptions<LevelState>
+} as StoreOptions<LevelState>;

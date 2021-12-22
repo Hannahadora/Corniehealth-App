@@ -1,6 +1,6 @@
-import Avatar from "@/components/avatar.vue"
-import { useHandleImage } from "@/composables/useHandleImage"
-import { defineComponent } from "@vue/runtime-core"
+import Avatar from "@/components/avatar.vue";
+import { useHandleImage } from "@/composables/useHandleImage";
+import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
     name: "cornie-avatar-field",
@@ -9,9 +9,8 @@ export default defineComponent({
     },
     emits: ["update:modelValue"],
     setup(props) {
-
-        const { url, placeholder, onChange } = useHandleImage(props.modelValue)
-        return { url, placeholder, onChange }
+        const { url, placeholder, onChange } = useHandleImage(props.modelValue);
+        return { url, placeholder, onChange };
     },
     props: {
         modelValue: { type: String, default: "" },
@@ -19,10 +18,10 @@ export default defineComponent({
     },
     watch: {
         url(newValue: string) {
-            this.$emit("update:modelValue", newValue)
+            this.$emit("update:modelValue", newValue);
         },
     },
     mounted() {
-        this.url = this.modelValue
+        this.url = this.modelValue;
     },
-})
+});

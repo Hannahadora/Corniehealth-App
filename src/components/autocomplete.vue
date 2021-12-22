@@ -171,7 +171,6 @@ export default class AutoComplete extends Vue {
     const selected = this.items.find(
       (item) => item.code == this.modelValue || item == this.modelValue
     );
-    ;
     return selected;
   }
 

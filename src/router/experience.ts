@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from "vue-router"
+import { RouteRecordRaw } from "vue-router";
 
 export const ExperienceRoutes: RouteRecordRaw = {
     path: "experience/",
@@ -163,4 +163,4 @@ export const ExperienceRoutes: RouteRecordRaw = {
             component: () => import("@/views/dashboard/schedules/edit-slot.vue"),
         },
     ],
-}
+};

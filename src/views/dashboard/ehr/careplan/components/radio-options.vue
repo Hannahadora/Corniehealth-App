@@ -258,7 +258,6 @@ export default class SelectReference extends Vue {
     this.localValue = this.value ? this.value : "";
     await this.fetchLocations();
     await this.fetchPatientConditions(this.$route.params.id.toString());
-    ;
   }
 }
 </script>

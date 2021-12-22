@@ -6,7 +6,7 @@
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-        Bank & Accounts
+        Billing Account
       </span>
       <span class="w-full h-screen">
         <bank-accounts-existing-state />

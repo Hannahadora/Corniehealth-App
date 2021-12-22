@@ -1,98 +1,105 @@
 <template>
   <accordion-component
     class="shadow-none rounded-none border-none text-primary"
-    title="Practice Information"
+    title="Performance"
     expand="true"
     v-model="opened"
-    :opened="false"
+    :opened="true"
   >
-    <p class="small-font mt-3">
-      The information contained below will appear in the CornieHealth booking
-      site, if you have embedded the link. This information does not affect
-      other related data in your practice settings
-    </p>
-    <div class="grid grid-cols-3 mt-3 pb-3">
-      <cornie-input
-        label="Email"
-        class=""
-        v-model="email"
-        placeholder="--Enter--"
-      />
-      <!-- <label>Contact information</label>  -->
-      <!-- <span class="d-flex justify-content-space-between"><plus-icon class="text-green-400 fill-current" /></span> -->
-      <phone-input
-        class="w-full mt-1 bold"
-        style="width: 95%"
-        label="Contact Number"
-        v-model:code="DialCode"
-        v-model="contactNumber"
-        :rules="requiredRule"
-        type="number"
-      />
-      <cornie-input
-        label="Address"
-        class=""
-        v-model="address"
-        placeholder="--Enter--"
-      />
-    </div>
     <div>
-      <label
-        for="ecounter"
-        class="flex uppercase mb-1 text-black text-xs font-bold"
-        >Site Message<span class="message-font"
-          >(Max 150 characters)</span
-        ></label
-      >
-      <div class="my-2 w-full">
-        <Textarea
-          class="w-full text-xs"
-          placeholder="Text Area"
-          :rules="required"
-          v-model="siteMessage"
-        />
+      <div class="flex space-x-4 w-full justify-between mt-3">
+        <p class="text-sm mt-3 text-black">
+          The information contained below will appear in the CornieHealth
+          booking site, if you have embedded the link. This information does not
+          affect <br />
+          other related data in your practice settings
+        </p>
+        <div
+          class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer"
+          @click="showEditSection"
+        >
+          <edit-icon class="fill-current text-danger mr-4" /> Edit
+        </div>
       </div>
     </div>
-    <cornie-card>
-      <cornie-card-text class="flex justify-end">
-        <cornie-btn
-          @click="show = false"
-          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-        >
-          Cancel
-        </cornie-btn>
-        <cornie-btn
-          :loading="loading"
-          @click="apply"
-          class="text-white bg-danger px-6 rounded-xl"
-        >
-          Save
-        </cornie-btn>
-      </cornie-card-text>
-    </cornie-card>
+    <div class="w-full mt-8 mb-32">
+      <div class="float-left">
+        <img class="mr-2" v-if="orgInfo.image" :src="orgInfo.image" />
+        <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
+        <div class="flex space-x-4 mt-2">
+          <div class="text-gray-300 text-xs">Active Since:</div>
+          <div class="text-blue-600 font-bold text-xs">31st May, 2021</div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <star-icon />
+          <span class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
+            >Get Verified</span
+          >
+          <span
+            class="text-xs text-green-600 bg-green-100 rounded-full"
+            v-if="verified"
+            >Verified</span
+          >
+        </div>
+      </div>
+      <div class="float-right">
+        <p class="text-sm text-black mb-1">
+          57 Campbell Street, Lagos Island. Lagos
+        </p>
+        <p class="text-sm text-black mb-1">+234 802 290 8484</p>
+        <p class="text-sm text-black mb-1">Info@saintnicholashospital.com</p>
+        <p class="text-sm text-black mb-1">www.nicholashospital.org</p>
+        <div class="flex space-x-4 mt-2">
+          <span class="text-gray-300 text-xs"
+            >Total Ratings:
+            <span class="text-blue-600 font-bold text-xs">16</span>
+          </span>
+          <span class="text-gray-300 text-xs"
+            >Patients Seen:
+            <span class="text-blue-600 font-bold text-xs">24</span>
+          </span>
+        </div>
+        <div class="mt-10">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            <view-icon class="mr-2" /> View
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            <share-icon class="mr-2" /> Share
+          </cornie-btn>
+        </div>
+      </div>
+    </div>
   </accordion-component>
-  <accordion-component
+
+  <!-- <accordion-component
     class="shadow-none rounded-none border-none text-primary"
     title="Practice Hours"
     expand="true"
     v-model="opened"
-    :opened="false"
+    :opened="true"
   >
     <div class="grid grid-cols-1 mt-4 gap-y-6 w-full">
-      <label class="flex items-center">
-        <input type="checkbox" class="mr-3" v-model="all" />
+      <label class="flex items-center  text-sm text-black">
+        <select-option type="checkbox" class="mr-3" v-model="all" />
         All days
       </label>
       <div class="day-grid grid w-full">
         <span class="font-bold block"></span>
-        <span class="font-bold uppercase text-sm">
+        <span class="font-medium text-black uppercase text-sm">
           <span>Start Time</span>
           <span class="ml-14">End Time</span>
         </span>
       </div>
       <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
-        <label class="flex items-center">
-          <input
+        <label class="flex items-center  text-sm text-black">
+          <select-option
             @change="changed"
             v-model="opHour.selected"
             type="checkbox"
@@ -139,7 +146,7 @@
         </cornie-btn>
       </cornie-card-text>
     </cornie-card>
-  </accordion-component>
+  </accordion-component> -->
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -162,15 +169,18 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import PlusIcon from "@/components/icons/add.vue";
-// import IFunction from "@/types/IFunction";
+import StarIcon from "@/components/icons/stars.vue";
+import ShareIcon from "@/components/icons/sharewhite.vue";
+import ViewIcon from "@/components/icons/eyegreen.vue";
+import SelectOption from "@/components/custom-checkbox.vue";
 import { Prop } from "vue-property-decorator";
 // import AddFunction from "./add-function.vue";
 import { Watch, PropSync } from "vue-property-decorator";
 import { HoursOfOperation } from "@/types/ILocation";
 import { Field } from "vee-validate";
-
+import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EditIcon from "@/components/icons/edit.vue";
+import EditIcon from "@/components/icons/aedit.vue";
 
 // const orgFunctions = namespace("OrgFunctions");
 const practiceinformations = namespace("practiceinformation");
@@ -236,14 +246,18 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     CornieSelect,
     CornieInput,
     SortIcon,
+    SelectOption,
     // AddFunction,
+    Avatar,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
     CornieBtn,
     TableRefreshIcon,
+    ShareIcon,
     FilterIcon,
     PlusIcon,
+    StarIcon,
     PhoneInput,
     IconInput,
     DeleteIcon,
@@ -252,6 +266,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     TableOptions,
     AccordionComponent,
     Textarea,
+    ViewIcon,
     Field,
   },
 })
@@ -274,6 +289,8 @@ export default class CarePartnersExistingState extends Vue {
   @practiceinformations.Action
   fetchPracticeHour!: () => Promise<void>;
 
+  showEdit = false;
+
   @Watch("all")
   opHours = opHours;
   loading = false;
@@ -286,6 +303,8 @@ export default class CarePartnersExistingState extends Vue {
   address = "";
   siteMessage = "";
   contactNumber = "";
+  localSrc = require("../../../../assets/img/placeholder.png");
+  orgInfo = [];
 
   get operationHours() {
     return this.modelValue;
@@ -297,7 +316,16 @@ export default class CarePartnersExistingState extends Vue {
   changed() {
     this.operationHours = this.operationHours;
   }
-
+  async fetchOrgInfo() {
+    try {
+      const response = await cornieClient().get(
+        "/api/v1/organization/myOrg/get"
+      );
+      this.orgInfo = response.data || {};
+    } catch (error) {
+      window.notify({ msg: "Could not fetch organization", status: "error" });
+    }
+  }
   allWeek(all: boolean) {
     if (!all) return;
     const opHours = [...this.operationHours].map((opHour) => ({
@@ -322,8 +350,10 @@ export default class CarePartnersExistingState extends Vue {
   async apply() {
     this.loading = true;
     // if (this.id) await this.updateIssues()
-    await this.createPracticeform();
     this.loading = false;
+  }
+  showEditSection() {
+    this.showEdit = true;
   }
 
   async applyhour() {
@@ -352,27 +382,6 @@ export default class CarePartnersExistingState extends Vue {
       return obj;
     };
   }
-  async createPracticeform() {
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/practice-information",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({
-          msg: "practice-information  Created",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error) {
-      ;
-      window.notify({
-        msg: "practice-information not Created",
-        status: "error",
-      });
-    }
-  }
 
   async createPracticehour() {
     try {
@@ -388,7 +397,6 @@ export default class CarePartnersExistingState extends Vue {
         this.done();
       }
     } catch (error) {
-      ;
       window.notify({
         msg: "practice-information not Created",
         status: "error",
@@ -397,12 +405,12 @@ export default class CarePartnersExistingState extends Vue {
   }
 
   created() {
+    this.fetchOrgInfo();
     if (!this.modelValue || this.modelValue.length < 1)
       this.operationHours = opHours;
-    alert("hello");
     this.fetchPracticeInformation();
     this.fetchPracticeHour();
-    // ;
+    // console.log(this.mappedfunc);
   }
 }
 </script>

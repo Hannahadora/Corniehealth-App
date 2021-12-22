@@ -529,8 +529,6 @@ export default class PractitionerExistingState extends Vue {
           ) < 0
       )
       .map((i) => {
-        ;
-
         return {
           code: i.id,
           display: `${i.firstName} ${i.lastName}`,
@@ -580,7 +578,6 @@ export default class PractitionerExistingState extends Vue {
       this.getShifts();
     } catch (error) {
       window.notify({ msg: "Shift could not deactivated", status: "error" });
-      ;
     }
   }
 
@@ -596,7 +593,6 @@ export default class PractitionerExistingState extends Vue {
         window.notify({ msg: "Schedule activated", status: "success" });
     } catch (error) {
       window.notify({ msg: "Schedule could not activated", status: "error" });
-      ;
     }
   }
 
@@ -612,7 +608,6 @@ export default class PractitionerExistingState extends Vue {
         window.notify({ msg: "Schedule deactivated", status: "success" });
     } catch (error) {
       window.notify({ msg: "Schedule could not deactivated", status: "error" });
-      ;
     }
   }
 
@@ -633,14 +628,12 @@ export default class PractitionerExistingState extends Vue {
       }
     } catch (error) {
       window.notify({ msg: "Schedule could not deleted", status: "error" });
-      ;
     }
   }
 
   viewSchedule(id: string) {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (schedule) this.selectedSchedule = schedule;
-    ;
     this.showActorsPane = true;
     // this.showViewPane = true;
   }
@@ -648,8 +641,6 @@ export default class PractitionerExistingState extends Vue {
   addActor(id: string) {
     const schedule = this.schedules.find((i: any) => i.id === id);
     if (schedule) this.selectedSchedule = schedule;
-    ;
-
     this.showAddActorsPane = true;
   }
 
@@ -668,7 +659,6 @@ export default class PractitionerExistingState extends Vue {
       await this.getSchedules();
     if (!this.practitioners || this.practitioners.length === 0)
       await this.fetchPractitioners();
-    ;
   }
 }
 </script>

@@ -50,7 +50,6 @@ export default class Tabs extends Vue {
     return index == this.syncedValue;
   }
 
-  mounted() {
-  }
+  mounted() {}
 }
 </script>

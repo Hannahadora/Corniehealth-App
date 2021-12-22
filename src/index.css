@@ -156,14 +156,14 @@ input[type="checkbox"]:after {
 }
 
 .multi-input {
-    justify-content: center;
-    position: relative;
-    top: 50px;
-    padding-left: 15px;
-    color: #fff;
-    background: #080056;
-    border-radius: 30px;
-    width: 90px;
+  justify-content: center;
+  position: relative;
+  top: 50px;
+  padding-left: 15px;
+  color: #fff;
+  background: #080056;
+  border-radius: 30px;
+  width: 90px;
 }
 
 .slider-tooltip {
@@ -240,27 +240,27 @@ input[type="checkbox"]:checked:after {
 
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
 }
 
-.nav-tabs.nav-tabs-bottom>li>a.active,
-.nav-tabs.nav-tabs-bottom>li>a.active:hover,
-.nav-tabs.nav-tabs-bottom>li>a.active:focus {
-    border-bottom-width: 4px;
-    border-color: transparent;
-    border-bottom-color: #FE4D3C;
-    color: #000;
-    position: relative;
-    font-weight: 700;
-    /* background-color: transparent; */
-    top: 2px;
-    transition: none 0s ease 0s;
-    -moz-transition: none 0s ease 0s;
-    -o-transition: none 0s ease 0s;
-    -ms-transition: none 0s ease 0s;
-    -webkit-transition: none 0s ease 0s;
+.nav-tabs.nav-tabs-bottom > li > a.active,
+.nav-tabs.nav-tabs-bottom > li > a.active:hover,
+.nav-tabs.nav-tabs-bottom > li > a.active:focus {
+  border-bottom-width: 4px;
+  border-color: transparent;
+  border-bottom-color: #fe4d3c;
+  color: #000;
+  position: relative;
+  font-weight: 700;
+  /* background-color: transparent; */
+  top: 2px;
+  transition: none 0s ease 0s;
+  -moz-transition: none 0s ease 0s;
+  -o-transition: none 0s ease 0s;
+  -ms-transition: none 0s ease 0s;
+  -webkit-transition: none 0s ease 0s;
 }
 
 .switch {
@@ -301,7 +301,7 @@ input[type="checkbox"]:checked:after {
 }
 
 input:checked + .slider {
-  background-color: #f0f4fe;
+  background-color: #fe4d3c;
 }
 
 input:focus + .slider {
@@ -312,6 +312,7 @@ input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
+  background: #fff;
 }
 
 /* Rounded sliders */

@@ -1,5 +1,5 @@
-import Period from "./IPeriod"
-import Practitioner from "./IPractitioner"
+import Period from "./IPeriod";
+import Practitioner from "./IPractitioner";
 
 export default interface IPracticeform {
   id?: string;

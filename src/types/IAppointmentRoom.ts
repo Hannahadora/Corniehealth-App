@@ -1,9 +1,9 @@
 export default interface IAppointmentRoom {
   id: string;
   roomName: string;
-  roomNumber: string;
+  roomNumber: number;
   custodian: string;
   locationId: string;
-  availability: boolean;
+  availability: string;
   status: string;
 }

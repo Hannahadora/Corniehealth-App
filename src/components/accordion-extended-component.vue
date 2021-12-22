@@ -3,15 +3,7 @@
     <div class="w-full">
       <div
         @click="handle"
-        class="
-          h-11
-          w-full
-          border-b-2
-          cursor-pointer
-          flex
-          items-center
-          justify-between
-        "
+        class="h-11 w-full border-b-2 cursor-pointer flex items-center justify-between"
         :class="{
           'bg-white': expand,
           'rounded-t-xl': first && expand,

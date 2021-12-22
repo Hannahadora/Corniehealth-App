@@ -1,6 +1,6 @@
 <template>
   <div
-    class="card"
+    class="card animated fadeIn"
     :class="[`bg-${color}`, flat ? 'flat' : '']"
     :style="{ width, height }"
   >

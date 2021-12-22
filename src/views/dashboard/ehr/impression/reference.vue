@@ -270,7 +270,6 @@ export default {
       }
     },
     changed(index, intital) {
-      ;
       this.assesorPractitionerValue = index;
       const newvalue = this.assesorPractitionerValue;
       if (
@@ -280,8 +279,6 @@ export default {
         this.assesorRoleValue.splice(intital, 1);
       } else {
         this.assesorRoleValue.push(this.assesorPractitionerValue);
-        ;
-        ;
       }
 
       //this.valueid.push(index);

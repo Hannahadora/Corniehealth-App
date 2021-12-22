@@ -1,4 +1,4 @@
-import IProcedure from "@/types/IProcedure"
+import IProcedure from "@/types/IProcedure";
 
 const mapSelectedProcedure = (selectedProcedure: IProcedure) => {
     const result = {
@@ -15,27 +15,27 @@ const mapSelectedProcedure = (selectedProcedure: IProcedure) => {
             start: new Date().toLocaleDateString(),
             end: new Date().toLocaleDateString(),
         },
-    }
+    };
 
-    return result
-}
+    return result;
+};
 
 const formatReqBody = (procedure: IProcedure) => {
     const data = Object.fromEntries(
         Object.entries(procedure).filter(([_, v]) => v != null)
-    )
+    );
     const reqBody = {
         ...data,
         performedPeriod: {
             start: new Date(data.performedPeriod?.start).toISOString(),
             end: new Date(data.performedPeriod?.end).toISOString(),
         },
-    } as IProcedure
+    } as IProcedure;
 
-    return reqBody
-}
+    return reqBody;
+};
 
 export default {
     mapSelectedProcedure,
     formatReqBody,
-}
+};

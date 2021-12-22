@@ -1,9 +1,9 @@
 <template>
-  <div class="mt-2 mb-5 rounded-lg settings bg-white w-full overflow-hidden">
-    <div class="w-full h-full p-3 border-r-2 overflow-hidden">
+  <div class="mt-2 mb-5 rounded-lg bg-white w-full overflow-auto h-full">
+    <!-- <div class="w-full h-full p-3 border-r-2 overflow-hidden">
       <settings-sidebar class="overflow-hidden" />
-    </div>
-    <div class="p-3 w-full overflow-auto">
+    </div> -->
+    <div class="p-3 w-full h-full">
       <router-view />
     </div>
   </div>

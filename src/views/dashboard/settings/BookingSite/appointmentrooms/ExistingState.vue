@@ -1,57 +1,71 @@
 <template>
-  <div class="w-full pb-7">
-    <div class="flex justify-end">
+  <div>
+    <div
+      class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+      v-if="empty"
+    >
+      <img src="@/assets/rafiki.svg" class="mb-2" />
+      <h4 class="text-black text-center">There are no rooms on record.</h4>
       <cornie-btn
-        class="bg-danger py-2 text-white m-5"
-        @click="editingFunction = true"
+        class="bg-danger px-3 rounded-full text-white m-5"
+        @click="showRoom = true"
       >
-        <plus-icon class="mr-2 fill-current text-white" />
         Add New
       </cornie-btn>
     </div>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="editAppointmentRoom(item.id)"
+    <div class="w-full pb-7" v-else>
+      <span class="flex justify-end">
+        <cornie-btn
+          class="bg-danger px-3 rounded-full text-white m-5"
+          @click="showRoom = true"
         >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
+          Add New
+        </cornie-btn>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="items">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showAppointmentRoom(item.id)"
+          >
+            <edit-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="deleteItem(item.id)"
+          >
+            <delete-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+        </template>
+      </cornie-table>
+      <div class="flex justify-between m-3">
+        <div class="flex justify-around">
+          <p class="text-sm">show</p>
+          <input
+            type="number"
+            class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
+          />
+          <p class="text-sm">per page</p>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="remove(item.id)"
-        >
-          <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
-        </div>
-      </template>
-    </cornie-table>
-    <div class="flex justify-between m-3">
-      <div class="flex justify-around">
-        <p class="text-sm">show</p>
-        <input
-          type="number"
-          class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
-        />
-        <p class="text-sm">per page</p>
-      </div>
-      <div class="flex justify-around">
-        <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
-        <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
-          <arrow-left-icon />
-        </div>
+        <div class="flex justify-around">
+          <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
+          <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
+            <arrow-left-icon />
+          </div>
 
-        <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-        <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
-        <div class="text-xs mt-1" style="fontsize: 5px">
-          <arrow-right-icon />
+          <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
+          <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
+          <div class="text-xs mt-1" style="fontsize: 5px">
+            <arrow-right-icon />
+          </div>
+          <!-- <delete-icon class="text-danger fill-current" /> -->
         </div>
-        <!-- <delete-icon class="text-danger fill-current" /> -->
       </div>
     </div>
-    <add-function v-model="editingFunction" :edit="roomToEdit" />
   </div>
+  <room-dialog v-model="showRoom" :id="roomId" @room-added="roomAdded" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -68,27 +82,25 @@ import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
-import IFunction from "@/types/IFunction";
-import { Prop } from "vue-property-decorator";
-import AddFunction from "./add-function.vue";
-
+import { cornieClient } from "@/plugins/http";
+import RoomDialog from "./appoitmentRoomDialog.vue";
+import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { first, getTableKeyValue } from "@/plugins/utils";
 
-const orgFunctions = namespace("OrgFunctions");
-const patients = namespace("patients");
 const location = namespace("location");
-const AppointmentRoom = namespace("AppointmentRoom");
+const appointmentRoom = namespace("appointmentRoom");
 
 @Options({
   components: {
     CornieTable,
     SortIcon,
-    AddFunction,
+    RoomDialog,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
@@ -106,24 +118,24 @@ const AppointmentRoom = namespace("AppointmentRoom");
     ArrowRightIcon,
   },
 })
-export default class CarePartnersExistingState extends Vue {
-  @Prop({ type: Array, default: [], required: true })
-  functions!: IFunction[];
+export default class apponitmentRooms extends Vue {
+  query = "";
+  roomId = "";
+  showRoom = false;
+  practitioner = [] as any;
+  location = [] as any;
+  updatedBy = "";
+  currentStatus = "";
+  showStatusModal = false;
 
-  @Prop({ type: Array, default: [], required: true })
+  @appointmentRoom.State
   appointmentrooms!: IAppointmentRoom[];
 
-  // functionToEdit = {} as IFunction;
-  // editingFunction = false;
+  @appointmentRoom.Action
+  deleteAppointmentroom!: (id: string) => Promise<boolean>;
 
-  roomToEdit = {} as IAppointmentRoom;
-  editingFunction = false;
-
-  @orgFunctions.Action
-  removeFunction!: (id: string) => Promise<void>;
-
-  @AppointmentRoom.Action
-  deleteAppointmentroom!: (id: string) => Promise<void>;
+  @appointmentRoom.Action
+  fetchAppointmentrooms!: () => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -131,6 +143,13 @@ export default class CarePartnersExistingState extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
+  showAppointmentRoom(value: string) {
+    this.showRoom = true;
+    this.roomId = value;
+  }
+
+  getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
   rawHeaders = [
     {
       title: "ROOM NAME",
@@ -144,80 +163,91 @@ export default class CarePartnersExistingState extends Vue {
     },
     {
       title: "LOCATION",
-      key: "Location",
+      key: "location",
       show: true,
     },
     {
       title: "CUSTODIAN",
-      key: "supervisor",
+      key: "custodian",
       show: true,
     },
     {
       title: "STATUS",
-      key: "Status",
+      key: "status",
       show: true,
     },
   ];
-
-  getLocationAddress(id: string) {
-    const pt = this.locations.find((i: any) => i.id === id);
-    return pt;
+  get empty() {
+    return this.appointmentrooms.length < 1;
   }
-
-  etLocationAddress(id: string) {
-    const pt = "-----";
-    return pt;
+  roomAdded() {
+    this.fetchAppointmentrooms();
   }
-
-  // getLocationAddress(id: string) {
-  //         const pt = this.locations.find((i: any) => i.id === id);
-  //         return pt ? pt.address : 'N/A';
-  // }
-
-  get items2() {
-    return this.functions.map((f) => ({
-      ...f,
-      hierarchy: f.hierarchy || "N/A",
-      supervisor: f.reportsTo?.name || "N/A",
-    }));
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
   get items() {
-    return this.appointmentrooms.map((f) => ({
-      ...f,
-      roomName: f.roomName || "N/A",
-      roomNumber: f.roomNumber || "N/A",
-      // Location: f.locationId || "N/A",
-      location: this.getLocationAddress(f.locationId)?.address || "N/A",
-      Status: f.status || "N/A",
-    }));
+    const appointmentrooms = this.appointmentrooms.map((appointmentroom) => {
+      (appointmentroom as any).createdAt = new Date(
+        (appointmentroom as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...appointmentroom,
+        action: appointmentroom.id,
+        keydisplay: "XXXXXXX",
+        location: this.getLocationName(appointmentroom.locationId),
+        custodian: this.getCustodianName(appointmentroom.custodian),
+      };
+    });
+    if (!this.query) return appointmentrooms;
+    return search.searchObjectArray(appointmentrooms, this.query);
+  }
+  getCustodianName(id: string) {
+    const pt = this.practitioner.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  getLocationName(id: string) {
+    const pt = this.location.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
   }
 
-  // async remove(id: string) {
-  //   await this.removeFunction(id);
-  // }
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this appointment room",
+      title: "Delete request",
+    });
+    if (!confirmed) return;
 
-  async remove(id: string) {
-    await this.deleteAppointmentroom(id);
+    if (await this.deleteAppointmentroom(id))
+      window.notify({ msg: "Appoinment room not deleted", status: "error" });
+    else window.notify({ msg: "Appoinment room deleted", status: "success" });
   }
 
-  // editFunction(id: string) {
-  //   const func = this.functions.find((f) => f.id == id);
-  //   if (!func) return;
-  //   this.functionToEdit = func;
-  //   this.editingFunction = true;
-  // }
-
-  editAppointmentRoom(id: string) {
-    const func = this.appointmentrooms.find((f: any) => f.id == id);
-    if (!func) return;
-    this.roomToEdit = func;
-    this.editingFunction = true;
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+    const response = await Promise.all([AllLocation]);
+    this.location = response[0].data;
   }
 
-  created() {
-    ;
-    if (!this.locations?.length) this.fetchLocations();
+  async fetchPractitioner() {
+    const AllPractitioner = cornieClient().get("/api/v1/practitioner");
+    const response = await Promise.all([AllPractitioner]);
+    this.practitioner = response[0].data;
+  }
+
+  async created() {
+    await this.fetchAppointmentrooms();
+    await this.fetchLocation();
+    await this.fetchPractitioner();
+    if (this.appointmentrooms.length < 1) this.fetchAppointmentrooms();
   }
 }
 </script>

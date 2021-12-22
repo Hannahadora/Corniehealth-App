@@ -1,3 +1,3 @@
-import Search from "@/lib/search"
+import Search from "@/lib/search";
 
-export default new Search()
+export default new Search();

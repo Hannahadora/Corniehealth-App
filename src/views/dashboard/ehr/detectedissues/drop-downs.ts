@@ -4,31 +4,31 @@ export const clinicalStatus = [
     { code: "amended", display: "Amended" },
     { code: "registered", display: "Registered" },
     { code: "corrected", display: "Corrected" },
-]
+];
 
 export const clinicalSeverity = [
     { code: "high", display: "High	" },
     { code: "moderate", display: "Moderate" },
     { code: "low", display: "Low" },
-]
+];
 
 export const clinicalItems = [
     { code: "high", display: "High	" },
     { code: "moderate", display: "Moderate" },
     { code: "low", display: "Low" },
-]
+];
 
 export const clinicalImplicated = [
     { code: "high", display: "High	" },
     { code: "moderate", display: "Moderate" },
     { code: "low", display: "Low" },
-]
+];
 
 export const clinicalAuthur = [
     { code: "high", display: "High	" },
     { code: "moderate", display: "Moderate" },
     { code: "low", display: "Low" },
-]
+];
 
 export const clinicalCode = [
     { code: "FOOD", display: "Food Interaction Alert" },
@@ -36,7 +36,7 @@ export const clinicalCode = [
     { code: "DRG", display: "Drug Interaction Alert" },
     { code: "NHP", display: "Natural Health Product Alert" },
     { code: "NONRX", display: "	Non-Prescription Interaction Alert" },
-]
+];
 
 export const clinicalAction = [
     { code: "1", display: "	Therapy Appropriate" },
@@ -50,4 +50,4 @@ export const clinicalAction = [
         code: "4",
         display: "appropriate indication or diagnosis",
     },
-]
+];

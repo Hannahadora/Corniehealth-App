@@ -2,29 +2,29 @@ export default {
     getSlots() {
         const start = new Date(
             new Date(`${new Date().toLocaleDateString()} 06:00`)
-        )
-        const slots = []
+        );
+        const slots = [];
         for (let i = 0; i < 24; i = i + 1) {
             const slotStart = new Date(start).setMinutes(
                 new Date(start).getMinutes() + i * 60
-            )
+            );
             const slotEnd = new Date(slotStart).setMinutes(
                 new Date(slotStart).getMinutes() + 60
-            )
+            );
             slots.unshift({
                 start: slotStart,
                 end: slotEnd,
-            })
+            });
         }
 
-        return slots
+        return slots;
     },
 
     isWithinRange(slot: any, dayDate: string) {
-        const start = new Date(slot.startTime)
-        const end = new Date(slot.endTime)
-        const day = new Date(dayDate)
-        return day >= start && day <= end
+        const start = new Date(slot.startTime);
+        const end = new Date(slot.endTime);
+        const day = new Date(dayDate);
+        return day >= start && day <= end;
     },
 
     slots() {
@@ -53,6 +53,6 @@ export default {
             "21:00 - 22:00",
             "22:00 - 23:00",
             "23:00 - 24:00",
-        ]
+        ];
     },
-}
+};

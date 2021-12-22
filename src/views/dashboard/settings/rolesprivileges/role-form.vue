@@ -881,15 +881,11 @@ export default class RolesAndPrivileges extends Vue {
   }
 
   async created() {
-    ;
-
     await this.getOrg();
   }
 
   get orgId() {
     if (!this.org) return "";
-    ;
-
     return this.org.id;
   }
 

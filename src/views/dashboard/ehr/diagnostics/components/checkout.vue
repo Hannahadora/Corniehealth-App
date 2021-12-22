@@ -217,7 +217,6 @@ export default class CheckIn extends Vue {
   onGetSlots() {
     const room = this.rooms.find((i: any) => i.code === this.item.roomId);
     this.checkoutData.roomId = room ? room.code : "";
-    ;
   }
 
   get rooms() {
@@ -254,7 +253,6 @@ export default class CheckIn extends Vue {
       await this.fetchLocations();
     if (!this.appointments || this.appointments.length === 0)
       await this.fetchAppointments();
-    ;
   }
 }
 </script>

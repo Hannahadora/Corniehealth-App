@@ -385,7 +385,6 @@ export default class AddService extends Vue {
       const response = await cornieClient().get(
         "/api/v1/organization/myOrg/get"
       );
-      ;
       this.identifier = response.data.id;
     } catch (error) {
       window.notify({ msg: "Could not fetch organization", status: "error" });

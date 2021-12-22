@@ -7,14 +7,14 @@ export async function categories() {
             display: "	Spontaneous abortion with laceration of cervix",
         },
         { code: "129007", display: "Homoiothermia" },
-    ]
+    ];
 }
 
 export const severities = [
     { code: "24484000", display: "Severe" },
     { code: "6736007", display: "Moderate" },
     { code: "255604002", display: "Mild" },
-]
+];
 
 export const verificationStatuses = [
     "unconfirmed",
@@ -23,7 +23,7 @@ export const verificationStatuses = [
     "confirmed",
     "refuted",
     "entered-in-error",
-]
+];
 
 export const clinicalStatuses = [
     "active",
@@ -32,7 +32,7 @@ export const clinicalStatuses = [
     "inactive",
     "remission",
     "resolved",
-]
+];
 
 export const codes = [
     { code: "109006", display: "Anxiety disorder of childhood OR adolescence" },
@@ -40,7 +40,7 @@ export const codes = [
     { code: "127009", display: "Spontaneous abortion with laceration of cervix" },
     { code: "129007", display: "Homoiothermia" },
     { code: "134006", display: "	Decreased hair growth" },
-]
+];
 
 export const bodySites = [
     { code: "106004", display: "Posterior carpal region	" },
@@ -48,7 +48,7 @@ export const bodySites = [
     { code: "108003", display: "Condylar emissary vein" },
     { code: "110001", display: "Visceral layer of Bowman's capsule" },
     { code: "111002", display: "Parathyroid gland" },
-]
+];
 
 export const stages = [
     { code: "106242004", display: "Walter Reed staging of prostatic cancer" },
@@ -62,7 +62,7 @@ export const stages = [
         code: "106247005",
         display: "FIGO staging system for epithelial tumor of ovary",
     },
-]
+];
 
 export const evidenceCodes = [
     { code: "109006", display: "Anxiety disorder of childhood OR adolescence" },
@@ -71,4 +71,4 @@ export const evidenceCodes = [
     { code: "129007", display: "Homoiothermia" },
     { code: "134006", display: "Decreased hair growth" },
     { code: "140004", display: "Chronic pharyngitis" },
-]
+];

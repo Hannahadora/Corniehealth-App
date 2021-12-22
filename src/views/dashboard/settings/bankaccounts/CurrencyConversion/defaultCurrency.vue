@@ -127,7 +127,6 @@ export default class defaultCurrency extends Vue {
 
   async submit() {
     try {
-      ;
       const response = await cornieClient().post(
         "/api/v1/currency/setDefault",
         this.payload

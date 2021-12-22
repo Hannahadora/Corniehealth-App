@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from "vue-router"
+import { RouteRecordRaw } from "vue-router";
 
 export const NewSettingsRoutes: RouteRecordRaw = {
     path: "settings/practise-management",
@@ -24,6 +24,13 @@ export const NewSettingsRoutes: RouteRecordRaw = {
             component: () => import("@/views/dashboard/settings/forms/surveys.vue"),
         },
         {
+            path: "booking-site",
+            name: "Booking Site",
+            component: () =>
+                import("@/views/dashboard/settings/BookingSite/index.vue"),
+        },
+
+        {
             path: "locationTax",
             name: "Location & Tax",
             component: () =>
@@ -41,16 +48,5 @@ export const NewSettingsRoutes: RouteRecordRaw = {
             component: () =>
                 import("@/views/dashboard/settings/locationtax/addtax.vue"),
         },
-        {
-            path: "bank-accounts",
-            name: "Bank & Accounts",
-            component: () => import("@/views/dashboard/settings/banks/index.vue"),
-        },
-        {
-            path: "transaction-history",
-            name: "Transaction history",
-            component: () =>
-                import("@/views/dashboard/settings/banks/payments/history.vue"),
-        },
     ],
-}
+};

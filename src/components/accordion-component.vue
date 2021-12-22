@@ -2,16 +2,7 @@
   <div class="w-full">
     <div
       @click="handle"
-      class="
-        cursor-pointer
-        h-11
-        w-full
-        flex
-        items-center
-        justify-between
-        px-3
-        border-2
-      "
+      class="cursor-pointer h-11 w-full flex items-center justify-between px-3 border-2"
       :class="{
         'border-0  text-base text-jet_black font-bold': expanded,
         'rounded-t-xl': first && expanded,
@@ -29,13 +20,13 @@
         </span>
         <chevron-down-icon
           class="cursor-pointer stroke-current"
-          :class="{ 'text-white': expanded }"
+          :class="{ 'text-jet_black': expanded }"
           @click="hide"
           v-if="expanded"
         />
         <chevron-right-icon
           class="cursor-pointer stroke-current"
-          :class="{ 'text-white': expanded }"
+          :class="{ 'text-jet_black': expanded }"
           v-else
           @click="expand"
         />

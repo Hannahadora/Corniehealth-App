@@ -618,7 +618,6 @@ export default class PractitionerExistingState extends Vue {
         });
       }
     } catch (error) {
-      ;
       this.loading = false;
     }
   }
@@ -685,8 +684,6 @@ export default class PractitionerExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    ;
-
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 
@@ -778,10 +775,7 @@ export default class PractitionerExistingState extends Vue {
     }, 5000);
     if (this.patients?.length === 0) await this.getPatients();
     await this.fetchByIdAppointments(this.$route.params.id.toString());
-    ;
-
     await this.getPatientVisits(this.$route.params.id.toString());
-    ;
     window.addEventListener("click", (e: any) => {
       if (!e.target.classList.contains("md")) {
         this.selectType = false;

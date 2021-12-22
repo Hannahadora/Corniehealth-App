@@ -234,9 +234,7 @@ export default {
     try {
       await this.fetchDropDown();
       await this.fetchLocation();
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   },
 
   watch: {
@@ -263,8 +261,6 @@ export default {
         "/api/v1/location/myOrg/getMyOrgLocations"
       );
       const response = await Promise.all([AllLocation]);
-      ;
-      ;
       this.locations = response[0].data;
     },
 

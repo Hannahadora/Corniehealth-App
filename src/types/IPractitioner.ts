@@ -1,4 +1,5 @@
-import Period from "./IPeriod"
+import Period from "./IPeriod";
+import User from "./user";
 
 export default interface IPractitioner {
   name: string;
@@ -8,11 +9,13 @@ export default interface IPractitioner {
   email: string;
   activeState: string;
   gender: string;
+  createdAt: string;
   phone: {
     number: string;
     code: string;
   };
   address: string;
+  user: User;
   domain: string;
   dateOfBirth: "2021-07-16";
   image: string;

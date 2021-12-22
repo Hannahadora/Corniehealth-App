@@ -470,8 +470,6 @@ export default class AddGroup extends Vue {
     this.setGroup();
     const data = await this.getDropdowns("group");
     this.dropdowns = data;
-    ;
-    ;
   }
 }
 </script>

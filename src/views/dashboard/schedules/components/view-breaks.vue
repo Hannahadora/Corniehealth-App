@@ -264,23 +264,18 @@ export default class EditDetail extends Vue {
       ...this.shift,
       id: this.$route.query.shiftId,
     };
-    ;
     this.loading = true;
     if (!this.$route.query.shiftId) {
       try {
         await this.createShift(body);
         this.$router.push({ name: "Patient Experience Management" });
-      } catch (error) {
-        ;
-      }
+      } catch (error) {}
     } else {
       try {
         this.loading = true;
         await this.updateShift(body);
         this.$router.push({ name: "Patient Experience Management" });
-      } catch (error) {
-        ;
-      }
+      } catch (error) {}
     }
     this.loading = false;
   }

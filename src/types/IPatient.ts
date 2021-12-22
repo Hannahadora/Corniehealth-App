@@ -1,5 +1,5 @@
-import Period from "./IPeriod"
-import Phone from "./IPhone"
+import Period from "./IPeriod";
+import Phone from "./IPhone";
 
 export interface Contact {
   id?: string;

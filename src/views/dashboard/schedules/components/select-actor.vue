@@ -158,9 +158,7 @@ export default class AllActors extends Vue {
       } else {
         window.notify({ msg: "Actor could not be added", status: "error" });
       }
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 
   async removeActor(actor: any) {
@@ -178,9 +176,7 @@ export default class AllActors extends Vue {
       } else {
         window.notify({ msg: "Actor could not be removed", status: "error" });
       }
-    } catch (error) {
-      ;
-    }
+    } catch (error) {}
   }
 }
 </script>

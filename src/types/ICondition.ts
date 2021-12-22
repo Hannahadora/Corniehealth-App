@@ -1,6 +1,6 @@
-import { IOrganization } from "./IOrganization"
-import Period from "./IPeriod"
-import IPractitioner from "./IPractitioner"
+import { IOrganization } from "./IOrganization";
+import Period from "./IPeriod";
+import IPractitioner from "./IPractitioner";
 
 interface Range {
   unit: string;

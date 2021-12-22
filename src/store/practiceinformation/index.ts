@@ -1,53 +1,63 @@
-import ObjectSet from "@/lib/objectset"
-import IPracticeInformation from "@/types/IPracticeInformation"
-import IPracticeHour from "@/types/IPracticeHours"
-import { StoreOptions } from "vuex"
-import { fetchPracticeInformation, fetchPracticeHour } from "./helper"
+import ObjectSet from "@/lib/objectset";
+import IPracticeInformation from "@/types/IPracticeInformation";
+import IPracticeHour from "@/types/IPracticeHours";
+import { StoreOptions } from "vuex";
+import { fetchPracticeInformations, fetchPracticeHours } from "./helper";
 
 interface IPracticeInformationState {
-  practiceInformation: IPracticeInformation[];
-  practiceHour: IPracticeHour[];
+  practiceInformations: IPracticeInformation[];
+  practiceHours: IPracticeHour[];
 }
 
 export default {
     namespaced: true,
     state: {
-        practiceInformation: [],
-        practiceHour: [],
+        practiceInformations: [],
+        practiceHours: [],
     },
     mutations: {
-        setPracticeInformation(state, practiceInformation: IPracticeInformation[]) {
-            state.practiceInformation = [...practiceInformation]
+        setPracticeInformations(state, practiceInformations: any) {
+            state.practiceInformations = [practiceInformations]
         },
-        setPracticeHour(state, practiceHour: IPracticeHour[]) {
-            state.practiceHour = [...practiceHour]
+        setPracticeHours(state, practiceHours: any) {
+            state.practiceHours = [practiceHours]
         },
-        updatePracticeInformation(
+        updatePracticeInformations(
             state,
-            practiceInformation: IPracticeInformation[]
+            practiceInformations: IPracticeInformation[]
         ) {
-            const practiceSet = new ObjectSet(
-                [...state.practiceInformation, ...practiceInformation],
+            const practiceInformationSet = new ObjectSet(
+                [...state.practiceInformations, ...practiceInformations],
                 "id"
-            )
-            state.practiceInformation = [...practiceSet]
+            );
+            state.practiceInformations = [...practiceInformationSet];
+        },
+        updatePracticeHours(state, practiceHours: IPracticeHour[]) {
+            const practiceHourSet = new ObjectSet(
+                [...state.practiceHours, ...practiceHours],
+                "id"
+            );
+            state.practiceHours = [...practiceHourSet];
         },
     },
     actions: {
-        async fetchPracticeInformation(ctx) {
-            const practiceInformation = await fetchPracticeInformation()
-            ctx.commit("setPracticeInformation", practiceInformation)
+        async fetchPracticeInformations(ctx) {
+            const practiceInformations = await fetchPracticeInformations();
+            ctx.commit("setPracticeInformations", practiceInformations);
         },
-        async fetchPracticeHour(ctx) {
-            const practiceHour = await fetchPracticeHour()
-            ctx.commit("setPracticeHour", practiceHour)
+        async fetchPracticeHours(ctx) {
+            const practiceHours = await fetchPracticeHours();
+            ctx.commit("setPracticeHours", practiceHours);
         },
-        async getPracticeinformationById(ctx, id: string) {
-            if (ctx.state.practiceInformation.length < 1)
-                await ctx.dispatch("fetchPracticeInformation")
-            return ctx.state.practiceInformation.find(
+        getPracticeinformationById(ctx, id: string) {
+            return ctx.state.practiceInformations.find(
                 practiceInformation => practiceInformation.id == id
             )
         },
+        getPracticeHourById(ctx, id: string) {
+            return ctx.state.practiceHours.find(
+                practiceHour => practiceHour.id == id
+            )
+        },
     },
-} as StoreOptions<IPracticeInformationState>
+} as StoreOptions<IPracticeInformationState>;

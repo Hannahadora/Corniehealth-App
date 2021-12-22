@@ -615,9 +615,7 @@ export default class AppoitmentExistingState extends Vue {
       if (response.success) {
         this.singleParticipant = response.data;
       }
-    } catch (e) {
-      ;
-    }
+    } catch (e) {}
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -633,8 +631,6 @@ export default class AppoitmentExistingState extends Vue {
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    ;
-    ;
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 

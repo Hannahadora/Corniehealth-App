@@ -180,13 +180,10 @@ export default class Availability extends Vue {
         )}`,
       };
     });
-    ;
     return slots;
   }
 
   constructDate(slot: any) {
-    ;
-
     return new Date(`${slot.startDate}, ${slot.startTime}`);
   }
 
@@ -204,19 +201,16 @@ export default class Availability extends Vue {
         window.notify({ msg: "Slot not deleted", status: "error" });
       }
     } catch (error) {
-      ;
       window.notify({ msg: "Error deleting slot", status: "error" });
     }
   }
 
   async created() {
     if (!this.schedules) await this.getSchedules();
-    ;
     const res = await slotService.getPractitionersSlots(
       "87e846a3-bac0-43b9-a4db-0b2605426c42"
     );
     this.slots = res.data ?? [];
-    ;
   }
 }
 </script>

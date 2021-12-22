@@ -834,8 +834,6 @@ export default class AddAppointment extends Vue {
           "/api/v1/appointment",
           this.payload
         );
-        ;
-        ;
         if (response.success) {
           window.notify({ msg: "Appointment created", status: "success" });
           this.done();
