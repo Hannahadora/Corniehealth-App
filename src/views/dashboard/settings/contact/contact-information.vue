@@ -7,19 +7,7 @@
         Account Owner
       </span>
       <admin-card class="my-4" />
-      <span
-        class="flex border-b-2 w-full font-bold text-base text-primary py-2 mx-auto mt-2"
-      >
-        Other Contacts
-      </span>
-      <div class="w-full py-4 flex justify-end">
-        <button
-          class="bg-danger text-sm font-bold rounded-full text-white py-2 px-10 my-auto focus:outline-none hover:opacity-90 ml-auto"
-          @click="editingContact = true"
-        >
-          Add Contact
-        </button>
-      </div>
+
       <contacts class="mt-2" />
     </div>
   </div>
