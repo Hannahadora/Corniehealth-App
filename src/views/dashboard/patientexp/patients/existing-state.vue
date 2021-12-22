@@ -1,10 +1,30 @@
 <template>
   <div
-    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
+    class="
+      flex-col
+      justify-center
+      bg-white
+      shadow-md
+      p-3
+      mt-2
+      mb-2
+      rounded
+      w-full
+      overflow-auto
+    "
   >
     <div class="w-full p-2">
       <span
-        class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
+        class="
+          flex flex-col
+          w-full
+          justify-center
+          border-b-2
+          font-bold
+          mb-5
+          text-xl text-primary
+          py-2
+        "
       >
         Patients
       </span>
@@ -28,6 +48,7 @@
         v-model="items"
         :columns="headers"
         @filter="filterAdvanced = true"
+        @refresh="fetchPatients"
       >
         <template #name="{ item }">
           <div class="flex items-center">
@@ -130,6 +151,9 @@ const patients = namespace("patients");
 export default class ExistingState extends Vue {
   @patients.State
   patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
 
   @patients.Action
   deletePatient!: (id: string) => Promise<boolean>;
