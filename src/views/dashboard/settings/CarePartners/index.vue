@@ -2,7 +2,15 @@
   <main class="p-6">
     <div>
       <span
-        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+        class="
+          flex
+          border-b-2
+          w-full
+          font-semibold
+          text-xl text-primary
+          py-2
+          mx-auto
+        "
       >
         Care Partners
       </span>
@@ -12,8 +20,17 @@
         </template>
         <template #actions>
           <button
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
-            @click="showAddCarePartners = true"
+            class="
+              bg-danger
+              rounded-full
+              text-white
+              mt-5
+              py-2
+              px-3
+              focus:outline-none
+              hover:opacity-90
+            "
+            @click="show"
           >
             Add a Care Partner
           </button>
@@ -23,7 +40,7 @@
         <existing-state />
       </template>
     </div>
-    <cornie-dialog :visible="showAddCarePartners" right class="w-4/12 h-full">
+    <cornie-dialog v-model="showAddCarePartners" right class="w-4/12 h-full">
       <add-care-partners @close="showAddCarePartners = false" />
     </cornie-dialog>
   </main>
@@ -41,6 +58,7 @@ import CornieDialog from "@/components/CornieDialog.vue";
 const CarePartnersStore = namespace("CarePartnersStore");
 
 @Options({
+  name: "CarePartnersIndex",
   components: {
     EmptyState,
     ExistingState,
@@ -63,6 +81,11 @@ export default class CarePartners extends Vue {
 
   mounted() {
     this.get();
+  }
+
+  show() {
+    console.log("Showing ");
+    this.showAddCarePartners = true;
   }
 }
 </script>

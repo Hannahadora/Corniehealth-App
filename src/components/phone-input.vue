@@ -67,9 +67,6 @@
           maxlength="11"
         />
       </span>
-      <span v-if="errorMessage" class="text-xs text-red-500 block">
-        {{ errorMessage }}
-      </span>
     </field>
   </span>
 </template>
