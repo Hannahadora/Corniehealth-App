@@ -2,7 +2,7 @@
   <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!login">
     <div class="w-full block p-12">
       <div>
-        <h2 class="font-bold text-2xl mb-5">Welcome Back!</h2>
+        <h2 class="font-bold text-4xl text-primary mb-5">Welcome Back!</h2>
         <p class="text-black mb-10">Login to your corniehealth account</p>
         <cornie-btn
           @click="login = true"
@@ -28,10 +28,10 @@
       </div>
     </div>
   </div>
-  <div v-else class="h-screen 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
+  <div class="h-full  w-2/3 flex justify-center  rounded-lg bg-white mt-24" v-else>
     <div class="w-full h-44 block p-12">
       <form class="w-full" @submit.prevent="submit">
-        <h2 class="font-bold text-2xl mb-5">Login to CornieHealth</h2>
+        <h2 class="font-bold text-4xl text-primary mb-5">Login to CornieHealth</h2>
         <div class="w-full gap-y-2 grid-cols-1 grid">
           <cornie-input
             class="w-full"
