@@ -5,8 +5,8 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import CreateAccount from "./createaccount.vue";
-import VerifyActivate from "./verify-activate.vue";
+import CreateAccount from "./createaccount/index.vue";
+import VerifyActivate from "./createaccount/verify-activate.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import Auth from "../auth.vue";
 

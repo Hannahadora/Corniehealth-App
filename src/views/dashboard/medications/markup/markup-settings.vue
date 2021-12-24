@@ -311,7 +311,7 @@ export default class MarkupSettings extends Vue {
       this.$router.push(`/dashboard/provider/settings/markup`)
 
     } catch (error) {
-      window.notify({
+      window.notify({ 
         msg: "There was an error when Submittin markup details",
         status: "error",
       });
