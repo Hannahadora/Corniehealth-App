@@ -3,7 +3,7 @@
     <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div
-          class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between"
+          class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between cursor-pointer"  
         >
           <div
             contenteditable="true"
@@ -29,6 +29,21 @@
             >
               <slot name="misc" />
             </span>
+             <div
+              class="flex space-x-3 cursor-pointer"
+              v-if="add"
+              @click="$emit('add')"
+            >
+              <add-icon />
+              <span class="text-sm"> Add</span>
+            </div>
+             <div
+              class="flex space-x-3 cursor-pointer"
+              v-if="expandsection"
+            >
+              <expand-icon />
+              <span class="text-sm"> Select existing director</span>
+            </div>
             <div
               class="flex space-x-3 -mt-4 cursor-pointer"
               v-if="question"
@@ -90,6 +105,8 @@ import DisplayIcon from "@/components/icons/formtext.vue";
 import ImageIcon from "@/components/icons/formimage.vue";
 import VideoIcon from "@/components/icons/formvideo.vue";
 import EditIcon from "@/components/icons/formedit.vue";
+import AddIcon from "@/components/icons/add.vue";
+import ExpandIcon from "@/components/icons/expandgreen.vue";
 
 @Options({
   name: "AccordionItem",
@@ -103,6 +120,8 @@ import EditIcon from "@/components/icons/formedit.vue";
     ImageIcon,
     VideoIcon,
     EditIcon,
+    AddIcon,
+    ExpandIcon,
   },
 })
 export default class AccordionComponent extends Vue {
@@ -136,6 +155,12 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: Boolean, default: false })
   move!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  add!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  expandsection!: boolean;
+
   @Watch("opened")
   toggled() {
     this.expand = this.opened;
@@ -151,3 +176,8 @@ export default class AccordionComponent extends Vue {
   }
 }
 </script>
+<style scoped>
+:focus-visible {
+    outline: unset !important;
+}
+</style>

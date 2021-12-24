@@ -46,7 +46,7 @@
                   class="text-white mb-2 stroke-current mt-2 ml-1"
                 />
               </button>
-              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1 z-10">
                 <li class="">
                   <Select
                     v-model="showDatalist"
@@ -69,7 +69,7 @@
         </div>
         <div v-else>
           <span class="flex justify-end w-full mb-8">
-            <div class="dropdown inline-block relative z-10">
+            <div class="dropdown inline-block relative" style="z-index: index 9;">
               <button
                 class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
               >
@@ -79,7 +79,7 @@
                 />
               </button>
               <ul
-                class="dropdown-menu absolute hidden text-gray-700 pt-1"
+                class="dropdown-menu absolute hidden text-gray-700 pt-1 z-10"
                 style="margin-left: -60px"
               >
                 <li class="">
@@ -196,7 +196,7 @@
                   class="text-white mb-2 stroke-current mt-2 ml-1"
                 />
               </button>
-              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+              <ul class="dropdown-menu absolute hidden text-gray-700 pt-1 z-10">
                 <li class="">
                   <select-survey
                     v-model="showDatalist"
@@ -219,7 +219,7 @@
         </div>
         <div v-else>
           <span class="flex justify-end w-full mb-8">
-            <div class="dropdown inline-block relative z-10">
+            <div class="dropdown inline-block relative" style="z-index: index 9;">
               <button
                 class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
               >
@@ -229,7 +229,7 @@
                 />
               </button>
               <ul
-                class="dropdown-menu absolute hidden text-gray-700 pt-1"
+                class="dropdown-menu absolute hidden text-gray-700 pt-1 z-10"
                 style="margin-left: -60px"
               >
                 <li class="">

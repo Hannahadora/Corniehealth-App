@@ -3,5 +3,6 @@ export default interface IAssociate {
   location: string;
   paymentCategories: [];
   accounts: [];
+  associatedAccounts:[];
   defaultAccount: string;
 }

@@ -92,8 +92,6 @@
                   :required="true"
                 />
               </div>
-              <!-- <cornie-input disabled label="Approval Date"  placeholder="Autofilled" class="w-full mb-4" />
-             -->
               <div class="mb-5">
                 <date-range-picker
                   v-model="effectivePeriod"
