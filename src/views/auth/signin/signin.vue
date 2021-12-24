@@ -28,10 +28,15 @@
       </div>
     </div>
   </div>
-  <div class="h-full  w-2/3 flex justify-center  rounded-lg bg-white mt-24" v-else>
+  <div
+    class="h-full w-2/3 flex justify-center rounded-lg bg-white mt-24"
+    v-else
+  >
     <div class="w-full h-44 block p-12">
       <form class="w-full" @submit.prevent="submit">
-        <h2 class="font-bold text-4xl text-primary mb-5">Login to CornieHealth</h2>
+        <h2 class="font-bold text-4xl text-primary mb-5">
+          Login to CornieHealth
+        </h2>
         <div class="w-full gap-y-2 grid-cols-1 grid">
           <cornie-input
             class="w-full"

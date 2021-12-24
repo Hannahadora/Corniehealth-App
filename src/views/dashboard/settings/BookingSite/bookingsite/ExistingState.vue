@@ -92,7 +92,7 @@ export default class ExistingState extends Vue {
   enabled = false;
   loading = false;
   orgValue = "TheGCBGLobal";
-  url="";
+  url = "";
   get payload() {
     return {
       id: this.id,

@@ -58,8 +58,6 @@
                 <p class="float-left text-xs">Name does not match.</p>
                 <fail-icon class="float-right" />
               </div>
-
-          
             </div>
             <div>
               <!-- <p
