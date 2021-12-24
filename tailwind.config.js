@@ -21,6 +21,7 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
       line_gray: "#C5C4D4",
+      light_gray: "#F6F8F9",
       grays: "#C2C7D6",
       jet_black: "#14171F",
 

@@ -1,118 +1,83 @@
 <template>
- <div
-            class="w-full h-2/3 mt-8 flex flex-col justify-center items-center"
-            v-if="empty"
+  <div
+    class="w-full h-2/3 mt-8 flex flex-col justify-center items-center"
+    v-if="empty"
+  >
+    <img src="@/assets/img/tracking.svg" />
+    <h3 class="text-center text-black mt-5">
+      You have not associated accounts with your locations (Warehouse | Outlets
+      | Stores | <br />
+      etc.). To associate accounts, click on New Location to start.
+    </h3>
+    <button
+      class="bg-danger rounded-full text-white text-sm mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
+      @click="showLocationAccount = true"
+    >
+      <span class="text-xl -mt-0.5">+ </span>
+      <span class="mt-1"> New Location</span>
+    </button>
+  </div>
+  <div class="w-full pb-80" v-else>
+    <div class="w-full mt-5">
+      <span class="flex justify-end">
+        <button
+          class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex"
+          @click="showLocationAccount = true"
+        >
+          <span class="text-xl -mt-1.5 mr-2">+ </span>
+          New Location
+        </button>
+      </span>
+      <cornie-table :columns="rawHeaders" v-model="items">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showModal(item.id)"
           >
-            <img src="@/assets/img/tracking.svg" />
-            <h3 class="text-center text-black mt-5">
-              You have not associated accounts with your locations (Warehouse |
-              Outlets | Stores | <br />
-              etc.). To associate accounts, click on New Location to start.
-            </h3>
-            <button
-              class="
-                bg-danger
-                rounded-full
-                text-white text-sm
-                mt-5
-                py-2
-                px-8
-                focus:outline-none
-                hover:opacity-90
-                flex
-                space-x-2
-              "
-              @click="showLocationAccount = true"
+            <d-edit class="text-primary fill-current" />
+            <span class="ml-3 text-xs">View & Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="deleteItem(item.id)"
+          >
+            <delete-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <close-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Deactivate Account</span>
+          </div>
+        </template>
+        <template #pay="{ item }">
+          <!-- <span class="bg-green-100 text-green-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Credit Notes'">{{item.paymentCategories.join()}}</span>
+                    <span class="bg-red-100 text-red-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Quotes'">{{item.paymentCategories.join()}}</span>
+                    <span class="bg-yellow-100 text-yellow-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Invoice'">{{item.paymentCategories.join()}}</span> -->
+          <div
+            class=""
+            v-for="(input, index) in item.paymentCategories"
+            :key="index"
+          >
+            <span
+              class="bg-green-100 text-green-700 p-2 rounded-md"
+              v-if="input == 'Credit Notes'"
+              >{{ input }}</span
             >
-              <span class="text-xl -mt-0.5">+ </span>
-              <span class="mt-1"> New Location</span>
-            </button>
+            <span
+              class="bg-red-100 text-red-700 p-2 rounded-md"
+              v-if="input == 'Quotes'"
+              >{{ input }}</span
+            >
+            <span
+              class="bg-yellow-100 text-yellow-700 p-2 rounded-md"
+              v-if="input == 'Invoice'"
+              >{{ input }}</span
+            >
           </div>
-          <div class="w-full pb-80" v-else>
-            <div class="w-full mt-5">
-              <span class="flex justify-end">
-                <button
-                  class="
-                    bg-danger
-                    rounded-full
-                    text-sm text-white
-                    mb-5
-                    mt-5
-                    py-2
-                    px-8
-                    focus:outline-none
-                    hover:opacity-90
-                    flex
-                  "
-                  @click="showLocationAccount = true"
-                >
-                  <span class="text-xl -mt-1.5 mr-2">+ </span>
-                  New Location
-                </button>
-              </span>
-              <cornie-table
-                :columns="rawHeaders"
-                v-model="items"
-              >
-                <template #actions="{ item }">
-                  <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
-                    @click="showModal(item.id)"
-                  >
-                    <d-edit class="text-primary fill-current" />
-                    <span class="ml-3 text-xs">View & Edit</span>
-                  </div>
-                  <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
-                    @click="deleteItem(item.id)"
-                  >
-                    <delete-icon class="text-yellow-500 fill-current" />
-                    <span class="ml-3 text-xs">Delete</span>
-                  </div>
-                  <div
-                    class="
-                      flex
-                      items-center
-                      hover:bg-gray-100
-                      p-3
-                      cursor-pointer
-                    "
-                  >
-                    <close-icon class="text-yellow-500 fill-current" />
-                    <span class="ml-3 text-xs">Deactivate Account</span>
-                  </div>
-                </template>
-                <template #pay="{ item }">
-                    <div class=""  v-for="(input, index) in item.paymentCategories" :key="index">
-                          <span class="bg-green-100 text-green-700 p-2 rounded-md" v-if="input == 'Credit Notes'">{{input}}</span>
-                        <span class="bg-red-100 text-red-700 p-2 rounded-md" v-if="input == 'Quotes'">{{input}}</span>
-                        <span class="bg-yellow-100 text-yellow-700 p-2 rounded-md" v-if="input == 'Invoice'">{{input}}</span>
-                    </div>
-                </template>
-                 <template #account="{ item }">
-                  <div class="flex items-center">
-                    <span class="text-xs">{{ item.associatedAccounts.length }}</span>
-                    <eye-icon
-                      class="cursor-pointer ml-3"
-                    />
-                  </div>
-                </template>
-              
-              </cornie-table>
-            </div>
-          </div>
+        </template>
+      </cornie-table>
+    </div>
+  </div>
   <location-modal
     v-model="showLocationAccount"
     @accountAdded="accountAdded"
@@ -189,9 +154,9 @@ export default class Payments extends Vue {
   AllBanks = [] as any;
   accountId = "";
   associationId = "";
-orgLocation = [] as any;
+  orgLocation = [] as any;
 
- @collections.Action
+  @collections.Action
   fetchCollectionAccounts!: (orgId: string) => Promise<void>;
 
   @collections.State
@@ -232,7 +197,6 @@ orgLocation = [] as any;
     },
   ];
 
-
   get items() {
     const associations = this.associations.map((association) => {
       (association as any).createdAt = new Date(
@@ -251,8 +215,8 @@ orgLocation = [] as any;
     if (!this.query) return associations;
     return search.searchObjectArray(associations, this.query);
   }
-  getPaymentCategoreis(value:any){
-      return value;
+  getPaymentCategoreis(value: any) {
+    return value;
   }
   getLocation(id: string) {
     const pt = this.orgLocation.find((i: any) => i.id === id);

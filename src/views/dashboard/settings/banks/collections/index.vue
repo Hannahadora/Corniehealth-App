@@ -102,7 +102,7 @@
           :class="{ active: selected === 2 }"
           id="Associations"
         >
-         <associate-section/>
+          <associate-section />
         </div>
       </div>
     </div>
@@ -132,7 +132,7 @@ import Select from "@/components/newautocomplete.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import DEdit from "@/components/icons/aedit.vue";
 import { Prop, Watch, PropSync } from "vue-property-decorator";
-import AssociateSection from './associateIndex.vue'
+import AssociateSection from "./associateIndex.vue";
 import search from "@/plugins/search";
 import CloseIcon from "@/components/icons/danger.vue";
 import { namespace } from "vuex-class";
@@ -238,7 +238,6 @@ export default class Payments extends Vue {
       show: true,
     },
   ];
-
 
   get items() {
     const collectionAccounts = this.collectionAccounts.map(

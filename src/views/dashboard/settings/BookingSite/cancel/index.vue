@@ -96,7 +96,7 @@ export default class Cancellation extends Vue {
   @cancel.Action
   fetchCancels!: () => Promise<void>;
 
- @cancel.State
+  @cancel.State
   cancels!: ICancel[];
 
   @cancel.Action
@@ -107,19 +107,19 @@ export default class Cancellation extends Vue {
     this.setCancel();
   }
 
-message= "";
-cancelId= "";
+  message = "";
+  cancelId = "";
   loading = false;
 
- async setCancel() {
+  async setCancel() {
     const cancel = await this.getCancelById(this.items as any);
     if (!cancel) return;
     this.message = cancel.message;
   }
- get items() {
-     return this.cancels.map((cancel) => {
-      return this.cancelId = cancel.id as string;
-    });  
+  get items() {
+    return this.cancels.map((cancel) => {
+      return (this.cancelId = cancel.id as string);
+    });
   }
   get payload() {
     return {

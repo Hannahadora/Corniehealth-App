@@ -27,15 +27,7 @@
         }"
       >
         <div
-          class="
-            border-r-2
-            rounded-lg
-            p-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-r-2 rounded-lg p-2 bg-white flex items-center justify-center"
           style="border-top-right-radius: 0; border-bottom-right-radius: 0"
           v-if="$slots.prepend"
         >
@@ -73,15 +65,7 @@
           <slot name="append-inner" />
         </div>
         <div
-          class="
-            border-l-2
-            rounded-lg
-            pr-2
-            bg-white
-            flex
-            items-center
-            justify-center
-          "
+          class="border-l-2 rounded-lg pr-2 bg-white flex items-center justify-center"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0"
           v-if="$slots.append"
         >
