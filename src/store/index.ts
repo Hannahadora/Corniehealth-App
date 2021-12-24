@@ -48,6 +48,7 @@ import CareplanStore from "./careplan";
 import CatalogueStore from "./catalogues";
 import AppointmentTypeStore from "./appointments";
 import CanelStore from "./cancel";
+import KycStore from "./kyc";
 
 import AppointmentRoomStore from "./appointmentroom";
 
@@ -71,6 +72,7 @@ export default createStore({
         healthcare: HealthcareStore,
         careteam: CareteamStore,
         roles: RolesStore,
+        kyc:KycStore,
         group: GroupteamStore,
         OrgLevels,
 

@@ -60,13 +60,7 @@
               </div>
             </div>
             <div>
-              <!-- <p
-                class="mt-4 text-sm text-danger font-semibold cursor-pointer"
-                v-if="accountName"
-                @click="addAccount"
-              >
-                <span class="text-danger text-lg">+</span> Add Account
-              </p> -->
+          
             </div>
           </div>
         </div>

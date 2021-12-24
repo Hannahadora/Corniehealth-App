@@ -18,8 +18,8 @@
         </div>
       </div>
       <div class="w-6/12">
-        <div class="w-11/12">
-          <uploaded-file :fileName="fileName" />
+        <div>
+          <uploaded-file :fileName="fileName"  @cleartext="cleartext"/>
         </div>
       </div>
     </div>
@@ -61,6 +61,10 @@ export default class FilePicker extends Vue {
 
     await this.file.onChange(e);
     this.$emit("uploaded", this.file.url);
+  }
+  cleartext(){
+    console.log("hello");
+    this.rawFile = {} as any;
   }
 }
 </script>

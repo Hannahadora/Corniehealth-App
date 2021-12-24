@@ -208,6 +208,8 @@ export default class Payments extends Vue {
         keydisplay: "XXXXXXX",
         default: this.getBankName(association.defaultAccount),
         location: this.getLocation(association.location),
+        account: association.associatedAccounts.length
+      
       };
     });
     if (!this.query) return associations;

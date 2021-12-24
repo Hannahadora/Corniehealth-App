@@ -23,34 +23,38 @@
           placeholder="--Autoloaded--"
         >
         </main-cornie-select>
-        <main-cornie-select
-          v-if="this.id"
-          class="w-full mb-5"
-          :items="allPractitioner"
-          v-model="singlePractitioner"
-          label="Practitioners"
-          placeholder="--Select from Practitioners--"
-        >
-        </main-cornie-select>
-        <main-cornie-select
-          v-else
-          class="w-full mb-5"
-          :items="allPractitioner"
-          v-model="singlePractitioner"
-          @click="sendPractioner"
-          label="Practitioners"
-          placeholder="--Select from Practitioners--"
-        >
-        </main-cornie-select>
-
-        <!-- 
-        <date-picker
-          class="w-full mb-8"
-          v-model="duration"
-          label="Duration"
-          width="full"
-        /> -->
-        <cornie-input
+        <div class="mb-5">
+          <span class="text-sm font-semibold mb-1">Practitioners</span>
+            <Multiselect
+                 v-model="practitioners"
+                  mode="tags"
+                  :hide-selected="false"
+                  id="field-id"
+                  :options="allPractitioner"
+                  value-prop="code"
+                  trackBy="code"
+                  label="code"
+                  placeholder="--Select--"
+                  class="w-full"
+                >
+                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.display }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                   <template v-slot:option="{ option }">
+                    <span class="w-full text-sm">{{ option.display }}</span>
+                   </template>
+                </Multiselect>
+        </div>
+          <cornie-input
           disabled
           label="Duration"
           placeholder="--Autoloaded--"
@@ -92,27 +96,39 @@
             />
           </div>
         </div>
+        <div class="mb-5">
+          <span class="text-sm font-semibold mb-1">Link forms</span>
+          <Multiselect
+                 v-model="linkForms"
+                  mode="tags"
+                  :hide-selected="false"
+                  id="field-id"
+                  :options="allForms"
+                  value-prop="code"
+                  trackBy="code"
+                  label="code"
+                  placeholder="--Select--"
+                  class="w-full"
+                >
+                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.display }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                   <template v-slot:option="{ option }">
+                    <span class="w-full text-sm">{{ option.display }}</span>
+                   </template>
+          </Multiselect>
+        </div>
 
-        <main-cornie-select
-          v-if="this.id"
-          class="w-full mb-5"
-          v-model="singleform"
-          :items="allForms"
-          label="Link forms"
-          placeholder="--Link from forms--"
-        >
-        </main-cornie-select>
-        <main-cornie-select
-          v-else
-          class="w-full mb-5"
-          v-model="singleform"
-          :items="allForms"
-          @click="sendForm"
-          label="Link forms"
-          placeholder="--Link from forms--"
-        >
-        </main-cornie-select>
-
+     
         <domain-input
           label="Booking Site Link"
           placeholder="--Enter--"
@@ -164,7 +180,7 @@ import ToggleCheck from "@/components/ToogleCheck.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
-import ILocation from "@/types/ILocation";
+import Multiselect from "@vueform/multiselect";
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -199,6 +215,7 @@ const catalogues = namespace("catalogues");
     ArrowLeftIcon,
     CustomDropdown,
     DeleteIcon,
+    Multiselect,
     ChevronDown,
     CornieDialog,
     CopyformIcon,
@@ -284,8 +301,8 @@ export default class AppointmentTypeDialog extends Vue {
     const filteritems2 = this.linkForms.filter((c) => c !== "");
     return {
       duration: this.duration,
-      practitioners: this.apractitioner,
-      linkForms: this.alinkForms,
+      practitioners: this.practitioners,
+      linkForms: this.linkForms,
       bookingSiteLink: this.bookingSiteLink,
       serviceId: this.serviceId,
       appointmentConfirmation: this.appointmentConfirmation,
@@ -392,8 +409,8 @@ export default class AppointmentTypeDialog extends Vue {
 
     const payload = {
       duration: this.duration,
-      practitioners: this.apractitioner,
-      linkForms: this.alinkForms,
+      practitioners: this.practitioners,
+      linkForms: this.linkForms,
       bookingSiteLink: this.bookingSiteLink,
       serviceId: this.serviceId,
       appointmentConfirmation: this.appointmentConfirmation,
