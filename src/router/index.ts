@@ -326,19 +326,6 @@ const routes: Array<RouteRecordRaw> = [
                     ),
             },
             {
-                path: "kyc",
-                props: true,
-                name: "KYC",
-                component: () => import("@/views/dashboard/settings/kyc/index.vue"),
-            },
-            {
-                path: "kyc-link",
-                props: true,
-                name: "KYC Link",
-                component: () =>
-                    import("@/views/dashboard/settings/kyc/components/email-link.vue"),
-            },
-            {
                 path: "pricebook",
                 name: "PriceBook",
                 component: () =>

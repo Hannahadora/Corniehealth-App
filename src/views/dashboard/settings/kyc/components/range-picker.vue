@@ -50,16 +50,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import RangeSlider from "@/components/range.vue";
-
+import { Prop, PropSync } from "vue-property-decorator";
 @Options({
   components: {
     RangeSlider,
   },
 })
-export default class RangePicker extends Vue {}
+export default class RangePicker extends Vue {
+   @Prop({ type: String })
+  modelValue!: string;
+
+  @PropSync("modelValue")
+  valueSync!: string;
+}
 </script>
 
 <style scoped>

@@ -16,6 +16,7 @@
     "@scelloo/cloudenly-ui": "^0.5.1",
     "@types/chart.js": "^2.9.34",
     "@vueform/multiselect": "^2.2.1",
+    "@vueform/slider": "^2.0.8",
     "aos": "^2.3.4",
     "chart.js": "^3.5.1",
     "core-js": "^3.6.5",

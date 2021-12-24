@@ -98,6 +98,7 @@ import PartnersIcon from "@/components/icons/partners.vue";
 import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
 import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
 import MarkupIcon from "@/components/icons/markup.vue";
+import KycIcon from "@/components/icons/kyc.vue";
 
 type INav = { name: string; to: string; icon: string };
 
@@ -117,6 +118,7 @@ type INav = { name: string; to: string; icon: string };
     OrgIcon,
     LocationIcon,
     SearchIcon,
+    KycIcon,
     HierarchyIcon,
     GroupIcon,
     SecurityIcon,
@@ -143,6 +145,7 @@ export default class Settings extends Vue {
     return [
       { name: "Organization Information", to: "org-info", icon: "org-icon" },
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
+       { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
         name: "Location Hierarchy",
         to: "location",
@@ -249,7 +252,6 @@ export default class Settings extends Vue {
 
   mapUrl(url: string) {
     const settingsBase = this.$router.resolve({ name: "Settings" }).href;
-    //  this.show=false;
     return `${settingsBase}/${url}`.replace("//", "/");
   }
 

@@ -126,3 +126,8 @@ export default class AutoComplete extends Vue {
   }
 }
 </script>
+<style scoped>
+.z-10{
+z-index: 9;
+}
+</style>

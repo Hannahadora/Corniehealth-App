@@ -9,19 +9,21 @@
         Booking Site
       </span>
       <span class="w-full h-screen">
-        <tabs :items="tabLinks" v-model="currentTab">
-          <practice-info />
-          <booking-site />
-          <appointment-types />
-          <appointment-rooms />
-          <reminder-section />
-          <calender-preference />
-          <notification-template />
-          <cancel-section />
-          <photo-section />
-          <rating-section />
-          <!-- <performance-section/> -->
-        </tabs>
+
+          <tabs :items="tabLinks" v-model="currentTab">
+            <practice-info />
+            <booking-site />
+            <appointment-types />
+            <appointment-rooms />
+            <reminder-section />
+            <calender-preference />
+            <notification-template />
+            <cancel-section />
+            <photo-section />
+            <rating-section />
+            <!-- <performance-section/> -->
+          </tabs>
+        
       </span>
     </div>
   </div>
@@ -35,10 +37,9 @@ import AppointmentTypes from "./appointmenttypes/ExistingState.vue";
 import BookingSite from "./bookingsite/ExistingState.vue";
 import PhotoSection from "./photo.vue";
 import PerformanceSection from "./performance.vue";
-
+import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
 import AppointmentRooms from "./appointmentrooms/ExistingState.vue";
-//import Designations2 from "./designations/ExistingState.vue";
-//import JobLevel2 from "./joblevel/JobLevel.vue";
 import ReminderSection from "./reminder/index.vue";
 import CancelSection from "./cancel/index.vue";
 import AddReminder from "./addreminder/JobLevel.vue";
@@ -56,8 +57,8 @@ import RatingSection from "./rating.vue";
     BookingSite,
     PerformanceSection,
     AppointmentRooms,
-    // Designations2,
-    //  JobLevel2,
+    ChevronRightIcon,
+    ChevronLeftIcon,
     ReminderSection,
     CalenderPreference,
     RatingSection,
@@ -83,4 +84,5 @@ export default class Bookings extends Vue {
 }
 </script>
 
-<style></style>
+<style>
+</style>

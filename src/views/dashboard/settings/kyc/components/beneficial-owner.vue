@@ -1,51 +1,59 @@
 <template>
-  <div class="container-fluid p-5 bg-white" style="width: 500px">
-    <div class="w-full">
-      <div class="w-full flex items-center pt-6">
-        <span class="border-r-2 pr-3 mr-3 cursor-pointer" @click="closeModal"
-          ><arrow-left
-        /></span>
-        <!-- <span class="mx-2"> | </span> -->
-        <span style="font-size: 24px; color: #211f45" class="font-semibold"
-          >Beneficial Owners</span
-        >
-      </div>
+  <cornie-dialog v-model="show" center class="w-4/12 h-4/12">
+    <cornie-card height="100%" class="flex flex-col h-full bg-white">
+        <cornie-card-title class="">
+        <icon-btn @click="show = false" >
+          <arrow-left stroke="#ffffff"/>
+        </icon-btn>
+        <div class="w-full border-l-2 border-gray-300">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Beneficial Owners
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
 
-      <div class="w-full my-8">
+  <cornie-card-text class="flex-grow scrollable">
+      <div class="w-full my-4">
         <cornie-input
           :label="'Name'"
           v-model="owner.name"
           style="width: 100%"
+          placeholder="--Enter--"
         />
       </div>
 
-      <div class="w-full my-8">
+      <div class="w-full my-4">
         <cornie-input
           :label="'Percentage'"
           v-model="owner.percentage"
           style="width: 100%"
+            placeholder="--Enter--"
         />
       </div>
-
-      <div class="w-full pb-10 pt-14 flex justify-between">
-        <cornie-button
-          @click="closeModal"
-          class="rounded-full px-12 py-2 font-semibold cursor-pointer"
-          style="border: 1px solid #080056; color: #080056"
-        >
-          Cancel
-        </cornie-button>
-
-        <cornie-button
-          @click="onSave"
-          class="rounded-full px-12 py-2 font-semibold text-white cursor-pointer"
-          style="background: #fe4d3c"
-        >
-          Save
-        </cornie-button>
-      </div>
-    </div>
-  </div>
+  </cornie-card-text>
+       <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            @click="onSave"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card>
+    </cornie-card>
+  </cornie-dialog>
 </template>
 
 <script lang="ts">
@@ -53,14 +61,26 @@ import { Options, Vue } from "vue-class-component";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { IBeneficialOwner } from "../index.vue";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieCard from "@/components/cornie-card";
+import IconBtn from "@/components/CornieIconBtn.vue";
+
 
 @Options({
   components: {
     ArrowLeft,
     CornieInput,
+     ...CornieCard,
+    CornieDialog,
+    IconBtn
   },
 })
-export default class NominateRefree extends Vue {
+export default class benficialOwnerRefree extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+
   owner = {} as IBeneficialOwner;
 
   onSave() {

@@ -95,16 +95,20 @@
                   </div>
                 </template>
                 <template #pay="{ item }">
-                    <!-- <span class="bg-green-100 text-green-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Credit Notes'">{{item.paymentCategories.join()}}</span>
-                    <span class="bg-red-100 text-red-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Quotes'">{{item.paymentCategories.join()}}</span>
-                    <span class="bg-yellow-100 text-yellow-700 p-2 rounded-md" v-if="item.paymentCategories.join() == 'Invoice'">{{item.paymentCategories.join()}}</span> -->
                     <div class=""  v-for="(input, index) in item.paymentCategories" :key="index">
                           <span class="bg-green-100 text-green-700 p-2 rounded-md" v-if="input == 'Credit Notes'">{{input}}</span>
                         <span class="bg-red-100 text-red-700 p-2 rounded-md" v-if="input == 'Quotes'">{{input}}</span>
                         <span class="bg-yellow-100 text-yellow-700 p-2 rounded-md" v-if="input == 'Invoice'">{{input}}</span>
                     </div>
                 </template>
-             
+                 <template #account="{ item }">
+                  <div class="flex items-center">
+                    <span class="text-xs">{{ item.associatedAccounts.length }}</span>
+                    <eye-icon
+                      class="cursor-pointer ml-3"
+                    />
+                  </div>
+                </template>
               
               </cornie-table>
             </div>
@@ -240,6 +244,7 @@ orgLocation = [] as any;
         keydisplay: "XXXXXXX",
         default: this.getBankName(association.defaultAccount),
         location: this.getLocation(association.location),
+        account: association.associatedAccounts.length
       
       };
     });
