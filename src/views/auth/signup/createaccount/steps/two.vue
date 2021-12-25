@@ -99,15 +99,18 @@ export default {
       const firstName = ref('')
       const lastName = ref('')
       const email = ref('')
+      const phone = ref('')
+      const dialCode = ref('+234')
       const practiceName = ref('')
       const domainName = ref('')
+      const PatientType = ref('')
 
       const next = ()=>{
           
           context.emit('next', 
           {
               firstName, lastName, email,
-              practiceName, domainName
+              practiceName, domainName, phone, dialCode, PatientType
           }
           )
       }
@@ -121,8 +124,8 @@ export default {
     );
     const emailRule = string().email("A valid email is required").required();
     return {
-      firstName, lastName, email,practiceName,domainName,
-      required, requiredString, phoneRule,
+      firstName, lastName, email,practiceName,domainName, phone, dialCode,
+      required, requiredString, phoneRule, PatientType,
       emailRule, next
     };
   },

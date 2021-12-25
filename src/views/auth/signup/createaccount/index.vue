@@ -56,20 +56,7 @@
         <!-- component -->
         <h1 class="text-primary font-bold text-4xl mb-8">Create an account</h1>
         <div class="relative pt-1 mb-8">
-          <div
-            class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
-            @click="back"
-          >
-            <div
-              :style="{ width: `${width}%` }"
-              aria-valuenow="25"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              class="cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"
-            >
-              <div class="icon-wrap3"></div>
-            </div>
-          </div>
+        
         </div>
         <verify-email-code
           v-model:code="code"
@@ -81,20 +68,6 @@
       <!-- component -->
       <div class="" :user="user" v-if="step == 4 && userCreated">
         <div class="relative pt-1">
-          <div
-            class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
-            @click="back"
-          >
-            <div
-              :style="{ width: `${width}%` }"
-              aria-valuenow="25"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              class="cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"
-            >
-              <div class="icon-wrap4"></div>
-            </div>
-          </div>
         </div>
         <activate-account
           :userId="user.id"
@@ -105,7 +78,7 @@
     </v-form>
 
     <span
-      class="w-full flex justify-center items-center text-sm text-center mt-2"
+      class="w-full flex justify-center items-center text-sm text-center mt-2" v-if=" step!= 4 && step !=3"
     >
       Already have an account?
       <router-link class="ml-1 text-danger" to="/login"> Sign In </router-link>
@@ -189,6 +162,8 @@ export default class CreateAccount extends Vue {
   promo = false;
   service = false;
   email = "";
+  lastName = "";
+  firstName = "";
   phone = "";
   dialCode = "+234";
   fullName = "";
@@ -209,15 +184,18 @@ export default class CreateAccount extends Vue {
   setCornieData!: (data: any) => void;
 
   updateData(data:any){
-    console.log(data);
+    this.lastName = data.lastName.value
+    this.firstName = data.firstName.value
+    this.phone = data.phone.value
+    this.email = data.email.value
+    this.dialCode = data.dialCode.value
+
   }
 
   get payload() {
-    const { firstName, lastName, middleName } = this.splitName();
     return {
-      lname: lastName,
-      fname: firstName,
-      mname: middleName,
+      lname: this.lastName,
+      fname: this.firstName,
       dialCode: this.dialCode,
       phoneNo: this.phone,
       email: this.email,
@@ -241,13 +219,7 @@ export default class CreateAccount extends Vue {
     this.step >= 0 && (this.step -= 1);
     this.width -= this.width_percent;
   }
-  splitName() {
-    const names = this.fullName.split(" ");
-    if (names.length < 3)
-      return { firstName: names[0], middleName: "", lastName: names[1] };
-    else
-      return { firstName: names[0], middleName: names[3], lastName: names[2] };
-  }
+
   setUser(payload: any) {
     this.userSync = {
       id: payload.data.userId,
@@ -310,10 +282,7 @@ export default class CreateAccount extends Vue {
 }
 </script>
 <style scoped>
-.text-xs {
-  font-size: 0.65rem;
-  line-height: 1rem;
-}
+
 .bg-gray-500 {
   background-color: #8785ad;
 }
@@ -340,69 +309,6 @@ export default class CreateAccount extends Vue {
 .bg-gray {
   background-color: #f6f8f9;
 }
-.icon-wrap {
-  content: counter(step);
-  counter-increment: step;
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: -22em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
-.icon-wrap2 {
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: 0.5em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
-.icon-wrap3 {
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: 20em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
-.icon-wrap4 {
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: 42em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
 .icon-check-mark {
   top: 8.8em;
   z-index: 1;
@@ -410,20 +316,7 @@ export default class CreateAccount extends Vue {
   right: 0;
   position: absolute;
 }
-.icon-check-mark2 {
-  top: 8.8em;
-  z-index: 1;
-  left: 17em;
-  right: 0;
-  position: absolute;
-}
-.icon-check-mark3 {
-  top: 8.8em;
-  z-index: 1;
-  left: 25.5em;
-  right: 0;
-  position: absolute;
-}
+
 .bg-danger-100 {
   background-color: #fe4d3c;
 }
