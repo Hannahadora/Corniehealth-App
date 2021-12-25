@@ -189,6 +189,8 @@ export default class CreateAccount extends Vue {
   promo = false;
   service = false;
   email = "";
+  lastName = "";
+  firstName = "";
   phone = "";
   dialCode = "+234";
   fullName = "";
@@ -210,14 +212,13 @@ export default class CreateAccount extends Vue {
 
   updateData(data:any){
     console.log(data);
+
   }
 
   get payload() {
-    const { firstName, lastName, middleName } = this.splitName();
     return {
-      lname: lastName,
-      fname: firstName,
-      mname: middleName,
+      lname: this.lastName,
+      fname: this.firstName,
       dialCode: this.dialCode,
       phoneNo: this.phone,
       email: this.email,
@@ -241,13 +242,7 @@ export default class CreateAccount extends Vue {
     this.step >= 0 && (this.step -= 1);
     this.width -= this.width_percent;
   }
-  splitName() {
-    const names = this.fullName.split(" ");
-    if (names.length < 3)
-      return { firstName: names[0], middleName: "", lastName: names[1] };
-    else
-      return { firstName: names[0], middleName: names[3], lastName: names[2] };
-  }
+
   setUser(payload: any) {
     this.userSync = {
       id: payload.data.userId,
