@@ -224,7 +224,7 @@
             </accordion-component>
           </div>
 
-          <div class="w-full section-card px-4 my-6">
+          <div class="w-full my-6">
             <accordion-component :opened="true" :title="'Address'" :height="220">
               <template v-slot:default>
                 <div class="w-full grid mt-4 grid-cols-3 gap-4 items-center mb-6">
