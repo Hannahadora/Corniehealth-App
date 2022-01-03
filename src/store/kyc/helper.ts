@@ -10,3 +10,16 @@ export async function fetchKycs() {
     } catch (error) {}
     return [] as IKyc[];
 }
+export async function deleteRefree(id: string) {
+    try {
+        const response = await cornieClient().delete(
+            `/api/v1/kyc/referee/${id}`
+        );
+        if (response.success) {
+            return true;
+        }
+    } catch (error) {
+        return false;
+    }
+    return false;
+}

@@ -7,7 +7,7 @@
         </icon-btn>
         <div class="w-full border-l-2 border-gray-300">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Beneficial Owners
+            Nominate Referees
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -16,25 +16,34 @@
         </div>
       </cornie-card-title>
 
-  <cornie-card-text class="flex-grow scrollable">
-      <div class="w-full my-4">
-        <cornie-input
-          :label="'Name'"
-          v-model="owner.name"
-          style="width: 100%"
-          placeholder="--Enter--"
-        />
-      </div>
+      <cornie-card-text class="flex-grow scrollable">
 
-      <div class="w-full my-4">
-        <cornie-input
-          :label="'Percentage'"
-          v-model="owner.percentage"
-          style="width: 100%"
-            placeholder="Enter in %"
-        />
-      </div>
-  </cornie-card-text>
+        <div class="w-full my-4">
+          <cornie-input
+            :label="'Name'"
+            v-model="referee.name"
+            style="width: 100%"
+              placeholder="--Enter--"
+          />
+        </div>
+        <div class="w-full my-4">
+          <cornie-input
+            :label="'Email Address'"
+            v-model="referee.email"
+            style="width: 100%"
+            placeholder="--Enter--"
+          />
+        </div>
+        <div class="w-full my-4">
+          <cornie-phone
+            :label="'Phone Number'"
+            v-model="referee.number"
+            v-model:code="referee.dialCode"
+            placeholder="--Enter--"
+          />
+        </div>
+
+      </cornie-card-text>
        <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
@@ -52,6 +61,7 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
+
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -60,38 +70,42 @@
 import { Options, Vue } from "vue-class-component";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CornieInput from "@/components/cornieinput.vue";
-import { IBeneficialOwner } from "../index.vue";
+import CorniePhone from "@/components/phone-input.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
-
-
+import IPhone from "@/types/IPhone";
 @Options({
   components: {
+    ...CornieCard,
     ArrowLeft,
+    CorniePhone,
     CornieInput,
-     ...CornieCard,
     CornieDialog,
     IconBtn
   },
 })
-export default class benficialOwnerRefree extends Vue {
+export default class NominateRefree extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
-
-
-  owner = {} as IBeneficialOwner;
-
+@Prop({ type: String, default: "" })
+  id!: string;
+  referee: any = {dialCode:"+234",number:"" };
   onSave() {
-    if (!this.owner.name) return false;
-    this.$emit("ownerAdded", this.owner);
+    if (!this.referee?.name) return false;
+    this.$emit("refadded", {
+      name: this.referee.name,
+      email: this.referee.email,
+      phone: {dialCode: this.referee.dialCode,number:this.referee.number},
+      notified: false,
+    });
     this.closeModal();
-    this.owner = { name: "", percentage: 0 } as IBeneficialOwner;
+    this.referee = { name: "", email: "", phone: {dialCode:"+234",number:""} } as any;
   }
-
   closeModal() {
     this.$emit("close");
+    this.show = false
   }
 }
 </script>

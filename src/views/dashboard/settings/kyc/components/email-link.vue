@@ -433,7 +433,7 @@ idFileUploaded2(fileUrl: string,) {
         this.payload
       );
       window.notify({ msg: "Response submited successfully", status: "success" });
-      location.reload();
+      this.$router.push('/');
     } catch (error) {
       window.notify({ msg: "Response not submited", status: "error" });
     }

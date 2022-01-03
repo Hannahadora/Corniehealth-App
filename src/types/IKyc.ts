@@ -1,4 +1,5 @@
 import IPhone from "./IPhone";
+import IKycref  from "./IKycref";
 
 export default interface IKyc {
   id?: string;
@@ -18,7 +19,7 @@ export default interface IKyc {
   proofOfAddressUpload: string;
   particularOfDirectors: ParticularOfDirectors[];
   beneficialOwners: BeneficialOwners[];
-  referees: [];
+  referees: IKycref[];
 }
 
 export interface ParticularOfDirectors {

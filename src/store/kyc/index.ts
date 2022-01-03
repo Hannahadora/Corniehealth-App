@@ -1,41 +1,56 @@
 import ObjectSet from "@/lib/objectset";
 import IKyc from "@/types/IKyc";
+import IKycref from "@/types/IKycref";
 import { StoreOptions } from "vuex";
-import { fetchKycs } from "./helper";
+import { fetchKycs, deleteRefree } from "./helper";
 
 interface KycState {
-  kycs: IKyc[];
+  orgKyc: IKyc;
 }
 
 export default {
     namespaced: true,
     state: {
-        kycs: [],
+        orgKyc: {} as IKyc,
     },
     mutations: {
-        setKycs(state, kycs: any) {
-            state.kycs = [kycs]
+        setKycs(state, orgKyc: any) {
+            state.orgKyc = orgKyc
         },
         updateKycs(
             state,
-            kycs: IKyc[]
+            orgKyc: IKyc
         ) {
-            const kycSet = new ObjectSet(
-                [...state.kycs, ...kycs],
+            state.orgKyc = orgKyc;
+        },
+        addreferees(state, referees: IKycref[]){
+            const existingRefs = state.orgKyc.referees || [];
+            const refset = new ObjectSet(
+                [...existingRefs, ...referees],
                 "id"
+            )
+            state.orgKyc.referees = [...refset]
+        },
+        deleteRefree(state, id: string) {
+            const index = state.orgKyc.referees.findIndex(
+                refree => refree.id == id
             );
-            state.kycs = [...kycSet];
+            if (index < 0) return;
+            const refset = [...state.orgKyc.referees];
+            refset.splice(index, 1);
+            state.orgKyc.referees = [...refset];
         },
     },
     actions: {
         async fetchKycs(ctx) {
-            const kycs = await fetchKycs();
-            ctx.commit("setKycs", kycs);
+            const orgKyc = await fetchKycs();
+            ctx.commit("setKycs", orgKyc);
         },
-        getKycById(ctx, id: string) {
-            return ctx.state.kycs.find(
-                kyc => kyc.id == id
-            )
+        async deleteRefree(ctx, id: string) {
+            const deleted = await deleteRefree(id);
+            if (!deleted) return false;
+            ctx.commit("deleteRefree", id);
+            return true;
         },
     },
 } as StoreOptions<KycState>;
