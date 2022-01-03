@@ -83,8 +83,7 @@
             <div class="w-full flex mb-4">
               <div class="w-full my-2">
                 <a class="normal-text mr-4"
-                  >Please select qualities that best describe Dr. Obi Akeem
-                  Musa</a
+                  >Please select qualities that best describe Dr. {{practionername}}</a
                 >
                 <div class="grid grid-cols-9 gap-2 w-full">
                   <div
@@ -109,25 +108,38 @@
             </div>
 
             <div class="w-full flex flex-wrap items-start pb-4">
-              <div class="w-6/12">
-                <p class="normal-text mr-4">
+                <p class="normal-text mb-8">
                   Please rate Dr. {{practionername}}'s clinical experience
                 </p>
-                  <div class="w-full mt-4 flex">
-                    <range-picker  v-model="clinicalExperience.value"/>
-                  </div>
+              <div class="w-full">
+                <div class="grid grid-cols-4 justify-between col-span-full w-96">
+                  <span>{{clinicalExperience.min}}</span>
+                      <Slider class="custom mt-2" :tooltips="false" v-model="clinicalExperience.value" :min="0" :max="100" :default="50"/>
+                  <span class="ml-28">{{clinicalExperience.max}}</span>
+                  <input type="number" class="p-1.5 ml-14 -mt-1 border-2 border-danger rounded h-8 w-12" v-model="clinicalExperience.value">
+                </div>
+                
               </div>
             </div>
 
             <div class="w-full flex flex-wrap items-start py-4">
-              <div class="w-6/12">
-                <p class="normal-text mr-4">
+                <p class="normal-text mb-8">
                   Please rate Dr. {{practionername}} quality of work in clinical
                   medicine
                 </p>
+              <!-- <div class="w-6/12">
               <div class="w-full mt-4 flex">
                 <range-picker  v-model="qualityOfWork.value"/>
               </div>
+              </div> -->
+               <div class="w-full">
+                <div class="grid grid-cols-4 justify-between col-span-full w-96">
+                  <span>{{qualityOfWork.min}}</span>
+                      <Slider class="custom mt-2" :tooltips="false" v-model="qualityOfWork.value" :min="0" :max="100" :default="50"/>
+                  <span class="ml-28">{{qualityOfWork.max}}</span>
+                  <input type="number" class="p-1.5 ml-14 -mt-1 border-2 border-danger rounded h-8 w-12" v-model="qualityOfWork.value">
+                </div>
+                
               </div>
             </div>
 
@@ -288,7 +300,7 @@ import CornieCheckbox from "@/components/corniecheckbox.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import { useCountryStates } from "@/composables/useCountryStates";
 import { cornieClient } from "@/plugins/http";
-
+import Slider from '@vueform/slider'
 
 @Options({
   components: {
@@ -297,6 +309,7 @@ import { cornieClient } from "@/plugins/http";
     DatePicker,
     PhoneInput,
     CornieSelect,
+    Slider,
     AutoComplete,
     DeleteIcon,
     CornieButton,
@@ -344,13 +357,13 @@ nationState = setup(() => useCountryStates());
   qualityDescriptions = [];
   clinicalExperience = {
     value: "10",
-    max: "10",
-    min:"10"
+    max: "100",
+    min:"0"
   };
   qualityOfWork = {
      value: "10",
-    max: "10",
-    min:"10"
+    max: "100",
+    min:"0"
   };
   previousMalpractice = true;
   generalComments = "";
@@ -378,8 +391,6 @@ nationState = setup(() => useCountryStates());
   get practionername(){
     const name = this.$route.query.practitioner;
     const name2 = atob(`${name}`)
-    console.log(name,"ENCODEDNAME")
-     console.log(name2,"DECODEDNAME")
     return name2
   }
   get id(){
@@ -433,7 +444,10 @@ idFileUploaded2(fileUrl: string,) {
         this.payload
       );
       window.notify({ msg: "Response submited successfully", status: "success" });
-      this.$router.push('/');
+      setTimeout(() => {
+        this.$router.push('/');
+        //your code to be executed after 1 second
+      }, 6000);
     } catch (error) {
       window.notify({ msg: "Response not submited", status: "error" });
     }
@@ -442,13 +456,30 @@ idFileUploaded2(fileUrl: string,) {
 }
 
 </script>
-
+<style src="@vueform/slider/themes/default.css"></style>
 <style scoped>
 * {
   font-family: Inter;
   font-style: normal;
 }
-
+.custom{
+     margin-left: -60px;
+    margin-right: -90px;
+}
+input:focus-visible {
+    outline-offset: unset !important;
+}
+:focus-visible {
+    outline: unset !important;
+}
+.slider-connect {
+    background: #fe4d3c;
+    cursor: pointer;
+}
+.slider-handle:focus {
+    box-shadow: 0 0 0 var(--slider-handle-ring-width,3px) #b9371030,var(--slider-handle-shadow,.5px .5px 2px 1px rgba(0,0,0,.32));
+    outline: none;
+}
 .header {
   font-weight: bold;
   font-size: 20px;
