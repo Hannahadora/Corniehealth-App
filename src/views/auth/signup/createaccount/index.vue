@@ -29,159 +29,64 @@
     </div>
   </div>
 
-  <div class="h-5/6 2xl:h-3/6 w-2/3 grid place-items-center rounded-lg bg-white -mt-12" v-else>
-    <div
-      class=""
-    >
-      <v-form class="w-full p-6" @submit="submit">
-
-
-        <div class="" v-if="step == 1">
-          <One 
+  <div
+    class="h-5/6 2xl:h-3/6 w-full flex flex-col justify-center rounded-lg bg-white -mt-12"
+    v-else
+  >
+    <v-form class="w-full p-6" @submit="submit">
+      <div v-if="step == 1">
+        <One
           :checked="checked"
           :checked2="checked2"
           :checked3="checked3"
           :isVisible="isVisible"
-
           @next="next()"
-          
-          @selected="checkedType($event)"/>
-        </div>
-        <div class="" v-if="step == 2">
-          <!-- component -->
-          <h1 class="text-primary font-bold text-4xl mb-8">
-            Create an account
-          </h1>
-          <div class="relative pt-1">
-            <div
-              class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
-              @click="back"
-            >
-              <div
-                :style="{ width: `${width}%` }"
-                aria-valuenow="25"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                class="cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"
-              >
-                <div class="icon-wrap2"></div>
-              </div>
-            </div>
-          </div>
-          <p class="mt-2 mb-5">
-            You will be the root administrator for this account
-          </p>
-          <cornie-input
-            :rules="requiredString"
-            v-model="fullName"
-            required
-            class="w-full mb-3"
-            placeholder="First, Middle, Surname"
-            label="Full Name"
-          />
-          <cornie-input
-            v-model="email"
-            :rules="emailRule"
-            class="w-full mb-3"
-            placeholder="Enter Email Address"
-            label="Email Address"
-          />
-          <phone-input
-            v-model:code="dialCode"
-            v-model="phone"
-            :rules="phoneRule"
-            class="w-full mb-4"
-            label="Phone number"
-          />
-          <label for="promos" class="flex mb-1 items-center">
-            <input id="promos" type="checkbox" required />
-            <span class="ml-1 text-xs">
-              Receive relevant offers and promotions from Cornie Health
-            </span>
-          </label>
-          <label for="terms" class="mt-1 mb-2 flex items-center">
-            <input id="terms" type="checkbox" required />
-            <span class="ml-1 text-xs">
-              I agree to CornieHealth’s
-              <a href="#" class="text-danger"> Terms of service</a> and
-              <a href="#" class="text-danger"> Privacy policy</a>
-            </span>
-          </label>
-          <cornie-btn
-            class="font-semibold rounded-full bg-gray-500 mt-3 w-full text-white p-2"
-            type="submit"
-            :loading="loading"
-          >
-            Continue
-          </cornie-btn>
-        </div>
-        <div class="" :user="user" v-if="step == 3 && userCreated">
-          <!-- component -->
-          <h1 class="text-primary font-bold text-4xl mb-8">
-            Create an account
-          </h1>
-          <div class="relative pt-1 mb-8">
-            <div
-              class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
-              @click="back"
-            >
-              <div
-                :style="{ width: `${width}%` }"
-                aria-valuenow="25"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                class="cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"
-              >
-                <div class="icon-wrap3"></div>
-              </div>
-            </div>
-          </div>
-          <verify-email-code
-            v-model:code="code"
-            :user="user"
-            :next="next"
-            v-model:verified="emailVerified"
-          />
-          <!-- <cornie-btn
-              class="font-semibold rounded-full bg-gray-500 mt-3 w-full text-white p-2"
-              @click="next">
-              Next
-        </cornie-btn>-->
-        </div>
+          @selected="checkedType($event)"
+        />
+      </div>
+
+      <div v-if="step == 2">
+        <Two 
+        :loading="loading"
+        @next="updateData($event)"
+        />
+      </div>
+
+      <div class="" :user="user" v-if="step == 3 && userCreated">
         <!-- component -->
-        <div class="" :user="user" v-if="step == 4 && userCreated">
-          <div class="relative pt-1">
-            <div
-              class="overflow-hidden h-1 mb-4 text-xs flex rounded bg-gray-200 cursor-pointer"
-              @click="back"
-            >
-              <div
-                :style="{ width: `${width}%` }"
-                aria-valuenow="25"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                class="cursor-pointer shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-danger"
-              >
-                <div class="icon-wrap4"></div>
-              </div>
-            </div>
-          </div>
-          <activate-account
-            :userId="user.id"
-            :code="code"
-            :emailVerified="emailVerified"
-          />
+        <h1 class="text-primary font-bold text-4xl mb-8">Create an account</h1>
+        <div class="relative pt-1 mb-8">
+        
         </div>
-      </v-form>
-      <span
-        class="w-full flex justify-center items-center text-sm text-center mt-2"
-      >
-        Already have an account?
-        <router-link class="ml-1 text-danger" to="/login">
-          Sign In
-        </router-link>
-      </span>
-    </div>
+        <verify-email-code
+          v-model:code="code"
+          :user="user"
+          :next="next"
+          v-model:verified="emailVerified"
+        />
+      </div>
+      <!-- component -->
+      <div class="" :user="user" v-if="step == 4 && userCreated">
+        <div class="relative pt-1">
+        </div>
+        <activate-account
+          :userId="user.id"
+          :code="code"
+          :emailVerified="emailVerified"
+        />
+      </div>
+    </v-form>
+
+    <span
+      class="w-full flex justify-center items-center text-sm text-center mt-2" v-if=" step!= 4 && step !=3"
+    >
+      Already have an account?
+      <router-link class="ml-1 text-danger" to="/login"> Sign In </router-link>
+    </span>
+
+    <span class="text-center mt-6" v-if="step == 2">
+      Terms of use | Privacy Policy | Help | 2021 Cornie Health Ltd.
+    </span>
   </div>
 </template>
 <script lang="ts">
@@ -206,6 +111,7 @@ import ActivateAccount from "./activateaccount.vue";
 import VerifyEmailCode from "./verifyemailcode.vue";
 import Tooltip from "@/components/tooltip.vue";
 import One from "./steps/one.vue";
+import Two from "./steps/two.vue";
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -229,6 +135,7 @@ const user = namespace("user");
     InfoIcon,
     Tooltip,
     One,
+    Two,
   },
 })
 export default class CreateAccount extends Vue {
@@ -255,6 +162,8 @@ export default class CreateAccount extends Vue {
   promo = false;
   service = false;
   email = "";
+  lastName = "";
+  firstName = "";
   phone = "";
   dialCode = "+234";
   fullName = "";
@@ -274,12 +183,19 @@ export default class CreateAccount extends Vue {
   @user.Mutation
   setCornieData!: (data: any) => void;
 
+  updateData(data:any){
+    this.lastName = data.lastName.value
+    this.firstName = data.firstName.value
+    this.phone = data.phone.value
+    this.email = data.email.value
+    this.dialCode = data.dialCode.value
+
+  }
+
   get payload() {
-    const { firstName, lastName, middleName } = this.splitName();
     return {
-      lname: lastName,
-      fname: firstName,
-      mname: middleName,
+      lname: this.lastName,
+      fname: this.firstName,
       dialCode: this.dialCode,
       phoneNo: this.phone,
       email: this.email,
@@ -289,13 +205,13 @@ export default class CreateAccount extends Vue {
     this.step = this.step + 1;
     this.width += this.width_percent;
   }
-  checkedType(value : any){
-    if(value === "1"){
-this.checkValue()
-    }else if (value === "2"){
-this.checkValue2()
-    }else{
-this.checkValue3()
+  checkedType(value: any) {
+    if (value === "1") {
+      this.checkValue();
+    } else if (value === "2") {
+      this.checkValue2();
+    } else {
+      this.checkValue3();
     }
   }
 
@@ -303,13 +219,7 @@ this.checkValue3()
     this.step >= 0 && (this.step -= 1);
     this.width -= this.width_percent;
   }
-  splitName() {
-    const names = this.fullName.split(" ");
-    if (names.length < 3)
-      return { firstName: names[0], middleName: "", lastName: names[1] };
-    else
-      return { firstName: names[0], middleName: names[3], lastName: names[2] };
-  }
+
   setUser(payload: any) {
     this.userSync = {
       id: payload.data.userId,
@@ -372,10 +282,7 @@ this.checkValue3()
 }
 </script>
 <style scoped>
-.text-xs {
-  font-size: 0.65rem;
-  line-height: 1rem;
-}
+
 .bg-gray-500 {
   background-color: #8785ad;
 }
@@ -402,69 +309,6 @@ this.checkValue3()
 .bg-gray {
   background-color: #f6f8f9;
 }
-.icon-wrap {
-  content: counter(step);
-  counter-increment: step;
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: -22em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
-.icon-wrap2 {
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: 0.5em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
-.icon-wrap3 {
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: 20em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
-.icon-wrap4 {
-  background: #fff;
-  border-radius: 50%;
-  top: -0.3em;
-  z-index: 1;
-  color: #fff;
-  border: 2px solid #fe4d3c;
-  display: block;
-  height: 1.4em;
-  margin: 0 auto -0.6em;
-  left: 42em;
-  right: 0;
-  position: absolute;
-  width: 1.4em;
-}
 .icon-check-mark {
   top: 8.8em;
   z-index: 1;
@@ -472,20 +316,7 @@ this.checkValue3()
   right: 0;
   position: absolute;
 }
-.icon-check-mark2 {
-  top: 8.8em;
-  z-index: 1;
-  left: 17em;
-  right: 0;
-  position: absolute;
-}
-.icon-check-mark3 {
-  top: 8.8em;
-  z-index: 1;
-  left: 25.5em;
-  right: 0;
-  position: absolute;
-}
+
 .bg-danger-100 {
   background-color: #fe4d3c;
 }
@@ -493,5 +324,3 @@ input[type="radio"]:checked {
   background-color: #fe4d3c;
 }
 </style>
-
-

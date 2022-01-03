@@ -381,18 +381,16 @@ export default class CarePartnersExistingState extends Vue {
   @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
-
-@practiceinformation.State
+  @practiceinformation.State
   practiceInformations!: IPracticeInformation[];
 
   @practiceinformation.Action
   fetchPracticeInformations!: () => Promise<void>;
 
-   @practiceinformation.Action
+  @practiceinformation.Action
   getPracticeinformationById!: (id: string) => IPracticeInformation;
 
-
- @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   @practiceinformation.State
@@ -401,15 +399,15 @@ export default class CarePartnersExistingState extends Vue {
   @practiceinformation.Action
   fetchPracticeHours!: () => Promise<void>;
 
-   @practiceinformation.Action
+  @practiceinformation.Action
   getPracticeHourById!: (id: string) => IPracticeHour;
 
-   hoursModel = {} as IPracticeHour;
+  hoursModel = {} as IPracticeHour;
 
   showEdit = false;
   informationId = "";
   hourId = "";
-    opHours = opHours;
+  opHours = opHours;
   loading = false;
   all = true;
   newArr = [];
@@ -426,12 +424,12 @@ export default class CarePartnersExistingState extends Vue {
   localSrc = require("../../../../../assets/img/placeholder.png");
   orgInfo = [];
   dialCode = "+234";
- dateoptions = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
+  dateoptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
   monday = {
     startDate: "",
     endDate: "",
@@ -448,7 +446,7 @@ export default class CarePartnersExistingState extends Vue {
     startDate: "",
     endDate: "",
   };
-  friday= {
+  friday = {
     startDate: "",
     endDate: "",
   };
@@ -461,13 +459,12 @@ export default class CarePartnersExistingState extends Vue {
     endDate: "",
   };
 
-
   @Watch("informationId")
-    idChanged() {
+  idChanged() {
     this.setPracticeInformation();
     this.setPracticeHour();
   }
- async setPracticeInformation() {
+  async setPracticeInformation() {
     const practice = await this.getPracticeinformationById(this.items as any);
     if (!practice) return;
     this.email = practice.email;
@@ -480,12 +477,11 @@ export default class CarePartnersExistingState extends Vue {
     const hour = await this.getPracticeHourById(this.items2 as any);
     if (!hour) return;
     this.hoursModel = hour;
-   
   }
-async setImpressionModel() {
+  async setImpressionModel() {
     this.hoursModel = JSON.parse(JSON.stringify({ ...opHours }));
   }
- phoneRule = string().matches(phoneRegex, "A valid phone number is required");
+  phoneRule = string().matches(phoneRegex, "A valid phone number is required");
 
   removenumber(index: number) {
     this.phonenumbers.splice(index, 1);
@@ -503,16 +499,16 @@ async setImpressionModel() {
     }
   }
 
- get items() {
-     return this.practiceInformations.map((practiceInformation) => {
-      return this.informationId = practiceInformation.id as string;
-    });  
+  get items() {
+    return this.practiceInformations.map((practiceInformation) => {
+      return (this.informationId = practiceInformation.id as string);
+    });
   }
 
   get items2() {
-     return this.practiceHours.map((practiceHour) => {
-      return this.hourId = practiceHour.id as string;
-    });  
+    return this.practiceHours.map((practiceHour) => {
+      return (this.hourId = practiceHour.id as string);
+    });
   }
   get phone(): IPhone {
     return {

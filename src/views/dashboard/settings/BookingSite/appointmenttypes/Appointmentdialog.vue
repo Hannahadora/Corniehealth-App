@@ -75,9 +75,25 @@
             >Appointment Confirmation</span
           >
           <div class="grid grid-cols-2 gap-4 mt-3 mb-5">
-            <cornie-radio name="confirm" value="pay-to-confirm" v-model="appointmentConfirmation" checked label="Pay to Confirm" />
-            <cornie-radio name="confirm" value="pay-later" v-model="appointmentConfirmation" label="Confirm and pay later" />
-            <cornie-radio name="confirm" value="either" v-model="appointmentConfirmation" label="Either" />
+            <cornie-radio
+              name="confirm"
+              value="pay-to-confirm"
+              v-model="appointmentConfirmation"
+              checked
+              label="Pay to Confirm"
+            />
+            <cornie-radio
+              name="confirm"
+              value="pay-later"
+              v-model="appointmentConfirmation"
+              label="Confirm and pay later"
+            />
+            <cornie-radio
+              name="confirm"
+              value="either"
+              v-model="appointmentConfirmation"
+              label="Either"
+            />
           </div>
         </div>
         <div class="mb-5">
@@ -246,7 +262,7 @@ export default class AppointmentTypeDialog extends Vue {
   date = new Date();
 
   duration = "";
-  singlePractitioner =[""];
+  singlePractitioner = [""];
   singleform = "";
   practitioners = [""];
   fee = 0;
@@ -258,7 +274,7 @@ export default class AppointmentTypeDialog extends Vue {
 
   practitioner = [];
   practiceform = [];
-serviceFees = [] as any;
+  serviceFees = [] as any;
   arr = [] as any[];
 
   data: any = {};
@@ -281,8 +297,8 @@ serviceFees = [] as any;
   }
 
   get payload() {
-    const filteritems = this.practitioners.filter((c) => c !== '');
-    const filteritems2 = this.linkForms.filter((c) => c !== '');
+    const filteritems = this.practitioners.filter((c) => c !== "");
+    const filteritems2 = this.linkForms.filter((c) => c !== "");
     return {
       duration: this.duration,
       practitioners: this.practitioners,
@@ -303,8 +319,7 @@ serviceFees = [] as any;
     });
   }
 
-  sendPractioner(){
-  
+  sendPractioner() {
     this.practitioners.push(this.singlePractitioner as any);
   }
   sendForm() {
@@ -328,10 +343,10 @@ serviceFees = [] as any;
       };
     });
   }
-setFee(id:string){
- const pt = this.serviceFees.find((i: any) => i.id === id);
-    return pt ? this.fee = pt.fee : "", this.duration = pt.serviceUOM;
-}
+  setFee(id: string) {
+    const pt = this.serviceFees.find((i: any) => i.id === id);
+    return pt ? (this.fee = pt.fee) : "", (this.duration = pt.serviceUOM);
+  }
   done() {
     this.$emit("type-added");
     this.show = false;
@@ -381,14 +396,14 @@ setFee(id:string){
       });
     }
   }
-  get filterItems(){
-    return this.practitioners.filter((c:any) => c !== null);
+  get filterItems() {
+    return this.practitioners.filter((c: any) => c !== null);
   }
-  get filterItems2(){
-    return this.linkForms.filter((c:any) => c !== null);
+  get filterItems2() {
+    return this.linkForms.filter((c: any) => c !== null);
   }
-  apractitioner = ["d4249dec-f3ab-444f-867d-5710e3c6891a"]
-  alinkForms = ["046c3d84-78d6-4162-b530-81b9175971de"]
+  apractitioner = ["d4249dec-f3ab-444f-867d-5710e3c6891a"];
+  alinkForms = ["046c3d84-78d6-4162-b530-81b9175971de"];
   async updateAppointmentType() {
     const url = `/api/v1/appointment-types/${this.id}`;
 
