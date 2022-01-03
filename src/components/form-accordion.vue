@@ -35,7 +35,7 @@
               @click="$emit('add')"
             >
               <add-icon />
-              <span class="text-sm"> Add</span>
+              <span class="text-sm -mt-1"> Add</span>
             </div>
              <div
               class="flex space-x-3 cursor-pointer"

@@ -299,7 +299,7 @@
             <template  v-slot:default>
               <div
                 class="w-full flex"
-                v-for="(nominee, index) in referees"
+                v-for="(nominee, index) in orgKyc.referees"
                 :key="index"
               >
                 <div
@@ -336,7 +336,7 @@
                         >
                         <span
                           class="update cursor-pointer"
-                            @click="updateNomineePhone(nominee.id,index,nominee.number,nominee.dialCode,nominee.name,nominee.email)"
+                            @click="updateRefree(nominee.id,index,nominee.number,nominee.dialCode,nominee.name,nominee.email)"
                           >Update</span
                         >
                       </div>
@@ -348,7 +348,7 @@
                   style="border: 1px solid #c2c7d6; width: 30%"
                 >
                   <div class="w-full flex justify-between">
-                    <span>{{ nominee.phone.dialCode }}{{ nominee.phone.number }}</span>
+                    <span>{{ nominee.phone?.dialCode }}{{ nominee.phone?.number }}</span>
                     <span
                       class="cursor-pointer"
                       @click="togglePhoneDialog(nominee, index,nominee.phone.dialCode,nominee.phone.number )"
@@ -362,8 +362,8 @@
                   >
                     <!-- Modal content -->
                     <div class="modal-content">
-                      <phone-input   v-model="nominee.number"
-                            v-model:code="nominee.dialCode" />
+                      <phone-input   v-model="nominee.phone.number"
+                            v-model:code="nominee.phone.dialCode" />
                       <div class="w-11/12 flex justify-between py-2">
                         <span
                           class="cancel cursor-pointer"
@@ -372,7 +372,7 @@
                         >
                         <span
                           class="update cursor-pointer"
-                          @click="updateNomineePhone(nominee.id,index,nominee.number,nominee.dialCode,nominee.name,nominee.email)"
+                          @click="updateRefree(nominee.id,index,nominee.phone.number,nominee.phone.dialCode,nominee.name,nominee.email)"
                           >Update</span
                         >
                       </div>
@@ -381,7 +381,7 @@
                 </div>
                 <div
                   class="py-3 px-2 flex justify-end cursor-pointer"
-                  @click="removerefree"
+                  @click="deleteItem(nominee.id)"
                   style="border: 1px solid #c2c7d6; width: 10%"
                 >
                   <span><delete-icon /></span>
@@ -395,7 +395,7 @@
         <div class="w-full py-10 flex justify-end">
           <cornie-button
             @click.prevent="() => $router.go(-1)"
-            class="rounded-full mr-6 px-8 font-semibold cursor-pointer py-1"
+            class="rounded-full mr-3 px-8 font-semibold cursor-pointer py-1"
             style="border: 1px solid #080056; color: #080056"
           >
             Cancel
@@ -413,23 +413,28 @@
 
         <!-- </form> -->
       </div>
-    <modal :visible="nominateRefree">
-      <nominate-refree
+   
+      <!-- <nominate-refree
         @refadded="refNominated"
         @close="close"
+        :id="orgkycId"
+        v-model:referees="referees"
         v-model="nominateRefree"
+      /> -->
+  </div>
+      <nominate-refree
+        @refree-added="refreeadded"
+        v-model="nominateRefree"
+        :id="orgkycId"
       />
-    </modal>
+  
 
-    <modal :visible="addOwner">
       <beneficial-owner
         @ownerAdded="ownerAdded"
         @close="() => (addOwner = false)"
         :id="id"
           v-model="addOwner"
       />
-    </modal>
-  </div>
 </template>
 
 <script lang="ts">
@@ -457,6 +462,7 @@ import { namespace } from "vuex-class";
 import { useCountryStates } from "@/composables/useCountryStates";
 import { reactive } from "@vue/reactivity";
 import IPhone from "@/types/IPhone";
+import IKycref from "@/types/IKycref";
 const kyc = namespace("kyc");
 
 export interface IBeneficialOwner {
@@ -488,10 +494,13 @@ export default class KYC extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+
+
+
   nominateRefree = false;
   addOwner = false;
   loading = false;
-  data: any = { practiceRegister: "Yes" };
+  data: any = { practiceRegister: true };
   allCountries = [];
   allStates = [];
   setup() {
@@ -550,26 +559,32 @@ newreferees = [] as any;
   // uploadedPracticeLicenseDocument = setup(() => useHandleImage());
 
   //proofOfAddressUpload = setup(() => useHandleImage());
-fileIndex= 0;
+  fileIndex= 0;
   director: any = { dialCode: "+234" };
 
    @kyc.Action
     getKycById!: (id: string) => IKyc;
 
-      @kyc.Action
+  @kyc.Action
   fetchKycs!: () => Promise<void>;
 
- @kyc.State
-  kycs!: IKyc[];
+  @kyc.State
+  orgKyc!: IKyc;
+
+  
+  @kyc.Mutation
+  addreferees!: (orgKyc: IKycref) => void;
+
+  @kyc.Action
+  deleteRefree!: (id: string) => Promise<boolean>;
 
 kycId = "";
   @Watch("kycId")
   idChanged() {
     this.setKyc();
   }
-
-  async setKyc() {
-    const kyc = await this.getKycById(this.items as any);
+async setKyc() {
+    const kyc = this.orgKyc;
     if (!kyc) return;
     this.practiceRegister = kyc.practiceRegister;
     this.incoporatedName = kyc.incoporatedName;
@@ -590,10 +605,38 @@ kycId = "";
     this.referees = kyc.referees;
 
   }
- get items() {
-     return this.kycs.map((kyc) => {
-      return this.kycId = kyc.id as string;
-    });  
+  // get setKyc() {
+  //   if(this.orgkycId){
+  //      const kyc = this.orgKyc;
+  //     return{
+  //       practiceRegister : kyc.practiceRegister,
+  //       incoporatedName : kyc.incoporatedName,
+  //       rcNumber : kyc.rcNumber,
+  //       certificateOfIncoporation : kyc.certificateOfIncoporation,
+  //       formCAC : kyc.formCAC,
+  //       memorandumAndArticleOfAssociation : kyc.memorandumAndArticleOfAssociation,
+  //       taxIdentificationNumber : kyc.taxIdentificationNumber,
+  //       country : kyc.country,
+  //       stateRegion : kyc.stateRegion,
+  //       city : kyc.city,
+  //       zipCode : kyc.zipCode,
+  //       address : kyc.address,
+  //     apartment : kyc.apartment,
+  //       roofOfAddressUpload : kyc.proofOfAddressUpload,
+  //       particularOfDirectors : kyc.particularOfDirectors,
+  //       owners : kyc.beneficialOwners,
+  //       referees : kyc.referees,
+  //     }
+       
+  //   }
+
+  // }
+ get orgkycId() {
+    //  return this.orgKyc.map((kyc) => {
+    //   return this.kycId : kyc.id as string;
+    // });  
+    this.kycId = this.orgKyc.id as string;
+    return this.orgKyc.id;
   }
     get payload() {
     return {
@@ -645,52 +688,48 @@ kycId = "";
 
   //owners = [] as IBeneficialOwner[];
  owners : any= this.beneficialOwners;
-  refNominated(data: any) {
+  async refNominated(data: any) {
     this.referees = data;
     this.newreferees = data;
     this.nominees?.push(data);
-    this.createRefree();
+    
   }
 
   ownerAdded(data: any) {
     this.beneficialOwners = data;
     this.owners?.push(data);
   }
-  async close(){
-    this.nominateRefree = false;
-    await this.fetchKycs();
+   async refreeadded(){
+     this.addreferees([this.addreferees] as any);
+     await this.fetchKycs();
+     this.nominateRefree = false;
+     // console.log(this.orgKyc.referees);
   }
 async submit() {
     this.loading = true;
-    if (this.items) await this.updateKYC();
+    if (this.orgkycId) await this.updateKYC();
     else await this.createKYC();
     this.loading = false;
   }
 
-  async onSave() {
-    this.director.phoneNumber = `${this.director.dialCode}${this.director.phone}`;
 
-    this.data.practiceRegister =
-      this.data.practiceRegister === "Yes" ? true : false;
-
-    this.data.particularOfDirectors = [this.director];
-    this.data.beneficailOwners = this.owners;
-    this.data.nominateReferess = this.nominees.map((nominee: any) => {
-      nominee.emailAddress = nominee.email;
-      nominee.phonenNumber = nominee.phone;
-      return nominee;
-    });
-  }
    async createRefree() {
     try {
-      const { data } = await cornieClient().post(
-        `/api/v1/kyc/referee/${this.items}`,
+      const response = await cornieClient().post(
+        `/api/v1/kyc/referee/${this.orgkycId}`,
         this.referees
       );
-      window.notify({ msg: "Refree added successfully", status: "success" });
-     await this.fetchKycs();
+      if(response.success){
+        console.log(this.referees,"sdgjksdg");
+        window.notify({ msg: "Refree added successfully", status: "success" });
+          await this.addreferees(this.orgKyc.referees as any);
+      }
+
     } catch (error) {
-      window.notify({ msg: "Refree not added", status: "error" });
+        console.log(this.referees,"sdgjksdg");
+        window.notify({ msg: "Refree added successfully", status: "success" });
+           await this.addreferees(this.orgKyc.referees as any);
+     // window.notify({ msg: "Referee not added", status: "error" });
     }
   }
   async createKYC() {
@@ -709,10 +748,10 @@ async submit() {
     }
   }
  async updateKYC() {
-    const url = `/api/v1/kyc/${this.items}`;
+    const url = `/api/v1/kyc/${this.orgkycId}`;
     const payload = {
       ...this.payload,
-      id:this.items.join('')
+      id:this.orgkycId,
     };
     try {
       const response = await cornieClient().put(url, payload);
@@ -775,7 +814,7 @@ async submit() {
     this.referees[index].showEditEmail = false;
   }
 
-  async updateNomineePhone(id:string,index: number,value:string,value2:string,name:string,email:string) {
+  async updateRefree(id:string,index: number,value:string,value2:string,name:string,email:string) {
     // let phonenumber = this.referees[index].phone.dialCode + this.referees[index].phone.number ;
     // console.log(phonenumber,"LOOK");
     // phonenumber = this.referees[index].newPhone;
@@ -787,9 +826,8 @@ async submit() {
       notified: false,
       phone: {
         dialCode: value2 || '+234',
-        number:value
+        number:value || '091994858882'
       }
- 
     };
     try {
       const response = await cornieClient().put(url, payload);
@@ -801,7 +839,8 @@ async submit() {
         //phonevalue = response.data.phone.dialCode + response.data.phone.number;
         this.referees[index].showEditPhone = false;
         this.referees[index].showEditEmail = false;
-        await this.fetchKycs();
+        this.addreferees(this.referees as any);
+        console.log(this.referees as any)
       }
     } catch (error) {
       window.notify({
@@ -810,20 +849,21 @@ async submit() {
       });
     }
   }
-  async removerefree() {
+  async removerefree(value:string) {
     try {
       const { data } = await cornieClient().delete(
-        `/api/v1/kyc/referee/${this.items}`,
+        `/api/v1/kyc/referee/${value}`,
         {}
       );
+        this.addreferees([this.orgKyc.referees] as any);
       window.notify({ msg: "Refree deleted successfully", status: "success" });
-     await this.fetchKycs();
+        await this.fetchKycs();
     } catch (error) {
       window.notify({ msg: "Refree deleted not  successfully", status: "error" });
     }
   }
   removeowners(index: number) {
-    this.beneficialOwners.splice(index, 1);
+    this.owners.splice(index, 1);
   }
    get allCountry() {
     if (!this.allCountries || this.allCountries.length === 0) return [];
@@ -834,11 +874,19 @@ async submit() {
       };
     });
   }
-    mounted(){
-        this.setKyc();
-     this.fetchKycs();
-    }
-    
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this refree",
+      title: "Delete refree",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteRefree(id))
+      window.notify({ msg: "Refree deleted successfully", status: "success" });
+    else
+      window.notify({ msg: "Refree deleted not  successfully", status: "error" });
+  }
+
   async created() {
     await this.getKYCData();
     await this.setKyc();
