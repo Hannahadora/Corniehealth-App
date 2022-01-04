@@ -8,40 +8,40 @@ interface LocationState {
 }
 
 export default {
-    namespaced: true,
-    state: {
-        locations: [],
+  namespaced: true,
+  state: {
+    locations: [],
+  },
+  mutations: {
+    setLocations(state, locations: any) {
+      state.locations = [...locations];
     },
-    mutations: {
-        setLocations(state, locations: any) {
-            state.locations = [...locations];
-        },
-        updateLocations(state, locations: ILocation[]) {
-            const locationSet = new ObjectSet(
-                [...state.locations, ...locations],
-                "id"
-            );
-            state.locations = [...locationSet];
-        },
-        deleteLocation(state, id: string) {
-            state.locations = state.locations.filter(location => location.id != id);
-        },
+    updateLocations(state, locations: ILocation[]) {
+      const locationSet = new ObjectSet(
+        [...state.locations, ...locations],
+        "id"
+      );
+      state.locations = [...locationSet];
     },
-    actions: {
-        async fetchLocations(ctx) {
-            const locations = await fetchLocations();
+    deleteLocation(state, id: string) {
+      state.locations = state.locations.filter(location => location.id != id);
+    },
+  },
+  actions: {
+    async fetchLocations(ctx) {
+      const locations = await fetchLocations();
 
-            ctx.commit("setLocations", locations);
-        },
-        async getLocationById(ctx, id: string) {
-            if (ctx.state.locations.length < 1) await ctx.dispatch("fetchLocations");
-            return ctx.state.locations.find(location => location.id == id);
-        },
-        async deleteLocation(ctx, id: string) {
-            const deleted = await deleteLocation(id);
-            if (!deleted) return false;
-            ctx.commit("deleteLocation", id);
-            return true;
-        },
+      ctx.commit("setLocations", locations);
     },
+    async getLocationById(ctx, id: string) {
+      if (ctx.state.locations.length < 1) await ctx.dispatch("fetchLocations");
+      return ctx.state.locations.find(location => location.id == id);
+    },
+    async deleteLocation(ctx, id: string) {
+      const deleted = await deleteLocation(id);
+      if (!deleted) return false;
+      ctx.commit("deleteLocation", id);
+      return true;
+    },
+  },
 } as StoreOptions<LocationState>;

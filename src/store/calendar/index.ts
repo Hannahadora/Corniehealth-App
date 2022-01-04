@@ -7,24 +7,24 @@ interface CalendarState {
 }
 
 export default {
-    namespaced: true,
-    state: {
-        calendars: [],
+  namespaced: true,
+  state: {
+    calendars: [],
+  },
+  mutations: {
+    setCalendars(state, calendars: any) {
+      state.calendars = [calendars]
     },
-    mutations: {
-        setCalendars(state, calendars: any) {
-            state.calendars = [calendars]
-        },
+  },
+  actions: {
+    async fetchCalendars(ctx) {
+      const calendars = await fetchCalendars();
+      ctx.commit("setCalendars", calendars);
     },
-    actions: {
-        async fetchCalendars(ctx) {
-            const calendars = await fetchCalendars();
-            ctx.commit("setCalendars", calendars);
-        },
-        getCalendarById(ctx, id: string) {
-            return ctx.state.calendars.find(
-                calendar => calendar.id == id
-            )
-        },
+    getCalendarById(ctx, id: string) {
+      return ctx.state.calendars.find(
+        calendar => calendar.id == id
+      )
     },
+  },
 } as StoreOptions<CalendarState>;

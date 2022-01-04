@@ -13,9 +13,9 @@ export interface IndexableObject {
 export class ErrorResponse extends Error {
   response!: JsonResponse;
   constructor(response: JsonResponse) {
-      super("An error occured while processing your request");
-      this.name = "Error Response";
-      this.response = response;
+    super("An error occured while processing your request");
+    this.name = "Error Response";
+    this.response = response;
   }
 }
 
@@ -30,34 +30,34 @@ export class JsonResponse {
   baseResponse: Response;
 
   get status(): number {
-      return this.baseResponse.status;
+    return this.baseResponse.status;
   }
 
   get success(): boolean {
-      return this.baseResponse.ok;
+    return this.baseResponse.ok;
   }
 
   private constructor(response: Response, json: IndexableObject) {
-      this.baseResponse = response;
-      this.data = json.data || json;
-      this.numberOfPages = json.numberOfPages;
-      this.nextPage = json.nextPage;
-      this.previousPage = json.previousPage;
-      this.currentPage = json.currentPage;
-      this.errors = json.errors;
-      this.token = json.token;
+    this.baseResponse = response;
+    this.data = json.data || json;
+    this.numberOfPages = json.numberOfPages;
+    this.nextPage = json.nextPage;
+    this.previousPage = json.previousPage;
+    this.currentPage = json.currentPage;
+    this.errors = json.errors;
+    this.token = json.token;
   }
 
   static async createJsonResponse(response: Response): Promise<JsonResponse> {
-      let json;
-      try {
-          json = await response.json();
-      } catch (error) {
+    let json;
+    try {
+      json = await response.json();
+    } catch (error) {
       // this handles the edge case of an api returning an empty response on a valid call.
       //response.json() fails if the body returned is empty.
-          json = {};
-      }
-      return new JsonResponse(response, json);
+      json = {};
+    }
+    return new JsonResponse(response, json);
   }
 }
 interface Errors {
@@ -72,57 +72,57 @@ export class JSONClient implements HttpClient {
   constructor(private headers: IndexableObject, private baseUrl: string = "") {}
 
   appendHeaders(headers: IndexableObject) {
-      this.headers = { ...this.headers, ...headers };
+    this.headers = { ...this.headers, ...headers };
   }
 
   private async exec(url: string, method: string, body?: IndexableObject) {
-      const response = await fetch(this.buildUrl(url), {
-          method: method,
-          headers: { ...this.headers },
-          body: this.buildBody(method, body),
-      });
-      if (!response.ok) {
-          throw new ErrorResponse(await JsonResponse.createJsonResponse(response));
-      }
+    const response = await fetch(this.buildUrl(url), {
+      method: method,
+      headers: { ...this.headers },
+      body: this.buildBody(method, body),
+    });
+    if (!response.ok) {
+      throw new ErrorResponse(await JsonResponse.createJsonResponse(response));
+    }
 
-      return await JsonResponse.createJsonResponse(response);
+    return await JsonResponse.createJsonResponse(response);
   }
 
   private buildBody(method: string, body?: IndexableObject) {
-      if (method == "GET" || method == "HEAD") return null;
-      if (!body) return;
-      return JSON.stringify(body);
+    if (method == "GET" || method == "HEAD") return null;
+    if (!body) return;
+    return JSON.stringify(body);
   }
 
   private buildUrl(url: string) {
-      let reqURL;
-      if (this.baseUrl) reqURL = new URL(url, this.baseUrl);
-      else reqURL = new URL(url);
+    let reqURL;
+    if (this.baseUrl) reqURL = new URL(url, this.baseUrl);
+    else reqURL = new URL(url);
 
-      return reqURL.href;
+    return reqURL.href;
   }
 
   public get(url: string, query: IndexableObject = {}): Promise<JsonResponse> {
-      const params = new URLSearchParams(query);
-      let reqUrl;
-      if (url.includes("?")) reqUrl = `${url}&${params.toString()}`;
-      else reqUrl = `${url}?${params.toString()}`;
-      return this.exec(reqUrl, "GET");
+    const params = new URLSearchParams(query);
+    let reqUrl;
+    if (url.includes("?")) reqUrl = `${url}&${params.toString()}`;
+    else reqUrl = `${url}?${params.toString()}`;
+    return this.exec(reqUrl, "GET");
   }
 
   public post(url: string, data: IndexableObject): Promise<JsonResponse> {
-      return this.exec(url, "POST", data);
+    return this.exec(url, "POST", data);
   }
 
   public patch(url: string, data: IndexableObject): Promise<JsonResponse> {
-      return this.exec(url, "PATCH", data);
+    return this.exec(url, "PATCH", data);
   }
 
   public put(url: string, data: IndexableObject): Promise<JsonResponse> {
-      return this.exec(url, "PUT", data);
+    return this.exec(url, "PUT", data);
   }
 
   public delete(url: string, data?: IndexableObject): Promise<JsonResponse> {
-      return this.exec(url, "DELETE", data);
+    return this.exec(url, "DELETE", data);
   }
 }

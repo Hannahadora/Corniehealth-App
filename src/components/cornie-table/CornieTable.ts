@@ -36,29 +36,29 @@ interface IColumn {
 }
 
 function defaultFilter(item: any, query: string) {
-    return search.searchObject(item, query);
+  return search.searchObject(item, query);
 }
 
 @Options({
-    name: "cornie-table",
-    components: {
-        SortIcon,
-        IconInput,
-        SearchIcon,
-        TableSettingsIcon,
-        PrintIcon,
-        FilterIcon,
-        CornieSpacer,
-        DotsHorizontalIcon,
-        DotsVerticalIcon,
-        ColumnFilter,
-        FilterByIcon,
-        CornieCheckbox,
-        IconBtn,
-        CornieMenu,
-        RefreshIcon,
-        Card,
-    },
+  name: "cornie-table",
+  components: {
+    SortIcon,
+    IconInput,
+    SearchIcon,
+    TableSettingsIcon,
+    PrintIcon,
+    FilterIcon,
+    CornieSpacer,
+    DotsHorizontalIcon,
+    DotsVerticalIcon,
+    ColumnFilter,
+    FilterByIcon,
+    CornieCheckbox,
+    IconBtn,
+    CornieMenu,
+    RefreshIcon,
+    Card,
+  },
 })
 export default class CornieTable extends Vue {
   @Prop()
@@ -88,43 +88,43 @@ export default class CornieTable extends Vue {
   numberOfPages = 0;
 
   get filteredItems() {
-      return this.items
-          .filter((item: any) => this.filter(item, this.query))
-          .sort(this.orderBy);
+    return this.items
+      .filter((item: any) => this.filter(item, this.query))
+      .sort(this.orderBy);
   }
 
   setOrderBy(orderBy: Sorter) {
-      this.orderBy = orderBy || this.orderBy;
+    this.orderBy = orderBy || this.orderBy;
   }
 
   isSelected(item: any): boolean {
-      return !this.selectedItems.every((element: any) => element.id != item.id);
+    return !this.selectedItems.every((element: any) => element.id != item.id);
   }
 
   select(item: any) {
-      if (this.isSelected(item))
-          this.selectedItems = this.selectedItems.filter(
-              (element: any) => element.id != item.id
-          );
-      else this.selectedItems.push(item);
+    if (this.isSelected(item))
+      this.selectedItems = this.selectedItems.filter(
+        (element: any) => element.id != item.id
+      );
+    else this.selectedItems.push(item);
   }
 
   async loadItems() {
-      const response = await this.loaderProp(this.nextPage);
-      this.nextPage = response.nextPage as number;
-      this.numberOfPages = response.numberOfPages as number;
-      this.items = response.data;
+    const response = await this.loaderProp(this.nextPage);
+    this.nextPage = response.nextPage as number;
+    this.numberOfPages = response.numberOfPages as number;
+    this.items = response.data;
   }
 
   @Watch("selectedAll")
   onSelectedAllChange(newValue: boolean) {
-      this.selectedItems = [];
-      if (newValue)
-          for (const item of this.filteredItems) this.selectedItems.push(item);
+    this.selectedItems = [];
+    if (newValue)
+      for (const item of this.filteredItems) this.selectedItems.push(item);
   }
 
   mounted() {
-      this.preferredColumns = this.columns;
-      if (this.loaderProp != null) this.loadItems();
+    this.preferredColumns = this.columns;
+    if (this.loaderProp != null) this.loadItems();
   }
 }

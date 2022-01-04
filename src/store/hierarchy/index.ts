@@ -8,23 +8,23 @@ interface HierarchyState {
 }
 
 export default {
-    namespaced: true,
-    state: {
-        categories: [],
+  namespaced: true,
+  state: {
+    categories: [],
+  },
+  mutations: {
+    setCategories(state, payload: Category[]) {
+      const categorySet = new ObjectSet(
+        [...state.categories, ...payload],
+        "id"
+      );
+      state.categories = [...categorySet];
     },
-    mutations: {
-        setCategories(state, payload: Category[]) {
-            const categorySet = new ObjectSet(
-                [...state.categories, ...payload],
-                "id"
-            );
-            state.categories = [...categorySet];
-        },
+  },
+  actions: {
+    async fetchCategories(ctx) {
+      const categories = await fetchCategories();
+      ctx.commit("setCategories", categories);
     },
-    actions: {
-        async fetchCategories(ctx) {
-            const categories = await fetchCategories();
-            ctx.commit("setCategories", categories);
-        },
-    },
+  },
 } as StoreOptions<HierarchyState>;
