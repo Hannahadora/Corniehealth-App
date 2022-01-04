@@ -1,5 +1,5 @@
 <template>
-  <div class="border-t border-b border-gray-300">
+  <div class="border-t border-gray-300">
     <div class="flex mt-10 mb-6 items-center">
       <ToogleCheck
         v-model="twoFA"
@@ -31,7 +31,7 @@
     </div>
     <div class="my-10">
       <div class="border-t-2 border-dashed">
-        <h2 class="text-primary text-xl mt-5 font-bold">Questions & Answers</h2>
+        <h2 class="text-primary text-lg mt-5 font-bold">Questions & Answers</h2>
       </div>
       <div>
         <div
@@ -40,20 +40,20 @@
           :key="`-${index}`"
         >
           <div>
-            <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
+            <div class="bg-blue-50 py-3 px-2 mt-5 rounded-md font-bold">
               {{ input.question }}
             </div>
-            <div class="border border-grey-200 py-3 px-2 mb-5 rounded-md">
+            <!-- <div class="border border-grey-200 py-3 px-2 mb-5 rounded-md">
               {{ input.answer }}
               <span
                 class="text-danger float-right mr-2 cursor-pointer"
                 @click="editQuestion(index, securityQuestions)"
                 >Edit</span
               >
-            </div>
+            </div> -->
           </div>
           <div
-            class="cursor-pointer"
+            class="cursor-pointer mt-8"
             @click="removeQuestion(index, securityQuestions)"
           >
             <svg
@@ -76,9 +76,10 @@
             </svg>
           </div>
         </div>
-        <div class="my-10 w-full">
+        <div class="my-10 w-full  border-b-2 pb-5 border-dashed">
           <cornie-select
             :rules="required"
+            class="w-full mb-0"
             v-model="securityQuestion.question"
             :items="[
               ' What is the name of your best teacher in primary school?',
@@ -88,18 +89,19 @@
           >
           </cornie-select>
           <cornie-input
+          class="w-full -mt-4"
             placeholder="Answer here"
             v-model="securityQuestion.answer"
           />
           <div
-            class="cursor-pointer text-danger mt-8 font-bold"
+            class="cursor-pointer text-danger mt-8 text-sm font-semibold"
             @click="addQuestion"
           >
             Add Question
           </div>
         </div>
 
-        <div class="my-10 w-3/4 mt-5 border-t-2 border-dashed">
+        <!-- <div class="my-10 w-3/4 mt-5">
           <label for="Password" class="text-primary text-xl mt-5 font-bold">
             Confirm Password
           </label>
@@ -119,14 +121,14 @@
             <list-boxes types="radio" class="mt-2" />
             <span class="ml-2 mt-2">Random question during sign in.</span>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <span class="flex justify-end">
       <button
         type="submit"
         @click="saveTwoFactor()"
-        class="my-10 px-6 py-2 pl-6 pr-6 flex justify-end text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+        class="px-6 py-2 pl-6 pr-6 flex justify-end text-white appearance-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         Save
       </button>
