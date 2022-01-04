@@ -4,7 +4,20 @@
       <div>
         <div class="flex space-x-4 w-full justify-between px-3">
           <div
-            class="float-left px-3 pl-7 pr-7 py-3 bg-primary border-primary font-semibold text-white uppercase sectionclass text-xs"
+            class="
+              float-left
+              px-3
+              pl-7
+              pr-7
+              py-3
+              bg-primary
+              border-primary
+              font-semibold
+              text-white
+              uppercase
+              sectionclass
+              text-xs
+            "
           >
             section {{ num1 }} of {{ num2 }}
           </div>
@@ -40,13 +53,9 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "./icons/chevrondown.vue";
 import InfoIcon from "./icons/info.vue";
-import IPracticeform from "@/types/IPracticeform";
 import AinfoIcon from "./icons/ainfo.vue";
 import MoveIcon from "@/components/icons/move.vue";
-import { FormValidationResult } from "vee-validate";
 import Draggable from "vuedraggable";
-
-const copy = (original: any) => JSON.parse(JSON.stringify(original));
 
 @Options({
   name: "AccordionItem",
