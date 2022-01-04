@@ -1,44 +1,45 @@
 <template>
   <div class="border-t border-b border-primary-300">
-    <div class="flex mt-10 mb-6 items-center">
-      <div class="grid-cols-1 my-10">
-        <label for="currentPassword" class="font-bold text-base uppercase mb-5">
-          Current Password
-        </label>
-        <password-input
-          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
-          placeholder="Enter Password"
-          v-model="currentPassword"
-        />
+  
+      <div class="grid grid-cols-3 gap-4 w-full">
+        <div>
+            <label for="currentPassword" class="mb-0 text-sm capitalise">
+              Old Password
+            </label>
+            <password-input
+              class="appearance-none w-full border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
+              placeholder="--Enter old password--"
+              v-model="currentPassword"
+            />
+        </div>
+        <div>
+          <label for="NewPassword" class="mb-0 text-sm capitalise">
+            New Password
+          </label>
+          <password-input
+            class="appearance-none w-full border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            placeholder="--Enter new password--"
+            v-model="newPassword"
+          />
+           <password-meter :password="newPassword" />
+        </div>
+        <div>
+          <label for="ConfirmPassword" class="mb-0 text-sm capitalise">
+            Retype New Password
+          </label>
+          <password-input
+            class="appearance-none w-full border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            placeholder="--Confirm new password--"
+            v-model="ConfirmPassword"
+          />
+        </div>
       </div>
-    </div>
-    <div class="flex grid grid-cols-2 gap-4 my-10">
-      <div>
-        <label for="NewPassword" class="font-bold text-base uppercase mb-5">
-          New Password
-        </label>
-        <password-input
-          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-          placeholder="Enter Password"
-          v-model="newPassword"
-        />
-      </div>
-      <div>
-        <label for="ConfirmPassword" class="font-bold text-base uppercase mb-5">
-          Confirm Password
-        </label>
-        <password-input
-          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-          placeholder="Confirm New Password"
-          v-model="ConfirmPassword"
-        />
-      </div>
-    </div>
+   
     <span class="flex justify-end">
       <button
         type="submit"
         @click="updatePassword()"
-        class="my-10 px-6 py-2 text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+        class="pl-5 pr-5 py-2 mb-5 mt-5 text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         Save
       </button>
@@ -50,11 +51,13 @@
 import PasswordInput from "@/components/PasswordInput.vue";
 import { quantumClient } from "@/plugins/http";
 import store from "@/store";
+import PasswordMeter from 'vue-simple-password-meter';
 
 export default {
   name: "UpdatePassword",
   components: {
     PasswordInput,
+    PasswordMeter
   },
   data() {
     return {
@@ -77,9 +80,9 @@ export default {
     async updatePassword() {
       try {
         await quantumClient().post("auth/change-password", this.payload);
-        alert("Password Changed Succesfully");
+         window.notify({ msg: "Password Changed Succesfully", status: "success" });
       } catch (error) {
-        alert("An error occured when changing your password");
+         window.notify({ msg: "An error occured when changing your password", status: "error" });
       }
     },
   },

@@ -113,7 +113,7 @@ input[type="checkbox"]:after {
     background-position: center;
     border-radius: 3px;
     text-align: center;
-    border: 1px solid #080056;
+    border: 1px solid #fe4d3c;
 }
 
 
@@ -202,7 +202,7 @@ input[type="checkbox"]:after {
 
 input[type="checkbox"]:checked:after {
     background-image: url("./assets/tick.svg");
-    background-color: #080056;
+    background-color: #fe4d3c;
 }
 
 .scrollable {
