@@ -48,7 +48,6 @@ import CareplanStore from "./careplan";
 import CatalogueStore from "./catalogues";
 import AppointmentTypeStore from "./appointments";
 import CanelStore from "./cancel";
-import KycStore from "./kyc";
 
 import AppointmentRoomStore from "./appointmentroom";
 

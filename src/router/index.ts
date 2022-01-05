@@ -98,7 +98,7 @@ const routes: Array<RouteRecordRaw> = [
       InPatientRoutes,
       NewSettingsRoutes,
       {
-        path: "settings/",
+        path: "/settings/",
         name: "Settings",
         component: Settings,
         redirect: (to) => `${to.path}/org-info`.replace("//", "/"),

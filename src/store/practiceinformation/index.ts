@@ -51,12 +51,12 @@ export default {
     },
     getPracticeinformationById(ctx, id: string) {
       return ctx.state.practiceInformations.find(
-        (practiceInformation) => practiceInformation.id == id
+        practiceInformation => practiceInformation.id == id
       );
     },
     getPracticeHourById(ctx, id: string) {
       return ctx.state.practiceHours.find(
-        (practiceHour) => practiceHour.id == id
+        practiceHour => practiceHour.id == id
       );
     },
   },
