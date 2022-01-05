@@ -51,7 +51,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: (to) => `${to.path}/home`.replace("//", "/"),
+    redirect: to => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
       {
@@ -101,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/settings/",
         name: "Settings",
         component: Settings,
-        redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
+        redirect: to => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
             path: "care-partners",
