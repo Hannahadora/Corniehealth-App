@@ -1,19 +1,19 @@
 <template>
   <main class="p-6">
-    <h3>Account Security</h3>
+    <h3 class="pb-3">Account Security</h3>
     <section class="acc-main">
       <div class="password-main">
         <div>
-          <h4>Password</h4>
+          <h4 class="text-sm">Password</h4>
           <span>
             The same password strength are enforced for all users across the
             app.
-            <div
+            <span
               @click="viewPolicy = !viewPolicy"
               class="ml-1 text-blue-700 mt-1 font-bold cursor-pointer text-xs"
             >
               VIEW POLICY
-            </div>
+            </span>
           </span>
         </div>
         <div v-if="!isShowingPassword">
@@ -220,7 +220,7 @@ h4 {
   font-family: Inter;
   font-style: normal;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 27px;
   color: #2b2b2b;
   margin: 4px 0px;

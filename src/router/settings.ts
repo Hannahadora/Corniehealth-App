@@ -5,7 +5,7 @@ export const SettingsRoute: RouteRecordRaw = {
   path: "settings/",
   name: "Settings",
   component: Settings,
-  redirect: to => `${to.path}/org-info`.replace("//", "/"),
+  redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
   children: [
     {
       path: "org-hierarchy",
@@ -164,6 +164,19 @@ export const SettingsRoute: RouteRecordRaw = {
       name: "Markup Settings",
       component: () =>
         import("@/views/dashboard/medications/markup/markup-settings.vue"),
+    },
+    {
+      path: "kyc",
+      props: true,
+      name: "KYC",
+      component: () => import("@/views/dashboard/settings/kyc/index.vue"),
+    },
+    {
+      path: "kyc-link",
+      props: true,
+      name: "KYC Link",
+      component: () =>
+        import("@/views/dashboard/settings/kyc/components/email-link.vue"),
     },
   ],
 };

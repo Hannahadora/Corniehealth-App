@@ -21,7 +21,6 @@
         label="Percentage Markup (%)"
         placeholder="--Autoloaded--"
         v-model="PercentageMarkup"
-        
       >
       </cornie-input>
       <cornie-input
@@ -30,7 +29,6 @@
         v-model="MaxDiscount"
         placeholder="--Autoloaded--"
         disabled
-        
       >
       </cornie-input>
 
@@ -40,7 +38,6 @@
         placeholder="--Autoloaded--"
         v-model="CDM"
         disabled
-        
         :readonly="readonly"
       >
       </cornie-input>
@@ -50,7 +47,6 @@
         placeholder="--Autoloaded--"
         v-model="margin"
         disabled
-        
       >
       </cornie-input>
       <cornie-input
@@ -59,7 +55,6 @@
         placeholder="--Autoloaded--"
         v-model="percentageMargin"
         disabled
-        
       >
       </cornie-input>
 
@@ -69,7 +64,6 @@
         placeholder="--Autoloaded--"
         v-model="minimumPrice"
         disabled
-        
       >
       </cornie-input>
       <cornie-input
@@ -78,7 +72,6 @@
         v-model="discountMargin"
         placeholder="--Autoloaded--"
         disabled
-        
       >
       </cornie-input>
       <cornie-input
@@ -87,7 +80,6 @@
         placeholder="--Autoloaded--"
         v-model="discountMarginPercentage"
         disabled
-        
       >
       </cornie-input>
     </div>
@@ -100,7 +92,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-          @click=" submitMarkup"
+          @click="submitMarkup"
           class="bg-danger text-white m-5 px-9 font-bold"
         >
           Save
@@ -135,7 +127,6 @@ import CornieInput from "@/components/cornieinput.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { cornieClient } from "@/plugins/http";
 
-
 const patients = namespace("patients");
 
 @Options({
@@ -162,8 +153,6 @@ const patients = namespace("patients");
     CornieInput,
   },
 })
-
-
 export default class MarkupSettings extends Vue {
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
@@ -186,31 +175,30 @@ export default class MarkupSettings extends Vue {
   checkingIn = false;
   registerNew = false;
 
-  SUC = 1000
-  PercentageMarkup = 200
-  MaxDiscount = 10/100
+  SUC = 1000;
+  PercentageMarkup = 200;
+  MaxDiscount = 10 / 100;
 
-  get CDM(){
-    return this.SUC * (this.PercentageMarkup/100)
-  }
-
-  get margin(){
-    return this.CDM - this.SUC 
-  }
-  get percentageMargin(){
-    return (this.margin / this.CDM ) * 100
+  get CDM() {
+    return this.SUC * (this.PercentageMarkup / 100);
   }
 
-  get minimumPrice(){
-    return this.CDM * (1 - this.MaxDiscount)
+  get margin() {
+    return this.CDM - this.SUC;
   }
-  get discountMargin(){
-    return this.minimumPrice - this.SUC
-  }
-  get discountMarginPercentage(){
-    return Math.floor((this.discountMargin / this.minimumPrice) *100)
+  get percentageMargin() {
+    return (this.margin / this.CDM) * 100;
   }
 
+  get minimumPrice() {
+    return this.CDM * (1 - this.MaxDiscount);
+  }
+  get discountMargin() {
+    return this.minimumPrice - this.SUC;
+  }
+  get discountMarginPercentage() {
+    return Math.floor((this.discountMargin / this.minimumPrice) * 100);
+  }
 
   headers = [
     {
@@ -244,8 +232,6 @@ export default class MarkupSettings extends Vue {
       show: true,
     },
   ];
-
-
 
   get items() {
     const patients = this.filteredPatients;
@@ -284,32 +270,30 @@ export default class MarkupSettings extends Vue {
     return `XXXXX${mrn?.substr(31)}`;
   }
 
-    async submitMarkup() {
+  async submitMarkup() {
     try {
       const { data } = await cornieClient().post(
-        `/api/v1/markup-discount/createEditForOrganizationAdmin`, 
-          {
-  "sampleUnitCost": this.SUC,
-  "markupPercentage": this.PercentageMarkup,
-  "locationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "cdmPrice": this.CDM,
-  "margin": this.margin,
-  "marginPercentage": this.percentageMargin,
-  "maxAllowedDiscount": this.MaxDiscount,
-  "minPrice": this.minimumPrice,
-  "discountedMargin": this.discountMargin,
-  "discountedMarginPercentage": this.discountMarginPercentage,
-  "locationAdminsCanSetForLocations": true
-}
-        
+        `/api/v1/markup-discount/createEditForOrganizationAdmin`,
+        {
+          sampleUnitCost: this.SUC,
+          markupPercentage: this.PercentageMarkup,
+          locationId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          cdmPrice: this.CDM,
+          margin: this.margin,
+          marginPercentage: this.percentageMargin,
+          maxAllowedDiscount: this.MaxDiscount,
+          minPrice: this.minimumPrice,
+          discountedMargin: this.discountMargin,
+          discountedMarginPercentage: this.discountMarginPercentage,
+          locationAdminsCanSetForLocations: true,
+        }
       );
-           window.notify({
+      window.notify({
         msg: "Markup updated successfully",
         status: "success",
       });
 
-      this.$router.push(`/dashboard/provider/settings/markup`)
-
+      this.$router.push(`/dashboard/provider/settings/markup`);
     } catch (error) {
       window.notify({
         msg: "There was an error when Submittin markup details",

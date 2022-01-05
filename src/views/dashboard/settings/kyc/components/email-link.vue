@@ -1,7 +1,8 @@
 <template>
-  <div class="container-fluid p-4 bg-white overflow-y-scroll">
-    <div class="w-full">
-      <div class="w-full py-4" style="border-bottom: 1px solid #c2c7d6">
+<div class="container-fluid bg-gray-100">
+  <div class="overflow-y-scroll">
+    <div class="bg-white m-10 px-5 rounded-md">
+      <div class="w-full bg-white py-4" style="border-bottom: 1px solid #c2c7d6">
         <p class="header">KYC</p>
       </div>
 
@@ -9,7 +10,7 @@
         <form action="">
           <div class="w-full flex flex-wrap items-center pt-6 pb-8">
             <p class="normal-text">
-              Thank you for choosing to refer Dr.Obi Akeem Musa. This exercise
+              Thank you for choosing to refer Dr.{{practionername}}. This exercise
               will take less than 5 minutes.
             </p>
           </div>
@@ -18,55 +19,51 @@
             <div class="w-full flex flex-wrap items-center py-4">
               <div class="w-5/12">
                 <p class="normal-text mr-4">
-                  What's your relationship with Dr. Obi Akeem Musa?
+                  What's your relationship with Dr. {{practionername}}?
                 </p>
-              </div>
-              <div class="w-7/12 flex">
-                <div class="mx-2 -mb-2">
+              <div class="w-full space-x-20 mt-4 flex">
                   <cornie-radio
-                    v-model="data.relationship"
+                    v-model="relationship"
                     :label="'Professional Colleague'"
                     value="Professional Colleague"
+                    class="w-full"
                   />
-                </div>
-                <div class="mx-2 -mb-2">
                   <cornie-radio
-                    v-model="data.relationship"
+                    v-model="relationship"
                     :label="'Friend'"
                     value="Friend"
+                     class="w-full"
                   />
-                </div>
-                <div class="mx-2 -mb-2">
                   <cornie-radio
-                    v-model="data.relationship"
+                    v-model="relationship"
                     :label="'Relative'"
                     value="Relative"
+                    class="w-full"
                   />
-                </div>
-                <div class="mx-2 -mb-2">
                   <cornie-radio
-                    v-model="data.relationship"
+                    v-model="relationship"
                     :label="'Others'"
                     value="Others"
+                    class="w-full"
                   />
-                </div>
+              
+              </div>
               </div>
             </div>
 
             <div class="w-full flex my-3">
               <div class="w-5/12">
                 <p class="normal-text">
-                  How long have you known Dr. Obi Akeem Musa?
+                  How long have you known Dr. {{practionername}}?
                 </p>
-              </div>
               <div
-                class="w-3/12 flex border py-1 rounded"
+                class="w-full mt-4 flex border py-1 rounded"
                 style="height: 46px; max-width: 200px"
               >
                 <div class="w-4/12">
                   <input
                     type="text"
-                    v-model="data.knownDuration"
+                    v-model="relationshipDuration.value"
                     class="w-full p-2 px-3 outline-none"
                     style="height: 100%; border: none"
                   />
@@ -74,59 +71,75 @@
                 </div>
                 <div class="w-8/12 border-l-2">
                   <cornie-dropdown
-                    v-model="data.knowDurationUnit"
+                    v-model="relationshipDuration.unit"
                     style="width: 100%; border: transparent"
                     :items="['Years', 'Months']"
                   />
                 </div>
               </div>
+              </div>
             </div>
 
             <div class="w-full flex mb-4">
-              <div class="w-12/12 flex items-center flex-wrap my-2">
+              <div class="w-full my-2">
                 <a class="normal-text mr-4"
-                  >Please select qualities that best describe Dr. Obi Akeem
-                  Musa</a
+                  >Please select qualities that best describe Dr. {{practionername}}</a
                 >
-                <div
-                  class="mx-3 -mb-2"
-                  v-for="(quality, index) in qualities"
-                  :key="index"
-                >
-                  <label class="inline-flex items-center my-4">
-                    <input
-                      type="checkbox"
-                      class="form-radio h-3 w-3"
-                      :value="quality"
-                    />
-                    <span class="ml-2 noraml-text text-sm font-normal">{{
-                      quality
-                    }}</span>
-                  </label>
+                <div class="grid grid-cols-9 gap-2 w-full">
+                  <div
+                    class="mx-3 -mb-2"
+                    v-for="(quality, index) in qualities"
+                    :key="index"
+                  >
+                    <label class="inline-flex items-center my-4">
+                      <input
+                      v-model="qualityDescriptions"
+                        type="checkbox"
+                        class="form-radio h-2 w-2"
+                        :value="quality"
+                      />
+                      <span class="ml-2 noraml-text text-xs font-normal">{{
+                        quality
+                      }}</span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="w-full flex flex-wrap items-start pb-4">
-              <div class="w-6/12">
-                <p class="normal-text mr-4">
-                  Please rate Dr. Obi Akeem Musa's clinical experience
+                <p class="normal-text mb-8">
+                  Please rate Dr. {{practionername}}'s clinical experience
                 </p>
-              </div>
-              <div class="w-4/12 flex">
-                <range-picker />
+              <div class="w-full">
+                <div class="grid grid-cols-4 justify-between col-span-full w-96">
+                  <span>{{clinicalExperience.min}}</span>
+                      <Slider class="custom mt-2" :tooltips="false" v-model="clinicalExperience.value" :min="0" :max="100" :default="50"/>
+                  <span class="ml-28">{{clinicalExperience.max}}</span>
+                  <input type="number" class="p-1.5 ml-14 -mt-1 border-2 border-danger rounded h-8 w-12" v-model="clinicalExperience.value">
+                </div>
+                
               </div>
             </div>
 
             <div class="w-full flex flex-wrap items-start py-4">
-              <div class="w-6/12">
-                <p class="normal-text mr-4">
-                  Please rate Dr. Obi Akeem Musa quality of work in clinical
+                <p class="normal-text mb-8">
+                  Please rate Dr. {{practionername}} quality of work in clinical
                   medicine
                 </p>
+              <!-- <div class="w-6/12">
+              <div class="w-full mt-4 flex">
+                <range-picker  v-model="qualityOfWork.value"/>
               </div>
-              <div class="w-4/12 flex">
-                <range-picker />
+              </div> -->
+               <div class="w-full">
+                <div class="grid grid-cols-4 justify-between col-span-full w-96">
+                  <span>{{qualityOfWork.min}}</span>
+                      <Slider class="custom mt-2" :tooltips="false" v-model="qualityOfWork.value" :min="0" :max="100" :default="50"/>
+                  <span class="ml-28">{{qualityOfWork.max}}</span>
+                  <input type="number" class="p-1.5 ml-14 -mt-1 border-2 border-danger rounded h-8 w-12" v-model="qualityOfWork.value">
+                </div>
+                
               </div>
             </div>
 
@@ -134,129 +147,104 @@
               <div class="w-7/12">
                 <p class="normal-text mr-4">
                   Are you aware of any previous or pending malpractice suite
-                  against Dr. Obi Akeem Musa?
+                  against Dr. {{practionername}}?
                 </p>
+              <div class="w-full mt-4 flex">
+                <div class="mx-2 -mb-2">
+                  <cornie-radio v-model="previousMalpractice" :label="'Yes'" :value="true" />
+                </div>
+                <div class="mx-2 -mb-2">
+                  <cornie-radio v-model="previousMalpractice" :label="'No'" :value="false" />
+                </div>
               </div>
-              <div class="w-5/12 flex">
-                <div class="mx-2 -mb-2">
-                  <cornie-radio :label="'Yes'" value="Yes" />
-                </div>
-                <div class="mx-2 -mb-2">
-                  <cornie-radio :label="'No'" value="No" />
-                </div>
               </div>
             </div>
 
             <div class="w-full">
-              <div class="w-12/12">
+              <div class="w-full pb-12">
                 <Textarea
                   style="width: 97%; height: 150px"
                   :label="'General comments'"
+                  v-model="generalComments"
+                  placeholder="Start typing..."
                 />
               </div>
             </div>
           </div>
 
-          <div class="w-full section-card px-4 my-6">
-            <collapse-section
+          <div class="w-full my-6">
+            <accordion-component
               :title="'Particulars of Referee'"
-              :height="320"
-              :overflow="true"
+              :opened="true"
             >
-              <template #form>
-                <div class="w-full flex items-center mb-6">
-                  <div class="w-3/12">
-                    <cornie-input :label="'Full Name'" />
-                  </div>
-                  <div class="w-3/12">
-                    <cornie-input :label="'Nationality'" />
-                  </div>
-                  <div class="w-3/12">
-                    <div class="w-11/12">
-                      <cornie-input :label="'Email Address'" />
+               <template v-slot:default>
+                 <div class="mt-5">
+                    <div class="w-full grid grid-cols-4 gap-4 mb-6">    
+                        <cornie-input :label="'Full Name'" placeholder="--Enter--" v-model="fullname" />
+                    
+                        <cornie-input :label="'Nationality'" placeholder="--Enter--" v-model="nationality"/>
+                    
+                          <cornie-input :label="'Email Address'" placeholder="--Enter--" v-model="email"/>
+                      
+                    
+                          <phone-input :label="'Phone Number'" v-model="phone.number" v-model:code="phone.dialCode" />
                     </div>
-                  </div>
-                  <div class="w-3/12">
-                    <div class="w-11/12">
-                      <phone-input :label="'Phone Number'" />
+                    <div class="w-full grid grid-cols-3 gap-4 mb-6">
+                        <cornie-select
+                          :items="[
+                            'Nigerian Bank Identification Number (BVN)',
+                            'International Passport',
+                            'National Identitiy Number (NIN)',
+                            'Driver\'s License',
+                            'Voter\'s Card',
+                          ]"
+                          :label="'Identification Document'"
+                          v-model="identificationDocument"
+                          placeholder="--Select--"
+                        />
+                        <cornie-input placeholder="--Enter--" :label="'Identity Document Number'" v-model="identificationDocumentNumber"/>
+                        <file-picker placeholder="--Enter--" :label="'Upload Identitification Document'"  @uploaded="idFileUploaded" v-model="identificationDocumentFile" />
+                        <cornie-select
+                          :items="[
+                            'Medical Practice Licence',
+                            'Pharmacy Practice Licence',
+                            'Radiology Practice Licence',
+                            'Pathology Practice Licence',
+                            'Not Applicable',
+                          ]"
+                          :label="'Practice Licence Document'"
+                          v-model="practiceLicenseDocument"
+                          placeholder="--Select--"
+                        />
+                        <cornie-input placeholder="--Enter--" :label="'Practice Licence Number'" v-model="practiceLicenseNumber" />
+                        <file-picker :label="'Upload Practice Licence Document'" @uploaded="idFileUploaded2"  v-model="practiceLicenseFile"/>
                     </div>
-                  </div>
-                </div>
-                <div class="w-full flex items-center mb-6">
-                  <div class="w-4/12 -mb-4">
-                    <cornie-select
-                      :items="[
-                        'Nigerian Bank Identification Number (BVN)',
-                        'International Passport',
-                        'National Identitiy Number (NIN)',
-                        'Driver\'s License',
-                        'Voter\'s Card',
-                      ]"
-                      :label="'Identification Document'"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <cornie-input :label="'Identity Document Number'" />
-                  </div>
-                  <div class="w-4/12">
-                    <file-picker :label="'Upload Identitification Document '" />
-                  </div>
-                </div>
-                <div class="w-full flex items-center mb-6">
-                  <div class="w-4/12 -mb-4">
-                    <cornie-select
-                      style="z-index: 1000"
-                      :items="[
-                        'Medical Practice Licence',
-                        'Pharmacy Practice Licence',
-                        'Radiology Practice Licence',
-                        'Pathology Practice Licence',
-                        'Not Applicable',
-                      ]"
-                      :label="'Practice Licence Document'"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <cornie-input :label="'Practice Licence Number'" />
-                  </div>
-                  <div class="w-4/12">
-                    <file-picker :label="'Upload Practice Licence Document'" />
-                  </div>
-                </div>
+                 </div>
               </template>
-            </collapse-section>
+            </accordion-component>
           </div>
 
-          <div class="w-full section-card px-4 my-6">
-            <collapse-section :title="'Address'" :height="220">
-              <template #form>
-                <div class="w-full flex items-center mb-6">
-                  <div class="w-4/12 -mb-4">
-                    <cornie-select :items="['Nigeria']" :label="'Country'" />
-                  </div>
-                  <div class="w-4/12 -mb-4">
+          <div class="w-full my-6">
+            <accordion-component :opened="true" :title="'Address'" :height="220">
+              <template v-slot:default>
+                <div class="w-full grid mt-4 grid-cols-3 gap-4 items-center mb-6">
+                    <cornie-select placeholder="--Select--" v-model="nationState.country"
+                    :items="nationState.countries" :label="'Country'" />
                     <cornie-select
-                      :items="['Lagos']"
+                    placeholder="--Select--"
+                      :items="nationState.states"
                       :label="'State of Region'"
+                      v-model="state"
+                      
                     />
-                  </div>
-                  <div class="w-4/12 -mb-4">
-                    <cornie-select :items="['Ikeja']" :label="'City'" />
-                  </div>
+                    <cornie-input placeholder="--Enter--"   v-model="city" :label="'City'" />
+                    <cornie-input placeholder="--Enter--" :label="'ZIP or Post Code'" v-model="zipCode"/>
+                    <cornie-input placeholder="--Enter--" :label="'Address'" v-model="address"/>
+                    <cornie-input placeholder="--Enter--" :label="'Apartment or House Number'" v-model="houseNumber" />
                 </div>
-                <div class="w-full flex items-center mb-6">
-                  <div class="w-4/12">
-                    <cornie-input :label="'ZIP or Post Code'" />
-                  </div>
-                  <div class="w-4/12">
-                    <cornie-input :label="'Address'" />
-                  </div>
-                  <div class="w-4/12">
-                    <cornie-input :label="'Apartment or House Number'" />
-                  </div>
-                </div>
+               
               </template>
-            </collapse-section>
+            </accordion-component>
           </div>
 
           <div class="w-full py-10 flex justify-end">
@@ -270,6 +258,8 @@
             <cornie-button
               class="rounded-full px-8 font-semibold cursor-pointer py-1 text-white"
               style="background: #fe4d3c"
+              @click="submit"
+               :loading="loading"
             >
               Save
             </cornie-button>
@@ -286,10 +276,11 @@
       <beneficial-owner @close="() => (addOwner = false)" />
     </modal>
   </div>
+</div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, Vue, setup } from "vue-class-component";
 import CollapseSection from "./collapse-section.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import DatePicker from "@/components/datepicker.vue";
@@ -306,6 +297,10 @@ import FilePicker from "./choose-file.vue";
 import UploadedFile from "./uploadd-file.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieCheckbox from "@/components/corniecheckbox.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import { useCountryStates } from "@/composables/useCountryStates";
+import { cornieClient } from "@/plugins/http";
+import Slider from '@vueform/slider'
 
 @Options({
   components: {
@@ -314,12 +309,14 @@ import CornieCheckbox from "@/components/corniecheckbox.vue";
     DatePicker,
     PhoneInput,
     CornieSelect,
+    Slider,
     AutoComplete,
     DeleteIcon,
     CornieButton,
     Modal,
     Textarea,
     RangePicker,
+    AccordionComponent,
     CornieDropdown,
     FilePicker,
     UploadedFile,
@@ -330,7 +327,8 @@ import CornieCheckbox from "@/components/corniecheckbox.vue";
 export default class EmailLink extends Vue {
   nominateRefree = false;
   addOwner = false;
-
+  loading=false;
+nationState = setup(() => useCountryStates());
   qualities = [
     "Knowledgeable",
     "Attentive",
@@ -351,16 +349,137 @@ export default class EmailLink extends Vue {
     "Time management",
   ];
 
-  data: any = {};
-}
-</script>
+  relationship = "";
+  relationshipDuration = {
+    unit: "",
+    value: 0
+  };
+  qualityDescriptions = [];
+  clinicalExperience = {
+    value: "10",
+    max: "100",
+    min:"0"
+  };
+  qualityOfWork = {
+     value: "10",
+    max: "100",
+    min:"0"
+  };
+  previousMalpractice = true;
+  generalComments = "";
+  fullname = "";
+  nationality = "";
+  email = "";
+  phone = {
+    number : '',
+    dialCode : '+234',
+  };
+  identificationDocument = "";
+  identificationDocumentNumber = "";
+  identificationDocumentFile = "";
+  practiceLicenseDocument = "";
+  practiceLicenseNumber = "";
+  practiceLicenseFile = "";
+  country = "";
+  state = "";
+  city = "";
+  zipCode = "";
+  address = "";
+  houseNumber = "";
 
+  data: any = {};
+  get practionername(){
+    const name = this.$route.query.practitioner;
+    const name2 = atob(`${name}`)
+    return name2
+  }
+  get id(){
+    return this.$attrs.id
+  }
+    idFileUploaded(fileUrl: string,) {
+    this.identificationDocumentFile = fileUrl;
+  }
+idFileUploaded2(fileUrl: string,) {
+     this.practiceLicenseFile = fileUrl;
+  }
+
+
+    get payload() {
+    return {
+      relationship: this.relationship,
+      relationshipDuration: this.relationshipDuration,
+      qualityDescriptions: this.qualityDescriptions,
+      clinicalExperience: this.clinicalExperience,
+      qualityOfWork: this.qualityOfWork,
+      previousMalpractice: this.previousMalpractice,
+      generalComments: this.generalComments,
+      country: this.nationState.country,
+      fullname: this.fullname,
+      city: this.city,
+      zipCode: this.zipCode,
+      address: this.address,
+      nationality: this.nationality,
+      email: this.email,
+      phone: this.phone,
+      identificationDocument: this.identificationDocument,
+      identificationDocumentNumber: this.identificationDocumentNumber,
+      identificationDocumentFile: this.identificationDocumentFile,
+      practiceLicenseDocument: this.practiceLicenseDocument,
+      practiceLicenseNumber: this.practiceLicenseNumber,
+       practiceLicenseFile: this.practiceLicenseFile,
+        state: this.state,
+         houseNumber: this.houseNumber,
+
+    };
+  }
+  async submit() {
+    this.loading = true;
+     await this.createResponse();
+    this.loading = false;
+  }
+  async createResponse() {
+    try {
+      const { data } = await cornieClient().post(
+        `/api/v1/kyc/response/${this.id}`,
+        this.payload
+      );
+      window.notify({ msg: "Response submited successfully", status: "success" });
+      setTimeout(() => {
+        this.$router.push('/');
+        //your code to be executed after 1 second
+      }, 6000);
+    } catch (error) {
+      window.notify({ msg: "Response not submited", status: "error" });
+    }
+  }
+
+}
+
+</script>
+<style src="@vueform/slider/themes/default.css"></style>
 <style scoped>
 * {
   font-family: Inter;
   font-style: normal;
 }
-
+.custom{
+     margin-left: -60px;
+    margin-right: -90px;
+}
+input:focus-visible {
+    outline-offset: unset !important;
+}
+:focus-visible {
+    outline: unset !important;
+}
+.slider-connect {
+    background: #fe4d3c;
+    cursor: pointer;
+}
+.slider-handle:focus {
+    box-shadow: 0 0 0 var(--slider-handle-ring-width,3px) #b9371030,var(--slider-handle-shadow,.5px .5px 2px 1px rgba(0,0,0,.32));
+    outline: none;
+}
 .header {
   font-weight: bold;
   font-size: 20px;

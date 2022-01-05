@@ -12,6 +12,7 @@
               <download-icon />
             </span>
             <span
+            @click="$emit('cleartext')"
               class="px-1 cursor-pointer rounded-full border flex items-center justify-center text-white text-xs"
               style="width: 20px; height: 20px; background: #949eb8"
               >x</span
@@ -38,6 +39,7 @@ import { Prop } from "vue-property-decorator";
 export default class UploadedFile extends Vue {
   @Prop({ type: String, default: "no file" })
   fileName!: string;
+
 }
 </script>
 

@@ -1,143 +1,121 @@
 <template>
-  <div class="container-fluid p-4 bg-white overflow-y-scroll">
-    <div class="w-full">
-      <div class="w-full py-4" style="border-bottom: 1px solid #c2c7d6">
-        <p class="header">KYC</p>
+  <div>
+      <div class="py-2" style="border-bottom: 1px solid #c2c7d6">
+        <p class="header text-sm">KYC</p>
       </div>
 
       <div class="w-full">
         <!-- <form> -->
+        <p class="normal-text mt-5">Is this practice registered?</p>
         <div class="w-full flex flex-wrap items-center pt-6 pb-8">
-          <p class="normal-text mr-4">Is this practice registered?</p>
-          <div class="mx-5 -mb-2">
+          <div class=" -mb-2">
             <cornie-radio
-              v-model="data.practiceRegister"
+              v-model="practiceRegister"
               :label="'Yes'"
-              value="Yes"
+              :value="true"
             />
           </div>
-          <div class="mx-5 -mb-2">
+          <div class="ml-4 -mb-2">
             <cornie-radio
-              v-model="data.practiceRegister"
+              v-model="practiceRegister"
               :label="'No'"
-              value="No"
+              :value="false"
             />
           </div>
         </div>
 
-        <div
-          class="w-full section-card px-4 my-6"
-          v-if="data.practiceRegister == 'Yes'"
-        >
-          <collapse-section :title="'Incorporation Details'" :height="200">
-            <template #form>
-              <div class="w-full flex items-center mb-6">
-                <div class="w-4/12">
+        <div class="w-full  my-6" v-if="practiceRegister == true">
+          <accordion-component :title="'Incorporation Details'" :opened="true" :height="200">
+             <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-4 mt-5">
                   <cornie-input
-                    v-model="data.incoporatedName"
+                    v-model="incoporatedName"
                     :label="'Incorporated Name'"
+                    placeholder="--Enter--"
                   />
-                </div>
-                <div class="w-4/12">
-                  <cornie-input v-model="data.rcNumber" :label="'RC Number'" />
-                </div>
-                <div class="w-4/12">
+                  <cornie-input v-model="rcNumber"  placeholder="--Enter--" :label="'RC Number'" />
+                  <file-picker
+                      @uploaded="idFileUploaded"
+                      v-model="certificateOfIncoporation"
+                      :label="'Certificate of Incorporation'"
+                      class=""
+                    />
                   <cornie-input
-                    v-model="data.certificateOfIncoporation"
-                    :label="'Certificate of Incorporation'"
-                  />
-                </div>
-              </div>
-              <div class="w-full flex items-center my-6">
-                <div class="w-4/12">
-                  <cornie-input
-                    v-model="data.formCAC"
+                    v-model="formCAC"
                     :label="'Form CAC 1.1'"
+                      placeholder="--Enter--"
                   />
-                </div>
-                <div class="w-4/12">
                   <cornie-input
-                    v-model="data.memorandumAndArticleOfAssociation"
+                    v-model="memorandumAndArticleOfAssociation"
                     :label="'Memorandum & Articles of Association'"
+                      placeholder="--Enter--"
                   />
-                </div>
-                <div class="w-4/12">
                   <cornie-input
-                    v-model="data.taxIdentificationNumber"
+                    v-model="taxIdentificationNumber"
                     :label="'Tax Identification Number'"
+                      placeholder="--Enter--"
                   />
-                </div>
               </div>
             </template>
-          </collapse-section>
+          </accordion-component>
         </div>
 
-        <div class="w-full section-card px-4 my-6">
-          <collapse-section
+        <div class="w-full my-6">
+          <accordion-component
             :title="'Particulars of Directors'"
-            :overflow="true"
-            @add="() => (nominateRefree = true)"
+            :opened="true"
+            @add="setDirector"
             :height="480"
-            :showAdd="true"
+            :add="true"
             :buttonText="'Select existing director'"
           >
-            <template #form>
-              <div class="w-full section-card p-4">
-                <collapse-section
-                  :title="'Director 1'"
-                  :height="330"
-                  :overflow="true"
+           <template v-slot:default>
+              <div class="w-full pb-6">
+                <accordion-component
+                  :editabetitle="'Director'+' '+ [index + 1]"
+                    v-for="(director, index) in particularOfDirectors"
+                  :key="index"
+                   :height="480"
+                  :opened="true"
+                  class="w-full"
                 >
-                  <template #form>
-                    <div class="w-full flex items-center mb-6">
-                      <div class="w-4/12">
+                   <template v-slot:default>
+                    <div class="w-full grid grid-cols-3 gap-4 mt-5 pb-8">
                         <cornie-input
                           v-model="director.fullName"
                           :label="'Full Name'"
+                            placeholder="--Enter--"
                         />
-                      </div>
-                      <div class="w-4/12">
-                        <div class="w-11/12">
                           <date-picker
                             v-model="director.dateOfBirth"
                             :label="'Date of Birth'"
+                              placeholder="--Enter--"
                           />
-                        </div>
-                      </div>
-                      <div class="w-4/12">
-                        <cornie-input
+                        <cornie-select
                           v-model="director.nationality"
                           :label="'Nationality'"
+                          :items="nationState.countries"
+                          placeholder="--Select--"
+                          class="w-full"
                         />
-                      </div>
-                    </div>
-
-                    <div class="w-full flex items-center my-6">
-                      <div class="w-4/12">
                         <cornie-input
                           v-model="director.emailAddress"
                           :label="'Email Address'"
+                            placeholder="--Enter--"
                         />
-                      </div>
-                      <div class="w-4/12">
-                        <div class="w-11/12">
                           <phone-input
-                            v-model="director.phone"
-                            v-model:code="director.dialCode"
+                            v-model="director.phoneNumber.number"
+                            v-model:code="director.phoneNumber.dialCode"
                             :label="'Phone Number'"
+                              placeholder="--Enter--"
                           />
-                        </div>
-                      </div>
-                      <div class="w-4/12">
                         <cornie-input
                           :label="'Tax Identification Number'"
                           v-model="director.taxIdentificationNumber"
+                            placeholder="--Enter--"
                         />
-                      </div>
-                    </div>
-                    <div class="w-full flex items-center mb-6">
-                      <div class="w-4/12 -mb-4">
-                        <cornie-select
+                         <cornie-select
+                         class="w-full"
                           :items="[
                             'Nigerian Bank Identification Number (BVN)',
                             'International Passport',
@@ -146,26 +124,24 @@
                             'Voter\'s Card',
                           ]"
                           :label="'Identification Document'"
+                           placeholder="--Select--"
+                           v-model="director.identificationDocumentNumber"
                         />
-                      </div>
-                      <div class="w-4/12">
-                        <cornie-input
+                         <cornie-input
                           v-model="director.identificationDocumentNumber"
                           :label="'Identification Document Number'"
+                            placeholder="--Enter--"
                         />
-                      </div>
-                      <div class="w-4/12">
-                        <file-picker
-                          @uploaded="idFileUploaded"
+                         <file-picker
+                          @uploaded="Uploaded"
+                            @change="sendIndex(index)"
                           :label="'Upload Identitification Document '"
+                          v-model="director.uploadedIdentificationDocument"
+                            placeholder="--Enter--"
                         />
-                      </div>
-                    </div>
-                    <div class="w-full flex items-center mb-6">
-                      <div class="w-4/12 -mb-4">
-                        <cornie-select
+                         <cornie-select
                           v-model="director.practiceLicenseDocument"
-                          style="z-index: 1000"
+                          class="w-full"
                           :items="[
                             'Medical Practice Licence',
                             'Pharmacy Practice Licence',
@@ -174,123 +150,115 @@
                             'Not Applicable',
                           ]"
                           :label="'Practice Licence Document'"
+                          placeholder="--Select--"
                         />
-                      </div>
-                      <div class="w-4/12">
-                        <cornie-input
+                           <cornie-input
                           v-model="director.practiceLicenseNumber"
                           :label="'Practice Licence Number'"
+                            placeholder="--Enter--"
                         />
-                      </div>
-                      <div class="w-4/12">
                         <file-picker
+                        class="w-full"
                           @uploaded="practiceLicenceUploaded"
+                          @change="sendIndex(index)"
                           :label="'Upload Practice Licence Document'"
+                          v-model="director.uploadedPracticeLicenseDocument"
+                            placeholder="--Enter--"
                         />
-                      </div>
                     </div>
                   </template>
-                </collapse-section>
+                </accordion-component>
               </div>
             </template>
-          </collapse-section>
+          </accordion-component>
         </div>
 
-        <div class="w-full section-card px-4 my-6">
-          <collapse-section :title="'Address'" :height="370">
-            <template #form>
-              <div class="w-full flex items-center mb-6">
-                <div class="w-4/12 -mb-4">
+        <div class="w-full my-6">
+          <accordion-component :title="'Address'" :height="370" :opened="true">
+            <template  v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-4 items-center mt-5 pb-6">
                   <cornie-select
-                    v-model="data.country"
-                    :items="['Nigeria']"
+                    v-model="nationState.country"
+                    :items="nationState.countries"
                     :label="'Country'"
+                    class="w-full"
+                    placeholder="--Select--"
                   />
-                </div>
-                <div class="w-4/12 -mb-4">
                   <cornie-select
-                    v-model="data.stateRegion"
-                    :items="['Lagos']"
+                    v-model="stateRegion"
+                    :items="nationState.states"
                     :label="'State of Region'"
+                      class="w-full"
+                       placeholder="--Select--"
                   />
-                </div>
-                <div class="w-4/12 -mb-4">
-                  <cornie-select
-                    v-model="data.city"
-                    :items="['Ikeja']"
+                  <cornie-input
+                    v-model="city"
                     :label="'City'"
+                    class="w-full"
+                     placeholder="--Select--"
                   />
-                </div>
-              </div>
-              <div class="w-full flex items-center mb-6">
-                <div class="w-4/12">
+              
                   <cornie-input
-                    v-model="data.zipCode"
+                    v-model="zipCode"
                     :label="'ZIP or Post Code'"
+                      class="w-full"
                   />
-                </div>
-                <div class="w-4/12">
-                  <cornie-input v-model="data.address" :label="'Address'" />
-                </div>
-                <div class="w-4/12">
+                  <cornie-input v-model="address"   placeholder="--Enter--" :label="'Address'"   class="w-full"/>
                   <cornie-input
-                    v-model="data.apartment"
+                    v-model="apartment"
                     :label="'Apartment or House Number'"
+                      class="w-full"
+                       placeholder="--Enter--"
                   />
-                </div>
               </div>
-              <div class="w-full flex items-start mb-6">
-                <div class="w-4/12">
+              <div class="grid grid-cols-2 gap-4 pb-8 w-full">
                   <file-picker
                     @uploaded="addrssProofUploaded"
                     :label="'Please upload a proof of address *'"
                   />
-                </div>
-                <div class="w-8/12">
-                  <div class="w-full upload-desc p-3">
-                    <p
-                      style="border-bottom: 1px solid #c2c7d6"
-                      class="pb-4 mb-3"
-                    >
-                      Proof of address can be any of the listed documents below,
-                      not more than 3 months old.
-                    </p>
-                    <div class="w-full">
-                      <ul class="pl-4" style="list-style: unset">
-                        <li class="text-normal" style="color: #14171f">
-                          Utility bill for services to the address
-                        </li>
-                        <li class="text-normal" style="color: #14171f">
-                          Bank statement showing current address
-                        </li>
-                        <li class="text-normal" style="color: #14171f">
-                          Tax assessment document showing address
-                        </li>
-                        <li class="text-normal" style="color: #14171f">
-                          Letter from a public authority
-                        </li>
-                      </ul>
+                    <div class="w-full upload-desc p-3">
+                      <span
+                        class="pb-4 text-xs border-b-2 border-gray-200 mb-3"
+                      >
+                        Proof of address can be any of the listed documents below,
+                        not more than 3 months old.
+                      </span>
+                      <div class="w-full mt-8">
+                        <ul class="pl-4" style="list-style: unset">
+                          <li class="text-normal mb-3 text-sm" style="color: #14171f">
+                            Utility bill for services to the address
+                          </li>
+                          <li class="text-normal mb-3 text-sm" style="color: #14171f">
+                            Bank statement showing current address
+                          </li>
+                          <li class="text-normal mb-3 text-sm" style="color: #14171f">
+                            Tax assessment document showing address
+                          </li>
+                          <li class="text-normal mb-3 text-sm" style="color: #14171f">
+                            Letter from a public authority
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                </div>
               </div>
             </template>
-          </collapse-section>
+          </accordion-component>
         </div>
 
         <div
-          class="w-full section-card px-4 my-6"
-          v-if="data.practiceRegister == 'Yes'"
+          class="w-full my-6"
+          v-if="practiceRegister == true"
         >
-          <collapse-section
+          <accordion-component
             :title="'Beneficial Owners'"
             :showAddExisting="true"
+            :opened="true"
             @add="() => (addOwner = true)"
-            :showAdd="true"
-            :buttonText="'Select existing dirctor'"
+            :add="true"
+            :expandsection="true"
             :height="owners?.length <= 0 ? 45 : 52 * owners?.length + 40"
           >
-            <template #form>
+            <template  v-slot:default>
               <div
                 class="w-full flex"
                 v-for="(owner, index) in owners"
@@ -306,45 +274,32 @@
                   {{ owner.percentage }}%
                 </div>
                 <div
-                  class="w-4/12 py-3 px-2 flex justify-end"
+                  class="w-4/12 py-3 px-2 flex justify-end cursor-pointer"
+                  @click="removeowners(index)"
                   style="border: 1px solid #c2c7d6"
                 >
                   <span><delete-icon /></span>
                   <span class="text-sm font-normal mx-2">Delete</span>
                 </div>
               </div>
-              <!-- <div class="w-full flex">
-                                    <div class="w-4/12 py-3 px-2" style="border: 1px solid #C2C7D6">
-                                        <span class="normal-text">Ademola Emeka</span>
-                                    </div>
-                                    <div class="w-4/12 py-3 px-2 flex justify-end" style="border: 1px solid #C2C7D6">
-                                        10%
-                                    </div>
-                                    <div class="w-4/12 py-3 px-2 flex justify-end" style="border: 1px solid #C2C7D6">
-                                        <span><delete-icon /></span>
-                                        <span class="text-sm font-normal mx-2">Delete</span>
-                                    </div>
-                                </div> -->
             </template>
-          </collapse-section>
+          </accordion-component>
         </div>
 
-        <div class="w-full section-card px-4 my-6">
-          <collapse-section
+        <div class="w-full my-6">
+          <accordion-component
             :title="'Nominate Referees'"
             @add="() => (nominateRefree = true)"
             :showAddExisting="true"
-            :overflow="
-              nominees.findIndex((i) => i.showEditEmail || i.showEditPhone) >= 0
-            "
+            :opened="true"
+             :add="true"
+            :expandsection="true"
             :showAdd="true"
-            :buttonText="'Select existing dirctor'"
-            :height="nominees?.length <= 0 ? 45 : 52 * nominees?.length + 40"
           >
-            <template #form>
+            <template  v-slot:default>
               <div
                 class="w-full flex"
-                v-for="(nominee, index) in nominees"
+                v-for="(nominee, index) in orgKyc.referees"
                 :key="index"
               >
                 <div
@@ -372,7 +327,7 @@
                   >
                     <!-- Modal content -->
                     <div class="modal-content">
-                      <cornie-input v-model="nominee.newEmail" />
+                      <cornie-input v-model="nominee.email" />
                       <div class="w-11/12 flex justify-between py-2">
                         <span
                           class="cancel cursor-pointer"
@@ -381,7 +336,7 @@
                         >
                         <span
                           class="update cursor-pointer"
-                          @click="updateNomineeEmail(index)"
+                            @click="updateRefree(nominee.id,index,nominee.number,nominee.dialCode,nominee.name,nominee.email)"
                           >Update</span
                         >
                       </div>
@@ -393,10 +348,10 @@
                   style="border: 1px solid #c2c7d6; width: 30%"
                 >
                   <div class="w-full flex justify-between">
-                    <span>{{ nominee.phone }}</span>
+                    <span>{{ nominee.phone?.dialCode }}{{ nominee.phone?.number }}</span>
                     <span
                       class="cursor-pointer"
-                      @click="togglePhoneDialog(nominee, index)"
+                      @click="togglePhoneDialog(nominee, index,nominee.phone.dialCode,nominee.phone.number )"
                       ><edit-icon
                     /></span>
                   </div>
@@ -407,7 +362,8 @@
                   >
                     <!-- Modal content -->
                     <div class="modal-content">
-                      <cornie-input v-model="nominee.newPhone" />
+                      <phone-input   v-model="nominee.phone.number"
+                            v-model:code="nominee.phone.dialCode" />
                       <div class="w-11/12 flex justify-between py-2">
                         <span
                           class="cancel cursor-pointer"
@@ -416,7 +372,7 @@
                         >
                         <span
                           class="update cursor-pointer"
-                          @click="updateNomineePhone(index)"
+                          @click="updateRefree(nominee.id,index,nominee.phone.number,nominee.phone.dialCode,nominee.name,nominee.email)"
                           >Update</span
                         >
                       </div>
@@ -424,7 +380,8 @@
                   </div>
                 </div>
                 <div
-                  class="py-3 px-2 flex justify-end"
+                  class="py-3 px-2 flex justify-end cursor-pointer"
+                  @click="deleteItem(nominee.id)"
                   style="border: 1px solid #c2c7d6; width: 10%"
                 >
                   <span><delete-icon /></span>
@@ -432,20 +389,20 @@
                 </div>
               </div>
             </template>
-          </collapse-section>
+          </accordion-component>
         </div>
 
         <div class="w-full py-10 flex justify-end">
           <cornie-button
             @click.prevent="() => $router.go(-1)"
-            class="rounded-full mr-6 px-8 font-semibold cursor-pointer py-1"
+            class="rounded-full mr-3 px-8 font-semibold cursor-pointer py-1"
             style="border: 1px solid #080056; color: #080056"
           >
             Cancel
           </cornie-button>
 
           <cornie-button
-            @click="onSave"
+            @click="submit"
             :loading="loading"
             class="rounded-full px-8 font-semibold cursor-pointer py-1 text-white"
             style="background: #fe4d3c"
@@ -456,25 +413,32 @@
 
         <!-- </form> -->
       </div>
-    </div>
-
-    <modal :visible="nominateRefree">
-      <nominate-refree
+   
+      <!-- <nominate-refree
         @refadded="refNominated"
-        @close="() => (nominateRefree = false)"
+        @close="close"
+        :id="orgkycId"
+        v-model:referees="referees"
+        v-model="nominateRefree"
+      /> -->
+  </div>
+      <nominate-refree
+        @refree-added="refreeadded"
+        v-model="nominateRefree"
+        :id="orgkycId"
       />
-    </modal>
+  
 
-    <modal :visible="addOwner">
       <beneficial-owner
         @ownerAdded="ownerAdded"
         @close="() => (addOwner = false)"
+        :id="id"
+          v-model="addOwner"
       />
-    </modal>
-  </div>
 </template>
 
 <script lang="ts">
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { Options, Vue, setup } from "vue-class-component";
 import CollapseSection from "./components/collapse-section.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -492,6 +456,14 @@ import CornieRadio from "@/components/cornieradio.vue";
 import EditIcon from "@/components/icons/edit-purple.vue";
 import { cornieClient } from "@/plugins/http";
 import { useHandleImage } from "@/composables/useHandleImage";
+import AccordionComponent from "@/components/form-accordion.vue";
+import IKyc, { ParticularOfDirectors,BeneficialOwners } from "@/types/IKyc";
+import { namespace } from "vuex-class";
+import { useCountryStates } from "@/composables/useCountryStates";
+import { reactive } from "@vue/reactivity";
+import IPhone from "@/types/IPhone";
+import IKycref from "@/types/IKycref";
+const kyc = namespace("kyc");
 
 export interface IBeneficialOwner {
   name: string;
@@ -510,6 +482,7 @@ export interface IBeneficialOwner {
     CornieButton,
     NominateRefree,
     BeneficialOwner,
+    AccordionComponent,
     Modal,
     FilePicker,
     CornieRadio,
@@ -517,89 +490,283 @@ export interface IBeneficialOwner {
   },
 })
 export default class KYC extends Vue {
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+
+
+
   nominateRefree = false;
   addOwner = false;
   loading = false;
-  data: any = { practiceRegister: "Yes" };
+  data: any = { practiceRegister: true };
+  allCountries = [];
+  allStates = [];
+  setup() {
+    const { url, placeholder, onChange } = useHandleImage();
+    return { img: reactive({ url, placeholder, onChange }) };
+  }
 
-  uploadedIdentificationDocument = setup(() => useHandleImage());
+nationState = setup(() => useCountryStates());
+ practiceRegister = true;
+  incoporatedName = "";
+  rcNumber = "";
+certificateOfIncoporation  = setup(() => useHandleImage()) as any;
+  formCAC = "";
+  memorandumAndArticleOfAssociation = "";
+  taxIdentificationNumber = "";
+  country = "";
+  stateRegion = "";
+  city = "";
+  zipCode = "";
+  address = "";
+  apartment = "";
+  proofOfAddressUpload = setup(() => useHandleImage()) as any;
+  particularOfDirectors : any = [
+    {
+    fullName : "",
+    dateOfBirth : "",
+    nationality : "",
+    emailAddress : "",
+    phoneNumber : {
+        number: "",
+        dialCode: "+234",
+      } ,
+    taxIdentificationNumber : "",
+    identificationDocumentNumber : "",
+    uploadedIdentificationDocument  : " " as string,
+    practiceLicenseDocument : "",
+    uploadedPracticeLicenseDocument : " " as string,
+    practiceLicenseNumber : "",
+    }
+  ];
+  newDirectors : any= this.particularOfDirectors;
+  beneficialOwners : any = [
+    {
+    name : "",
+    percentage : "",
+  }
+  ] ;
+  newbeneficialOwners: any= [this.beneficialOwners];
+referees = [] as any[];
+newreferees = [] as any;
 
-  uploadedPracticeLicenseDocument = setup(() => useHandleImage());
+  uploadedIdentificationDocument= setup(() => useHandleImage()) as any;
+
+  uploadedPracticeLicenseDocument = setup(() => useHandleImage()) as any;
 
   // uploadedPracticeLicenseDocument = setup(() => useHandleImage());
 
-  proofOfAddressUpload = setup(() => useHandleImage());
-
+  //proofOfAddressUpload = setup(() => useHandleImage());
+  fileIndex= 0;
   director: any = { dialCode: "+234" };
 
-  idFileUploaded(fileUrl: string) {
+   @kyc.Action
+    getKycById!: (id: string) => IKyc;
+
+  @kyc.Action
+  fetchKycs!: () => Promise<void>;
+
+  @kyc.State
+  orgKyc!: IKyc;
+
+  
+  @kyc.Mutation
+  addreferees!: (orgKyc: IKycref) => void;
+
+  @kyc.Action
+  deleteRefree!: (id: string) => Promise<boolean>;
+
+kycId = "";
+  @Watch("kycId")
+  idChanged() {
+    this.setKyc();
+  }
+async setKyc() {
+    const kyc = this.orgKyc;
+    if (!kyc) return;
+    this.practiceRegister = kyc.practiceRegister;
+    this.incoporatedName = kyc.incoporatedName;
+    this.rcNumber = kyc.rcNumber;
+    this.certificateOfIncoporation = kyc.certificateOfIncoporation;
+    this.formCAC = kyc.formCAC;
+    this.memorandumAndArticleOfAssociation = kyc.memorandumAndArticleOfAssociation;
+    this.taxIdentificationNumber = kyc.taxIdentificationNumber;
+    this.country = kyc.country;
+    this.stateRegion = kyc.stateRegion;
+    this.city = kyc.city;
+    this.zipCode = kyc.zipCode;
+    this.address = kyc.address;
+    this.apartment = kyc.apartment;
+    this.proofOfAddressUpload = kyc.proofOfAddressUpload;
+    this.particularOfDirectors = kyc.particularOfDirectors;
+    this.owners = kyc.beneficialOwners;
+    this.referees = kyc.referees;
+
+  }
+  // get setKyc() {
+  //   if(this.orgkycId){
+  //      const kyc = this.orgKyc;
+  //     return{
+  //       practiceRegister : kyc.practiceRegister,
+  //       incoporatedName : kyc.incoporatedName,
+  //       rcNumber : kyc.rcNumber,
+  //       certificateOfIncoporation : kyc.certificateOfIncoporation,
+  //       formCAC : kyc.formCAC,
+  //       memorandumAndArticleOfAssociation : kyc.memorandumAndArticleOfAssociation,
+  //       taxIdentificationNumber : kyc.taxIdentificationNumber,
+  //       country : kyc.country,
+  //       stateRegion : kyc.stateRegion,
+  //       city : kyc.city,
+  //       zipCode : kyc.zipCode,
+  //       address : kyc.address,
+  //     apartment : kyc.apartment,
+  //       roofOfAddressUpload : kyc.proofOfAddressUpload,
+  //       particularOfDirectors : kyc.particularOfDirectors,
+  //       owners : kyc.beneficialOwners,
+  //       referees : kyc.referees,
+  //     }
+       
+  //   }
+
+  // }
+ get orgkycId() {
+    //  return this.orgKyc.map((kyc) => {
+    //   return this.kycId : kyc.id as string;
+    // });  
+    this.kycId = this.orgKyc.id as string;
+    return this.orgKyc.id;
+  }
+    get payload() {
+    return {
+      practiceRegister: this.practiceRegister,
+      incoporatedName: this.incoporatedName,
+      rcNumber: this.rcNumber,
+      certificateOfIncoporation: this.certificateOfIncoporation,
+      formCAC: this.formCAC,
+      memorandumAndArticleOfAssociation: this.memorandumAndArticleOfAssociation,
+      taxIdentificationNumber: this.taxIdentificationNumber,
+      country: this.country,
+      stateRegion: this.stateRegion,
+      city: this.city,
+      zipCode: this.zipCode,
+      address: this.address,
+      apartment: this.apartment,
+      proofOfAddressUpload: this.proofOfAddressUpload,
+      particularOfDirectors: this.particularOfDirectors,
+      beneficialOwners: this.owners,
+      referees: this.referees,
+    };
+  }
+
+  setDirector(){
+    this.particularOfDirectors.push(this.newDirectors)
+  }
+  idFileUploaded(fileUrl: string,) {
     this.director.uploadedIdentificationDocument = fileUrl;
+    this.certificateOfIncoporation = fileUrl;
+    this.proofOfAddressUpload = fileUrl;
+  }
+  
+
+  Uploaded(fileUrl: string) {
+    this.particularOfDirectors[this.fileIndex].uploadedIdentificationDocument = fileUrl;
   }
 
   practiceLicenceUploaded(fileUrl: string) {
-    this.director.uploadedPracticeLicenseDocument = fileUrl;
+    this.particularOfDirectors[this.fileIndex].uploadedPracticeLicenseDocument = fileUrl;
   }
-
+  sendIndex(index:number){
+    this.fileIndex = index
+  }
   addrssProofUploaded(fileUrl: string) {
     this.data.proofOfAddressUpload = fileUrl;
   }
 
   nominees = [] as any[];
 
-  owners = [] as IBeneficialOwner[];
-
-  refNominated(data: any) {
+  //owners = [] as IBeneficialOwner[];
+ owners : any= this.beneficialOwners;
+  async refNominated(data: any) {
+    this.referees = data;
+    this.newreferees = data;
     this.nominees?.push(data);
+    
   }
 
   ownerAdded(data: any) {
+    this.beneficialOwners = data;
     this.owners?.push(data);
   }
-
-  async onSave() {
-    this.director.phoneNumber = `${this.director.dialCode}${this.director.phone}`;
-
-    this.data.practiceRegister =
-      this.data.practiceRegister === "Yes" ? true : false;
-
-    this.data.particularOfDirectors = [this.director];
-    this.data.beneficailOwners = this.owners;
-    this.data.nominateReferess = this.nominees.map((nominee: any) => {
-      nominee.emailAddress = nominee.email;
-      nominee.phonenNumber = nominee.phone;
-      return nominee;
-    });
-
-    if (!this.data?.id) {
-      this.createKYC(this.data);
-    } else {
-      this.updateKYC(this.data);
-    }
+   async refreeadded(){
+     this.addreferees([this.addreferees] as any);
+     await this.fetchKycs();
+     this.nominateRefree = false;
+     // console.log(this.orgKyc.referees);
+  }
+async submit() {
+    this.loading = true;
+    if (this.orgkycId) await this.updateKYC();
+    else await this.createKYC();
+    this.loading = false;
   }
 
-  async createKYC(body: any) {
+
+   async createRefree() {
     try {
-      const { data } = await cornieClient().post("/api/v1/kyc", body);
-      if (data?.id) {
-        window.notify({ msg: "KYC updated successfully", status: "success" });
+      const response = await cornieClient().post(
+        `/api/v1/kyc/referee/${this.orgkycId}`,
+        this.referees
+      );
+      if(response.success){
+        console.log(this.referees,"sdgjksdg");
+        window.notify({ msg: "Refree added successfully", status: "success" });
+          await this.addreferees(this.orgKyc.referees as any);
       }
-      this.loading = false;
+
     } catch (error) {
-      this.loading = false;
+        console.log(this.referees,"sdgjksdg");
+        window.notify({ msg: "Refree added successfully", status: "success" });
+           await this.addreferees(this.orgKyc.referees as any);
+     // window.notify({ msg: "Referee not added", status: "error" });
+    }
+  }
+  async createKYC() {
+    this.payload.country = this.nationState.country;
+   // this.payload.particularOfDirectors.uploadedIdentificationDocument = this.uploadedIdentificationDocument;
+   // this.payload.particularOfDirectors.uploadedPracticeLicenseDocument = this.uploadedPracticeLicenseDocument;
+
+    try {
+      const { data } = await cornieClient().post(
+        "/api/v1/kyc",
+        this.payload
+      );
+      window.notify({ msg: "KYC updated successfully", status: "success" });
+    } catch (error) {
       window.notify({ msg: "KYC update failed", status: "error" });
     }
   }
-
-  async updateKYC(body: any) {
+ async updateKYC() {
+    const url = `/api/v1/kyc/${this.orgkycId}`;
+    const payload = {
+      ...this.payload,
+      id:this.orgkycId,
+    };
     try {
-      const { data } = await cornieClient().put(`/api/v1/kyc/${body.id}`, body);
-      if (data?.id) {
-        window.notify({ msg: "KYC updated successfully", status: "success" });
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "KYC updated successfully",
+          status: "success",
+        });
+        await this.fetchKycs();
       }
-      this.loading = false;
     } catch (error) {
-      this.loading = false;
-      window.notify({ msg: "KYC update failed", status: "error" });
+      window.notify({
+        msg: "KYC update failed",
+        status: "error",
+      });
     }
   }
 
@@ -632,27 +799,98 @@ export default class KYC extends Vue {
   }
 
   toggleEditDialog(nominee: any, index: number) {
-    this.nominees[index].newEmail = this.nominees[index].email;
-    this.nominees[index].showEditEmail = !this.nominees[index].showEditEmail;
+    this.referees[index].newEmail = this.referees[index].email;
+    this.referees[index].showEditEmail = !this.referees[index].showEditEmail;
   }
 
-  togglePhoneDialog(nominee: any, index: number) {
-    this.nominees[index].newPhone = this.nominees[index].phone;
-    this.nominees[index].showEditPhone = !this.nominees[index].showEditPhone;
+  togglePhoneDialog(nominee: any, index: number,dialcode:string,phone:string) {
+    this.referees[index].newPhone = dialcode + ''+ phone;
+   // this.referees[index].newPhone.number = phone;
+    this.referees[index].showEditPhone = !this.referees[index].showEditPhone;
   }
 
   updateNomineeEmail(index: number) {
-    this.nominees[index].email = this.nominees[index].newEmail;
-    this.nominees[index].showEditEmail = false;
+    this.referees[index].email = this.referees[index].newEmail;
+    this.referees[index].showEditEmail = false;
   }
 
-  updateNomineePhone(index: number) {
-    this.nominees[index].phone = this.nominees[index].newPhone;
-    this.nominees[index].showEditPhone = false;
+  async updateRefree(id:string,index: number,value:string,value2:string,name:string,email:string) {
+    // let phonenumber = this.referees[index].phone.dialCode + this.referees[index].phone.number ;
+    // console.log(phonenumber,"LOOK");
+    // phonenumber = this.referees[index].newPhone;
+    // this.referees[index].showEditPhone = false;
+     const url = `/api/v1/kyc/referee/${id}`;
+    const payload = {
+       name: name,
+      email: email,
+      notified: false,
+      phone: {
+        dialCode: value2 || '+234',
+        number:value || '091994858882'
+      }
+    };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "Referee updated successfully",
+          status: "success",
+        });
+        //phonevalue = response.data.phone.dialCode + response.data.phone.number;
+        this.referees[index].showEditPhone = false;
+        this.referees[index].showEditEmail = false;
+        this.addreferees(this.referees as any);
+        console.log(this.referees as any)
+      }
+    } catch (error) {
+      window.notify({
+        msg: "Referee update failed",
+        status: "error",
+      });
+    }
+  }
+  async removerefree(value:string) {
+    try {
+      const { data } = await cornieClient().delete(
+        `/api/v1/kyc/referee/${value}`,
+        {}
+      );
+        this.addreferees([this.orgKyc.referees] as any);
+      window.notify({ msg: "Refree deleted successfully", status: "success" });
+        await this.fetchKycs();
+    } catch (error) {
+      window.notify({ msg: "Refree deleted not  successfully", status: "error" });
+    }
+  }
+  removeowners(index: number) {
+    this.owners.splice(index, 1);
+  }
+   get allCountry() {
+    if (!this.allCountries || this.allCountries.length === 0) return [];
+    return this.allCountries.map((i: any) => {
+      return {
+        code: i.code,
+        display: i.name,
+      };
+    });
+  }
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this refree",
+      title: "Delete refree",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteRefree(id))
+      window.notify({ msg: "Refree deleted successfully", status: "success" });
+    else
+      window.notify({ msg: "Refree deleted not  successfully", status: "error" });
   }
 
   async created() {
     await this.getKYCData();
+    await this.setKyc();
+    await this.fetchKycs();
   }
 }
 </script>

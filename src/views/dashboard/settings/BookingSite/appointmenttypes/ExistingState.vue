@@ -45,7 +45,12 @@
       </cornie-table>
     </div>
   </div>
-  <appointment-modal :id="typeId" v-model="registerNew" @type-added="typeadded" @closesidemodal="closeModal" />
+  <appointment-modal
+    :id="typeId"
+    v-model="registerNew"
+    @type-added="typeadded"
+    @closesidemodal="closeModal"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -105,8 +110,8 @@ export default class AppointmentTypes extends Vue {
 
   registerNew = false;
   query = "";
-practitioner = [] as any;
-typeId= "";
+  practitioner = [] as any;
+  typeId = "";
 
   @appointmentType.State
   appointmentTypes!: IAppointmentTypes[];
@@ -114,16 +119,16 @@ typeId= "";
   @appointmentType.Action
   fetchappointmentTypes!: () => Promise<void>;
 
-    @appointmentType.Action
+  @appointmentType.Action
   deleteAppointmentType!: (id: string) => Promise<boolean>;
 
- @catalogues.Action
+  @catalogues.Action
   getServices!: () => Promise<void>;
 
   @catalogues.State
   services!: ICatalogueService[];
 
- @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   // appointmentId ="";
@@ -170,9 +175,9 @@ typeId= "";
   get empty() {
     return this.appointmentTypes.length < 1;
   }
- async typeadded(){
-   await this.fetchappointmentTypes();
- }
+  async typeadded() {
+    await this.fetchappointmentTypes();
+  }
   get items() {
     const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
       (appointmentType as any).createdAt = new Date(
@@ -185,7 +190,10 @@ typeId= "";
         service: this.getServiceName(appointmentType.serviceId),
         duration: this.getDuration(appointmentType.serviceId),
         forms: "-----",
-        practitioners: this.authPractitioner.firstName +' '+ this.authPractitioner.lastName,
+        practitioners:
+          this.authPractitioner.firstName +
+          " " +
+          this.authPractitioner.lastName,
         booking: "-----",
         status: "Active",
       };
@@ -193,11 +201,11 @@ typeId= "";
     if (!this.query) return appointmentTypes;
     return search.searchObjectArray(appointmentTypes, this.query);
   }
-  showTypeModal(value:string){
+  showTypeModal(value: string) {
     this.registerNew = true;
     this.typeId = value;
   }
-   async deleteItem(id: string) {
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this appointment type",
       title: "Delete request",
@@ -206,25 +214,22 @@ typeId= "";
 
     if (await this.deleteAppointmentType(id))
       window.notify({ msg: "Appoinment type deleted", status: "success" });
-    else window.notify({ msg: "Appoinment type not deleted", status: "error" }); 
+    else window.notify({ msg: "Appoinment type not deleted", status: "error" });
   }
- getDuration(id:string){
- const pt = this.services.find((i: any) => i.id === id);
+  getDuration(id: string) {
+    const pt = this.services.find((i: any) => i.id === id);
     return pt ? `${pt.serviceUOM}` : "";
+  }
 
- }
- 
- getServiceName(id:string){
- const pt = this.services.find((i: any) => i.id === id);
+  getServiceName(id: string) {
+    const pt = this.services.find((i: any) => i.id === id);
     return pt ? `${pt.name}` : "";
-
- }
-  getPractitionerName(id:string){
- const pt = this.practitioner.find((i: any) => i.id === id);
+  }
+  getPractitionerName(id: string) {
+    const pt = this.practitioner.find((i: any) => i.id === id);
     return pt ? `${pt.firstName}  ${pt.lastName}` : "";
+  }
 
- }
- 
   async fetchPractitioner() {
     const AllPractitioner = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractitioner]);
@@ -232,9 +237,8 @@ typeId= "";
   }
   async created() {
     await this.fetchappointmentTypes();
-      await this.getServices();
-      await this.fetchPractitioner();
-    
+    await this.getServices();
+    await this.fetchPractitioner();
   }
 }
 </script>

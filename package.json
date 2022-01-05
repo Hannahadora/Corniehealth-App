@@ -12,7 +12,6 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.0",
     "aos": "^2.3.4",
     "chart.js": "^3.5.1",
     "sass-loader": "^12.2.0",
@@ -22,6 +21,7 @@
     "vue-class-component": "^8.0.0-rc.1",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.8",
+    "vue-simple-password-meter": "^1.1.0",
     "vue-slide-bar": "^1.2.0",
     "vue-star-rating": "^2.1.0",
     "vuedraggable": "^4.0.3",

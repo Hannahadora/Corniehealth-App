@@ -51,7 +51,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: to => `${to.path}/home`.replace("//", "/"),
+    redirect: (to) => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
       {
@@ -101,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "settings/",
         name: "Settings",
         component: Settings,
-        redirect: to => `${to.path}/org-info`.replace("//", "/"),
+        redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
             path: "care-partners",
@@ -326,19 +326,6 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
       {
-        path: "kyc",
-        props: true,
-        name: "KYC",
-        component: () => import("@/views/dashboard/settings/kyc/index.vue"),
-      },
-      {
-        path: "kyc-link",
-        props: true,
-        name: "KYC Link",
-        component: () =>
-          import("@/views/dashboard/settings/kyc/components/email-link.vue"),
-      },
-      {
         path: "pricebook",
         name: "PriceBook",
         component: () =>
@@ -375,6 +362,64 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
     ],
+  },
+  SettingsRoute,
+  UserRoute,
+  {
+    path: "org-heirarchy/new-designation/:id?",
+    props: true,
+    name: "New Designation",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/OrganisationHierarchy/designations/NewDesignation.vue"
+      ),
+  },
+  {
+    path: "kyc",
+    props: true,
+    name: "KYC",
+    component: () => import("@/views/dashboard/settings/kyc/index.vue"),
+  },
+  {
+    path: "kyc-link",
+    props: true,
+    name: "KYC Link",
+    component: () =>
+      import("@/views/dashboard/settings/kyc/components/email-link.vue"),
+  },
+  {
+    path: "pricebook",
+    name: "PriceBook",
+    component: () => import("@/views/dashboard/settings/pricebook/index.vue"),
+  },
+  {
+    path: "catalogues",
+    name: "Catalogues",
+    component: () => import("@/views/dashboard/settings/catalogues/index.vue"),
+  },
+  {
+    path: "newservice/:serviceId?",
+    name: "New Service",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/catalogues/components/new-service.vue"
+      ),
+  },
+  {
+    path: "newproduct",
+    name: "New Product",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/catalogues/components/new-products.vue"
+      ),
+  },
+  {
+    path: "addvariant/:catalogueId",
+    name: "Medication",
+    component: () =>
+      import(
+        "@/views/dashboard/settings/catalogues/components/new-products.vue"
+      ),
   },
 ];
 

@@ -17,10 +17,10 @@ export default {
   },
   mutations: {
     setPracticeInformations(state, practiceInformations: any) {
-      state.practiceInformations = [practiceInformations]
+      state.practiceInformations = [practiceInformations];
     },
     setPracticeHours(state, practiceHours: any) {
-      state.practiceHours = [practiceHours]
+      state.practiceHours = [practiceHours];
     },
     updatePracticeInformations(
       state,
@@ -51,13 +51,13 @@ export default {
     },
     getPracticeinformationById(ctx, id: string) {
       return ctx.state.practiceInformations.find(
-        practiceInformation => practiceInformation.id == id
-      )
+        (practiceInformation) => practiceInformation.id == id
+      );
     },
     getPracticeHourById(ctx, id: string) {
       return ctx.state.practiceHours.find(
-        practiceHour => practiceHour.id == id
-      )
+        (practiceHour) => practiceHour.id == id
+      );
     },
   },
 } as StoreOptions<IPracticeInformationState>;

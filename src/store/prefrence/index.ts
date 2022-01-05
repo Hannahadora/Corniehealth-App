@@ -13,7 +13,7 @@ export default {
   },
   mutations: {
     setPrefrences(state, prefrences: any) {
-      state.prefrences = [prefrences]
+      state.prefrences = [prefrences];
     },
   },
   actions: {
@@ -22,9 +22,7 @@ export default {
       ctx.commit("setPrefrences", prefrences);
     },
     getPrefrenceById(ctx, id: string) {
-      return ctx.state.prefrences.find(
-        prefrence => prefrence.id == id
-      )
+      return ctx.state.prefrences.find((prefrence) => prefrence.id == id);
     },
   },
 } as StoreOptions<PrefrenceState>;

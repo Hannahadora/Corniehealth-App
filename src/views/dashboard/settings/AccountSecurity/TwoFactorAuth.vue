@@ -9,13 +9,15 @@
       />
     </div>
     <div class="flex items-center">
-      <list-boxes types="checkbox" class="mt-2" />
+      <!-- <list-boxes types="checkbox" class="mt-2" /> -->
+         <cornie-checkbox/>
       <span class="ml-2"
         >Enforce two factor authentication during sign in for all users within
         your domain.</span
       >
       <div class="cursor-pointer ml-2 my-auto">
-        <svg
+       
+         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
           height="20"
@@ -29,10 +31,10 @@
         </svg>
       </div>
     </div>
-    <div class="grid grid-cols-3 gap-x-16 my-10 border-t-2 border-dashed">
-      <div class="col-span-2 mt-10">
-        <label for="otp"> Enter the one time pin sent to you email </label>
-        <br />
+    <div class="grid grid-cols-2 mt-10 gap-4 border-t-2 border-dashed">
+      <div class="mt-12">
+        <label for="otp" class="text-sm mb-0"> Enter the one time pin sent to you email </label>
+       
         <input
           autocomplete="false"
           type="text"
@@ -42,16 +44,16 @@
           class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
         />
         <br />
-        <p class="text-danger font-bold cursor-pointer" @click="sendCode">
-          SEND CODE
+        <p class="text-danger cursor-pointer text-sm mt-1" @click="sendCode">
+         Resend Code
         </p>
       </div>
 
-      <div class="grid-cols-3 my-10">
-        <label for="Password" class="font-bold text-base uppercase">
+      <div class="mt-10">
+        <label for="Password" class="text-sm mb-0">
           Confirm Password
         </label>
-        <br />
+       
         <password-input
           id="ConfirmPassword"
           required
@@ -79,6 +81,7 @@ import ListBoxes from "@/components/ListBoxes.vue";
 import ToogleCheck from "@/components/ToogleCheck.vue";
 import NotificationIcon from "@/components/icons/notification.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
 import { quantumClient } from "@/plugins/http";
 import store from "@/store";
 
@@ -89,6 +92,7 @@ export default {
     ToogleCheck,
     NotificationIcon,
     PasswordInput,
+    CornieCheckbox,
   },
   data() {
     return {

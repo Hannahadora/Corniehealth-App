@@ -7,20 +7,21 @@
         v-for="(contacts, key, i) in titles"
         :key="key"
       >
-        <template v-slot:misc="{ expanded }">
-          <add-icon
-            :class="{ 'text-white': expanded }"
-            class="text-primary cursor-pointer fill-current"
+        <div class="w-full border p-5 pb-2 flex flex-col">
+          <button
+            class="bg-danger text-sm font-bold rounded-full text-white py-2 px-10 my-auto focus:outline-none hover:opacity-90 ml-auto"
             @click="addNew(key)"
-          />
-        </template>
-        <div class="w-full border p-2 flex flex-wrap">
-          <contact-card
-            :contact="contact"
-            v-for="contact in contacts"
-            :key="contact.id"
-            class="m-1"
-          />
+          >
+            Add Contact
+          </button>
+          <div class="w-full flex">
+            <contact-card
+              :contact="contact"
+              v-for="contact in contacts"
+              :key="contact.id"
+              class="m-1"
+            />
+          </div>
         </div>
       </accordion-item>
     </accordion>

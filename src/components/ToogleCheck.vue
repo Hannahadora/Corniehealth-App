@@ -24,9 +24,9 @@
 <style scoped>
 .switch {
   position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
+    display: inline-block;
+   width: 60px;
+    height: 34px;
 }
 .switch input {
   opacity: 0;
@@ -46,14 +46,13 @@
 }
 .slider:before {
   position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+    content: "";
+    height: 28px;
+    width: 28px;
+    left: 2px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
 }
 input:checked + .slider {
   background: #fe4d3c;

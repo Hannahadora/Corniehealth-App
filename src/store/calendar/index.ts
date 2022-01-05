@@ -13,7 +13,7 @@ export default {
   },
   mutations: {
     setCalendars(state, calendars: any) {
-      state.calendars = [calendars]
+      state.calendars = [calendars];
     },
   },
   actions: {
@@ -22,9 +22,7 @@ export default {
       ctx.commit("setCalendars", calendars);
     },
     getCalendarById(ctx, id: string) {
-      return ctx.state.calendars.find(
-        calendar => calendar.id == id
-      )
+      return ctx.state.calendars.find((calendar) => calendar.id == id);
     },
   },
 } as StoreOptions<CalendarState>;

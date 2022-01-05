@@ -1,6 +1,7 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col h-full bg-white">
+
       <cornie-card-title class="">
         <icon-btn @click="show = false">
           <arrow-left stroke="#ffffff" />
@@ -15,6 +16,7 @@
           />
         </div>
       </cornie-card-title>
+
       <cornie-card-text class="flex-grow scrollable">
         <v-form class="flex-grow flex flex-col" @submit="submit">
           <cornie-input
@@ -96,7 +98,9 @@
             </cornie-btn>
           </div>
         </v-form>
+
       </cornie-card-text>
+      
     </cornie-card>
   </cornie-dialog>
 </template>
