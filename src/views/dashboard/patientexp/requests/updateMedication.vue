@@ -10,7 +10,14 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
           <span
-            class="text-danger text-xs p-3 uppercase float-right font-semibold mb-4"
+            class="
+              text-danger text-xs
+              p-3
+              uppercase
+              float-right
+              font-semibold
+              mb-4
+            "
             >{{ medications.length }} added</span
           >
           <accordion-component
@@ -148,7 +155,14 @@
             </div>
           </accordion-component>
           <span
-            class="text-danger text-xs p-3 uppercase float-right font-semibold cursor-pointer"
+            class="
+              text-danger text-xs
+              p-3
+              uppercase
+              float-right
+              font-semibold
+              cursor-pointer
+            "
             @click="addMedication"
             >Add</span
           >
@@ -220,8 +234,7 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "./accordion-medication-list.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
-import { duration } from "moment";
-import IRequest, { Medications } from "@/types/IRequest";
+import { Medications } from "@/types/IRequest";
 
 const emptyMedication: Medications = {
   // requestId: "",
@@ -331,8 +344,6 @@ export default class Medication extends Vue {
       window.notify({ msg: "Medication not Updated", status: "error" });
     }
   }
-
-  created() {}
 }
 </script>
 

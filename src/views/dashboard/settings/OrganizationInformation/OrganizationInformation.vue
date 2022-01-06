@@ -35,6 +35,7 @@
             :rules="requiredRule"
             v-model="DomainName"
           />
+
           <cornie-input label="Alias" class="w-full" v-model="alias" />
           <cornie-input
             label="Organization Identifier"
@@ -127,6 +128,7 @@ import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { mapActions, mapState } from "vuex";
 import DomainInput from "@/components/domain-input.vue";
+import SnomedInput from "@/components/snomed-input.vue";
 
 export default {
   name: "OrganizationInformation",
@@ -137,6 +139,7 @@ export default {
     DomainInput,
     PhoneInput,
     AvatarField,
+    SnomedInput,
   },
   setup() {
     const { url, placeholder, onChange } = useHandleImage();

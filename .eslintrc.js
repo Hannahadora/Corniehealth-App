@@ -14,7 +14,7 @@ module.exports = {
   },
   rules: {
     "no-console": "warn",
-    "no-debugger": "warn",
+    "no-debugger": process.env.NODE_ENV == "production" ? "error" : "warn",
     "vue/no-deprecated-slot-attribute": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -50,11 +50,11 @@ module.exports = {
     ],
     "no-var": "error",
     "no-use-before-define": "off",
-    indent: ["error", 4, { SwitchCase: 0 }],
+    indent: ["warn", 2, { SwitchCase: 0 }],
     "no-mixed-spaces-and-tabs": ["off", "smart-tabs"],
     quotes: ["error", "double"],
     "prefer-const": ["error"],
-    "arrow-parens": ["error", "as-needed"],
+    "arrow-parens": ["warn", "as-needed"],
     "no-return-assign": "off",
     curly: "off",
     "vue/html-indent": [

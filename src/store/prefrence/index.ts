@@ -7,22 +7,22 @@ interface PrefrenceState {
 }
 
 export default {
-    namespaced: true,
-    state: {
-        prefrences: [],
+  namespaced: true,
+  state: {
+    prefrences: [],
+  },
+  mutations: {
+    setPrefrences(state, prefrences: any) {
+      state.prefrences = [prefrences];
     },
-    mutations: {
-        setPrefrences(state, prefrences: any) {
-            state.prefrences = [prefrences];
-        },
+  },
+  actions: {
+    async fetchPrefrences(ctx) {
+      const prefrences = await fetchPrefrences();
+      ctx.commit("setPrefrences", prefrences);
     },
-    actions: {
-        async fetchPrefrences(ctx) {
-            const prefrences = await fetchPrefrences();
-            ctx.commit("setPrefrences", prefrences);
-        },
-        getPrefrenceById(ctx, id: string) {
-            return ctx.state.prefrences.find(prefrence => prefrence.id == id);
-        },
+    getPrefrenceById(ctx, id: string) {
+      return ctx.state.prefrences.find(prefrence => prefrence.id == id);
     },
+  },
 } as StoreOptions<PrefrenceState>;
