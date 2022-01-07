@@ -454,6 +454,7 @@ import { useCountryStates } from "@/composables/useCountryStates";
 import { reactive } from "@vue/reactivity";
 import IPhone from "@/types/IPhone";
 import IKycref from "@/types/IKycref";
+
 const kyc = namespace("kyc");
 
 export interface IBeneficialOwner {
@@ -484,9 +485,6 @@ export default class KYC extends Vue {
 
   @Prop({ type: String, default: "" })
   id!: string;
-
-
-
 
   nominateRefree = false;
   addOwner = false;
