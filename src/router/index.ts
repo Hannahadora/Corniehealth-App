@@ -155,7 +155,7 @@ const routes: Array<RouteRecordRaw> = [
                     },
                     {
                         path: "location",
-                        name: "Location Hierarchy",
+                        name: "Location",
                         component: () =>
                             import("@/views/dashboard/settings/location/index.vue"),
                     },

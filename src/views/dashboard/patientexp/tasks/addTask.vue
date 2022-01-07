@@ -509,7 +509,6 @@ import Avatar from "@/components/avatar.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import { IOrganization } from "@/types/IOrganization";
 import ILocation from "@/types/ILocation";
-import moment from "moment";
 
 const task = namespace("task");
 const organization = namespace("organization");
@@ -721,8 +720,6 @@ export default class AddTask extends Vue {
     this.loading = false;
   }
   async createTask() {
-    moment(this.data.startTime).format("YYYY-MM-DD HH:mm Z");
-    moment(this.data.endTime).format("YYYY-MM-DD HH:mm Z");
     this.data.startDate = new Date(this.data.startDate).toISOString();
     this.data.endDate = new Date(this.data.endDate).toISOString();
     this.startDateTime = this.data.startDate;

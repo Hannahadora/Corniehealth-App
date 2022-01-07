@@ -173,7 +173,6 @@ import SingleDatePicker from "./datepicker.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
-import moment from "moment";
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");

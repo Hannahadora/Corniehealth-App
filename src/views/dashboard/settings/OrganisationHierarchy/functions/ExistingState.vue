@@ -1,14 +1,14 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full mb-5">
+    <span class="flex justify-end w-full mb-5 mt-5">
       <cornie-btn
-        class="bg-danger py-2 text-white m-5"
+        class="bg-danger text-white text-sm font-semibold px-0 py-1 rounded-full mr-3"
         @click="editingFunction = true"
       >
         <plus-icon class="mr-2 fill-current text-white" />
         New Function
       </cornie-btn>
-      <cornie-btn class="text-primary border py-1 border-primary m-5">
+      <cornie-btn class="text-primary border-2 text-sm font-semibold py-1 border-primary px-0 rounded-full">
         View Org. Structure
       </cornie-btn>
     </span>

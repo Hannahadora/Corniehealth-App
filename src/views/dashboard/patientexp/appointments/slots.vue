@@ -59,7 +59,6 @@ import Availability from "@/components/availability.vue";
 import Profile from "@/components/profile.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import Avatar from "@/components/avatar.vue";
-import moment from "moment";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -169,9 +168,6 @@ export default {
     },
   },
   methods: {
-    moment: function () {
-      return moment();
-    },
     apply(value) {
       this.$emit("update:preferred", this.indexvalue);
       this.show = false;

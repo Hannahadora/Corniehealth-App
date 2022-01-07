@@ -411,16 +411,7 @@
           </cornie-button>
         </div>
 
-        <!-- </form> -->
       </div>
-   
-      <!-- <nominate-refree
-        @refadded="refNominated"
-        @close="close"
-        :id="orgkycId"
-        v-model:referees="referees"
-        v-model="nominateRefree"
-      /> -->
   </div>
       <nominate-refree
         @refree-added="refreeadded"
@@ -555,10 +546,6 @@ newreferees = [] as any;
   uploadedIdentificationDocument= setup(() => useHandleImage()) as any;
 
   uploadedPracticeLicenseDocument = setup(() => useHandleImage()) as any;
-
-  // uploadedPracticeLicenseDocument = setup(() => useHandleImage());
-
-  //proofOfAddressUpload = setup(() => useHandleImage());
   fileIndex= 0;
   director: any = { dialCode: "+234" };
 
@@ -605,36 +592,8 @@ async setKyc() {
     this.referees = kyc.referees;
 
   }
-  // get setKyc() {
-  //   if(this.orgkycId){
-  //      const kyc = this.orgKyc;
-  //     return{
-  //       practiceRegister : kyc.practiceRegister,
-  //       incoporatedName : kyc.incoporatedName,
-  //       rcNumber : kyc.rcNumber,
-  //       certificateOfIncoporation : kyc.certificateOfIncoporation,
-  //       formCAC : kyc.formCAC,
-  //       memorandumAndArticleOfAssociation : kyc.memorandumAndArticleOfAssociation,
-  //       taxIdentificationNumber : kyc.taxIdentificationNumber,
-  //       country : kyc.country,
-  //       stateRegion : kyc.stateRegion,
-  //       city : kyc.city,
-  //       zipCode : kyc.zipCode,
-  //       address : kyc.address,
-  //     apartment : kyc.apartment,
-  //       roofOfAddressUpload : kyc.proofOfAddressUpload,
-  //       particularOfDirectors : kyc.particularOfDirectors,
-  //       owners : kyc.beneficialOwners,
-  //       referees : kyc.referees,
-  //     }
-       
-  //   }
-
-  // }
  get orgkycId() {
-    //  return this.orgKyc.map((kyc) => {
-    //   return this.kycId : kyc.id as string;
-    // });  
+
     this.kycId = this.orgKyc.id as string;
     return this.orgKyc.id;
   }
@@ -686,7 +645,6 @@ async setKyc() {
 
   nominees = [] as any[];
 
-  //owners = [] as IBeneficialOwner[];
  owners : any= this.beneficialOwners;
   async refNominated(data: any) {
     this.referees = data;
@@ -712,26 +670,6 @@ async submit() {
     this.loading = false;
   }
 
-
-   async createRefree() {
-    try {
-      const response = await cornieClient().post(
-        `/api/v1/kyc/referee/${this.orgkycId}`,
-        this.referees
-      );
-      if(response.success){
-        console.log(this.referees,"sdgjksdg");
-        window.notify({ msg: "Refree added successfully", status: "success" });
-          await this.addreferees(this.orgKyc.referees as any);
-      }
-
-    } catch (error) {
-        console.log(this.referees,"sdgjksdg");
-        window.notify({ msg: "Refree added successfully", status: "success" });
-           await this.addreferees(this.orgKyc.referees as any);
-     // window.notify({ msg: "Referee not added", status: "error" });
-    }
-  }
   async createKYC() {
     this.payload.country = this.nationState.country;
    // this.payload.particularOfDirectors.uploadedIdentificationDocument = this.uploadedIdentificationDocument;

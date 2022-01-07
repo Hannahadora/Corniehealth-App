@@ -11,7 +11,7 @@
       </template>
       <template #actions>
         <button
-          class="bg-danger rounded-full text-white py-2 px-6 mt-5 focus:outline-none hover:opacity-90"
+          class="bg-danger rounded-full text-white py-3 font-semibold text-sm px-6 mt-5 focus:outline-none hover:opacity-90"
           @click="$router.push({ name: 'New Designation' })"
         >
           <img src="@/assets/img/plus.svg" class="inline-block mr-2" />

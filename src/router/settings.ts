@@ -60,13 +60,13 @@ export const SettingsRoute: RouteRecordRaw = {
         },
         {
             path: "location",
-            name: "Location Hierarchy",
+            name: "Location",
             component: () => import("@/views/dashboard/settings/location/index.vue"),
         },
         {
             path: "add-location/:id?",
             props: true,
-            name: "Create or Update Location",
+            name: "New Location",
             component: () =>
                 import("@/views/dashboard/settings/location/addLocation.vue"),
         },

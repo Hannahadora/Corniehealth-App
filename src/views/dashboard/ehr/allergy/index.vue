@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-md p-3 mb-2 rounded-3xl w-full"
+    class="flex justify-center bg-white shadow-md p-3 mb-2 rounded w-full"
   >
     <div class="w-full">
       <span
@@ -65,8 +65,8 @@ export default class AllergysIndex extends Vue {
     this.fetchAllergys(this.activePatientId);
   }
 
-  created() {
-    if (this.allergys.length < 1) this.fetchAllergys(this.activePatientId);
+  async created() {
+    if (this.allergys.length < 1) await this.fetchAllergys(this.activePatientId);
   }
 }
 </script>

@@ -14,7 +14,7 @@
     <div class="w-full border-b-4 curved flex mb-8">
       <div class="container-fluid flex font-semibold text-lg">
         <a
-          class="px-4 py-2 active-tab cursor-pointer"
+          class="px-4 py-2 text-sm active-tab cursor-pointer"
           :class="{
             'active-color text-dark': activeTab === 0,
             'text-gray-500': activeTab !== 0,
@@ -23,7 +23,7 @@
           >All Patients</a
         >
         <a
-          class="px-4 py-2 active-tab cursor-pointer"
+          class="px-4 py-2 text-sm active-tab cursor-pointer"
           :class="{
             'active-color': activeTab === 1,
             'text-gray-500': activeTab !== 1,
@@ -134,10 +134,6 @@
             <settings-icon class="text-red-500 fill-current" />
             <span class="ml-3 text-xs">Patient Settings</span>
           </table-action>
-          <!-- <table-action @click="checkIn(item)">
-            <checkin-icon />
-            <span class="ml-3 text-xs">Check-In</span>
-          </table-action> -->
         </template>
       </cornie-table>
     </div>
@@ -148,38 +144,7 @@
       v-model="filterAdvanced"
       :patients="patients"
     />
-    <!-- <modal :visible="showAuthModal">
-      <template #title>
-        <div class="w-full">
-          <div class="container p-6 content-con">
-            <p class="text-primary text-2xl font-semibold pb-3">You need to be authenticated to view health records.</p>
-            <span style="color:#667499" class="text-secondary text-base">Type in your password	</span>
 
-            <div class="w-full py-6">
-              <label for="password" class="flex flex-col">
-              <span class="block uppercase mb-1 text-xs font-bold">
-                Password
-              </span>
-              <password-input
-                id="password"
-                v-model="password"
-                class="border rounded"
-              />
-            </label>
-            </div>
-            <div class="w-full flex flex justify-end">
-                <corniebtn class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer">
-                    <span class="font-semibold" @click="() => $router.push('/dashboard/provider/home/')">Cancel</span>
-                </corniebtn>
-
-                <CornieBtn :loading="loading" class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer">
-                    <span class="text-white font-semibold" @click="authenticateUser">Submit</span>
-                </CornieBtn>
-            </div>
-          </div>
-        </div>
-      </template>
-    </modal> -->
 
     <modal :visible="showSearchModal">
       <template #title>
@@ -465,28 +430,6 @@ export default class ExistingState extends Vue {
     else window.notify({ msg: "Patient not deleted", status: "error" });
   }
 
-  // async authenticateUser() {
-  //   try {
-  //     this.loading = true;
-  //     const verified = await ehrHelper.authenticateUser({ email: this.authPractitioner?.email, authPassword: this.password, accountId: this.domain ? this.domain : ""})
-  //     this.password = "";
-
-  //     this.loading = false;
-  //     if (verified) {
-  //       this.showAuthModal = false;
-  //       this.updatePractitionerAuthStatus(true);
-  //       if (!this.patientId) {
-  //         this.showSearchModal = true;
-  //       } else {
-  //         this.$router.push(`/provider/clinical/${this.patientId}/health-trend`)
-  //         // this.$router.push({ name: 'Health Trend', params: { id: this.patientId }})
-  //       }
-  //     }
-  //   } catch (error) {
-  //     this.loading = false;
-  //     ;
-  //   }
-  // }
 
   async searchForPatient() {
     try {

@@ -142,9 +142,6 @@ export default class NominateRefree extends Vue {
       }
 
     } catch (error) {
-        // console.log(this.referees,"sdgjksdg");
-        // window.notify({ msg: "Refree added successfully", status: "success" });
-        //    await this.addreferees(this.orgKyc.referees as any);
       window.notify({ msg: "Referee not added", status: "error" });
     }
   }

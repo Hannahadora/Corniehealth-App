@@ -4,14 +4,14 @@
       <input type="checkbox" class="mr-3" v-model="all" />
       All days
     </label>
-    <div class="day-grid grid w-full">
+    <div class="grid day-grid gap-4 w-full">
       <span class="font-bold block"></span>
       <span class="font-bold uppercase text-sm">
         <span>Start Time</span>
         <span class="ml-14">End Time</span>
       </span>
     </div>
-    <div class="grid day-grid w-full" v-for="(opHour, i) in opHours" :key="i">
+    <div class="grid grid-cols-3 gap-4 w-full" v-for="(opHour, i) in opHours" :key="i">
       <label class="flex items-center">
         <input
           @change="changed"
@@ -31,7 +31,7 @@
             class="w-24 mr-1"
           />
         </span>
-        <span class="mr-3">to</span>
+        <span class="mr-3 -mt-5">to</span>
         <span class="flex">
           <cornie-select
             @update:modelValue="changed"
@@ -154,6 +154,6 @@ export default class OperationHours extends Vue {
 </script>
 <style scoped>
 .day-grid {
-  grid-template-columns: 20% 75%;
+  grid-template-columns: 34% 75%;
 }
 </style>
