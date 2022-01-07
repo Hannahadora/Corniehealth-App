@@ -27,7 +27,7 @@
             v-model="codeSync"
           >
             <cornie-select
-              class="w-full h-full rounded-r-none"
+              class="w-full h-full  rounded-r-none"
               :items="codes"
               v-model="codeSync"
               :class="{

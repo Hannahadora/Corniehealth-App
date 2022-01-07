@@ -149,7 +149,6 @@ import CornieSelect from "@/components/autocomplete.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import MultiSelectsearch from "@/components/custom-multiselect.vue";
 import { cornieClient } from "@/plugins/http";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import FailIcon from "@/components/icons/fail.vue";
@@ -185,7 +184,6 @@ const collections = namespace("collections");
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
-    MultiSelectsearch,
   },
 })
 export default class AssociaitonModal extends Vue {

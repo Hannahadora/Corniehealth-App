@@ -2,29 +2,36 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full mb-3">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-full text-white font-semibold  text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         @click="$router.push('add-location')"
       >
-        New Location
+        Add New Location
       </button>
     </span>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false">
+    <cornie-table :columns="rawHeaders" v-model="sortLocations" :check="false">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="$router.push(`add-location/${item.id}`)"
         >
-          <eye-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">View</span>
+          <edit-icon class="text-primary fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteLoc(item.id)"
         >
-          <delete-icon class="text-yellow-500 fill-current" />
+          <delete-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
+         <template #name="{ item }">
+              <div class="flex space-x-4 items-center">
+                <location-icon class="fill-current text-primary"/>
+                <span>{{ item.name }} 
+                </span>
+              </div>
+            </template>
     </cornie-table>
   </div>
 </template>
@@ -45,7 +52,9 @@ import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
+import LocationIcon from "@/components/icons/location.vue";
 import EyeIcon from "@/components/icons/newview.vue";
+import EditIcon from "@/components/icons/edit.vue";
 
 const location = namespace("location");
 
@@ -58,6 +67,8 @@ const location = namespace("location");
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
+    EditIcon,
+    LocationIcon,
     IconInput,
     DeleteIcon,
     EyeIcon,
@@ -73,6 +84,9 @@ export default class LocationExistingState extends Vue {
   locations!: ILocation[];
 
   @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  @location.Action
   deleteLocation!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
@@ -84,16 +98,16 @@ export default class LocationExistingState extends Vue {
       show: true,
     },
     { title: "Address", key: "address", show: true },
-    { title: "Country", key: "country", show: true },
+    { title: "Alias", key: "alias", show: true },
     {
-      title: "State",
-      key: "state",
+      title: "Altitude",
+      key: "altitude",
       show: true,
     },
     {
       title: "Hours of operation",
       key: "hoursOfOperation",
-      show: false,
+      show: true,
     },
     {
       title: "Operational Status",
@@ -142,8 +156,16 @@ export default class LocationExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deleteLocation(id)) alert("Location deleted");
-    else alert("Location not deleted");
+    if (await this.deleteLocation(id)) window.notify({ msg: "Location deleted", status: "success" }); 
+    else window.notify({ msg: "Location not deleted", status: "error" }); 
+  }
+  get sortLocations() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+  async created(){
+    await this.fetchLocations();
   }
 }
 </script>

@@ -8,7 +8,7 @@
         <p class="text-danger mb-6">
           Which of these best describes the designation?
         </p>
-        <div class="flex border-b-2 pb-6 mb-6 items-center">
+        <div class="flex space-x-4 border-b-2 pb-6 mb-6 items-center">
           <cornie-radio
             label="Supervisory"
             value="Sup"
@@ -25,19 +25,20 @@
         <h1 class="text-primary text-xl font-extrabold mb-3">
           Designation Details
         </h1>
-        <div class="grid grid-cols-3 border-b-2 pb-3">
+        <div class="grid grid-cols-3 gap-4 border-b-2 pb-3">
           <cornie-input
             label="title"
-            class=""
             v-model="title"
             :rules="required"
             placeholder="--Enter--"
+            class="w-full"
           />
           <cornie-input
             label="cost centre"
             v-model="costCentre"
             :rules="required"
             placeholder="--Enter--"
+             class="w-full"
           />
           <cornie-select
             label="function"
@@ -45,17 +46,18 @@
             :rules="required"
             v-model="assignedFunction"
             :items="allFunctions"
+             class="w-full"
           />
           <cornie-select
             label="reporting to"
-            class=""
             placeholder="--Select--"
             v-model="reportingTo"
             :items="allDesignations"
+             class="w-full"
           />
           <cornie-select
             label="job level"
-            class=""
+             class="w-full"
             placeholder="--Select--"
             :rules="required"
             v-model="jobLevel"
@@ -63,7 +65,7 @@
           />
           <cornie-select
             label="dotted reporting"
-            class=""
+             class="w-full"
             placeholder="--Select--"
             v-model="dottedReporting"
             :items="[]"
@@ -81,10 +83,10 @@
             </h1>
           </card-text>
           <card-text>
-            <div class="flex">
+            <div class="flex space-x-4 w-full">
               <cornie-input
                 label="lower salary band"
-                class="mx-6"
+               
                 :rules="numberRequired"
                 placeholder="--Enter--"
                 v-model="lowerSalaryBand"
@@ -108,13 +110,11 @@
         </card>
         <div class="flex justify-items-end py-6 border-t-2">
           <span class="flex-grow"></span>
-          <button
-            class="outline-primary rounded-full text-black mr-2 py-2 px-6 border border-primary focus:outline-none outline hover:bg-primary hover:text-white"
-          >
-            Cancel
-          </button>
+           <cornie-btn class="text-primary mr-3 border-2 text-sm font-semibold py-1 border-primary px-1 rounded-full">
+              Cancel
+            </cornie-btn>
           <cornie-btn
-            class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-full text-white font-semibold text-sm py-1 px-0 focus:outline-none hover:opacity-90"
             type="submit"
             :loading="loading"
           >

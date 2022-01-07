@@ -10,7 +10,7 @@
       <template #actions>
         <div class="mt-2">
           <button
-            class="bg-danger rounded-full text-white py-2 px-6 focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-full text-white py-1 px-1 focus:outline-none hover:opacity-90"
             @click="addFunction = true"
           >
             <img src="@/assets/img/plus.svg" class="inline-block mr-2" />

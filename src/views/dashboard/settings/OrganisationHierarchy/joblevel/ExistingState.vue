@@ -1,8 +1,8 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full mb-5">
+    <span class="flex justify-end w-full mb-5 mt-5">
       <cornie-btn
-        class="bg-danger py-2 text-white m-5"
+        class="bg-danger py-1 rounded-full px-1 font-semibold text-sm text-white"
         @click="editingLevel = true"
       >
         <plus-icon class="mr-2 fill-current text-white" />

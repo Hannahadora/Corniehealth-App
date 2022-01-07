@@ -1,10 +1,10 @@
 <template>
   <div class="h-full flex justify-center">
-    <div class="w-full mx-5">
+    <div class="w-full mx-2">
       <span
-        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+        class="flex border-b-2 w-full font-bold text-lg text-primary py-2"
       >
-        Location Hierarchy
+        Location
       </span>
       <span class="w-full">
         <location-empty-state v-if="empty" />
@@ -45,8 +45,8 @@ export default class LocationIndex extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-  created() {
-    if (this.locations.length < 1) this.fetchLocations();
+  async created() {
+    if (this.locations.length < 1) await this.fetchLocations();
   }
 }
 </script>

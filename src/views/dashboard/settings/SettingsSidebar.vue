@@ -147,7 +147,7 @@ export default class Settings extends Vue {
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
        { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
-        name: "Location Hierarchy",
+        name: "Location",
         to: "location",
         icon: "location-icon",
       },

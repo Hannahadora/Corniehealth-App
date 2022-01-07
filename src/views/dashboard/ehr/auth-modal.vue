@@ -18,22 +18,19 @@
         </label>
       </div>
       <div class="w-full flex justify-end">
-        <corniebtn
-          class="bg-white p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer"
-          style="border: 1px solid #0a4269"
-        >
-          <span class="font-semibold" @click="() => $router.go(-1)"
-            >Cancel</span
-          >
-        </corniebtn>
-
         <CornieBtn
           :loading="loading"
-          class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer"
+          class="border-primary border-2  rounded-full px-8 mr-2 py-1 text-primary cursor-pointer"
+          @click="() => $router.go(-1)"
         >
-          <span class="text-white font-semibold" @click="authenticateUser"
-            >Submit</span
-          >
+          Cancel
+        </CornieBtn>
+        <CornieBtn
+          :loading="loading"
+          class="bg-danger  rounded-full px-8 py-1 text-white cursor-pointer"
+          @click="authenticateUser"
+        >
+          Submit
         </CornieBtn>
       </div>
     </div>

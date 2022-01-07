@@ -10,7 +10,6 @@ import ResponseData from "./response-data";
 import CornieSelect from "@/components/cornieselect.vue";
 import SingleDatePicker from "./datepicker.vue";
 import { cornieClient } from "@/plugins/http";
-import moment from "moment";
 
 export default {
   name: "ResponseChart",
@@ -46,11 +45,6 @@ export default {
   async created() {},
   computed: {},
   mounted() {
-    //  const values = this.chartData[0].map(function (e) {
-    //     e.createdAt = moment(values).format('dddd,GG')
-    //     return e.createdAt;
-    //   });
-    //this.loaded = true;
     const ctx = this.$refs.responsechart;
     const chart = new Chart(ctx, {
       type: "bar",

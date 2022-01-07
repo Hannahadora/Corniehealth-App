@@ -36,13 +36,14 @@
       </div>
    
     <span class="flex justify-end">
-      <button
+      <cornie-btn
         type="submit"
         @click="updatePassword()"
-        class="pl-5 pr-5 py-2 mb-5 mt-5 text-white appearance-none border-none bg-danger rounded-3xl placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+        :loading="loading"
+        class="py-1 px-4 mb-5 mt-5 text-white appearance-none border-none bg-danger rounded-full placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         Save
-      </button>
+      </cornie-btn>
     </span>
   </div>
 </template>
@@ -64,6 +65,7 @@ export default {
       currentPassword: "",
       newPassword: "",
       userId: "",
+      loading: false
     };
   },
 
@@ -78,10 +80,13 @@ export default {
   },
   methods: {
     async updatePassword() {
+      this.loading = true;
       try {
         await quantumClient().post("auth/change-password", this.payload);
+         this.loading = false;
          window.notify({ msg: "Password Changed Succesfully", status: "success" });
       } catch (error) {
+         this.loading = false;
          window.notify({ msg: "An error occured when changing your password", status: "error" });
       }
     },
