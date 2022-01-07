@@ -3,7 +3,20 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+          class="
+            bg-danger
+            rounded-full
+            text-white
+            mt-5
+            py-2
+            pr-12
+            pl-12
+            px-3
+            mb-5
+            font-semibold
+            focus:outline-none
+            hover:opacity-90
+          "
           @click="showAllergy('false')"
         >
           New Allergy
@@ -92,7 +105,6 @@ import MessageIcon from "@/components/icons/message.vue";
 import AllergyModal from "./allergydialog.vue";
 import { namespace } from "vuex-class";
 import { mapDisplay } from "@/plugins/definitions";
-import { string } from "yup/lib/locale";
 
 const allergy = namespace("allergy");
 

@@ -9,27 +9,27 @@ interface IssuesState {
 }
 
 export default {
-    namespaced: true,
-    state: {
-        issues: [],
+  namespaced: true,
+  state: {
+    issues: [],
+  },
+  mutations: {
+    setIssues(state, issues: IIssues[]) {
+      state.issues = [...issues];
     },
-    mutations: {
-        setIssues(state, issues: IIssues[]) {
-            state.issues = [...issues];
-        },
-        updateIssues(state, issues: IIssues[]) {
-            const issueSet = new ObjectSet([...state.issues, ...issues], "id");
-            state.issues = [...issueSet];
-        },
+    updateIssues(state, issues: IIssues[]) {
+      const issueSet = new ObjectSet([...state.issues, ...issues], "id");
+      state.issues = [...issueSet];
     },
-    actions: {
-        async fetchIssues(ctx, patientId: string) {
-            const issues = await fetchIssues();
-            ctx.commit("setIssues", issues);
-        },
-        async getIssuesById(ctx, id: string) {
-            if (ctx.state.issues.length < 1) await ctx.dispatch("fetchIssues");
-            return ctx.state.issues.find(issues => issues.id == id);
-        },
+  },
+  actions: {
+    async fetchIssues(ctx, patientId: string) {
+      const issues = await fetchIssues();
+      ctx.commit("setIssues", issues);
     },
+    async getIssuesById(ctx, id: string) {
+      if (ctx.state.issues.length < 1) await ctx.dispatch("fetchIssues");
+      return ctx.state.issues.find(issues => issues.id == id);
+    },
+  },
 } as StoreOptions<IssuesState>;

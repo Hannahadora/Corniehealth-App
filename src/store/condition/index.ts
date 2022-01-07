@@ -11,25 +11,25 @@ interface Payload {
   conditions: ICondition[];
 }
 export default {
-    namespaced: true,
-    state: {
-        conditions: {},
+  namespaced: true,
+  state: {
+    conditions: {},
+  },
+  mutations: {
+    setPatientConditions(state, { patientId, conditions }: Payload) {
+      const patientConditions = state.conditions[patientId] || [];
+      const conditionSet = new ObjectSet(
+        [...patientConditions, ...conditions],
+        "id"
+      );
+      state.conditions[patientId] = [...conditionSet];
     },
-    mutations: {
-        setPatientConditions(state, { patientId, conditions }: Payload) {
-            const patientConditions = state.conditions[patientId] || [];
-            const conditionSet = new ObjectSet(
-                [...patientConditions, ...conditions],
-                "id"
-            );
-            state.conditions[patientId] = [...conditionSet];
-        },
-    },
-    actions: {
-        async fetchPatientConditions(ctx, patientId: string) {
-            const conditions = await fetchPatientConditions(patientId);
+  },
+  actions: {
+    async fetchPatientConditions(ctx, patientId: string) {
+      const conditions = await fetchPatientConditions(patientId);
 
-            ctx.commit("setPatientConditions", { patientId, conditions });
-        },
+      ctx.commit("setPatientConditions", { patientId, conditions });
     },
+  },
 } as StoreOptions<ConditionState>;
