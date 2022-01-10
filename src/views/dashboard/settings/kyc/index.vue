@@ -10,9 +10,11 @@
         <div class="w-full flex flex-wrap items-center pt-6 pb-8">
           <div class=" -mb-2">
             <cornie-radio
-              v-model="practiceRegister"
+            :checked="practiceRegister"
+            v-model="practiceRegister"
               :label="'Yes'"
               :value="true"
+              name="practiceRegister"
             />
           </div>
           <div class="ml-4 -mb-2">
@@ -20,6 +22,7 @@
               v-model="practiceRegister"
               :label="'No'"
               :value="false"
+               name="practiceRegister"
             />
           </div>
         </div>
@@ -62,6 +65,7 @@
 
         <div class="w-full my-6">
           <accordion-component
+          v-if="orgKyc.particularOfDirectors?.length > 0"
             :title="'Particulars of Directors'"
             :opened="true"
             @add="setDirector"
@@ -73,7 +77,7 @@
               <div class="w-full pb-6">
                 <accordion-component
                   :editabetitle="'Director'+' '+ [index + 1]"
-                    v-for="(director, index) in particularOfDirectors"
+                    v-for="(director, index) in orgKyc.particularOfDirectors"
                   :key="index"
                    :height="480"
                   :opened="true"
@@ -104,8 +108,117 @@
                             placeholder="--Enter--"
                         />
                           <phone-input
-                            v-model="director.phoneNumber.number"
-                            v-model:code="director.phoneNumber.dialCode"
+                            v-model:code="director.dialCode"
+                            v-model="director.phone"
+                            :label="'Phone Number'"
+                              placeholder="--Enter--"
+                          />
+                        <cornie-input
+                          :label="'Tax Identification Number'"
+                          v-model="director.taxIdentificationNumber"
+                            placeholder="--Enter--"
+                        />
+                         <cornie-select
+                         class="w-full"
+                          :items="[
+                            'Nigerian Bank Identification Number (BVN)',
+                            'International Passport',
+                            'National Identitiy Number (NIN)',
+                            'Driver\'s License',
+                            'Voter\'s Card',
+                          ]"
+                          :label="'Identification Document'"
+                           placeholder="--Select--"
+                           v-model="director.identificationDocumentNumber"
+                        />
+                         <cornie-input
+                          v-model="director.identificationDocumentNumber"
+                          :label="'Identification Document Number'"
+                            placeholder="--Enter--"
+                        />
+                         <file-picker
+                          @uploaded="Uploaded"
+                            @change="sendIndex(index)"
+                          :label="'Upload Identitification Document '"
+                          v-model="director.uploadedIdentificationDocument"
+                            placeholder="--Enter--"
+                        />
+                         <cornie-select
+                          v-model="director.practiceLicenseDocument"
+                          class="w-full"
+                          :items="[
+                            'Medical Practice Licence',
+                            'Pharmacy Practice Licence',
+                            'Radiology Practice Licence',
+                            'Pathology Practice Licence',
+                            'Not Applicable',
+                          ]"
+                          :label="'Practice Licence Document'"
+                          placeholder="--Select--"
+                        />
+                           <cornie-input
+                          v-model="director.practiceLicenseNumber"
+                          :label="'Practice Licence Number'"
+                            placeholder="--Enter--"
+                        />
+                        <file-picker
+                        class="w-full"
+                          @uploaded="practiceLicenceUploaded"
+                          @change="sendIndex(index)"
+                          :label="'Upload Practice Licence Document'"
+                          v-model="director.uploadedPracticeLicenseDocument"
+                            placeholder="--Enter--"
+                        />
+                    </div>
+                  </template>
+                </accordion-component>
+              </div>
+            </template>
+          </accordion-component>
+          <accordion-component
+          v-else
+            :title="'Particulars of Directors'"
+            :opened="true"
+            :height="480"
+            :buttonText="'Select existing director'"
+          >
+           <template v-slot:default>
+              <div class="w-full pb-6">
+                <accordion-component
+                  :editabetitle="'Director'+' '+ [index + 1]"
+                    v-for="(director, index) in newDirectors"
+                  :key="index"
+                   :height="480"
+                  :opened="true"
+                  class="w-full"
+                >
+                   <template v-slot:default>
+                    <div class="w-full grid grid-cols-3 gap-4 mt-5 pb-8">
+                        <cornie-input
+                          v-model="director.fullName"
+                          :label="'Full Name'"
+                            placeholder="--Enter--"
+                        />
+                          <date-picker
+                            v-model="director.dateOfBirth"
+                            :label="'Date of Birth'"
+                              placeholder="--Enter--"
+                          />
+                        <cornie-select
+                          v-model="director.nationality"
+                          :label="'Nationality'"
+                          :items="nationState.countries"
+                          placeholder="--Select--"
+                          class="w-full"
+                        />
+                        <cornie-input
+                          v-model="director.emailAddress"
+                          :label="'Email Address'"
+                            placeholder="--Enter--"
+                        />
+                          <phone-input
+                            v-model:code="director.dialCode"
+                            v-model="director.phone"
                             :label="'Phone Number'"
                               placeholder="--Enter--"
                           />
@@ -286,7 +399,7 @@
           </accordion-component>
         </div>
 
-        <div class="w-full my-6">
+        <div class="w-full my-6" v-if="this.orgKyc.id">
           <accordion-component
             :title="'Nominate Referees'"
             @add="() => (nominateRefree = true)"
@@ -489,7 +602,9 @@ export default class KYC extends Vue {
   nominateRefree = false;
   addOwner = false;
   loading = false;
-  data: any = { practiceRegister: true };
+  data: any = { };
+  phone="";
+  dialCode = "+234"
   allCountries = [];
   allStates = [];
   setup() {
@@ -497,11 +612,11 @@ export default class KYC extends Vue {
     return { img: reactive({ url, placeholder, onChange }) };
   }
 
-nationState = setup(() => useCountryStates());
- practiceRegister = true;
+  nationState = setup(() => useCountryStates());
+  practiceRegister = true;
   incoporatedName = "";
   rcNumber = "";
-certificateOfIncoporation  = setup(() => useHandleImage()) as any;
+  certificateOfIncoporation  = setup(() => useHandleImage()) as any;
   formCAC = "";
   memorandumAndArticleOfAssociation = "";
   taxIdentificationNumber = "";
@@ -538,8 +653,8 @@ certificateOfIncoporation  = setup(() => useHandleImage()) as any;
   }
   ] ;
   newbeneficialOwners: any= [this.beneficialOwners];
-referees = [] as any[];
-newreferees = [] as any;
+  referees = [] as any[];
+  newreferees = [] as any;
 
   uploadedIdentificationDocument= setup(() => useHandleImage()) as any;
 
@@ -591,7 +706,6 @@ async setKyc() {
 
   }
  get orgkycId() {
-
     this.kycId = this.orgKyc.id as string;
     return this.orgKyc.id;
   }
@@ -619,6 +733,9 @@ async setKyc() {
 
   setDirector(){
     this.particularOfDirectors.push(this.newDirectors)
+  }
+  addDirector(){
+    this.newDirectors.push(this.particularOfDirectors)
   }
   idFileUploaded(fileUrl: string,) {
     this.director.uploadedIdentificationDocument = fileUrl;
@@ -706,33 +823,33 @@ async submit() {
     }
   }
 
-  async getKYCData() {
-    try {
-      const { data } = await cornieClient().get("/api/v1/kyc");
-      this.nominees = data.nominateReferess
-        ? data.nominateReferess?.map((nominee: any) => {
-            nominee.email = nominee.emailAddress;
-            nominee.phone = nominee.phonenNumber;
-            return nominee;
-          })
-        : [];
+  // async getKYCData() {
+  //   try {
+  //     const { data } = await cornieClient().get("/api/v1/kyc");
+  //     this.nominees = data.nominateReferess
+  //       ? data.nominateReferess?.map((nominee: any) => {
+  //           nominee.email = nominee.emailAddress;
+  //           nominee.phone = nominee.phonenNumber;
+  //           return nominee;
+  //         })
+  //       : [];
 
-      this.owners = data.beneficailOwners ? data.beneficailOwners : [];
+  //     this.owners = data.beneficailOwners ? data.beneficailOwners : [];
 
-      if (data?.particularOfDirectors?.length > 0) {
-        const firstIitem = data?.particularOfDirectors[0];
-        this.director = {
-          ...firstIitem,
-          phone: firstIitem?.phoneNumber,
-        };
-      }
-
-      this.data = {
-        ...data,
-        practiceRegister: data.practiceRegister ? "Yes" : "No",
-      };
-    } catch (error) {}
-  }
+  //     if (data?.particularOfDirectors?.length > 0) {
+  //       const firstIitem = data?.particularOfDirectors[0];
+  //       this.director = {
+  //         ...firstIitem,
+  //         phone: firstIitem?.phoneNumber,
+  //       };
+  //     }
+  //   this.practiceRegister = true;
+  //     this.data = {
+  //       ...data,
+  //       practiceRegister: data.practiceRegister ? true : false,
+  //     };
+  //   } catch (error) {}
+  // }
 
   toggleEditDialog(nominee: any, index: number) {
     this.referees[index].newEmail = this.referees[index].email;
@@ -824,7 +941,7 @@ async submit() {
   }
 
   async created() {
-    await this.getKYCData();
+  //  await this.getKYCData();
     await this.setKyc();
     await this.fetchKycs();
   }

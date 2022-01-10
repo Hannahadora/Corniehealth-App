@@ -182,7 +182,7 @@
                     <div class="w-full grid grid-cols-4 gap-4 mb-6">    
                         <cornie-input :label="'Full Name'" placeholder="--Enter--" v-model="fullname" />
                     
-                        <cornie-input :label="'Nationality'" placeholder="--Enter--" v-model="nationality"/>
+                        <cornie-select :label="'Nationality'"  :items="nationState.countries" placeholder="--Select--" v-model="nationality"/>
                     
                           <cornie-input :label="'Email Address'" placeholder="--Enter--" v-model="email"/>
                       
