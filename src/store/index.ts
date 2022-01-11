@@ -49,11 +49,13 @@ import CatalogueStore from "./catalogues";
 import AppointmentTypeStore from "./appointments";
 import CanelStore from "./cancel";
 import KycStore from "./kyc";
+import RouterStore from "./routing";
 
 import AppointmentRoomStore from "./appointmentroom";
 
 export default createStore({
   modules: {
+    routerStore: RouterStore,
     user: UserStore,
     device: DeviceStore,
     dropdown: Dropdown,
@@ -106,6 +108,6 @@ export default createStore({
     calendar: CalenderStore,
     prefrence: PrefrenceStore,
     cancel: CanelStore,
-    kyc:KycStore
+    kyc: KycStore,
   },
 } as StoreOptions<any>);
