@@ -6,7 +6,7 @@ export const SettingsRoute: RouteRecordRaw = {
   name: "Settings",
   meta: { settings: true },
   component: Settings,
-  redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
+  redirect: to => `${to.path}/org-info`.replace("//", "/"),
   children: [
     {
       path: "org-hierarchy",
@@ -113,7 +113,7 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "add-practitioner/:id?",
       props: true,
-      name: "Create or Update Practitioner",
+      name: "Practitioner",
       component: () =>
         import("@/views/dashboard/settings/practitioners/addPractitioner.vue"),
     },

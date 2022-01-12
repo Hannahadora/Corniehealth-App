@@ -187,34 +187,42 @@
               {{ designation }}
             </p>
           </li>
-          <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5">
+          <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5" v-if="authPractitioner?.authorizedLocations">
             <span class="text-gray-600 font-bold text-xs uppercase">
-              Domains</span
+              Locations</span
             >
           </li>
-          <li class="flex w-full mb-3">
+
+          <li class="flex w-full mb-3" v-for="(item,index) in authPractitioner?.authorizedLocations" :key="index">
             <div class="w-full flex space-x-3">
-              <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
-                <img
-                  class="object-cover w-full h-full"
-                  src="@/assets/img/reddignton.png"
-                />
+              <div class="h-10 w-10 flex-grow-0 flex-shrink-0">
+              <location-icon class="fill-current text-primary text-xl ml-3"/>
               </div>
               <div class="w-full">
                 <div class="flex items-center justify-between">
-                  <h2 class="text-gray-600 text-lg">Reddington Hospitals</h2>
-                  <span
+                  <h2 class="text-gray-600 text-lg">{{item.name}}</h2>
+                  <!-- <span
                     class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
-                    >Current Domain</span
+                    >Current Domain</span> -->
+                     <span
+                    class="p-2 text-sm font-semibold leading-none text-danger rounded-full flex-shrink-0 cursor-pointer"
+                    >Switch</span
                   >
                 </div>
                 <a href="#" class="text-gray-400 text-sm"
-                  >https://www.corniehealth/reddington</a
+                  >{{item.address}}</a
                 >
               </div>
             </div>
           </li>
-          <li class="flex w-full mb-3">
+          
+          <li class="flex space-x-4 justify-center w-full p-5" v-if="authPractitioner?.authorizedLocations.length < 0">
+            <location-icon class="fill-current text-primary"/>
+            <p class="text-center text-sm font-semibold  text-danger justify-center flex">No Available Locations</p>
+          </li> 
+
+
+          <!-- <li class="flex w-full mb-3">
             <div class="w-full flex space-x-3">
               <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
                 <img
@@ -257,7 +265,9 @@
                 >
               </div>
             </div>
-          </li>
+          </li> -->
+
+
           <li class="flex w-full border-t mt-4 pt-4 mb-4 border-primary">
             <div class="w-full flex space-x-3">
               <p class="text-sm font-extrabold">Manage My Subscription</p>
@@ -304,7 +314,10 @@ import { logout } from "@/plugins/auth";
 import FormIcon from "@/components/icons/questionnaire.vue";
 import IPractitioner from "@/types/IPractitioner";
 import BankIcon from "@/components/icons/bank.vue";
+import Avatar from "@/components/avatar.vue"
 import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
+import LocationIcon from "@/components/icons/location.vue";
+
 import { suggester } from "@/plugins/route-suggester";
 
 const account = namespace("user");
@@ -325,10 +338,13 @@ const routerStore = namespace("routerStore");
     PractitionerIcon,
     ApprovalIcon,
     SettingsModal,
+    Avatar,
+    LocationIcon
   },
 })
 export default class NavBar extends Vue {
   showSettingsModal = false;
+  localSrc =  require("../assets/img/locationIcon.png");
 
   get routeName() {
     return this.$route.name;

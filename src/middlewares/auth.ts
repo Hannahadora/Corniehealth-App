@@ -6,7 +6,7 @@ export async function authMiddleware(
   _: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
-  if (!to.matched.some((record) => record.meta.requiresAuth)) return next();
+  if (!to.matched.some(record => record.meta.requiresAuth)) return next();
   if (await isLoggedIn()) {
     startTokenRefresher(900);
     refreshUser();

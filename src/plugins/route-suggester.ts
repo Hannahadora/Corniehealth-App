@@ -18,7 +18,7 @@ export class RouteSuggester {
     private reactiveCB: (recents: Route[]) => void
   ) {
     const storedRecents: Route[] = store.get("route-suggestion") || defaults;
-    storedRecents.forEach((route) => {
+    storedRecents.forEach(route => {
       this._recents.set(route.path, route);
     });
     this.makeReactive();
@@ -39,7 +39,7 @@ export class RouteSuggester {
     const entries = this.getEntries();
     const updatedRoutes = this.rearrangeRoutes(entries);
     this._recents.clear();
-    updatedRoutes.forEach((route) => {
+    updatedRoutes.forEach(route => {
       this._recents.set(route.path, route);
     });
     this.makeReactive();
@@ -53,7 +53,7 @@ export class RouteSuggester {
     routes.sort((a, b) => a.position - b.position);
     let cursor = 0;
     const updatedRoutes = routes
-      .map((route) => {
+      .map(route => {
         const position = cursor;
         cursor++;
         return { ...route, position };
