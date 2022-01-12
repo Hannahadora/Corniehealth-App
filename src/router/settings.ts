@@ -4,8 +4,9 @@ import Settings from "@/views/dashboard/settings/index.vue";
 export const SettingsRoute: RouteRecordRaw = {
   path: "settings/",
   name: "Settings",
+  meta: { settings: true },
   component: Settings,
-  redirect: to => `${to.path}/org-info`.replace("//", "/"),
+  redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
   children: [
     {
       path: "org-hierarchy",

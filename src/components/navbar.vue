@@ -14,31 +14,12 @@
           class="dropdown-menu p-4 bg-white rounded w-auto justify-center h-auto right-32 absolute -mt-2 z-10 shadow-md hidden"
         >
           <li
-            @click="$router.push('/dashboard/settings/org-info')"
+            v-for="(route, index) in recentRoutes"
+            :key="index"
+            @click="$router.push(route.path)"
             class="mb-3 list-none items-center flex font-medium text-sm text-black hover:bg-blue-100 rounded-full cursor-pointer my-1 -m-2 p-5 py-2"
           >
-            <p class="ml-2">Account Info</p>
-          </li>
-          <li
-            @click="$router.push('/dashboard/user')"
-            class="mb-3 list-none items-center flex font-medium text-sm text-black hover:bg-blue-100 rounded-full cursor-pointer my-1 -m-2 p-5 py-2"
-          >
-            <p class="ml-2">Users & Security</p>
-          </li>
-          <li
-            class="mb-3 list-none items-center flex font-medium text-sm text-black hover:bg-blue-100 rounded-full cursor-pointer my-1 -m-2 p-5 py-2"
-          >
-            <p class="ml-2">Commercial</p>
-          </li>
-          <li
-            @click="
-              $router.push(
-                '/dashboard/settings/practise-management/forms-questionnaires'
-              )
-            "
-            class="mb-3 list-none items-center flex font-medium text-sm text-black hover:bg-blue-100 rounded-full cursor-pointer my-1 -m-2 p-5 py-2"
-          >
-            <p class="ml-2">Practice Management</p>
+            <p class="ml-2">{{ route.name }}</p>
           </li>
           <li class="cursor-pointer mb-3" @click="showSettings">
             <cornie-btn
@@ -331,15 +312,17 @@ import PractitionerIcon from "@/components/icons/practitioner.vue";
 import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
 import FormIcon from "@/components/icons/questionnaire.vue";
-import store from "@/store";
 import IPractitioner from "@/types/IPractitioner";
 import BankIcon from "@/components/icons/bank.vue";
 import Avatar from "@/components/avatar.vue"
 import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
 import LocationIcon from "@/components/icons/location.vue";
 
+import { suggester } from "@/plugins/route-suggester";
 
 const account = namespace("user");
+const routerStore = namespace("routerStore");
+
 @Options({
   components: {
     ArrowLeftIcon,
@@ -366,6 +349,9 @@ export default class NavBar extends Vue {
   get routeName() {
     return this.$route.name;
   }
+
+  @routerStore.State("recents")
+  recentRoutes!: { path: string; name: string }[];
 
   @account.State
   user!: User;
