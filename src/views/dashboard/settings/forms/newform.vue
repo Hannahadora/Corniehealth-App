@@ -787,7 +787,7 @@
         <cornie-btn
           v-else
           @click="showPreview"
-          class="bg-danger rounded-full font-semibold text-white mt-5 mr-3 py-1 pr-2 pl-2 px-1 focus:outline-none hover:opacity-90"
+          class="bg-danger rounded-full font-semibold text-white mt-5 mr-3 py-1 px-1 focus:outline-none hover:opacity-90"
         >
           Preview | Submit
         </cornie-btn>

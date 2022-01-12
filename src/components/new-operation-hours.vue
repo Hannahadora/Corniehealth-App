@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-1 mt-4 gap-y-6 w-full">
     <label class="flex items-center">
-      <input type="checkbox" class="mr-3" v-model="all" />
+      <input type="checkbox" class="mr-3 cursor-pointer" v-model="all" />
       All days
     </label>
     <div class="grid day-grid gap-4 w-full">
@@ -17,7 +17,7 @@
           @change="changed"
           v-model="opHour.selected"
           type="checkbox"
-          class="mr-3"
+          class="mr-3 cursor-pointer"
         />
         {{ opHour.day }}:
       </label>

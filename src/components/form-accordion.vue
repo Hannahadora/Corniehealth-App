@@ -1,9 +1,11 @@
 <template>
-  <div class="bg-white shadow-md p-3 mb-2 mt-5 w-full">
+  <div class="bg-white shadow-md p-3 mb-2 mt-5 w-full cursor-pointer">
     <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div
-          class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between cursor-pointer"  
+          class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between cursor-pointer" 
+          :class="{ 'text-primary': expand }"
+                @click="expand = !expand" 
         >
           <div
             contenteditable="true"

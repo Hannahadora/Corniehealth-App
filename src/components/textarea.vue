@@ -10,8 +10,8 @@
       {{ label }}
     </label>
     <textarea
-      rows="10"
-      cols="50"
+      :rows="rows"
+      :cols="cols"
       maxlength="255"
       :class="{
         'border-red-500': Boolean(errorMessage),
@@ -54,6 +54,12 @@ export default class DInput extends Vue {
 
   @Prop({ type: String })
   name!: string;
+
+  @Prop({ type: String, default: "10" })
+  rows!: string;
+
+  @Prop({ type: String, default: "50" })
+  cols!: string;
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

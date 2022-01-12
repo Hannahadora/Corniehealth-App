@@ -33,6 +33,8 @@ export default interface IPractitioner {
   organizationId: string;
   type: string;
   period: Period;
+  locations: [];
+  authorizedLocations:[];
 }
 
 export interface HoursOfOperation {
