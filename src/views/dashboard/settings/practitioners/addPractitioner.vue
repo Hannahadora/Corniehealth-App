@@ -111,6 +111,14 @@
                   </template>
                     </Multiselect>
                     </div>
+                     <cornie-select
+                    :rules="required"
+                    :items="allLocation"
+                    v-model="defaultLocation"
+                    label="Default Location"
+                     placeholder="--Select--"
+                     class="w-full"
+                  />
                 </div>
              </template>
              <template v-slot:misc>
@@ -286,6 +294,7 @@ export default class AddPractitioner extends Vue {
   communicationLanguage = "";
   availabilityExceptions = "";
   consultationChannel = "";
+  defaultLocation="";
   hoursOfOperation: HoursOfOperation[] = [];
   organizationId = "";
   dialCode = "+234";
@@ -335,6 +344,7 @@ export default class AddPractitioner extends Vue {
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
     this.locations = practitioner.authorizedLocations;
+    this.defaultLocation = practitioner.defaultLocation;
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -369,7 +379,8 @@ export default class AddPractitioner extends Vue {
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
       period: this.period,
-      locations: this.locations
+      locations: this.locations,
+      defaultLocation: this.defaultLocation
     };
   }
 

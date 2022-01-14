@@ -2,6 +2,7 @@ import Period from "./IPeriod";
 import User from "./user";
 
 export default interface IPractitioner {
+  defaultLocation: string;
   name: string;
   id: string;
   firstName: string;

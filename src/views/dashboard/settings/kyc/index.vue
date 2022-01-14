@@ -68,7 +68,7 @@
           v-if="orgKyc.particularOfDirectors?.length > 0"
             :title="'Particulars of Directors'"
             :opened="true"
-            @add="setDirector"
+            @add="addDirector"
             :height="480"
             :add="true"
             :buttonText="'Select existing director'"
@@ -77,7 +77,7 @@
               <div class="w-full pb-6">
                 <accordion-component
                   :editabetitle="'Director'+' '+ [index + 1]"
-                    v-for="(director, index) in orgKyc.particularOfDirectors"
+                    v-for="(director, index) in particularOfDirectors"
                   :key="index"
                    :height="480"
                   :opened="true"
@@ -107,12 +107,13 @@
                           :label="'Email Address'"
                             placeholder="--Enter--"
                         />
-                          <phone-input
-                            v-model:code="director.dialCode"
-                            v-model="director.phone"
+                          <!-- <phone-input
+                           
+                             :modelValue="director.phoneNumber.number"
+                            @input="director.phoneNumber.number = $event.target.value"
                             :label="'Phone Number'"
                               placeholder="--Enter--"
-                          />
+                          /> -->
                         <cornie-input
                           :label="'Tax Identification Number'"
                           v-model="director.taxIdentificationNumber"
@@ -216,12 +217,13 @@
                           :label="'Email Address'"
                             placeholder="--Enter--"
                         />
-                          <phone-input
-                            v-model:code="director.dialCode"
-                            v-model="director.phone"
+                          <!-- <phone-input
+                         
+                            :modelValue="director.phoneNumber.number"
+                            @input="director.phoneNumber.number = $event.target.value"
                             :label="'Phone Number'"
                               placeholder="--Enter--"
-                          />
+                          /> -->
                         <cornie-input
                           :label="'Tax Identification Number'"
                           v-model="director.taxIdentificationNumber"
@@ -399,7 +401,7 @@
           </accordion-component>
         </div>
 
-        <div class="w-full my-6" v-if="this.orgKyc.id">
+        <div class="w-full my-6">
           <accordion-component
             :title="'Nominate Referees'"
             @add="() => (nominateRefree = true)"
@@ -626,17 +628,18 @@ export default class KYC extends Vue {
   zipCode = "";
   address = "";
   apartment = "";
+  phoneNumber = "";
   proofOfAddressUpload = setup(() => useHandleImage()) as any;
-  particularOfDirectors : any = [
+  particularOfDirectors  = [
     {
     fullName : "",
     dateOfBirth : "",
     nationality : "",
     emailAddress : "",
-    phoneNumber : {
-        number: "",
-        dialCode: "+234",
-      } ,
+    phoneNumber :  {
+        number: this.phoneNumber,
+        dialCode: this.dialCode,
+      },
     taxIdentificationNumber : "",
     identificationDocumentNumber : "",
     uploadedIdentificationDocument  : " " as string,
@@ -645,7 +648,7 @@ export default class KYC extends Vue {
     practiceLicenseNumber : "",
     }
   ];
-  newDirectors : any= this.particularOfDirectors;
+  newDirectors : any = this.particularOfDirectors;
   beneficialOwners : any = [
     {
     name : "",
@@ -683,6 +686,11 @@ kycId = "";
   idChanged() {
     this.setKyc();
   }
+
+  // get newDirectors(){
+  //   return this.particularOfDirectors
+     
+  // }
 async setKyc() {
     const kyc = this.orgKyc;
     if (!kyc) return;
@@ -725,17 +733,17 @@ async setKyc() {
       address: this.address,
       apartment: this.apartment,
       proofOfAddressUpload: this.proofOfAddressUpload,
-      particularOfDirectors: this.particularOfDirectors,
+      particularOfDirectors: this.newDirectors,
       beneficialOwners: this.owners,
       referees: this.referees,
     };
   }
 
-  setDirector(){
-    this.particularOfDirectors.push(this.newDirectors)
-  }
+  // setDirector(){
+  //   this.particularOfDirectors.push(this.newDirectors)
+  // }
   addDirector(){
-    this.newDirectors.push(this.particularOfDirectors)
+    this.particularOfDirectors.push(...this.newDirectors)
   }
   idFileUploaded(fileUrl: string,) {
     this.director.uploadedIdentificationDocument = fileUrl;

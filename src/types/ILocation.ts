@@ -30,3 +30,11 @@ export interface HoursOfOperation {
   closeTime: string;
   selected: boolean;
 }
+export interface AuthorizedLocation {
+  address: string;
+  alias: string;
+  isDefault: boolean;
+  id:string;
+  name:string;
+}
+

@@ -2,7 +2,7 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2.5 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-full text-white mt-5 mb-5 py-2.5 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="$router.push('add-practitioner')"
       >
         Add a Practitioner
