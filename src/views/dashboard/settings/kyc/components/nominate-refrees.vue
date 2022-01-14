@@ -113,7 +113,8 @@ export default class NominateRefree extends Vue {
 
   async submit() {
     this.loading = true;
-    await this.onSave();
+    if (this.id) await this.onSave();
+    else await this.newRefree();
     this.loading = false;
   }
 
@@ -129,7 +130,17 @@ export default class NominateRefree extends Vue {
   //   this.closeModal();
   //   this.referee = { name: "", email: "", phone: {dialCode:"+234",number:""} } as any;
   // }
-
+async newRefree() {
+    try {
+      const { data } = await cornieClient().post(
+        "/api/v1/kyc",
+        this.payload
+      );
+      window.notify({ msg: "KYC updated successfully", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "KYC update failed", status: "error" });
+    }
+  }
   async onSave(){
      try {
       const response = await cornieClient().post(

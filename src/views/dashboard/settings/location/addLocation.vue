@@ -158,12 +158,10 @@
                        :disabled="true"
                     />
                     <cornie-input
-                      :readonly="true"
                       v-model="altitude"
                       label="Altitude"
                       placeholder="--Enter--"
                       class="w-full"
-                       :disabled="true"
                     />
                     <!-- <cornie-select
                       :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
@@ -305,7 +303,7 @@ export default class AddLocation extends Vue {
   physicalType = "";
   latitude = "";
   longitude = "";
-  altitude = "321";
+  altitude = "";
   managingOrg = "";
   partOf = "";
   availabilityExceptions = "";
