@@ -105,6 +105,7 @@
                         <cornie-input
                           v-model="director.emailAddress"
                           :label="'Email Address'"
+                           :rules="requiredEmail"
                             placeholder="--Enter--"
                         />
                           <!-- <phone-input
@@ -215,6 +216,7 @@
                         <cornie-input
                           v-model="director.emailAddress"
                           :label="'Email Address'"
+                           :rules="requiredEmail"
                             placeholder="--Enter--"
                         />
                           <!-- <phone-input
