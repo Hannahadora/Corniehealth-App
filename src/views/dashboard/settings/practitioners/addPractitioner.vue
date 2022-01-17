@@ -20,7 +20,7 @@
                     :rules="required"
                     :items="['active', 'inactive']"
                     v-model="activeState"
-                    label="Active State"
+                    label="Status"
                     class="w-full"
                     placeholder="--Select--"
                   />

@@ -188,7 +188,7 @@
             </p>
           </li>
           
-          <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5" v-if="authorizedLocations.length > 0">
+          <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5" v-if="authorizedLocations?.length > 0">
             <span class="text-gray-600 font-bold text-xs uppercase">
               Locations</span
             >
@@ -200,7 +200,7 @@
 
           <li  :class="{
           'experience-links-con-max': showFullHeight,
-          'experience-links-con-min': !showFullHeight && authorizedLocations.length > 0
+          'experience-links-con-min': !showFullHeight && authorizedLocations?.length > 0
         }">
             <div class="flex w-full mb-3" v-for="(item,index) in authorizedLocations" :key="index">
             
@@ -235,7 +235,7 @@
           </li>
           <li>
             <span
-              v-if="!expand && authorizedLocations.length > 0"
+              v-if="!expand && authorizedLocations?.length > 0"
               @click="() => (showFullHeight = !showFullHeight)"
               class="px-3 pb-3 justify-center flex more cursor-pointer"
               >{{ showFullHeight ? "See less" : "See more" }}</span

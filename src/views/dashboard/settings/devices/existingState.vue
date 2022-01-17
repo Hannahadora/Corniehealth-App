@@ -1,13 +1,13 @@
 <template>
   <div class="w-full mx-5">
     <span
-      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+      class="flex border-b-2 w-full font-semibold text-lg text-primary py-2 mx-auto"
     >
       Devices
     </span>
     <span class="flex justify-end">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-full text-white font-semibold text-sm mt-5 py-2 px-5 focus:outline-none hover:opacity-90"
         @click="$emit('add-device')"
       >
         Add a New Device

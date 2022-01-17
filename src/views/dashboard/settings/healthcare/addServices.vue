@@ -12,6 +12,12 @@
               <accordion-component title="Basic Info" :opened="true">
                 <template  v-slot:default>
                   <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                     <!-- Image Upload  -->
+                    <div class="w-full">
+                        <span class="flex items-center">
+                          <cornie-avatar-field v-model="img.url" />
+                        </span>
+                      </div>
                     <cornie-input
                       v-model="identifier"
                       label="Identifier"
@@ -108,12 +114,7 @@
                         label="service provision code"
                         placeholder="--Select--"
                       />
-                    <!-- Image Upload  -->
-                    <div class="w-full">
-                        <span class="flex items-center">
-                          <cornie-avatar-field v-model="img.url" />
-                        </span>
-                      </div>
+                   
                     <!-- <span class="flex items-center mt-3">
                       <avatar class="mr-2" v-if="img.url" :src="img.url" />
                       <avatar class="mr-2" v-else :src="img.placeholder" />
@@ -319,6 +320,7 @@ export default class AddService extends Vue {
   coverageArea = "";
   type = "";
   phone = "";
+  emailRule = string().email().required();
   address = "";
   characteristics = "";
   communication = "";
