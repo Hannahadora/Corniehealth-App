@@ -52,7 +52,19 @@
             <input
               v-if="withFilter"
               v-model="filterText"
-              class="rounded-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="
+                rounded-full
+                shadow
+                appearance-none
+                border
+                w-full
+                py-2
+                px-3
+                text-gray-700
+                leading-tight
+                focus:outline-none
+                focus:shadow-outline
+              "
               id="username"
               type="text"
               placeholder="Username"
@@ -64,12 +76,16 @@
             <ContactIcon v-if="isContact" />
             <div class="ml-2 w-full">
               <span class="flex justify-between">
-                <span>{{
-                  optionLabel ? slotProps.option[optionLabel] : slotProps.option
-                }}</span>
-                <span class="ml-3 text-current italic">{{
-                  optionLabel ? slotProps.option[subText] : ""
-                }}</span>
+                <span>
+                  {{
+                    optionLabel
+                      ? slotProps.option[optionLabel]
+                      : slotProps.option
+                  }}
+                </span>
+                <span class="ml-3 text-current italic">
+                  {{ optionLabel ? slotProps.option[subText] : "" }}
+                </span>
               </span>
             </div>
           </div>

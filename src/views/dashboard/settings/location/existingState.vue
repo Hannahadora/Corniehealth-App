@@ -2,13 +2,18 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full mb-3">
       <button
-        class="bg-danger rounded-full text-white font-semibold  text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-full text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         @click="$router.push('add-location')"
       >
         Add New Location
       </button>
     </span>
-    <cornie-table :columns="rawHeaders" v-model="sortLocations" :check="false">
+    <cornie-table
+      v-model:refreshing="refreshing"
+      :columns="rawHeaders"
+      v-model="sortLocations"
+      :check="false"
+    >
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -25,21 +30,18 @@
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
-         <template #name="{ item }">
-              <div class="flex space-x-4 items-center">
-                <location-icon class="fill-current text-primary"/>
-                <span>{{ item.name }} 
-                </span>
-              </div>
-          </template>
-          <template #hoursOfOperation="{ item }">
-              <div class="items-center">
-                <p class="mb-1">{{item.hoursOfOperation}}</p>
-                <p class="text-xs text-gray-700">
-                   (Mon - Fri)
-                </p>
-              </div>
-          </template>
+      <template #name="{ item }">
+        <div class="flex space-x-4 items-center">
+          <location-icon class="fill-current text-primary" />
+          <span>{{ item.name }} </span>
+        </div>
+      </template>
+      <template #hoursOfOperation="{ item }">
+        <div class="items-center">
+          <p class="mb-1">{{ item.hoursOfOperation }}</p>
+          <p class="text-xs text-gray-700">(Mon - Fri)</p>
+        </div>
+      </template>
     </cornie-table>
   </div>
 </template>
@@ -63,6 +65,7 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import LocationIcon from "@/components/icons/location.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
+import { Watch } from "vue-property-decorator";
 
 const location = namespace("location");
 
@@ -98,6 +101,8 @@ export default class LocationExistingState extends Vue {
   deleteLocation!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
+
+  refreshing = false;
 
   rawHeaders = [
     {
@@ -164,15 +169,24 @@ export default class LocationExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deleteLocation(id)) window.notify({ msg: "Location deleted", status: "success" }); 
-    else window.notify({ msg: "Location not deleted", status: "error" }); 
+    if (await this.deleteLocation(id))
+      window.notify({ msg: "Location deleted", status: "success" });
+    else window.notify({ msg: "Location not deleted", status: "error" });
   }
   get sortLocations() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  async created(){
+
+  @Watch("refreshing")
+  async refresh(val: boolean) {
+    if (!val) return;
+    await this.fetchLocations();
+    this.refreshing = false;
+  }
+
+  async created() {
     await this.fetchLocations();
   }
 }

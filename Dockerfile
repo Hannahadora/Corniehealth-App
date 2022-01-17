@@ -1,4 +1,4 @@
-FROM node:12-slim as base
+FROM node:14-slim as base
 ENV NODE=ENV=production
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
@@ -7,12 +7,12 @@ EXPOSE 7000
 RUN mkdir /app && chown -R node:node /app
 WORKDIR /app
 USER node
-COPY --chown=noe:node package.json package-lock*.json ./
+COPY --chown=node:node package.json package-lock*.json ./
 RUN npm ci && npm cache clean --force
 
 FROM base as dev
 ENV NODE_ENV=development
-ENV PATH=/app/node_modeules/.bin:$PATH
+ENV PATH=/app/node_modules/.bin:$PATH
 RUN npm install --only=development
 CMD ["nodemon", "./bin/wwww", "--inspect=0.0.0,0:9229"]
 
