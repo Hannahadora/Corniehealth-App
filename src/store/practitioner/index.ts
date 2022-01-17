@@ -26,7 +26,7 @@ export default {
     },
     deletePractitioner(state, id: string) {
       const index = state.practitioners.findIndex(
-        (practitioner) => practitioner.id == id
+        practitioner => practitioner.id == id
       );
       if (index < 0) return;
       const practitioners = [...state.practitioners];
@@ -41,7 +41,7 @@ export default {
     },
     getPractitionerById(ctx, id: string) {
       return ctx.state.practitioners.find(
-        (practitioner) => practitioner.id == id
+        practitioner => practitioner.id == id
       );
     },
     async deletePractitioner(ctx, id: string) {

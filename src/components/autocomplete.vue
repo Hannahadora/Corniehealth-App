@@ -37,27 +37,12 @@
                   :placeholder="$attrs.placeholder"
                   disabled
                   :value="displayVal"
-                  class="
-                    p-1
-                    pl-2
-                    bg-transparent
-                    appearance-none
-                    outline-none
-                    w-full
-                    text-gray-800
-                  "
+                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
                   @change="handleChange"
                 />
 
                 <div
-                  class="
-                    text-gray-300
-                    py-1
-                    pr-1
-                    flex
-                    items-center
-                    border-gray-200
-                  "
+                  class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
                 >
                   <chevron-down-icon />
                 </div>
@@ -69,21 +54,7 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="
-              absolute
-              shadow
-              bg-white
-              border-gray-400 border
-              top-100
-              z-40
-              w-full
-              lef-0
-              rounded
-              max-h-select
-              overflow-y-auto
-              mt-2
-              svelte-5uyqqj
-            "
+            class="absolute shadow bg-white border-gray-400 border top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <icon-input
@@ -101,28 +72,14 @@
                 v-for="(item, i) in processedItems"
                 :key="i"
                 @click="selected(item)"
-                class="
-                  cursor-pointer
-                  w-full
-                  border-gray-100
-                  rounded-xl
-                  hover:bg-white-cotton-ball
-                "
+                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
                   <slot name="item" v-bind:item="item" />
                 </template>
                 <div
                   v-else
-                  class="
-                    flex
-                    w-full
-                    items-center
-                    p-2
-                    pl-2
-                    border-transparent border-l-2
-                    relative
-                  "
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
                 >
                   {{ item.display || item }}
                 </div>
@@ -181,7 +138,7 @@ export default class AutoComplete extends Vue {
   customFilter(item: any) {
     if (this.filter) return this.filter(item, this.query);
     if (typeof item === "string" || item instanceof String)
-      return item.includes(this.query);
+      return item.toLowerCase().includes(this.query);
     const { code, display }: { code: string; display: string } = item;
     return (
       `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
