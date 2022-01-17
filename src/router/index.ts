@@ -209,7 +209,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "add-practitioner/:id?",
             props: true,
-            name: "Create or Update Practitioner",
+            name: "Add a Practitioner",
             component: () =>
               import(
                 "@/views/dashboard/settings/practitioners/addPractitioner.vue"

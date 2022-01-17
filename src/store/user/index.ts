@@ -13,6 +13,7 @@ interface UserState {
   cornieData: { user: CornieUser; practitioner: IPractitioner };
   practitionerAuthenticated: boolean;
   domain: string;
+  currentLocation:string;
 }
 
 export default {
@@ -27,6 +28,7 @@ export default {
     cornieData: {} as any,
     practitionerAuthenticated: true,
     domain: "",
+    currentLocation : "",
   },
   getters: {
     accountType(state) {
@@ -42,10 +44,29 @@ export default {
       const corniedata = localStorage.getItem("corniehealthdata") as string;
       return JSON.parse(corniedata)?.authDomain;
     },
+    authCurrentLocation(state){
+      return state.currentLocation;
+    },
+    authorizedLocations(state){
+      const practitioner =  state.cornieData?.practitioner; 
+      const defaultLocation = practitioner?.defaultLocation;
+      return practitioner?.authorizedLocations?.map((location:any)=>{
+        return{
+          ...location,
+          isDefault: location.id == defaultLocation
+
+        }
+      })
+    }
   },
   mutations: {
     setCornieData(state, payload) {
       state.cornieData = { ...state.cornieData, ...payload };
+      const practitioner = state.cornieData?.practitioner;
+      state.currentLocation =  practitioner?.defaultLocation || "";
+    },
+    switchCurrentLocation(state,locationId){
+      state.currentLocation = locationId;
     },
     setAuthToken(state, token) {
       state.authToken = token;

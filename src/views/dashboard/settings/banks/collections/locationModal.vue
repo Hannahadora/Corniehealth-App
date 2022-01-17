@@ -154,6 +154,7 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import FailIcon from "@/components/icons/fail.vue";
 import BluecheckIcon from "@/components/icons/bluecheck.vue";
 import IconInput from "@/components/IconInput.vue";
+import CornieMultiselect from "@/components/multiselect.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import { string } from "yup";
 import ICollection from "@/types/ICollection";
@@ -184,6 +185,7 @@ const collections = namespace("collections");
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
+    CornieMultiselect
   },
 })
 export default class AssociaitonModal extends Vue {
@@ -387,7 +389,7 @@ export default class AssociaitonModal extends Vue {
   }
 }
 </script>
-
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style>
 .bg-gray {
   background-color: #f6f8f9;

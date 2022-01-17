@@ -36,6 +36,12 @@
           <span>{{ item.name }} </span>
         </div>
       </template>
+      <template #hoursOfOperation="{ item }">
+        <div class="items-center">
+          <p class="mb-1">{{ item.hoursOfOperation }}</p>
+          <p class="text-xs text-gray-700">(Mon - Fri)</p>
+        </div>
+      </template>
     </cornie-table>
   </div>
 </template>

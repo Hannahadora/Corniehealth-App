@@ -113,7 +113,7 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "add-practitioner/:id?",
       props: true,
-      name: "Create or Update Practitioner",
+      name: "Practitioner",
       component: () =>
         import("@/views/dashboard/settings/practitioners/addPractitioner.vue"),
     },

@@ -187,34 +187,63 @@
               {{ designation }}
             </p>
           </li>
-          <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5">
+          
+          <li class="cursor-pointer list-none items-center -mb-2 -m-2 p-5" v-if="authorizedLocations?.length > 0">
             <span class="text-gray-600 font-bold text-xs uppercase">
-              Domains</span
+              Locations</span
             >
           </li>
-          <li class="flex w-full mb-3">
-            <div class="w-full flex space-x-3">
-              <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
-                <img
-                  class="object-cover w-full h-full"
-                  src="@/assets/img/reddignton.png"
-                />
-              </div>
-              <div class="w-full">
-                <div class="flex items-center justify-between">
-                  <h2 class="text-gray-600 text-lg">Reddington Hospitals</h2>
-                  <span
-                    class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
-                    >Current Domain</span
-                  >
-                </div>
-                <a href="#" class="text-gray-400 text-sm"
-                  >https://www.corniehealth/reddington</a
-                >
-              </div>
+          <li class="flex space-x-4 justify-center w-full p-5" v-else>
+            <location-icon class="fill-current text-primary"/>
+            <p class="text-center text-sm font-semibold  text-danger justify-center flex">No Available Locations</p>
+          </li> 
+
+          <li  :class="{
+          'experience-links-con-max': showFullHeight,
+          'experience-links-con-min': !showFullHeight && authorizedLocations?.length > 0
+        }">
+            <div class="flex w-full mb-3" v-for="(item,index) in authorizedLocations" :key="index">
+            
+                  <div class="w-full flex space-x-3">
+                    <div class="h-10 w-10 mt-2 flex-grow-0 flex-shrink-0">
+                      <location-icon class="fill-current text-primary text-xl ml-3"/>
+                    </div>
+                    <div class="w-full">
+                      <div class="flex items-center justify-between">
+                        <h2 class="text-gray-600 text-lg">{{item.name}}</h2>
+                          <span
+                          v-if="item.isDefault && currentLocation == null"
+                          class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
+                          >Current Location</span>
+                        <span
+                          v-if="currentLocation === item.id"
+                          class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
+                          >Current Location</span>
+                          <span
+                          v-else
+                          class="p-2 text-sm font-semibold leading-none text-danger rounded-full flex-shrink-0 cursor-pointer"
+                          @click="setDefault(item.id)"
+                          >Switch</span>
+                      </div>
+                      <a href="#" class="text-gray-400 text-sm"
+                        >{{item.address}}</a
+                      >
+                    </div>
+                  </div>
+              
             </div>
           </li>
-          <li class="flex w-full mb-3">
+          <li>
+            <span
+              v-if="!expand && authorizedLocations?.length > 0"
+              @click="() => (showFullHeight = !showFullHeight)"
+              class="px-3 pb-3 justify-center flex more cursor-pointer"
+              >{{ showFullHeight ? "See less" : "See more" }}</span
+            >
+          </li>
+          
+      
+          <!-- <li class="flex w-full mb-3">
             <div class="w-full flex space-x-3">
               <div class="h-12 w-12 flex-grow-0 flex-shrink-0">
                 <img
@@ -257,7 +286,9 @@
                 >
               </div>
             </div>
-          </li>
+          </li> -->
+
+
           <li class="flex w-full border-t mt-4 pt-4 mb-4 border-primary">
             <div class="w-full flex space-x-3">
               <p class="text-sm font-extrabold">Manage My Subscription</p>
@@ -303,8 +334,12 @@ import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
 import FormIcon from "@/components/icons/questionnaire.vue";
 import IPractitioner from "@/types/IPractitioner";
+import ILocation,{AuthorizedLocation} from "@/types/ILocation";
 import BankIcon from "@/components/icons/bank.vue";
+import Avatar from "@/components/avatar.vue"
 import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
+import LocationIcon from "@/components/icons/location.vue";
+import { cornieClient } from "@/plugins/http";
 import { suggester } from "@/plugins/route-suggester";
 
 const account = namespace("user");
@@ -325,10 +360,15 @@ const routerStore = namespace("routerStore");
     PractitionerIcon,
     ApprovalIcon,
     SettingsModal,
+    Avatar,
+    LocationIcon
   },
 })
 export default class NavBar extends Vue {
   showSettingsModal = false;
+  localSrc =  require("../assets/img/locationIcon.png");
+   expand = false;
+  showFullHeight = false;
 
   get routeName() {
     return this.$route.name;
@@ -344,7 +384,16 @@ export default class NavBar extends Vue {
   authPractitioner!: IPractitioner;
 
   @account.Getter
+  authorizedLocations!: AuthorizedLocation[];
+
+  @account.State
+  currentLocation!: string;
+
+  @account.Getter
   cornieUser!: CornieUser;
+
+  @account.Mutation
+  switchCurrentLocation!: (locationId: any) => void;
 
   get profilePhoto() {
     return this.cornieUser?.image;
@@ -365,6 +414,50 @@ export default class NavBar extends Vue {
     middleInitials = middleInitials ? `${middleInitials}.` : "";
     return `${lastName} ${firstInitials}. ${middleInitials}`;
   }
+  // async deleteLoc(id: string) {
+  //   const confirmed = await window.confirmAction({
+  //     message: "You are about to delete this location",
+  //   });
+  //   if (!confirmed) return;
+
+  //   if (await this.deleteLocation(id)) window.notify({ msg: "Location deleted", status: "success" }); 
+  //   else window.notify({ msg: "Location not deleted", status: "error" }); 
+  // }
+  async setDefault(value:string) {
+     const confirmed = await window.confirmAction({
+      message: "Do you want to switch this location?",
+      yes: "Yes",
+      no: "No"
+    });
+    if (!confirmed) return;
+
+      if(confirmed){
+          try {
+          this.switchCurrentLocation(value) 
+          window.notify({ msg: "Authorized Locations Swtiched", status: "success" });
+            //  else window.notify({ msg: "Authorized Locations not Swtiched", status: "error" })
+          } catch (error) {
+            window.notify({ msg: "Authorized Locations not Swtiched", status: "error" });
+          }
+      }
+      //  if (await this.switchCurrentLocation(value)) window.notify({ msg: "Location deleted", status: "success" }); 
+      // else window.notify({ msg: "Location not deleted", status: "error" })
+
+
+      // const url = `/api/v1/practitioner/set-default-location/${this.authPractitioner.id}`;
+      // try {
+      //   const response = await cornieClient().patch(url,{location:value});
+      //   if (response.success) {
+      //     window.notify({ msg: "Approved Locations Updated", status: "success" });
+      //     // this.done();
+      //   }
+      // } catch (error) {
+      //   window.notify({ msg: "Approved Locations Not Updated", status: "error" });
+      // }
+    
+
+  }
+
 
   async logout() {
     await logout();
@@ -372,8 +465,25 @@ export default class NavBar extends Vue {
   }
 }
 </script>
-<style>
+<style scoped>
 .dropdown:hover .dropdown-menu {
   display: block;
+}
+.experience-links-con-max {
+  height: auto;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+.experience-links-con-min {
+  height: 190px;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+.more {
+  font-size: 14px;
+  color: #FE4D3C;
+  font-weight: bold;
 }
 </style>

@@ -6,13 +6,16 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="flex capitalize mb-1 text-black text-sm font-semibold"
+              class="flex space-x-55 justify-between w-full capitalize mb-1 text-black text-sm font-semibold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
               <template v-else>
                 {{ label }}
               </template>
+              <div class="float-right cursor-pointer fill-current text-primary">
+                 <slot name="misc"  />
+                </div>
               <span class="text-danger ml-1" v-if="required"> * </span>
               <span class="ml-1 mb-1" v-if="$slots.labelicon">
                 <slot name="labelicon" />

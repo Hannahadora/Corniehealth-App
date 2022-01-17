@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded mb-56 p-5 mt-5">
+  <div class="bg-white rounded p-5 mt-5">
     <div class="">
       <h3 class="text-primary font-bold border-b-2 border-gray-200 pb-4">
         You can activate the Virtual NUBAN Account to manage your payments.
@@ -36,7 +36,13 @@
             Your virtual account can only be used on Cloudenly. This service is
             offered in partnership with Paystack.
           </p>
-          <div class="flex w-full space-x-2 mt-5">
+          <div
+            class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+          >
+            <img src="@/assets/img/nobank.svg" class="mb-2" />
+            <h4 class="text-black text-center">No Virtual NUBAN  </h4>
+          </div>
+          <div class="w-full space-x-2 mt-5 hidden">
             <span>
               <svg
                 width="18"
@@ -70,7 +76,7 @@
               Virtual NUBAN Accounts Setup
             </span>
           </div>
-          <div>
+          <div class="hidden">
             <span class="flex justify-end w-full mb-8">
               <button
                 class="flex space-x-3 bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 focus:outline-none hover:opacity-90"
@@ -294,14 +300,7 @@ export default class Payments extends Vue {
   selected = 1;
   query = "";
 
-  @task.State
-  tasks!: ITask[];
 
-  @task.Action
-  deleteTask!: (id: string) => Promise<boolean>;
-
-  @task.Action
-  fetchTasks!: () => Promise<void>;
 
   select(i: number) {
     this.selected = i;
@@ -309,52 +308,11 @@ export default class Payments extends Vue {
   showModal() {
     this.showNubanModal = true;
   }
-  rawHeaders = [
-    { title: "ACCOUNT NAME", key: "name", show: true },
-    {
-      title: "Virtual NUBAN Account Number",
-      key: "nuban",
-      show: true,
-    },
-    {
-      title: "Bank Name",
-      key: "bankname",
-      show: true,
-    },
-    {
-      title: "Current Balance",
-      key: "balance",
-      show: true,
-    },
-  ];
+  
 
-  get items() {
-    const tasks = this.tasks.map((task) => {
-      (task as any).excecutionPeriod.start = new Date(
-        (task as any).excecutionPeriod.start
-      ).toLocaleDateString("en-US");
-      (task as any).excecutionPeriod.end = new Date(
-        (task as any).excecutionPeriod.end
-      ).toLocaleDateString("en-US");
-      (task as any).createdAt = new Date(
-        (task as any).createdAt
-      ).toLocaleDateString("en-US");
-      return {
-        ...task,
-        action: task.id,
-        keydisplay: "XXXXXXX",
-        name: "Paystack Cloudenly/XYZ Co.Ltd.",
-        nuban: "100023567",
-        bankname: "Wema Bank",
-        balance: "N31,501, 981",
-      };
-    });
-    if (!this.query) return tasks;
-    return search.searchObjectArray(tasks, this.query);
-  }
+  
   created() {
-    this.fetchTasks();
-    if (this.tasks.length < 1) this.fetchTasks();
+    
   }
 }
 </script>

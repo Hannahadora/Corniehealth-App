@@ -2,7 +2,7 @@
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span
-        class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+        class="flex border-b-2 w-full font-bold text-lg text-primary py-2 mx-auto"
       >
         Healthcare Services
       </span>

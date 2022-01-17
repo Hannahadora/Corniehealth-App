@@ -63,7 +63,15 @@
                           placeholder="--Select--"
                           class="w-full"
                       />
-                      <cornie-select
+                      <fhir-input
+                       
+                          reference="http://hl7.org/fhir/ValueSet/v3-ServiceDeliveryLocationRoleType"
+                          class="required w-full"
+                           v-model="type"
+                           label="Type"
+                           placeholder="--Select--"
+                        />
+                      <!-- <cornie-select
                         :rules="required"
                         required
                         :items="dropdowns.type"
@@ -71,7 +79,7 @@
                         label="Type"
                           placeholder="--Select--"
                           class="w-full"
-                      />
+                      /> -->
               
                         <phone-input
                           v-model="phone"
@@ -119,6 +127,8 @@
                       <Textarea
                           :label="'Address'"
                           v-model="address"
+                          :rows="1"
+                          :cols="1"
                           class="w-full"
                           placeholder="Start typing..."
                         />
@@ -148,12 +158,10 @@
                        :disabled="true"
                     />
                     <cornie-input
-                      :readonly="true"
                       v-model="altitude"
                       label="Altitude"
                       placeholder="--Enter--"
                       class="w-full"
-                       :disabled="true"
                     />
                     <!-- <cornie-select
                       :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
@@ -250,6 +258,8 @@ import AutoComplete from "@/components/autocomplete.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import InfoIcon from "@/components/icons/info.vue"
 import Textarea from "@/components/textarea.vue"
+import FhirInput from "@/components/fhir-input.vue";
+
 
 const countries = getCountries();
 
@@ -265,6 +275,7 @@ const location = namespace("location");
     PhoneInput,
     OperationHours,
     Textarea,
+    FhirInput,
     AccordionComponent,
   },
 })
@@ -292,7 +303,7 @@ export default class AddLocation extends Vue {
   physicalType = "";
   latitude = "";
   longitude = "";
-  altitude = "321";
+  altitude = "";
   managingOrg = "";
   partOf = "";
   availabilityExceptions = "";

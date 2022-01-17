@@ -2,7 +2,7 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-full text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="$router.push('add-practitioner')"
       >
         Add a Practitioner
@@ -14,19 +14,27 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="$router.push(`add-practitioner/${item.id}`)"
         >
-          <eye-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">View</span>
+          <edit-icon class="text-primary fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showModal(item.id)"
+        >
+           <update-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Update Location</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="remove(item.id)"
         >
-          <delete-icon class="text-yellow-500 fill-current" />
+          <delete-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
     </cornie-table>
   </div>
+  <location-modal v-model="showLocationModal" @location-update="updateLocation" :id="locationId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -45,6 +53,9 @@ import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/newview.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import LocationModal from './locationModal.vue';
+import UpdateIcon from "@/components/icons/newupdate.vue";
 
 const practitioner = namespace("practitioner");
 
@@ -62,11 +73,16 @@ const practitioner = namespace("practitioner");
     EyeIcon,
     ColumnFilter,
     TableOptions,
+    EditIcon,
+    LocationModal,
+    UpdateIcon
   },
 })
 export default class PractitionerExistingState extends Vue {
   showColumnFilter = false;
   query = "";
+  showLocationModal= false;
+  locationId="";
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -74,7 +90,15 @@ export default class PractitionerExistingState extends Vue {
   @practitioner.Action
   deletePractitioner!: (id: string) => Promise<boolean>;
 
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
   rawHeaders = [
+    {
+      title: "IDENTIFIER",
+      key: "id",
+      show:true
+    },
     {
       title: "Name",
       key: "name",
@@ -83,14 +107,14 @@ export default class PractitionerExistingState extends Vue {
     { title: "Department", key: "department", show: true },
     { title: "Job Designation", key: "jobDesignation", show: true },
     {
-      title: "Active State",
+      title: "Status",
       key: "activeState",
       show: true,
     },
     {
       title: "Code",
       key: "qualificationIssuer",
-      show: true,
+      show: false,
     },
     {
       title: "Address",
@@ -149,6 +173,14 @@ export default class PractitionerExistingState extends Vue {
     if (await this.deletePractitioner(id))
       window.notify({ msg: "Practitioner deleted", status: "success" });
     else window.notify({ msg: "Practitioner not deleted", status: "error" });
+  }
+  async updateLocation(){
+    await this.fetchPractitioners();
+  }
+
+  showModal(value:string){
+    this.showLocationModal = true;
+    this.locationId = value;
   }
 }
 </script>
