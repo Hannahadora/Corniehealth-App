@@ -9,6 +9,4 @@ export async function remeberSettings(
   if (!to.matched.some(record => record.meta.settings)) return;
   if (!to.name) return;
   suggester.rememberRoute(to.fullPath, to.name as string);
-  // eslint-disable-next-line no-console
-  console.log("Remembering this ", to.fullPath, to.name);
 }

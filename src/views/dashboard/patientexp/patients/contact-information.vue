@@ -35,13 +35,13 @@
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
-          :items="countries"
+          :items="nationState.countries"
         />
         <auto-complete
           class="w-full"
           v-model="state"
           label="State"
-          :items="states"
+          :items="nationState.states"
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
@@ -113,11 +113,11 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { string } from "yup";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import { getCountries, getStates } from "@/plugins/nation-states";
+
+import { useCountryStates } from "@/composables/useCountryStates";
 
 const patients = namespace("patients");
 
-const countries = getCountries();
 @Options({
   name: "PatientContact",
   components: {
@@ -132,6 +132,8 @@ const countries = getCountries();
 export default class PatientContact extends Vue {
   @Prop({ type: Array, default: [] })
   modelValue!: Contact[];
+
+  nationState = setup(() => useCountryStates());
 
   @PropSync("modelValue", { type: Array, default: [] })
   contactsSync!: Contact[];
@@ -151,15 +153,6 @@ export default class PatientContact extends Vue {
   dialCode = "+234";
   email = "";
   contactId = "";
-
-  states = [] as any;
-  countries = countries;
-
-  @Watch("country")
-  async countryPicked(country: string) {
-    const states = await getStates(country);
-    this.states = states;
-  }
 
   loading = false;
   requiredString = string().required();

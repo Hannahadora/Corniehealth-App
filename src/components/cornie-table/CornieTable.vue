@@ -19,7 +19,11 @@
       <span class="flex justify-between items-center">
         <dots-horizontal-icon class="mr-7" />
         <print-icon class="mr-7" />
-        <refresh-icon class="mr-7 cursor-pointer" @click="$emit('refresh')" />
+        <refresh-icon
+          :loading="refreshing"
+          class="mr-7 cursor-pointer"
+          @click="refresh"
+        />
         <filter-icon class="cursor-pointer" @click="$emit('filter')" />
       </span>
     </div>
@@ -142,7 +146,7 @@ function defaultFilter(item: any, query: string) {
 
 @Options({
   name: "cornie-table",
-  emits: ["refresh"],
+  emits: ["refresh", "filter"],
   components: {
     SortIcon,
     IconInput,
@@ -175,6 +179,12 @@ export default class CornieTable extends Vue {
   @Prop({ type: Boolean, default: true })
   check!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  refreshing!: boolean;
+
+  @PropSync("refreshing")
+  refreshSync!: boolean;
+
   @PropSync("loader", { type: Function })
   loaderProp!: ItemLoader;
 
@@ -193,6 +203,11 @@ export default class CornieTable extends Vue {
     return this.items
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
+  }
+
+  refresh() {
+    this.$emit("refresh");
+    this.refreshSync = true;
   }
 
   setOrderBy(orderBy: Sorter) {

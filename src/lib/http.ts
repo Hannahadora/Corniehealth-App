@@ -66,7 +66,6 @@ interface Errors {
     [key: string]: any;
   };
 }
-
 export class JSONClient implements HttpClient {
   create: any;
   constructor(private headers: IndexableObject, private baseUrl: string = "") {}

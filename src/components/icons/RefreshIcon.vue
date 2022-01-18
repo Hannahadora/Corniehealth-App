@@ -4,6 +4,7 @@
     height="14"
     viewBox="0 0 20 14"
     fill="none"
+    :class="{ spinner: loading }"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
@@ -12,3 +13,21 @@
     />
   </svg>
 </template>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
+
+@Options({
+  name: "RefreshIcon",
+})
+export default class RefreshIcon extends Vue {
+  @Prop({ type: Boolean, default: false })
+  loading!: boolean;
+}
+</script>
+
+<style scoped>
+.spinner {
+  animation: rotate 2s linear infinite;
+}
+</style>

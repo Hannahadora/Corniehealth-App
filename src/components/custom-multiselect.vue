@@ -28,7 +28,13 @@
         <template #value="slotProps">
           <div class="flex">
             <div
-              class="country-item country-item-value flex items-center p-multiselect-car-token mx-1"
+              class="
+                country-item country-item-value
+                flex
+                items-center
+                p-multiselect-car-token
+                mx-1
+              "
               v-for="(option, index) of slotProps.value"
               :key="index"
             >
@@ -56,7 +62,19 @@
               v-if="withFilter"
               autofocus
               v-model="filterText"
-              class="rounded-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="
+                rounded-full
+                shadow
+                appearance-none
+                border
+                w-full
+                py-2
+                px-3
+                text-gray-700
+                leading-tight
+                focus:outline-none
+                focus:shadow-outline
+              "
               id="username"
               type="text"
               placeholder="Search"
@@ -81,7 +99,13 @@
         <template #chip="slotProps">
           <div class="country-item flex items-center p-2">
             <div
-              class="country-item country-item-value flex items-center p-multiselect-car-token mx-1"
+              class="
+                country-item country-item-value
+                flex
+                items-center
+                p-multiselect-car-token
+                mx-1
+              "
               v-for="(option, index) of slotProps.value"
               :key="index"
             >
