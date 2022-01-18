@@ -180,9 +180,9 @@ export default class Settings extends Vue {
   }
   get healthCare() {
     return [
-      {
-        name: "Healthcare Services",
-        to: "health-services",
+       {
+        name: "Catalogue Services",
+        to: "catalogues",
         icon: "health-service-icon",
       },
       { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },

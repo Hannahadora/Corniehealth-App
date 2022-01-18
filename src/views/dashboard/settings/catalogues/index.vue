@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
+    class="flex-col justify-cente"
   >
     <div class="container-fluid">
       <div class="w-full p-2">
@@ -233,6 +233,8 @@ export default class ExistingState extends Vue {
 
 .active-color {
   border-color: #fe4d3c;
+  position: relative;
+    bottom: -3px;
 }
 
 .status-active {

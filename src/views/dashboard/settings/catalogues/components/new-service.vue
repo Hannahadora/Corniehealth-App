@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid p-4 bg-white overflow-y-scroll">
+  <div class="container-fluid p-4 bg-white">
     <div class="w-full">
       <div class="w-full" style="border-bottom: 1px solid #c2c7d6">
         <span
@@ -10,40 +10,128 @@
         <!-- <registration-chart class="w-full" :height="100" /> -->
       </div>
 
-      <div class="container">
-        <span class="flex items-center my-6">
-          <avatar class="mr-2" v-if="img.url" :src="img.url" />
-          <avatar class="mr-2 h-20 w-20" v-else :src="img.placeholder" />
-          <input
-            type="file"
-            accept="image/*"
-            name="image"
-            id="file"
-            @change="img.onChange"
-            hidden
-          />
-          <label for="file" class="text-red-500 font-bold cursor-pointer">
-            Upload
-          </label>
+      <div class="w-full py-5">
+        <span class="flex items-center">
+          <cornie-avatar-field v-model="img.url" />
         </span>
       </div>
 
-      <div class="w-full flex">
-        <div class="w-4/12">
-          <cornie-select
-            :label="'Category'"
-            v-model="reqBody.category"
-            :items="['Category 1']"
-          />
-        </div>
-        <div class="w-4/12">
-          <cornie-select
-            :label="'Sub-Category'"
-            v-model="reqBody.subcategory"
-            :items="['Sub-Category 1']"
-          />
-        </div>
-        <div class="w-4/12">
+      <div class="w-full grid grid-cols-3 gap-4">
+           <fhir-input          
+              reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
+              class="w-full"
+              v-model="reqBody.specialty"
+              label="Specialty"
+              placeholder="--Select--"
+            />
+            <fhir-input         
+                reference="http://hl7.org/fhir/ValueSet/service-category"
+                class="w-full"
+                v-model="reqBody.category"
+                label="category"
+                  placeholder="--Select--"
+              />
+               <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/service-type"
+                    class="w-full"
+                    v-model="reqBody.type"
+                    label="type"
+                    placeholder="--Select--"
+                />
+                <cornie-input :label="'Service Name'" placeholder="--Enter--" />
+                 <cornie-input v-model="reqBody.description" :label="'Description'" placeholder="--Enter--" />
+                 <cornie-input
+                  :label="'Item Code'"
+                  v-model="reqBody.itemCode"
+                  placeholder="--DNS Generated--"
+                  :disabled="true"
+                />
+                 <cornie-select  
+                     :items="nationState.countries"
+                      v-model="reqBody.address"
+                      label="location"
+                      class="w-full"
+                       placeholder="--Select--"
+                  />
+                  <cornie-select
+                      :items="allLocation"
+                      v-model="reqBody.coverageArea"
+                      label="Coverage area"
+                      class="w-full"
+                      placeholder="--Select--"
+                    />
+                    <cornie-select  
+                     :items="['Active','Inactive']"
+                      v-model="reqBody.status"
+                      label="location"
+                      class="w-full"
+                       placeholder="--Select--"
+                  />
+                  <cornie-select
+                      :items="['providers']"
+                      v-model="reqBody.providedBy"
+                      label="Provided by"
+                      class="w-full"
+                      placeholder="--Select--"
+                    />
+                    <combo-input :label="'Unit of Service'">
+                      <template #list>
+                        <cornie-select
+                          v-model="reqBody.serviceUOM"
+                          :items="['hours']"
+                          style="width: 100%; border-radius: 8px 0 0 8px"
+                        />
+                      </template>
+                      <template #input>
+                        <input-with-desc>
+                          <input
+                            type="text"
+                            class="p-2 border w-100 w-full"
+                            style="border-radius: 0 8px 8px 0"
+                          />
+                        </input-with-desc>
+                      </template>
+                    </combo-input>
+                    <cornie-input v-model="reqBody.description" :label="'Cost Per Unit'" placeholder="--Enter--" />
+                    <div class="w-full">
+                      <span class="text-dark font-semibold capitalize text-sm mb-5">Priced</span>
+                      <div class="w-full flex space-x-4 mt-4">
+                        <cornie-radio
+                            v-model="reqBody.ingredientStatus"
+                            :label="'Yes'"
+                            :value="'yes'"
+                            name="status"
+                            checked
+                        />
+                        <cornie-radio
+                              v-model="reqBody.ingredientStatus"
+                              :label="'No'"
+                              :value="'no'"
+                              name="status"
+                          />
+
+                      </div>
+                    </div>
+                    <div class="w-full">
+                      <span class="text-dark font-semibold capitalize text-sm mb-3">Discount Applicable?</span>
+                      <div class="w-full flex space-x-4 mt-4">
+                        <cornie-radio
+                            v-model="reqBody.ingredientStatus"
+                            :label="'Yes'"
+                            :value="'yes'"
+                            name="newstatus"
+                            checked
+                        />
+                        <cornie-radio
+                              v-model="reqBody.ingredientStatus"
+                              :label="'No'"
+                              :value="'no'"
+                              name="newstatus"
+                          />
+
+                      </div>
+                    </div>
+        <!-- <div class="w-4/12">
           <service-dropdown
             @add="() => (addNew = true)"
             v-model="reqBody.name"
@@ -54,64 +142,27 @@
               'Biopsy',
             ]"
           />
-        </div>
+        </div> -->
       </div>
 
-      <div class="w-full flex">
-        <div class="w-4/12">
-          <cornie-input v-model="reqBody.description" :label="'Description'" />
-        </div>
-        <div class="w-4/12">
-          <cornie-input
-            :label="'Item Code'"
-            v-model="reqBody.itemCode"
-            placeholder="--DNS Generated"
-          />
-        </div>
-        <div class="w-4/12">
-          <div class="w-11/12 -mt-5">
-            <combo-input :label="'Service UoM'">
-              <template #list>
-                <cornie-select
-                  v-model="reqBody.serviceUOM"
-                  :items="['hours']"
-                  style="width: 100%; border-radius: 8px 0 0 8px"
-                />
-              </template>
-              <template #input>
-                <input-with-desc>
-                  <input
-                    type="text"
-                    class="p-2 border w-100 w-full"
-                    style="border-radius: 0 8px 8px 0"
-                  />
-                </input-with-desc>
-              </template>
-            </combo-input>
-          </div>
-        </div>
-      </div>
 
       <div class="w-full py-4">
         <p class="sub-headers">Fee Information</p>
       </div>
 
-      <div class="w-full flex">
-        <div class="w-4/12">
+      <div class="w-full grid grid-cols-3 gap-4">
           <cornie-input
             v-model.number="reqBody.cost"
             :label="'Service Cost (NGN)'"
+            placeholder="--Enter--"
           />
-        </div>
-        <div class="w-4/12">
-          <cornie-input :label="'Free Markup'" placeholder="--Autoloaded--" />
-        </div>
-        <div class="w-4/12">
-          <cornie-input
-            :label="'Discount Limit'"
-            placeholder="--Autoloaded--"
-          />
-        </div>
+          <cornie-input :label="'Free Markup'" :disabled="true" placeholder="--Autoloaded--" />
+            <cornie-input
+              :label="'Discount Limit'"
+              placeholder="--Autoloaded--"
+              :disabled="true"
+            />
+
       </div>
 
       <div class="w-full mb-8 mt-3 py-4">
@@ -151,7 +202,7 @@
               <span>DISCOUNTED margin(%)</span>
             </div>
           </div>
-          <div class="w-full flex tbs py-3 mb-3" style="min-width: 1330px">
+          <div class="w-full flex tbs py-3 px-3 mb-3" style="min-width: 1330px">
             <div class="th flex items-center">
               <span>Hour</span>
             </div>
@@ -209,6 +260,61 @@
         </div>
       </div>
 
+      <div class="w-full grid grid-cols-3 gap-4 mt-5">
+           <fhir-input            
+              reference="http://hl7.org/fhir/ValueSet/service-referral-method"
+              class="w-full"
+              v-model="referralMethod"
+              label="referral method"
+              placeholder="--Select--"
+            />
+            <div class="w-full">
+                <span class="text-dark capitalize font-semibold text-sm mb-3">appointment required?</span>
+                <div class="w-full flex space-x-4 mt-4">
+                  <cornie-radio
+                      v-model="reqBody.ingredientStatus"
+                      :label="'Yes'"
+                      :value="'yes'"
+                      name="required"
+                      checked
+                  />
+                  <cornie-radio
+                        v-model="reqBody.ingredientStatus"
+                        :label="'No'"
+                        :value="'no'"
+                        name="required"
+                    />
+
+                </div>
+            </div>
+             <cornie-select
+                :items="['providers']"
+                v-model="reqBody.providedBy"
+                label="Available Times"
+                class="w-full"
+                placeholder="--Select--"
+              />
+              <cornie-input
+                v-model="reqBody.availabilityExceptions"
+                label="availability exceptions"
+                  placeholder="--Enter--"
+                  class="w-full"
+              />
+              <cornie-select           
+                v-model="reqBody.notAvailableChannel"
+                label="Channel of Service"
+                :items="['dental', 'hospice']"
+                  placeholder="--Select--"
+                  class="w-full"
+              />
+               <cornie-select
+                  :items="dropdown.CommunicationLanguage"
+                  v-model="reqBody.communicationLanguage"
+                  label="Telecom"
+                   placeholder="--Select--"
+                   class="w-full"
+                />
+      </div>
       <div class="w-full">
         <span class="w-full bg-danger">
           <span class="flex justify-end w-full my-5">
@@ -279,9 +385,10 @@
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import Avatar from "@/components/avatar.vue";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import CornieSelect from "@/components/cornieselect.vue";
+import { cornieClient } from "@/plugins/http";
 import CornieInput from "@/components/cornieinput.vue";
 import ComboInput from "@/views/dashboard/ehr/vitals/components/split-input.vue";
 import CornieCheckbox from "@/components/corniecheckbox.vue";
@@ -290,12 +397,16 @@ import Modal from "@/components/modal.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import ICatalogueService from "@/types/ICatalogue";
+import FhirInput from "@/components/fhir-input.vue";
+import { useCountryStates } from "@/composables/useCountryStates";
+import CornieRadio from "@/components/cornieradio.vue";
 
+const dropdown = namespace("dropdown");
 const catalogue = namespace("catalogues");
 
 @Options({
   components: {
-    Avatar,
+    CornieAvatarField,
     CornieSelect,
     CornieInput,
     ComboInput,
@@ -303,6 +414,8 @@ const catalogue = namespace("catalogues");
     ServiceDropdown,
     Modal,
     CloseIcon,
+    FhirInput,
+    CornieRadio
   },
 })
 export default class NwService extends Vue {
@@ -319,13 +432,19 @@ export default class NwService extends Vue {
   services!: ICatalogueService[];
 
   img = setup(() => useHandleImage());
+  nationState = setup(() => useCountryStates());
   addNew = false;
   loading = false;
+  dropdown = {} as IIndexableObject;
+  location=[];
   reqBody = {
     quantity: 1,
     cost: 10,
     status: "active",
   } as ICatalogueService;
+
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
   async onSave() {
     if (!this.img?.url) {
@@ -364,8 +483,30 @@ export default class NwService extends Vue {
       this.loading = false;
     }
   }
+  get allLocation() {
+    if (!this.location || this.location.length === 0) return [];
+    return this.location.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+ 
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+    const response = await Promise.all([AllLocation]);
+    this.location = response[0].data;
+  }
+  async setDropdown() {
+    const data = await this.getDropdowns("practitioner");
+    this.dropdown = data;
+  }
 
   async created() {
+    await this.setDropdown();
     if (this.$route.params.serviceId) {
       if (this.services?.length <= 0) await this.getServices();
       this.reqBody = this.services.find(

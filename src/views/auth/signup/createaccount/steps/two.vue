@@ -1,6 +1,6 @@
 <template>
-  <div class="w-10/12 mx-auto">
-    <h1 class="text-primary font-bold text-4xl mb-8">Create an account</h1>
+  <div class="w-9/12 mx-auto mt-96">
+    <h1 class="text-primary font-bold text-3xl mb-8">Create an account</h1>
     <div class="bg-light_gray p-4 text-jet_black my-4 mb-12">
       You must be 18 or older to create a CornieCare Patient Online account.
       Parents must create dependent accounts for patients under 18.

@@ -3,7 +3,7 @@
     <div class="w-full block p-12">
       <div>
         <h2 class="font-bold text-4xl text-primary mb-5">Welcome Back!</h2>
-        <p class="text-black mb-10">Login to your corniehealth account</p>
+        <p class="text-primary mb-10">Sign In to CornieHealth</p>
         <cornie-btn
           @click="login = true"
           class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
@@ -29,13 +29,13 @@
     </div>
   </div>
   <div
-    class="h-full w-2/3 flex justify-center rounded-lg bg-white mt-24"
+    class="h-full w-2/3 flex justify-center rounded-lg bg-white -mt-12 lg:-mt-10  xl:-mt-12 md:-mt-12"
     v-else
   >
     <div class="w-full h-44 block p-12">
       <form class="w-full" @submit.prevent="submit">
-        <h2 class="font-bold text-4xl text-primary mb-5">
-          Login to CornieHealth
+        <h2 class="font-bold text-3xl text-primary mb-5">
+          Sign In to CornieHealth
         </h2>
         <div class="w-full gap-y-2 grid-cols-1 grid">
           <cornie-input
@@ -72,9 +72,10 @@
           </label>
         </div>
         <span class="flex item-center mb-3">
-          <label class="inline-flex items-center mt-3">
+          <!-- <label class="inline-flex items-center mt-3">
             <input type="checkbox" />
-          </label>
+          </label> -->
+          <cornie-checkbox/>
           <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
         </span>
         <cornie-btn
@@ -106,6 +107,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import QuantumIcon from "@/components/icons/quantum.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue"
 import store from "@/store";
 import { login, setAuthDomain } from "@/plugins/auth";
 import { string } from "yup";
@@ -116,6 +118,7 @@ import { string } from "yup";
     CornieSelect,
     PasswordInput,
     QuantumIcon,
+    CornieCheckbox
   },
 })
 export default class Signin extends Vue {
