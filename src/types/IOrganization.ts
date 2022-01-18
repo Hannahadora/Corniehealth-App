@@ -11,4 +11,5 @@ export interface IOrganization {
   incorporationType: string;
   website: string;
   incorporationStatus: string;
+  reference: string;
 }

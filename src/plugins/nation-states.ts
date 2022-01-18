@@ -2,7 +2,7 @@ import { countryCodes } from "./countrycodes";
 import localStore from "./localstore";
 
 export function getCountries() {
-  return countryCodes.map((c) => c.name);
+  return countryCodes.map(c => c.name);
 }
 
 export const nigerianStates = [

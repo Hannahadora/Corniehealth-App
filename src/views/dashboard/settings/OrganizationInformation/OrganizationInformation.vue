@@ -5,20 +5,7 @@
     </h3>
     <section class="pb-4">
       <div class="image-upload flex mt-10 items-center">
-        <avatar class="mr-2" v-if="img.url" :src="img.url" />
-        <avatar class="mr-2" v-else :src="img.placeholder" />
-        <br />
-        <input
-          type="file"
-          accept="image/*"
-          name="image"
-          id="file"
-          @change="img.onChange"
-          hidden
-        />
-        <label for="file" class="text-pink-600 font-bold cursor-pointer">
-          Upload Image
-        </label>
+        <avatar-field v-model="image" />
       </div>
 
       <v-form @submit="submitForm">
@@ -116,21 +103,22 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
 import { cornieClient } from "@/plugins/http";
 import Avatar from "@/components/avatar.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
 import PhoneInput from "@/components/phone-input.vue";
-import { reactive } from "@vue/reactivity";
 import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import { mapActions, mapState } from "vuex";
 import DomainInput from "@/components/domain-input.vue";
 import SnomedInput from "@/components/snomed-input.vue";
+import { IOrganization } from "@/types/IOrganization";
+import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
 
-export default {
+const organization = namespace("organization");
+@Options({
   name: "OrganizationInformation",
   components: {
     Avatar,
@@ -141,126 +129,113 @@ export default {
     AvatarField,
     SnomedInput,
   },
-  setup() {
-    const { url, placeholder, onChange } = useHandleImage();
-    return { img: reactive({ url, placeholder, onChange }) };
-  },
-  data() {
-    return {
-      OrganizationName: "",
-      alias: "",
-      OrganizationType: "",
-      ReferenceOrganization: "",
-      RegistrationNumber: "",
-      DialCode: "+234",
-      PhoneNumber: "",
-      DomainName: "",
-      OrganizationIdentifier: "System Generated",
-      ProviderProfile: "",
-      IncorporationType: "",
-      EmailAddress: " ",
-      Website: "",
-      IncorporationStatus: "",
+})
+export default class organizationInfo extends Vue {
+  OrganizationName = "";
+  alias = "";
+  OrganizationType = "";
+  ReferenceOrganization = "";
+  RegistrationNumber = "";
+  DialCode = "+234";
+  PhoneNumber = "";
+  DomainName = "";
+  OrganizationIdentifier = "System Generated";
+  ProviderProfile = "";
+  IncorporationType = "";
+  EmailAddress = " ";
+  Website = "";
+  IncorporationStatus = "";
 
-      orgTypes: [],
-      provProfiles: [],
-      incTypes: [],
-      loading: false,
-      OrgInfo: {},
-      urlRule: string().url(),
-      emailRule: string().email().required(),
-      requiredRule: string().required(),
-      image: "",
+  orgTypes = [];
+  provProfiles = [];
+  incTypes = [];
+  loading = false;
+  defaultOrgInfo?: IOrganization;
+  urlRule = string().url();
+  emailRule = string().email().required();
+  requiredRule = string().required();
+  image = "";
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<IOrganization>;
+
+  get payload() {
+    return {
+      name: this.OrganizationName,
+      image: this.image,
+      alias: this.alias,
+      organisationType: this.OrganizationType,
+      registrationNumber: this.RegistrationNumber,
+      domainName: this.DomainName,
+      providerProfile: this.ProviderProfile,
+      incorporationType: this.IncorporationType,
+      website: this.Website,
+      incorporationStatus: this.IncorporationStatus,
+      email: this.EmailAddress,
+      reference: this.ReferenceOrganization,
     };
-  },
-  computed: {
-    ...mapState("organization", {
-      organizationInfo: (state) => state.organizationInfo,
-    }),
-    payload() {
-      return {
-        name: this.OrganizationName,
-        image: this.img.url,
-        alias: this.alias,
-        organisationType: this.OrganizationType,
-        registrationNumber: this.RegistrationNumber,
-        domainName: this.DomainName,
-        providerProfile: this.ProviderProfile,
-        incorporationType: this.IncorporationType,
-        website: this.Website,
-        incorporationStatus: this.IncorporationStatus,
-        email: this.EmailAddress,
-        reference: this.ReferenceOrganization,
-      };
-    },
-  },
+  }
+
   async created() {
     try {
       const dropdown = this.fetchDropDown();
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
+      this.defaultOrgInfo = this.organizationInfo;
+      this.setOrgInfo(this.organizationInfo);
     } catch (error) {}
-  },
-  methods: {
-    ...mapActions("organization", ["fetchOrgInfo"]),
-    async submitForm() {
-      this.loading = true;
-      try {
-        await cornieClient().post("/api/v1/organization", this.payload);
-        window.notify({
-          msg: "Organization updated Sucessfully",
-          status: "success",
-        });
-      } catch (error) {
-        window.notify({ msg: "Organization not updated", status: "error" });
-      }
-      this.loading = false;
-    },
-    async fetchDropDown() {
-      const orgType = cornieClient().get(
-        "/api/v1/organization/getOrganisationType"
-      );
-      const providerProfile = cornieClient().get(
-        "/api/v1/organization/getProviderProfile"
-      );
-      const incType = cornieClient().get(
-        "/api/v1/organization/getIncorporationType"
-      );
-      const response = await Promise.all([orgType, providerProfile, incType]);
-      this.orgTypes = response[0].data;
-      this.provProfiles = response[1].data;
-      this.incTypes = response[2].data;
-    },
-    revertChanges() {
-      this.setOrgInfo(this.orgInfo);
-    },
-    async fetchOrgInfo() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/organization/myOrg/get"
-        );
-        this.orgInfo = response.data || {};
-        this.setOrgInfo(response.data);
-      } catch (error) {
-        window.notify({ msg: "Could not fetch organization", status: "error" });
-      }
-    },
-    setOrgInfo(data) {
-      this.OrganizationName = data.name || "";
-      this.img.url = data.image || "";
-      this.alias = data.alias || "";
-      this.OrganizationType = data.organisationType || "";
-      this.RegistrationNumber = data.registrationNumber || "";
-      this.DomainName = data.domainName || "";
-      this.OrganizationIdentifier = data.identifier || "";
-      this.ProviderProfile = data.providerProfile || "";
-      this.IncorporationType = data.incorporationType || "";
-      this.Website = data.website || "";
-      this.IncorporationStatus = data.incorporationStatus || "";
-      this.ReferenceOrganization = data.reference || "";
-    },
-  },
-};
+  }
+
+  async submitForm() {
+    this.loading = true;
+    try {
+      await cornieClient().post("/api/v1/organization", this.payload);
+      window.notify({
+        msg: "Organization updated Sucessfully",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({ msg: "Organization not updated", status: "error" });
+    }
+    this.loading = false;
+  }
+  async fetchDropDown() {
+    const orgType = cornieClient().get(
+      "/api/v1/organization/getOrganisationType"
+    );
+    const providerProfile = cornieClient().get(
+      "/api/v1/organization/getProviderProfile"
+    );
+    const incType = cornieClient().get(
+      "/api/v1/organization/getIncorporationType"
+    );
+    const response = await Promise.all([orgType, providerProfile, incType]);
+    this.orgTypes = response[0].data;
+    this.provProfiles = response[1].data;
+    this.incTypes = response[2].data;
+  }
+  revertChanges() {
+    if (this.defaultOrgInfo) this.setOrgInfo(this.defaultOrgInfo);
+  }
+
+  setOrgInfo(data: IOrganization) {
+    this.OrganizationName = data.name || "";
+    this.image = data.image || "";
+    this.alias = data.alias || "";
+    this.OrganizationType = data.organisationType || "";
+    this.RegistrationNumber = data.registrationNumber || "";
+    this.DomainName = data.domainName || "";
+    this.OrganizationIdentifier = data.identifier || "";
+    this.ProviderProfile = data.providerProfile || "";
+    this.IncorporationType = data.incorporationType || "";
+    this.Website = data.website || "";
+    this.IncorporationStatus = data.incorporationStatus || "";
+    this.ReferenceOrganization = data.reference || "";
+  }
+}
 </script>
 
 <style scoped>
