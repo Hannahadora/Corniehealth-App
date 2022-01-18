@@ -179,5 +179,35 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/kyc/components/email-link.vue"),
     },
+    {
+      path: "catalogues",
+      name: "Catalogues",
+      component: () =>
+        import("@/views/dashboard/settings/catalogues/index.vue"),
+    },
+    {
+      path: "newservice/:serviceId?",
+      name: "New Service",
+      component: () =>
+        import(
+          "@/views/dashboard/settings/catalogues/components/new-service.vue"
+        ),
+    },
+    {
+      path: "newproduct",
+      name: "New Product",
+      component: () =>
+        import(
+          "@/views/dashboard/settings/catalogues/components/new-products.vue"
+        ),
+    },
+    {
+      path: "addvariant/:catalogueId",
+      name: "Medication",
+      component: () =>
+        import(
+          "@/views/dashboard/settings/catalogues/components/new-products.vue"
+        ),
+    },
   ],
 };

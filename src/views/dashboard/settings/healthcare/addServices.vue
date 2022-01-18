@@ -36,7 +36,6 @@
                     />
 
                     <cornie-select
-                      
                       :items="['providers']"
                       v-model="providedBy"
                       label="Provided by"
@@ -208,7 +207,6 @@
                             
                             class="w-full"
                           />
-
                           <cornie-input
                             v-model="availabilityExceptions"
                             label="availability exceptions"

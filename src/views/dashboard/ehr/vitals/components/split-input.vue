@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid pt-4">
+  <div class="container-fluid -mt-1">
     <div class="w-full">
       <div class="w-12/12 pt-1">
         <span class="flex capitalize mb-1 text-black text-sm font-semibold">{{
