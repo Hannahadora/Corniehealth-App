@@ -33,6 +33,8 @@
     class="h-5/6 2xl:h-3/6 w-full flex flex-col justify-center rounded-lg bg-white -mt-12"
     v-else
   >
+    
+
     <v-form class="w-full p-6" @submit="submit">
       <div v-if="step == 1">
         <One
@@ -46,18 +48,79 @@
       </div>
 
       <div v-if="step == 2">
+        <div class="container flex flex-col flex-wrap px-5 py-4 mx-auto">
+          <div class="flex flex-wrap mx-auto">
+                <a
+                  class="
+                    inline-flex
+                    items-center
+                    justify-center
+                    w-1/2
+                    py-3
+                    font-medium
+                    leading-none
+                    tracking-wider
+                    text-indigo-500
+                    bg-gray-100
+                    border-b-2 border-indigo-500
+                    rounded-t
+                    sm:px-6 sm:w-auto sm:justify-start
+                    title-font
+                  "
+                  @click="step = 2"
+                >
+                  STEP 1
+                </a>
+                <a
+                  class="
+                    inline-flex
+                    items-center
+                    justify-center
+                    w-1/2
+                    py-3
+                    font-medium
+                    leading-none
+                    tracking-wider
+                    border-b-2 border-gray-200
+                    sm:px-6 sm:w-auto sm:justify-start
+                    title-font
+                    hover:text-gray-900
+                  "
+                  @click="step = 3"
+                >
+
+                  STEP 2
+                </a>
+                <a
+                  class="
+                    inline-flex
+                    items-center
+                    justify-center
+                    w-1/2
+                    py-3
+                    font-medium
+                    leading-none
+                    tracking-wider
+                    border-b-2 border-gray-200
+                    sm:px-6 sm:w-auto sm:justify-start
+                    title-font
+                    hover:text-gray-900
+                  "
+                >
+                  STEP 3
+                </a>
+          </div>
+        </div>
         <Two 
         :loading="loading"
         @next="updateData($event)"
         />
+
       </div>
 
       <div class="" :user="user" v-if="step == 3 && userCreated">
         <!-- component -->
-        <h1 class="text-primary font-bold text-4xl mb-8">Create an account</h1>
-        <div class="relative pt-1 mb-8">
-        
-        </div>
+        <h1 class="text-primary font-bold text-2xl mb-4">Create an account</h1>
         <verify-email-code
           v-model:code="code"
           :user="user"
@@ -77,9 +140,7 @@
       </div>
     </v-form>
 
-    <span
-      class="w-full flex justify-center items-center text-sm text-center mt-2" v-if=" step!= 4 && step !=3"
-    >
+    <span class="w-full flex justify-center items-center text-sm text-center mt-2" v-if=" step!= 4 && step !=3">
       Already have an account?
       <router-link class="ml-1 text-danger" to="/login"> Sign In </router-link>
     </span>

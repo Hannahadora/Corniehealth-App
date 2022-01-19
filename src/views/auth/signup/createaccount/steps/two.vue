@@ -1,34 +1,39 @@
 <template>
-  <div class="w-9/12 mx-auto mt-96">
-    <h1 class="text-primary font-bold text-3xl mb-8">Create an account</h1>
+  <div class="w-9/12 mx-auto mt-56">
+    <h1 class="text-primary font-bold text-2xl mb-8">Create an account</h1>
     <div class="bg-light_gray p-4 text-jet_black my-4 mb-12">
       You must be 18 or older to create a CornieCare Patient Online account.
       Parents must create dependent accounts for patients under 18.
     </div>
 
-    <div class="w-full mt-4 grid grid-cols-1 gap-6">
+    <div class="w-full grid grid-cols-2 gap-4">
       <cornie-select
-        v-model="PatientType"
-        required
-        class="w-full mb-3"
+        v-model="practiceType" 
+        :items="['Hospital/Clinic','Solo Practice','Community Pharmacy','Diagnostics Center']"
+        class="w-full"
         placeholder="--Select--"
-        label="Patient Type"
+        label="Practice Type"
       />
-    </div>
-
-    <div class="w-full mt-4 grid grid-cols-2 gap-6">
+       <cornie-select
+        v-model="subType"
+        :items="['Hospital/Clinic','Solo Practice']"
+        class="w-full"
+        placeholder="--Select--"
+        label="Select your practice sub-type      "
+      />
+   
       <cornie-input
         :rules="requiredString"
         v-model="firstName"
         required
-        class="w-full mb-3"
+        class="w-full"
         placeholder="--Enter--"
         label="First Name"
       />
       <cornie-input
         v-model="lastName"
         :rules="requiredString"
-        class="w-full mb-3"
+        class="w-full"
         placeholder="--Enter--"
         label="Last Name"
       />
@@ -36,13 +41,13 @@
         v-model:code="dialCode"
         v-model="phone"
         :rules="phoneRule"
-        class="w-full mb-4"
+        class="w-full"
         label="Phone number"
       />
       <cornie-input
         v-model="email"
         :rules="emailRule"
-        class="w-full mb-3"
+        class="w-full"
         placeholder="--Enter--"
         label="Email Address"
       />
@@ -51,31 +56,37 @@
         :rules="requiredString"
         v-model="practiceName"
         required
-        class="w-full mb-3"
+        class="w-full"
         placeholder="--Enter--"
         label="Practice Name"
       />
       <cornie-input
         v-model="domainName"
         :rules="requiredString"
-        class="w-full mb-3"
+        class="w-full"
         placeholder="--Enter--"
         label="Domain Name"
       />
+   
     </div>
-
     <label for="terms" class="mt-1 mb-2 flex items-center">
-      <input id="terms" type="checkbox" required />
-      <span class="ml-1 text-xs">
+      <input id="terms" type="checkbox" v-model="checkRequire" required />
+      <span class="ml-3 text-xs">
         I agree to CornieHealth’s
         <a href="#" class="text-danger"> Terms of service</a> and
         <a href="#" class="text-danger"> Privacy policy</a>
       </span>
     </label>
     <cornie-btn
-      class="font-semibold rounded-full bg-gray-500 mt-3 w-full text-white p-2"
+      class="font-semibold mt-3 w-full p-2"
       @click="next()"
       :loading="loading"
+       :class="[
+        checkRequire == true && firstName !== '' && practiceName !== ''
+          ? 'bg-danger text-white'
+          : 'text-gray-400 bg-gray-200',
+      ]"
+      :disabled="checkRequire != true && firstName == '' && practiceName == ''"
     >
       Continue
     </cornie-btn>
@@ -104,13 +115,16 @@ export default {
       const practiceName = ref('')
       const domainName = ref('')
       const PatientType = ref('')
+      const practiceType = ref('')
+      const subType = ref('')
+      const checkRequire = ref(false);
 
       const next = ()=>{
           
           context.emit('next', 
           {
               firstName, lastName, email,
-              practiceName, domainName, phone, dialCode, PatientType
+              practiceName, domainName, phone, dialCode, PatientType,practiceType,subType
           }
           )
       }
@@ -125,8 +139,8 @@ export default {
     const emailRule = string().email("A valid email is required").required();
     return {
       firstName, lastName, email,practiceName,domainName, phone, dialCode,
-      required, requiredString, phoneRule, PatientType,
-      emailRule, next
+      required, requiredString, phoneRule, PatientType,subType,practiceType,
+      emailRule, next,checkRequire
     };
   },
 };
