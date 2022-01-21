@@ -58,9 +58,13 @@ async function fetchCountries() {
   return countries;
 }
 
+interface Country {
+  [state: string]: string[];
+}
 async function getCountriesFromRemote() {
   const response = await fetch("/country-state.json");
-  const countries = await response.json();
+  const countries = (await response.json()) as Country;
+
   return countries;
 }
 

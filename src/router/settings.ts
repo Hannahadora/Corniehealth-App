@@ -47,7 +47,7 @@ export const SettingsRoute: RouteRecordRaw = {
     },
     {
       path: "update-add-device/:id?",
-      name: "UpdateDevice",
+      name: "Add or Update Device",
       component: () => import("@/views/dashboard/settings/devices/updatedevice.vue"),
     },
     {
@@ -183,6 +183,37 @@ export const SettingsRoute: RouteRecordRaw = {
       name: "KYC Link",
       component: () =>
         import("@/views/dashboard/settings/kyc/components/email-link.vue"),
+    },
+    {
+      path: "catalogues",
+      name: "Catalogues",
+      component: () =>
+        import("@/views/dashboard/settings/catalogues/index.vue"),
+    },
+    {
+      path: "newservice/:id?",
+      name: "New Service",
+      props: true,
+      component: () =>
+        import(
+          "@/views/dashboard/settings/catalogues/components/new-service.vue"
+        ),
+    },
+    {
+      path: "newproduct",
+      name: "New Product",
+      component: () =>
+        import(
+          "@/views/dashboard/settings/catalogues/components/new-products.vue"
+        ),
+    },
+    {
+      path: "addvariant/:catalogueId",
+      name: "Medication",
+      component: () =>
+        import(
+          "@/views/dashboard/settings/catalogues/components/new-products.vue"
+        ),
     },
   ],
 };

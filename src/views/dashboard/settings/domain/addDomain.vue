@@ -102,7 +102,6 @@ export default class AddDomain extends Vue {
   allaction() {
     return this.id ? "Update" : "Create New";
   }
-
   get payload() {
     return {
       orgName: this.orgName,

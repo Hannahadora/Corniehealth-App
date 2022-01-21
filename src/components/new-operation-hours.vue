@@ -11,7 +11,11 @@
         <span class="ml-14">End Time</span>
       </span>
     </div>
-    <div class="grid grid-cols-3 gap-4 w-full" v-for="(opHour, i) in opHours" :key="i">
+    <div
+      class="grid grid-cols-3 gap-4 w-full"
+      v-for="(opHour, i) in operationHours"
+      :key="i"
+    >
       <label class="flex items-center">
         <input
           @change="changed"
@@ -99,7 +103,7 @@ const opHours = [
 
 const pad = (x: number) => {
   if (x < 10) return `0${x}00`;
-  return `${x}000`;
+  return `${x}00`;
 };
 const splitTime = (time: string) => {
   const hour = time.slice(0, 2);

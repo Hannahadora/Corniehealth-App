@@ -1,6 +1,5 @@
 <template>
-  <!-- w-11/12  -->
-  <div class="flex flex-col items-center w-full mb-5">
+  <div class="flex flex-col items-center mb-5">
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">

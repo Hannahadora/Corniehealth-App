@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <domain-dialog v-model="addNewDomain" center title="Create New Domain">
+    <domain-dialog v-model="addNewDomain" center :title="title">
       <add-domain
         @close-add-domain-diag="handleCloseAddDomain"
         :id="domainId"
@@ -58,6 +58,7 @@
     </cornie-table>
   </div>
 </template>
+
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Table from "@scelloo/cloudenly-ui/src/components/table";
@@ -143,6 +144,10 @@ export default class DomainExistingState extends Vue {
     },
   ];
 
+  get title() {
+    return this.domainId ? "Update Domain" : "Create New Domain";
+  }
+
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -203,8 +208,3 @@ export default class DomainExistingState extends Vue {
   }
 }
 </script>
-<style>
-.outline-primary {
-  border: 2px solid #080056;
-}
-</style>

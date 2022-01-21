@@ -1,6 +1,6 @@
 <template>
-  <auth>
-    <create-account v-model:user="user" />
+  <auth :step="user" :type="type">
+    <create-account v-model:user="user" @check-type="setType" />
   </auth>
 </template>
 <script lang="ts">
@@ -23,13 +23,20 @@ export default class SignUp extends Vue {
   @Prop({ required: false, type: Boolean })
   showText!: boolean;
 
+  // @Prop({ type: String, default:'' })
+  // type!: String;
+
   user = {} as CreatedUser;
+  type = "";
 
   userCreated = false;
 
   @Watch("user", { deep: true })
   userChanged(user: CreatedUser) {
     if (user.id) this.userCreated = true;
+  }
+  setType(value: string) {
+    this.type = value;
   }
 }
 </script>

@@ -7,7 +7,7 @@
             class="text-no-wrap flex items-center uppercase text-xs"
             style="white-space: nowrap"
           >
-            <Avatar />
+            <Avatar :src="item.image" />
             <span class="ml-2">{{ item.name }}</span>
           </div>
         </template>
@@ -26,6 +26,7 @@
               :class="{
                 active: item.status === 'active',
                 inactive: item.status === 'inactive',
+                error: item.status === 'entered-in-error',
               }"
             >
               {{ item.status }}</span
@@ -33,33 +34,17 @@
           </div>
         </template>
         <template #actions="{ item }">
-          <table-action
-            @click="
-              () =>
-                $router.push({
-                  name: 'New Service',
-                  params: { serviceId: item.id },
-                })
-            "
-          >
+          <!-- <table-action  @click="$router.push(`newservice/${item.id}`)">
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
-          </table-action>
-          <table-action
-            @click="
-              () =>
-                $router.push({
-                  name: 'New Service',
-                  params: { serviceId: item.id },
-                })
-            "
-          >
+          </table-action> -->
+          <table-action @click="$router.push(`newservice/${item.id}`)">
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs">Edit</span>
           </table-action>
           <table-action @click="onDelete(item.id)">
-            <deactivate-icon class="text-primary fill-current" />
-            <span class="ml-3 text-xs">Deactivate</span>
+            <delete-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
           </table-action>
         </template>
       </cornie-table>
@@ -80,6 +65,9 @@ import DeactivateIcon from "@/components/icons/deactivate.vue";
 import { Prop } from "vue-property-decorator";
 import ICatalogueService from "@/types/ICatalogue";
 import { namespace } from "vuex-class";
+import search from "@/plugins/search";
+import { mapDisplay } from "@/plugins/definitions";
+import DeleteIcon from "@/components/icons/delete.vue";
 
 const catalogue = namespace("catalogues");
 
@@ -93,9 +81,11 @@ const catalogue = namespace("catalogues");
     AnalyticsIcon,
     EditIcon,
     DeactivateIcon,
+    DeleteIcon,
   },
 })
 export default class ServicesTable extends Vue {
+  query = "";
   headers = [
     {
       title: "Name",
@@ -110,11 +100,6 @@ export default class ServicesTable extends Vue {
     {
       title: "Category",
       key: "category",
-      show: true,
-    },
-    {
-      title: "Sub Category",
-      key: "subCategory",
       show: true,
     },
     {
@@ -134,22 +119,60 @@ export default class ServicesTable extends Vue {
     },
   ];
 
+  categoryMapper = (code: string) => "";
+
   @catalogue.Action
   deleteService!: (serviceId: string) => Promise<boolean>;
 
-  @Prop({ type: Array, default: [] })
-  items!: ICatalogueService[];
+  @catalogue.State
+  services!: ICatalogueService[];
 
+  @catalogue.Action
+  getServices!: () => Promise<void>;
+
+  // @Prop({ type: Array, default: [] })
+  // items!: ICatalogueService[];
+
+  get items() {
+    const services = this.services.map((service) => {
+      (service as any).createdAt = new Date(
+        (service as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...service,
+        lastUpdated: service.createdAt,
+        category: this.categoryMapper(service.category),
+      };
+    });
+    if (!this.query) return services;
+    return search.searchObjectArray(services, this.query);
+  }
+  async createMapper() {
+    this.categoryMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/service-category"
+    );
+  }
   async onDelete(serviceId: string) {
     try {
       const confirmed = await window.confirmAction({
-        message: "Are you sure you want to deacttivate this srvice?",
-        title: "Deactivate Service",
+        message: "Are you sure you want to delete this service?",
+        title: "Delete Service",
       });
       if (confirmed) {
         const response = await this.deleteService(serviceId);
+        window.notify({ msg: "Catalogue service deleted", status: "success" });
+      } else {
+        window.notify({
+          msg: "Catalogue service not deleted",
+          status: "error",
+        });
       }
     } catch (error) {}
+  }
+
+  async created() {
+    await this.getServices();
+    await this.createMapper();
   }
 }
 </script>
@@ -178,6 +201,11 @@ export default class ServicesTable extends Vue {
 
 .inactive {
   color: #fe4d3c;
+  background: rgba(254, 77, 60, 0.08);
+  border-radius: 5px;
+}
+.error {
+  color: #ffc402;
   background: rgba(254, 77, 60, 0.08);
   border-radius: 5px;
 }

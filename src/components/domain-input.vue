@@ -7,15 +7,14 @@
       :name="inputName"
       as="div"
       v-slot="{ errorMessage, meta, handleChange }"
-      :rules="customRule"
       v-model="valueSync"
       id="DomainName"
       class="w-full"
     >
       <div class="flex items-center w-full">
         <input
-          style="width: 50%; background-color: #080056 !important"
-          class="appearance-none border border-gray-300 px-3 py-3 mr-0.5 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+          style="width: 50%"
+          class="appearance-none border bg-primary px-3 py-3 mr-1 rounded-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           disabled
           placeholder="https://corniehealth.com/"
         />

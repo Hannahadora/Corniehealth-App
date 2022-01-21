@@ -13,6 +13,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import IDomain from "@/types/IDomain";
 import { Options, Vue } from "vue-class-component";

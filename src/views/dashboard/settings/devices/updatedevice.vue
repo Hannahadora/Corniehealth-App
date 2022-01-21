@@ -1,11 +1,10 @@
 <template>
-  <div class="w-full mx-auto mb-10">
+  <div class="w-full mx-auto mb-10 pb-5">
     <span
       class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
       {{ isUpdate ? "Update " : "Add a New " }} Device
     </span>
-
     <form class="mt-5 w-full" @submit.prevent="submit">
       <accordion-component :title="'Carrier Details'" v-model="show">
         <template v-slot:misc>

@@ -1,9 +1,9 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-4/12">
     <cornie-card height="100%" class="flex flex-col h-full bg-white">
-        <cornie-card-title class="">
-        <icon-btn @click="show = false" >
-          <arrow-left stroke="#ffffff"/>
+      <cornie-card-title class="">
+        <icon-btn @click="show = false">
+          <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full border-l-2 border-gray-300">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
@@ -17,13 +17,12 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-
         <div class="w-full my-4">
           <cornie-input
             :label="'Name'"
             v-model="name"
             style="width: 100%"
-              placeholder="--Enter--"
+            placeholder="--Enter--"
           />
         </div>
         <div class="w-full my-4">
@@ -42,9 +41,8 @@
             placeholder="--Enter--"
           />
         </div>
-
       </cornie-card-text>
-       <cornie-card>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
@@ -61,7 +59,6 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
-
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -84,7 +81,7 @@ import { cornieClient } from "@/plugins/http";
     CorniePhone,
     CornieInput,
     CornieDialog,
-    IconBtn
+    IconBtn,
   },
 })
 export default class NominateRefree extends Vue {
@@ -96,27 +93,27 @@ export default class NominateRefree extends Vue {
 
   loading = false;
 
-  name="";
-  email="";
+  name = "";
+  email = "";
   phone = {
-    dialCode:"+234",
-    number:""
-  }
-   get payload() {
+    dialCode: "+234",
+    number: "",
+  };
+  get payload() {
     return {
       name: this.name,
       email: this.email,
       phone: this.phone,
     };
   }
-  referee: any = {phone: {dialCode:"+234",number:""} };
+  referee: any = { phone: { dialCode: "+234", number: "" } };
 
   async submit() {
     this.loading = true;
-    await this.onSave();
+    if (this.id) await this.onSave();
+    else await this.newRefree();
     this.loading = false;
   }
-
 
   // onSave() {
   //   if (!this.referee?.name) return false;
@@ -129,18 +126,24 @@ export default class NominateRefree extends Vue {
   //   this.closeModal();
   //   this.referee = { name: "", email: "", phone: {dialCode:"+234",number:""} } as any;
   // }
-
-  async onSave(){
-     try {
+  async newRefree() {
+    try {
+      const { data } = await cornieClient().post("/api/v1/kyc", this.payload);
+      window.notify({ msg: "KYC updated successfully", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "KYC update failed", status: "error" });
+    }
+  }
+  async onSave() {
+    try {
       const response = await cornieClient().post(
         `/api/v1/kyc/referee/${this.id}`,
         this.payload
       );
-      if(response.success){
+      if (response.success) {
         window.notify({ msg: "Refree added successfully", status: "success" });
-          this.done();
+        this.done();
       }
-
     } catch (error) {
       window.notify({ msg: "Referee not added", status: "error" });
     }
