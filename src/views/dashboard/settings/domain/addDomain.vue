@@ -45,7 +45,7 @@
             type="submit"
             class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
           >
-            Save
+            {{ id ? "Update" : "Save" }}
           </cornie-btn>
         </span>
       </form>
@@ -102,6 +102,7 @@ export default class AddDomain extends Vue {
   allaction() {
     return this.id ? "Update" : "Create New";
   }
+
   get payload() {
     return {
       orgName: this.orgName,

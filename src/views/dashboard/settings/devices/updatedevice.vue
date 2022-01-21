@@ -3,7 +3,7 @@
     <span
       class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
-      {{ isUpdate ? "Update" : "Add a New" }} Device
+      {{ isUpdate ? "Update " : "Add a New " }} Device
     </span>
 
     <form class="mt-5 w-full" @submit.prevent="submit">

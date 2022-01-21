@@ -1,7 +1,10 @@
 <template>
   <div class="w-full">
     <domain-dialog v-model="addNewDomain" center title="Create New Domain">
-      <add-domain @close-add-domain-diag="addNewDomain = false"></add-domain>
+      <add-domain
+        @close-add-domain-diag="handleCloseAddDomain"
+        :id="domainId"
+      ></add-domain>
     </domain-dialog>
     <domain-dialog v-model="addNewInvite" center title="Invite Domain">
       <send-invite @close-add-invite="addNewInvite = false"></send-invite>
@@ -37,7 +40,7 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`add-domain/${item.id}`)"
+          @click="handleRename(item.id)"
         >
           <span class="mr-3 text-xl bold" style="color: #35ba83 !important"
             >+</span
@@ -110,6 +113,7 @@ export default class DomainExistingState extends Vue {
   query = "";
   addNewDomain = false as boolean;
   addNewInvite = false as boolean;
+  domainId = "" as String;
 
   @domain.State
   domains!: IDomain[];
@@ -185,6 +189,17 @@ export default class DomainExistingState extends Vue {
     if (!confirmed) return;
 
     return;
+  }
+
+  async handleCloseAddDomain() {
+    this.addNewDomain = false;
+    this.domainId = "";
+  }
+
+  async handleRename(id: string) {
+    this.domainId = id;
+
+    this.addNewDomain = true;
   }
 }
 </script>
