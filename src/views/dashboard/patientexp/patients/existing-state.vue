@@ -1,30 +1,10 @@
 <template>
   <div
-    class="
-      flex-col
-      justify-center
-      bg-white
-      shadow-md
-      p-3
-      mt-2
-      mb-2
-      rounded
-      w-full
-      overflow-auto
-    "
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
   >
     <div class="w-full p-2">
       <span
-        class="
-          flex flex-col
-          w-full
-          justify-center
-          border-b-2
-          font-bold
-          mb-5
-          text-xl text-primary
-          py-2
-        "
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
       >
         Patients
       </span>
@@ -204,7 +184,7 @@ export default class ExistingState extends Vue {
       dob: this.printDOB(patient.dateOfBirth),
       email: this.printEmail(patient),
       phone: this.printPhone(patient),
-      mrn: this.printMRN(patient.mrn),
+      mrn: patient.mrn,
       gender: patient.gender,
       photo: patient.profilePhoto,
       id: patient.id,
@@ -229,9 +209,6 @@ export default class ExistingState extends Vue {
     if (!dateOfBirth) return "N/A";
     const date = new Date(dateOfBirth);
     return date.toLocaleDateString("en-NG");
-  }
-  printMRN(mrn?: string) {
-    return `XXXXX${mrn?.substr(31)}`;
   }
 
   async removePatient(id: string) {
