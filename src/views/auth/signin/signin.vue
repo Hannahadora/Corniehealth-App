@@ -2,18 +2,18 @@
   <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!login">
     <div class="w-full block p-12">
       <div>
-        <h2 class="font-bold text-4xl text-primary mb-5">Welcome Back!</h2>
+        <h2 class="font-bold text-3xl text-primary mb-4">Welcome Back!</h2>
         <p class="text-primary mb-10">Sign In to CornieHealth</p>
         <cornie-btn
           @click="login = true"
-          class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
+          class="font-semibold rounded bg-danger mt-3 w-full text-white p-2"
           type="button"
         >
           Continue with Email
         </cornie-btn>
         <span class="w-full text-center block my-1">or</span>
         <cornie-btn
-          class="font-semibold rounded-full mb-5 py-1 px-3 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2"
+          class="font-semibold rounded mb-5 py-1 px-3 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2"
         >
           <span class="inline-flex justify-center pb-1"
             ><quantum-icon class="mr-2 pt-1" /></span
@@ -29,7 +29,7 @@
     </div>
   </div>
   <div
-    class="h-full w-2/3 flex justify-center rounded-lg bg-white -mt-12 lg:-mt-10  xl:-mt-12 md:-mt-12"
+    class="h-full w-2/3 flex justify-center rounded-lg bg-white -mt-12 lg:-mt-10  xl:-mt-2 md:-mt-2"
     v-else
   >
     <div class="w-full h-44 block p-12">
@@ -43,16 +43,16 @@
             v-model="domainName"
             label="Domain Name"
           />
-          <span class="text-right text-gray-400 mb-2 text-xs"
+          <!-- <span class="text-right text-gray-400 mb-2 text-xs"
             >Forgot Domain?</span
-          >
+          > -->
           <cornie-input
             v-model="email"
             :rules="emailRule"
             class="w-full mb-2"
             label="Mobile Number or Email Address"
           />
-          <label for="password" class="mt-6 flex flex-col">
+          <label for="password" class="flex flex-col">
             <span class="block uppercase mb-1 text-xs font-bold">
               Password
             </span>
@@ -71,7 +71,7 @@
             >
           </label>
         </div>
-        <span class="flex item-center mb-3">
+        <span class="flex item-center mb-1">
           <!-- <label class="inline-flex items-center mt-3">
             <input type="checkbox" />
           </label> -->
@@ -80,7 +80,7 @@
         </span>
         <cornie-btn
           :loading="loading"
-          class="font-semibold rounded-full bg-danger mt-3 mb-5 w-full text-white py-1 px-3"
+          class="font-semibold rounded bg-danger mt-3 mb-5 w-full text-white py-1 px-3"
           type="submit"
         >
           Login

@@ -2,7 +2,7 @@
   <div class="w-full">
     <span class="flex justify-end w-full mb-8">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 focus:outline-none hover:opacity-90"
         @click="$router.push('/dashboard/provider/experience/add-appointment')"
       >
         Create Appointment

@@ -1,13 +1,16 @@
 <template>
-  <div class="w-9/12 mx-auto mt-56">
-    <h1 class="text-primary font-bold text-2xl mb-8">Create an account</h1>
-    <div class="bg-light_gray p-4 text-jet_black my-4 mb-12">
-      You must be 18 or older to create a CornieCare Patient Online account.
-      Parents must create dependent accounts for patients under 18.
-    </div>
-
+   <div class="grid grid-cols-1 w-full" v-if="account == 'Patient'">
+      <cornie-select
+        v-model="PatientType" 
+        :items="['Private','Employer']"
+        class="w-full"
+        placeholder="--Select--"
+        label="Patient Type"
+      />
+   </div>
     <div class="w-full grid grid-cols-2 gap-4">
       <cornie-select
+      v-if="account !== 'Patient'"
         v-model="practiceType" 
         :items="['Hospital/Clinic','Solo Practice','Community Pharmacy','Diagnostics Center']"
         class="w-full"
@@ -15,6 +18,7 @@
         label="Practice Type"
       />
        <cornie-select
+        v-if="account !== 'Patient'"
         v-model="subType"
         :items="['Hospital/Clinic','Solo Practice']"
         class="w-full"
@@ -53,6 +57,7 @@
       />
 
             <cornie-input
+             v-if="account !== 'Patient'"
         :rules="requiredString"
         v-model="practiceName"
         required
@@ -60,21 +65,28 @@
         placeholder="--Enter--"
         label="Practice Name"
       />
-      <cornie-input
+      <!-- <cornie-input
+       v-if="account !== 'Patient'"
         v-model="domainName"
         :rules="requiredString"
         class="w-full"
         placeholder="--Enter--"
         label="Domain Name"
-      />
-   
+      /> -->
+       <domain-input
+        v-if="account !== 'Patient'"
+          label="Domain Name"
+          placeholder="--Enter--"
+          v-model="domainName"
+          v-on:input="checkDomain"
+        />
     </div>
     <label for="terms" class="mt-1 mb-2 flex items-center">
       <input id="terms" type="checkbox" v-model="checkRequire" required />
       <span class="ml-3 text-xs">
         I agree to CornieHealth’s
-        <a href="#" class="text-danger"> Terms of service</a> and
-        <a href="#" class="text-danger"> Privacy policy</a>
+        <a href="javascript:void(0)" class="text-danger"> Terms of service</a> and
+        <a href="javascript:void(0)" class="text-danger"> Privacy policy</a>
       </span>
     </label>
     <cornie-btn
@@ -82,15 +94,14 @@
       @click="next()"
       :loading="loading"
        :class="[
-        checkRequire == true && firstName !== '' && practiceName !== ''
+        checkRequire == true && firstName !== ''
           ? 'bg-danger text-white'
           : 'text-gray-400 bg-gray-200',
       ]"
-      :disabled="checkRequire != true && firstName == '' && practiceName == ''"
+      :disabled="checkRequire != true && firstName == ''"
     >
       Continue
     </cornie-btn>
-  </div>
 </template>
 
 <script>
@@ -99,12 +110,13 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import { string } from "yup";
-import {ref, emit} from 'vue'
+import {ref, emit} from 'vue';
+import DomainInput from "@/components/domain-input.vue";
 
 export default {
   name: "step two",
-  components: { CornieInput, CornieSelect, CornieRadio, PhoneInput },
-  props:["loading", ""],
+  components: { CornieInput, CornieSelect, CornieRadio, PhoneInput,DomainInput },
+  props:["loading", "account"],
 
   setup(props, context) {
       const firstName = ref('')

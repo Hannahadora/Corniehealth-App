@@ -36,5 +36,6 @@ export interface AuthorizedLocation {
   isDefault: boolean;
   id:string;
   name:string;
+  currentLocation: boolean
 }
 

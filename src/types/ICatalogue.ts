@@ -14,10 +14,26 @@ export default interface ICatalogueService {
   applyVat: boolean;
   status: string;
   organizationId?: string;
+  specialty: string;
+  type:string;
+  coverageArea:string;
+  providedBy: string;
+  priced:boolean;
+  availabilityExceptions: [];
+  referralMethod:string;
+  channelOfService:string;
+  telecom:string;
+  requiresAppointment:boolean;
+  locations: [];
+  availableTimes: AvailableTimes[];
   updatedAt?: string | Date;
   createdAt?: string | Date;
 }
-
+export interface AvailableTimes {
+  day: string;
+  openTime: string;
+  closeTime: string;
+}
 export interface ICatalogueProduct {
   id: string;
   organizationId: string;

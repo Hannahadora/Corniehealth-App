@@ -300,7 +300,7 @@
                   $router.push('/dashboard/provider/experience/appointments')
                 "
                 type="button"
-                class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
+                class="outline-primary rounded text-black bg-white mt-5 mr-3 py-2 pr-14 pl-14 px-3 focus:outline-none hover:bg-primary hover:text-white"
               >
                 Cancel
               </button>
@@ -308,7 +308,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="bg-danger rounded-full text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
+                class="bg-danger rounded text-white mt-5 pr-14 pl-14 focus:outline-none hover:opacity-90"
               >
                 Save
               </cornie-btn>
@@ -767,6 +767,7 @@ export default class AddAppointment extends Vue {
 }
 .outline-primary {
   border: 2px solid #080056;
+  background: #fff;
 }
 .required label::after {
   content: "*";

@@ -162,7 +162,7 @@
       </div>
     </div>
     <cornie-btn
-      class="font-semibold rounded-full mt-3 w-full p-2"
+      class="font-semibold rounded mt-3 w-full p-2"
       :class="[
         checked == true || checked2 == true || checked3 == true
           ? 'bg-danger-100 text-white'

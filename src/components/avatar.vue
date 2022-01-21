@@ -19,9 +19,9 @@ export default {
 };
 </script>
 <style scoped>
-img {
+/* img {
     width: 100px;
     height: 100px;
     object-fit: contain;
-}
+} */
 </style>

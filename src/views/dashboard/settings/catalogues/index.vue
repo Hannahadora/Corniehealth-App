@@ -66,14 +66,14 @@
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full m4-5">
           <cornie-btn
-            class="m-5 px-12 font-semibold rounded-full"
+            class="m-5 px-12 font-semibold rounded"
             style="color: #080056; border: 1px solid #080056"
           >
             Export
           </cornie-btn>
 
           <cornie-btn
-            class="bg-danger px-10 text-white my-5 mx-4 rounded-full p-1 font-semibold"
+            class="bg-danger px-10 text-white my-5 mx-4 rounded p-1 font-semibold"
             @click="createNew"
           >
             Create New
