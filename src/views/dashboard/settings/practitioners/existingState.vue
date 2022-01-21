@@ -21,7 +21,7 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showModal(item.id)"
         >
-           <update-icon class="text-yellow-500 fill-current" />
+          <update-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">Update Location</span>
         </div>
         <div
@@ -34,7 +34,11 @@
       </template>
     </cornie-table>
   </div>
-  <location-modal v-model="showLocationModal" @location-update="updateLocation" :id="locationId"/>
+  <location-modal
+    v-model="showLocationModal"
+    @location-update="updateLocation"
+    :id="locationId"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -54,7 +58,7 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import LocationModal from './locationModal.vue';
+import LocationModal from "./locationModal.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
 
 const practitioner = namespace("practitioner");
@@ -75,14 +79,14 @@ const practitioner = namespace("practitioner");
     TableOptions,
     EditIcon,
     LocationModal,
-    UpdateIcon
+    UpdateIcon,
   },
 })
 export default class PractitionerExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-  showLocationModal= false;
-  locationId="";
+  showLocationModal = false;
+  locationId = "";
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -96,8 +100,8 @@ export default class PractitionerExistingState extends Vue {
   rawHeaders = [
     {
       title: "IDENTIFIER",
-      key: "id",
-      show:true
+      key: "identifier",
+      show: true,
     },
     {
       title: "Name",
@@ -174,11 +178,11 @@ export default class PractitionerExistingState extends Vue {
       window.notify({ msg: "Practitioner deleted", status: "success" });
     else window.notify({ msg: "Practitioner not deleted", status: "error" });
   }
-  async updateLocation(){
+  async updateLocation() {
     await this.fetchPractitioners();
   }
 
-  showModal(value:string){
+  showModal(value: string) {
     this.showLocationModal = true;
     this.locationId = value;
   }
