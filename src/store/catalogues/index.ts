@@ -49,6 +49,9 @@ export default {
         if (index >= 0) state.services[index] = updatedService;
       }
     },
+    deleteService(state, id: string) {
+      state.services = state.services.filter(service => service.id != id);
+    },
   },
 
   actions: {
@@ -56,7 +59,10 @@ export default {
       const res = await getServices();
       commit("setServices", res);
     },
-
+    async getServicesById(ctx, id: string) {
+      if (ctx.state.services.length < 1) await ctx.dispatch("getServices");
+      return ctx.state.services.find(service => service.id == id);
+    },
     async getProducts({ commit }) {
       const res = await getProducts();
       commit("setProducts", res);
@@ -83,9 +89,10 @@ export default {
       return true;
     },
 
-    async deleteService({ commit }, serviceId: string) {
-      const res = await deleteService(serviceId);
-      if (!res?.id) return false;
+    async deleteService(ctx, id: string) {
+      const deleted = await deleteService(id);
+      if (!deleted) return false;
+      ctx.commit("deleteService", id);
       return true;
     },
   },

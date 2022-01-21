@@ -53,8 +53,8 @@ export default {
       return practitioner?.authorizedLocations?.map((location:any)=>{
         return{
           ...location,
-          isDefault: location.id == defaultLocation
-
+          isDefault: location.id == defaultLocation,
+          currentLocation: location.id == state.currentLocation ? true : false
         }
       })
     }

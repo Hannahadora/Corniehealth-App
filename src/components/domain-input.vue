@@ -7,18 +7,11 @@
       :name="inputName"
       as="div"
       v-slot="{ errorMessage, meta, handleChange }"
-      :rules="customRule"
       v-model="valueSync"
       id="DomainName"
       class="w-full"
     >
       <div class="flex items-center w-full">
-        <input
-          style="width: 50%"
-          class="appearance-none border border-gray-300 bg-gray-500 px-3 py-2 rounded-l-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-          disabled
-          placeholder="https://corniehealth.com/"
-        />
         <input
           :placeholder="placeholder"
           style="width: 55%"
@@ -29,8 +22,14 @@
           }"
           :disabled="$attrs.disabled"
           @change="handleChange"
-          class="rounded-r-md appearance-none px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+          class="rounded-l-md appearance-none px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           v-model="valueSync"
+        />
+          <input
+          style="width: 50%"
+          class="appearance-none border bg-primary px-3 py-2 rounded-r-md placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+          disabled
+          placeholder="https://corniehealth.com/"
         />
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">

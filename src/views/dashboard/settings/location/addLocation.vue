@@ -223,14 +223,14 @@
             <span class="flex w-full mb-5 mt-10 pb-10 justify-end">
                <cornie-btn
                  @click="$router.back()"
-                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+                class="border-primary border-2 px-6 mr-3 rounded text-primary"
               >
                 Cancel
               </cornie-btn>
               <cornie-btn
                 :loading="loading"
                 @click="submit"
-                class="text-white bg-danger px-6 rounded-xl"
+                class="text-white bg-danger px-6 rounded"
               >
                 Save
               </cornie-btn>

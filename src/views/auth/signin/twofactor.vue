@@ -43,7 +43,7 @@
           v-if="requiresTwoFactor"
           type="submit"
           :loading="loading"
-          class="py-1 px-3 w-full bg-danger text-white font-semibold rounded-full"
+          class="py-1 px-3 w-full bg-danger text-white font-semibold rounded"
         >
           Submit
         </cornie-btn>
@@ -51,7 +51,7 @@
           else
           @click="$router.push('/signup')"
           type="button"
-          class="py-1 px-3 w-full bg-gray-600 text-white font-semibold rounded-full"
+          class="py-1 px-3 w-full bg-gray-600 text-white font-semibold rounded"
         >
           Back
         </cornie-btn>

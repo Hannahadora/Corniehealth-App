@@ -277,7 +277,6 @@ export default class MarkupSettings extends Vue {
         {
           sampleUnitCost: this.SUC,
           markupPercentage: this.PercentageMarkup,
-          locationId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           cdmPrice: this.CDM,
           margin: this.margin,
           marginPercentage: this.percentageMargin,
