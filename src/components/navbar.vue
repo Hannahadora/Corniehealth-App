@@ -8,54 +8,72 @@
     </span>
     <h2 class="text-xl font-bold ml-3 capitalize">{{ routeName }}</h2>
 
-     <span class="flex items-center justify-center ml-auto cursor-pointer">
+    <span class="flex items-center justify-center ml-auto cursor-pointer">
       <div class="dropdown">
-        <span class="bg-blue-200 py-2 px-6 rounded-full flex space-x-5 cursor-pointer">
-            <new-location-icon class="mt-0.5"/>
-             <span class="mr-1 text-blue-600 text-sm font-semibold mt-0.5"> {{locationDefault}} </span>
-                <chevron-down-icon class="text-blue-600 mb-2 stroke-current ml-1 mt-2"/>
+        <span
+          class="bg-blue-200 py-2 px-6 rounded-full flex space-x-5 cursor-pointer"
+        >
+          <new-location-icon class="mt-0.5" />
+          <span class="mr-1 text-blue-600 text-sm font-semibold mt-0.5">
+            {{ locationDefault }}
+          </span>
+          <chevron-down-icon
+            class="text-blue-600 mb-2 stroke-current ml-1 mt-2"
+          />
         </span>
         <ul
           class="dropdown-menu p-4 bg-white rounded w-72 justify-center h-auto right-56 absolute -mt-2 z-10 shadow-md hidden"
         >
-
-          <li  :class="{
-          'experience-links-con-max': showFullHeight,
-          'experience-links-con-min': !showFullHeight && authorizedLocations?.length > 0
-        }">
+          <li
+            :class="{
+              'experience-links-con-max': showFullHeight,
+              'experience-links-con-min':
+                !showFullHeight && authorizedLocations?.length > 0,
+            }"
+          >
             <div class="flex space-x-4 p-5" v-if="authorizedLocations == null">
-              <location-icon class="fill-current text-primary"/>
-              <p class="text-center text-sm font-semibold  text-danger justify-center flex">No Available Locations</p>
+              <location-icon class="fill-current text-primary" />
+              <p
+                class="text-center text-sm font-semibold text-danger justify-center flex"
+              >
+                No Available Locations
+              </p>
             </div>
-             <div class="flex w-full mb-3" v-for="(item,index) in sortLocations" :key="index">
-            
-                  <div class="w-full flex space-x-3">
-                    <div class="h-10 w-10 mt-2 flex-grow-0 flex-shrink-0">
-                      <location-icon class="fill-current text-primary text-xl ml-3"/>
-                    </div>
-                    <div class="w-full">
-                      <div class="flex items-center justify-between">
-                        <h2 class="text-gray-600 text-lg">{{item.name}}</h2>
-                          <!-- <span
+            <div
+              class="flex w-full mb-3"
+              v-for="(item, index) in sortLocations"
+              :key="index"
+            >
+              <div class="w-full flex space-x-3">
+                <div class="h-10 w-10 mt-2 flex-grow-0 flex-shrink-0">
+                  <location-icon
+                    class="fill-current text-primary text-xl ml-3"
+                  />
+                </div>
+                <div class="w-full">
+                  <div class="flex items-center justify-between">
+                    <h2 class="text-gray-600 text-lg">{{ item.name }}</h2>
+                    <!-- <span
                           v-if="item.isDefault && currentLocation == null"
                           class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
                           >Current Location</span> -->
-                        <span
-                          v-if="currentLocation === item.id"
-                          class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
-                          >Current Location</span>
-                          <span
-                          v-else
-                          class="p-2 text-sm font-semibold leading-none text-danger rounded-full flex-shrink-0 cursor-pointer"
-                          @click="setDefault(item.id)"
-                          >Switch</span>
-                      </div>
-                      <a href="#" class="text-gray-400 text-sm"
-                        >{{item.address}}</a
-                      >
-                    </div>
+                    <span
+                      v-if="currentLocation === item.id"
+                      class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
+                      >Current Location</span
+                    >
+                    <span
+                      v-else
+                      class="p-2 text-sm font-semibold leading-none text-danger rounded-full flex-shrink-0 cursor-pointer"
+                      @click="setDefault(item.id)"
+                      >Switch</span
+                    >
                   </div>
-              
+                  <a href="#" class="text-gray-400 text-sm">{{
+                    item.address
+                  }}</a>
+                </div>
+              </div>
             </div>
           </li>
           <li>
@@ -66,11 +84,9 @@
               >{{ showFullHeight ? "See less" : "See more" }}</span
             >
           </li>
-          
         </ul>
       </div>
     </span>
-
 
     <span class="flex items-center justify-center ml-5">
       <div class="dropdown">
@@ -252,7 +268,7 @@
               {{ designation }}
             </p>
           </li>
-     
+
           <li class="flex w-full mt-4 pt-4 mb-4">
             <div class="w-full flex space-x-3">
               <p class="text-sm font-extrabold">Manage My Subscription</p>
@@ -298,15 +314,15 @@ import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
 import FormIcon from "@/components/icons/questionnaire.vue";
 import IPractitioner from "@/types/IPractitioner";
-import ILocation,{AuthorizedLocation} from "@/types/ILocation";
+import ILocation, { AuthorizedLocation } from "@/types/ILocation";
 import BankIcon from "@/components/icons/bank.vue";
-import Avatar from "@/components/avatar.vue"
+import Avatar from "@/components/avatar.vue";
 import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
 import LocationIcon from "@/components/icons/location.vue";
 import { cornieClient } from "@/plugins/http";
 import { suggester } from "@/plugins/route-suggester";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-import NewLocationIcon from "@/components/icons/newlocation.vue"
+import NewLocationIcon from "@/components/icons/newlocation.vue";
 
 const account = namespace("user");
 const routerStore = namespace("routerStore");
@@ -330,13 +346,13 @@ const location = namespace("location");
     Avatar,
     LocationIcon,
     ChevronDownIcon,
-    NewLocationIcon
+    NewLocationIcon,
   },
 })
 export default class NavBar extends Vue {
   showSettingsModal = false;
-  localSrc =  require("../assets/img/locationIcon.png");
-   expand = false;
+  localSrc = require("../assets/img/locationIcon.png");
+  expand = false;
   showFullHeight = false;
 
   get routeName() {
@@ -391,45 +407,52 @@ export default class NavBar extends Vue {
     middleInitials = middleInitials ? `${middleInitials}.` : "";
     return `${lastName} ${firstInitials}. ${middleInitials}`;
   }
-  async setDefault(value:string) {
-     const confirmed = await window.confirmAction({
+  async setDefault(value: string) {
+    const confirmed = await window.confirmAction({
       message: "Do you want to switch this location?",
       yes: "Yes",
-      no: "No"
+      no: "No",
     });
     if (!confirmed) return;
 
-      if(confirmed){
-          try {
-          this.switchCurrentLocation(value) 
-          window.notify({ msg: "Authorized Locations Swtiched", status: "success" });
-            //  else window.notify({ msg: "Authorized Locations not Swtiched", status: "error" })
-          } catch (error) {
-            window.notify({ msg: "Authorized Locations not Swtiched", status: "error" });
-          }
+    if (confirmed) {
+      try {
+        this.switchCurrentLocation(value);
+        window.notify({
+          msg: "Authorized Locations Swtiched",
+          status: "success",
+        });
+        //  else window.notify({ msg: "Authorized Locations not Swtiched", status: "error" })
+      } catch (error) {
+        window.notify({
+          msg: "Authorized Locations not Swtiched",
+          status: "error",
+        });
       }
+    }
   }
 
-   get locationDefault() {
-    const pt = this.authorizedLocations?.find((i: any) => i.id === this.currentLocation);
+  get locationDefault() {
+    const pt = this.authorizedLocations?.find(
+      (i: any) => i.id === this.currentLocation
+    );
     return pt ? `${pt.name}` : "Set default location";
-
   }
   get sortLocations() {
-    const sorted = this.authorizedLocations?.sort((a,b) =>{
-      if(a.currentLocation) return -1;
-      if(b.currentLocation) return 1;
+    const sorted = this.authorizedLocations?.sort((a, b) => {
+      if (a.currentLocation) return -1;
+      if (b.currentLocation) return 1;
 
       return 0;
-    })
-    return sorted
+    });
+    return sorted;
   }
   async logout() {
     await logout();
     this.$router.push("/login");
   }
-  async created(){
-    await this.fetchLocations()
+  async created() {
+    await this.fetchLocations();
   }
 }
 </script>

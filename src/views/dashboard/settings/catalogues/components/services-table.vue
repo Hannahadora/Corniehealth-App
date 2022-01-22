@@ -7,7 +7,7 @@
             class="text-no-wrap flex items-center uppercase text-xs"
             style="white-space: nowrap"
           >
-            <Avatar :src="item.image"/>
+            <Avatar :src="item.image" />
             <span class="ml-2">{{ item.name }}</span>
           </div>
         </template>
@@ -81,11 +81,11 @@ const catalogue = namespace("catalogues");
     AnalyticsIcon,
     EditIcon,
     DeactivateIcon,
-    DeleteIcon
+    DeleteIcon,
   },
 })
 export default class ServicesTable extends Vue {
-  query="";
+  query = "";
   headers = [
     {
       title: "Name",
@@ -124,25 +124,24 @@ export default class ServicesTable extends Vue {
   @catalogue.Action
   deleteService!: (serviceId: string) => Promise<boolean>;
 
-   @catalogue.State
+  @catalogue.State
   services!: ICatalogueService[];
 
-   @catalogue.Action
+  @catalogue.Action
   getServices!: () => Promise<void>;
 
   // @Prop({ type: Array, default: [] })
   // items!: ICatalogueService[];
 
-   get items() {
+  get items() {
     const services = this.services.map((service) => {
-       (service as any).createdAt = new Date(
+      (service as any).createdAt = new Date(
         (service as any).createdAt
       ).toLocaleDateString("en-US");
       return {
         ...service,
-        lastUpdated:service.createdAt,
-         category: this.categoryMapper(service.category)
-       
+        lastUpdated: service.createdAt,
+        category: this.categoryMapper(service.category),
       };
     });
     if (!this.query) return services;
@@ -161,14 +160,17 @@ export default class ServicesTable extends Vue {
       });
       if (confirmed) {
         const response = await this.deleteService(serviceId);
-          window.notify({ msg: "Catalogue service deleted", status: "success" });
-      }else{
-          window.notify({ msg: "Catalogue service not deleted", status: "error" });
+        window.notify({ msg: "Catalogue service deleted", status: "success" });
+      } else {
+        window.notify({
+          msg: "Catalogue service not deleted",
+          status: "error",
+        });
       }
     } catch (error) {}
   }
 
-  async created(){
+  async created() {
     await this.getServices();
     await this.createMapper();
   }

@@ -1,36 +1,38 @@
 <template>
   <div>
-    <span
-      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
-    >
-      Invite Domain
-    </span>
-    <div class="w-full h-full">
+    <div>
       <form class="mt-5 w-full" @submit.prevent="submit">
-        <div class="w-full grid grid-cols-2 gap-5">
-          <cornie-input
-            label="Organization Name"
-            placeholder="--Enter--"
-            v-model="orgName"
-            :rules="required"
-          />
-          <cornie-input
-            label="Email Address"
-            placeholder="--Enter--"
-            v-model="email"
-            :rules="required"
-          />
-          <d-text
-            label="Message"
-            placeholder="Enter Message"
-            v-model="message"
-            :rules="required"
-          />
+        <div class="w-full grid grid-cols-12 mb-10">
+          <div class="col-span-12 mb-4">
+            <cornie-input
+              label="ORGANIZATION NAME"
+              placeholder="--Enter--"
+              v-model="orgName"
+              :rules="required"
+            />
+          </div>
+          <div class="col-span-12 mb-4">
+            <cornie-input
+              label="EMAIL ADDRESS"
+              placeholder="--Enter--"
+              v-model="email"
+              :rules="required"
+            />
+          </div>
+          <div class="col-span-12 mb-4">
+            <d-text
+              label="MESSAGE"
+              placeholder="Enter Message"
+              v-model="message"
+              :rules="required"
+            />
+          </div>
         </div>
-        <span class="flex justify-end w-full border-t-2 mt-36">
+        <span class="flex justify-end w-full">
           <button
-            @click="$router.push('domains')"
-            class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white"
+            @click="$emit('close-add-invite')"
+            type="button"
+            class="outline-primary rounded-md text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white"
           >
             Cancel
           </button>
@@ -38,7 +40,7 @@
           <cornie-btn
             :loading="loading"
             type="submit"
-            class="bg-danger rounded-full text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
           >
             Save
           </cornie-btn>
@@ -74,6 +76,7 @@ export default class SendInvite extends Vue {
   orgName = "";
   email = "";
   message = "";
+  required = true;
 
   get payload() {
     return {

@@ -29,7 +29,7 @@
     </div>
   </div>
   <div
-    class="h-full w-2/3 flex justify-center rounded-lg bg-white -mt-12 lg:-mt-10  xl:-mt-2 md:-mt-2"
+    class="h-full w-2/3 flex justify-center rounded-lg bg-white -mt-12 lg:-mt-10 xl:-mt-2 md:-mt-2"
     v-else
   >
     <div class="w-full h-44 block p-12">
@@ -75,7 +75,7 @@
           <!-- <label class="inline-flex items-center mt-3">
             <input type="checkbox" />
           </label> -->
-          <cornie-checkbox/>
+          <cornie-checkbox />
           <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
         </span>
         <cornie-btn
@@ -107,7 +107,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import QuantumIcon from "@/components/icons/quantum.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue"
+import CornieCheckbox from "@/components/custom-checkbox.vue";
 import store from "@/store";
 import { login, setAuthDomain } from "@/plugins/auth";
 import { string } from "yup";
@@ -118,7 +118,7 @@ import { string } from "yup";
     CornieSelect,
     PasswordInput,
     QuantumIcon,
-    CornieCheckbox
+    CornieCheckbox,
   },
 })
 export default class Signin extends Vue {

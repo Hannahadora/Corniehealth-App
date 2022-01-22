@@ -15,8 +15,8 @@
       <p class="mt-12 text-sm">
         Didn’t receive code?
         <span class="cursor-pointer text-danger" @click="resend"> Resend </span>
-        <vue-countdown :time="300 * 1000" v-slot="{  minutes, seconds }">
-           {{ minutes }} : {{ seconds }}
+        <vue-countdown :time="300 * 1000" v-slot="{ minutes, seconds }">
+          {{ minutes }} : {{ seconds }}
         </vue-countdown>
       </p>
     </form>
@@ -28,13 +28,13 @@ import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import MultiInput from "@/components/multi-input.vue";
 import CheckIcon from "@/components/icons/check.vue";
-import VueCountdown from '@chenfengyuan/vue-countdown';
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
 @Options({
   components: {
     MultiInput,
     CheckIcon,
-    VueCountdown
+    VueCountdown,
   },
 })
 export default class VerifyEmailCode extends Vue {

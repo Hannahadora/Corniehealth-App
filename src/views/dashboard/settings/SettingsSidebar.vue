@@ -145,7 +145,7 @@ export default class Settings extends Vue {
     return [
       { name: "Organization Information", to: "org-info", icon: "org-icon" },
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
-       { name: "KYC", to: "kyc", icon: "kyc-icon" },
+      { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
         name: "Location",
         to: "location",
@@ -180,7 +180,7 @@ export default class Settings extends Vue {
   }
   get healthCare() {
     return [
-       {
+      {
         name: "Catalogue Services",
         to: "catalogues",
         icon: "health-service-icon",
