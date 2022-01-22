@@ -1,7 +1,7 @@
 <template>
   <main class="p-6">
     <h3 class="text-primary text-xl font-bold border-b border-gray-300">
-      Organization Information
+      Practice Information
     </h3>
     <section class="pb-4">
       <div class="image-upload flex mt-10 items-center">
@@ -9,85 +9,119 @@
       </div>
 
       <v-form @submit="submitForm">
-        <div class="grid grid-cols-2 gap-x-5 gap-y-4 mt-10">
-          <cornie-input
-            label="Organization Name"
-            class="w-full"
-            v-model="OrganizationName"
-            :rules="requiredRule"
-          />
-          <domain-input
-            label="Domain Name"
-            placeholder="--Enter--"
-            :rules="requiredRule"
-            v-model="DomainName"
-          />
+        <div class="grid grid-cols-12 gap-x-5 gap-y-4 mt-10">
+          <div class="col-span-4">
+            <cornie-input
+              label="Organization Name"
+              class="w-full"
+              v-model="OrganizationName"
+              :rules="requiredRule"
+              placeholder="--Enter--"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-input
+              label="Organization Identifier"
+              :modelValue="OrganizationIdentifier"
+              class="w-full"
+              placeholder="--Enter--"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-input
+              label="Alias"
+              placeholder="--Enter--"
+              class="w-full"
+              v-model="alias"
+            />
+          </div>
+          <div class="col-span-4">
+            <provider-input
+              label="Domain Name"
+              placeholder="https://providername"
+              :rules="requiredRule"
+              v-model="DomainName"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-select
+              :items="orgTypes"
+              label="Organization Type"
+              class="w-full"
+              v-model="OrganizationType"
+              :rules="requiredRule"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-select
+              :items="provProfiles"
+              label="Provider Profile"
+              class="w-full"
+              v-model="ProviderProfile"
+              :rules="requiredRule"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-input
+              v-model="ReferenceOrganization"
+              label="Reference Organization"
+              class="w-full"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-select
+              :items="incTypes"
+              class="w-full"
+              label="Incorporation Type"
+              :rules="requiredRule"
+              v-model="IncorporationType"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-input
+              v-model="RegistrationNumber"
+              class="w-full"
+              label="Registration Number"
+              :rules="requiredRule"
+              placeholder="--Enter--"
+            />
+          </div>
 
-          <cornie-input label="Alias" class="w-full" v-model="alias" />
-          <cornie-input
-            label="Organization Identifier"
-            disabled
-            :modelValue="OrganizationIdentifier"
-            class="w-full"
-          />
-          <cornie-select
-            :items="orgTypes"
-            label="Organization Type"
-            class="w-full"
-            v-model="OrganizationType"
-            :rules="requiredRule"
-          />
-          <cornie-select
-            :items="provProfiles"
-            label="Provider Profile"
-            class="w-full"
-            v-model="ProviderProfile"
-            :rules="requiredRule"
-          />
-          <cornie-input
-            v-model="ReferenceOrganization"
-            label="Reference Organization"
-            class="w-full"
-          />
+          <div class="col-span-4">
+            <cornie-input
+              class="w-full"
+              label="Email Address"
+              v-model="EmailAddress"
+              :rules="emailRule"
+              placeholder="--Enter--"
+            />
+          </div>
+          <div class="col-span-4">
+            <cornie-input
+              class="w-full"
+              :rules="urlRule"
+              label="Website"
+              v-model="Website"
+            />
+          </div>
+          <div class="col-span-4">
+            <phone-input
+              class="w-full"
+              label="Phone Number"
+              v-model:code="DialCode"
+              v-model="PhoneNumber"
+              placeholder="--Enter--"
+              :rules="requiredRule"
+            />
+          </div>
+          <!-- 
           <cornie-select
             :items="['Ongoing', 'Completed']"
             label="Incorporation Status"
             class="w-full"
             v-model="IncorporationStatus"
             :rules="requiredRule"
-          />
-          <cornie-input
-            v-model="RegistrationNumber"
-            class="w-full"
-            label="Registration Number"
-            :rules="requiredRule"
-          />
-          <cornie-select
-            :items="incTypes"
-            class="w-full"
-            label="Incorporation Type"
-            :rules="requiredRule"
-            v-model="IncorporationType"
-          />
-          <phone-input
-            class="w-full"
-            label="Phone Number"
-            v-model:code="DialCode"
-            v-model="PhoneNumber"
-            :rules="requiredRule"
-          />
-          <cornie-input
-            class="w-full"
-            label="Email Address"
-            v-model="EmailAddress"
-            :rules="emailRule"
-          />
-          <cornie-input
-            class="w-full"
-            :rules="urlRule"
-            label="Website"
-            v-model="Website"
-          />
+          /> -->
         </div>
 
         <div class="my-8 flex items-center gap-x-4 justify-end">
@@ -111,7 +145,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import { string } from "yup";
 import AvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import DomainInput from "@/components/domain-input.vue";
+import ProviderInput from "@/components/provider-input.vue";
 import SnomedInput from "@/components/snomed-input.vue";
 import { IOrganization } from "@/types/IOrganization";
 import { Options, Vue } from "vue-class-component";
@@ -119,18 +153,18 @@ import { namespace } from "vuex-class";
 
 const organization = namespace("organization");
 @Options({
-  name: "OrganizationInformation",
+  name: "PracticeInformation",
   components: {
     Avatar,
     CornieInput,
     CornieSelect,
-    DomainInput,
+    ProviderInput,
     PhoneInput,
     AvatarField,
     SnomedInput,
   },
 })
-export default class organizationInfo extends Vue {
+export default class PracticeInfo extends Vue {
   OrganizationName = "";
   alias = "";
   OrganizationType = "";
@@ -144,7 +178,7 @@ export default class organizationInfo extends Vue {
   IncorporationType = "";
   EmailAddress = " ";
   Website = "";
-  IncorporationStatus = "";
+  // IncorporationStatus = "";
 
   orgTypes = [];
   provProfiles = [];
@@ -173,7 +207,7 @@ export default class organizationInfo extends Vue {
       providerProfile: this.ProviderProfile,
       incorporationType: this.IncorporationType,
       website: this.Website,
-      incorporationStatus: this.IncorporationStatus,
+      // incorporationStatus: this.IncorporationStatus,
       email: this.EmailAddress,
       reference: this.ReferenceOrganization,
     };
@@ -194,11 +228,11 @@ export default class organizationInfo extends Vue {
     try {
       await cornieClient().post("/api/v1/organization", this.payload);
       window.notify({
-        msg: "Organization updated Sucessfully",
+        msg: "Provider information updated sucessfully",
         status: "success",
       });
     } catch (error) {
-      window.notify({ msg: "Organization not updated", status: "error" });
+      window.notify({ msg: "Provider information not updated", status: "error" });
     }
     this.loading = false;
   }
@@ -232,7 +266,7 @@ export default class organizationInfo extends Vue {
     this.ProviderProfile = data.providerProfile || "";
     this.IncorporationType = data.incorporationType || "";
     this.Website = data.website || "";
-    this.IncorporationStatus = data.incorporationStatus || "";
+    // this.IncorporationStatus = data.incorporationStatus || "";
     this.ReferenceOrganization = data.reference || "";
   }
 }

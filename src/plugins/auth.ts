@@ -24,6 +24,8 @@ export async function login(payload: AuthPayload) {
 
 export async function getAccountType() {
   let type = store.getters["user/accountType"] ?? getSessionData("accountType");
+
+  console.log(getSessionData("accountType"))
   if (!type) {
     const { user } = await fetchCornieData();
     type = user.accountType;
