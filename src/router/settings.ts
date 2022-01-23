@@ -51,8 +51,8 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/settings/devices/updatedevice.vue"),
     },
     {
-      path: "org-info",
-      name: "Organization Information",
+      path: "practice-information",
+      name: "Practice Information",
       component: () =>
         import(
           "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"
