@@ -1,13 +1,13 @@
 <template>
   <div class="w-full block mt-3">
     <form class="mt-3" @submit.prevent="submit">
-      <label for="password">
+      <label for="password" class="mt-6 flex flex-col">
         <span class="block uppercase mb-1 text-xs font-bold">Password</span>
         <password-input
           v-model="password"
           required
           id="password"
-          class="border rounded"
+          class="border rounded w-full"
         />
         <span class="flex w-2/3 justify-between items-center">
           <span class="text-xs text-gray-500">Password Strength</span>
@@ -60,11 +60,11 @@
       </div>
       <div class="w-full">
         <cornie-btn
-          class="font-semibold rounded-full bg-danger mt-3 w-full text-white p-2"
+          class="font-semibold rounded bg-danger mt-3 w-full text-white p-2"
           :disabled="!emailVerified"
           :loading="loading"
           type="submit"
-          :class="{ 'bg-gray-600': !emailVerified || !valid }"
+          :class="{ 'text-gray-400 bg-gray-200': !emailVerified || !valid }"
         >
           Create Account
         </cornie-btn>

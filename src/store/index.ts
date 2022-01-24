@@ -4,6 +4,7 @@ import UserStore from "./user";
 import Dropdown from "./dropdowns";
 import LocationStore from "./location";
 import ContactStore from "./contact";
+import MarkupStore from "./markup";
 
 import DomainStore from "./domain";
 import PaymentStore from "./payment";
@@ -99,6 +100,7 @@ export default createStore({
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
+    markup:MarkupStore,
 
     appointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,

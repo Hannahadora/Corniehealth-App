@@ -431,7 +431,6 @@ export default class AddPractitioner extends Vue {
       };
     });
   }
-
   async fetchLocation() {
     const AllLocation = cornieClient().get(
       "/api/v1/location/myOrg/getMyOrgLocations"

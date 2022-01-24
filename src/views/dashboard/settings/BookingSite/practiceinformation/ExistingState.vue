@@ -667,4 +667,9 @@ export default class CarePartnersExistingState extends Vue {
   font-size: 6px;
   margin-left: 6px;
 }
+img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
 </style>

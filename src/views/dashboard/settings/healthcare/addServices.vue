@@ -9,113 +9,106 @@
       <span class="w-full">
         <div class="w-full h-screen">
           <v-form class="mt-5 w-full" @submit="submit">
-              <accordion-component title="Basic Info" :opened="true">
-                <template  v-slot:default>
-                  <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                     <!-- Image Upload  -->
-                    <div class="w-full">
-                        <span class="flex items-center">
-                          <cornie-avatar-field v-model="img.url" />
-                        </span>
-                      </div>
-                    <cornie-input
-                      v-model="identifier"
-                      label="Identifier"
-                      class="w-fill"
-                      :disabled="true"
-                      placeholder="--Enter--"
-                    />
+            <accordion-component title="Basic Info" :opened="true">
+              <template v-slot:default>
+                <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                  <!-- Image Upload  -->
+                  <div class="w-full">
+                    <span class="flex items-center">
+                      <cornie-avatar-field v-model="img.url" />
+                    </span>
+                  </div>
+                  <cornie-input
+                    v-model="identifier"
+                    label="Identifier"
+                    class="w-fill"
+                    :disabled="true"
+                    placeholder="--Enter--"
+                  />
 
-                    <cornie-select
-                      
-                      :items="activeStates"
-                      v-model="activeState"
-                      label="active state"
-                      class="w-full"
-                      placeholder="--Select--"
-                    />
+                  <cornie-select
+                    :items="activeStates"
+                    v-model="activeState"
+                    label="active state"
+                    class="w-full"
+                    placeholder="--Select--"
+                  />
 
-                    <cornie-select
-                      
-                      :items="['providers']"
-                      v-model="providedBy"
-                      label="Provided by"
-                      class="w-full"
-                      placeholder="--Select--"
-                    />
-                     <fhir-input
-                       
-                        reference="http://hl7.org/fhir/ValueSet/service-category"
-                        class="w-full"
-                        v-model="category"
-                        label="category"
-                          placeholder="--Select--"
-                      />
-                      <fhir-input
-                       
-                        reference="http://hl7.org/fhir/ValueSet/service-type"
-                        class="w-full"
-                        v-model="type"
-                        label="type"
-                        placeholder="--Select--"
-                      />
-                      <fhir-input
-                       
-                        reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
-                        class="w-full"
-                        v-model="specialty"
-                        label="Specialty"
-                        placeholder="--Select--"
-                      />
-                    <cornie-select
-                      
-                     :items="nationState.countries"
-                      v-model="address"
-                      label="location"
-                      class="w-full"
-                       placeholder="--Select--"
-                    />
+                  <cornie-select
+                    :items="['providers']"
+                    v-model="providedBy"
+                    label="Provided by"
+                    class="w-full"
+                    placeholder="--Select--"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/service-category"
+                    class="w-full"
+                    v-model="category"
+                    label="category"
+                    placeholder="--Select--"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/service-type"
+                    class="w-full"
+                    v-model="type"
+                    label="type"
+                    placeholder="--Select--"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
+                    class="w-full"
+                    v-model="specialty"
+                    label="Specialty"
+                    placeholder="--Select--"
+                  />
+                  <cornie-select
+                    :items="nationState.countries"
+                    v-model="address"
+                    label="location"
+                    class="w-full"
+                    placeholder="--Select--"
+                  />
 
-                    <cornie-input  v-model="name" label="name"   placeholder="--Enter--"/>
+                  <cornie-input
+                    v-model="name"
+                    label="name"
+                    placeholder="--Enter--"
+                  />
 
-                    <cornie-input
-                      
-                      v-model="comment"
-                      label="comment"
-                       placeholder="--Enter--"
-                    />
+                  <cornie-input
+                    v-model="comment"
+                    label="comment"
+                    placeholder="--Enter--"
+                  />
 
-                    <cornie-input
-                      
-                      v-model="extraDetails"
-                      label="extra details"
-                       placeholder="--Enter--"
-                    />
+                  <cornie-input
+                    v-model="extraDetails"
+                    label="extra details"
+                    placeholder="--Enter--"
+                  />
 
-                    <phone-input
-                      v-model="phone"
-                      
-                      label="Phone Number"
-                       placeholder="--Enter--"
-                    />
-                    <cornie-select
-                      :items="allLocation"
-                      v-model="coverageArea"
-                      label="Coverage area"
-                      
-                      class="w-full"
-                      placeholder="--Select--"
-                    />
-                      <fhir-input
-                       
-                        reference="http://hl7.org/fhir/ValueSet/service-provision-conditions"
-                        class="w-full"
-                        v-model="provisionCode"
-                        label="service provision code"
-                        placeholder="--Select--"
-                      />
-                   
-                    <!-- <span class="flex items-center mt-3">
+                  <phone-input
+                    v-model="phone"
+                    label="Phone Number"
+                    placeholder="--Enter--"
+                  />
+                  <cornie-select
+                    :items="allLocation"
+                    v-model="coverageArea"
+                    label="Coverage area"
+                    class="w-full"
+                    placeholder="--Select--"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/service-provision-conditions"
+                    class="w-full"
+                    v-model="provisionCode"
+                    label="service provision code"
+                    placeholder="--Select--"
+                  />
+
+                  <!-- <span class="flex items-center mt-3">
                       <avatar class="mr-2" v-if="img.url" :src="img.url" />
                       <avatar class="mr-2" v-else :src="img.placeholder" />
                       <input
@@ -133,104 +126,114 @@
                         Upload
                       </label>
                     </span> -->
-                  </div>
-                </template>
-                 <template v-slot:misc>
-                 <info-icon class="fill-current text-primary"/>
-               </template>
-              </accordion-component>
+                </div>
+              </template>
+              <template v-slot:misc>
+                <info-icon class="fill-current text-primary" />
+              </template>
+            </accordion-component>
 
-                <accordion-component title="Eligibility" :opened="false">
-                  <template  v-slot:default>
-                    <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                      <cornie-select
-                        :items="['code']"
-                        v-model="eligibilityCode"
-                        label="Code"
-                        class="w-full"
-                        placeholder="--Select--"
-                      />
-                      <cornie-input v-model="eligibilityComment" label="Comment" placeholder="--Enter--" class="w-full"/>
-                      <cornie-input v-model="programs" label="Programs" placeholder="--Enter--" class="w-full"/>
-                      <cornie-input v-model="characteristics" label="Characteristics" placeholder="--Enter--" class="w-full"/>
-                      <fhir-input
-                          
-                          reference="http://hl7.org/fhir/ValueSet/languages"
-                          class="w-full"
-                          v-model="communication"
-                          label="Communication"
-                          placeholder="--Select--"
-                        />
-                        <fhir-input
-                          
-                          reference="http://hl7.org/fhir/ValueSet/service-referral-method"
-                          class="w-full"
-                          v-model="referralMethod"
-                          label="referral method"
-                          placeholder="--Select--"
-                        />
-                      <cornie-select
-                        :items="['Yes', 'No']"
-                        v-model="appointmentRequired"
-                        label="appointment required?"
-                         placeholder="--Select--"
-                         class="w-full"
-                      />
-                    </div>
-                  </template>
-                   <template v-slot:misc>
-                    <info-icon class="fill-current text-primary"/>
-                  </template>
-                </accordion-component>
+            <accordion-component title="Eligibility" :opened="false">
+              <template v-slot:default>
+                <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                  <cornie-select
+                    :items="['code']"
+                    v-model="eligibilityCode"
+                    label="Code"
+                    class="w-full"
+                    placeholder="--Select--"
+                  />
+                  <cornie-input
+                    v-model="eligibilityComment"
+                    label="Comment"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    v-model="programs"
+                    label="Programs"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    v-model="characteristics"
+                    label="Characteristics"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/languages"
+                    class="w-full"
+                    v-model="communication"
+                    label="Communication"
+                    placeholder="--Select--"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/service-referral-method"
+                    class="w-full"
+                    v-model="referralMethod"
+                    label="referral method"
+                    placeholder="--Select--"
+                  />
+                  <cornie-select
+                    :items="['Yes', 'No']"
+                    v-model="appointmentRequired"
+                    label="appointment required?"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
+                </div>
+              </template>
+              <template v-slot:misc>
+                <info-icon class="fill-current text-primary" />
+              </template>
+            </accordion-component>
 
-                 <accordion-component title="Available Time" :opened="false">
-                    <template  v-slot:default>
-                        <div class="mt-3 w-full">
-                          <operation-hours v-model="hoursOfOperation" />
-                        </div>
+            <accordion-component title="Available Time" :opened="false">
+              <template v-slot:default>
+                <div class="mt-3 w-full">
+                  <operation-hours v-model="hoursOfOperation" />
+                </div>
 
-                       <div class="flex space-x-1 w-full mt-5 mb-5 col-span-full justify-between">
-                          <span class="text-sm w-32 -mb-2"> Not Available</span>
-                          <span class="border-b-2 border-gray-200 w-full"></span>
-                       </div>
-                        <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                          <cornie-input
-                            
-                            v-model="notAvailableDescription"
-                            label="description"
-                            placeholder="--Enter--"
-                            class="w-full"
-                          />
-                          <date-picker
-                            label="During"
-                            v-model="notAvailableDateRange"
-                            placeholder="--Enter--"
-                            
-                            class="w-full"
-                          />
+                <div
+                  class="flex space-x-1 w-full mt-5 mb-5 col-span-full justify-between"
+                >
+                  <span class="text-sm w-32 -mb-2"> Not Available</span>
+                  <span class="border-b-2 border-gray-200 w-full"></span>
+                </div>
+                <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                  <cornie-input
+                    v-model="notAvailableDescription"
+                    label="description"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <date-picker
+                    label="During"
+                    v-model="notAvailableDateRange"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    v-model="availabilityExceptions"
+                    label="availability exceptions"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-select
+                    v-model="notAvailableChannel"
+                    label="channel"
+                    :items="['dental', 'hospice']"
+                    placeholder="--Select--"
+                    class="w-ful"
+                  />
+                </div>
+              </template>
+              <template v-slot:misc>
+                <info-icon class="fill-current text-primary" />
+              </template>
+            </accordion-component>
 
-                          <cornie-input
-                            v-model="availabilityExceptions"
-                            label="availability exceptions"
-                             placeholder="--Enter--"
-                             class="w-full"
-                          />
-                          <cornie-select
-                            
-                            v-model="notAvailableChannel"
-                            label="channel"
-                            :items="['dental', 'hospice']"
-                             placeholder="--Select--"
-                             class="w-ful"
-                          />
-                      </div>
-                    </template>
-                      <template v-slot:misc>
-                      <info-icon class="fill-current text-primary"/>
-                    </template>
-                 </accordion-component>
-
-            
             <span class="mt-10 flex w-full mb-32 pb-20 justify-end">
               <button
                 class="rounded-full font-semibold pr-10 pl-10 py-1 text-sm text-primary border border-primary mr-3"
@@ -268,12 +271,12 @@ import { string } from "yup";
 import { Prop, Watch } from "vue-property-decorator";
 import DatePicker from "./datepicker.vue";
 // import DatePicker from "@/components/daterangepicker.vue";
-import  AccordionComponent from "@/components/form-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import FhirInput from "@/components/fhir-input.vue";
 import { getCountries, getStates } from "@/plugins/nation-states";
 import { useCountryStates } from "@/composables/useCountryStates";
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import InfoIcon from "@/components/icons/info.vue"
+import InfoIcon from "@/components/icons/info.vue";
 
 const countries = getCountries();
 
@@ -291,11 +294,10 @@ const dropdown = namespace("dropdown");
     AccordionComponent,
     FhirInput,
     CornieAvatarField,
-    InfoIcon
+    InfoIcon,
   },
 })
 export default class AddService extends Vue {
-
   nationState = setup(() => useCountryStates());
   img = setup(() => useHandleImage());
   @Prop({ type: String, default: "" })
@@ -309,7 +311,7 @@ export default class AddService extends Vue {
 
   loading = false;
   activeStates = ["active", "inactive"];
-  location=[];
+  location = [];
 
   identifier = "";
   name = "";
@@ -465,7 +467,7 @@ export default class AddService extends Vue {
       };
     });
   }
- 
+
   async fetchLocation() {
     const AllLocation = cornieClient().get(
       "/api/v1/location/myOrg/getMyOrgLocations"
@@ -473,7 +475,6 @@ export default class AddService extends Vue {
     const response = await Promise.all([AllLocation]);
     this.location = response[0].data;
   }
-
 
   async created() {
     this.setHealthcare();

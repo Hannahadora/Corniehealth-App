@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid p-2 h-screen overflow-y-scroll">
+  <div class="p-2">
     <div class="w-full mb-6">
       <div
         class="w-full p-2 px-4 stock"
@@ -727,6 +727,8 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import NewVariant from "./new-variant.vue";
 import StockUnit from "./stock-unit.vue";
+import AccordionComponent from "@/components/accordion-component.vue";
+
 import {
   ICatalogueProduct,
   IInventory,
@@ -746,6 +748,7 @@ const catalogue = namespace("catalogues");
     CornieSelect,
     CornieRadio,
     Cornieradio,
+    AccordionComponent,
     AddIcon,
     CornieCheckbox,
     DatePicker,

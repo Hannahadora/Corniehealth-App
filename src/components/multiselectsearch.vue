@@ -52,19 +52,7 @@
             <input
               v-if="withFilter"
               v-model="filterText"
-              class="
-                rounded-full
-                shadow
-                appearance-none
-                border
-                w-full
-                py-2
-                px-3
-                text-gray-700
-                leading-tight
-                focus:outline-none
-                focus:shadow-outline
-              "
+              class="rounded-full shadow appearance-none border w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username"
               type="text"
               placeholder="Username"

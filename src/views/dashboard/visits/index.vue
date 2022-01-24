@@ -76,7 +76,7 @@
               <router-link
                 :to="{ name: 'Appointment' }"
                 style="background: #fe4d3c"
-                class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-full"
+                class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-md"
               >
                 Go To Appointments
               </router-link>

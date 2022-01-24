@@ -1,9 +1,9 @@
 <template>
   <div>
     <two-factor v-if="twoFactor" />
-    <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-else>
+    <div class="2xl:h-3/6 w-9/12 mx-20 block rounded-lg bg-white" v-else>
       <div class="w-full h-full flex flex-col p-12">
-        <h2 class="font-bold text-3xl">Welcome Back!</h2>
+        <h2 class="font-bold text-primary text-3xl">Welcome Back!</h2>
         <div class="flex flex-col mt-10">
           <h3 class="font-bold text-danger text-xl">2FA Required</h3>
           <p class="block mt-4 mb-5">
@@ -15,13 +15,13 @@
           <div class="w-full flex flex-col items-end text-white">
             <cornie-btn
               @click="$router.push('/dashboard/providerr/user/security')"
-              class="bg-danger rounded-full py-1 px-3 w-full mb-3"
+              class="bg-danger rounded py-1 px-3 w-full mb-3"
             >
               Set up
             </cornie-btn>
             <cornie-btn
               @click="$router.replace('/dashboard')"
-              class="mb-12 border-primary py-1 px-3 border-2 hover:bg-primary hover:text-white text-primary mt-2 rounded-full p-3 w-full"
+              class="mb-12 border-primary py-1 px-3 border-2 hover:bg-primary hover:text-white text-primary mt-2 rounded p-3 w-full"
             >
               Skip
             </cornie-btn>

@@ -10,12 +10,12 @@
   <div class="w-full flex flex-col justify-center items-center h-96">
     <!-- <img src="@/assets/img/empty-domain.svg" /> -->
     <VisitIcon />
-    <h3 class="text-center mt-5">There are no visits on record!</h3>
+    <h3 class="text-center mt-5">There are no active visits</h3>
     <h3 class="text-center">
       Schedule a new appointment by clicking on Create Appointment below
     </h3>
     <button
-      class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 font-semibold"
+      class="bg-danger rounded-md text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 font-semibold"
       @click="$router.push({ name: 'Create Appointment' })"
     >
       Create Appointment

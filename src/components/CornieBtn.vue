@@ -1,5 +1,5 @@
 <template>
-  <button ref="btn" class="relative rounded-3xl" :disabled="loading">
+  <button ref="btn" class="relative rounded" :disabled="loading">
     <div
       :class="{ invisible: loading }"
       class="px-3 py-2 pl-8 pr-8 flex items-center justify-center w-full h-full"

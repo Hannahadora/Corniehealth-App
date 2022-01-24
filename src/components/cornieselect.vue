@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center w-11/12 mb-5">
+  <div class="flex flex-col items-center mb-5">
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
@@ -14,8 +14,8 @@
                 {{ label }}
               </template>
               <div class="float-right cursor-pointer fill-current text-primary">
-                 <slot name="misc"  />
-                </div>
+                <slot name="misc" />
+              </div>
               <span class="text-danger ml-1" v-if="required"> * </span>
               <span class="ml-1 mb-1" v-if="$slots.labelicon">
                 <slot name="labelicon" />

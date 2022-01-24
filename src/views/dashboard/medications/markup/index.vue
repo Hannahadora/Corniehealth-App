@@ -7,7 +7,7 @@
 
   <div class="w-full py-4 flex justify-end" v-if="tableData.length">
     <button
-      class="bg-danger text-base font-bold rounded-full text-white py-4 px-24"
+      class="bg-danger text-base font-bold rounded-full text-white py-2 px-24"
       @click="$router.push('/dashboard/provider/settings/markup-settings')"
     >
       Edit
@@ -25,7 +25,7 @@
     </span>
 
     <button
-      class="bg-danger text-base font-bold rounded-full text-white py-4 px-20"
+      class="bg-danger text-base font-bold rounded text-white py-4 px-20"
       @click="$router.push('/dashboard/provider/settings/markup-settings')"
     >
       Setup
