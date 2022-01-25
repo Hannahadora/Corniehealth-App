@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="w-full">
+    <div class="w-full" v-if="services.length > 0">
       <cornie-table v-model="items" :columns="headers">
         <template #name="{ item }">
           <div
@@ -49,6 +49,16 @@
         </template>
       </cornie-table>
     </div>
+    <div class="w-full flex flex-col justify-center items-center h-full" v-else>
+      <img src="@/assets/img/service.svg" />
+      <h3 class="text-center mt-5">Start by adding a service</h3>
+      <button
+        class="bg-danger font-semibold rounded text-sm text-white mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
+        @click="$router.push('newservice')"
+      >
+        Add Services
+      </button>
+    </div>  
   </div>
 </template>
 

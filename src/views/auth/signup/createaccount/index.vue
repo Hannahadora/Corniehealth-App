@@ -48,7 +48,7 @@
       </div>
 
       <div v-if="step == 2">
-          <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20" :class="[accountType == 'Patient' ? 'mt-44' : 'mt-56']">
+          <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20" :class="[accountType == 'Patient' ? 'mt-36' : 'mt-48']">
               <h1 class="text-primary font-bold text-2xl mb-2">Create an account</h1>
                <div class="bg-light_gray text-sm w-full p-4 text-jet_black mb-5" v-if="accountType == 'Patient'">
                 You must be 18 or older to create a CornieCare Patient Online account.
@@ -61,17 +61,16 @@
                       inline-flex
                       items-center
                       justify-center
-                      w-auto
                       py-3
                       font-medium
                       leading-none
-                      tracking-wider
                       rounded-t
+                       tracking-wider
                       text-sm
-                      sm:px-6 sm:w-auto sm:justify-start
                       title-font
                       cursor-pointer
                       relative
+                      hover:text-gray-900
                     "
                      :class="[
                         step == 2
@@ -86,16 +85,16 @@
                       inline-flex
                       items-center
                       justify-center
-                      w-auto
                       py-3
+                       tracking-wider
                       font-medium
                       leading-none
-                       text-sm
-                      tracking-wider
-                      sm:px-6 sm:w-auto sm:justify-start
+                      rounded-t
+                      text-sm
                       title-font
-                      hover:text-gray-900
+                      cursor-pointer
                       relative
+                      hover:text-gray-900
                     "
                     :class="[
                         step == 3 && userCreated
@@ -146,19 +145,18 @@
           <div class="flex flex-wrap mb-8" style="width:120vh">
                   <a
                     class="
-                      inline-flex
+                     inline-flex
                       items-center
                       justify-center
-                      w-1/2
                       py-3
-                      text-sm
+                       tracking-wider
                       font-medium
                       leading-none
-                      tracking-wider
                       rounded-t
-                      sm:px-6 sm:w-auto sm:justify-start
+                      text-sm
                       title-font
                       cursor-pointer
+                      relative
                       border-b-4 border-danger text-black
                     "
    
@@ -173,15 +171,15 @@
                       inline-flex
                       items-center
                       justify-center
-                      w-1/2
                       py-3
+                       tracking-wider
                       font-medium
-                       text-sm
                       leading-none
-                      relative
-                      tracking-wider
-                      sm:px-6 sm:w-auto sm:justify-start
+                      rounded-t
+                      text-sm
                       title-font
+                      cursor-pointer
+                      relative
                       hover:text-gray-900
                     "
                     :class="[
@@ -228,7 +226,7 @@
       </div>
       <!-- component -->
       <div class="" :user="user" v-if="step == 4 && userCreated">
-        <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20 mt-52">
+        <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20 mt-28">
         <h1 class="text-primary font-bold text-2xl mb-2">Create an account</h1>
           <!-- <div class="flex flex-wrap mx-auto" style="width:120vh">
                   <a
@@ -308,16 +306,16 @@
                       inline-flex
                       items-center
                       justify-center
-                      w-1/2
                       py-3
-                      text-sm
+                       tracking-wider
                       font-medium
                       leading-none
-                      tracking-wider
                       rounded-t
-                      sm:px-6 sm:w-auto sm:justify-start
+                      text-sm
                       title-font
                       cursor-pointer
+                      relative
+                      hover:text-gray-900
                       border-b-4 border-danger text-black
                     "
    
@@ -332,15 +330,15 @@
                       inline-flex
                       items-center
                       justify-center
-                      w-1/2
                       py-3
+                       tracking-wider
                       font-medium
-                       text-sm
                       leading-none
-                      relative
-                      tracking-wider
-                      sm:px-6 sm:w-auto sm:justify-start
+                      rounded-t
+                      text-sm
                       title-font
+                      cursor-pointer
+                      relative
                       hover:text-gray-900
                     "
                     :class="[
@@ -644,7 +642,7 @@ export default class CreateAccount extends Vue {
     background: #fff;
 }
 .icon-wrap::after {
-   content: '';
+       content: '';
     background: #fff;
     position: inherit;
     border-radius: 50%;
@@ -653,12 +651,12 @@ export default class CreateAccount extends Vue {
     z-index: 1;
     color: #fff;
     border: 2px solid #fe4d3c;
-    right: -25px;
-    top: 20px;
+    right: -2px;
+    top: 21px;
  
 }
 .icon-wrap2::after {
-    content: '';
+        content: '';
     background: #fff;
     position: inherit;
     border-radius: 50%;
@@ -667,7 +665,7 @@ export default class CreateAccount extends Vue {
     z-index: 1;
     color: #fff;
     border: 2px solid #fe4d3c;
-    right: -35px;
+    right: -5px;
     top: 29px;
  
 }

@@ -30,6 +30,7 @@
           <cornie-input
             :label="'Email Address'"
             v-model="email"
+             :rules="emailRule"
             style="width: 100%"
             placeholder="--Enter--"
           />
@@ -48,14 +49,14 @@
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            class="border-primary border-2 px-6 mr-3 rounded text-primary"
           >
             Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             @click="submit"
-            class="text-white bg-danger px-6 rounded-xl"
+            class="text-white bg-danger px-6 rounded"
           >
             Save
           </cornie-btn>
@@ -77,6 +78,8 @@ import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import IPhone from "@/types/IPhone";
 import { cornieClient } from "@/plugins/http";
+import { string, date } from "yup";
+
 @Options({
   components: {
     ...CornieCard,
@@ -96,6 +99,7 @@ export default class NominateRefree extends Vue {
 
   loading = false;
 
+emailRule = string().email("A valid email is required").required();
   name="";
   email="";
   phone = {
@@ -131,15 +135,8 @@ export default class NominateRefree extends Vue {
   //   this.referee = { name: "", email: "", phone: {dialCode:"+234",number:""} } as any;
   // }
 async newRefree() {
-    try {
-      const { data } = await cornieClient().post(
-        "/api/v1/kyc",
-        this.payload
-      );
-      window.notify({ msg: "KYC updated successfully", status: "success" });
-    } catch (error) {
-      window.notify({ msg: "KYC update failed", status: "error" });
-    }
+    this.$emit('refree', this.payload);
+      this.done();
   }
   async onSave(){
      try {
@@ -148,7 +145,7 @@ async newRefree() {
         this.payload
       );
       if(response.success){
-        window.notify({ msg: "Refree added successfully", status: "success" });
+        window.notify({ msg: "Refree added successfully,kindly check email", status: "success" });
           this.done();
       }
 

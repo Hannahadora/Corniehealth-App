@@ -20,8 +20,8 @@ export default {
 
   },
   actions: {
-    async fetchMarkups(ctx, practitionerId: string) {
-      const markups = await fetchMarkups(practitionerId);
+    async fetchMarkups(ctx) {
+      const markups = await fetchMarkups();
       ctx.commit("setMarkups", markups);
     },
   },

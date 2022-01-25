@@ -91,7 +91,7 @@
                   ).length > 0
                 "
               >
-                <Actors
+            <Actors
                   :items="
                     getPnersForSchedule(
                       item.split('-')[0].trim(),
