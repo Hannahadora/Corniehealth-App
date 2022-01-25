@@ -250,12 +250,13 @@ const locationsStore = namespace("location");
 const devicesStore = namespace("devices");
 const visitsStore = namespace("visits");
 
-interface Time{
-  hour: number
-  minute: number
+interface Time {
+  hour: number;
+  minute: number;
 }
 
 @Options({
+  name: "Availability",
   components: {
     AddIcon,
     Actors,
@@ -279,9 +280,8 @@ export default class Availability extends Vue {
   @Prop({ type: Array })
   schedules!: ISchedule[];
 
-
   /// Start
-  
+
   getWeekDates(start: Date) {
     const dates: Date[] = [];
     for (let i = 0; i < 7; i++) {
@@ -295,94 +295,103 @@ export default class Availability extends Vue {
 
   get headers() {
     const now = new Date(); // sun jan 23, 2022 //
-    const start = getWeekStart(now)
+    const start = getWeekStart(now);
     const dates = this.getWeekDates(start);
-    return dates.map((date) => ({
+    const headers = dates.map((date) => ({
       key: printWeekday(date),
-      title: this.printDate(date),
+      title: date.toDateString(),
     }));
+
+    return [...headers, { key: "range", title: "Time" }];
   }
 
-
-  groupHourly(schedules: ISchedule[]){
-    const groups: {[state: number]: ISchedule[]} = {} 
-    schedules.forEach(schedule => {
-      const start = this.buildTime(schedule.startTime)
-      const end = this.buildTime(schedule.endTime)
-      const hours = this.getHoursBetween(start, end)
-      this.insertMatchingHours(groups, hours, schedule)
-    })
-    return groups
+  groupHourly(schedules: ISchedule[]) {
+    const groups: { [state: number]: ISchedule[] } = {};
+    schedules.forEach((schedule) => {
+      const start = this.buildTime(schedule.startTime);
+      const end = this.buildTime(schedule.endTime);
+      const hours = this.getHoursBetween(start, end);
+      this.insertMatchingHours(groups, hours, schedule);
+    });
+    this.padHourlyGrouping(groups);
+    return groups;
   }
 
-  groupDaily(schedules: ISchedule[]){
+  padHourlyGrouping(groups: { [state: number]: ISchedule[] }) {
+    const hoursPerDay = 23;
+    for (let i = 0; i < hoursPerDay; i++) {
+      const schedules = groups[i];
+      if (!schedules) groups[i] = [];
+    }
+  }
+  groupDaily(schedules: ISchedule[]) {
     const weekDays = new Map<string, IPractitioner[]>();
     schedules.forEach((schedule) => {
       this.insertWeekDays(weekDays, schedule);
     });
-    const group: {[state: string]: IPractitioner[]} = {}
+    const group: { [state: string]: IPractitioner[] } = {};
     weekDays.forEach((value, key) => {
-      group[key] = value
-    })
-    return group
+      group[key] = value;
+    });
+    return group;
   }
 
-  insertMatchingHours(groups: {[state: number]: ISchedule[]}, hours: number[], schedule: ISchedule){
-    hours.forEach(hour => {
-      const schedules = groups[hour] ?? []
-      schedules.push(schedule)
-    })
+  insertMatchingHours(
+    groups: { [state: number]: ISchedule[] },
+    hours: number[],
+    schedule: ISchedule
+  ) {
+    hours.forEach((hour) => {
+      const schedules = groups[hour] ?? [];
+      schedules.push(schedule);
+      groups[hour] = schedules;
+    });
   }
-  buildTime(time: string){
-    const [hour, min, ...rest] = time.split(":")
+  buildTime(time: string) {
+    const [hour, min, ...rest] = time.split(":");
     return {
       hour: Number(hour),
-      minute: Number(min)
-    }
+      minute: Number(min),
+    };
   }
-  getHoursBetween(start: Time, end: Time){
-    const hours = []
+  getHoursBetween(start: Time, end: Time) {
+    const hours = [];
     for (let i = start.hour; i < end.hour; i++) {
-      hours.push(i)
+      hours.push(i);
     }
-    if(end.minute) hours.push(end.hour + 1)
-    return hours
+    if (end.minute) hours.push(end.hour + 1);
+    return hours;
   }
   pad(x: number) {
-  if (x < 10) return `0${x}:00`;
-  return `${x}:00`;
-};
-
- get _items() {
-    const schedules = this.schedules || []
-    const hourly = this.groupHourly(schedules)
-    const items: {range: any, [state: string]: IPractitioner[] }[] = []
-     Object.entries(hourly).forEach(([key, value]) => {
-      const item = this.groupDaily(value)
-      items.push({...item, range: this.printRange(Number(key)) as any})
-    })
-    console.log(hourly,"hourly");
-    return items
-  } 
-
-
-  printRange(start: number){
-    const min = this.pad(start)
-    const max = this.pad(start + 1)
-    return `${min}-${max}`
+    if (x < 10) return `0${x}:00`;
+    return `${x}:00`;
   }
-  
+
+  get _items() {
+    const schedules = this.schedules || [];
+    const hourly = this.groupHourly(schedules);
+    console.log({ hourly });
+    const items: { range: any; [state: string]: IPractitioner[] }[] = [];
+    Object.entries(hourly).map(([key, value]) => {
+      const item = this.groupDaily(value);
+      items.push({ ...item, range: this.printRange(Number(key)) as any });
+    });
+    return items;
+  }
+
+  printRange(start: number) {
+    const min = this.pad(start);
+    const max = this.pad(start + 1);
+    return `${min}-${max}`;
+  }
+
   insertWeekDays(map: Map<string, IPractitioner[]>, schedule: ISchedule) {
     const { days } = schedule;
     days.forEach((day) => {
-      const _practitioners = map.get(day) ?? []
-      const practitioners = schedule.practitioners ?? []
+      const _practitioners = map.get(day) ?? [];
+      const practitioners = schedule.practitioners ?? [];
       map.set(day, [...practitioners, ..._practitioners]);
     });
-  }
-  
-  printDate(date: Date) {
-    return "sun jan 23, 2022";
   }
 
   //// End
