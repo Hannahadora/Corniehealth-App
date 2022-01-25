@@ -4,8 +4,8 @@
       <div class="container-fluid">
         <!-- <div class="container-fluid" v-if="filterOptions.byPractitioners?.length === 0"> -->
         <cornie-table
-          :columns="availabilityHeaders"
-          v-model="items"
+          :columns="headers"
+          v-model="_items"
           @filter="showFilterPane"
         >
           <template #actions="{}">
@@ -40,7 +40,7 @@
             </div>
           </template>
 
-          <template #time="{ item }">
+          <template #range="{ item }">
             <p class="text-xs">{{ item }}</p>
           </template>
 
@@ -293,7 +293,7 @@ export default class Availability extends Vue {
     return dates;
   }
 
-  headers() {
+  get headers() {
     const now = new Date(); // sun jan 23, 2022 //
     const start = getWeekStart(now)
     const dates = this.getWeekDates(start);
@@ -353,14 +353,16 @@ export default class Availability extends Vue {
   return `${x}:00`;
 };
 
-  _items() {
+ get _items() {
     const schedules = this.schedules || []
     const hourly = this.groupHourly(schedules)
     const items: {range: any, [state: string]: IPractitioner[] }[] = []
-    return Object.entries(hourly).map(([key, value]) => {
+     Object.entries(hourly).forEach(([key, value]) => {
       const item = this.groupDaily(value)
       items.push({...item, range: this.printRange(Number(key)) as any})
     })
+    console.log(hourly,"hourly");
+    return items
   } 
 
 
