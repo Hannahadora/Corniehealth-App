@@ -131,7 +131,6 @@ export default class OperationHours extends Vue {
   get operationHours() {
     return this.modelValue;
   }
-
   set operationHours(val: HoursOfOperation[]) {
     this.$emit("update:modelValue", val);
   }
@@ -139,7 +138,6 @@ export default class OperationHours extends Vue {
   changed() {
     this.operationHours = this.operationHours;
   }
-
   @Watch("all")
   allWeek(all: boolean) {
     if (!all) return;

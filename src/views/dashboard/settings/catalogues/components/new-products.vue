@@ -1,5 +1,5 @@
 <template>
-  <div class=" p-2">
+  <div class="p-2">
     <div class="w-full mb-6">
       <div
         class="w-full p-2 px-4 stock"

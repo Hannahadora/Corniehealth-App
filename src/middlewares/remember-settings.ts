@@ -8,5 +8,9 @@ export async function remeberSettings(
 ) {
   if (!to.matched.some(record => record.meta.settings)) return;
   if (!to.name) return;
+  const { type, ...rest } = to.params;
+  if (rest && Object.entries(rest).length > 0) {
+    return;
+  }
   suggester.rememberRoute(to.fullPath, to.name as string);
 }

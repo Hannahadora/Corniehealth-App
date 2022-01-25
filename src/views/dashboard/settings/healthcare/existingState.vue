@@ -22,12 +22,11 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <delete-icon class="fill-current text-danger"/>
+          <delete-icon class="fill-current text-danger" />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
     </cornie-table>
-
   </div>
 </template>
 <script lang="ts">
@@ -51,7 +50,6 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { mapDisplay } from "@/plugins/definitions";
 import EditIcon from "@/components/icons/edit.vue";
 
-
 const healthcare = namespace("healthcare");
 @Options({
   components: {
@@ -73,7 +71,7 @@ const healthcare = namespace("healthcare");
 export default class HealthcareExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-   typeMapper = (code: string) => "";
+  typeMapper = (code: string) => "";
 
   loading = false;
 
@@ -86,7 +84,7 @@ export default class HealthcareExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-     {
+    {
       title: "IDENTIFIER",
       key: "id",
       show: true,
@@ -96,7 +94,7 @@ export default class HealthcareExistingState extends Vue {
       key: "type",
       show: true,
     },
-     {
+    {
       title: "communication",
       key: "communication",
       show: true,
@@ -121,7 +119,7 @@ export default class HealthcareExistingState extends Vue {
       key: "provisionCode",
       show: false,
     },
-    
+
     {
       title: "Comment",
       key: "comment",
@@ -158,7 +156,7 @@ export default class HealthcareExistingState extends Vue {
       return {
         ...healthcare,
         action: healthcare.id,
-        type: this.typeMapper(healthcare.type)
+        type: this.typeMapper(healthcare.type),
       };
     });
 
@@ -185,8 +183,8 @@ export default class HealthcareExistingState extends Vue {
       window.notify({ msg: "Healthcare service not deleted", status: "error" });
   }
 
-  async created(){
-     await this.createMapper();
+  async created() {
+    await this.createMapper();
   }
 }
 </script>

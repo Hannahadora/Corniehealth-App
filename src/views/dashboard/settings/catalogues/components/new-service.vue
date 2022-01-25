@@ -474,7 +474,7 @@ import Modal from "@/components/modal.vue";
 import CloseIcon from "@/components/icons/close.vue";
 import { namespace } from "vuex-class";
 import { Prop, Watch } from "vue-property-decorator";
-import ICatalogueService,{ AvailableTimes } from "@/types/ICatalogue";
+import ICatalogueService, { AvailableTimes } from "@/types/ICatalogue";
 import FhirInput from "@/components/fhir-input.vue";
 import { useCountryStates } from "@/composables/useCountryStates";
 import CornieRadio from "@/components/cornieradio.vue";
@@ -502,7 +502,7 @@ const markup = namespace("markup");
     FhirInput,
     CornieRadio,
     OperationHours,
-    Multiselect
+    Multiselect,
   },
 })
 export default class NwService extends Vue {
@@ -521,38 +521,35 @@ export default class NwService extends Vue {
   @catalogue.State
   services!: ICatalogueService[];
 
-
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
-@userStore.Getter
+  @userStore.Getter
   cornieUser!: CornieUser;
 
   @markup.State
   markups!: any[];
 
-
   @markup.Action
   fetchMarkups!: () => Promise<void>;
 
-
-  options= [
-    { value: 'holidays', label: 'Holidays' },
-    { value: 'weekends', label: 'Weekends' },
-    { value: 'Fridays', label: 'Fridays' },
-    { value: 'sundays', label: 'Sundays' },
+  options = [
+    { value: "holidays", label: "Holidays" },
+    { value: "weekends", label: "Weekends" },
+    { value: "Fridays", label: "Fridays" },
+    { value: "sundays", label: "Sundays" },
   ];
   image = "";
-  category =  "";
+  category = "";
   subcategory = "subcategory";
   name = "";
-  description =  "";
+  description = "";
   itemCode = "code";
   serviceUOM = "";
   quantity = 0;
   cost = 0;
   markup = 0;
-  availabilityExceptions=[];
+  availabilityExceptions = [];
   discountLimit = 0;
   applyVat = false;
   status = "";
@@ -568,16 +565,16 @@ export default class NwService extends Vue {
   referralMethod = "";
   requiresAppointment = false;
   locations = [] as any;
-  availableTimes : AvailableTimes[] = [];
- hoursOfOperation: HoursOfOperation[] = [];
+  availableTimes: AvailableTimes[] = [];
+  hoursOfOperation: HoursOfOperation[] = [];
 
   img = setup(() => useHandleImage());
   nationState = setup(() => useCountryStates());
   addNew = false;
   loading = false;
-  markupData =[];
+  markupData = [];
   dropdown = {} as IIndexableObject;
-  location=[];
+  location = [];
   reqBody = {
     quantity: 1,
     cost: 10,
@@ -595,9 +592,9 @@ export default class NwService extends Vue {
     this.setServices();
   }
 
-   async setServices() {
+  async setServices() {
     const service = await this.getServicesById(this.id);
-    console.log(service,"HELLO AM SERCICE")
+    console.log(service, "HELLO AM SERCICE");
     if (!service) return;
     this.img.url = service.image;
     this.category = service.category;
@@ -606,7 +603,7 @@ export default class NwService extends Vue {
     this.description = service.description;
     this.itemCode = service.itemCode;
     this.serviceUOM = service.serviceUOM;
-   // this.quantity = service.quantity;
+    // this.quantity = service.quantity;
     this.discountLimit = service.discountLimit;
     this.applyVat = service.applyVat;
     this.status = service.status;
@@ -660,9 +657,9 @@ export default class NwService extends Vue {
     else await this.create();
     this.loading = false;
   }
-  
+
   async create() {
-   // this.payload.organizationId = this.cornieUser.organizationId;
+    // this.payload.organizationId = this.cornieUser.organizationId;
     try {
       const response = await cornieClient().post(
         "/api/v1/catalogue-service",
@@ -670,7 +667,7 @@ export default class NwService extends Vue {
       );
       if (response.success) {
         window.notify({ msg: "Catalogue service Created", status: "success" });
-          this.$router.push("/dashboard/provider/settings/catalogues");
+        this.$router.push("/dashboard/provider/settings/catalogues");
       }
     } catch (error) {
       window.notify({ msg: "Catalogue service not Created", status: "error" });
@@ -679,11 +676,11 @@ export default class NwService extends Vue {
 
   async update() {
     const url = `/api/v1/catalogue-service/${this.id}`;
-    const payload = {...this.payload };
+    const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       window.notify({ msg: "Catalogue service Updated", status: "success" });
-       this.$router.push("/dashboard/provider/settings/catalogues");
+      this.$router.push("/dashboard/provider/settings/catalogues");
     } catch (error) {
       window.notify({ msg: "Catalogue service not Updated", status: "error" });
     }
@@ -735,7 +732,7 @@ export default class NwService extends Vue {
       };
     });
   }
- 
+
   async fetchLocation() {
     const AllLocation = cornieClient().get(
       "/api/v1/location/myOrg/getMyOrgLocations"
@@ -748,13 +745,14 @@ export default class NwService extends Vue {
     this.dropdown = data;
   }
 
-  get allP(){
+  get allP() {
     return this.cornieUser;
   }
 
-   async fetchMarkup() {
-    
-    const AllMarkup = cornieClient().get('/api/v1/markup-discount/findAllByOrgId/');
+  async fetchMarkup() {
+    const AllMarkup = cornieClient().get(
+      "/api/v1/markup-discount/findAllByOrgId/"
+    );
     const response = await Promise.all([AllMarkup]);
     this.markupData = response[0].data[0];
   }
@@ -762,7 +760,7 @@ export default class NwService extends Vue {
     await this.setDropdown();
     await this.fetchLocation();
     await this.fetchMarkup();
-  await this.setServices();
+    await this.setServices();
     // if (this.$route.params.serviceId) {
     //   if (this.services?.length <= 0) await this.getServices();
     //   this.reqBody = this.services.find(
@@ -832,55 +830,57 @@ input[type="checkbox"]:checked:after {
   color: #14171f;
 }
 .multiselect-option.is-selected {
-    background: #fe4d3c;
-    color: var(--ms-option-color-selected,#fff);
+  background: #fe4d3c;
+  color: var(--ms-option-color-selected, #fff);
 }
 .multiselect-option.is-selected.is-pointed {
-    background: var(--ms-option-bg-selected-pointed,#fe4d3c);
-    color: var(--ms-option-color-selected-pointed,#fff);
+  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+  color: var(--ms-option-color-selected-pointed, #fff);
 }
 .multiselect-option.is-selected {
-    background: var(--ms-option-bg-selected,#fe4d3c);
-    color: var(--ms-option-color-selected,#fff);
+  background: var(--ms-option-bg-selected, #fe4d3c);
+  color: var(--ms-option-color-selected, #fff);
 }
 
 .multiselect {
-    position: relative;
-    margin: 0 auto;
-    margin-bottom: 50px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    box-sizing: border-box;
-    cursor: pointer;
-    outline: none;
-    border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-    border-radius: var(--ms-radius, 4px);
-    background: var(--ms-bg, #fff);
-    font-size: var(--ms-font-size, 1rem);
-    min-height: calc( var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) * var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2);
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+  border-radius: var(--ms-radius, 4px);
+  background: var(--ms-bg, #fff);
+  font-size: var(--ms-font-size, 1rem);
+  min-height: calc(
+    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+  );
 }
 
 .multiselect-tags {
-    flex-grow: 1;
-    flex-shrink: 1;
-    display: flex;
-    flex-wrap: wrap;
-    margin: var(--ms-tag-my, 0.25rem) 0 0;
-    padding-left: var(--ms-py, 0.5rem);
-    align-items: center;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin: var(--ms-tag-my, 0.25rem) 0 0;
+  padding-left: var(--ms-py, 0.5rem);
+  align-items: center;
 }
 
 .multiselect-tag.is-user {
-    padding: 5px 12px;
-    border-radius: 22px;
-    background: #080056;
-    margin: 3px 3px 8px;
-    position: relative;
-    left: -10px;
+  padding: 5px 12px;
+  border-radius: 22px;
+  background: #080056;
+  margin: 3px 3px 8px;
+  position: relative;
+  left: -10px;
 }
-
 
 /* .multiselect-clear-icon {
       -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
@@ -891,49 +891,48 @@ input[type="checkbox"]:checked:after {
   } */
 
 .multiselect-placeholder {
-    font-size: 0.8em;
-    font-weight: 400;
-    font-style: italic;
-    color: #667499;
+  font-size: 0.8em;
+  font-weight: 400;
+  font-style: italic;
+  color: #667499;
 }
 
 .multiselect-caret {
-    transform: rotate(0deg);
-    transition: transform 0.3s;
-    -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
-    mask-image: url("../../../../../assets/img/Chevron.png");
-    background-color: #080056;
-    margin: 0 var(--ms-px, 0.875rem) 0 0;
-    position: relative;
-    z-index: 10;
-    flex-shrink: 0;
-    flex-grow: 0;
-    pointer-events: none;
+  transform: rotate(0deg);
+  transition: transform 0.3s;
+  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+  mask-image: url("../../../../../assets/img/Chevron.png");
+  background-color: #080056;
+  margin: 0 var(--ms-px, 0.875rem) 0 0;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  flex-grow: 0;
+  pointer-events: none;
 }
 
 .multiselect-tag.is-user img {
-    width: 18px;
-    border-radius: 50%;
-    height: 18px;
-    margin-right: 8px;
-    border: 2px solid #ffffffbf;
+  width: 18px;
+  border-radius: 50%;
+  height: 18px;
+  margin-right: 8px;
+  border: 2px solid #ffffffbf;
 }
 
 .multiselect-tag.is-user i:before {
-    color: #ffffff;
-    border-radius: 50%;
+  color: #ffffff;
+  border-radius: 50%;
 }
 
 .multiselect-tag-remove {
-    display: flex;
-    align-items: center;
-    /* border: 1px solid #fff;
+  display: flex;
+  align-items: center;
+  /* border: 1px solid #fff;
     background: #fff; */
-    border-radius: 50%;
-    color: #fff;
-    justify-content: center;
-    padding: 0.77px;
-    margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
+  border-radius: 50%;
+  color: #fff;
+  justify-content: center;
+  padding: 0.77px;
+  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
 }
-
 </style>

@@ -8,70 +8,73 @@
       </span>
       <span class="w-full">
         <div class="w-full h-screen">
-    
-            <accordion-component title="Location Details" :opened="true">
-               <template v-slot:default>
-                 <div class="w-full">
-                    <div class="w-full mt-5 grid grid-cols-3 gap-4">
-                      <cornie-input
-                        disabled
-                        :modelValue="identifier"
-                        label="Location Identifier"
-                        class="w-full"
-                      />
-                      <cornie-input
-                        :rules="required"
-                        required
-                        v-model="name"
-                        label="Location Name"
-                        class="w-full"
-                        placeholder="--Enter--"
-                      />
-                      <cornie-select
-                        :rules="required"
-                        required
-                        v-model="locationStatus"
-                        :items="['active', 'inactive']"
-                        label="Location Status"
-                        class="w-full"
-                          placeholder="--Select--"
-                      />
-                      <cornie-select
-                        :rules="required"
-                        required
-                        :items="dropdowns.operationalStatus"
-                        v-model="operationalStatus"
-                        label="Operational status"
-                          placeholder="--Select--"
-                          class="w-full"
-                      />
-                      <cornie-input
-                        :rules="required"
-                        required
-                        v-model="description"
-                        label="Description"
-                        placeholder="--Enter--"
-                        class="w-full"
-                      />
-                      <cornie-input v-model="alias" label="Alias"   placeholder="--Enter--" class="w-full"/>
-                      <cornie-select
-                        :rules="required"
-                        required
-                        :items="dropdowns.mode"
-                        v-model="mode"
-                        label="Mode"
-                          placeholder="--Select--"
-                          class="w-full"
-                      />
-                      <fhir-input
-                       
-                          reference="http://hl7.org/fhir/ValueSet/v3-ServiceDeliveryLocationRoleType"
-                          class="required w-full"
-                           v-model="type"
-                           label="Type"
-                           placeholder="--Select--"
-                        />
-                      <!-- <cornie-select
+          <accordion-component title="Location Details" :opened="true">
+            <template v-slot:default>
+              <div class="w-full">
+                <div class="w-full mt-5 grid grid-cols-3 gap-4">
+                  <cornie-input
+                    disabled
+                    :modelValue="identifier"
+                    label="Location Identifier"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    :rules="required"
+                    required
+                    v-model="name"
+                    label="Location Name"
+                    class="w-full"
+                    placeholder="--Enter--"
+                  />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="locationStatus"
+                    :items="['active', 'inactive']"
+                    label="Location Status"
+                    class="w-full"
+                    placeholder="--Select--"
+                  />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    :items="dropdowns.operationalStatus"
+                    v-model="operationalStatus"
+                    label="Operational status"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    :rules="required"
+                    required
+                    v-model="description"
+                    label="Description"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    v-model="alias"
+                    label="Alias"
+                    placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    :items="dropdowns.mode"
+                    v-model="mode"
+                    label="Mode"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/v3-ServiceDeliveryLocationRoleType"
+                    class="required w-full"
+                    v-model="type"
+                    label="Type"
+                    placeholder="--Select--"
+                  />
+                  <!-- <cornie-select
                         :rules="required"
                         required
                         :items="dropdowns.type"
@@ -80,16 +83,16 @@
                           placeholder="--Select--"
                           class="w-full"
                       /> -->
-              
-                        <phone-input
-                          v-model="phone"
-                          required
-                          :rules="required"
-                          label="Phone Number"
-                          class="w-full"
-                        />
-                      
-                      <!-- <cornie-input
+
+                  <phone-input
+                    v-model="phone"
+                    required
+                    :rules="required"
+                    label="Phone Number"
+                    class="w-full"
+                  />
+
+                  <!-- <cornie-input
                         :rules="requiredEmail"
                         required
                         v-model="email"
@@ -123,47 +126,47 @@
                         label="Physical Type"
                         :rules="required"
                       /> -->
-                    </div>
-                      <Textarea
-                          :label="'Address'"
-                          v-model="address"
-                          :rows="1"
-                          :cols="1"
-                          class="w-full"
-                          placeholder="Start typing..."
-                        />
-                 </div>
-               </template>
-               <template v-slot:misc>
-                 <info-icon class="fill-current text-primary"/>
-               </template>
-            </accordion-component>
-             <accordion-component title="Position"  :opened="false">
-                <template v-slot:default>
-                  <div class="w-full grid grid-cols-3 gap-4 mt-3">
-                    <cornie-input
-                      :readonly="true"
-                      :modelValue="longitude"
-                      label="Longitude"
-                      class="w-full"
-                      placeholder="--Enter--"
-                      :disabled="true"
-                    />
-                    <cornie-input
-                      :readonly="true"
-                      :modelValue="latitude"
-                      label="Latitude"
-                      placeholder="--Enter--"
-                      class="w-full"
-                       :disabled="true"
-                    />
-                    <cornie-input
-                      v-model="altitude"
-                      label="Altitude"
-                      placeholder="--Enter--"
-                      class="w-full"
-                    />
-                    <!-- <cornie-select
+                </div>
+                <Textarea
+                  :label="'Address'"
+                  v-model="address"
+                  :rows="1"
+                  :cols="1"
+                  class="w-full"
+                  placeholder="Start typing..."
+                />
+              </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
+          <accordion-component title="Position" :opened="false">
+            <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-4 mt-3">
+                <cornie-input
+                  :readonly="true"
+                  :modelValue="longitude"
+                  label="Longitude"
+                  class="w-full"
+                  placeholder="--Enter--"
+                  :disabled="true"
+                />
+                <cornie-input
+                  :readonly="true"
+                  :modelValue="latitude"
+                  label="Latitude"
+                  placeholder="--Enter--"
+                  class="w-full"
+                  :disabled="true"
+                />
+                <cornie-input
+                  v-model="altitude"
+                  label="Altitude"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
+                <!-- <cornie-select
                       :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
                       v-model="managingOrg"
                       label="Managing Organization"
@@ -173,69 +176,68 @@
                       v-model="partOf"
                       label="Part Of"
                     /> -->
-                  </div>
-                </template>
-                <template v-slot:misc>
-                 <info-icon class="fill-current text-primary"/>
-               </template>
-             </accordion-component>
-            <accordion-component title="Hours Of Operation" :opened="false">
-               <template v-slot:default>
-                 <div class="grid grid-cols-2 gap-4">
-                    <div class="mt-3 w-full">
-                      <operation-hours v-model="hoursOfOperation" />
-                    </div>
-                    <div class="w-full mt-16">
-                      <cornie-select
-                        :rules="required"
-                        required
-                        v-model="availabilityExceptions"
-                        :items="['X-MAS', 'SALAH']"
-                        label="Availability Exceptions"
-                        placeholder="--Select--"
-                        class="w-full"
-                      />
-                      <cornie-input
-                        :rules="required"
-                        required
-                        v-model="openTo"
-                        label="Open To"
-                        placeholder="--Enter--"
-                        class="w-full mb-3"
-                      />
-                      <cornie-select
-                        :rules="required"
-                        required
-                        v-model="careOptions"
-                        label="Care Options"
-                        :items="['dental', 'hospice']"
-                        placeholder="--Select--"
-                        class="w-full"
-                      />
-                    </div>
-                 </div>
-               </template>
-                <template v-slot:misc>
-                 <info-icon class="fill-current text-primary"/>
-               </template>
-            </accordion-component>
+              </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
+          <accordion-component title="Hours Of Operation" :opened="false">
+            <template v-slot:default>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="mt-3 w-full">
+                  <operation-hours v-model="hoursOfOperation" />
+                </div>
+                <div class="w-full mt-16">
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="availabilityExceptions"
+                    :items="['X-MAS', 'SALAH']"
+                    label="Availability Exceptions"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    :rules="required"
+                    required
+                    v-model="openTo"
+                    label="Open To"
+                    placeholder="--Enter--"
+                    class="w-full mb-3"
+                  />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="careOptions"
+                    label="Care Options"
+                    :items="['dental', 'hospice']"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
+                </div>
+              </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
 
-            <span class="flex w-full mb-5 mt-10 pb-10 justify-end">
-               <cornie-btn
-                 @click="$router.back()"
-                class="border-primary border-2 px-6 mr-3 rounded text-primary"
-              >
-                Cancel
-              </cornie-btn>
-              <cornie-btn
-                :loading="loading"
-                @click="submit"
-                class="text-white bg-danger px-6 rounded"
-              >
-                Save
-              </cornie-btn>
-            </span>
-         
+          <span class="flex w-full mb-5 mt-10 pb-10 justify-end">
+            <cornie-btn
+              @click="$router.back()"
+              class="border-primary border-2 px-6 mr-3 rounded text-primary"
+            >
+              Cancel
+            </cornie-btn>
+            <cornie-btn
+              :loading="loading"
+              @click="submit"
+              class="text-white bg-danger px-6 rounded"
+            >
+              Save
+            </cornie-btn>
+          </span>
         </div>
       </span>
     </div>
@@ -256,10 +258,9 @@ import { getCoordinates } from "@/plugins/utils";
 import { getCountries, getStates } from "@/plugins/nation-states";
 import AutoComplete from "@/components/autocomplete.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
-import InfoIcon from "@/components/icons/info.vue"
-import Textarea from "@/components/textarea.vue"
+import InfoIcon from "@/components/icons/info.vue";
+import Textarea from "@/components/textarea.vue";
 import FhirInput from "@/components/fhir-input.vue";
-
 
 const countries = getCountries();
 
@@ -418,7 +419,7 @@ export default class AddLocation extends Vue {
       );
       if (response.success) {
         window.notify({ msg: "Location Created", status: "success" });
-          this.$router.push("/dashboard/provider/settings/location");
+        this.$router.push("/dashboard/provider/settings/location");
       }
     } catch (error) {
       window.notify({ msg: "Location not Created", status: "error" });

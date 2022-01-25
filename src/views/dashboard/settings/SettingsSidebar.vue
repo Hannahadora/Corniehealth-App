@@ -143,9 +143,13 @@ export default class Settings extends Vue {
   open = 0;
   get organization() {
     return [
-      { name: "Organization Information", to: "org-info", icon: "org-icon" },
+      {
+        name: "Practice Information",
+        to: "practice-information",
+        icon: "org-icon",
+      },
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
-       { name: "KYC", to: "kyc", icon: "kyc-icon" },
+      { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
         name: "Location",
         to: "location",

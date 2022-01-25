@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex-col justify-cente"
-  >
+  <div class="flex-col justify-cente">
     <div class="container-fluid">
       <div class="w-full p-2">
         <span
@@ -239,7 +237,7 @@ export default class ExistingState extends Vue {
 .active-color {
   border-color: #fe4d3c;
   position: relative;
-    bottom: -3px;
+  bottom: -3px;
 }
 
 .status-active {

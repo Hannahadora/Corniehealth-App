@@ -46,8 +46,13 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/settings/devices/index.vue"),
     },
     {
-      path: "org-info",
-      name: "Organization Information",
+      path: "update-add-device/:id?",
+      name: "Add or Update Device",
+      component: () => import("@/views/dashboard/settings/devices/updatedevice.vue"),
+    },
+    {
+      path: "practice-information",
+      name: "Practice Information",
       component: () =>
         import(
           "@/views/dashboard/settings/OrganizationInformation/OrganizationInformation.vue"

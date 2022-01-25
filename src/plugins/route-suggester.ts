@@ -68,8 +68,8 @@ export class RouteSuggester {
 }
 const DEFAULT_ROUTES: Route[] = [
   {
-    path: "/dashboard/provider/settings/org-info",
-    name: "Organization Information",
+    path: "/dashboard/provider/settings/practice-information",
+    name: "Practice Information",
     position: 0,
   },
   {

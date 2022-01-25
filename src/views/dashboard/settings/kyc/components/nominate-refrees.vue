@@ -1,9 +1,9 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-4/12">
     <cornie-card height="100%" class="flex flex-col h-full bg-white">
-        <cornie-card-title class="">
-        <icon-btn @click="show = false" >
-          <arrow-left stroke="#ffffff"/>
+      <cornie-card-title class="">
+        <icon-btn @click="show = false">
+          <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full border-l-2 border-gray-300">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
@@ -17,13 +17,12 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-
         <div class="w-full my-4">
           <cornie-input
             :label="'Name'"
             v-model="name"
             style="width: 100%"
-              placeholder="--Enter--"
+            placeholder="--Enter--"
           />
         </div>
         <div class="w-full my-4">
@@ -43,9 +42,8 @@
             placeholder="--Enter--"
           />
         </div>
-
       </cornie-card-text>
-       <cornie-card>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
@@ -62,7 +60,6 @@
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
-
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -87,7 +84,7 @@ import { string, date } from "yup";
     CorniePhone,
     CornieInput,
     CornieDialog,
-    IconBtn
+    IconBtn,
   },
 })
 export default class NominateRefree extends Vue {
@@ -103,17 +100,17 @@ emailRule = string().email("A valid email is required").required();
   name="";
   email="";
   phone = {
-    dialCode:"+234",
-    number:""
-  }
-   get payload() {
+    dialCode: "+234",
+    number: "",
+  };
+  get payload() {
     return {
       name: this.name,
       email: this.email,
       phone: this.phone,
     };
   }
-  referee: any = {phone: {dialCode:"+234",number:""} };
+  referee: any = { phone: { dialCode: "+234", number: "" } };
 
   async submit() {
     this.loading = true;
@@ -121,7 +118,6 @@ emailRule = string().email("A valid email is required").required();
     else await this.newRefree();
     this.loading = false;
   }
-
 
   // onSave() {
   //   if (!this.referee?.name) return false;
@@ -138,8 +134,8 @@ async newRefree() {
     this.$emit('refree', this.payload);
       this.done();
   }
-  async onSave(){
-     try {
+  async onSave() {
+    try {
       const response = await cornieClient().post(
         `/api/v1/kyc/referee/${this.id}`,
         this.payload
@@ -148,7 +144,6 @@ async newRefree() {
         window.notify({ msg: "Refree added successfully,kindly check email", status: "success" });
           this.done();
       }
-
     } catch (error) {
       window.notify({ msg: "Referee not added", status: "error" });
     }

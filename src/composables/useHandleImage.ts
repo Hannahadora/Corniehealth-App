@@ -25,7 +25,7 @@ async function uploadImage(img: any): Promise<string> {
 
 export function useHandleImage(oldUrl = "") {
   const url = ref(oldUrl);
-  const placeholder = ref(require("@/assets/img/placeholder.png"));
+  const placeholder = ref(require("@/assets/img/avatar.svg"));
   const onChange = async (event: any) => {
     const imageFile = event.target.files[0];
     url.value = await uploadImage(imageFile);
