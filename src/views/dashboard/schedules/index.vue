@@ -1,14 +1,14 @@
 <template>
   <div class="w-full my-2 h-screen" style="height: fit-content">
     <div class="container-fluid bg-white sm:p-6 h-full">
-      <div class="w-full border-b-2 curved flex py-2 mt-4">
-        <div class="container-fluid flex font-semibold text-xl py-2">
+      <div class="w-full border-b-2 curved flex py-2">
+        <div class="container-fluid flex font-semibold text-lg py-2">
           <h2>Schedules & Slots</h2>
         </div>
       </div>
 
       <div class="w-full border-b-4 curved flex my-8">
-        <div class="container-fluid flex font-semibold text-xl">
+        <div class="container-fluid flex font-semibold text-sm">
           <a
             class="px-4 py-2 active-tab cursor-pointer"
             :class="{
@@ -111,7 +111,7 @@
               <router-link
                 :to="{ name: 'Patient Experience - New Schedule' }"
                 style="background: #fe4d3c"
-                class="text-lg bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-bold py-3 px-8 rounded-full"
+                class=" bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold text-sm py-3 px-8 rounded"
               >
                 New Schedule
               </router-link>
