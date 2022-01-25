@@ -503,11 +503,19 @@ import SelectedLocation, { IItem } from "./selected-location.vue";
 import ILocation from "@/types/ILocation";
 import IDevice from "@/types/IDevice";
 import ISchedule from "@/types/ISchedule";
+import { getWeekStart, printWeekday } from "@/plugins/utils";
+import group from "@/store/group";
+import IPractitioner from "@/types/IPractitioner";
 
 const practitionersStore = namespace("practitioner");
 const locationsStore = namespace("location");
 const devicesStore = namespace("devices");
 const visitsStore = namespace("visits");
+
+interface Time{
+  hour: number
+  minute: number
+}
 
 @Options({
   components: {
@@ -524,8 +532,115 @@ const visitsStore = namespace("visits");
 export default class Availability extends Vue {
   @Prop({ type: Object })
   items!: any;
-  @Prop({ type: Object })
-  schedules!: any;
+
+  @Prop({ type: Array })
+  schedules!: ISchedule[];
+
+
+  /// Start
+  
+  getWeekDates(start: Date) {
+    const dates: Date[] = [];
+    for (let i = 0; i < 7; i++) {
+      const current = start.getDate();
+      const date = new Date(start);
+      date.setDate(current + 1);
+      dates.push(date);
+    }
+    return dates;
+  }
+
+  headers() {
+    const now = new Date(); // sun jan 23, 2022 //
+    const start = getWeekStart(now)
+    const dates = this.getWeekDates(start);
+    return dates.map((date) => ({
+      key: printWeekday(date),
+      title: this.printDate(date),
+    }));
+  }
+
+
+  groupHourly(schedules: ISchedule[]){
+    const groups: {[state: number]: ISchedule[]} = {} 
+    schedules.forEach(schedule => {
+      const start = this.buildTime(schedule.startTime)
+      const end = this.buildTime(schedule.endTime)
+      const hours = this.getHoursBetween(start, end)
+      this.insertMatchingHours(groups, hours, schedule)
+    })
+    return groups
+  }
+
+  groupDaily(schedules: ISchedule[]){
+    const weekDays = new Map<string, IPractitioner[]>();
+    schedules.forEach((schedule) => {
+      this.insertWeekDays(weekDays, schedule);
+    });
+    const group: {[state: string]: IPractitioner[]} = {}
+    weekDays.forEach((value, key) => {
+      group[key] = value
+    })
+    return group
+  }
+
+  insertMatchingHours(groups: {[state: number]: ISchedule[]}, hours: number[], schedule: ISchedule){
+    hours.forEach(hour => {
+      const schedules = groups[hour] ?? []
+      schedules.push(schedule)
+    })
+  }
+  buildTime(time: string){
+    const [hour, min, ...rest] = time.split(":")
+    return {
+      hour: Number(hour),
+      minute: Number(min)
+    }
+  }
+  getHoursBetween(start: Time, end: Time){
+    const hours = []
+    for (let i = start.hour; i < end.hour; i++) {
+      hours.push(i)
+    }
+    if(end.minute) hours.push(end.hour + 1)
+    return hours
+  }
+  pad(x: number) {
+  if (x < 10) return `0${x}:00`;
+  return `${x}:00`;
+};
+
+  _items() {
+    const schedules = this.schedules || []
+    const hourly = this.groupHourly(schedules)
+    const items: {range: any, [state: string]: IPractitioner[] }[] = []
+    return Object.entries(hourly).map(([key, value]) => {
+      const item = this.groupDaily(value)
+      items.push({...item, range: this.printRange(Number(key)) as any})
+    })
+  } 
+
+
+  printRange(start: number){
+    const min = this.pad(start)
+    const max = this.pad(start + 1)
+    return `${min}-${max}`
+  }
+  
+  insertWeekDays(map: Map<string, IPractitioner[]>, schedule: ISchedule) {
+    const { days } = schedule;
+    days.forEach((day) => {
+      const _practitioners = map.get(day) ?? []
+      const practitioners = schedule.practitioners ?? []
+      map.set(day, [...practitioners, ..._practitioners]);
+    });
+  }
+  
+  printDate(date: Date) {
+    return "sun jan 23, 2022";
+  }
+
+  //// End
 
   @practitionersStore.Action
   fetchPractitioners!: () => Promise<void>;
@@ -565,6 +680,11 @@ export default class Availability extends Vue {
     return practitioner;
   }
 
+  getFirstDayOfWeek(date: Date) {
+    return new Date(
+      new Date().setDate(date.getDate() - ((new Date().getDay() + 6) % 6))
+    );
+  }
   get availabilityDates() {
     let arr = [];
     for (let i = 0; i < 7; i++) {

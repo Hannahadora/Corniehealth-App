@@ -107,3 +107,29 @@ function printTitle(designation: string) {
     return designation;
   }
 }
+
+function addDays(date: Date, days: number) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + days);
+  return newDate;
+}
+
+export function getWeekStart(date: Date) {
+  const day = date.getDay();
+  const weekStart = addDays(date, -day);
+  return weekStart;
+}
+
+export function printWeekday(date: Date) {
+  const map: any = {
+    1: "monday",
+    2: "tuesday",
+    3: "wednesday",
+    4: "thursday",
+    5: "friday",
+    6: "saturday",
+    7: "sunday",
+  };
+  const day = date.getDay();
+  return map[day];
+}
