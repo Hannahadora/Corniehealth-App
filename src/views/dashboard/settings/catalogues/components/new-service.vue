@@ -1,404 +1,396 @@
 <template>
   <div class="container-fluid p-4 bg-white">
     <div class="w-full">
-      <div class="w-full" style="border-bottom: 1px solid #c2c7d6">
+      <!-- <div class="w-full" style="border-bottom: 1px solid #c2c7d6">
         <span
           class="flex flex-col w-full justify-center font-bold text-xl text-primary py-2"
         >
           New Service
         </span>
-        <!-- <registration-chart class="w-full" :height="100" /> -->
-      </div>
+      </div> -->
 
-      <div class="w-full py-5">
-        <span class="flex items-center">
-          <cornie-avatar-field v-model="img.url" />
-        </span>
-      </div>
-
-      <div class="w-full grid grid-cols-3 gap-4">
-        <fhir-input
-          reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
-          class="w-full"
-          v-model="specialty"
-          label="Specialty"
-          placeholder="--Select--"
-        />
-        <fhir-input
-          reference="http://hl7.org/fhir/ValueSet/service-category"
-          class="w-full"
-          v-model="category"
-          label="category"
-          placeholder="--Select--"
-        />
-        <fhir-input
-          reference="http://hl7.org/fhir/ValueSet/service-type"
-          class="w-full"
-          v-model="type"
-          label="type"
-          placeholder="--Select--"
-        />
-        <cornie-input
-          :label="'Service Name'"
-          v-model="name"
-          placeholder="--Enter--"
-        />
-        <cornie-input
-          v-model="description"
-          :label="'Description'"
-          placeholder="--Enter--"
-        />
-        <cornie-input
-          :label="'Item Code'"
-          v-model="itemCode"
-          placeholder="--DNS Generated--"
-          :disabled="true"
-        />
+      <accordion-component title="New Service" class="text-primary capitalize" :opened="true">
+         <template v-slot:default>
         <div>
-          <span class="text-sm font-semibold mb-2">Locations</span>
-          <Multiselect
-            v-model="locations"
-            mode="tags"
-            :hide-selected="false"
-            :close-on-select="true"
-            id="field-id"
-            :options="allLocation"
-            value-prop="code"
-            label="label"
-            :before="'Location'"
-            placeholder="--Select--"
-            class="w-full"
-          >
-            <template v-slot:tag="{ option, handleTagRemove, disabled }">
-              <div class="multiselect-tag is-user">
-                {{ option.display }}
-                <span
-                  v-if="!disabled"
-                  class="multiselect-tag-remove"
-                  @mousedown.prevent="handleTagRemove(option, $event)"
-                >
-                  <span class="multiselect-tag-remove-icon"></span>
-                </span>
-              </div>
-            </template>
-            <template v-slot:option="{ option }">
-              <span class="w-full text-sm">{{ option.display }}</span>
-            </template>
-          </Multiselect>
-        </div>
+          <div class="w-full py-5">
+            <span class="flex items-center">
+              <cornie-avatar-field v-model="img.url" />
+            </span>
+          </div>
 
-        <cornie-select
-          :items="allLocation"
-          v-model="coverageArea"
-          label="Coverage area"
-          class="w-full"
-          placeholder="--Select--"
-        />
+          <div class="w-full grid grid-cols-3 gap-4">
+              <fhir-input          
+                  reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
+                  class="w-full"
+                  v-model="specialty"
+                  label="Specialty"
+                  placeholder="--Select--"
+                />
+                <fhir-input         
+                    reference="http://hl7.org/fhir/ValueSet/service-category"
+                    class="w-full"
+                    v-model="category"
+                    label="category"
+                      placeholder="--Select--"
+                  />
+                  <fhir-input
+                        reference="http://hl7.org/fhir/ValueSet/service-type"
+                        class="w-full"
+                        v-model="type"
+                        label="type"
+                        placeholder="--Select--"
+                    />
+                    <cornie-input :label="'Service Name'" v-model="name" placeholder="--Enter--" />
+                    <cornie-input v-model="description" :label="'Description'" placeholder="--Enter--" />
+                    <cornie-input
+                      :label="'Item Code'"
+                      v-model="itemCode"
+                      placeholder="--DNS Generated--"
+                      :disabled="true"
+                    />
+                      <div>
+                          <span class="text-sm font-semibold mb-2">Locations</span>
+                          <Multiselect
+                            v-model="locations"
+                            mode="tags"
+                            :hide-selected="false"
+                            :close-on-select="true"
+                            id="field-id"
+                            :options="allLocation"
+                            value-prop="code"
+                            label="label"
+                            :before="'Location'"
+                            placeholder="--Select--"
+                            class="w-full"
+                          >
+                        <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                          <div class="multiselect-tag is-user">
+                            {{ option.display }}
+                            <span
+                              v-if="!disabled"
+                              class="multiselect-tag-remove"
+                              @mousedown.prevent="handleTagRemove(option, $event)"
+                            >
+                              <span class="multiselect-tag-remove-icon"></span>
+                            </span>
+                          </div>
+                        </template>
+                        <template v-slot:option="{ option }">
+                          <span class="w-full text-sm">{{ option.display }}</span>
+                        </template>
+                          </Multiselect>
+                        </div>
+                      
+                      <cornie-select
+                          :items="allLocation"
+                          v-model="coverageArea"
+                          label="Coverage area"
+                          class="w-full"
+                          placeholder="--Select--"
+                        />
+                      
+                        <cornie-select  
+                        :items="['active','inactive','entered-in-error']"
+                          v-model="status"
+                          label="Status"
+                          class="w-full"
+                          placeholder="--Select--"
+                      />
+                      <cornie-select
+                          :items="['providers']"
+                          v-model="providedBy"
+                          label="Provided by"
+                          class="w-full"
+                          placeholder="--Select--"
+                        />
+                        <combo-input :label="'Unit of Service'">
+                          <template #list>
+                            <cornie-select
+                              v-model="serviceUOM"
+                              :items="['minutes','hours','sessions']"
+                              style="width: 100%; border-radius: 8px 0 0 8px"
+                              placeholder="--Select--"
+                            />
+                          </template>
+                          <template #input>
+                            <input-with-desc>
+                              <input
+                                type="text"
+                                class="p-2 border w-100 w-full"
+                                style="border-radius: 0 8px 8px 0"
+                              value="0"
+                              />
+                            </input-with-desc>
+                          </template>
+                        </combo-input>
+                        <cornie-input v-model="cost" :label="'Cost Per Unit'" placeholder="--Enter--" />
+                        <div class="w-full">
+                          <span class="text-dark font-semibold capitalize text-sm mb-5">Priced</span>
+                          <div class="w-full flex space-x-4 mt-4">
+                            <cornie-radio
+                                v-model="priced"
+                                :label="'Yes'"
+                                :value="true"
+                                name="status"
+                                checked
+                            />
+                            <cornie-radio
+                                  v-model="priced"
+                                  :label="'No'"
+                                  :value="false"
+                                  name="status"
+                              />
 
-        <cornie-select
-          :items="['active', 'inactive', 'entered-in-error']"
-          v-model="status"
-          label="Status"
-          class="w-full"
-          placeholder="--Select--"
-        />
-        <cornie-select
-          :items="['providers']"
-          v-model="providedBy"
-          label="Provided by"
-          class="w-full"
-          placeholder="--Select--"
-        />
-        <combo-input :label="'Unit of Service'">
-          <template #list>
-            <cornie-select
-              v-model="serviceUOM"
-              :items="['minutes', 'hours', 'sessions']"
-              style="width: 100%; border-radius: 8px 0 0 8px"
-              placeholder="--Select--"
-            />
-          </template>
-          <template #input>
-            <input-with-desc>
-              <input
-                type="text"
-                class="p-2 border w-100 w-full"
-                style="border-radius: 0 8px 8px 0"
-                value="0"
+                          </div>
+                        </div>
+                        <div class="w-full">
+                          <span class="text-dark font-semibold capitalize text-sm mb-3">Discount Applicable?</span>
+                          <div class="w-full flex space-x-4 mt-4">
+                            <cornie-radio
+                                v-model="reqBody.ingredientStatus"
+                                :label="'Yes'"
+                                :value="'yes'"
+                                name="newstatus"
+                                checked
+                            />
+                            <cornie-radio
+                                  v-model="reqBody.ingredientStatus"
+                                  :label="'No'"
+                                  :value="'no'"
+                                  name="newstatus"
+                              />
+
+                          </div>
+                        </div>
+            <!-- <div class="w-4/12">
+              <service-dropdown
+                @add="() => (addNew = true)"
+                v-model="reqBody.name"
+                :label="'Service Name'"
+                :items="[
+                  'Specialist Consultation',
+                  'General Consultation',
+                  'Biopsy',
+                ]"
               />
-            </input-with-desc>
-          </template>
-        </combo-input>
-        <cornie-input
-          v-model="cost"
-          :label="'Cost Per Unit'"
-          placeholder="--Enter--"
-        />
-        <div class="w-full">
-          <span class="text-dark font-semibold capitalize text-sm mb-5"
-            >Priced</span
-          >
-          <div class="w-full flex space-x-4 mt-4">
-            <cornie-radio
-              v-model="priced"
-              :label="'Yes'"
-              :value="true"
-              name="status"
-              checked
-            />
-            <cornie-radio
-              v-model="priced"
-              :label="'No'"
-              :value="false"
-              name="status"
-            />
+            </div> -->
           </div>
         </div>
-        <div class="w-full">
-          <span class="text-dark font-semibold capitalize text-sm mb-3"
-            >Discount Applicable?</span
-          >
-          <div class="w-full flex space-x-4 mt-4">
-            <cornie-radio
-              v-model="reqBody.ingredientStatus"
-              :label="'Yes'"
-              :value="'yes'"
-              name="newstatus"
-              checked
-            />
-            <cornie-radio
-              v-model="reqBody.ingredientStatus"
-              :label="'No'"
-              :value="'no'"
-              name="newstatus"
-            />
-          </div>
-        </div>
-        <!-- <div class="w-4/12">
-          <service-dropdown
-            @add="() => (addNew = true)"
-            v-model="reqBody.name"
-            :label="'Service Name'"
-            :items="[
-              'Specialist Consultation',
-              'General Consultation',
-              'Biopsy',
-            ]"
-          />
-        </div> -->
-      </div>
+         </template>
+      </accordion-component>
 
-      <div class="w-full py-4">
-        <p class="sub-headers">Fee Information</p>
-      </div>
+     <accordion-component title="Fee Information" class="text-primary capitalize" :opened="true">
+         <template v-slot:default>
+          <div class="mt-5">
 
-      <div class="w-full grid grid-cols-3 gap-4">
-        <cornie-input
-          v-model.number="cost"
-          :label="'Service Cost (NGN)'"
-          placeholder="--Enter--"
-          :disabled="true"
-        />
-        <cornie-input
-          :label="'Fee Markup'"
-          v-model.number="markup"
-          :disabled="true"
-          placeholder="--Autoloaded--"
-        />
-        <cornie-input
-          :label="'Discount Limit'"
-          placeholder="--Autoloaded--"
-          v-model="discountLimit"
-          :disabled="true"
-        />
-      </div>
-
-      <div class="w-full mb-8 mt-3 py-4">
-        <div class="w-full overflow-x-scroll">
-          <div class="w-full flex ths py-2" style="min-width: 1220px">
-            <div class="th flex items-center">
-              <span>unit of Service</span>
-            </div>
-            <div class="th flex items-center hidden">
-              <span>QTY</span>
-            </div>
-            <div class="th flex items-center">
-              <span>service cost</span>
-            </div>
-            <div class="th flex items-center">
-              <span>Fee markup</span>
-            </div>
-            <div class="th flex items-center">
-              <span>Service fee</span>
-            </div>
-            <div class="th flex items-center">
-              <span>margin (ngn)</span>
-            </div>
-            <div class="th flex items-center">
-              <span>margin (%)</span>
-            </div>
-            <div class="th flex items-center">
-              <span>discount limit</span>
-            </div>
-            <div class="th flex items-center">
-              <span>Service fee (discounted)</span>
-            </div>
-            <div class="th flex items-center">
-              <span>DISCOUNTED margin (ngn)</span>
-            </div>
-            <div class="th flex items-center">
-              <span>DISCOUNTED margin(%)</span>
-            </div>
-          </div>
-          <div class="w-full flex tbs py-3 px-3 mb-3" style="min-width: 1220px">
-            <div class="th flex items-center">
-              <span>{{ serviceUOM }}</span>
-            </div>
-            <div class="th flex items-center hidden">
-              <span>1</span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.sampleUnitCost }}</span>
-            </div>
-            <div class="th flex items-center">
-              <span><cornie-input v-model="markup" palceholder="100%" /></span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.cdmPrice }}</span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.margin }}</span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.marginPercentage }}</span>
-            </div>
-            <div class="th flex items-center">
-              <span
-                ><cornie-input v-model="discountLimit" palceholder="0%"
-              /></span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.maxAllowedDiscount }}</span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.discountedMargin }}</span>
-            </div>
-            <div class="th flex items-center">
-              <span>{{ markupData.discountedMarginPercentage }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="w-full py-4">
-        <p class="sub-headers">Tax Information</p>
-      </div>
-
-      <div class="w-full">
-        <div class="w-full flex">
-          <label class="inline-flex items-center">
-            <input
-              v-model="applyVat"
-              type="checkbox"
-              class="form-radio h-3 w-3"
-              :value="true"
-            />
-            <span class="ml-2 noraml-text text-sm font-normal"
-              >Apply VAT to this service item</span
-            >
-          </label>
-        </div>
-      </div>
-
-      <div class="w-full grid grid-cols-2 gap-4 mt-5">
-        <div class="mt-3 w-full">
-          <operation-hours v-model="availableTimes" />
-        </div>
-        <div>
-          <fhir-input
-            reference="http://hl7.org/fhir/ValueSet/service-referral-method"
-            class="w-full mb-5"
-            v-model="referralMethod"
-            label="referral method"
-            placeholder="--Select--"
-          />
-          <div class="w-full mb-8">
-            <span class="text-dark capitalize font-semibold text-sm mb-3"
-              >appointment required?</span
-            >
-            <div class="w-full flex space-x-4 mt-4">
-              <cornie-radio
-                v-model="requiresAppointment"
-                :label="'Yes'"
-                :value="true"
-                name="required"
-                checked
-              />
-              <cornie-radio
-                v-model="requiresAppointment"
-                :label="'No'"
-                :value="false"
-                name="required"
-              />
-            </div>
-          </div>
-          <div>
-            <span class="text-sm font-semibold capitalize mb-2"
-              >Availability Exceptions</span
-            >
-            <Multiselect
-              v-model="availabilityExceptions"
-              mode="tags"
-              :hide-selected="false"
-              :close-on-select="true"
-              id="value"
-              :options="options"
-              value-prop="value"
-              label="label"
-              :before="'Location'"
-              placeholder="--Select--"
-              class="w-full"
-            >
-              <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                <div class="multiselect-tag is-user">
-                  {{ option.label }}
-                  <span
-                    v-if="!disabled"
-                    class="multiselect-tag-remove"
-                    @mousedown.prevent="handleTagRemove(option, $event)"
-                  >
-                    <span class="multiselect-tag-remove-icon"></span>
-                  </span>
-                </div>
-              </template>
-              <template v-slot:option="{ option }">
-                <span class="w-full text-sm">{{ option.label }}</span>
-              </template>
-            </Multiselect>
-          </div>
-
-          <!-- <cornie-input
-                v-model="availabilityExceptions"
-                label="availability exceptions"
+            <div class="w-full grid grid-cols-3 gap-4">
+                <cornie-input
+                  v-model.number="cost"
+                  :label="'Service Cost (NGN)'"
                   placeholder="--Enter--"
-                  class="w-full mb-8"
-              /> -->
-          <cornie-select
-            v-model="channelOfService"
-            label="Channel of Service"
-            :items="['dental', 'hospice']"
-            placeholder="--Select--"
-            class="w-full mb-5"
-          />
-          <cornie-select
-            :items="dropdown.CommunicationLanguage"
-            v-model="telecom"
-            label="Telecom"
-            placeholder="--Select--"
-            class="w-full"
-          />
+                  :disabled="true"
+                />
+                <cornie-input :label="'Fee Markup'"  v-model.number="markup" :disabled="true" placeholder="--Autoloaded--" />
+                  <cornie-input
+                    :label="'Discount Limit'"
+                    placeholder="--Autoloaded--"
+                    v-model="discountLimit"
+                    :disabled="true"
+                  />
+
+            </div>
+
+            <div class="w-full mb-8 mt-3 py-4">
+              <div class="w-full overflow-x-scroll">
+                <div class="w-full flex ths py-2" style="min-width: 1220px">
+                  <div class="th flex items-center">
+                    <span>unit of Service</span>
+                  </div>
+                  <div class="th flex items-center hidden">
+                    <span>QTY</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>service cost</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>Fee markup</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>Service fee</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>margin (ngn)</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>margin (%)</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>discount limit</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>Service fee (discounted)</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>DISCOUNTED margin (ngn)</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>DISCOUNTED margin(%)</span>
+                  </div>
+                </div>
+                <div class="w-full flex tbs py-3 px-3 mb-3" style="min-width: 1220px">
+                  <div class="th flex items-center">
+                    <span>{{serviceUOM}}</span>
+                  </div>
+                  <div class="th flex items-center hidden">
+                    <span>1</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.sampleUnitCost}}</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span><cornie-input v-model="markup" palceholder="100%" /></span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.cdmPrice}}</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.margin}}</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.marginPercentage}}</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span><cornie-input v-model="discountLimit" palceholder="0%"/></span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.maxAllowedDiscount}}</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.discountedMargin}}</span>
+                  </div>
+                  <div class="th flex items-center">
+                    <span>{{markupData.discountedMarginPercentage}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         </template>
+     </accordion-component>
+
+    <accordion-component title="Tax Information" class="text-primary capitalize" :opened="true">
+         <template v-slot:default>
+        <div class="w-full mt-5">
+          <div class="w-full flex">
+            <label class="inline-flex items-center">
+              <input
+                v-model="applyVat"
+                type="checkbox"
+                class="form-radio h-3 w-3"
+                :value="true"
+              />
+              <span class="ml-2 noraml-text text-sm font-normal"
+                >Apply VAT to this service item</span
+              >
+            </label>
+          </div>
         </div>
-      </div>
+
+        <div class="w-full grid grid-cols-3 gap-4 mt-5">
+        
+            <div>
+
+            <fhir-input            
+                reference="http://hl7.org/fhir/ValueSet/service-referral-method"
+                class="w-full mb-5"
+                v-model="referralMethod"
+                label="referral method"
+                placeholder="--Select--"
+              />
+              <div class="w-full mb-8">
+                  <span class="text-dark capitalize font-semibold text-sm mb-3">appointment required?</span>
+                  <div class="w-full flex space-x-4 mt-4">
+                    <cornie-radio
+                        v-model="requiresAppointment"
+                        :label="'Yes'"
+                        :value="true"
+                        name="required"
+                        checked
+                    />
+                    <cornie-radio
+                          v-model="requiresAppointment"
+                          :label="'No'"
+                          :value="false"
+                          name="required"
+                      />
+
+                  </div>
+              </div>
+              <div>
+                    <span class="text-sm font-semibold capitalize mb-2">Availability Exceptions</span>
+                        <Multiselect
+                          v-model="availabilityExceptions"
+                          mode="tags"
+                          :hide-selected="false"
+                          :close-on-select="true"
+                          id="value"
+                          :options="options"
+                          value-prop="value"
+                          label="label"
+                          :before="'Location'"
+                          placeholder="--Select--"
+                          class="w-full"
+                        >
+                        <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                        <div class="multiselect-tag is-user">
+                          {{ option.label }}
+                          <span
+                            v-if="!disabled"
+                            class="multiselect-tag-remove"
+                            @mousedown.prevent="handleTagRemove(option, $event)"
+                          >
+                            <span class="multiselect-tag-remove-icon"></span>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-slot:option="{ option }">
+                        <span class="w-full text-sm">{{ option.label }}</span>
+                      </template>
+                        </Multiselect>
+              </div>
+                    
+                <!-- <cornie-input
+                  v-model="availabilityExceptions"
+                  label="availability exceptions"
+                    placeholder="--Enter--"
+                    class="w-full mb-8"
+                /> -->
+                <cornie-select           
+                  v-model="channelOfService"
+                  label="Channel of Service"
+                  :items="['dental', 'hospice']"
+                    placeholder="--Select--"
+                    class="w-full mb-5"
+                />
+                <cornie-select
+                    :items="dropdown.CommunicationLanguage"
+                    v-model="telecom"
+                    label="Telecom"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
+            </div>
+        </div>
+         </template>
+    </accordion-component>
+
+        <accordion-component title="Availability" class="text-primary capitalize" :opened="true">
+         <template v-slot:default>
+          <div class="mt-5 w-full">
+              <operation-hours v-model="availableTimes" />
+            </div>
+         </template>
+        </accordion-component>
       <div class="w-full">
         <span class="w-full bg-danger">
           <span class="flex justify-end w-full my-5">
@@ -473,6 +465,7 @@ import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarFiel
 import { useHandleImage } from "@/composables/useHandleImage";
 import CornieSelect from "@/components/cornieselect.vue";
 import { cornieClient } from "@/plugins/http";
+import AccordionComponent from "@/components/form-accordion.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import ComboInput from "@/views/dashboard/ehr/vitals/components/split-input.vue";
 import CornieCheckbox from "@/components/corniecheckbox.vue";
@@ -499,6 +492,7 @@ const markup = namespace("markup");
   components: {
     CornieAvatarField,
     CornieSelect,
+    AccordionComponent,
     CornieInput,
     ComboInput,
     CornieCheckbox,
@@ -537,7 +531,7 @@ export default class NwService extends Vue {
   markups!: any[];
 
   @markup.Action
-  fetchMarkups!: (practitionerId: string) => Promise<void>;
+  fetchMarkups!: () => Promise<void>;
 
   options = [
     { value: "holidays", label: "Holidays" },

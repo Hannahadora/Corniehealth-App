@@ -5,10 +5,10 @@
     Markup & Discount
   </span>
 
-  <div class="w-full py-4 flex justify-end" v-if="tableData.length">
+  <div class="w-full py-4 flex justify-end" v-if="markups.length > 0">
     <button
-      class="bg-danger text-base font-bold rounded-full text-white py-2 px-24"
-      @click="$router.push('/dashboard/provider/settings/markup-settings')"
+      class="bg-danger text-base font-bold rounded text-white py-2 px-24"
+      @click="$router.push(`/dashboard/provider/settings/markup-settings/${markupId}`)"
     >
       Edit
     </button>
@@ -16,7 +16,7 @@
 
   <div
     class="flex items-center flex-col justify-center h-full gap-8"
-    v-if="!tableData.length"
+    v-if="!markups.length"
   >
     <img src="@/assets/img/bro.png" />
     <span class="text-center">
@@ -33,7 +33,8 @@
   </div>
 
   <div v-else>
-    <cornie-table v-model="items" :columns="headers"> </cornie-table>
+    <cornie-table :columns="headers" v-model="items" :check="false">
+    </cornie-table>
 
     <div class="flex flex-col gap-4 mt-8">
       <span class="font-bold text-sm text-jet_black"
@@ -43,14 +44,14 @@
         <cornie-radio
           name="confirm"
           :value="true"
-          v-model="tableData.locationAdminsCanSetForLocations"
+          v-model="markups.locationAdminsCanSetForLocations"
           checked
           label="Yes"
         />
         <cornie-radio
           name="confirm"
           :value="false"
-          v-model="tableData.locationAdminsCanSetForLocations"
+          v-model="markups.locationAdminsCanSetForLocations"
           label="No"
         />
       </div>
@@ -64,8 +65,10 @@ import CornieRadio from "@/components/cornieradio.vue";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import { Options, Vue } from "vue-class-component";
+import search from "@/plugins/search";
 
 const user = namespace("user");
+const markup = namespace("markup");
 
 @Options({
   name: "mark ",
@@ -79,7 +82,16 @@ export default class ExistingState extends Vue {
   @user.Getter
   cornieUser!: any;
 
-  tableData = [];
+   @markup.State
+  markups!: any[];
+
+
+  @markup.Action
+  fetchMarkups!: () => Promise<void>;
+
+  query = "";
+  markupId = "";
+
 
   headers = [
     {
@@ -129,24 +141,22 @@ export default class ExistingState extends Vue {
     },
   ];
 
-  async fetchClinicalImpressions() {
-    try {
-      const { data } = await cornieClient().get(
-        `/api/v1/markup-discount/findAllByOrgId/${this.cornieUser.organizationId}`
-      );
+ get items() {
+    const markups = this.markups.map((markup) => {
+      const markupId = markup.id;
+      this.markupId = markupId;
+      return {
+        ...markup,
 
-      this.tableData = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching mark details",
-        status: "error",
-      });
-    }
+      };
+    });
+    if (!this.query) return markups;
+    return search.searchObjectArray(markups, this.query);
   }
 
-  created() {
-    console.log(this?.cornieUser?.organizationId);
-    this.fetchClinicalImpressions();
+
+ async created() {
+   await this.fetchMarkups();
   }
 }
 </script>

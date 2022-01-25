@@ -165,7 +165,7 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/medications/markup/index.vue"),
     },
     {
-      path: "markup-settings",
+      path: "markup-settings/:id?",
       props: true,
       name: "Markup Settings",
       component: () =>
@@ -185,8 +185,8 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/kyc/components/email-link.vue"),
     },
     {
-      path: "catalogues",
-      name: "Catalogues",
+      path: "charge-description-master",
+      name: "Charge Description Master",
       component: () =>
         import("@/views/dashboard/settings/catalogues/index.vue"),
     },

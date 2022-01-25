@@ -3,7 +3,7 @@ import IKycref  from "./IKycref";
 
 export default interface IKyc {
   id?: string;
-  practiceRegister: boolean;
+  practiceRegister: true;
   incoporatedName: string;
   rcNumber: string;
   certificateOfIncoporation: string;
