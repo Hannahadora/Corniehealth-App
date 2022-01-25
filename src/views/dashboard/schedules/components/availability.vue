@@ -524,9 +524,58 @@ const visitsStore = namespace("visits");
 export default class Availability extends Vue {
   @Prop({ type: Object })
   items!: any;
-  @Prop({ type: Object })
-  schedules!: any;
 
+  @Prop({ type: Array })
+  schedules!: ISchedule[];
+
+  getWeekDates(start: Date) {
+    const dates: Date[] = [];
+    for (let i = 0; i < 7; i++) {
+      const current = start.getDate();
+      const date = new Date(start);
+      date.setDate(current + 1);
+      dates.push(date);
+    }
+    return dates;
+  }
+
+  headers() {
+    const start = new Date(); // sun jan 23, 2022 //
+    const dates = this.getWeekDates(start);
+    return dates.map((date) => ({
+      key: "sunday",
+      title: this.printDate(date),
+    }));
+  }
+
+  _items() {
+    const weekDays = new Map();
+    this.schedules.forEach((schedule) => {
+      this.insertWeekDays(weekDays, schedule);
+    });
+    const items: any = [];
+    weekDays.forEach((key, value) => {
+      const item = {
+        [key]: [key],
+        practitioners: value?.length ? value : "--",
+      };
+      items.push(item);
+    });
+    return items;
+  }
+
+  insertWeekDays(map: Map<string, any>, schedule: ISchedule) {
+    const { days } = schedule;
+    days.forEach((day) => {
+      map.set(day, schedule.practitioners);
+    });
+  }
+  getWeekDay(date: Date) {
+    return "sunday";
+  }
+  printDate(date: Date) {
+    return "sun jan 23, 2022";
+  }
   @practitionersStore.Action
   fetchPractitioners!: () => Promise<void>;
 
@@ -565,6 +614,11 @@ export default class Availability extends Vue {
     return practitioner;
   }
 
+  getFirstDayOfWeek(date: Date) {
+    return new Date(
+      new Date().setDate(date.getDate() - ((new Date().getDay() + 6) % 6))
+    );
+  }
   get availabilityDates() {
     let arr = [];
     for (let i = 0; i < 7; i++) {
