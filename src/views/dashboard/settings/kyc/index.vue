@@ -71,59 +71,9 @@
         </accordion-component>
       </div>
 
-      <div class="w-full my-6">
-        <accordion-component
-          v-if="orgKyc.particularOfDirectors?.length > 0"
-          :title="'Particulars of Directors'"
-          :opened="true"
-          @add="addDirector"
-          :height="480"
-          :add="true"
-          :buttonText="'Select existing director'"
-        >
-          <template v-slot:default>
-            <div class="w-full pb-6">
-              <accordion-component
-                :editabetitle="'Director' + ' ' + [index + 1]"
-                v-for="(director, index) in particularOfDirectors"
-                :key="index"
-                :height="480"
-                :opened="true"
-                class="w-full"
-              >
-                <template v-slot:default>
-                  <div class="w-full grid grid-cols-3 gap-4 mt-5 pb-8">
-                    <cornie-input
-                      v-model="director.fullName"
-                      :label="'Full Name'"
-                      placeholder="--Enter--"
-                    />
-                    <date-picker
-                      v-model="director.dateOfBirth"
-                      :label="'Date of Birth'"
-                      placeholder="--Enter--"
-                    />
-                    <cornie-select
-                      v-model="director.nationality"
-                      :label="'Nationality'"
-                      :items="nationState.countries"
-                      placeholder="--Select--"
-                      class="w-full"
-                    />
-                    <cornie-input
-                      v-model="director.emailAddress"
-                      :label="'Email Address'"
-                      :rules="requiredEmail"
-                      placeholder="--Enter--"
-                  />
-              </div>
-            </template>
-          </accordion-component>
-        </div>
-
         <div class="w-full my-6">
           <accordion-component
-          v-if="orgKyc.particularOfDirectors?.length > 0"
+            v-if="orgKyc.particularOfDirectors?.length > 0"
             :title="'Particulars of Directors'"
             :opened="true"
             @add="addDirector"
@@ -163,18 +113,16 @@
                         />
                         <cornie-input
                           v-model="director.emailAddress"
-                          
                           :label="'Email Address'"
                             placeholder="--Enter--"
                             :rules="emailRule"
                         />
-                          <!-- <phone-input
-                           
-                             :modelValue="director.phoneNumber.number"
-                            @input="director.phoneNumber.number = $event.target.value"
+                           <phone-input
+                            v-model="director.phoneNumber.number"
+                            v-model:code="director.phoneNumber.dialCode"
                             :label="'Phone Number'"
                               placeholder="--Enter--"
-                          /> -->
+                          />
                     <cornie-input
                       :label="'Tax Identification Number'"
                       v-model="director.taxIdentificationNumber"
@@ -425,7 +373,8 @@
         </accordion-component>
       </div>
 
-      <div class="w-full my-6" v-if="practiceRegister == true">
+
+        <div class="w-full my-6" v-if="practiceRegister == true">
         <accordion-component
           :title="'Beneficial Owners'"
           :showAddExisting="true"
@@ -433,22 +382,20 @@
           @add="() => (addOwner = true)"
           :add="true"
           :expandsection="true"
-          :height="owners?.length <= 0 ? 45 : 52 * owners?.length + 40"
+          :height="newowner?.length <= 0 ? 45 : 52 * newowner?.length + 40"
         >
-          <accordion-component
-            :title="'Beneficial Owners'"
-            :showAddExisting="true"
-            :opened="true"
-            @add="() => (addOwner = true)"
-            :add="true"
-            :expandsection="true"
-            :height="newowner?.length <= 0 ? 45 : 52 * newowner?.length + 40"
-          >
-            <template  v-slot:default>
+          <template v-slot:default>
+            <div
+              class="w-full flex"
+              v-for="(owner, index) in newowner"
+              :key="index"
+            >
+              <div class="w-4/12 py-3 px-2" style="border: 1px solid #c2c7d6">
+                <span class="normal-text">{{ owner?.name }}</span>
+              </div>
               <div
-                class="w-full flex"
-                v-for="(owner, index) in newowner"
-                :key="index"
+                class="w-4/12 py-3 px-2 flex justify-end"
+                style="border: 1px solid #c2c7d6"
               >
                 {{ owner.percentage }}%
               </div>
@@ -465,6 +412,9 @@
         </accordion-component>
       </div>
 
+
+    
+
         <div class="w-full my-6">
           <accordion-component
           v-if="orgkycId"
@@ -476,7 +426,12 @@
             :expandsection="true"
             :showAdd="true"
           >
-            <template  v-slot:default>
+            <template v-slot:default>
+            <div
+              class="w-full flex"
+              v-for="(nominee, index) in orgKyc.referees"
+              :key="index"
+            >
               <div
                 class="py-3 px-2"
                 style="border: 1px solid #c2c7d6; width: 30%"
@@ -584,8 +539,18 @@
                   </div>
                 </div>
               </div>
-            </template>
+              <div
+                class="py-3 px-2 flex justify-end cursor-pointer"
+                @click="deleteItem(nominee.id)"
+                style="border: 1px solid #c2c7d6; width: 10%"
+              >
+                <span><delete-icon /></span>
+                <span class="text-sm font-normal mx-2">Delete</span>
+              </div>
+            </div>
+          </template>
           </accordion-component>
+
            <accordion-component
            v-else
             :title="'Nominate Referees'"
@@ -711,17 +676,8 @@
           </cornie-button>
         </div>
 
-        <cornie-button
-          @click="submit"
-          :loading="loading"
-          class="rounded-full px-8 font-semibold cursor-pointer py-1 text-white"
-          style="background: #fe4d3c"
-        >
-          Save
-        </cornie-button>
       </div>
     </div>
-  </div>
       <nominate-refree
         @refree-added="refreeadded"
         @refree ="refree"
