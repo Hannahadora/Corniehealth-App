@@ -37,7 +37,7 @@ export function flatten(data: any) {
 }
 
 export function clickOutside(id: string, callBack: () => void) {
-  document.addEventListener("click", e => {
+  document.addEventListener("click", (e) => {
     const select = document.getElementById(id);
     let targetElement: any = e.target; // clicked element
     do {
@@ -97,13 +97,39 @@ export function printPractitioner(practitioner: IPractitioner) {
 function printTitle(designation: string) {
   if (!designation) return "Pr.";
   switch (designation.toLowerCase()) {
-  case "doctor":
-    return "Dr.";
-  case "nurse":
-    return "RN.";
-  case "surgeon":
-    return "Sr.";
-  default:
-    return designation;
+    case "doctor":
+      return "Dr.";
+    case "nurse":
+      return "RN.";
+    case "surgeon":
+      return "Sr.";
+    default:
+      return designation;
   }
+}
+
+function addDays(date: Date, days: number) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + days);
+  return newDate;
+}
+
+export function getWeekStart(date: Date) {
+  const day = date.getDay();
+  const weekStart = addDays(date, -day);
+  return weekStart;
+}
+
+export function printWeekday(date: Date) {
+  const map: any = {
+    1: "monday",
+    2: "tuesday",
+    3: "wednesday",
+    4: "thursday",
+    5: "friday",
+    6: "saturday",
+    7: "sunday",
+  };
+  const day = date.getDay();
+  return map[day];
 }
