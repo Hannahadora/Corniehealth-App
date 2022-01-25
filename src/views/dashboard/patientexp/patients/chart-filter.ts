@@ -65,7 +65,7 @@ function getDaysInMonth() {
 
 function getUnitData(data: DateStat[], getUnit: (date: Date) => number) {
   const map = new Map<number, number>();
-  data.forEach((d) => {
+  data.forEach(d => {
     const day = getUnit(d.date);
     const dayCount = Number(d.count);
     const sum = (map.get(day) || 0) + dayCount;
@@ -115,58 +115,58 @@ function weekToDay(data: DateStat[]) {
   const now = new Date();
 
   const thisWeekData = data.filter(
-    (d) =>
+    d =>
       d.date.getFullYear() == now.getFullYear() &&
       d.date.getMonth() == now.getMonth() &&
       sameWeek(d.date, now)
   );
-  return getChartData(thisWeekData, Weekdays, (d) => d.getDay());
+  return getChartData(thisWeekData, Weekdays, d => d.getDay());
 }
 
 function yearToDay(data: DateStat[]) {
   const now = new Date();
 
   const thisYearData = data.filter(
-    (d) => d.date.getFullYear() == now.getFullYear()
+    d => d.date.getFullYear() == now.getFullYear()
   );
-  return getChartData(thisYearData, Months, (d) => d.getMonth() + 1);
+  return getChartData(thisYearData, Months, d => d.getMonth() + 1);
 }
 
 function monthToDay(data: DateStat[]) {
   const now = new Date();
 
   const thisMonthData = data.filter(
-    (d) =>
+    d =>
       d.date.getFullYear() == now.getFullYear() &&
       d.date.getMonth() == now.getMonth()
   );
-  return getChartData(thisMonthData, getDaysInMonth(), (d) => d.getDate());
+  return getChartData(thisMonthData, getDaysInMonth(), d => d.getDate());
 }
 
 function today(data: DateStat[]) {
   const today = new Date();
   const todayData = data.filter(
-    (d) =>
+    d =>
       d.date.getFullYear() == today.getFullYear() &&
       d.date.getMonth() == today.getMonth() &&
       d.date.getDate() == today.getDate()
   );
-  return getChartData(todayData, HoursOfDay, (d) => d.getHours());
+  return getChartData(todayData, HoursOfDay, d => d.getHours());
 }
 
 export function groupData(data: IStat[], order: Order) {
-  const datedData = data.map((d) => ({ ...d, date: new Date(d.date) }));
+  const datedData = data.map(d => ({ ...d, date: new Date(d.date) }));
   switch (order) {
-    case "WTD":
-      return weekToDay(datedData);
-    case "YTD":
-      return yearToDay(datedData);
-    case "MTD":
-      return monthToDay(datedData);
-    case "Today":
-      return today(datedData);
-    default:
-      break;
+  case "WTD":
+    return weekToDay(datedData);
+  case "YTD":
+    return yearToDay(datedData);
+  case "MTD":
+    return monthToDay(datedData);
+  case "Today":
+    return today(datedData);
+  default:
+    break;
   }
   return weekToDay(datedData);
 }
