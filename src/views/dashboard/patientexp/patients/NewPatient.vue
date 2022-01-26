@@ -4,7 +4,10 @@
       {{ title }}
     </h1>
     <cornie-card class="my-5 mr-4">
-      <cornie-card-title>
+      <cornie-card-title
+        class="cursor-pointer"
+        @click="togglePatientInformation"
+      >
         <h1 class="text-lg font-extrabold">Patient Information</h1>
         <cornie-spacer />
         <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
@@ -149,7 +152,7 @@
     </cornie-card>
 
     <cornie-card class="my-5 mr-4">
-      <cornie-card-title>
+      <cornie-card-title class="cursor-pointer" @click="toggleContactInfo">
         <h1 class="text-lg font-extrabold">Contact Info</h1>
         <cornie-spacer />
         <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
@@ -174,7 +177,10 @@
     </cornie-card>
 
     <cornie-card class="my-5 mr-4">
-      <cornie-card-title>
+      <cornie-card-title
+        class="cursor-pointer"
+        @click="toggleOptionalInformation"
+      >
         <h1 class="text-lg font-extrabold">Optional Information</h1>
         <span class="text-xs text-primary ml-2">
           (This section is optional and can be added if desired)
