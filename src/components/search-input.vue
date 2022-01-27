@@ -22,7 +22,7 @@
           :key="i"
           @click="select(item)"
           :class="[hoverColor]"
-          class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+          class="cursor-pointer px-4 py-1 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
         >
           <template v-if="Boolean($slots.item)">
             <slot name="item" v-bind:item="item" />

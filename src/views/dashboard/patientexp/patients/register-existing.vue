@@ -9,7 +9,7 @@
       </cornie-card-title>
       <cornie-card-text>
         <span class="text-sm mb-3 flex">
-          Enter Patient’s MRN/Email/Unique ID
+          Enter Patient's MRN/Email/Unique ID
           <cornie-tooltip class="ml-3" right>
             <template #activator="{ on }">
               <span v-on="on">
@@ -19,11 +19,31 @@
             <div>
               Enter&nbsp;patient&nbsp;MRN/Email/&nbsp;Unique&nbsp;ID.<br /><br />
               Unique&nbsp;ID&nbsp;can&nbsp;either&nbsp;be&nbsp;NIN, BVN,
-              Driver’s license ID or International passport ID.
+              Driver's license ID or International passport ID.
             </div>
           </cornie-tooltip>
         </span>
-        <cornie-input placeholder="Enter" v-model="patientQuery" />
+        <search-input
+          placeholder="Enter"
+          v-model="patientQuery"
+          background="bg-gray-200"
+          :results="foundPatients"
+          @selected="selectPatient"
+        >
+          <template #item="{ item }">
+            <div class="w-full flex items-center justify-between">
+              <div class="flex items-center">
+                <avatar :src="item.profilePhoto" />
+                <div class="flex ml-1 flex-col">
+                  <span class="font-semibold text-sm">
+                    {{ printPatient(item) }}
+                  </span>
+                </div>
+              </div>
+              <span class="text-danger font-semibold text-sm"> Add </span>
+            </div>
+          </template>
+        </search-input>
       </cornie-card-text>
       <cornie-card-text class="flex justify-end">
         <cornie-btn
@@ -54,11 +74,12 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import InformationIcon from "@/components/icons/InformationIcon.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
+import SearchInput from "@/components/search-input.vue";
+import Avatar from "@/components/avatar.vue";
 
 const patient = namespace("patients");
 
@@ -73,8 +94,9 @@ const patient = namespace("patients");
     InformationIcon,
     CornieDialog,
     CornieBtn,
-    CornieInput,
+    SearchInput,
     CornieIconBtn,
+    Avatar,
   },
 })
 export default class RegisterExisting extends Vue {
@@ -91,6 +113,21 @@ export default class RegisterExisting extends Vue {
   @patient.Mutation
   addPatients!: (patients: IPatient[]) => void;
 
+  foundPatients = [] as IPatient[];
+
+  printPatient(patient: IPatient) {
+    return `${patient.firstname} ${patient.middlename || ""} ${
+      patient.lastname
+    }`;
+  }
+
+  async selectPatient(patient: IPatient) {
+    this.show = false;
+    this.foundPatients = [];
+    if (patient.belongsToPractice) return;
+    await this.addToPractice(patient);
+  }
+
   async findPatient() {
     if (!this.patientQuery) return;
     this.loading = true;
@@ -99,13 +136,8 @@ export default class RegisterExisting extends Vue {
         query: this.patientQuery,
       });
       const patients = response.data as IPatient[];
-      if (!patients.length)
-        window.notify({ msg: "Patient not found", status: "error" });
-      this.show = false;
-      const [patient, ..._] = patients;
-      if (patient.belongsToPractice) return;
-      await this.addToPractice(patient);
-      this.addPatients([patient]);
+      if (patients.length) this.foundPatients = patients;
+      else window.notify({ msg: "Patient not found", status: "error" });
     } catch (error) {
       window.notify({ msg: "Patient not found", status: "error" });
     }
@@ -121,12 +153,13 @@ export default class RegisterExisting extends Vue {
       title: "Confirmation",
     });
     if (!confirmed) return;
-    const added = this.execAdd(patient.id!!);
+    const added = await this.execAdd(patient.id!!);
     if (!added)
       return window.notify({
         msg: "Patient not added to your organization",
         status: "error",
       });
+    this.addPatients([patient]);
     window.notify({
       msg: "Patient added to your organization",
       status: "success",
