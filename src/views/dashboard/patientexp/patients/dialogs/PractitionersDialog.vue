@@ -209,8 +209,8 @@ export default class PractitionersDialog extends Vue {
   }
 
   get items() {
-    const genPractitioners = this.patient.generalPractitioners || [];
-    if (genPractitioners.length < 1) this.practitonersSync;
+    const genPractitioners = this.patient?.generalPractitioners || [];
+    if (genPractitioners.length < 1) return this.practitonersSync;
     return genPractitioners;
   }
 
