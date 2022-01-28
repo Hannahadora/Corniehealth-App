@@ -64,7 +64,7 @@
             </template>
           </div>
         </div>
-        <div class="w-full border-b border-gray-300 dashed my-3"></div>
+        <div class="w-full border-b border-gray-300 border-dashed my-3"></div>
         <div class="flex justify-end w-full mt-4 mb-3">
           <button
             class="rounded-md mt-5 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
@@ -169,7 +169,6 @@ export default class AddActor extends Vue {
     if (val === "Practitioner") {
       this.title = "Practitioner";
       this.actors = <IPractitioner[]>[...this.practitioners];
-      console.log(this.actors);
     }
 
     if (val === "Device") {

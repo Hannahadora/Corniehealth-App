@@ -2,7 +2,7 @@
   <div class="w-full">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-md text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
         @click="$router.push('/dashboard/provider/add-group')"
       >
         Add a Group

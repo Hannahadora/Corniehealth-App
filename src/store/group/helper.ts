@@ -5,7 +5,6 @@ export async function fetchGroups() {
   try {
     const response = await cornieClient().get("/api/v1/group");
     if (response.success) {
-      console.log(response.data)
       return response.data;
     }
   } catch (error) {
