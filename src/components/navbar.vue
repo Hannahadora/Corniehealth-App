@@ -22,7 +22,7 @@
           />
         </span>
         <ul
-          class="dropdown-menu p-4 bg-white rounded w-72 justify-center h-auto right-56 absolute -mt-2 z-10 shadow-md hidden"
+          class="dropdown-menu p-4 bg-white rounded w-72 justify-center h-auto right-56 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li
             :class="{
@@ -92,7 +92,7 @@
       <div class="dropdown">
         <settings-icon class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-4 bg-white rounded w-auto justify-center h-auto right-32 absolute -mt-2 z-10 shadow-md hidden"
+          class="dropdown-menu p-4 bg-white rounded w-auto justify-center h-auto right-32 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li
             v-for="(route, index) in recentRoutes"
@@ -118,7 +118,7 @@
       <div class="dropdown">
         <bell-icon class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-80 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden"
+          class="dropdown-menu p-2 bg-white rounded-md w-80 h-auto right-10 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li
             class="border-b border-primary grid grid-cols-2 m-3 pb-2 gap-20 col-span-full cursor-pointer list-none"
@@ -214,7 +214,7 @@
       <span class="ml-1 mt-2">
         <chevron-down class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-10 absolute -mt-2 z-10 shadow-md hidden"
+          class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-10 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li class="float-right mr-1">
             <settings-icon
@@ -422,6 +422,7 @@ export default class NavBar extends Vue {
           msg: "Authorized Locations Swtiched",
           status: "success",
         });
+        this.$router.push('/dashboard/provider/home')
         //  else window.notify({ msg: "Authorized Locations not Swtiched", status: "error" })
       } catch (error) {
         window.notify({

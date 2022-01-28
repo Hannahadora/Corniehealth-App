@@ -74,17 +74,18 @@
 
         <div class="w-full flex justify-end mt-6">
           <div class="w-full pb-8 flex flex justify-end">
-            <corniebtn class="bg-gray-300 p-2 rounded-full px-8 mx-4">
+            <corniebtn>
               <span
-                class="font-semibold text-gray-500 cursor-pointer"
+                 class="m-5  py-3 px-6 font-semibold rounded"
+              style="color: #080056; border: 1px solid #080056"
                 @click="() => $emit('closesidemodal')"
                 >Close</span
               >
             </corniebtn>
 
-            <corniebtn class="bg-red-500 p-2 rounded-full px-8 mx-4">
+            <corniebtn>
               <span
-                class="text-white font-semibold cursor-pointer"
+                 class="bg-danger px-6 py-3 text-white my-5 mx-4 font-semibold rounded"
                 @click="saveParticpants"
                 >Add</span
               >

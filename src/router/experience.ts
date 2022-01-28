@@ -41,7 +41,7 @@ export const ExperienceRoutes: RouteRecordRaw = {
     },
     {
       path: "add-appointment/:id?",
-      props: true,
+      props: route => ({slotId: route.query.slot, id: route.params.id, practitionersId: route.query.practitioner}),
       name: "Create Appointment",
       component: () =>
         import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),

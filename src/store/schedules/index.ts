@@ -1,4 +1,5 @@
 import { StoreOptions } from "vuex";
+import {Slot} from "@/types/ISchedule";
 import {
   deleteSchedule,
   createSchedule,
@@ -9,22 +10,27 @@ import {
   removePractitioner,
   addPractitioner,
   deleteSlot,
+  singlePractitonerSlot
 } from "./helper";
 
 interface SchedulesStore {
   schedules: any[];
+  slots: any[];
 }
 
 export default {
   namespaced: true,
   state: {
     schedules: [],
+    slots:[],
   },
   mutations: {
     setSchedules(state, schs) {
       if (schs) state.schedules = [...schs];
     },
-
+    setSlotPractitioner(state, slots: Slot[]) {
+      state.slots = [...slots];
+    },
     addSchedule(state, sch) {
       if (sch) state.schedules.unshift(sch);
     },
@@ -75,7 +81,10 @@ export default {
       const schs = await getSchedules();
       ctx.commit("setSchedules", schs);
     },
-
+    async singlePractitonerSlot(ctx, practitionerId: string) {
+      const slots = await singlePractitonerSlot(practitionerId);
+      ctx.commit("setSlotPractitioner", slots);
+    },
     async deleteSchedule(ctx, id: string) {
       const deleted = await deleteSchedule(id);
 

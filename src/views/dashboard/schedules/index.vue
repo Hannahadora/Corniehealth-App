@@ -238,7 +238,10 @@
           </cornie-table>
           <!-- Test Availability -->
           <div class="w-full" v-if="activeTab === 1">
+             <one-availabilty-list v-if="singlePractitioner.length > 0" :singlePractitioner="singlePractitioner" :id="OneId"/>
             <AvailabilityList
+            @set-oneId="oneIdSet"
+              v-else
               @filterbypractitioner="filterByPractitioner"
               :items="availabilityItems"
               :schedules="schedules"
@@ -343,6 +346,7 @@ import utilservice from "./helper/util";
 import dateHelper from "./helper/date-helper";
 import edit from "./edit-slot.vue";
 import AvailabilityList from "./components/availability.vue";
+import OneAvailabiltyList from "./components/oneavailable.vue"
 
 const shifts = namespace("shifts");
 const schedulesStore = namespace("schedules");
@@ -354,6 +358,7 @@ const contacts = namespace("practitioner");
     edit,
     Slots,
     AddActors,
+    OneAvailabiltyList,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
@@ -396,8 +401,9 @@ export default class PractitionerExistingState extends Vue {
   showAllActors = false;
   showActorsPane = false;
   showAddActorsPane = false;
-
+  OneId = "";
   selectedSchedule: any = {};
+  singlePractitioner = [] as any;
 
   @shifts.State
   shifts!: any[];
@@ -512,6 +518,11 @@ export default class PractitionerExistingState extends Vue {
     // this.
   }
 
+  oneIdSet(practitioner:any,value:string){
+    console.log(practitioner,value,"HELLO LAST");
+    this.singlePractitioner = [practitioner];
+    this.OneId = value;
+  }
   get availabilityItems() {
     if (!this.schedules) return [];
     return utilservice.slots();

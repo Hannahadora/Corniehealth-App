@@ -11,32 +11,6 @@
         <div class="container-fluid">
           <div title="Shift Details" class="bg-white shadow-xl rounded-lg">
             <div class="w-full px-4">
-              <!-- <div class="container-fluid pb-3 pt-3 flex justify-around">
-                                <div class="w-4/12">
-                                    <cornie-input v-model="slotData.scheduleId" label="Schedule"  placeholder="--Enter--" />
-                                </div>
-                                <div class="w-4/12">
-                                     <div class="w-full">
-                                        <div class="w-11/12">
-                                            <date-picker label="Start date" v-model="slotData.startDate"  placeholder="Enter" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-4/12">
-                                     <div class="w-full">
-                                        <div class="w-11/12">
-                                            <label for="" class="w-95">
-                                                <span class="uppercase font-bold text-xs">Start Time</span>
-                                                <div class="w-12/12 mx-auto">
-                                                    <input type="time" v-model="slotData.startTime" class="w-full border rounded-lg p-2 w-95" id="appt" required>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div> -->
-
               <div class="container-fluid py-3 flex justify-around">
                 <div class="w-4/12">
                   <div class="w-11/12">
@@ -307,24 +281,32 @@
                 </div>
               </div>
 
-              <div class="w-full pb-8 flex flex justify-end">
-                <corniebtn
-                  class="p-2 rounded-full px-8 mx-4 cursor-pointer"
+           
+
+            </div>
+          </div>
+        </div>
+      </div>
+         <div class="w-full pb-8 flex flex justify-end">
+                <cornie-btn
+                  class="py-2 rounded px-8 mx-4 cursor-pointer"
                   style="border: 1px solid #080056"
                 >
                   <span class="font-semibold text-gray-500">Cancel</span>
-                </corniebtn>
+                </cornie-btn>
 
-                <CornieBtn
+                <cornie-btn
                   :loading="loading"
-                  class="bg-red-500 p-2 rounded-full px-8 mx-4 cursor-pointer"
+                  @click="onSave"
+                  class="bg-red-500 py-2 rounded px-8 mx-4 cursor-pointer"
                 >
-                  <span class="text-white font-semibold" @click="onSave"
+                  <span class="text-white font-semibold" 
                     >Save</span
                   >
-                </CornieBtn>
+                </cornie-btn>
               </div>
-
+    </div>
+  </div>
               <side-modal
                 :visible="addActorPane"
                 @closesidemodal="() => (addActorPane = false)"
@@ -334,12 +316,6 @@
                   @closesidemodal="() => (addActorPane = false)"
                 />
               </side-modal>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -541,8 +517,9 @@ export default class Shift extends Vue {
   ];
 
   async onSave() {
+    console.log("HREEIEIE");
+    this.loading = true;
     try {
-      this.loading = true;
       const createdSlot = await this.createSlot({
         endTime: this.slotData.endTime,
         hasWaitList: this.slotData?.hasWaitList === "yes" ? true : false,
