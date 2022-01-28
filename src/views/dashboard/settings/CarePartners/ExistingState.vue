@@ -2,7 +2,7 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-md text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
         @click="showAddCarePartners = true"
       >
         Add a Care Partner
@@ -19,9 +19,8 @@
         </div>
       </template>
     </cornie-table>
-    <cornie-dialog v-model="showAddCarePartners" right class="w-4/12 h-full">
-      <add-care-partners @close="showAddCarePartners = false" class="h-full" />
-    </cornie-dialog>
+
+    <add-care-partners :visible="showAddCarePartners" />
   </div>
 </template>
 <script lang="ts">
@@ -42,7 +41,7 @@ import EyeIcon from "@/components/icons/eye.vue";
 import ICarePartner from "@/types/ICarePartner";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import AddCarePartners from "./AddCarePartner.vue";
+import AddCarePartners from "./components/AddCarePartners.vue";
 import IEmail from "@/types/IEmail";
 import IPhone from "@/types/IPhone";
 
