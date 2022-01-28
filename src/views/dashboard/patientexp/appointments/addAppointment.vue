@@ -7,9 +7,215 @@
       >
     </span>
     <div>
+      <div class="py-4 ">
+         <div class="flex space-x-4">
+            <avatar class="mr-2 w-14 h-14" v-if="practionerObject?.image" :src="practionerObject?.image"/>
+            <avatar class="mr-2  w-14 h-14" v-else :src="img.placeholder"/>
+            <div>
+              <p class="text-sm text-dark font-semibold">
+                {{ practionerObject?.firstName }}
+                {{ practionerObject?.lastName }}
+              </p>
+              <p class="text-sm text-gray font-light">
+                {{ practionerObject?.department }}
+              </p>
+            </div>
+          </div>
+      </div>
       <div class="w-full">
         <form class="mt-5 w-full" @submit.prevent="submit">
           <div class="mb-44 pb-80">
+            <accordion-component title="Appointment Details" v-model="opened">
+              <template v-slot:default>
+                <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
+                  <cornie-select
+                    class="w-full"
+                   :required="true"
+                    :rules="required"
+                    :items="dropdowns.serviceCategory"
+                    v-model="serviceCategory"
+                    label="service category"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    class="w-full"
+                   :required="true"
+                    :rules="required"
+                    :items="dropdowns.serviceType"
+                    v-model="serviceType"
+                    label="service type"
+                    placeholder="--Select--"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                   :required="true"
+                    :rules="required"
+                    :items="dropdowns.specialty"
+                    v-model="specialty"
+                    label="specialty"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                   :required="true"
+                    :rules="required"
+                    :items="[
+                      'Check-Up',
+                      'Follow-Up',
+                      'Emergency',
+                      'Routine',
+                      'Walk-In',
+                    ]"
+                    v-model="appointmentType"
+                    label="Appointment Type"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    :items="['reason code']"
+                    v-model="reasonCode"
+                    label="Reason code"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    :items="[
+                      'Refferal',
+                      'Condition',
+                      'Procedure',
+                      'Observation',
+                      'Immunization',
+                      'Recommendation',
+                    ]"
+                    v-model="reasonRef"
+                    label="reason reference"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    :items="['routine', 'urgent', 'asap', 'stat']"
+                    v-model="priority"
+                    label="priority"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                  </cornie-select>
+                  <cornie-input
+                    label="description"
+                    placeholder="--Enter--"
+                    v-model="description"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    label="supporting information"
+                    placeholder="--Enter--"
+                    v-model="supportingInfo"
+                    class="w-full"
+                  />
+                  <!-- <div>
+                    <label class="block uppercase mb-1 text-xs font-bold">
+                      slot
+                    </label>
+                    <span
+                      class="text-gray-600 cursor-pointer text-xs"
+                      @click="showSlots"
+                    >
+                      Choose Slot</span
+                    >
+                  </div> -->
+                   <cornie-input
+                    label="Slot"
+                    placeholder="--Autofilled--"
+                    v-model="slot"
+                    :disabled="true"
+                    class="w-full"
+                  />
+                  <cornie-input
+                    label="start date"
+                    placeholder="--Autofilled--"
+                    v-model="period.start"
+                    :disabled="true"
+                    class="w-full"
+                  />
+                   <cornie-input
+                    label="end date"
+                    placeholder="--Autofilled--"
+                    v-model="period.end"
+                    :disabled="true"
+                    class="w-full"
+                  />
+                  <!-- <div class="w-11/12">
+                    <single-date-picker
+                      label="start date"
+                      v-model="period.start"
+                    />
+                  </div> -->
+                  <!-- <div class="w-11/12">
+                    <single-date-picker
+                      label="end date"
+                      v-model="period.end"
+                    />
+                  </div> -->
+                  <cornie-input
+                    label="duration (minutes)"
+                    placeholder="--Enter--"
+                    v-model="duration"
+                    :disabled="true"
+                  />
+                  <cornie-input
+                    :required="true"
+                    :rules="required"
+                    label="comments"
+                    placeholder="--Enter--"
+                    v-model="comments"
+                  />
+                  <cornie-input
+                    label="patient’s instruction"
+                    placeholder="--Enter--"
+                    v-model="patientInstruction"
+                  />
+                  <!-- <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="[
+                    'CarePlan',
+                    'MedicationRequest',
+                    'ServiceRequest',
+                    'ImmunizationRecommendation',
+                  ]"
+                  v-model="basedOn"
+                  label="based on"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="['information']"
+                  v-model="supportingInformation"
+                  label="supporting information"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                 <cornie-select
+                  class="required"
+                  :rules="required"
+                  :items="['required']"
+                  v-model="required"
+                  label="required"
+                  placeholder="--Select--"
+                >
+                </cornie-select>
+                <cornie-date-picker  class="w-full" v-model="period"
+                  label="Period"/> -->
+                </div>
+              </template>
+            </accordion-component>
             <accordion-component title="Add Participants" v-model="openedR">
               <template v-slot:default>
                 <div
@@ -22,6 +228,46 @@
                 <div class="w-full">
                   <div>
                     <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                      <div v-if="practitioners.practitioner">
+                        <div
+                          class="border-r-2"
+                          v-for="(input, index) in practitioners"
+                          :key="index"
+                        >
+                          <div class="mb-8 p-2">
+                            <div class="flex space-x-4">
+                              <avatar
+                                class="mr-2"
+                                v-if="input.practitioner.image"
+                                :src="input.practitioner.image"
+                              />
+                              <avatar
+                                class="mr-2"
+                                v-else
+                                :src="img.placeholder"
+                              />
+                              <div>
+                                <p class="text-xs text-dark font-semibold">
+                                  {{ input.practitioner.firstName }}
+                                  {{ input.practitioner.lastName }}
+                                </p>
+                                <p class="text-xs text-gray font-light">
+                                  {{ valuePractioner }}
+                                </p>
+                              </div>
+                            </div>
+                            <span>
+                              <deleteorange-icon
+                                class="float-right cursor-pointer relative bottom-8"
+                                @click="removePractitioner(index)"
+                              />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div v-else>
+
                       <div
                         class="border-r-2"
                         v-for="(input, index) in newPractitioners"
@@ -57,42 +303,20 @@
                           </span>
                         </div>
                       </div>
-                      <div
-                        class="border-r-2"
-                        v-for="(input, index) in newDevices"
-                        :key="index"
-                      >
-                        <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
-                            <avatar class="mr-2" :src="img.placeholder" />
-                            <div>
-                              <p class="text-xs text-dark font-semibold">
-                                {{ input.deviceName.name }}
-                              </p>
-                              <p class="text-xs text-gray font-light">
-                                {{ valueDevice }}
-                              </p>
-                            </div>
-                          </div>
-                          <span>
-                            <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
-                              @click="removeDevice(index)"
-                            />
-                          </span>
-                        </div>
                       </div>
+
+                    <div v-if="patients.patient">
                       <div
                         class="border-r-2"
-                        v-for="(input, index) in newRoles"
+                        v-for="(input, index) in patients"
                         :key="index"
                       >
                         <div class="mb-8 p-2">
                           <div class="flex space-x-4">
                             <avatar
                               class="mr-2"
-                              v-if="input.image"
-                              :src="input.image"
+                              v-if="input.patient.profilePhoto"
+                              :src="input.patient.profilePhoto"
                             />
                             <avatar
                               class="mr-2"
@@ -101,21 +325,23 @@
                             />
                             <div>
                               <p class="text-xs text-dark font-semibold">
-                                {{ input.name }}
+                                {{ input.patient.firstname }} {{ input.patient.lastname }}
                               </p>
                               <p class="text-xs text-gray font-light">
-                                {{ valueRole }}
+                                {{ valuePatient }}
                               </p>
                             </div>
                           </div>
                           <span>
                             <deleteorange-icon
                               class="float-right cursor-pointer relative bottom-8"
-                              @click="removeRole(index)"
+                              @click="removePatient(index)"
                             />
                           </span>
                         </div>
                       </div>
+                    </div>
+                     <div v-else>
                       <div
                         class="border-r-2"
                         v-for="(input, index) in newPatients"
@@ -151,145 +377,100 @@
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </template>
-            </accordion-component>
-            <accordion-component title="Appointment Details" v-model="opened">
-              <template v-slot:default>
-                <div class="w-full grid grid-cols-3 gap-5 mt-5 pb-5">
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceCategory"
-                    v-model="serviceCategory"
-                    label="service category"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.serviceType"
-                    v-model="serviceType"
-                    label="service type"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="dropdowns.specialty"
-                    v-model="specialty"
-                    label="specialty"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="[
-                      'Check-Up',
-                      'Follow-Up',
-                      'Emergency',
-                      'Routine',
-                      'Walk-In',
-                    ]"
-                    v-model="appointmentType"
-                    label="APPOINTMENT TYPE"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :rules="required"
-                    :items="['reason code']"
-                    v-model="reasonCode"
-                    label="Reason code"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :rules="required"
-                    :items="[
-                      'Refferal',
-                      'Condition',
-                      'Procedure',
-                      'Observation',
-                      'Immunization',
-                      'Recommendation',
-                    ]"
-                    v-model="reasonRef"
-                    label="reason reference"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    :rules="required"
-                    :items="['routine', 'urgent', 'asap', 'stat']"
-                    v-model="priority"
-                    label="priority"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <cornie-input
-                    label="description"
-                    placeholder="--Enter--"
-                    v-model="description"
-                  />
-                  <cornie-input
-                    label="supporting information"
-                    placeholder="--Enter--"
-                    v-model="supportingInfo"
-                  />
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      slot
-                    </label>
-                    <span
-                      class="text-gray-600 cursor-pointer text-xs"
-                      @click="showSlots"
-                    >
-                      Choose Slot</span
-                    >
-                  </div>
-                  <div class="w-11/12">
-                    <single-date-picker
-                      label="start date"
-                      v-model="period.start"
-                      :rules="required"
-                    />
-                  </div>
-                  <div class="w-11/12">
-                    <single-date-picker
-                      label="end date"
-                      v-model="period.end"
-                      :rules="required"
-                    />
-                  </div>
-                  <cornie-input
-                    label="duration (minutes)"
-                    placeholder="--Enter--"
-                    v-model="duration"
-                  />
-                  <cornie-input
-                    class="required"
-                    label="comments"
-                    placeholder="--Enter--"
-                    v-model="comments"
-                  />
-                  <cornie-input
-                    class="required"
-                    label="patient’s instruction"
-                    placeholder="--Enter--"
-                    v-model="patientInstruction"
-                  />
-                  <div>
-                    <label class="block uppercase mb-1 text-xs font-bold">
-                      Based On
-                    </label>
-                    <span class="text-gray-600 cursor-pointer text-xs">
-                      Choose Request</span
-                    >
+
+                       <div v-if="devices">
+                          <div
+                            class="border-r-2"
+                            v-for="(input, index) in devices"
+                            :key="index"
+                          >
+                            <div class="mb-8 p-2">
+                              <div class="flex space-x-4">
+                                <avatar class="mr-2" :src="img.placeholder" />
+                                <div>
+                                  <p class="text-xs text-dark font-semibold">
+                                    {{ input.device.deviceName.name }}
+                                  </p>
+                                  <p class="text-xs text-gray font-light">
+                                    {{ valueDevice }}
+                                  </p>
+                                </div>
+                              </div>
+                              <span>
+                                <deleteorange-icon
+                                  class="float-right cursor-pointer relative bottom-8"
+                                  @click="removeDevice(index)"
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                         <div v-else>
+                          <div
+                            class="border-r-2"
+                            v-for="(input, index) in newDevices"
+                            :key="index"
+                          >
+                            <div class="mb-8 p-2">
+                              <div class="flex space-x-4">
+                                <avatar class="mr-2" :src="img.placeholder" />
+                                <div>
+                                  <p class="text-xs text-dark font-semibold">
+                                    {{ input.deviceName.name }}
+                                  </p>
+                                  <p class="text-xs text-gray font-light">
+                                    {{ valueDevice }}
+                                  </p>
+                                </div>
+                              </div>
+                              <span>
+                                <deleteorange-icon
+                                  class="float-right cursor-pointer relative bottom-8"
+                                  @click="removeDevice(index)"
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                      <div
+                        class="border-r-2"
+                        v-for="(input, index) in newRoles"
+                        :key="index"
+                      >
+                        <div class="mb-8 p-2">
+                          <div class="flex space-x-4">
+                            <avatar
+                              class="mr-2"
+                              v-if="input.image"
+                              :src="input.image"
+                            />
+                            <avatar
+                              class="mr-2"
+                              v-else
+                              :src="img.placeholder"
+                            />
+                            <div>
+                              <p class="text-xs text-dark font-semibold">
+                                {{ input.name }}
+                              </p>
+                              <p class="text-xs text-gray font-light">
+                                {{ valueRole }}
+                              </p>
+                            </div>
+                          </div>
+                          <span>
+                            <deleteorange-icon
+                              class="float-right cursor-pointer relative bottom-8"
+                              @click="removeRole(index)"
+                            />
+                          </span>
+                        </div>
+                      </div>
+
+                
+
+                    </div>
                   </div>
                 </div>
               </template>
@@ -320,8 +501,9 @@
           :devices="device"
           :roles="role"
           :patients="patient"
+          :practionerId="practitionersId"
           @update:preferred="displayParticipants"
-          v-model:visible="showActors"
+          v-model="showActors"
         />
         <all-slots
           :columns="availableSlots"
@@ -339,7 +521,7 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import Availability from "@/components/availability.vue";
+import CornieDateRangePicker from "@/components/daterangepicker.vue";
 import IAppointment, {
   ParticipantDetail,
   Practitioners,
@@ -367,9 +549,11 @@ import AllActors from "./actors.vue";
 import AllSlots from "./slots.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
+import {Slot} from '@/types/ISchedule';
 
 const appointment = namespace("appointment");
 const dropdown = namespace("dropdown");
+const slot = namespace("schedules");
 
 const emptyPractitioners: Practitioners = {
   id: "",
@@ -415,8 +599,8 @@ const emptyParticipant: ParticipantDetail = {
     PlusIcon,
     PractitionersFilter,
     SingleDatePicker,
-    Availability,
     DeleteorangeIcon,
+    CornieDateRangePicker,
     Textarea,
     DEdit,
     CDelete,
@@ -436,10 +620,30 @@ export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: String, default: "" })
+  practitionersId!: string;
+
+   @Prop({ type: String, default: "" })
+  slotId!: string;
+
+  @Prop({ type: Array, default: [] })
+  availivilePractitioner!: object;
+
+  
+
+  
+  @slot.State
+  slots!: Slot[];
+
+  @slot.Action
+  singlePractitonerSlot!: (patientId: string) => Promise<void>;
+
   actorTypeValue = "";
 
   @appointment.Action
   getAppointmentById!: (id: string) => IAppointment;
+
+
   loading = false;
   expand = false;
   isVisible = "";
@@ -524,6 +728,7 @@ export default class AddAppointment extends Vue {
   }
   async setAppointment() {
     const appointment = await this.getAppointmentById(this.id);
+    console.log(appointment,"return")
     if (!appointment) return;
     this.serviceCategory = appointment.serviceCategory;
     this.locationId = appointment.locationId;
@@ -570,26 +775,67 @@ export default class AddAppointment extends Vue {
       Practitioners: this.practitioners,
     };
   }
+  // get singlePractionerId(){
+  //   return this.$route.redirectedFrom?.query.practitioner as string
+  // }
+  start = [] as any;
+  end= [] as any;
   get allaction() {
     return this.id ? "Edit" : "Create";
   }
   get selectedItem() {
     return this.participantitem;
   }
-  async addPractitioner(value: any, id: any) {
-    //this.practitioner.push({ ...this.practitioners });
-    this.newPractitioners = value;
-    this.practitioners = id;
-    this.practitionerFilter = false;
+  get practionerObject() {
+    const pt = this.practitioner.find((i: any) => i.id == this.practitionersId);
+    return pt;
   }
+
+  setTime(date: Date, time: string) {
+  const { hour, minute } = this.splitTime(time);
+  date.setHours(hour);
+  date.setMinutes(minute);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+  return date;
+  }
+   splitTime(time: string) {
+  const [hour, minute] = time.split(":").map((val) => Number(val));
+  return { hour, minute };
+  }
+  getDurationSecs(startTime: string, endTime: string) {
+    let start = new Date();
+    start = this.setTime(start, startTime);
+    let end = new Date();
+    end = this.setTime(end, endTime);
+    const durationMillis = end.getTime() - start.getTime();
+    return Math.ceil(durationMillis / 1000);
+  }
+  
+  get slotObject() {
+    const pt = this.slots.find((i: any) => i.id == this.slotId);
+    console.log(pt,"PT@ii");
+    if(pt){
+      this.slot  = pt.id as any;
+      this.period.start = pt.date;
+      this.period.end = pt.date;
+      const time = this.getDurationSecs( pt.startTime as any , pt.endTime as any);
+      this.duration = Math.floor(time / 60).toString() as any;
+      return pt;
+    }
+  }
+  // async addPractitioner(value: any, id: any) {
+  //   this.newPractitioners = value;
+  //   this.practitioners = id;
+  //   this.practitionerFilter = false;
+  // }
   async showSlots(slots: any) {
     this.displaySlots = true;
     this.period.start = slots.startDate;
     this.period.end = slots.endDate;
     this.duration = slots.startTime + "-" + slots.endTime;
     this.slot = slots.id;
-    this.getSlots();
-    // this.practitioner = slots.practitioners;
+   this.getPractionerSlot();
   }
   async displayParticipants(
     valueforpractitioner: any,
@@ -601,10 +847,7 @@ export default class AddAppointment extends Vue {
     incomingdevice: any,
     apractitionerId: string
   ) {
-    // this.newPractitioners .push({ ...this.practitioners });
-    //  this.newActors = value;
     this.showActors = true;
-
     if (typevalue == "Practitioner") {
       this.newPractitioners = valueforpractitioner;
       this.valuePractioner = typevalue;
@@ -676,6 +919,11 @@ export default class AddAppointment extends Vue {
   }
   async createAppointment() {
     this.actor = this.type;
+    if(this.payload.Practitioners == []){
+        window.notify({ msg: "Practioner Actor is requred", status: "error" });
+    }else if (this.payload.Patients == []){
+      window.notify({ msg: "Pateint Actor is requred", status: "error" });
+    }
     try {
       const response = await cornieClient().post(
         "/api/v1/appointment",
@@ -686,7 +934,7 @@ export default class AddAppointment extends Vue {
         this.$router.push("/dashboard/provider/experience/appointments");
       }
     } catch (error) {
-      window.notify({ msg: "Appointment not created", status: "error" });
+      window.notify({ msg: "The Slot is overbooked", status: "error" });
       // this.$router.push("/dashboard/provider/experience/appointments");
     }
   }
@@ -705,24 +953,29 @@ export default class AddAppointment extends Vue {
     }
   }
 
-  async getSlots() {
-    const oneId = this.practitionerId;
+  async getPractionerSlot() {
     try {
       const response = await cornieClient().get(
-        `/api/v1/slot/practitioner/${oneId}`
+        `/api/v1/slot/practitioner/${this.practitionersId}`
       );
       if (response.success) {
         this.availableSlots = response.data;
       }
     } catch (error) {}
 
-    // const AllSchedules = cornieClient().get(`/api/v1/slot/practitioner/${oneId}`);
-    // const response = await Promise.all([AllSchedules]);
-    // ;
-    // ;
-    //  ;
-    // this.availableSlots = response[0].data;
   }
+
+  // async getSlots() {
+  //   try {
+  //     const response = await cornieClient().get(
+  //       `/api/v1/slot/practitioner/${this.practitionersId}`
+  //     );
+  //     if (response.success) {
+  //       this.availableSlots = response.data;
+  //     }
+  //   } catch (error) {}
+
+  // }
 
   async fetchPractitioners() {
     const AllPractitioners = cornieClient().get("/api/v1/practitioner");
@@ -745,16 +998,19 @@ export default class AddAppointment extends Vue {
     this.patient = response[0].data;
   }
   async created() {
+    await this.setAppointment();
     //  this.getSlots();
-    this.setAppointment();
-    this.fetchPractitioners();
-    this.fetchDevices();
-    this.fetchRoles();
-    this.fetchPatients();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;
     this.dropdowns2 = data2;
+    this.slotObject
+    await this.getPractionerSlot();
+     await this.singlePractitonerSlot(this.practitionersId);
+    this.fetchPractitioners();
+    this.fetchDevices();
+    this.fetchRoles();
+    this.fetchPatients();
   }
 }
 </script>

@@ -19,7 +19,7 @@
           />
           <span></span>
         </div>
-        <span class="text-danger" @click="apply">Add</span>
+        <span class="text-danger cursor-pointer" @click="apply">Add</span>
         <div class="w-full flex space-x-4">
           <note-icon />
           <div>
@@ -36,7 +36,7 @@
         <cornie-card-text class="flex justify-end">
           <div class="flex justify-end w-full mt-auto">
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel

@@ -3,47 +3,115 @@
     <div class="w-full">
       <div class="container-fluid">
         <!-- <div class="container-fluid" v-if="filterOptions.byPractitioners?.length === 0"> -->
+        <div class="w-full flex space-x-4 py-4"  v-for="(input, index) in singlePractitioner" :key="index">
+            <div class="flex space-x-4">
+                    <div class="w-10 h-10">
+                    <avatar
+                        class="mr-2"
+                        v-if="input.user?.image"
+                        :src="input.user?.image"
+                    />
+                    <avatar class="mr-2" v-else :src="localSrc" />
+                    </div>
+                    <div>
+                    <p class="text-xs text-dark font-semibold">
+                        {{ input.user?.firstName }}
+                        {{ input.user?.lastName }}
+                    </p>
+                    <p class="text-xs text-gray-500 font-meduim">
+                        {{ input?.jobDesignation }}
+                        {{ input?.department }}
+                    </p>
+                    </div>
+            </div>
+            <filter-icon class="-mt-2 shadow rounded-full" @click="showFilterPane"/>
+        </div>
         <cornie-table
           :columns="headers"
-          v-model="_items"
+          v-model="items"
           @filter="showFilterPane"
         >
+          <template #actions>
+            <!-- <div
+              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+              style="width: 200px"
+            >
+              <add-icon class="mr-3 mt-1" />
+              <span class="ml-3 text-xs" @click="goToCreateSlot()"
+                >Create slot</span
+              >
+            </div> -->
+            <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" 
+            @click="goToAppoimment(item)">
+              <calendar-icon />
+              <span class="ml-3 text-xs">Book Appointment</span>
+            </div> -->
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <edit-icon class="text-blue-400 fill-current" />
+              <span class="ml-3 text-xs">Edit Slot</span>
+            </div>
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <copy-icon class="text-blue-400 fill-current" />
+              <span class="ml-3 text-xs">Copy</span>
+            </div>
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <cancel-icon class="text-green-600 fill-current" />
+              <span class="ml-3 text-xs">Cancel</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <share-icon class="text-indigo-700 fill-current" />
+              <span class="ml-3 text-xs">Share</span>
+            </div>
+          </template>
 
           <template #monday="{item}">
-           <actors-section :items="item.monday" @set-oneId="setoneId" v-if="item?.monday" :range="item.range"/>
-           <span v-else>--</span>
+           <color-section :items="item.monday"/>
           </template>
            <template #tuesday="{item}">
-            <actors-section :items="item.tuesday" @set-oneId="setoneId" v-if="item?.tuesday" :range="item.range"/>
-             <span v-else>--</span>
+            <color-section :items="item.tuesday"/>
           </template>
            <template #wednesday="{item}">
-             <actors-section :items="item.wednesday" @set-oneId="setoneId" v-if="item?.wednesday" :range="item.range"/>
-              <span v-else>--</span>
+             <color-section :items="item.wednesday"/>
           </template>
            <template #thursday="{item}">
-             <actors-section :items="item.thursday" @set-oneId="setoneId" v-if="item?.thursday" :range="item.range"/>
-              <span v-else>--</span>
+             <color-section :items="item.thursday"/>
           </template>
            <template #friday="{item}">
-              <actors-section :items="item.friday" @set-oneId="setoneId" v-if="item?.friday" :range="item.range"/>
-               <span v-else>--</span>
+              <color-section :items="item.friday"/>
           </template>
            <template #saturday="{item}">
-             <actors-section :items="item.saturday" @set-oneId="setoneId" v-if="item?.saturday" :range="item.range"/>
-              <span v-else>--</span>
+             <color-section :items="item.saturday"/>
           </template> 
           <template #sunday="{item}">
-             <actors-section :items="item.sunday" @set-oneId="setoneId" v-if="item?.sunday" :range="item.range"/>
-               <span v-else>--</span>
+             <color-section :items="item.sunday"/>
           </template>
 
 
         </cornie-table>
+        <div class="flex space-x-4 mt-5">
+            <span class="text-xs flex space-x-2">
+                <dot-1-icon class="mt-1"/> 
+                <span>Available</span> 
+            </span>
+            <span class="text-xs flex">
+                <dot-2-icon /> 
+                <span>Booked</span>
+            </span>
+            <span class="text-xs flex space-x-2">
+                <dot-3-icon class="mt-1"/> 
+                <span>Not Available</span>
+            </span>
+
+        </div>
       </div>
 
-        <advanced-filter v-model="showFilter" @applyfilter="applyFilter" />
-
+  
+      <!-- <side-modal
+        :visible="showFilter"
+        @closesidemodal="() => (showFilter = false)"
+      >
+      </side-modal> -->
+        <advanced-filter v-model="showFilter"  @applyfilter="applyFilter" />
       
     </div>
   </div>
@@ -76,14 +144,23 @@ import ShareIcon from "@/components/icons/share.vue"
 import { getWeekStart, printWeekday } from "@/plugins/utils";
 import group from "@/store/group";
 import IPractitioner from "@/types/IPractitioner";
+import {Slot} from '@/types/ISchedule';
+import ColorSection from './color.vue'
+import Dot1Icon from '@/components/icons/dot1.vue';
+import Dot2Icon from '@/components/icons/dot2.vue';
+import Dot3Icon from '@/components/icons/dot3.vue';
+
+
 import actorsSection from './newActors.vue';
 import search from "@/plugins/search";
-
+import Avatar from "@/components/avatar.vue";
+import FilterIcon from "@/components/icons/circleFilter.vue";
 
 const practitionersStore = namespace("practitioner");
 const locationsStore = namespace("location");
 const devicesStore = namespace("devices");
 const visitsStore = namespace("visits");
+const slot = namespace("schedules");
 
 interface Time {
   hour: number;
@@ -91,12 +168,18 @@ interface Time {
 }
 
 @Options({
-  name: "Availability",
+  name: "SingleAvailability",
   components: {
     AddIcon,
+    FilterIcon,
     Actors,
     CornieTable,
+    ColorSection,
     SideModal,
+    Avatar,
+    Dot1Icon,
+    Dot2Icon,
+    Dot3Icon,
     AdvancedFilter,
     actorsSection,
     CopyIcon,
@@ -109,17 +192,61 @@ interface Time {
     ShareIcon,
   },
 })
-export default class Availability extends Vue {
-  @Prop({ type: Object })
-  items!: any;
+export default class SingleAvailability extends Vue {
+ @Prop({ type: String, default: "" })
+  id!: string;
+
+  @Prop({type: Array, default: []})
+  singlePractitioner!:object;
+
+//   @Prop({ type: Object })
+//   items!: any;
 
   @Prop({ type: Array })
   schedules!: ISchedule[];
 
   actorsValue = [] as any;
 
+  @slot.State
+  slots!: Slot[];
+
+  @slot.Action
+  singlePractitonerSlot!: (patientId: string) => Promise<void>;
+
   /// Start
 
+  get items() {
+    const slots = this.slots || [];
+    const hourly = this.groupHourly(slots);
+    const items: { range: any; [state: string]: IPractitioner[] }[] = [];
+    Object.entries(hourly).map(([key, value]) => {
+      const item = this.groupDaily(value);
+      this.actorsValue = item;
+      items.push({ ...item, range: this.printRange(Number(key)) as any });
+    });
+    return items;
+  }
+
+groupDaily(slots: Slot[]) {
+    const weekDays = new Map<string, Slot[]>();
+    slots.forEach((slot) => {
+      this.insertWeekDays(weekDays, slot);
+    });
+    const group: { [state: string]: Slot[] } = {};
+    weekDays.forEach((value, key) => {
+      group[key] = value;
+    });
+    return group;
+}
+insertWeekDays(map: Map<string, Slot[]>, slot: any) {
+    const  date = new Date(slot.date) as any;
+    const weekday = printWeekday(date)
+    const slots = map.get(weekday) ?? [];
+    slots.push(slot)
+    map.set(weekday, slots);
+    // this.filterPractitioners([... practitioners, ..._practitioners])
+
+  }
   getWeekDates(start: Date) {
     const dates: Date[] = [];
     for (let i = 0; i < 7; i++) {
@@ -135,56 +262,45 @@ export default class Availability extends Vue {
     const now = new Date(); // sun jan 23, 2022 //
     const start = getWeekStart(now);
     const dates = this.getWeekDates(start);
-    const headers = dates.map((date:any) => ({
+    const headers = dates.map((date) => ({
       key: printWeekday(date),
       title: date.toDateString(),
       show:true
     }));
-      console.log(headers,"HEADERS")
 
     return [{ key: "range", title: "Time", show:true },...headers];
   }
 
-  groupHourly(schedules: ISchedule[]) {
-    const groups: { [state: number]: ISchedule[] } = {};
-    schedules.forEach((schedule) => {
-      const start = this.buildTime(schedule.startTime);
-      const end = this.buildTime(schedule.endTime);
+  groupHourly(slots: Slot[]) {
+    const groups: { [state: number]: Slot[] } = {};
+    slots.forEach((slot:any) => {
+      const start = this.buildTime(slot.startTime);
+      const end = this.buildTime(slot.endTime);
       const hours = this.getHoursBetween(start, end);
-      this.insertMatchingHours(groups, hours, schedule);
+      this.insertMatchingHours(groups, hours, slot);
     });
     this.padHourlyGrouping(groups);
     return groups;
   }
 
-  padHourlyGrouping(groups: { [state: number]: ISchedule[] }) {
+  padHourlyGrouping(groups: { [state: number]: Slot[] }) {
     const hoursPerDay = 23;
     for (let i = 0; i < hoursPerDay; i++) {
       const schedules = groups[i];
       if (!schedules) groups[i] = [];
     }
   }
-  groupDaily(schedules: ISchedule[]) {
-    const weekDays = new Map<string, IPractitioner[]>();
-    schedules.forEach((schedule) => {
-      this.insertWeekDays(weekDays, schedule);
-    });
-    const group: { [state: string]: IPractitioner[] } = {};
-    weekDays.forEach((value, key) => {
-      group[key] = value;
-    });
-    return group;
-  }
+
 
   insertMatchingHours(
-    groups: { [state: number]: ISchedule[] },
+    groups: { [state: number]: Slot[] },
     hours: number[],
-    schedule: ISchedule
+    slot: Slot
   ) {
     hours.forEach((hour) => {
-      const schedules = groups[hour] ?? [];
-      schedules.push(schedule);
-      groups[hour] = schedules;
+      const slots = groups[hour] ?? [];
+      slots.push(slot);
+      groups[hour] = slots;
     });
   }
   buildTime(time: string) {
@@ -207,18 +323,7 @@ export default class Availability extends Vue {
     return `${x}:00`;
   }
 
-  get _items() {
-    const schedules = this.schedules || [];
-    const hourly = this.groupHourly(schedules);
-    const items: { range: any; [state: string]: IPractitioner[] }[] = [];
-    Object.entries(hourly).map(([key, value]) => {
-      const item = this.groupDaily(value);
-      this.actorsValue = item;
-      items.push({ ...item, range: this.printRange(Number(key)) as any });
-    });
-    console.log(items,"items")
-    return items;
-  }
+ 
 
   printRange(start: number) {
     const min = this.pad(start);
@@ -226,37 +331,13 @@ export default class Availability extends Vue {
     return `${min}-${max}`;
   }
 
-  insertWeekDays(map: Map<string, IPractitioner[]>, schedule: ISchedule) {
-    const { days } = schedule;
-    days.forEach((day) => {
-      const _practitioners = map.get(day) ?? [];
-      const practitioners = schedule.practitioners ?? [];
-       map.set(day,this.filterPractitioners([... practitioners, ..._practitioners]) as any);
-    // this.filterPractitioners([... practitioners, ..._practitioners])
-    });
 
-  }
   filterPractitioners(practitioners:IPractitioner[]) {
     console.log(search.searchObjectArray(practitioners, this.query),"FILTER");
       return search.searchObjectArray(practitioners, this.query);
   }
 
-  goToAppoimment(item:any){
-     console.log(item,"FDJKFD");
-    // const [practitioner, ...rest] = item
-    // const id = practitioner?.id;
-    // console.log(item,"FDJKFD");
-    // if(id == null){
-    //   return
-    // }else{
-    //   this.$router.push(`/dashboard/experience/add-appointment/${id}`)
-    // }
-  }
 
-  setoneId(practitioner:any,value:string){
-     console.log(practitioner,value,"HELLO ThIRD")
-    this.$emit('set-oneId', practitioner,value)
-  }
   //// End
 
   @practitionersStore.Action
@@ -304,27 +385,22 @@ export default class Availability extends Vue {
       new Date().setDate(date.getDate() - ((new Date().getDay() + 6) % 6))
     );
   }
-  get availabilityDates() {
-    let arr = [];
-    for (let i = 0; i < 7; i++) {
-      // let sunday = new Date();
-      let sunday = new Date(
-        new Date().setDate(
-          new Date().getDate() - ((new Date().getDay() + 6) % 6)
-        )
-      );
-      arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
-    }
+//   get availabilityDates() {
+//     let arr = [];
+//     for (let i = 0; i < 7; i++) {
+//       // let sunday = new Date();
+//       let sunday = new Date(
+//         new Date().setDate(
+//           new Date().getDate() - ((new Date().getDay() + 6) % 6)
+//         )
+//       );
+//       arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
+//     }
 
-    return arr;
-  }
+//     return arr;
+//   }
 
-  get filteredItems() {
-    if (!this.items) return [];
-    return this.items.map((timeSlot: string) => {
-      return;
-    });
-  }
+  
 
   get allLocations() {
     if (!this.locations) return [];
@@ -340,19 +416,19 @@ export default class Availability extends Vue {
     });
   }
 
-  get availabilityHeaders() {
-    if (!this.availabilityDates) return [];
-    let arr = this.availabilityDates.map((i: any, index: number) => {
-      return {
-        title: i,
-        key: index.toString(),
-        show: true,
-        // show: index > 4 ? false : true
-      };
-    });
-    arr.unshift({ title: "Time", key: "time", show: true });
-    return arr;
-  }
+//   get availabilityHeaders() {
+//     if (!this.availabilityDates) return [];
+//     let arr = this.availabilityDates.map((i: any, index: number) => {
+//       return {
+//         title: i,
+//         key: index.toString(),
+//         show: true,
+//         // show: index > 4 ? false : true
+//       };
+//     });
+//     arr.unshift({ title: "Time", key: "time", show: true });
+//     return arr;
+//   }
 
   locaionChanged(newLocation: ILocation) {
     this.locations.unshift(newLocation);
@@ -450,6 +526,7 @@ export default class Availability extends Vue {
   }
 
   async created() {
+    await this.singlePractitonerSlot(this.id);
     if (!this.practitioners) await this.fetchPractitioners();
     if (!this.locations) await this.fetchLocations();
     if (!this.devices) await this.fetchDevices();

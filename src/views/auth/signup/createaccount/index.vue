@@ -130,7 +130,7 @@
                   </a>
             </div>
 
-          <div class="flex flex-wrap mb-8" style="width: 115vh">
+          <!-- <div class="flex flex-wrap mb-8" style="width: 115vh">
             <a
               class="inline-flex items-center justify-center w-auto py-3 font-medium leading-none tracking-wider rounded-t text-sm sm:px-6 sm:w-auto sm:justify-start title-font cursor-pointer relative"
               :class="[
@@ -161,7 +161,7 @@
             >
               Access Dashboard
             </a>
-          </div>
+          </div> -->
 
           <Two
             :loading="loading"
