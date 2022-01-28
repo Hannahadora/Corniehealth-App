@@ -11,10 +11,12 @@
           />
           <drop-down v-model="filter">
             <div class="flex flex-col">
-              <span class="cursor-pointer" @click="order = 'Today'">Today</span>
-              <span class="cursor-pointer" @click="order = 'WTD'">WTD</span>
-              <span class="cursor-pointer" @click="order = 'MTD'">MTD</span>
-              <span class="cursor-pointer" @click="order = 'YTD'">YTD</span>
+              <span class="cursor-pointer" @click="reorder('Today')"
+                >Today</span
+              >
+              <span class="cursor-pointer" @click="reorder('WTD')">WTD</span>
+              <span class="cursor-pointer" @click="reorder('MTD')">MTD</span>
+              <span class="cursor-pointer" @click="reorder('YTD')">YTD</span>
             </div>
           </drop-down>
         </div>
@@ -57,6 +59,11 @@ export default class RegistrationChart extends Vue {
   }
 
   raw: IStat[] = [];
+
+  reorder(order: "Today" | "WTD" | "MTD" | "YTD") {
+    this.order = order;
+    this.filter = false;
+  }
 
   async fetchData() {
     try {

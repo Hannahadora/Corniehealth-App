@@ -117,8 +117,11 @@ export default class DatePicker extends Vue {
 
   get customRules() {
     const defaultRule = date();
-    if (this.rules) return defaultRule.concat(this.rules);
-    return defaultRule;
+    if (this.rules)
+      return defaultRule
+        .concat(this.rules)
+        .typeError("A valid date must be entered");
+    return defaultRule.typeError("A valid date must be entered");
   }
 
   @Watch("date")

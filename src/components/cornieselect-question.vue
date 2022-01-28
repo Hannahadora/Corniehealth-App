@@ -1,19 +1,23 @@
 <template>
-  <div class="flex flex-col items-center w-11/12 mb-5">
+  <div class="flex flex-col items-center mb-5">
     <div class="w-full flex flex-col items-center">
       <div class="w-full">
         <div class="flex flex-col items-center relative" :id="id">
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="block capitalize mb-1 text-black text-sm font-semibold"
+              class="flex space-x-55 w-full capitalize mb-1 text-black text-sm font-semibold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
-              <template v-else>
-                {{ label }}
-              </template>
-              <span class="text-danger ml-1" v-if="required"> * </span>
+              <template v-else> {{ label }}</template>
+              <span class="text-danger ml-0.5 mr-1" v-if="required">*</span>
+              <div class="float-right cursor-pointer fill-current text-primary">
+                <question-icon />
+              </div>
+              <span class="ml-1 mb-1" v-if="$slots.labelicon">
+                <slot name="labelicon" />
+              </span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -54,22 +58,11 @@
           </div>
           <div
             :class="{ hidden: !showDatalist }"
-            class="absolute shadow bg-white border-gray-400 border top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
+            class="absolute shadow bg-white top-100 z-40 w-full lef-0 border border-gray-400 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
-              <icon-input
-                autocomplete="off"
-                class="border border-gray-600 rounded-full focus:outline-none"
-                type="search"
-                placeholder="Search"
-                v-model="query"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input>
               <div
-                v-for="(item, i) in processedItems"
+                v-for="(item, i) in items"
                 :key="i"
                 @click="selected(item)"
                 class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
@@ -79,7 +72,7 @@
                 </template>
                 <div
                   v-else
-                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
+                  class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative capitalize"
                 >
                   {{ item.display || item }}
                 </div>
@@ -98,19 +91,16 @@ import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
-import IconInput from "@/components/IconInput.vue";
-import SearchIcon from "./icons/search.vue";
+import QuestionIcon from "@/components/icons/question.vue";
 
 @Options({
   components: {
     ChevronDownIcon,
     Field,
-    IconInput,
-    SearchIcon,
+    QuestionIcon,
   },
-  emits: ["query"],
 })
-export default class AutoComplete extends Vue {
+export default class CornieSelect extends Vue {
   @Prop({ type: Array, default: [] })
   items!: any[];
 
@@ -132,34 +122,11 @@ export default class AutoComplete extends Vue {
   @Prop({ type: String })
   label!: string;
 
-  @Prop({ type: Function })
-  filter!: (item: any, query: string) => boolean;
-
-  customFilter(item: any) {
-    if (this.filter) return this.filter(item, this.query);
-    if (typeof item === "string" || item instanceof String)
-      return item.toLowerCase().includes(this.query.toLowerCase());
-    const { code, display }: { code: string; display: string } = item;
-    return (
-      `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
-      `${display}`.toLowerCase().includes(this.query.toLowerCase())
-    );
-  }
+  @Prop({ type: String, default: "" })
+  labelicon!: string;
 
   showDatalist = false;
   id = "";
-
-  query = "";
-
-  @Watch("query")
-  searched(query: string) {
-    this.$emit("query", query);
-  }
-
-  get processedItems() {
-    if (!this.query) return this.items;
-    return this.items.filter(this.customFilter);
-  }
 
   get displayVal() {
     if (!this.modelValue || this.items.length < 1) return;
@@ -190,6 +157,12 @@ export default class AutoComplete extends Vue {
     const id = Math.random().toString(36).substring(2, 9);
     return `select-${id}`;
   }
+
+  @Watch("items")
+  update() {
+    this.$emit("change");
+  }
+
   mounted() {
     clickOutside(this.id, () => {
       this.showDatalist = false;
@@ -215,6 +188,7 @@ export default class AutoComplete extends Vue {
 ::placeholder {
   font-size: 0.8em;
   font-weight: 400;
+  font-style: italic;
   color: #667499;
 }
 </style>

@@ -47,7 +47,7 @@
             class="w-full"
             placeholder="Enter"
             v-model="country"
-            :items="countries"
+            :items="nationState.countries"
           />
 
           <auto-complete
@@ -55,7 +55,7 @@
             class="w-full"
             placeholder="Enter"
             v-model="state"
-            :items="states"
+            :items="nationState.states"
           />
 
           <cornie-input
@@ -135,7 +135,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue, Options, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -153,8 +153,7 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import Period from "@/types/IPeriod";
 import AutoComplete from "@/components/autocomplete.vue";
-import { getCountries, getStates } from "@/plugins/nation-states";
-const countries = getCountries();
+import { useCountryStates } from "@/composables/useCountryStates";
 
 const patients = namespace("patients");
 
@@ -220,14 +219,7 @@ export default class EmergencyDontactDialog extends Vue {
   loading = false;
   currentId = "";
 
-  states = [] as any;
-  countries = countries;
-
-  @Watch("country")
-  async countryPicked(country: string) {
-    const states = await getStates(country);
-    this.states = states;
-  }
+  nationState = setup(() => useCountryStates());
 
   @patients.Action
   updatePatientField!: (data: {

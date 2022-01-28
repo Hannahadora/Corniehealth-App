@@ -2,7 +2,7 @@
   <div class="w-full">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-md text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
         @click="$router.push('/dashboard/provider/add-group')"
       >
         Add a Group
@@ -14,7 +14,7 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="$router.push(`/dashboard/provider/view-group/${item.id}`)"
         >
-          <newview-icon class="text-yellow-500 fill-current" />
+          <eye-yellow class="text-blue-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
@@ -26,32 +26,53 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="displayMember(item.id)"
+          @click="handleSuspendGroup(item.id)"
         >
-          <span class="mr-3 text-2xl bold text-primary">+</span>
-          <span class="ml-3 text-xs">Add Memeber </span>
+          <cancel-icon />
+          <span class="ml-3 text-xs">Suspend</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          v-if="item.groupStatusDetails.active == true"
           @click="showDeactivateGroup(item.id)"
         >
-          <close-icon class="mr-3" />
+          <not-allowed class="fill-current text-red-500" />
           <span class="ml-3 text-xs">Deactivate</span>
         </div>
+        <!-- <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          v-if="item.groupStatusDetails.active == false"
+          @click="showDeactivateGroup(item.id)"
+        >
+          <not-allowed class="fill-current text-red-500" />
+          <span class="ml-3 text-xs">Deactivate</span>
+        </div> -->
         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="handleMarkProposed(item.id)"
+        >
+          <check class="fill-current text-green-500 w-5" />
+          <span class="ml-3 text-xs">Mark as Proposed</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showAddMemberDiag = true"
+        >
+          <span class="mr-3 text-2xl bold text-green-400">+</span>
+          <span class="ml-3 text-xs">Add Member </span>
+        </div>
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           v-if="item.groupStatusDetails.active == false"
           @click="activateGroup(getKeyValue(item).value)"
         >
           <close-icon class="mr-3" />
-          <span class="ml-3 text-xs">Activate</span>
-        </div>
+          <span class="text-xs">Activate</span>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <cancel-icon />
+          <delete-red />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
@@ -61,6 +82,17 @@
     <deactivate-modal
       v-model:visible="showDeativateModal"
       :paymentId="paymentId"
+    />
+    <update-status-diag
+      v-if="showUpdateStatusDiag"
+      :show="showUpdateStatusDiag"
+      @close-status-diag="showUpdateStatusDiag = false"
+    />
+
+    <add-member-diag
+      v-if="showAddMemberDiag"
+      :show="showAddMemberDiag"
+      @close-member-diag="showAddMemberDiag = false"
     />
   </div>
 </template>
@@ -81,15 +113,19 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
 import IGroup from "@/types/IGroup";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
+import DeleteRed from "@/components/icons/delete-red.vue";
 import MemberModal from "./memberModal.vue";
 import DeactivateModal from "./deactivateModal.vue";
-import EyeIcon from "@/components/icons/eye.vue";
+import EyeYellow from "@/components/icons/eye-yellow.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import CancelIcon from "@/components/icons/cancel.vue";
+import NotAllowed from "@/components/icons/not-allowed.vue";
+import Check from "@/components/icons/check.vue";
+import UpdateStatusDiag from "./components/UpdateStatus.vue";
+import AddMemberDiag from "./components/AddMember.vue";
 
 const group = namespace("group");
 
@@ -108,11 +144,15 @@ const group = namespace("group");
     IconInput,
     ColumnFilter,
     TableOptions,
-    DeleteIcon,
-    EyeIcon,
+    DeleteRed,
+    EyeYellow,
     EditIcon,
     MemberModal,
     DeactivateModal,
+    NotAllowed,
+    Check,
+    UpdateStatusDiag,
+    AddMemberDiag,
   },
 })
 export default class GroupExistingState extends Vue {
@@ -123,6 +163,8 @@ export default class GroupExistingState extends Vue {
   showMemberModal = false;
   showDeativateModal = false;
   paymentId = "";
+  showUpdateStatusDiag = false;
+  showAddMemberDiag = false;
 
   @group.State
   groups!: IGroup[];
@@ -246,7 +288,8 @@ export default class GroupExistingState extends Vue {
 
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this group",
+      message:
+        "Are you sure you want to delete this group? This action cannot be undone.",
       title: "Delete Group",
     });
     if (!confirmed) return;
@@ -265,6 +308,13 @@ export default class GroupExistingState extends Vue {
     this.showDeativateModal = true;
     this.paymentId = id;
   }
+
+  async handleMarkProposed(id: string) {}
+
+  async handleSuspendGroup(id: string) {
+    this.showUpdateStatusDiag = true;
+  }
+
   async activateGroup(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to activate this Group",

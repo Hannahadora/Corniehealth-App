@@ -39,9 +39,11 @@
                 <div class="flex items-center">
                   <avatar :src="item.image" />
                   <div class="flex ml-1 flex-col">
-                    <span class="font-semibold text-sm">Dr Ajayi Charles</span>
+                    <span class="font-semibold text-sm">
+                      {{ printPractitioner(item) }}
+                    </span>
                     <span class="text-xs font-semibold text-gray-500">
-                      Paediatrics
+                      {{ item.specialty }}
                     </span>
                   </div>
                 </div>
