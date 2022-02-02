@@ -381,7 +381,6 @@ export default class AddPractitioner extends Vue {
     this.hoursOfOperation = practitioner.hoursOfOperation;
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
-    this.locations = practitioner.authorizedLocations;
     this.defaultLocation = practitioner.defaultLocation;
   }
   serializeDate(date: string) {
