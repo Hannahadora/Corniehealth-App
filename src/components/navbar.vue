@@ -31,7 +31,7 @@
                 !showFullHeight && authorizedLocations?.length > 0,
             }"
           >
-            <div class="flex space-x-4 p-5" v-if="authorizedLocations == null">
+            <div class="flex space-x-4 p-5" v-if="!authorizedLocations?.length">
               <location-icon class="fill-current text-primary" />
               <p
                 class="text-center text-sm font-semibold text-danger justify-center flex"
@@ -107,8 +107,8 @@
               class="font-semibold rounded-full mb-1 bg-primary mt-2 w-full text-white"
             >
               <span class="inline-flex justify-center text-sm">
-                View all settings <settings-white-icon class="ml-2 mt-0.5"
-              /></span>
+                View all settings <settings-white-icon class="ml-2 mt-0.5" />
+              </span>
             </cornie-btn>
           </li>
         </ul>
@@ -377,12 +377,6 @@ export default class NavBar extends Vue {
   @account.Getter
   cornieUser!: CornieUser;
 
-  @location.State
-  locations!: ILocation[];
-
-  @location.Action
-  fetchLocations!: () => Promise<void>;
-
   @account.Mutation
   switchCurrentLocation!: (locationId: any) => void;
 
@@ -391,6 +385,7 @@ export default class NavBar extends Vue {
   get profilePhoto() {
     return this.cornieUser?.image;
   }
+
   showSettings() {
     this.showSettingsModal = true;
   }
@@ -415,20 +410,17 @@ export default class NavBar extends Vue {
     });
     if (!confirmed) return;
 
-    if (confirmed) {
-      try {
-        this.switchCurrentLocation(value);
-        window.notify({
-          msg: "Authorized Locations Swtiched",
-          status: "success",
-        });
-        //  else window.notify({ msg: "Authorized Locations not Swtiched", status: "error" })
-      } catch (error) {
-        window.notify({
-          msg: "Authorized Locations not Swtiched",
-          status: "error",
-        });
-      }
+    try {
+      this.switchCurrentLocation(value);
+      window.notify({
+        msg: "Authorized Locations Swtiched",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({
+        msg: "Authorized Locations not Swtiched",
+        status: "error",
+      });
     }
   }
 
@@ -450,9 +442,6 @@ export default class NavBar extends Vue {
   async logout() {
     await logout();
     this.$router.push("/login");
-  }
-  async created() {
-    await this.fetchLocations();
   }
 }
 </script>

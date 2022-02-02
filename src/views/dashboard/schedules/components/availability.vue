@@ -218,6 +218,7 @@
               <span class="ml-3 text-xs" @click="goToCreateSlot"
                 >Create slot</span
               >
+              <div class="">{{ _items }}</div>
             </div>
           </template>
 
@@ -544,13 +545,13 @@ export default class Availability extends Vue {
     for (let i = 0; i < 7; i++) {
       const current = start.getDate();
       const date = new Date(start);
-      date.setDate(current + 1);
+      date.setDate(current + i);
       dates.push(date);
     }
     return dates;
   }
 
-  headers() {
+  get headers() {
     const now = new Date(); // sun jan 23, 2022 //
     const start = getWeekStart(now);
     const dates = this.getWeekDates(start);
@@ -627,7 +628,6 @@ export default class Availability extends Vue {
   get _items() {
     const schedules = this.schedules || [];
     const hourly = this.groupHourly(schedules);
-    console.log({ hourly });
     const items: { range: any; [state: string]: IPractitioner[] }[] = [];
     Object.entries(hourly).map(([key, value]) => {
       const item = this.groupDaily(value);
