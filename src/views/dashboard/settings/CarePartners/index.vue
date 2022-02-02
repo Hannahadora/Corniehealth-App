@@ -12,7 +12,7 @@
         </template>
         <template #actions>
           <button
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-md text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
             @click="show"
           >
             Add a Care Partner
@@ -23,9 +23,11 @@
         <existing-state />
       </template>
     </div>
-    <cornie-dialog v-model="showAddCarePartners" right class="w-4/12 h-full">
-      <add-care-partners @close="showAddCarePartners = false" />
-    </cornie-dialog>
+
+    <add-care-partners
+      :visible="showAddCarePartners"
+      @close-add-care-partner="showAddCarePartners = false"
+    />
   </main>
 </template>
 
@@ -35,7 +37,7 @@ import EmptyState from "@/components/CornieEmptyState.vue";
 import { namespace } from "vuex-class";
 import ICarePartner from "@/types/ICarePartner";
 import ExistingState from "./ExistingState.vue";
-import AddCarePartners from "./AddCarePartner.vue";
+import AddCarePartners from "./components/AddCarePartners.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 
 const CarePartnersStore = namespace("CarePartnersStore");

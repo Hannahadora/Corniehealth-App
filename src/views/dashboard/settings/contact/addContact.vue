@@ -1,109 +1,130 @@
 <template>
-  <div class="overflow-y-auto">
-    <modal
-      :visible="visible"
-      class="mx-14 h-3/4 w-4/12 overflow-y-auto py-4 px-2"
-    >
-      <!-- <div
-        class="flex bg-primary w-full h-3/4 overflow-y-auto rounded-t-lg p-2"
-      >
-        <span class="block pr-2 border-r-2">
-
-        </span>
-      </div> -->
-      <div class="w-full p-3">
-        <div class="flex items-center gap-2 mb-12">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-          <div class="border h-5" />
-          <h2 class="text-primary font-bold text-2xl">
-            {{ isUpdate ? "Edit My Contact" : "Add Contact" }}
+  <cornie-dialog
+    v-model="visible"
+    right
+    class="w-5/12 h-full animated fadeIn z-50 absolute overflow-y-none"
+  >
+    <cornie-card height="100%" class="flex flex-col animated fadeInUp">
+      <cornie-card-title class="w-full p-3">
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
+        <div class="w-full border-l-2 border-gray-100">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            {{ isUpdate ? "Edit Contact" : "Add Contact" }}
           </h2>
         </div>
-
-        <span class="flex items-center mt-3 mb-12">
-          <cornie-avatar-field v-model="image" />
-        </span>
-        <v-form @submit="submit">
-          <div class="mt-2 grid grid-cols-2 p-1 gap-y-2 gap-3">
-            <cornie-input
-              :rules="requiredRule"
-              label="First Name"
-              v-model="fname"
-            />
-            <cornie-input
-              :rules="requiredRule"
-              label="Last Name"
-              v-model="lname"
-            />
-            <cornie-input
-              :rules="requiredRule"
-              label="Purpose"
-              :modelValue="purpose"
-            />
-            <cornie-select
-              label="Gender"
-              v-model="gender"
-              :rules="requiredRule"
-              :items="['Male', 'Female', 'Unspecified']"
-            />
-            <cornie-input
-              :rules="requiredRule"
-              label="Email Address"
-              v-model="email"
-            />
-            <phone-input
-              v-model:code="code"
-              :rules="requiredRule"
-              label="Phone Number"
-              v-model="phone"
-              class="w-full"
-            />
-            <cornie-select
-              :rules="requiredRule"
-              label="Country"
-              v-model="nationState.country"
-              :items="nationState.countries"
-            />
-            <cornie-select
-              :rules="requiredRule"
-              label="State"
-              v-model="state"
-              :items="nationState.states"
-            />
-            <cornie-input :rules="requiredRule" label="City" v-model="city" />
-            <cornie-input
-              :rules="requiredRule"
-              label="Address"
-              v-model="address"
-            />
-          </div>
-          <div class="flex justify-end w-full mt-4 mb-3">
-            <button
-              class="rounded-full mt-5 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-              @click="show = false"
-            >
-              Cancel
-            </button>
-            <cornie-btn
-              :loading="loading"
-              type="submit"
-              class="bg-danger rounded-full text-white mt-5 py-1 px-4 font-bold focus:outline-none hover:opacity-90 w-1/3"
-            >
-              Save
-            </cornie-btn>
-          </div>
-        </v-form>
-      </div>
-    </modal>
-  </div>
+      </cornie-card-title>
+      <cornie-card-text class="flex-grow scrollable">
+        <div class="flex flex-col h-full w-full overflow-auto max-h-full">
+          <span class="flex items-center mt-2 mb-4">
+            <cornie-avatar-field v-model="image" />
+          </span>
+          <v-form @submit="submit">
+            <div class="mt-2 grid grid-cols-12 p-1 gap-y-2 gap-2">
+              <div class="col-span-6">
+                <cornie-input
+                  :rules="requiredRule"
+                  label="First Name"
+                  v-model="fname"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-input
+                  :rules="requiredRule"
+                  label="Last Name"
+                  v-model="lname"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-input
+                  :rules="requiredRule"
+                  label="Purpose"
+                  :modelValue="purpose"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-select
+                  label="Gender"
+                  v-model="gender"
+                  :rules="requiredRule"
+                  :items="['Male', 'Female', 'Unspecified']"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-input
+                  :rules="requiredRule"
+                  label="Email Address"
+                  v-model="email"
+                />
+              </div>
+              <div class="col-span-6">
+                <phone-input
+                  v-model:code="code"
+                  :rules="requiredRule"
+                  label="Phone Number"
+                  v-model="phone"
+                  class="w-full"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-select
+                  :rules="requiredRule"
+                  label="Country"
+                  v-model="nationState.country"
+                  :items="nationState.countries"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-select
+                  :rules="requiredRule"
+                  label="State"
+                  v-model="state"
+                  :items="nationState.states"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-input
+                  :rules="requiredRule"
+                  label="City"
+                  v-model="city"
+                />
+              </div>
+              <div class="col-span-6">
+                <cornie-input
+                  :rules="requiredRule"
+                  label="Address"
+                  v-model="address"
+                />
+              </div>
+            </div>
+            <div class="flex justify-end w-full mt-4 mb-3">
+              <button
+                class="rounded-md mt-5 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+                @click="show = false"
+              >
+                Cancel
+              </button>
+              <cornie-btn
+                :loading="loading"
+                type="submit"
+                class="bg-danger rounded-md text-white mt-5 py-1 px-4 font-bold focus:outline-none hover:opacity-90 w-1/3"
+              >
+                Save
+              </cornie-btn>
+            </div>
+          </v-form>
+        </div>
+      </cornie-card-text>
+    </cornie-card>
+  </cornie-dialog>
 </template>
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import Modal from "@/components/modal.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieCard from "@/components/cornie-card";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieInput from "@/components/cornieinput.vue";
@@ -122,12 +143,14 @@ const contact = namespace("contact");
 @Options({
   name: "AddContactInfo",
   components: {
+    ...CornieCard,
     ArrowLeftIcon,
-    Modal,
+    CornieDialog,
     CornieSelect,
     CornieInput,
     PhoneInput,
     CornieAvatarField,
+    CornieIconBtn,
   },
 })
 export default class AddContact extends Vue {

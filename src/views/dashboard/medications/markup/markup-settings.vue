@@ -92,7 +92,8 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-          @click="submitMarkup"
+        :loading="loading"
+          @click="submit"
           class="bg-danger text-white m-5 px-9 font-bold"
         >
           Save
@@ -121,14 +122,16 @@ import RegistrationChart from "../registration-chart.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
 import CheckInDialog from "../dialogs/checkin-dialog.vue";
 import AdvancedFilter from "../dialogs/advanced-filter.vue";
+import IMarkup from '@/types/IMarkup'
 
 import AddFunction from "../add-function.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { cornieClient } from "@/plugins/http";
+import search from "@/plugins/search";
 
 const patients = namespace("patients");
-
+const markup = namespace("markup");
 @Options({
   name: "MarkupSettings",
   components: {
@@ -163,12 +166,8 @@ export default class MarkupSettings extends Vue {
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
 
-  @patients.State
-  patients!: IPatient[];
 
-  @patients.Action
-  deletePatient!: (id: string) => Promise<boolean>;
-
+  loading= false;
   filterAdvanced = false;
   filteredPatients: IPatient[] = [];
   checkInPatient!: IPatient;
@@ -200,53 +199,6 @@ export default class MarkupSettings extends Vue {
     return Math.floor((this.discountMargin / this.minimumPrice) * 100);
   }
 
-  headers = [
-    {
-      title: "MARKUP (%)",
-      key: "markup",
-      show: true,
-    },
-    {
-      title: "MARGIN (NGN)",
-      key: "margin",
-      show: true,
-    },
-    {
-      title: "MARGIN (%)",
-      key: "marginPercent",
-      show: true,
-    },
-    {
-      title: "MAX. DISCOUNT (%)",
-      key: "maxDiscount",
-      show: true,
-    },
-    {
-      title: "DISCOUNTED MARGIN (NGN)",
-      key: "discountMargin",
-      show: true,
-    },
-    {
-      title: "DISCOUNTED MARGIN (%)",
-      key: "discountMarginPercent",
-      show: true,
-    },
-  ];
-
-  get items() {
-    const patients = this.filteredPatients;
-    return patients.map((patient) => ({
-      name: `${patient.firstname} ${patient.lastname}`,
-      dob: this.printDOB(patient.dateOfBirth),
-      email: this.printEmail(patient),
-      phone: this.printPhone(patient),
-      mrn: this.printMRN(patient.mrn),
-      gender: patient.gender,
-      photo: patient.profilePhoto,
-      id: patient.id,
-    }));
-  }
-
   checkIn(patient: IPatient) {
     this.checkInPatient = patient;
     this.checkingIn = true;
@@ -270,6 +222,55 @@ export default class MarkupSettings extends Vue {
     return `XXXXX${mrn?.substr(31)}`;
   }
 
+locationAdminsCanSetForLocations = false;
+
+  async submit() {
+    this.loading = true;
+     await this.submitMarkup();
+    this.loading = false;
+  }
+    query = "";
+  markupId = "";
+
+
+   @markup.State
+  markups!: IMarkup[];
+
+
+  @markup.Action
+  fetchMarkups!: () => Promise<void>;
+
+  get items() {
+    const markups = this.markups.map((markup) => {
+      const markupId = markup.id;
+      return {
+        ...markup,
+      };
+    });
+    if (!this.query) return markups;
+    return search.searchObjectArray(markups, this.query);
+  }
+
+
+  // @Watch("markupId")
+  // idChanged() {
+  //   this.setServices();
+  // }
+
+  //  async setServices() {
+  //   const markup = this.markups as any;
+  //   if (!markup) return;
+  //   this.SUC = markup.sampleUnitCost;
+  //   this.PercentageMarkup = markup.markupPercentage;
+  //   this.CDM  = markup.cdmPrice;
+  //   this.margin = markup.margin;
+  //   this.percentageMargin = markup.maxAllowedDiscount;
+  //   this.minimumPrice = markup.minPrice;
+  //   this.discountMargin = markup.discountedMargin;
+  //   this.discountMarginPercentage = markup.discountedMarginPercentage;
+  //   this.locationAdminsCanSetForLocations = markup.locationAdminsCanSetForLocations;
+ 
+  // }
   async submitMarkup() {
     try {
       const { data } = await cornieClient().post(
@@ -287,11 +288,11 @@ export default class MarkupSettings extends Vue {
           locationAdminsCanSetForLocations: true,
         }
       );
+
       window.notify({
         msg: "Markup updated successfully",
         status: "success",
       });
-
       this.$router.push(`/dashboard/provider/settings/markup`);
     } catch (error) {
       window.notify({
@@ -301,17 +302,9 @@ export default class MarkupSettings extends Vue {
     }
   }
 
-  async removePatient(id: string) {
-    const confirmed = await window.confirmAction({
-      message: `Are you sure you want to delete this patient?
-       Removing patient from your register means patient
-      will no longer be associated with this provider`,
-      title: "Remove Patient",
-    });
-    if (!confirmed) return;
-    const deleted = await this.deletePatient(id);
-    if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
-    else window.notify({ msg: "Patient not deleted", status: "error" });
-  }
+async created(){
+  await this.fetchMarkups();
+}
+
 }
 </script>

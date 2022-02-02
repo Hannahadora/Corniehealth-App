@@ -210,25 +210,6 @@
                 />
               </div>
               <div class="w-full p-3" v-if="singleId == input.id">
-                <!-- <cornie-select
-                        :onChange="setValue"
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="adevice.type"
-                        label="TYPE"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="adevice.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
                 <cornie-select
                   class="required w-full"
                   :rules="required"
@@ -291,13 +272,6 @@
                   name="role"
                   class="bg-danger ml-16 focus-within:bg-danger px-6 shadow"
                 />
-                <!-- <input
-                      v-model="indexvalue"
-                      :value="input"
-                      @input="changed(input.id)"
-                      type="checkbox"
-                      class="bg-danger ml-32 focus-within:bg-danger px-6 shadow"
-                    />-->
               </div>
             </div>
           </div>
@@ -328,25 +302,6 @@
                 />
               </div>
               <div class="w-full p-3" v-if="singleId == patients.id">
-                <!-- <cornie-select
-                        :onChange="setValue"
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="apatient.type"
-                        label="TYPE"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="apatient.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
                 <cornie-select
                   class="required w-full"
                   :rules="required"
@@ -378,8 +333,6 @@
                 >
                 </cornie-select>
                 <div class="pb-5">
-                  <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Patients[index] && Patients[index].patientId" @click="clearActor('Patient',index)">Clear Actor</span>
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Patient',index)">Add Actor</span> -->
                 </div>
               </div>
             </div>
@@ -409,25 +362,6 @@
                 />
               </div>
               <div class="w-full p-3" v-if="singleId == input.id">
-                <!-- <cornie-select
-                        :onChange="setValue"
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="apatient.type"
-                        label="TYPE"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="apatient.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
                 <cornie-select
                   class="required w-full"
                   :rules="required"

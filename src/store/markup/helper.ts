@@ -1,10 +1,10 @@
 import { cornieClient } from "@/plugins/http";
 import IMarkup from "@/types/IMarkup";
 
-export async function fetchMarkups(practitionerId: string) {
+export async function fetchMarkups() {
   try {
     const response = await cornieClient().get(
-      `/api/v1/markup-discount/findAllByOrgId/${practitionerId}`
+      "/api/v1/markup-discount/findAllByOrgId/"
     );
     if (response.success) {
       return response.data;

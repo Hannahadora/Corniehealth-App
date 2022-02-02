@@ -16,7 +16,7 @@
               :onChange="setValue"
               :items="['Patient', 'Practitioner', 'Device']"
               v-model="type"
-              class="rounded-full"
+              class="rounded"
               placeholder="--Select--"
             >
             </cornie-select>
@@ -24,7 +24,7 @@
           <div class="relative bottom-2">
             <icon-input
               autocomplete="off"
-              class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
+              class="border border-gray-200 h-10 w-full rounded focus:outline-none"
               type="search"
               placeholder="Search"
               v-bind="$attrs"
@@ -40,120 +40,91 @@
           <div class="bg-gray-100">
             <div v-if="practitionerFilter">
               <div v-for="(input, index) in practitioners" :key="index">
-                <div class="flex justify-between space-x-4 w-full mt-2 p-3">
-                  <div class="w-full dflex space-x-4">
-                    <div class="w-10 h-10">
-                      <avatar
-                        class="mr-2"
-                        v-if="input.image"
-                        :src="input.image"
-                      />
-                      <avatar class="mr-2" v-else :src="localSrc" />
+                <div v-if="practionerId != input.id">
+                  <div class="flex justify-between space-x-4 w-full mt-2 p-3">
+                    <div class="w-full dflex space-x-4">
+                      <div class="w-10 h-10">
+                        <avatar
+                          class="mr-2"
+                          v-if="input.image"
+                          :src="input.image"
+                        />
+                        <avatar class="mr-2" v-else :src="localSrc" />
+                      </div>
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.firstName }}
+                          {{ input.lastName }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.jobDesignation }}
+                          {{ input.department }}
+                        </p>
+                      </div>
                     </div>
-                    <div class="w-full">
-                      <p class="text-xs text-dark font-semibold">
-                        {{ input.firstName }}
-                        {{ input.lastName }}
-                      </p>
-                      <p class="text-xs text-gray-500 font-meduim">
-                        {{ input.jobDesignation }}
-                        {{ input.department }}
-                      </p>
-                    </div>
+
+                    <!-- <p
+                      class="cursor-pointer pl-12 w-full text-xs text-danger"
+                      @click="availableFilter = true">
+                      View Availability
+                    </p> -->
+                    <p
+                      class="cursor-pointer float-right justify-end flex w-full text-xs mt-3  text-danger"
+                      @click="
+                        showProfile(
+                          input.id,
+                          input.firstName,
+                          input.lastName,
+                          input.type,
+                          input.activeState,
+                          input.image
+                        )"
+                    >
+                      View Profile
+                    </p>
+                    <cornie-radio
+                      v-model="newIndexvaluepractitioner"
+                      :value="input"
+                      @input="changed(input.id)"
+                      @click="apractitioner.practitionerId = input.id"
+                      name="practioner"
+                      class="bg-danger mb-5 focus-within:bg-danger px-6 shadow"
+                    />
                   </div>
-
-                  <p
-                    class="cursor-pointer pl-12 w-full text-xs text-danger"
-                    @click="
-                      showAvailable(input.id, input.firstName, input.lastName)
-                    "
-                  >
-                    View Availability
-                  </p>
-                  <p
-                    class="cursor-pointer w-full text-xs text-danger"
-                    @click="
-                      showProfile(
-                        input.id,
-                        input.firstName,
-                        input.lastName,
-                        input.type,
-                        input.activeState
-                      )
-                    "
-                  >
-                    View Profile
-                  </p>
-
-                  <cornie-radio
-                    v-model="newIndexvaluepractitioner"
-                    :value="input"
-                    @input="changed(input.id)"
-                    name="practioner"
-                    class="bg-danger mb-5 focus-within:bg-danger px-6 shadow"
-                  />
-                </div>
-                <div class="w-full p-3" v-if="singleId == input.id">
-                  <!-- <cornie-select
-                        :onChange="setValue"
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="apractitioner.type"
-                        label="TYPE"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                  <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="apractitioner.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                  <!-- <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="apractitioner.required"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
-                      </div> -->
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="['Required', 'Information Only', 'Optional']"
-                    v-model="apractitioner.required"
-                    label="required"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <date-picker
-                    class="w-full mb-5"
-                    label="period"
-                    v-model="apractitioner.period"
-                    :rules="required"
-                  />
-                  <cornie-select
-                    class="required w-full"
-                    :rules="required"
-                    :items="[
-                      'Out-Patient',
-                      ' In-Patient',
-                      ' Virtual',
-                      'HomeCare',
-                    ]"
-                    v-model="apractitioner.consultationMedium"
-                    label="consultation medium"
-                    placeholder="--Select--"
-                  >
-                  </cornie-select>
-                  <div class="pb-5">
-                    <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].practitionerId" @click="clearActor('Practitioner',index)">Clear Actor</span>
-                      <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Practitioner',index)">Add Actor</span> -->
+                  <div class="w-full p-3" v-if="singleId == input.id">
+                    <cornie-select
+                      class="required w-full"
+                      :rules="required"
+                      :items="['Required', 'Information Only', 'Optional']"
+                      v-model="apractitioner.required"
+                      label="required"
+                      placeholder="--Select--"
+                    >
+                    </cornie-select>
+                    <date-picker
+                      class="w-full mb-5"
+                      label="period"
+                      v-model="apractitioner.period"
+                      :rules="required"
+                    />
+                    <cornie-select
+                      class="required w-full"
+                      :rules="required"
+                      :items="[
+                        'Out-Patient',
+                        ' In-Patient',
+                        ' Virtual',
+                        'HomeCare',
+                      ]"
+                      v-model="apractitioner.consultationMedium"
+                      label="consultation medium"
+                      placeholder="--Select--"
+                    >
+                    </cornie-select>
+                    <div class="pb-5">
+                      <!-- <span class=" float-right cursor-pointer text-danger text-xs font-semibold"  v-if="Practitioners[index] && Practitioners[index].practitionerId" @click="clearActor('Practitioner',index)">Clear Actor</span>
+                        <span class=" float-right cursor-pointer text-danger text-xs font-semibold" v-else @click="applyActor('Practitioner',index)">Add Actor</span> -->
+                    </div>
                   </div>
                 </div>
               </div>
@@ -187,6 +158,7 @@
                   v-model="newIndexvaluedevice"
                   :value="input"
                   @input="changed(input.id)"
+                   @click="adevice.deviceId = input.id"
                   name="device"
                   class="bg-danger float-right focus-within:bg-danger px-6 shadow"
                 />
@@ -301,6 +273,7 @@
                   v-model="newIndexvaluepatient"
                   :value="input"
                   @input="changed(input.id)"
+                  @click="apatient.patientId = input.id"
                   name="patients"
                   class="bg-danger float-right focus-within:bg-danger px-6 shadow"
                 />
@@ -381,56 +354,56 @@
             v-if="practitionerFilter"
           >
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
             </button>
             <button
               @click="apply('Practitioner')"
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+              class="bg-danger rounded text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
             >
               Add
             </button>
           </div>
           <div class="flex justify-end w-full mt-auto" v-if="deviceFilter">
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
             </button>
             <button
               @click="apply('Device')"
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+              class="bg-danger rounded text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
             >
               Add
             </button>
           </div>
           <div class="flex justify-end w-full mt-auto" v-if="roleFilter">
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
             </button>
             <button
               @click="apply('Role')"
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+              class="bg-danger rounded text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
             >
               Add
             </button>
           </div>
           <div class="flex justify-end w-full mt-auto" v-if="patientFilter">
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
             </button>
             <button
               @click="apply('Patient')"
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+              class="bg-danger rounded text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
             >
               Add
             </button>
@@ -439,23 +412,26 @@
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
-  <availability
-    v-model:visible="availableFilter"
+   <availability
+    v-model="availableFilter"
     :available="available"
     :name="practitionername"
     :practitionerId="singleId"
   />
   <profile
-    v-model:visible="profileFilter"
+    v-model="profileFilter"
     :profile="practitioners"
     :name="practitionername"
     :activeState="activeState"
     :type="practitionerType"
     :profileId="singleId"
+    :image="image"
   />
+ 
 </template>
-<script>
-import { setup } from "vue-class-component";
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import Modal from "@/components/practitionermodal.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
@@ -475,9 +451,8 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
-const copy = (original) => JSON.parse(JSON.stringify(original));
 
-export default {
+@Options({
   name: "actors",
   components: {
     ...CornieCard,
@@ -497,123 +472,109 @@ export default {
     Avatar,
     CornieRadio,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    showPartcipants: {
-      type: Boolean,
-    },
-    columns: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    preferred: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    available: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    appointmentId: {
-      type: String,
-    },
-    practitioners: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    devices: {
-      type: Array,
-    },
-    roles: {
-      type: Array,
-    },
-    patients: {
-      type: Array,
-    },
-  },
-  data() {
-    return {
-      selected: 0,
-      localSrc: require("../../../../assets/img/placeholder.png"),
-      participantDetail: {
+})
+export default class Actors extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  @Prop({ type: String, default: "" })
+  practionerId!: string;
+
+
+  @Prop({ type: String, default: "" })
+  appointmentId!: string;
+
+  // @Prop({ type: Boolean, default: false })
+  // visible: boolean;
+
+  // @Prop({ type: Boolean, default: false })
+  // showPartcipants: boolean;
+
+
+  // @Prop({ type: Array, default: () => [] })
+  // available!: object;
+
+  @Prop({ type: Array, default: () => [] })
+  columns!: object;
+
+  @Prop({ type: Array, default: () => [] })
+  preferred!: object;
+
+  @Prop({ type: Array, default: () => [] })
+  practitioners!: object;
+
+  @Prop({ type: Array, default: () => [] })
+  devices!: object;
+
+  @Prop({ type: Array, default: () => [] })
+  roles!: object;
+
+  @Prop({ type: Array, default: () => [] })
+  patients!: object;
+
+
+    selected = 0;
+      localSrc = require("../../../../assets/img/placeholder.png");
+      participantDetail = {
         consultationMedium: "",
         period: "",
         required: "",
-      },
-      apractitioner: {
+      };
+      image="";
+       singlePracId = "";
+      apractitioner = {
         required: false,
         consultationMedium: "",
         period: "",
-        practitionerId: "",
-      },
-      apatient: {
+        id:"",
+        practitionerId:"",
+      } as any;
+      apatient = {
         required: false,
         consultationMedium: "",
         period: "",
-        patientId: "",
-      },
-      adevice: {
+        id:"",
+        patientId:"",
+      } as any;
+      adevice = {
         required: false,
         consultationMedium: "",
         period: "",
-        deviceId: "",
-      },
-      Patients: [],
-      Practitioners: [],
-      Devices: [],
-      activeState: "",
-      practitionerType: "",
-      columnsProxy: [],
-      indexvalue: [],
-      indexvaluepractitioner: [],
-      indexvaluepatient: [],
-      indexvaluedevice: [],
-      newIndexvaluepractitioner: {},
-      newIndexvaluedevice: {},
-      newIndexvaluepatient: {},
-      valueid: [],
-      available: [],
-      type: "Practitioners",
-      singleId: "",
-      availableFilter: false,
-      practitionername: "",
-      profileFilter: false,
-      practitionerFilter: true,
-      deviceFilter: false,
-      patientFilter: false,
-      roleFilter: false,
-      practitionerId: "",
-    };
-  },
-  watch: {
-    columns(val) {
-      this.columnsProxy = copy(val);
-    },
-    visible() {
-      const active = this.preferred.length > 0 ? this.preferred : this.columns;
-      //this.columnsProxy = copy([...active]);
-    },
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
-  methods: {
-    setValue() {
+        id: "",
+        deviceId:""
+      } as any;
+      Patients = [];
+      Practitioners = [];
+      Devices = [];
+      activeState = "";
+      practitionerType = "";
+      columnsProxy = [];
+      indexvalue = [];
+      indexvaluepractitioner = [];
+      indexvaluepatient = [];
+      indexvaluedevice = [];
+      newIndexvaluepractitioner = {};
+      newIndexvaluedevice = {};
+      newIndexvaluepatient = {};
+      valueid = [];
+      practitionerprofile = [];
+      available = [];
+     
+      type = "Practitioners";
+      singleId = "";
+      availableFilter = false;
+      practitionername = "";
+      profileFilter = false;
+      practitionerFilter = true;
+      deviceFilter = false;
+      patientFilter = false;
+      roleFilter = false;
+      practitionerId = "";
+
+  setValue() {
       if (this.type == "Practitioner") {
         this.practitionerFilter = true;
         this.patientFilter = false;
@@ -635,8 +596,8 @@ export default {
         this.patientFilter = false;
         this.deviceFilter = false;
       }
-    },
-    async reset(value) {
+    }
+    async reset(value:string) {
       if (value == "Practitioner") {
         this.apractitioner = { ...this.Practitioners };
       } else if (value == "Patient") {
@@ -644,125 +605,97 @@ export default {
       } else if (value == "Device") {
         this.adevice = { ...this.Devices };
       }
-    },
-    clearActor(value, index) {
-      if (value == "Practitioner") {
-        // this.apractitioner.id = this.singleId;
-        this.apractitioner.practitionerId = this.singleId;
-        //this.Practitioners = this.apractitioner[index];
-        this.Practitioners.splice(index, 1);
-      } else if (value == "Patient") {
-        //this.apatient.id = this.singleId;
-        this.apatient.patientId = this.singleId;
-        //this.Patients = this.apatient[index];
-        this.Patients.splice(index, 1);
-      } else if (value == "Device") {
-        // this.adevice.id = this.singleId;
-        this.adevice.deviceId = this.singleId;
-        this.Devices.splice(index, 1);
-      }
-      this.reset(value);
-    },
-    applyActor(value) {
-      if (value == "Practitioner") {
-        // this.apractitioner.id = this.singleId;
-        this.apractitioner.practitionerId = this.singleId;
-        this.Practitioners.push(this.apractitioner);
-        this.indexvaluepractitioner.push(this.newIndexvaluepractitioner);
-      } else if (value == "Patient") {
-        // this.apatient.id = this.singleId;
-        this.apatient.patientId = this.singleId;
-        this.Patients.push(this.apatient);
-        this.indexvaluepatient.push(this.newIndexvaluepatient);
-      } else if (value == "Device") {
-        //  this.adevice.id = this.singleId;
-        this.adevice.deviceId = this.singleId;
-        this.Devices.push(this.adevice);
-        this.indexvaluedevice.push(this.newIndexvaluedevice);
-      }
-      // this.reset(value);
-    },
-    apply(value) {
-      this.applyActor(value);
+    }
+ 
+    apply(value:string) {
+      // this.applyActor(value);
+      console.log(this.indexvaluepractitioner,"VALUES")
       this.$emit(
         "update:preferred",
-        this.indexvaluepractitioner,
-        this.indexvaluepatient,
-        this.indexvaluedevice,
+        [this.newIndexvaluepractitioner],
+       [ this.newIndexvaluepatient],
+        [this.newIndexvaluedevice],
         value,
-        this.Practitioners,
-        this.Patients,
-        this.Devices,
+        [this.apractitioner],
+        [this.apatient],
+        [this.adevice],
         this.singleId
       );
       this.indexvalue = [];
       this.valueid = [];
-      this.value = [];
+      // this.value = [];
       this.show = false;
-    },
-    showAvailable(value, firstname, lastname) {
+    }
+    showAvailable(value:string, firstname:string, lastname:string) {
       this.singleId = value;
       this.availableFilter = true;
       this.practitionername = firstname + " " + lastname;
-      this.viewAvialaibilty();
-    },
-    showProfile(value, firstname, lastname, type, state) {
+      // this.viewAvialaibilty();
+    }
+    showProfile(value:string, firstname:string, lastname:string, type:string, state:string,image:string) {
       this.singleId = value;
       this.profileFilter = true;
       this.practitionername = firstname + " " + lastname;
       this.practitionerType = type;
       this.activeState = state;
+      this.image = image;
 
-      this.viewProfile();
-    },
-    select(i) {
+      // this.viewProfile();
+    }
+    select(i:any) {
       this.selected = i;
-    },
-    changed(index) {
+    }
+    changed(index:string) {
       this.singleId = index;
-      if (this.setValue == "Practitioner") {
-        this.singleId = index;
+      if (this.type == "Practitioner") {
+        this.singlePracId = index;
       }
       //this.valueid.push(index);
-    },
+    }
     async viewAvialaibilty() {
+      if(this.singlePracId == ''){
+        this.singlePracId = this.practionerId;
+      }
       const SinglePractitioner = cornieClient().get(
-        `/api/v1/schedule/practitioner/${this.apractitioner.practitionerId}`
+        `/api/v1/schedule/practitioner/${this.singlePracId}`
       );
       const response = await Promise.all([SinglePractitioner]);
       this.available = response[0].data;
-    },
-    async viewProfile() {
-      const SinglePractitioner = cornieClient().get(
-        `/api/v1/schedule/practitioner/${this.apractitioner.practitionerId}`
-      );
-      const response = await Promise.all([SinglePractitioner]);
-      this.practitionerprofile = response[0].data;
-      return response[0].data;
-    },
-    async viewAppointemnt() {
-      try {
-        const response = await cornieClient().get(
-          "/api/v1/appointment",
-          this.appointmentId
-        );
-        if (response.success) {
-          this.columnsProxy = response.data;
-        }
-      } catch (error) {
-        this.show = false;
-        console.error(error);
-      }
-    },
-  },
-  mounted() {
-    this.viewAppointemnt();
-    this.columnsProxy = copy([...this.indexvalue]);
-  },
-  created() {
+    }
+    // async viewProfile() {
+    //   const SinglePractitioner = cornieClient().get(
+    //     `/api/v1/schedule/practitioner/${this.apractitioner.practitionerId}`
+    //   );
+    //   const response = await Promise.all([SinglePractitioner]);
+    //   this.practitionerprofile = response[0].data;
+    //   return response[0].data;
+    // }
+    // async viewAppointemnt() {
+    //   try {
+    //     const response = await cornieClient().get(
+    //       "/api/v1/appointment",
+    //       this.appointmentId
+    //     );
+    //     if (response.success) {
+    //       this.columnsProxy = response.data;
+    //     }
+    //   } catch (error) {
+    //     this.show = false;
+    //     console.error(error);
+    //   }
+    // }
+
+   mounted() {
+   // this.viewAppointemnt();
+  }
+  async created() {
+    await this.viewAvialaibilty();
     this.setValue();
-  },
-};
+  }
+}
+
+
+
 </script>
 <style scoped>
 .dflex {

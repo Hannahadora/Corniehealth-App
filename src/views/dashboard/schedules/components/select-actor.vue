@@ -71,7 +71,7 @@
 
         <div class="w-full flex justify-end mt-6">
           <corniebtn
-            class="bg-danger p-2 px-8 rounded-full text-white"
+            class="bg-danger py-2 px-8 rounded text-white"
             @click="$emit('close')"
           >
             <span>Close</span>

@@ -10,6 +10,17 @@ export async function getSchedules() {
   }
   return {};
 }
+export async function singlePractitonerSlot(practitionerId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/slot/practitioner/${practitionerId}`
+    );
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {}
+}
+
 
 export async function deleteSchedule(id: string) {
   try {

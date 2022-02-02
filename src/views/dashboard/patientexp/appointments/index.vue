@@ -20,16 +20,13 @@
       </span>
 
       <div class="w-full mt-6">
-        <span class="flex justify-end w-full mb-8">
+        <!-- <span class="flex justify-end w-full mb-8">
           <button
             class="bg-danger rounded text-white font-semibold mt-5 py-2 pr-5 pl-5 px-3 mb-5 focus:outline-none hover:opacity-90"
-            @click="
-              $router.push('/dashboard/provider/experience/add-appointment')
-            "
-          >
+            @click="$router.push('/dashboard/provider/experience/add-appointment')">
             Create Appointment
           </button>
-        </span>
+        </span> -->
         <div class="w-full pb-7 mb-8">
           <cornie-table :columns="rawHeaders" v-model="items">
             <template #appointmentType-header="{}">
@@ -316,6 +313,8 @@
       </div>
     </div>
   </div>
+  <notes-section   @update:preferred="makeNotes"
+      v-model:visible="noteShow" :appointmentId="appointmentId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -352,6 +351,7 @@ import EncounterIcon from "@/components/icons/encounter.vue";
 import CheckoutIcon from "@/components/icons/checkout.vue";
 import Checkin from "../../visits/components/checkin.vue";
 import SideModal from "../../schedules/components/side-modal.vue";
+import NotesSection from './notes.vue'
 
 import EmptyState from "./emptyState.vue";
 
@@ -363,6 +363,7 @@ const appointment = namespace("appointment");
     //Close,
     SortIcon,
     ThreeDotIcon,
+    NotesSection,
     SearchIcon,
     PrintIcon,
     TableRefreshIcon,
@@ -399,6 +400,7 @@ export default class AppoitmentExistingState extends Vue {
   showPartcipants = false;
   query = "";
   search = "";
+  noteShow = false;
 
   selectedStatus = 0;
   filterByType: any = [];
@@ -407,6 +409,10 @@ export default class AppoitmentExistingState extends Vue {
   currentVisitId = "";
   onePatientId = "";
 
+makeNotes(value:string){
+  this.noteShow = true
+  this.appointmentId = value;
+}
   activeTab = 0;
   showEditPane = false;
   showViewPane = false;

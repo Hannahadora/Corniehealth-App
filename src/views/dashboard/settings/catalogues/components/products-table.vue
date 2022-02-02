@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="w-full">
+    <div class="w-full" v-if="products.lenght >0">
       <cornie-table v-model="items" :columns="headers">
         <template #name="{ item }">
           <div
@@ -63,6 +63,16 @@
         </template>
       </cornie-table>
     </div>
+     <div class="w-full flex flex-col justify-center items-center h-full" v-else>
+      <img src="@/assets/img/product.svg" />
+      <h3 class="text-center mt-5">Start by adding a product</h3>
+      <button
+        class="bg-danger font-semibold rounded text-sm text-white mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
+      >
+        Add Product
+      </button>
+    </div> 
+    <!-- <span>  @click="$router.push('newproduct')"</span>  -->
   </div>
 </template>
 
@@ -77,9 +87,10 @@ import AnalyticsIcon from "@/components/icons/analytics.vue";
 import EditIcon from "@/components/icons/edit-purple.vue";
 import DeactivateIcon from "@/components/icons/deactivate.vue";
 import { namespace } from "vuex-class";
-import { ICatalogueProduct } from "@/types/ICatalogue";
 import { Prop } from "vue-property-decorator";
+import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 
+const catalogue = namespace("catalogues");
 @Options({
   components: {
     CornieTable,
@@ -139,7 +150,18 @@ export default class ProductsTable extends Vue {
   @Prop({ type: Array, fault: [] })
   items!: ICatalogueProduct[];
 
-  async created() {}
+ @catalogue.State
+  services!: ICatalogueService[];
+
+  @catalogue.State
+  products!: ICatalogueProduct[];
+
+  @catalogue.Action
+  getProducts!: () => Promise<void>;
+
+  async created() {
+    await this.getProducts();
+  }
 }
 </script>
 

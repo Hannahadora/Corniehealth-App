@@ -39,14 +39,14 @@
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            class="border-primary border-2 px-6 mr-3 rounded text-primary"
           >
             Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             @click="onSave"
-            class="text-white bg-danger px-6 rounded-xl"
+            class="text-white bg-danger px-6 rounded"
           >
             Save
           </cornie-btn>

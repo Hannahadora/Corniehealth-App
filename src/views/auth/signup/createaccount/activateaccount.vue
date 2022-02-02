@@ -196,6 +196,7 @@ export default class ActivateAccount extends Vue {
     if (this.password != this.confirmation) return;
     if (!this.valid) return;
     const errMsg = "Account not activated";
+    this.loading = true;
     try {
       const data = await quantumClient().post(
         "/auth/account/activate/",
@@ -204,6 +205,7 @@ export default class ActivateAccount extends Vue {
 
       if (!data.success) {
         this.showText = true;
+        this.loading= false
         return window.notify({ msg: errMsg });
       }
       store.commit("user/setLoginInfo", data);

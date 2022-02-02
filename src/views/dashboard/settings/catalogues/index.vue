@@ -5,7 +5,7 @@
         <span
           class="flex flex-col w-full justify-center font-bold text-xl text-primary py-2"
         >
-          Catalogues
+          Charge Description Master	
         </span>
         <!-- <registration-chart class="w-full" :height="100" /> -->
       </div>
@@ -18,7 +18,7 @@
             'active-color active-tab': activeTab === 0,
             inactive: activeTab !== 0,
           }"
-          >Products</a
+          >Medicines & Healthcare Products</a
         >
         <a
           class="cursor-pointer p-4"
@@ -27,7 +27,7 @@
             'active-color active-tab': activeTab === 1,
             inactive: activeTab !== 1,
           }"
-          >Services</a
+          >Healthcare Services</a
         >
       </div>
 
@@ -36,7 +36,7 @@
           <div class="w-12/12 flex justify-between card p-3 bg-red">
             <div class="w-full">
               <p class="inactive">Total Number of Items</p>
-              <p class="card-number">80</p>
+              <p class="card-number">{{total}}</p>
             </div>
             <total-icon />
           </div>
@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <span class="w-full bg-danger">
+      <span class="w-full bg-danger" v-if="services.length > 0 || products.length > 0">
         <span class="flex justify-end w-full m4-5">
           <cornie-btn
             class="m-5 px-12 font-semibold rounded"
@@ -199,6 +199,11 @@ export default class ExistingState extends Vue {
         ).toLocaleDateString(),
       };
     });
+  }
+
+  get total(){
+    const totalitems = this.products.length + this.services.length;
+    return totalitems;
   }
 
   createNew() {

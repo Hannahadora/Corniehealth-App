@@ -8,6 +8,7 @@ export async function remeberSettings(
 ) {
   if (!to.matched.some(record => record.meta.settings)) return;
   if (!to.name) return;
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const { type, ...rest } = to.params;
   if (rest && Object.entries(rest).length > 0) {
     return;

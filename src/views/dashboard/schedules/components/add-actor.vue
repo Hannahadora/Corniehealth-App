@@ -1,40 +1,71 @@
 <template>
-  <div class="container-fluid">
-    <div class="w-full px-2">
-      <div>
-        <p class="text-base text-gray-500 my-3">
-          Search actor/practitioner name to add to this schedule
-        </p>
-        <div class="w-full">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title class="w-full">
+         <cornie-icon-btn @click="show = false">
+                <arrow-left-icon />
+        </cornie-icon-btn>
+        <div class="w-full flex items-center justify-between">
+         
+          <h2 class="font-bold text-xl text-primary float-right ml-3 -mt-0.5">
+            Actors
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+       <cornie-card-text class="flex-grow scrollable">
+        <span class="text-sm my-3 mb-5">
+          All actors available from {{ range }} for appointment bookings.
+        </span>
+        <div class="w-full mt-5">
           <div class="w-full pb-2" style="border-bottom: 1px dashed #c2c7d6">
-            <SearchBox :items="actors">
-              <template #item="data">
-                <p class="my-2 flex justify-between">
-                  <span>{{ data.item.display }}</span>
-                  <span
-                    @click="addActor(data.item)"
-                    class="text-danger font-semibold text-lg cursor-pointer"
-                    >Add</span
-                  >
-                </p>
-              </template>
-            </SearchBox>
+              <search-section placeholder="Search Actor" class="rounded-full w-full"/>
           </div>
           <div class="container flex flex-col mt-4">
-            <div class="w-full">
-              <p class="font-semibold text-base">
-                Actors currently associated with this schedule
-              </p>
-            </div>
             <div
               class="w-full flex items-center my-2"
-              v-for="(person, index) in persons"
+              v-for="(input, index) in actors"
               :key="index"
             >
-              <div class="w-2/12">
+            
+                  <div class="w-full grid grid-cols-2 gap-4">
+                    <div class="w-full flex space-x-4">
+                      <div class="w-10 h-10">
+                        <avatar
+                          class="mr-2"
+                          v-if="input.user?.image"
+                          :src="input.user?.image"
+                        />
+                        <avatar class="mr-2" v-else :src="localSrc" />
+                      </div>
+                      <div>
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.user?.firstName }}
+                          {{ input.user?.lastName }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input?.jobDesignation }}
+                          {{ input?.department }}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <span
+                        class="cursor-pointer w-full text-yellow-400 text-xs font-semibold float-right flex justify-end"
+                        @click="showAvailable(input,input.id)">
+                        View Availability
+                      </span>
+                    
+                    </div>
+                  </div>
+           
+              <!-- <div class="w-2/12">
                 <img
-                  v-if="person.image"
-                  :src="person.image"
+                  v-if="person?.user?.image"
+                  :src="person?.user?.image"
                   class="rounded-full border"
                   alt="Image"
                 />
@@ -48,7 +79,7 @@
               <div class="w-10/12 ml-2">
                 <span class="flex justify-between">
                   <span class="text-base text-gray-500"
-                    >{{ person.firstName }} {{ person.lastName ?? "" }}</span
+                    >{{ person?.user?.firstName }} {{ person?.user?.lastName ?? "" }}</span
                   >
                   <span
                     class="text-danger font-semibold"
@@ -56,46 +87,71 @@
                     ><a class="text-warning"><DeleteIcon /></a
                   ></span>
                 </span>
-              </div>
+              </div> -->
+
+
             </div>
           </div>
         </div>
+       </cornie-card-text>
 
-        <div class="w-full flex justify-end mt-6">
-          <corniebtn
-            class="bg-danger p-2 px-8 rounded-full text-white"
-            @click="$emit('close')"
+         <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="bg-danger py-1 px-10 rounded text-white"
           >
-            <span>Close</span>
-          </corniebtn>
-        </div>
-      </div>
-    </div>
-  </div>
+            Close
+          </cornie-btn>
+
+        </cornie-card-text>
+      </cornie-card>
+
+    </cornie-card>
+  </cornie-dialog>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
-import { Prop } from "vue-property-decorator";
+import { Prop,PropSync } from "vue-property-decorator";
 import DeleteIcon from "@/components/icons/delete.vue";
 import SearchBox from "./search-box.vue";
 import { namespace } from "vuex-class";
+import CornieCard from "@/components/cornie-card";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
+import Avatar from "@/components/avatar.vue";
+import SearchSection from "@/components/autocomplete.vue"
 
 const schedules = namespace("schedules");
 
 @Options({
   components: {
+     ...CornieCard,
     IconInput,
     SearchIcon,
     DeleteIcon,
+    Avatar,
+    SearchSection,
     SearchBox,
+    CornieIconBtn,
+    ArrowLeftIcon,
+    CornieDialog,
+    CancelIcon
+
   },
 })
 export default class AllActors extends Vue {
   search = "";
   data: any;
+
+   @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
 
   @schedules.Action
   removePractitioner!: (reqData: any) => Promise<boolean>;
@@ -106,8 +162,11 @@ export default class AllActors extends Vue {
   @Prop()
   schedule!: any;
 
-  @Prop()
+  @Prop({ type: Array, default: [] })
   actors!: any;
+
+  @Prop({ type: String, default: "" })
+  range!: string;
 
   actorSelected(actor: any) {
     this.$emit("actoradded", { id: actor.code, firstName: actor.display });
@@ -121,6 +180,16 @@ export default class AllActors extends Vue {
     )
       return [];
     return this.schedule.practitioners;
+  }
+
+   showAvailable(practitioner:any,value:string){
+    console.log(practitioner,value,"HELLO First")
+   this.$emit('one-id',practitioner,value);
+      this.show = false;
+
+  }
+  async done(){
+    this.show = false;
   }
 
   async addActor(actor: any) {

@@ -28,14 +28,14 @@
         <cornie-card-text class="flex justify-end">
           <div class="flex justify-end w-full mt-auto">
             <button
-              class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
             </button>
             <button
               @click="apply('Practitioner')"
-              class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+              class="bg-danger rounded text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
             >
               Add
             </button>

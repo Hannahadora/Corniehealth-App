@@ -30,6 +30,7 @@ export default interface ISchedule {
 export interface Slot {
   startTime?: string;
   endTime?: string;
+  date:string;
   id?: string;
   scheduleId?: string;
   description?: string;
