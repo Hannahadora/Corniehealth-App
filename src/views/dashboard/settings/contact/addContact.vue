@@ -232,6 +232,7 @@ export default class AddContact extends Vue {
     this.loading = true;
     this.isUpdate ? await this.update() : await this.create();
     this.loading = false;
+    this.show = false;
   }
 
   async create() {
@@ -240,8 +241,11 @@ export default class AddContact extends Vue {
         "/api/v1/contacts",
         this.payload
       );
-      if (response.success) this.updateContacts([response.data]);
-      notify({ msg: "Contact Created", status: "success" });
+      if (response.success) {
+        this.updateContacts([response.data]);
+        notify({ msg: "Contact Created", status: "success" });
+        this.show = false;
+      }
     } catch (error) {
       notify({ msg: "Contact not Created", status: "error" });
     }
@@ -253,8 +257,11 @@ export default class AddContact extends Vue {
         `/api/v1/contacts/${this.id}`,
         this.payload
       );
-      if (response.success) this.updateContacts([response.data]);
-      notify({ msg: "Contact Updated", status: "success" });
+      if (response.success) {
+        this.updateContacts([response.data]);
+        notify({ msg: "Contact Updated", status: "success" });
+        this.show = false;
+      }
     } catch (error) {
       notify({ msg: "Contact not updated", status: "error" });
     }

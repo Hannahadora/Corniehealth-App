@@ -37,6 +37,7 @@ export default interface IPractitioner {
   locations: [];
   authorizedLocations: [];
   identifier: string;
+  locationRoles: [] 
 }
 
 export interface HoursOfOperation {
