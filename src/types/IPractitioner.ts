@@ -44,6 +44,7 @@ export default interface IPractitioner {
   period: Period;
   locationRoles?: PractitionerLocationRole[];
   identifier: string;
+  locationRoles: [] 
 }
 
 export interface HoursOfOperation {

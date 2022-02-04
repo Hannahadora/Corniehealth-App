@@ -27,6 +27,7 @@
     <add-care-partners
       :visible="showAddCarePartners"
       @close-add-care-partner="showAddCarePartners = false"
+      @open-add-care-partner="showAddCarePartners = true"
     />
   </main>
 </template>

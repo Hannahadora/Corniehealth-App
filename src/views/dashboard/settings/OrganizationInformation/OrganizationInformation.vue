@@ -36,11 +36,11 @@
             />
           </div>
           <div class="col-span-4">
-            <provider-input
+            <cornie-input
               label="Domain Name"
               placeholder="https://providername"
-              :rules="requiredRule"
               v-model="DomainName"
+              disabled
             />
           </div>
           <div class="col-span-4">
@@ -126,7 +126,7 @@
 
         <div class="my-8 flex items-center gap-x-4 justify-end">
           <cornie-btn class="border border-primary">
-            Revert Changes
+            Cancel Changes
           </cornie-btn>
           <cornie-btn :loading="loading" class="bg-danger text-white px-2">
             Save Changes
@@ -228,11 +228,14 @@ export default class PracticeInfo extends Vue {
     try {
       await cornieClient().post("/api/v1/organization", this.payload);
       window.notify({
-        msg: "Provider information updated sucessfully",
+        msg: "Practice information updated sucessfully",
         status: "success",
       });
     } catch (error) {
-      window.notify({ msg: "Provider information not updated", status: "error" });
+      window.notify({
+        msg: "Practice information not updated",
+        status: "error",
+      });
     }
     this.loading = false;
   }
@@ -261,7 +264,7 @@ export default class PracticeInfo extends Vue {
     this.alias = data.alias || "";
     this.OrganizationType = data.organisationType || "";
     this.RegistrationNumber = data.registrationNumber || "";
-    this.DomainName = data.domainName || "";
+    this.DomainName = `https://${data.domainName}.corniehealth.com` || "";
     this.OrganizationIdentifier = data.identifier || "";
     this.ProviderProfile = data.providerProfile || "";
     this.IncorporationType = data.incorporationType || "";

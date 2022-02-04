@@ -4,7 +4,6 @@
     width="15"
     height="14"
     viewBox="0 0 15 14"
-    fill="none"
   >
     <path d="M14.5 8H8.5V14H6.5V8H0.5V6H6.5V0H8.5V6H14.5V8Z" />
   </svg>

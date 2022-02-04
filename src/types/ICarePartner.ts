@@ -3,6 +3,7 @@ import IPhone from "./IPhone";
 
 export default interface ICarePartner {
   id?: string;
+  status: string;
   name: string;
   organisationType: string;
   email: string | IEmail;

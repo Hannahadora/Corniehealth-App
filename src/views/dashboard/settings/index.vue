@@ -1,8 +1,8 @@
 <template>
-  <div class="mt-2 mb-5 rounded-lg bg-white w-full overflow-auto h-full">
-    <!-- <div class="w-full h-full p-3 border-r-2 overflow-hidden">
-      <settings-sidebar class="overflow-hidden" />
-    </div> -->
+  <div
+    class="mt-2 mb-5 rounded-lg w-full overflow-auto h-full"
+    :class="$route.name === 'Create a Care Team' ? '' : 'bg-white'"
+  >
     <div class="p-3 w-full h-full">
       <router-view />
     </div>
