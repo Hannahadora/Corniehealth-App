@@ -13,7 +13,7 @@
               <info></info>
             </template>
             <template v-slot:default>
-              <div class="w-full grid grid-cols-3 gap-5 p-5">
+              <div class="w-full grid grid-cols-3 gap-5 mt-5">
                 <cornie-input label="Identifier" placeholder="XXXX" disabled />
                 <cornie-select
                   :onChange="setValue(options.text)"
