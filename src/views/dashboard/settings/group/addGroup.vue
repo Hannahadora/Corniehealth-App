@@ -26,7 +26,7 @@
                 </cornie-select>
                 <fhir-input
                   reference="http://hl7.org/fhir/ValueSet/group-type"
-                  class="w-auto"
+                  class="w-full"
                   :rules="required"
                   v-model="type"
                   label="Type"
@@ -331,7 +331,7 @@ export default class AddGroup extends Vue {
   memberToDelete = "" as string;
 
   async updateActorsList(actors: any) {
-    this.actorsList = [...actors];
+    this.actorsList = [actors[0], ...this.actorsList];
 
     this.memberEntity = "--Select--";
   }

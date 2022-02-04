@@ -10,7 +10,7 @@
     </button>
     <cornie-dialog
       v-model="show"
-      center
+      right
       class="w-96 h-full animated fadeIn z-50 absolute overflow-y-hidden"
     >
       <cornie-card height="100%" class="flex flex-col animated fadeInUp">
@@ -77,7 +77,6 @@
                     v-model="selectedEntity"
                     name="entity"
                     :value="actor.id"
-                    @update:modelValue="selectEntity"
                   ></cornie-radio>
                 </div>
               </template>
@@ -114,14 +113,15 @@
               </template>
             </div>
           </div>
-          <div>
-            <div class="font-semibold -mb-3 leading-none text-sm">
+          <div class="mb-1">
+            <div class="font-semibold -mb-1 leading-none text-sm">
               Period <span class="text-red-500">*</span>
             </div>
-            <cornie-date-picker
+            <d-range-picker
               placeholder="--Select--"
               v-model="period"
-            ></cornie-date-picker>
+              class="w-full"
+            ></d-range-picker>
           </div>
           <div>
             <div class="font-semibold mb-1.5 leading-none text-sm">
@@ -174,6 +174,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
+import DRangePicker from "@/components/daterangepicker.vue";
 import { namespace } from "vuex-class";
 
 const practitioner = namespace("practitioner");
@@ -194,6 +195,7 @@ const device = namespace("device");
     CornieSelect,
     CornieRadio,
     CornieDatePicker,
+    DRangePicker,
   },
 })
 export default class AddActor extends Vue {
@@ -245,36 +247,36 @@ export default class AddActor extends Vue {
     this.$emit("memberDeleted");
   }
 
-  async selectEntity(val: any) {
+  @Watch("selectedEntity")
+  @Watch("period")
+  @Watch("status")
+  async selectEntity() {
     if (this.entity === "Practitioner") {
-      let added = this.selectedActors.some((item: any) => item.id === val);
-
-      if (added || this.period === "") return;
-
-      let practitioner = this.actors.find((item: any) => item.id === val);
+      let practitioner = this.actors.find(
+        (item: any) => item.id === this.selectedEntity
+      );
 
       let item = {
-        id: practitioner.id,
-        name: `${practitioner.firstName} ${practitioner.lastName}`,
-        job: practitioner.jobDesignation,
+        id: practitioner?.id,
+        name: `${practitioner?.firstName} ${practitioner?.lastName}`,
+        job: practitioner?.jobDesignation,
         type: this.entity,
-        image: practitioner.image,
+        image: practitioner?.image,
         period: this.period,
         status: this.status,
       };
 
-      this.selectedActors = [item, ...this.selectedActors];
+      this.selectedActors = [item];
     }
 
     if (this.entity === "Device") {
-      let added = this.selectedActors.some((item: any) => item.id === val);
-
-      if (added || this.period === "") return;
-      let device = this.actors.find((item: any) => item.id === val);
+      let device = this.actors.find(
+        (item: any) => item.id === this.selectedEntity
+      );
 
       let item = {
-        id: device.id,
-        name: `${device.deviceName.name}`,
+        id: device?.id,
+        name: `${device?.deviceName.name}`,
         job: "",
         type: this.entity,
         image: "",
@@ -282,13 +284,8 @@ export default class AddActor extends Vue {
         status: this.status,
       };
 
-      this.selectedActors = [item, ...this.selectedActors];
+      this.selectedActors = [item];
     }
-
-    this.period = "";
-    this.status = "Active";
-
-    console.log(this.selectedActors);
   }
 
   @Watch("entity")
@@ -319,6 +316,9 @@ export default class AddActor extends Vue {
   async updateSelectedActors() {
     this.$emit("update-actors-list", this.selectedActors);
     this.show = false;
+    this.selectedEntity = "";
+    this.status = "Active";
+    this.period = "";
   }
 
   async created() {

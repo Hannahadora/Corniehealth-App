@@ -40,7 +40,7 @@
               label="Domain Name"
               placeholder="https://providername"
               v-model="DomainName"
-              disabled
+              :disabled="DomainName"
             />
           </div>
           <div class="col-span-4">
