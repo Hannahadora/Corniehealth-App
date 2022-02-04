@@ -11,13 +11,10 @@
         <span>Saturday</span>
     </div>
     <div class="grid grid-cols-7 text-gray-500 divide-x border-2 border-gray-100 font-bold">
-        <div class="px-4 py-8 border-b-2 flex border-gray-300" v-for="(item, index) in _items" :key="index">
+        <div class="px-4 py-8 border-b-2 flex space-x-5 border-gray-300" v-for="(item, index) in _items" :key="index">
             {{ item?.date.toLocaleDateString('en',options) }}  
+            <actors-section v-for="(cal, index) in item?.schedules"  :key="index" :items="cal.practitioners" @set-oneId="setoneId" />
         </div>
-    <span v-for="(cal, index) in item?.schedules"  :key="index">
-            <actors-section :items="cal.practitioners" @set-oneId="setoneId" />
-    </span>
-       
     </div>
 </div>
     <!-- <cornie-table

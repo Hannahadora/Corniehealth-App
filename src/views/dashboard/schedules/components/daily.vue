@@ -1,19 +1,20 @@
 <template>
 <div class=" border-t-2 border-gray-100">
-    <div class="flex space-x-7 w-full"  v-for="(item, index) in _items"
-      :key="index">
-        <div class="border-r-2 border-gray-100 p-3">
-            <span class="text-sm">{{ item?.date.toLocaleTimeString('en-US') ? item?.date.toLocaleTimeString('en-US') : '0:00:00 PM  ' }}</span>
-        </div>
-        <div class="border-t-2 mt-3 border-gray-100 w-full">
 
-            <div class="border-t-2 mt-4 w-full col-span-full border-dashed border-gray-100 p-3">
-                <actors-section :items="item?.practitioners" @set-oneId="setoneId"  :range="item?.schedules?.startTime +' - '+ item?.schedules?.endTime"/>
+        <div class="flex space-x-7 w-full"  v-for="(item, index) in _items" :key="index">
+            <div class="border-r-2 border-gray-100 p-3">
+                <span class="text-sm">{{ item?.date.toLocaleTimeString('en-US') ? item?.date.toLocaleTimeString('en-US') : '0:00:00 PM  ' }}</span>
+            </div>
+            <div class="border-t-2 mt-3 border-gray-100 w-full">
+
+                <div class="border-t-2 mt-4 w-full col-span-full border-dashed border-gray-100 p-3">
+                    <actors-section  v-for="(cal, index) in item?.schedules" :key="index"  :items="cal?.practitioners" @set-oneId="setoneId"  :range="tConvert(cal?.startTime) +' - '+ tConvert(cal?.endTime)"/>
+                </div>
+
             </div>
 
         </div>
-
-    </div>
+    
 </div>
     <!-- <cornie-table
     :columns="headers"
@@ -200,6 +201,17 @@ export default class Daily extends Vue {
 
     return [{ key: "range", title: "Time", show:true },...headers];
   }
+   tConvert (time:any) {
+  // Check correct time format and split into components
+  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+  if (time.length > 1) { // If time format correct
+    time = time.slice (1);  // Remove full string match value
+    time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+    time[0] = +time[0] % 12 || 12; // Adjust hours
+  }
+  return time.join (''); // return adjusted time or original string
+}
 
   groupHourly(schedules: ISchedule[]) {
     const groups: { [state: number]: ISchedule[] } = {};

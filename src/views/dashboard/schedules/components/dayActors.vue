@@ -1,6 +1,6 @@
 <template>
   <div  v-for="(actor, index) in actors"
-        :key="index" class="w-full col-span-full border  bg-purple border-purple rounded flex space-x-7 cursor-pointer">
+        :key="index" class="w-full col-span-full border mb-1 bg-purple border-purple rounded flex space-x-7 cursor-pointer">
     <!-- {{ items }} -->
         <span
        
@@ -8,7 +8,7 @@
         :class="{ 'img-hover': index > 0 }"
         >
             <div
-                class="image-con rounded-full border flex items-center justify-center cursor-pointer"
+                class="image-con ml-4 rounded-full border flex items-center justify-center cursor-pointer"
                 v-if="actor.user.image"
                 @click="showActorModal(items)"
             >
@@ -17,7 +17,7 @@
             </div>
             <div
                 v-if="!actor.user.image && actor.user.firstName"
-                class="image-con rounded-full relative -ml-1 flex items-center border justify-center bg-white"
+                class="image-con rounded-full relative -ml-4 flex items-center border justify-center bg-white"
             >
                 <span class="text-warning"
                 >{{ actor.user.firstName ? actor.user.firstName : "" }}

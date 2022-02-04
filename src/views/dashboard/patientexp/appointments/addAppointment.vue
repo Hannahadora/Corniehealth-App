@@ -789,7 +789,7 @@ export default class AddAppointment extends Vue {
     return this.participantitem;
   }
   get practionerObject() {
-    const pt = this.practitioner.find((i: any) => i.id == this.practitionersId);
+    const pt = this.practitioner.find((i: any) => i.id === this.practitionersId);
     return pt;
   }
 
@@ -1001,22 +1001,22 @@ export default class AddAppointment extends Vue {
     this.patient = response[0].data;
   }
   async created() {
+   await  this.fetchPractitioners();
+    await this.singlePractitonerSlot(this.practitionerId);
     const data =  this.getDropdowns("availability");
     const data2 =  this.getDropdowns("practitioner");
+    if(this.payload.slot){
+      await this.singlePractitonerSlot(this.payload.slot);
+    }else{
+    }
     //  this.getSlots();
     this.dropdowns = data;
     this.dropdowns2 = data2;
     this.slotObject;
     await this.setAppointment();
     await this.getPractionerSlot();
-    if(this.payload.slot){
-      await this.singlePractitonerSlot(this.payload.slot);
-    }else{
-      await this.singlePractitonerSlot(this.practitionerId);
-    }
 
     
-    this.fetchPractitioners();
     this.fetchDevices();
     this.fetchRoles();
     this.fetchPatients();
