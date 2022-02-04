@@ -8,43 +8,73 @@
           v-model="_items"
           @filter="showFilterPane"
         >
-
-          <template #monday="{item}">
-           <actors-section :items="item.monday" @set-oneId="setoneId" v-if="item?.monday" :range="item.range"/>
-           <span v-else>--</span>
+          <template #monday="{ item }">
+            <actors-section
+              :items="item.monday"
+              @set-oneId="setoneId"
+              v-if="item?.monday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
           </template>
-           <template #tuesday="{item}">
-            <actors-section :items="item.tuesday" @set-oneId="setoneId" v-if="item?.tuesday" :range="item.range"/>
-             <span v-else>--</span>
+          <template #tuesday="{ item }">
+            <actors-section
+              :items="item.tuesday"
+              @set-oneId="setoneId"
+              v-if="item?.tuesday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
           </template>
-           <template #wednesday="{item}">
-             <actors-section :items="item.wednesday" @set-oneId="setoneId" v-if="item?.wednesday" :range="item.range"/>
-              <span v-else>--</span>
+          <template #wednesday="{ item }">
+            <actors-section
+              :items="item.wednesday"
+              @set-oneId="setoneId"
+              v-if="item?.wednesday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
           </template>
-           <template #thursday="{item}">
-             <actors-section :items="item.thursday" @set-oneId="setoneId" v-if="item?.thursday" :range="item.range"/>
-              <span v-else>--</span>
+          <template #thursday="{ item }">
+            <actors-section
+              :items="item.thursday"
+              @set-oneId="setoneId"
+              v-if="item?.thursday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
           </template>
-           <template #friday="{item}">
-              <actors-section :items="item.friday" @set-oneId="setoneId" v-if="item?.friday" :range="item.range"/>
-               <span v-else>--</span>
+          <template #friday="{ item }">
+            <actors-section
+              :items="item.friday"
+              @set-oneId="setoneId"
+              v-if="item?.friday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
           </template>
-           <template #saturday="{item}">
-             <actors-section :items="item.saturday" @set-oneId="setoneId" v-if="item?.saturday" :range="item.range"/>
-              <span v-else>--</span>
-          </template> 
-          <template #sunday="{item}">
-             <actors-section :items="item.sunday" @set-oneId="setoneId" v-if="item?.sunday" :range="item.range"/>
-               <span v-else>--</span>
+          <template #saturday="{ item }">
+            <actors-section
+              :items="item.saturday"
+              @set-oneId="setoneId"
+              v-if="item?.saturday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
           </template>
-
-
+          <template #sunday="{ item }">
+            <actors-section
+              :items="item.sunday"
+              @set-oneId="setoneId"
+              v-if="item?.sunday"
+              :range="item.range"
+            />
+            <span v-else>--</span>
+          </template>
         </cornie-table>
       </div>
 
-        <advanced-filter v-model="showFilter" @applyfilter="applyFilter" />
-
-      
+      <advanced-filter v-model="showFilter" @applyfilter="applyFilter" />
     </div>
   </div>
 </template>
@@ -68,17 +98,16 @@ import SelectedLocation, { IItem } from "./selected-location.vue";
 import ILocation from "@/types/ILocation";
 import IDevice from "@/types/IDevice";
 import ISchedule from "@/types/ISchedule";
-import CalendarIcon from "@/components/icons/bcalendar.vue"
+import CalendarIcon from "@/components/icons/bcalendar.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CopyIcon from "@/components/icons/copy.vue";
-import CancelIcon from "@/components/icons/cancel.vue"
-import ShareIcon from "@/components/icons/share.vue"
+import CancelIcon from "@/components/icons/cancel.vue";
+import ShareIcon from "@/components/icons/share.vue";
 import { getWeekStart, printWeekday } from "@/plugins/utils";
 import group from "@/store/group";
 import IPractitioner from "@/types/IPractitioner";
-import actorsSection from './newActors.vue';
+import actorsSection from "./newActors.vue";
 import search from "@/plugins/search";
-
 
 const practitionersStore = namespace("practitioner");
 const locationsStore = namespace("location");
@@ -135,14 +164,14 @@ export default class Availability extends Vue {
     const now = new Date(); // sun jan 23, 2022 //
     const start = getWeekStart(now);
     const dates = this.getWeekDates(start);
-    const headers = dates.map((date:any) => ({
+    const headers = dates.map((date: any) => ({
       key: printWeekday(date),
       title: date.toDateString(),
-      show:true
+      show: true,
     }));
-      console.log(headers,"HEADERS")
+    console.log(headers, "HEADERS");
 
-    return [{ key: "range", title: "Time", show:true },...headers];
+    return [{ key: "range", title: "Time", show: true }, ...headers];
   }
 
   groupHourly(schedules: ISchedule[]) {
@@ -216,7 +245,7 @@ export default class Availability extends Vue {
       this.actorsValue = item;
       items.push({ ...item, range: this.printRange(Number(key)) as any });
     });
-    console.log(items,"items")
+    console.log(items, "items");
     return items;
   }
 
@@ -231,18 +260,20 @@ export default class Availability extends Vue {
     days.forEach((day) => {
       const _practitioners = map.get(day) ?? [];
       const practitioners = schedule.practitioners ?? [];
-       map.set(day,this.filterPractitioners([... practitioners, ..._practitioners]) as any);
-    // this.filterPractitioners([... practitioners, ..._practitioners])
+      map.set(
+        day,
+        this.filterPractitioners([...practitioners, ..._practitioners]) as any
+      );
+      // this.filterPractitioners([... practitioners, ..._practitioners])
     });
-
   }
-  filterPractitioners(practitioners:IPractitioner[]) {
-    console.log(search.searchObjectArray(practitioners, this.query),"FILTER");
-      return search.searchObjectArray(practitioners, this.query);
+  filterPractitioners(practitioners: IPractitioner[]) {
+    console.log(search.searchObjectArray(practitioners, this.query), "FILTER");
+    return search.searchObjectArray(practitioners, this.query);
   }
 
-  goToAppoimment(item:any){
-     console.log(item,"FDJKFD");
+  goToAppoimment(item: any) {
+    console.log(item, "FDJKFD");
     // const [practitioner, ...rest] = item
     // const id = practitioner?.id;
     // console.log(item,"FDJKFD");
@@ -253,9 +284,9 @@ export default class Availability extends Vue {
     // }
   }
 
-  setoneId(practitioner:any,value:string){
-     console.log(practitioner,value,"HELLO ThIRD")
-    this.$emit('set-oneId', practitioner,value)
+  setoneId(practitioner: any, value: string) {
+    console.log(practitioner, value, "HELLO ThIRD");
+    this.$emit("set-oneId", practitioner, value);
   }
   //// End
 

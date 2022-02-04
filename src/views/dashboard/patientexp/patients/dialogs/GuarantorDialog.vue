@@ -27,10 +27,11 @@
             :items="genderOptions"
             v-model="gender"
           />
-          <cornie-input
+          <cornie-select
             label="Relationship"
             class="w-full"
             placeholder="Enter"
+            :items="relationshipOptions"
             v-model="relationship"
           />
           <cornie-input

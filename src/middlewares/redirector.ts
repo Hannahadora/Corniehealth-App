@@ -12,5 +12,5 @@ export async function redirector(
   const expectedPath = `/dashboard/${accountType}`.toLowerCase();
   if (to.path.includes(expectedPath)) return next();
   const newPath = to.fullPath.replace("/dashboard", expectedPath);
-  next({path: newPath, query: to.query})
+  next({ path: newPath, query: to.query });
 }
