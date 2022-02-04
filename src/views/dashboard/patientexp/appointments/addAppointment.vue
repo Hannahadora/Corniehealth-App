@@ -131,7 +131,7 @@
                    <cornie-input
                     label="Slot"
                     placeholder="--Autofilled--"
-                    v-model="slot"
+                    v-model="slotDate"
                     :disabled="true"
                     class="w-full"
                   />
@@ -228,45 +228,7 @@
                 <div class="w-full">
                   <div>
                     <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                      <div v-if="practitioners.practitioner">
-                        <div
-                          class="border-r-2"
-                          v-for="(input, index) in practitioners"
-                          :key="index"
-                        >
-                          <div class="mb-8 p-2">
-                            <div class="flex space-x-4">
-                              <avatar
-                                class="mr-2"
-                                v-if="input.practitioner.image"
-                                :src="input.practitioner.image"
-                              />
-                              <avatar
-                                class="mr-2"
-                                v-else
-                                :src="img.placeholder"
-                              />
-                              <div>
-                                <p class="text-xs text-dark font-semibold">
-                                  {{ input.practitioner.firstName }}
-                                  {{ input.practitioner.lastName }}
-                                </p>
-                                <p class="text-xs text-gray font-light">
-                                  {{ valuePractioner }}
-                                </p>
-                              </div>
-                            </div>
-                            <span>
-                              <deleteorange-icon
-                                class="float-right cursor-pointer relative bottom-8"
-                                @click="removePractitioner(index)"
-                              />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div v-else>
+                       <div v-if="newPractitioners.length > 0">
 
                       <div
                         class="border-r-2"
@@ -304,108 +266,118 @@
                         </div>
                       </div>
                       </div>
-
-                    <div v-if="patients.patient">
-                      <div
-                        class="border-r-2"
-                        v-for="(input, index) in patients"
-                        :key="index"
-                      >
-                        <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
-                            <avatar
-                              class="mr-2"
-                              v-if="input.patient.profilePhoto"
-                              :src="input.patient.profilePhoto"
-                            />
-                            <avatar
-                              class="mr-2"
-                              v-else
-                              :src="img.placeholder"
-                            />
-                            <div>
-                              <p class="text-xs text-dark font-semibold">
-                                {{ input.patient.firstname }} {{ input.patient.lastname }}
-                              </p>
-                              <p class="text-xs text-gray font-light">
-                                {{ valuePatient }}
-                              </p>
-                            </div>
-                          </div>
-                          <span>
-                            <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
-                              @click="removePatient(index)"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                     <div v-else>
-                      <div
-                        class="border-r-2"
-                        v-for="(input, index) in newPatients"
-                        :key="index"
-                      >
-                        <div class="mb-8 p-2">
-                          <div class="flex space-x-4">
-                            <avatar
-                              class="mr-2"
-                              v-if="input.profilePhoto"
-                              :src="input.profilePhoto"
-                            />
-                            <avatar
-                              class="mr-2"
-                              v-else
-                              :src="img.placeholder"
-                            />
-                            <div>
-                              <p class="text-xs text-dark font-semibold">
-                                {{ input.firstname }} {{ input.lastname }}
-                              </p>
-                              <p class="text-xs text-gray font-light">
-                                {{ valuePatient }}
-                              </p>
-                            </div>
-                          </div>
-                          <span>
-                            <deleteorange-icon
-                              class="float-right cursor-pointer relative bottom-8"
-                              @click="removePatient(index)"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                       <div v-if="devices">
-                          <div
-                            class="border-r-2"
-                            v-for="(input, index) in devices"
-                            :key="index"
-                          >
-                            <div class="mb-8 p-2">
-                              <div class="flex space-x-4">
-                                <avatar class="mr-2" :src="img.placeholder" />
-                                <div>
-                                  <p class="text-xs text-dark font-semibold">
-                                    {{ input.device.deviceName.name }}
-                                  </p>
-                                  <p class="text-xs text-gray font-light">
-                                    {{ valueDevice }}
-                                  </p>
-                                </div>
+                      <div v-else>
+                        <div
+                          class="border-r-2"
+                          v-for="(input, index) in practitioners"
+                          :key="index"
+                        >
+                          <div class="mb-8 p-2">
+                            <div class="flex space-x-4">
+                              <avatar
+                                class="mr-2"
+                                v-if="input.practitioner.image"
+                                :src="input.practitioner.image"
+                              />
+                              <avatar
+                                class="mr-2"
+                                v-else
+                                :src="img.placeholder"
+                              />
+                              <div>
+                                <p class="text-xs text-dark font-semibold">
+                                  {{ input.practitioner.firstName }}
+                                  {{ input.practitioner.lastName }}
+                                </p>
+                                <p class="text-xs text-gray font-light">
+                                  {{ valuePractioner }}
+                                </p>
                               </div>
-                              <span>
-                                <deleteorange-icon
-                                  class="float-right cursor-pointer relative bottom-8"
-                                  @click="removeDevice(index)"
-                                />
-                              </span>
                             </div>
+                            <span>
+                              <deleteorange-icon
+                                class="float-right cursor-pointer relative bottom-8"
+                                @click="removePractitioner(index)"
+                              />
+                            </span>
                           </div>
                         </div>
-                         <div v-else>
+                      </div>
+
+                      <div v-if="newPatients.length > 0">
+                        <div
+                          class="border-r-2"
+                          v-for="(input, index) in newPatients"
+                          :key="index"
+                        >
+                          <div class="mb-8 p-2">
+                            <div class="flex space-x-4">
+                              <avatar
+                                class="mr-2"
+                                v-if="input.profilePhoto"
+                                :src="input.profilePhoto"
+                              />
+                              <avatar
+                                class="mr-2"
+                                v-else
+                                :src="img.placeholder"
+                              />
+                              <div>
+                                <p class="text-xs text-dark font-semibold">
+                                  {{ input.firstname }} {{ input.lastname }}
+                                </p>
+                                <p class="text-xs text-gray font-light">
+                                  {{ valuePatient }}
+                                </p>
+                              </div>
+                            </div>
+                            <span>
+                              <deleteorange-icon
+                                class="float-right cursor-pointer relative bottom-8"
+                                @click="removePatient(index)"
+                              />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <div
+                          class="border-r-2"
+                          v-for="(input, index) in patients"
+                          :key="index"
+                        >
+                          <div class="mb-8 p-2">
+                            <div class="flex space-x-4">
+                              <avatar
+                                class="mr-2"
+                                v-if="input.patient.profilePhoto"
+                                :src="input.patient.profilePhoto"
+                              />
+                              <avatar
+                                class="mr-2"
+                                v-else
+                                :src="img.placeholder"
+                              />
+                              <div>
+                                <p class="text-xs text-dark font-semibold">
+                                  {{ input.patient.firstname }} {{ input.patient.lastname }}
+                                </p>
+                                <p class="text-xs text-gray font-light">
+                                  {{ valuePatient }}
+                                </p>
+                              </div>
+                            </div>
+                            <span>
+                              <deleteorange-icon
+                                class="float-right cursor-pointer relative bottom-8"
+                                @click="removePatient(index)"
+                              />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    
+                       <div v-if="newDevices.length > 0">
                           <div
                             class="border-r-2"
                             v-for="(input, index) in newDevices"
@@ -432,6 +404,34 @@
                             </div>
                           </div>
                         </div>
+                       <div v-else>
+                          <div
+                            class="border-r-2"
+                            v-for="(input, index) in devices"
+                            :key="index"
+                          >
+                            <div class="mb-8 p-2">
+                              <div class="flex space-x-4">
+                                <avatar class="mr-2" :src="img.placeholder" />
+                                <div>
+                                  <p class="text-xs text-dark font-semibold">
+                                    {{ input.device.deviceName.name }}
+                                  </p>
+                                  <p class="text-xs text-gray font-light">
+                                    {{ valueDevice }}
+                                  </p>
+                                </div>
+                              </div>
+                              <span>
+                                <deleteorange-icon
+                                  class="float-right cursor-pointer relative bottom-8"
+                                  @click="removeDevice(index)"
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
 
                       <div
                         class="border-r-2"
@@ -636,7 +636,7 @@ export default class AddAppointment extends Vue {
   slots!: Slot[];
 
   @slot.Action
-  singlePractitonerSlot!: (patientId: string) => Promise<void>;
+  singlePractitonerSlot!: (slotId: string) => Promise<void>;
 
   actorTypeValue = "";
 
@@ -659,6 +659,7 @@ export default class AddAppointment extends Vue {
   type = "";
   practitionerId = "";
   img = setup(() => useHandleImage());
+  slotDate = "";
 
   serviceCategory = "";
   locationId = null;
@@ -728,7 +729,6 @@ export default class AddAppointment extends Vue {
   }
   async setAppointment() {
     const appointment = await this.getAppointmentById(this.id);
-    console.log(appointment,"return")
     if (!appointment) return;
     this.serviceCategory = appointment.serviceCategory;
     this.locationId = appointment.locationId;
@@ -750,6 +750,8 @@ export default class AddAppointment extends Vue {
     this.practitioners = appointment.Practitioners;
     this.devices = appointment.Devices;
     this.patients = appointment.Patients;
+    this.slotId = appointment.slot;
+    this.slotDate = new Date(appointment.period.start).toLocaleDateString() +'-'+ new Date(appointment.period.end as any).toLocaleDateString();
   }
   get payload() {
     return {
@@ -817,6 +819,7 @@ export default class AddAppointment extends Vue {
     console.log(pt,"PT@ii");
     if(pt){
       this.slot  = pt.id as any;
+      this.slotDate = pt.startTime +'-'+ pt.endTime;
       this.period.start = pt.date;
       this.period.end = pt.date;
       const time = this.getDurationSecs( pt.startTime as any , pt.endTime as any);
@@ -998,15 +1001,21 @@ export default class AddAppointment extends Vue {
     this.patient = response[0].data;
   }
   async created() {
-    await this.setAppointment();
+    const data =  this.getDropdowns("availability");
+    const data2 =  this.getDropdowns("practitioner");
     //  this.getSlots();
-    const data = await this.getDropdowns("availability");
-    const data2 = await this.getDropdowns("practitioner");
     this.dropdowns = data;
     this.dropdowns2 = data2;
-    this.slotObject
+    this.slotObject;
+    await this.setAppointment();
     await this.getPractionerSlot();
-     await this.singlePractitonerSlot(this.practitionersId);
+    if(this.payload.slot){
+      await this.singlePractitonerSlot(this.payload.slot);
+    }else{
+      await this.singlePractitonerSlot(this.practitionerId);
+    }
+
+    
     this.fetchPractitioners();
     this.fetchDevices();
     this.fetchRoles();

@@ -211,7 +211,7 @@ export default class SingleAvailability extends Vue {
   slots!: Slot[];
 
   @slot.Action
-  singlePractitonerSlot!: (patientId: string) => Promise<void>;
+  singlePractitonerSlot!: (slotId: string) => Promise<void>;
 
   /// Start
 

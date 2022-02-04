@@ -108,7 +108,7 @@ function printTitle(designation: string) {
   }
 }
 
-function addDays(date: Date, days: number) {
+export function addDays(date: Date, days: number) {
   const newDate = new Date(date);
   newDate.setDate(newDate.getDate() + days);
   return newDate;
@@ -121,7 +121,6 @@ export function getWeekStart(date: Date) {
 }
 
 export function printWeekday(date: Date) {
-  console.log(date);
   const map: any = {
     0: "monday",
     1: "tuesday",

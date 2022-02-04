@@ -2,7 +2,7 @@
   <div class="container-fluid flex">
 
       <span
-        v-for="(actor, index) in actors"
+        v-for="(actor, index) in items.slice(0, 3)"
         :key="index"
         :class="{ 'img-hover': index > 0 }"
       >
@@ -27,7 +27,7 @@
       </span>
       <div
         v-if="items?.length > 3"
-        class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center  relative"
+        class="image-con rounded-full bg-blue-700 -ml-3 flex items-center border justify-center  relative"
       >
         <span class="text-xs">+{{ items?.length - actors?.length }}</span>
       </div>
@@ -52,7 +52,7 @@ export default class ActorsList extends Vue {
 
   get actors() {
     if (!this.items || this.items.length === 0) return [];
-    if (this.items.length <= 3) return this.items;
+    if (this.items.length >= 3) return this.items;
     return this.items.slice(0, 3);
   }
 }

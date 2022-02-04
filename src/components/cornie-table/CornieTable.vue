@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex">
-      <slot name="topleft">
+      <slot name="topleft" v-if="search">
         <span class="flex items-center">
           <sort-icon class="mr-5" />
           <icon-input
@@ -16,7 +16,7 @@
         </span>
       </slot>
       <cornie-spacer />
-      <span class="flex justify-between items-center">
+      <span class="flex justify-between items-center" v-if="menu">
         <dots-horizontal-icon class="mr-7" />
         <print-icon class="mr-7" />
         <refresh-icon
@@ -181,6 +181,12 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: false })
   refreshing!: boolean;
+
+  @Prop({ type: Boolean, default: true })
+  search!: boolean;
+
+  @Prop({ type: Boolean, default: true })
+  menu!: boolean;
 
   @PropSync("refreshing")
   refreshSync!: boolean;

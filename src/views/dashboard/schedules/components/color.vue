@@ -1,15 +1,15 @@
 <template>
   <div class="container-fluid">
-      <div  v-for="(input, index) in items" :key="index">
-            <div class="bg-red-100 border-t-2 border-red-600 py-4 w-full" v-if="!input">
+      <div  v-for="(slot, index) in items" :key="index">
+            <div class="bg-red-100 border-t-2 border-red-600 py-4 w-full" v-if="!Boolean(slot)">
                 <info-section  :text="'Book Appointment'"/>
             </div>
-            <div class="bg-yellow-100 border-t-2 border-yellow-600 py-4 w-full" v-if="input.capacity == input.booked">
+            <div class="bg-yellow-100 border-t-2 border-yellow-600 py-4 w-full" v-if="slot.capacity <= slot.booked">
                 <info-section  :text="'Book Appointment'"/>
             </div>
-            <div class="bg-green-100 border-t-2 border-green-600 py-4 w-full" v-else>
+            <div class="bg-green-100 border-t-2 border-green-600 py-4 w-full"  v-if="slot.capacity > slot.booked">
                 <info-section  :text="'Book Appointment'" class="cursor-pointer"
-@click="$router.push(`/dashboard/experience/add-appointment?practitioner=${input.practitionerId}&slot=${input.id}`)"/>
+                @click="$router.push(`/dashboard/experience/add-appointment?practitioner=${slot.practitionerId}&slot=${slot.id}`)"/>
             </div>
       </div>
   </div>

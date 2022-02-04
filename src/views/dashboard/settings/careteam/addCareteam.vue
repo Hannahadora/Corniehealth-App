@@ -77,9 +77,7 @@
                 <d-edit
                   class="ml-20 cursor-pointer"
                   @click="
-                    editParticipant(input.careTeamId, index, participants)
-                  "
-                />
+                    editParticipant(input.careTeamId, index, participants)"/>
                 <c-delete
                   @click="removeParticipant(index, participants)"
                   class="cursor-pointer"
@@ -148,7 +146,7 @@
             label="Email"
             v-model="participant.email"
             placeholder="--Enter--"
-            :rules="required"
+           :rules="emailRule"
           />
           <Textarea
             label="Notes"
@@ -256,6 +254,8 @@ export default class AddCareteam extends Vue {
   dropdowns = {} as IIndexableObject;
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
+
+  emailRule = string().email("A valid email is required").required();
 
   @Watch("id")
   idChanged() {
