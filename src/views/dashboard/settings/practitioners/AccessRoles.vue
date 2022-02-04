@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-auto h-5/6">
+  <cornie-dialog v-model="show" right class="w-auto h-screen">
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
         <div class="w-full flex items-center justify-between">

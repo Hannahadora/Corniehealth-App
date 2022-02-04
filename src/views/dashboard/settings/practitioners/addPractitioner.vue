@@ -429,8 +429,6 @@ export default class AddPractitioner extends Vue {
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
     this.accessRoles = [];
-
-    console.log(practitioner);
   }
   serializeDate(date: string) {
     if (!date) return "";
