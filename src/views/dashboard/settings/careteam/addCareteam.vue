@@ -168,13 +168,8 @@
             placeholder="--Enter--"
             :rules="required"
           />
-          <span></span>
-          <span
-            ><c-add
-              class="float-right cursor-pointer mb-2 mt-8 mr-5"
-              @click="checkParticipant"
-          /></span>
-        </div>
+          <span><c-add class="float-right cursor-pointer mb-2 mt-8 mr-5" @click="checkParticipant" /></span>
+
         <span class="flex justify-end w-full border-t-2 h-full">
           <button
             @click="$router.push('care-teams')"
@@ -184,13 +179,14 @@
             Revert Changes
           </button>
 
-        <cornie-btn
-          :loading="loading"
-          type="submit"
-          class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
-        >
-          Save
-        </cornie-btn>
+            <cornie-btn
+              :loading="loading"
+              type="submit"
+              class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+            >
+              Save
+            </cornie-btn>
+        </span>
     </form>
   </div>
 </template>
