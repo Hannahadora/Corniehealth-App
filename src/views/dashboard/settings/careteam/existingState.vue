@@ -110,32 +110,28 @@ export default class CareteamExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Identfier", key: "identifier", show: true },
-    { title: "Status", key: "status", show: true },
-    {
-      title: "Category",
-      key: "category",
-      show: true,
-    },
+    { title: "Identfier", key: "identifier", show: true, noOrder: true },
     {
       title: "Name",
       key: "name",
       show: true,
+      noOrder: true,
     },
     {
-      title: "Subject",
-      key: "subject",
-      show: false,
+      title: "ON Behalf Of",
+      key: "onBehalfOf",
+      show: true,
+      noOrder: true,
     },
     {
-      title: "Period",
-      key: "period",
-      show: false,
+      title: "Category Type",
+      key: "category",
+      show: true,
     },
     {
-      title: "Participants",
-      key: "participants",
-      show: false,
+      title: "Status",
+      key: "status",
+      show: true,
     },
   ];
 
@@ -149,12 +145,12 @@ export default class CareteamExistingState extends Vue {
   }
 
   get items() {
-    const careteams = this.careteams.map((careteam) => {
-      // const allparticipant = careteam.participants;
+    let careteams = this.careteams.map((careteam) => {
+      let participants = careteam.participants[0];
       return {
         ...careteam,
+        onBehalfOf: participants?.onBehalfOf || "",
         action: careteam.id,
-        //  participants: allparticipant,
       };
     });
     if (!this.query) return careteams;
@@ -216,6 +212,10 @@ export default class CareteamExistingState extends Vue {
         console.error(error);
       }
     }
+  }
+
+  created() {
+    // console.log(this.careteams);
   }
 }
 </script>

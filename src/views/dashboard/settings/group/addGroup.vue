@@ -1,11 +1,5 @@
 <template>
   <div class="bg-white rounded p-5 mt-5">
-    <add-actor
-      :entity="memberEntity"
-      @update-actors-list="updateActorsList"
-      :memberToDelete="memberToDelete"
-      @memberDeleted="memberToDelete = ''"
-    />
     <span
       class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
     >
@@ -32,7 +26,7 @@
                 </cornie-select>
                 <fhir-input
                   reference="http://hl7.org/fhir/ValueSet/group-type"
-                  class="w-auto"
+                  class="w-full"
                   :rules="required"
                   v-model="type"
                   label="Type"
@@ -55,6 +49,7 @@
                   label="Code"
                   placeholder="--Enter--"
                   v-model="code"
+                  required
                 />
                 <cornie-input
                   label="Quantity"
@@ -82,66 +77,70 @@
               <info></info>
             </template>
             <template v-slot:default>
-              <div class="w-full mt-10 mb-5" v-if="actorsList.length">
-                <template v-for="actor in actorsList" :key="actor.id">
-                  <div class="flex justify-between items-center mb-4">
-                    <div class="flex flex-row items-center justify-start">
-                      <div class="h-12 w-12 rounded-full overflow-hidden mr-1">
-                        <img
-                          :src="actor.image || '@/assets/img/avatar.svg'"
-                          class="h-full w-full"
-                        />
-                      </div>
-                      <div class="flex flex-col">
-                        <div class="font-bold text-md">
-                          {{ `${actor.lastName} ${actor.firstName}` }}
-                        </div>
-                        <div class="text-sm text-gray-400">
-                          {{ actor.jobDesignation }}
-                        </div>
+              <div v-if="actorsList.length" class="grid grid-cols-12 mt-5">
+                <div
+                  class="flex justify-between col-span-4 pr-5"
+                  :class="[
+                    index !== actorsList.length - 1
+                      ? 'border-r border-gray-400'
+                      : '',
+                    index % 2 !== 0 ? 'pl-5' : '',
+                    index === actorsList.length - 1 ? 'pl-5' : '',
+                  ]"
+                  v-for="(actor, index) in actorsList"
+                  :key="actor.id"
+                >
+                  <div class="flex justify-center items-center">
+                    <div class="h-12 w-12 rounded-full overflow-hidden mr-1">
+                      <img
+                        :src="actor.image || '@/assets/img/avatar.svg'"
+                        class="h-full w-full"
+                        v-if="actor.type === 'Practitioner'"
+                      />
+                      <div
+                        class="h-full w-full rounded-full overflow-hidden flex items-center justify-center bg-blue-500 text-white-cotton-ball font-bold"
+                        v-else
+                      >
+                        {{ actor.name.substr(0, 2).toUpperCase() }}
                       </div>
                     </div>
-                    <div class="flex flex-row">
-                      <button class="mr-10" type="button">
-                        <edit-icon />
-                      </button>
-                      <button type="button" @click="deleteMember(actor.id)">
-                        <delete-icon />
-                      </button>
+                    <div class="flex flex-col items-start">
+                      <div class="mb-0 font-bold text-sm">
+                        <div class="flex justify-center items-center">
+                          <div class="mr-1">
+                            {{ actor.name }}
+                          </div>
+                          <div
+                            class="font-bolder text-gray-400 mr-1"
+                            v-if="actor.job"
+                          >
+                            •
+                          </div>
+                          <div class="text-xs text-gray-400">
+                            {{ actor.job }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-xs text-gray-400">{{ actor.type }}</div>
                     </div>
                   </div>
-                </template>
+                  <div class="flex justify-center items-center">
+                    <button
+                      class="border-0"
+                      type="button"
+                      @click="deleteMember(actor.id)"
+                    >
+                      <delete-icon />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div class="w-full grid grid-cols-3 gap-5 mt-5">
-                <cornie-select-question
-                  :rules="required"
-                  :required="true"
-                  :items="[
-                    '--Select--',
-                    'Practitioner',
-                    'Patient',
-                    'Practitioner Role',
-                    'Device',
-                    'Medication',
-                  ]"
-                  v-model="memberEntity"
-                  label="Entity"
-                  placeholder="--Select--"
-                ></cornie-select-question>
-                <date-picker
-                  label="Period"
-                  v-model="period"
-                  placeholder="--Enter--"
-                  :rules="required"
-                />
-                <cornie-select
-                  :rules="required"
-                  :items="['Active', 'Inactive']"
-                  v-model="memberStatus"
-                  label="Status"
-                  placeholder="--Select--"
-                ></cornie-select>
-              </div>
+              <add-actor
+                @update-actors-list="updateActorsList"
+                :memberToDelete="memberToDelete"
+                @memberDeleted="memberToDelete = ''"
+                type="button"
+              />
             </template>
           </accordion-component>
         </div>
@@ -149,7 +148,7 @@
           <button
             @click="$router.push('/dashboard/provider/settings/group')"
             type="button"
-            class="outline-primary rounded-md text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white"
+            class="border border-primary rounded-md text-black mt-5 mr-3 py-2 px-8 focus:outline-none hover:bg-primary hover:text-white"
           >
             Cancel
           </button>
@@ -157,7 +156,7 @@
           <cornie-btn
             :loading="loading"
             type="submit"
-            class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-md text-white mt-5 px-3 focus:outline-none hover:opacity-90"
           >
             Save
           </cornie-btn>
@@ -261,6 +260,7 @@ export default class AddGroup extends Vue {
   // memberPeriod: { start: "2011/12/15", end: "2017/12/19" };
   memberStatus = "";
   memberEntity = "--Select--";
+  launchMemberdiag = false;
   aoption = "Active";
   // groupmember = { ...emptyMember };
   // groupmembers: GroupMembers[] = [];
@@ -320,7 +320,7 @@ export default class AddGroup extends Vue {
       period: this.period,
       memberPeriod: this.memberPeriod,
       memberStatus: this.memberStatus,
-      memberEntity: this.memberEntity,
+      members: this.actorsList,
     };
   }
   get allaction() {
@@ -331,7 +331,7 @@ export default class AddGroup extends Vue {
   memberToDelete = "" as string;
 
   async updateActorsList(actors: any) {
-    this.actorsList = [...actors];
+    this.actorsList = [actors[0], ...this.actorsList];
 
     this.memberEntity = "--Select--";
   }
@@ -366,9 +366,6 @@ export default class AddGroup extends Vue {
     this.loading = false;
   }
   async createGroup() {
-    this.payload.memberPeriod = new Date(
-      this.payload.memberPeriod
-    ).toISOString();
     try {
       const response = await cornieClient().post("/api/v1/group", this.payload);
       if (response.success) {

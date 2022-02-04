@@ -1,4 +1,11 @@
 <template>
+  <access-role
+    :show="addAccessRole"
+    :deletedRole="deletedRole"
+    @close-access-diag="addAccessRole = false"
+    @add-access-roles="addAccessRoles"
+    @role-deleted="deletedRole = {}"
+  />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
       <span
@@ -85,58 +92,75 @@
                   label="Department"
                   placeholder="--Enter--"
                 />
-                <cornie-select
-                  :rules="required"
-                  :items="practitionerRoles"
-                  v-model="accessRole"
-                  label="Access Role"
-                  placeholder="--Select--"
-                  class="w-full"
-                />
-                <div class="mb-5">
-                  <span class="text-sm font-semibold mb-2"
-                    >Approved Locations</span
-                  >
-                  <Multiselect
-                    v-model="locations"
-                    mode="tags"
-                    :hide-selected="false"
-                    :close-on-select="true"
-                    id="field-id"
-                    :options="allLocation"
-                    value-prop="code"
-                    label="label"
-                    :before="'Approved Location'"
-                    placeholder="--Select--"
-                    class="w-full"
-                  >
-                    <template
-                      v-slot:tag="{ option, handleTagRemove, disabled }"
+              </div>
+              <div class="flex my-5">
+                <button
+                  type="button"
+                  class="border-0 font-bold text-red-500 text-xs mr-1"
+                  @click="addAccessRole = true"
+                >
+                  ADD ACCESS ROLE
+                </button>
+                <plus class="fill-current text-blue-900 font-bold w-3" />
+              </div>
+              <div v-if="accessRoles.length" class="grid grid-cols-12 mb-4">
+                <div
+                  class="flex justify-between col-span-4 pr-5"
+                  :class="[
+                    index !== accessRoles.length - 1
+                      ? 'border-r border-gray-400'
+                      : '',
+                    index % 2 !== 0 ? 'pl-5' : '',
+                    index === accessRoles.length - 1 ? 'pl-5' : '',
+                  ]"
+                  v-for="(access, index) in accessRoles"
+                  :key="`${access.roleId}-${access.locationId}`"
+                >
+                  <div class="flex justify-center items-center">
+                    <div
+                      class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
                     >
-                      <div class="multiselect-tag is-user">
-                        {{ option.display }}
-                        <span
-                          v-if="!disabled"
-                          class="multiselect-tag-remove"
-                          @mousedown.prevent="handleTagRemove(option, $event)"
-                        >
-                          <span class="multiselect-tag-remove-icon"></span>
-                        </span>
+                      {{
+                        `${access.location
+                          .substr(0, 1)
+                          .toUpperCase()}${access.role
+                          .substr(0, 1)
+                          .toUpperCase()}`
+                      }}
+                    </div>
+                    <div class="flex flex-col items-start">
+                      <div class="mb-0 font-bold text-sm">
+                        <div class="flex justify-center items-center">
+                          <div class="mr-1">
+                            {{ access.location }}
+                          </div>
+                          <div
+                            class="font-bolder text-black mr-1"
+                            v-if="access.default"
+                          >
+                            •
+                          </div>
+                          <div class="text-xs text-blue-500">
+                            {{ access.default ? "Default" : "" }}
+                          </div>
+                        </div>
                       </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <span class="w-full text-sm">{{ option.display }}</span>
-                    </template>
-                  </Multiselect>
+                      <div class="text-xs text-gray-400">{{ access.role }}</div>
+                    </div>
+                  </div>
+                  <div class="flex justify-center items-center">
+                    <button class="border-0 mr-5" type="button">
+                      <edit-icon class="fill-current text-primary" />
+                    </button>
+                    <button
+                      class="border-0"
+                      type="button"
+                      @click="deleteRole(access.roleId, access.locationId)"
+                    >
+                      <delete-red />
+                    </button>
+                  </div>
                 </div>
-                <cornie-select
-                  :rules="required"
-                  :items="allLocation"
-                  v-model="defaultLocation"
-                  label="Default Location"
-                  placeholder="--Select--"
-                  class="w-full"
-                />
               </div>
             </template>
             <template v-slot:misc>
@@ -259,6 +283,10 @@ import Multiselect from "@vueform/multiselect";
 import Avatar from "@/components/avatar.vue";
 import Period from "@/types/IPeriod";
 import { createDate } from "@/plugins/utils";
+import Plus from "@/components/icons/plus.vue";
+import AccessRole from "./AccessRoles.vue";
+import DeleteRed from "@/components/icons/delete-red.vue";
+import EditIcon from "@/components/icons/edit.vue";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
@@ -267,6 +295,8 @@ const roles = namespace("roles");
 @Options({
   name: "AddPractitioner",
   components: {
+    AccessRole,
+    Plus,
     CornieInput,
     CornieSelect,
     AccordionComponent,
@@ -278,7 +308,8 @@ const roles = namespace("roles");
     Avatar,
     CornieAvatarField,
     AddBlueIcon,
-    Multiselect,
+    DeleteRed,
+    EditIcon,
   },
 })
 export default class AddPractitioner extends Vue {
@@ -305,10 +336,6 @@ export default class AddPractitioner extends Vue {
     createDate(0, 0, -16),
     "Practitioner must be at least 16yrs."
   );
-
-  get practitionerRoles() {
-    return this.roles.map((role) => ({ code: role.id, display: role.name }));
-  }
 
   qualificationCode = "";
   name = "";
@@ -341,6 +368,9 @@ export default class AddPractitioner extends Vue {
   location = [];
   locations = [];
   generatedIdentifier = "";
+  addAccessRole = false;
+  accessRoles = [] as any[];
+  deletedRole = {} as object;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -352,6 +382,23 @@ export default class AddPractitioner extends Vue {
   @Watch("id")
   idChanged() {
     this.setPractitioner();
+  }
+
+  async addAccessRoles(payload: any) {
+    this.accessRoles = [...payload];
+  }
+
+  async deleteRole(roleId: string, locationId: string) {
+    this.accessRoles = [
+      ...this.accessRoles.filter(
+        (item: any) => item.roleId !== roleId && item.locationId !== locationId
+      ),
+    ];
+
+    this.deletedRole = {
+      roleId,
+      locationId,
+    };
   }
 
   async setPractitioner() {
@@ -381,8 +428,7 @@ export default class AddPractitioner extends Vue {
     this.hoursOfOperation = practitioner.hoursOfOperation;
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
-    this.locations = practitioner.authorizedLocations;
-    this.defaultLocation = practitioner.defaultLocation;
+    this.accessRoles = [];
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -417,20 +463,12 @@ export default class AddPractitioner extends Vue {
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
       period: this.period,
-      locations: this.locations,
-      defaultLocation: this.defaultLocation,
+      // locations: this.locations,
+      // defaultLocation: this.defaultLocation,
+      locationRoles: this.accessRoles,
     };
   }
 
-  get allLocation() {
-    if (!this.location || this.location.length === 0) return [];
-    return this.location.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.name,
-      };
-    });
-  }
   async fetchLocation() {
     const AllLocation = cornieClient().get(
       "/api/v1/location/myOrg/getMyOrgLocations"

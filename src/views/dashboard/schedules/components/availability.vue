@@ -44,7 +44,7 @@ import SelectedLocation, { IItem } from "./selected-location.vue";
 import ILocation from "@/types/ILocation";
 import IDevice from "@/types/IDevice";
 import ISchedule from "@/types/ISchedule";
-import CalendarIcon from "@/components/icons/bcalendar.vue"
+import CalendarIcon from "@/components/icons/bcalendar.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CopyIcon from "@/components/icons/copy.vue";
 import CancelIcon from "@/components/icons/cancel.vue"
@@ -52,7 +52,7 @@ import ShareIcon from "@/components/icons/share.vue"
 import { getWeekStart, printWeekday, addDays } from "@/plugins/utils";
 import group from "@/store/group";
 import IPractitioner from "@/types/IPractitioner";
-import actorsSection from './newActors.vue';
+import actorsSection from "./newActors.vue";
 import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
 import WeekSection from "./weekly.vue";
@@ -149,13 +149,13 @@ export default class Availability extends Vue {
     const now = this.start;
     const start = getWeekStart(now);
     const dates = this.getWeekDates(start);
-    const headers = dates.map((date:any) => ({
+    const headers = dates.map((date: any) => ({
       key: printWeekday(date),
       title: date.toDateString(),
-      show:true
+      show: true,
     }));
 
-    return [{ key: "range", title: "Time", show:true },...headers];
+    return [{ key: "range", title: "Time", show: true }, ...headers];
   }
 
   groupHourly(schedules: ISchedule[]) {
@@ -243,17 +243,19 @@ export default class Availability extends Vue {
     days.forEach((day) => {
       const _practitioners = map.get(day) ?? [];
       const practitioners = schedule.practitioners ?? [];
-       map.set(day,this.filterPractitioners([... practitioners, ..._practitioners]) as any);
-    // this.filterPractitioners([... practitioners, ..._practitioners])
+      map.set(
+        day,
+        this.filterPractitioners([...practitioners, ..._practitioners]) as any
+      );
+      // this.filterPractitioners([... practitioners, ..._practitioners])
     });
-
   }
   filterPractitioners(practitioners:IPractitioner[]) {
       return search.searchObjectArray(practitioners, this.query);
   }
 
-  goToAppoimment(item:any){
-     console.log(item,"FDJKFD");
+  goToAppoimment(item: any) {
+    console.log(item, "FDJKFD");
     // const [practitioner, ...rest] = item
     // const id = practitioner?.id;
     // console.log(item,"FDJKFD");

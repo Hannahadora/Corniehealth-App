@@ -1,69 +1,35 @@
 <template>
   <div>
-    <span
-      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-auto"
+    <div
+      class="flex border-b-2 w-full font-semibold text-xl text-primary py-2 mx-aut mb-4"
     >
       Create a Care Team
-    </span>
-    <div class="w-full h-screen">
-      <form class="mt-5 w-full" @submit.prevent="submit">
-        <div class="w-full grid grid-cols-2 gap-5">
-          <cornie-input
-            label="Organization Name"
-            v-model="identifier"
-            placeholder="--Automatically Generated--"
-            class="bg-gray-200"
-            disabled
-          />
-          <cornie-select
-            :rules="required"
-            :items="['Active', 'Inactive']"
-            v-model="status"
-            label="Status"
-            aria-selected="--Select--"
-          >
-          </cornie-select>
-          <cornie-select
-            :rules="required"
-            :items="dropdowns.category"
-            v-model="category"
-            label="Category"
-            aria-selected="--Select--"
-          >
-          </cornie-select>
-          <cornie-input
-            label="Name"
-            v-model="name"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <div>
-            <cornie-input
-              label="Subject"
-              v-model="subject"
-              placeholder="--Enter--"
-              :rules="required"
-            />
-          </div>
-          <date-picker
-            label="Period"
-            v-model="participant.period.start"
-            v-model:end="participant.period.end"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <!--  <cornie-input label="Period" v-model="period.start" v-model:end="period.end"  placeholder="--Enter--" :rules="required"/>-->
-          <span
-            class="flex border-b-2 w-full text-sm text-dark py-2 mx-auto font-semibold col-span-full mb-2 mt-4"
-          >
-            Participant
-          </span>
-          <div class="col-span-full mb-5">
-            <div>
-              <div
-                class="grid grid-cols-7 gap-2 col-span-full mb-4"
-                v-for="(input, index) in participants"
-                :key="`-${index}`"
+    </div>
+    <form class="w-full" @submit.prevent="submit">
+      <div class="w-full h-auto bg-white rounded-lg p-5">
+        <accordion-component
+          title="Basic Info"
+          :modelValue="true"
+          :first="true"
+        >
+          <div class="w-full grid grid-cols-12 gap-5 mt-4">
+            <div class="col-span-4">
+              <cornie-select
+                :rules="required"
+                :items="['Active', 'Inactive']"
+                v-model="activityDefinition"
+                label="Activity Definition"
+                aria-selected="--Select--"
+              >
+              </cornie-select>
+            </div>
+            <div class="col-span-4">
+              <cornie-select
+                :rules="required"
+                :items="['Active', 'Inactive']"
+                v-model="basedOn"
+                label="Based on"
+                aria-selected="--Select--"
               >
                 <p class="text-xs text-dark font-semibold">{{ input.name }}</p>
                 <p class="text-xs text-dark font-semibold">{{ input.role }}</p>
@@ -83,63 +49,111 @@
                   class="cursor-pointer"
                 />
               </div>
+           
+            <div class="col-span-4">
+              <div class="font-bold">Start date & time</div>
+              <date-time-picker
+                title="Start date & time"
+                v-model="startDateTime"
+              ></date-time-picker>
+            </div>
+            <div class="col-span-4">
+              <div class="font-bold">End date & time</div>
+              <date-time-picker
+                title="End date & time"
+                v-model="endDateTime"
+              ></date-time-picker>
             </div>
           </div>
-          <cornie-input
-            label="Name"
-            v-model="participant.name"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <cornie-select
-            :rules="required"
-            :items="dropdowns.role"
-            label="Role"
-            v-model="participant.role"
-            aria-selected="--Select--"
-          >
-          </cornie-select>
-          <cornie-input
-            label="On behalf of"
-            v-model="participant.onBehalfOf"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <date-picker
-            label="Period"
-            v-model="participant.period.start"
-            v-model:end="participant.period.end"
-            placeholder="--Enter--"
-            :rules="required"
-          />
+        </accordion-component>
 
-          <!--   <cornie-input label="Period" v-model="participant.period.start" v-model:end = "participant.period.end"   placeholder="--Enter--" :rules="required"/>-->
-          <cornie-select
-            :rules="required"
-            :items="dropdowns.reasonCode"
-            label="Reason Code"
-            v-model="participant.reasonCode"
-            aria-selected="--Select--"
-          >
-          </cornie-select>
-          <cornie-input
-            label="Reason Reference"
-            v-model="participant.reasonReference"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <cornie-input
-            label="Managing Organization"
-            v-model="participant.managingOrganization"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <phone-input
-            :rules="requiredRule"
-            label="Phone"
-            v-model="participant.phone.number"
-            v-model:code="participant.phone.dialCode"
-          />
+        <accordion-component title="Participants">
+          <div class="w-full grid grid-cols-12 gap-5 mt-4">
+            <div class="col-span-4">
+              <cornie-select
+                :rules="required"
+                :items="dropdowns.role"
+                label="Role"
+                v-model="role"
+                aria-selected="--Select--"
+              >
+              </cornie-select>
+            </div>
+            <div class="col-span-4">
+              <div class="flex flex-row justify-center items-center w-full">
+                <div class="mr-3">
+                  <cornie-select
+                    :rules="required"
+                    :items="dropdowns.member"
+                    label="Member"
+                    v-model="member"
+                    aria-selected="--Select--"
+                  >
+                  </cornie-select>
+                </div>
+                <!-- Replace with search input -->
+                <div>
+                  <cornie-input-team v-model="search" placeholder="--Search--">
+                    <template #prepend>
+                      <search-icon />
+                    </template>
+                  </cornie-input-team>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-4">
+              <cornie-input
+                v-model="onBehalfOf"
+                placeholder="--Enter--"
+                :rules="required"
+              >
+                <template #label>On behalf of</template>
+                <template #labelicon>
+                  <info-blue-bg class="w-4" />
+                </template>
+              </cornie-input>
+            </div>
+          </div>
+          <div class="w-full font-bold text-red-400 text-xs mt-5 mb-3">
+            PERIOD
+          </div>
+          <div class="w-full grid grid-cols-12 gap-5">
+            <div class="col-span-2">
+              <div class="font-bold">Start date & time</div>
+              <date-time-picker
+                title="Start date & time"
+                v-model="startDateTimePeriod"
+              ></date-time-picker>
+            </div>
+            <div class="col-span-2">
+              <div class="font-bold">End date & time</div>
+              <date-time-picker
+                title="End date & time"
+                v-model="endDateTimePeriod"
+              ></date-time-picker>
+            </div>
+            <div class="col-span-4">
+              <cornie-select
+                :rules="required"
+                :items="dropdowns.reasonCode"
+                label="Reason Code"
+                v-model="participant.reasonCode"
+                aria-selected="Select one"
+              >
+              </cornie-select>
+            </div>
+            <div class="col-span-4">
+              <cornie-select
+                :rules="required"
+                :items="dropdowns.reasonReference"
+                label="Reason Reference"
+                v-model="reasonReference"
+                aria-selected="Select one"
+              >
+              </cornie-select>
+            </div>
+          </div>
+        </accordion-component>
 
           <!-- <cornie-input label="Phone"  v-model="participants.phone" placeholder="--Enter--" :rules="required"/>-->
           <cornie-input
@@ -170,21 +184,20 @@
             Revert Changes
           </button>
 
-          <cornie-btn
-            :loading="loading"
-            type="submit"
-            class="bg-danger rounded-full text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
-          >
-            Save
-          </cornie-btn>
-        </span>
-      </form>
-    </div>
+        <cornie-btn
+          :loading="loading"
+          type="submit"
+          class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+        >
+          Save
+        </cornie-btn>
+    </form>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
+import CornieInputTeam from "@/components/cornieinput-team.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import Textarea from "@/components/textarea.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -200,6 +213,19 @@ import CDelete from "@/components/icons/cdelete.vue";
 import CAdd from "@/components/icons/cadd.vue";
 import AddIcon from "@/components/icons/add.vue";
 import DatePicker from "@/components/daterangepicker.vue";
+import AccordionComponent from "@/components/accordion-component-care-team.vue";
+import DateTimePicker from "@/components/date-time-picker.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import InfoBlueBg from "@/components/icons/info-blue-bg.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import SystemButtonGroup from "./components/systembtngroup.vue";
+import FaxIcon from "@/components/icons/fax.vue";
+import DotHorIcon from "@/components/icons/dot-hor.vue";
+import SmsIcon from "@/components/icons/sms.vue";
+import UrlIcon from "@/components/icons/url.vue";
+import PagerIcon from "@/components/icons/pager.vue";
+import MailIcon from "@/components/icons/mail.vue";
+import MobileIcon from "@/components/icons/mobile.vue";
 
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
@@ -230,6 +256,20 @@ const emptyParticipant: Participants = {
     AddIcon,
     PhoneInput,
     DatePicker,
+    AccordionComponent,
+    DateTimePicker,
+    CornieRadio,
+    InfoBlueBg,
+    CornieInputTeam,
+    SearchIcon,
+    SystemButtonGroup,
+    FaxIcon,
+    MobileIcon,
+    SmsIcon,
+    DotHorIcon,
+    UrlIcon,
+    PagerIcon,
+    MailIcon,
   },
 })
 export default class AddCareteam extends Vue {
@@ -242,16 +282,41 @@ export default class AddCareteam extends Vue {
   loading = false;
 
   identifier = "";
+  activityDefinition = "";
+  basedOn = "";
+  replaces = "";
+  startDateTime = "";
+  endDateTime = "";
+  startDateTimePeriod = "";
+  endDateTimePeriod = "";
+  startDateTimeCom = "";
+  endDateTimeCom = "";
+  value = "";
+  reasonCode = "";
+  reasonReference = "";
+  use = "Home";
+  system = "Phone";
+  subject = "Patient";
+  search = "";
+  onBehalfOf = "";
+  role = "";
+  member = "";
+  notes = "";
+
+  communication = [] as IIndexableObject[];
+
   status = "";
   category = "";
   name = "";
-  subject = "";
   participant = { ...emptyParticipant };
   participants: Participants[] = [];
   period = { start: "2011/09/12", end: "2011/12/19" };
   required = string().required();
+  phone = "";
+  fax = "";
 
   dropdowns = {} as IIndexableObject;
+
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
@@ -261,6 +326,32 @@ export default class AddCareteam extends Vue {
   idChanged() {
     this.setCareteam();
   }
+
+  async addCommunication() {
+    if (
+      this.system === "" ||
+      this.value === "" ||
+      this.use === "" ||
+      this.startDateTimeCom === "" ||
+      this.endDateTimeCom === ""
+    )
+      return;
+
+    let info = {
+      system: this.system,
+      value: this.value,
+      use: this.use,
+      startDate: new Date(this.startDateTimeCom).toLocaleString(),
+      endDate: new Date(this.endDateTimeCom).toLocaleString(),
+    } as IIndexableObject;
+
+    this.communication = [info, ...this.communication];
+    this.system = "Phone";
+    this.use = "Home";
+
+    this.value = this.startDateTimeCom = this.endDateTimeCom = "";
+  }
+
   async setCareteam() {
     const careteam = await this.getCareteamById(this.id);
     if (!careteam) return;
@@ -271,6 +362,11 @@ export default class AddCareteam extends Vue {
     this.subject = careteam.subject;
     this.period = careteam.period;
     this.participants = careteam.participants;
+  }
+
+  async handleSystemChange(val: string) {
+    this.system = val;
+    console.log(val);
   }
   get payload() {
     return {
@@ -404,6 +500,7 @@ export default class AddCareteam extends Vue {
     this.setCareteam();
     this.fetchOrgInfo();
     const data = await this.getDropdowns("careTeam");
+    console.log(data);
     this.dropdowns = data;
   }
 }
