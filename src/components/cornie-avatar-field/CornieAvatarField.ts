@@ -12,16 +12,23 @@ export default defineComponent({
     const { url, placeholder, onChange } = useHandleImage(props.modelValue);
     return { url, placeholder, onChange };
   },
+  data() {
+    return {
+      initalized: false,
+    };
+  },
   props: {
     modelValue: { type: String, default: "" },
     readonly: { type: Boolean, default: false },
   },
   watch: {
     url(newValue: string) {
-      this.$emit("update:modelValue", newValue);
+      if (this.initalized) this.$emit("update:modelValue", newValue);
     },
-  },
-  mounted() {
-    this.url = this.modelValue;
+    modelValue(value: string) {
+      if (this.initalized) return;
+      this.url = value;
+      this.initalized = true;
+    },
   },
 });
