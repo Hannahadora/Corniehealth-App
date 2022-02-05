@@ -9,8 +9,14 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props) {
+    console.log("original ", props.modelValue);
     const { url, placeholder, onChange } = useHandleImage(props.modelValue);
     return { url, placeholder, onChange };
+  },
+  data() {
+    return {
+      initalized: false,
+    };
   },
   props: {
     modelValue: { type: String, default: "" },
@@ -18,10 +24,12 @@ export default defineComponent({
   },
   watch: {
     url(newValue: string) {
-      this.$emit("update:modelValue", newValue);
+      if (this.initalized) this.$emit("update:modelValue", newValue);
     },
-  },
-  mounted() {
-    this.url = this.modelValue;
+    modelValue(value: string) {
+      if (this.initalized) return;
+      this.url = value;
+      this.initalized = true;
+    },
   },
 });

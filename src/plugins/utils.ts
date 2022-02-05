@@ -37,7 +37,7 @@ export function flatten(data: any) {
 }
 
 export function clickOutside(id: string, callBack: () => void) {
-  document.addEventListener("click", e => {
+  document.addEventListener("click", (e) => {
     const select = document.getElementById(id);
     let targetElement: any = e.target; // clicked element
     do {
@@ -77,14 +77,21 @@ export async function getCoordinates(address: string) {
   return resData.data[0];
 }
 
-export function dateBetween(dateStr: string, start: string, end: string) {
-  const date = new Date(dateStr).getTime();
-  const startDate = new Date(start).getTime();
-  const endDate = new Date(end).getTime();
-  if (start && end) return date > startDate && date < endDate;
-  if (start) return date > startDate;
-  if (end) return date < endDate;
+export function dateObjBetween(date: Date, start: Date, end: Date) {
+  const _date = date.getTime();
+  const startDate = start.getTime();
+  const endDate = end.getTime();
+  if (start && end) return _date > startDate && _date < endDate;
+  if (start) return _date > startDate;
+  if (end) return _date < endDate;
   return false;
+}
+
+export function dateBetween(dateStr: string, start: string, end: string) {
+  const date = new Date(dateStr);
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  return dateObjBetween(date, startDate, endDate);
 }
 
 export function printPractitioner(practitioner: IPractitioner) {
@@ -97,14 +104,14 @@ export function printPractitioner(practitioner: IPractitioner) {
 function printTitle(designation: string) {
   if (!designation) return "Pr.";
   switch (designation.toLowerCase()) {
-  case "doctor":
-    return "Dr.";
-  case "nurse":
-    return "RN.";
-  case "surgeon":
-    return "Sr.";
-  default:
-    return designation;
+    case "doctor":
+      return "Dr.";
+    case "nurse":
+      return "RN.";
+    case "surgeon":
+      return "Sr.";
+    default:
+      return designation;
   }
 }
 
@@ -121,15 +128,14 @@ export function getWeekStart(date: Date) {
 }
 
 export function printWeekday(date: Date) {
-  console.log(date);
-  const map: any = {
-    0: "monday",
-    1: "tuesday",
-    2: "wednesday",
-    3: "thursday",
-    4: "friday",
-    5: "saturday",
-    6: "sunday",
+  const map: { [state: number]: string } = {
+    1: "monday",
+    2: "tuesday",
+    3: "wednesday",
+    4: "thursday",
+    5: "friday",
+    6: "saturday",
+    7: "sunday",
   };
   const day = date.getDay();
   return map[day];
