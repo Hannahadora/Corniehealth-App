@@ -37,7 +37,7 @@ export function flatten(data: any) {
 }
 
 export function clickOutside(id: string, callBack: () => void) {
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", e => {
     const select = document.getElementById(id);
     let targetElement: any = e.target; // clicked element
     do {
@@ -104,14 +104,14 @@ export function printPractitioner(practitioner: IPractitioner) {
 function printTitle(designation: string) {
   if (!designation) return "Pr.";
   switch (designation.toLowerCase()) {
-    case "doctor":
-      return "Dr.";
-    case "nurse":
-      return "RN.";
-    case "surgeon":
-      return "Sr.";
-    default:
-      return designation;
+  case "doctor":
+    return "Dr.";
+  case "nurse":
+    return "RN.";
+  case "surgeon":
+    return "Sr.";
+  default:
+    return designation;
   }
 }
 

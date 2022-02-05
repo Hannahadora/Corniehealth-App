@@ -9,7 +9,6 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props) {
-    console.log("original ", props.modelValue);
     const { url, placeholder, onChange } = useHandleImage(props.modelValue);
     return { url, placeholder, onChange };
   },
