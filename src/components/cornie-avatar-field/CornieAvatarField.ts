@@ -26,6 +26,7 @@ export default defineComponent({
       this.$emit("update:modelValue", newValue);
     },
     modelValue(value: string) {
+      return
       if (this.url == value) return
       this.url = value;
     },
