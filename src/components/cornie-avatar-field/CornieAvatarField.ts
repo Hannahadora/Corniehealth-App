@@ -23,12 +23,11 @@ export default defineComponent({
   },
   watch: {
     url(newValue: string) {
-      if (this.initalized) this.$emit("update:modelValue", newValue);
+      this.$emit("update:modelValue", newValue);
     },
     modelValue(value: string) {
-      if (this.initalized) return;
+      if (this.url == value) return
       this.url = value;
-      this.initalized = true;
     },
   },
 });
