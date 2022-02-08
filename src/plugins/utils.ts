@@ -77,14 +77,21 @@ export async function getCoordinates(address: string) {
   return resData.data[0];
 }
 
-export function dateBetween(dateStr: string, start: string, end: string) {
-  const date = new Date(dateStr).getTime();
-  const startDate = new Date(start).getTime();
-  const endDate = new Date(end).getTime();
-  if (start && end) return date > startDate && date < endDate;
-  if (start) return date > startDate;
-  if (end) return date < endDate;
+export function dateObjBetween(date: Date, start: Date, end: Date) {
+  const _date = date.getTime();
+  const startDate = start.getTime();
+  const endDate = end.getTime();
+  if (start && end) return _date > startDate && _date < endDate;
+  if (start) return _date > startDate;
+  if (end) return _date < endDate;
   return false;
+}
+
+export function dateBetween(dateStr: string, start: string, end: string) {
+  const date = new Date(dateStr);
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  return dateObjBetween(date, startDate, endDate);
 }
 
 export function printPractitioner(practitioner: IPractitioner) {
