@@ -31,25 +31,35 @@
                 label="Based on"
                 aria-selected="--Select--"
               >
-                <p class="text-xs text-dark font-semibold">{{ input.name }}</p>
-                <p class="text-xs text-dark font-semibold">{{ input.role }}</p>
-                <p class="text-xs text-dark font-semibold">
-                  {{ input.managingOrganization }}
-                </p>
-                <p class="text-xs text-dark font-semibold">
-                  {{ input.phone.dialCode + input.phone.number }}
-                </p>
-                <p class="text-xs text-dark font-semibold">{{ input.email }}</p>
-                <d-edit
-                  class="ml-20 cursor-pointer"
-                  @click="
-                    editParticipant(input.careTeamId, index, participants)"/>
-                <c-delete
-                  @click="removeParticipant(index, participants)"
-                  class="cursor-pointer"
-                />
+              </cornie-select>
+            </div>
+            <div class="col-span-4">
+              <cornie-select
+                :rules="required"
+                :items="['Active', 'Inactive']"
+                v-model="replaces"
+                label="Replaces"
+                aria-selected="--Select--"
+              >
+              </cornie-select>
+            </div>
+            <div class="col-span-4 leading-none">
+              <div class="font-bold mb-3 text-black">Subject</div>
+              <div class="flex flex-row justify-between items-baseline w-2/3">
+                <cornie-radio
+                  label="Patient"
+                  v-model="subject"
+                  name="subject"
+                  value="Patient"
+                ></cornie-radio>
+                <cornie-radio
+                  label="Group"
+                  v-model="subject"
+                  name="subject"
+                  value="Group"
+                ></cornie-radio>
               </div>
-           
+            </div>
             <div class="col-span-4">
               <div class="font-bold">Start date & time</div>
               <date-time-picker
@@ -155,38 +165,164 @@
           </div>
         </accordion-component>
 
-          <!-- <cornie-input label="Phone"  v-model="participants.phone" placeholder="--Enter--" :rules="required"/>-->
-          <cornie-input
-            label="Email"
-            v-model="participant.email"
-            placeholder="--Enter--"
-           :rules="emailRule"
-          />
-          <Textarea
-            label="Notes"
-            v-model="participant.notes"
-            placeholder="--Enter--"
-            :rules="required"
-          />
-          <span><c-add class="float-right cursor-pointer mb-2 mt-8 mr-5" @click="checkParticipant" /></span>
-
-        <span class="flex justify-end w-full border-t-2 h-full">
-          <button
-            @click="$router.push('care-teams')"
-            type="button"
-            class="outline-primary rounded-full text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white"
-          >
-            Revert Changes
-          </button>
-
-            <cornie-btn
-              :loading="loading"
-              type="submit"
-              class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+        <accordion-component title="Communication">
+          <div class="w-full font-bold text-sm text-black mt-5 mb-3">
+            SYSTEM
+          </div>
+          <div class="grid grid-cols-12 gap-5 mt-4">
+            <div class="col-span-12 mb-16 flex">
+              <system-button-group @system-changed="handleSystemChange" />
+            </div>
+            <div class="col-span-3">
+              <cornie-input
+                v-model="value"
+                placeholder="--Enter--"
+                :rules="required"
+              >
+                <template #label>Value</template>
+                <template #labelicon>
+                  <info-blue-bg class="w-4" />
+                </template>
+              </cornie-input>
+            </div>
+            <div class="col-span-5 flex flex-col">
+              <div class="mb-5 flex flex-row">
+                <div class="font-bold text-sm mr-2">USE</div>
+                <info-blue-bg />
+              </div>
+              <div class="flex flex-row justify-between items-baseline w-full">
+                <div class="mr-2">
+                  <cornie-radio
+                    label="Home"
+                    v-model="use"
+                    value="Home"
+                    name="use"
+                  ></cornie-radio>
+                </div>
+                <div class="mr-2">
+                  <cornie-radio
+                    label="Work"
+                    v-model="use"
+                    value="Work"
+                    name="use"
+                  ></cornie-radio>
+                </div>
+                <div class="mr-2">
+                  <cornie-radio
+                    label="Temp"
+                    v-model="use"
+                    value="Temp"
+                    name="use"
+                  ></cornie-radio>
+                </div>
+                <div class="mr-2">
+                  <cornie-radio
+                    label="Old"
+                    v-model="use"
+                    value="Old"
+                    name="use"
+                  ></cornie-radio>
+                </div>
+                <div>
+                  <cornie-radio
+                    label="Mobile"
+                    v-model="use"
+                    value="Mobile"
+                    name="use"
+                  ></cornie-radio>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <div class="font-bold">Start date & time</div>
+              <date-time-picker
+                title="Start date & time"
+                v-model="startDateTimeCom"
+              ></date-time-picker>
+            </div>
+            <div class="col-span-2">
+              <div class="font-bold">End date & time</div>
+              <date-time-picker
+                title="End date & time"
+                v-model="endDateTimeCom"
+              ></date-time-picker>
+            </div>
+          </div>
+          <div class="w-full flex flex-row justify-end">
+            <button
+              class="font-bold text-red-500 text-sm border-0 mt-8"
+              @click="addCommunication"
+              type="button"
             >
-              Save
-            </cornie-btn>
-        </span>
+              Add
+            </button>
+          </div>
+          <div class="grid grid-cols-12 gap-10 my-10">
+            <template v-if="communication.length">
+              <div
+                class="col-span-4 flex items-start justify-start"
+                v-for="(comm, index) in communication"
+                :key="index"
+              >
+                <div class="mr-3 leading-none">
+                  <template v-if="comm.system === 'Phone'">
+                    <mobile-icon class="fill-current text-red-500 w-4" />
+                  </template>
+                  <template v-if="comm.system === 'Fax'">
+                    <fax-icon class="fill-current text-red-500" />
+                  </template>
+                  <template v-if="comm.system === 'Url'">
+                    <url-icon class="fill-current text-red-500" />
+                  </template>
+                  <template v-if="comm.system === 'Email'">
+                    <mail-icon class="fill-current text-red-500" />
+                  </template>
+                  <template v-if="comm.system === 'Pager'">
+                    <pager-icon class="fill-current text-red-500" />
+                  </template>
+                  <template v-if="comm.system === 'Sms'">
+                    <sms-icon class="fill-current text-red-500" />
+                  </template>
+                </div>
+                <div class="flex-1">
+                  <p>
+                    {{ comm.value }}
+                    <span class="text-xs text-gray-400">({{ comm.use }})</span>
+                  </p>
+                  <p class="text-xs text-gray-400">
+                    {{ comm.startDate }} - {{ comm.endDate }}
+                  </p>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div class="w-full h-auto overflow-y-auto">
+            <label class="font-bold block">Notes</label>
+            <textarea
+              v-model="notes"
+              class="w-full h-auto rounded-md border border-gray-400 p-2"
+              placeholder="--Enter--"
+            />
+          </div>
+        </accordion-component>
+      </div>
+      <div class="flex justify-end w-full pb-5">
+        <button
+          @click="$router.push('care-teams')"
+          type="button"
+          class="outline-primary rounded-md text-black mt-5 mr-3 py-2 pr-8 pl-8 px-3 focus:outline-none hover:bg-primary hover:text-white"
+        >
+          Cancel
+        </button>
+
+        <cornie-btn
+          :loading="loading"
+          type="submit"
+          class="bg-danger rounded-md text-white mt-5 pr-10 pl-10 focus:outline-none hover:opacity-90"
+        >
+          Save
+        </cornie-btn>
+      </div>
     </form>
   </div>
 </template>
@@ -316,7 +452,10 @@ export default class AddCareteam extends Vue {
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  emailRule = string().email("A valid email is required").required();
+  @Watch("use")
+  handleUse() {
+    console.log(this.use);
+  }
 
   @Watch("id")
   idChanged() {
