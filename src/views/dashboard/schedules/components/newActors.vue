@@ -2,7 +2,7 @@
   <div class="container-fluid flex cursor-pointer">
     <!-- {{ items }} -->
     <span
-      v-for="(actor, index) in items"
+      v-for="(actor, index) in actors"
       :key="index"
       :class="{ 'img-hover': index > 0 }"
     >
@@ -28,7 +28,7 @@
     </span>
     <div
       v-if="items?.length > 3"
-      class="image-con rounded-full bg-gray-200 -ml-3 flex items-center border justify-center  relative"
+      class="image-con rounded-full bg-blue-600 text-white font-bold -ml-3 flex items-center border justify-center  relative"
     >
       <span class="text-xs">+{{ items?.length - actors?.length }}</span>
     </div>

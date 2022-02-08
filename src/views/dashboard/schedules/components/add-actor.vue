@@ -31,7 +31,7 @@
               :key="index"
             >
             
-                  <div class="w-full grid grid-cols-2 gap-4">
+                  <div class="w-full flex">
                     <div class="w-full flex space-x-4">
                       <div class="w-10 h-10">
                         <avatar
@@ -58,6 +58,39 @@
                         @click="showAvailable(input,input.id)">
                         View Availability
                       </span>
+                      <!-- <span>
+
+                       <cornie-menu top="30px" >
+                          <template #activator="{ on }">
+                            <icon-btn v-on="on">
+                              <dots-vertical-icon />
+                            </icon-btn>
+                          </template>
+                          <card-text>
+                            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" 
+                              @click="$router.push(`/dashboard/experience/add-appointment?practitioner=${input.id}&slot=${input.schedule_practitioners.ScheduleId}`)">
+                              <calendar-icon />
+                              <span class="ml-3 text-xs">Book Appointment</span>
+                            </div>
+                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                <edit-icon class="text-blue-400 fill-current" />
+                                <span class="ml-3 text-xs">Edit Slot</span>
+                              </div>
+                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                <copy-icon class="text-blue-400 fill-current" />
+                                <span class="ml-3 text-xs">Copy</span>
+                              </div>
+                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                <cancel-icon class="text-green-600 fill-current" />
+                                <span class="ml-3 text-xs">Cancel</span>
+                              </div>
+                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                <share-icon class="text-indigo-700 fill-current" />
+                                <span class="ml-3 text-xs">Share</span>
+                              </div>
+                          </card-text>
+                        </cornie-menu>
+                      </span> -->
                     
                     </div>
                   </div>
@@ -127,6 +160,13 @@ import InfoIcon from "@/components/icons/info.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import Avatar from "@/components/avatar.vue";
 import SearchSection from "@/components/autocomplete.vue"
+import CalendarIcon from "@/components/icons/bcalendar.vue"
+import EditIcon from "@/components/icons/edit.vue";
+import CopyIcon from "@/components/icons/copy.vue";
+import ShareIcon from "@/components/icons/share.vue"
+import CornieMenu from "@/components/CornieMenu.vue";
+import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
+import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
 
 const schedules = namespace("schedules");
 
@@ -142,11 +182,18 @@ const schedules = namespace("schedules");
     CornieIconBtn,
     ArrowLeftIcon,
     CornieDialog,
-    CancelIcon
+    CancelIcon,
+    CalendarIcon,
+    EditIcon,
+    CopyIcon,
+    ShareIcon,
+    CornieMenu,
+    DotsHorizontalIcon,
+    DotsVerticalIcon
 
   },
 })
-export default class AllActors extends Vue {
+export default class AddActors extends Vue {
   search = "";
   data: any;
 
