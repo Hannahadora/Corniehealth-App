@@ -11,14 +11,69 @@
       @change="onChange"
       hidden
     />
-    <label
-      v-if="!readonly"
-      for="file"
-      class="text-primary border-primary border px-7 py-1.5 rounded-full font-bold cursor-pointer"
-    >
-      Upload Image
-    </label>
+    <div class="flex flex-col">
+      <label
+        v-if="!readonly"
+        for="file"
+        :class="{
+          'border-danger': Boolean(errorMessage),
+          'border-primary': !Boolean(errorMessage),
+        }"
+        class="text-primary border px-7 py-1.5 rounded-full font-bold cursor-pointer"
+      >
+        Upload Image
+      </label>
+      <span v-if="errorMessage" class="text-xs text-red-500 block">
+        {{ errorMessage }}
+      </span>
+    </div>
   </div>
 </template>
 
-<script src="./CornieAvatarField.ts"></script>
+<script lang="ts">
+import Avatar from "@/components/avatar.vue";
+import { useHandleImage } from "@/composables/useHandleImage";
+import { defineComponent, watch } from "@vue/runtime-core";
+import { useField } from "vee-validate";
+import { string } from "yup";
+
+export default defineComponent({
+  name: "cornie-avatar-field",
+  components: {
+    Avatar,
+  },
+  emits: ["update:modelValue"],
+  setup(props) {
+    const rule = props.rules || string().url();
+    const id = Math.random().toString(36).substring(2, 9);
+    const fieldName = `avatar-field-${id}`;
+    const { errorMessage, value } = useField(fieldName, rule);
+
+    const { url, placeholder, onChange } = useHandleImage(props.modelValue);
+
+    watch(url, (urlVal) => {
+      value.value = urlVal || "";
+    });
+    return { url, placeholder, onChange, errorMessage };
+  },
+  data() {
+    return {
+      initalized: false,
+    };
+  },
+  props: {
+    modelValue: { type: String, default: "" },
+    readonly: { type: Boolean, default: false },
+    rules: { type: Object },
+  },
+  watch: {
+    url(newValue: string) {
+      this.$emit("update:modelValue", newValue);
+    },
+    modelValue(value: string) {
+      if (value == this.url) return;
+      this.url = value;
+    },
+  },
+});
+</script>
