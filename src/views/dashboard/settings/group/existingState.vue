@@ -21,7 +21,7 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="$router.push(`/dashboard/provider/add-group/${item.id}`)"
         >
-          <edit-icon class="mr-3" />
+          <edit-icon class="mr-3 fill-current text-primary" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
         <div

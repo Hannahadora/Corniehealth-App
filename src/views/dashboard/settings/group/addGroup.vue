@@ -32,14 +32,14 @@
                   label="Type"
                   placeholder="--Select--"
                 />
-                <!-- <cornie-select
+                <cornie-select
                   :rules="required"
                   :items="['state']"
                   v-model="state"
                   label="State"
                   placeholder="--Select--"
                 >
-                </cornie-select> -->
+                </cornie-select>
                 <cornie-input
                   label="Name"
                   placeholder="--Enter--"
@@ -282,6 +282,7 @@ export default class AddGroup extends Vue {
   async setGroup() {
     const group = await this.getGroupById(this.id);
     if (!group) return;
+    console.log(group);
     this.state = group.state;
     this.status = group.status;
     this.type = group.type;
@@ -289,38 +290,26 @@ export default class AddGroup extends Vue {
     this.code = group.code;
     this.quantity = group.quantity;
     this.managingEntity = group.managingEntity;
-    this.characteristicsCode = group.characteristicsCode;
-    this.valueCodeableConcept = group.valueCodeableConcept;
-    this.valueBoolean = group.valueBoolean;
-    this.valueQuantity = group.valueQuantity;
-    this.valueRange = group.valueRange;
-    this.valueRef = group.valueRef;
-    this.exclude = group.exclude;
-    this.period = group.period;
-    this.memberPeriod = group.memberPeriod;
-    this.memberStatus = group.memberStatus;
-    this.memberEntity = group.memberEntity;
+    this.actorsList = group.members;
   }
   get payload() {
     return {
-      state: this.state,
-      status: this.status,
-      type: this.type,
-      name: this.name,
-      code: this.code,
-      quantity: this.quantity,
-      managingEntity: this.managingEntity,
-      characteristicsCode: this.characteristicsCode,
-      valueCodeableConcept: this.valueCodeableConcept,
-      valueBoolean: this.valueBoolean,
-      valueQuantity: this.valueQuantity,
-      valueRange: this.valueRange,
-      valueRef: this.valueRef,
-      exclude: this.exclude,
-      period: this.period,
-      memberPeriod: this.memberPeriod,
-      memberStatus: this.memberStatus,
-      members: this.actorsList,
+      group: {
+        state: this.state,
+        status: this.status,
+        type: this.type,
+        name: this.name,
+        code: this.code,
+        quantity: this.quantity,
+        managingEntity: this.managingEntity,
+      },
+      members: this.actorsList.map((item: any) => {
+        return {
+          userId: item.id,
+          period: item.period,
+          status: item.status,
+        };
+      }),
     };
   }
   get allaction() {

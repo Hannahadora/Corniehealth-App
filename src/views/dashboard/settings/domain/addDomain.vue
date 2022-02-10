@@ -5,7 +5,7 @@
         <div class="w-full grid grid-cols-12 mb-10">
           <div class="col-span-12 mb-4">
             <cornie-input
-              label="ORGANIZATION NAME"
+              label="Organization Name"
               placeholder="--Enter--"
               :rules="required"
               v-model="orgName"
@@ -13,7 +13,7 @@
           </div>
           <div class="col-span-12 mb-4">
             <domain-input
-              label="DOMAIN NAME"
+              label="Domain Name"
               placeholder="--Enter--"
               :rules="required"
               v-model="domainName"
@@ -25,7 +25,7 @@
             <cornie-select
               :rules="required"
               :items="['Super admin']"
-              label="ROLE"
+              label="Role"
               v-model="roleForDomain"
             >
             </cornie-select>

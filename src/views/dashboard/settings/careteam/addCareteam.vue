@@ -78,17 +78,8 @@
         </accordion-component>
 
         <accordion-component title="Participants">
-          <div class="w-full grid grid-cols-12 gap-5 mt-4">
-            <div class="col-span-4">
-              <cornie-select
-                :rules="required"
-                :items="dropdowns.role"
-                label="Role"
-                v-model="role"
-                aria-selected="--Select--"
-              >
-              </cornie-select>
-            </div>
+          <add-actor />
+          <!-- <div class="w-full grid grid-cols-12 gap-5 mt-4">
             <div class="col-span-4">
               <div class="flex flex-row justify-center items-center w-full">
                 <div class="mr-3">
@@ -101,7 +92,6 @@
                   >
                   </cornie-select>
                 </div>
-                <!-- Replace with search input -->
                 <div>
                   <cornie-input-team v-model="search" placeholder="--Search--">
                     <template #prepend>
@@ -162,7 +152,7 @@
               >
               </cornie-select>
             </div>
-          </div>
+          </div> -->
         </accordion-component>
 
         <accordion-component title="Communication">
@@ -358,6 +348,7 @@ import UrlIcon from "@/components/icons/url.vue";
 import PagerIcon from "@/components/icons/pager.vue";
 import MailIcon from "@/components/icons/mail.vue";
 import MobileIcon from "@/components/icons/mobile.vue";
+import AddActor from "./components/AddActor.vue";
 
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
@@ -402,6 +393,7 @@ const emptyParticipant: Participants = {
     UrlIcon,
     PagerIcon,
     MailIcon,
+    AddActor,
   },
 })
 export default class AddCareteam extends Vue {
@@ -635,7 +627,6 @@ export default class AddCareteam extends Vue {
     this.setCareteam();
     this.fetchOrgInfo();
     const data = await this.getDropdowns("careTeam");
-    console.log(data);
     this.dropdowns = data;
   }
 }
