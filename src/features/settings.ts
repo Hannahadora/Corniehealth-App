@@ -1,4 +1,3 @@
-import organization from "@/store/organization";
 import EPracticeType from "@/types/practice-type";
 
 interface INav {
