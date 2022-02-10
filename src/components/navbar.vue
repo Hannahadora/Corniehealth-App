@@ -31,7 +31,7 @@
                 !showFullHeight && authorizedLocations?.length > 0,
             }"
           >
-            <div class="flex space-x-4 p-5" v-if="authorizedLocations == null">
+            <div class="flex space-x-4 p-5" v-if="!authorizedLocations?.length">
               <location-icon class="fill-current text-primary" />
               <p
                 class="text-center text-sm font-semibold text-danger justify-center flex"
@@ -107,8 +107,8 @@
               class="font-semibold rounded-full mb-1 bg-primary mt-2 w-full text-white"
             >
               <span class="inline-flex justify-center text-sm">
-                View all settings <settings-white-icon class="ml-2 mt-0.5"
-              /></span>
+                View all settings <settings-white-icon class="ml-2 mt-0.5" />
+              </span>
             </cornie-btn>
           </li>
         </ul>
@@ -270,8 +270,8 @@
           </li>
 
           <li class="flex w-full mt-4 pt-4 mb-4">
-            <div class="w-full flex space-x-3">
-              <p class="text-sm font-extrabold">Manage My Subscription</p>
+            <div class="w-full flex space-x-14">
+              <p class="font-semibold text-xl">Sign out</p>
               <span
                 class="relative left-40 flex-shrink-0 cursor-pointer"
                 @click="logout"
@@ -314,19 +314,16 @@ import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
 import FormIcon from "@/components/icons/questionnaire.vue";
 import IPractitioner from "@/types/IPractitioner";
-import ILocation, { AuthorizedLocation } from "@/types/ILocation";
 import BankIcon from "@/components/icons/bank.vue";
 import Avatar from "@/components/avatar.vue";
 import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
 import LocationIcon from "@/components/icons/location.vue";
-import { cornieClient } from "@/plugins/http";
-import { suggester } from "@/plugins/route-suggester";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import NewLocationIcon from "@/components/icons/newlocation.vue";
+import { AuthorizedLocation } from "@/types/ILocation";
 
 const account = namespace("user");
 const routerStore = namespace("routerStore");
-const location = namespace("location");
 
 @Options({
   components: {
@@ -377,12 +374,6 @@ export default class NavBar extends Vue {
   @account.Getter
   cornieUser!: CornieUser;
 
-  @location.State
-  locations!: ILocation[];
-
-  @location.Action
-  fetchLocations!: () => Promise<void>;
-
   @account.Mutation
   switchCurrentLocation!: (locationId: any) => void;
 
@@ -391,6 +382,7 @@ export default class NavBar extends Vue {
   get profilePhoto() {
     return this.cornieUser?.image;
   }
+
   showSettings() {
     this.showSettingsModal = true;
   }
@@ -415,21 +407,17 @@ export default class NavBar extends Vue {
     });
     if (!confirmed) return;
 
-    if (confirmed) {
-      try {
-        this.switchCurrentLocation(value);
-        window.notify({
-          msg: "Authorized Locations Swtiched",
-          status: "success",
-        });
-        this.$router.push('/dashboard/provider/home')
-        //  else window.notify({ msg: "Authorized Locations not Swtiched", status: "error" })
-      } catch (error) {
-        window.notify({
-          msg: "Authorized Locations not Swtiched",
-          status: "error",
-        });
-      }
+    try {
+      this.switchCurrentLocation(value);
+      window.notify({
+        msg: "Authorized Locations Swtiched",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({
+        msg: "Authorized Locations not Swtiched",
+        status: "error",
+      });
     }
   }
 
@@ -451,9 +439,6 @@ export default class NavBar extends Vue {
   async logout() {
     await logout();
     this.$router.push("/login");
-  }
-  async created() {
-    await this.fetchLocations();
   }
 }
 </script>

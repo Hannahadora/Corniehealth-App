@@ -1,6 +1,14 @@
+import ILocation from "./ILocation";
 import Period from "./IPeriod";
 import User from "./user";
 
+export interface PractitionerLocationRole {
+  id?: string;
+  locationId: string;
+  roleId: string;
+  default: boolean;
+  location: ILocation;
+}
 export default interface IPractitioner {
   defaultLocation: string;
   name: string;
@@ -34,8 +42,7 @@ export default interface IPractitioner {
   organizationId: string;
   type: string;
   period: Period;
-  locations: [];
-  authorizedLocations: [];
+  locationRoles?: PractitionerLocationRole[];
   identifier: string;
   locationRoles: [] 
 }

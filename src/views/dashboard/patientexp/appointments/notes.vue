@@ -16,18 +16,22 @@
             v-model="notes"
             placeholder="--Enter--"
             :rules="required"
+            class="w-full"
           />
           <span></span>
         </div>
-        <span class="text-danger cursor-pointer" @click="apply">Add</span>
-        <div class="w-full flex space-x-4">
-          <note-icon />
+        <span class="text-danger cursor-pointer text-sm float-right font-bold" @click="apply">Add</span>
+        <div class="w-full flex space-x-4" v-for="(item, index) in allNotes" :key="index">
+          <span>
+            <note-icon />
+          </span>
           <div>
-            <span class="text-gray-600">8-Sep-2021</span>
+            <span class="text-gray-600 text-sm">
+              {{ new Date(item.createdAt).toLocaleString() }}
+              <span class="text-gray-600 font-bold text-sm uppercase">. {{ item.user.firstName +' '+ item.user.lastName}}</span>
+              </span>
             <p class="text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis
-              egestas at sociis sodales nunc metus, commodo, viverra sit.
-              Bibendum sagittis neque blandit varius.
+              {{ item.text }}
             </p>
           </div>
         </div>
@@ -35,12 +39,12 @@
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <div class="flex justify-end w-full mt-auto">
-            <button
-              class="rounded mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+            <cornie-btn
+              class="rounded mt-5 py-1 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
               @click="show = false"
             >
               Cancel
-            </button>
+            </cornie-btn>
             <!-- <cornie-btn
             @click="apply"
             :loading="loading"
@@ -84,7 +88,7 @@ import { cornieClient } from "@/plugins/http";
 const copy = (original) => JSON.parse(JSON.stringify(original));
 
 export default {
-  name: "ParticipantFilter",
+  name: "notes",
   components: {
     ...CornieCard,
     CornieDialog,
@@ -124,6 +128,10 @@ export default {
       required: true,
       default: () => [],
     },
+    allNotes:{
+      type: Array,
+      default:[]
+    }
   },
   data() {
     return {
@@ -133,6 +141,7 @@ export default {
       notes: "",
       availableFilter: false,
       profileFilter: false,
+
     };
   },
   watch: {
@@ -175,6 +184,7 @@ export default {
         this.$router.push("/dashboard/provider/experience/appointments");
       }
     },
+    
 
     reset() {
       this.$emit("update:preferred", copy([...this.columns]));
@@ -189,6 +199,8 @@ export default {
   },
   mounted() {
     this.columnsProxy = copy([...this.columns]);
+   
   },
+
 };
 </script>

@@ -40,12 +40,13 @@
           </div>
           <div class="col-span-4">
             <cornie-input
-              required
+              v-if="hasDomain"
               label="Domain Name"
-              placeholder="https://providername"
-              v-model="DomainName"
-              :disabled="DomainName"
+              placeholder="--Enter--"
+              :modelValue="`https://${DomainName}.corniehealth.com`"
+              disabled
             />
+            <domain-input v-else label="Domain Name" v-model="DomainName" />
           </div>
           <div class="col-span-4">
             <cornie-select
@@ -167,6 +168,7 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import CornieTooltip from "@/components/tooltip.vue";
 import QuestionIcon from "@/components/icons/question.vue";
+import DomainInput from "@/components/newdomaininput.vue";
 
 const organization = namespace("organization");
 @Options({
@@ -174,6 +176,7 @@ const organization = namespace("organization");
   components: {
     Avatar,
     CornieInput,
+    DomainInput,
     CornieSelect,
     ProviderInput,
     PhoneInput,
@@ -212,8 +215,15 @@ export default class PracticeInfo extends Vue {
   @organization.State
   organizationInfo!: IOrganization;
 
+  @organization.Mutation("setData")
+  setOrganization!: (data: any) => void;
+
   @organization.Action
   fetchOrgInfo!: () => Promise<IOrganization>;
+
+  get hasDomain() {
+    return Boolean(this.organizationInfo?.domainName);
+  }
 
   get payload() {
     return {
@@ -245,7 +255,11 @@ export default class PracticeInfo extends Vue {
   async submitForm() {
     this.loading = true;
     try {
-      await cornieClient().post("/api/v1/organization", this.payload);
+      const organization = await cornieClient().post(
+        "/api/v1/organization",
+        this.payload
+      );
+      this.setOrganization(organization);
       window.notify({
         msg: "Practice information updated sucessfully",
         status: "success",
@@ -283,7 +297,7 @@ export default class PracticeInfo extends Vue {
     this.alias = data.alias || "";
     this.OrganizationType = data.organisationType || "";
     this.RegistrationNumber = data.registrationNumber || "";
-    this.DomainName = `https://${data.domainName}.corniehealth.com` || "";
+    this.DomainName = data.domainName;
     this.OrganizationIdentifier = data.identifier || "";
     this.ProviderProfile = data.providerProfile || "";
     this.IncorporationType = data.incorporationType || "";

@@ -59,14 +59,6 @@ async function checkDomain(domainName?: string) {
   }
 }
 
-async function uniqueDomain(instance: StringSchema, msg: string) {
-  return instance.test({
-    name: "uniqueDomain",
-    message: msg,
-    test: checkDomain,
-  });
-}
-
 @Options({
   inheritAttrs: false,
   components: {

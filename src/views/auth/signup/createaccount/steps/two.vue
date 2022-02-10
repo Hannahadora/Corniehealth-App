@@ -16,21 +16,32 @@
         'Hospital/Clinic',
         'Solo Practice',
         'Community Pharmacy',
-        'Diagnostics Center',
+        'Diagnostics Services',
       ]"
       class="w-full"
       placeholder="--Select--"
       label="Practice Type"
     />
-    <cornie-select
-      v-if="account !== 'Patient'"
-      v-model="subType"
-      :items="['Hospital/Clinic', 'Solo Practice']"
-      class="w-full"
-      placeholder="--Select--"
-      label="Select your practice sub-type      "
-    />
-
+    <div v-if="practiceType == 'Hospital/Clinic'">
+      <cornie-select
+        v-if="account !== 'Patient' || practiceType == 'Hospital/Clinic'"
+        v-model="subType"
+        :items="['Primary Care', 'Specialist (ophthalmology)','Specialist (ENT)','Specialist (Dentistry)','Specialist (Others)','Community','Rural','Retail']"
+        class="w-full"
+        placeholder="--Select--"
+        label="Select your practice sub-type      "
+      />
+    </div>
+    <div v-if="practiceType == 'Solo Practice'">
+      <cornie-select
+        v-if="account !== 'Patient'"
+        v-model="subType"
+        :items="['Family Practice', 'General Practice','Pediatrics','Sexual & Reproductive','ObGyn','Dermatology','Ophthalmology','Mental Health','Occupational Therapist','Physical Therapist','Speech-Language Pathologists','Applied Behavior Analysts']"
+        class="w-full"
+        placeholder="--Select--"
+        label="Select your practice sub-type"
+      />
+    </div>
     <cornie-input
       :rules="requiredString"
       v-model="firstName"

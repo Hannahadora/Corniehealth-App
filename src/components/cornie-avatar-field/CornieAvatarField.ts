@@ -12,6 +12,11 @@ export default defineComponent({
     const { url, placeholder, onChange } = useHandleImage(props.modelValue);
     return { url, placeholder, onChange };
   },
+  data() {
+    return {
+      initalized: false,
+    };
+  },
   props: {
     modelValue: { type: String, default: "" },
     readonly: { type: Boolean, default: false },
@@ -20,8 +25,10 @@ export default defineComponent({
     url(newValue: string) {
       this.$emit("update:modelValue", newValue);
     },
-  },
-  mounted() {
-    this.url = this.modelValue;
+    modelValue(value: string) {
+      return
+      if (this.url == value) return
+      this.url = value;
+    },
   },
 });

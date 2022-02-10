@@ -1,19 +1,19 @@
 <template>
-  <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
+  <div class=" w-2/3 block rounded-lg bg-white -mt-4">
     <div
-      class="w-80 lg:w-full xl:w-full md:w-full block p-4 relative right-32 lg:right-0 xl:right-0 md:right-0 border-2 border-gray-300 rounded-lg"
+      class="w-80 lg:w-full xl:w-full md:w-full block"
     >
       <form class="m-8" @submit.prevent="submit">
-        <h2 class="font-bold text-gray-900 mb-16 text-2xl">Reset Password</h2>
-        <label for="password">
-          <span class="block uppercase mb-1 text-xs font-bold"
+        <h2 class="font-bold text-primary mb-5 text-xl">Reset Password</h2>
+        <label for="password" class=" flex flex-col">
+          <span class="block capitalize mb-1 w-full text-sm font-bold"
             >Previous Password</span
           >
           <password-input
             v-model="previousPassword"
             required
             id="password"
-            class="border rounded py-2"
+            class="border rounded py-2 w-full"
           />
           <span class="flex w-2/3 justify-between items-center">
             <span class="text-xs text-gray-500">Password Strength</span>
@@ -28,7 +28,7 @@
           </span>
         </label>
         <label for="confirm" class="mt-6 flex flex-col">
-          <span class="block uppercase mb-1 text-xs font-bold"
+          <span class="block capitalize mb-1 text-sm font-bold"
             >New Password</span
           >
           <password-input
@@ -88,7 +88,7 @@
         <div class="flex items-center justify-between">
           <cornie-btn
             :loading="loading"
-            class="font-semibold rounded-full py-1 px-3 bg-danger mt-3 w-full text-white p-2"
+            class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
             type="submit"
           >
             Submit
@@ -132,6 +132,7 @@ export default class SignUp extends Vue {
 
   get payload() {
     return {
+      userId:"",
       previousPassword: this.previousPassword,
       newPassword: this.newPassword,
     };

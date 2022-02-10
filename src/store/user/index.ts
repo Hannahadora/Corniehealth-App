@@ -1,4 +1,5 @@
 import { rememberLogin } from "@/plugins/auth";
+import { IOrganization } from "@/types/IOrganization";
 import IPractitioner from "@/types/IPractitioner";
 import User, { CornieUser } from "@/types/user";
 import { StoreOptions } from "vuex";
@@ -10,10 +11,14 @@ interface UserState {
   requiresTwoFactorAuth: boolean;
   requiresSecurityQuestion: boolean;
   authTime?: Date;
-  cornieData: { user: CornieUser; practitioner: IPractitioner };
+  cornieData: {
+    user: CornieUser;
+    practitioner: IPractitioner;
+    organization: IOrganization;
+  };
   practitionerAuthenticated: boolean;
   domain: string;
-  currentLocation:string;
+  currentLocation: string;
 }
 
 export default {
@@ -28,9 +33,19 @@ export default {
     cornieData: {} as any,
     practitionerAuthenticated: true,
     domain: "",
-    currentLocation : "",
+    currentLocation: "",
   },
   getters: {
+    accountMeta(state, getters, rootState: any) {
+      const organization: IOrganization =
+        rootState.organization.organizationInfo;
+      return {
+        organizationType: organization?.organisationType,
+        accountType: getters.accountType,
+        practiceType: organization?.practiceType,
+        practiceSubType: organization?.practiceSubType,
+      };
+    },
     accountType(state) {
       return state.cornieData?.user?.accountType;
     },
@@ -44,28 +59,31 @@ export default {
       const corniedata = localStorage.getItem("corniehealthdata") as string;
       return JSON.parse(corniedata)?.authDomain;
     },
-    authCurrentLocation(state){
+    authCurrentLocation(state) {
       return state.currentLocation;
     },
-    authorizedLocations(state){
-      const practitioner =  state.cornieData?.practitioner; 
-      const defaultLocation = practitioner?.defaultLocation;
-      return practitioner?.authorizedLocations?.map((location:any)=>{
-        return{
+    authorizedLocations(state) {
+      const practitioner = state.cornieData?.practitioner;
+      return practitioner?.locationRoles?.map(
+        ({ location, locationId, default: isDefault }) => ({
           ...location,
-          isDefault: location.id == defaultLocation,
-          currentLocation: location.id == state.currentLocation ? true : false
-        }
-      })
-    }
+          isDefault,
+          currentLocation: locationId == state.currentLocation,
+        })
+      );
+    },
   },
   mutations: {
     setCornieData(state, payload) {
-      state.cornieData = { ...state.cornieData, ...payload };
+      const { organization, ...data } = payload;
+      state.cornieData = { ...state.cornieData, ...data };
+      if (organization) {
+        (this.state as any).organization.organizationInfo = organization;
+      }
       const practitioner = state.cornieData?.practitioner;
-      state.currentLocation =  practitioner?.defaultLocation || "";
+      state.currentLocation = practitioner?.defaultLocation || "";
     },
-    switchCurrentLocation(state,locationId){
+    switchCurrentLocation(state, locationId) {
       state.currentLocation = locationId;
     },
     setAuthToken(state, token) {

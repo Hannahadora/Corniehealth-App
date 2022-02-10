@@ -12,7 +12,7 @@
         </h2>
       </div>
       <div
-        class="mt-5 flex h-3/4 items-center w-full flex-col justify-between text-white text-lg overflow-y-auto"
+        class="mt-5 flex h-3/4 gap-y-6 items-center w-full flex-col text-white text-lg overflow-y-auto"
       >
         <sidebar-link
           v-for="(link, i) in links"
@@ -55,6 +55,10 @@ import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
 import PatientIcon from "./icons/PatientIcon.vue";
 import SidebarLink from "./sidebarlink.vue";
+import { namespace } from "vuex-class";
+import { AccountMeta } from "@/types/user";
+import { getPracticeNav } from "@/features/navigation";
+import EPracticeType from "@/types/practice-type";
 
 interface ISidebarLink {
   name: string;
@@ -63,6 +67,8 @@ interface ISidebarLink {
   hasSubsection: boolean;
   children?: ISidebarLink[];
 }
+
+const user = namespace("user");
 
 @Options({
   components: {
@@ -84,6 +90,22 @@ interface ISidebarLink {
 })
 export default class CorniDashboardeSideBar extends Vue {
   hovered = false;
+
+  @user.Getter
+  accountMeta!: AccountMeta;
+
+  get links() {
+    let links: ISidebarLink[];
+    if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
+    links = getPracticeNav(EPracticeType.Solo);
+    const accType = this.accType?.toLowerCase();
+    return links.map((link) => {
+      return {
+        ...link,
+        to: `/dashboard/${accType}/${link.to}/`,
+      };
+    });
+  }
 
   providerLinks: ISidebarLink[] = [
     {
@@ -248,19 +270,6 @@ export default class CorniDashboardeSideBar extends Vue {
 
   get accType() {
     return this.$route.params.type as string;
-  }
-
-  get links() {
-    const accType = this.accType?.toLowerCase();
-    let links = [];
-    if (accType == "hmo") links = [...this.hmoLinks];
-    else links = [...this.providerLinks];
-    return links.map((link) => {
-      return {
-        ...link,
-        to: `/dashboard/${accType}/${link.to}/`,
-      };
-    });
   }
 }
 </script>
