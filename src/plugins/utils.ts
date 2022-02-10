@@ -121,7 +121,6 @@ export function getWeekStart(date: Date) {
 }
 
 export function printWeekday(date: Date) {
-  console.log(date);
   const map: any = {
     0: "monday",
     1: "tuesday",
