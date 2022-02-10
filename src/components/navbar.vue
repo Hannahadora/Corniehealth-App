@@ -270,8 +270,8 @@
           </li>
 
           <li class="flex w-full mt-4 pt-4 mb-4">
-            <div class="w-full flex space-x-3">
-              <p class="text-sm font-extrabold">Manage My Subscription</p>
+            <div class="w-full flex space-x-14">
+              <p class="font-semibold text-xl">Sign out</p>
               <span
                 class="relative left-40 flex-shrink-0 cursor-pointer"
                 @click="logout"
@@ -314,19 +314,16 @@ import ApprovalIcon from "@/components/icons/approval.vue";
 import { logout } from "@/plugins/auth";
 import FormIcon from "@/components/icons/questionnaire.vue";
 import IPractitioner from "@/types/IPractitioner";
-import ILocation, { AuthorizedLocation } from "@/types/ILocation";
 import BankIcon from "@/components/icons/bank.vue";
 import Avatar from "@/components/avatar.vue";
 import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
 import LocationIcon from "@/components/icons/location.vue";
-import { cornieClient } from "@/plugins/http";
-import { suggester } from "@/plugins/route-suggester";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import NewLocationIcon from "@/components/icons/newlocation.vue";
+import { AuthorizedLocation } from "@/types/ILocation";
 
 const account = namespace("user");
 const routerStore = namespace("routerStore");
-const location = namespace("location");
 
 @Options({
   components: {
