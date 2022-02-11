@@ -97,7 +97,7 @@ export default class CorniDashboardeSideBar extends Vue {
   get links() {
     let links: ISidebarLink[];
     if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
-    links = getPracticeNav(EPracticeType.Solo);
+    links = getPracticeNav(this.accountMeta.practiceType);
     const accType = this.accType?.toLowerCase();
     return links.map((link) => {
       return {
