@@ -1,6 +1,5 @@
 <template>
 <div class=" border-t-2 border-gray-100">
-
         <div class="flex space-x-7 w-full"  v-for="(item, index) in _items" :key="index">
             <div class="border-r-2 border-gray-100 p-3">
                 <span class="text-sm">{{ item?.date.toLocaleTimeString('en-US') ? item?.date.toLocaleTimeString('en-US') : '0:00:00 PM  ' }}</span>
@@ -13,8 +12,7 @@
 
             </div>
 
-        </div>
-    
+        </div> 
 </div>
     <!-- <cornie-table
     :columns="headers"

@@ -1,15 +1,19 @@
 <template>
   <div class="container-fluid">
-      <div  v-for="(slot, index) in items" :key="index">
-            <div class="bg-red-100 border-t-2 border-red-600 py-4 w-full" v-if="!Boolean(slot)">
-                <info-section  :text="'Book Appointment'"/>
-            </div>
-            <div class="bg-yellow-100 border-t-2 border-yellow-600 py-4 w-full" v-if="slot.capacity <= slot.booked">
-                <info-section  :text="'Book Appointment'"/>
-            </div>
-            <div class="bg-green-100 border-t-2 border-green-600 py-4 w-full"  v-if="slot.capacity > slot.booked">
-                <info-section  :text="'Book Appointment'" class="cursor-pointer"
-                @click="$router.push(`/dashboard/experience/add-appointment?practitioner=${slot.practitionerId}&slot=${slot.id}`)"/>
+    <div v-if="items.length > 0">
+        <div  v-for="(slot, index) in items" :key="index">
+              <div class="bg-red-100 border-t-2 border-red-600 py-4 w-full" v-if="!Boolean(slot)">
+              </div>
+              <div class="bg-yellow-100 border-t-2 border-yellow-600 py-4 w-full" v-if="slot.capacity == slot.booked">
+              </div>
+              <div class="bg-green-100 border-t-2 border-green-600 py-4 w-full"  v-if="slot.capacity > slot.booked">
+                  <info-section  :text="'Book Appointment'" class="cursor-pointer"
+                  @click="$router.push(`/dashboard/experience/add-appointment?practitioner=${slot.practitionerId}&slot=${slot.id}`)"/>
+              </div>
+        </div>
+    </div>
+      <div  v-else>
+            <div class="bg-red-100 border-t-2 border-red-600 py-4 w-full">
             </div>
       </div>
   </div>

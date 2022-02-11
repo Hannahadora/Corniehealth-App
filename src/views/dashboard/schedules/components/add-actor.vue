@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right  class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
          <cornie-icon-btn @click="show = false">
@@ -16,6 +16,7 @@
           />
         </div>
       </cornie-card-title>
+
        <cornie-card-text class="flex-grow scrollable">
         <span class="text-sm my-3 mb-5">
           All actors available from {{ range }} for appointment bookings.
@@ -30,8 +31,7 @@
               v-for="(input, index) in actors"
               :key="index"
             >
-            
-                  <div class="w-full flex">
+                  <div class="grid grid-cols-2 gap-4">
                     <div class="w-full flex space-x-4">
                       <div class="w-10 h-10">
                         <avatar
@@ -52,47 +52,46 @@
                         </p>
                       </div>
                     </div>
-                    <div>
-                      <span
-                        class="cursor-pointer w-full text-yellow-400 text-xs font-semibold float-right flex justify-end"
-                        @click="showAvailable(input,input.id)">
-                        View Availability
-                      </span>
-                      <!-- <span>
-
-                       <cornie-menu top="30px" >
-                          <template #activator="{ on }">
-                            <icon-btn v-on="on">
-                              <dots-vertical-icon />
-                            </icon-btn>
-                          </template>
-                          <card-text>
-                            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" 
-                              @click="$router.push(`/dashboard/experience/add-appointment?practitioner=${input.id}&slot=${input.schedule_practitioners.ScheduleId}`)">
-                              <calendar-icon />
-                              <span class="ml-3 text-xs">Book Appointment</span>
-                            </div>
-                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                                <edit-icon class="text-blue-400 fill-current" />
-                                <span class="ml-3 text-xs">Edit Slot</span>
+                      <div class="float-right flex space-x-7 justify-end">
+                        <span
+                          class="cursor-pointer w-full text-yellow-400 text-xs font-semibold float-right flex justify-end"
+                          @click="showAvailable(input,input.id)">
+                          View Availability
+                        </span>
+                        <!-- <span class="cursor-pointer">
+                        <cornie-menu top="30px" >
+                            <template #activator="{ on }">
+                              <icon-btn v-on="on">
+                                <dots-vertical-icon />
+                              </icon-btn>
+                            </template>
+                            <card-text>
+                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" 
+                                @click="$router.push(`/dashboard/experience/add-appointment?practitioner=${input.id}&slot=${input.schedule_practitioners.ScheduleId}`)">
+                                <calendar-icon />
+                                <span class="ml-3 text-xs">Book Appointment</span>
                               </div>
-                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                                <copy-icon class="text-blue-400 fill-current" />
-                                <span class="ml-3 text-xs">Copy</span>
-                              </div>
-                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                                <cancel-icon class="text-green-600 fill-current" />
-                                <span class="ml-3 text-xs">Cancel</span>
-                              </div>
-                              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                                <share-icon class="text-indigo-700 fill-current" />
-                                <span class="ml-3 text-xs">Share</span>
-                              </div>
-                          </card-text>
-                        </cornie-menu>
-                      </span> -->
-                    
-                    </div>
+                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                  <edit-icon class="text-blue-400 fill-current" />
+                                  <span class="ml-3 text-xs">Edit Slot</span>
+                                </div>
+                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                  <copy-icon class="text-blue-400 fill-current" />
+                                  <span class="ml-3 text-xs">Copy</span>
+                                </div>
+                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                  <cancel-icon class="text-green-600 fill-current" />
+                                  <span class="ml-3 text-xs">Cancel</span>
+                                </div>
+                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                                  <share-icon class="text-indigo-700 fill-current" />
+                                  <span class="ml-3 text-xs">Share</span>
+                                </div>
+                            </card-text>
+                          </cornie-menu>
+                        </span>  -->
+                      
+                      </div>
                   </div>
            
               <!-- <div class="w-2/12">
@@ -128,7 +127,7 @@
         </div>
        </cornie-card-text>
 
-         <cornie-card>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"

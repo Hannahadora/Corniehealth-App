@@ -19,7 +19,7 @@
       v-model="valueSync"
     >
       <span class="flex w-full">
-        <span class="">
+        <span class="w-full flex">
           <field
             :name="`${inputName}-code`"
             v-slot="{ meta: codeMeta, handleChange, errorMessage: codeError }"
@@ -27,7 +27,7 @@
             v-model="codeSync"
           >
             <cornie-select
-              class="w-full h-full  rounded-r-none"
+              class="w-full h-full   rounded-r-none"
               :items="codes"
               v-model="codeSync"
               :class="{
@@ -40,32 +40,39 @@
                 <span class="w-full flex items-center mb-3">
                   <div class="flex w-full">
                     <img class="mr-3 w-6 rounded-md" :src="item.flag" />
-                    <span class="text-sm font-semibold"> {{ item.name }}</span>
+                    <span class="text-sm font-semibold"> {{ item.dialCode }}</span>
                   </div>
-                  <div class="text-xs text-gray-400 flex-shrink-0 float-right">
+                  <!-- <div class="text-xs text-gray-400 flex-shrink-0 float-right">
                     {{ item.dialCode }}
-                  </div>
+                  </div> -->
                 </span>
               </template>
               <template v-slot:selected="{ item }">
-                <span class="block p-2">
-                  <img :src="item?.flag" class="h-4 w-7" />
-                </span>
+                <div class="flex space-x-2 mr-2">
+                  <span class="block p-2">
+                    <img :src="item?.flag" class="h-3 w-3" />
+                  </span>
+                  <span class="text-xs mt-2 mr-1">
+                    {{ item?.name }}
+                  </span>
+                </div>
               </template>
             </cornie-select>
           </field>
-        </span>
         <input
           :class="{
             'border-red-500': Boolean(errorMessage),
             'border-green-400': meta.valid && meta.touched,
           }"
-          class="rounded-r-lg border p-2 flex-grow w-full focus:outline-none"
+          class="rounded-r-lg border-1 border-gray-300 p-2 flex-grow w-full focus:outline-none"
           type="tel"
           v-bind="field"
           minlength="10"
           maxlength="11"
+          placeholder=""
+          style="line-height: 10px;"
         />
+        </span>
       </span>
     </field>
   </span>

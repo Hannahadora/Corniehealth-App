@@ -31,6 +31,9 @@ export default class Modal extends Vue {
   left!: boolean;
 
   @Prop({ type: Boolean, default: false })
+  padding!: boolean;
+
+  @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
   @PropSync("modelValue", { type: Boolean, required: true, default: false })
@@ -38,13 +41,16 @@ export default class Modal extends Vue {
 
   get classes() {
     return [
-      this.center
+      this.padding
+        ? "p-5"
+      :this.center
         ? "justify-center"
         : this.left
         ? "justify-start"
         : this.right
         ? "justify-end"
         : "",
+        
     ];
   }
 }

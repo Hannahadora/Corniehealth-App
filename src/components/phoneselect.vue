@@ -13,9 +13,10 @@
             </label>
             <div
               v-bind="$attrs"
-              class="p-1 bg-white flex border border-gray-200 rounded-lg"
+              class="p-1 bg-white flex border-1 border-gray-300 rounded-r-none rounded-lg"
+              style="border-right: none;"
             >
-              <span v-if="Boolean($slots.selected)">
+              <span class="w-full" v-if="Boolean($slots.selected)">
                 <slot name="selected" :item="selectedItem" />
               </span>
               <input
@@ -23,7 +24,7 @@
                 placeholder=""
                 disabled
                 :value="displayVal"
-                class="bg-transparent p-1 pl-2 appearance-none outline-none w-full text-gray-800"
+                class="bg-transparent p-1 pl-2 rounded-r-none appearance-none outline-none w-full text-gray-800"
               />
 
               <div
@@ -33,9 +34,10 @@
               </div>
             </div>
           </div>
+          
           <div
             :class="{ hidden: !showDatalist }"
-            class="absolute shadow bg-white top-100 z-40 left-0 rounded w-custom max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
+            class="absolute shadow bg-white top-100 z-40 left-0 rounded  max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
             <div class="flex flex-col w-full p-2">
               <span class="mb-2 rounded-full">

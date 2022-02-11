@@ -636,7 +636,7 @@ export default class AddAppointment extends Vue {
   slots!: Slot[];
 
   @slot.Action
-  singlePractitonerSlot!: (slotId: string) => Promise<void>;
+  singlePractitonerSlot!: (practitionerId: string) => Promise<void>;
 
   actorTypeValue = "";
 
@@ -1001,14 +1001,11 @@ export default class AddAppointment extends Vue {
     this.patient = response[0].data;
   }
   async created() {
-   await  this.fetchPractitioners();
-    await this.singlePractitonerSlot(this.practitionerId);
+     this.singlePractitonerSlot(this.practitionersId);
+     this.fetchPractitioners();
     const data =  this.getDropdowns("availability");
     const data2 =  this.getDropdowns("practitioner");
-    if(this.payload.slot){
-      await this.singlePractitonerSlot(this.payload.slot);
-    }else{
-    }
+ 
     //  this.getSlots();
     this.dropdowns = data;
     this.dropdowns2 = data2;
