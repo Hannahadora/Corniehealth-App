@@ -37,11 +37,8 @@
     </div>
 
     <div class="flex justify-between items-center w-2/5 ml-8">
-      <div class="flex items-center">
-        <TransferIcon class="text-primary mr-4" />
-        <span class="text-sm text-primary">Transfer Ownership</span>
-      </div>
-
+      <!-- Tranfer Ownership Comp -->
+      <!-- <transfer-ownership /> -->
       <button
         class="bg-primary text-sm ml-6 font-bold rounded-full text-white py-2 px-8 my-auto focus:outline-none hover:opacity-90"
         @click="editingContact = true"
@@ -65,8 +62,8 @@ import Avatar from "@/components/avatar.vue";
 import { namespace } from "vuex-class";
 import IContact from "@/types/IContact";
 import AddContact from "./addContact.vue";
-import TransferIcon from "@/components/icons/transfer.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
+import TransferOwnership from "./components/TransferOwnership.vue";
 
 const contact = namespace("contact");
 
@@ -75,7 +72,7 @@ const contact = namespace("contact");
   components: {
     Avatar,
     AddContact,
-    TransferIcon,
+    TransferOwnership,
   },
 })
 export default class AdminCard extends Vue {

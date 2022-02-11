@@ -125,23 +125,43 @@ export default class DomainExistingState extends Vue {
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Organizatin Name", key: "orgName", show: true },
-    { title: "Domain Name", key: "domainName", show: true },
+    { title: "Accounts", key: "orgName", show: true, noOrder: true },
+    { title: "Domain Name", key: "domainName", show: true, noOrder: true },
     {
-      title: "Role",
-      key: "roleForDomain",
+      title: "Account ID",
+      key: "organizationId",
       show: true,
+      noOrder: true,
+    },
+    {
+      title: "Email",
+      key: "email",
+      show: true,
+      noOrder: true,
     },
     {
       title: "Date Created",
       key: "createdAt",
-      show: false,
+      show: true,
+      noOrder: true,
     },
-    {
-      title: "Organization ID",
-      key: "organizationId",
-      show: false,
-    },
+    // { title: "Organizatin Name", key: "orgName", show: true },
+    // { title: "Domain Name", key: "domainName", show: true },
+    // {
+    //   title: "Role",
+    //   key: "roleForDomain",
+    //   show: true,
+    // },
+    // {
+    //   title: "Date Created",
+    //   key: "createdAt",
+    //   show: false,
+    // },
+    // {
+    //   title: "Organization ID",
+    //   key: "organizationId",
+    //   show: false,
+    // },
   ];
 
   get title() {
@@ -167,6 +187,8 @@ export default class DomainExistingState extends Vue {
         ...domain,
       };
     });
+
+    console.log(domains);
 
     if (!this.query) return domains;
     return search.searchObjectArray(domains, this.query);

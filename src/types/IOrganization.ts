@@ -12,4 +12,6 @@ export interface IOrganization {
   website: string;
   incorporationStatus: string;
   reference: string;
+  practiceType?: string;
+  practiceSubType?: string;
 }

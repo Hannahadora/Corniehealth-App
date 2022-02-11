@@ -36,6 +36,16 @@ export default {
     currentLocation: "",
   },
   getters: {
+    accountMeta(state, getters, rootState: any) {
+      const organization: IOrganization =
+        rootState.organization.organizationInfo;
+      return {
+        organizationType: organization?.organisationType,
+        accountType: getters.accountType,
+        practiceType: organization?.practiceType,
+        practiceSubType: organization?.practiceSubType,
+      };
+    },
     accountType(state) {
       return state.cornieData?.user?.accountType;
     },
@@ -65,7 +75,11 @@ export default {
   },
   mutations: {
     setCornieData(state, payload) {
-      state.cornieData = { ...state.cornieData, ...payload };
+      const { organization, ...data } = payload;
+      state.cornieData = { ...state.cornieData, ...data };
+      if (organization) {
+        (this.state as any).organization.organizationInfo = organization;
+      }
       const practitioner = state.cornieData?.practitioner;
       state.currentLocation = practitioner?.defaultLocation || "";
     },

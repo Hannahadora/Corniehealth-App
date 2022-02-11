@@ -49,6 +49,7 @@
                   :to="mapUrl(item.to)"
                   v-for="(item, index) in setting"
                   :key="index"
+                  @click="clicked"
                 >
                   <template v-slot="{ active }">
                     <keep-alive>
@@ -99,8 +100,12 @@ import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
 import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
 import MarkupIcon from "@/components/icons/markup.vue";
 import KycIcon from "@/components/icons/kyc.vue";
+import { namespace } from "vuex-class";
+import { AccountMeta } from "@/types/user";
+import { getPracticeSettings } from "@/features/settings";
 
 type INav = { name: string; to: string; icon: string };
+const user = namespace("user");
 
 @Options({
   name: "SettingsSidebar",
@@ -141,117 +146,13 @@ export default class Settings extends Vue {
 
   query = "";
   open = 0;
-  get organization() {
-    return [
-      {
-        name: "Practice Information",
-        to: "practice-information",
-        icon: "org-icon",
-      },
-      { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
-      { name: "KYC", to: "kyc", icon: "kyc-icon" },
-      {
-        name: "Location",
-        to: "location",
-        icon: "location-icon",
-      },
-      {
-        name: "Organization Hierarchy",
-        to: "org-hierarchy",
-        icon: "hierarchy-icon",
-      },
-    ];
-  }
 
-  get userSecurity() {
-    return [
-      {
-        name: "Account Security",
-        to: "account-security",
-        icon: "security-icon",
-      },
-      { name: "Domains", to: "domains", icon: "domain-icon" },
-      { name: "Practitioners", to: "practitioners", icon: "practitioner-icon" },
-      { name: "Group", to: "group", icon: "group-icon" },
-      { name: "Care Team", to: "care-teams", icon: "team-icon" },
-      {
-        name: "Roles and Privileges",
-        to: "roles-privileges",
-        icon: "roles-icon",
-      },
-      { name: "Approval", to: "approval", icon: "approval-icon" },
-    ];
-  }
-  get healthCare() {
-    return [
-       {
-        name: "Charge Description Master",
-        to: "charge-description-master",
-        icon: "health-service-icon",
-      },
-      { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
-      { name: "Devices", to: "devices", icon: "devices-icon" },
-      { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
-      { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
-    ];
-  }
-  get PracticeManagement() {
-    return [
-      {
-        name: "Forms & Questionnaires",
-        to: "practise-management/forms-questionnaires",
-        icon: "templates-icon",
-      },
-      {
-        name: "Booking Site",
-        to: "practise-management/booking-site",
-        icon: "security-icon",
-      },
-      //  {
-      //   name: "Forms & Questionnaires",
-      //   to: "forms-questionnaires",
-      //   icon: "form-icon",
-      // },
-    ];
-  }
-  get Pricing() {
-    return [
-      {
-        name: "Markup and Discounts",
-        to: "markup",
-        icon: "roles-icon",
-      },
-      // {
-      //   name: "Markup Settings",
-      //   to: "markup-settings",
-      //   icon: "bank-icon",
-      // },
-    ];
-  }
+  @user.Getter
+  accountMeta!: AccountMeta;
 
   get settings() {
-    const provider = {
-      "Account Info": this.filter(this.organization),
-      "Users & Security": this.filter(this.userSecurity),
-      Commercial: this.filter(this.healthCare),
-      "Practise Management": this.filter(this.PracticeManagement),
-      // PRICING: this.filter(this.Pricing),
-    };
-    const hmo = {
-      Organization: this.filter(this.organization),
-      "Users & Security": this.filter([
-        {
-          name: "Account Security",
-          to: "account-security",
-          icon: "security-icon",
-        },
-        { name: "Domains", to: "domains", icon: "domain-icon" },
-      ]),
-    };
-
-    const type = this.$route.params.type as string;
-    if (type.toLowerCase() == "hmo") return hmo;
-    return provider;
+    if (!this.accountMeta.practiceType) return {};
+    return getPracticeSettings(this.accountMeta.practiceType);
   }
 
   mapUrl(url: string) {
@@ -259,11 +160,8 @@ export default class Settings extends Vue {
     return `${settingsBase}/${url}`.replace("//", "/");
   }
 
-  filter(navs: INav[]) {
-    if (!this.query) return navs;
-    return navs.filter((nav) =>
-      nav.name.toLowerCase().includes(this.query.toLowerCase())
-    );
+  clicked() {
+    this.show = false;
   }
 }
 </script>

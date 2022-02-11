@@ -1,3 +1,5 @@
+import EPracticeType from "./practice-type";
+
 export default interface User {
   id: string;
   isActive: boolean;
@@ -29,4 +31,11 @@ export interface CornieUser {
   };
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AccountMeta {
+  organizationType: string;
+  accountType: string;
+  practiceType: EPracticeType;
+  practiceSubType: string;
 }
