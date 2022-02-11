@@ -20,12 +20,13 @@
         <span class="text-danger ml-1" v-if="required"> * </span>
       </label>
       <div
-        class="flex rounded-md border-1"
+        class="flex rounded-md border-1 border-gray-300"
         :class="{
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
           'bg-gray-100 border-gray-100': disabled,
           ...errorClasses,
+          'rounded-l': addextraclass
         }"
       >
         <div
@@ -117,6 +118,9 @@ export default class CornieInput extends Vue {
   @Prop({ type: Boolean, default: false })
   disabled!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  addextraclass!: boolean;
+
   @Prop({ type: Object, default: {} })
   errorClasses!: Object;
 
@@ -134,5 +138,11 @@ export default class CornieInput extends Vue {
   font-size: 0.8em;
   font-weight: 400;
   color: #667499;
+}
+.rounded-l{
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-left-width: 0px !important;
+  border-left: none;
 }
 </style>

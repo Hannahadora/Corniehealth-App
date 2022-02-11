@@ -9,7 +9,7 @@
       <div class="w-6/12">
         <div class="w-11/12">
           <label class="file-picker flex flex-col w-full rounded-full">
-            <input type="file" @change="fileSelected" />
+            <input type="file" @change="fileSelected" name="upload" accept="application/pdf"/>
             <p class="flex items-center justify-between">
               <span><i class="fa fa-cloud-upload"></i> Choose file</span>
               <span class="mr-3"><upload-icon /></span>

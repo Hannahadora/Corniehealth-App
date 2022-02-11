@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex">
+    <div class="flex" v-if="!listmenu">
       <slot name="topleft" v-if="search">
         <span class="flex items-center">
           <sort-icon class="mr-5" />
@@ -180,6 +180,9 @@ export default class CornieTable extends Vue {
   check!: boolean;
 
   @Prop({ type: Boolean, default: false })
+  listmenu!: boolean;
+
+  @Prop({ type: Boolean, default: false })
   refreshing!: boolean;
 
   @Prop({ type: Boolean, default: true })
@@ -255,7 +258,7 @@ export default class CornieTable extends Vue {
 
 <style scoped>
 .table-card {
-  overflow-x: scroll;
+  overflow-x: visible;
   overflow-y: visible !important;
   min-height: 27rem;
 }

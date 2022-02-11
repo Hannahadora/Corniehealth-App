@@ -36,8 +36,8 @@
               v-if="add"
               @click="$emit('add')"
             >
-              <add-icon />
-              <span class="text-sm -mt-1"> Add</span>
+              <add-icon class="w-3 h-3"/>
+              <span class="text-xs font-medium"> Add New</span>
             </div>
              <div
               class="flex space-x-3 cursor-pointer"

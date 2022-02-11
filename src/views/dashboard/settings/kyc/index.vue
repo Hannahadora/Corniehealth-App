@@ -71,8 +71,9 @@
         </accordion-component>
       </div>
 
-        <div class="w-full my-6">
-          <accordion-component
+      <div class="w-full my-6">
+        <director-sections  :directors="particularOfDirectors" />
+        <!-- <accordion-component
             v-if="orgKyc.particularOfDirectors?.length > 0"
             :title="'Particulars of Directors'"
             :opened="true"
@@ -295,7 +296,7 @@
                 </accordion-component>
               </div>
             </template>
-          </accordion-component>
+          </accordion-component> -->
       </div>
 
       <div class="w-full my-6">
@@ -373,9 +374,9 @@
         </accordion-component>
       </div>
 
-
-        <div class="w-full my-6" v-if="practiceRegister == true">
-        <accordion-component
+      <div class="w-full my-6" v-if="practiceRegister == true">
+        <owner-section :owners="newowner"/>
+        <!-- <accordion-component
           :title="'Beneficial Owners'"
           :showAddExisting="true"
           :opened="true"
@@ -385,7 +386,7 @@
           :height="newowner?.length <= 0 ? 45 : 52 * newowner?.length + 40"
         >
           <template v-slot:default>
-            <div
+             <div
               class="w-full flex"
               v-for="(owner, index) in newowner"
               :key="index"
@@ -407,15 +408,14 @@
                 <span><delete-icon /></span>
                 <span class="text-sm font-normal mx-2">Delete</span>
               </div>
-            </div>
+            </div> 
+          
           </template>
-        </accordion-component>
-      </div>
-
-
+        </accordion-component> -->
+      </div> 
     
 
-        <div class="w-full my-6">
+       <div class="w-full my-6">
           <accordion-component
           v-if="orgkycId"
             :title="'Nominate Referees'"
@@ -722,6 +722,10 @@ import IPhone from "@/types/IPhone";
 import IKycref from "@/types/IKycref";
 import { string, date } from "yup";
 import { createDate } from "@/plugins/utils";
+import DirectorSections from "./components/directorSection.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import OwnerSection from './components/ownerSection.vue';
+
 
 const kyc = namespace("kyc");
 
@@ -734,15 +738,18 @@ export interface IBeneficialOwner {
   components: {
     CollapseSection,
     CornieInput,
+    DirectorSections,
     DatePicker,
     PhoneInput,
     CornieSelect,
     AutoComplete,
     DeleteIcon,
+    OwnerSection,
     CornieButton,
     NominateRefree,
     BeneficialOwner,
     AccordionComponent,
+    CornieTable,
     Modal,
     FilePicker,
     CornieRadio,
@@ -791,24 +798,7 @@ export default class KYC extends Vue {
   apartment = "";
   phoneNumber = "";
   proofOfAddressUpload = setup(() => useHandleImage()) as any;
-  particularOfDirectors = [
-    {
-    fullName : "",
-    dateOfBirth : "",
-    nationality : "",
-    emailAddress : "",
-    phoneNumber :  {
-        number: "",
-        dialCode: "",
-      },
-      taxIdentificationNumber: "",
-      identificationDocumentNumber: "",
-      uploadedIdentificationDocument: " " as string,
-      practiceLicenseDocument: "",
-      uploadedPracticeLicenseDocument: " " as string,
-      practiceLicenseNumber: "",
-    },
-  ];
+  particularOfDirectors = [] as any;
   newDirectors: any = this.particularOfDirectors;
   beneficialOwners: any = [
     {
@@ -851,6 +841,7 @@ export default class KYC extends Vue {
   //   return this.particularOfDirectors
 
   // }
+ 
   async setKyc() {
     const kyc = this.orgKyc;
     if (!kyc) return;

@@ -110,7 +110,10 @@ import MultiInput from "@/components/multi-input.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import store from "@/store";
+import User, { CornieUser } from "@/types/user";
 import { namespace } from "vuex-class";
+
+const user = namespace("user");
 
 @Options({
   components: {
@@ -123,6 +126,16 @@ import { namespace } from "vuex-class";
   },
 })
 export default class SignUp extends Vue {
+
+  @user.State
+  cornieData!: any;
+
+  @user.State
+  user!: User;
+
+  @user.Getter
+  cornieUser!: CornieUser;
+
   code = "";
 
   domain = "";

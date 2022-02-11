@@ -194,6 +194,10 @@ export default class Monthly extends Vue {
       })
 
   }
+   setoneId(practitioner:any,value:string){
+     console.log(practitioner,value,"HELLO ThIRD")
+    this.$emit('set-oneId', practitioner,value)
+  }
 
 
   //// End

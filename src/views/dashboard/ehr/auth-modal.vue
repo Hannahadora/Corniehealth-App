@@ -19,15 +19,14 @@
       </div>
       <div class="w-full flex justify-end">
         <CornieBtn
-          :loading="loading"
-          class="border-primary border-2  rounded-full px-8 mr-2 py-1 text-primary cursor-pointer"
+          class="border-primary border-2  rounded px-8 mr-2 py-1 text-primary cursor-pointer"
           @click="() => $router.go(-1)"
         >
           Cancel
         </CornieBtn>
         <CornieBtn
           :loading="loading"
-          class="bg-danger  rounded-full px-8 py-1 text-white cursor-pointer"
+          class="bg-danger  rounded px-8 py-1 text-white cursor-pointer"
           @click="authenticateUser"
         >
           Submit
