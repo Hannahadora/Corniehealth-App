@@ -1,3 +1,4 @@
+import { IndexableObject } from "@/lib/http";
 import Period from "./IPeriod";
 export default interface IGroup {
   id?: string;
@@ -19,4 +20,5 @@ export default interface IGroup {
   memberPeriod: string;
   memberStatus: string;
   memberEntity: string;
+  members: IndexableObject
 }

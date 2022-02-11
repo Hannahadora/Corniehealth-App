@@ -12,7 +12,8 @@
         <div class="grid grid-cols-12 gap-x-5 gap-y-4 mt-10">
           <div class="col-span-4">
             <cornie-input
-              label="Organization Name"
+              required
+              label="Practice Name"
               class="w-full"
               v-model="OrganizationName"
               :rules="requiredRule"
@@ -21,10 +22,12 @@
           </div>
           <div class="col-span-4">
             <cornie-input
-              label="Organization Identifier"
+              label="Practice Identifier"
+              required
               :modelValue="OrganizationIdentifier"
               class="w-full"
-              placeholder="--Enter--"
+              placeholder="--System generated--"
+              disabled
             />
           </div>
           <div class="col-span-4">
@@ -47,8 +50,9 @@
           </div>
           <div class="col-span-4">
             <cornie-select
+              required
               :items="orgTypes"
-              label="Organization Type"
+              label="Practice Type"
               class="w-full"
               v-model="OrganizationType"
               :rules="requiredRule"
@@ -56,6 +60,7 @@
           </div>
           <div class="col-span-4">
             <cornie-select
+              required
               :items="provProfiles"
               label="Provider Profile"
               class="w-full"
@@ -66,12 +71,22 @@
           <div class="col-span-4">
             <cornie-input
               v-model="ReferenceOrganization"
-              label="Reference Organization"
+              label="Reference Practice"
               class="w-full"
-            />
+            >
+              <template #labelicon>
+                <cornie-tooltip>
+                  <template #tooltip>
+                    <span>Reference practice</span>
+                  </template>
+                  <question-icon class="fill-current text-primary" />
+                </cornie-tooltip>
+              </template>
+            </cornie-input>
           </div>
           <div class="col-span-4">
             <cornie-select
+              required
               :items="incTypes"
               class="w-full"
               label="Incorporation Type"
@@ -83,14 +98,19 @@
             <cornie-input
               v-model="RegistrationNumber"
               class="w-full"
-              label="Registration Number"
+              label="Incorporation Number"
               :rules="requiredRule"
               placeholder="--Enter--"
-            />
+            >
+              <template #prepend>
+                <span class="font-bold text-sm text-gray-400">RC</span>
+              </template>
+            </cornie-input>
           </div>
 
           <div class="col-span-4">
             <cornie-input
+              required
               class="w-full"
               label="Email Address"
               v-model="EmailAddress"
@@ -104,10 +124,12 @@
               :rules="urlRule"
               label="Website"
               v-model="Website"
+              placeholder="--Enter--"
             />
           </div>
           <div class="col-span-4">
             <phone-input
+              required
               class="w-full"
               label="Phone Number"
               v-model:code="DialCode"
@@ -144,6 +166,8 @@ import SnomedInput from "@/components/snomed-input.vue";
 import { IOrganization } from "@/types/IOrganization";
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
+import CornieTooltip from "@/components/tooltip.vue";
+import QuestionIcon from "@/components/icons/question.vue";
 import DomainInput from "@/components/newdomaininput.vue";
 
 const organization = namespace("organization");
@@ -158,6 +182,8 @@ const organization = namespace("organization");
     PhoneInput,
     AvatarField,
     SnomedInput,
+    CornieTooltip,
+    QuestionIcon,
   },
 })
 export default class PracticeInfo extends Vue {
@@ -169,7 +195,7 @@ export default class PracticeInfo extends Vue {
   DialCode = "+234";
   PhoneNumber = "";
   DomainName = "";
-  OrganizationIdentifier = "System Generated";
+  OrganizationIdentifier = "";
   ProviderProfile = "";
   IncorporationType = "";
   EmailAddress = " ";

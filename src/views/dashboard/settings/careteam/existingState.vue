@@ -14,28 +14,32 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="$router.push(`add-careteam/${item.id}`)"
         >
-          <edit-icon class="mr-3 text-yellow-300 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
+          <edit-icon class="mr-3 text-primary fill-current" />
+          <span class="ml-3 text-xs">Edit & View</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="handleUpdateStatus(item.id)"
+        >
+          <update-status-icon class="mr-3" />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <span class="mr-3 text-2xl bold text-green-400">+</span>
+          <span class="ml-3 text-xs">Add Member </span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deactivateCareteam(item.id)"
         >
-          <close-icon class="mr-3" />
+          <deactivate-icon class="mr-3" />
           <span class="ml-3 text-xs">Deactivate</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="activateCareteam(item.id)"
-        >
-          <close-icon class="mr-3" />
-          <span class="ml-3 text-xs">Activate</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deleteItem(item.id)"
         >
-          <cancel-icon class="text-danger fill-current" />
+          <delete-red class="text-danger fill-current mr-3" />
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
@@ -45,6 +49,14 @@
       :columns="rawHeaders"
       v-model:preferred="preferredHeaders"
       v-model:visible="showColumnFilter"
+    />
+
+    <update-status
+      v-if="showUpdateStatusDiag"
+      :show="showUpdateStatusDiag"
+      :teamStatus="teamStatus"
+      @close-status-diag="showUpdateStatusDiag = false"
+      @update-status="updateStatus"
     />
   </div>
 </template>
@@ -72,6 +84,10 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import CancelIcon from "@/components/icons/cancel.vue";
 import EditIcon from "@/components/icons/edit.vue";
+import UpdateStatusIcon from "@/components/icons/update-status.vue";
+import DeleteRed from "@/components/icons/delete-red.vue";
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+import UpdateStatus from "./components/UpdateStatus.vue";
 
 const careteam = namespace("careteam");
 
@@ -93,6 +109,10 @@ const careteam = namespace("careteam");
     EyeIcon,
     CloseIcon,
     CancelIcon,
+    UpdateStatusIcon,
+    UpdateStatus,
+    DeleteRed,
+    DeactivateIcon,
   },
 })
 export default class CareteamExistingState extends Vue {
@@ -157,9 +177,48 @@ export default class CareteamExistingState extends Vue {
     return search.searchObjectArray(careteams, this.query);
   }
 
+  teamToUpdate = "" as String;
+  showUpdateStatusDiag = false;
+  teamStatus = "" as String;
+
+  async handleUpdateStatus(id: string) {
+    this.teamToUpdate = id;
+    this.showUpdateStatusDiag = true;
+    let team = this.careteams.find((item: any) => item.id === id);
+
+    this.teamStatus = team?.status || "";
+  }
+
+  async updateStatus(status: string) {
+    if (!this.teamToUpdate) return;
+
+    let team = this.careteams.find(
+      (item: any) => item.id === this.teamToUpdate
+    );
+
+    if (team) {
+      team.status = status;
+
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/care-teams/deactivate/${this.teamToUpdate}`,
+          team
+        );
+        if (response.success) {
+          window.notify({ msg: "Care team status updated", status: "success" });
+          this.teamToUpdate = "";
+          this.showUpdateStatusDiag = false;
+        }
+      } catch (err) {
+        window.notify({ msg: "Care team status not updated", status: "error" });
+      }
+    }
+  }
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this care team",
+      message:
+        "Are you sure you want to delete this care team? This action cannot be undone.",
       title: "Delete Care Team",
     });
     if (!confirmed) return;
@@ -187,7 +246,6 @@ export default class CareteamExistingState extends Vue {
         }
       } catch (error) {
         window.notify({ msg: "Care team not deactivated", status: "error" });
-        console.error(error);
       }
     }
   }
@@ -212,10 +270,6 @@ export default class CareteamExistingState extends Vue {
         console.error(error);
       }
     }
-  }
-
-  created() {
-    // console.log(this.careteams);
   }
 }
 </script>

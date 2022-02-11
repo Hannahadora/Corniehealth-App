@@ -6,7 +6,7 @@
           <div class="w-full" @click="toggle">
             <label
               v-if="label || $slots.label"
-              class="flex space-x-55 justify-between w-full capitalize mb-1 text-black text-sm font-semibold"
+              class="flex space-x-55 w-full capitalize mb-1 text-black text-sm font-semibold"
               :for="`${id}-inputfield`"
             >
               <slot name="label" v-if="$slots.label" />
@@ -35,7 +35,10 @@
                 }"
                 class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
               >
-                <span v-if="Boolean($slots.selected)">
+                <span
+                  v-if="Boolean($slots.selected)"
+                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
+                >
                   <slot name="selected" :item="selectedItem" />
                 </span>
                 <input
@@ -152,6 +155,8 @@ export default class CornieSelect extends Vue {
       this.showDatalist = false;
       this.modelValueSync = item.code || item;
     });
+
+    this.$emit("selected", item);
   }
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

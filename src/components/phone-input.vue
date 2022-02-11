@@ -1,11 +1,12 @@
 <template>
   <span class="w-full">
     <label
-      class="flex space-x-55 justify-between w-full capitalize mb-1 text-black text-sm font-semibold"
+      class="flex space-x-55 w-full capitalize mb-1 text-black text-sm font-semibold"
     >
       <span class="float-left">
         {{ label }}
       </span>
+      <span class="text-danger ml-1" v-if="required"> * </span>
       <add-blue-icon
         class="float-right cursor-pointer fill-current text-primary"
         @click="$emit('addnumbers')"
@@ -27,7 +28,7 @@
             v-model="codeSync"
           >
             <cornie-select
-              class="w-full h-full  rounded-r-none"
+              class="w-full h-full rounded-r-none"
               :items="codes"
               v-model="codeSync"
               :class="{
