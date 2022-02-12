@@ -151,7 +151,6 @@ export default class Settings extends Vue {
   accountMeta!: AccountMeta;
 
   get settings() {
-    if (!this.accountMeta.practiceType) return {};
     return getPracticeSettings(this.accountMeta.practiceType);
   }
 
