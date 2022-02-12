@@ -7,12 +7,12 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Add New Director
+            {{newaction}} New Director
           </h2>
-          <cancel-icon
+          <!-- <cancel-icon
             class="float-right cursor-pointer"
             @click="show = false"
-          />
+          /> -->
         </div>
       </cornie-card-title>
 
@@ -61,8 +61,8 @@
                     <cornie-select
                         :items="['Nigerian Bank Identification Number (BVN)','International Passport','National Identitiy Number (NIN)','Drivers License','Voters Card']"
                         placeholder="--Select--"
-                        class="w-48 mt-0.5  rounded-r-none"
-                        v-model="identificationDocument"
+                        class="w-58 mt-0.5  rounded-r-none"
+                        v-model="identificationDocumentType"
                     />
                     <div class="w-full">
                     <cornie-input
@@ -80,8 +80,8 @@
                     <cornie-select
                         :items="['Medical Practice Licence','Pharmacy Practice Licence','Radiology Practice Licence','Pathology Practice Licence','Not Applicable']"
                         placeholder="select doc type"
-                        class="w-48 mt-0.5  rounded-r-none"
-                        v-model="practiceLicense"
+                        class="w-58 mt-0.5  rounded-r-none"
+                        v-model="practiceLicenseDocumentType"
                     />
                     <div class="w-full">
                     <cornie-input
@@ -95,7 +95,7 @@
             </div>
             <file-picker
                 class="w-full"
-                @change="sendIndex(index)"
+                 @uploaded="idFileUploaded"
                 :label="'Upload Practice Licence Document'"
                 placeholder="--Enter--"
                 v-model="uploadedPracticeLicenseDocument"
@@ -113,7 +113,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="sendDirectorData"
+            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Save
@@ -151,96 +151,88 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieCard from "@/components/cornie-card";
-import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
-import MainCornieSelect from "@/components/cornieselect.vue";
-import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
-import DEdit from "@/components/icons/aedit.vue";
-import RangeSlider from "@/components/range.vue";
-import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/datepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
-import Period from "@/types/IPeriod";
-import IImpression, { Effective } from "@/types/IImpression";
 import { namespace } from "vuex-class";
 
+import { useHandleImage } from "@/composables/useHandleImage";
+import { reactive } from "@vue/reactivity";
 import { createDate } from "@/plugins/utils";
 import { string, date } from "yup";
 import { useCountryStates } from "@/composables/useCountryStates";
 import FilePicker from "./choose-file.vue";
 import PhoneInput from "@/components/phone-input.vue";
+import IDirector from "@/types/IDirector";
 
-const impression = namespace("impression");
-
+const kyc = namespace("kyc");
 
 @Options({
   name: "directorModal",
   components: {
     ...CornieCard,
     CornieIconBtn,
-    NoteIcon,
     ArrowLeftIcon,
     DatePicker,
-    RangeSlider,
-    DEdit,
-    CDelete,
     PhoneInput,
     CancelIcon,
-    InfoIcon,
     FilePicker,
     CornieDialog,
     SearchIcon,
     AccordionComponent,
     IconInput,
-    Textarea,
     CornieInput,
     CornieSelect,
-    CorniePhoneInput,
-    CornieRadio,
     CornieBtn,
-    MainCornieSelect,
   },
 })
-export default class Medication extends Vue {
+export default class DirectorModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @impression.Action
-  getImpressionById!: (id: string) => IImpression;
+  @Prop({ type: String, default: "" })
+  directorId!: string;
 
-  @Prop({ type: Array, default: () => [] })
-  available!: object;
-
-  impressionModel = {} as IImpression;
+ @kyc.Action
+  getDirectorById!: (id: string) => IDirector;
 
 
-//Date of birth validation
+
+ 
+ //Date of birth validation
   dobValidator = date().max(
     createDate(0, 0, -16),
     "Director must be at least 16yrs."
   );
+
   //Email Valitdaiton
   emailRule = string().email("A valid email is required").required();
 
-//   @Watch("id")
-//   idChanged() {
-//     this.setImpression();
-//   }
+ setup() {
+    const { url, placeholder, onChange } = useHandleImage();
+    return { img: reactive({ url, placeholder, onChange }) };
+  }
+
+idFileUploaded(fileUrl: string) {
+    this.practiceLicenseDocument = fileUrl;
+  }
+
+  @Watch("directorId")
+  idChanged() {
+    this.setDirector();
+  }
 
   nationState = setup(() => useCountryStates());
   loading = false;
@@ -257,27 +249,45 @@ export default class Medication extends Vue {
     taxIdentificationNumber = "";
     identificationDocumentNumber = "";
     practiceLicenseDocument = "";
-    uploadedPracticeLicenseDocument = " " as string;
+    uploadedPracticeLicenseDocument = "" as string;
     practiceLicenseNumber = "";
+    practiceLicenseDocumentType = "";
+    identificationDocumentType = "";
     identificationDocument = "";
-    practiceLicense = "";
 
- 
-  async apply() {
-    this.loading = true;
-    if (this.id) await this.updateDirectorData();
-    else await this.sendDirectorData();
-    this.loading = false;
-  }
 
  sendIndex(index:number){
     this.fileIndex = index
   }
-//   async setImpression() {
-//     const impression = await this.getImpressionById(this.id);
-//     if (!impression) return;
-//     this.impressionModel = impression;
-//   }
+  async setDirector() {
+    const director = await this.getDirectorById(this.directorId);
+    if (!director) return;
+     this.fullName  = director.fullName;
+      this.dateOfBirth  = director.dateOfBirth;
+      this.nationality  = director.nationality;
+      this.emailAddress  = director.emailAddress;
+      this.phoneNumber  = director.phoneNumber;
+      this.identificationDocumentNumber  = director.identificationDocumentNumber;
+      this.practiceLicenseDocument  = director.practiceLicenseDocument;
+      this.practiceLicenseNumber  = director.practiceLicenseNumber;
+      this.practiceLicenseDocumentType  = director.practiceLicenseDocumentType;
+      this.identificationDocumentType  = director.identificationDocumentType;
+      this.identificationDocument  = director.identificationDocument;
+
+  }
+
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.apply();
+    else await this.updateDirectorData();
+    this.loading = false;
+  }
+   async apply() {
+    this.loading = true;
+    if (this.directorId) await this.updateDirector();
+    else await this.saveDirector();
+    this.loading = false;
+  }
 
 
   get payload() {
@@ -291,30 +301,58 @@ export default class Medication extends Vue {
       identificationDocumentNumber: this.identificationDocumentNumber,
       practiceLicenseDocument: this.practiceLicenseDocument,
       practiceLicenseNumber: this.practiceLicenseNumber,
-      identificationDocument: this.identificationDocument,
-      practiceLicense: this.practiceLicense,
+      practiceLicenseDocumentType: this.practiceLicenseDocumentType,
+      identificationDocumentType: this.identificationDocumentType,
+      identificationDocument: this.identificationDocumentType
       
     };
   }
 
   get newaction() {
-    return this.id ? "Update" : "Create New";
+    return this.id ? "Update" : "Add";
   }
 
+ 
+ 
+  async saveDirector() {
+      try {
+      const response = await cornieClient().post(
+        `/api/v1/kyc/director/${this.id}`,
+        this.payload
+      );
+      if(response.success){
+          this.done();
+        window.notify({ msg: "Director added successfully", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Director not added", status: "error" });
+    }
+  }
+  
+  async updateDirector() {
+    const url = `/api/v1/kyc/director/${this.directorId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Director updated succesffuly", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Director not updated", status: "error" });
+    }
+  }
+
+  async updateDirectorData() {
+   this.$emit('director-data',this.payload);
+    this.done();
+  }
+ 
   done() {
-    this.$emit("impression-added");
+    this.$emit("director-added");
     this.show = false;
   }
 
- 
-  async sendDirectorData() {
-      this.$emit('director-data',this.payload);
-       this.show = false;
-  }
-  async updateDirectorData() {
-   this.$emit('director-data',this.payload);
-  }
- 
 
   created() {
     //this.setImpression();

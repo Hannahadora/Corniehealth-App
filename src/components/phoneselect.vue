@@ -46,8 +46,7 @@
                   class="border border-gray-600 rounded-full focus:outline-none"
                   type="search"
                   placeholder="Search"
-                  v-bind="$attrs"
-                  v-model="displayVal"
+                   v-model="query"
                 >
                   <template v-slot:prepend>
                     <search-icon />
@@ -55,7 +54,7 @@
                 </icon-input>
               </span>
               <div
-                v-for="(item, i) in items"
+                v-for="(item, i) in filteredItems"
                 :key="i"
                 @click="selected(item)"
                 class="cursor-pointer w-auto border-gray-100 rounded-xl hover:bg-white-cotton-ball"
@@ -85,7 +84,12 @@ import { Prop, PropSync } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "./icons/search.vue";
+import search from "@/plugins/search";
 
+function defaultFilter(item: any, query: string) {
+  return search.searchObject(item, query);
+}
+type Sorter = (a: any, b: any) => number;
 @Options({
   components: {
     ChevronDownIcon,
@@ -97,6 +101,9 @@ export default class CornieSelect extends Vue {
   @Prop({ type: Array, default: [] })
   items!: any[];
 
+  @Prop({ type: Function, default: defaultFilter })
+  filter!: (item: any, query: string) => boolean;
+
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
@@ -107,6 +114,15 @@ export default class CornieSelect extends Vue {
   label!: string;
   showDatalist = false;
   id = "";
+ query = "";
+   orderBy: Sorter = () => 1;
+
+  get filteredItems() {
+    return this.items
+      .filter((item: any) => this.filter(item, this.query))
+      .sort(this.orderBy);
+  }
+  
 
   get displayVal() {
     if (!this.modelValue || this.items.length < 1) return;

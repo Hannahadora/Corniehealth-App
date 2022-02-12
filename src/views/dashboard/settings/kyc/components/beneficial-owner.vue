@@ -20,20 +20,32 @@
       <div class="w-full my-4">
         <cornie-input
           :label="'Name'"
-          v-model="owner.name"
+          v-model="name"
           style="width: 100%"
+          :type="number"
           placeholder="--Enter--"
         />
       </div>
 
-      <div class="w-full my-4">
-        <cornie-input
-          :label="'Percentage'"
-          v-model="owner.percentage"
-          style="width: 100%"
-            placeholder="Enter in %"
-        />
-      </div>
+      <div class="flex my-4">
+        <div class="flex-auto w-full ... ...">
+          <cornie-input
+            :label="'Percentage'"
+            v-model="percentage"
+            placeholder="--Enter--"
+            :addnewextraclass="true"
+          
+          />
+        </div>
+        <div class="flex-auto w-12...">
+          <cornie-input
+            placeholder="%"
+            class="mt-5 text-center"
+            :readonly="true"
+          
+          />
+        </div>
+     </div>
   </cornie-card-text>
        <cornie-card>
         <cornie-card-text class="flex justify-end">
@@ -45,7 +57,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="onSave"
+            @click="submit"
             class="text-white bg-danger px-6 rounded"
           >
             Save
@@ -65,7 +77,12 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
+import { namespace } from "vuex-class";
+import IKyc from "@/types/IKyc";
+import IOwner from "@/types/IOwner"
+import { cornieClient } from "@/plugins/http";
 
+const kyc = namespace("kyc");
 
 @Options({
   components: {
@@ -76,22 +93,127 @@ import IconBtn from "@/components/CornieIconBtn.vue";
     IconBtn
   },
 })
-export default class benficialOwnerRefree extends Vue {
+export default class benficialOwner extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+ @Prop({ type: String, default: "" })
+  ownerId!: string;
 
   owner = {} as IBeneficialOwner;
+  loading =  false;
+  percentage = 0;
+  name = "";
 
-  onSave() {
-    if (!this.owner.name) return false;
-    this.$emit("ownerAdded", this.owner);
-    this.closeModal();
-    this.owner = { name: "", percentage: 0 } as IBeneficialOwner;
+    @kyc.Action
+  fetchKycs!: () => Promise<void>;
+
+   @kyc.State
+   orgKyc!: IKyc;
+
+  @kyc.Action
+  getOwnerById!: (id: string) => IOwner;
+
+  @Watch("ownerId")
+  idChanged() {
+    this.setDirector();
   }
 
+
+ async setDirector() {
+    const owner = await this.getOwnerById(this.ownerId);
+    if (!owner) return;
+    this.name = owner.name;
+    this.percentage = owner.percentage
+  }
+
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.apply();
+    else await this.updateDirectorData();
+    this.loading = false;
+  }
+   async apply() {
+    this.loading = true;
+    if (this.ownerId) await this.updateDirector();
+    else await this.saveDirector();
+    this.loading = false;
+  }
+
+
+  get payload() {
+    return {
+      name: this.name,
+      percentage: this.percentage,
+      
+    };
+  }
+
+  get newaction() {
+    return this.id ? "Update" : "Add";
+  }
+
+  async saveDirector() {
+      try {
+      const response = await cornieClient().post(
+        `/api/v1/kyc/beneficial-owner/${this.id}`,
+        this.payload
+      );
+      if(response.success){
+        window.notify({ msg: "Beneficial owner added successfully", status: "success" });
+          this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Beneficial owner not added", status: "error" });
+    }
+  }
+  
+  async updateDirector() {
+    const url = `/api/v1/kyc/beneficial-owner/${this.ownerId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        this.done();
+        window.notify({ msg: "Beneficial owner updated succesffuly", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Beneficial owner not updated", status: "error" });
+    }
+  }
+
+  async updateDirectorData() {
+   this.$emit('ownerAdded',this.payload);
+  }
+ 
+  done() {
+    this.$emit("setOwner");
+    this.show = false;
+  }
+
+
+
+  // onSave() {
+  //   if (!this.owner.name) return false;
+  //   this.$emit("ownerAdded", this.owner);
+  //   this.closeModal();
+  //   this.owner = { name: "", percentage: 0 } as IBeneficialOwner;
+  // }
+
   closeModal() {
-    this.$emit("close");
+   this.show = false;
   }
 }
 </script>
+<style scoped>
+.spanclass{
+    display: flex;
+    justify-content: center;
+    margin-left: 40px;
+    height: 2.65rem;
+    padding: 10px;
+}
+</style>

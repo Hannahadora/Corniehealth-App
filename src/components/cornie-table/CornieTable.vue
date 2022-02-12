@@ -60,6 +60,7 @@
             />
           </th>
         </thead>
+
         <tr
           v-for="(row, index) in filteredItems"
           :key="index"
@@ -81,7 +82,7 @@
               <cornie-menu top="30px" right="100%">
                 <template #activator="{ on }">
                   <icon-btn v-on="on">
-                    <dots-vertical-icon />
+                    <dots-horizontal-icon v-on="on"/>
                   </icon-btn>
                 </template>
                 <card-text>
@@ -91,6 +92,7 @@
             </div>
           </td>
         </tr>
+
       </table>
     </card>
 

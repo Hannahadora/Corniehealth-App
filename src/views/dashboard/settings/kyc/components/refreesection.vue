@@ -1,36 +1,47 @@
 <template>
   <div class="w-full">
    <accordion-component
-            :title="'Beneficial Owners'"
-             :opened="[owners.length < 0 ? true : false  ]"
-            @add="showOwner = true"
+            :title="'Nominate Referees'"
+            :opened="true"
+            @add="nominateRefree = true"
             :add="true"
             :showAddExisting="true"
-            :expandText="'Select existing director'"
             :expandsection="true"
+            :expandText="'Select existing practitioner'"
             :showAdd="true"
-            @selectExisting="showDirector"
+             @selectExisting="showPractitoner"
           >
-          <cornie-table :columns="rawHeaders" v-model="sortRefrees" :listmenu="true" :check="false">
+          <cornie-table :columns="rawHeaders" v-model="sortRefress" :listmenu="true" :check="false">
             <template #actions="{ item }">
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="shoeEditOwner(item.id)">
-                 <edit-icon class="text-purple-700 fill-current" />
+              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showEditRefree(item.id)">
+               <edit-icon class="text-purple-700 fill-current"/>
                 <span class="ml-3 text-xs">Edit</span>
               </div>
               <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                 <delete-icon class="text-danger fill-current" />
+                <delete-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
+            <template #status="{ item }">
+                <span class="bg-green-100 text-green-700 rounded p-1 text-xs" v-if="item.status === 'completed'">{{ item.status }}</span>
+                <span class="bg-yellow-100 text-yellow-600 rounded p-1 text-xs" v-if="item.status === 'pending'">{{ item.status }}</span>
+                <span class="bg-red-100 text-red-600 rounded p-1 text-xs" v-if="item.status === 'declined'">{{ item.status }}</span>
+            </template>
+             <template #phone="{ item }">
+                <span>
+                    {{item.phone?.dialCode +''+ item.phone?.number}} 
+                </span>
+            </template>
           </cornie-table>
    </accordion-component>
-     <beneficial-owner
-        @setOwner="setOwner"
-        @ownerAdded="ownerAdded"
-      :id="id" :ownerId="ownerId"
-        v-model="showOwner"
+     <nominate-refree
+        @refree-added="refreeadded"
+        v-model="nominateRefree"
+        :id="id"
+        :refreeId="refreeId"
+
       />
-    <exisiting-director :id="id" :ownerId="ownerId"   @setOwner="setOwner" v-model="showExistingDriector" />
+      <exisiting-practitioner v-model="showExisitingPractioner"  :id="id"  @refree-added="refreeadded"/>
   </div>
 </template>
 <script lang="ts">
@@ -38,7 +49,6 @@ import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -54,50 +64,27 @@ import { Prop } from "vue-property-decorator";
 import ITask from "@/types/ITask";
 import AccordionComponent from "@/components/form-accordion.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import TimelineIcon from "@/components/icons/timeline.vue";
-import DangerIcon from "@/components/icons/danger.vue";
-import NoteIcon from "@/components/icons/notes.vue";
-import CheckinIcon from "@/components/icons/checkin.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
-import MessageIcon from "@/components/icons/message.vue";
-import { namespace } from "vuex-class";
-import BeneficialOwner from "./beneficial-owner.vue";
-import ExisitingDirector from './exsitingDirector.vue';
 import IKyc from "@/types/IKyc";
+import IKycref from "@/types/IKycref";
+import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import IDirector from "@/types/IDirector";
-import DirectorModal from "./directorModal.vue";
-import IOwner from "@/types/IOwner";
+import NominateRefree from "./refreesModal.vue";
+import ExisitingPractitioner from "./exsitingPractitioner.vue"
 
-const task = namespace("task");
+import DirectorModal from "./directorModal.vue";
+
 const kyc = namespace("kyc");
 
 @Options({
   components: {
-    Table,
-    CancelIcon,
     AccordionComponent,
     SortIcon,
-    CheckinIcon,
-    NewviewIcon,
-    UpdateIcon,
-    TimelineIcon,
-    NoteIcon,
     ThreeDotIcon,
-    BeneficialOwner,
-    DangerIcon,
     DirectorModal,
-    PlusIcon,
+    ExisitingPractitioner,
+    NominateRefree,
     SearchIcon,
-    ExisitingDirector,
-    //  NotesAdd,
-    //  CloseIcon,
-    MessageIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -105,7 +92,6 @@ const kyc = namespace("kyc");
     ColumnFilter,
     TableOptions,
     DeleteIcon,
-    EyeIcon,
     EditIcon,
     CornieTable,
     CardText,
@@ -114,29 +100,29 @@ const kyc = namespace("kyc");
 })
 
 export default class DirectorState extends Vue {
+ @Prop({ type: Array, default: [] })
+  refrees!: [];
+
 @Prop({ type: String, default: "" })
   id!: string;
 
- @Prop({ type: Array, default: [] })
-  owners!: any;
-
   @kyc.Action
-  deleteOwner!: (id: string) => Promise<boolean>;
+  deleteRefree!: (id: string) => Promise<boolean>;
 
-   @kyc.Action
+ @kyc.Action
   fetchKycs!: () => Promise<void>;
 
-  @kyc.Mutation
-   addOwners!: (orgKyc: IOwner) => void;
+  @kyc.State
+  orgKyc!: IKyc;
 
-   @kyc.State
-   orgKyc!: IKyc;
+  @kyc.Mutation
+  addreferees!: (orgKyc: IKycref) => void;
 
   query = "";
-  ownerId= "";
-  showOwner = false;
+  refreeId = "";
+  nominateRefree = false;
   particularOfDirectors = [] as any;
-  showExistingDriector= false;
+  showExisitingPractioner = false;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -147,9 +133,21 @@ export default class DirectorState extends Vue {
       show: true,
       noOrder: true
     },
-    {
-      title: "ownership equity (%)",
-      key: "percentage",
+     {
+      title: "Email",
+      key: "email",
+      show: true,
+      noOrder: true
+    },
+     {
+      title: "mobile",
+      key: "phone",
+      show: true,
+      noOrder: true
+    },
+     {
+      title: "Status",
+      key: "status",
       show: true,
       noOrder: true
     },
@@ -164,55 +162,57 @@ export default class DirectorState extends Vue {
   }
 
   get items() {
-    const owners = this.owners?.map((owner: any) => {
+    const directors = this.refrees?.map((director: any) => {
       return {
-        ...owner,
-        action: owner?.id,
-        percentage: owner.percentage +' %'
+        ...director,
+        // action: director?.id,
+        // name: director?.fullName,
+        // date: Date.now()
 
       };
     });
-   return owners; 
+   return directors; 
   }
 
-    showDirector(){
-        this.showExistingDriector = true
-    }
-    shoeEditOwner(value:string){
-        this.showOwner = true;
-        this.ownerId = value;
-    }
-    async setOwner(){
-         this.addOwners([this.addOwners] as any);
-        await this.fetchKycs();
+    showPractitoner(){
+        this.showExisitingPractioner  = true;
     }
 
-    ownerAdded(data: any) {
-            this.owners = data;
-    }
-    async deleteItem(id: string) {
-        const confirmed = await window.confirmAction({
-        message: "You are about to delete this beneficial owner",
-        title: "Delete beneficial owner",
-        });
-        if (!confirmed) return;
-
-        if (await this.deleteOwner(id))
-        window.notify({ msg: "beneficial owner deleted", status: "success" });
-        else window.notify({ msg: "beneficial owner not deleted", status: "error" });
+    async showEditRefree(value:string){
+      this.refreeId = value;
+      this.nominateRefree = true;  
     }
 
- get sortRefrees() {
+async refreeadded() {
+    this.addreferees([this.addreferees] as any);
+    await this.fetchKycs();
+    this.nominateRefree = false;
+    // console.log(this.orgKyc.referees);
+   }
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this refree",
+      title: "Delete refree",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteRefree(id))
+      window.notify({ msg: "Refree deleted", status: "success" });
+      else window.notify({ msg: "Refree not deleted", status: "error" });
+  }
+
+ get sortRefress() {
     return this.items?.slice().sort(function (a:any, b:any) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
+
   directorData(value:any){
     this.particularOfDirectors = value;
   }
 
   async created() {
-    await this.fetchKycs();
+   await this.fetchKycs();
   }
 }
 </script>

@@ -41,7 +41,8 @@
                 <span class="w-full flex items-center mb-3">
                   <div class="flex w-full">
                     <img class="mr-3 w-6 rounded-md" :src="item.flag" />
-                    <span class="text-sm font-semibold"> {{ item.dialCode }}</span>
+                    <!-- <span class="text-xs font-semibold"> {{ item.name }}</span> -->
+                    <span class="text-xs font-semibold codestyle"> {{ item.dialCode }}</span>
                   </div>
                   <!-- <div class="text-xs text-gray-400 flex-shrink-0 float-right">
                     {{ item.dialCode }}
@@ -176,5 +177,11 @@ export default class PhoneInput extends Vue {
 .phone-grid {
   display: grid;
   columns: 10% 90%;
+}
+.codestyle{
+  float: right;
+  display: flex;
+  justify-content: end;
+  width: 100%;
 }
 </style>

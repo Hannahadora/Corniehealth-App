@@ -1,5 +1,6 @@
-import IPhone from "./IPhone";
 import IKycref  from "./IKycref";
+import IDirector  from "./IDirector";
+import IOwner  from "./IOwner";
 
 export default interface IKyc {
   id?: string;
@@ -17,26 +18,7 @@ export default interface IKyc {
   address: string;
   apartment: string;
   proofOfAddressUpload: string;
-  particularOfDirectors: ParticularOfDirectors[];
-  beneficialOwners: BeneficialOwners[];
+  directors: IDirector[];
+  beneficialOwners: IOwner[];
   referees: IKycref[];
 }
-
-export interface ParticularOfDirectors {
-    fullName: string;
-    dateOfBirth: string;
-    nationality: string;
-    emailAddress: string;
-    phoneNumber: IPhone;
-    taxIdentificationNumber: string;
-    identificationDocumentNumber: string;
-    uploadedIdentificationDocument: string;
-    practiceLicenseDocument: string;
-    uploadedPracticeLicenseDocument: string;
-    practiceLicenseNumber: string;
-  }
-
-export interface BeneficialOwners {
-    name: string;
-    percentage: string;
-  }

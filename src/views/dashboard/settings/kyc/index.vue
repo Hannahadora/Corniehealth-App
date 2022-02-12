@@ -72,231 +72,7 @@
       </div>
 
       <div class="w-full my-6">
-        <director-sections  :directors="particularOfDirectors" />
-        <!-- <accordion-component
-            v-if="orgKyc.particularOfDirectors?.length > 0"
-            :title="'Particulars of Directors'"
-            :opened="true"
-            @add="addDirector"
-            :height="480"
-            :add="true"
-            :buttonText="'Select existing director'"
-          >
-           <template v-slot:default>
-              <div class="w-full pb-6">
-                <accordion-component
-                  :editabetitle="'Director'+' '+ [index + 1]"
-                    v-for="(director, index) in particularOfDirectors"
-                  :key="index"
-                   :height="480"
-                  :opened="true"
-                  class="w-full"
-                >
-                   <template v-slot:default>
-                    <div class="w-full grid grid-cols-3 gap-4 mt-5 pb-8">
-                        <cornie-input
-                          v-model="director.fullName"
-                          :label="'Full Name'"
-                            placeholder="--Enter--"
-                        />
-                          <date-picker
-                            v-model="director.dateOfBirth"
-                            :rules="dobValidator"
-                            :label="'Date of Birth'"
-                              placeholder="--Enter--"
-                          />
-                        <cornie-select
-                          v-model="director.nationality"
-                          :label="'Nationality'"
-                          :items="nationState.countries"
-                          placeholder="--Select--"
-                          class="w-full"
-                        />
-                        <cornie-input
-                          v-model="director.emailAddress"
-                          :label="'Email Address'"
-                            placeholder="--Enter--"
-                            :rules="emailRule"
-                        />
-                           <phone-input
-                            v-model="director.phoneNumber.number"
-                            v-model:code="director.phoneNumber.dialCode"
-                            :label="'Phone Number'"
-                              placeholder="--Enter--"
-                          />
-                    <cornie-input
-                      :label="'Tax Identification Number'"
-                      v-model="director.taxIdentificationNumber"
-                      placeholder="--Enter--"
-                    />
-                    <cornie-select
-                      class="w-full"
-                      :items="[
-                        'Nigerian Bank Identification Number (BVN)',
-                        'International Passport',
-                        'National Identitiy Number (NIN)',
-                        'Driver\'s License',
-                        'Voter\'s Card',
-                      ]"
-                      :label="'Identification Document'"
-                      placeholder="--Select--"
-                      v-model="director.identificationDocumentNumber"
-                    />
-                    <cornie-input
-                      v-model="director.identificationDocumentNumber"
-                      :label="'Identification Document Number'"
-                      placeholder="--Enter--"
-                    />
-                    <file-picker
-                      @uploaded="Uploaded"
-                      @change="sendIndex(index)"
-                      :label="'Upload Identitification Document '"
-                      v-model="director.uploadedIdentificationDocument"
-                      placeholder="--Enter--"
-                    />
-                    <cornie-select
-                      v-model="director.practiceLicenseDocument"
-                      class="w-full"
-                      :items="[
-                        'Medical Practice Licence',
-                        'Pharmacy Practice Licence',
-                        'Radiology Practice Licence',
-                        'Pathology Practice Licence',
-                        'Not Applicable',
-                      ]"
-                      :label="'Practice Licence Document'"
-                      placeholder="--Select--"
-                    />
-                    <cornie-input
-                      v-model="director.practiceLicenseNumber"
-                      :label="'Practice Licence Number'"
-                      placeholder="--Enter--"
-                    />
-                    <file-picker
-                      class="w-full"
-                      @uploaded="practiceLicenceUploaded"
-                      @change="sendIndex(index)"
-                      :label="'Upload Practice Licence Document'"
-                      v-model="director.uploadedPracticeLicenseDocument"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                </template>
-              </accordion-component>
-            </div>
-          </template>
-        </accordion-component>
-         <accordion-component
-          v-else
-            :title="'Particulars of Directors'"
-            :opened="true"
-            :height="480"
-            :buttonText="'Select existing director'"
-          >
-           <template v-slot:default>
-              <div class="w-full pb-6">
-                <accordion-component
-                  :editabetitle="'Director'+' '+ [index + 1]"
-                    v-for="(director, index) in newDirectors"
-                  :key="index"
-                   :height="480"
-                  :opened="true"
-                  class="w-full"
-                >
-                   <template v-slot:default>
-                    <div class="w-full grid grid-cols-3 gap-4 mt-5 pb-8">
-                        <cornie-input
-                          v-model="director.fullName"
-                          :label="'Full Name'"
-                            placeholder="--Enter--"
-                        />
-                          <date-picker
-                            v-model="director.dateOfBirth"
-                             :rules="dobValidator"
-                            :label="'Date of Birth'"
-                              placeholder="--Enter--"
-                          />
-                        <cornie-select
-                          v-model="director.nationality"
-                          :label="'Nationality'"
-                          :items="nationState.countries"
-                          placeholder="--Select--"
-                          class="w-full"
-                        />
-                        <cornie-input
-                          v-model="director.emailAddress"
-                          :label="'Email Address'"
-                            :rules="emailRule"
-                            placeholder="--Enter--"
-                        />
-                          <phone-input
-                            v-model="director.phoneNumber.number"
-                            v-model:code="director.phoneNumber.dialCode"
-                            :label="'Phone Number'"
-                              placeholder="--Enter--"
-                          />
-                        <cornie-input
-                          :label="'Tax Identification Number'"
-                          v-model="director.taxIdentificationNumber"
-                            placeholder="--Enter--"
-                        />
-                         <cornie-select
-                         class="w-full"
-                          :items="[
-                            'Nigerian Bank Identification Number (BVN)',
-                            'International Passport',
-                            'National Identitiy Number (NIN)',
-                            'Driver\'s License',
-                            'Voter\'s Card',
-                          ]"
-                          :label="'Identification Document'"
-                           placeholder="--Select--"
-                           v-model="director.identificationDocumentNumber"
-                        />
-                         <cornie-input
-                          v-model="director.identificationDocumentNumber"
-                          :label="'Identification Document Number'"
-                            placeholder="--Enter--"
-                        />
-                         <file-picker
-                          @uploaded="Uploaded"
-                            @change="sendIndex(index)"
-                          :label="'Upload Identitification Document '"
-                          v-model="director.uploadedIdentificationDocument"
-                            placeholder="--Enter--"
-                        />
-                         <cornie-select
-                          v-model="director.practiceLicenseDocument"
-                          class="w-full"
-                          :items="[
-                            'Medical Practice Licence',
-                            'Pharmacy Practice Licence',
-                            'Radiology Practice Licence',
-                            'Pathology Practice Licence',
-                            'Not Applicable',
-                          ]"
-                          :label="'Practice Licence Document'"
-                          placeholder="--Select--"
-                        />
-                           <cornie-input
-                          v-model="director.practiceLicenseNumber"
-                          :label="'Practice Licence Number'"
-                            placeholder="--Enter--"
-                        />
-                        <file-picker
-                        class="w-full"
-                          @uploaded="practiceLicenceUploaded"
-                          @change="sendIndex(index)"
-                          :label="'Upload Practice Licence Document'"
-                          v-model="director.uploadedPracticeLicenseDocument"
-                            placeholder="--Enter--"
-                        />
-                    </div>
-                  </template>
-                </accordion-component>
-              </div>
-            </template>
-          </accordion-component> -->
+        <director-sections @director-added="directorAdded"  :id="orgkycId" :directors="particularOfDirectors" />
       </div>
 
       <div class="w-full my-6">
@@ -375,288 +151,12 @@
       </div>
 
       <div class="w-full my-6" v-if="practiceRegister == true">
-        <owner-section :owners="newowner"/>
-        <!-- <accordion-component
-          :title="'Beneficial Owners'"
-          :showAddExisting="true"
-          :opened="true"
-          @add="() => (addOwner = true)"
-          :add="true"
-          :expandsection="true"
-          :height="newowner?.length <= 0 ? 45 : 52 * newowner?.length + 40"
-        >
-          <template v-slot:default>
-             <div
-              class="w-full flex"
-              v-for="(owner, index) in newowner"
-              :key="index"
-            >
-              <div class="w-4/12 py-3 px-2" style="border: 1px solid #c2c7d6">
-                <span class="normal-text">{{ owner?.name }}</span>
-              </div>
-              <div
-                class="w-4/12 py-3 px-2 flex justify-end"
-                style="border: 1px solid #c2c7d6"
-              >
-                {{ owner.percentage }}%
-              </div>
-              <div
-                class="w-4/12 py-3 px-2 flex justify-end cursor-pointer"
-                @click="removeowners(index)"
-                style="border: 1px solid #c2c7d6"
-              >
-                <span><delete-icon /></span>
-                <span class="text-sm font-normal mx-2">Delete</span>
-              </div>
-            </div> 
-          
-          </template>
-        </accordion-component> -->
+        <owner-section :owners="orgKyc.beneficialOwners" :id="orgkycId"  @owner-added="setOwner" @ownerAdded="ownerAdded"/>
       </div> 
-    
 
        <div class="w-full my-6">
-          <accordion-component
-          v-if="orgkycId"
-            :title="'Nominate Referees'"
-            @add="() => (nominateRefree = true)"
-            :showAddExisting="true"
-            :opened="true"
-             :add="true"
-            :expandsection="true"
-            :showAdd="true"
-          >
-            <template v-slot:default>
-            <div
-              class="w-full flex"
-              v-for="(nominee, index) in orgKyc.referees"
-              :key="index"
-            >
-              <div
-                class="py-3 px-2"
-                style="border: 1px solid #c2c7d6; width: 30%"
-              >
-                <span class="normal-text">{{ nominee?.name }}</span>
-              </div>
-              <div
-                class="py-3 px-4 relative"
-                style="border: 1px solid #c2c7d6; width: 30%"
-              >
-                <div class="w-full flex justify-between">
-                  <span>{{ nominee.email }}</span>
-                  <span
-                    class="cursor-pointer"
-                    @click="toggleEditDialog(nominee, index)"
-                    ><edit-icon
-                  /></span>
-                </div>
-                <div
-                  id="myModal"
-                  class="modal edit-dialog p-4"
-                  v-if="nominee.showEditEmail"
-                >
-                  <!-- Modal content -->
-                  <div class="modal-content">
-                    <cornie-input v-model="nominee.email" />
-                    <div class="w-11/12 flex justify-between py-2">
-                      <span
-                        class="cancel cursor-pointer"
-                        @click="() => (nominee.showEditEmail = false)"
-                        >Cancel</span
-                      >
-                      <span
-                        class="update cursor-pointer"
-                        @click="
-                          updateRefree(
-                            nominee.id,
-                            index,
-                            nominee.number,
-                            nominee.dialCode,
-                            nominee.name,
-                            nominee.email
-                          )
-                        "
-                        >Update</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="py-3 px-4 relative"
-                style="border: 1px solid #c2c7d6; width: 30%"
-              >
-                <div class="w-full flex justify-between">
-                  <span
-                    >{{ nominee.phone?.dialCode
-                    }}{{ nominee.phone?.number }}</span
-                  >
-                  <span
-                    class="cursor-pointer"
-                    @click="
-                      togglePhoneDialog(
-                        nominee,
-                        index,
-                        nominee.phone.dialCode,
-                        nominee.phone.number
-                      )
-                    "
-                    ><edit-icon
-                  /></span>
-                </div>
-                <div
-                  id="myModal"
-                  class="modal edit-dialog p-4"
-                  v-if="nominee.showEditPhone"
-                >
-                  <!-- Modal content -->
-                  <div class="modal-content">
-                    <phone-input
-                      v-model="nominee.phone.number"
-                      v-model:code="nominee.phone.dialCode"
-                    />
-                    <div class="w-11/12 flex justify-between py-2">
-                      <span
-                        class="cancel cursor-pointer"
-                        @click="() => (nominee.showEditPhone = false)"
-                        >Cancel</span
-                      >
-                      <span
-                        class="update cursor-pointer"
-                        @click="
-                          updateRefree(
-                            nominee.id,
-                            index,
-                            nominee.phone.number,
-                            nominee.phone.dialCode,
-                            nominee.name,
-                            nominee.email
-                          )
-                        "
-                        >Update</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="py-3 px-2 flex justify-end cursor-pointer"
-                @click="deleteItem(nominee.id)"
-                style="border: 1px solid #c2c7d6; width: 10%"
-              >
-                <span><delete-icon /></span>
-                <span class="text-sm font-normal mx-2">Delete</span>
-              </div>
-            </div>
-          </template>
-          </accordion-component>
-
-           <accordion-component
-           v-else
-            :title="'Nominate Referees'"
-            @add="() => (nominateRefree = true)"
-            :showAddExisting="true"
-            :opened="true"
-             :add="true"
-            :expandsection="true"
-            :showAdd="true"
-          >
-            <template  v-slot:default>
-              <div
-                class="w-full flex"
-                v-for="(nominee, index) in referees"
-                :key="index"
-              >
-                <div
-                  class="py-3 px-2"
-                  style="border: 1px solid #c2c7d6; width: 30%"
-                >
-                  <span class="normal-text">{{ nominee?.name }}</span>
-                </div>
-                <div
-                  class="py-3 px-4 relative"
-                  style="border: 1px solid #c2c7d6; width: 30%"
-                >
-                  <div class="w-full flex justify-between">
-                    <span>{{ nominee.email }}</span>
-                    <span
-                      class="cursor-pointer"
-                      @click="toggleEditDialog(nominee, index)"
-                      ><edit-icon
-                    /></span>
-                  </div>
-                  <div
-                    id="myModal"
-                    class="modal edit-dialog p-4"
-                    v-if="nominee.showEditEmail"
-                  >
-                    <!-- Modal content -->
-                    <div class="modal-content">
-                      <cornie-input v-model="nominee.email" />
-                      <div class="w-11/12 flex justify-between py-2">
-                        <span
-                          class="cancel cursor-pointer"
-                          @click="() => (nominee.showEditEmail = false)"
-                          >Cancel</span
-                        >
-                        <span
-                          class="update cursor-pointer"
-                            @click="updateRefree(nominee.id,index,nominee.number,nominee.dialCode,nominee.name,nominee.email)"
-                          >Update</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="py-3 px-4 relative"
-                  style="border: 1px solid #c2c7d6; width: 30%"
-                >
-                  <div class="w-full flex justify-between">
-                    <span>{{ nominee.phone?.dialCode }}{{ nominee.phone?.number }}</span>
-                    <span
-                      class="cursor-pointer"
-                      @click="togglePhoneDialog(nominee, index,nominee.phone.dialCode,nominee.phone.number )"
-                      ><edit-icon
-                    /></span>
-                  </div>
-                  <div
-                    id="myModal"
-                    class="modal edit-dialog p-4"
-                    v-if="nominee.showEditPhone"
-                  >
-                    <!-- Modal content -->
-                    <div class="modal-content">
-                      <phone-input   v-model="nominee.phone.number"
-                            v-model:code="nominee.phone.dialCode" />
-                      <div class="w-11/12 flex justify-between py-2">
-                        <span
-                          class="cancel cursor-pointer"
-                          @click="() => (nominee.showEditPhone = false)"
-                          >Cancel</span
-                        >
-                        <span
-                          class="update cursor-pointer"
-                          @click="updateRefree(nominee.id,index,nominee.phone.number,nominee.phone.dialCode,nominee.name,nominee.email)"
-                          >Update</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="py-3 px-2 flex justify-end cursor-pointer"
-                  @click="deleteItem(nominee.id)"
-                  style="border: 1px solid #c2c7d6; width: 10%"
-                >
-                  <span><delete-icon /></span>
-                  <span class="text-sm font-normal mx-2">Delete</span>
-                </div>
-              </div>
-            </template>
-          </accordion-component>
+         <refree-section :refrees="orgKyc.referees" :id="orgkycId"  @refree-added="refreeadded"/>
         </div>
-
         <div class="w-full py-10 flex justify-end">
           <cornie-button
             @click.prevent="() => $router.go(-1)"
@@ -678,20 +178,7 @@
 
       </div>
     </div>
-      <nominate-refree
-        @refree-added="refreeadded"
-        @refree ="refree"
-        v-model="nominateRefree"
-        :id="orgkycId"
-      />
   
-
-  <beneficial-owner
-    @ownerAdded="ownerAdded"
-    @close="() => (addOwner = false)"
-    :id="id"
-    v-model="addOwner"
-  />
 </template>
 
 <script lang="ts">
@@ -706,7 +193,7 @@ import AutoComplete from "@/components/autocomplete.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CornieButton from "@/components/CornieBtn.vue";
 import Modal from "@/components/modal.vue";
-import NominateRefree from "./components/nominate-refrees.vue";
+import NominateRefree from "./components/refreesModal.vue";
 import BeneficialOwner from "./components/beneficial-owner.vue";
 import FilePicker from "./components/choose-file.vue";
 import CornieRadio from "@/components/cornieradio.vue";
@@ -714,18 +201,19 @@ import EditIcon from "@/components/icons/edit-purple.vue";
 import { cornieClient } from "@/plugins/http";
 import { useHandleImage } from "@/composables/useHandleImage";
 import AccordionComponent from "@/components/form-accordion.vue";
-import IKyc, { ParticularOfDirectors, BeneficialOwners } from "@/types/IKyc";
+import IKyc from "@/types/IKyc";
 import { namespace } from "vuex-class";
 import { useCountryStates } from "@/composables/useCountryStates";
 import { reactive } from "@vue/reactivity";
-import IPhone from "@/types/IPhone";
 import IKycref from "@/types/IKycref";
 import { string, date } from "yup";
 import { createDate } from "@/plugins/utils";
 import DirectorSections from "./components/directorSection.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import OwnerSection from './components/ownerSection.vue';
-
+import RefreeSection from './components/refreesection.vue';
+import IDirector from "@/types/IDirector";
+import IOwner from "@/types/IOwner"
 
 const kyc = namespace("kyc");
 
@@ -745,6 +233,7 @@ export interface IBeneficialOwner {
     AutoComplete,
     DeleteIcon,
     OwnerSection,
+    RefreeSection,
     CornieButton,
     NominateRefree,
     BeneficialOwner,
@@ -798,16 +287,11 @@ export default class KYC extends Vue {
   apartment = "";
   phoneNumber = "";
   proofOfAddressUpload = setup(() => useHandleImage()) as any;
-  particularOfDirectors = [] as any;
+  particularOfDirectors = [] as  IDirector[];
   newDirectors: any = this.particularOfDirectors;
-  beneficialOwners: any = [
-    {
-      name: "",
-      percentage: "",
-    },
-  ];
+  beneficialOwners = [] as  IOwner[];
   newbeneficialOwners: any = [this.beneficialOwners];
-  referees = [] as any[];
+  referees = [] as IKycref[];
   newreferees = [] as any;
 
   uploadedIdentificationDocument = setup(() => useHandleImage()) as any;
@@ -826,7 +310,13 @@ export default class KYC extends Vue {
   orgKyc!: IKyc;
 
   @kyc.Mutation
+  addOwners!: (orgKyc: IOwner) => void;
+
+  @kyc.Mutation
   addreferees!: (orgKyc: IKycref) => void;
+
+  @kyc.Mutation
+  addDirectors!: (orgKyc: IDirector) => void;
 
   @kyc.Action
   deleteRefree!: (id: string) => Promise<boolean>;
@@ -837,10 +327,7 @@ export default class KYC extends Vue {
     this.setKyc();
   }
 
-  // get newDirectors(){
-  //   return this.particularOfDirectors
-
-  // }
+ 
  
   async setKyc() {
     const kyc = this.orgKyc;
@@ -860,7 +347,7 @@ export default class KYC extends Vue {
     this.address = kyc.address;
     this.apartment = kyc.apartment;
     this.proofOfAddressUpload = kyc.proofOfAddressUpload;
-    this.particularOfDirectors = kyc.particularOfDirectors;
+    this.particularOfDirectors = kyc.directors;
     this.newowner = kyc.beneficialOwners;
     this.referees = kyc.referees;
   }
@@ -884,15 +371,12 @@ export default class KYC extends Vue {
       address: this.address,
       apartment: this.apartment,
       proofOfAddressUpload: this.proofOfAddressUpload,
-      particularOfDirectors: this.newDirectors,
+      directors: this.particularOfDirectors,
       beneficialOwners: this.newowner,
       referees: this.referees,
     };
   }
 
-  // setDirector(){
-  //   this.particularOfDirectors.push(this.newDirectors)
-  // }
   addDirector() {
     this.particularOfDirectors.push(...this.newDirectors);
   }
@@ -902,26 +386,28 @@ export default class KYC extends Vue {
     this.proofOfAddressUpload = fileUrl;
   }
 
-  // Uploaded(fileUrl: string) {
-  //   this.particularOfDirectors[this.fileIndex].uploadedIdentificationDocument = fileUrl;
-  // }
 
-  // practiceLicenceUploaded(fileUrl: string) {
-  //   this.particularOfDirectors[this.fileIndex].uploadedPracticeLicenseDocument = fileUrl;
-  // }
   sendIndex(index:number){
     this.fileIndex = index
   }
   addrssProofUploaded(fileUrl: string) {
     this.data.proofOfAddressUpload = fileUrl;
   }
+ async directorAdded(){
+   await this.fetchKycs();
+    this.addDirectors([this.addDirectors] as any);
 
+}
   
 
   async refNominated(data: any) {
     this.referees = data;
     this.newreferees = data;
     this.nominees?.push(data);
+  }
+  async setOwner(){
+         this.addOwners([this.addOwners] as any);
+        await this.fetchKycs();
   }
 
 newowner = [] as any;
@@ -986,116 +472,9 @@ async submit() {
     }
   }
 
-  // async getKYCData() {
-  //   try {
-  //     const { data } = await cornieClient().get("/api/v1/kyc");
-  //     this.nominees = data.nominateReferess
-  //       ? data.nominateReferess?.map((nominee: any) => {
-  //           nominee.email = nominee.emailAddress;
-  //           nominee.phone = nominee.phonenNumber;
-  //           return nominee;
-  //         })
-  //       : [];
 
-  //     this.owners = data.beneficailOwners ? data.beneficailOwners : [];
 
-  //     if (data?.particularOfDirectors?.length > 0) {
-  //       const firstIitem = data?.particularOfDirectors[0];
-  //       this.director = {
-  //         ...firstIitem,
-  //         phone: firstIitem?.phoneNumber,
-  //       };
-  //     }
-  //   this.practiceRegister = true;
-  //     this.data = {
-  //       ...data,
-  //       practiceRegister: data.practiceRegister ? true : false,
-  //     };
-  //   } catch (error) {}
-  // }
 
-  toggleEditDialog(nominee: any, index: number) {
-    this.referees[index].newEmail = this.referees[index].email;
-    this.referees[index].showEditEmail = !this.referees[index].showEditEmail;
-  }
-
-  togglePhoneDialog(
-    nominee: any,
-    index: number,
-    dialcode: string,
-    phone: string
-  ) {
-    this.referees[index].newPhone = dialcode + "" + phone;
-    // this.referees[index].newPhone.number = phone;
-    this.referees[index].showEditPhone = !this.referees[index].showEditPhone;
-  }
-
-  updateNomineeEmail(index: number) {
-    this.referees[index].email = this.referees[index].newEmail;
-    this.referees[index].showEditEmail = false;
-  }
-
-  async updateRefree(
-    id: string,
-    index: number,
-    value: string,
-    value2: string,
-    name: string,
-    email: string
-  ) {
-    // let phonenumber = this.referees[index].phone.dialCode + this.referees[index].phone.number ;
-    // console.log(phonenumber,"LOOK");
-    // phonenumber = this.referees[index].newPhone;
-    // this.referees[index].showEditPhone = false;
-    const url = `/api/v1/kyc/referee/${id}`;
-    const payload = {
-      name: name,
-      email: email,
-      notified: false,
-      phone: {
-        dialCode: value2 || "+234",
-        number: value || "091994858882",
-      },
-    };
-    try {
-      const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        window.notify({
-          msg: "Referee updated successfully",
-          status: "success",
-        });
-        //phonevalue = response.data.phone.dialCode + response.data.phone.number;
-        this.referees[index].showEditPhone = false;
-        this.referees[index].showEditEmail = false;
-        this.addreferees(this.referees as any);
-        console.log(this.referees as any);
-      }
-    } catch (error) {
-      window.notify({
-        msg: "Referee update failed",
-        status: "error",
-      });
-    }
-  }
-  async removerefree(value: string) {
-    try {
-      const { data } = await cornieClient().delete(
-        `/api/v1/kyc/referee/${value}`,
-        {}
-      );
-      this.addreferees([this.orgKyc.referees] as any);
-      window.notify({ msg: "Refree deleted successfully", status: "success" });
-      await this.fetchKycs();
-    } catch (error) {
-      window.notify({
-        msg: "Refree deleted not  successfully",
-        status: "error",
-      });
-    }
-  }
-  removeowners(index: number) {
-    this.newowner.splice(index, 1);
-  }
   get allCountry() {
     if (!this.allCountries || this.allCountries.length === 0) return [];
     return this.allCountries.map((i: any) => {
@@ -1105,21 +484,7 @@ async submit() {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this refree",
-      title: "Delete refree",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteRefree(id))
-      window.notify({ msg: "Refree deleted successfully", status: "success" });
-    else
-      window.notify({
-        msg: "Refree deleted not  successfully",
-        status: "error",
-      });
-  }
 
   async created() {
     //  await this.getKYCData();

@@ -81,7 +81,7 @@
       <br />
 
       <a
-        href="www.corniehealth.com/provider/reference"
+        href="www.corniehealth.com/reference"
         style="
           line-height: 20px;
           font-size: 14px;
@@ -89,7 +89,7 @@
           color: #fe4d3c;
         "
       >
-        www.corniehealth.com/provider/reference
+        www.corniehealth.com/reference
       </a>
       <br />
       <br />
