@@ -214,15 +214,9 @@
       <span class="ml-1 mt-2">
         <chevron-down class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-10 absolute -mt-2 z-10 shadow-xl hidden"
+          class="dropdown-menu p-2 bg-white rounded-md w-72 h-auto right-10 absolute -mt-2 z-10 shadow-xl hidden"
         >
-          <li class="float-right mr-1">
-            <settings-icon
-              class="mt-0.5 justify-end cursor-pointer"
-              @click="$router.push('/dashboard/provider/user')"
-            />
-          </li>
-          <li class="list-none -mb-3 mt-2 -m-2 p-5 flex justify-center">
+          <li class="list-none p-2 flex justify-center">
             <span class="w-10 h-10 relative justify-center">
               <div
                 class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple cursor-pointer"
@@ -259,19 +253,23 @@
               </div>
             </span>
           </li>
-          <li class="justify-content border-b border-primary pb-5">
-            <p class="3xl text-center font-extrabold">{{ name }}</p>
-            <p class="2xl text-center text-gray-600 font-bold">
+          <li class="justify-content mb-2">
+            <p class="3xl text-center text-black font-extrabold">{{ name }}</p>
+            <p class="text-sm text-center text-dark font-light">
               {{ user ? user.email : "" }}
             </p>
             <p class="2xl text-center text-yellow-400 font-bold">
-              {{ designation }}
+              {{ user.designation }}
             </p>
           </li>
-
-          <li class="flex w-full mt-4 pt-4 mb-4">
-            <div class="w-full flex space-x-14">
-              <p class="font-semibold text-xl">Sign out</p>
+        <li class="flex w-full justify-center border-b border-primary pb-5">
+          <span class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"    @click="$router.push('/dashboard/provider/user')">
+            Manage Profile
+          </span>
+        </li>
+          <li class="flex w-full py-4">
+            <div class="w-full flex space-x-7">
+              <p class="font-semibold text-sm">Sign out</p>
               <span
                 class="relative left-40 flex-shrink-0 cursor-pointer"
                 @click="logout"

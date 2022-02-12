@@ -76,7 +76,11 @@ import IconBtn from "@/components/CornieIconBtn.vue";
 import IPhone from "@/types/IPhone";
 import { cornieClient } from "@/plugins/http";
 import { string, date } from "yup";
+import { namespace } from "vuex-class";
+import IKycref from "@/types/IKycref";
 
+
+const kyc = namespace("kyc");
 @Options({
   components: {
     ...CornieCard,
@@ -94,43 +98,61 @@ export default class NominateRefree extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: String, default: "" })
+  refreeId!: string;
+
+  @kyc.Action
+  getRefreeById!: (id: string) => IKycref;
+
   loading = false;
 
-emailRule = string().email("A valid email is required").required();
+  emailRule = string().email("A valid email is required").required();
   name="";
   email="";
   phone = {
     dialCode: "+234",
     number: "",
   };
+  notified = true
+
+ @Watch("refreeId")
+  idChanged() {
+    this.setRefree();
+  }
+
+  async setRefree() {
+    const refree = await this.getRefreeById(this.refreeId);
+    if (!refree) return;
+     this.name  = refree.name;
+     this.email  = refree.email;
+     this.phone  = refree.phone;
+
+    }
   get payload() {
     return {
       name: this.name,
       email: this.email,
       phone: this.phone,
+      notified: false
     };
   }
-  referee: any = { phone: { dialCode: "+234", number: "" } };
+ 
 
   async submit() {
     this.loading = true;
-    if (this.id) await this.onSave();
+    if (this.id) await this.apply();
     else await this.newRefree();
     this.loading = false;
   }
 
-  // onSave() {
-  //   if (!this.referee?.name) return false;
-  //   this.$emit("refadded", {
-  //     name: this.referee.name,
-  //     email: this.referee.email,
-  //     phone: {dialCode: this.referee.dialCode,number:this.referee.number},
-  //     notified: false,
-  //   });
-  //   this.closeModal();
-  //   this.referee = { name: "", email: "", phone: {dialCode:"+234",number:""} } as any;
-  // }
-async newRefree() {
+   async apply() {
+    this.loading = true;
+    if (this.refreeId) await this.updateReffree();
+    else await this.onSave();
+    this.loading = false;
+  }
+
+ async newRefree() {
     this.$emit('refree', this.payload);
       this.done();
   }
@@ -146,6 +168,19 @@ async newRefree() {
       }
     } catch (error) {
       window.notify({ msg: "Referee not added", status: "error" });
+    }
+  }
+  async updateReffree(){
+    const url = `/api/v1/kyc/referee/${this.refreeId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Refree updated successfully", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Refree not updated", status: "error" });
     }
   }
   done() {

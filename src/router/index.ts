@@ -269,7 +269,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "",
             props: true,
-            name: "User Setup",
+            name: "Practioner profile",
             component: () =>
               import(
                 "@/views/dashboard/usersettings/profile/components/empty-state.vue"

@@ -26,7 +26,8 @@
           'border-green-400': meta.valid && meta.touched,
           'bg-gray-100 border-gray-100': disabled,
           ...errorClasses,
-          'rounded-l': addextraclass
+          'rounded-l': addextraclass,
+           'rounded-r': addnewextraclass
         }"
       >
         <div
@@ -121,6 +122,9 @@ export default class CornieInput extends Vue {
   @Prop({ type: Boolean, default: false })
   addextraclass!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  addnewextraclass!: boolean;
+
   @Prop({ type: Object, default: {} })
   errorClasses!: Object;
 
@@ -144,5 +148,12 @@ export default class CornieInput extends Vue {
   border-bottom-left-radius: 0px !important;
   border-left-width: 0px !important;
   border-left: none;
+}
+.rounded-r{
+   border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  border-right-width: 0px !important;
+  border-right: none;
+  width: 120%;
 }
 </style>

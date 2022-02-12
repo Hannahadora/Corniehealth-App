@@ -42,9 +42,10 @@
              <div
               class="flex space-x-3 cursor-pointer"
               v-if="expandsection"
+              @click="$emit('selectExisting')"
             >
-              <expand-icon />
-              <span class="text-sm"> Select existing director</span>
+              <expand-icon class="w-5 h-5"/>
+              <span class="text-xs font-medium">{{ expandText }}</span>
             </div>
             <div
               class="flex space-x-3 -mt-4 cursor-pointer"
@@ -131,7 +132,10 @@ export default class AccordionComponent extends Vue {
   title!: string;
 
   @Prop({ type: String, default: "" })
-  editabetitle!: string;
+  editabetitle!: string; 
+
+  @Prop({ type: String, default: "Select existing director" })
+  expandText!: string; 
 
   @Prop({ type: Boolean, default: false })
   first!: boolean;
