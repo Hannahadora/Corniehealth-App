@@ -60,25 +60,18 @@
                 v-model="name"
                 :disabled="true"
               />
-            <div class="flex my-4">
-                <div class="flex-auto w-full ... ...">
+ 
                 <cornie-input
                     :label="'Percentage'"
                     placeholder="--Enter--"
-                    :addnewextraclass="true"
-                    v-model="percentage"
-                
-                />
-                </div>
-                <div class="flex-auto w-12...">
-                <cornie-input
-                    placeholder="%"
-                    class="mt-5 text-center"
-                    :readonly="true"
-                
-                />
-                </div>
-            </div>
+                    v-model="percentage" 
+                       class="w-full mb-5" 
+                >
+                      <template v-slot:append-inner>
+                        <span class="border-l-2 border-gray-300 px-4 py-2">%</span>
+                      </template>
+                </cornie-input>
+         
         </div>
          
      
