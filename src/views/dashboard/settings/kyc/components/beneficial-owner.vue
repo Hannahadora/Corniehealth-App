@@ -33,18 +33,21 @@
             :label="'Percentage'"
             v-model="percentage"
             placeholder="--Enter--"
-            :addnewextraclass="true"
+         
           
-          />
-        </div>
-        <div class="flex-auto w-12...">
-          <cornie-input
+          >
+            <template v-slot:append-inner>
+               <cornie-input
             placeholder="%"
             class="mt-5 text-center"
             :readonly="true"
           
           />
+            </template>
+          </cornie-input>
+          
         </div>
+    
      </div>
   </cornie-card-text>
        <cornie-card>
