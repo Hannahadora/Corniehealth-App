@@ -19,6 +19,7 @@ interface UserState {
   practitionerAuthenticated: boolean;
   domain: string;
   currentLocation: string;
+  orgTwoFA: boolean;
 }
 
 export default {
@@ -33,6 +34,7 @@ export default {
     cornieData: {} as any,
     practitionerAuthenticated: true,
     domain: "",
+    orgTwoFA: false,
     currentLocation: "",
   },
   getters: {
@@ -74,6 +76,9 @@ export default {
     },
   },
   mutations: {
+    updateTwoFA(state, payload: boolean) {
+      state.requiresTwoFactorAuth = payload;
+    },
     setCornieData(state, payload) {
       const { organization, ...data } = payload;
       state.cornieData = { ...state.cornieData, ...data };
