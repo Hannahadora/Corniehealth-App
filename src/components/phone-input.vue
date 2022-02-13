@@ -6,7 +6,7 @@
       <span class="float-left">
         {{ label }}
       </span>
-      <span class="text-danger ml-1" v-if="required"> * </span>
+      <span class="text-danger ml-1" v-if="requiredText"> * </span>
       <add-blue-icon
         class="float-right cursor-pointer fill-current text-primary"
         @click="$emit('addnumbers')"
@@ -119,6 +119,9 @@ export default class PhoneInput extends Vue {
 
   @Prop({ type: String })
   code!: string;
+
+  @Prop({ type: Boolean, default: false })
+  requiredText!: boolean;
 
   @PropSync("code", { default: "+234" })
   codeSync!: string;

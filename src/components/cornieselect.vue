@@ -32,11 +32,13 @@
                 :class="{
                   'border-red-500': Boolean(errorMessage),
                   'border-green-400': meta.valid && meta.touched,
+                  'bg-gray-50 border-gray-50': disabled || readonly
                 }"
                 class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
               >
                 <span
                   v-if="Boolean($slots.selected)"
+                  
                   class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
                 >
                   <slot name="selected" :item="selectedItem" />
@@ -44,8 +46,9 @@
                 <input
                   v-else
                   :placeholder="$attrs.placeholder"
-                  disabled
+                  :readonly="readonly || disabled"
                   :value="displayVal"
+                   :class="{ 'bg-gray-50 border-gray-50': disabled || readonly }"
                   class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
                   @change="handleChange"
                 />
@@ -119,8 +122,11 @@ export default class CornieSelect extends Vue {
   @Prop({ type: Boolean, default: false })
   required!: boolean;
 
-  @Prop({ type: Boolean, default: false })
+   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
 
   @Prop({ type: String })
   label!: string;

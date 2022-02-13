@@ -57,7 +57,7 @@
           :placeholder="$attrs.placeholder || '--Enter--'"
           :name="inputName"
           :readonly="readonly || disabled"
-          :class="{ 'bg-gray-100 border-gray-100': disabled }"
+          :class="{ 'bg-gray-50 border-gray-50': disabled }"
           v-model="valueSync"
           @update:modelValue="handleChange"
         />

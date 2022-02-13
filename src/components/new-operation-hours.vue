@@ -34,6 +34,11 @@
             :items="wholeDay"
             class="w-24 mr-1"
           />
+           <cornie-select
+            v-model="am"
+            :items="['AM','PM']"
+            class="w-24 mr-1"
+          />
         </span>
         <span class="mr-3 -mt-5">to</span>
         <span class="flex">
@@ -41,6 +46,11 @@
             @update:modelValue="changed"
             v-model="opHour.closeTime"
             :items="wholeDay"
+            class="w-24 mr-1"
+          />
+           <cornie-select
+            v-model="pm"
+            :items="['AM','PM']"
             class="w-24 mr-1"
           />
         </span>
@@ -149,6 +159,8 @@ export default class OperationHours extends Vue {
   }
 
   wholeDay = workHours;
+  am = "AM";
+  pm = "PM";
 
   created() {
     if (!this.modelValue || this.modelValue.length < 1)
