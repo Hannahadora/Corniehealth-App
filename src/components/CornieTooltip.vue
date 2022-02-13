@@ -15,10 +15,11 @@
           'flex-row-reverse': right,
         }"
       >
-        <div class="text-xs p-1 flex-grow">
-          <slot />
-        </div>
-        <div class="tooltip-pointer bg-primary rounded" ref="tooltipPointer" />
+        <div class="text-xs p-1 flex-grow"><slot /></div>
+        <div
+          class="tooltip-pointer bg-primary rounded"
+          ref="tooltipPointer"
+        ></div>
       </div>
     </div>
   </span>

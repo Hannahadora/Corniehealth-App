@@ -34,6 +34,7 @@ import { Options, Vue } from "vue-class-component";
 export default class Modal extends Vue {
   @Prop({ type: Boolean, required: true, default: false })
   visible!: boolean;
+
   @PropSync("visible", { type: Boolean, required: true, default: false })
   show!: boolean;
 
