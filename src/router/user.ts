@@ -2,34 +2,35 @@ import { RouteRecordRaw } from "vue-router";
 
 export const UserRoute: RouteRecordRaw = {
   path: "user",
-  props: true,
   name: "User Settings",
   component: () => import("@/views/dashboard/usersettings/profile/index.vue"),
+  redirect: () => "practitioner-profile",
   children: [
+    // {
+    //   path: "",
+    //   props: true,
+    //   component: () =>
+    //     import(
+    //       "@/views/dashboard/usersettings/profile/components/empty-state.vue"
+    //     ),
+    // },
     {
-      path: "",
+      path: "practitioner-profile",
       props: true,
-      name: "User Settings",
+      name: "Practitioner profile",
       component: () =>
         import(
-          "@/views/dashboard/usersettings/profile/components/empty-state.vue"
+          "@/views/dashboard/usersettings/profile/components/index.vue"
         ),
     },
     {
-      path: "setup",
+      path: "edit-profile",
       props: true,
-      name: "Setup",
+      name: "Edit profile",
       component: () =>
         import(
           "@/views/dashboard/usersettings/profile/components/user-setup.vue"
         ),
-    },
-    {
-      path: "security",
-      props: true,
-      name: "Security",
-      component: () =>
-        import("@/views/dashboard/usersettings/security/index.vue"),
     },
     {
       path: "domain/add",
