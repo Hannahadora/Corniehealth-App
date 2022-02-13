@@ -3,13 +3,13 @@ import { RouteRecordRaw } from "vue-router";
 export const UserRoute: RouteRecordRaw = {
   path: "user",
   props: true,
-  name: "Settings",
+  name: "User Settings",
   component: () => import("@/views/dashboard/usersettings/profile/index.vue"),
   children: [
     {
       path: "",
       props: true,
-      name: "Settings",
+      name: "User Settings",
       component: () =>
         import(
           "@/views/dashboard/usersettings/profile/components/empty-state.vue"
