@@ -4,9 +4,7 @@
       <div class="flex space-x-4 w-full">
         <div
           class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between cursor-pointer" 
-          :class="{ 'text-primary': expand }"
-                @click="expand = !expand" 
-        >
+          :class="{ 'text-primary': expand }" @click="expand = !expand" >
           <div
             contenteditable="true"
             :value="editabetitle"

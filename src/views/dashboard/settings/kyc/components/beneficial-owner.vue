@@ -27,26 +27,19 @@
         />
       </div>
 
-      <div class="flex my-4">
-        <div class="flex-auto w-full ... ...">
+      <div class="my-4">
           <cornie-input
             :label="'Percentage'"
             v-model="percentage"
             placeholder="--Enter--"
-         
-          
+            class="w-full"
           >
             <template v-slot:append-inner>
-               <cornie-input
-            placeholder="%"
-            class="mt-5 text-center"
-            :readonly="true"
-          
-          />
+               <span class="border-l-2 border-gray-300 px-4 py-2 divide-x-8">%</span>
             </template>
           </cornie-input>
           
-        </div>
+     
     
      </div>
   </cornie-card-text>

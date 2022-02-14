@@ -2,7 +2,7 @@
   <div class="w-full">
    <accordion-component
             :title="'Directors'"
-            :opened="[directors ? true : false  ]"
+            :opened="[directors.length < 0 ? true : false  ]"
             @add="showDirector = true"
             :add="true"
             :height="200"

@@ -1,11 +1,11 @@
 <template>
   <icon-input :type="visible ? 'text' : 'password'" class="py-2 px-3">
     <template v-slot:append>
-      <span @click="visible = false" v-if="visible">
-        <close-eye-icon class="cursor-pointer"/>
+      <span @click="visible = !visible" v-if="visible">
+        <open-eye-icon class="cursor-pointer" />
       </span>
       <span @click="visible = !visible" v-else>
-        <open-eye-icon class="cursor-pointer"/>
+        <close-eye-icon class="cursor-pointer" />
       </span>
     </template>
   </icon-input>

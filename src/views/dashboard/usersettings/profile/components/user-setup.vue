@@ -1,293 +1,233 @@
 <template>
-  <div class="container-fluid topest" style="height: 100vh; overflow-y: scroll">
-    <div class="w-full">
-      <div class="container-fluid">
-        <div class="w-full border-b-2 curved flex py-2">
-          <div class="container-fluid flex font-semibold text-xl py-2">
-            <h2>Set Up Profile</h2>
-          </div>
+  <div class="container topest" style="height: 100vh; overflow-y: auto">
+    <div class="w-full bg-white shadow-md p-5">
+      <div class="">
+        <div class="w-full border-b-2 curved flex">
+            <h3 class="text-primary text-lg font-bold">Edit Profile</h3>
         </div>
 
-        <div class="w-full my-6 border">
-          <div class="container-fluid">
-            <Accordion title="Basic Info" v-model="show" class="" :first="true">
-              <div class="w-full px-4">
-                <div class="container">
+        <div class="w-full">
+          <div class="">
+            <accordion-component title="Basic Info"  :opened="true">
+              <template v-slot:default>
+                <div class="w-full py-4 px-4">
                   <span class="flex items-center mt-3 mb-3">
-                    <avatar class="mr-2" v-if="img.url" :src="img.url" />
-                    <avatar class="mr-2" v-else :src="img.placeholder" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      name="image"
-                      id="file"
-                      @change="img.onChange"
-                      hidden
-                    />
-                    <label
-                      for="file"
-                      class="text-pink-600 font-bold cursor-pointer"
-                    >
-                      Upload
-                    </label>
+                    <cornie-avatar-field v-model="img.url" v-if="img.url" />
+                    <cornie-avatar-field v-model="img.placeholder" v-else />
                   </span>
-                </div>
-                <div class="container-fluid py-3 flex justify-around">
-                  <div class="w-4/12">
-                    <CornieInput
-                      label="Identifier"
-                      v-model="data.id"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Active state"
-                      :items="states"
-                      v-model="data.activeState"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Type"
-                      :items="types"
-                      v-model="data.type"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                </div>
+                   <div class="w-full flex flex-wrap items-center py-5">
+                      <div class="-mb-2">
+                        <cornie-radio
+                          :checked="true"
+                          :label="'General Practitioner'"
+                          :value="true"
+                          name="practiceRegister"
+                        />
+                      </div>
+                      <div class="ml-4 -mb-2">
+                        <cornie-radio
+                          :label="'Specialist'"
+                          :value="false"
+                          name="practiceRegister"
+                        />
+                      </div>
+                    </div>
 
-                <div class="container-fluid py-3 flex justify-around">
-                  <div class="w-4/12">
-                    <CornieInput
-                      label="name (first and last)"
-                      v-model="data.name"
-                      placeholder="--Enter--"
-                    />
+                  <div class="grid grid-cols-3 gap-4">
+                      <CornieInput
+                        label="Identifier"
+                        v-model="authPractitioner.identifier"
+                        placeholder="--Automatically Generated--"
+                        :disabled="true"
+                      />
+                      <CornieSelect
+                        label="Status"
+                        :items="states"
+                        v-model="authPractitioner.activeState"
+                        placeholder="Not editable"
+                        :readonly="true"
+                        :disabled="true"
+                      />
+                       <CornieInput
+                        label="Type"
+                        v-model="authPractitioner.type"
+                        placeholder="Not editable"
+                        :disabled="true"
+                      />
+
+                      <CornieInput
+                        label="name (first and last)"
+                        v-model="data.name"
+                        placeholder="--Enter--"
+                      />
+              
+                      <CornieSelect
+                        label="Gender"
+                        :items="genders"
+                        v-model="data.gender"
+                        placeholder="--Enter--"
+                      />
+                      <phone-select
+                        label="Phone number"
+                        v-model="data.phone"
+                        v-model:code="data.phoneCode"
+                        placeholder="--Enter--"
+                      />
+                      <cornie-input
+                          :label="'Email'"
+                          placeholder="--Enter--"
+                          :rules="emailRule"
+                          class="mb-5"
+                          v-model="emailAddress"
+                      />
+                  
+                      <CornieInput
+                        label="Address"
+                        v-model="data.address"
+                        placeholder="--Enter--"
+                      />
+                   
+                        <DatePicker
+                          v-model="data.dateOfBirth"
+                          label="Date of birth"
+                            :rules="dobValidator"
+                          style="width:max-width:100%"
+                          placeholder="--Enter--"
+                        />
+
+                         <CornieInput
+                          label="Job Designation"
+                          v-model="authPractitioner.jobDesignation"
+                          placeholder="Not editable"
+                          :disabled="true"
+                        />
+
+                       <CornieInput
+                          label="Department"
+                          v-model="authPractitioner.department"
+                          placeholder="Not editable"
+                          :disabled="true"
+                        />
+                   
+                      <!-- <CornieSelect
+                        label="Access role"
+                        :items="accessRoles"
+                        v-model="data.accessRole"
+                        placeholder="--Enter--"
+                      /> -->
                   </div>
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Gender"
-                      :items="genders"
-                      v-model="data.gender"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <phone-select
-                      label="Phone"
-                      v-model="data.phone"
-                      v-model:code="data.phoneCode"
-                      placeholder="--Enter--"
-                    />
+                  <div class="w-full">
+                    <span class="font-bold text-sm mb-5">Location(s) & privileges</span>
+                    <div class="flex space-x-4">
+                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
+                        <avatar :src="img.placeholder"/>
+                        <div>
+                          <p class="text-black text-sm">Market . <span class="text-blue-600 text-xs">Default</span></p>
+                          <p class="text-xs text-gray-300 mb-3">Physician</p>
+                          <p class="text-danger text-xs font-semibold">View privileges</p>
+                        </div>
+                      </div>
+                       <div class="flex space-x-4 mt-5">
+                        <avatar :src="img.placeholder"/>
+                        <div>
+                          <p class="text-black text-sm">Market</p>
+                          <p class="text-xs text-gray-300 mb-3">Physician</p>
+                          <p class="text-danger text-xs font-semibold">View privileges</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </template>
+              <template v-slot:misc>
+               <info-icon class="fill-current text-primary" />
+              </template>
+            </accordion-component>
 
-                <div class="container-fluid py-3 flex justify-around">
-                  <div class="w-4/12">
-                    <CornieInput
-                      label="Address"
-                      v-model="data.address"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <div class="w-11/12">
-                      <DatePicker
-                        v-model="data.dateOfBirth"
-                        label="Date of birth"
-                        style="width:max-width:100%"
+            <accordion-component title="Qualification" :opened="true">
+              <template v-slot:default>
+                <div class="w-full px-4 py-4">
+                  <div class="grid grid-cols-3 gap-4">
+                      <CornieInput
+                        label="identifier"
+                        v-model="authPractitioner.identifier"
+                        placeholder="--Automatically Generated--"
+                        :disabled="true"
+                      />
+                      <CornieSelect
+                        label="Code"
+                        :items="dropdown.Qualification"
+                        v-model="data.qualificationCode"
+                        placeholder="--Select--"
+                      />
+                      <Period
+                        label="Period"
+                        v-model="data.period"
+                        placeholder="--Select--"
+                      />
+                      <CornieInput
+                        label="Issuer"
+                        v-model="data.qualificationIssuer"
+                        placeholder="--Enter--"
+                      />
+                      <cornie-select
+                        :items="dropdown.CommunicationLanguage"
+                        v-model="data.communicationLanguage"
+                        label="Communication"
+                         placeholder="--Select--"
+                      />
+                      <CornieInput
+                        label="LICENSE NUMBER"
+                        v-model="data.licenseNumber"
                         placeholder="--Enter--"
                       />
                     </div>
-                  </div>
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Job Designation"
-                      :items="designations"
-                      v-model="data.jobDesignation"
-                      placeholder="--Enter--"
-                    />
-                  </div>
                 </div>
+              </template>
+               <template v-slot:misc>
+               <info-icon class="fill-current text-primary" />
+              </template>
+            </accordion-component>
 
-                <div class="container-fluid py-3 flex justify-around">
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Department"
-                      :items="functions"
-                      v-model="data.department"
-                      placeholder="--Enter--"
-                    />
-                    <!-- <CornieInput  label="Department"  placeholder="--Enter--" /> -->
-                  </div>
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Access role"
-                      :items="accessRoles"
-                      v-model="data.accessRole"
-                      placeholder="--Enter--"
-                    />
-                    <!-- <CornieInput label="access role"  placeholder="--Enter--" /> -->
-                  </div>
-                  <div class="w-4/12"></div>
-                </div>
-              </div>
-            </Accordion>
-
-            <Accordion title="Qualification" v-model="show" class="my-6">
-              <div class="w-full px-4">
-                <div class="container-fluid py-3 flex justify-around">
-                  <div class="w-4/12">
-                    <CornieInput
-                      label="identifier"
-                      v-model="data.qualificationIdentifier"
-                      placeholder=""
-                      :disabled="true"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <CornieSelect
-                      label="Code"
-                      :items="dropdown.Qualification"
-                      v-model="data.qualificationCode"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <Period
-                      label="Period"
-                      v-model="data.period"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                </div>
-
-                <div class="container-fluid py-3 flex justify-around">
-                  <div class="w-4/12">
-                    <CornieInput
-                      label="Issuer"
-                      v-model="data.qualificationIssuer"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <cornie-select
-                      :items="dropdown.CommunicationLanguage"
-                      v-model="data.communicationLanguage"
-                      label="Communication"
-                    />
-                  </div>
-                  <div class="w-4/12">
-                    <CornieInput
-                      label="LICENSE NUMBER"
-                      v-model="data.licenseNumber"
-                      placeholder="--Enter--"
-                    />
-                  </div>
-                </div>
-              </div>
-            </Accordion>
-
-            <Accordion title="Available Time" class="mt-6">
-              <div class="w-full px-4">
-                <!-- <div class="container my-3">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-radio h-6 w-6" v-model="allChecked" @change="onAll"  name="schedule">
-                                            <span class="ml-2">All days</span>
-                                        </label>
-                                    </div> -->
-
-                <!-- <div class="container flex">
-                                        <div class="w-2/12">
-                                        </div>
-                                        <div class="w-4/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <span class="font-bold uppercase text-sm">Start</span>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <span class="font-bold uppercase text-sm">Stop</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
+            <accordion-component title="Available Time" class="mt-4" :opened="true">
+              <div class="w-full py-4 px-4">
                 <div class="w-full">
                   <operation-hours v-model="hoursOfOperation" />
                 </div>
-
-                <!-- <div class="container flex my-3" v-for="(day, index) in times" :key="index">
-                                        <div class="w-2/12">
-                                            <label class="inline-flex items-center">
-                                                <input type="checkbox" v-model="day.selected" class="form-radio h-6 w-6"  name="schedule">
-                                                <span class="ml-2">{{ day.day }}</span>
-                                            </label>
-                                        </div>
-                                        <div class="w-4/12">
-                                            <div class="container flex">
-                                                <div class="w-6/12 mr-3">
-                                                    <label for="">
-                                                        <input type="time" v-model="day.openTime" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                                <div class="w-6/12">
-                                                    <label for="">
-                                                        <input type="time" v-model="day.closeTime" class="w-full border rounded p-2" id="appt" name="appt" required>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
-                <div class="container flex my-3">
-                  <div class="w-4/12">
+                <div class="grid grid-cols-2 gap-4">
                     <CornieSelect
                       label="availability exceptions"
                       :items="['X-MAS', 'SALAH']"
                       v-model="data.availabilityExceptions"
                       placeholder="--Enter--"
                     />
-                  </div>
-                  <div class="w-4/12">
                     <CornieSelect
                       label="consulation channel"
                       :items="dropdown.ConsultationChannel"
                       v-model="data.consultationChannel"
                       placeholder="--Enter--"
                     />
-                  </div>
                 </div>
               </div>
-            </Accordion>
+            </accordion-component>
           </div>
         </div>
       </div>
-      <div class="w-full mb-12">
-        <div class="container-fluid my-8 flex justify-end items-center">
-          <corniebtn :loading="false">
-            <router-link
-              to=""
-              class="cursor-pointer focus:outline-none text-gray-500 border mr-6 font-bold py-3 px-8 rounded-full"
+       <span class="flex w-full mb-5 mt-10 pb-10 justify-end">
+            <cornie-btn
+              @click="$router.back()"
+              class="border-primary border-2 px-6 mr-3 rounded text-primary"
             >
               Cancel
-            </router-link>
-          </corniebtn>
-          <CornieBtn
-            :loading="loading"
-            @click="setup"
-            :class="{ 'bg-gray-500': loading }"
-          >
-            <a
-              style="background: #fe4d3c"
-              class="bg-red-500 hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full"
+            </cornie-btn>
+            <cornie-btn
+               :loading="loading"
+             @click="submit"
+              class="text-white bg-danger px-6 rounded"
             >
               Save
-            </a>
-          </CornieBtn>
-        </div>
-      </div>
+            </cornie-btn>
+        </span>
     </div>
   </div>
 </template>
@@ -295,7 +235,7 @@
 <script lang="ts">
 import { Options, setup, Vue } from "vue-class-component";
 import { useHandleImage } from "@/composables/useHandleImage";
-import Accordion from "@/components/accordion-component.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import Button from "@/components/globals/corniebtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import DatePicker from "@/components/datepicker.vue";
@@ -312,6 +252,12 @@ import OperationHours from "@/components/new-operation-hours.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { Watch } from "vue-property-decorator";
 import CornieBtn from "@/components/CornieBtn.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import { string, date } from "yup";
+import { createDate } from "@/plugins/utils";
+
 
 const roles = namespace("roles");
 const dropdown = namespace("dropdown");
@@ -320,7 +266,7 @@ const userSettingsStore = namespace("usersettings");
 
 @Options({
   components: {
-    Accordion,
+    AccordionComponent,
     Button,
     DatePicker,
     Avatar,
@@ -331,6 +277,9 @@ const userSettingsStore = namespace("usersettings");
     Period,
     OperationHours,
     CornieBtn,
+    InfoIcon,
+    CornieAvatarField,
+    CornieRadio
   },
 })
 export default class USerSetup extends Vue {
@@ -387,6 +336,14 @@ export default class USerSetup extends Vue {
   ];
 
   img = setup(() => useHandleImage());
+  //Email Valitdaiton
+  emailRule = string().email("A valid email is required").required();
+
+  //Date of birth validation
+  dobValidator = date().max(
+    createDate(0, 0, -16),
+    "Director must be at least 16yrs."
+  );
 
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
@@ -449,7 +406,7 @@ export default class USerSetup extends Vue {
     });
   }
 
-  async setup() {
+  async submit() {
     const body = {
       ...this.data,
       // id: this.user.id,
@@ -460,12 +417,15 @@ export default class USerSetup extends Vue {
         number: this.data.phone,
         dialCode: this.data.phoneCode,
       },
+      activeState: this.authPractitioner.activeState,
+
       hoursOfOperation: this.hoursOfOperation,
       dateOfBirth: this.data.dateOfBirth
         ? new Date(this.data.dateOfBirth).toISOString()
         : "",
       organizationId: this.user.orgId,
-      image: this.img.url,
+      image: this.img.url || this.img.placeholder,
+      address: this.data.address
     };
 
     try {
