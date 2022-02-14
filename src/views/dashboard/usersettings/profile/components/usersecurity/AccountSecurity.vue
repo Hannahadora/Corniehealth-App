@@ -1,27 +1,23 @@
 <template>
   <main class="p-6">
-    <h3 class="pb-3">User Security</h3>
+    <h3>Account Security</h3>
     <section class="acc-main">
       <div class="password-main">
         <div>
-          <h4 class="text-sm">Password</h4>
-          <span>
+          <h4>Password</h4>
+          <p>
             The same password strength are enforced for all users across the
             app.
-            <span
+            <a
               @click="viewPolicy = !viewPolicy"
               class="ml-1 text-blue-700 mt-1 font-bold cursor-pointer text-xs"
             >
               VIEW POLICY
-            </span>
-          </span>
+            </a>
+          </p>
         </div>
         <div v-if="!isShowingPassword">
-          <button
-            ref="pass"
-            class="py-2 px-3.5 border-1 border-primary rounded-md text-primary"
-            @click="displayUpadtePassword()"
-          >
+          <button ref="pass" @click="displayUpadtePassword()">
             Update Password
           </button>
         </div>
@@ -48,16 +44,13 @@
             />
           </svg>
         </span>
-        <UpdatePassword />
+        <update-password></update-password>
       </div>
       <div class="two-factor-box">
         <div>
           <h4>Two Factor Authentication</h4>
           <p>
-            <span class="text-blue-700"
-              >Your admin requires you to setup 2FA to further secure your
-              account.</span
-            >
+            Two factor authentication enforced for all users within your domain.
             <svg
               class="ml-2"
               xmlns="http://www.w3.org/2000/svg"
@@ -74,12 +67,7 @@
           </p>
         </div>
         <div v-if="!isShowingTwoFactor">
-          <button
-            @click="displayTwoFactorAuth()"
-            class="py-2 px-14 border-1 border-primary rounded-md text-primary text-center"
-          >
-            Set Up
-          </button>
+          <button @click="displayTwoFactorAuth()">Configure</button>
         </div>
       </div>
       <div v-if="displayTwoFactor">
@@ -123,12 +111,7 @@
           </p>
         </div>
         <div v-if="!isShowingSecurity">
-          <button
-            @click="displaySecurityQuestion()"
-            class="py-2 px-14 border-1 border-primary rounded-md text-primary text-center"
-          >
-            Set Up
-          </button>
+          <button @click="displaySecurityQuestion()">Configure</button>
         </div>
       </div>
       <div v-if="displaySecurity">
@@ -237,7 +220,7 @@ h4 {
   font-family: Inter;
   font-style: normal;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 27px;
   color: #2b2b2b;
   margin: 4px 0px;
@@ -251,7 +234,7 @@ p {
   color: #2b2b2b;
   display: flex;
 }
-/* button {
+button {
   background: #ffffff;
   border: 1px solid #080056;
   box-sizing: border-box;
@@ -263,9 +246,9 @@ p {
   line-height: 24px;
   text-align: center;
   color: #080056;
-  width: 80px;
+  width: 200px;
   height: 50px;
-} */
+}
 .password-main,
 .two-factor-box,
 .security-box {
