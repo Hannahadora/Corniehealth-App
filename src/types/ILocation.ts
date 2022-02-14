@@ -1,3 +1,4 @@
+import IPhone from "./IPhone";
 export default interface ILocation {
   name: string;
   locationStatus: string;
@@ -7,9 +8,11 @@ export default interface ILocation {
   mode: string;
   type: string;
   phone: string;
+  phoneObject: IPhone,
   email: string;
   address: string;
   country: string;
+  city: string;
   state: string;
   physicalType: string;
   latitude: string;

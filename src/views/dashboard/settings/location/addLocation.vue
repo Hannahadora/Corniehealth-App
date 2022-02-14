@@ -12,12 +12,12 @@
             <template v-slot:default>
               <div class="w-full">
                 <div class="w-full mt-5 grid grid-cols-3 gap-4">
-                  <cornie-input
+                  <!-- <cornie-input
                     disabled
                     :modelValue="identifier"
                     label="Location Identifier"
                     class="w-full"
-                  />
+                  /> -->
                   <cornie-input
                     :rules="required"
                     required
@@ -58,21 +58,46 @@
                     placeholder="--Enter--"
                     class="w-full"
                   />
-                  <cornie-select
-                    :rules="required"
-                    required
-                    :items="dropdowns.mode"
-                    v-model="mode"
-                    label="Mode"
-                    placeholder="--Select--"
-                    class="w-full"
-                  />
                   <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/v3-ServiceDeliveryLocationRoleType"
                     class="required w-full"
                     v-model="type"
                     label="Type"
                     placeholder="--Select--"
+                  />
+                  <phone-input
+                    v-model:code="dialCode"
+                    v-model="phoneNumber"
+                    required
+                    :rules="required"
+                    label="Phone Number"
+                    class="w-full"
+                  />
+                  <auto-complete
+                    :rules="required"
+                    v-model="country"
+                    required
+                    label="Country"
+                    :items="countries"
+                  />
+                  <auto-complete
+                    required
+                    :rules="required"
+                    :items="states"
+                    v-model="state"
+                    label="State"
+                  />
+                  <cornie-input
+                    :rules="required"
+                    v-model="city"
+                    label="City"
+                    required
+                  />
+                  <cornie-input
+                    :rules="required"
+                    v-model="address"
+                    label="Address"
+                    required
                   />
                   <!-- <cornie-select
                         :rules="required"
@@ -84,41 +109,14 @@
                           class="w-full"
                       /> -->
 
-                  <phone-input
-                    v-model="phone"
-                    required
-                    :rules="required"
-                    label="Phone Number"
-                    class="w-full"
-                  />
-
                   <!-- <cornie-input
                         :rules="requiredEmail"
                         required
                         v-model="email"
                         label="Email Address"
                       />
-                      <cornie-input
-                        :rules="required"
-                        v-model="address"
-                        label="Address"
-                        required
-                      />
-                      <auto-complete
-                        :rules="required"
-                        v-model="country"
-                        required
-                        label="Country"
-                        :items="countries"
-                        class=""
-                      />
-                      <auto-complete
-                        required
-                        :rules="required"
-                        :items="states"
-                        v-model="state"
-                        label="State"
-                      />
+                      
+                      
                       <cornie-select
                         :items="dropdowns.physicalType"
                         v-model="physicalType"
@@ -127,21 +125,21 @@
                         :rules="required"
                       /> -->
                 </div>
-                <Textarea
+                <!-- <Textarea
                   :label="'Address'"
                   v-model="address"
                   :rows="1"
                   :cols="1"
                   class="w-full"
                   placeholder="Start typing..."
-                />
+                /> -->
               </div>
             </template>
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
-          <accordion-component title="Position" :opened="false">
+          <!-- <accordion-component title="Position" :opened="false">
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-4 mt-3">
                 <cornie-input
@@ -166,29 +164,29 @@
                   placeholder="--Enter--"
                   class="w-full"
                 />
-                <!-- <cornie-select
-                      :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                      v-model="managingOrg"
-                      label="Managing Organization"
-                    />
-                    <cornie-select
-                      :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
-                      v-model="partOf"
-                      label="Part Of"
-                    /> -->
+                <cornie-select
+                  :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                  v-model="managingOrg"
+                  label="Managing Organization"
+                />
+                <cornie-select
+                  :items="['0eb0c710-665a-449c-ab27-42014d25c676']"
+                  v-model="partOf"
+                  label="Part Of"
+                />
               </div>
             </template>
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
             </template>
-          </accordion-component>
+          </accordion-component> -->
           <accordion-component title="Hours Of Operation" :opened="false">
             <template v-slot:default>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="mt-3 w-full">
+              <div class="grid grid-cols-12 gap-4">
+                <div class="mt-3 w-full col-span-12">
                   <operation-hours v-model="hoursOfOperation" />
                 </div>
-                <div class="w-full mt-16">
+                <div class="w-full mt-16 grid gap-10 grid-cols-3 col-span-12">
                   <cornie-select
                     :rules="required"
                     required
@@ -248,7 +246,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
+import OperationHours from "@/components/location-operation-hours.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
@@ -261,6 +259,7 @@ import AccordionComponent from "@/components/form-accordion.vue";
 import InfoIcon from "@/components/icons/info.vue";
 import Textarea from "@/components/textarea.vue";
 import FhirInput from "@/components/fhir-input.vue";
+import IPhone from "@/types/IPhone";
 
 const countries = getCountries();
 
@@ -296,11 +295,13 @@ export default class AddLocation extends Vue {
   alias = "";
   mode = "";
   type = "";
-  phone = "";
+  phoneNumber = "";
+  dialCode = "+234";
   email = "";
   address = "";
   country = "";
   state = "";
+  city = "";
   physicalType = "";
   latitude = "";
   longitude = "";
@@ -360,11 +361,13 @@ export default class AddLocation extends Vue {
     this.mode = location.mode;
 
     this.type = location.type;
-    this.phone = location.phone;
+    this.phoneNumber = location.phoneObject.number;
+    this.dialCode = location.phoneObject.dialCode;
     this.email = location.email;
     this.address = location.address;
     this.country = location.country;
     this.state = location.state;
+    this.city = location.city;
     this.physicalType = location.physicalType;
     this.latitude = location.latitude;
     this.longitude = location.longitude;
@@ -384,13 +387,16 @@ export default class AddLocation extends Vue {
       description: this.description,
       alias: this.alias,
       mode: this.mode,
-
       type: this.type,
-      phone: this.phone,
+      phone: {
+        number: this.phoneNumber,
+        dialCode: this.dialCode,
+      } as any as IPhone,
       email: this.email,
       address: this.address,
       country: this.country,
       state: this.state,
+      city: this.city,
       physicalType: this.physicalType,
       latitude: this.latitude,
       longitude: this.longitude,

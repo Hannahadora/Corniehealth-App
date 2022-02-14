@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="toogle-check -ml-4">
+    <div class="toogle-check -ml-4 flex justify-center items-center">
       <span
-        class="text-gray font-semibold mr-3"
-        :class="{ 'text-danger': modelSync }"
+        class="text-gray font-semibold mr-0 pb-1.5"
+        :class="{ 'text-gray-200': modelSync }"
       >
         {{ uncheckedText }}</span
       >
@@ -12,8 +12,8 @@
         <span class="slider round"></span>
       </label>
       <span
-        class="text-gray font-semibold ml-3"
-        :class="{ 'text-success': !modelSync }"
+        class="text-gray font-semibold ml-0 pb-1.5"
+        :class="{ 'text-gray-200': !modelSync }"
       >
         {{ checkedText }}</span
       >
@@ -24,9 +24,9 @@
 <style scoped>
 .switch {
   position: relative;
-    display: inline-block;
-   width: 60px;
-    height: 34px;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
 }
 .switch input {
   opacity: 0;
@@ -46,13 +46,13 @@
 }
 .slider:before {
   position: absolute;
-    content: "";
-    height: 28px;
-    width: 28px;
-    left: 2px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
+  content: "";
+  height: 28px;
+  width: 28px;
+  left: 2px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
 }
 input:checked + .slider {
   background: #fe4d3c;
