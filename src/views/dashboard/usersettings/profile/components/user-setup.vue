@@ -57,20 +57,23 @@
 
                       <CornieInput
                         label="name (first and last)"
-                        v-model="data.name"
+                        v-model="name"
                         placeholder="--Enter--"
+                        :required="true"
                       />
               
                       <CornieSelect
                         label="Gender"
                         :items="genders"
-                        v-model="data.gender"
+                        v-model="gender"
+                         :required="true"
                         placeholder="--Enter--"
                       />
                       <phone-select
                         label="Phone number"
-                        v-model="data.phone"
-                        v-model:code="data.phoneCode"
+                        v-model="phone.number"
+                        v-model:code="phone.dialCode"
+                         :required="true"
                         placeholder="--Enter--"
                       />
                       <cornie-input
@@ -78,19 +81,20 @@
                           placeholder="--Enter--"
                           :rules="emailRule"
                           class="mb-5"
-                          v-model="emailAddress"
+                          v-model="email"
                       />
                   
                       <CornieInput
                         label="Address"
-                        v-model="data.address"
+                        v-model="address"
                         placeholder="--Enter--"
                       />
                    
                         <DatePicker
-                          v-model="data.dateOfBirth"
+                          v-model="dateOfBirth"
                           label="Date of birth"
                             :rules="dobValidator"
+                             :required="true"
                           style="width:max-width:100%"
                           placeholder="--Enter--"
                         />
@@ -157,28 +161,29 @@
                       <CornieSelect
                         label="Code"
                         :items="dropdown.Qualification"
-                        v-model="data.qualificationCode"
+                        v-model="qualificationCode"
                         placeholder="--Select--"
                       />
                       <Period
                         label="Period"
-                        v-model="data.period"
+                        v-model="period"
                         placeholder="--Select--"
+                        class="w-full -mt-1"
                       />
                       <CornieInput
                         label="Issuer"
-                        v-model="data.qualificationIssuer"
+                        v-model="qualificationIssuer"
                         placeholder="--Enter--"
                       />
                       <cornie-select
                         :items="dropdown.CommunicationLanguage"
-                        v-model="data.communicationLanguage"
+                        v-model="communicationLanguage"
                         label="Communication"
                          placeholder="--Select--"
                       />
                       <CornieInput
-                        label="LICENSE NUMBER"
-                        v-model="data.licenseNumber"
+                        label="License Number"
+                        v-model="licenseNumber"
                         placeholder="--Enter--"
                       />
                     </div>
@@ -198,13 +203,13 @@
                     <CornieSelect
                       label="availability exceptions"
                       :items="['X-MAS', 'SALAH']"
-                      v-model="data.availabilityExceptions"
+                      v-model="availabilityExceptions"
                       placeholder="--Enter--"
                     />
                     <CornieSelect
                       label="consulation channel"
                       :items="dropdown.ConsultationChannel"
-                      v-model="data.consultationChannel"
+                      v-model="consultationChannel"
                       placeholder="--Enter--"
                     />
                 </div>
@@ -289,6 +294,12 @@ export default class USerSetup extends Vue {
   @roles.Action
   getRoles!: () => Promise<any>;
 
+  @userSettingsStore.State
+  userprofiles!: any;
+
+  @userSettingsStore.Action
+  getUserProfile!: () => Promise<any>;
+
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
@@ -344,7 +355,81 @@ export default class USerSetup extends Vue {
     createDate(0, 0, -16),
     "Director must be at least 16yrs."
   );
+  userprofile = [];
+  period = {} as Period;
+  name="";
+  image = "";
+  phone = {
+    dialCode:"+234",
+    number:""
+  } as any;
+  gender = "";
+  address = "";
+  firstName = "";
+  lastName = "";
+  dateOfBirth = "";
+  qualificationIdentifier = "";
+  qualificationIssuer = "";
+  communicationLanguage = "";
+  email = "";
+  availabilityExceptions = "";
+  consultationChannel= "";
+  licenseNumber = "";
+  qualificationCode = "" as any;
 
+
+ @Watch("authPractitioner")
+  updateData() {
+    this.setData();
+  }
+  async setData() {
+    const practitioner = await setupHelper.constructPractitionerData(this.authPractitioner);
+    if (!practitioner) return;
+     this.name = this.authPractitioner.firstName +' '+ this.authPractitioner.lastName;
+    this.firstName = this.authPractitioner.firstName;
+    this.lastName = this.authPractitioner.lastName;
+    this.image = this.authPractitioner.image;
+    this.img.url = this.authPractitioner.image;
+     this.img.placeholder = this.authPractitioner.image;
+    this.gender = this.authPractitioner.gender;
+    this.address = this.authPractitioner.address;
+    this.dateOfBirth = this.authPractitioner.dateOfBirth;
+    this.qualificationIdentifier = this.authPractitioner.qualificationIdentifier;
+    this.phone = this.authPractitioner.phone;
+    this.communicationLanguage = this.authPractitioner.communicationLanguage;
+    this.email = this.authPractitioner.email;
+    this.qualificationIssuer = this.authPractitioner.qualificationIssuer;
+    this.availabilityExceptions = this.authPractitioner.availabilityExceptions;
+    this.consultationChannel = this.authPractitioner.consultationChannel;
+    this.licenseNumber = this.authPractitioner.licenseNumber;
+    this.hoursOfOperation = this.authPractitioner.hoursOfOperation;
+    this.qualificationCode = this.authPractitioner.qualificationCode;
+    this.period = this.authPractitioner.period as any;
+  
+  }
+get payload(){
+  return{
+    image: this.image,
+    gender: this.gender,
+    address: this.address,
+    firstName: this.firstName,
+    lastName: this.firstName,
+    dateOfBirth: this.dateOfBirth,
+    qualificationIdentifier: this.qualificationIdentifier,
+    phone: this.phone,
+    communicationLanguage: this.communicationLanguage,
+    email: this.email,
+    qualificationIssuer: this.qualificationIssuer,
+    availabilityExceptions: this.availabilityExceptions,
+    consultationChannel: this.consultationChannel,
+    licenseNumber: this.licenseNumber,
+    hoursOfOperation: this.hoursOfOperation,
+    period : this.period,
+    qualificationCode: this.qualificationCode
+
+
+  }
+}
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
     this.dropdown = data;
@@ -407,42 +492,38 @@ export default class USerSetup extends Vue {
   }
 
   async submit() {
+    this.loading = true;
     const body = {
-      ...this.data,
-      // id: this.user.id,
-      firstName: this.data.name ? this.data.name.split(" ")[0] : "",
-      lastName: this.data.name ? this.data.name.split(" ")[1] : "",
-      email: this.user.email,
-      phone: {
-        number: this.data.phone,
-        dialCode: this.data.phoneCode,
-      },
-      activeState: this.authPractitioner.activeState,
-
-      hoursOfOperation: this.hoursOfOperation,
-      dateOfBirth: this.data.dateOfBirth
-        ? new Date(this.data.dateOfBirth).toISOString()
+      ...this.payload,
+      firstName: this.name ? this.name.split(" ")[0] : "",
+      lastName: this.name ? this.name.split(" ")[1] : "",
+      dateOfBirth: this.payload.dateOfBirth
+        ? new Date(this.payload.dateOfBirth).toISOString()
         : "",
-      organizationId: this.user.orgId,
       image: this.img.url || this.img.placeholder,
-      address: this.data.address
+      activeState: this.authPractitioner.activeState,
+      type: this.authPractitioner.type || 'type',
+      qualificationIdentifier: this.authPractitioner?.identifier,
+      organizationId: this.authPractitioner.organizationId
     };
-
+    const url = `/api/v1/practitioner/${this.authPractitioner.id}`;
+    const payload = { ...body, id: this.authPractitioner.id };
     try {
-      this.loading = true;
-      const res = await this.setUserUp(body);
-      this.loading = false;
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+          this.loading = false;
+        window.notify({ msg: "Practioner profile updated", status: "success" });
+        this.$router.back();
+      }
     } catch (error) {
-      this.loading = false;
+      window.notify({ msg: "Practitioner profile not updated", status: "error" });
     }
   }
 
-  @Watch("authPractitioner")
-  updateData() {
-    this.data = setupHelper.constructPractitionerData(this.authPractitioner);
-  }
+ 
 
   async created() {
+    await this.setData();
     if (this.roles) await this.getRoles();
     this.getDesignations();
     this.getLevels();

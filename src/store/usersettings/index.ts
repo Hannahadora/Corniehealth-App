@@ -4,11 +4,13 @@ import {
   getDormains,
   changePassword,
   postSignature,
+  getUserProfile
 } from "./helper";
 
 interface UserSetup {
   practitioner: any;
   domains: any[];
+  userprofiles: any[],
 }
 
 export default {
@@ -16,11 +18,15 @@ export default {
   state: {
     practitioner: {},
     domains: [],
+    userprofiles: [],
   },
 
   mutations: {
     setDomains(state, domains) {
       if (domains) state.domains = [...domains];
+    },
+    setUserProfile(state, userprofiles) {
+      if (userprofiles) state.userprofiles = [...userprofiles];
     },
   },
 
@@ -29,7 +35,10 @@ export default {
       const domains = await getDormains();
       ctx.commit("setDomains", domains);
     },
-
+    async getUserProfile(ctx) {
+      const userprofiles = await getUserProfile();
+      ctx.commit("setUserProfile", userprofiles);
+    },
     async changePassword(ctx, body: any) {
       const res = await changePassword(body);
       if (!res) return false;
