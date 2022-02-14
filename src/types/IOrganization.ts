@@ -1,3 +1,5 @@
+import IPhone from "./IPhone";
+
 export interface IOrganization {
   id: string;
   name: string;
@@ -5,6 +7,7 @@ export interface IOrganization {
   alias: string;
   organisationType: string;
   registrationNumber: string;
+  phone: IPhone,
   domainName: string;
   identifier: string;
   providerProfile: string;
