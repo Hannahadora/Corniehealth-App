@@ -263,7 +263,7 @@
             </p>
           </li>
         <li class="flex w-full justify-center border-b border-primary pb-5">
-          <span class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"    @click="$router.push('/dashboard/provider/user')">
+          <span class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"    @click="$router.push({ name: 'Practitioner profile' })">
             Manage Profile
           </span>
         </li>
