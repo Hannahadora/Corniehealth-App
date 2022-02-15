@@ -6,11 +6,10 @@ import {
   getDormains,
   changePassword,
   postSignature,
-  getUserProfile
 } from "./helper";
 
 interface UserSetup {
-  practitioner: any;
+  practitioners: IPractitioner[];
   domains: any[];
   userprofiles: any[],
 }
@@ -18,7 +17,7 @@ interface UserSetup {
 export default {
   namespaced: true,
   state: {
-    practitioner: {},
+    practitioners: [],
     domains: [],
     userprofiles: [],
   },
@@ -27,13 +26,14 @@ export default {
     setDomains(state, domains) {
       if (domains) state.domains = [...domains];
     },
-    setUserProfile(state, practitioner:IPractitioner[]){
-      const existingRefs = state.practitioner || [];
-      const refset = new ObjectSet(
-        [...existingRefs, ...practitioner],
+    updatePractitioners(state, practitioners: IPractitioner[]) {
+      // eslint-disable-next-line no-console
+      console.log(practitioners,"HELLO PREA");
+      const practitionerSet = new ObjectSet(
+        [...state.practitioners, ...practitioners],
         "id"
-      )
-      state.practitioner = [...refset]
+      );
+      state.practitioners = [...practitionerSet];
     },
   },
 
@@ -41,10 +41,6 @@ export default {
     async getDomains(ctx) {
       const domains = await getDormains();
       ctx.commit("setDomains", domains);
-    },
-    async getUserProfile(ctx) {
-      const userprofiles = await getUserProfile();
-      ctx.commit("setUserProfile", userprofiles);
     },
     async changePassword(ctx, body: any) {
       const res = await changePassword(body);
