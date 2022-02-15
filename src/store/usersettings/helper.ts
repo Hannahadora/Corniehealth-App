@@ -12,6 +12,18 @@ export async function getDormains() {
   return {};
 }
 
+export async function getUserProfile() {
+  try {
+    const response = await cornieClient().get(
+      "/api/v1/user/practitioner"
+    );
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error fetching user profile", status: "error" });
+  }
+  return {};
+}
+
 export async function postSignature(body: any) {
   try {
     const response = await cornieClient().post("/api/v1//signature", body);
