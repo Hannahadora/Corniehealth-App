@@ -11,7 +11,7 @@
             </span>
 
             <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">
-              Add Access Role
+              {{allaction}} Access Role
             </h2>
           </div>
         </div>
@@ -55,7 +55,7 @@
                 <div
                   class="flex justify-between mb-4"
                   v-for="(access, index) in accessRoles"
-                  :key="`${access.roleId}-${access.locationId}`"
+                  :key="`${access.roleId}-${access.locationId}` "
                 >
                   <div class="flex justify-center items-center">
                     <cornie-radio
@@ -99,7 +99,7 @@
         </cornie-btn>
         <cornie-btn
           :loading="loading"
-          @click="save"
+          @click="submit"
           class="text-white bg-danger px-4 rounded-md"
         >
           Save
@@ -138,9 +138,11 @@ import EditIcon from "@/components/icons/edit.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
+import IPractitioner, {PractitionerLocationRole} from "@/types/IPractitioner";
 
 const dropdown = namespace("dropdown");
 const roles = namespace("roles");
+const practitioner = namespace("practitioner");
 
 @Options({
   name: "statusDialog",
@@ -178,10 +180,20 @@ export default class Medication extends Vue {
   id!: string;
 
   @Prop({ type: String, default: "" })
+  locationId!: string;
+
+  @Prop({ type: String, default: "" })
+  roleId!: string;
+
+  @Prop({ type: String, default: "" })
   updatedBy!: string;
 
   @Prop({ type: Object, default: {} })
   deletedRole!: any;
+
+  @Prop({ type: Object, default: {} })
+  setRoles!: any;
+
 
   @Prop({ type: String, default: "" })
   currentStatus!: string;
@@ -200,7 +212,7 @@ export default class Medication extends Vue {
   locations = [];
   defaultVal = "";
 
-  accessRoles = [] as any;
+  accessRoles =[] as any;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -221,6 +233,24 @@ export default class Medication extends Vue {
     });
   }
 
+ @practitioner.Action
+  getPractitionerRoleById!: (id: string) => PractitionerLocationRole;
+
+@Watch("roleId")
+ idChanged() {
+    this.setAccessroles();
+  }
+
+  async setAccessroles(){
+   const role = await this.getPractitionerRoleById(this.roleId);
+    if (!role) return;
+    this.accessRoles = role;
+
+  }
+ get allaction() {
+    return this.roleId ? "Edit" : "Add";
+  }
+
   @Watch("deletedRole")
   deleteRole() {
     if (this.deletedRole === {}) return;
@@ -234,6 +264,49 @@ export default class Medication extends Vue {
     ];
 
     this.$emit("role-deleted");
+  }
+  get payload(){
+    return{
+      ...this.accessRoles
+    }
+  }
+   async submit() {
+    this.loading = true;
+    if (this.roleId) await this.updateRole();
+    else await this.createRole();
+    this.loading = false;
+  }
+
+   async createRole() {
+     const body =  [...this.accessRoles];
+     
+    try {
+      const response = await cornieClient().post(`/api/v1/practitioner/location-roles/${this.id}`, this.accessRoles);
+      if (response.success) {
+        window.notify({ msg: "Practitioner role created", status: "success" });
+         if (!this.accessRoles.length) return;
+        this.$emit("add-access-roles", this.accessRoles);
+        this.$emit("close-access-diag");
+        this.loading = false;
+      }
+    } catch (error: any) {
+      this.loading = false
+      console.log(error.response.data);
+    }
+  }
+
+   async updateRole() {
+    const url = `/api/v1/practitioner/location-roles/${this.locationId}`;
+    const payload = {locationId: this.locationId, roleId:this.roleId };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Practitioner role updated", status: "success" });
+       this.show = false;
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner role not updated", status: "error" });
+    }
   }
 
   async deleteRoleAccess(roleId: string, locationId: string) {

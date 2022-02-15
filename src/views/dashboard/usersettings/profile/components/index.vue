@@ -18,6 +18,18 @@ import { Options, Vue } from "vue-class-component";
 import Tabs from "@/components/tabs.vue";
 import PractitionerSection from "./practionerprofile.vue"
 import UserSecurity from "./usersecurity/index.vue"
+import { namespace } from "vuex-class";
+import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
+import { useHandleImage } from "@/composables/useHandleImage";
+import Avatar from "@/components/avatar.vue";
+
+
+
+const roles = namespace("roles");
+const dropdown = namespace("dropdown");
+const userStore = namespace("user");
+const userSettingsStore = namespace("usersettings");
 
 @Options({
   components: {
@@ -33,6 +45,20 @@ export default class UserProfile extends Vue {
     "Practitioner Profile",
     "User Security",
   ];
+
+  
+  @userStore.Getter
+  authPractitioner!: IPractitioner;
+
+  @userSettingsStore.Action
+  setUserUp!: (body: IPractitioner) => Promise<boolean>;
+
+  @userSettingsStore.Mutation
+  setUserProfile!: (practitioner: IPractitioner) => void;
+    async created(){
+    await this.authPractitioner
+     await this.setUserProfile([this.setUserProfile] as any);
+  }
 }
 </script>
 <style>

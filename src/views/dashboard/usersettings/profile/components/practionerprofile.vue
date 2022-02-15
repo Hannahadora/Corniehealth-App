@@ -90,10 +90,17 @@ export default class PractitonerProfile extends Vue {
   @userSettingsStore.Action
   setUserUp!: (body: IPractitioner) => Promise<boolean>;
 
+  @userSettingsStore.Mutation
+  setUserProfile!: (practitioner: IPractitioner) => void;
+
   img = setup(() => useHandleImage());
 
   get image() {
     return this.authPractitioner?.image || this.img.placeholder;
+  }
+  async created(){
+    await this.authPractitioner
+     await this.setUserProfile([this.setUserProfile] as any);
   }
 }
 </script>

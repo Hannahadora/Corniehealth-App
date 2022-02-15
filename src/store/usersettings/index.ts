@@ -1,4 +1,6 @@
 import { StoreOptions } from "vuex";
+import IPractitioner from "@/types/IPractitioner";
+import ObjectSet from "@/lib/objectset";
 import {
   setUserUp,
   getDormains,
@@ -25,8 +27,13 @@ export default {
     setDomains(state, domains) {
       if (domains) state.domains = [...domains];
     },
-    setUserProfile(state, userprofiles) {
-      if (userprofiles) state.userprofiles = [...userprofiles];
+    setUserProfile(state, practitioner:IPractitioner[]){
+      const existingRefs = state.practitioner || [];
+      const refset = new ObjectSet(
+        [...existingRefs, ...practitioner],
+        "id"
+      )
+      state.practitioner = [...refset]
     },
   },
 
