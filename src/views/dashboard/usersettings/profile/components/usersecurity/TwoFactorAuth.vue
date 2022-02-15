@@ -83,7 +83,6 @@ export default {
     },
     payloadOn() {
       return {
-        // token not yet given
         token: this.token,
         userId: store.state.user.user.id,
       };
