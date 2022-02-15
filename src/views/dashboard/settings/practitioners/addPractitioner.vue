@@ -5,6 +5,9 @@
     @close-access-diag="addAccessRole = false"
     @add-access-roles="addAccessRoles"
     @role-deleted="deletedRole = {}"
+    :locationId="locationId"
+    :roleId="roleId"
+    :id="id"
   />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
@@ -103,17 +106,18 @@
                 </button>
                 <plus class="fill-current text-blue-900 font-bold w-3" />
               </div>
-              <div v-if="accessRoles.length" class="grid grid-cols-12 mb-4">
+              <div>
+                <div v-if="locationRoles.length" class="grid grid-cols-12 mb-4">
                 <div
-                  class="flex justify-between col-span-4 pr-5"
+                  class="flex justify-between col-span-5 mb-4"
                   :class="[
-                    index !== accessRoles.length - 1
+                    index !== locationRoles.length - 1
                       ? 'border-r border-gray-400'
                       : '',
                     index % 2 !== 0 ? 'pl-5' : '',
-                    index === accessRoles.length - 1 ? 'pl-5' : '',
+                    index === locationRoles.length - 1 ? 'pl-5' : '',
                   ]"
-                  v-for="(access, index) in accessRoles"
+                  v-for="(access, index) in locationRoles"
                   :key="`${access.roleId}-${access.locationId}`"
                 >
                   <div class="flex justify-center items-center">
@@ -121,9 +125,9 @@
                       class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
                     >
                       {{
-                        `${access.location
+                        `${access.location.name
                           .substr(0, 1)
-                          .toUpperCase()}${access.role
+                          .toUpperCase()}${getRoleName(access.roleId)
                           .substr(0, 1)
                           .toUpperCase()}`
                       }}
@@ -132,7 +136,7 @@
                       <div class="mb-0 font-bold text-sm">
                         <div class="flex justify-center items-center">
                           <div class="mr-1">
-                            {{ access.location }}
+                            {{ access.location.name }}
                           </div>
                           <div
                             class="font-bolder text-black mr-1"
@@ -145,23 +149,85 @@
                           </div>
                         </div>
                       </div>
-                      <div class="text-xs text-gray-400">{{ access.role }}</div>
+                      <div class="text-xs text-gray-400">{{ getRoleName(access.roleId) }}</div>
                     </div>
                   </div>
                   <div class="flex justify-center items-center">
                     <button class="border-0 mr-5" type="button">
-                      <edit-icon class="fill-current text-primary" />
+                      <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
                     </button>
                     <button
                       class="border-0"
                       type="button"
-                      @click="deleteRole(access.roleId, access.locationId)"
+                      @click="deleteItem(access.locationId)"
                     >
                       <delete-red />
                     </button>
                   </div>
                 </div>
+                </div>
               </div>
+              <!-- <div v-else>
+                <div v-if="accessRoles.length" class="grid grid-cols-12 mb-4">
+                  <div
+                    class="flex justify-between col-span-4 pr-5"
+                    :class="[
+                      index !== accessRoles.length - 1
+                        ? 'border-r border-gray-400'
+                        : '',
+                      index % 2 !== 0 ? 'pl-5' : '',
+                      index === accessRoles.length - 1 ? 'pl-5' : '',
+                    ]"
+                    v-for="(access, index) in accessRoles"
+                    :key="`${access.roleId}-${access.locationId}`"
+                  >
+                    <div class="flex justify-center items-center">
+                      <div
+                        class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
+                      >
+                        {{
+                          `${access.location
+                            .substr(0, 1)
+                            .toUpperCase()}${access.role
+                            .substr(0, 1)
+                            .toUpperCase()}`
+                        }}
+                      </div>
+                      <div class="flex flex-col items-start">
+                        <div class="mb-0 font-bold text-sm">
+                          <div class="flex justify-center items-center">
+                            <div class="mr-1">
+                              {{ access.location }}
+                            </div>
+                            <div
+                              class="font-bolder text-black mr-1"
+                              v-if="access.default"
+                            >
+                              •
+                            </div>
+                            <div class="text-xs text-blue-500">
+                              {{ access.default ? "Default" : "" }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-xs text-gray-400">{{ access.role }}</div>
+                      </div>
+                    </div>
+                    <div class="flex justify-center items-center">
+                      <button class="border-0 mr-5" type="button">
+                        <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
+                      </button>
+                      <button
+                        class="border-0"
+                        type="button"
+                        @click="deleteRole(access.roleId, access.locationId)"
+                      >
+                        <delete-red />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
             </template>
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
@@ -242,13 +308,13 @@
           </accordion-component>
           <span class="flex w-full mt-5 pb-3 justify-end">
             <button
-              class="rounded-full font-semibold py-1 px-12 text-primary border border-primary mr-3"
+              class="rounded font-semibold py-1 px-12 text-primary border border-primary mr-3"
               @click="$router.push('practitioners')"
             >
               Cancel
             </button>
             <cornie-btn
-              class="rounded-full font-semibold py-1 px-6 text-white border bg-danger"
+              class="rounded font-semibold py-1 px-6 text-white border bg-danger"
               :loading="loading"
               type="submit"
               @click="submit"
@@ -330,6 +396,19 @@ export default class AddPractitioner extends Vue {
   @practitioner.Mutation
   updatePractitioners!: (practitioners: IPractitioner[]) => void;
 
+
+  @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  deletePractitioner!: (id: string) => Promise<boolean>;
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
+  @practitioner.Action
+  deleteLocationrole!: (id: string) => Promise<boolean>;
+
   loading = false;
 
   dobValidator = date().max(
@@ -369,7 +448,11 @@ export default class AddPractitioner extends Vue {
   locations = [];
   generatedIdentifier = "";
   addAccessRole = false;
-  accessRoles = [] as any[];
+  accessRoles = [] as any;
+  locationRoles = [] as any;
+  locationId = "";
+  roleId = "";
+  setRoles = [] as any[];
   deletedRole = {} as object;
 
   @dropdown.Action
@@ -386,6 +469,11 @@ export default class AddPractitioner extends Vue {
 
   async addAccessRoles(payload: any) {
     this.accessRoles = [...payload];
+  }
+  editRole(locationId: string, roleId:string){
+    this.locationId = locationId;
+    this.roleId = roleId;
+    this.addAccessRole = true;
   }
 
   async deleteRole(roleId: string, locationId: string) {
@@ -428,7 +516,7 @@ export default class AddPractitioner extends Vue {
     this.hoursOfOperation = practitioner.hoursOfOperation;
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
-    this.accessRoles = [];
+    this.locationRoles = practitioner.locationRoles;
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -465,10 +553,44 @@ export default class AddPractitioner extends Vue {
       period: this.period,
       // locations: this.locations,
       // defaultLocation: this.defaultLocation,
-      locationRoles: this.accessRoles,
+     locationRoles: this.accessRoles,
     };
   }
-
+   get payloadEdit() {
+    const [firstName, lastName] = this.name.split(" ");
+    return {
+      firstName,
+      lastName,
+      email: this.email,
+      activeState: this.activeState,
+      gender: this.gender,
+      phone: {
+        number: this.phone,
+        dialCode: this.dialCode,
+      },
+      type: this.type,
+      address: this.address,
+      dateOfBirth: this.serializeDate(this.dateOfBirth),
+      image: this.img.url,
+      jobDesignation: this.jobDesignation,
+      department: this.department,
+      accessRole: this.accessRole,
+      qualificationIdentifier: this.qualificationIdentifier,
+      qualificationIssuer: this.qualificationIssuer,
+      licenseNumber: this.licenseNumber,
+      communicationLanguage: this.communicationLanguage,
+      qualificationCode: this.qualificationCode,
+      availabilityExceptions: this.availabilityExceptions,
+      consultationChannel: this.consultationChannel,
+      organizationId: this.organizationId,
+      hoursOfOperation: this.hoursOfOperation,
+      period: this.period,
+    };
+  }
+  getRoleName(id: string) {
+    const pt = this.roles.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
   async fetchLocation() {
     const AllLocation = cornieClient().get(
       "/api/v1/location/myOrg/getMyOrgLocations"
@@ -502,7 +624,7 @@ export default class AddPractitioner extends Vue {
 
   async updatePractitioner() {
     const url = `/api/v1/practitioner/${this.id}`;
-    const payload = { ...this.payload, id: this.id };
+    const payload = { ...this.payloadEdit, id: this.id };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
@@ -514,6 +636,27 @@ export default class AddPractitioner extends Vue {
       window.notify({ msg: "Practitioner not updated", status: "error" });
     }
   }
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message:
+        "Are you sure you want to delete this location role? This action cannot be undone.",
+      title: "Delete location role",
+    });
+    if (!confirmed) return;
+    const url = `/api/v1/practitioner/location-roles/${this.id}`;
+    const payload = [id];
+    try {
+      const response = await cornieClient().delete(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Location role deleted", status: "success" });
+       // this.$router.back();
+      }
+    } catch (error) {
+     window.notify({ msg: "Location role not deleted", status: "error" });
+    }
+
+
+  }
 
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
@@ -522,6 +665,7 @@ export default class AddPractitioner extends Vue {
   async created() {
     this.setPractitioner();
     this.setDropdown();
+     await this.fetchPractitioners();
     await this.fetchLocation();
     if (!this.roles.length) await this.getRoles();
   }
