@@ -8,6 +8,7 @@
     :locationId="locationId"
     :roleId="roleId"
     :id="id"
+    :accessRoles="locationRoles"
   />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
@@ -469,6 +470,7 @@ export default class AddPractitioner extends Vue {
 
   async addAccessRoles(payload: any) {
     this.accessRoles = [...payload];
+    this.locationRoles = [...payload];
   }
   editRole(locationId: string, roleId:string){
     this.locationId = locationId;

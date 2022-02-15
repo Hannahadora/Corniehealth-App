@@ -53,12 +53,6 @@ export default class UserProfile extends Vue {
   @userSettingsStore.Action
   setUserUp!: (body: IPractitioner) => Promise<boolean>;
 
-  @userSettingsStore.Mutation
-  setUserProfile!: (practitioner: IPractitioner) => void;
-    async created(){
-    await this.authPractitioner
-     await this.setUserProfile([this.setUserProfile] as any);
-  }
 }
 </script>
 <style>

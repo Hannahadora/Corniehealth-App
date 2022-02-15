@@ -114,6 +114,9 @@ export default {
     updatePractitionerAuthStatus(state, payload) {
       state.practitionerAuthenticated = payload;
     },
+    updatePractitioner(state, payload:IPractitioner) {
+      state.cornieData.practitioner = payload
+    },
   },
   actions: {
     async updatePractitionerAuthStatus({ commit }, authenticated) {

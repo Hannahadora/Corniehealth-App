@@ -71,8 +71,8 @@
                       />
                       <phone-select
                         label="Phone number"
-                        v-model="phone.number"
-                        v-model:code="phone.dialCode"
+                        v-model="phone"
+                        v-model:code="dialCode"
                          :required="true"
                         placeholder="--Enter--"
                       />
@@ -286,6 +286,7 @@ const roles = namespace("roles");
 const dropdown = namespace("dropdown");
 const userStore = namespace("user");
 const userSettingsStore = namespace("usersettings");
+const practitioner = namespace("practitioner");
 
 @Options({
   components: {
@@ -318,8 +319,6 @@ export default class USerSetup extends Vue {
   @userSettingsStore.Action
   getUserProfile!: () => Promise<any>;
 
-  @userSettingsStore.Mutation
-  setUserProfile!: (practitioner: IPractitioner) => void;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -329,6 +328,9 @@ export default class USerSetup extends Vue {
 
   @userStore.Getter
   authPractitioner!: IPractitioner;
+
+  @userStore.Mutation
+  updatePractitioner!: (payload: IPractitioner) => void;
 
   @userSettingsStore.Action
   setUserUp!: (body: IPractitioner) => Promise<boolean>;
@@ -380,10 +382,8 @@ export default class USerSetup extends Vue {
   period = {} as Period;
   name="";
   image = "";
-  phone = {
-    dialCode:"+234",
-    number:""
-  } as any;
+  phone = "";
+  dialCode = "+234"
   gender = "";
   address = "";
   firstName = "";
@@ -416,7 +416,7 @@ export default class USerSetup extends Vue {
     this.address = this.authPractitioner.address;
     this.dateOfBirth = this.authPractitioner.dateOfBirth;
     this.qualificationIdentifier = this.authPractitioner.qualificationIdentifier;
-    this.phone = this.authPractitioner.phone;
+    this.phone = this.authPractitioner.phone?.number;
     this.communicationLanguage = this.authPractitioner.communicationLanguage;
     this.email = this.authPractitioner.email;
     this.qualificationIssuer = this.authPractitioner.qualificationIssuer;
@@ -437,7 +437,10 @@ get payload(){
     lastName: this.firstName,
     dateOfBirth: this.dateOfBirth,
     qualificationIdentifier: this.qualificationIdentifier,
-    phone: this.phone,
+    phone: {
+        number: this.phone,
+        dialCode: this.dialCode,
+    },
     communicationLanguage: this.communicationLanguage,
     email: this.email,
     qualificationIssuer: this.qualificationIssuer,
@@ -533,9 +536,12 @@ get payload(){
     };
     const url = `/api/v1/practitioner/${this.authPractitioner.id}`;
     const payload = { ...body, id: this.authPractitioner.id };
+
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
+        console.log(response.data,"DATA")
+        this.updatePractitioner(response.data);
         this.loading = false;
         window.notify({ msg: "Practioner profile updated", status: "success" });
         this.$router.back();

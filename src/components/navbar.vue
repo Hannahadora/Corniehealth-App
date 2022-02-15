@@ -375,6 +375,9 @@ export default class NavBar extends Vue {
   @account.Mutation
   switchCurrentLocation!: (locationId: any) => void;
 
+ @account.Mutation
+  updatePractitioner!: (practitioners: IPractitioner[]) => void;
+
   defaultLocation = "";
 
   get profilePhoto() {
@@ -437,6 +440,9 @@ export default class NavBar extends Vue {
   async logout() {
     await logout();
     this.$router.push("/login");
+  }
+  async created(){
+     await this.updatePractitioner(this.authPractitioner as any)
   }
 }
 </script>
