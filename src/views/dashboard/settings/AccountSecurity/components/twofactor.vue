@@ -16,7 +16,7 @@
         </small>
       </div>
 
-      <div class="w-1/5" v-if="changed">
+      <div class="w-1/3 mb-4" v-if="changed">
         <span v-if="tokenSent">
           <h2 class="cursor-default text-xs font-semibold mt-4">
             Enter token to confirm
