@@ -19,6 +19,16 @@ import Tabs from "@/components/tabs.vue";
 import PractitionerSection from "./practionerprofile.vue";
 import UserSecurity from "./usersecurity/index.vue";
 import Bio from "./bio.vue";
+import { namespace } from "vuex-class";
+import User from "@/types/user";
+import IPractitioner from "@/types/IPractitioner";
+import { useHandleImage } from "@/composables/useHandleImage";
+import Avatar from "@/components/avatar.vue";
+
+const roles = namespace("roles");
+const dropdown = namespace("dropdown");
+const userStore = namespace("user");
+const userSettingsStore = namespace("usersettings");
 
 @Options({
   components: {

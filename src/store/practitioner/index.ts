@@ -1,17 +1,19 @@
 import ObjectSet from "@/lib/objectset";
 import search from "@/plugins/search";
-import IPractitioner from "@/types/IPractitioner";
+import IPractitioner, {PractitionerLocationRole} from "@/types/IPractitioner";
 import { StoreOptions } from "vuex";
-import { deletePractitioner, fetchPractitioners } from "./helper";
+import { deletePractitioner, fetchPractitioners, deleteLocationrole } from "./helper";
 
 interface PractitionerState {
   practitioners: IPractitioner[];
+  practionerRole: PractitionerLocationRole[];
 }
 
 export default {
   namespaced: true,
   state: {
     practitioners: [],
+    practionerRole: []
   },
   mutations: {
     setPractitioners(state, practitioners: IPractitioner[]) {
@@ -33,6 +35,15 @@ export default {
       practitioners.splice(index, 1);
       state.practitioners = [...practitioners];
     },
+    deleteLocationrole(state, id: string) {
+      const index = state.practionerRole.findIndex(
+        practitioner => practitioner.id == id
+      );
+      if (index < 0) return;
+      const dirset = [...state.practionerRole];
+      dirset.splice(index, 1);
+      state.practionerRole = [...dirset];
+    },
   },
   actions: {
     async fetchPractitioners(ctx) {
@@ -49,11 +60,20 @@ export default {
       if (deleted) ctx.commit("deletePractitioner", id);
       return deleted;
     },
+    async deleteLocationrole(ctx, id: string) {
+      const deleted = await deleteLocationrole(id);
+      if (deleted) ctx.commit("deleteLocationrole", id);
+      return deleted;
+    },
     async searchPractitioners(ctx, query: string) {
       if (!ctx.state.practitioners.length)
         await ctx.dispatch("fetchPractitioners");
       const practitioners = ctx.state.practitioners;
       return search.searchObjectArray(practitioners, query);
+    },
+    async getPractitionerRoleById(ctx, id: string) {
+      if (ctx.state.practionerRole.length < 1) await ctx.dispatch("fetchPractitioners");
+      return ctx.state.practionerRole.find(practitioner => practitioner.id == id);
     },
   },
 } as StoreOptions<PractitionerState>;

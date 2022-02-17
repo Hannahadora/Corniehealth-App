@@ -71,8 +71,8 @@
                       />
                       <phone-select
                         label="Phone number"
-                        v-model="phone.number"
-                        v-model:code="phone.dialCode"
+                        v-model="phone"
+                        v-model:code="dialCode"
                          :required="true"
                         placeholder="--Enter--"
                       />
@@ -122,23 +122,41 @@
                   </div>
                   <div class="w-full">
                     <span class="font-bold text-sm mb-5">Location(s) & privileges</span>
-                    <div class="flex space-x-4">
-                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
-                        <avatar :src="img.placeholder"/>
+                    <div class="grid grid-cols-4 gap-4">
+                      <div  v-for="(access, index) in authPractitioner?.locationRoles" :key="index" class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
+                        <div
+                            class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
+                           >
+                            {{
+                              `${access?.location?.name
+                                .substr(0, 1)
+                                .toUpperCase()}${getRoleName(access.roleId)
+                          .substr(0, 1)
+                          .toUpperCase()}`
+                            }}
+                       </div>
                         <div>
-                          <p class="text-black text-sm">Market . <span class="text-blue-600 text-xs">Default</span></p>
-                          <p class="text-xs text-gray-300 mb-3">Physician</p>
-                          <p class="text-danger text-xs font-semibold">View privileges</p>
+                          <div class="text-black text-sm"> {{ access.location.name }} 
+                             <div
+                              class="font-bolder text-black mr-1"
+                              v-if="access.default">
+                              •
+                            </div>
+                             <span class="text-blue-600 text-xs">  {{ access.default ? "Default" : "" }}</span>
+                             
+                            </div>
+                          <p class="text-xs text-gray-400 mb-3">{{ getRoleName(access.roleId) }}</p>
+                          <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
                         </div>
                       </div>
-                       <div class="flex space-x-4 mt-5">
+                       <!-- <div class="flex space-x-4 mt-5">
                         <avatar :src="img.placeholder"/>
                         <div>
                           <p class="text-black text-sm">Market</p>
                           <p class="text-xs text-gray-300 mb-3">Physician</p>
                           <p class="text-danger text-xs font-semibold">View privileges</p>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -268,6 +286,7 @@ const roles = namespace("roles");
 const dropdown = namespace("dropdown");
 const userStore = namespace("user");
 const userSettingsStore = namespace("usersettings");
+const practitioner = namespace("practitioner");
 
 @Options({
   components: {
@@ -300,6 +319,7 @@ export default class USerSetup extends Vue {
   @userSettingsStore.Action
   getUserProfile!: () => Promise<any>;
 
+
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
@@ -308,6 +328,9 @@ export default class USerSetup extends Vue {
 
   @userStore.Getter
   authPractitioner!: IPractitioner;
+
+  @userStore.Mutation
+  updatePractitioner!: (payload: IPractitioner) => void;
 
   @userSettingsStore.Action
   setUserUp!: (body: IPractitioner) => Promise<boolean>;
@@ -359,10 +382,8 @@ export default class USerSetup extends Vue {
   period = {} as Period;
   name="";
   image = "";
-  phone = {
-    dialCode:"+234",
-    number:""
-  } as any;
+  phone = "";
+  dialCode = "+234"
   gender = "";
   address = "";
   firstName = "";
@@ -385,7 +406,7 @@ export default class USerSetup extends Vue {
   async setData() {
     const practitioner = await setupHelper.constructPractitionerData(this.authPractitioner);
     if (!practitioner) return;
-     this.name = this.authPractitioner.firstName +' '+ this.authPractitioner.lastName;
+     this.name = this.authPractitioner?.firstName +' '+ this.authPractitioner?.lastName;
     this.firstName = this.authPractitioner.firstName;
     this.lastName = this.authPractitioner.lastName;
     this.image = this.authPractitioner.image;
@@ -395,7 +416,7 @@ export default class USerSetup extends Vue {
     this.address = this.authPractitioner.address;
     this.dateOfBirth = this.authPractitioner.dateOfBirth;
     this.qualificationIdentifier = this.authPractitioner.qualificationIdentifier;
-    this.phone = this.authPractitioner.phone;
+    this.phone = this.authPractitioner.phone?.number;
     this.communicationLanguage = this.authPractitioner.communicationLanguage;
     this.email = this.authPractitioner.email;
     this.qualificationIssuer = this.authPractitioner.qualificationIssuer;
@@ -416,7 +437,10 @@ get payload(){
     lastName: this.firstName,
     dateOfBirth: this.dateOfBirth,
     qualificationIdentifier: this.qualificationIdentifier,
-    phone: this.phone,
+    phone: {
+        number: this.phone,
+        dialCode: this.dialCode,
+    },
     communicationLanguage: this.communicationLanguage,
     email: this.email,
     qualificationIssuer: this.qualificationIssuer,
@@ -433,6 +457,10 @@ get payload(){
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
     this.dropdown = data;
+  }
+  getRoleName(id: string) {
+    const pt = this.roles.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
   }
 
   onAll(e: any) {
@@ -508,14 +536,18 @@ get payload(){
     };
     const url = `/api/v1/practitioner/${this.authPractitioner.id}`;
     const payload = { ...body, id: this.authPractitioner.id };
+
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-          this.loading = false;
+        console.log(response.data,"DATA")
+        this.updatePractitioner(response.data);
+        this.loading = false;
         window.notify({ msg: "Practioner profile updated", status: "success" });
         this.$router.back();
       }
     } catch (error) {
+        this.loading = false;
       window.notify({ msg: "Practitioner profile not updated", status: "error" });
     }
   }
