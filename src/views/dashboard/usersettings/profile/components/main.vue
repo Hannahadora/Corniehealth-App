@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid h-screen">
+  <div class="container-fluid h-screen flex flex-col">
     <div class="w-full">
       <div class="container-fluid" style="heigth: 100vh">
         <EmptyState />

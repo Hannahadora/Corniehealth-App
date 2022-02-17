@@ -79,6 +79,7 @@
                     required
                     label="Country"
                     :items="countries"
+                    class="w-full"
                   />
                   <auto-complete
                     required
@@ -86,6 +87,7 @@
                     :items="states"
                     v-model="state"
                     label="State"
+                    class="w-full"
                   />
                   <cornie-input
                     :rules="required"

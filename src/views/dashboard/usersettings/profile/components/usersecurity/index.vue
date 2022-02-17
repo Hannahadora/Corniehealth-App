@@ -102,7 +102,7 @@
         </span>
         <TwoFactorAuth />
       </div>
-      <div class="security-box">
+      <!-- <div class="security-box">
         <div>
           <h4>Security Questions</h4>
           <p>
@@ -150,7 +150,7 @@
           </svg>
         </span>
         <SecurityQuestion />
-      </div>
+      </div> -->
     </section>
 
     <password-policy v-model:visible="viewPolicy" />
