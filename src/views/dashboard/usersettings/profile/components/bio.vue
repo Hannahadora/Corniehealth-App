@@ -19,7 +19,7 @@
           type="submit"
           @click="saveBio"
           :loading="loading"
-          class="px-14 py-2 flex justify-center items.-cnter text-white appearance-none border-none bg-danger rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 focus-within text-center"
+          class="px-5 py-0 flex justify-center items.-cnter text-white appearance-none border-none bg-danger rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 focus-within text-center"
         >
           Save
         </cornie-btn>
