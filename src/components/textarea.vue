@@ -13,6 +13,7 @@
       :rows="rows"
       :cols="cols"
       maxlength="255"
+      :placeholder="placeholder"
       :class="{
         'border-red-500': Boolean(errorMessage),
         'border-green-400': meta.valid && meta.touched,
@@ -60,6 +61,9 @@ export default class DInput extends Vue {
 
   @Prop({ type: String, default: "50" })
   cols!: string;
+
+  @Prop({ type: String, default: "" })
+  placeholder!: string;
 
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
