@@ -65,6 +65,12 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/contact/contact-information.vue"),
     },
     {
+      path: "specialties",
+      name: "Specialties",
+      component: () =>
+        import("@/views/dashboard/settings/special/index.vue"),
+    },
+    {
       path: "location",
       name: "Location",
       component: () => import("@/views/dashboard/settings/location/index.vue"),

@@ -32,14 +32,16 @@
                 :class="{
                   'border-red-500': Boolean(errorMessage),
                   'border-green-400': meta.valid && meta.touched,
-                  'bg-gray-50 border-gray-50': disabled || readonly
+                  'bg-gray-50 border-gray-50': disabled || readonly,
+                  'bg-primary border-primary' : setPrimary ,
+                  'bg-white  border-gray-300' :!setPrimary
                 }"
-                class="p-1 bg-white flex border-1 border-gray-300 rounded-md"
+                class="p-1 flex border-1 rounded-md"
               >
                 <span
                   v-if="Boolean($slots.selected)"
-                  
-                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
+                  :class="{'text-gray-800':!setPrimary, 'text-white':setPrimary}"
+                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full"
                 >
                   <slot name="selected" :item="selectedItem" />
                 </span>
@@ -48,15 +50,16 @@
                   :placeholder="$attrs.placeholder"
                   :readonly="readonly || disabled"
                   :value="displayVal"
-                   :class="{ 'bg-gray-50 border-gray-50': disabled || readonly }"
-                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full text-gray-800"
+                   :class="{ 'bg-gray-50 border-gray-50': disabled || readonly, 'bg-primary border-primary text-white' : setPrimary,'text-gray-800':!setPrimary }"
+                  class="p-1 pl-2 bg-transparent appearance-none outline-none w-full"
                   @change="handleChange"
                 />
 
                 <div
                   class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
                 >
-                  <chevron-down-icon />
+                  <chevron-down-icon v-if="!setPrimary"/>
+                  <chevron-white-icon v-else/>
                 </div>
               </div>
               <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -98,11 +101,13 @@ import { nextTick } from "vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import ChevronWhiteIcon from "./icons/chevronwhitedown.vue";
 import { Field } from "vee-validate";
 
 @Options({
   components: {
     ChevronDownIcon,
+    ChevronWhiteIcon,
     Field,
   },
 })
@@ -124,6 +129,9 @@ export default class CornieSelect extends Vue {
 
    @Prop({ type: Boolean, default: false })
   readonly!: boolean;
+
+   @Prop({ type: Boolean, default: false })
+  setPrimary!: boolean;
 
   @Prop({ type: Boolean, default: false })
   disabled!: boolean;

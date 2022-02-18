@@ -88,6 +88,7 @@ import SecurityIcon from "@/components/icons/security.vue";
 import FormIcon from "@/components/icons/questionnaire.vue";
 import DomainIcon from "@/components/icons/domain.vue";
 import PractitionerIcon from "@/components/icons/practitioner.vue";
+import SpecialIcon from "@/components/icons/special.vue";
 import GroupIcon from "@/components/icons/group.vue";
 import TeamIcon from "@/components/icons/team.vue";
 import RolesIcon from "@/components/icons/roles.vue";
@@ -126,6 +127,7 @@ type INav = { name: string; to: string; icon: string };
     HealthServiceIcon,
     BankIcon,
     PractitionerIcon,
+    SpecialIcon,
     DomainIcon,
     ContactIcon,
     RolesIcon,
@@ -144,8 +146,9 @@ export default class Settings extends Vue {
   open = 0;
   get organization() {
     return [
-      { name: "Organization Information", to: "org-info", icon: "org-icon" },
+      { name: "Practice Information", to: "org-info", icon: "org-icon" },
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
+       { name: "Specialties", to: "specialties", icon: "special-icon" },
        { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
         name: "Location",
