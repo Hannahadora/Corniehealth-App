@@ -441,6 +441,9 @@ export default class NavBar extends Vue {
     await logout();
     this.$router.push("/login");
   }
+   mounted(){
+      this.updatePractitioner(this.authPractitioner as any)
+  }
   async created(){
      await this.updatePractitioner(this.authPractitioner as any)
   }
