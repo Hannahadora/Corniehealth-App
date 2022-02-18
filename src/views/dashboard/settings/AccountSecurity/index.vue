@@ -9,9 +9,9 @@
         <span class="text-sm mt-2 flex items-center">
           Cornie Health enforces a strict password policy to ensure you adopt a
           strong password.
-          <a @click="showPolicy" class="text-blue-600 ml-2 cursor-pointer">
+          <span @click="showPolicy" class="text-blue-600 ml-2 cursor-pointer">
             View Password
-          </a>
+          </span>
         </span>
       </div>
 
@@ -55,6 +55,7 @@ export default class extends Vue {
 
   showPolicy() {
     this.viewPolicy = true;
+    console.log("Okay");
   }
 }
 </script>

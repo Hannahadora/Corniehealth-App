@@ -8,8 +8,8 @@
   />
   <cornie-dialog
     v-model="show"
-    center
-    class="w-96 h-5/6 animated fadeIn z-50 absolute overflow-y-hidden"
+    right
+    class="w-96 h-full animated fadeIn z-50 absolute overflow-y-hidden"
   >
     <cornie-card height="100%" class="flex flex-col animated fadeInUp">
       <cornie-card-title class="w-full p-3">
@@ -393,14 +393,20 @@ export default class AddCarePartner extends Vue {
         else await this.save(partner);
       }
 
-      window.notify({ msg: "Care Partner added", status: "success" });
+      window.notify({
+        msg: "Care Partner Invited Successfully",
+        status: "success",
+      });
 
       this.loading = false;
       this.$emit("close-add-care-partner");
       this.addedCarePartners = [] as ICarePartner[];
       this.reset();
     } catch (err) {
-      window.notify({ msg: "Care Partner not added", status: "error" });
+      window.notify({
+        msg: "An Error While Sending Care Partner Invitation",
+        status: "error",
+      });
       this.loading = false;
       this.reset();
     }
