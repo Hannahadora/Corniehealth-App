@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -34,7 +33,9 @@
     "vuex": "^4.0.1",
     "vuex-class": "^0.3.2",
     "yup": "^0.32.9",
-    "zxcvbn": "^4.4.2"
+    "zxcvbn": "^4.4.2",
+    "primeicons": "^5.0.0",
+    "primevue": "^2.8.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^14.1.0",
