@@ -60,7 +60,6 @@ import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -71,7 +70,7 @@ import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
+
 import { Prop } from "vue-property-decorator";
 import IAttachment from "@/types/IAttachment";
 import DeleteIcon from "@/components/icons/delete.vue";
@@ -94,7 +93,6 @@ const attachments = namespace("attachments");
 
 @Options({
   components: {
-    Table,
     CancelIcon,
     SortIcon,
     CheckinIcon,
@@ -153,7 +151,6 @@ export default class AttachmentExistingState extends Vue {
   @attachments.Action
   fetchAttachment!: (patientId: string) => Promise<void>;
 
-  getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     // {
@@ -190,7 +187,7 @@ export default class AttachmentExistingState extends Vue {
         ? this.preferredHeaders
         : this.rawHeaders;
     const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
+    return headers;
   }
   currentAttachment: any = null;
   get items() {
