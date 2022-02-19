@@ -313,15 +313,22 @@
       </div>
     </div>
   </div>
-  <notes-section   @update:preferred="makeNotes"
-      v-model:visible="noteShow" :appointmentId="appointmentId" :allNotes="notes"/>
+  <notes-section
+    @update:preferred="makeNotes"
+    v-model:visible="noteShow"
+    :appointmentId="appointmentId"
+    :allNotes="notes"
+  />
 
-  <show-confirm-modal   v-model="showConfirm" @setCancel="setCancel" :appointmentId="appointmentId" />
+  <show-confirm-modal
+    v-model="showConfirm"
+    @setCancel="setCancel"
+    :appointmentId="appointmentId"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { cornieClient } from "@/plugins/http";
-// import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -353,8 +360,8 @@ import EncounterIcon from "@/components/icons/encounter.vue";
 import CheckoutIcon from "@/components/icons/checkout.vue";
 import Checkin from "../../visits/components/checkin.vue";
 import SideModal from "../../schedules/components/side-modal.vue";
-import NotesSection from './notes.vue';
-import showConfirmModal from './cancel.vue';
+import NotesSection from "./notes.vue";
+import showConfirmModal from "./cancel.vue";
 
 import EmptyState from "./emptyState.vue";
 
@@ -405,7 +412,7 @@ export default class AppoitmentExistingState extends Vue {
   query = "";
   search = "";
   noteShow = false;
-  notes=[] as any;
+  notes = [] as any;
 
   selectedStatus = 0;
   filterByType: any = [];
@@ -413,7 +420,6 @@ export default class AppoitmentExistingState extends Vue {
   completedStatus: any = [];
   currentVisitId = "";
   onePatientId = "";
-
 
   activeTab = 0;
   showEditPane = false;
@@ -615,16 +621,18 @@ export default class AppoitmentExistingState extends Vue {
     this.currentAppId = id;
     this.showCheckin = true;
   }
-  makeNotes(value:string){
-  this.noteShow = true
-  this.appointmentId = value;
-  this.fetchNotes();
-  
-}
- async fetchNotes() {
-      const AllNotes = cornieClient().get(`/api/v1/appointment/notes/getAllNotesForAppointment/${this.appointmentId}`,{} );
-      const response = await Promise.all([AllNotes]);
-      this.notes = response[0].data;
+  makeNotes(value: string) {
+    this.noteShow = true;
+    this.appointmentId = value;
+    this.fetchNotes();
+  }
+  async fetchNotes() {
+    const AllNotes = cornieClient().get(
+      `/api/v1/appointment/notes/getAllNotesForAppointment/${this.appointmentId}`,
+      {}
+    );
+    const response = await Promise.all([AllNotes]);
+    this.notes = response[0].data;
   }
 
   async displayParticipants(value: string) {
@@ -639,12 +647,13 @@ export default class AppoitmentExistingState extends Vue {
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "Are you sure you want to cancel this appoitment? This action caanot be undone.",
+      message:
+        "Are you sure you want to cancel this appoitment? This action caanot be undone.",
       title: "Cancel appointment",
     });
-  
-      this.appointmentId = id;
-      this.showConfirm = true;
+
+    this.appointmentId = id;
+    this.showConfirm = true;
   }
 
   getPatientName(id: string) {
@@ -684,10 +693,10 @@ export default class AppoitmentExistingState extends Vue {
     this.setSelectedPatient(id);
     this.viewDetails = true;
   }
-  async setCancel(){
+  async setCancel() {
     await this.fetchAppointments();
   }
-   get sortAppointments() {
+  get sortAppointments() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });

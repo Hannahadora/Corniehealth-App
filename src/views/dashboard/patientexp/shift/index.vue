@@ -154,7 +154,6 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -189,7 +188,6 @@ interface IRole {
 
 @Options({
   components: {
-    Table,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
