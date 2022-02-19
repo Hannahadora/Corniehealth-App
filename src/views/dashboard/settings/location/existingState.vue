@@ -115,7 +115,7 @@ export default class LocationExistingState extends Vue {
     {
       title: "Altitude",
       key: "altitude",
-      show: true,
+      show: false,
     },
     {
       title: "Hours of operation",

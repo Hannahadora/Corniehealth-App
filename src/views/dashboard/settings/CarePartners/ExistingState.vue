@@ -100,7 +100,7 @@ export default class CarePartnersExistingState extends Vue {
 
   headers = [
     {
-      title: "Identifier",
+      title: "Practice ID",
       key: "identifier",
       //   orderBy: (a: ICarePartner, b: ICarePartner) => a.name < b.name ? -1 : 1,
       show: true,

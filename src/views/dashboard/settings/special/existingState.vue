@@ -1,51 +1,41 @@
 <template>
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
-       <button
-         class="rounded-lg font-semibold  mt-5 mb-5 py-3 px-5 text-primary border border-primary mr-3 text-sm  focus:outline-none hover:opacity-90"
-        @click="showInviteModal = true"
-      >
-        Invite Practitioner
-      </button>
       <button
         class="bg-danger rounded-lg text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
-        @click="$router.push('add-practitioner')"
+        @click="showSpecialModal = true"
       >
-        Add a Practitioner
+       Add New Specialty
       </button>
     </span>
     <cornie-table :columns="rawHeaders" v-model="items" :check="false">
       <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`add-practitioner/${item.id}`)"
-        >
-          <edit-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showManagePractitioner = true">
+          <pract-icon class="text-primary fill-current" />
+          <span class="ml-3 text-xs">Manage Practitioners</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showModal(item.id)"
         >
-          <update-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Update Location</span>
+          <location-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Manage Locations</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="remove(item.id)"
         >
-          <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
+          <deactivate-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Deactivate</span>
         </div>
       </template>
     </cornie-table>
   </div>
-  <location-modal
-    v-model="showLocationModal"
-    @location-update="updateLocation"
+  <special-modal
+    v-model="showSpecialModal"
     :id="locationId"
   />
-  <invitation-modal  v-model="showInviteModal"/>
+  <manage-practitioner v-model="showManagePractitioner"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -62,12 +52,12 @@ import search from "@/plugins/search";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/newview.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import LocationModal from "./locationModal.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
-import InvitationModal from './inviteModal.vue';
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+import PractIcon from "@/components/icons/practicon.vue";
+import LocationIcon from "@/components/icons/locicon.vue";
+import SpecialModal from './newspecial.vue';
+import managePractitioner from './practitioner.vue';
+
 
 const practitioner = namespace("practitioner");
 
@@ -80,22 +70,21 @@ const practitioner = namespace("practitioner");
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
-    InvitationModal,
+    SpecialModal,
+    managePractitioner,
     IconInput,
-    DeleteIcon,
-    EyeIcon,
+    DeactivateIcon,
+    PractIcon,
     ColumnFilter,
     TableOptions,
-    EditIcon,
-    LocationModal,
-    UpdateIcon,
+    LocationIcon,
   },
 })
-export default class PractitionerExistingState extends Vue {
+export default class SpecialExistingState extends Vue {
   showColumnFilter = false;
   query = "";
-  showLocationModal = false;
-  showInviteModal = false;
+  showSpecialModal = false;
+  showManagePractitioner = false;
   locationId = "";
 
   @practitioner.State
@@ -109,52 +98,30 @@ export default class PractitionerExistingState extends Vue {
 
   rawHeaders = [
     {
-      title: "IDENTIFIER",
+      title: "code",
       key: "identifier",
       show: true,
+       noOrder: true
     },
     {
-      title: "Name",
+      title: "specialty",
       key: "name",
       show: true,
+       noOrder: true
     },
-    { title: "Department", key: "department", show: true },
-    { title: "Job Designation", key: "jobDesignation", show: true },
+    { title: "locations", key: "department", show: true, noOrder: true },
     {
-      title: "Status",
+      title: "practitioners",
       key: "activeState",
       show: true,
+       noOrder: true
     },
     {
-      title: "Code",
+      title: "STATUS",
       key: "qualificationIssuer",
-      show: false,
+      show: true,
     },
-    {
-      title: "Address",
-      key: "address",
-      show: false,
-    },
-    {
-      title: "Access Role",
-      key: "accessRole",
-      show: false,
-    },
-    {
-      title: "Gender",
-      key: "gender",
-      show: false,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: false,
-    },
-    {
-      title: "Physical Type",
-      key: "physicalType",
-      show: false,
-    },
+
   ];
 
   get items() {
@@ -193,7 +160,6 @@ export default class PractitionerExistingState extends Vue {
   }
 
   showModal(value: string) {
-    this.showLocationModal = true;
     this.locationId = value;
   }
 }

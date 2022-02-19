@@ -50,12 +50,12 @@
               </cornie-btn>
             </div>
             <div class="col-span-12 pt-4">
-              <div class="text-sm font-bold mb-5">Select Default Location</div>
+              <div class="text-sm font-bold mb-5">Change default location</div>
               <template v-if="accessRoles.length">
                 <div
                   class="flex justify-between mb-4"
                   v-for="(access, index) in accessRoles"
-                  :key="`${access.roleId}-${access.locationId}` "
+                  :key="index"
                 >
                   <div class="flex justify-center items-center">
                     <cornie-radio
@@ -145,7 +145,7 @@ const roles = namespace("roles");
 const practitioner = namespace("practitioner");
 
 @Options({
-  name: "statusDialog",
+  name: "Accessrole",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -172,7 +172,7 @@ const practitioner = namespace("practitioner");
     EditIcon,
   },
 })
-export default class Medication extends Vue {
+export default class Accessrole extends Vue {
   @Prop({ type: Boolean, default: false })
   show!: boolean;
 
@@ -272,8 +272,8 @@ export default class Medication extends Vue {
   }
    async submit() {
     this.loading = true;
-    if (this.roleId) await this.updateRole();
-    else await this.createRole();
+    if (this.roleId) await this.createRole();
+    else await this.save();
     this.loading = false;
   }
 
@@ -285,13 +285,13 @@ export default class Medication extends Vue {
       if (response.success) {
         window.notify({ msg: "Practitioner role created", status: "success" });
          if (!this.accessRoles.length) return;
-        this.$emit("add-access-roles", this.accessRoles);
+         this.$emit("add-access-roles", this.accessRoles);
         this.$emit("close-access-diag");
         this.loading = false;
       }
     } catch (error: any) {
       this.loading = false
-      console.log(error.response.data);
+      // console.log(error.response.data);
     }
   }
 

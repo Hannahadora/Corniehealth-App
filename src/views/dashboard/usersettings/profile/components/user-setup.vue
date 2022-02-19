@@ -81,6 +81,7 @@
                           placeholder="--Enter--"
                           :rules="emailRule"
                           class="mb-5"
+                          :required="true"
                           v-model="email"
                       />
                   
@@ -88,13 +89,14 @@
                         label="Address"
                         v-model="address"
                         placeholder="--Enter--"
+                          :required="true"
                       />
                    
                         <DatePicker
                           v-model="dateOfBirth"
                           label="Date of birth"
-                            :rules="dobValidator"
-                             :required="true"
+                          :rules="dobValidator"
+                          :required="true"
                           style="width:max-width:100%"
                           placeholder="--Enter--"
                         />
@@ -145,7 +147,7 @@
                              <span class="text-blue-600 text-xs">  {{ access.default ? "Default" : "" }}</span>
                              
                             </div>
-                          <p class="text-xs text-gray-400 mb-3">{{ getRoleName(access.roleId) }}</p>
+                          <p class="text-xs text-gray-400 mb-1">{{ getRoleName(access.roleId) }}</p>
                           <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
                         </div>
                       </div>
@@ -181,28 +183,33 @@
                         :items="dropdown.Qualification"
                         v-model="qualificationCode"
                         placeholder="--Select--"
+                          :required="true"
                       />
                       <Period
                         label="Period"
                         v-model="period"
                         placeholder="--Select--"
                         class="w-full -mt-1"
+                          :required="true"
                       />
                       <CornieInput
                         label="Issuer"
                         v-model="qualificationIssuer"
                         placeholder="--Enter--"
+                          :required="true"
                       />
                       <cornie-select
                         :items="dropdown.CommunicationLanguage"
                         v-model="communicationLanguage"
                         label="Communication"
                          placeholder="--Select--"
+                           :required="true"
                       />
                       <CornieInput
                         label="License Number"
                         v-model="licenseNumber"
                         placeholder="--Enter--"
+                          :required="true"
                       />
                     </div>
                 </div>
@@ -534,11 +541,11 @@ get payload(){
       qualificationIdentifier: this.authPractitioner?.identifier,
       organizationId: this.authPractitioner.organizationId
     };
-    const url = `/api/v1/practitioner/${this.authPractitioner.id}`;
+    const url = `/api/v1/user/practitioner`;
     const payload = { ...body, id: this.authPractitioner.id };
 
     try {
-      const response = await cornieClient().put(url, payload);
+      const response = await cornieClient().patch(url, payload);
       if (response.success) {
         console.log(response.data,"DATA")
         this.updatePractitioner(response.data);
@@ -555,12 +562,12 @@ get payload(){
  
 
   async created() {
+    this.setDropdown();
     await this.setData();
     if (this.roles) await this.getRoles();
     this.getDesignations();
     this.getLevels();
     this.getDepartments();
-    this.setDropdown();
   }
 }
 </script>
