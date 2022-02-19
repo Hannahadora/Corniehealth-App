@@ -1,36 +1,55 @@
 <template>
   <div class="w-full">
-   <accordion-component
-            :title="'Beneficial Owners'"
-             :opened="[owners.length < 0 ? true : false  ]"
-            @add="showOwner = true"
-            :add="true"
-            :showAddExisting="true"
-            :expandText="'Select existing director'"
-            :expandsection="true"
-            :showAdd="true"
-            @selectExisting="showDirector"
+    <accordion-component
+      :title="'Beneficial Owners'"
+      :opened="[owners.length < 0 ? true : false]"
+      @add="showOwner = true"
+      :add="true"
+      :showAddExisting="true"
+      :expandText="'Select existing director'"
+      :expandsection="true"
+      :showAdd="true"
+      @selectExisting="showDirector"
+    >
+      <cornie-table
+        :columns="rawHeaders"
+        v-model="sortRefrees"
+        :listmenu="true"
+        :check="false"
+      >
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="shoeEditOwner(item.id)"
           >
-          <cornie-table :columns="rawHeaders" v-model="sortRefrees" :listmenu="true" :check="false">
-            <template #actions="{ item }">
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="shoeEditOwner(item.id)">
-                 <edit-icon class="text-purple-700 fill-current" />
-                <span class="ml-3 text-xs">Edit</span>
-              </div>
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-                 <delete-icon class="text-danger fill-current" />
-                <span class="ml-3 text-xs">Delete</span>
-              </div>
-            </template>
-          </cornie-table>
-   </accordion-component>
-     <beneficial-owner
-        @setOwner="setOwner"
-        @ownerAdded="ownerAdded"
-      :id="id" :ownerId="ownerId"
-        v-model="showOwner"
-      />
-    <exisiting-director :id="id" :ownerId="ownerId"   @setOwner="setOwner" v-model="showExistingDriector" />
+            <edit-icon class="text-purple-700 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="deleteItem(item.id)"
+          >
+            <delete-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div>
+        </template>
+      </cornie-table>
+    </accordion-component>
+    <beneficial-owner
+      @setOwner="setOwner"
+      @ownerAdded="ownerAdded"
+      :id="id"
+      :ownerId="ownerId"
+      v-model="showOwner"
+      :totalPercentage="currentPercentage"
+    />
+    <exisiting-director
+      :id="id"
+      :ownerId="ownerId"
+      @setOwner="setOwner"
+      v-model="showExistingDriector"
+      :totalPercentage="currentPercentage"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -48,10 +67,8 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
-import search from "@/plugins/search";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Prop } from "vue-property-decorator";
-import ITask from "@/types/ITask";
 import AccordionComponent from "@/components/form-accordion.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
@@ -67,10 +84,8 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 import { namespace } from "vuex-class";
 import BeneficialOwner from "./beneficial-owner.vue";
-import ExisitingDirector from './exsitingDirector.vue';
+import ExisitingDirector from "./exsitingDirector.vue";
 import IKyc from "@/types/IKyc";
-import { cornieClient } from "@/plugins/http";
-import IDirector from "@/types/IDirector";
 import DirectorModal from "./directorModal.vue";
 import IOwner from "@/types/IOwner";
 
@@ -112,31 +127,30 @@ const kyc = namespace("kyc");
     CornieDialog,
   },
 })
-
 export default class DirectorState extends Vue {
-@Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   id!: string;
 
- @Prop({ type: Array, default: [] })
-  owners!: any;
+  @Prop({ type: Array, default: [] })
+  owners!: IOwner[];
 
   @kyc.Action
   deleteOwner!: (id: string) => Promise<boolean>;
 
-   @kyc.Action
+  @kyc.Action
   fetchKycs!: () => Promise<void>;
 
   @kyc.Mutation
-   addOwners!: (orgKyc: IOwner) => void;
+  addOwners!: (orgKyc: IOwner) => void;
 
-   @kyc.State
-   orgKyc!: IKyc;
+  @kyc.State
+  orgKyc!: IKyc;
 
   query = "";
-  ownerId= "";
+  ownerId = "";
   showOwner = false;
   particularOfDirectors = [] as any;
-  showExistingDriector= false;
+  showExistingDriector = false;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -145,13 +159,13 @@ export default class DirectorState extends Vue {
       title: "Name",
       key: "name",
       show: true,
-      noOrder: true
+      noOrder: true,
     },
     {
       title: "ownership equity (%)",
       key: "percentage",
       show: true,
-      noOrder: true
+      noOrder: true,
     },
   ];
   get headers() {
@@ -163,51 +177,58 @@ export default class DirectorState extends Vue {
     return [...first(4, headers), { title: "", value: "action", image: true }];
   }
 
+  get currentPercentage() {
+    const percentage = this?.owners
+      .map((owner) => Number(owner.percentage))
+      .reduce((prev, current) => prev + current, 0);
+    return percentage || 0;
+  }
+
   get items() {
     const owners = this.owners?.map((owner: any) => {
       return {
         ...owner,
         action: owner?.id,
-        percentage: owner.percentage +' %'
-
+        percentage: owner.percentage + " %",
       };
     });
-   return owners; 
+    return owners;
   }
 
-    showDirector(){
-        this.showExistingDriector = true
-    }
-    shoeEditOwner(value:string){
-        this.showOwner = true;
-        this.ownerId = value;
-    }
-    async setOwner(){
-         this.addOwners([this.addOwners] as any);
-        await this.fetchKycs();
-    }
+  showDirector() {
+    this.showExistingDriector = true;
+  }
+  shoeEditOwner(value: string) {
+    this.showOwner = true;
+    this.ownerId = value;
+  }
+  async setOwner() {
+    this.addOwners([this.addOwners] as any);
+    await this.fetchKycs();
+  }
 
-    ownerAdded(data: any) {
-            this.owners = data;
-    }
-    async deleteItem(id: string) {
-        const confirmed = await window.confirmAction({
-        message: "You are about to delete this beneficial owner",
-        title: "Delete beneficial owner",
-        });
-        if (!confirmed) return;
+  ownerAdded(data: any) {
+    this.owners = data;
+  }
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this beneficial owner",
+      title: "Delete beneficial owner",
+    });
+    if (!confirmed) return;
 
-        if (await this.deleteOwner(id))
-        window.notify({ msg: "beneficial owner deleted", status: "success" });
-        else window.notify({ msg: "beneficial owner not deleted", status: "error" });
-    }
+    if (await this.deleteOwner(id))
+      window.notify({ msg: "beneficial owner deleted", status: "success" });
+    else
+      window.notify({ msg: "beneficial owner not deleted", status: "error" });
+  }
 
- get sortRefrees() {
-    return this.items?.slice().sort(function (a:any, b:any) {
+  get sortRefrees() {
+    return this.items?.slice().sort(function (a: any, b: any) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  directorData(value:any){
+  directorData(value: any) {
     this.particularOfDirectors = value;
   }
 

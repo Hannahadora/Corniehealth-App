@@ -28,7 +28,7 @@
       </span>
     </div>
 
-    <card class="mt-3 block table-card pb-2" flat>
+    <cornie-card class="mt-3 block table-card pb-2" flat>
       <table class="w-full h-full" style="border-radius: 5px">
         <thead class="bg-accent p-4 text-primary">
           <th class="text-left p-2" width="1" v-if="check">
@@ -82,19 +82,18 @@
               <cornie-menu top="30px" right="100%">
                 <template #activator="{ on }">
                   <icon-btn v-on="on">
-                    <dots-horizontal-icon v-on="on"/>
+                    <dots-horizontal-icon v-on="on" />
                   </icon-btn>
                 </template>
-                <card-text>
+                <cornie-card-text>
                   <slot name="actions" :item="row" :index="index" />
-                </card-text>
+                </cornie-card-text>
               </cornie-menu>
             </div>
           </td>
         </tr>
-
       </table>
-    </card>
+    </cornie-card>
 
     <column-filter
       :columns="columns"
@@ -123,6 +122,7 @@ import CornieMenu from "@/components/CornieMenu.vue";
 import Card from "@/components/cornie-card/CornieCard.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import search from "@/plugins/search";
+import CornieCard from "@/components/cornie-card";
 
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
@@ -165,7 +165,7 @@ function defaultFilter(item: any, query: string) {
     IconBtn,
     CornieMenu,
     RefreshIcon,
-    Card,
+    ...CornieCard,
   },
 })
 export default class CornieTable extends Vue {
