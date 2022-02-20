@@ -181,7 +181,7 @@ import Button from "@/components/globals/corniebtn.vue";
 import SideModal from "@/components/modal-right.vue";
 import Overlay from "./components/overlay.vue";
 import Modal from "./components/modal.vue";
-import Dropdown from "@/components/multiselectsearch.vue";
+
 import { namespace } from "vuex-class";
 import User from "@/types/user";
 import IPractitioner from "@/types/IPractitioner";
@@ -224,7 +224,6 @@ interface IRole {
     ModalContent,
     Modal,
     Overlay,
-    Dropdown,
     TableOptions,
     ColumnFilter,
 

@@ -32,7 +32,6 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import VAlert from "@scelloo/cloudenly-ui/src/components/alert";
 import ModalCloseIcon from "./icons/modal-close.vue";
 import ModalOkIcon from "./icons/modal-ok.vue";
 import NotAllowedIcon from "./icons/not-allowed.vue";
@@ -41,7 +40,6 @@ import InfoIcon from "./icons/info.vue";
 @Options({
   name: "Notify",
   components: {
-    VAlert,
     ModalCloseIcon,
     InfoIcon,
     ModalOkIcon,

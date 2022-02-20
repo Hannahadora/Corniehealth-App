@@ -1008,7 +1008,6 @@ import DatePicker from "@/components/daterangepicker.vue";
 import Period from "@/types/IPeriod";
 import Avatar from "@/components/avatar.vue";
 import IOtherrequest from "@/types/IOtherrequest";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";

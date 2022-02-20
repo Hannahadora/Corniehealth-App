@@ -1,9 +1,9 @@
 <template>
   <cornie-dialog v-model="show" center class="w-4/12 h-4/12">
     <cornie-card height="100%" class="flex flex-col h-full bg-white">
-        <cornie-card-title class="">
-        <icon-btn @click="show = false" >
-          <arrow-left stroke="#ffffff"/>
+      <cornie-card-title class="">
+        <icon-btn @click="show = false">
+          <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full border-l-2 border-gray-300">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
@@ -15,35 +15,36 @@
           />
         </div>
       </cornie-card-title>
+      <v-form ref="form">
+        <cornie-card-text class="flex-grow scrollable">
+          <div class="w-full my-4">
+            <cornie-input
+              :label="'Name'"
+              v-model="name"
+              style="width: 100%"
+              placeholder="--Enter--"
+            />
+          </div>
 
-  <cornie-card-text class="flex-grow scrollable">
-      <div class="w-full my-4">
-        <cornie-input
-          :label="'Name'"
-          v-model="name"
-          style="width: 100%"
-          :type="number"
-          placeholder="--Enter--"
-        />
-      </div>
-
-      <div class="my-4">
-          <cornie-input
-            :label="'Percentage'"
-            v-model="percentage"
-            placeholder="--Enter--"
-            class="w-full"
-          >
-            <template v-slot:append-inner>
-               <span class="border-l-2 border-gray-300 px-4 py-2 divide-x-8">%</span>
-            </template>
-          </cornie-input>
-          
-     
-    
-     </div>
-  </cornie-card-text>
-       <cornie-card>
+          <div class="my-4">
+            <cornie-input
+              :label="'Percentage'"
+              v-model="percentage"
+              placeholder="--Enter--"
+              class="w-full"
+              type="number"
+              :rules="percentageValidator"
+            >
+              <template v-slot:append-inner>
+                <span class="border-l-2 border-gray-300 px-4 py-2 divide-x-8">
+                  %
+                </span>
+              </template>
+            </cornie-input>
+          </div>
+        </cornie-card-text>
+      </v-form>
+      <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
@@ -75,8 +76,9 @@ import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import { namespace } from "vuex-class";
 import IKyc from "@/types/IKyc";
-import IOwner from "@/types/IOwner"
+import IOwner from "@/types/IOwner";
 import { cornieClient } from "@/plugins/http";
+import { number } from "yup";
 
 const kyc = namespace("kyc");
 
@@ -84,9 +86,9 @@ const kyc = namespace("kyc");
   components: {
     ArrowLeft,
     CornieInput,
-     ...CornieCard,
+    ...CornieCard,
     CornieDialog,
-    IconBtn
+    IconBtn,
   },
 })
 export default class benficialOwner extends Vue {
@@ -96,55 +98,67 @@ export default class benficialOwner extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
- @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   ownerId!: string;
 
   owner = {} as IBeneficialOwner;
-  loading =  false;
+  loading = false;
   percentage = 0;
   name = "";
 
-    @kyc.Action
+  @Prop({ type: Number, default: 0, required: true })
+  totalPercentage!: number;
+
+  @kyc.Action
   fetchKycs!: () => Promise<void>;
 
-   @kyc.State
-   orgKyc!: IKyc;
+  @kyc.State
+  orgKyc!: IKyc;
 
   @kyc.Action
   getOwnerById!: (id: string) => IOwner;
+
+  get percentageValidator() {
+    const difference = 100 - this.totalPercentage;
+    return number()
+      .typeError("Please input a number between 1 and 100")
+      .min(1)
+      .max(difference, "percentage cannot be more than 100");
+  }
 
   @Watch("ownerId")
   idChanged() {
     this.setDirector();
   }
 
-
- async setDirector() {
-    const owner = await this.getOwnerById(this.ownerId);
+  async setDirector() {
+    const owner = this.getOwnerById(this.ownerId);
     if (!owner) return;
     this.name = owner.name;
-    this.percentage = owner.percentage
+    this.percentage = owner.percentage;
   }
 
   async submit() {
+    const form = this.$refs.form as any;
+    const { valid } = await form.validate();
+    if (!valid) return;
     this.loading = true;
     if (this.id) await this.apply();
     else await this.updateDirectorData();
     this.loading = false;
   }
-   async apply() {
+
+  async apply() {
     this.loading = true;
     if (this.ownerId) await this.updateDirector();
     else await this.saveDirector();
     this.loading = false;
   }
 
-
   get payload() {
     return {
       name: this.name,
       percentage: this.percentage,
-      
     };
   }
 
@@ -153,20 +167,23 @@ export default class benficialOwner extends Vue {
   }
 
   async saveDirector() {
-      try {
+    try {
       const response = await cornieClient().post(
         `/api/v1/kyc/beneficial-owner/${this.id}`,
         this.payload
       );
-      if(response.success){
-        window.notify({ msg: "Beneficial owner added successfully", status: "success" });
-          this.done();
+      if (response.success) {
+        window.notify({
+          msg: "Beneficial owner added successfully",
+          status: "success",
+        });
+        this.done();
       }
     } catch (error) {
       window.notify({ msg: "Beneficial owner not added", status: "error" });
     }
   }
-  
+
   async updateDirector() {
     const url = `/api/v1/kyc/beneficial-owner/${this.ownerId}`;
     const payload = { ...this.payload };
@@ -174,7 +191,10 @@ export default class benficialOwner extends Vue {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         this.done();
-        window.notify({ msg: "Beneficial owner updated succesffuly", status: "success" });
+        window.notify({
+          msg: "Beneficial owner updated succesffuly",
+          status: "success",
+        });
       }
     } catch (error) {
       window.notify({ msg: "Beneficial owner not updated", status: "error" });
@@ -182,15 +202,13 @@ export default class benficialOwner extends Vue {
   }
 
   async updateDirectorData() {
-   this.$emit('ownerAdded',this.payload);
+    this.$emit("ownerAdded", this.payload);
   }
- 
+
   done() {
     this.$emit("setOwner");
     this.show = false;
   }
-
-
 
   // onSave() {
   //   if (!this.owner.name) return false;
@@ -200,16 +218,16 @@ export default class benficialOwner extends Vue {
   // }
 
   closeModal() {
-   this.show = false;
+    this.show = false;
   }
 }
 </script>
 <style scoped>
-.spanclass{
-    display: flex;
-    justify-content: center;
-    margin-left: 40px;
-    height: 2.65rem;
-    padding: 10px;
+.spanclass {
+  display: flex;
+  justify-content: center;
+  margin-left: 40px;
+  height: 2.65rem;
+  padding: 10px;
 }
 </style>

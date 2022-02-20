@@ -72,7 +72,11 @@
       </div>
 
       <div class="w-full my-6">
-        <director-sections @director-added="directorAdded"  :id="orgkycId" :directors="particularOfDirectors" />
+        <director-sections
+          @director-added="directorAdded"
+          :id="orgkycId"
+          :directors="particularOfDirectors"
+        />
       </div>
 
       <div class="w-full my-6">
@@ -151,34 +155,41 @@
       </div>
 
       <div class="w-full my-6" v-if="practiceRegister == true">
-        <owner-section :owners="orgKyc.beneficialOwners" :id="orgkycId"  @owner-added="setOwner" @ownerAdded="ownerAdded"/>
-      </div> 
+        <owner-section
+          :owners="orgKyc.beneficialOwners"
+          :id="orgkycId"
+          @owner-added="setOwner"
+          @ownerAdded="ownerAdded"
+        />
+      </div>
 
-       <div class="w-full my-6">
-         <refree-section :refrees="orgKyc.referees" :id="orgkycId"  @refree-added="refreeadded"/>
-        </div>
-        <div class="w-full py-10 flex justify-end">
-          <cornie-button
-            @click.prevent="() => $router.go(-1)"
-            class="rounded mr-3 px-8 font-semibold cursor-pointer py-1"
-            style="border: 1px solid #080056; color: #080056"
-          >
-            Cancel
-          </cornie-button>
+      <div class="w-full my-6">
+        <refree-section
+          :refrees="orgKyc.referees"
+          :id="orgkycId"
+          @refree-added="refreeadded"
+        />
+      </div>
+      <div class="w-full py-10 flex justify-end">
+        <cornie-button
+          @click.prevent="() => $router.go(-1)"
+          class="rounded mr-3 px-8 font-semibold cursor-pointer py-1"
+          style="border: 1px solid #080056; color: #080056"
+        >
+          Cancel
+        </cornie-button>
 
-          <cornie-button
-            @click="submit"
-            :loading="loading"
-            class="rounded px-8 font-semibold cursor-pointer py-1 text-white"
-            style="background: #fe4d3c"
-          >
-            Save
-          </cornie-button>
-        </div>
-
+        <cornie-button
+          @click="submit"
+          :loading="loading"
+          class="rounded px-8 font-semibold cursor-pointer py-1 text-white"
+          style="background: #fe4d3c"
+        >
+          Save
+        </cornie-button>
       </div>
     </div>
-  
+  </div>
 </template>
 
 <script lang="ts">
@@ -210,10 +221,10 @@ import { string, date } from "yup";
 import { createDate } from "@/plugins/utils";
 import DirectorSections from "./components/directorSection.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import OwnerSection from './components/ownerSection.vue';
-import RefreeSection from './components/refreesection.vue';
+import OwnerSection from "./components/ownerSection.vue";
+import RefreeSection from "./components/refreesection.vue";
 import IDirector from "@/types/IDirector";
-import IOwner from "@/types/IOwner"
+import IOwner from "@/types/IOwner";
 
 const kyc = namespace("kyc");
 
@@ -262,6 +273,7 @@ export default class KYC extends Vue {
   dialCode = "+234";
   allCountries = [];
   allStates = [];
+
   setup() {
     const { url, placeholder, onChange } = useHandleImage();
     return { img: reactive({ url, placeholder, onChange }) };
@@ -269,7 +281,7 @@ export default class KYC extends Vue {
 
   nominees = [] as any[];
 
- owners =[] as any[];
+  owners = [] as any[];
 
   nationState = setup(() => useCountryStates());
   practiceRegister = true;
@@ -287,9 +299,9 @@ export default class KYC extends Vue {
   apartment = "";
   phoneNumber = "";
   proofOfAddressUpload = setup(() => useHandleImage()) as any;
-  particularOfDirectors = [] as  IDirector[];
+  particularOfDirectors = [] as IDirector[];
   newDirectors: any = this.particularOfDirectors;
-  beneficialOwners = [] as  IOwner[];
+  beneficialOwners = [] as IOwner[];
   newbeneficialOwners: any = [this.beneficialOwners];
   referees = [] as IKycref[];
   newreferees = [] as any;
@@ -327,8 +339,6 @@ export default class KYC extends Vue {
     this.setKyc();
   }
 
- 
- 
   async setKyc() {
     const kyc = this.orgKyc;
     if (!kyc) return;
@@ -386,31 +396,29 @@ export default class KYC extends Vue {
     this.proofOfAddressUpload = fileUrl;
   }
 
-
-  sendIndex(index:number){
-    this.fileIndex = index
+  sendIndex(index: number) {
+    this.fileIndex = index;
   }
   addrssProofUploaded(fileUrl: string) {
     this.data.proofOfAddressUpload = fileUrl;
   }
- async directorAdded(){
-   await this.fetchKycs();
+  async directorAdded() {
+    await this.fetchKycs();
     this.addDirectors([this.addDirectors] as any);
-
-}
-  
+  }
 
   async refNominated(data: any) {
     this.referees = data;
     this.newreferees = data;
     this.nominees?.push(data);
   }
-  async setOwner(){
-         this.addOwners([this.addOwners] as any);
-        await this.fetchKycs();
+
+  async setOwner() {
+    this.addOwners([this.addOwners] as any);
+    await this.fetchKycs();
   }
 
-newowner = [] as any;
+  newowner = [] as any;
   ownerAdded(data: any) {
     this.beneficialOwners = data;
     this.newowner.push(this.beneficialOwners);
@@ -421,10 +429,10 @@ newowner = [] as any;
     this.nominateRefree = false;
     // console.log(this.orgKyc.referees);
   }
-  refree(value:any){
+  refree(value: any) {
     this.referees = [value];
   }
-async submit() {
+  async submit() {
     this.loading = true;
     if (this.orgkycId) await this.updateKYC();
     else await this.createKYC();
@@ -433,16 +441,13 @@ async submit() {
 
   async createKYC() {
     this.payload.country = this.nationState.country;
-    // this.payload.particularOfDirectors.phoneNumber.number = this.phone; 
-    // this.payload.particularOfDirectors.phoneNumber.dialCode = this.dialCode; 
-   // this.payload.particularOfDirectors.uploadedIdentificationDocument = this.uploadedIdentificationDocument;
-   // this.payload.particularOfDirectors.uploadedPracticeLicenseDocument = this.uploadedPracticeLicenseDocument;
+    // this.payload.particularOfDirectors.phoneNumber.number = this.phone;
+    // this.payload.particularOfDirectors.phoneNumber.dialCode = this.dialCode;
+    // this.payload.particularOfDirectors.uploadedIdentificationDocument = this.uploadedIdentificationDocument;
+    // this.payload.particularOfDirectors.uploadedPracticeLicenseDocument = this.uploadedPracticeLicenseDocument;
 
     try {
-      const { data } = await cornieClient().post(
-        "/api/v1/kyc",
-        this.payload
-      );
+      const { data } = await cornieClient().post("/api/v1/kyc", this.payload);
       window.notify({ msg: "KYC created successfully", status: "success" });
     } catch (error) {
       window.notify({ msg: "KYC creation failed", status: "error" });
@@ -452,8 +457,8 @@ async submit() {
     const url = `/api/v1/kyc/${this.orgkycId}`;
     const payload = {
       ...this.payload,
-      id:this.orgkycId,
-      particularOfDirectors: this.particularOfDirectors
+      id: this.orgkycId,
+      particularOfDirectors: this.particularOfDirectors,
     };
     try {
       const response = await cornieClient().put(url, payload);
@@ -472,9 +477,6 @@ async submit() {
     }
   }
 
-
-
-
   get allCountry() {
     if (!this.allCountries || this.allCountries.length === 0) return [];
     return this.allCountries.map((i: any) => {
@@ -484,7 +486,6 @@ async submit() {
       };
     });
   }
-
 
   async created() {
     //  await this.getKYCData();
