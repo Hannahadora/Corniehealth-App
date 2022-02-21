@@ -16,36 +16,37 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import IPractitioner from "@/types/IPractitioner";
+import ISpecial from "@/types/ISpecial";
 import { namespace } from "vuex-class";
 import SpecialEmptyState from "./emptyState.vue";
 import SpecialExistingState from "./existingState.vue";
+import IPractitioner from "@/types/IPractitioner";
 
-const practitioner = namespace("practitioner");
+const special = namespace("special");
 
 @Options({
-  name: "PractitionerIndex",
+  name: "SpecialIndex",
   components: {
     SpecialExistingState,
     SpecialEmptyState,
   },
 })
 export default class SpecialIndex extends Vue {
-  addPractitioner = false;
-  practitionerToUpdate = {} as IPractitioner;
+
+  practitionerToUpdate = {} as ISpecial;
 
   get empty() {
-    return this.practitioners.length < 1;
+    return this.specials.length < 1;
   }
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  @special.State
+  specials!: ISpecial[];
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
 
-  created() {
-    this.fetchPractitioners();
+   created() {
+     this.fetchSpecials();
   }
 }
 </script>

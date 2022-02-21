@@ -5,7 +5,7 @@
       :name="inputName"
       v-slot="{ meta, handleChange, errorMessage }"
       :rules="rules"
-      v-model="myValue"
+     v-model="modelValueSync"
       v-bind="$attrs"
     >
       <MultiSelect
@@ -19,7 +19,7 @@
             : '#35BA83',
         }"
         @update:modelValue="handleChange"
-        v-model="myValue"
+         v-model="modelValueSync"
         :options="items"
         :optionLabel="optionLabel"
         :placeholder="placeholder"
@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import MultiSelect from "primevue/multiselect";
-import { Prop } from "vue-property-decorator";
+import { Prop, PropSync } from "vue-property-decorator";
 import { Field } from "vee-validate";
 
 @Options({
@@ -46,6 +46,12 @@ import { Field } from "vee-validate";
 })
 export default class MySelect extends Vue {
   myValue = "";
+
+  @Prop({ type: String, default: "" })
+  modelValue!: string;
+
+  @PropSync("modelValue")
+  modelValueSync!: string;
 
   @Prop({ type: String, default: "" })
   label!: any;
@@ -60,7 +66,7 @@ export default class MySelect extends Vue {
   name!: any;
 
   @Prop({ type: Array, default: [] })
-  items!: any;
+  items!: any[];
 
   @Prop()
   rules!: any;

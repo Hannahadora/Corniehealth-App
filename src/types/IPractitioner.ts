@@ -1,6 +1,7 @@
 import ILocation from "./ILocation";
 import Period from "./IPeriod";
 import User from "./user";
+import ICatalogueService from "./ICatalogue";
 
 export interface PractitionerLocationRole {
   ids: string[];
@@ -45,6 +46,26 @@ export default interface IPractitioner {
   period: Period;
   locationRoles?: PractitionerLocationRole[];
   identifier: string;
+  services: ICatalogueService[];
+  nationality: string;
+  country: string;
+  state: string;
+  city: string;
+  postCode: string;
+  aptNumber: string;
+  specialties: string[];
+  practiceDuration: {
+    value: number,
+    unit: string
+  };
+  consultationRate: {
+    value: number,
+    unit: string
+  };
+  graduationYear: string;
+  licenseIssuer: string;
+  licensePeriod: Period;
+
 }
 
 export interface HoursOfOperation {

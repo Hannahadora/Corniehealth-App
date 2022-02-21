@@ -159,13 +159,13 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     const practitioners = this.practitioners.map((practitioner) => {
-      const opHours = this.stringifyOperationHours(
-        practitioner.hoursOfOperation
-      );
+      // const opHours = this.stringifyOperationHours(
+      //   practitioner?.hoursOfOperation
+      // );
       return {
         ...practitioner,
         action: practitioner.id,
-        hoursOfOperation: opHours,
+        //hoursOfOperation: opHours,
         name: `${practitioner.firstName} ${practitioner.lastName}`,
       };
     });

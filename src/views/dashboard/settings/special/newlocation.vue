@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           New Specialty
+           New Location
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -18,57 +18,57 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="border-b-2 w-full border-dashed pb-2 mb-5 border-gray-300">
-                <span class="text-dark text-sm font-medium">Enter director’s details</span>
+             <div class="border-b-2 w-full border-dashed pb-2 mb-7 border-gray-300">
+                <div class="">
+                 <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
+                    <icon-input
+                    autocomplete="off"
+                    class="border border-gray-600 rounded-full focus:outline-none"
+                    type="search"
+                    placeholder="Search"
+                    v-model="query"
+                    >
+                    <template v-slot:prepend>
+                        <search-icon />
+                    </template>
+                    </icon-input>
+                 </span>
+                <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']" 
+                    class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj" style="width:96%">
+                        <div class="flex flex-col w-full p-2">
+                            <div v-for="(item, i) in filteredItems"
+                                :key="i"
+                                @click="selected(item)"
+                                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                                <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
+                                    {{ item?.name   || item }}
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="filteredItems.length === 0">
+                             <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
+                        </div>
+                  </div>
+                </div>
             </div>
-                 <div>
+            <div>
                 <span class="text-sm font-semibold mb-1">Account</span>
                 <Multiselect
-                   v-model="name"
-                 mode="multiple"
-                  name="object_true" :native="false" :object="true"
+                  v-model="aLocation"
+                  mode="tags"
+                  :hide-selected="false"
+                  id="field-id"
                   :searchable = true
-                  :options="[
-                    { name : 'Adult mental illness', status:'active'},
-                    {name : 'Anesthetics', status:'active'},
-                    {name : 'Audiological medicine', status:'active'},
-                    {name : 'Blood banking and transfusion medicine', status:'active'},
-                    {name : 'Burns care', status:'active'},
-                    {name : 'Cardiology', status:'active'},
-                    {name : 'Clinical cytogenetics and molecular genetics', status:'active'},
-                    {name : 'Clinical genetics', status:'active'},
-                    {name : 'Clinical hematology', status:'active'},
-                    {name : 'Clinical immunology', status:'active'},
-                    {name : 'Clinical microbiology', status:'active'},
-                    {name : 'Clinical neuro-physiology', status:'active'},
-                    {name : 'Clinical oncology', status:'active'},
-                    {name : 'Clinical pharmacology', status:'active'},
-                    {name : 'Clinical physiology', status:'active'},
-                    {name : 'Community medicine', status:'active'},
-                    {name : 'Critical care medicine', status:'active'},
-                    {name : 'Dental medicine specialties', status:'active'},
-                    {name : 'Dental-General dental practice', status:'active'},
-                    {name : 'Dermatology', status:'active'},
-                    {name : 'Diabetic medicine', status:'active'},
-                    {name : 'Dive medicine', status:'active'},
-                    {name : 'Endocrinology', status:'active'},
-                    {name : 'Family practice', status:'active'},
-                    {name : 'Gastroenterology', status:'active'},
-                    {name : 'General medical practice', status:'active'},
-
-                  
-                  ]"
-                  :clear-on-select="false"
-                  label-prop="name"
-                  value-prop="name"
-                  trackBy="name"
-                  label="name"
+                  :options="allLocations"
+                   value-prop="code"
+                  trackBy="code"
+                  label="code"
                   placeholder="--Select--"
                   class="w-full"
                 >
                   <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
-                      {{ option.name }}
+                      {{ option.display }}
                       <span
                         v-if="!disabled"
                         class="multiselect-tag-remove"
@@ -79,49 +79,12 @@
                     </div>
                   </template>
                   <template v-slot:option="{ option }">
-                        <select-option  :value="option.name" :label="option.name" />
-                    <!-- <span class="w-full text-sm">{{ option.display }}</span> -->
+                    <select-option :value="option.display" :label="option.display"/>
                   </template>
                 </Multiselect>
-            </div>
-            <div class="border-b-2 pb-5 border-dashed border-gray-200">
-
-                <div class="grid grid-cols-2 gap-4 mt-3">
-                <div
-                class="flex space-x-4 w-auto bg-primary rounded-full text-white py-2 px-4"
-                v-for="(item, index) in name"
-                :key="index"
-                >
-                <span class="text-xs w-full justify-between">{{ item.name }}</span>
-                <close-icon
-                        class="cursor-pointer"
-                        @click="removearray(index)"
-                    />
-                </div>
-                </div>
-            </div>
-            <!-- <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
-                    class="w-full"
-                    v-model="name"
-                    @onchange="addArray"
-                    label="Specialty"
-                    placeholder="--Select--"
-                /> -->
-              
-                    <!-- <div
-                    class="inline space-x-4 bg-primary rounded-full text-white "
-                    v-for="(item, index) in specialarray"
-                    :key="index"
-                    >
-                    <span class="text-xs w-full text-center">{{ item }}</span>
-                    <close-icon
-                        class="mt-1 cursor-pointer"
-                        @click="removearray(index)"
-                    />
-                    </div> -->
-              
-      
+              </div>
+          
+       
         </v-form>
       </cornie-card-text>
       
@@ -152,6 +115,7 @@
 import { Options, Vue, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieCard from "@/components/cornie-card";
+import { nextTick } from "vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
@@ -163,57 +127,111 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import CloseIcon from "@/components/icons/whitecancel.vue";
 import { namespace } from "vuex-class";
 import Multiselect from "@vueform/multiselect";
+import AutoComplete from "@/components/singleSearch.vue";
 import CornieSelect from "@/components/cornieselect.vue";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import ISpecial from "@/types/ISpecial";
-import FhirInput from "@/components/fhir-input.vue";
+import Avatar from "@/components/avatar.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
+import search from "@/plugins/search";
 
+const location = namespace("location");
 const special = namespace("special");
-const dropdown = namespace("dropdown");
+
+type Sorter = (a: any, b: any) => number;
+
+
+function defaultFilter(item: any, query: string) {
+  return search.searchObject(item, query);
+}
 
 @Options({
-  name: "specialModal",
+  name: "newLocation",
   components: {
     ...CornieCard,
     CornieIconBtn,
+    AutoComplete,
     ArrowLeftIcon,
     Multiselect,
-    FhirInput,
+    CancelIcon,
     CornieDialog,
+    Avatar,
     SearchIcon,
+    DeleteIcon,
     IconInput,
     CornieBtn,
-    CancelIcon,
-    SelectOption,
     CornieSelect,
-    CloseIcon
+    CloseIcon,
+    SelectOption
   },
 })
-export default class SpecialModal extends Vue {
+export default class newLocation extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: String, default: "" })
-  directorId!: string;
+   @Prop({ type: String, default: "" })
+  specilatyId!: string;
+
+  @Prop({ type: Function, default: defaultFilter })
+  filter!: (item: any, query: string) => boolean;
 
 
   loading = false;
-  specialarray = [] as any;
-  name = [];
+  showPractitionerModal = false;
+  showDatalist = false;
 
- @dropdown.Action
-  getDropdowns!: (key: string) => Promise<IIndexableObject>;
+  query = "";
+  aLocation = [];
 
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  
   @special.State
-  specialsNames!: ISpecial[];
+  specials!: ISpecial[];
 
   @special.Action
-  fetchSpecialNames!: () => Promise<void>;
+  fetchSpecials!: () => Promise<void>;
 
-dropdownData = {} as IIndexableObject;
+
+  orderBy: Sorter = () => 1;
+
+
+  get allLocations() {
+    return this.locations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+
+  
+  get filteredItems() {
+    return this.locations
+      .filter((item: any) => this.filter(item, this.query))
+      .sort(this.orderBy);
+  }
+
+//  selected(item: any) {
+//     nextTick(() => {
+//       this.showDatalist = false;
+//       this.modelValueSync = item.code || item;
+//     });
+//   }
+  
+   get payload() {
+    return {
+        locations: this.aLocation,
+    };
+  }
 
 
    async apply() {
@@ -221,61 +239,45 @@ dropdownData = {} as IIndexableObject;
      await this.save();
     this.loading = false;
   }
-   get spaciallItems() {
-    return {
-      text: this.name,
-    };
-  }
-   addArray() {
-       console.log("hello")
-      this.specialarray.push(this.name);
-    }
-
-   removearray(index: number) {
-    this.name.splice(index, 1);
-  }
-
-
-  get payload() {
-    return this.name;
-  }
-
-  get newaction() {
-    return this.id ? "Update" : "Add";
-  }
-
- 
- 
-  async save() {
+  
+    async save() {
       try {
       const response = await cornieClient().post(
-        '/api/v1/specialty/',
+        `/api/v1/specialty/location/${this.specilatyId}`,
         this.payload
       );
       if(response.success){
           this.done();
-        window.notify({ msg: "Speciality saved successfully", status: "success" });
+        window.notify({ msg: "Location saved successfully", status: "success" });
       }
     } catch (error) {
-      window.notify({ msg: "Speciality not saved", status: "error" });
+      window.notify({ msg: "Location not saved", status: "error" });
     }
   }
   
-
  
-  done() {
-    this.$emit("special-added");
-    this.show = false;
+ 
+ async specialadded(){
+     await this.fetchSpecials();
   }
 
 
-  async created() {
-    await this.fetchSpecialNames();
+done() {
+    this.$emit("location-added");
+    this.show = false;
+  }
+
+  created() {
+    this.fetchSpecials();
+    this.fetchLocations();
   }
 }
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style>
+.dflex {
+  display: -webkit-box;
+}
 .multiselect-option.is-selected {
   background: #fe4d3c;
   color: var(--ms-option-color-selected, #fff);

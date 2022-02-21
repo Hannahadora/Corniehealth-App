@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Manage Practitioners
+          Manage Locations
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -18,38 +18,22 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full mb-5">
-                <span class="cursor-pointer float-right rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-end" @click="showPractitionerModal = true">
-                    <span class="text-lg mr-4 -mt-1.5">+</span> New Practitioner
+            <div class="w-full">
+                <span class="cursor-pointer float-right rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-end" @click="showLocationModal = true">
+                    <span class="text-lg mr-4 -mt-1.5">+</span>New Location
                 </span>
             </div>
 
-                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.practitioners" :key="index">
-                    
-                    <div class="w-full dflex space-x-4 mb-3">
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.locations" :key="index">
+                    <div class="w-full dflex mb-3">
                         <div class="w-10 h-10">
-                            <avatar
-                                class="mr-2"
-                                v-if="item.image"
-                                :src="item.image"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
+                            <house-icon/>
                         </div>
-                        <div class="w-full">
-                            <p class="text-xs text-dark font-medium">
-                                {{ item.firstName }}
-                                {{ item.lastName }}
-                            </p>
-                            <p class="text-xs text-gray-500 font-meduim">
-                            {{ item.jobDesignation }}
-                            {{ item.department }}
-                        </p>
-                        </div>
+                        <span>{{ item.name}}</span>
                     </div>
                     <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)"/>
                 </div>
-         
-          
+        
        
         </v-form>
       </cornie-card-text>
@@ -73,9 +57,9 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"   @practitioner-added="specialadded" :specilatyId="specilatyId"/>
 
   </cornie-dialog>
+  <new-location v-model="showLocationModal" @location-added="specialadded" :specilatyId="specilatyId"/>
 </template>
 
 <script lang="ts">
@@ -97,15 +81,14 @@ import CornieSelect from "@/components/cornieselect.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import NewPractitioner from './newpractitioner.vue';
+import NewLocation from './newlocation.vue';
+import HouseIcon from "@/components/house.vue";
 import ISpecial from "@/types/ISpecial";
 
-
-const practitioner = namespace("practitioner");
 const special = namespace("special");
 
 @Options({
-  name: "managePractitioner",
+  name: "manageLocation",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -114,7 +97,8 @@ const special = namespace("special");
     CancelIcon,
     CornieDialog,
     Avatar,
-    NewPractitioner,
+    HouseIcon,
+    NewLocation,
     SearchIcon,
     DeleteIcon,
     IconInput,
@@ -123,90 +107,78 @@ const special = namespace("special");
     CloseIcon
   },
 })
-export default class managePractitioner extends Vue {
+export default class manageLocation extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: String, default: "" })
+@Prop({ type: String, default: "" })
   specilatyId!: string;
+
 
 
   loading = false;
   showPractitionerModal = false;
-    aPractitioner = [];
-
-  @special.Action
-  deleteSpecial!: (id: string) => Promise<boolean>;
+  showLocationModal = false;
 
 
   @special.Action
   getSpecialById!: (id: string) => Promise<ISpecial>;
 
-
   @special.State
-  specials!: ISpecial;
+  specials!: ISpecial[];
 
   @special.Action
   fetchSpecials!: () => Promise<void>;
 
- @practitioner.State
-  practitioners!: IPractitioner[];
-
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
-
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
-
-newspecials = [] as any;
+  newspecials = [] as any;
 
   @Watch("specilatyId")
   idChanged() {
-    this.setPractitioner();
+    this.setLocation();
   }
 
-async setPractitioner() {
-        const practitioner = await this.getSpecialById(this.specilatyId);
-        if (!practitioner) return;
-         this.newspecials = practitioner;
+async setLocation() {
+        const location = await this.getSpecialById(this.specilatyId);
+        if (!location) return;
+         this.newspecials = location;
   }
 
 
-  async specialadded(){
-     await this.fetchSpecials();
-  }
-
-  done() {
-    this.$emit("practitioner-added");
-    this.show = false;
-  }
 
   async deleteItem(value:string) {
        const confirmed = await window.confirmAction({
-          message: "You are about to delete this Practitioner",
+          message: "You are about to delete this Location",
         });
         if (!confirmed) return;
       try {
       const response = await cornieClient().delete(
-        `/api/v1/specialty/practitioner/${this.specilatyId}`,
-        {practitioners: [value]}
+        `/api/v1/specialty/location/${this.specilatyId}`,
+        {locations: [value]}
       );
       if(response.success){
           this.done();
-        window.notify({ msg: "Practitioner deleted successfully", status: "success" });
+        window.notify({ msg: "Location deleted successfully", status: "success" });
       }
     } catch (error) {
-      window.notify({ msg: "Practitioner not deleted", status: "error" });
+      window.notify({ msg: "Location not deleted", status: "error" });
     }
+  }
+   async specialadded(){
+     await this.fetchSpecials();
+  }
+
+ 
+ done() {
+    this.$emit("location-added");
+    this.show = false;
   }
 
   async created() {
-    await this.setPractitioner();
-    this.fetchPractitioners();
-    this.fetchSpecials();
+    await this.setLocation();
+    await this.fetchSpecials();
   }
 }
 </script>
