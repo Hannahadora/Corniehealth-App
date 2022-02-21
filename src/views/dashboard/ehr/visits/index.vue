@@ -254,7 +254,6 @@
 import { Options, Vue } from "vue-class-component";
 
 import Actors from "@/views/dashboard/schedules/components/actors.vue";
-// import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";

@@ -176,7 +176,6 @@ import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -219,19 +218,8 @@ const otherrequest = namespace("otherrequest");
 const patients = namespace("patients");
 const userStore = namespace("user");
 
-const emptyOtherrequest: IOtherrequest = {
-  basicInfo: {},
-  requestInfo: {},
-  subject: {},
-  performer: {},
-  forms: {},
-  request: {
-    range: [20, 50],
-  },
-};
 @Options({
   components: {
-    Table,
     CancelIcon,
     SortIcon,
     CalenderIcon,
@@ -288,12 +276,6 @@ export default class ReferralExistingState extends Vue {
   name = [];
   medicationMapper = (code: string) => "";
   priorityMapper = (code: string) => "";
-
-  // @Prop({ type: Array, default: [] })
-  // requests!: IOtherrequest[];
-
-  //  @otherrequest.State
-  // otherrequests!: any[];
 
   @otherrequest.State
   patientrequests!: any[];

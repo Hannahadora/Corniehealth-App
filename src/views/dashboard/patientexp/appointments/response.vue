@@ -149,7 +149,6 @@ import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 //import CardText from "@/components/card-text.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import CornieSelect from "@/components/cornieselect.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -184,7 +183,6 @@ const appointment = namespace("appointment");
 
 @Options({
   components: {
-    Table,
     ResponseChart,
     CornieSelect,
     PatientDetails,

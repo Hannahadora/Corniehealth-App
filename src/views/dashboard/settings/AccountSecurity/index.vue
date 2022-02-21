@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import PasswordPolicy from "./passwordpolicy.vue";
+import PasswordPolicy from "./components/passwordpolicy.vue";
 import Tooltip from "./components/tooltip.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import SecBtn from "./components/sec-button.vue";

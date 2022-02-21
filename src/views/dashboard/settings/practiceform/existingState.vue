@@ -116,7 +116,6 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import AccordionComponent from "@/components/accordion-component.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -153,7 +152,6 @@ const practiceform = namespace("practiceform");
     Select,
     ChevronDownIcon,
     CornieSelect,
-    Table,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
@@ -239,9 +237,11 @@ export default class PracticeformExistingState extends Vue {
       (practiceform as any).updatedAt = new Date(
         (practiceform as any).updatedAt
       ).toLocaleDateString("en-US");
-      const practioner = this.stringifyPractioners(practiceform.createdBy);
+      const practioner = this.stringifyPractioners(
+        practiceform.createdBy as IPractitioner
+      );
       const updatedpractioner = this.stringifyUpdatedPractioners(
-        practiceform.updatedBy
+        practiceform.updatedBy as IPractitioner
       );
       return {
         ...practiceform,
