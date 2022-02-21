@@ -22,8 +22,60 @@
                 <span class="text-dark text-sm font-medium">Select Specialty</span>
             </div>
             <div>
-                <multiple-select :items="['a','b','c']" />
+                <span class="text-sm font-semibold mb-1">Account</span>
+                <Multiselect
+                  v-model="specialties"
+                 mode="multiple"
+                  value="code"
+                  :searchable = true
+                  :options="allSpecials"
+                  :clear-on-select="false"
+                  label-prop="display"
+                  value-prop="code"
+                  trackBy="code"
+                  label="code"
+                  placeholder="--Select--"
+                  class="w-full"
+                >
+                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.display }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                  <template v-slot:option="{ option }">
+                    <select-option  :value="option.display" :label="option.display" />
+                    <!-- <span class="w-full text-sm">{{ option.display }}</span> -->
+                  </template>
+                </Multiselect>
             </div>
+             <div class="w-full -mb-12"  v-for="(item, index) in specialties" :key="index">
+                <accordion-component class="-mb-8" :title="getSpecialityName(item)" :addborder="true" :opened="true">
+                    <div class="w-full mb-8">
+                        <div class="flex justify-center">
+                            <circle-icon/>
+                        </div>
+                        <p class="text-sm text-center font-bold mt-5">Start by adding services you render for {{ getSpecialityName(item) }}</p>
+                        <div class="flex justify-center mt-5">
+                            <span class="text-danger font-semibold text-sm cursor-pointer"  @click="showService(item)">
+                                <span class="text-lg">+</span>  Add services
+                            </span>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-2 gap-4 w-full mt-8 justify-center">
+                       <span v-for="(input, index) in specialservices" :key="index">
+                          <select-option :label="getServiceName(input)" :checked="true"/>
+                       </span>
+                    </div>
+                </accordion-component>
+            </div>
+             
       
         </v-form>
     </cornie-card-text>
@@ -38,7 +90,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="submit"
+            @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Save
@@ -49,6 +101,7 @@
     </cornie-card>
 
   </cornie-dialog>
+  <service-modal v-model="showAService" :name="serviceName" @add-services="addservices"/>
 </template>
 
 <script lang="ts">
@@ -65,12 +118,19 @@ import SearchIcon from "@/components/icons/search.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import CloseIcon from "@/components/icons/whitecancel.vue";
 import { namespace } from "vuex-class";
-import Multiselect from "@vueform/multiselect";
 import CornieSelect from "@/components/cornieselect.vue";
-import MultipleSelect from '@/components/multiselect.vue';
+import Multiselect from "@vueform/multiselect";
+import ILocation from "@/types/ILocation";
+import ISpecial from "@/types/ISpecial";
+import SelectOption from "@/components/custom-checkbox.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import CircleIcon from "@/components/icons/circle.vue";
+import ServiceModal from "./services.vue";
+import ICatalogueService from "@/types/ICatalogue";
 
-
-const kyc = namespace("kyc");
+const catalogue = namespace("catalogues");
+const location = namespace("location");
+const special = namespace("special");
 
 @Options({
   name: "spcialModal",
@@ -78,15 +138,18 @@ const kyc = namespace("kyc");
     ...CornieCard,
     CornieIconBtn,
     ArrowLeftIcon,
-    Multiselect,
     CancelIcon,
-    MultipleSelect,
+    SelectOption,
+    Multiselect,
+    AccordionComponent,
     CornieDialog,
+    CircleIcon,
     SearchIcon,
     IconInput,
     CornieBtn,
     CornieSelect,
-    CloseIcon
+    CloseIcon,
+    ServiceModal
   },
 })
 export default class SpecialModal extends Vue {
@@ -99,13 +162,39 @@ export default class SpecialModal extends Vue {
   @Prop({ type: String, default: "" })
   directorId!: string;
 
+  
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  
+
+ @catalogue.State
+  services!: ICatalogueService[];
+
+  @catalogue.Action
+  getServices!: () => Promise<void>;
+
+
+ specialservices = [] as any;
+
+  @special.State
+  specials!: ISpecial[];
+
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
 
   loading = false;
   specialarray = [] as any;
-  special = "";
+  special = '';
+  showAService = false;
+  specialties = [];
+  serviceName = "";
+  
 
-
-
+  
     fullName = "";
     dateOfBirth  =  "";
     nationality = "";
@@ -126,7 +215,7 @@ export default class SpecialModal extends Vue {
 
    async apply() {
     this.loading = true;
-     await this.saveDirector();
+     await this.saveSpecial();
     this.loading = false;
   }
    get spaciallItems() {
@@ -142,51 +231,48 @@ export default class SpecialModal extends Vue {
      
     }
   }
+
+ async addservices(value:any) {
+    this.$emit("add-another-services", value);
+    this.specialservices = value;
+  }
+  getServiceName(id: string) {
+    const pt = this.services.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+
+   getSpecialityName(id: string) {
+    const pt = this.specials.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+
+
+  showService(value:string){
+      this.showAService = true;
+      this.serviceName =  this.getSpecialityName(value);;
+  }
    removearray(index: number) {
-    this.specialarray.splice(index, 1);
+    this.specialties.splice(index, 1);
   }
-
-
-  get payload() {
-    return {
-      fullName: this.fullName,
-      dateOfBirth: this.dateOfBirth,
-      nationality: this.nationality,
-      emailAddress: this.emailAddress,
-      phoneNumber: this.phoneNumber,
-      taxIdentificationNumber: this.taxIdentificationNumber,
-      identificationDocumentNumber: this.identificationDocumentNumber,
-      practiceLicenseDocument: this.practiceLicenseDocument,
-      practiceLicenseNumber: this.practiceLicenseNumber,
-      practiceLicenseDocumentType: this.practiceLicenseDocumentType,
-      identificationDocumentType: this.identificationDocumentType,
-      identificationDocument: this.identificationDocumentType
-      
-    };
-  }
-
   get newaction() {
     return this.id ? "Update" : "Add";
   }
 
  
  
-  async saveDirector() {
-      try {
-      const response = await cornieClient().post(
-        `/api/v1/kyc/director/${this.id}`,
-        this.payload
-      );
-      if(response.success){
-          this.done();
-        window.notify({ msg: "Director added successfully", status: "success" });
-      }
-    } catch (error) {
-      window.notify({ msg: "Director not added", status: "error" });
-    }
+  async saveSpecial() {
+      this.$emit("send-speicality", this.specialties);
+      this.show = false
   }
   
-
+get allSpecials() {
+    return this.specials.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
  
   done() {
     this.$emit("director-added");
@@ -195,116 +281,11 @@ export default class SpecialModal extends Vue {
 
 
   created() {
+    this.getServices();
+      this.fetchLocations();
+      this.fetchSpecials();
     //this.setImpression();
   }
 }
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
-<style>
-.multiselect-option.is-selected {
-  background: #fe4d3c;
-  color: var(--ms-option-color-selected, #fff);
-}
-.multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
-  color: var(--ms-option-color-selected-pointed, #fff);
-}
-.multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
-}
 
-.multiselect {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  cursor: pointer;
-  outline: none;
-  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-  border-radius: var(--ms-radius, 4px);
-  background: var(--ms-bg, #fff);
-  font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
-}
-
-.multiselect-tags {
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--ms-tag-my, 0.25rem) 0 0;
-  padding-left: var(--ms-py, 0.5rem);
-  align-items: center;
-}
-
-.multiselect-tag.is-user {
-  padding: 5px 12px;
-  border-radius: 22px;
-  background: #080056;
-  margin: 3px 3px 8px;
-  position: relative;
-  left: -10px;
-}
-
-/* .multiselect-clear-icon {
-      -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
-      mask-image: url("/components/icons/chevrondownprimary.vue");
-      background-color: #080056;
-      display: inline-block;
-      transition: .3s;
-  } */
-
-.multiselect-placeholder {
-  font-size: 0.8em;
-  font-weight: 400;
-  font-style: italic;
-  color: #667499;
-}
-
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
-
-.multiselect-tag.is-user img {
-  width: 18px;
-  border-radius: 50%;
-  height: 18px;
-  margin-right: 8px;
-  border: 2px solid #ffffffbf;
-}
-
-.multiselect-tag.is-user i:before {
-  color: #ffffff;
-  border-radius: 50%;
-}
-
-.multiselect-tag-remove {
-  display: flex;
-  align-items: center;
-  /* border: 1px solid #fff;
-    background: #fff; */
-  border-radius: 50%;
-  color: #fff;
-  justify-content: center;
-  padding: 0.77px;
-  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
-}
-</style>

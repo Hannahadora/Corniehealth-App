@@ -19,7 +19,7 @@
       </span>
       <span class="w-full h-full block">
         <div class="w-full h-screen block">
-          <accordion-component title="Basic Info" :opened="true">
+          <accordion-component title="Bio" :opened="true">
             <template v-slot:default>
               <div class="w-full">
                 <span class="flex items-center mt-5 mb-12">
@@ -31,14 +31,16 @@
                     <cornie-radio
                       :checked="true"
                       :label="'General Practitioner'"
-                      :value="true"
+                      :value="'General Practitioner'"
+                      v-model="type"
                       name="practiceRegister"
                     />
                   </div>
                   <div class="ml-4 -mb-2">
                     <cornie-radio
                       :label="'Specialist'"
-                      :value="false"
+                      :value="'Specialist'"
+                       v-model="type"
                       name="practiceRegister"
                     />
                   </div>
@@ -58,14 +60,14 @@
                         :checked="true"
                         v-model="activeState"
                         :label="'Active'"
-                        :value="'Active'"
+                        :value="'active'"
                         name="practiceRegister"
                       />
                     </div>
                     <div class="ml-4 -mb-2">
                       <cornie-radio
                         :checked="true"
-                        :label="'Inactive'"
+                        :label="'inactive'"
                         v-model="activeState"
                         :value="'Inactive'"
                         name="practiceRegister"
@@ -108,223 +110,15 @@
                   placeholder="--Select--"
                   class="w-full"
                 />
-                <phone-input
-                  v-model="phone"
-                  v-model:code="dialCode"
-                  :rules="required"
-                  label="Phone Number"
-                  placeholder="--Enter--"
-                />
-                <cornie-input
-                  :rules="emailRule"
-                  v-model="email"
-                  placeholder="--Enter--"
-                  label="Email"
-                />
                 <date-picker
                   label="Date of Birth"
                   :rules="dobValidator"
                   v-model="dateOfBirth"
                   placeholder="--Select--"
                 />
-                <auto-complete
-                  class="w-full"
-                  v-model="country"
-                  label="Country"
-                  placeholder="Enter"
-                  :rules="requiredString"
-                  :readonly="readonly"
-                  :items="nationState.countries"
-                />
-                <auto-complete
-                  class="w-full"
-                  v-model="state"
-                  label="State or Region"
-                  :items="nationState.states"
-                  placeholder="Enter"
-                  :rules="requiredString"
-                  :readonly="readonly"
-                />
-                <cornie-input
-                  class="w-full"
-                  v-model="city"
-                  label="City"
-                  placeholder="Enter"
-                  :rules="requiredString"
-                  :readonly="readonly"
-                />
-                <cornie-input
-                  class="w-full"
-                  v-model="postCode"
-                  label="Zip or Post Code"
-                  placeholder="Enter"
-                  :rules="requiredString"
-                  :readonly="readonly"
-                />
-                <cornie-input
-                  :rules="required"
-                  v-model="address"
-                  label="Apartment or House Number"
-                  placeholder="--Enter--"
-                />
-                 <cornie-input
-                  :rules="required"
-                  v-model="address"
-                  label="Address"
-                  placeholder="--Enter--"
-                />
-                
-                <cornie-input
-                  :rules="required"
-                  v-model="jobDesignation"
-                  label="Job Designation"
-                  placeholder="--Enter--"
-                />
-                 <cornie-input
-                  :rules="required"
-                  v-model="specialty"
-                  label="Specialty"
-                  placeholder="Add Specialty"
-                  :appendleft="true"
-                >
-                <template v-slot:append>
-                  <add-icon @click="showSpecialModal"/>
-                </template>   
-                </cornie-input>
-                <div class="w-full">
-                  <span class="text-sm font-semibold mb-4">Consultation Rate</span>
-                  <div class="flex space-x-2">
-                    <cornie-input
-                      :rules="required"
-                      v-model="consultationRate"
-                      placeholder="--Enter--"
-                      class="grow"
-                    />
-                    <cornie-select
-                        :items="['Hour']"
-                        placeholder="/ Hour"
-                        class="w-32 mt-0.5 flex-none"
-                        v-model="nationality"
-                        :setPrimary="true"
-                    />
-                  </div>
-                </div>
-                 <div class="w-full">
-                  <span class="text-sm font-semibold mb-4">Years in Practice</span>
-                  <div class="flex space-x-2">
-                    <cornie-input
-                      :rules="required"
-                      v-model="yearsInPractice"
-                      placeholder="--Enter--"
-                      class="grow"
-                    />
-                    <cornie-select
-                        :items="['Years']"
-                        placeholder="years"
-                        class="w-32 mt-0.5 flex-none"
-                        v-model="years"
-                        :setPrimary="true"
-                    />
-                  </div>
-                </div>
-                 <cornie-select
-                  :items="dropdown.CommunicationLanguage"
-                  v-model="communicationLanguage"
-                  label="Communication"
-                  placeholder="--Select--"
-                  class="w-full"
-                />
-                 <cornie-select
-                  :rules="required"
-                  v-model="consultationChannel"
-                  label="Consultation Channel"
-                  :items="dropdown.ConsultationChannel"
-                  placeholder="--Select--"
-                />
-                <!-- <cornie-input
-                  :rules="required"
-                  v-model="department"
-                  label="Department"
-                  placeholder="--Enter--"
-                /> -->
+
               </div>
-               <div class="w-full">
-                  <span class="font-bold text-sm mb-5 flex space-x-4">
-                    <span> Location(s) & privileges</span> 
-                      <plus class="fill-current text-danger font-bold w-3" @click="addAccessRole = true"/>
-                  </span>
-                  <div class="grid grid-cols-4 gap-4" v-if="id">
-                    <div  v-for="(access, index) in locationRoles" :key="index" class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
-                      <div
-                          class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
-                          >
-                          {{
-                            `${access?.location?.name
-                              .substr(0, 1)
-                              .toUpperCase()}${getRoleName(access.roleId)
-                        .substr(0, 1)
-                        .toUpperCase()}`
-                          }}
-                      </div>
-                      <div>
-                        <div class="text-black text-sm"> {{ access.location.name }} 
-                            <div
-                            class="text-black mr-1"
-                            v-if="access.default">
-                            •
-                          </div>
-                            <span class="text-blue-600 text-xs">  {{ access.default ? "Default" : "" }}</span>
-                            
-                          </div>
-                        <p class="text-xs text-gray-400 mb-1">{{ getRoleName(access.roleId) }}</p>
-                        <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
-                      </div>
-                    </div>
-                  </div>
-                    <div class="grid grid-cols-4 gap-4" v-for="(access, index) in locationRoles" :key="index" v-else>
-                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
-                        <div class="flex">
-                          <div
-                              class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
-                              >
-                              {{
-                              `${access.location
-                                .substr(0, 1)
-                                .toUpperCase()}${access.role
-                                .substr(0, 1)
-                                .toUpperCase()}`
-                            }}
-                          </div>
-                          <div>
-                            <div class="text-black  flex text-sm">
-                              {{ access.location }} 
-                                <div
-                                class="text-black ml-1"
-                                v-if="access.default">
-                                •
-                                </div>
-                                <span class="text-blue-600 ml-1 text-xs">  {{ access.default ? "Default" : "" }}</span>
-                                
-                            </div>
-                            <p class="text-xs text-gray-400 mb-1">{{ getRoleName(access.roleId) }}</p>
-                            <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
-                          </div>
-                        </div>
-                        <div class="flex -mt-6 justify-center items-center">
-                          <button class="border-0 mr-5" type="button">
-                            <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
-                          </button>
-                          <button
-                            class="border-0"
-                            type="button"
-                            @click="deleteRole(access.roleId, access.locationId)"
-                          >
-                            <delete-red />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                </div>
+             
 
               <!-- <div class="flex my-5">
                 <button
@@ -463,13 +257,184 @@
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
+          <accordion-component title="Contact" :opened="false">
+            <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-4 mt-5">
+      
+                <phone-input
+                  v-model="phone"
+                  v-model:code="dialCode"
+                  :rules="required"
+                  label="Phone Number"
+                  placeholder="--Enter--"
+                />
+                <cornie-input
+                  :rules="emailRule"
+                  v-model="email"
+                  placeholder="--Enter--"
+                  label="Email"
+                />
+                <auto-complete
+                  class="w-full"
+                  v-model="country"
+                  label="Country"
+                  placeholder="Enter"
+                  :rules="requiredString"
+                  :readonly="readonly"
+                  :items="nationState.countries"
+                />
+                <auto-complete
+                  class="w-full"
+                  v-model="state"
+                  label="State or Region"
+                  :items="nationState.states"
+                  placeholder="Enter"
+                  :rules="requiredString"
+                  :readonly="readonly"
+                />
+                <cornie-input
+                  class="w-full"
+                  v-model="city"
+                  label="City"
+                  placeholder="Enter"
+                  :rules="requiredString"
+                  :readonly="readonly"
+                />
+                <cornie-input
+                  class="w-full"
+                  v-model="postCode"
+                  label="Zip or Post Code"
+                  placeholder="Enter"
+                  :rules="requiredString"
+                  :readonly="readonly"
+                />
+                <cornie-input
+                  :rules="required"
+                  v-model="aptNumber"
+                  label="Apartment or House Number"
+                  placeholder="--Enter--"
+                />
+                 <cornie-input
+                  :rules="required"
+                  v-model="address"
+                  label="Address"
+                  placeholder="--Enter--"
+                />
+              </div>
+         
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
+            <accordion-component title="Work" :opened="false">
+            <template v-slot:default>
+              <div class="w-full grid grid-cols-3 gap-4 mt-5">
+         
+                <cornie-input
+                  :rules="required"
+                  v-model="jobDesignation"
+                  label="Job Designation"
+                  placeholder="--Enter--"
+                />
+                <div v-if="specialties.length > 0">
+                  <span class="text-sm mb-4 font-semibold">Specialty</span>
+                  <div class="p-2 border-1 h-11 border-gray-300 rounded-lg flex space-x-1">
+                    <div class="flex space-x-2 w-full">
+                      <div v-if="id">
+                        <div v-for="(item, index) in specialties" :key="index">
+                          <span class="text-sm">
+                            {{ item.name}} , 
+                          </span>
+                        </div>
+                      </div>
+                      <div v-else v-for="(item, index) in specialties" :key="index">
+                        <span class="text-sm">
+                          {{ getSpecialityName(item)}} , 
+                        </span>
+                      </div>
+                    </div>
+                    <div class="w-full flex justify-end">
+                      <add-icon @click="showSpecialModal" />
+                    </div>
+                  </div>
+                </div>
+                 <cornie-input
+                 v-else
+                  :rules="required"
+                  v-model="specialties"
+                  label="Specialty"
+                  placeholder="Add Specialty"
+                  :appendleft="true"
+                >
+                <template v-slot:append>
+                  <add-icon @click="showSpecialModal"/>
+                </template>   
+                </cornie-input>
+              
+                <div class="w-full">
+                  <span class="text-sm font-semibold mb-4">Consultation Rate</span>
+                  <div class="flex space-x-2">
+                    <cornie-input
+                      :rules="required"
+                      v-model="consultationRate.value"
+                      placeholder="--Enter--"
+                      class="grow"
+                    />
+                    <cornie-select
+                        :items="['Hour']"
+                        placeholder="/ Hour"
+                        class="w-32 mt-0.5 flex-none"
+                        v-model="consultationRate.unit"
+                        :setPrimary="true"
+                    />
+                  </div>
+                </div>
+                 <div class="w-full">
+                  <span class="text-sm font-semibold mb-4">Years in Practice</span>
+                  <div class="flex space-x-2">
+                    <cornie-input
+                      :rules="required"
+                      v-model="practiceDuration.value"
+                      placeholder="--Enter--"
+                      class="grow"
+                    />
+                    <cornie-select
+                        :items="['Year', 'Month']"
+                        placeholder="years"
+                        class="w-32 mt-0.5 flex-none"
+                        v-model="practiceDuration.unit"
+                        :setPrimary="true"
+                    />
+                  </div>
+                </div>
+                 <cornie-select
+                  :items="dropdown.CommunicationLanguage"
+                  v-model="communicationLanguage"
+                  label="Communication"
+                  placeholder="--Select--"
+                  class="w-full"
+                />
+                 <cornie-select
+                  :rules="required"
+                  v-model="consultationChannel"
+                  label="Consultation Channel"
+                  :items="dropdown.ConsultationChannel"
+                  placeholder="--Select--"
+                />
 
-          <accordion-component title="Education" :opened="true">
+              </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
+          <accordion-component title="Education" :opened="false">
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-4 mt-3">
                 <cornie-input
                   label="Issuer"
-                  v-model="issuer"
+                  v-model="licenseIssuer"
                 />
                 <cornie-select
                   :items="dropdown.Qualification"
@@ -481,7 +446,7 @@
                 <date-picker
                     class="w-full mb-5"
                     label="Year of Graduation"
-                    v-model="graduation"
+                    v-model="graduationYear"
                     :rules="required"
                 />
               </div>
@@ -490,7 +455,7 @@
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
-          <accordion-component title="Board License" :opened="true">
+          <accordion-component title="Board License" :opened="false">
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-4 mt-3">
 
@@ -509,10 +474,124 @@
                 <period-picker
                   label="Period"
                   class="-mt-1.5 w-full"
-                  v-model="period"
+                  v-model="licensePeriod"
                   placeholder="--Select--"
                 />
               </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
+           <accordion-component title="Location(s) & privileges" :opened="false">
+            <template v-slot:default>
+                <div class="w-full mt-5">
+                  <span class="font-bold text-sm mb-5 flex space-x-4">
+                    <span class="text-danger font-bold"> Location(s) & privileges</span> 
+                      <plus class="fill-current text-danger font-bold w-3" @click="addAccessRole = true"/>
+                  </span>
+                  <div class="grid grid-cols-4 gap-4" v-if="locationRoles.length > 0 && id">
+                    <div  v-for="(access, index) in locationRoles" :key="index">
+                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
+                        <div class="flex space-x-4 mt- pr-5">
+                          <div class="flex">
+                            <div
+                                class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
+                                >
+                                {{
+                                  `${access?.location?.name
+                                    .substr(0, 1)
+                                    .toUpperCase()}${getRoleName(access.roleId)
+                              .substr(0, 1)
+                              .toUpperCase()}`
+                                }}
+                            </div>
+                            <div>
+                              <div class="text-black  flex text-sm"> 
+                                {{ access.location.name }} 
+                                  <div
+                                  class="text-black mr-1"
+                                  v-if="access.default">
+                                  •
+                                    </div>
+                                  <span class="text-blue-600 text-xs">  {{ access.default ? "Default" : "" }}</span>
+                                  
+                                </div>
+                              <p class="text-xs text-gray-400 mb-1">{{ getRoleName(access.roleId) }}</p>
+                              <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
+                            </div>
+                          </div>
+                          <div class="flex -mt-6 justify-center items-center">
+                            <button class="border-0 mr-5" type="button">
+                              <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
+                            </button>
+                            <button
+                              class="border-0"
+                              type="button"
+                              @click="deleteItem(access.locationId)"
+                            >
+                              <delete-red />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                    <div class="grid grid-cols-4 gap-4" v-for="(access, index) in locationRoles" :key="index" v-else>
+                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
+                        <div class="flex">
+                          <div
+                              class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
+                              >
+                              {{
+                              `${access.location
+                                .substr(0, 1)
+                                .toUpperCase()}${access.role
+                                .substr(0, 1)
+                                .toUpperCase()}`
+                            }}
+                          </div>
+                          <div>
+                            <div class="text-black  flex text-sm">
+                              {{ access.location }} 
+                                <div
+                                class="text-black ml-1"
+                                v-if="access.default">
+                                •
+                                </div>
+                                <span class="text-blue-600 ml-1 text-xs">  {{ access.default ? "Default" : "" }}</span>
+                                
+                            </div>
+                            <p class="text-xs text-gray-400 mb-1 capitalize">
+                              {{ access?.days?.mon }}
+                              {{ access?.days?.tue }}
+                              {{ access?.days?.wed }}
+                              {{ access?.days?.thu }}
+                              {{ access?.days?.fri }}
+                              {{ access?.days?.sat }}
+                              {{ access?.days?.sun }}
+
+                            </p>
+                            <p class="text-xs text-gray-400 mb-1">{{ getRoleName(access.roleId) }}</p>
+                            <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
+                          </div>
+                        </div>
+                        <div class="flex -mt-6 justify-center items-center">
+                          <button class="border-0 mr-5" type="button">
+                            <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
+                          </button>
+                          <button
+                            class="border-0"
+                            type="button"
+                            @click="deleteRole(access.roleId, access.locationId)"
+                          >
+                            <delete-red />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
             </template>
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
@@ -539,7 +618,7 @@
       </span>
     </div>
   </div>
-  <speciality-modal v-model="showSpecial"/>
+  <speciality-modal :id="id" v-model="showSpecial" @send-speicality="sendspeicality" @add-another-services="saveservices"/>
 </template>
 <script lang="ts">
 import { Options, setup, Vue } from "vue-class-component";
@@ -572,10 +651,12 @@ import { useCountryStates } from "@/composables/useCountryStates";
 import AutoComplete from "@/components/autocomplete.vue";
 import AddIcon from '@/components/icons/addblue.vue';
 import SpecialityModal from './specialModal.vue';
+import ISpecial from "@/types/ISpecial";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
 const roles = namespace("roles");
+const special = namespace("special");
 
 @Options({
   name: "AddPractitioner",
@@ -632,6 +713,12 @@ export default class AddPractitioner extends Vue {
   @practitioner.Action
   deleteLocationrole!: (id: string) => Promise<boolean>;
 
+  @special.State
+  specials!: ISpecial[];
+
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
+
   loading = false;
 
   dobValidator = date().max(
@@ -650,7 +737,7 @@ nationState = setup(() => useCountryStates());
   address = "";
   dateOfBirth = "";
   jobDesignation = "";
-  department = "";
+  department = "department";
   accessRole = "";
   singleLocation = "";
   nationality = "";
@@ -659,8 +746,6 @@ nationState = setup(() => useCountryStates());
   postCode = "";
   city = "";
   specialty="";
-  consultationRate = 0;
-  yearsInPractice = 0;
   years = 0;
   issuer= "";
   graduation = "";
@@ -670,8 +755,9 @@ nationState = setup(() => useCountryStates());
   qualificationIssuer = "";
   licenseNumber = "";
   type = "";
+  practitionerId= "";
   communicationLanguage = "";
-  availabilityExceptions = "";
+  availabilityExceptions = "availabilityExceptions";
   consultationChannel = "";
   defaultLocation = "";
   hoursOfOperation: HoursOfOperation[] = [];
@@ -691,6 +777,22 @@ nationState = setup(() => useCountryStates());
   roleId = "";
   setRoles = [] as any[];
   deletedRole = {} as object;
+  services = [] as any;
+
+  aptNumber = "";
+
+  specialties = [] as any;
+  practiceDuration = {
+    value: 0,
+    unit: ""
+  };
+  consultationRate = {
+    value: 0,
+    unit: ""
+  };
+  graduationYear = "";
+  licenseIssuer = "";
+  licensePeriod = {} as Period;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -730,6 +832,13 @@ nationState = setup(() => useCountryStates());
       locationId,
     };
   }
+  saveservices(value:any){
+      this.services = value;
+  }
+
+  sendspeicality(value:any){
+    this.specialties = value;
+  }
 
   showSpecialModal(){
     this.showSpecial = true;
@@ -737,6 +846,7 @@ nationState = setup(() => useCountryStates());
   async setPractitioner() {
     const practitioner = await this.getPractitionerById(this.id);
     if (!practitioner) return;
+    this.practitionerId = practitioner.id;
     this.name = `${practitioner.firstName} ${practitioner.lastName}`;
     this.email = practitioner.email;
     this.generatedIdentifier = practitioner.identifier;
@@ -762,6 +872,20 @@ nationState = setup(() => useCountryStates());
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
     this.locationRoles = practitioner.locationRoles;
+    this.services = practitioner.services;
+    this.nationality = practitioner.nationality;
+    this.country = practitioner.country;
+    this.city = practitioner.city;
+    this.postCode = practitioner.postCode;
+    this.aptNumber = practitioner.aptNumber;
+    this.specialties = practitioner.specialties;
+    this.practiceDuration = practitioner.practiceDuration;
+    this.consultationRate = practitioner.consultationRate;
+    this.graduationYear = practitioner.graduationYear;
+    this.licenseIssuer = practitioner.licenseIssuer;
+    this.licensePeriod = practitioner.licensePeriod;
+
+
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -799,6 +923,20 @@ nationState = setup(() => useCountryStates());
       // locations: this.locations,
       // defaultLocation: this.defaultLocation,
      locationRoles: this.accessRoles,
+     services : this.services,
+     nationality : this.nationality,
+     country : this.country,
+     state : this.state,
+     city : this.city,
+     postCode : this.postCode,
+     aptNumber : this.aptNumber,
+     specialties : this.specialties,
+     practiceDuration : this.practiceDuration,
+     consultationRate : this.consultationRate,
+     graduationYear : this.graduationYear,
+    licenseIssuer : this.licenseIssuer,
+    licensePeriod : this.licensePeriod,
+
     };
   }
    get payloadEdit() {
@@ -830,6 +968,19 @@ nationState = setup(() => useCountryStates());
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
       period: this.period,
+      services : this.services,
+     nationality : this.nationality,
+     country : this.country,
+     state : this.state,
+     city : this.city,
+     postCode : this.postCode,
+     aptNumber : this.aptNumber,
+     specialties : this.specialties,
+     practiceDuration : this.practiceDuration,
+     consultationRate : this.consultationRate,
+     graduationYear : this.graduationYear,
+    licenseIssuer : this.licenseIssuer,
+    licensePeriod : this.licensePeriod,
     };
   }
   getRoleName(id: string) {
@@ -894,6 +1045,7 @@ nationState = setup(() => useCountryStates());
       const response = await cornieClient().delete(url, payload);
       if (response.success) {
         window.notify({ msg: "Location role deleted", status: "success" });
+           await this.fetchPractitioners();
        // this.$router.back();
       }
     } catch (error) {
@@ -903,11 +1055,17 @@ nationState = setup(() => useCountryStates());
 
   }
 
+  getSpecialityName(id: string) {
+    const pt = this.specials.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
     this.dropdown = data;
   }
   async created() {
+    this.fetchSpecials();
     this.setPractitioner();
     this.setDropdown();
      await this.fetchPractitioners();

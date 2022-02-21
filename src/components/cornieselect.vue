@@ -85,6 +85,10 @@
                   v-else
                   class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative capitalize"
                 >
+                <!-- <select-option 
+                v-model="item.display"
+                /> -->
+                 
                   {{ item.display || item }}
                 </div>
               </div>
@@ -103,12 +107,14 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import ChevronWhiteIcon from "./icons/chevronwhitedown.vue";
 import { Field } from "vee-validate";
+import SelectOption from "@/components/custom-checkbox.vue";
 
 @Options({
   components: {
     ChevronDownIcon,
     ChevronWhiteIcon,
     Field,
+    SelectOption
   },
 })
 export default class CornieSelect extends Vue {
@@ -135,6 +141,14 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: Boolean, default: false })
   disabled!: boolean;
+
+  
+  @Prop({ type: Boolean, default: false })
+  setCheck!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  addCheck!: boolean;
+
 
   @Prop({ type: String })
   label!: string;

@@ -51,6 +51,7 @@ import AppointmentTypeStore from "./appointments";
 import CanelStore from "./cancel";
 import KycStore from "./kyc";
 import RouterStore from "./routing";
+import SpecialStore from "./special";
 
 import AppointmentRoomStore from "./appointmentroom";
 
@@ -75,6 +76,7 @@ export default createStore({
     healthcare: HealthcareStore,
     careteam: CareteamStore,
     roles: RolesStore,
+    special: SpecialStore,
     group: GroupteamStore,
     OrgLevels,
 

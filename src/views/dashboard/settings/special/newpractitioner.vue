@@ -18,34 +18,71 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full">
-                <button class="float-right rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-end" @click="showPractitionerModal = true">
-                    <span class="text-lg mr-4 -mt-1.5">+</span> New Practitioner
-                </button>
-            </div>
-            <div class="w-full flex space-x-7 mt-4" v-for="(input, index) in practitioners" :key="index">
-                <div class="w-full dflex space-x-4 mb-3">
-                    <div class="w-10 h-10">
-                        <avatar
-                            class="mr-2"
-                            v-if="input.image"
-                            :src="input.image"
-                        />
-                        <avatar class="mr-2" v-else :src="localSrc" />
-                    </div>
-                    <div class="w-full">
-                        <p class="text-xs text-dark font-medium">
-                            {{ input.firstName }}
-                            {{ input.lastName }}
-                        </p>
-                         <p class="text-xs text-gray-500 font-meduim">
-                        {{ input.jobDesignation }}
-                        {{ input.department }}
-                      </p>
-                    </div>
+             <div class="border-b-2 w-full border-dashed pb-2 mb-7 border-gray-300">
+                <div class="">
+                 <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
+                    <icon-input
+                    autocomplete="off"
+                    class="border border-gray-600 rounded-full focus:outline-none"
+                    type="search"
+                    placeholder="Search"
+                    v-model="query"
+                    >
+                    <template v-slot:prepend>
+                        <search-icon />
+                    </template>
+                    </icon-input>
+                 </span>
+                  <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']" 
+                 class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj" style="width:96%">
+                        <div class="flex flex-col w-full p-2">
+                            <div v-for="(item, i) in filteredItems"
+                                :key="i"
+                                @click="selected(item)"
+                                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                                <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
+                                    {{ item?.firstName +' '+ item?.lastName   || item }}
+                                    <p class="text-xs text-gray-500">[{{ item?.department }}]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="filteredItems.length === 0">
+                             <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
+                        </div>
+                  </div>
                 </div>
-                <delete-icon class="fill-current text-danger"/>
             </div>
+            <div>
+                <span class="text-sm font-semibold mb-1">Account</span>
+                <Multiselect
+                  v-model="aPractitioner"
+                  mode="tags"
+                  :hide-selected="false"
+                  id="field-id"
+                  :options="allPractitioners"
+                  value-prop="code"
+                  trackBy="code"
+                  label="code"
+                  placeholder="--Select--"
+                  class="w-full"
+                >
+                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.display }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                  <template v-slot:option="{ option }">
+                    <select-option :value="option.display" :label="option.display"/>
+                  </template>
+                </Multiselect>
+              </div>
           
        
         </v-form>
@@ -61,7 +98,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="submit"
+            @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Save
@@ -93,9 +130,21 @@ import CornieSelect from "@/components/cornieselect.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
+import SelectOption from "@/components/custom-checkbox.vue";
+import search from "@/plugins/search";
+import ISpecial from "@/types/ISpecial";
 
 
+
+const special = namespace("special");
 const practitioner = namespace("practitioner");
+
+type Sorter = (a: any, b: any) => number;
+
+
+function defaultFilter(item: any, query: string) {
+  return search.searchObject(item, query);
+}
 
 @Options({
   name: "newPractitioner",
@@ -112,7 +161,8 @@ const practitioner = namespace("practitioner");
     IconInput,
     CornieBtn,
     CornieSelect,
-    CloseIcon
+    CloseIcon,
+    SelectOption
   },
 })
 export default class newPractitioner extends Vue {
@@ -123,14 +173,26 @@ export default class newPractitioner extends Vue {
   id!: string;
 
   @Prop({ type: String, default: "" })
-  directorId!: string;
+  specilatyId!: string;
+
+  @Prop({ type: Function, default: defaultFilter })
+  filter!: (item: any, query: string) => boolean;
 
 
   loading = false;
   showPractitionerModal = false;
+  showDatalist = false;
+  aPractitioner = [];
 
  @practitioner.State
   practitioners!: IPractitioner[];
+  query = "";
+
+ @special.State
+  specials!: ISpecial[];
+
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
 
   @practitioner.Action
   deletePractitioner!: (id: string) => Promise<boolean>;
@@ -138,16 +200,58 @@ export default class newPractitioner extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
+  orderBy: Sorter = () => 1;
 
+
+  get allPractitioners() {
+    return this.practitioners.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.firstName +' '+ i.lastName,
+      };
+    });
+  }
 
   
- 
- 
-  
+  get filteredItems() {
+    return this.practitioners
+      .filter((item: any) => this.filter(item, this.query))
+      .sort(this.orderBy);
+  }
 
+ get payload() {
+    return {
+        practitioners: this.aPractitioner,
+    };
+  }
+
+ async apply() {
+    this.loading = true;
+     await this.save();
+    this.loading = false;
+  }
+  
+    async save() {
+      try {
+      const response = await cornieClient().post(
+        `/api/v1/specialty/practitioner/${this.specilatyId}`,
+        this.payload
+      );
+      if(response.success){
+          this.done();
+        window.notify({ msg: "Practitioner saved successfully", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not saved", status: "error" });
+    }
+  }
+  
+ async specialadded(){
+     await this.fetchSpecials();
+  }
  
   done() {
-    this.$emit("director-added");
+    this.$emit("practitioner-added");
     this.show = false;
   }
 
