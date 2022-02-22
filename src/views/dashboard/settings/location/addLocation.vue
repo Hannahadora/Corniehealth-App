@@ -210,8 +210,8 @@
                     :rules="required"
                     required
                     v-model="careOptions"
-                    label="Care Options"
-                    :items="['dental', 'hospice']"
+                    label="Care Channel"
+                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
                     placeholder="--Select--"
                     class="w-full"
                   />

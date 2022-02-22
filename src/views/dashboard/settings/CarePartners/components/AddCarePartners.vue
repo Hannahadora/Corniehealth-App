@@ -63,12 +63,21 @@
               placeholder="--Enter--"
               v-model="name"
             />
-            <cornie-input
+            <!-- <cornie-input
               label="Organisation type"
               class="mb-3"
               required
               placeholder="--Enter--"
               v-model="type"
+            /> -->
+            <cornie-select
+              required
+              :items="orgTypes"
+              placeholder="--Select--"
+              label="Organisation type"
+              class="w-full"
+              v-model="type"
+              :rules="requiredRule"
             />
             <cornie-input
               label="address"
@@ -139,10 +148,12 @@ import SearchIcon from "@/components/icons/search.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import ICarePartner from "@/types/ICarePartner";
 import AddedCarePartner from "./AddedCarePartners.vue";
+import CornieSelect from "@/components/cornieselect.vue";
 
 import { namespace } from "vuex-class";
 import IPhone from "@/types/IPhone";
 import IEmail from "@/types/IEmail";
+import { cornieClient } from "@/plugins/http";
 
 const carePartners = namespace("CarePartnersStore");
 const dropdown = namespace("dropdown");
@@ -161,6 +172,7 @@ const dropdown = namespace("dropdown");
     PhoneInput,
     CloseIcon,
     AddedCarePartner,
+    CornieSelect,
   },
   emits: ["close-add-care-partner", "open-add-care-partner"],
 })
@@ -188,7 +200,7 @@ export default class AddCarePartner extends Vue {
 
   @carePartners.Action
   search!: (payload: { q: string }) => Promise<ICarePartner[]>;
-
+  orgTypes = [];
   searchString = "" as string;
   index = "" as any;
   id = "" as string | undefined;
@@ -412,7 +424,17 @@ export default class AddCarePartner extends Vue {
     }
   }
 
+  async fetchDropDown() {
+    const orgType = cornieClient().get(
+      "/api/v1/organization/getOrganisationType"
+    );
+
+    const response = await Promise.all([orgType]);
+    this.orgTypes = response[0].data;
+  }
+
   async created() {
+    await this.fetchDropDown();
     if (!this.carePartners.length) await this.fetchPartners();
   }
 }
