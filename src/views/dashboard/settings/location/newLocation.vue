@@ -151,7 +151,7 @@ export default {
     } catch (error) {}
   },
   Watch: {
-    coordinatesCB(cb) {
+    async coordinatesCB(cb) {
       const data = await cb();
       this.longitude = String(data.longitude);
       this.latitude = String(data.latitude);
