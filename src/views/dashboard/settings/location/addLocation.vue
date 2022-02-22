@@ -248,7 +248,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/location-operation-hours.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
