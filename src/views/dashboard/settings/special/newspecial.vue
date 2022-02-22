@@ -22,7 +22,7 @@
                 <span class="text-dark text-sm font-medium">Enter director’s details</span>
             </div>
                  <div>
-                <span class="text-sm font-semibold mb-1">Account</span>
+                <span class="text-sm font-semibold mb-1">Specialty</span>
                 <Multiselect
                    v-model="name"
                  mode="multiple"
