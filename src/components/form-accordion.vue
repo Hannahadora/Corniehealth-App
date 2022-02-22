@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white p-3 mb-2 mt-5 w-full cursor-pointer" :class="{'shadow-md':!addborder}">
+  <div class="rounded-lg bg-white p-3 mb-2 mt-5 w-full cursor-pointer" :class="{'shadow-md':!addborder}">
     <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div
