@@ -29,7 +29,6 @@
                <div class="w-full flex flex-wrap items-center py-5">
                   <div class="-mb-2">
                     <cornie-radio
-                      :checked="true"
                       :label="'General Practitioner'"
                       :value="'General Practitioner'"
                       v-model="type"
@@ -57,7 +56,6 @@
                   <div class="w-full flex flex-wrap items-center py-5">
                     <div class="-mb-2">
                       <cornie-radio
-                        :checked="true"
                         v-model="activeState"
                         :label="'Active'"
                         :value="'active'"
@@ -66,10 +64,9 @@
                     </div>
                     <div class="ml-4 -mb-2">
                       <cornie-radio
-                        :checked="true"
-                        :label="'inactive'"
+                        :label="'Inactive'"
                         v-model="activeState"
-                        :value="'Inactive'"
+                        :value="'inactive'"
                         name="practiceRegister"
                       />
                     </div>
@@ -88,10 +85,12 @@
                   label="Type"
                   placeholder="Not editable"
                   :disabled="true"
+                  :required="true"
                 />
                 <cornie-input
                   :rules="required"
                   v-model="name"
+                    :required="true"
                   label="Name (First and Last)"
                   placeholder="--Enter--"
                 />
@@ -100,6 +99,7 @@
                       :items="nationState.countries"
                       placeholder="--Select--"
                       class="w-full"
+                      :required="true"
                       v-model="nationality"
                   />
                 <cornie-select
@@ -107,6 +107,7 @@
                   :items="['male', 'female', 'other']"
                   v-model="gender"
                   label="Gender"
+                  :required="true"
                   placeholder="--Select--"
                   class="w-full"
                 />
@@ -114,6 +115,7 @@
                   label="Date of Birth"
                   :rules="dobValidator"
                   v-model="dateOfBirth"
+                  :required="true"
                   placeholder="--Select--"
                 />
 
@@ -265,37 +267,40 @@
                   v-model="phone"
                   v-model:code="dialCode"
                   :rules="required"
+                  :required="true"
                   label="Phone Number"
                   placeholder="--Enter--"
                 />
                 <cornie-input
                   :rules="emailRule"
                   v-model="email"
+                    :required="true"
                   placeholder="--Enter--"
                   label="Email"
                 />
-                <auto-complete
-                  class="w-full"
-                  v-model="country"
-                  label="Country"
-                  placeholder="Enter"
-                  :rules="requiredString"
-                  :readonly="readonly"
-                  :items="nationState.countries"
-                />
-                <auto-complete
-                  class="w-full"
-                  v-model="state"
-                  label="State or Region"
-                  :items="nationState.states"
-                  placeholder="Enter"
-                  :rules="requiredString"
-                  :readonly="readonly"
-                />
+                  <auto-complete
+                    class="w-full"
+                    v-model="country"
+                    label="Country"
+                    placeholder="Enter"
+                    :rules="requiredString"
+                    :readonly="readonly"
+                    :items="nationState.countries"
+                  />
+                  <auto-complete
+                    class="w-full"
+                    v-model="state"
+                    label="State"
+                    :items="nationState.states"
+                    placeholder="Enter"
+                    :rules="requiredString"
+                    :readonly="readonly"
+                  />
                 <cornie-input
                   class="w-full"
                   v-model="city"
                   label="City"
+                    :required="true"
                   placeholder="Enter"
                   :rules="requiredString"
                   :readonly="readonly"
@@ -305,6 +310,7 @@
                   v-model="postCode"
                   label="Zip or Post Code"
                   placeholder="Enter"
+                    :required="true"
                   :rules="requiredString"
                   :readonly="readonly"
                 />
@@ -313,12 +319,14 @@
                   v-model="aptNumber"
                   label="Apartment or House Number"
                   placeholder="--Enter--"
+                  :required="true"
                 />
                  <cornie-input
                   :rules="required"
                   v-model="address"
                   label="Address"
                   placeholder="--Enter--"
+                  :required="true"
                 />
               </div>
          
@@ -336,21 +344,15 @@
                   v-model="jobDesignation"
                   label="Job Designation"
                   placeholder="--Enter--"
+                  :required="true"
                 />
                 <div v-if="specialties.length > 0">
                   <span class="text-sm mb-4 font-semibold">Specialty</span>
                   <div class="p-2 border-1 h-11 border-gray-300 rounded-lg flex space-x-1">
                     <div class="flex space-x-2 w-full">
-                      <div v-if="id">
-                        <div v-for="(item, index) in specialties" :key="index">
-                          <span class="text-sm">
-                            {{ item.name}} , 
-                          </span>
-                        </div>
-                      </div>
-                      <div v-else v-for="(item, index) in specialties" :key="index">
-                        <span class="text-sm">
-                          {{ getSpecialityName(item)}} , 
+                      <div >
+                        <span class="text-xs" v-for="(item, index) in specialties" :key="index">
+                          {{ getSpecialityName(item) || item?.name}} , 
                         </span>
                       </div>
                     </div>
@@ -364,6 +366,7 @@
                   :rules="required"
                   v-model="specialties"
                   label="Specialty"
+                   :required="true"
                   placeholder="Add Specialty"
                   :appendleft="true"
                 >
@@ -372,30 +375,35 @@
                 </template>   
                 </cornie-input>
               
-                <div class="w-full">
-                  <span class="text-sm font-semibold mb-4">Consultation Rate</span>
-                  <div class="flex space-x-2">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Consultation Rate
+                    <span class="text-red-500">*</span>
+                  </span>
+                  <div class="flex space-x-2 w-full">
                     <cornie-input
                       :rules="required"
-                      v-model="consultationRate.value"
+                       v-model="consultationRatevalue"
                       placeholder="--Enter--"
-                      class="grow"
+                      class="grow w-full"
+
                     />
                     <cornie-select
                         :items="['Hour']"
                         placeholder="/ Hour"
                         class="w-32 mt-0.5 flex-none"
-                        v-model="consultationRate.unit"
+                        v-model="consultationRateunit"
                         :setPrimary="true"
                     />
                   </div>
                 </div>
-                 <div class="w-full">
-                  <span class="text-sm font-semibold mb-4">Years in Practice</span>
+                 <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-4">Years in Practice
+                      <span class="text-red-500">*</span>
+                  </span>
                   <div class="flex space-x-2">
                     <cornie-input
                       :rules="required"
-                      v-model="practiceDuration.value"
+                      v-model="practiceDurationvalue"
                       placeholder="--Enter--"
                       class="grow"
                     />
@@ -403,7 +411,7 @@
                         :items="['Year', 'Month']"
                         placeholder="years"
                         class="w-32 mt-0.5 flex-none"
-                        v-model="practiceDuration.unit"
+                        v-model="practiceDurationunit"
                         :setPrimary="true"
                     />
                   </div>
@@ -414,6 +422,7 @@
                   label="Communication"
                   placeholder="--Select--"
                   class="w-full"
+                   :required="true"
                 />
                  <cornie-select
                   :rules="required"
@@ -421,6 +430,7 @@
                   label="Consultation Channel"
                   :items="dropdown.ConsultationChannel"
                   placeholder="--Select--"
+                   :required="true"
                 />
 
               </div>
@@ -435,6 +445,7 @@
                 <cornie-input
                   label="Issuer"
                   v-model="licenseIssuer"
+                   :required="true"
                 />
                 <cornie-select
                   :items="dropdown.Qualification"
@@ -442,12 +453,14 @@
                   label="Qualification"
                   placeholder="--Select--"
                   class="w-full"
+                   :required="true"
                 />
                 <date-picker
                     class="w-full mb-5"
                     label="Year of Graduation"
                     v-model="graduationYear"
                     :rules="required"
+                     :required="true"
                 />
               </div>
             </template>
@@ -464,18 +477,21 @@
                   label="Issuer"
                   class="w-full"
                   placeholder="--Enter--"
+                   :required="true"
                 />
 
                 <cornie-input
                   v-model="licenseNumber"
                   label="License Number"
                   placeholder="--Enter--"
+                   :required="true"
                 />
                 <period-picker
                   label="Period"
                   class="-mt-1.5 w-full"
                   v-model="licensePeriod"
                   placeholder="--Select--"
+                   :required="true"
                 />
               </div>
             </template>
@@ -487,10 +503,10 @@
             <template v-slot:default>
                 <div class="w-full mt-5">
                   <span class="font-bold text-sm mb-5 flex space-x-4">
-                    <span class="text-danger font-bold"> Location(s) & privileges</span> 
+                    <span class="-mt-1 text-danger font-bold cursor-pointer" @click="addAccessRole = true"> Location(s) & privileges</span> 
                       <plus class="fill-current text-danger font-bold w-3" @click="addAccessRole = true"/>
                   </span>
-                  <div class="grid grid-cols-4 gap-4" v-if="locationRoles.length > 0 && id">
+                  <!-- <div class="grid grid-cols-4 gap-4" v-if="id">
                     <div  v-for="(access, index) in locationRoles" :key="index">
                       <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
                         <div class="flex space-x-4 mt- pr-5">
@@ -536,31 +552,29 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
 
-                    <div class="grid grid-cols-4 gap-4" v-for="(access, index) in locationRoles" :key="index" v-else>
-                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5">
+                    <div class="grid grid-cols-4 gap-4">
+                      <div class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5" v-for="(access, index) in locationRoles" :key="index">
                         <div class="flex">
                           <div
                               class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
                               >
                               {{
-                              `${access.location
-                                .substr(0, 1)
-                                .toUpperCase()}${access.role
-                                .substr(0, 1)
-                                .toUpperCase()}`
+                              `${getLocationName(access?.locationId).substr(0, 1)?.toUpperCase()}${getRoleName(access?.roleId)?.substr(0, 1)?.toUpperCase()}`
+                                ||
+                               `${getLocationName(access?.locationId).substr(0, 1)?.toUpperCase()}${getRoleName(access?.roleId)?.substr(0, 1)?.toUpperCase()}`
                             }}
                           </div>
                           <div>
                             <div class="text-black  flex text-sm">
-                              {{ access.location }} 
+                              {{ getLocationName(access?.locationId)  }} 
                                 <div
                                 class="text-black ml-1"
                                 v-if="access.default">
                                 •
                                 </div>
-                                <span class="text-blue-600 ml-1 text-xs">  {{ access.default ? "Default" : "" }}</span>
+                                <span class="text-blue-600 ml-1 text-xs">  {{ access?.default ? "Default" : "" }}</span>
                                 
                             </div>
                             <p class="text-xs text-gray-400 mb-1 capitalize">
@@ -579,12 +593,12 @@
                         </div>
                         <div class="flex -mt-6 justify-center items-center">
                           <button class="border-0 mr-5" type="button">
-                            <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
+                            <edit-icon class="fill-current text-primary" @click="addAccessRole = true"/>
                           </button>
                           <button
                             class="border-0"
                             type="button"
-                            @click="deleteRole(access.roleId, access.locationId)"
+                           @click="deleteItem(access.locationId)"
                           >
                             <delete-red />
                           </button>
@@ -618,7 +632,7 @@
       </span>
     </div>
   </div>
-  <speciality-modal :id="id" v-model="showSpecial" @send-speicality="sendspeicality" @add-another-services="saveservices"/>
+  <speciality-modal :id="id" v-model="showSpecial" @save-sepcailty="saveSepcailty" @send-speicality="sendspeicality" @add-another-services="saveservices"/>
 </template>
 <script lang="ts">
 import { Options, setup, Vue } from "vue-class-component";
@@ -652,11 +666,13 @@ import AutoComplete from "@/components/autocomplete.vue";
 import AddIcon from '@/components/icons/addblue.vue';
 import SpecialityModal from './specialModal.vue';
 import ISpecial from "@/types/ISpecial";
+import ILocation from "@/types/ILocation";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
 const roles = namespace("roles");
 const special = namespace("special");
+const location = namespace("location");
 
 @Options({
   name: "AddPractitioner",
@@ -700,6 +716,12 @@ export default class AddPractitioner extends Vue {
   @practitioner.Mutation
   updatePractitioners!: (practitioners: IPractitioner[]) => void;
 
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -726,12 +748,21 @@ export default class AddPractitioner extends Vue {
     "Practitioner must be at least 16yrs."
   );
 
+  get readonly() {
+    return this.$route.path.includes("view");
+  }
 nationState = setup(() => useCountryStates());
+
+consultationRatevalue = 0;
+consultationRateunit = "";
+practiceDurationvalue = 0;
+practiceDurationunit = "";
+newspecialties = [] as any;
 
   qualificationCode = "";
   name = "";
   email = "";
-  activeState = "";
+  activeState = "active";
   gender = "";
   phone = "";
   address = "";
@@ -740,9 +771,9 @@ nationState = setup(() => useCountryStates());
   department = "department";
   accessRole = "";
   singleLocation = "";
-  nationality = "";
-  country = "";
-  state = "";
+  nationality = "Nigeria";
+  country = "Nigeria";
+  state = "Abia";
   postCode = "";
   city = "";
   specialty="";
@@ -754,7 +785,7 @@ nationState = setup(() => useCountryStates());
   qualificationIdentifier = "1122";
   qualificationIssuer = "";
   licenseNumber = "";
-  type = "";
+  type = "General Practitioner";
   practitionerId= "";
   communicationLanguage = "";
   availabilityExceptions = "availabilityExceptions";
@@ -768,7 +799,7 @@ nationState = setup(() => useCountryStates());
   required = string().required();
   emailRule = string().email().required();
   location = [];
-  locations = [];
+  // locations = [];
   generatedIdentifier = "";
   addAccessRole = false;
   accessRoles = [] as any;
@@ -784,14 +815,15 @@ nationState = setup(() => useCountryStates());
   specialties = [] as any;
   practiceDuration = {
     value: 0,
-    unit: ""
+    unit: "Year"
   };
   consultationRate = {
     value: 0,
-    unit: ""
+    unit: "Hour"
   };
   graduationYear = "";
   licenseIssuer = "";
+  newservices = [] as any;
   licensePeriod = {} as Period;
 
   @dropdown.Action
@@ -834,10 +866,12 @@ nationState = setup(() => useCountryStates());
   }
   saveservices(value:any){
       this.services = value;
+      this.newservices = value;
   }
 
   sendspeicality(value:any){
     this.specialties = value;
+      this.newspecialties = value;
   }
 
   showSpecialModal(){
@@ -868,6 +902,7 @@ nationState = setup(() => useCountryStates());
     this.availabilityExceptions = practitioner.availabilityExceptions;
     this.consultationChannel = practitioner.consultationChannel;
     this.organizationId = practitioner.organizationId;
+    this.state = practitioner.state;
     this.hoursOfOperation = practitioner.hoursOfOperation;
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
@@ -879,8 +914,14 @@ nationState = setup(() => useCountryStates());
     this.postCode = practitioner.postCode;
     this.aptNumber = practitioner.aptNumber;
     this.specialties = practitioner.specialties;
-    this.practiceDuration = practitioner.practiceDuration;
-    this.consultationRate = practitioner.consultationRate;
+    this.practiceDuration.value = practitioner.practiceDuration.value;
+    this.practiceDuration.unit = practitioner.practiceDuration.unit;
+    this.consultationRate.value = practitioner.consultationRate.value;
+    this.consultationRate.unit = practitioner.consultationRate.unit;
+    this.consultationRatevalue = practitioner?.consultationRate?.value;
+    this.consultationRateunit = practitioner?.consultationRate?.unit;
+    this.practiceDurationvalue = practitioner?.practiceDuration?.value;
+    this.practiceDurationunit = practitioner?.practiceDuration?.unit;
     this.graduationYear = practitioner.graduationYear;
     this.licenseIssuer = practitioner.licenseIssuer;
     this.licensePeriod = practitioner.licensePeriod;
@@ -941,6 +982,12 @@ nationState = setup(() => useCountryStates());
   }
    get payloadEdit() {
     const [firstName, lastName] = this.name.split(" ");
+    const special = this.specialties.map((data:any) =>{
+      this.newspecialties = [data.id];
+      return{
+        ...data
+      }
+    })
     return {
       firstName,
       lastName,
@@ -968,20 +1015,29 @@ nationState = setup(() => useCountryStates());
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
       period: this.period,
-      services : this.services,
+      services : this.newservices,
      nationality : this.nationality,
      country : this.country,
      state : this.state,
      city : this.city,
      postCode : this.postCode,
      aptNumber : this.aptNumber,
-     specialties : this.specialties,
+     specialties : this.newspecialties,
      practiceDuration : this.practiceDuration,
      consultationRate : this.consultationRate,
      graduationYear : this.graduationYear,
     licenseIssuer : this.licenseIssuer,
     licensePeriod : this.licensePeriod,
     };
+  }
+
+ async saveSepcailty(){
+   await this.fetchSpecials();
+     await this.fetchPractitioners();
+}
+  getLocationName(id:string){
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
   }
   getRoleName(id: string) {
     const pt = this.roles.find((i: any) => i.id === id);
@@ -1003,6 +1059,11 @@ nationState = setup(() => useCountryStates());
   }
 
   async createPractitioner() {
+    this.payload.consultationRate.value = this.consultationRatevalue;
+     this.payload.consultationRate.unit = this.consultationRateunit;
+      this.payload.practiceDuration.value = this.practiceDurationvalue;
+      this.payload.practiceDuration.unit = this.practiceDurationunit;
+
     try {
       const response = await cornieClient().post(
         "/api/v1/practitioner",
@@ -1019,6 +1080,11 @@ nationState = setup(() => useCountryStates());
   }
 
   async updatePractitioner() {
+ this.payload.consultationRate.value = this.consultationRatevalue;
+     this.payload.consultationRate.unit = this.consultationRateunit;
+      this.payload.practiceDuration.value = this.practiceDurationvalue;
+      this.payload.practiceDuration.unit = this.practiceDurationunit;
+
     const url = `/api/v1/practitioner/${this.id}`;
     const payload = { ...this.payloadEdit, id: this.id };
     try {
@@ -1045,6 +1111,7 @@ nationState = setup(() => useCountryStates());
       const response = await cornieClient().delete(url, payload);
       if (response.success) {
         window.notify({ msg: "Location role deleted", status: "success" });
+         this.updatePractitioners([response.data]);
            await this.fetchPractitioners();
        // this.$router.back();
       }

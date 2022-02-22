@@ -117,12 +117,12 @@ export default class SpecialExistingState extends Vue {
 
 
   rawHeaders = [
-    {
-      title: "code",
-      key: "identifier",
-      show: true,
-       noOrder: true
-    },
+    // {
+    //   title: "code",
+    //   key: "identifier",
+    //   show: true,
+    //    noOrder: true
+    // },
     {
       title: "specialty",
       key: "name",

@@ -169,7 +169,7 @@ export default class ServicesModal extends Vue {
  
   async saveService() {
       try {
-      const response = await cornieClient().post(
+      const response = await cornieClient().patch(
         `/api/v1/practitioner/services/${this.id}`,
         this.payload
       );
