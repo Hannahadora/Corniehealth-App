@@ -4,10 +4,10 @@
     <div class="absolute pt-2 z-50 -left-44 right-0 top-2">
       <card
         v-show="showMenu"
-        class="relative py-2 p-1 bg-white border border-gray-200 rounded-md block w-56 shadow-xl"
+        class="relative py-2 p-0 bg-white border border-gray-200 rounded-md block w-56 shadow-xl"
         ref="card"
       >
-        <slot />
+        <slot class="p-0" />
       </card>
     </div>
   </div>
