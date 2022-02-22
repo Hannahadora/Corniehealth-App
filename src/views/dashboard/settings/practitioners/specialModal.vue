@@ -22,7 +22,7 @@
                 <span class="text-dark text-sm font-medium">Select Specialty</span>
             </div>
             <div>
-                <span class="text-sm font-semibold mb-1">Account</span>
+                <span class="text-sm font-semibold mb-1">Specialty</span>
                 <Multiselect
                   v-model="specialties"
                  mode="multiple"
@@ -50,31 +50,58 @@
                     </div>
                   </template>
                   <template v-slot:option="{ option }">
-                    <select-option  :value="option.display" :label="option.display" />
-                    <!-- <span class="w-full text-sm">{{ option.display }}</span> -->
+                    <select-option  :value="option.code" @click="set"  />
+                    <span class="w-full text-sm">{{ option.display }}</span>
                   </template>
                 </Multiselect>
             </div>
-             <div class="w-full -mb-12"  v-for="(item, index) in specialties" :key="index">
-                <accordion-component class="-mb-8" :title="getSpecialityName(item)" :addborder="true" :opened="true">
-                    <div class="w-full mb-8">
-                        <div class="flex justify-center">
-                            <circle-icon/>
-                        </div>
-                        <p class="text-sm text-center font-bold mt-5">Start by adding services you render for {{ getSpecialityName(item) }}</p>
-                        <div class="flex justify-center mt-5">
-                            <span class="text-danger font-semibold text-sm cursor-pointer"  @click="showService(item)">
-                                <span class="text-lg">+</span>  Add services
-                            </span>
-                        </div>
-                    </div>
-                     <div class="grid grid-cols-2 gap-4 w-full mt-8 justify-center">
-                       <span v-for="(input, index) in specialservices" :key="index">
-                          <select-option :label="getServiceName(input)" :checked="true"/>
-                       </span>
-                    </div>
-                </accordion-component>
+            <div v-if="id">
+              <div class="w-full -mb-12"  v-for="(item, index) in specialspecialties" :key="index">
+                  <accordion-component class="-mb-8" :title="item.name" :addborder="true" :opened="true">
+                      <div class="w-full mb-8">
+                          <div class="flex justify-center">
+                              <circle-icon/>
+                          </div>
+                          <p class="text-sm text-center font-bold mt-5">Start by adding services you render for {{ item.name }}</p>
+                          <div class="flex justify-center mt-5">
+                              <span class="text-danger font-semibold text-sm cursor-pointer"  @click="showService(item)">
+                                  <span class="text-lg">+</span>  Add services
+                              </span>
+                          </div>
+                      </div>
+                      <div class="grid grid-cols-2 gap-4 w-full mt-8 justify-center">
+                        <span v-for="(input, index) in specialservices" :key="index">
+                            <select-option :label="getServiceName(input)" :checked="true"/>
+                        </span>
+                      </div>
+                  </accordion-component>
+              </div>
             </div>
+            <div>
+              <div v-if="specialties.length > 0">
+                <div class="w-full -mb-12"  v-for="(item, index) in specialties" :key="index">
+                    <accordion-component class="-mb-8" :title="getSpecialityName(item)" :addborder="true" :opened="true">
+                        <div class="w-full mb-8">
+                            <div class="flex justify-center">
+                                <circle-icon/>
+                            </div>
+                            <p class="text-sm text-center font-bold mt-5">Start by adding services you render for {{ getSpecialityName(item) }}</p>
+                            <div class="flex justify-center mt-5">
+                                <span class="text-danger font-semibold text-sm cursor-pointer"  @click="showService(item)">
+                                    <span class="text-lg">+</span>  Add services
+                                </span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 w-full mt-8 justify-center">
+                          <span v-for="(input, index) in specialservices" :key="index">
+                              <select-option :label="getServiceName(input)" :checked="true"/>
+                          </span>
+                        </div>
+                    </accordion-component>
+                </div>
+              </div>
+            </div>
+           
              
       
         </v-form>
@@ -127,10 +154,12 @@ import AccordionComponent from "@/components/form-accordion.vue";
 import CircleIcon from "@/components/icons/circle.vue";
 import ServiceModal from "./services.vue";
 import ICatalogueService from "@/types/ICatalogue";
+import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 
 const catalogue = namespace("catalogues");
 const location = namespace("location");
 const special = namespace("special");
+const practitioner = namespace("practitioner");
 
 @Options({
   name: "spcialModal",
@@ -159,9 +188,6 @@ export default class SpecialModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: String, default: "" })
-  directorId!: string;
-
   
   @location.State
   locations!: ILocation[];
@@ -186,13 +212,19 @@ export default class SpecialModal extends Vue {
   @special.Action
   fetchSpecials!: () => Promise<void>;
 
+  @practitioner.Action
+  getPractitionerById!: (id: string) => Promise<IPractitioner>;
+
+
   loading = false;
   specialarray = [] as any;
   special = '';
   showAService = false;
-  specialties = [];
+  specialties = [] as any;
+  specialspecialties = [] as any;
   serviceName = "";
-  
+  add = [];
+  remove = [];
 
   
     fullName = "";
@@ -213,11 +245,41 @@ export default class SpecialModal extends Vue {
     identificationDocument = "";
 
 
-   async apply() {
+  @Watch("id")
+  idChanged() {
+    this.setPractitioner();
+  }
+
+  async setPractitioner() {
+    const practitioner = await this.getPractitionerById(this.id);
+    if (!practitioner) return;
+    this.services = practitioner.services;
+    this.specialspecialties = practitioner.specialties;
+
+
+  }
+ get payload() {
+    return {
+      remove: this.remove,
+      add: this.add,
+      
+    };
+  }
+
+
+  //  async apply() {
+  //   this.loading = true;
+  //    await this.saveSpecial();
+  //   this.loading = false;
+  // }
+     async apply() {
     this.loading = true;
-     await this.saveSpecial();
+     if(this.id) await this.NewSpecialty();
+    else await this.saveSpecial();
     this.loading = false;
   }
+
+
    get spaciallItems() {
     return {
       text: this.special,
@@ -229,6 +291,22 @@ export default class SpecialModal extends Vue {
     } else {
       this.specialarray.push(this.spaciallItems);
      
+    }
+  }
+
+  async NewSpecialty() {
+    this.payload.add = this.specialties
+      try {
+      const response = await cornieClient().patch(
+        `/api/v1/practitioner/specialties/${this.id}`,
+        this.payload
+      );
+      if(response.success){
+          this.done();
+        window.notify({ msg: "Specialties added successfully", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Specialties not added", status: "error" });
     }
   }
 
@@ -275,12 +353,13 @@ get allSpecials() {
   }
  
   done() {
-    this.$emit("director-added");
+    this.$emit("save-sepcailty");
     this.show = false;
   }
 
 
   created() {
+    this.setPractitioner();
     this.getServices();
       this.fetchLocations();
       this.fetchSpecials();
