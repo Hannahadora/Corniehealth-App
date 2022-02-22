@@ -34,7 +34,7 @@ import { Vue, Options, setup } from "vue-class-component";
 import TextArea from "@/components/textarea.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import { namespace } from "vuex-class";
-import { quantumClient } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 
 @Options({
   name: "BioProfile",
@@ -47,12 +47,35 @@ export default class Bio extends Vue {
   bio = "";
   loading = false as Boolean;
 
+  created() {
+    this.fetchBio();
+  }
+
+  setBio(bio: any) {
+    this.bio = bio;
+  }
+
+  async fetchBio() {
+    try {
+      let bio = cornieClient().get("/api/v1/user/practitioner/bio");
+      const response = await Promise.all([bio]);
+      this.setBio(response[0].data.text);
+    } catch (err) {
+      window.notify({
+        msg: "An error occured while fetching your bio.",
+        status: "error",
+      });
+    }
+  }
+
   async saveBio() {
     if (this.bio === "") return;
 
     this.loading = true;
     try {
-      await quantumClient().post("", { bio: this.bio });
+      await cornieClient().post("/api/v1/user/practitioner/bio", {
+        text: this.bio,
+      });
       this.loading = false;
       window.notify({
         msg: "Bio was updated successfully",

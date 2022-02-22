@@ -5,7 +5,7 @@
         <div class="w-full grid grid-cols-12 mb-10">
           <div class="col-span-12 mb-4">
             <cornie-input
-              label="ORGANIZATION NAME"
+              label="Organization Name"
               placeholder="--Enter--"
               v-model="orgName"
               :rules="required"
@@ -13,7 +13,7 @@
           </div>
           <div class="col-span-12 mb-4">
             <cornie-input
-              label="EMAIL ADDRESS"
+              label="Email Address"
               placeholder="--Enter--"
               v-model="email"
               :rules="required"
@@ -21,7 +21,7 @@
           </div>
           <div class="col-span-12 mb-4">
             <d-text
-              label="MESSAGE"
+              label="Message"
               placeholder="Enter Message"
               v-model="message"
               :rules="required"
