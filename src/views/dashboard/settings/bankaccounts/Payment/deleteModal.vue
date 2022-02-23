@@ -76,7 +76,7 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 import { cornieClient } from "@/plugins/http";
-import Swal from "sweetalert2";
+
 export default {
   name: "extraModal",
   components: {
@@ -111,24 +111,10 @@ export default {
         if (response.success) {
           this.show = false;
           this.loading = false;
-          Swal.fire({
-            title: response.message,
-            text: response.success,
-            icon: "success",
-            showCancelButton: false,
-            confirmButtonColor: "#080056",
-            confirmButtonText: "Okay, Thanks",
-          });
+          window.notify({ msg: response.message, status: "success" });
         }
       } catch (error) {
-        Swal.fire({
-          title: response.message,
-          text: error,
-          icon: "error",
-          showCancelButton: false,
-          confirmButtonColor: "#080056",
-          confirmButtonText: "Okay, Thanks",
-        });
+        window.notify({ status: "error", msg: response.message });
       }
     },
   },

@@ -1,8 +1,14 @@
 <template>
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
+       <button
+         class="rounded-lg font-semibold  mt-5 mb-5 py-3 px-5 text-primary border border-primary mr-3 text-sm  focus:outline-none hover:opacity-90"
+        @click="showInviteModal = true"
+      >
+        Invite Practitioner
+      </button>
       <button
-        class="bg-danger rounded-full text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-lg text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="$router.push('add-practitioner')"
       >
         Add a Practitioner
@@ -39,6 +45,7 @@
     @location-update="updateLocation"
     :id="locationId"
   />
+  <invitation-modal  v-model="showInviteModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -60,6 +67,7 @@ import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import LocationModal from "./locationModal.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
+import InvitationModal from './inviteModal.vue';
 
 const practitioner = namespace("practitioner");
 
@@ -72,6 +80,7 @@ const practitioner = namespace("practitioner");
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
+    InvitationModal,
     IconInput,
     DeleteIcon,
     EyeIcon,
@@ -86,6 +95,7 @@ export default class PractitionerExistingState extends Vue {
   showColumnFilter = false;
   query = "";
   showLocationModal = false;
+  showInviteModal = false;
   locationId = "";
 
   @practitioner.State
@@ -149,13 +159,13 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     const practitioners = this.practitioners.map((practitioner) => {
-      const opHours = this.stringifyOperationHours(
-        practitioner.hoursOfOperation
-      );
+      // const opHours = this.stringifyOperationHours(
+      //   practitioner?.hoursOfOperation
+      // );
       return {
         ...practitioner,
         action: practitioner.id,
-        hoursOfOperation: opHours,
+        //hoursOfOperation: opHours,
         name: `${practitioner.firstName} ${practitioner.lastName}`,
       };
     });

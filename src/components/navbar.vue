@@ -269,7 +269,7 @@
         </li>
           <li class="flex w-full py-4">
             <div class="w-full flex space-x-7">
-              <p class="font-semibold text-sm">Sign out</p>
+              <p class="font-semibold text-sm cursor-pointer"  @click="logout">Sign out</p>
               <span
                 class="relative left-40 flex-shrink-0 cursor-pointer"
                 @click="logout"
@@ -440,6 +440,9 @@ export default class NavBar extends Vue {
   async logout() {
     await logout();
     this.$router.push("/login");
+  }
+   mounted(){
+      this.updatePractitioner(this.authPractitioner as any)
   }
   async created(){
      await this.updatePractitioner(this.authPractitioner as any)

@@ -64,7 +64,6 @@ import { Options, Vue } from "vue-class-component";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import Table from "@scelloo/cloudenly-ui/src/components/table";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -98,7 +97,6 @@ const allergy = namespace("allergy");
 
 @Options({
   components: {
-    Table,
     CancelIcon,
     SortIcon,
     CheckinIcon,

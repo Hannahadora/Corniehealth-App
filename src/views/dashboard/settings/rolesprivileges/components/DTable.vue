@@ -128,7 +128,6 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-// import Table from "@scelloo/cloudenly-ui/src/components/table";
 import Table from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -243,17 +242,12 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     const practitioners = this.roles.map((role) => {
-      //   const opHours = this.stringifyOperationHours(
-      //     practitioner.hoursOfOperation
-      //   );
       return {
         ...role,
         action: role.id,
         members: "",
         createdAt: new Date(role.createdAt).toLocaleDateString(),
         updatedAt: new Date(role.updatedAt).toLocaleDateString(),
-
-        // hoursOfOperation: opHours,
       };
     });
     if (!this.query) return practitioners;

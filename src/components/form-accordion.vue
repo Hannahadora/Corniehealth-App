@@ -1,17 +1,17 @@
 <template>
-  <div class="bg-white shadow-md p-3 mb-2 mt-5 w-full cursor-pointer">
+  <div class="rounded-lg bg-white p-3 mb-2 mt-5 w-full cursor-pointer" :class="{'shadow-md':!addborder}">
     <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div
-          class="h-11 w-full border-b-2 border-gray-200 flex items-center justify-between cursor-pointer" 
-          :class="{ 'text-primary': expand }" @click="expand = !expand" >
+          class="h-11 w-full  flex items-center justify-between cursor-pointer" 
+          :class="{ 'text-primary': expand, 'border-b-2 border-gray-200' : !addborder }" @click="expand = !expand" >
           <div
             contenteditable="true"
             :value="editabetitle"
             @input="$emit('update:modelValue', $event.target.innerText)"
             class="flex space-x-4 cursor-pointer font-bold text-sm text-black uppercase mb-1"
             v-if="editabetitle"
-            :class="{ 'text-black': expand }"
+            :class="{ 'text-black': expand, 'capitalize':!addborder }"
           >
             <edit-icon class="mr-3" /> {{ editabetitle }}
           </div>
@@ -146,6 +146,9 @@ export default class AccordionComponent extends Vue {
 
   @Prop({ type: Boolean, default: false })
   text!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  addborder!: boolean;
 
   @Prop({ type: Boolean, default: false })
   text2!: boolean;
