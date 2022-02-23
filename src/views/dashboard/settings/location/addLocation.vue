@@ -38,7 +38,7 @@
                   <cornie-select
                     :rules="required"
                     required
-                    :items="dropdowns.operationalStatus"
+                    :items="operationalStatusDropdown"
                     v-model="operationalStatus"
                     label="Operational status"
                     placeholder="--Select--"
@@ -64,6 +64,7 @@
                     v-model="type"
                     label="Type"
                     placeholder="--Select--"
+                    required
                   />
                   <phone-input
                     v-model:code="dialCode"
@@ -262,6 +263,7 @@ import InfoIcon from "@/components/icons/info.vue";
 import Textarea from "@/components/textarea.vue";
 import FhirInput from "@/components/fhir-input.vue";
 import IPhone from "@/types/IPhone";
+import { IndexableObject } from "@/lib/http";
 
 const countries = getCountries();
 
@@ -286,7 +288,7 @@ export default class AddLocation extends Vue {
   id!: string;
 
   @location.Action
-  getLocationById!: (id: string) => Promise<ILocation>;
+  getLocationById!: (id: string) => Promise<any | ILocation>;
 
   loading = false;
 
@@ -315,6 +317,8 @@ export default class AddLocation extends Vue {
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
 
+  operationalStatusDropdown = {} as IndexableObject;
+
   dropdowns = {} as IIndexableObject;
 
   required = string().required();
@@ -326,22 +330,23 @@ export default class AddLocation extends Vue {
   get identifier() {
     return this.id || "System generated";
   }
+
   @Watch("id")
   idChanged() {
     this.setLocation();
   }
 
-  get coordinatesCB() {
-    const address = `${this.address}, ${this.state} ${this.country}`;
-    return () => getCoordinates(address);
-  }
+  // get coordinatesCB() {
+  //   const address = `${this.address}, ${this.state} ${this.country}`;
+  //   return () => getCoordinates(address);
+  // }
 
-  @Watch("coordinatesCB")
-  async coordinatesFetched(cb: () => Promise<any>) {
-    const data = await cb();
-    this.longitude = String(data.longitude);
-    this.latitude = String(data.latitude);
-  }
+  // @Watch("coordinatesCB")
+  // async coordinatesFetched(cb: () => Promise<any>) {
+  //   const data = await cb();
+  //   this.longitude = String(data.longitude);
+  //   this.latitude = String(data.latitude);
+  // }
 
   states = [] as any;
   countries = countries;
@@ -354,6 +359,7 @@ export default class AddLocation extends Vue {
 
   async setLocation() {
     const location = await this.getLocationById(this.id);
+    console.log(location);
     if (!location) return;
     this.name = location.name;
     this.locationStatus = location.locationStatus;
@@ -363,17 +369,17 @@ export default class AddLocation extends Vue {
     this.mode = location.mode;
 
     this.type = location.type;
-    this.phoneNumber = location.phoneObject.number;
-    this.dialCode = location.phoneObject.dialCode;
+    this.phoneNumber = location.phone.number;
+    this.dialCode = location.phone.dialCode;
     this.email = location.email;
     this.address = location.address;
     this.country = location.country;
     this.state = location.state;
     this.city = location.city;
     this.physicalType = location.physicalType;
-    this.latitude = location.latitude;
-    this.longitude = location.longitude;
-    this.altitude = location.altitude;
+    // this.latitude = location.latitude;
+    // this.longitude = location.longitude;
+    // this.altitude = location.altitude;
     this.managingOrg = location.managingOrg;
     this.partOf = location.partOf;
     this.availabilityExceptions = location.availabilityExceptions;
@@ -381,6 +387,7 @@ export default class AddLocation extends Vue {
     this.openTo = location.openTo;
     this.hoursOfOperation = location.hoursOfOperation;
   }
+
   get payload() {
     return {
       name: this.name,
@@ -400,9 +407,9 @@ export default class AddLocation extends Vue {
       state: this.state,
       city: this.city,
       physicalType: this.physicalType,
-      latitude: this.latitude,
-      longitude: this.longitude,
-      altitude: this.altitude,
+      // latitude: this.latitude,
+      // longitude: this.longitude,
+      // altitude: this.altitude,
       managingOrg: this.managingOrg,
       partOf: this.partOf,
       availabilityExceptions: this.availabilityExceptions,
@@ -449,7 +456,14 @@ export default class AddLocation extends Vue {
   async created() {
     this.setLocation();
     const data = await this.getDropdowns("location");
+
     this.dropdowns = data;
+
+    let op = this.dropdowns.operationalStatus.filter(
+      (item: any) => item.code !== "O"
+    );
+
+    this.operationalStatusDropdown = [{ code: "O", display: "Opened" }, ...op];
   }
 }
 </script>

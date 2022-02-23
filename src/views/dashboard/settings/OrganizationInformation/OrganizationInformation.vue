@@ -310,8 +310,8 @@ export default class PracticeInfo extends Vue {
     this.ProviderProfile = data.providerProfile || "";
     this.IncorporationType = data.incorporationType || "";
     this.Website = data.website || "";
-    (this.PhoneNumber = data.phone.number),
-      (this.DialCode = data.phone.dialCode);
+    this.PhoneNumber = data.phone.number;
+    this.DialCode = data.phone.dialCode;
     // this.IncorporationStatus = data.incorporationStatus || "";
     this.ReferenceOrganization = data.reference || "";
   }
