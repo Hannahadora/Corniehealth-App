@@ -8,7 +8,7 @@
         <span
           class="text-primary font-extrabold text-lg border-l-2 border-gray-100 pl-2"
         >
-          Insurance
+          Payment Account
         </span>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
