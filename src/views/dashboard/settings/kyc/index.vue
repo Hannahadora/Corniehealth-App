@@ -70,19 +70,22 @@
           </template>
         </accordion-component>
       </div>
-
-      <div class="w-full my-6">
-        <director-sections
-          @director-added="directorAdded"
-          :id="orgkycId"
-          :directors="particularOfDirectors"
-        />
-      </div>
-
-      <div class="w-full my-6">
-        <accordion-component :title="'Address'" :height="370" :opened="true">
+        <div class="w-full my-6">
+        <accordion-component :title="'Practice Address'" :height="370" :opened="true">
           <template v-slot:default>
-            <div class="w-full grid grid-cols-3 gap-4 items-center mt-5 pb-6">
+            <div class="flex w-full my-5">
+              <span class="w-full">
+                No 90 Ashiek jarma street, jabi
+              </span>
+              <cornie-button
+                  class="grow-0 w-32 px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
+                  style="background: #fe4d3c"
+                >
+                  Change
+                </cornie-button>
+
+            </div>
+            <!-- <div class="w-full grid grid-cols-3 gap-4 items-center mt-5 pb-6">
               <cornie-select
                 v-model="nationState.country"
                 :items="nationState.countries"
@@ -121,7 +124,7 @@
                 class="w-full"
                 placeholder="--Enter--"
               />
-            </div>
+            </div> -->
             <div class="grid grid-cols-2 gap-4 pb-8 w-full">
               <file-picker
                 @uploaded="addrssProofUploaded"
@@ -154,12 +157,24 @@
         </accordion-component>
       </div>
 
+
+      <div class="w-full my-6">
+        <director-sections
+          @director-added="directorAdded"
+          @directordata="directordata"
+          :id="orgkycId"
+          :directors="particularOfDirectors"
+        />
+      </div>
+
+    
       <div class="w-full my-6" v-if="practiceRegister == true">
         <owner-section
           :owners="orgKyc.beneficialOwners"
           :id="orgkycId"
           @owner-added="setOwner"
           @ownerAdded="ownerAdded"
+          @ownerdata="ownerdata"
         />
       </div>
 
@@ -168,6 +183,7 @@
           :refrees="orgKyc.referees"
           :id="orgkycId"
           @refree-added="refreeadded"
+          @refreedata="refreedata"
         />
       </div>
       <div class="w-full py-10 flex justify-end">
@@ -292,11 +308,11 @@ export default class KYC extends Vue {
   memorandumAndArticleOfAssociation = "";
   taxIdentificationNumber = "";
   country = "";
-  stateRegion = "";
-  city = "";
-  zipCode = "";
-  address = "";
-  apartment = "";
+  stateRegion = "stateRegion";
+  city = "city";
+  zipCode = "zipCode";
+  address = "address";
+  apartment = "apartment";
   phoneNumber = "";
   proofOfAddressUpload = setup(() => useHandleImage()) as any;
   particularOfDirectors = [] as IDirector[];
@@ -374,12 +390,12 @@ export default class KYC extends Vue {
       formCAC: this.formCAC,
       memorandumAndArticleOfAssociation: this.memorandumAndArticleOfAssociation,
       taxIdentificationNumber: this.taxIdentificationNumber,
-      country: this.country,
-      stateRegion: this.stateRegion,
-      city: this.city,
-      zipCode: this.zipCode,
-      address: this.address,
-      apartment: this.apartment,
+      country: "country",
+      stateRegion: "stateRegion",
+      city: "city",
+      zipCode: "zipCode",
+      address: "address",
+      apartment: "apartment",
       proofOfAddressUpload: this.proofOfAddressUpload,
       directors: this.particularOfDirectors,
       beneficialOwners: this.newowner,
@@ -405,6 +421,16 @@ export default class KYC extends Vue {
   async directorAdded() {
     await this.fetchKycs();
     this.addDirectors([this.addDirectors] as any);
+  }
+
+  directordata(value:any){
+    this.particularOfDirectors = value;
+  }
+  ownerdata(value:any){
+    this.newowner = value;
+  }
+  refreedata(value:any){
+    this.referees = value;
   }
 
   async refNominated(data: any) {

@@ -207,22 +207,35 @@ export default class DirectorState extends Vue {
     this.showDirector = true;
   }
   get items() {
-    const directors = this.orgkycDirectors?.map((director: any) => {
-      //      (director as any).createdAt = new Date(
-      //     (director as any).createdAt
-      //   ).toISOString().slice(0, 10);
-      (director as any).createdAt = new Date(
-        (director as any).createdAt
-      ).toLocaleDateString();
-      return {
-        ...director,
-        action: director?.id,
-        name: director?.fullName,
-        phoneNumber:
-          director?.phoneNumber?.dialCode + "" + director?.phoneNumber?.number,
-      };
-    });
-    return directors;
+    if(this.id){
+      const directors = this.orgkycDirectors?.map((director: any) => {
+        //      (director as any).createdAt = new Date(
+        //     (director as any).createdAt
+        //   ).toISOString().slice(0, 10);
+        (director as any).createdAt = new Date(
+          (director as any).createdAt
+        ).toLocaleDateString();
+        return {
+          ...director,
+          action: director?.id,
+          name: director?.fullName,
+          phoneNumber:
+            director?.phoneNumber?.dialCode + "" + director?.phoneNumber?.number,
+        };
+      });
+      return directors;
+    }else{
+       const directors = this.particularOfDirectors?.map((director: any) => {
+        return {
+          ...director,
+          action: director?.id,
+          name: director?.fullName,
+          phoneNumber:director?.phoneNumber?.dialCode + "" + director?.phoneNumber?.number,
+          createdAt: new Date().toLocaleDateString()
+        };
+      });
+      return directors;
+    }
   }
 
   async directorAdded() {
@@ -250,6 +263,7 @@ export default class DirectorState extends Vue {
 
   directorData(value: any) {
     this.particularOfDirectors = value;
+    this.$emit('directordata',value);
   }
 
   async created() {

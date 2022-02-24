@@ -2,11 +2,13 @@
   <div class="w-full">
    <accordion-component
             :title="'Nominate Referees'"
+            :spanText="'(Refree accepts a minimum of 2 refrees, however you can nominate up to 4 refrees)'"
             :opened="true"
             @add="nominateRefree = true"
-            :add="true"
-            :showAddExisting="true"
-            :expandsection="true"
+            :add="getLength"
+            :spanCaption="true"
+            :showAddExisting="getLength"
+            :expandsection="getLength"
             :expandText="'Select existing practitioner'"
             :showAdd="true"
              @selectExisting="showPractitoner"
@@ -38,7 +40,9 @@
         @refree-added="refreeadded"
         v-model="nominateRefree"
         :id="id"
+        @refree="pushRefree"
         :refreeId="refreeId"
+
 
       />
       <exisiting-practitioner v-model="showExisitingPractioner"  :id="id"  @refree-added="refreeadded"/>
@@ -121,7 +125,7 @@ export default class DirectorState extends Vue {
   query = "";
   refreeId = "";
   nominateRefree = false;
-  particularOfDirectors = [] as any;
+  newRefrees = [] as any;
   showExisitingPractioner = false;
 
   getKeyValue = getTableKeyValue;
@@ -162,7 +166,8 @@ export default class DirectorState extends Vue {
   }
 
   get items() {
-    const directors = this.refrees?.map((director: any) => {
+   if(this.id){
+      const directors = this.refrees?.map((director: any) => {
       return {
         ...director,
         // action: director?.id,
@@ -172,23 +177,53 @@ export default class DirectorState extends Vue {
       };
     });
    return directors; 
+   }
+   else{
+      const directors = this.newRefrees?.map((director: any) => {
+      return {
+        ...director,
+        // action: director?.id,
+        // name: director?.fullName,
+        // date: Date.now()
+
+      };
+    });
+   return directors; 
+   }
   }
 
-    showPractitoner(){
-        this.showExisitingPractioner  = true;
-    }
+  showPractitoner(){
+      this.showExisitingPractioner  = true;
+  }
 
-    async showEditRefree(value:string){
-      this.refreeId = value;
-      this.nominateRefree = true;  
-    }
+  async showEditRefree(value:string){
+    this.refreeId = value;
+    this.nominateRefree = true;  
+  }
 
-async refreeadded() {
-    this.addreferees([this.addreferees] as any);
-    await this.fetchKycs();
-    this.nominateRefree = false;
-    // console.log(this.orgKyc.referees);
-   }
+  get getLength() {
+    const percentage = this.refrees.length;
+    if (percentage > 4) {
+      return false
+    }
+    if (percentage < 4) {
+       return true
+    }
+  }
+ 
+
+  async refreeadded() {
+      this.addreferees([this.addreferees] as any);
+      await this.fetchKycs();
+      this.nominateRefree = false;
+      // console.log(this.orgKyc.referees);
+  }
+
+  async pushRefree(value:any){
+    this.newRefrees = value;
+    this.$emit('refreedata',value);
+  }
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this refree",
@@ -205,10 +240,6 @@ async refreeadded() {
     return this.items?.slice().sort(function (a:any, b:any) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
-  }
-
-  directorData(value:any){
-    this.particularOfDirectors = value;
   }
 
   async created() {

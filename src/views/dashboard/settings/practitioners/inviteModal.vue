@@ -15,9 +15,24 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
             <div class="w-full pb-2 mb-5">
-                <span class="text-dark text-sm font-medium">Send an email invite to your practitioners to complete their registration.</span>
+                <span class="text-dark text-sm font-medium">Send an invitation to your practitioners to complete their registration.</span>
             </div>
-               <div>
+              <cornie-input
+                    label="First name"
+                    placeholder="--Enter--"
+                    :required="true"
+                />
+                  <cornie-input
+                    label="Last name"
+                    placeholder="--Enter--"
+                    :required="true"
+                />
+                <cornie-input
+                    label="Email"
+                    placeholder="--Enter--"
+                   :required="true"
+                />
+               <!-- <div>
                 <span class="text-sm font-semibold mb-1">Email Address</span>
                 <Multiselect
                   v-model="paymentCategories"
@@ -47,7 +62,7 @@
                      <span>{{option?.display}}</span>
                   </template>
                 </Multiselect>
-              </div>
+              </div> -->
         </v-form>
       </cornie-card-text>
       

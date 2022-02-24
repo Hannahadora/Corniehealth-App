@@ -262,7 +262,7 @@ export default class CornieTable extends Vue {
 .table-card {
   overflow-x: visible;
   overflow-y: visible !important;
-  min-height: 27rem;
+  min-height: auto;
 }
 .table-card::-webkit-scrollbar {
   width: 5px !important;

@@ -1,5 +1,5 @@
 <template>
-  <button ref="btn" class="relative rounded" :disabled="loading">
+  <button ref="btn" class="relative rounded" :disabled="loading || invalid" :rules="rules">
     <div
       :class="{ invisible: loading }"
       class="px-3 py-2 pl-8 pr-8 flex items-center justify-center w-full h-full"
@@ -30,6 +30,12 @@ import CornieCircularProgress from "./CornieCircularProgress.vue";
 export default class CornieBtn extends Vue {
   @Prop({ type: Boolean, default: false })
   loading!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  invalid!: boolean;
+
+  @Prop({ type: Object })
+  rules!: any;
 
   @Prop({ type: String, default: "white" })
   loadingColor!: string;
