@@ -571,13 +571,13 @@
                               {{ getLocationName(access?.locationId)  }} 
                                 <div
                                 class="text-black ml-1"
-                                v-if="access.default">
+                                v-if="access?.default">
                                 •
                                 </div>
                                 <span class="text-blue-600 ml-1 text-xs">  {{ access?.default ? "Default" : "" }}</span>
                                 
                             </div>
-                            <p class="text-xs text-gray-400 mb-1 capitalize">
+                            <!-- <p class="text-xs text-gray-400 mb-1 capitalize">
                               {{ access?.days?.mon }}
                               {{ access?.days?.tue }}
                               {{ access?.days?.wed }}
@@ -586,7 +586,7 @@
                               {{ access?.days?.sat }}
                               {{ access?.days?.sun }}
 
-                            </p>
+                            </p> -->
                             <p class="text-xs text-gray-400 mb-1">{{ getRoleName(access.roleId) }}</p>
                             <span class="text-danger text-xs font-semibold cursor-pointer" @click="$router.push('/dashboard/provider/settings/roles-privileges')">View privileges</span>
                           </div>

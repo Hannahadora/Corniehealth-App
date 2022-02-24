@@ -39,7 +39,7 @@
                 class="w-full"
               />
             </div>
-            <div class="col-span-12">
+            <!-- <div class="col-span-12">
               <span class="text-primary text-sm font-semibold mb-5"> Available Days </span>
               <div class="grid grid-cols-7 gap-4 w-full mt-4">
                 <div :class="{'active' : isActiveMon}" @click="setActive('mon')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
@@ -65,7 +65,7 @@
                 </div>
 
               </div>
-            </div>
+            </div> -->
             <div
               class="col-span-12 flex justify-start mt-5 border-b-2 border-dashed border-gray-200 pb-4">
              <span class="text-danger font-semibold text-sm cursor-pointer"  @click="add">
@@ -91,11 +91,11 @@
                       <div class="flex flex-col">
                         <div class="mb-0 font-bold text-sm">
                           {{ access.location.name }}
-                          <span class="ml-5 text-gray-400 text-xs font-light">
+                          <!-- <span class="ml-5 text-gray-400 text-xs font-light">
                             {{ isActiveMon ? data?.mon : '' }} {{isActiveTue ? data?.tue : ''}}  {{isActiveWed ? data?.wed : ''}}
                               {{isActiveThu ? data?.thu : ''}}  {{isActiveFir ? data?.fri : ''}}  {{isActiveSat ? data?.sat : ''}}
                               {{isActiveSun ? data?.sun : ''}}
-                          </span>
+                          </span> -->
                         </div>
                         <div class="text-xs text-gray-400">{{ getRoleName(access.roleId) }}</div>
                       </div>
@@ -453,7 +453,7 @@ export default class Accessrole extends Vue {
         location: this.allLocation.find((item) => item.code === this.location)
           ?.display,
         default: false,
-        days: this.data
+        // days: this.data
       };
       this.accessRoles = [access, ...this.accessRoles];
 

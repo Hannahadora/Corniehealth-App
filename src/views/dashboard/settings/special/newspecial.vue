@@ -28,45 +28,31 @@
                  mode="multiple"
                   name="object_true" :native="false" :object="true"
                   :searchable = true
-                  :options="[
-                    { name : 'Adult mental illness', status:'active'},
-                    {name : 'Anesthetics', status:'active'},
-                    {name : 'Audiological medicine', status:'active'},
-                    {name : 'Blood banking and transfusion medicine', status:'active'},
-                    {name : 'Burns care', status:'active'},
-                    {name : 'Cardiology', status:'active'},
-                    {name : 'Clinical cytogenetics and molecular genetics', status:'active'},
-                    {name : 'Clinical genetics', status:'active'},
-                    {name : 'Clinical hematology', status:'active'},
-                    {name : 'Clinical immunology', status:'active'},
-                    {name : 'Clinical microbiology', status:'active'},
-                    {name : 'Clinical neuro-physiology', status:'active'},
-                    {name : 'Clinical oncology', status:'active'},
-                    {name : 'Clinical pharmacology', status:'active'},
-                    {name : 'Clinical physiology', status:'active'},
-                    {name : 'Community medicine', status:'active'},
-                    {name : 'Critical care medicine', status:'active'},
-                    {name : 'Dental medicine specialties', status:'active'},
-                    {name : 'Dental-General dental practice', status:'active'},
-                    {name : 'Dermatology', status:'active'},
-                    {name : 'Diabetic medicine', status:'active'},
-                    {name : 'Dive medicine', status:'active'},
-                    {name : 'Endocrinology', status:'active'},
-                    {name : 'Family practice', status:'active'},
-                    {name : 'Gastroenterology', status:'active'},
-                    {name : 'General medical practice', status:'active'},
-
-                  
-                  ]"
+                  :options="Specilaitems"
                   :clear-on-select="false"
-                  label-prop="name"
-                  value-prop="name"
-                  trackBy="name"
-                  label="name"
+                  label-prop="display"
+                  value-prop="display"
+                  trackBy="display"
+                  label="display"
                   placeholder="--Select--"
                   class="w-full"
                 >
                   <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.display }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                  <template v-slot:option="{ option }">
+                    <select-option :value="option.display" :label="option.display"/>
+                  </template>
+                  <!-- <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
                       {{ option.name }}
                       <span
@@ -80,8 +66,7 @@
                   </template>
                   <template v-slot:option="{ option }">
                         <select-option  :value="option.name" :label="option.name" />
-                    <!-- <span class="w-full text-sm">{{ option.display }}</span> -->
-                  </template>
+                  </template> -->
                 </Multiselect>
             </div>
             <div class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -167,6 +152,8 @@ import CornieSelect from "@/components/cornieselect.vue";
 import ISpecial from "@/types/ISpecial";
 import FhirInput from "@/components/fhir-input.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
+import { getDropdown } from "@/plugins/definitions";
+import { Codeable } from "@/types/misc";
 
 const special = namespace("special");
 const dropdown = namespace("dropdown");
@@ -214,6 +201,7 @@ export default class SpecialModal extends Vue {
   fetchSpecialNames!: () => Promise<void>;
 
 dropdownData = {} as IIndexableObject;
+  Specilaitems: Codeable[] = [];
 
 
    async apply() {
@@ -262,6 +250,20 @@ dropdownData = {} as IIndexableObject;
   }
   
 
+  async setRefs() {
+    const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
+    const ref = reference.trim();
+    const defs = await getDropdown(ref);
+    if (defs && Array.isArray(defs)) {
+      this.Specilaitems = defs;
+    } else {
+      window.notify({
+        status: "error",
+        msg: `Cannot get definitions for ${reference}`,
+      });
+    }
+  }
+
  
   done() {
     this.$emit("special-added");
@@ -270,6 +272,7 @@ dropdownData = {} as IIndexableObject;
 
 
   async created() {
+     await this.setRefs();
     await this.fetchSpecialNames();
   }
 }
@@ -381,5 +384,17 @@ dropdownData = {} as IIndexableObject;
   justify-content: center;
   padding: 0.77px;
   margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
+}
+.multiselect-options {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    max-height: var(--ms-max-height,19rem) !important;
+}
+.multiselect-dropdown {
+    max-height: 19rem !important;
+    
 }
 </style>

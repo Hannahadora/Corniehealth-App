@@ -32,6 +32,7 @@
              :rules="emailRule"
             style="width: 100%"
             placeholder="--Enter--"
+            
           />
         </div>
         <div class="w-full my-4">
@@ -78,7 +79,7 @@ import { cornieClient } from "@/plugins/http";
 import { string, date } from "yup";
 import { namespace } from "vuex-class";
 import IKycref from "@/types/IKycref";
-
+import { number } from "yup";
 
 const kyc = namespace("kyc");
 @Options({
@@ -115,6 +116,22 @@ export default class NominateRefree extends Vue {
   };
   notified = true
 
+  
+  @Prop({ type: Number, default: 0, required: true })
+  totalLength!: number;
+
+  invalid = false;
+
+
+    get lengthValidator() {
+    const difference = 4 - this.totalLength;
+    return number()
+      .typeError("Please input a number between 1 and 4")
+      .min(1)
+      .max(difference, "Refree cannot be more than 4");
+  }
+
+
  @Watch("refreeId")
   idChanged() {
     this.setRefree();
@@ -139,6 +156,7 @@ export default class NominateRefree extends Vue {
  
 
   async submit() {
+
     this.loading = true;
     if (this.id) await this.apply();
     else await this.newRefree();

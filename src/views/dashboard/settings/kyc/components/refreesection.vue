@@ -2,11 +2,13 @@
   <div class="w-full">
    <accordion-component
             :title="'Nominate Referees'"
+            :spanText="'(Refree accepts a minimum of 2 refrees, however you can nominate up to 4 refrees)'"
             :opened="true"
             @add="nominateRefree = true"
-            :add="true"
-            :showAddExisting="true"
-            :expandsection="true"
+            :add="getLength"
+            :spanCaption="true"
+            :showAddExisting="getLength"
+            :expandsection="getLength"
             :expandText="'Select existing practitioner'"
             :showAdd="true"
              @selectExisting="showPractitoner"
@@ -39,6 +41,7 @@
         v-model="nominateRefree"
         :id="id"
         :refreeId="refreeId"
+
 
       />
       <exisiting-practitioner v-model="showExisitingPractioner"  :id="id"  @refree-added="refreeadded"/>
@@ -174,14 +177,25 @@ export default class DirectorState extends Vue {
    return directors; 
   }
 
-    showPractitoner(){
-        this.showExisitingPractioner  = true;
-    }
+  showPractitoner(){
+      this.showExisitingPractioner  = true;
+  }
 
-    async showEditRefree(value:string){
-      this.refreeId = value;
-      this.nominateRefree = true;  
+  async showEditRefree(value:string){
+    this.refreeId = value;
+    this.nominateRefree = true;  
+  }
+
+  get getLength() {
+    const percentage = this.refrees.length;
+    if (percentage > 4) {
+      return false
     }
+    if (percentage < 4) {
+       return true
+    }
+  }
+ 
 
 async refreeadded() {
     this.addreferees([this.addreferees] as any);

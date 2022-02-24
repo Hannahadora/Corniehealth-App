@@ -46,13 +46,12 @@
           >
             Cancel
           </cornie-btn>
-          <!-- <cornie-btn
-            :loading="loading"
-            @click="submit"
+          <cornie-btn
+             @click="show = false"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Save
-          </cornie-btn> -->
+          </cornie-btn>
 
         </cornie-card-text>
       </cornie-card>

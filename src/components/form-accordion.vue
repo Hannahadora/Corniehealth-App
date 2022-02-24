@@ -21,6 +21,7 @@
             :class="{ 'text-black': expand }"
           >
             {{ title }}
+            <span class="lowercase text-xs text-red-500" v-if="spanCaption">{{ spanText }}</span>
           </div>
           <div class="flex space-x-6 justify-end items-end">
             <span
@@ -144,8 +145,14 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: Boolean, default: false })
   question!: boolean;
 
+    @Prop({ type: Boolean, default: false })
+  spanCaption!: boolean;
+
   @Prop({ type: Boolean, default: false })
   text!: boolean;
+
+   @Prop({ type: Boolean, default: false })
+  spanText!: boolean;
 
   @Prop({ type: Boolean, default: false })
   addborder!: boolean;
