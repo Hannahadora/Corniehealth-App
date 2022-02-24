@@ -239,7 +239,7 @@ idFileUploaded(fileUrl: string) {
  fileIndex = 0;
 
     fullName = "";
-    dateOfBirth  =  "";
+    dateOfBirth  =  "2021-07-16";
     nationality = "";
     emailAddress = "";
     phoneNumber =  {
@@ -344,7 +344,7 @@ idFileUploaded(fileUrl: string) {
   }
 
   async updateDirectorData() {
-   this.$emit('director-data',this.payload);
+   this.$emit('director-data',[this.payload]);
     this.done();
   }
  

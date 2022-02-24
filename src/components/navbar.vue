@@ -52,7 +52,7 @@
                 </div>
                 <div class="w-full">
                   <div class="flex items-center justify-between">
-                    <h2 class="text-gray-600 text-lg">{{ item.name }}</h2>
+                    <h2 class="text-gray-600 text-lg">{{ item?.name }}</h2>
                     <!-- <span
                           v-if="item.isDefault && currentLocation == null"
                           class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
@@ -70,7 +70,7 @@
                     >
                   </div>
                   <a href="#" class="text-gray-400 text-sm">{{
-                    item.address
+                    item?.address
                   }}</a>
                 </div>
               </div>
@@ -100,7 +100,7 @@
             @click="$router.push(route.path)"
             class="mb-3 list-none items-center flex font-medium text-sm text-black hover:bg-blue-100 rounded-full cursor-pointer my-1 -m-2 p-5 py-2"
           >
-            <p class="ml-2">{{ route.name }}</p>
+            <p class="ml-2">{{ route?.name }}</p>
           </li>
           <li class="cursor-pointer mb-3" @click="showSettings">
             <cornie-btn
@@ -256,10 +256,10 @@
           <li class="justify-content mb-2">
             <p class="3xl text-center text-black font-extrabold">{{ name }}</p>
             <p class="text-sm text-center text-dark font-light">
-              {{ user ? user.email : "" }}
+              {{ user ? user?.email : "" }}
             </p>
             <p class="2xl text-center text-yellow-400 font-bold">
-              {{ user.designation }}
+              {{ user?.designation }}
             </p>
           </li>
         <li class="flex w-full justify-center border-b border-primary pb-5">

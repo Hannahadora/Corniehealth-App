@@ -218,7 +218,8 @@ export default class benficialOwner extends Vue {
   }
 
   async updateDirectorData() {
-    this.$emit("ownerAdded", this.payload);
+    this.$emit("ownerAdded", [this.payload]);
+      this.done();
   }
 
   done() {

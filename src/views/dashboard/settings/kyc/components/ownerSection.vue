@@ -147,8 +147,10 @@ export default class DirectorState extends Vue {
   query = "";
   ownerId = "";
   showOwner = false;
-  particularOfDirectors = [] as any;
+  newOwners = [] as any;
   showExistingDriector = false;
+
+
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -183,14 +185,25 @@ export default class DirectorState extends Vue {
   }
 
   get items() {
-    const owners = this.owners?.map((owner: any) => {
-      return {
-        ...owner,
-        action: owner?.id,
-        percentage: owner.percentage + " %",
-      };
-    });
-    return owners;
+    if(this.id){
+      const owners = this.owners?.map((owner: any) => {
+        return {
+          ...owner,
+          action: owner?.id,
+          percentage: owner.percentage + " %",
+        };
+      });
+      return owners;
+    }else{
+       const owners = this.newOwners?.map((owner: any) => {
+        return {
+          ...owner,
+          action: owner?.id,
+          percentage: owner.percentage + " %",
+        };
+      });
+      return owners;
+    }
   }
 
   showDirector() {
@@ -206,7 +219,8 @@ export default class DirectorState extends Vue {
   }
 
   ownerAdded(data: any) {
-    this.owners = data;
+    this.newOwners = data;
+   this.$emit('ownerdata',data);
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -226,9 +240,7 @@ export default class DirectorState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  directorData(value: any) {
-    this.particularOfDirectors = value;
-  }
+  
 
   async created() {
     await this.fetchKycs();
