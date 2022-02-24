@@ -68,11 +68,11 @@
               :rules="requiredRule"
             />
           </div>
-          <div class="col-span-4">
+          <div class="col-span-4 -mt-3.5">
             <cornie-input
               v-model="ReferenceOrganization"
               label="Reference Practice"
-              class="w-full"
+              class="w-full mt-0"
             >
               <template #labelicon>
                 <cornie-tooltip>
@@ -96,7 +96,10 @@
               v-model="IncorporationType"
             />
           </div>
-          <div class="col-span-4">
+          <div
+            class="col-span-4"
+            v-show="IncorporationType !== 'Not Registered'"
+          >
             <cornie-input
               v-model="RegistrationNumber"
               class="w-full"

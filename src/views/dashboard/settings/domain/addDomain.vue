@@ -56,7 +56,7 @@
 import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import DomainInput from "@/components/domain-input.vue";
+import DomainInput from "@/components/newdomaininput.vue";
 import IDomain from "@/types/IDomain";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
