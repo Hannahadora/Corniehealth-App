@@ -70,19 +70,22 @@
           </template>
         </accordion-component>
       </div>
-
-      <div class="w-full my-6">
-        <director-sections
-          @director-added="directorAdded"
-          :id="orgkycId"
-          :directors="particularOfDirectors"
-        />
-      </div>
-
-      <div class="w-full my-6">
-        <accordion-component :title="'Address'" :height="370" :opened="true">
+        <div class="w-full my-6">
+        <accordion-component :title="'Practice Address'" :height="370" :opened="true">
           <template v-slot:default>
-            <div class="w-full grid grid-cols-3 gap-4 items-center mt-5 pb-6">
+            <div class="flex w-full my-5">
+              <span class="w-full">
+                No 90 Ashiek jarma street, jabi
+              </span>
+              <cornie-button
+                  class="grow-0 w-32 px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
+                  style="background: #fe4d3c"
+                >
+                  Change
+                </cornie-button>
+
+            </div>
+            <!-- <div class="w-full grid grid-cols-3 gap-4 items-center mt-5 pb-6">
               <cornie-select
                 v-model="nationState.country"
                 :items="nationState.countries"
@@ -121,7 +124,7 @@
                 class="w-full"
                 placeholder="--Enter--"
               />
-            </div>
+            </div> -->
             <div class="grid grid-cols-2 gap-4 pb-8 w-full">
               <file-picker
                 @uploaded="addrssProofUploaded"
@@ -154,6 +157,16 @@
         </accordion-component>
       </div>
 
+
+      <div class="w-full my-6">
+        <director-sections
+          @director-added="directorAdded"
+          :id="orgkycId"
+          :directors="particularOfDirectors"
+        />
+      </div>
+
+    
       <div class="w-full my-6" v-if="practiceRegister == true">
         <owner-section
           :owners="orgKyc.beneficialOwners"

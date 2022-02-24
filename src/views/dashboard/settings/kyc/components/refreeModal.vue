@@ -23,7 +23,7 @@
             :label="'Name'"
             v-model="referee.name"
             style="width: 100%"
-              placeholder="--Enter--"
+            placeholder="--Enter--"
           />
         </div>
         <div class="w-full my-4">
@@ -53,6 +53,8 @@
             Cancel
           </cornie-btn>
           <cornie-btn
+          :rules="percentageValidator"
+          :invalid="invalid"
             :loading="loading"
             @click="onSave"
             class="text-white bg-danger px-6 rounded-xl"
@@ -76,6 +78,8 @@ import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import IPhone from "@/types/IPhone";
+import { number } from "yup";
+
 @Options({
   components: {
     ...CornieCard,
@@ -89,10 +93,28 @@ import IPhone from "@/types/IPhone";
 export default class NominateRefree extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
-@Prop({ type: String, default: "" })
+  
+  @Prop({ type: String, default: "" })
   id!: string;
+
+  @Prop({ type: Number, default: 0, required: true })
+  totalLength!: number;
+
+  invalid = false;
+
+
   referee: any = {dialCode:"+234",number:"" };
-  onSave() {
+
+  get lengthValidator() {
+    const difference = 4 - this.totalLength;
+    return number()
+      .typeError("Please input a number between 1 and 4")
+      .min(1)
+      .max(difference, "Refree cannot be more than 4");
+  }
+
+  async onSave() {
+
     if (!this.referee?.name) return false;
     this.$emit("refadded", {
       name: this.referee.name,

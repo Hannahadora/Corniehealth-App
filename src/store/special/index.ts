@@ -1,6 +1,7 @@
 import ISpecial from "@/types/ISpecial";
 import { StoreOptions } from "vuex";
 import { deleteSpecial, fetchSpecialNames, fetchSpecials} from "./helper";
+import ObjectSet from "@/lib/objectset";
 
 interface SpecialState {
     specials:any;
@@ -23,6 +24,24 @@ export default {
     updateSpecials( state, specials: ISpecial) {
       state.specials = specials;
     },
+    // addPractitioners(state, specials) {
+    //   state.specials.practitioners = specials;
+    // },
+    addPractitioners(state, specials: ISpecial[]) {
+      const practitionerSet = new ObjectSet(
+        [...state.specials.practitioners, ...specials],
+        "id"
+      );
+      state.specials.practitioners = [...practitionerSet];
+    },
+    // addPractitioners(state, specials: ISpecial[]){
+    //   const existingPracs = state.specials.practitioners || [];
+    //   const pracset = new ObjectSet(
+    //     [...existingPracs, specials],
+    //     "id"
+    //   )
+    //   state.specials.practitioners = [...pracset]
+    // },
 
     deleteSpecial(state, id: string) {
       const index = state.specials.findIndex( (special: { id: string; }) => special.id == id);

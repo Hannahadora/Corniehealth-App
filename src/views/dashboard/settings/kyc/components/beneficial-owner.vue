@@ -28,6 +28,21 @@
 
           <div class="my-4">
             <cornie-input
+            v-if="ownerId"
+              :label="'Percentage'"
+              v-model="percentage"
+              placeholder="--Enter--"
+              class="w-full"
+              type="number"
+            >
+              <template v-slot:append-inner>
+                <span class="border-l-2 border-gray-300 px-4 py-2 divide-x-8">
+                  %
+                </span>
+              </template>
+            </cornie-input>
+              <cornie-input
+              v-else
               :label="'Percentage'"
               v-model="percentage"
               placeholder="--Enter--"
@@ -132,7 +147,8 @@ export default class benficialOwner extends Vue {
   }
 
   async setDirector() {
-    const owner = this.getOwnerById(this.ownerId);
+    console.log("dsjkfjks");
+    const owner = await this.getOwnerById(this.ownerId);
     if (!owner) return;
     this.name = owner.name;
     this.percentage = owner.percentage;
@@ -219,6 +235,9 @@ export default class benficialOwner extends Vue {
 
   closeModal() {
     this.show = false;
+  }
+  async created(){
+    await this.setDirector();
   }
 }
 </script>

@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div>
-                <span class="text-sm font-semibold mb-1">Account</span>
+                <span class="text-sm font-semibold mb-1">Practitioner</span>
                 <Multiselect
                   v-model="aPractitioner"
                   mode="tags"
@@ -189,7 +189,10 @@ export default class newPractitioner extends Vue {
   query = "";
 
  @special.State
-  specials!: ISpecial[];
+  specials!: ISpecial;
+
+@special.Mutation
+  addPractitioners!: (specials: ISpecial[]) => void;
 
   @special.Action
   fetchSpecials!: () => Promise<void>;
@@ -231,15 +234,16 @@ export default class newPractitioner extends Vue {
     this.loading = false;
   }
   
-    async save() {
+  async save() {
       try {
       const response = await cornieClient().post(
         `/api/v1/specialty/practitioner/${this.specilatyId}`,
         this.payload
       );
       if(response.success){
-          this.done();
+        this.done();
         window.notify({ msg: "Practitioner saved successfully", status: "success" });
+
       }
     } catch (error) {
       window.notify({ msg: "Practitioner not saved", status: "error" });

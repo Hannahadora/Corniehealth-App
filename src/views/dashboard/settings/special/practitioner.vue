@@ -62,13 +62,12 @@
           >
             Cancel
           </cornie-btn>
-          <!-- <cornie-btn
-            :loading="loading"
-            @click="submit"
+          <cornie-btn
+             @click="show = false"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Save
-          </cornie-btn> -->
+          </cornie-btn>
 
         </cornie-card-text>
       </cornie-card>
@@ -161,6 +160,9 @@ export default class managePractitioner extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
+  @special.Mutation
+  addPractitioners!: (specials: ISpecial) => void;
+
 newspecials = [] as any;
 
   @Watch("specilatyId")
@@ -176,7 +178,12 @@ async setPractitioner() {
 
 
   async specialadded(){
+      console.log("HELLO ADEDDED")
+      this.addPractitioners(this.specials.practitioners as any);
+     await this.setPractitioner();
      await this.fetchSpecials();
+     await   this.fetchPractitioners();
+
   }
 
   done() {
@@ -205,8 +212,8 @@ async setPractitioner() {
 
   async created() {
     await this.setPractitioner();
-    this.fetchPractitioners();
-    this.fetchSpecials();
+    await this.fetchPractitioners();
+    await this.fetchSpecials();
   }
 }
 </script>
