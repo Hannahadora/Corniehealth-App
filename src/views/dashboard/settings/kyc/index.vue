@@ -161,6 +161,7 @@
       <div class="w-full my-6">
         <director-sections
           @director-added="directorAdded"
+          @directordata="directordata"
           :id="orgkycId"
           :directors="particularOfDirectors"
         />
@@ -173,6 +174,7 @@
           :id="orgkycId"
           @owner-added="setOwner"
           @ownerAdded="ownerAdded"
+          @ownerdata="ownerdata"
         />
       </div>
 
@@ -181,6 +183,7 @@
           :refrees="orgKyc.referees"
           :id="orgkycId"
           @refree-added="refreeadded"
+          @refreedata="refreedata"
         />
       </div>
       <div class="w-full py-10 flex justify-end">
@@ -305,11 +308,11 @@ export default class KYC extends Vue {
   memorandumAndArticleOfAssociation = "";
   taxIdentificationNumber = "";
   country = "";
-  stateRegion = "";
-  city = "";
-  zipCode = "";
-  address = "";
-  apartment = "";
+  stateRegion = "stateRegion";
+  city = "city";
+  zipCode = "zipCode";
+  address = "address";
+  apartment = "apartment";
   phoneNumber = "";
   proofOfAddressUpload = setup(() => useHandleImage()) as any;
   particularOfDirectors = [] as IDirector[];
@@ -387,12 +390,12 @@ export default class KYC extends Vue {
       formCAC: this.formCAC,
       memorandumAndArticleOfAssociation: this.memorandumAndArticleOfAssociation,
       taxIdentificationNumber: this.taxIdentificationNumber,
-      country: this.country,
-      stateRegion: this.stateRegion,
-      city: this.city,
-      zipCode: this.zipCode,
-      address: this.address,
-      apartment: this.apartment,
+      country: "country",
+      stateRegion: "stateRegion",
+      city: "city",
+      zipCode: "zipCode",
+      address: "address",
+      apartment: "apartment",
       proofOfAddressUpload: this.proofOfAddressUpload,
       directors: this.particularOfDirectors,
       beneficialOwners: this.newowner,
@@ -418,6 +421,16 @@ export default class KYC extends Vue {
   async directorAdded() {
     await this.fetchKycs();
     this.addDirectors([this.addDirectors] as any);
+  }
+
+  directordata(value:any){
+    this.particularOfDirectors = value;
+  }
+  ownerdata(value:any){
+    this.newowner = value;
+  }
+  refreedata(value:any){
+    this.referees = value;
   }
 
   async refNominated(data: any) {

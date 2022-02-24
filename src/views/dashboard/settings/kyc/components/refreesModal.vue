@@ -171,7 +171,7 @@ export default class NominateRefree extends Vue {
   }
 
  async newRefree() {
-    this.$emit('refree', this.payload);
+    this.$emit('refree', [this.payload]);
       this.done();
   }
   async onSave() {

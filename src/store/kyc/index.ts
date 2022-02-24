@@ -130,8 +130,8 @@ export default {
       return ctx.state.orgKyc.directors.find(director => director.id == id);
     },
     async getOwnerById(ctx, id: string) {
-      if (ctx.state.orgKyc.beneficialOwners.length < 1) await ctx.dispatch("fetchKycs");
-      return ctx.state.orgKyc.beneficialOwners.find(owner => owner.id == id);
+      if (ctx.state?.orgKyc?.beneficialOwners?.length < 1) await ctx.dispatch("fetchKycs");
+      return ctx.state?.orgKyc?.beneficialOwners?.find(owner => owner.id == id);
     },
   },
 } as StoreOptions<KycState>;
