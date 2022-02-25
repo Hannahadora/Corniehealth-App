@@ -8,31 +8,37 @@
       />
     </span>
     <span class="w-full mt-6">
-      <div class="w-1/3 mb-4" v-if="changed">
+      <div class="w-1/3 mb-4">
         <span v-if="tokenSent">
           <h2 class="cursor-default text-xs font-semibold mt-4">
             Enter token to confirm
           </h2>
           <cornie-input v-model="token" placeholder="enter token" />
+          <cornie-btn
+            :loading="loading"
+            @click="submit"
+            class="text-white mt-3 rounded-lg bg-danger w-full"
+          >
+            Activate
+          </cornie-btn>
         </span>
-        <span v-else>
+        <span v-if="deactivate">
           <h2 class="cursor-default text-xs font-semibold mt-4">
-            Enter password to get token
+            Enter password to deactivate
           </h2>
           <password-input
             placeholder="enter password"
             class="border border-gray-300"
             v-model="password"
           />
+          <cornie-btn
+            :loading="loading"
+            @click="submit"
+            class="text-white mt-3 rounded-lg bg-danger w-full"
+          >
+            Deactivate
+          </cornie-btn>
         </span>
-
-        <cornie-btn
-          :loading="loading"
-          @click="submit"
-          class="text-white mt-3 rounded-lg bg-danger w-full"
-        >
-          {{ tokenSent ? "Save" : "Get Token" }}
-        </cornie-btn>
       </div>
     </span>
   </div>
@@ -79,68 +85,90 @@ export default class TwoFactor extends Vue {
   @user.Mutation
   updateTwoFA!: (val: boolean) => void;
 
-  @Watch("requiresTwoFactorAuth")
-  globalStatusChanged(val: boolean) {
-    this.enabled = val;
-  }
-
   @Watch("enabled")
-  switched(val: boolean) {
-    if (val == this.requiresTwoFactorAuth) this.changed = false;
-    else this.changed = true;
+  switched() {
+    if (this.enabled) {
+      this.getToken();
+    } else {
+      this.handleDeactivate();
+    }
   }
 
-  get passwordData() {
-    return {
-      email: this.user.email,
-      password: this.password,
-    };
+  deactivate = false;
+
+  handleDeactivate() {
+    this.deactivate = true;
+    this.tokenSent = false;
+  }
+
+  async deactivate2Fa() {
+    if (this.password === "") return;
+    try {
+      const { success } = await quantumClient().post(
+        "/org/security/2fa/status/off",
+        {
+          userId: this.user.id,
+          password: this.password,
+        }
+      );
+
+      if (success) {
+        window.notify({
+          msg: "Two factor authentication has been successfully deactivate",
+          status: "success",
+        });
+        this.updateTwoFA(false);
+        this.enabled = false;
+      }
+    } catch (err) {
+      window.notify({
+        msg: "An error occured!",
+        status: "error",
+      });
+
+      this.enabled = true;
+    }
   }
 
   async getToken() {
-    if (!this.password) return false;
-    this.loading = true;
-    let status = false;
-    console.log(this.passwordData);
     try {
-      const { success } = await quantumClient().post(
-        "/auth/login",
-        this.passwordData
-      );
-
-      console.log(success);
-      status = success;
-    } catch (error) {
-      status = false;
-    }
-    if (status)
-      window.notify({
-        msg: "An authorization token has been sent to your email",
-        status: "success",
+      const { success } = await quantumClient().post("/org/security/2fa/otp", {
+        userId: this.user.id,
       });
-    else window.notify({ msg: "Invalid password", status: "error" });
-    this.loading = false;
-    this.tokenSent = status;
-  }
 
-  get twoFAPayload() {
-    return {
-      userId: this.user.id,
-      token: this.token,
-    };
+      if (success) {
+        this.tokenSent = success;
+        this.deactivate = false;
+        window.notify({
+          msg: "An authorization token has been sent to your email",
+          status: "success",
+        });
+      }
+    } catch (error) {
+      this.tokenSent = false;
+      window.notify({
+        msg: "An error occured while sending authorization token",
+        status: "error",
+      });
+    }
   }
 
   async submit() {
     if (this.tokenSent) await this.save();
-    else await this.getToken();
+
+    if (this.deactivate) await this.deactivate2Fa();
   }
 
   async save() {
+    if (this.token === "") return;
     this.loading = true;
     try {
       const { success } = await quantumClient().post(
         "/org/security/2fa/setup",
-        this.twoFAPayload
+        {
+          userId: this.user.id,
+          token: this.token,
+        }
       );
       if (success) {
         window.notify({
@@ -164,7 +192,6 @@ export default class TwoFactor extends Vue {
   }
 
   reset() {
-    this.changed = false;
     this.tokenSent = true;
   }
 }
