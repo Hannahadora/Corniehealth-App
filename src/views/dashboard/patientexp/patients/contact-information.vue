@@ -20,14 +20,6 @@
         </span>
       </div>
       <div class="w-full grid grid-cols-3 gap-5 mt-4">
-        <cornie-input
-          class="w-full"
-          v-model="primaryAddress"
-          label="Address"
-          placeholder="Enter"
-          :rules="requiredString"
-          :readonly="readonly"
-        />
         <auto-complete
           class="w-full"
           v-model="country"
@@ -40,8 +32,16 @@
         <auto-complete
           class="w-full"
           v-model="state"
-          label="State"
+          label="State/Region"
           :items="nationState.states"
+          placeholder="Enter"
+          :rules="requiredString"
+          :readonly="readonly"
+        />
+        <cornie-input
+          class="w-full"
+          v-model="city"
+          label="City"
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
@@ -56,16 +56,17 @@
         />
         <cornie-input
           class="w-full"
-          v-model="city"
-          label="City"
+          v-model="primaryAddress"
+          label="Address"
           placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
         />
-        <phone-input
-          label="Phone"
-          v-model:code="dialCode"
-          v-model="phoneNumber"
+        <cornie-input
+          class="w-full"
+          v-model="apartment"
+          label="Apartment"
+          placeholder="Enter"
           :rules="requiredString"
           :readonly="readonly"
         />
@@ -77,13 +78,20 @@
           placeholder="Enter"
           :readonly="readonly"
         />
+        <phone-input
+          label="Phone"
+          v-model:code="dialCode"
+          v-model="phoneNumber"
+          :rules="requiredString"
+          :readonly="readonly"
+        />
       </div>
       <div class="flex justify-end m-5" v-if="!readonly">
         <cornie-btn
           loading-color="white"
           type="submit"
           :loading="loading"
-          class="bg-success text-white px-10 py-1"
+          class="bg-primary text-white px-10 py-1"
         >
           Save
         </cornie-btn>
@@ -153,6 +161,7 @@ export default class PatientContact extends Vue {
   dialCode = "+234";
   email = "";
   contactId = "";
+  apartment = "";
 
   loading = false;
   requiredString = string().required();
@@ -188,6 +197,7 @@ export default class PatientContact extends Vue {
       phone: { number: this.phoneNumber, dialCode: this.dialCode },
       email: this.email,
       type: this.type,
+      apartment: this.apartment,
     } as Contact;
     if (this.patient) payload.patientId = this.patient.id!!;
     if (this.contactId) payload.id = this.contactId;
@@ -205,6 +215,7 @@ export default class PatientContact extends Vue {
     this.email = "";
     this.type = "work";
     this.contactId = "";
+    this.apartment = "";
   }
 
   async addAnother() {

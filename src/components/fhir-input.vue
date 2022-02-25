@@ -1,5 +1,5 @@
 <template>
-  <auto-complete :items="items" v-model="modelValueSync" />
+  <auto-complete :items="items" v-model="modelValueSync" :required="required" />
 </template>
 <script lang="ts">
 import { getDropdown } from "@/plugins/definitions";
@@ -26,6 +26,9 @@ export default class FHIRInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   snomed!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
 
   items: Codeable[] = [];
 

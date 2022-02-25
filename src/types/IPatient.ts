@@ -13,6 +13,7 @@ export interface Contact {
   state?: string;
   email?: string;
   phone?: Phone;
+  apartment?: string;
 }
 export interface Demographics {
   id?: string;

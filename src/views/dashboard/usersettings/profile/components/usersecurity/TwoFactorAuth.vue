@@ -1,146 +1,198 @@
 <template>
-  <div class="border-t border-b border-gray-300">
-    <div
-      class="flex my-2 items-center border-b-2 border-gray-300 border-dotted pb-3"
-    >
-      <ToogleCheck
-        v-model="twoFA"
-        class="mx-2"
+  <div class="w-full flex flex-col mt-6">
+    <span class="w-full block pb-2 border-b-2 border-dashed border-gray-200">
+      <toogle-check
+        v-model="enabled"
         checkedText="Enabled"
         uncheckedText="Disabled"
       />
-    </div>
-    <div class="grid mb-2 grid-cols-12 gap-4">
-      <div class="col-span-4">
-        <label for="Password" class="text-sm mb-0">
-          Enter password to confirm
-        </label>
-        <password-input
-          id="ConfirmPassword"
-          required
-          class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-          placeholder="Confirm New Password"
-          v-model="ConfirmPassword"
-        />
-        <span class="flex justify-start mt-2">
-          <button
-            type="submit"
-            @click="saveTwoFactor()"
-            class="px-6 py-2 flex justify-center items.-cnter text-white appearance-none border-none bg-danger rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 focus-within w-full text-center"
+    </span>
+    <span class="w-full mt-6">
+      <div class="w-1/3 mb-4">
+        <span v-if="tokenSent">
+          <h2 class="cursor-default text-xs font-semibold mt-4">
+            Enter token to confirm
+          </h2>
+          <cornie-input v-model="token" placeholder="enter token" />
+          <cornie-btn
+            :loading="loading"
+            @click="submit"
+            class="text-white mt-3 rounded-lg bg-danger w-full"
           >
-            Save
-          </button>
+            Activate
+          </cornie-btn>
+        </span>
+        <span v-if="deactivate">
+          <h2 class="cursor-default text-xs font-semibold mt-4">
+            Enter password to deactivate
+          </h2>
+          <password-input
+            placeholder="enter password"
+            class="border border-gray-300"
+            v-model="password"
+          />
+          <cornie-btn
+            :loading="loading"
+            @click="submit"
+            class="text-white mt-3 rounded-lg bg-danger w-full"
+          >
+            Deactivate
+          </cornie-btn>
         </span>
       </div>
-    </div>
+    </span>
   </div>
 </template>
-
-<script>
-import ListBoxes from "@/components/ListBoxes.vue";
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
 import ToogleCheck from "@/components/ToogleCheck.vue";
-import NotificationIcon from "@/components/icons/notification.vue";
+import CustomCheck from "@/components/custom-checkbox.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
+import CornieModal from "@/components/modal.vue";
+import { namespace } from "vuex-class";
+import User from "@/types/user";
 import { quantumClient } from "@/plugins/http";
-import store from "@/store";
+import { Watch } from "vue-property-decorator";
+import CornieInput from "@/components/cornieinput.vue";
 
-export default {
-  name: "TwoFactorAuth",
+const user = namespace("user");
+
+@Options({
+  name: "TwoFactorSettings",
   components: {
-    ListBoxes,
     ToogleCheck,
-    NotificationIcon,
+    CornieInput,
+    CornieModal,
+    CustomCheck,
     PasswordInput,
-    CornieCheckbox,
   },
-  data() {
-    return {
-      value: "",
-      password: "",
-      userId: "",
-      token: "",
-      twoFA: false,
-    };
-  },
-  created() {
-    this.twoFA = this.requiresTwoFactorAuth;
-  },
-  watch: {
-    requiresTwoFactorAuth() {
-      this.twoFA = this.requiresTwoFactorAuth;
-    },
-  },
-  computed: {
-    requiresTwoFactorAuth() {
-      return store.state.user.requiresTwoFactorAuth;
-    },
-    payloadOff() {
-      return {
-        password: store.state.user.password,
-        userId: store.state.user.Id,
-      };
-    },
-    payloadOn() {
-      return {
-        token: this.token,
-        userId: store.state.user.user.id,
-      };
-    },
-  },
-  methods: {
-    saveTwoFactor() {},
-    async sendCode() {
-      const payload = {
-        userId: store.state.user.user.id,
-        email: store.state.user.user.email,
-      };
-      try {
-        await quantumClient().post("/org/security/2fa/setup/otp", payload);
-        window.notify({
-          msg: "Code has been sent to your email " + payload.email,
-          status: "success",
-        });
-      } catch (error) {
-        window.notify({
-          msg: "Code not sent please try again",
-          status: "error",
-        });
-      }
-    },
-    async turnOn() {
-      try {
-        await quantumClient().post("/org/security/2fa/setup", this.payloadOn);
-        window.notify({
-          msg: "Turned ON Two-Factor Suceesfully",
-          status: "success",
-        });
-      } catch (error) {
-        window.notify({
-          msg: "Not turned on please try again",
-          status: "error",
-        });
-      }
-    },
-    async turnOff() {
-      try {
-        await quantumClient().post(
-          "/org/security/2fa/status/off",
-          this.payloadOff
-        );
-        window.notify({
-          msg: "Turned OFF Two-Factor Succesfully",
-          status: "success",
-        });
-      } catch (error) {
-        window.notify({
-          msg: "Not turned off please try again",
-          status: "error",
-        });
-      }
-    },
-  },
-};
-</script>
+})
+export default class TwoFactor extends Vue {
+  enabled = false;
+  loading = false;
+  password = "";
+  token = "";
 
-<style scoped></style>
+  tokenSent = false;
+  changed = false;
+
+  @user.State
+  user!: User;
+
+  @user.State
+  requiresTwoFactorAuth!: false;
+
+  @user.Mutation
+  updateTwoFA!: (val: boolean) => void;
+
+  @Watch("enabled")
+  switched() {
+    if (this.enabled) {
+      this.getToken();
+    } else {
+      this.handleDeactivate();
+    }
+  }
+
+  deactivate = false;
+
+  handleDeactivate() {
+    this.deactivate = true;
+    this.tokenSent = false;
+  }
+
+  async deactivate2Fa() {
+    if (this.password === "") return;
+    try {
+      const { success } = await quantumClient().post(
+        "/org/security/2fa/status/off",
+        {
+          userId: this.user.id,
+          password: this.password,
+        }
+      );
+
+      if (success) {
+        window.notify({
+          msg: "Two factor authentication has been successfully deactivate",
+          status: "success",
+        });
+        this.updateTwoFA(false);
+        this.enabled = false;
+      }
+    } catch (err) {
+      window.notify({
+        msg: "An error occured!",
+        status: "error",
+      });
+
+      this.enabled = true;
+    }
+  }
+
+  async getToken() {
+    try {
+      const { success } = await quantumClient().post("/org/security/2fa/otp", {
+        userId: this.user.id,
+      });
+
+      if (success) {
+        this.tokenSent = success;
+        this.deactivate = false;
+        window.notify({
+          msg: "An authorization token has been sent to your email",
+          status: "success",
+        });
+      }
+    } catch (error) {
+      this.tokenSent = false;
+      window.notify({
+        msg: "An error occured while sending authorization token",
+        status: "error",
+      });
+    }
+  }
+
+  async submit() {
+    if (this.tokenSent) await this.save();
+
+    if (this.deactivate) await this.deactivate2Fa();
+  }
+
+  async save() {
+    if (this.token === "") return;
+    this.loading = true;
+    try {
+      const { success } = await quantumClient().post(
+        "/org/security/2fa/setup",
+        {
+          userId: this.user.id,
+          token: this.token,
+        }
+      );
+      if (success) {
+        window.notify({
+          msg: "Two factor authentication activated!",
+          status: "success",
+        });
+        this.updateTwoFA(this.enabled);
+      } else
+        window.notify({
+          msg: "Two factor authentication not activated",
+          status: "error",
+        });
+    } catch (error) {
+      window.notify({
+        msg: "Two factor authentication not activated",
+        status: "error",
+      });
+    }
+    this.reset();
+    this.loading = false;
+  }
+
+  reset() {
+    this.tokenSent = true;
+  }
+}
+</script>
