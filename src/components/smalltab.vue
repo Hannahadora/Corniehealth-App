@@ -1,22 +1,39 @@
 <template>
   <div>
-    <div class="flex w-full font-semibold py-2 mx-auto mt-4">
+    <div class="flex w-full font-semibold mt-5">
+      <span class="text-danger text-sm font-semibold float-left flex justify-start w-full">
+        <span class="text-lg -mt-1 mr-1">+</span> Create
+      </span>
+      <div>
+        
+      </div>
       <template v-for="(tab, index) in items" :key="`tab-${index}`">
-        <span
-          class="flex px-3 py-2 border-b-4  text-sm cursor-pointer hover:bg-gray-300 hover:bg-opacity-20"
-          :class="syncedValue == index ? ['border-gray-100 bg-white'] : ['text-gray-500 bg-gray-100']"
-          @click="syncedValue = index"
-        >
-          {{ tab }}
-        </span>
+        <div class="bg-gray-100 rounded  w-56 h-8 p-1 text-center">
+          <span
+            class="flex   hover:bg-gray-300 hover:bg-opacity-20  mt-0.5 justify-center text-center"
+            :class="syncedValue == index ? ['border-gray-100 w-full pt-0.5 h-5 text-center bg-white'] : ['text-gray-600']"
+            @click="syncedValue = index"
+          >
+        
+          <span class="text-center text-xs">
+
+            {{ tab }}
+          </span>
+       
+           
+          </span>
+        </div>
       </template>
-      <span class="flex px-3 space-x-6 pb-2 flex-grow justify-end float-right">
-          <dots-horizontal-icon />
-        <filter-icon class="cursor-pointer" @click="$emit('filter')" />
+      <span class="flex px-3 w-full space-x-6 pb-2 justify-end float-right">
+          <!-- <dots-horizontal-icon /> -->
         <span class="flex space-x-4">
+            <span class="text-sm ">{{ new Date(dDate).toLocaleDateString("en-US", options) }}</span>
             <arrow-left @click="$emit('left',syncedValue)" class="cursor-pointer"/>
-            <span class="text-sm">{{ new Date(dDate).toLocaleDateString("en-US", options) }}</span>
             <arrow-right @click="$emit('right',syncedValue)" class="cursor-pointer"/>
+        </span>
+        <span class="text-sm text-primary font-bold border-1 border-primary rounded-lg flex space-x-2 py-2 px-4">
+           <filter-icon class="cursor-pointer mr-2" @click="$emit('filter')" />
+           Filter
         </span>
       </span>
     </div>
