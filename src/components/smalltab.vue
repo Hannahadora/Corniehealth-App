@@ -1,41 +1,55 @@
 <template>
   <div>
-    <div class="flex w-full font-semibold mt-5">
-      <span class="text-danger text-sm font-semibold float-left flex justify-start w-full">
-        <span class="text-lg -mt-1 mr-1">+</span> Create
-      </span>
-      <div>
-        
-      </div>
-      <template v-for="(tab, index) in items" :key="`tab-${index}`">
-        <div class="bg-gray-100 rounded  w-56 h-8 p-1 text-center">
-          <span
-            class="flex   hover:bg-gray-300 hover:bg-opacity-20  mt-0.5 justify-center text-center"
-            :class="syncedValue == index ? ['border-gray-100 w-full pt-0.5 h-5 text-center bg-white'] : ['text-gray-600']"
-            @click="syncedValue = index"
-          >
-        
-          <span class="text-center text-xs">
+    <div class="flex w-full font-medium mt-5">
+      <div class="flex  justify-start float-left w-full">
+            <p class="text-sm mr-2">{{ new Date(dDate).toLocaleDateString("en-US", options) }}</p>
+            <span class="flex space-x-4 mr-4"> 
+                  <arrow-left @click="$emit('left',syncedValue)" class="cursor-pointer"/>
+                  <arrow-right @click="$emit('right',syncedValue)" class="cursor-pointer"/>
+            </span>
+          <template v-for="(tab, index) in items" :key="`tab-${index}`">
+            <div class="rounded cursor-pointer  w-20 h-8 p-1 text-center" style="background:#F0F1F5">
+              <span
+                class="flex hover:bg-gray-300 hover:bg-opacity-20  mt-0.5 justify-center text-center"
+                :class="syncedValue == index ? ['border-gray-100 pt-1 h-6 cursor-pointer rounded-md w-full text-center bg-white'] : ['text-black']"
+                :style="syncedValue == index ? ['margin-top: -1px;'] : []"
+                @click="syncedValue = index"
+              >
+            
+              <span class="text-center text-xs">
 
-            {{ tab }}
+                {{ tab }}
+              </span>
+          
+              
+              </span>
+            </div>
+          </template>
+      </div>
+       <div class="flex float-left justify-start">
+      </div> 
+
+      <div class="w-full">
+        <span class="flex space-x-2 justify-end float-right">
+            <!-- <dots-horizontal-icon /> -->
+          <span class="text-sm text-primary mt-1 font-bold flex space-x-2">
+            <filter-icon class="cursor-pointer mr-2 h-4 w-4" @click="$emit('filter')" />
+            Filter
           </span>
-       
-           
-          </span>
-        </div>
-      </template>
-      <span class="flex px-3 w-full space-x-6 pb-2 justify-end float-right">
-          <!-- <dots-horizontal-icon /> -->
-        <span class="flex space-x-4">
-            <span class="text-sm ">{{ new Date(dDate).toLocaleDateString("en-US", options) }}</span>
-            <arrow-left @click="$emit('left',syncedValue)" class="cursor-pointer"/>
-            <arrow-right @click="$emit('right',syncedValue)" class="cursor-pointer"/>
+          <cornie-menu top="30px" class="cursor-pointer">
+                  <template #activator="{ on }">
+                    <icon-btn v-on="on">
+                      <span class="bg-danger flex text-white rounded-lg py-1.5 px-4 text-sm">
+                          <span class="text-lg -mt-1.5 mr-1">+</span> Create
+                        </span>
+                    </icon-btn>
+                  </template>
+                  <cornie-card-text>
+                      <slot name="actions"  />
+                  </cornie-card-text>
+          </cornie-menu>
         </span>
-        <span class="text-sm text-primary font-bold border-1 border-primary rounded-lg flex space-x-2 py-2 px-4">
-           <filter-icon class="cursor-pointer mr-2" @click="$emit('filter')" />
-           Filter
-        </span>
-      </span>
+      </div>
     </div>
     <tab :vnode="$slots.default()[syncedValue]" />
   </div>
@@ -51,7 +65,8 @@ import FilterByIcon from "@/components/icons/FilterByIcon.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import ArrowLeft from "@/components/icons/grayarrow.vue";
 import ArrowRight from "@/components/icons/orangearrow.vue";
-;
+import CornieMenu from "@/components/newMenu.vue";
+import CornieCard from "@/components/cornie-card";
 
 @Options({
   name: "tab",
@@ -73,7 +88,9 @@ class Tab extends Vue {
     DotsHorizontalIcon,
     FilterIcon,
     ArrowLeft,
-    ArrowRight
+    ArrowRight,
+    CornieMenu,
+    ...CornieCard
   },
 })
 export default class Tabs extends Vue {

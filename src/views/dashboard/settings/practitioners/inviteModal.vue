@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-4/12 h-6/12">
+  <cornie-dialog v-model="show" center class="w-4/12 h-4/12">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -14,55 +14,37 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full pb-2 mb-5">
-                <span class="text-dark text-sm font-medium">Send an invitation to your practitioners to complete their registration.</span>
+            <div class="w-full pb-2 mb-3">
+                <span class="text-dark text-sm font-medium">Send an email invite to your practitioners to complete their registration.	</span>
             </div>
-              <cornie-input
-                    label="First name"
-                    placeholder="--Enter--"
-                    :required="true"
-                />
-                  <cornie-input
-                    label="Last name"
-                    placeholder="--Enter--"
-                    :required="true"
-                />
-                <cornie-input
-                    label="Email"
-                    placeholder="--Enter--"
-                   :required="true"
-                />
-               <!-- <div>
-                <span class="text-sm font-semibold mb-1">Email Address</span>
-                <Multiselect
-                  v-model="paymentCategories"
-                  mode="tags"
-                  :closeOnSelect="true"
-                  :searchable="true"
-                    :filter-results="true"
-                  :createTag="true"
-                  :options="Mail"
-                  label="display"
-                  placeholder="--Select--"
-                  class="w-full"
-                >
-                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                    <div class="multiselect-tag is-user">
-                      {{ option.display }}
-                      <span
-                        v-if="!disabled"
-                        class="multiselect-tag-remove"
-                        @mousedown.prevent="handleTagRemove(option, $event)"
-                      >
-                        <span class="multiselect-tag-remove-icon"></span>
-                      </span>
+            <div  class="border-b-2 border-gray-100 pb-3 border-dashed">
+              <div class="grid grid-cols-2 gap-4">
+                    <cornie-input
+                        label="Full name"
+                        placeholder="First Name, Last Name"
+                    />
+                    <cornie-input
+                        label="Email Address"
+                        placeholder="Enter email address"
+                    />
+              </div>
+              <span class="text-sm text-danger font-semibold">
+                Add <span class="text-lg"> + </span>
+              </span>
+            </div>
+             <div class="w-full flex space-x-7 mt-4 pb-4">
+                <div class="w-full dflex space-x-4 mb-3">
+                    <div class="w-full">
+                        <p class="text-xs text-dark font-medium">
+                           Sam John
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                       samjohn@reddington.ng
+                    </p>
                     </div>
-                  </template>
-                  <template v-slot:option="{ option }">
-                     <span>{{option?.display}}</span>
-                  </template>
-                </Multiselect>
-              </div> -->
+                </div>
+                <delete-icon class="fill-current text-danger cursor-pointer"/>
+            </div>
         </v-form>
       </cornie-card-text>
       
@@ -106,6 +88,9 @@ import { namespace } from "vuex-class";
 import Multiselect from "@vueform/multiselect";
 import CornieSelect from "@/components/cornieselect.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import DeleteIcon from "@/components/icons/delete.vue";
+import CornieInput from "@/components/cornieinput.vue";
+
 
 const practitioner = namespace("practitioner");
 
@@ -122,7 +107,9 @@ const practitioner = namespace("practitioner");
     IconInput,
     CornieBtn,
     CornieSelect,
-    CloseIcon
+    CloseIcon,
+    DeleteIcon,
+    CornieInput
   },
 })
 export default class SpecialModal extends Vue {

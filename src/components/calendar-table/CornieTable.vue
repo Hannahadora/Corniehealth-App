@@ -2,10 +2,10 @@
   <div>
     <div class="flex" v-if="!listmenu">
       <slot name="topleft" v-if="search">
-        <span class="flex items-center" :class="{'mt-4' : !menu}">
-          <sort-icon class="mr-5" v-if="menu"/>
+        <span class="flex items-center">
+          <sort-icon class="mr-5" />
           <icon-input
-            class="border border-gray-600 py-2 rounded-full focus:outline-none"
+            class="border border-gray-600 rounded-full focus:outline-none"
             placeholder="Search Table"
             v-model="query"
           >
@@ -29,68 +29,43 @@
     </div>
 
     <cornie-card class="mt-3 block table-card pb-2" flat>
-      <table class="w-full h-full" style="border-radius: 5px">
-        <thead class="bg-accent p-4 text-primary">
-          <th class="text-left p-2" width="1" v-if="check">
-            <cornie-checkbox @click="selectAll" v-model="selectedAll" />
-          </th>
-          <th class="text-left p-2" width="1">
-            <span> # </span>
-          </th>
+      <table class="w-full h-full my-5" style="border-radius: 5px">
+        <thead class="border-b-2 border-gray-100  text-black font-semibold" style="height: 3.5rem;">
+
+
           <template v-for="(column, index) in preferredColumns" :key="index">
-            <th class="text-left p-3" v-if="column.show">
-              <div class="flex items-center">
+            <th class="text-right" v-if="column.show">
+              <div class="flex items-center border-r-2 border-gray-100  w-full h-full">
                 <slot :name="`${column.key}-header`">
-                  <span class="uppercase text-xs">
-                    {{ column.title }}
+                  <span class="uppercase text-xs font-semibold text-gray-400">
+                    {{ column.subtitle }}
+                    <p class="uppercase  text-lg text-black font-bold">
+                        {{ column.title }}
+                      </p>
                   </span>
+                   
                 </slot>
-                <filter-by-icon
-                  v-if="!column.noOrder"
-                  class="ml-2 cursor-pointer"
-                  @click="setOrderBy(column.orderBy)"
-                />
               </div>
             </th>
           </template>
-          <th class="text-left p-2" width="1">
-            <table-settings-icon
-              class="text-primary cursor-pointer"
-              @click="showColumnFilter = true"
-            />
-          </th>
+
         </thead>
 
         <tr
           v-for="(row, index) in filteredItems"
           :key="index"
-          class="border-t-2 border-2 border-y-gray"
-        >
-          <td class="p-2" v-if="check">
-            <cornie-checkbox @click="select(row)" :checked="isSelected(row)" />
-          </td>
-          <td class="p-2">{{ index + 1 }}</td>
+          class="border-t-2"
+          style="height: 3.5rem;"
+         >
+          <td class="p-2 border-r-2 border-gray-100">{{ index + 1 }}</td>
           <template v-for="(column, index) in preferredColumns" :key="index">
-            <td class="p-3 text-sm capitalize" v-if="column.show">
+            <td class="p-3 text-sm capitalize border-r-2 border-gray-100" v-if="column.show">
               <slot :name="column.key" :item="row" :index="index">
                 {{ row[column.key] }}
               </slot>
             </td>
           </template>
-          <td>
-            <div class="flex justify-center">
-              <cornie-menu top="30px" right="100%">
-                <template #activator="{ on }">
-                  <icon-btn v-on="on">
-                    <dots-horizontal-icon v-on="on" />
-                  </icon-btn>
-                </template>
-                <cornie-card-text>
-                  <slot name="actions" :item="row" :index="index" />
-                </cornie-card-text>
-              </cornie-menu>
-            </div>
-          </td>
+             <td class="p-2 border-r-2 border-gray-100">{{ index + 1 }}</td>
         </tr>
       </table>
     </cornie-card>
@@ -140,6 +115,7 @@ interface IColumn {
   title: string;
   key: string | number;
   orderBy: Sorter;
+  subtitle: string;
 }
 
 function defaultFilter(item: any, query: string) {

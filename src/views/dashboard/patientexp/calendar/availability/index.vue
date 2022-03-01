@@ -28,14 +28,29 @@
                     <day-section @set-oneId="setoneId" :schedules="schedules" :startDate="'3/22/2022'"/>
                 </div>
                 <div>
-                    <week-section @set-oneId="setoneId" :schedules="schedules" :startDate="'3/22/2022'"></week-section>
+                    <week-section @set-oneId="setoneId" :schedules="schedules" :startDate="'22/3/2022'"></week-section>
                 </div>
                 <div>
                 <month-section @set-oneId="setoneId" :schedules="schedules" :startDate="'3/22/2022'"/>
                 </div>
+                 <template #actions>
+                    <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showAvailable">
+                        <span class="text-xs font-medium">Schedule</span>
+                    </div>
+                    <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showAppointment = true">
+                        <span class="text-xs font-medium">Appointment</span>
+                    </div>
+                    <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showblocked = true">
+                        <span class="text-xs font-medium">Blocked Slot</span>
+                    </div>
+                </template>
             </tabs>
       <advanced-filter v-model="showFilter" @applyfilter="applyFilter" />
 
+        <availabilty-modal v-model="showAvailableModal"/>
+        <appointment-modal v-model="showAppointment"/>
+         <blocked-modal v-model="showblocked"/>
+        
       
     </div>
   </div>
@@ -47,7 +62,15 @@ import Tabs from "@/components/smalltab.vue";
 import WeekSection from "./week.vue";
 import DaySection from "./day.vue";
 import MonthSection from "./month.vue"
+import AvailabiltyModal from "./addScheduleModal.vue";
+import AppointmentModal from "../appointments/addAppointmentModal.vue";
+import BlockedModal from "../blockedslots/addBlockSlots.vue";
+import AdvancedFilter from "./advanced-filter.vue";
+import { namespace } from "vuex-class";
+import ISchedule from "@/types/ISchedule";
+import slotService from "@/views/dashboard/visits/helper/slot-service";
 
+const visitsStore = namespace("visits");
 
 @Options({
   name: "AvailabilityIndex",
@@ -55,16 +78,53 @@ import MonthSection from "./month.vue"
       Tabs,
       WeekSection,
       DaySection,
-      MonthSection
+      MonthSection,
+      AvailabiltyModal,
+      AppointmentModal,
+      BlockedModal,
+      AdvancedFilter
   },
 })
+
 export default class AvailabilityIndex extends Vue {
+
     tabLinks = [
-    "Day",
-    "Week",
-    "Month"
-  ];
+      "Day",
+      "Week",
+      "Month"
+    ];
+
   currentTab = 0;
+  showAvailableModal = false;
+  showAppointment = false;
+  showblocked = false;
+  showFilter = false;
+  filterOptions: any = {};
+  filteredSlots: any = [];
+
+  @visitsStore.Action
+  schedulesByPractitioner!: (id: string) => Promise<ISchedule[]>;
+
+  showAvailable(){
+      this.showAvailableModal = true;
+  }
+   showFilterPane() {
+    this.showFilter = true;
+  }
+  async applyFilter(filterOpions: any) {
+    this.showFilter = false;
+    this.showFilter = false;
+    this.filterOptions = filterOpions;
+    const loadedSchedules: any = await this.schedulesByPractitioner(
+      filterOpions.byPractitioners[0]
+    );
+
+    const response: any = await slotService.getPractitionersSlots(
+      filterOpions.byPractitioners[0]
+    );
+    this.filteredSlots = response?.data;
+  }
+
 
 }
 </script>

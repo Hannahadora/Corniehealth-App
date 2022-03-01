@@ -29,7 +29,7 @@
         v-if="items?.length > 3"
         class="image-con rounded-full bg-blue-700 -ml-3 flex items-center border justify-center  relative"
       >
-        <span class="text-xs">+{{ items?.length - actors?.length }}</span>
+        <span class="text-xs text-white">+{{ items?.length - actors?.length }}</span>
       </div>
   
   </div>

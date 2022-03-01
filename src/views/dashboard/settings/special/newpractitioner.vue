@@ -60,9 +60,9 @@
                   :hide-selected="false"
                   id="field-id"
                   :options="allPractitioners"
-                  value-prop="code"
-                  trackBy="code"
-                  label="code"
+                  value-prop="value"
+                  trackBy="display"
+                  label="display"
                   placeholder="--Select--"
                   class="w-full"
                 >
@@ -209,7 +209,7 @@ export default class newPractitioner extends Vue {
   get allPractitioners() {
     return this.practitioners.map((i: any) => {
       return {
-        code: i.id,
+        value: i.id,
         display: i.firstName +' '+ i.lastName,
       };
     });
@@ -260,8 +260,8 @@ export default class newPractitioner extends Vue {
   }
 
 
-  created() {
-    this.fetchPractitioners();
+  async created() {
+    await this.fetchPractitioners();
   }
 }
 </script>

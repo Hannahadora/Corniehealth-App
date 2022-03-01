@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-lg bg-white p-3 mb-2 mt-5 w-full cursor-pointer" :class="{'shadow-md':!addborder}">
+  <div class="rounded-lg bg-white  w-full cursor-pointer" :class="{'shadow-md':!addborder}">
     <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div
@@ -100,7 +100,7 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "./icons/chevrondownprimary.vue";
+import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import MoveIcon from "@/components/icons/move.vue";
 import GroupIcon from "@/components/icons/groupform.vue";
 import QuestionIcon from "@/components/icons/addform.vue";
