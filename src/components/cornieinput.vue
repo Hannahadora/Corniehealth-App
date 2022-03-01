@@ -72,7 +72,7 @@
         </div>
         <div
           class="rounded-lg pr-2 bg-white flex items-center justify-center"
-          :class="{'border-l-2 ' : !appendleft}"
+          :class="{ 'border-l-2 ': !appendleft }"
           style="border-top-left-radius: 0; border-bottom-left-radius: 0"
           v-if="$slots.append"
         >
@@ -152,14 +152,14 @@ export default class CornieInput extends Vue {
   font-weight: 400;
   color: #667499;
 }
-.rounded-l{
+.rounded-l {
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
   border-left-width: 0px !important;
   border-left: none;
 }
-.rounded-r{
-   border-top-right-radius: 0px !important;
+.rounded-r {
+  border-top-right-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
   border-right-width: 0px !important;
   border-right: none;

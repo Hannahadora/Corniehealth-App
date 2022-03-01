@@ -2,7 +2,7 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full mb-3">
       <button
-        class="bg-danger rounded-full text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         @click="$router.push('add-location')"
       >
         Add New Location
@@ -68,6 +68,7 @@ import EditIcon from "@/components/icons/edit.vue";
 import { Watch } from "vue-property-decorator";
 
 const location = namespace("location");
+const dropdown = namespace("dropdown");
 
 @Options({
   components: {
@@ -100,9 +101,14 @@ export default class LocationExistingState extends Vue {
   @location.Action
   deleteLocation!: (id: string) => Promise<boolean>;
 
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+
   getKeyValue = getTableKeyValue;
 
   refreshing = false;
+
+  dropdowns = {} as IIndexableObject;
 
   rawHeaders = [
     {
@@ -112,11 +118,11 @@ export default class LocationExistingState extends Vue {
     },
     { title: "Address", key: "address", show: true },
     { title: "Alias", key: "alias", show: true },
-    {
-      title: "Altitude",
-      key: "altitude",
-      show: false,
-    },
+    // {
+    //   title: "Altitude",
+    //   key: "altitude",
+    //   show: false,
+    // },
     {
       title: "Hours of operation",
       key: "hoursOfOperation",
@@ -147,10 +153,14 @@ export default class LocationExistingState extends Vue {
   get items() {
     const locations = this.locations.map((location) => {
       const opHours = this.stringifyOperationHours(location.hoursOfOperation);
+      let operationalStatus = this.dropdowns.operationalStatus?.find(
+        (item: any) => item.code === location.operationalStatus
+      );
       return {
         ...location,
         action: location.id,
         hoursOfOperation: opHours,
+        operationalStatus: operationalStatus?.display,
       };
     });
     if (!this.query) return locations;
@@ -187,7 +197,18 @@ export default class LocationExistingState extends Vue {
   }
 
   async created() {
+    const data = await this.getDropdowns("location");
     await this.fetchLocations();
+
+    let op = data.operationalStatus.filter((item: any) => item.code !== "O");
+    let operationalStatus = [{ code: "O", display: "Opened" }, ...op];
+
+    this.dropdowns = {
+      mode: data.mode,
+      physicalType: data.physicalType,
+      type: data.type,
+      operationalStatus,
+    };
   }
 }
 </script>

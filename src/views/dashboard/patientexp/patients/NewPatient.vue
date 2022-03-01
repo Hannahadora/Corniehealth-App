@@ -53,12 +53,20 @@
 
             <cornie-input
               class="w-full"
-              label="Surname"
+              label="Last Name"
               placeholder="Enter"
               v-model="lastName"
               :rules="requiredRule"
               :readonly="viewOnly"
             />
+            <cornie-input
+              label="Nationality"
+              class="w-full"
+              placeholder="Enter"
+              v-model="nationality"
+              :readonly="viewOnly"
+            >
+            </cornie-input>
 
             <date-picker
               class="w-full"
@@ -71,7 +79,64 @@
 
             <cornie-select
               class="w-full"
-              label="Multiple Birth"
+              label="Sex"
+              :rules="requiredRule"
+              placeholder="Select One"
+              :items="genderOptions"
+              v-model="gender"
+              :readonly="viewOnly"
+            />
+
+            <cornie-input
+              label="Blood Group"
+              class="w-full"
+              placeholder="Enter"
+              v-model="nationality"
+              :readonly="viewOnly"
+            >
+            </cornie-input>
+
+            <cornie-input
+              label="Genotype"
+              class="w-full"
+              placeholder="Enter"
+              v-model="genotype"
+              :readonly="viewOnly"
+            >
+            </cornie-input>
+
+            <cornie-select
+              class="w-full"
+              placeholder="Select One"
+              :items="['Single', 'Divorced', 'Widowed', 'Married']"
+              v-model="maritalStatus"
+              :rules="requiredRule"
+              :readonly="viewOnly"
+            >
+              <template #labelicon>
+                <cornie-tooltip>
+                  <template #tooltip>
+                    <span>Marital status</span>
+                  </template>
+                  <question-icon
+                    class="fill-current text-primary leading-none"
+                  />
+                </cornie-tooltip>
+              </template>
+              <template #label> Marital status </template>
+            </cornie-select>
+
+            <cornie-input
+              label="Number of Children"
+              class="w-full"
+              placeholder="Enter"
+              v-model="numberOfChildren"
+              :readonly="viewOnly"
+            >
+            </cornie-input>
+            <cornie-select
+              class="w-full"
+              label="Multiple Birth?"
               placeholder="Select One"
               :items="multipleBirthOptions"
               v-model="multipleBirth"
@@ -84,56 +149,17 @@
               type="number"
               :rules="multipleBirthRule"
               :readonly="viewOnly"
+              label="Number of Multiple Births"
             >
-              <template #label> Multiple Birth Integer (1 - 10) </template>
-            </cornie-input>
-            <cornie-select
-              class="w-full"
-              label="Gender"
-              :rules="requiredRule"
-              placeholder="Select One"
-              :items="genderOptions"
-              v-model="gender"
-              :readonly="viewOnly"
-            />
-
-            <cornie-select
-              class="w-full"
-              placeholder="Select One"
-              :items="['Single', 'Divorced', 'Widowed', 'Married']"
-              v-model="maritalStatus"
-              :rules="requiredRule"
-              :readonly="viewOnly"
-            >
-              <template #label> Marital status </template>
-            </cornie-select>
-
-            <cornie-input
-              :readonly="viewOnly"
-              class="w-full"
-              placeholder="Enter"
-              label="Identity No"
-              v-model="idNumber"
-              :rules="requiredRule"
-            >
-              <template #prepend class="-0">
-                <cornie-menu class="cursor-pointer">
-                  <template #activator="{ on }">
-                    <div v-on="on" class="flex items-center">
-                      <span class="mr-3"> {{ idType }}</span>
-                      <chevron-down-icon />
-                    </div>
+              <template #labelicon>
+                <cornie-tooltip>
+                  <template #tooltip>
+                    <span>Number of multiple births</span>
                   </template>
-                  <div
-                    class="m-1 p-2"
-                    :class="{ 'bg-gray-100': idOption == idType }"
-                    v-for="(idOption, index) in idOptions"
-                    :key="index"
-                    @click="selectId(idOption)"
-                  >
-                    {{ idOption }}
-                  </div>
-                </cornie-menu>
+                  <info-icon
+                    class="fill-current text-primary leading-none mt-1.5"
+                  />
+                </cornie-tooltip>
               </template>
             </cornie-input>
           </div>
@@ -142,7 +168,116 @@
               loading-color="white"
               type="submit"
               :loading="loading"
-              class="bg-success text-white px-10 py-1"
+              class="bg-primary text-white px-10 py-1 rounded-md"
+            >
+              Save
+            </cornie-btn>
+          </div>
+        </v-form>
+      </cornie-card-text>
+    </cornie-card>
+
+    <cornie-card class="my-5 mr-4">
+      <cornie-card-title class="cursor-pointer" @click="togglePatientIdentity">
+        <h1 class="text-lg font-extrabold">Identity & Association</h1>
+        <cornie-spacer />
+        <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
+          Edit
+        </span>
+        <completed-icon v-if="!viewOnly && basicCompleted" class="mr-2" />
+        <icon-btn @click="togglePatientIdentity">
+          <chevron-down-icon v-if="showPatientIdentity" />
+          <chevron-right-icon v-else />
+        </icon-btn>
+      </cornie-card-title>
+
+      <!-- Patient Identity and association -->
+      <cornie-card-text :class="{ hidden: !showPatientIdentity }">
+        <v-form @submit="saveIdentity" ref="basic">
+          <div class="grid grid-cols-12">
+            <div class="col-span-4">
+              <cornie-input
+                :readonly="viewOnly"
+                class="w-full"
+                placeholder="Enter"
+                label="Identity No"
+                v-model="idNumber"
+                :rules="requiredRule"
+              >
+                <template #prepend class="-0">
+                  <cornie-menu class="cursor-pointer">
+                    <template #activator="{ on }">
+                      <div v-on="on" class="flex items-center">
+                        <span class="mr-3"> {{ idType }}</span>
+                        <chevron-down-icon />
+                      </div>
+                    </template>
+                    <div
+                      class="m-1 p-2"
+                      :class="{ 'bg-gray-100': idOption == idType }"
+                      v-for="(idOption, index) in idOptions"
+                      :key="index"
+                      @click="selectId(idOption)"
+                    >
+                      {{ idOption }}
+                    </div>
+                  </cornie-menu>
+                </template>
+              </cornie-input>
+            </div>
+          </div>
+          <button
+            class="flex flex-row items-center w-full mt-5"
+            type="button"
+            @click="showAssociationsDialog = true"
+          >
+            <h1 class="text-sm font-bold text-red-500 mr-3">
+              ADD ASSOCIATIONS
+            </h1>
+            <div>
+              <plus-icon />
+            </div>
+          </button>
+          <div class="my-4" v-if="allAssociations.length">
+            <div class="flex">
+              <template
+                v-for="(assoc, index) in allAssociations"
+                :key="assoc.id"
+              >
+                <div
+                  class="flex items-center px-3"
+                  :class="
+                    index !== associations.length - 1
+                      ? 'border-r border-gray-400'
+                      : ''
+                  "
+                >
+                  <div class="flex items-center mr-10">
+                    <div
+                      class="w-8 h-8 p-4 rounded-full bg-blue-500 text-white mr-2 flex justify-center items-center"
+                    >
+                      {{ assoc.name.substr(0, 2).toUpperCase() }}
+                    </div>
+                    <div class="flex-1">
+                      <h1 class="text-sm">{{ assoc.name }}</h1>
+                      <h1 class="text-xs">
+                        {{ assoc.accountType }}\{{ assoc.relationship }}
+                      </h1>
+                    </div>
+                  </div>
+                  <button type="button" @click="delAssoc(assoc.id)">
+                    <delete-icon />
+                  </button>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="flex justify-end m-5" v-if="!viewOnly">
+            <cornie-btn
+              loading-color="white"
+              type="submit"
+              :loading="loading"
+              class="bg-primary text-white px-10 py-1 rounded-md"
             >
               Save
             </cornie-btn>
@@ -223,7 +358,7 @@
           <cornie-btn
             loading-color="white"
             type="submit"
-            class="bg-success text-white px-10 py-1"
+            class="bg-primary text-white px-10 py-1"
           >
             Save
           </cornie-btn>
@@ -249,11 +384,19 @@
       :patient="patient"
       v-model="showEmergencyContactDialog"
     />
+
+    <!-- Now Links -->
     <guarantor-dialog
       :patient="patient"
       v-model:guarantor="guarantor"
       v-model="showGuarantorDialog"
     />
+    <association-dialog
+      :associtions="associations"
+      v-model="showAssociationsDialog"
+      @add-associations="addAssociations"
+    />
+    <!-- Now Payment account -->
     <insurance-dialog
       :patient="patient"
       v-model:insurances="insurances"
@@ -271,6 +414,7 @@
       v-model="showDemographicsDialog"
     />
 
+    <!-- Now primary doctor -->
     <practitioners-dialog
       :patient="patient"
       v-model="showPractitionersDialog"
@@ -300,6 +444,7 @@ import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
 import MedicineIcon from "@/components/icons/MedicineIcon.vue";
 import ScienceIcon from "@/components/icons/ScienceIcon.vue";
 import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
+import LinkIcon from "@/components/icons/LinkIcon.vue";
 import UrlIcon from "@/components/icons/UrlIcon.vue";
 import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
 import DemographicIcon from "@/components/icons/DemographicIcon.vue";
@@ -310,6 +455,9 @@ import GuarantorDialog from "./dialogs/GuarantorDialog.vue";
 import InsuranceDialog from "./dialogs/InsuranceDialog.vue";
 import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
 import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
+import AssociationDialog from "./dialogs/AssociationDialog.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import DeleteIcon from "@/components/icons/delete-red.vue";
 
 import ContactInfo from "./contact-information.vue";
 import { string, number, date, array } from "yup";
@@ -318,6 +466,9 @@ import { cornieClient } from "@/plugins/http";
 import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { namespace } from "vuex-class";
 import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
+import CornieTooltip from "@/components/tooltip.vue";
+import QuestionIcon from "@/components/icons/question.vue";
+import InfoIcon from "@/components/icons/info-blue-bg.vue";
 
 const patients = namespace("patients");
 
@@ -325,6 +476,9 @@ const patients = namespace("patients");
   name: "new-patient",
   components: {
     ...CornieCard,
+    CornieTooltip,
+    QuestionIcon,
+    InfoIcon,
     CornieSpacer,
     ContactInfo,
     ChevronRightIcon,
@@ -350,15 +504,20 @@ const patients = namespace("patients");
     UrlIcon,
     GuarantorIcon,
     DemographicIcon,
+    LinkIcon,
+    DeleteIcon,
 
     EmergencyContactDialog,
     GuarantorDialog,
     InsuranceDialog,
     ProvidersDialog,
+    AssociationDialog,
+    PlusIcon,
   },
 })
 export default class NewPatient extends Vue {
   showPatientInformation = true;
+  showPatientIdentity = true;
   showContactInfo = true;
   showOptionalInformation = false;
   idOptions = ["NIN", "BVN"];
@@ -380,6 +539,9 @@ export default class NewPatient extends Vue {
 
   loading = false;
 
+  nationality = "";
+  numberOfChildren = "";
+
   vip = false;
   multipleBirth = false;
   multipleBirthInteger = 0;
@@ -398,6 +560,7 @@ export default class NewPatient extends Vue {
   insurances = [];
   labs = [];
   pharmacies = [];
+  associations = [] as any;
   demographics!: Demographics;
   practitioners = [];
 
@@ -405,6 +568,7 @@ export default class NewPatient extends Vue {
 
   showEmergencyContactDialog = false;
   showGuarantorDialog = false;
+  showAssociationsDialog = false;
   showInsuranceDialog = false;
   showProvidersDialog = false;
   showPractitionersDialog = false;
@@ -446,6 +610,18 @@ export default class NewPatient extends Vue {
     this.$router.push(`/dashboard/provider/experience/edit-patient/${this.id}`);
   }
 
+  addAssociations(payload: any) {
+    this.associations = [...payload, ...this.associations];
+  }
+
+  async delAssoc(id: string) {
+    this.associations = this.associations.filter((item: any) => item.id !== id);
+  }
+
+  get allAssociations() {
+    return this.associations;
+  }
+
   get providerLength() {
     const labLen = this.patient?.preferredLabs?.length || this.labs.length;
     const pharmLen =
@@ -455,6 +631,12 @@ export default class NewPatient extends Vue {
   get optionalItems() {
     return [
       {
+        name: "Payment Accounts",
+        icon: "insurance-icon",
+        click: () => (this.showInsuranceDialog = true),
+        number: this.patient?.insurances?.length || this.insurances.length,
+      },
+      {
         name: "Emergency Contact",
         icon: "emergency-icon",
         click: () => (this.showEmergencyContactDialog = true),
@@ -463,25 +645,13 @@ export default class NewPatient extends Vue {
           this.emergencyContacts.length,
       },
       {
-        name: "Add Guarantor",
-        icon: "guarantor-icon",
-        click: () => (this.showGuarantorDialog = true),
-        number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
-      },
-      {
-        name: "Insurance",
-        icon: "insurance-icon",
-        click: () => (this.showInsuranceDialog = true),
-        number: this.patient?.insurances?.length || this.insurances.length,
-      },
-      {
         name: "Providers",
         icon: "medicine-icon",
         click: () => (this.showProvidersDialog = true),
         number: this.providerLength,
       },
       {
-        name: "General Practitioners",
+        name: "Primary Doctor",
         icon: "medical-team-icon",
         click: () => (this.showPractitionersDialog = true),
         number:
@@ -494,11 +664,21 @@ export default class NewPatient extends Vue {
         click: () => (this.showDemographicsDialog = true),
         number: this.patient?.demographicsData ? 1 : this.demographics ? 1 : 0,
       },
+      {
+        name: "Links",
+        icon: "link-icon",
+        click: () => (this.showGuarantorDialog = true),
+        number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
+      },
     ];
   }
 
   togglePatientInformation() {
     this.showPatientInformation = !this.showPatientInformation;
+  }
+
+  togglePatientIdentity() {
+    this.showPatientIdentity = !this.showPatientIdentity;
   }
 
   toggleContactInfo() {
