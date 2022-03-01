@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right class="w-3/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Manage Practitioners
+           Actors
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -18,35 +18,69 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full mb-5">
-                <span class="cursor-pointer float-left rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-start" @click="showPractitionerModal = true">
-                    <span class="text-lg mr-4 -mt-1.5">+</span> New Practitioner
-                </span>
+            <span class="text-gray-500 text-xs mb-4">0 selected</span>
+            <div class="flex space-x-2 w-full mb-7">
+                  <cornie-select
+                    :items="['Practitioner']"
+                    placeholder="--Select--"
+                    class="w-40"
+                />
+                <div class="w-60">
+                 <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
+                    <icon-input
+                    autocomplete="off"
+                    class="border border-gray-600 py-2 -mt-2 rounded focus:outline-none"
+                    type="search"
+                    placeholder="Search"
+                    v-model="query"
+                    >
+                    <template v-slot:prepend>
+                        <search-icon />
+                    </template>
+                    </icon-input>
+                 </span>
+                  <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']" 
+                    class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj" style="width:96%">
+                        <div class="flex flex-col w-full p-2">
+                            <div v-for="(item, i) in filteredItems"
+                                :key="i"
+                                @click="selected(item)"
+                                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                                <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
+                                    {{ item?.firstName +' '+ item?.lastName   || item }}
+                                    <p class="text-xs text-gray-500">[{{ item?.department }}]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="filteredItems.length === 0">
+                             <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
+                        </div>
+                  </div>
+                </div>
             </div>
-
-                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.practitioners" :key="index">
+                <div class="w-full flex space-x-7 mt-4">
                     
                     <div class="w-full dflex space-x-4 mb-3">
                         <div class="w-10 h-10">
-                            <avatar
+                            <!-- <avatar
                                 class="mr-2"
                                 v-if="item.image"
                                 :src="item.image"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
+                            /> -->
+                            <avatar class="mr-2"  :src="localSrc" />
                         </div>
                         <div class="w-full">
                             <p class="text-xs text-dark font-medium">
-                                {{ item.firstName }}
-                                {{ item.lastName }}
+                               dfsiogfodis
+                              iooioi
                             </p>
                             <p class="text-xs text-gray-500 font-meduim">
-                            {{ item.jobDesignation }}
-                            {{ item.department }}
+                            banker
+                            bn
                         </p>
                         </div>
                     </div>
-                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)"/>
+                    <select-option/>
                 </div>
          
           
@@ -58,15 +92,15 @@
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            class="border-primary border-2  mr-3 rounded-xl text-primary"
           >
             Cancel
           </cornie-btn>
           <cornie-btn
              @click="show = false"
-            class="text-white bg-danger px-6 rounded-xl"
+            class="text-white bg-danger px-2 rounded-xl"
            >
-            Save
+            Add
           </cornie-btn>
 
         </cornie-card-text>
@@ -96,12 +130,19 @@ import CornieSelect from "@/components/cornieselect.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import NewPractitioner from './newpractitioner.vue';
 import ISpecial from "@/types/ISpecial";
-
+import SelectOption from "@/components/custom-checkbox.vue";
+import search from "@/plugins/search";
 
 const practitioner = namespace("practitioner");
 const special = namespace("special");
+
+type Sorter = (a: any, b: any) => number;
+
+
+function defaultFilter(item: any, query: string) {
+  return search.searchObject(item, query);
+}
 
 @Options({
   name: "managePractitioner",
@@ -113,7 +154,7 @@ const special = namespace("special");
     CancelIcon,
     CornieDialog,
     Avatar,
-    NewPractitioner,
+    SelectOption,
     SearchIcon,
     DeleteIcon,
     IconInput,
@@ -126,6 +167,9 @@ export default class managePractitioner extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ type: Function, default: defaultFilter })
+  filter!: (item: any, query: string) => boolean;
+
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -135,85 +179,27 @@ export default class managePractitioner extends Vue {
 
   loading = false;
   showPractitionerModal = false;
-    aPractitioner = [];
+  aPractitioner = [];
+  localSrc = require("../../../../../assets/img/placeholder.png");
+  query = "";
+ orderBy: Sorter = () => 1;
 
-  @special.Action
-  deleteSpecial!: (id: string) => Promise<boolean>;
-
-
-  @special.Action
-  getSpecialById!: (id: string) => Promise<ISpecial>;
-
-
-  @special.State
-  specials!: ISpecial;
-
-  @special.Action
-  fetchSpecials!: () => Promise<void>;
 
  @practitioner.State
   practitioners!: IPractitioner[];
 
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
 
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
-  @special.Mutation
-  addPractitioners!: (specials: ISpecial) => void;
-
-newspecials = [] as any;
-
-  @Watch("specilatyId")
-  idChanged() {
-    this.setPractitioner();
-  }
-
-async setPractitioner() {
-        const practitioner = await this.getSpecialById(this.specilatyId);
-        if (!practitioner) return;
-         this.newspecials = practitioner;
-  }
-
-
-  async specialadded(){
-      console.log("HELLO ADEDDED")
-      this.addPractitioners(this.specials.practitioners as any);
-     await this.setPractitioner();
-     await this.fetchSpecials();
-     await   this.fetchPractitioners();
-
-  }
-
-  done() {
-    this.$emit("practitioner-added");
-    this.show = false;
-  }
-
-  async deleteItem(value:string) {
-       const confirmed = await window.confirmAction({
-          message: "You are about to delete this Practitioner",
-        });
-        if (!confirmed) return;
-      try {
-      const response = await cornieClient().delete(
-        `/api/v1/specialty/practitioner/${this.specilatyId}`,
-        {practitioners: [value]}
-      );
-      if(response.success){
-          this.done();
-        window.notify({ msg: "Practitioner deleted successfully", status: "success" });
-      }
-    } catch (error) {
-      window.notify({ msg: "Practitioner not deleted", status: "error" });
-    }
+ get filteredItems() {
+    return this.practitioners
+      .filter((item: any) => this.filter(item, this.query))
+      .sort(this.orderBy);
   }
 
   async created() {
-    await this.setPractitioner();
     await this.fetchPractitioners();
-    await this.fetchSpecials();
   }
 }
 </script>
@@ -293,8 +279,8 @@ async setPractitioner() {
 .multiselect-caret {
   transform: rotate(0deg);
   transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../assets/img/Chevron.png");
+  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+  mask-image: url("../../../../../assets/img/Chevron.png");
   background-color: #080056;
   margin: 0 var(--ms-px, 0.875rem) 0 0;
   position: relative;

@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div>
-                <span class="text-sm font-semibold mb-1">Account</span>
+                <span class="text-sm font-semibold mb-1">Location</span>
                 <Multiselect
                   v-model="aLocation"
                   mode="tags"
@@ -267,9 +267,9 @@ done() {
     this.show = false;
   }
 
-  created() {
-    this.fetchSpecials();
-    this.fetchLocations();
+  async created() {
+    await this.fetchSpecials();
+    await this.fetchLocations();
   }
 }
 </script>

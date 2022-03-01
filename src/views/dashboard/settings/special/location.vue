@@ -19,7 +19,7 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
             <div class="w-full">
-                <span class="cursor-pointer float-right rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-end" @click="showLocationModal = true">
+                <span class="cursor-pointer float-left rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-start" @click="showLocationModal = true">
                     <span class="text-lg mr-4 -mt-1.5">+</span>New Location
                 </span>
             </div>

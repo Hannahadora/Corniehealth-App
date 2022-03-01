@@ -1,17 +1,17 @@
 <template>
-<div>
+<div class="mt-10">
 
-    <div class="grid grid-cols-7 gap-4 bg-accent p-4 text-primary font-bold">
-        <span>Sunday</span>
-        <span>Monday</span>
-        <span>Tuesday</span>
-        <span>Wednesday</span>
-        <span>Thursday</span>
-        <span>Friday</span>
-        <span>Saturday</span>
+    <div class="grid grid-cols-7 text-gray-400 font-bold" style="height: 4.5rem;">
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Sunday</span>
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Monday</span>
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Tuesday</span>
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Wednesday</span>
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Thursday</span>
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Friday</span>
+        <span class="border-l-2 px-4 border-gray-100 h-full w-full">Saturday</span>
     </div>
-    <div class="grid grid-cols-7 text-gray-500 divide-x border-2 border-gray-100 font-bold">
-        <div class="px-4 py-8 border-b-2 flex space-x-5 border-gray-300" v-for="(item, index) in _items" :key="index">
+    <div class="grid grid-cols-7 text-gray-500 divide-x border-l-2 border-gray-100 font-bold">
+        <div class="px-4 py-8 border-t-2 flex space-x-5 border-gray-100" v-for="(item, index) in _items" :key="index">
             {{ item?.date.toLocaleDateString('en',options) }}  
             <actors-section v-for="(cal, index) in item?.schedules"  :key="index" :items="cal.practitioners" @set-oneId="setoneId" />
         </div>
@@ -119,14 +119,16 @@ export default class Monthly extends Vue {
          return newdate
        })
        const dateSet = new Set(dates);
-       return this.schedules.filter((c) => dateSet.has(c.startDate as string));
+      //  return this.schedules.filter((c) => dateSet.has(c.startDate as string));
+       return ["00:00","00:00","00:00","00:00"];
    }
   get _items() {
 
   const item =  this.CalendarDates.map( date => ({
       date, 
       schedules: this.getMatchingSchedules(date) ,
-      practitioners: this.getMatchingSchedules(date).map(schedule => schedule.practitioners )
+      practitioners:""
+      // practitioners: this.getMatchingSchedules(date).map(schedule => schedule.practitioners )
     }));
      
   const [first, ..._] = item;
@@ -137,12 +139,11 @@ export default class Monthly extends Vue {
 
   getMatchingSchedules(date: Date){
       return this.ActiveSchedules.filter((schedule) =>{
-          console.log(schedule,"MAPP")
-          return dateBetween(
-              date.toISOString(),
-              schedule.startDate as string,
-              schedule.endDate as string
-          )
+          // return dateBetween(
+          //     date.toISOString(),
+          //     schedule.startDate as string,
+          //     schedule.endDate as string
+          // )
       })
 
   }

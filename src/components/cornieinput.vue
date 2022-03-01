@@ -27,7 +27,9 @@
           'bg-gray-100 border-gray-100': disabled,
           ...errorClasses,
           'rounded-l': addextraclass,
-           'rounded-r': addnewextraclass
+           'rounded-r': addnewextraclass,
+            'bg-primary border-primary' : setPrimary ,
+            'bg-white  border-gray-300' :!setPrimary
         }"
       >
         <div
@@ -57,7 +59,7 @@
           :placeholder="$attrs.placeholder || '--Enter--'"
           :name="inputName"
           :readonly="readonly || disabled"
-          :class="{ 'bg-gray-50 border-gray-50': disabled }"
+          :class="{ 'bg-gray-50 border-gray-50': disabled, 'bg-primary border-primary' : setPrimary , }"
           v-model="valueSync"
           @update:modelValue="handleChange"
         />
@@ -110,6 +112,9 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: String })
   name!: string;
+
+  @Prop({ type: Boolean, default: false })
+  setPrimary!: boolean;
 
   @Prop({ type: Boolean, default: false })
   required!: boolean;

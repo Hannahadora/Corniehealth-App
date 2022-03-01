@@ -2,13 +2,13 @@
 <div class="mt-12">
         <div class="flex space-x-7 w-full"  v-for="(item, index) in _items" :key="index">
             <div class="border-r-2 border-gray-100 p-3">
-                <span class="text-xs">{{ item?.date.toLocaleTimeString('en-US') ? item?.date.toLocaleTimeString('en-US') : '0:00:00 PM  ' }}</span>
+                <span class="text-xs text-gray-500 font-semibold">{{ item?.date.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) ? item?.date.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit',hour12: false}) : '00:00' }}</span>
             </div>
-            <div class="border-gray-100 border-t-2 w-full px-0 py- my-0 mx-0">
+            <div class="border-gray-100  border-b-2 border-t-2 w-full px-0 mx-0">
                     <actors-section  v-for="(cal, index) in item?.schedules" :key="index"  :items="cal?.practitioners" @set-oneId="setoneId"  :range="tConvert(cal?.startTime) +' - '+ tConvert(cal?.endTime)"/>
             </div>
              <div class="border-l-2 border-gray-100 p-3">
-                <span class="text-xs w-full">{{ item?.date.toLocaleTimeString('en-US') ? item?.date.toLocaleTimeString('en-US') : '0:00:00 PM  ' }}</span>
+                 <span class="text-xs text-gray-500 font-semibold">{{ item?.date.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) ? item?.date.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit',hour12: false}) : '00:00' }}</span>
             </div>
 
         </div> 
@@ -153,7 +153,8 @@ export default class Daily extends Vue {
 
   if (time.length > 1) { // If time format correct
     time = time.slice (1);  // Remove full string match value
-    time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+      time[5] = +time[0] < 12; // Set AM/PM
+   // time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
     time[0] = +time[0] % 12 || 12; // Adjust hours
   }
   return time.join (''); // return adjusted time or original string

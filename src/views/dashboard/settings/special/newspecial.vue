@@ -19,12 +19,12 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
             <div class="border-b-2 w-full border-dashed pb-2 mb-5 border-gray-300">
-                <span class="text-dark text-sm font-medium">Enter director’s details</span>
+                <!-- <span class="text-dark text-sm font-medium">Enter director’s details</span> -->
             </div>
                  <div>
                 <span class="text-sm font-semibold mb-1">Specialty</span>
                 <Multiselect
-                   v-model="name"
+                   v-model="names"
                  mode="multiple"
                   name="object_true" :native="false" :object="true"
                   :searchable = true
@@ -50,7 +50,7 @@
                     </div>
                   </template>
                   <template v-slot:option="{ option }">
-                    <select-option :value="option.display" :label="option.display"/>
+                    <select-option  @click="check(option.display)" :label="option.display"/>
                   </template>
                   <!-- <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
@@ -74,10 +74,10 @@
                 <div class="grid grid-cols-2 gap-4 mt-3">
                 <div
                 class="flex space-x-4 w-auto bg-primary rounded-full text-white py-2 px-4"
-                v-for="(item, index) in name"
+                v-for="(item, index) in names"
                 :key="index"
                 >
-                <span class="text-xs w-full justify-between">{{ item.name }}</span>
+                <span class="text-xs w-full justify-between">{{ item.display }}</span>
                 <close-icon
                         class="cursor-pointer"
                         @click="removearray(index)"
@@ -189,7 +189,8 @@ export default class SpecialModal extends Vue {
 
   loading = false;
   specialarray = [] as any;
-  name = [];
+  name = [] as any;
+  names = [];
 
  @dropdown.Action
   getDropdowns!: (key: string) => Promise<IIndexableObject>;
@@ -217,6 +218,10 @@ dropdownData = {} as IIndexableObject;
    addArray() {
        console.log("hello")
       this.specialarray.push(this.name);
+    }
+
+    check(value:string){
+      this.name.push({"name": value})
     }
 
    removearray(index: number) {

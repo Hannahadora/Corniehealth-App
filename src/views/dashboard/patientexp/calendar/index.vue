@@ -12,7 +12,9 @@
 
           <tabs :items="tabLinks" v-model="currentTab">
             <availability-section />
-          
+            <schedules-section />
+            <appointment-section />
+            <slots-section />
           </tabs>
         
       </span>
@@ -24,12 +26,18 @@
 import { Vue, Options } from "vue-class-component";
 import Tabs from "@/components/tabs.vue";
 import AvailabilitySection from "./availability/index.vue";
+import SchedulesSection from "./schedules/index.vue";
+import AppointmentSection from "./appointments/index.vue";
+import SlotsSection from "./blockedslots/index.vue";
 
 @Options({
   name: "CalendarIndex",
   components: {
     Tabs,
-    AvailabilitySection
+    AvailabilitySection,
+    SchedulesSection,
+    AppointmentSection,
+    SlotsSection
 
   },
 })

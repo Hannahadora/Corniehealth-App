@@ -1,47 +1,49 @@
 <template>
-    <cornie-table
-    :columns="headers"
-    v-model="_items"
-    :search="false"
-    :menu="false"
-    @filter="showFilterPane"
-    >
-    <template #monday="{item}">
-    <actors-section :items="item.monday" @set-oneId="setoneId" v-if="item?.monday" :range="item.range"/>
-    <span v-else>--</span>
-    </template>
-    <template #tuesday="{item}">
-        <actors-section :items="item.tuesday" @set-oneId="setoneId" v-if="item?.tuesday" :range="item.range"/>
-        <span v-else>--</span>
-    </template>
-    <template #wednesday="{item}">
-        <actors-section :items="item.wednesday" @set-oneId="setoneId" v-if="item?.wednesday" :range="item.range"/>
-        <span v-else>--</span>
-    </template>
-    <template #thursday="{item}">
-        <actors-section :items="item.thursday" @set-oneId="setoneId" v-if="item?.thursday" :range="item.range"/>
-        <span v-else>--</span>
-    </template>
-    <template #friday="{item}">
-        <actors-section :items="item.friday" @set-oneId="setoneId" v-if="item?.friday" :range="item.range"/>
-        <span v-else>--</span>
-    </template>
-    <template #saturday="{item}">
-        <actors-section :items="item.saturday" @set-oneId="setoneId" v-if="item?.saturday" :range="item.range"/>
-        <span v-else>--</span>
-    </template> 
-    <template #sunday="{item}">
-        <actors-section :items="item.sunday" @set-oneId="setoneId" v-if="item?.sunday" :range="item.range"/>
-        <span v-else>--</span>
-    </template>
-   </cornie-table>
+<div class="mt-10">
+      <cornie-table
+      :columns="headers"
+      v-model="_items"
+      :search="false"
+      :menu="false"
+      @filter="showFilterPane"
+      >
+      <template #monday="{item}">
+      <actors-section :items="item.monday" @set-oneId="setoneId" v-if="item?.monday" :range="item.range"/>
+      <span v-else>--</span>
+      </template>
+      <template #tuesday="{item}">
+          <actors-section :items="item.tuesday" @set-oneId="setoneId" v-if="item?.tuesday" :range="item.range"/>
+          <span v-else>--</span>
+      </template>
+      <template #wednesday="{item}">
+          <actors-section :items="item.wednesday" @set-oneId="setoneId" v-if="item?.wednesday" :range="item.range"/>
+          <span v-else>--</span>
+      </template>
+      <template #thursday="{item}">
+          <actors-section :items="item.thursday" @set-oneId="setoneId" v-if="item?.thursday" :range="item.range"/>
+          <span v-else>--</span>
+      </template>
+      <template #friday="{item}">
+          <actors-section :items="item.friday" @set-oneId="setoneId" v-if="item?.friday" :range="item.range"/>
+          <span v-else>--</span>
+      </template>
+      <template #saturday="{item}">
+          <actors-section :items="item.saturday" @set-oneId="setoneId" v-if="item?.saturday" :range="item.range"/>
+          <span v-else>--</span>
+      </template> 
+      <template #sunday="{item}">
+          <actors-section :items="item.sunday" @set-oneId="setoneId" v-if="item?.sunday" :range="item.range"/>
+          <span v-else>--</span>
+      </template>
+    </cornie-table>
+</div>
 </template>
 
 <script lang="ts">
 import AddIcon from "@/components/icons/add.vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import CornieTable from "@/components/calendar-table/CornieTable.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import { namespace } from "vuex-class";
 import { Practitioner } from "@/types/IPatient";
@@ -89,7 +91,7 @@ export default class Weekly extends Vue {
   @Prop({ type: Array })
   schedules!: ISchedule[];
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "22/02/2022" })
   startDate!: any;
 
   actorsValue = [] as any;
@@ -104,16 +106,21 @@ export default class Weekly extends Vue {
         month: "short", //to display the full name of the month
     }
 
+   
+
+
   start  = new Date();
 
    get ActiveSchedules(){
-       const start = getWeekStart(this.startDate);
+      //  const start = getWeekStart(this.startDate);
+       const start = new Date();
        const dates = this.getWeekDates(start).map((date) =>{
          const newdate = new Date(date).toISOString().split('T')[0];
          return newdate
        })
-       const dateSet = new Set(dates);
-       return this.schedules.filter((c) => dateSet.has(c.startDate as string));
+      //  const dateSet = new Set(dates);
+      //  return this.schedules.filter((c) => dateSet.has(c.startDate as string));
+      return new Date();
     }
 
   getWeekDates(start: Date) {
@@ -128,31 +135,33 @@ export default class Weekly extends Vue {
   }
 
   get headers() {
-   // const now = new Date(); // sun jan 23, 2022 //
+    const now = new Date(); // sun jan 23, 2022 //
     const startDate = this.start;
-    const now = this.start;
-    const start = getWeekStart(this.startDate);
+    //const now = this.start;
+    const start = getWeekStart(startDate);
     const dates = this.getWeekDates(start);
     const headers = dates.map((date:any) => ({
       key: printWeekday(date),
-      title: date.toLocaleDateString('en', this.options),
+      // title: date.toLocaleDateString('en', this.options),
+      title: new Date("3/22/2022").toLocaleDateString('en-US',{ day: "numeric",}),
+      subtitle: new Date("3/22/2022").toLocaleDateString('en-US',{  weekday: "short",}),
       show:true
     }));
 
-    return [{ key: "range", title: "Time", show:true },...headers];
+    return [{ key: "range", show:true },...headers];
   }
 
-  groupHourly(schedules: ISchedule[]) {
-    const groups: { [state: number]: ISchedule[] } = {};
-    schedules.forEach((schedule) => {
-      const start = this.buildTime(schedule.startTime);
-      const end = this.buildTime(schedule.endTime);
-      const hours = this.getHoursBetween(start, end);
-      this.insertMatchingHours(groups, hours, schedule);
-    });
-    this.padHourlyGrouping(groups);
-    return groups;
-  }
+  // groupHourly(schedules: ISchedule[]) {
+  //   const groups: { [state: number]: ISchedule[] } = {};
+  //   schedules.forEach((schedule) => {
+  //     const start = this.buildTime(schedule.startTime);
+  //     const end = this.buildTime(schedule.endTime);
+  //     const hours = this.getHoursBetween(start, end);
+  //     this.insertMatchingHours(groups, hours, schedule);
+  //   });
+  //   this.padHourlyGrouping(groups);
+  //   return groups;
+  // }
 
   padHourlyGrouping(groups: { [state: number]: ISchedule[] }) {
     const hoursPerDay = 23;
@@ -206,14 +215,15 @@ export default class Weekly extends Vue {
 
   get _items() {
     const schedules = this.ActiveSchedules || [];
-    const hourly = this.groupHourly(schedules);
+    // const hourly = this.groupHourly(schedules as any);
+    const hourly = [] as any;
     const items: { range: any; [state: string]: IPractitioner[] }[] = [];
     Object.entries(hourly).map(([key, value]) => {
-      const item = this.groupDaily(value);
+      const item = this.groupDaily(value as any);
       this.actorsValue = item;
       items.push({ ...item, range: this.printRange(Number(key)) as any });
     });
-    return items;
+    return ["00:00","00:00","00:00","00:00"];
   }
 
   printRange(start: number) {
