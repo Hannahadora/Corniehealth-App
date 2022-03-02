@@ -85,7 +85,7 @@
               </ul>
             </div>
           </span>
-          <cornie-table :columns="rawHeaders" v-model="items">
+          <cornie-table :columns="rawHeaders" v-model="sortForms">
             <template #actions="{ item }">
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -688,7 +688,7 @@ export default class PracticeformExistingState extends Vue {
     else window.notify({ msg: "Practice form not deleted", status: "error" });
   }
 
-  get sortTasks() {
+  get sortForms() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
@@ -732,5 +732,8 @@ export default class PracticeformExistingState extends Vue {
 .status-warning {
   background: #fefaf0;
   color: #f7b538;
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 </style>
