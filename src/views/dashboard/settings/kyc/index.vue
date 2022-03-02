@@ -74,11 +74,18 @@
         <accordion-component :title="'Practice Address'" :height="370" :opened="true">
           <template v-slot:default>
             <div class="flex w-full my-5">
-              <span class="w-full">
+              <!-- <span class="w-full">
                 {{ organizationInfo?.address }}
-              </span>
+              </span> -->
+               <cornie-input
+                v-model="city"
+                :value="organizationInfo?.address || 'Add address on practice infromation'"
+                :label="'Address'"
+                class="w-full"
+                placeholder="--Select--"
+              />
               <cornie-button
-                  class="grow-0 w-32 px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
+                  class="px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
                   style="background: #fe4d3c"
                    @click="$router.push('practice-information')"
                 >

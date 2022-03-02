@@ -6,7 +6,7 @@
       class="w-4/12 flex flex-col overflow-y-auto ml-auto mr-2"
     >
       <div class="flex w-full overflow-y-auto rounded-t-lg p-2">
-        <span class="block pr-2 border-r-2 mt-2">
+        <span class="block pr-2 border-r-2 mt-3">
           <arrow-left-icon
             class="stroke-current text-primary cursor-pointer"
             @click="show = false"

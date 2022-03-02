@@ -6,8 +6,7 @@
         class="border border-gray-600 rounded-full focus:outline-none"
         type="search"
         placeholder="Search"
-        v-bind="$attrs"
-        v-model="displayVal"
+         v-model="query"
       >
         <template v-slot:prepend>
           <search-icon />
@@ -19,7 +18,7 @@
       >
         <div
           class="flex flex-row px-1 divide-y-2 divide-solid cursor-pointer hover:bg-gray-100 rounded-full"
-          v-for="(item, i) in filteredItems"
+          v-for="(item, i) in processedItems"
           :key="i"
           @click="selected(item)"
         >
@@ -54,12 +53,32 @@ export default class AutoComplete extends Vue {
   @Prop({ type: String, default: "" })
   modelValue!: string;
 
+  @Prop({ type: Function })
+  filter!: (item: any, query: string) => boolean;
+
   @PropSync("modelValue")
   modelValueSync!: string;
 
   displayVal = "";
+  query = "";
 
   showDatalist = false;
+  
+    customFilter(item: any) {
+    if (this.filter) return this.filter(item, this.query);
+    if (typeof item === "string" || item instanceof String)
+      return item.toLowerCase().includes(this.query.toLowerCase());
+    const { code, display }: { code: string; display: string } = item;
+    return (
+      `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
+      `${display}`.toLowerCase().includes(this.query.toLowerCase())
+    );
+  }
+
+  get processedItems() {
+    if (!this.query) return this.items;
+    return this.items.filter(this.customFilter);
+  }
 
   get filteredItems() {
     if (!this.displayVal) return this.items;

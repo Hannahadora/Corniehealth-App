@@ -7,7 +7,7 @@
   >
     <div class="w-full">
       <div class="float-left">
-        <img class="mr-2" v-if="orgInfo.image" :src="orgInfo.image" />
+        <img class="mr-2 h-10 w-10" v-if="orgInfo.image" :src="orgInfo.image" />
         <avatar class="mr-2" v-else :src="localSrc" />
       </div>
       <div class="block float-right">
@@ -290,7 +290,7 @@ export default class ViewForm extends Vue {
   }
   async submit() {
     this.loading = true;
-    this.createPracticeform();
+    await this.createPracticeform();
     this.loading = false;
   }
   async createPracticeform() {
