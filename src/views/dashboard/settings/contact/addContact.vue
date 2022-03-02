@@ -100,7 +100,7 @@
             </div>
             <div class="flex justify-end w-full mt-4 mb-3">
               <button
-                class="rounded-md mt-5 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+                class="rounded-xl mt-5 py-0.5 px-6 border border-primary focus:outline-none hover:opacity-90 mr-2 text-primary font-semibold"
                 @click="show = false"
               >
                 Cancel
@@ -108,7 +108,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="bg-danger rounded-md text-white mt-5 py-1 px-4 font-bold focus:outline-none hover:opacity-90 w-1/3"
+                class="bg-danger rounded-xl text-white mt-5 mr-2 py-0.5 px-3 font-bold focus:outline-none hover:opacity-90"
               >
                 Save
               </cornie-btn>

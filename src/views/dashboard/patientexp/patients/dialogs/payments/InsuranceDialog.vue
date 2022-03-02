@@ -2,31 +2,44 @@
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title>
-        <cornie-icon-btn @click="show = false">
+        <cornie-icon-btn @click="handleCancel">
           <arrow-left-icon />
         </cornie-icon-btn>
         <span
           class="text-primary font-extrabold text-lg border-l-2 border-gray-100 pl-2"
         >
-          Payment Account
+          Insurance
         </span>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <p class="text-sm mb-5">Fill the form below to add Insurance.</p>
         <v-form ref="form" class="grid grid-cols-1 gap-y-2">
           <cornie-input
-            label="Type"
+            label="Owner"
             class="w-full"
             placeholder="Enter"
-            v-model="type"
+            v-model="owner"
+          />
+          <cornie-input
+            label="Payor"
+            class="w-full"
+            placeholder="--Enter--"
+            v-model="payor"
           />
           <cornie-select
-            label="Group"
+            label="Prority"
             class="w-full"
             placeholder="Select One"
             :items="['one', 'two']"
-            v-model="group"
+            v-model="priority"
           />
+          <cornie-input
+            label="Type"
+            class="w-full"
+            placeholder="--Enter--"
+            v-model="type"
+          />
+
           <cornie-input
             label="Payer"
             class="w-full"
@@ -73,7 +86,7 @@
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
-            @click="show = false"
+            @click="handleCancel"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Cancel
@@ -122,6 +135,7 @@ const patients = namespace("patients");
     CornieDatePicker,
     CornieBtn,
   },
+  emits: ["canceled"],
 })
 export default class EmergencyDontactDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
@@ -178,6 +192,11 @@ export default class EmergencyDontactDialog extends Vue {
     if (this.patient) await this.submit();
     else this.batch();
     this.loading = false;
+  }
+
+  handleCancel() {
+    this.$emit("canceled");
+    this.show = false;
   }
 
   batch() {

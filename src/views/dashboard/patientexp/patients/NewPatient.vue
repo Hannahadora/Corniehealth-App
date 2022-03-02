@@ -143,7 +143,7 @@
               :readonly="viewOnly"
             />
             <cornie-input
-              class="w-full"
+              class="w-full mb-10"
               placeholder="Enter"
               v-model="multipleBirthInteger"
               type="number"
@@ -156,9 +156,7 @@
                   <template #tooltip>
                     <span>Number of multiple births</span>
                   </template>
-                  <info-icon
-                    class="fill-current text-primary leading-none mt-1.5"
-                  />
+                  <info-icon class="fill-current text-primary mt-1.5" />
                 </cornie-tooltip>
               </template>
             </cornie-input>
@@ -380,13 +378,14 @@
         Register New
       </cornie-btn>
     </div>
+
     <emergency-contact-dialog
       :patient="patient"
       v-model="showEmergencyContactDialog"
     />
 
     <!-- Now Links -->
-    <guarantor-dialog
+    <links-dialog
       :patient="patient"
       v-model:guarantor="guarantor"
       v-model="showGuarantorDialog"
@@ -397,11 +396,8 @@
       @add-associations="addAssociations"
     />
     <!-- Now Payment account -->
-    <insurance-dialog
-      :patient="patient"
-      v-model:insurances="insurances"
-      v-model="showInsuranceDialog"
-    />
+    <payment-dialog v-model="addPaymentsDialog" />
+
     <providers-dialog
       :patient="patient"
       v-model:labs="labs"
@@ -451,13 +447,13 @@ import DemographicIcon from "@/components/icons/DemographicIcon.vue";
 import { Field } from "vee-validate";
 
 import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
-import GuarantorDialog from "./dialogs/GuarantorDialog.vue";
-import InsuranceDialog from "./dialogs/InsuranceDialog.vue";
+import LinksDialog from "./dialogs/LinksDialog.vue";
 import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
 import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
 import AssociationDialog from "./dialogs/AssociationDialog.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import DeleteIcon from "@/components/icons/delete-red.vue";
+import PaymentDialog from "./dialogs/PaymentDialog.vue";
 
 import ContactInfo from "./contact-information.vue";
 import { string, number, date, array } from "yup";
@@ -508,10 +504,10 @@ const patients = namespace("patients");
     DeleteIcon,
 
     EmergencyContactDialog,
-    GuarantorDialog,
-    InsuranceDialog,
+    LinksDialog,
     ProvidersDialog,
     AssociationDialog,
+    PaymentDialog,
     PlusIcon,
   },
 })
@@ -573,6 +569,7 @@ export default class NewPatient extends Vue {
   showProvidersDialog = false;
   showPractitionersDialog = false;
   showDemographicsDialog = false;
+  addPaymentsDialog = false;
 
   contactsCompleted = false;
 
@@ -633,7 +630,7 @@ export default class NewPatient extends Vue {
       {
         name: "Payment Accounts",
         icon: "insurance-icon",
-        click: () => (this.showInsuranceDialog = true),
+        click: () => (this.addPaymentsDialog = true),
         number: this.patient?.insurances?.length || this.insurances.length,
       },
       {
