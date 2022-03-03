@@ -2,9 +2,12 @@
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
-        <div class="w-full">
+        <icon-btn @click="show = false" class="mr-2">
+          <arrow-left-icon stroke="#ffffff" />
+        </icon-btn>
+         <div class="w-full border-l-2 border-gray-300">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ action }} Collection Account
+           {{ action }} Collection Account
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -31,7 +34,7 @@
               />
               <cornie-select
                 label="Bank"
-                class="mb-4 w-full"
+                class="w-full"
                 :items="allTheBanks"
                 v-model="bank"
                 placeholder="--Select Preferred Bank--"
@@ -40,7 +43,7 @@
                 label="Account Number"
                 @change="fetchAccountName"
                 v-model="accountNumber"
-                placeholder="--Enter Account Numebr--"
+                placeholder="--Enter Account Number--"
                 class="w-full mb-4"
               />
 
@@ -70,7 +73,7 @@
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            class="border-primary border-2 px-2 mr-3 rounded-xl text-primary"
           >
             Cancel
           </cornie-btn>

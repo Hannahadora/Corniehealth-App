@@ -35,7 +35,7 @@
             <img src="@/assets/img/nobank.svg" class="mb-2" />
             <h4 class="text-black text-center">Add new account</h4>
             <button
-              class="bg-danger rounded-full text-white text-sm mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
+              class="bg-danger rounded-lg text-white text-sm mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
               @click="showAccountModal = true"
             >
               <span class="text-xl -mt-0.5">+ </span>
@@ -46,7 +46,7 @@
             <div class="w-full mt-5">
               <span class="flex justify-end">
                 <button
-                  class="bg-danger rounded-full text-sm text-white mb-5 mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
+                  class="bg-danger rounded-lg text-sm text-white mb-5 mt-5 py-2 px-8 focus:outline-none hover:opacity-90 flex space-x-2"
                   @click="showAccountModal = true"
                 >
                   <span class="text-xl -mt-1.5 mr-2">+ </span>
@@ -70,17 +70,17 @@
                     class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="deleteItem(item.id)"
                   >
-                    >
+                    
                     <close-icon class="text-yellow-500 fill-current" />
                     <span class="ml-3 text-xs">Deactivate</span>
                   </div>
-                  <div
+                  <!-- <div
                     class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                     @click="deleteItem(item.id)"
                   >
                     <delete-icon class="text-yellow-500 fill-current" />
                     <span class="ml-3 text-xs">Delete Account</span>
-                  </div>
+                  </div> -->
                 </template>
                 <template #status>
                   <span class="bg-green-400 rounded-xl text-sm"></span>

@@ -576,6 +576,95 @@
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
+          <accordion-component title="Education" :opened="false">
+            <template v-slot:default>
+              <div class="border-b-2 border-gray-100 border-dashed pb-4">
+                <div class="w-full grid grid-cols-3 gap-4 mt-3">
+                  <cornie-input
+                    label="Issuer"
+                    v-model="licenseIssuer"
+                    :required="true"
+                  />
+                  <cornie-select
+                    :items="dropdown.Qualification"
+                    v-model="qualificationCode"
+                    label="Qualification"
+                    placeholder="--Select--"
+                    class="w-full"
+                    :required="true"
+                  />
+                  <date-picker
+                    class="w-full mb-5"
+                    label="Year of Graduation"
+                    v-model="graduationYear"
+                    :rules="required"
+                    :required="true"
+                  />
+                </div>
+                <span class="text-sm text-danger font-semibold">
+                  Add <span class="text-lg"> + </span>
+                </span>
+              </div>
+              <div class="grid grid-cols-4 mt-5 gap-4 w-full">
+                <div class="border-r-2 border-gray-200">
+                  <p class="text-black font-semibold">University of Unilag</p>
+                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
+                </div>
+                <div class="border-r-2 border-gray-200">
+                  <p class="text-black font-semibold">University of Unilag</p>
+                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
+                </div>
+              </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
+          <accordion-component title="Board License" :opened="false">
+            <template v-slot:default>
+              <div class="border-b-2 border-gray-100 border-dashed pb-4">
+                <div class="w-full grid grid-cols-3 gap-4 mt-3">
+                  <cornie-input
+                    v-model="qualificationIssuer"
+                    label="Issuer"
+                    class="w-full"
+                    placeholder="--Enter--"
+                    :required="true"
+                  />
+
+                  <cornie-input
+                    v-model="licenseNumber"
+                    label="License Number"
+                    placeholder="--Enter--"
+                    :required="true"
+                  />
+                  <period-picker
+                    label="Period"
+                    class="-mt-1.5 w-full"
+                    v-model="licensePeriod"
+                    placeholder="--Select--"
+                    :required="true"
+                  />
+                </div>
+                <span class="text-sm text-danger font-semibold">
+                  Add <span class="text-lg"> + </span>
+                </span>
+              </div>
+              <div class="grid grid-cols-4 mt-5 gap-4 w-full">
+                <div class="border-r-2 border-gray-200">
+                  <p class="text-black font-semibold">University of Unilag</p>
+                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
+                </div>
+                <div class="border-r-2 border-gray-200">
+                  <p class="text-black font-semibold">University of Unilag</p>
+                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
+                </div>
+              </div>
+            </template>
+            <template v-slot:misc>
+              <info-icon class="fill-current text-primary" />
+            </template>
+          </accordion-component>
 
           <span class="flex w-full mt-5 pb-3 justify-end">
             <button

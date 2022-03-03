@@ -16,12 +16,13 @@
             <edit-icon class="mr-3" /> {{ editabetitle }}
           </div>
           <div
-            class="font-bold text-sm text-black uppercase mb-1"
+            class="font-bold text-sm text-black capitalize mb-1"
             v-else
             :class="{ 'text-black': expand }"
           >
             {{ title }}
             <span class="lowercase text-xs text-red-500" v-if="spanCaption">{{ spanText }}</span>
+            <span class="capitalize text-xs text-gray-400" v-if="grayCaption">(Optional)</span>
           </div>
           <div class="flex space-x-6 justify-end items-end">
             <span
@@ -153,6 +154,9 @@ export default class AccordionComponent extends Vue {
 
    @Prop({ type: Boolean, default: false })
   spanText!: boolean;
+
+   @Prop({ type: Boolean, default: false })
+  grayCaption!: boolean;
 
   @Prop({ type: Boolean, default: false })
   addborder!: boolean;

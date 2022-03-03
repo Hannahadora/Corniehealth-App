@@ -123,6 +123,15 @@
               placeholder="--Enter--"
             />
           </div>
+           <div class="col-span-4">
+            <cornie-input
+              required
+              class="w-full"
+              label="Address"
+              v-model="address"
+              placeholder="--Enter--"
+            />
+          </div>
           <div class="col-span-4">
             <cornie-input
               class="w-full"
@@ -205,6 +214,7 @@ export default class PracticeInfo extends Vue {
   IncorporationType = "";
   EmailAddress = " ";
   Website = "";
+  address ="";
   // IncorporationStatus = "";
 
   orgTypes = [];
@@ -247,6 +257,7 @@ export default class PracticeInfo extends Vue {
       },
       email: this.EmailAddress,
       reference: this.ReferenceOrganization,
+      address: this.address
     };
   }
 
@@ -314,6 +325,7 @@ export default class PracticeInfo extends Vue {
     this.DialCode = data.phone.dialCode;
     // this.IncorporationStatus = data.incorporationStatus || "";
     this.ReferenceOrganization = data.reference || "";
+    this.address = data.address || "";
   }
 }
 </script>

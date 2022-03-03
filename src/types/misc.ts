@@ -3,6 +3,10 @@ export interface Codeable {
   display: string;
 }
 
+export interface SepcialCodeable {
+  name: string;
+}
+
 export interface Timeable {
   age: string;
   startDate: string;

@@ -59,9 +59,6 @@
               <div class="w-full -mb-12"  v-for="(item, index) in specialspecialties" :key="index">
                   <accordion-component class="-mb-8" :title="item.name" :addborder="true" :opened="true">
                       <div class="w-full mb-8">
-                          <div class="flex justify-center">
-                              <circle-icon/>
-                          </div>
                           <p class="text-sm text-center font-bold mt-5">Start by adding services you render for {{ item.name }}</p>
                           <div class="flex justify-center mt-5">
                               <span class="text-danger font-semibold text-sm cursor-pointer"  @click="showService(item)">

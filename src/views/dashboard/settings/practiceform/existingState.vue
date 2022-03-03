@@ -17,13 +17,14 @@
         <div class="dropdown inline-block relative">
           <button
             class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
+            @click="showDropdown = true"
           >
             <span class="mr-1">Create New Form </span>
             <chevron-down-icon
               class="text-white mb-2 stroke-current mt-1 ml-1"
             />
           </button>
-          <ul class="dropdown-menu absolute hidden z-10 text-gray-700 pt-1">
+          <ul class="dropdown-menu absolute hidden z-10 text-gray-700 pt-1" v-if="showDropdown">
             <li class="">
               <Select
                 v-model="showDatalist"
@@ -180,6 +181,7 @@ export default class PracticeformExistingState extends Vue {
   showDeativateModal = false;
   showDatalist = true;
   showSelect = false;
+  showDropdown = false;
   paymentId = "";
   @practiceform.State
   practiceforms!: IPracticeform[];

@@ -74,12 +74,20 @@
         <accordion-component :title="'Practice Address'" :height="370" :opened="true">
           <template v-slot:default>
             <div class="flex w-full my-5">
-              <span class="w-full">
-                No 90 Ashiek jarma street, jabi
-              </span>
+              <!-- <span class="w-full">
+                {{ organizationInfo?.address }}
+              </span> -->
+               <cornie-input
+                v-model="city"
+                :value="organizationInfo?.address || 'Add address on practice infromation'"
+                :label="'Address'"
+                class="w-full"
+                placeholder="--Select--"
+              />
               <cornie-button
-                  class="grow-0 w-32 px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
+                  class="px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
                   style="background: #fe4d3c"
+                   @click="$router.push('practice-information')"
                 >
                   Change
                 </cornie-button>
@@ -241,8 +249,10 @@ import OwnerSection from "./components/ownerSection.vue";
 import RefreeSection from "./components/refreesection.vue";
 import IDirector from "@/types/IDirector";
 import IOwner from "@/types/IOwner";
+import { IOrganization } from "@/types/IOrganization";
 
 const kyc = namespace("kyc");
+const organization = namespace("organization");
 
 export interface IBeneficialOwner {
   name: string;
@@ -348,6 +358,13 @@ export default class KYC extends Vue {
 
   @kyc.Action
   deleteRefree!: (id: string) => Promise<boolean>;
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<IOrganization>;
+
 
   kycId = "";
   @Watch("kycId")
@@ -515,6 +532,7 @@ export default class KYC extends Vue {
 
   async created() {
     //  await this.getKYCData();
+    await this.fetchOrgInfo();
     await this.setKyc();
     await this.fetchKycs();
   }
