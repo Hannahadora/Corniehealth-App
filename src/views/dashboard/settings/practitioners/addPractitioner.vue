@@ -1043,8 +1043,6 @@ export default class AddPractitioner extends Vue {
   }
 
   async submit() {
-    console.log(this.makeAvailable);
-    return;
     this.loading = true;
     if (this.id) await this.updatePractitioner();
     else await this.createPractitioner();

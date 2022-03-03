@@ -63,7 +63,7 @@
                   v-model:code="code"
                   :rules="requiredRule"
                   label="Phone Number"
-                  v-model="phone"
+                  v-model:dialCode="phone.dialCode"
                   class="w-full"
                 />
               </div>

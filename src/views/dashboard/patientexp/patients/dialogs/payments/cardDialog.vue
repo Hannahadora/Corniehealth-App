@@ -19,43 +19,52 @@
               class="w-full"
               placeholder="--Enter--"
               v-model="cardName"
+              :rules="required"
+              required
             />
           </div>
           <div class="col-span-12">
-            <cornie-input
+            <cornie-num-input
               label="Card Number"
               class="w-full"
               placeholder="--Enter--"
               v-model="cardNumber"
+              :rules="cardNumberRules"
+              required
             />
+            <span
+              v-if="wrongCard && cardNumber.length"
+              class="text-xs text-red-500 font-bold block"
+              >Invalid card number</span
+            >
           </div>
           <div class="col-span-6">
-            <cornie-input
+            <cornie-expiry-input
               label="Expiry"
               class="w-full"
               placeholder="--Enter--"
               v-model="expiry"
+              :rules="required"
+              required
             />
           </div>
           <div class="col-span-6">
-            <cornie-input
+            <cornie-num-input
               label="CVV"
               class="w-full"
               placeholder="--Enter--"
               v-model="cvv"
+              :rules="cvvRules"
+              required
             />
           </div>
           <div class="col-span-12">
-            <label
-              for="card-pin"
-              class="inline-block font-bold text-sm mb-0 leading-none"
-              >Card Pin</label
-            >
-            <password-input
+            <cornie-num-input
               label="Card Pin"
-              class="w-full mt-0 border border-gray-400"
               placeholder="--Enter--"
               v-model="cardPin"
+              :rules="required"
+              required
             />
           </div>
           <div class="col-span-12">
@@ -65,6 +74,8 @@
               placeholder="Select One"
               :items="['Active', 'Inactive']"
               v-model="status"
+              :rules="required"
+              required
             />
           </div>
         </v-form>
@@ -73,6 +84,7 @@
             type="button"
             class="border border-primary py-2 px-5 rounded-lg w-auto"
             @click="add"
+            :disabled="wrongCard"
           >
             {{ currentId ? "Update" : "Add" }}
           </button>
@@ -148,6 +160,7 @@ import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import CornieExpiryInput from "@/components/cornie-expiry-input.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/datepicker.vue";
@@ -161,6 +174,8 @@ import CornieRadio from "@/components/cornieradio.vue";
 import DeleteIcon from "@/components/icons/delete-red.vue";
 import EditIcon from "@/components/icons/edit-purple.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
+import CornieNumInput from "@/components/cornienuminput.vue";
+import { string, date, number } from "yup";
 
 const patients = namespace("patients");
 
@@ -182,6 +197,8 @@ const patients = namespace("patients");
     DeleteIcon,
     EditIcon,
     PasswordInput,
+    CornieNumInput,
+    CornieExpiryInput,
   },
   emits: ["canceled"],
 })
@@ -189,9 +206,14 @@ export default class EmergencyDontactDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  required = string().required();
+  cardNumberRules = string().required().min(15).max(16);
+  cvvRules = string().required().max(3);
+  wrongCard = false;
+
   cardName = "";
   cardNumber = "";
-  expiry = "";
+  expiry = "" as number | any;
   cvv = "";
   cardPin = "";
   status = "";
@@ -206,6 +228,63 @@ export default class EmergencyDontactDialog extends Vue {
     this.$emit("canceled");
     this.show = false;
   }
+
+  @Watch("cardNumber")
+  handleWrongCard() {
+    let cardType = +this.cardNumber.toString().substring(0, 1);
+    switch (cardType) {
+      case 4:
+      case 5:
+        this.wrongCard = false;
+        break;
+      default:
+        this.wrongCard = true;
+    }
+  }
+
+  actualExpiry = "";
+
+  @Watch("actualExpiry")
+  updateExp() {
+    // if (this.expiry.length === 5) return;
+    document.addEventListener("keyup", this.updateExpiryDate);
+  }
+
+  @Watch("expiry")
+  handleExpiryDate() {
+    let matched = this.expiry ? this.expiry.match(/.{1,2}/g)?.join(" ") : "";
+    if (matched !== "") {
+      var str = matched?.replace(/ /g, "/") as string;
+
+      this.actualExpiry = str;
+    }
+  }
+
+  unmounted() {
+    document.removeEventListener("keyup", this.updateExpiryDate);
+  }
+
+  updateExpiryDate(e: any) {
+    if (
+      !this.expiry.match(/^\d+$/) &&
+      e.key !== "Backspace" &&
+      this.expiry.length < 5
+    ) {
+      this.expiry = "";
+    }
+
+    if (e.key !== "Backspace" && this.actualExpiry.length === 4) {
+      this.expiry = this.actualExpiry;
+    }
+  }
+  // get expiryDate() {
+  //   return this.expiry ? this.expiry.match(/.{1,2}/g)?.join(" ") : "";
+  // }
+
+  // updateExpiry(e: any) {
+  //   this.expiry = e.target.value.replace(/ /g, "/");
+  //   console.log(this.expiry);
+  // }
 
   reset() {
     this.cardName = "";
@@ -239,7 +318,9 @@ export default class EmergencyDontactDialog extends Vue {
     this.status = item.status;
   }
 
-  delCard(id: any) {}
+  delCard(id: any) {
+    this.cardList = this.cardList.filter((item: any) => item.id !== id);
+  }
 
   async add() {
     if (
@@ -252,7 +333,7 @@ export default class EmergencyDontactDialog extends Vue {
     )
       return;
 
-    let cardType = +this.cardNumber.substring(0, 1);
+    let cardType = +this.cardNumber.toString().substring(0, 1);
     let logo = "";
     switch (cardType) {
       case 4:

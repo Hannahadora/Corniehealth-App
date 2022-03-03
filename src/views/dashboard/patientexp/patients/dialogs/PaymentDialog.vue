@@ -13,18 +13,18 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form" class="grid grid-cols-1 gap-y-2">
-          <cornie-select
+          <!-- <cornie-select
             label="Account Type"
             class="w-full"
             placeholder="Select One"
             :items="['Cash', 'Transfer']"
             v-model="accountType"
-          />
+          /> -->
           <cornie-select
             label="Payment Type"
             class="w-full"
             placeholder="Select One"
-            :items="['Card', 'Wallet', 'Issurance']"
+            :items="['Card']"
             v-model="paymentType"
           />
         </v-form>
