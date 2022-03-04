@@ -282,7 +282,7 @@ export default class AddGroup extends Vue {
   async setGroup() {
     const group = await this.getGroupById(this.id);
     if (!group) return;
-    console.log(group);
+
     this.state = group.state;
     this.status = group.status;
     this.type = group.type;

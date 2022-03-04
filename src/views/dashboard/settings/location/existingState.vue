@@ -200,8 +200,8 @@ export default class LocationExistingState extends Vue {
     const data = await this.getDropdowns("location");
     await this.fetchLocations();
 
-    let op = data.operationalStatus.filter((item: any) => item.code !== "O");
-    let operationalStatus = [{ code: "O", display: "Opened" }, ...op];
+    let op = data.operationalStatus.filter((item: any) => item.code !== "U");
+    let operationalStatus = [{ code: "U", display: "Opened" }, ...op];
 
     this.dropdowns = {
       mode: data.mode,

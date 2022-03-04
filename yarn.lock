@@ -1163,15 +1163,6 @@
   "resolved" "https://registry.npmjs.org/@popperjs/core/-/core-2.11.2.tgz"
   "version" "2.11.2"
 
-"@scelloo/cloudenly-ui@^0.5.1":
-  "integrity" "sha512-5UoJDVCduVeAVvDcO6Df0yebFE9D6Fm4SgYaWYXPVaMl+Dg3Pk/BBQ9n9Ed5yw8rZmWvJrWN9NVJ/TtoUODrgg=="
-  "resolved" "https://npm.pkg.github.com/download/@scelloo/cloudenly-ui/0.5.2/a68a8efe93842fb51a79fbefa02a1a38e6386a5e17d19489544d35980cefa9fb"
-  "version" "0.5.2"
-  dependencies:
-    "core-js" "^3.6.5"
-    "vee-validate" "^3.4.13"
-    "vue" "^2.6.11"
-
 "@soda/friendly-errors-webpack-plugin@^1.7.1":
   "integrity" "sha512-h2ooWqP8XuFqTXT+NyAFbrArzfQA7R6HTezADrvD9Re8fxMLTPPniLdqVTdDaO0eIoLaAwKT+d6w+5GeTk7Vbg=="
   "resolved" "https://registry.npmjs.org/@soda/friendly-errors-webpack-plugin/-/friendly-errors-webpack-plugin-1.8.1.tgz"
@@ -9447,11 +9438,6 @@
     "unquote" "~1.1.1"
     "util.promisify" "~1.0.0"
 
-"sweetalert2@^11.3.3":
-  "integrity" "sha512-10Keqbmjng/+XpkpSOQ6dttpztl7XNohjnpC6bX6XFgm0WpRXM81YE0wmonGYOP6uyzd76vpfnZS04PdVvO31Q=="
-  "resolved" "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.3.3.tgz"
-  "version" "11.3.3"
-
 "table@^5.2.3":
   "integrity" "sha512-wmEc8m4fjnob4gt5riFRtTu/6+4rSe12TpAELNSqHMfF3IqnA+CH37USM6/YR3qRZv7e56kAEAtd6nKZaxe0Ug=="
   "resolved" "https://registry.npmjs.org/table/-/table-5.4.6.tgz"
@@ -10080,11 +10066,6 @@
   "resolved" "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   "version" "1.1.2"
 
-"vee-validate@^3.4.13":
-  "integrity" "sha512-Hqqic8G9WcRSIzCxiCPqMZv4qB8JE1lIQqIOLDm2K5BXUiL8d4a2+kqkanv8gQSGDzYpnCQZ7BO/T99Aj05T1Q=="
-  "resolved" "https://registry.npmjs.org/vee-validate/-/vee-validate-3.4.14.tgz"
-  "version" "3.4.14"
-
 "vee-validate@^4.4.2":
   "integrity" "sha512-EcpvOikBP5LlRIKwULfwRDeyIaERuOJztZUPWRmSIeWpeQWD6hs9qQ8A3CmVVteqEohbUM07gV/ea8lPXCfCJQ=="
   "resolved" "https://registry.npmjs.org/vee-validate/-/vee-validate-4.5.7.tgz"
@@ -10127,6 +10108,11 @@
   "integrity" "sha512-w1nMzsT/UdbDAXKqhwTmSoyuJzUXKrxLE77PCFVuC6syr8acdFDAq116xgvZh9UCuV0h+rlCtxXolr3Hi3HyPQ=="
   "resolved" "https://registry.npmjs.org/vue-class-component/-/vue-class-component-8.0.0-rc.1.tgz"
   "version" "8.0.0-rc.1"
+
+"vue-credit-card-validation@^1.0.3":
+  "integrity" "sha512-QjmpOJtRLmGJ0PlL1SFJOYxjk8pw24MkfJiBry9r9XWRe7uBj6qdhVB6bfQG9Rh4E8z/zAOREwpuXf5zXsYbzA=="
+  "resolved" "https://registry.npmjs.org/vue-credit-card-validation/-/vue-credit-card-validation-1.0.3.tgz"
+  "version" "1.0.3"
 
 "vue-eslint-parser@^7.0.0", "vue-eslint-parser@^7.10.0":
   "integrity" "sha512-qh3VhDLeh773wjgNTl7ss0VejY9bMMa0GoDG2fQVyDzRFdiU3L7fw74tWZDHNQXdZqxO3EveQroa9ct39D2nqg=="
@@ -10218,11 +10204,6 @@
     "@vue/runtime-dom" "3.2.27"
     "@vue/server-renderer" "3.2.27"
     "@vue/shared" "3.2.27"
-
-"vue@^2.5.18", "vue@^2.6.11":
-  "integrity" "sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ=="
-  "resolved" "https://registry.npmjs.org/vue/-/vue-2.6.14.tgz"
-  "version" "2.6.14"
 
 "vue@^2.5.22":
   "integrity" "sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ=="

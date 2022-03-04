@@ -19,7 +19,7 @@
           'border-danger': Boolean(errorMessage),
           'border-primary': !Boolean(errorMessage),
         }"
-        class="text-primary border px-7 py-1.5 rounded-full font-bold cursor-pointer"
+        class="text-primary border px-7 py-1.5 rounded-3xl font-bold cursor-pointer"
       >
         Upload Image
       </label>

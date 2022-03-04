@@ -121,9 +121,10 @@
               v-model="EmailAddress"
               :rules="emailRule"
               placeholder="--Enter--"
+              type="email"
             />
           </div>
-           <div class="col-span-4">
+          <div class="col-span-4">
             <cornie-input
               required
               class="w-full"
@@ -212,9 +213,9 @@ export default class PracticeInfo extends Vue {
   OrganizationIdentifier = "";
   ProviderProfile = "";
   IncorporationType = "";
-  EmailAddress = " ";
+  EmailAddress = "";
   Website = "";
-  address ="";
+  address = "";
   // IncorporationStatus = "";
 
   orgTypes = [];
@@ -257,7 +258,7 @@ export default class PracticeInfo extends Vue {
       },
       email: this.EmailAddress,
       reference: this.ReferenceOrganization,
-      address: this.address
+      address: this.address,
     };
   }
 
@@ -267,6 +268,7 @@ export default class PracticeInfo extends Vue {
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
       this.defaultOrgInfo = this.organizationInfo;
+      console.log(this.organizationInfo);
       this.setOrgInfo(this.organizationInfo);
     } catch (error) {}
   }
@@ -321,11 +323,12 @@ export default class PracticeInfo extends Vue {
     this.ProviderProfile = data.providerProfile || "";
     this.IncorporationType = data.incorporationType || "";
     this.Website = data.website || "";
-    this.PhoneNumber = data.phone.number;
-    this.DialCode = data.phone.dialCode;
+    this.PhoneNumber = data.phone?.number;
+    this.DialCode = data.phone?.dialCode;
+    this.EmailAddress = data.email || "";
     // this.IncorporationStatus = data.incorporationStatus || "";
-    this.ReferenceOrganization = data.reference || "";
-    this.address = data.address || "";
+    this.ReferenceOrganization = data.reference;
+    this.address = data?.address || "";
   }
 }
 </script>

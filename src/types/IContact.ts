@@ -1,3 +1,5 @@
+import IPhone from "./IPhone";
+
 export default interface IContact {
   fname: string;
   lname: string;
@@ -7,7 +9,7 @@ export default interface IContact {
   country: string;
   state: string;
   city: string;
-  phone: string;
+  phone: IPhone;
   email: string;
   address: string;
   id?: string;
