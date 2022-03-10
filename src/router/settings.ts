@@ -129,6 +129,13 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/practitioners/addPractitioner.vue"),
     },
     {
+      path: "view-practitioner/:id",
+      props: true,
+      name: "View Practitioner",
+      component: () =>
+        import("@/views/dashboard/settings/practitioners/viewPractitioner.vue"),
+    },
+    {
       path: "care-teams",
       name: "Care Teams",
       component: () => import("@/views/dashboard/settings/careteam/index.vue"),

@@ -328,7 +328,7 @@
               <div class="w-full grid grid-cols-3 gap-4 mt-5">
                 <cornie-input
                   :rules="required"
-                  v-model="jobDesignation"
+                  v-model="employmentType"
                   label="Employment Type"
                   placeholder="--Enter--"
                   :required="true"
@@ -570,10 +570,10 @@
                   :class="index !== educations.length - 1 ? 'border-r-2' : ''"
                 >
                   <p class="text-black font-semibold">
-                    {{ item.licenseIssuer }}
+                    {{ item.issuer }}
                   </p>
                   <div class="text-gray-600 text-sm flex items-center">
-                    <div>{{ item.qualificationCode }}</div>
+                    <div>{{ item.qualification }}</div>
                     <div class="font-bold text-xs leading-none mx-1">•</div>
                     <div>{{ item.graduationYear.split("-")[0] }}</div>
                   </div>
@@ -605,7 +605,7 @@
                     placeholder="--Enter--"
                     :required="true"
                   />
-                  <date-picker
+                  <period-picker
                     label="Period"
                     class="-mt-1.5 w-full"
                     v-model="licensePeriod"
@@ -631,13 +631,20 @@
                   :class="index !== licenses.length - 1 ? 'border-r-2' : ''"
                 >
                   <p class="text-black font-semibold">
-                    {{ item.licenseIssuer
+                    {{ item.issuer
                     }}<span class="text-gray-400 font-light text-sm"
                       >({{ item.licenseNumber }})</span
                     >
                   </p>
                   <div class="text-gray-600 text-sm flex items-center">
-                    <div>{{ item.licensePeriod.split("-")[0] }}</div>
+                    <div>
+                      {{
+                        new Date(item.period.start)
+                          .toLocaleDateString()
+                          .toString()
+                          .split("/")[2]
+                      }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -789,19 +796,23 @@ export default class AddPractitioner extends Vue {
   licenses = [] as any;
 
   addEducation() {
-    if (!this.graduationYear || !this.licenseIssuer || !this.qualificationCode)
+    if (
+      !this.graduationYear ||
+      !this.qualificationIssuer ||
+      !this.qualificationCode
+    )
       return;
 
     this.educations = [
       {
         graduationYear: this.graduationYear,
-        qualificationIssuer: this.qualificationIssuer,
-        qualificationCode: this.qualificationCode,
+        issuer: this.qualificationIssuer,
+        qualification: this.qualificationCode,
       },
       ...this.educations,
     ];
 
-    this.licenseIssuer = this.qualificationCode = "";
+    this.qualificationIssuer = this.qualificationCode = "";
   }
 
   addLicense() {
@@ -811,8 +822,8 @@ export default class AddPractitioner extends Vue {
     this.licenses = [
       {
         licenseNumber: this.licenseNumber,
-        licenseIssuer: this.licenseIssuer,
-        licensePeriod: this.licensePeriod,
+        issuer: this.licenseIssuer,
+        period: this.licensePeriod,
       },
       ...this.licenses,
     ];
@@ -847,6 +858,7 @@ export default class AddPractitioner extends Vue {
   address = "";
   dateOfBirth = "";
   jobDesignation = "";
+  employmentType = "";
   department = "department";
   accessRole = "";
   singleLocation = "";
@@ -1069,11 +1081,16 @@ export default class AddPractitioner extends Vue {
       postCode: this.postCode,
       aptNumber: this.aptNumber,
       specialties: this.specialties,
+      practiceDuartion: {},
       practiceDuration: this.practiceDuration,
       consultationRate: this.consultationRate,
       graduationYear: this.graduationYear,
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
+      education: this.educations,
+      boardLicenses: this.licenses,
+      location: this.locations,
+      employmentType: this.employmentType,
     };
   }
   get payloadEdit() {
@@ -1119,11 +1136,18 @@ export default class AddPractitioner extends Vue {
       postCode: this.postCode,
       aptNumber: this.aptNumber,
       specialties: this.newspecialties,
-      practiceDuration: this.practiceDuration,
-      consultationRate: this.consultationRate,
+      practiceDuration: {
+        value: this.practiceDurationvalue,
+        unit: this.practiceDurationunit,
+      },
+      consultationRate: {
+        value: this.consultationRatevalue,
+        unit: this.consultationRateunit,
+      },
       graduationYear: this.graduationYear,
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
+      availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
     };
   }
 
@@ -1155,11 +1179,6 @@ export default class AddPractitioner extends Vue {
   }
 
   async createPractitioner() {
-    this.payload.consultationRate.value = this.consultationRatevalue;
-    this.payload.consultationRate.unit = this.consultationRateunit;
-    this.payload.practiceDuration.value = this.practiceDurationvalue;
-    this.payload.practiceDuration.unit = this.practiceDurationunit;
-
     try {
       const response = await cornieClient().post(
         "/api/v1/practitioner",
