@@ -1,16 +1,17 @@
 <template>
   <div
-    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded-2xl w-full"
     :style="{ height }"
   >
     <div class="w-full p-2">
       <span
-        class="flex w-full justify-between border-b-2 mb-5 text-primary py-2"
+        class="flex w-full justify-between mb-2 text-primary py-2"
       >
-        <span class="font-bold text-sm">{{ title }}</span>
+        <span class="font-bold text-2xl">{{ title }}</span>
         <div class="flex items-center">
-          <span class="mx-2">{{ order }}</span>
-          <chevron-down-icon
+          <span class="mx-2 text-sm font-semibold" style="color: #FE4D3C;">{{ action }}</span>
+          <!-- <span class="mx-2">{{ order }}</span> -->
+          <!-- <chevron-down-icon
             @click="filter = !filter"
             class="stroke-current cursor-pointer text-danger"
           />
@@ -21,9 +22,10 @@
               <span class="cursor-pointer" @click="order = 'MTD'">MTD</span>
               <span class="cursor-pointer" @click="order = 'YTD'">YTD</span>
             </div>
-          </drop-down>
+          </drop-down> -->
         </div>
       </span>
+      <span class="text-sm font-bold" style="color: #667499;">{{ subtitle }}</span>
       <slot />
     </div>
   </div>
@@ -44,10 +46,16 @@ import { Prop } from "vue-property-decorator";
 export default class ChartCard extends Vue {
   filter = false;
 
-  order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
+  // order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   @Prop({ type: String, default: "" })
   title!: string;
+
+  @Prop({ type: String, default: "" })
+  subtitle!: string;
+
+  @Prop({ type: String, default: "" })
+  action!: string;
 
   @Prop({ type: String, default: "" })
   height!: string;
