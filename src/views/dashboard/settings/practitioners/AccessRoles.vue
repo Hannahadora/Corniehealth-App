@@ -11,7 +11,7 @@
             </span>
 
             <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">
-              {{allaction}} Access Role
+              {{ allaction }} Access Role
             </h2>
           </div>
         </div>
@@ -22,16 +22,6 @@
             <div class="col-span-12">
               <cornie-select
                 :rules="required"
-                :items="allLocation"
-                v-model="location"
-                label="Location"
-                placeholder="--Select--"
-                class="w-full"
-              />
-            </div>
-            <div class="col-span-12">
-              <cornie-select
-                :rules="required"
                 :items="practitionerRoles"
                 v-model="role"
                 label="Role"
@@ -39,6 +29,17 @@
                 class="w-full"
               />
             </div>
+            <div class="col-span-12">
+              <cornie-select
+                :rules="required"
+                :items="allLocation"
+                v-model="location"
+                label="Location"
+                placeholder="--Select--"
+                class="w-full"
+              />
+            </div>
+
             <!-- <div class="col-span-12">
               <span class="text-primary text-sm font-semibold mb-5"> Available Days </span>
               <div class="grid grid-cols-7 gap-4 w-full mt-4">
@@ -67,13 +68,19 @@
               </div>
             </div> -->
             <div
-              class="col-span-12 flex justify-start mt-5 border-b-2 border-dashed border-gray-200 pb-4">
-             <span class="text-danger font-semibold text-sm cursor-pointer"  @click="add">
-              <span class="text-lg">+</span>  Add
+              class="col-span-12 flex justify-start mt-5 border-b-2 border-dashed border-gray-200 pb-4"
+            >
+              <span
+                class="text-danger font-semibold text-sm cursor-pointer"
+                @click="add"
+              >
+                <span class="text-lg">+</span> Add
               </span>
             </div>
             <div class="col-span-12 pt-4">
-              <div class="text-sm font-bold mb-5 uppercase">Change default location</div>
+              <div class="text-sm font-bold mb-5 uppercase">
+                Change default location
+              </div>
               <template v-if="accessRoles.length">
                 <div v-if="roleId && id && locationId">
                   <div
@@ -97,7 +104,9 @@
                               {{isActiveSun ? data?.sun : ''}}
                           </span> -->
                         </div>
-                        <div class="text-xs text-gray-400">{{ getRoleName(access.roleId) }}</div>
+                        <div class="text-xs text-gray-400">
+                          {{ getRoleName(access.roleId) }}
+                        </div>
                       </div>
                     </div>
                     <div class="flex justify-center items-center">
@@ -106,14 +115,17 @@
                       </button>
                       <button
                         class="border-0"
-                        @click="deleteRoleAccess(access.roleId, access.locationId)">
+                        @click="
+                          deleteRoleAccess(access.roleId, access.locationId)
+                        "
+                      >
                         <delete-red />
                       </button>
                     </div>
                   </div>
                 </div>
                 <div
-                v-else
+                  v-else
                   class="flex justify-between mb-4"
                   v-for="(access, index) in accessRoles"
                   :key="index"
@@ -129,9 +141,13 @@
                       <div class="mb-0 font-bold text-sm">
                         {{ access.location }}
                         <span class="ml-5 text-gray-400 text-xs font-light">
-                          {{ isActiveMon ? data?.mon : '' }} {{isActiveTue ? data?.tue : ''}}  {{isActiveWed ? data?.wed : ''}}
-                            {{isActiveThu ? data?.thu : ''}}  {{isActiveFir ? data?.fri : ''}}  {{isActiveSat ? data?.sat : ''}}
-                            {{isActiveSun ? data?.sun : ''}}
+                          {{ isActiveMon ? data?.mon : "" }}
+                          {{ isActiveTue ? data?.tue : "" }}
+                          {{ isActiveWed ? data?.wed : "" }}
+                          {{ isActiveThu ? data?.thu : "" }}
+                          {{ isActiveFir ? data?.fri : "" }}
+                          {{ isActiveSat ? data?.sat : "" }}
+                          {{ isActiveSun ? data?.sun : "" }}
                         </span>
                       </div>
                       <div class="text-xs text-gray-400">{{ access.role }}</div>
@@ -143,7 +159,10 @@
                     </button>
                     <button
                       class="border-0"
-                      @click="deleteRoleAccess(access.roleId, access.locationId)">
+                      @click="
+                        deleteRoleAccess(access.roleId, access.locationId)
+                      "
+                    >
                       <delete-red />
                     </button>
                   </div>
@@ -201,7 +220,7 @@ import EditIcon from "@/components/icons/edit.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
-import IPractitioner, {PractitionerLocationRole} from "@/types/IPractitioner";
+import IPractitioner, { PractitionerLocationRole } from "@/types/IPractitioner";
 
 const dropdown = namespace("dropdown");
 const roles = namespace("roles");
@@ -257,7 +276,6 @@ export default class Accessrole extends Vue {
   @Prop({ type: Object, default: {} })
   setRoles!: any;
 
-
   @Prop({ type: String, default: "" })
   currentStatus!: string;
 
@@ -276,7 +294,6 @@ export default class Accessrole extends Vue {
   locations = [];
   defaultVal = "";
 
-
   isActiveMon = false;
   isActiveTue = false;
   isActiveWed = false;
@@ -286,7 +303,7 @@ export default class Accessrole extends Vue {
   isActiveSun = false;
   data = {} as any;
 
-   accessRoles =[] as any;
+  accessRoles = [] as any;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -310,21 +327,20 @@ export default class Accessrole extends Vue {
     });
   }
 
- @practitioner.Action
+  @practitioner.Action
   getPractitionerRoleById!: (id: string) => PractitionerLocationRole;
 
-@Watch("roleId")
- idChanged() {
+  @Watch("roleId")
+  idChanged() {
     this.setAccessroles();
   }
 
-  async setAccessroles(){
+  async setAccessroles() {
     const practitioner = await this.getPractitionerById(this.id);
     if (!practitioner) return;
     this.accessRoles = practitioner.locationRoles;
-
   }
- get allaction() {
+  get allaction() {
     return this.roleId ? "Edit" : "Add";
   }
 
@@ -342,79 +358,80 @@ export default class Accessrole extends Vue {
 
     this.$emit("role-deleted");
   }
-  get payload(){
-    return{
-      ...this.accessRoles
-    }
+  get payload() {
+    return {
+      ...this.accessRoles,
+    };
   }
-  setActive(item:string){
-    if (item == 'mon'){
+  setActive(item: string) {
+    if (item == "mon") {
       this.isActiveMon = !this.isActiveMon;
-      this.data.mon = 'mon .';
-    } else if (item == 'tue'){
-       this.data.tue = 'tue .';
+      this.data.mon = "mon .";
+    } else if (item == "tue") {
+      this.data.tue = "tue .";
       this.isActiveTue = !this.isActiveTue;
-    } else if (item == 'wed'){
-        this.data.wed = 'wed .';
+    } else if (item == "wed") {
+      this.data.wed = "wed .";
       this.isActiveWed = !this.isActiveWed;
-    } else if ( item == 'thu'){
-        this.data.thu = 'thu .';
+    } else if (item == "thu") {
+      this.data.thu = "thu .";
       this.isActiveThu = !this.isActiveThu;
-    } else if ( item == 'fri'){
-        this.data.fri = 'fri .';
+    } else if (item == "fri") {
+      this.data.fri = "fri .";
       this.isActiveFir = !this.isActiveFir;
-    } else if (item == 'sat'){
-        this.data.sat = 'sat .';
+    } else if (item == "sat") {
+      this.data.sat = "sat .";
       this.isActiveSat = !this.isActiveSat;
     } else {
-        this.data.sun = 'sun .';
+      this.data.sun = "sun .";
       this.isActiveSun = !this.isActiveSun;
     }
   }
-   getRoleName(id: string) {
+  getRoleName(id: string) {
     const pt = this.roles.find((i: any) => i.id === id);
     return pt ? `${pt.name}` : "";
   }
-   async submit() {
+  async submit() {
     this.loading = true;
     if (this.roleId) await this.apply();
     else await this.save();
     this.loading = false;
   }
 
-   async apply() {
+  async apply() {
     this.loading = true;
     if (this.id) await this.updateRole();
     else await this.createRole();
     this.loading = false;
   }
 
-
-   async createRole() {
-    
+  async createRole() {
     try {
-      const response = await cornieClient().post(`/api/v1/practitioner/location-roles/${this.id}`, this.accessRoles);
+      const response = await cornieClient().post(
+        `/api/v1/practitioner/location-roles/${this.id}`,
+        this.accessRoles
+      );
       if (response.success) {
         window.notify({ msg: "Practitioner role created", status: "success" });
-         if (!this.accessRoles.length) return;
-         this.$emit("add-access-roles", this.accessRoles);
+        if (!this.accessRoles.length) return;
+        this.$emit("add-access-roles", this.accessRoles);
         this.$emit("close-access-diag");
         this.loading = false;
       }
     } catch (error: any) {
-      this.loading = false
+      this.loading = false;
       // console.log(error.response.data);
     }
   }
 
-   async updateRole() {
+  async updateRole() {
     const url = `/api/v1/practitioner/location-roles/${this.locationId}`;
-    const payload = {locationId: this.locationId, roleId:this.roleId };
+    const payload = { locationId: this.locationId, roleId: this.roleId };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Practitioner role updated", status: "success" });
-       this.show = false;
+        this.show = false;
       }
     } catch (error) {
       window.notify({ msg: "Practitioner role not updated", status: "error" });
@@ -491,7 +508,7 @@ export default class Accessrole extends Vue {
 }
 </script>
 <style scoped>
-.active{
+.active {
   background: #080056;
   border: 1px solid #080056;
   color: #fff;

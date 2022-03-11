@@ -1,8 +1,8 @@
 <template>
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
-       <button
-         class="rounded-lg font-semibold  mt-5 mb-5 py-3 px-5 text-primary border border-primary mr-3 text-sm  focus:outline-none hover:opacity-90"
+      <button
+        class="rounded-lg font-semibold mt-5 mb-5 py-3 px-5 text-primary border border-primary mr-3 text-sm focus:outline-none hover:opacity-90"
         @click="showInviteModal = true"
       >
         Invite Practitioner
@@ -18,6 +18,13 @@
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="$router.push(`view-practitioner/${item.id}`)"
+        >
+          <eye-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="$router.push(`add-practitioner/${item.id}`)"
         >
           <edit-icon class="text-primary fill-current" />
@@ -28,14 +35,28 @@
           @click="showModal(item.id)"
         >
           <update-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Update Location</span>
+          <span class="ml-3 text-xs">Update Work</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showModal(item.id)"
+        >
+          <update-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Update Location & Previleges</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="remove(item.id)"
+        >
+          <revoke-icon />
+          <span class="ml-3 text-xs">Revoke Invitation</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="remove(item.id)"
         >
           <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
+          <span class="ml-3 text-xs">Deactivate</span>
         </div>
       </template>
     </cornie-table>
@@ -45,7 +66,7 @@
     @location-update="updateLocation"
     :id="locationId"
   />
-  <invitation-modal  v-model="showInviteModal"/>
+  <invitation-modal v-model="showInviteModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -62,17 +83,19 @@ import search from "@/plugins/search";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
+import DeleteIcon from "@/components/icons/deactivate.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import LocationModal from "./locationModal.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
-import InvitationModal from './inviteModal.vue';
+import InvitationModal from "./inviteModal.vue";
+import RevokeIcon from "@/components/icons/revoke.vue";
 
 const practitioner = namespace("practitioner");
 
 @Options({
   components: {
+    RevokeIcon,
     CornieTable,
     SortIcon,
     ThreeDotIcon,
