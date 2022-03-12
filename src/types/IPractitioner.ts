@@ -65,6 +65,8 @@ export default interface IPractitioner {
   graduationYear: string;
   licenseIssuer: string;
   licensePeriod: Period;
+  location: any[]
+  education: any[]
 
 }
 

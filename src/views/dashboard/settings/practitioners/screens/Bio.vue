@@ -1,20 +1,5 @@
 <template>
-  <screen-header :properties="properties">
-    Bio
-    <template #icon>
-      <button
-        class="flex items-center"
-        @click="
-          $router.push(
-            `/dashboard/provider/settings/add-practitioner/${properties.id}`
-          )
-        "
-      >
-        <edit-icon class="fill-current text-red-500 mr-1 text-sm" />
-        <h1 class="text-red-500 text-xs font-bold">Edit</h1>
-      </button>
-    </template>
-  </screen-header>
+  <screen-header :properties="properties"> Bio </screen-header>
   <div v-if="properties">
     <div class="grid grid-cols-4 gap-1">
       <div class="flex flex-col">
@@ -53,7 +38,6 @@
 <script lang="ts">
 import { Options, setup, Vue } from "vue-class-component";
 import ScreenHeader from "./Header.vue";
-import EditIcon from "@/components/icons/edit-prac.vue";
 import CalendareIcon from "@/components/icons/calendar.vue";
 import { Prop } from "vue-property-decorator";
 import { countryCodes } from "@/plugins/countrycodes";
@@ -62,7 +46,6 @@ import { countryCodes } from "@/plugins/countrycodes";
   name: "PractitionerBio",
   components: {
     ScreenHeader,
-    EditIcon,
     CalendareIcon,
   },
 })
@@ -93,7 +76,5 @@ export default class Bio extends Vue {
         this.properties.nationality?.toLowerCase()
     )?.flag;
   }
-
-  edit() {}
 }
 </script>
