@@ -4,7 +4,7 @@
       <div class="greet">Good Morning, Dr. Johnson!</div>
       <div class="flex items-center mt-4">
         <span class="">Have a lovely day</span>
-        <img class="ml-6" src="@/assets/Emoji.png" alt="" />
+        <img class="ml-6" src="@/assets/emoji.png" alt="" />
       </div>
 
       <div class="s1-slider mt-8">
@@ -20,19 +20,28 @@
     <div class="bg-white p-6 mb-8">
       <span class="font-bold text-xl">Timeframe</span>
 
-      <div class="grid items-center gap-8 mt-4" style="grid-template-columns: 23% 23% 1% 23% 23%">
-        <div class="flex items-center px-4 py-3" style="background: #F0F4FE">
-          <img class="mr-4" src="" alt="">
+      <div
+        class="grid items-center gap-8 mt-4"
+        style="grid-template-columns: 23% 23% 1% 23% 23%"
+      >
+        <div class="flex items-center px-4 py-3" style="background: #f0f4fe">
+          <img class="mr-4" src="" alt="" />
           <span class="text-base w-10/12" style="">Preferred Period Range</span>
-          <img class="ml-4" src="" alt="">
+          <img class="ml-4" src="" alt="" />
         </div>
 
         <div>
-          <input type="date" class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200" />
+          <input
+            type="date"
+            class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200"
+          />
         </div>
         <span>to</span>
         <div>
-          <input type="date" class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200" />
+          <input
+            type="date"
+            class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200"
+          />
         </div>
 
         <div>
@@ -61,14 +70,14 @@
     </div>
 
     <div class="w-full grid grid-cols-3 gap-8">
-     <div class="col-span-3"> 
-        <appointment-chart  />
-     </div>
-     
+      <div class="col-span-3">
+        <appointment-chart />
+      </div>
+
       <referral-chart />
-       <visits-chart />
-    <InpatientChart />
-      
+      <visits-chart />
+      <InpatientChart />
+
       <!--
       <billings-chart />
       <medication-chart /> -->
@@ -76,14 +85,18 @@
       <!-- <diagnostics-chart /> -->
       <!-- <chart-card height="439px" title="Diagnostics" /> -->
     </div>
-    <!-- <span class="w-full grid">
-      <rating-chart />
-    </span> -->
     <!-- <div class="w-full grid gap-x-3" style="grid-template-columns: 64% 35%">
-      <resource-chart />
-      <messages-chart />
     </div> -->
     <!-- <questionnaire-chart /> -->
+    <div class="mb-8">
+      <rating-chart />
+    </div>
+    <div class="mb-8">
+      <resource-chart />
+    </div>
+    <div class="mb-11">   
+      <messages-chart />
+    </div>
   </div>
 </template>
 <script lang="ts">

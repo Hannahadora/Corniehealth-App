@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="450px" title="Rating">
+  <chart-card height="402px" title="Overall Ratings" :subtitle="totalRate">
     <div class="w-full grid rating-grid">
       <span class="block p-3">
         <canvas id="rating-chart" style="margin: auto"></canvas>
@@ -79,6 +79,12 @@ Chart.register(CustomDoughnutController);
 })
 export default class RatingChart extends Vue {
   chart!: Chart;
+  starIcon = require('@/assets/staricon.png')
+
+  get totalRate() {
+    return  "4.56/5.0"
+  }
+
   mounted() {
     this.mountChart();
   }
@@ -89,7 +95,7 @@ export default class RatingChart extends Vue {
       datasets: [
         {
           backgroundColor: ["#35BA83", "#F0F4FE"],
-          data: [4, 1],
+          data: [52, 1],
         },
       ],
     };
@@ -103,7 +109,7 @@ export default class RatingChart extends Vue {
         maintainAspectRatio: false,
         elements: {
           center: {
-            text: "4.1/5 Average",
+            text: "4.56/5.0",
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
