@@ -15,8 +15,6 @@
       </div>
     </div>
 
-    <!-- <timeframe /> -->
-
     <div class="bg-white p-6 mb-8">
       <span class="font-bold text-xl">Timeframe</span>
 
@@ -77,24 +75,23 @@
       <referral-chart />
       <visits-chart />
       <InpatientChart />
-
-      <!--
-      <billings-chart />
-      <medication-chart /> -->
-
-      <!-- <diagnostics-chart /> -->
-      <!-- <chart-card height="439px" title="Diagnostics" /> -->
     </div>
-    <!-- <div class="w-full grid gap-x-3" style="grid-template-columns: 64% 35%">
-    </div> -->
-    <!-- <questionnaire-chart /> -->
+
+    <div class="w-full grid grid-cols-2 gap-8 mb-8">
+      <medication-chart />
+      <diagnostics-chart />
+    </div>
+
+    <div class="mb-8">
+      <billings-chart />
+    </div>
     <div class="mb-8">
       <rating-chart />
     </div>
     <div class="mb-8">
       <resource-chart />
     </div>
-    <div class="mb-11">   
+    <div class="mb-11">
       <messages-chart />
     </div>
   </div>

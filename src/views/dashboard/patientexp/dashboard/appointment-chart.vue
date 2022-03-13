@@ -29,7 +29,7 @@
               alt=""
             />
             <span class="w-10/12 mr-4">{{ appointment.pName }}</span>
-            <!-- <img src="@/assets/icon (2).png" alt="" /> -->
+            <img src="@/assets/icon(2).png" alt="" />
           </div>
         </div>
       </div>
@@ -56,17 +56,17 @@ export default class AppointmentChart extends Vue {
   appointments: Array<any> = [
     {
       time: "10:30",
-      pImage: "@/assets/avatar (1).png",
+      pImage: require('@/assets/avatar(1).png'),
       pName: "Oluwafunmilayo Adeola Sarah",
     },
     {
       time: "13:45",
-      pImage: "@/assets/avatar (2).png",
+      pImage: require('@/assets/avatar(2).png'),
       pName: "Busayo Akindele Deborah",
     },
     {
       time: "16:30",
-      pImage: "@/assets/avatar (3).png",
+      pImage: require('@/assets/avatar(3).png'),
       pName: "Group Meeting",
     },
   ];

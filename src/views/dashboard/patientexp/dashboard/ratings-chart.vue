@@ -4,57 +4,41 @@
       <span class="block p-3">
         <canvas id="rating-chart" style="margin: auto"></canvas>
       </span>
-      <div class="w-full mt-5 flex flex-col">
-        <rating-bar :percent="12" color="warning" title="Neutral Responses" />
+      <div class="w-full flex flex-col">
         <rating-bar
-          :percent="30"
-          class="mt-3"
-          color="danger"
-          subtitle="(+3 IN THE LAST 30 DAYS)"
-          title="Negative Responses"
+          :percent="52"
+          background="#35BA83"
+          total="1,820"
+          :title="require('@/assets/5star.png')"
         />
         <rating-bar
-          :percent="58"
+          :percent="8"
           class="mt-3"
-          color="success"
-          subtitle="(14 RATINGS)"
-          title="Positive Responses"
+          background="#F7B538"
+          total="170"
+          :title="require('@/assets/4star.png')"
         />
-        <span class="mt-16 block">
-          <hr class="w-full border" />
-          <span class="w-full flex justify-between">
-            <div class="mt-3 flex items-center border-r-2 pr-3">
-              <span class="font-bold text-success">5</span>
-              <span class="ml-1 font-semibold text-sm text-black">
-                Very Satisfied
-              </span>
-            </div>
-            <div class="mt-3 flex items-center border-r-2 pr-3">
-              <span class="font-bold text-success">2</span>
-              <span class="ml-1 font-semibold text-sm text-black">
-                Satisfied
-              </span>
-            </div>
-            <div class="mt-3 flex items-center border-r-2 pr-3">
-              <span class="font-bold text-success">4</span>
-              <span class="ml-1 font-semibold text-sm text-black">
-                Average
-              </span>
-            </div>
-            <div class="mt-3 flex items-center border-r-2 pr-3">
-              <span class="font-bold text-success">3</span>
-              <span class="ml-1 font-semibold text-sm text-black">
-                Satisfied
-              </span>
-            </div>
-            <div class="mt-3 flex items-center pr-3">
-              <span class="font-bold text-success">0</span>
-              <span class="ml-1 font-semibold text-sm text-black">
-                Very Dissatisfied
-              </span>
-            </div>
-          </span>
-        </span>
+        <rating-bar
+          :percent="14"
+          class="mt-3"
+          background="#114FF5"
+          total="420"
+          :title="require('@/assets/3star.png')"
+        />
+        <rating-bar
+          :percent="12"
+          class="mt-3"
+          background="#FE4D3C"
+          total="280"
+          :title="require('@/assets/2star.png')"
+        />
+        <rating-bar
+          :percent="22"
+          class="mt-3"
+          background="#541388"
+          total="490"
+          :title="require('@/assets/staricon.png')"
+        />
       </div>
     </div>
   </chart-card>
@@ -79,10 +63,10 @@ Chart.register(CustomDoughnutController);
 })
 export default class RatingChart extends Vue {
   chart!: Chart;
-  starIcon = require('@/assets/staricon.png')
+  starIcon = require("@/assets/staricon.png");
 
   get totalRate() {
-    return  "4.56/5.0"
+    return "4.56/5.0";
   }
 
   mounted() {
@@ -91,11 +75,17 @@ export default class RatingChart extends Vue {
 
   mountChart() {
     const data = {
-      labels: ["Positive", "Others"],
+      labels: ["5 Star", "4 Star", "3 Star", "2 Star", "1 Star"],
       datasets: [
         {
-          backgroundColor: ["#35BA83", "#F0F4FE"],
-          data: [52, 1],
+          backgroundColor: [
+            "#35BA83",
+            "#541388",
+            "#114FF5",
+            "#FE4D3C",
+            "#F7B538",
+          ],
+          data: [52, 22, 14, 12, 8],
         },
       ],
     };
@@ -105,13 +95,13 @@ export default class RatingChart extends Vue {
       type: "derivedDoughnut",
       data,
       options: {
-        // cutout: "70%",
+        cutout: "70%",
         maintainAspectRatio: false,
         elements: {
           center: {
             text: "4.56/5.0",
             color: "#14171F",
-            fontStyle: "Arial",
+            fontStyle: "Inter",
             sidePadding: 12,
             minFontSize: 12,
             lineHeight: 25,
@@ -119,6 +109,15 @@ export default class RatingChart extends Vue {
         },
         responsive: true,
         plugins: {
+          //  legend: {
+          //     position: "right",
+          //     labels: {
+          //       boxWidth: 10,
+          //       boxHeight: 10,
+          //       pointStyle: "circle",
+          //       usePointStyle: true,
+          //     },
+          //   },
           legend: {
             display: false,
           },
@@ -130,13 +129,13 @@ export default class RatingChart extends Vue {
     });
     if (this.chart && this.chart.canvas.parentNode) {
       const parent: any = this.chart.canvas.parentNode;
-      parent.style.height = "390px";
+      parent.style.height = "200px";
     }
   }
 }
 </script>
 <style scoped>
 .rating-grid {
-  grid-template-columns: 40% 55%;
+  grid-template-columns: 30% 70%;
 }
 </style>
