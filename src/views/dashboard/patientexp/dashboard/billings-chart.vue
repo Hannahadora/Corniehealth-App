@@ -7,7 +7,7 @@
   >
     <div class="w-full grid rating-grid mt-8">
       <div class="w200">
-        <canvas ref="chart" style="margin: auto"></canvas>
+        <canvas ref="chart" style="margin: auto;"></canvas>
       </div>
 
       <div class="w-">
@@ -109,6 +109,10 @@ export default class BillingsChart extends Vue {
         },
       },
     });
+    if (this.chart && this.chart.canvas.parentNode) {
+      const parent: any = this.chart.canvas.parentNode;
+      parent.style.height = "200px";
+    }
   }
 }
 </script>
@@ -118,7 +122,7 @@ export default class BillingsChart extends Vue {
   grid-template-columns: 30% 70%;
 }
 .w200 {
-  width: 200px !important;
+  width: 200px !;
   height: 200px;
 }
 td {

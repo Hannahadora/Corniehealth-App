@@ -9,32 +9,53 @@
       <canvas ref="chart" style="margin: auto" class="mt-8 mb-11"></canvas>
     </chart-card>
 
-  <div class="col-span-2">
+    <div class="col-span-2">
       <chart-card
-      height="422px"
-      title="Today's Appointments"
-      action="View appointment"
-    >
-      <div class="w-full flex flex-col overflow-y-scroll">
-        <div
-          class="w-full flex items-center mb-4"
-          v-for="(appointment, index) in appointments"
-          :key="index"
-        >
-          <span class="text-lg" style="color: #667499;">{{ appointment.time }}</span>
-          <div class="w-11/12 p-4 ml-8 flex items-center hover:bg-blue-100">
-            <img
-              class="w-12 h-12 mr-4 rounded-full"
-              :src="appointment.pImage"
-              alt=""
-            />
-            <span class="w-10/12 mr-4">{{ appointment.pName }}</span>
-            <img src="@/assets/icon(2).png" alt="" />
+        height="422px"
+        title="Today's Appointments"
+        action="View appointment"
+      >
+        <div class="w-full flex flex-col overflow-y-scroll">
+          <div
+            class="w-full flex items-center mb-4"
+            v-for="(appointment, index) in appointments"
+            :key="index"
+          >
+            <span class="text-lg" style="color: #667499">{{
+              appointment.time
+            }}</span>
+            <div class="w-11/12 p-4 ml-8 flex items-center hover:bg-blue-100">
+              <img
+                class="w-12 h-12 mr-4 rounded-full"
+                :src="appointment.pImage"
+                alt=""
+              />
+              <span class="w-10/12 mr-4">{{ appointment.pName }}</span>
+              <img src="@/assets/icon(2).png" alt="" />
+            </div>
           </div>
         </div>
-      </div>
-    </chart-card>
-  </div>
+
+        <div
+          v-if="appointments.length === 0"
+          class="flex flex-col items-center justify-center"
+        >
+          <div class="mt-8 w-11/12 mx-auto">
+            <img src="@/assets/patientanddoctor.png" alt="" />
+          </div>
+          <div
+            class="mt-6 flex flex-col items-center justify-center text-center"
+          >
+            <span class="text-lg font-bold">There’s no Active Appointment</span>
+            <span style="color: #667499" class="text-sm"
+              >Active and upcoming appointment will be displayed here</span
+            >
+
+            <span class="mx-2 text-sm font-semibold cursor-pointer" style="color: #FE4D3C;">Create Appointment</span>
+          </div>
+        </div>
+      </chart-card>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -56,17 +77,17 @@ export default class AppointmentChart extends Vue {
   appointments: Array<any> = [
     {
       time: "10:30",
-      pImage: require('@/assets/avatar(1).png'),
+      pImage: require("@/assets/avatar(1).png"),
       pName: "Oluwafunmilayo Adeola Sarah",
     },
     {
       time: "13:45",
-      pImage: require('@/assets/avatar(2).png'),
+      pImage: require("@/assets/avatar(2).png"),
       pName: "Busayo Akindele Deborah",
     },
     {
       time: "16:30",
-      pImage: require('@/assets/avatar(3).png'),
+      pImage: require("@/assets/avatar(3).png"),
       pName: "Group Meeting",
     },
   ];

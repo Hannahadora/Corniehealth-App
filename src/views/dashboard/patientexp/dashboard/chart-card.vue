@@ -9,7 +9,7 @@
       >
         <span class="font-bold text-2xl">{{ title }}</span>
         <div class="flex items-center">
-          <span class="mx-2 text-sm font-semibold" style="color: #FE4D3C;">{{ action }}</span>
+          <span class="mx-2 text-sm font-semibold cursor-pointer" style="color: #FE4D3C;">{{ action }}</span>
           <!-- <span class="mx-2">{{ order }}</span> -->
           <!-- <chevron-down-icon
             @click="filter = !filter"

@@ -23,9 +23,9 @@
         style="grid-template-columns: 23% 23% 1% 23% 23%"
       >
         <div class="flex items-center px-4 py-3" style="background: #f0f4fe">
-          <img class="mr-4" src="" alt="" />
+          <img class="mr-4" src="@/assets/calendericon.svg" alt="" />
           <span class="text-base w-10/12" style="">Preferred Period Range</span>
-          <img class="ml-4" src="" alt="" />
+          <img class="ml-4" src="@/assets/chevrindownprimary.svg" alt="" />
         </div>
 
         <div>
@@ -58,16 +58,11 @@
       class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-8 rounded w-full overflow-auto"
     >
       <div class="w-full p-2">
-        <span
-          class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
-        >
-          Dashboards
-        </span>
         <registration-chart class="w-full" />
       </div>
     </div>
 
-    <div class="w-full grid grid-cols-3 gap-8">
+    <div class="w-full grid grid-cols-3 gap-8 mb-8">
       <div class="col-span-3">
         <appointment-chart />
       </div>
@@ -110,8 +105,6 @@ import RatingChart from "./ratings-chart.vue";
 import ResourceChart from "./resource-chart.vue";
 import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
-import QuestionnaireChart from "./questionnaire-chart.vue";
-import TimeFrame from "./timeframe.vue";
 
 @Options({
   name: "DashboardHome",
@@ -128,8 +121,6 @@ import TimeFrame from "./timeframe.vue";
     MedicationChart,
     RatingChart,
     ResourceChart,
-    QuestionnaireChart,
-    TimeFrame,
   },
 })
 export default class DashboardHome extends Vue {}

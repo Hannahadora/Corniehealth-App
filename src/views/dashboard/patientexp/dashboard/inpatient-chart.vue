@@ -10,10 +10,10 @@
   >
     <canvas ref="chart" style="margin: auto"></canvas>
   </chart-card>
-      <canvas
+      <!-- <canvas
         ref="inpatient_chart"
-        style="margin: auto; margin-top: -30px"
-      ></canvas>
+        style="margin: auto;"
+      ></canvas> -->
     </div>
 </template>
 <script lang="ts">

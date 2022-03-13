@@ -1,27 +1,13 @@
 <template>
   <div class="block w-full">
-    <div class="flex justify-between w-full">
-      <span class="flex items-center">
-        <h2 class="font-bold">Patient Registration Chart</h2>
-        <div class="flex items-center">
-          <span class="mx-2">{{ order }}</span>
-          <chevron-down-icon
-            @click="filter = !filter"
-            class="stroke-current cursor-pointer text-danger"
-          />
-          <drop-down v-model="filter">
-            <div class="flex flex-col">
-              <span class="cursor-pointer" @click="reorder('Today')"
-                >Today</span
-              >
-              <span class="cursor-pointer" @click="reorder('WTD')">WTD</span>
-              <span class="cursor-pointer" @click="reorder('MTD')">MTD</span>
-              <span class="cursor-pointer" @click="reorder('YTD')">YTD</span>
-            </div>
-          </drop-down>
-        </div>
+    <div class="my-6">
+      <span class="flex items-center justify-between">
+        <h2 class="font-bold text-base" style="coolor: #667499;">Patient Registration Chart</h2>
+        <span class="mx-2 text-sm font-semibold cursor-pointer" style="color: #FE4D3C;">View Patients</span>
       </span>
-      <span> Total={{ chartData.total }} </span>
+      <div class="flex items-center">
+        <span class="text-2xl font-bold mr-2">3,500</span><span class="text-base font-bold text-green-400">+4.0%</span>
+      </div>
     </div>
     <canvas ref="registration_chart"></canvas>
   </div>
