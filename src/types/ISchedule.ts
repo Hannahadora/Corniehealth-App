@@ -1,59 +1,85 @@
 import IDevice from "./IDevice";
-import IHealthCareService from "./IHealthcare";
 import IPractitioner from "./IPractitioner";
+import ICatalogueService from "./ICatalogue";
+import ILocation from "./ILocation";
 
 export default interface ISchedule {
   id: string;
   name: string;
   description: string;
-  scheduleType: string;
-  days: string[];
+  specialties: string[];
+  subspecialties: string[];
+  repeat:Repeat;
+  availableForOnlineBooking: boolean;
+  services : ICatalogueService[];
   locationId: string;
   serviceCategory: string;
-  serviceType: string;
-  specialty: string;
   status: string;
   organizationId: string;
   slots: any[];
+  participatingDevices: string[];
+  participatingLocations: [];
+  participatingealthCareServices:[];
+  bookedPatients:[];
+  waitListedPatients:[];
   practitioners: IPractitioner[];
-  healthcareServices: IHealthCareService[];
   devices: IDevice[];
-  startDate: string | Date;
-  endDate: string | Date;
+  startDate: string;
+  endDate: string;
   startTime: string;
   endTime: string;
   slotSize: number;
   comments: string;
   breaks: Break[];
+  serviceType:string;
+
+ 
+
 }
 
 export interface Slot {
-  startTime?: string;
-  endTime?: string;
   date:string;
   id?: string;
-  scheduleId?: string;
-  description?: string;
-  status?: string;
-  active?: true;
-  capacity?: 0;
-  hasWaitList?: true;
-  comments?: string;
-  repeat?: Repeat;
-}
-
-export interface Repeat {
-  year: number;
-  month: number;
-  week: number;
-  everyDayOfSchedule: boolean;
+  scheduleId: string;
+  description: string;
+  status: string;
+  active: true;
+  capacity: number;
+  hasWaitList: true;
+  comments: string;
+  repeat:Repeat;
+  type: string;
+  name: string;
+  locationId: string;
+  location: ILocation[];
+  meetingLink: null;
+  specialties: string[];
+  subspecialties: string[];
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  participatingPractitioners: IPractitioner[];
+  specialtyId: string;
+  waitListCapacity: number;
 }
 
 export interface Break {
   id: string;
   type: string;
   description: string;
-  status: string;
   startTime: string;
   endTime: string;
 }
+
+export interface Repeat {
+  interval: number;
+  intervalUnit: string;
+  days: string[];
+  end: {
+    type: string;
+    value: string;
+  };
+}
+
+

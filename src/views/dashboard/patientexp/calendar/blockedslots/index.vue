@@ -15,8 +15,10 @@ import IPractitioner from "@/types/IPractitioner";
 import { namespace } from "vuex-class";
 import SlotsEmptyState from "./emptyState.vue";
 import SlotsExistingState from "./existingState.vue";
+import {Slot} from '@/types/ISchedule';
 
-const practitioner = namespace("practitioner");
+const schedulesStore = namespace("schedules");
+const user = namespace("user");
 
 @Options({
   name: "SlotsIndex",
@@ -30,17 +32,22 @@ export default class SlotsIndex extends Vue {
   practitionerToUpdate = {} as IPractitioner;
 
   get empty() {
-    return this.practitioners.length < 1;
+    return this.slots.length < 1;
   }
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+   
+  @schedulesStore.State
+  slots!: Slot[];
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  @schedulesStore.Action
+  singlePractitonerSlot!: (practitionerId: string) => Promise<void>;
 
-  created() {
-    this.fetchPractitioners();
+   @user.State
+   currentLocation!: string;
+
+
+  async created() {
+    if (this.currentLocation) await this.singlePractitonerSlot(this.currentLocation);
   }
 }
 </script>

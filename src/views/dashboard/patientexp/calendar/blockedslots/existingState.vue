@@ -10,35 +10,25 @@
       </button>
     </span>
     <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false">
-      <template #actions>
+      <template #actions="{ item }">
         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showEventModal(item.id)">
           <eye-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showEventModal(item.id)">
           <settings-icon class="text-purple-800 fill-current" />
           <span class="ml-3 text-xs">Manage</span>
         </div>
          <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <plus-icon class="text-green-400 fill-current" />
-          <span class="ml-3 text-xs">Add Actor</span>
-        </div>
-         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <share-icon class="text-blue-800 fill-current" />
-          <span class="ml-3 text-xs">Share</span>
-        </div>
-         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="remove(item.id)">
           <cancel-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Deactivate</span>
+          <span class="ml-3 text-xs">Cancel</span>
         </div> 
       </template>
        <template #actors>
-         <actors-section :items="practitioners"/>
+         <actors-section :items="participatingPractitioners"/>
       </template>
        <template #status>
          <span class="text-green-600 bg-green-50 rounded-full py-2 px-6 text-xs">Active</span>
@@ -47,6 +37,7 @@
   </div>
   <slots-modal
     v-model="showSlotsModal"
+    :id="slotId"
   />
 </template>
 <script lang="ts">
@@ -73,7 +64,10 @@ import DatePicker from "@/components/daterangecalendar.vue";
 import ActorsSection from "@/views/dashboard/schedules/components/actors.vue";
 import SlotsModal from "../blockedslots/addBlockSlots.vue";
 
-const practitioner = namespace("practitioner");
+import {Slot} from '@/types/ISchedule';
+
+const schedulesStore = namespace("schedules");
+const user = namespace("user");
 
 @Options({
   components: {
@@ -104,22 +98,39 @@ export default class SlotsExistingState extends Vue {
   showInviteModal = false;
   locationId = "";
   showSlotsModal = false;
+  slotId = "";
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  // @practitioner.State
+  // practitioners!: IPractitioner[];
 
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
+   @schedulesStore.Action
+   deleteSlot!: (id: string) => Promise<boolean>;
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  // @practitioner.Action
+  // fetchPractitioners!: () => Promise<void>;
+
+   
+  @schedulesStore.State
+  slots!: Slot[];
+
+  @schedulesStore.Action
+  singlePractitonerSlot!: (locationId: string) => Promise<void>;
+
+   @user.State
+   currentLocation!: string;
 
   rawHeaders = [
     {
       title: "identifier",
-      key: "identifier",
+      key: "id",
       show: true,
       noOrder: true
+    },
+    {
+      title: "name",
+      key: "name",
+      show: true,
+       noOrder: true
     },
     {
       title: "description",
@@ -128,35 +139,32 @@ export default class SlotsExistingState extends Vue {
        noOrder: true
     },
     { title: "date", key: "date", show: true,  noOrder: true },
-    { title: "time", key: "time", show: true,  noOrder: true },
-     { title: "Booking cutoff", key: "booking", show: true,  noOrder: true },
-    {
-        title: "participants",
-      key: "actors",
-      show: true,
-      noOrder: true
-    },
+    { title: "time", key: "startTime", show: true,  noOrder: true },
+    //  { title: "Booking cutoff", key: "booking", show: true,  noOrder: true },
+    // {
+    //     title: "participants",
+    //   key: "actors",
+    //   show: true,
+    //   noOrder: true
+    // },
     {
       title: "status",
-      key: "status",
+      key: "private",
       show: true,
     },
   ];
 
+
   get items() {
-    const practitioners = this.practitioners.map((practitioner) => {
+    const slots = this.slots.map((slot) => {
       return {
-        ...practitioner,
-        action: practitioner.id,
-        booking: "25/02/2022",
-        time: "18:00",
-        date:"date",
-        description: "xxxxxx",
-        identifier: "xxxxxx",
+        ...slot,
+        action: slot.id,
+
       };
     });
-    if (!this.query) return practitioners;
-    return search.searchObjectArray(practitioners, this.query);
+    if (!this.query) return slots;
+    return search.searchObjectArray(slots, this.query);
   }
 
   stringifyOperationHours(opHours: HoursOfOperation[]) {
@@ -167,20 +175,28 @@ export default class SlotsExistingState extends Vue {
 
   async remove(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this practitioner",
+      message: "You are about to delete this event",
     });
     if (!confirmed) return;
-    if (await this.deletePractitioner(id))
-      window.notify({ msg: "Practitioner deleted", status: "success" });
-    else window.notify({ msg: "Practitioner not deleted", status: "error" });
+    if (await this.deleteSlot(id))
+      window.notify({ msg: "Event deleted", status: "success" });
+    else window.notify({ msg: "Event not deleted", status: "error" });
   }
   async updateLocation() {
-    await this.fetchPractitioners();
+    if (this.currentLocation) await this.singlePractitonerSlot(this.currentLocation);
+  }
+
+  showEventModal(value:string){
+    this.showSlotsModal = true;
+    this.slotId = value;
   }
 
   showModal(value: string) {
     this.showLocationModal = true;
     this.locationId = value;
+  }
+  async created(){
+    if (this.currentLocation) await this.singlePractitonerSlot(this.currentLocation);
   }
 }
 </script>

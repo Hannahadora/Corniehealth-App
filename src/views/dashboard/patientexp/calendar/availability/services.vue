@@ -32,7 +32,7 @@
                 </span>
             </div>
             <div class="w-full mb-10 mt-5 justify-center"  v-for="(item, index) in services" :key="index">
-                <select-option @click="setService(item.id)" :label="item.name"/>
+                <select-option @click="pushValue(item,item.id)" :label="item.name"/>
                 <div class="float-right flex justify-end -mt-6">
 
                 <span class="text-gray-400 text-xs">₦ {{ item?.cost?.toLocaleString() }}</span>
@@ -125,7 +125,7 @@ export default class ServicesModal extends Vue {
   name!: string;
 
   @Prop({ type: String, default: "" })
-  directorId!: string;
+  serviceId!: string;
 
  @Prop({ type: Function, default: defaultFilter })
   filter!: (item: any, query: string) => boolean;
@@ -144,30 +144,11 @@ export default class ServicesModal extends Vue {
   special = '';
   accounts = [];
   query = "";
+  firstServiceName = [] as any;
   orderBy: Sorter = () => 1;
 
-  remove = [];
-  add = [] as any;
-
-
-   async submit() {
-    this.loading = true;
-    if(this.id) await this.saveService();
-    else await this.save();
-    this.loading = false;
-  }
-
-   get spaciallItems() {
-    return {
-      text: this.special,
-    };
-  }
-  setService(value:string){
-    this.add.push(value);
-  }
-   removearray(index: number) {
-    this.accounts.splice(index, 1);
-  }
+  serviceIds = [] as any;
+  firstServices = [] as any;
 
    get filteredItems() {
     return this.services
@@ -177,48 +158,66 @@ export default class ServicesModal extends Vue {
 
 
   get payload() {
-    return {
-      remove: this.remove,
-      add: this.add,
-      
-    };
-  }
-   get payload2() {
-    return this.remove, this.add;
-      
+    return this.firstServiceName;
   }
 
-  get newaction() {
-    return this.id ? "Update" : "Add";
+  pushValue(item:any,id:string){
+    this.serviceIds.push(id);
+    this.firstServices.push(item);
+    this.firstServiceName.push(item.id)
   }
 
+  
+  async updateServiceData() {
+   this.$emit('service-data',this.firstServices,this.firstServiceName);
+    this.done();
+  }
+  done() {
+    this.$emit("service-added");
+    this.show = false;
+  }
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.apply();
+    else await this.updateServiceData();
+    this.loading = false;
+  }
+   async apply() {
+    this.loading = true;
+    if (this.serviceId) await this.updateService();
+    else await this.saveService();
+    this.loading = false;
+  }
 
- 
- 
-  async saveService() {
+   async saveService() {
       try {
-      const response = await cornieClient().patch(
-        `/api/v1/practitioner/services/${this.id}`,
+      const response = await cornieClient().post(
+        `/api/v1/schedule/add-practitioners/${this.id}`,
         this.payload
       );
       if(response.success){
           this.done();
-        window.notify({ msg: "Services added successfully", status: "success" });
+        window.notify({ msg: "Service added successfully", status: "success" });
       }
     } catch (error) {
-      window.notify({ msg: "Services not added", status: "error" });
+      window.notify({ msg: "Service not added", status: "error" });
     }
   }
-  async save() {
-    this.$emit("add-services", this.payload2);
-    this.show = false;
-  }
   
-
-  done() {
-    this.$emit("director-added");
-    this.show = false;
+  async updateService() {
+    const url = `/api/v1/schedule/add-practitioners/${this.serviceId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Service updated successffuly", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Service not updated", status: "error" });
+    }
   }
+
 
 
   async created() {

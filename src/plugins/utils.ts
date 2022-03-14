@@ -140,3 +140,8 @@ export function printWeekday(date: Date) {
   const day = date.getDay();
   return map[day];
 }
+
+export function splitDate(date: Date){
+  const [dateStr, ..._] = date.toISOString().split("T");
+  return dateStr
+}
