@@ -77,20 +77,24 @@
               <!-- <span class="w-full">
                 {{ organizationInfo?.address }}
               </span> -->
-               <cornie-input
-                v-model="city"
-                :value="organizationInfo?.address || 'Add address on practice infromation'"
-                :label="'Address'"
-                class="w-full"
-                placeholder="--Select--"
-              />
+              <div class="w-full">
+                <cornie-input
+                  v-model="organizationInfo.address"
+                  :label="'Address'"
+                  class="w-full"
+                  :disabled="true"
+                  placeholder="--Autofilled--"
+                />
+              </div>
+              <div class="flex justify-end  float-right w-full">  
               <cornie-button
-                  class="px-0 flex justify-end  float-right rounded font-semibold cursor-pointer py-1 text-white"
+                  class="px-0  rounded font-semibold cursor-pointer h-10 text-white"
                   style="background: #fe4d3c"
                    @click="$router.push('practice-information')"
                 >
                   Change
                 </cornie-button>
+              </div>
 
             </div>
             <!-- <div class="w-full grid grid-cols-3 gap-4 items-center mt-5 pb-6">

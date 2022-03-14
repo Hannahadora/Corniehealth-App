@@ -1,13 +1,19 @@
 <template>
 <div class="mt-12">
+    <div>
+        <div>
           <div class="flex w-full"  v-for="(item, index) in dayCalendar" :key="index">
-              <span class="text-xs text-gray-500 font-semibold p-3 border-r-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span>
-              <div class="border-gray-100 w-full  border-b-2 ">
-                <actors-section :items="item" :singletime="index" :range="index > 9 ? index +':00' : '0' + index +':00'" :range2="index  >= 9 ? (parseInt(index) + 1) +':00' : '0' + (parseInt(index) + 1) +':00'"/>
+              <span  v-if="item != 'unavailable'" class="text-xs text-gray-500 font-semibold p-3 border-r-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span>
+              <div v-if="item != 'unavailable'" class="border-gray-100 w-full  border-b-2 ">
+                <actors-section v-if="item != 'unavailable'" :items="item" :range="index > 9 ? index +':00' : '0' + index +':00'" :range2="index  >= 9 ? (parseInt(index) + 1) +':00' : '0' + (parseInt(index) + 1) +':00'"/>
                       <!-- <actors-section    :items="cal?.practitioners" @set-oneId="setoneId"  :range="tConvert(cal?.startTime) +' - '+ tConvert(cal?.endTime)"/> -->
               </div>
-              <span class="text-xs text-gray-500 font-semibold p-3 border-l-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span> 
-          </div>
+              <span v-if="item != 'unavailable'" class="text-xs text-gray-500 font-semibold p-3 border-l-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span> 
+          </div> 
+        </div>
+    </div>
+      
+      
 </div>
 </template>
 
@@ -29,7 +35,7 @@ import IPractitioner from "@/types/IPractitioner";
 import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
 import { splitDate } from '@/plugins/utils'
-import ActorsSection from './daysActors.vue';
+import ActorsSection from './dayactor.vue';
 
 
 const user = namespace("user");
@@ -57,6 +63,9 @@ interface Time {
 export default class Daily extends Vue {
   @Prop({ type: Object })
   items!: any;
+
+@Prop({ type: String, default: "" })
+  practitionerId!: string;
 
   @Prop({ type: Array })
   schedules!: ISchedule[];
@@ -89,32 +98,19 @@ export default class Daily extends Vue {
 
   //// End
 
-  get IdPract(){
-    if(this.$route.query.practitioner){
-      return this.$route.query.practitioner;
-    }
-}
   async fetchDayCalendar() {
    const date = this.startDate as any;
-   if(this.currentLocation && this.$route.query.practitioner){
-      const AllCalendarDay = cornieClient().get(
-       `/api/v1/calendar/personal/day-view/${this.currentLocation}/practitioner/${this.$route.query.practitioner}?date=2021-10-12`,);
-      
-      const response = await Promise.all([AllCalendarDay]);
-      this.dayCalendar = response[0].data;
-   }else{
-     const AllCalendarDay = cornieClient().get(
-        '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/day-view?date=2021-10-12',);
-     
-     const response = await Promise.all([AllCalendarDay]);
-     this.dayCalendar = response[0].data;
-   }
-   
+    const AllCalendarDay = cornieClient().get(
+       `/api/v1/calendar/personal/day-view/${this.currentLocation}/practitioner/${this.$route.query.practitioner}?date=2021-10-12`,
+    
+    );
+    const response = await Promise.all([AllCalendarDay]);
+    this.dayCalendar = response[0].data;
   }
 
 
   async created() {
-    await this.fetchDayCalendar();
+    if(this.currentLocation) await this.fetchDayCalendar();
   }
 }
 </script>

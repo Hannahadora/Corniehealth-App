@@ -65,7 +65,7 @@ import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import LocationModal from "./locationModal.vue";
+import LocationModal from "./AccessRoles.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
 import InvitationModal from './inviteModal.vue';
 

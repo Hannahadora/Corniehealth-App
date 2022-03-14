@@ -23,26 +23,27 @@
         </thead>
       
           <tr
-        
             v-for="(value, valueindex) in filteredItems"
             :key="valueindex"
             class="border-t-2"
             style="height: 3.5rem;"
           >
-            <td    class="p-2 border-r-2 text-xs text-gray-500 border-gray-100" >{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'  }}</td>
+            <td class="p-2 border-r-2 text-xs text-gray-500 border-gray-100" >{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'  }}</td>
               <template v-for="(item, index) in weekCalendar" :key="index">
                 <td class="p-3 text-sm capitalize border-r-2  border-gray-100">
-                     <actors-section :singletime="valueindex" :items="value" :range="valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'" :range2="valueindex  >= 9 ? (parseInt(valueindex) + 1) +':00' : '0' + (parseInt(valueindex) + 1) +':00'"/>
+                     <actors-section :items="value" :range="valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'" :range2="valueindex  >= 9 ? (parseInt(valueindex) + 1) +':00' : '0' + (parseInt(valueindex) + 1) +':00'"/>
                 </td>
               </template>
-            <td class="p-2 text-xs text-gray-500">{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'    }}</td>
-            
-           
+              <td class="p-2 text-xs text-gray-500">{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'    }}</td>
           </tr>
-       
       </table>
     </cornie-card>
 
+    <column-filter
+      :columns="columns"
+      v-model:preferred="preferredColumns"
+      v-model:visible="showColumnFilter"
+    />
   </div>
 </template>
 
@@ -64,7 +65,7 @@ import ShareIcon from "@/components/icons/share.vue"
 import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
 import { cornieClient } from "@/plugins/http";
-import ActorsSection from './weeksActors.vue';
+import ActorsSection from './weekactor.vue';
 
 
 const user = namespace("user");
@@ -97,6 +98,9 @@ export default class Weekly extends Vue {
   @Prop({ type: Object })
   items!: any;
 
+@Prop({ type: String, default: "" })
+  practitionersId!: string;
+
   @Prop({ type: Array })
   schedules!: ISchedule[];
 
@@ -118,11 +122,6 @@ export default class Weekly extends Vue {
     this.fetchweekCalendar();
   }
 
-  get IdPract(){
-    if(this.$route.query.practitioner){
-      return this.$route.query.practitioner;
-    }
-}
 
 
   query = "";
@@ -139,15 +138,17 @@ export default class Weekly extends Vue {
 
 
  async fetchweekCalendar() {
-   const AllCalendarDay = cornieClient().get(
-        '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/week-view?date=2021-10-12',);  
-     const response = await Promise.all([AllCalendarDay]);
-     this.weekCalendar = response[0].data;
+  //  const date = this.start as any;
+    const AllCalendarWeek = cornieClient().get(
+       '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/week-view?date=2021-10-12',
+    );
+    const response = await Promise.all([AllCalendarWeek]);
+    this.weekCalendar = response[0].data;
   }
 
 
   async created() {
-   if(!this.currentLocation) await this.fetchweekCalendar();
+      if(!this.currentLocation) await this.fetchweekCalendar();
 
   }
 }

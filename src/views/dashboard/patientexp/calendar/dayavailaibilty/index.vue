@@ -25,13 +25,13 @@
             <tabs :items="tabLinks" v-model="currentTab" :dDate="start"  @filter="showFilterPane" @left="setLeft" @right="setRight">
 
                 <div>
-                    <day-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
+                    <day-section :practitionerId="practitionerId" @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
                 </div>
                 <div>
-                    <week-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"></week-section>
+                    <week-section :practitionerId="practitionerId" @set-oneId="setoneId" :schedules="schedules" :startDate="start"></week-section>
                 </div>
                 <div>
-                <month-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
+                <month-section :practitionerId="practitionerId" @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
                 </div>
                  <template #actions>
                     <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showAvailable">
@@ -63,10 +63,6 @@ import WeekSection from "./week.vue";
 import { Prop, Watch } from "vue-property-decorator";
 import DaySection from "./day.vue";
 import MonthSection from "./month.vue"
-import AvailabiltyModal from "./addScheduleModal.vue";
-import AppointmentModal from "../appointments/addAppointmentModal.vue";
-import BlockedModal from "../blockedslots/addBlockSlots.vue";
-import AdvancedFilter from "./advanced-filter.vue";
 import { namespace } from "vuex-class";
 import ISchedule from "@/types/ISchedule";
 import slotService from "@/views/dashboard/visits/helper/slot-service";
@@ -75,20 +71,21 @@ import { getWeekStart, printWeekday, addDays } from "@/plugins/utils";
 const visitsStore = namespace("visits");
 
 @Options({
-  name: "AvailabilityIndex",
+  name: "SingleAvailabilityIndex",
   components: {
       Tabs,
       WeekSection,
       DaySection,
       MonthSection,
-      AvailabiltyModal,
-      AppointmentModal,
-      BlockedModal,
-      AdvancedFilter
   },
 })
 
-export default class AvailabilityIndex extends Vue {
+export default class SingleAvailabilityIndex extends Vue {
+  @Prop({ type: String, default: "" })
+  practitionerId!: string;
+
+  @Prop({ type: String, default: "" })
+  slotId!: string;
 
     tabLinks = [
       "Day",

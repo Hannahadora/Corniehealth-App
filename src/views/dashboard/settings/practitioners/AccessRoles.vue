@@ -11,7 +11,7 @@
             </span>
 
             <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">
-              {{allaction}} Access Role
+              Location(s) & privileges
             </h2>
           </div>
         </div>
@@ -75,7 +75,7 @@
             <div class="col-span-12 pt-4">
               <div class="text-sm font-bold mb-5 uppercase">Change default location</div>
               <template v-if="accessRoles.length">
-                <div v-if="roleId && id && locationId">
+                <div v-if="id">
                   <div
                     class="flex justify-between mb-4"
                     v-for="(access, index) in accessRoles"
@@ -102,13 +102,20 @@
                     </div>
                     <div class="flex justify-center items-center">
                       <button class="border-0 mr-5">
-                        <edit-icon class="fill-current text-primary" />
+                        <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
                       </button>
                       <button
-                        class="border-0"
-                        @click="deleteRoleAccess(access.roleId, access.locationId)">
-                        <delete-red />
-                      </button>
+                      class="border-0"
+                      v-if="id"
+                      @click="deleteItem(access.id)">
+                      <delete-red />
+                    </button>
+                    <button
+                    v-else
+                      class="border-0"
+                      @click="deleteRoleAccess(access.roleId, access.locationId,access.id)">
+                      <delete-red />
+                    </button>
                     </div>
                   </div>
                 </div>
@@ -143,7 +150,14 @@
                     </button>
                     <button
                       class="border-0"
-                      @click="deleteRoleAccess(access.roleId, access.locationId)">
+                      v-if="id"
+                      @click="deleteItem(access.id)">
+                      <delete-red />
+                    </button>
+                    <button
+                    v-else
+                      class="border-0"
+                      @click="deleteRoleAccess(access.roleId, access.locationId,access.id)">
                       <delete-red />
                     </button>
                   </div>
@@ -155,7 +169,7 @@
       </cornie-card-text>
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <cornie-btn
-          @click="$emit('close-access-diag')"
+          @click="show = false"
           class="border-primary border-2 px-5 mr-4 rounded-md text-primary"
         >
           Cancel
@@ -236,7 +250,7 @@ const practitioner = namespace("practitioner");
   },
 })
 export default class Accessrole extends Vue {
-  @Prop({ type: Boolean, default: false })
+   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
@@ -313,7 +327,7 @@ export default class Accessrole extends Vue {
  @practitioner.Action
   getPractitionerRoleById!: (id: string) => PractitionerLocationRole;
 
-@Watch("roleId")
+@Watch("id")
  idChanged() {
     this.setAccessroles();
   }
@@ -375,16 +389,20 @@ export default class Accessrole extends Vue {
     const pt = this.roles.find((i: any) => i.id === id);
     return pt ? `${pt.name}` : "";
   }
+   editRole(locationId: string, roleId:string){
+    this.locationId = locationId;
+    this.roleId = roleId;
+  }
    async submit() {
     this.loading = true;
-    if (this.roleId) await this.apply();
+    if (this.id) await this.apply();
     else await this.save();
     this.loading = false;
   }
 
    async apply() {
     this.loading = true;
-    if (this.id) await this.updateRole();
+    if (this.roleId) await this.updateRole();
     else await this.createRole();
     this.loading = false;
   }
@@ -400,6 +418,7 @@ export default class Accessrole extends Vue {
          this.$emit("add-access-roles", this.accessRoles);
         this.$emit("close-access-diag");
         this.loading = false;
+        this.show = false;
       }
     } catch (error: any) {
       this.loading = false
@@ -421,12 +440,58 @@ export default class Accessrole extends Vue {
     }
   }
 
-  async deleteRoleAccess(roleId: string, locationId: string) {
-    let filtered = this.accessRoles.filter(
-      (item: any) => item.roleId !== roleId && item.locationId !== locationId
-    );
+  async deleteRoleAccess(roleId: string, locationId: string, id:string) {
+    if(this.id){
+         const confirmed = await window.confirmAction({
+      message:
+        "Are you sure you want to delete this location role? This action cannot be undone.",
+      title: "Delete location role",
+    });
+    if (!confirmed) return;
+    const url = `/api/v1/practitioner/location-roles/${this.id}`;
+    const payload = [id];
+    try {
+      const response = await cornieClient().delete(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Location role deleted", status: "success" });
+       this.show = false;
+       // this.$router.back();
+      }
+    } catch (error) {
+     window.notify({ msg: "Location role not deleted", status: "error" });
+    }
 
-    this.accessRoles = [...filtered];
+    }
+    else
+    {
+        let filtered = this.accessRoles.filter(
+          (item: any) => item.roleId !== roleId && item.locationId !== locationId
+        );
+    
+        this.accessRoles = [...filtered];
+    }
+  }
+   async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message:
+        "Are you sure you want to delete this location role? This action cannot be undone.",
+      title: "Delete location role",
+    });
+    if (!confirmed) return;
+    const url = `/api/v1/practitioner/location-roles/${this.id}`;
+    const payload = [id];
+    try {
+      const response = await cornieClient().delete(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Location role deleted", status: "success" });
+       this.show = false;
+       // this.$router.back();
+      }
+    } catch (error) {
+     window.notify({ msg: "Location role not deleted", status: "error" });
+    }
+
+
   }
 
   get practitionerRoles() {
@@ -487,6 +552,7 @@ export default class Accessrole extends Vue {
 
   async created() {
     await this.fetchLocation();
+    await this.getRoles();
   }
 }
 </script>

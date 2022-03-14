@@ -15,8 +15,10 @@ import IPractitioner from "@/types/IPractitioner";
 import { namespace } from "vuex-class";
 import SchedulesEmptyState from "./emptyState.vue";
 import SchedulesExistingState from "./existingState.vue";
+import ISchedule,{Break, Repeat} from "@/types/ISchedule";
 
-const practitioner = namespace("practitioner");
+
+const schedulesStore = namespace("schedules");
 
 @Options({
   name: "SchedulesIndex",
@@ -26,21 +28,19 @@ const practitioner = namespace("practitioner");
   },
 })
 export default class SchedulesIndex extends Vue {
-  addPractitioner = false;
-  practitionerToUpdate = {} as IPractitioner;
 
   get empty() {
-    return this.practitioners.length < 1;
+    return this.schedules.length < 1;
   }
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  @schedulesStore.State
+  schedules!: ISchedule[];
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  @schedulesStore.Action
+  getSchedules!: () => Promise<void>;
 
-  created() {
-    this.fetchPractitioners();
+  async created() {
+    await this.getSchedules();
   }
 }
 </script>

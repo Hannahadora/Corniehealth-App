@@ -1,15 +1,8 @@
 <template>
-  <cornie-menu left="0" right="0">
-    <template #activator="{ on }">
-      <cornie-input
-        readonly
-        v-bind="$attrs"
-        v-on="on"
-        placeholder="00:00"
-        v-model="date"
-      >
-      </cornie-input>
-    </template>
+<cornie-input>
+
+
+</cornie-input>
     <v-date-picker
       v-model="date"
       mode="time"
@@ -20,7 +13,6 @@
       }"
       style="width: 100%"
     />
-  </cornie-menu>
 </template>
 
 <script lang="ts">
@@ -41,7 +33,7 @@ import CalendarIcon from "./icons/calendar.vue";
   },
 })
 export default class CornieDatePicker extends Vue {
-  date = "";
+  date = new Date();
 }
 </script>
 

@@ -20,12 +20,6 @@
         <v-form ref="form">
             <span class="text-gray-500 text-xs mb-4">{{ firstPractitioner.length }} selected</span>
             <div class="flex space-x-2 w-full mb-7">
-                  <cornie-select
-                    :items="['Practitioner']"
-                    placeholder="--Select--"
-                    class="w-40"
-                    v-model="actorType"
-                />
                 <div class="w-60">
                  <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
                     <icon-input
@@ -225,7 +219,6 @@ export default class managePractitioner extends Vue {
 
   loading = false;
   showPractitionerModal = false;
-  showDatalist= false;
   aPractitioner = [];
   localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
