@@ -3,51 +3,75 @@
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
-                <arrow-left-icon />
+          <arrow-left-icon />
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Invite Practitioner
+            Invite Practitioner
           </h2>
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full pb-2 mb-3">
-                <span class="text-dark text-sm font-medium">Send an email invite to your practitioners to complete their registration.	</span>
-            </div>
-            <div  class="border-b-2 border-gray-100 pb-3 border-dashed">
-              <div class="grid grid-cols-2 gap-4">
-                    <cornie-input
-                        label="Full name"
-                        placeholder="First Name, Last Name"
-                    />
-                    <cornie-input
-                        label="Email Address"
-                        placeholder="Enter email address"
-                    />
+          <div class="w-full pb-2 mb-3">
+            <span class="text-dark text-sm font-medium"
+              >Send an email invite to your practitioners to complete their
+              registration.
+            </span>
+          </div>
+          <div class="border-b-2 border-gray-100 pb-3 border-dashed">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <cornie-input
+                  label="Full name"
+                  v-model="name"
+                  placeholder="First-name Last-name"
+                />
               </div>
-              <span class="text-sm text-danger font-semibold">
-                Add <span class="text-lg"> + </span>
-              </span>
+              <div>
+                <cornie-input
+                  label="Email Address"
+                  placeholder="Enter email address"
+                  v-model="email"
+                />
+                <span class="block text-xs text-red-500" v-if="invalid"
+                  >The practitioner information provided does not exit.</span
+                >
+              </div>
             </div>
-             <div class="w-full flex space-x-7 mt-4 pb-4">
-                <div class="w-full dflex space-x-4 mb-3">
-                    <div class="w-full">
-                        <p class="text-xs text-dark font-medium">
-                           Sam John
-                        </p>
-                        <p class="text-xs text-gray-500 font-meduim">
-                       samjohn@reddington.ng
-                    </p>
-                    </div>
+            <span
+              class="text-sm text-danger font-semibold cursor-pointer"
+              @click="addPractioner"
+            >
+              Add <span class="text-lg"> + </span>
+            </span>
+          </div>
+          <template v-if="practitionerList.length">
+            <div
+              class="w-full flex space-x-7 mt-4 pb-4"
+              v-for="(item, index) in practitionerList"
+              :key="index"
+            >
+              <div class="w-full dflex space-x-4 mb-3">
+                <div class="w-full">
+                  <p class="text-xs text-dark font-medium">
+                    {{ `${item.lastName} ${item.firstName}` }}
+                  </p>
+                  <p class="text-xs text-gray-500 font-meduim">
+                    {{ item.email }}
+                  </p>
                 </div>
-                <delete-icon class="fill-current text-danger cursor-pointer"/>
+              </div>
+              <delete-icon
+                class="fill-current text-danger cursor-pointer"
+                @click="del(item.id)"
+              />
             </div>
+          </template>
         </v-form>
       </cornie-card-text>
-      
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
@@ -59,15 +83,13 @@
           <cornie-btn
             :loading="loading"
             @click="submit"
-            class="text-white bg-danger font-semibold  rounded-lg"
-           >
+            class="text-white bg-danger font-semibold rounded-lg"
+          >
             Send Invite
           </cornie-btn>
-
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-
   </cornie-dialog>
 </template>
 
@@ -91,7 +113,6 @@ import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import DeleteIcon from "@/components/icons/delete.vue";
 import CornieInput from "@/components/cornieinput.vue";
 
-
 const practitioner = namespace("practitioner");
 
 @Options({
@@ -109,7 +130,7 @@ const practitioner = namespace("practitioner");
     CornieSelect,
     CloseIcon,
     DeleteIcon,
-    CornieInput
+    CornieInput,
   },
 })
 export default class SpecialModal extends Vue {
@@ -119,14 +140,11 @@ export default class SpecialModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-
-
   loading = false;
   specialarray = [] as any;
   special = "";
 
-
-   @practitioner.State
+  @practitioner.State
   practitioners!: IPractitioner[];
 
   @practitioner.Action
@@ -143,35 +161,70 @@ export default class SpecialModal extends Vue {
       };
     });
   }
+  name = "";
+  email = "";
+  accessRole = "" as any;
+  practitionerList = [] as any;
+  invalid = false;
 
+  @Watch("email")
+  validateEmail() {
+    let valid = this.Mail.some((item: any) => item.display === this.email);
 
- 
- 
-//   async saveDirector() {
-//       try {
-//       const response = await cornieClient().post(
-//         `/api/v1/kyc/director/${this.id}`,
-//         this.payload
-//       );
-//       if(response.success){
-//           this.done();
-//         window.notify({ msg: "Director added successfully", status: "success" });
-//       }
-//     } catch (error) {
-//       window.notify({ msg: "Director not added", status: "error" });
-//     }
-//   }
-  
+    if (valid) {
+      this.accessRole = this.Mail.find(
+        (item: any) => item.display === this.email
+      )?.value;
+      this.invalid = false;
+    } else {
+      this.invalid = true;
+    }
+  }
+  addPractioner() {
+    if (!this.name || !this.email) return;
+    console.log(this.Mail);
 
- 
-  done() {
-    this.$emit("director-added");
-    this.show = false;
+    const [firstName, lastName] = this.name.split(" ");
+    this.practitionerList = [
+      {
+        id: Math.random() * 1999 + Math.random() * 2999,
+        accessRole: this.accessRole,
+        firstName,
+        lastName,
+        email: this.email,
+      },
+      ...this.practitionerList,
+    ];
+
+    this.name = this.email = "";
   }
 
+  del(id: any) {
+    this.practitionerList = this.practitionerList.filter(
+      (item: any) => item.id !== id
+    );
+  }
 
-  created() {
-    //this.setImpression();
+  async submit() {
+    if (!this.practitionerList.length) return;
+    this.loading = true;
+    try {
+      const response = await cornieClient().post(
+        `/api/v1/practitioner/invite`,
+        this.practitionerList
+      );
+      if (response.success) {
+        this.show = false;
+        window.notify({
+          msg: "Invitation sent successfully.",
+          status: "success",
+        });
+        this.loading = false;
+      }
+    } catch (error) {
+      window.notify({ msg: "Invitation not sent.", status: "error" });
+      this.loading = false;
+    }
   }
 }
 </script>

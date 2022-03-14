@@ -460,10 +460,10 @@ export default class AddLocation extends Vue {
     this.dropdowns = data;
 
     let op = this.dropdowns.operationalStatus.filter(
-      (item: any) => item.code !== "O"
+      (item: any) => item.code !== "U"
     );
 
-    this.operationalStatusDropdown = [{ code: "O", display: "Opened" }, ...op];
+    this.operationalStatusDropdown = [{ code: "U", display: "Opened" }, ...op];
   }
 }
 </script>

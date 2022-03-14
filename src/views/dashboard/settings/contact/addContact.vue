@@ -60,10 +60,10 @@
               </div>
               <div class="col-span-6">
                 <phone-input
-                  v-model:code="code"
+                  v-model="phone.number"
+                  v-model:code="phone.dialCode"
                   :rules="requiredRule"
                   label="Phone Number"
-                  v-model="phone"
                   class="w-full"
                 />
               </div>
@@ -100,7 +100,7 @@
             </div>
             <div class="flex justify-end w-full mt-4 mb-3">
               <button
-                class="rounded-md mt-5 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+                class="rounded-xl mt-5 py-0.5 px-6 border border-primary focus:outline-none hover:opacity-90 mr-2 text-primary font-semibold"
                 @click="show = false"
               >
                 Cancel
@@ -108,7 +108,7 @@
               <cornie-btn
                 :loading="loading"
                 type="submit"
-                class="bg-danger rounded-md text-white mt-5 py-1 px-4 font-bold focus:outline-none hover:opacity-90 w-1/3"
+                class="bg-danger rounded-xl text-white mt-5 mr-2 py-0.5 px-3 font-bold focus:outline-none hover:opacity-90"
               >
                 Save
               </cornie-btn>
@@ -137,6 +137,8 @@ import { getStates } from "@/plugins/nation-states";
 import { string } from "yup";
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { useCountryStates } from "@/composables/useCountryStates";
+import { IndexableObject } from "@/lib/http";
+import IPhone from "@/types/IPhone";
 
 const contact = namespace("contact");
 
@@ -181,7 +183,10 @@ export default class AddContact extends Vue {
   lname = "";
   gender = "";
   email = "";
-  phone = "";
+  phone = {
+    number: "",
+    dialCode: "",
+  } as IPhone;
   state = "";
   city = "";
   address = "";
@@ -197,7 +202,10 @@ export default class AddContact extends Vue {
     this.lname = "";
     this.gender = "";
     this.email = "";
-    this.phone = "";
+    this.phone = {
+      dialCode: "",
+      number: "",
+    };
     this.nationState.country = "";
     this.state = "";
     this.city = "";
@@ -212,7 +220,10 @@ export default class AddContact extends Vue {
     this.lname = contact.lname;
     this.gender = contact.gender;
     this.email = contact.email;
-    this.phone = contact.phone;
+    this.phone = {
+      number: contact.phone?.number,
+      dialCode: contact.phone?.dialCode,
+    };
     this.nationState.country = contact.country;
     this.state = contact.state;
     this.city = contact.city;
@@ -229,6 +240,7 @@ export default class AddContact extends Vue {
   }
 
   async submit() {
+    console.log(this.payload);
     this.loading = true;
     this.isUpdate ? await this.update() : await this.create();
     this.loading = false;

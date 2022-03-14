@@ -175,6 +175,8 @@ export default class TwoFactor extends Vue {
           msg: "Two factor authentication activated!",
           status: "success",
         });
+        this.deactivate = false;
+        this.tokenSent = false;
         this.updateTwoFA(this.enabled);
       } else
         window.notify({

@@ -17,5 +17,6 @@ export interface IOrganization {
   reference: string;
   practiceType?: string;
   practiceSubType?: string;
-  address?:string;
+  address?: string;
+  email: string,
 }
