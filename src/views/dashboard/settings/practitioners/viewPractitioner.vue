@@ -177,25 +177,95 @@ export default class AddPractitioner extends Vue {
           gender: this.gender,
           dob: this.dateOfBirth,
           available: this.makeAvailable,
+          type: this.type,
         };
       case 1:
-        return "contact";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          phone: {
+            dialCode: this.dialCode,
+            number: this.phone,
+          },
+          email: this.email,
+          country: this.country,
+          state: this.state,
+          city: this.city,
+          postCode: this.postCode,
+          aptNumber: this.aptNumber,
+          address: this.address,
+          available: this.makeAvailable,
+          type: this.type,
+        };
       case 2:
-        return "work-info";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+          employmentType: this.employmentType,
+          speciality: this.specialty,
+          jobDescription: this.jobDesignation,
+          consultationRate: this.consultationRate,
+          yearsOfPractice: {
+            value: this.practiceDurationvalue,
+            unit: this.practiceDurationunit,
+          },
+          type: this.type,
+        };
       case 3:
-        return "location-previledges";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          locations: this.locations,
+          roles: this.roles,
+          available: this.makeAvailable,
+          locationRoles: this.locationRoles,
+        };
       case 4:
-        return "education";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+          educations: this.educations,
+          type: this.type,
+        };
       case 5:
-        return "board-licenses";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+          licenses: this.licenses,
+          type: this.type,
+        };
       case 6:
-        return "availability";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+        };
       case 7:
-        return "group-teams";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+          type: this.type,
+        };
       case 8:
-        return "communication";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+          communication: this.communicationLanguage,
+          type: this.type,
+        };
       default:
-        return "visit-type";
+        return {
+          id: this.practitionerId,
+          img: this.img,
+          available: this.makeAvailable,
+          consultationChannel: this.consultationChannel,
+          type: this.type,
+        };
     }
   }
 
@@ -220,7 +290,7 @@ export default class AddPractitioner extends Vue {
       case 8:
         return "communication";
       default:
-        return "visit-type";
+        return "consultation-channel";
     }
   }
 
@@ -235,7 +305,7 @@ export default class AddPractitioner extends Vue {
     "Availability",
     "Group & Teams",
     "Communication",
-    "Visit Type(s)",
+    "Visit Type",
   ];
 
   addEducation() {
@@ -284,7 +354,6 @@ export default class AddPractitioner extends Vue {
   }
   nationState = setup(() => useCountryStates());
 
-  consultationRatevalue = 0;
   consultationRateunit = "";
   practiceDurationvalue = 0;
   practiceDurationunit = "";
@@ -333,7 +402,7 @@ export default class AddPractitioner extends Vue {
   period = {} as Period;
   required = string().required();
   emailRule = string().email().required();
-  location = [];
+  location = [] as any;
   // locations = [];
   generatedIdentifier = "";
   addAccessRole = false;
@@ -433,6 +502,8 @@ export default class AddPractitioner extends Vue {
   }
   async setPractitioner() {
     const practitioner = await this.getPractitionerById(this.id);
+
+    console.log(practitioner);
     if (!practitioner) return;
     this.practitionerId = practitioner.id;
     this.name = `${practitioner.firstName} ${practitioner.lastName}`;
@@ -472,13 +543,13 @@ export default class AddPractitioner extends Vue {
     this.practiceDuration.unit = practitioner.practiceDuration.unit;
     this.consultationRate.value = practitioner.consultationRate.value;
     this.consultationRate.unit = practitioner.consultationRate.unit;
-    this.consultationRatevalue = practitioner?.consultationRate?.value;
     this.consultationRateunit = practitioner?.consultationRate?.unit;
     this.practiceDurationvalue = practitioner?.practiceDuration?.value;
     this.practiceDurationunit = practitioner?.practiceDuration?.unit;
     this.graduationYear = practitioner.graduationYear;
     this.licenseIssuer = practitioner.licenseIssuer;
     this.licensePeriod = practitioner.licensePeriod;
+    this.educations = practitioner.education;
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -583,10 +654,7 @@ export default class AddPractitioner extends Vue {
         value: this.practiceDurationvalue,
         unit: this.practiceDurationunit,
       },
-      consultationRate: {
-        value: this.consultationRatevalue,
-        unit: this.consultationRateunit,
-      },
+      consultationRate: this.consultationRate,
       graduationYear: this.graduationYear,
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
@@ -638,11 +706,6 @@ export default class AddPractitioner extends Vue {
   }
 
   async updatePractitioner() {
-    this.payload.consultationRate.value = this.consultationRatevalue;
-    this.payload.consultationRate.unit = this.consultationRateunit;
-    this.payload.practiceDuration.value = this.practiceDurationvalue;
-    this.payload.practiceDuration.unit = this.practiceDurationunit;
-
     const url = `/api/v1/practitioner/${this.id}`;
     const payload = { ...this.payloadEdit, id: this.id };
     try {
