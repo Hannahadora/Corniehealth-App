@@ -275,7 +275,7 @@
     </cornie-card>
 
         <patient-modal v-model="showPatient" @patient-added="patientadded" @patient-data="patientdata"/>
-        <participant-modal v-model="showParticipant" @practitioner-data="practitionerdata" @device-data="devicedata"/>
+        <participant-modal v-model="showParticipant" :appoimtentId="appoimtentId" @practitioner-data="practitionerdata" @device-data="devicedata"/>
         <services-modal v-model="showService" @service-data="servicedata"/>
 
         <collect-modal v-model="showCollect"/>
@@ -441,7 +441,7 @@ export default class appointmentModal extends Vue {
   meetingLink = "";
   venue = "";
   patientId = [];
-  practitionerId = [];
+  practitionerId = [] as any;
   serviceId = [];
    localSrc = require("../../../../../assets/img/placeholder.png");
 
@@ -533,9 +533,10 @@ get payload(){
     }
   }
 
-   getAppoitmnet() {
+   getAppointment() {
     const pt = this.practitioners.find((i: any) => i.id === this.appoimtentId);
-    return this.Practitioners = pt
+    this.practitionerId.push({practitionerId: this.appoimtentId, required: true });
+    return this.Practitioners = [pt];
   }
 
   patientdata(value:any,valueId:any){
@@ -608,7 +609,7 @@ get payload(){
   async created() {
     await this.fetchLocations();
     await this.fetchPractitioners();
-    if(this.appoimtentId) await this.getAppoitmnet();
+    if(this.appoimtentId) await this.getAppointment();
   }
 }
 </script>

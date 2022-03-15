@@ -3,9 +3,7 @@
     <div class="container-fluid">
       <div class="w-full" v-if="item?.Patients && item?.Patients?.length > 0">
         <PatientDetails
-          :id="
-            appointmentPatients.length > 0 ? appointmentPatients[0].code : ''
-          "
+          :id="appointmentPatients.length > 0 ? appointmentPatients[0].code : ''"
         />
       </div>
 
@@ -164,12 +162,6 @@
             Cancel
           </router-link>
         </corniebtn>
-        <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
-                    <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save
-                    </a>
-                    <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
-                </button> -->
         <SplitButton>
           <template #main>
             <span @click="setSession">Check-In</span>

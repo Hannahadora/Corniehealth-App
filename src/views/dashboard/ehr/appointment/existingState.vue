@@ -29,7 +29,7 @@
       >
         <span class="flex justify-end w-full mb-8">
           <button
-            class="bg-danger rounded-full text-white mt-5 py-3 px-3 pl-7 pr-7 font-semibold focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-lg text-white mt-5 py-3 px-3 pl-7 pr-7 font-semibold focus:outline-none hover:opacity-90"
             @click="showAppointment('false')"
           >
             New Appointment
@@ -77,7 +77,7 @@
               <span class="ml-3 text-xs">Cancel</span>
             </div>
           </template>
-          <template #Participants="{ item }">
+          <!-- <template #Participants="{ item }">
             <div class="flex items-center">
               <span class="text-xs">{{ item.Participants }}</span>
               <eye-icon
@@ -85,6 +85,9 @@
                 @click="displayParticipants(item.id)"
               />
             </div>
+          </template> -->
+          <template #Participants="{ item }">
+             <actors-section :items="item.Participants" class="cursor-pointer"   @click="displayParticipants(item.id)"/>
           </template>
           <template #status="{ item }">
             <div class="flex items-center">
@@ -170,10 +173,8 @@
       v-model:visible="showNotes"
     />
     <all-participants
+      v-model="showPartcipants"
       :appointmentId="appointmentId"
-      :columns="singleParticipant"
-      @update:preferred="displayParticipants"
-      v-model:visible="showPartcipants"
     />
     <appointment-modal
       v-if="appointmentId == 'false'"
@@ -232,9 +233,10 @@ import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import AllParticipants from "./participants.vue";
+import AllParticipants from "./allParticipants.vue";
 import NotesAdd from "./notes.vue";
 import StatusModal from "./status-update.vue";
+import ActorsSection from "./actors.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
@@ -267,6 +269,7 @@ const patients = namespace("patients");
     ThreeDotIcon,
     NotesAdd,
     PlusIcon,
+    ActorsSection,
     SearchIcon,
     AllParticipants,
     //  CloseIcon,
@@ -327,7 +330,7 @@ export default class AppointmentExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     { title: "Recorded", key: "createdAt", show: true },
-    { title: "Identifier", key: "id", show: true },
+    { title: "Identifier", key: "idn", show: true },
     {
       title: "Appointment Type",
       key: "appointmentType",
@@ -341,11 +344,6 @@ export default class AppointmentExistingState extends Vue {
     {
       title: "Participants",
       key: "Participants",
-      show: true,
-    },
-    {
-      title: "Slot",
-      key: "newslot",
       show: true,
     },
     {
@@ -429,33 +427,11 @@ export default class AppointmentExistingState extends Vue {
         year: "numeric",
       });
 
-      const singleParticipantlength =
-        patientappointment.Practitioners.length +
-        patientappointment.Devices.length +
-        patientappointment.Patients.length +
-        patientappointment.Location.length +
-        patientappointment.HealthCare.length;
 
-      const pateintId = patientappointment.Patients.map((patient: any) => {
-        this.onePatientId = patient.patientId;
-      });
-      const practitionerId = patientappointment.Practitioners.map(
-        (Practitioner: any) => {
-          this.onePractitionerId = Practitioner.practitionerId;
-        }
-      );
-      this.updatedBy = this.getPatientName(this.onePatientId);
-      this.currentStatus = patientappointment.status;
-      this.update = (patientappointment as any).updatedAt = new Date(
-        (patientappointment as any).updatedAt
-      ).toLocaleDateString("en-US");
-      const patientNewId = this.onePatientId;
       return {
         ...patientappointment,
         action: patientappointment.id,
         patient: this.getPatientName(this.onePatientId),
-        newslot: this.showSlots(patientappointment.slot),
-        Participants: singleParticipantlength,
       };
     });
     return patientappointments;
@@ -503,15 +479,6 @@ export default class AppointmentExistingState extends Vue {
   async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
-    try {
-      const response = await cornieClient().get(`/api/v1/appointment/${value}`);
-      if (response.success) {
-        this.singleParticipant = response.data;
-      }
-    } catch (error) {
-      this.loading = false;
-      console.error(error);
-    }
   }
   get sortAppointments() {
     return this.items.slice().sort(function (a: any, b: any) {
@@ -529,11 +496,11 @@ export default class AppointmentExistingState extends Vue {
 
   async created() {
     await this.fetchByIdAppointments(this.$route.params.id.toString());
-    this.getSlot();
+    if(this.onePractitionerId) await this.getSlot();
   }
 }
 </script>
-<style>
+<style scoped>
 .outline-primary {
   border: 2px solid #080056;
 }

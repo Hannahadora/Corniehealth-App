@@ -10,14 +10,14 @@
       </button>
     </span>
     <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false">
-      <template #actions>
+      <template #actions="{ item }">
         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAppointment(item.id)">
           <eye-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAppointment(item.id)">
           <settings-icon class="text-purple-800 fill-current" />
           <span class="ml-3 text-xs">Manage</span>
         </div>
@@ -37,17 +37,74 @@
           <span class="ml-3 text-xs">Deactivate</span>
         </div> 
       </template>
-      <template #patient>
-          <p class="text-sm">Nancy Oge
-          </p>
-            <span class="text-xs text-gray-400"> MRN****3432</span> 
-      </template>
-       <template #actors>
-         <actors-section :items="practitioners"/>
-      </template>
-       <template #status>
-         <span class="text-green-600 bg-green-50 rounded-full py-2 px-6 text-xs">Active</span>
-      </template>
+     
+        <template #participants="{ item }">
+             <actors-section :items="item.Participants"/>
+          </template>
+          <template #status="{ item }">
+            <div class="flex items-center">
+              <p
+                class="text-xs bg-gray-300 p-1 rounded"
+                v-if="item.status == 'Proposed'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
+                v-if="item.status == 'Pending'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-200 text-green-500 p-1 rounded"
+                v-if="item.status == 'Booked'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+                v-if="item.status == 'Arrived'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-200 text-green-500 p-1 rounded"
+                v-if="item.status == 'Fullfiled'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-red-300 text-red-600 p-1 rounded"
+                v-if="item.status == 'Cancelled'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
+                v-if="item.status == 'No show'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+                v-if="item.status == 'Entered-in-Error'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-200 text-green-500 p-1 rounded"
+                v-if="item.status == 'Checked-in'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+                v-if="item.status == 'Waitlist'"
+              >
+                {{ item.status }}
+              </p>
+            </div>
+          </template>
       <template #appt>
            <p class="text-sm">24/02/2022
           </p>
@@ -57,6 +114,7 @@
   </div>
   <appointment-modal
     v-model="showAppointmentModal"
+    :id="appointmentId"
   />
 </template>
 <script lang="ts">
@@ -80,10 +138,12 @@ import ShareIcon from "@/components/icons/share.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import DatePicker from "@/components/daterangecalendar.vue";
-import ActorsSection from "@/views/dashboard/schedules/components/actors.vue";
+import ActorsSection from "./actors.vue";
 import AppointmentModal from '../appointments/addAppointmentModal.vue';
+import IAppointment from "@/types/IAppointment";
 
-const practitioner = namespace("practitioner");
+
+const appointment = namespace("appointment");
 
 @Options({
   components: {
@@ -112,45 +172,40 @@ export default class SchedulesExistingState extends Vue {
   query = "";
   showLocationModal = false;
   showInviteModal = false;
-  locationId = "";
+  appointmentId = "";
   showAppointmentModal = false;
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  @appointment.State
+  appointments!: IAppointment[];
 
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  @appointment.Action
+  deleteAppointment!: (id: string) => Promise<boolean>;
 
   rawHeaders = [
     {
       title: "request date",
-      key: "request",
+      key: "createdAt",
       show: true,
       noOrder: true
     },
     {
-      title: "patient",
-      key: "name",
+      title: "appointment type",
+      key: "appointmentType",
       show: true,
        noOrder: true
     },
-    { title: "appointment type", key: "type", show: true,  noOrder: true },
-    { title: "specialty", key: "specialty", show: true,  noOrder: true },
-    {
+       {
         title: "participants",
-      key: "actors",
+      key: "participants",
       show: true,
       noOrder: true
     },
-    {
-        title: "appt. date/time",
-        key: "appt",
-        show: true,
-        noOrder: true
-    },
+    { title: "billing type", key: "billingType", show: true,  noOrder: true },
+ 
+    { title: "description", key: "description", show: true,  noOrder: true },
     {
       title: "status",
       key: "status",
@@ -159,18 +214,22 @@ export default class SchedulesExistingState extends Vue {
   ];
 
   get items() {
-    const practitioners = this.practitioners.map((practitioner) => {
+    const appointments = this.appointments.map((appointment) => {
+       (appointment as any).createdAt = new Date(
+        (appointment as any).createdAt
+      ).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+
       return {
-        ...practitioner,
-        action: practitioner.id,
-        name: `${practitioner.firstName} ${practitioner.lastName}`,
-        request: "21/02/2022",
-        type: "xxxxxx",
-        specialty: "xxxxxx",
+        ...appointment,
+        action: appointment.id,
       };
     });
-    if (!this.query) return practitioners;
-    return search.searchObjectArray(practitioners, this.query);
+    if (!this.query) return appointments;
+    return search.searchObjectArray(appointments, this.query);
   }
 
   stringifyOperationHours(opHours: HoursOfOperation[]) {
@@ -184,17 +243,17 @@ export default class SchedulesExistingState extends Vue {
       message: "You are about to delete this practitioner",
     });
     if (!confirmed) return;
-    if (await this.deletePractitioner(id))
+    if (await this.deleteAppointment(id))
       window.notify({ msg: "Practitioner deleted", status: "success" });
     else window.notify({ msg: "Practitioner not deleted", status: "error" });
   }
   async updateLocation() {
-    await this.fetchPractitioners();
+    await this.fetchAppointments();
   }
 
-  showModal(value: string) {
-    this.showLocationModal = true;
-    this.locationId = value;
+   showAppointment(value:string){
+    this.showAppointmentModal = true;
+    this.appointmentId = value;
   }
 }
 </script>
