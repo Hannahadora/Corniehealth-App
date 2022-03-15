@@ -7,8 +7,7 @@
         items.length === 0 &&
         filterByStatus.length === 0 &&
         filterByType.length === 0 &&
-        !selectedStatus
-      "
+        !selectedStatus"
     >
       <EmptyState @clicked="() => $emit('gotoappointments')" />
     </div>

@@ -37,8 +37,8 @@ export default class AppointmentIndex extends Vue {
   @appointment.Action
   fetchAppointments!: () => Promise<void>;
 
-  created() {
-    this.fetchAppointments();
+  async created() {
+    await this.fetchAppointments();
   }
 }
 </script>

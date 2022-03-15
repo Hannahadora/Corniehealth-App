@@ -5,9 +5,9 @@
             <div class="grid w-full grid-cols-2 gap-4">
                 <div class="w-full flex space-x-4">
                     <div>
-                     <p class="text-4xl text-green-600 font-bold" v-if="avaialbleStatus == 'available'">.</p>
+                     <p class="text-4xl text-green-400 font-bold" v-if="avaialbleStatus == 'available'">.</p>
                       <p class="text-4xl text-blue-600 font-bold" v-if="avaialbleStatus == 'unavailable'">.</p>
-                      <p class="text-4xl text-yellow-600 font-bold" v-if="avaialbleStatus == 'event'">.</p>
+                      <p class="text-4xl text-yellow-400 font-bold" v-if="avaialbleStatus == 'event'">.</p>
                     </div>
                     <div class="w-10 h-10">
                     <avatar
@@ -29,8 +29,8 @@
                     </div>
                 </div>
                 <div class="float-right flex space-x-7 justify-end w-full">
-                <span class="cursor-pointer">
-                <cornie-menu top="30px" >
+                <span class="cursor-pointer" v-if="currentLocation">
+                    <cornie-menu top="30px" >
                     <template #activator="{ on }">
                         <icon-btn v-on="on">
                         <dots-vertical-icon class="float-right flex space-x-7 justify-end"/>
@@ -42,24 +42,6 @@
                         <calendar-icon />
                         <span class="ml-3 text-xs">Book appointment</span>
                         </div>
-                        <!-- 
-                            @click="$router.push(`/dashboard/experience/calendar?practitioner=${actor.id}`)">
-                            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                            <edit-icon class="text-blue-400 fill-current" />
-                            <span class="ml-3 text-xs">Edit Slot</span>
-                        </div>
-                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                            <copy-icon class="text-blue-400 fill-current" />
-                            <span class="ml-3 text-xs">Copy</span>
-                        </div>
-                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                            <cancel-icon class="text-green-600 fill-current" />
-                            <span class="ml-3 text-xs">Cancel</span>
-                        </div>
-                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                            <share-icon class="text-indigo-700 fill-current" />
-                            <span class="ml-3 text-xs">Share</span>
-                        </div> -->
                     </card-text>
                     </cornie-menu>
                 </span> 

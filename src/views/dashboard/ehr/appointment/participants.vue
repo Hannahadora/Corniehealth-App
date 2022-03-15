@@ -15,7 +15,7 @@
           <p class="text-sm mt-2">All participants for this appointment</p>
           <div>
             <div
-              v-for="(input, index) in columnsProxy.Practitioners"
+              v-for="(input, index) in columnsProxy.Participants"
               :key="index"
             >
               <span
@@ -50,7 +50,7 @@
               </div>
             </div>
 
-            <div v-for="(input, index) in columnsProxy.Devices" :key="index">
+            <div v-for="(input, index) in columnsProxy.Participants" :key="index">
               <span
                 class="flex border-b-2 border-dashed w-full text-sm text-primary py-2 mx-auto font-semibold col-span-full mb-2"
               >
@@ -98,7 +98,7 @@
                 </div>
               </div>
             </div>
-            <div v-for="(input, index) in columnsProxy.Patients" :key="index">
+            <div v-for="(input, index) in columnsProxy.Participants" :key="index">
               <span
                 class="flex border-b-2 border-dashed w-full text-sm text-primary py-2 mx-auto font-semibold col-span-full mb-2"
               >

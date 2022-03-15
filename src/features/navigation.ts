@@ -27,11 +27,11 @@ const links: ISidebarLink[] = [
         to: "/dashboard/experience/calendar",
         hasSubsection: false,
       },
-      {
-        name: "Schedules",
-        to: "/dashboard/experience/schedules",
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Schedules",
+      //   to: "/dashboard/experience/schedules",
+      //   hasSubsection: false,
+      // },
       {
         name: "Appointments",
         to: { name: "Appointment" },

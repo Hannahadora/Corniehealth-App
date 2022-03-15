@@ -23,7 +23,7 @@ export default {
   },
   mutations: {
     setAppointments(state, appointments: any) {
-      state.appointments = [...appointments.result];
+      state.appointments = [...appointments];
     },
     setPatientAppointment(state, appointments: any) {
       state.patientappointments = [...appointments.result];
