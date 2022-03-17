@@ -1,6 +1,6 @@
 <template>
   <access-role
-    :show="addAccessRole"
+    v-model="addAccessRole"
     :deletedRole="deletedRole"
     @close-access-diag="addAccessRole = false"
     @add-access-roles="addAccessRoles"
@@ -1108,6 +1108,7 @@ export default class AddPractitioner extends Vue {
       email: this.email,
       activeState: this.activeState,
       gender: this.gender,
+      locations: this.locations,
       phone: {
         number: this.phone,
         dialCode: this.dialCode,

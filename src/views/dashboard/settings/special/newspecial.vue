@@ -21,7 +21,7 @@
             <div class="border-b-2 w-full border-dashed pb-2 mb-5 border-gray-300">
                 <!-- <span class="text-dark text-sm font-medium">Enter director’s details</span> -->
             </div>
-                 <div>
+            <div>
                 <span class="text-sm font-semibold mb-1">Specialty</span>
                 <Multiselect
                    v-model="names"
@@ -85,27 +85,6 @@
                 </div>
                 </div>
             </div>
-            <!-- <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/c80-practice-codes"
-                    class="w-full"
-                    v-model="name"
-                    @onchange="addArray"
-                    label="Specialty"
-                    placeholder="--Select--"
-                /> -->
-              
-                    <!-- <div
-                    class="inline space-x-4 bg-primary rounded-full text-white "
-                    v-for="(item, index) in specialarray"
-                    :key="index"
-                    >
-                    <span class="text-xs w-full text-center">{{ item }}</span>
-                    <close-icon
-                        class="mt-1 cursor-pointer"
-                        @click="removearray(index)"
-                    />
-                    </div> -->
-              
       
         </v-form>
       </cornie-card-text>

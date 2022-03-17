@@ -18,15 +18,13 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <span class="mb-5 text-sm">
-                Add other participant(s) to this appoinment
-            </span>
-            <span class="text-gray-500 text-xs mb-4">0 selected</span>
+            <span class="text-gray-500 text-xs mb-4">{{ firstPractitioner.length }} selected</span>
             <div class="flex space-x-2 w-full mb-7">
                   <cornie-select
-                    :items="['Practitioner']"
+                    :items="['Practitioner','Device']"
                     placeholder="--Select--"
                     class="w-40"
+                    v-model="actorType"
                 />
                 <div class="w-60">
                  <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
@@ -61,30 +59,49 @@
                   </div>
                 </div>
             </div>
-                <div class="w-full flex space-x-7 mt-4">
-                    
+            <div v-if="actorType == 'Practitioner'">
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in practitioners" :key="index">  
                     <div class="w-full dflex space-x-4 mb-3">
                         <div class="w-10 h-10">
-                            <!-- <avatar
+                            <avatar
                                 class="mr-2"
                                 v-if="item.image"
                                 :src="item.image"
-                            /> -->
-                            <avatar class="mr-2"  :src="localSrc" />
+                            />
+                            <avatar class="mr-2" v-else  :src="localSrc" />
                         </div>
                         <div class="w-full">
                             <p class="text-xs text-dark font-medium">
-                               dfsiogfodis
-                              iooioi
+                              {{item.firstName}}  {{item.lastName}}
+                             
                             </p>
                             <p class="text-xs text-gray-500 font-meduim">
-                            banker
-                            bn
+                             {{item.department}}
                         </p>
                         </div>
                     </div>
-                    <select-option/>
+                    <select-option @click="pushValue(item,item.id)" :value="item.id"/>
                 </div>
+            </div>
+             <div v-if="actorType == 'Device'">
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in devices" :key="index">  
+                    <div class="w-full dflex space-x-4 mb-3">
+                        <div class="w-10 h-10">
+                            <avatar class="mr-2" :src="localSrc" />
+                        </div>
+                        <div class="w-full">
+                            <p class="text-xs text-dark font-medium">
+                              {{item.deviceName.name}} 
+                             
+                            </p>
+                            <p class="text-xs text-gray-500 font-meduim">
+                             {{item.deviceName.nameType}}
+                        </p>
+                        </div>
+                    </div>
+                    <select-option @click="pushDeviceValue(item,item.id)"/>
+                </div>
+            </div>
          
           
        
@@ -100,7 +117,17 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-             @click="show = false"
+          v-if="actorType == 'Practitioner'"
+          :loading="loading"
+             @click="submit"
+            class="text-white bg-danger px-2 rounded-xl"
+           >
+            Add
+          </cornie-btn>
+          <cornie-btn
+          v-if="actorType == 'Device'"
+          :loading="loading"
+             @click="submitDevice"
             class="text-white bg-danger px-2 rounded-xl"
            >
             Add
@@ -109,8 +136,7 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"   @practitioner-added="specialadded" :specilatyId="specilatyId"/>
-
+ 
   </cornie-dialog>
 </template>
 
@@ -133,12 +159,16 @@ import CornieSelect from "@/components/cornieselect.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import ISpecial from "@/types/ISpecial";
+import ISchedule,{Break, Repeat} from "@/types/ISchedule";
 import SelectOption from "@/components/custom-checkbox.vue";
 import search from "@/plugins/search";
+import { IPatient } from "@/types/IPatient";
+import IDevice from "@/types/IDevice";
 
 const practitioner = namespace("practitioner");
-const special = namespace("special");
+const devices = namespace("device");
+const schedulesStore = namespace("schedules");
+const patients = namespace("patients");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -148,7 +178,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "managePractitioner",
+  name: "Participants",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -166,7 +196,7 @@ function defaultFilter(item: any, query: string) {
     CloseIcon
   },
 })
-export default class managePractitioner extends Vue {
+export default class Participants extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -177,7 +207,26 @@ export default class managePractitioner extends Vue {
   id!: string;
 
   @Prop({ type: String, default: "" })
+  practitionerId!: string;
+
+  @Prop({ type: String, default: "" })
   specilatyId!: string;
+
+  @Prop({ type: String, default: "" })
+  appoimtentId!: string;
+
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+  @Prop({ type: Array, default: [] })
+  devices!: IDevice[];
+
+  @devices.Action
+  fetchDevices!: () => Promise<void>;
+
 
 
   loading = false;
@@ -185,8 +234,15 @@ export default class managePractitioner extends Vue {
   aPractitioner = [];
   localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
- orderBy: Sorter = () => 1;
+  orderBy: Sorter = () => 1;
+  firstPractitioner = [] as any;
+  practionerIds = [] as any;
 
+  firstDevice = [] as any;
+  deviceIds = [] as any;
+
+  actorType = "Practitioner";
+  practionervalue = false;
 
  @practitioner.State
   practitioners!: IPractitioner[];
@@ -195,14 +251,127 @@ export default class managePractitioner extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
- get filteredItems() {
+  @schedulesStore.Action
+  getScheduleById!: (id: string) => Promise<ISchedule>;
+  
+  @Watch("id")
+  idChanged() {
+    this.setSchedule();
+  }
+
+practitionersnew = [] as any;
+
+  async setSchedule() {
+    const schedule = await this.getScheduleById(this.id);
+    if (!schedule) return;
+    this.practitionersnew = schedule.practitioners;
+    this.practionervalue = true;
+
+  }
+
+   get checkValue (){
+    const activeactor = this.practitioners.filter((c) => c === this.practitionersnew);
+     if(activeactor){
+       return true;
+     }
+   }
+  get filteredItems() {
     return this.practitioners
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
 
+  get payload() {
+      return this.practionerIds;
+  }
+  pushValue(item:any,id:string){
+    this.practionerIds.push({practitionerId: id, required: true });
+    this.firstPractitioner.push(item);
+  }
+  pushDeviceValue(item:any,id:string){
+     this.deviceIds.push({id: id, required: true });
+    this.firstDevice.push(item);
+  }
+
+  async updatePractitoinerData() {
+   this.$emit('practitioner-data',this.firstPractitioner,this.practionerIds);
+    this.done();
+  }
+  async updatDeviceData() {
+   this.$emit('device-data',this.firstDevice,this.deviceIds);
+    this.done();
+  }
+  done() {
+    this.$emit("practitoner-added");
+    this.show = false;
+  }
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.apply();
+    else await this.updatePractitoinerData();
+    this.loading = false;
+  }
+  async submitDevice() {
+    this.loading = true;
+    await this.updatDeviceData();
+    this.loading = false;
+  }
+   async apply() {
+    this.loading = true;
+    if (this.practitionerId) await this.updatePractiitoner();
+    else await this.savePractitoner();
+    this.loading = false;
+  }
+  async applyPatient() {
+    this.loading = true;
+    if(this.practitionerId) await this.updatePractiitoner();
+    else await this.savePractitoner();
+    this.loading = false;
+  }
+
+   async savePractitoner() {
+      try {
+      const response = await cornieClient().post(
+        `/api/v1/schedule/add-practitioners/${this.id}`,
+        this.payload
+      );
+      if(response.success){
+          this.done();
+        window.notify({ msg: "Practitioner added successfully", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not added", status: "error" });
+    }
+  }
+  
+  async updatePractiitoner() {
+    const url = `/api/v1/schedule/add-practitioners/${this.practitionerId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Practitioner updated successffuly", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not updated", status: "error" });
+    }
+  }
+
+   getAppointment() {
+    const pt = this.practitioners.find((i: any) => i.id === this.appoimtentId);
+    console.log(pt,"PT")
+    return [pt];
+  }
+
+
+
   async created() {
+    if(this.appoimtentId) await this.getAppointment();
     await this.fetchPractitioners();
+    await this.setSchedule();
+    await this.fetchPatients();
+    await this.fetchDevices();
   }
 }
 </script>

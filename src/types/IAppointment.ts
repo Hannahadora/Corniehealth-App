@@ -1,4 +1,6 @@
 import Period from "./IPeriod";
+import ICatalogueService from "./ICatalogue";
+
 
 export default interface IAppointment {
   id?: string;
@@ -28,6 +30,15 @@ export default interface IAppointment {
   appointmentId: string;
   comment: string;
   status: string;
+  services: ICatalogueService[];
+  date: string;
+  startTime: string;
+  endTime: string;
+  billingType: string;
+  bookingLocationId: string;
+  venueAddress: string;
+  meetingLink: string;
+  venue: string;
 }
 export interface Practitioners {
   id?: string;

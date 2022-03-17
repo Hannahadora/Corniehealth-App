@@ -58,11 +58,11 @@
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <cornie-btn
           @click="show = false"
-          class="border-primary border-2 px-5 mr-4 rounded-full text-primary"
+          class="border-primary border-2 px-5 mr-4 rounded-lg text-primary"
         >
           Cancel
         </cornie-btn>
-        <cornie-btn :loading="loading" @click="apply" class="text-white bg-danger  px-4 rounded-full">
+        <cornie-btn :loading="loading" @click="apply" class="text-white bg-danger  px-4 rounded-lg">
           Update
         </cornie-btn>
       </div>
@@ -155,12 +155,18 @@ export default class Medication extends Vue {
 
   required = string().required();
 
+  get payload(){
+    return{
+
+    }
+  }
+
   async updateLocation() {
     const id = this.id;
-    const url = `/api/v1/practitioner/authorize-locations/${id}`;
+    const url = `/api/v1/practitioner/location-roles/${id}`;
 
     try {
-      const response = await cornieClient().patch(url, this.locations);
+      const response = await cornieClient().post(url, this.locations);
       if (response.success) {
         window.notify({ msg: "Approved Locations Updated", status: "success" });
         this.done();

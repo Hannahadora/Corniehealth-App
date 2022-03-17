@@ -53,8 +53,15 @@ export const ExperienceRoutes: RouteRecordRaw = {
         import("@/views/dashboard/patientexp/appointments/index.vue"),
     },
     {
-      path: "calendar",
+      path: "calendar/:practitionerId?",
+      props: route => ({practitionerId: route.query.practitioner}),
       name: "Calendar",
+      component: () =>
+        import("@/views/dashboard/patientexp/calendar/index.vue"),
+    },
+    {
+      path: "actor-calendar/:practitionerId?",
+      props: route => ({practitionerId: route.query.practitioner}),
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },

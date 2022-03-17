@@ -1,48 +1,55 @@
 <template>
-<div class="mt-10">
-      <cornie-table
-      :columns="headers"
-      v-model="_items"
-      :search="false"
-      :menu="false"
-      @filter="showFilterPane"
-      >
-      <template #monday="{item}">
-      <actors-section :items="item.monday" @set-oneId="setoneId" v-if="item?.monday" :range="item.range"/>
-      <span v-else>--</span>
-      </template>
-      <template #tuesday="{item}">
-          <actors-section :items="item.tuesday" @set-oneId="setoneId" v-if="item?.tuesday" :range="item.range"/>
-          <span v-else>--</span>
-      </template>
-      <template #wednesday="{item}">
-          <actors-section :items="item.wednesday" @set-oneId="setoneId" v-if="item?.wednesday" :range="item.range"/>
-          <span v-else>--</span>
-      </template>
-      <template #thursday="{item}">
-          <actors-section :items="item.thursday" @set-oneId="setoneId" v-if="item?.thursday" :range="item.range"/>
-          <span v-else>--</span>
-      </template>
-      <template #friday="{item}">
-          <actors-section :items="item.friday" @set-oneId="setoneId" v-if="item?.friday" :range="item.range"/>
-          <span v-else>--</span>
-      </template>
-      <template #saturday="{item}">
-          <actors-section :items="item.saturday" @set-oneId="setoneId" v-if="item?.saturday" :range="item.range"/>
-          <span v-else>--</span>
-      </template> 
-      <template #sunday="{item}">
-          <actors-section :items="item.sunday" @set-oneId="setoneId" v-if="item?.sunday" :range="item.range"/>
-          <span v-else>--</span>
-      </template>
-    </cornie-table>
-</div>
+ <div class="mt-12">
+    <cornie-card class="mt-3 block table-card pb-2" flat>
+      <table class="w-full h-full my-5" style="border-radius: 5px">
+        <thead class="border-b-2 border-gray-100  text-black font-semibold" style="height: 3.5rem;">
+
+          <template v-for="(item, index) in weekCalendar" :key="index">
+            <th class="text-right">
+             <div class="w-full flex float-right">
+
+              <div class="flex pr-2 float-right justify-end border-r-2 border-gray-100  w-full h-full">
+                  <span class="uppercase text-xs font-semibold text-gray-400">
+                    {{ new Date(index).toLocaleDateString('en-US',{  weekday: "short",}) }}
+                    <p class="uppercase  text-lg text-black font-bold">
+                        {{ new Date(index).toLocaleDateString('en-US',{ day: "numeric",}) }}
+                      </p>
+                  </span>
+              </div>
+             </div>
+            </th>
+          </template>
+
+        </thead>
+      
+          <tr
+        
+            v-for="(value, valueindex) in filteredItems"
+            :key="valueindex"
+            class="border-t-2"
+            style="height: 3.5rem;"
+          >
+            <td    class="p-2 border-r-2 text-xs text-gray-500 border-gray-100" >{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'  }}</td>
+              <template v-for="(item, index) in weekCalendar" :key="index">
+                <td class="p-3 text-sm capitalize border-r-2  border-gray-100">
+                     <actors-section :singletime="valueindex" :items="value" :range="valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'" :range2="valueindex  >= 9 ? (parseInt(valueindex) + 1) +':00' : '0' + (parseInt(valueindex) + 1) +':00'"/>
+                </td>
+              </template>
+            <td class="p-2 text-xs text-gray-500">{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'    }}</td>
+            
+           
+          </tr>
+       
+      </table>
+    </cornie-card>
+
+  </div>
 </template>
 
 <script lang="ts">
 import AddIcon from "@/components/icons/add.vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 import CornieTable from "@/components/calendar-table/CornieTable.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import { namespace } from "vuex-class";
@@ -54,20 +61,21 @@ import EditIcon from "@/components/icons/edit.vue";
 import CopyIcon from "@/components/icons/copy.vue";
 import CancelIcon from "@/components/icons/cancel.vue"
 import ShareIcon from "@/components/icons/share.vue"
-import { getWeekStart, printWeekday } from "@/plugins/utils";
-import group from "@/store/group";
-import IPractitioner from "@/types/IPractitioner";
 import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
+import { cornieClient } from "@/plugins/http";
+import ActorsSection from './weeksActors.vue';
 
 
-const practitionersStore = namespace("practitioner");
-const locationsStore = namespace("location");
-const visitsStore = namespace("visits");
+const user = namespace("user");
 
 interface Time {
   hour: number;
   minute: number;
+}
+type Sorter = (a: any, b: any) => number;
+function defaultFilter(item: any, query: string) {
+  return search.searchObject(item, query);
 }
 
 @Options({
@@ -82,6 +90,7 @@ interface Time {
     CancelIcon,
     ShareIcon,
     Tabs,
+    ActorsSection
   },
 })
 export default class Weekly extends Vue {
@@ -91,229 +100,55 @@ export default class Weekly extends Vue {
   @Prop({ type: Array })
   schedules!: ISchedule[];
 
-  @Prop({ type: String, default: "22/02/2022" })
+  @Prop({ type: String, default: "" })
   startDate!: any;
+
+
+@Prop({ type: Function, default: defaultFilter })
+  filter!: (item: any, query: string) => boolean;
+
+  @user.State
+  currentLocation!: string;
 
   actorsValue = [] as any;
 
-@visitsStore.Action
-  schedulesByPractitioner!: (id: string) => Promise<ISchedule[]>;
 
-  /// Start
-    options = {
-        weekday: "short", //to display the full name of the day, you can use short to indicate an abbreviation of the day
-        day: "numeric",
-        month: "short", //to display the full name of the month
+   @Watch("startDate")
+  idChanged() {
+    this.fetchweekCalendar();
+  }
+
+  get IdPract(){
+    if(this.$route.query.practitioner){
+      return this.$route.query.practitioner;
     }
-
-   
-
-
-  start  = new Date();
-
-   get ActiveSchedules(){
-      //  const start = getWeekStart(this.startDate);
-       const start = new Date();
-       const dates = this.getWeekDates(start).map((date) =>{
-         const newdate = new Date(date).toISOString().split('T')[0];
-         return newdate
-       })
-      //  const dateSet = new Set(dates);
-      //  return this.schedules.filter((c) => dateSet.has(c.startDate as string));
-      return new Date();
-    }
-
-  getWeekDates(start: Date) {
-    const dates: Date[] = [];
-    for (let i = 0; i < 7; i++) {
-      const current = start.getDate();
-      const date = new Date(start);
-      date.setDate(current + i);
-      dates.push(date);
-    }
-    return dates;
-  }
-
-  get headers() {
-    const now = new Date(); // sun jan 23, 2022 //
-    const startDate = this.start;
-    //const now = this.start;
-    const start = getWeekStart(startDate);
-    const dates = this.getWeekDates(start);
-    const headers = dates.map((date:any) => ({
-      key: printWeekday(date),
-      // title: date.toLocaleDateString('en', this.options),
-      title: new Date("3/22/2022").toLocaleDateString('en-US',{ day: "numeric",}),
-      subtitle: new Date("3/22/2022").toLocaleDateString('en-US',{  weekday: "short",}),
-      show:true
-    }));
-
-    return [{ key: "range", show:true },...headers];
-  }
-
-  // groupHourly(schedules: ISchedule[]) {
-  //   const groups: { [state: number]: ISchedule[] } = {};
-  //   schedules.forEach((schedule) => {
-  //     const start = this.buildTime(schedule.startTime);
-  //     const end = this.buildTime(schedule.endTime);
-  //     const hours = this.getHoursBetween(start, end);
-  //     this.insertMatchingHours(groups, hours, schedule);
-  //   });
-  //   this.padHourlyGrouping(groups);
-  //   return groups;
-  // }
-
-  padHourlyGrouping(groups: { [state: number]: ISchedule[] }) {
-    const hoursPerDay = 23;
-    for (let i = 0; i < hoursPerDay; i++) {
-      const schedules = groups[i];
-      if (!schedules) groups[i] = [];
-    }
-  }
-  groupDaily(schedules: ISchedule[]) {
-    const weekDays = new Map<string, IPractitioner[]>();
-    schedules.forEach((schedule) => {
-      this.insertWeekDays(weekDays, schedule);
-    });
-    const group: { [state: string]: IPractitioner[] } = {};
-    weekDays.forEach((value, key) => {
-      group[key] = value;
-    });
-    return group;
-  }
-
-  insertMatchingHours(
-    groups: { [state: number]: ISchedule[] },
-    hours: number[],
-    schedule: ISchedule
-  ) {
-    hours.forEach((hour) => {
-      const schedules = groups[hour] ?? [];
-      schedules.push(schedule);
-      groups[hour] = schedules;
-    });
-  }
-  buildTime(time: string) {
-    const [hour, min, ...rest] = time.split(":");
-    return {
-      hour: Number(hour),
-      minute: Number(min),
-    };
-  }
-  getHoursBetween(start: Time, end: Time) {
-    const hours = [];
-    for (let i = start.hour; i < end.hour; i++) {
-      hours.push(i);
-    }
-    if (end.minute) hours.push(end.hour + 1);
-    return hours;
-  }
-  pad(x: number) {
-    if (x < 10) return `0${x}:00`;
-    return `${x}:00`;
-  }
-
-  get _items() {
-    const schedules = this.ActiveSchedules || [];
-    // const hourly = this.groupHourly(schedules as any);
-    const hourly = [] as any;
-    const items: { range: any; [state: string]: IPractitioner[] }[] = [];
-    Object.entries(hourly).map(([key, value]) => {
-      const item = this.groupDaily(value as any);
-      this.actorsValue = item;
-      items.push({ ...item, range: this.printRange(Number(key)) as any });
-    });
-    return ["00:00","00:00","00:00","00:00"];
-  }
-
-  printRange(start: number) {
-    const min = this.pad(start);
-    const max = this.pad(start + 1);
-    return `${min}-${max}`;
-  }
-
-  insertWeekDays(map: Map<string, IPractitioner[]>, schedule: ISchedule) {
-    const { days } = schedule;
-    days.forEach((day) => {
-      const _practitioners = map.get(day) ?? [];
-      const practitioners = schedule.practitioners ?? [];
-       map.set(day,this.filterPractitioners([... practitioners, ..._practitioners]) as any);
-    // this.filterPractitioners([... practitioners, ..._practitioners])
-    });
-
-  }
-  filterPractitioners(practitioners:IPractitioner[]) {
-      return search.searchObjectArray(practitioners, this.query);
-  }
-
-
-  setoneId(practitioner:any,value:string){
-     console.log(practitioner,value,"HELLO ThIRD")
-    this.$emit('set-oneId', practitioner,value)
-  }
-  //// End
-
-  @practitionersStore.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  @practitionersStore.State
-  practitioners!: Practitioner[];
-
-  @locationsStore.Action
-  fetchLocations!: () => Promise<void>;
-
-  @locationsStore.State
-  locations!: ILocation[];
-
-
-
-  @locationsStore.Action
-  fetchDevices!: () => Promise<void>;
+}
 
 
   query = "";
-
+  weekCalendar = [];
   showFilter = false;
-  filterOptions: any = {};
-  selectedSlots: string[] = [];
-  selectedSlot: any = {};
+  orderBy: Sorter = () => 1;
 
-  filteredSlots: any = [];
-
-  get seletedPractitioner() {
-    if (!this.filterOptions || !this.filterOptions.byPractitioners) return {};
-    const practitioner = this.practitioners.find(
-      (practitioner) =>
-        practitioner.id === this.filterOptions?.byPractitioners[0]
-    );
-    if (!practitioner) return {};
-    return practitioner;
-  }
-
-  getFirstDayOfWeek(date: Date) {
-    return new Date(
-      new Date().setDate(date.getDate() - ((new Date().getDay() + 6) % 6))
-    );
-  }
-  get availabilityDates() {
-    let arr = [];
-    for (let i = 0; i < 7; i++) {
-      // let sunday = new Date();
-      let sunday = new Date(
-        new Date().setDate(
-          new Date().getDate() - ((new Date().getDay() + 6) % 6)
-        )
-      );
-      arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
+ get filteredItems() {
+    for (var key in this.weekCalendar) {
+        var obj = this.weekCalendar[key];
+        return obj
     }
+  }
 
-    return arr;
+
+ async fetchweekCalendar() {
+   const AllCalendarDay = cornieClient().get(
+        '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/week-view?date=2021-10-12',);  
+     const response = await Promise.all([AllCalendarDay]);
+     this.weekCalendar = response[0].data;
   }
 
 
   async created() {
-    if (!this.practitioners) await this.fetchPractitioners();
-    if (!this.locations) await this.fetchLocations();
+   if(!this.currentLocation) await this.fetchweekCalendar();
+
   }
 }
 </script>

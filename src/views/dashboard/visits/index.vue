@@ -1,18 +1,7 @@
 <template>
   <div class="w-full my-2 h-screen">
-    <div
-      class="containr-fluid"
-      v-if="
-        items &&
-        items.length === 0 &&
-        filterByStatus.length === 0 &&
-        filterByType.length === 0 &&
-        !selectedStatus
-      "
-    >
-      <EmptyState />
-    </div>
-    <div v-else class="container-fluid bg-white sm:p-6 h-full">
+ 
+    <div class="container-fluid bg-white sm:p-6 h-full">
       <div class="w-full border-b-2 curved flex py-2 mt-4">
         <div class="container-fluid flex font-semibold text-xl py-2">
           <h2>Active Visits</h2>
