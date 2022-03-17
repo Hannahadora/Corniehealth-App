@@ -26,7 +26,7 @@ export default {
       state.appointments = [...appointments];
     },
     setPatientAppointment(state, appointments: any) {
-      state.patientappointments = [...appointments.result];
+      state.patientappointments = [...appointments];
     },
 
     setPatients(state, pts) {

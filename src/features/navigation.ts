@@ -32,11 +32,11 @@ const links: ISidebarLink[] = [
       //   to: "/dashboard/experience/schedules",
       //   hasSubsection: false,
       // },
-      {
-        name: "Appointments",
-        to: { name: "Appointment" },
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Appointments",
+      //   to: { name: "Appointment" },
+      //   hasSubsection: false,
+      // },
       {
         name: "Visits",
         to: "/dashboard/experience/visits",

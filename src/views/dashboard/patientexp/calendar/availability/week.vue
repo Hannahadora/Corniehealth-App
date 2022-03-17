@@ -1,6 +1,17 @@
 <template>
  <div class="mt-12">
-    <cornie-card class="mt-3 block table-card pb-2" flat>
+     
+       <div v-if="!currentLocation">
+         <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
+          <!-- <div v-if="loading">
+            <div class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center">
+              <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+              <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
+              <p class="w-1/3 text-center text-white">This may take a few seconds, please don't close this modal.</p>
+            </div>
+        </div>  -->
+    </div>
+    <cornie-card class="mt-3 block table-card pb-2" v-else>
       <table class="w-full h-full my-5" style="border-radius: 5px">
         <thead class="border-b-2 border-gray-100  text-black font-semibold" style="height: 3.5rem;">
 
@@ -113,7 +124,7 @@ export default class Weekly extends Vue {
   actorsValue = [] as any;
 
 
-   @Watch("startDate")
+  @Watch("startDate")
   idChanged() {
     this.fetchweekCalendar();
   }
@@ -129,6 +140,7 @@ export default class Weekly extends Vue {
   weekCalendar = [];
   showFilter = false;
   orderBy: Sorter = () => 1;
+  loading = false;
 
  get filteredItems() {
     for (var key in this.weekCalendar) {
@@ -139,15 +151,19 @@ export default class Weekly extends Vue {
 
 
  async fetchweekCalendar() {
-   const AllCalendarDay = cornieClient().get(
-        '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/week-view?date=2021-10-12',);  
+    const date = this.startDate.toISOString() as any;
+    this.loading = true;
+    const AllCalendarDay = cornieClient().get(`/api/v1/calendar/organization/${this.currentLocation}/week-view?date=${date}`,);  
      const response = await Promise.all([AllCalendarDay]);
-     this.weekCalendar = response[0].data;
+     if(response){
+        this.loading = false;
+       this.weekCalendar = response[0].data;
+     }
   }
 
 
   async created() {
-   if(!this.currentLocation) await this.fetchweekCalendar();
+   if(this.currentLocation)await this.fetchweekCalendar();
 
   }
 }

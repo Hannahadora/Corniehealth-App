@@ -22,5 +22,5 @@ import VisitIcon from "./components/empty-icon.vue";
     VisitIcon,
   },
 })
-export default class DomainEmptyState extends Vue {}
+export default class VisitEmptyState extends Vue {}
 </script>

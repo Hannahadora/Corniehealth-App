@@ -25,13 +25,13 @@
             <tabs :items="tabLinks" v-model="currentTab" :dDate="start"  @filter="showFilterPane" @left="setLeft" @right="setRight">
 
                 <div>
-                    <day-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
+                    <day-section :startDate="start"/>
                 </div>
                 <div>
-                    <week-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"></week-section>
+                    <week-section  :startDate="start"></week-section>
                 </div>
                 <div>
-                <month-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
+                <month-section  :startDate="start"/>
                 </div>
                  <template #actions>
                     <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showAvailable">

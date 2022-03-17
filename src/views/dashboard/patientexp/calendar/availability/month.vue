@@ -1,6 +1,9 @@
 <template>
 <div class="mt-10">
-
+    <div v-if="!currentLocation">
+         <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
+    </div>
+<div v-else>
     <div class="grid grid-cols-7 text-gray-400 font-bold" style="height: 4.5rem;">
         <span class="border-l-2 px-4 border-gray-100 h-full w-full">Sunday</span>
         <span class="border-l-2 px-4 border-gray-100 h-full w-full">Monday</span>
@@ -18,6 +21,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 </template>
@@ -82,7 +86,7 @@ export default class Monthly extends Vue {
     } 
 
   @Prop({ type: String, default: "" })
-  startDate!: string;
+  startDate!: any;
 
   @user.State
   currentLocation!: string;
@@ -105,27 +109,14 @@ export default class Monthly extends Vue {
 
 
 async fetchMonthCalendar() {
-  //  const date = this.start as any;
-  if(this.currentLocation && this.$route.query.practitioner){
-      const AllCalendarDay = cornieClient().get(
-       `/api/v1/calendar/personal/month-view/${this.currentLocation}/practitioner/${this.$route.query.practitioner}?date=2021-10-12`,);
-      
-      const response = await Promise.all([AllCalendarDay]);
-      this.monthCalendar = response[0].data;
-   }else{
+   const date = this.startDate.toISOString() as any;
      const AllCalendarDay = cornieClient().get(
-        '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/month-view?date=2021-10-12',);
+      `/api/v1/calendar/organization/${this.currentLocation}/month-view?date=${date}`,);
      
      const response = await Promise.all([AllCalendarDay]);
      this.monthCalendar = response[0].data;
-   }
-    
-
-    // const AllCalendarWeek = cornieClient().get(
-    //    '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/month-view?date=2021-10-01',
-    // );
-    // const response = await Promise.all([AllCalendarWeek]);
-    // this.monthCalendar = response[0].data;
+   
+  
 
   }
 

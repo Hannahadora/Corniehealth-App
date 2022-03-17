@@ -5,7 +5,7 @@
         <cornie-icon-btn @click="show = false" class="">
                 <arrow-left-icon />
         </cornie-icon-btn>
-        <div class="w-full border-l-2 border-gray-100">
+        <div class="w-full border-l-2 border-gray-200">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
            Actors
           </h2>
@@ -292,8 +292,8 @@ practitionersnew = [] as any;
    this.$emit('patient-data',this.firstPatients,this.patientIds);
     this.done();
   }
-  done() {
-    this.$emit("practitoner-added");
+   done(){
+     this.$emit("schedule-added");
     this.show = false;
   }
   async submit() {

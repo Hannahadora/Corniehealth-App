@@ -60,27 +60,53 @@
                 </div>
             </div>
             <div v-if="actorType == 'Practitioner'">
-                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in practitioners" :key="index">  
-                    <div class="w-full dflex space-x-4 mb-3">
-                        <div class="w-10 h-10">
-                            <avatar
-                                class="mr-2"
-                                v-if="item.image"
-                                :src="item.image"
-                            />
-                            <avatar class="mr-2" v-else  :src="localSrc" />
-                        </div>
-                        <div class="w-full">
-                            <p class="text-xs text-dark font-medium">
-                              {{item.firstName}}  {{item.lastName}}
-                             
-                            </p>
-                            <p class="text-xs text-gray-500 font-meduim">
-                             {{item.department}}
-                        </p>
-                        </div>
-                    </div>
-                    <select-option @click="pushValue(item,item.id)" :value="item.id"/>
+                <div v-if="id">
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in avaialablePractitioners" :key="index">  
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="item.image"
+                                  :src="item.image"
+                              />
+                              <avatar class="mr-2" v-else  :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                {{item.firstName}}  {{item.lastName}}
+                              
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{item.department}}
+                          </p>
+                          </div>
+                      </div>
+                      <select-option @click="pushValue(item,item.id)" :value="item.id"/>
+                  </div>
+                </div>
+                 <div v-else>
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in avaialablePractitioners" :key="index">  
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="item.image"
+                                  :src="item.image"
+                              />
+                              <avatar class="mr-2" v-else  :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                {{item.firstName}}  {{item.lastName}}
+                              
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{item.department}}
+                          </p>
+                          </div>
+                      </div>
+                      <select-option @click="pushValue(item,item.id)" :value="item.id"/>
+                  </div>
                 </div>
             </div>
              <div v-if="actorType == 'Device'">
@@ -215,6 +241,10 @@ export default class Participants extends Vue {
   @Prop({ type: String, default: "" })
   appoimtentId!: string;
 
+
+  @Prop({ type: Array, default: [] })
+  Practitioners!: object;
+
   @patients.State
   patients!: IPatient[];
 
@@ -275,6 +305,10 @@ practitionersnew = [] as any;
        return true;
      }
    }
+  
+  get avaialablePractitioners(){
+    return this.practitioners.filter((c) => c.id !== this.appoimtentId)
+  }
   get filteredItems() {
     return this.practitioners
       .filter((item: any) => this.filter(item, this.query))

@@ -64,14 +64,16 @@
               <div class="font-bold">Start date & time</div>
               <date-time-picker
                 title="Start date & time"
-                v-model="startDateTime"
+                  v-model:date="startDateTime"
+               v-model:time="data.startdate"
               ></date-time-picker>
             </div>
             <div class="col-span-4">
               <div class="font-bold">End date & time</div>
               <date-time-picker
                 title="End date & time"
-                v-model="endDateTime"
+                  v-model:date="endDateTime"
+               v-model:time="data.enddate"
               ></date-time-picker>
             </div>
           </div>
@@ -227,14 +229,16 @@
               <div class="font-bold">Start date & time</div>
               <date-time-picker
                 title="Start date & time"
-                v-model="startDateTimeCom"
+                 v-model:date="startDateCom"
+               v-model:time="startDateTimeCom"
               ></date-time-picker>
             </div>
             <div class="col-span-2">
               <div class="font-bold">End date & time</div>
               <date-time-picker
                 title="End date & time"
-                v-model="endDateTimeCom"
+                  v-model:date="endDateCom"
+               v-model:time="endDateTimeCom"
               ></date-time-picker>
             </div>
           </div>
@@ -415,6 +419,8 @@ export default class AddCareteam extends Vue {
   endDateTimePeriod = "";
   startDateTimeCom = "";
   endDateTimeCom = "";
+    startDateCom = "";
+  endDateCom = "";
   value = "";
   reasonCode = "";
   reasonReference = "";
@@ -426,6 +432,9 @@ export default class AddCareteam extends Vue {
   role = "";
   member = "";
   notes = "";
+   data: any = {
+    days: [],
+  };
 
   communication = [] as IIndexableObject[];
 

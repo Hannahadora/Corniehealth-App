@@ -27,7 +27,7 @@
           </div>
           <div class="container flex flex-col mt-4">
 
-            <available-actors v-for="(input, index) in actors" :key="index" :singletime="singletime" :actor="input" :range="range" :id="input.id"/>
+            <available-actors v-for="(input, index) in actors" :key="index" :singletime="singletime" :actor="input" :range="range" :range2="range2" :id="input.id"/>
 
           </div>
         </div>

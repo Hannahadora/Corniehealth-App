@@ -66,8 +66,9 @@
   <schedule-modal
   :id="scheduleId"
     v-model="showScheduleModal"
+    @schedule-added="scheduleadded"
   />
-   <actor-modal v-model="showActor" @practitoner-added="practitionerdata" :id="scheduleId" :practitionerId="practitionerId"/>
+   <actor-modal v-model="showActor" @schedule-added="scheduleadded" :id="scheduleId" :practitionerId="practitionerId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -262,7 +263,7 @@ export default class SchedulesExistingState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  async practitionerdata(){
+  async scheduleadded(){
     await this.getSchedules();
   }
   async created(){

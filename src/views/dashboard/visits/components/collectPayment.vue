@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right class="w-3/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -17,21 +17,21 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-         <v-form ref="form">
+        <v-form ref="form">
+            <span class="text-xs text-green-300 font-semibold">View Bill</span>
              <cornie-input
                     label="Amount to Due (NGN)"
                     class="w-full mt-5"
                     :placeholder="'Autoloaded'"
                     :disabled="true"
-                    v-model="bill.total"
             />
-           <cornie-input
-                    label="Payment Type"
+              <cornie-select
+                    :items="['Cash','POS','Transfer','Wallet','Card on file']"
+                    :placeholder="'Select'"
+                    :label="'Payment Type'"
                     class="w-full mt-5"
-                    :placeholder="'Point of sale'"
-                    :disabled="true"
-            />
-               <text-area :label="'Note'" v-model="note" placeholder="Type here" class="w-full"/>
+              />
+               <text-area :label="'Note'"  placeholder="Type here" class="w-full"/>
        
         </v-form>
       </cornie-card-text>
@@ -45,7 +45,7 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-             @click="submit"
+             @click="show = false"
             class="text-white bg-danger px-2 rounded-xl"
            >
             Submit
@@ -54,7 +54,7 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"    :specilatyId="specilatyId"/>
+  <new-practitioner v-model="showPractitionerModal"   @practitioner-added="specialadded" :specilatyId="specilatyId"/>
 
   </cornie-dialog>
 </template>
@@ -95,7 +95,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "collectPayment",
+  name: "managePractitioner",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -115,7 +115,7 @@ function defaultFilter(item: any, query: string) {
     CloseIcon
   },
 })
-export default class collectPayment extends Vue {
+export default class managePractitioner extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -132,11 +132,9 @@ export default class collectPayment extends Vue {
   loading = false;
   showPractitionerModal = false;
   aPractitioner = [];
-  localSrc = require("../../../../../assets/img/placeholder.png");
+    localSrc = require("../../../../assets/img/placeholder.png");
   query = "";
-  orderBy: Sorter = () => 1;
-  bill = [] as any;
-  note = "";
+ orderBy: Sorter = () => 1;
 
 
  @practitioner.State
@@ -146,57 +144,14 @@ export default class collectPayment extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
-   @Watch("id")
-  idChanged() {
-    this.fetchBill();
-  }
-
  get filteredItems() {
     return this.practitioners
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
 
-  async fetchBill() {
-     try {
-      const response = await cornieClient().post(
-      `/api/v1/appointment/bill/generate/${this.id}`,{note: this.note}
-      );
-      if (response.success) {
-         this.bill = response.data;
-      }
-    } catch (error:any) {
-     window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-
-   async submit() {
-    this.loading = true;
-    if (this.id) await this.createPayment();
-    this.loading = false;
-  }
-
-  async createPayment() {
-     try {
-      const response = await cornieClient().post(
-      `/api/v1/appointment/bill/collect/${this.id}`,{note: this.note}
-      );
-      if (response.success) {
-        window.notify({ msg: "Payment collected succesfully", status: "success" });
-        this.show = false;  
-      }
-    } catch (error:any) {
-     window.notify({ msg: error.response.data.message, status: "error" });
-    }
-    
-   // this.bill = response[0].data;
-  }
-  mounted(){
-     if (this.id)  this.fetchBill();
-  }
   async created() {
     await this.fetchPractitioners();
-    if (this.id)  await this.fetchBill();
   }
 }
 </script>

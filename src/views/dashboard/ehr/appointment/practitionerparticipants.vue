@@ -240,6 +240,7 @@ export default class Participants extends Vue {
 
   firstDevice = [] as any;
   deviceIds = [] as any;
+  singlePractitonerid = "";
 
   actorType = "Practitioner";
   practionervalue = false;
@@ -287,6 +288,7 @@ practitionersnew = [] as any;
   pushValue(item:any,id:string){
     this.practionerIds.push({practitionerId: id, required: true });
     this.firstPractitioner.push(item);
+    this.singlePractitonerid = id;
   }
   pushDeviceValue(item:any,id:string){
      this.deviceIds.push({id: id, required: true });
@@ -294,7 +296,7 @@ practitionersnew = [] as any;
   }
 
   async updatePractitoinerData() {
-   this.$emit('practitioner-data',this.firstPractitioner,this.practionerIds);
+   this.$emit('practitioner-data',this.firstPractitioner,this.practionerIds, this.singlePractitonerid);
     this.done();
   }
   async updatDeviceData() {

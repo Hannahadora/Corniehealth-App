@@ -38,6 +38,7 @@
   <slots-modal
     v-model="showSlotsModal"
     :id="slotId"
+    @event-added="eventadded"
   />
 </template>
 <script lang="ts">
@@ -194,6 +195,9 @@ export default class SlotsExistingState extends Vue {
   showModal(value: string) {
     this.showLocationModal = true;
     this.locationId = value;
+  }
+  async eventadded(){
+    if (this.currentLocation) await this.singlePractitonerSlot(this.currentLocation);
   }
   async created(){
     if (this.currentLocation) await this.singlePractitonerSlot(this.currentLocation);

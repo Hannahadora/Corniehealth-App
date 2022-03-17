@@ -623,14 +623,11 @@ export default class AddAppointment extends Vue {
   @Prop({ type: String, default: "" })
   practitionersId!: string;
 
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   slotId!: string;
 
   @Prop({ type: Array, default: [] })
   availivilePractitioner!: object;
-
-  
-
   
   @slot.State
   slots!: Slot[];

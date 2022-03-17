@@ -1085,6 +1085,7 @@ export default class AddPractitioner extends Vue {
       practiceDuartion: {},
       practiceDuration: this.practiceDuration,
       consultationRate: this.consultationRate,
+      hourlyRate: this.consultationRate.value,
       graduationYear: this.graduationYear,
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
@@ -1150,6 +1151,7 @@ export default class AddPractitioner extends Vue {
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
       availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
+       hourlyRate: this.consultationRate.value,
     };
   }
 
