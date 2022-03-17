@@ -48,6 +48,7 @@ export interface ICatalogueProduct {
   description: string;
   regNo: string;
   variants: IProductVariant[];
+  stocksUnit: IProductStock[];
   size: string;
   inventoryUOM: IInventoryUOM;
   purchaseUOM: IInventoryUOM;
@@ -58,6 +59,7 @@ export interface ICatalogueProduct {
   storage: IIStorage;
   purchaseType: string;
   updatedAt: Date | string;
+  form: string
 }
 
 export interface IProductVariant {
@@ -72,6 +74,15 @@ export interface IProductVariant {
 export interface IInventoryUOM {
   unitName: string;
   itemQuantity: number;
+}
+
+export interface IProductStock {
+  purchase: string;
+  quantity: number;
+  inventory: number;
+  itemInventory: number;
+  sales: number;
+  itemSales: number;
 }
 
 export interface ISalesUOM {

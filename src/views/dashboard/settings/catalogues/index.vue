@@ -5,7 +5,7 @@
         <span
           class="flex flex-col w-full justify-center font-bold text-xl text-primary py-2"
         >
-          Charge Description Master	
+          Charge Description Master
         </span>
         <!-- <registration-chart class="w-full" :height="100" /> -->
       </div>
@@ -36,7 +36,7 @@
           <div class="w-12/12 flex justify-between card p-3 bg-red">
             <div class="w-full">
               <p class="inactive">Total Number of Items</p>
-              <p class="card-number">{{total}}</p>
+              <p class="card-number">{{ total }}</p>
             </div>
             <total-icon />
           </div>
@@ -61,17 +61,20 @@
         </div>
       </div>
 
-      <span class="w-full bg-danger" v-if="services.length > 0 || products.length > 0">
+      <span
+        class="w-full bg-danger"
+        v-if="services.length > 0 || products.length > 0"
+      >
         <span class="flex justify-end w-full m4-5">
           <cornie-btn
-            class="m-5 px-12 font-semibold rounded"
+            class="m-5 px-8 font-semibold rounded-lg"
             style="color: #080056; border: 1px solid #080056"
           >
             Export
           </cornie-btn>
 
           <cornie-btn
-            class="bg-danger px-10 text-white my-5 mx-4 rounded p-1 font-semibold"
+            class="bg-danger px-8 text-white my-5 mx-4 rounded-lg p-1 font-semibold"
             @click="createNew"
           >
             Create New
@@ -201,7 +204,7 @@ export default class ExistingState extends Vue {
     });
   }
 
-  get total(){
+  get total() {
     const totalitems = this.products.length + this.services.length;
     return totalitems;
   }

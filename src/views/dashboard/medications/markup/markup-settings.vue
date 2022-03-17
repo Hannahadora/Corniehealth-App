@@ -8,6 +8,50 @@
   <div
     class="flex-col justify-center bg-white p-3 mt-2 mb-2 rounded w-full overflow-auto"
   >
+    <template v-if="isRoot">
+      <div class="flex mb-7">
+        <div class="flex flex-col gap-4 mt-8 mr-20">
+          <span class="font-bold text-sm text-jet_black"
+            >Override all item based modifications</span
+          >
+          <div class="flex gap-4">
+            <cornie-radio
+              name="item-based"
+              :value="'on'"
+              v-model="itemBasedModification"
+              checked
+              label="Yes"
+            />
+            <cornie-radio
+              name="item-based"
+              :value="'off'"
+              v-model="itemBasedModification"
+              label="No"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 mt-8">
+          <span class="font-bold text-sm text-jet_black"
+            >Override location based modifications</span
+          >
+          <div class="flex gap-4">
+            <cornie-radio
+              name="location-based"
+              :value="'on'"
+              v-model="locationBasedModification"
+              checked
+              label="Yes"
+            />
+            <cornie-radio
+              name="location-based"
+              :value="'off'"
+              v-model="locationBasedModification"
+              label="No"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
     <div class="w-full mt-4 grid grid-cols-3 gap-5">
       <cornie-input
         class="w-full mb-6"
@@ -18,23 +62,14 @@
       </cornie-input>
       <cornie-input
         class="w-full mb-6"
-        label="Percentage Markup (%)"
+        label="Markup (%)"
         placeholder="--Autoloaded--"
         v-model="PercentageMarkup"
-      >
-      </cornie-input>
-      <cornie-input
-        class="w-full mb-6"
-        label="Maximum Allowable Discount (%)"
-        v-model="MaxDiscount"
-        placeholder="--Autoloaded--"
-        disabled
-      >
-      </cornie-input>
+      ></cornie-input>
 
       <cornie-input
         class="w-full mb-6"
-        label="Recommended Sales Price (NGN)"
+        label="CDM (NGN)"
         placeholder="--Autoloaded--"
         v-model="CDM"
         disabled
@@ -60,7 +95,16 @@
 
       <cornie-input
         class="w-full mb-6"
-        label="Discounted Sales Price (NGN)"
+        label="Maximum Allowable Discount (%)"
+        v-model="MaxDiscount"
+        placeholder="--Autoloaded--"
+        disabled
+      >
+      </cornie-input>
+
+      <cornie-input
+        class="w-full mb-6"
+        label="Minimum Price (NGN)"
         placeholder="--Autoloaded--"
         v-model="minimumPrice"
         disabled
@@ -92,7 +136,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-        :loading="loading"
+          :loading="loading"
           @click="submit"
           class="bg-danger text-white m-5 px-9 font-bold"
         >
@@ -122,21 +166,28 @@ import RegistrationChart from "../registration-chart.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
 import CheckInDialog from "../dialogs/checkin-dialog.vue";
 import AdvancedFilter from "../dialogs/advanced-filter.vue";
-import IMarkup from '@/types/IMarkup'
+import IMarkup from "@/types/IMarkup";
 
 import AddFunction from "../add-function.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
+import { AuthorizedLocation } from "@/types/ILocation";
+import { IOrganization } from "@/types/IOrganization";
+import CornieRadio from "@/components/cornieradio.vue";
 
 const patients = namespace("patients");
 const markup = namespace("markup");
+const account = namespace("user");
+const org = namespace("organization");
+
 @Options({
   name: "MarkupSettings",
   components: {
     ...CornieCard,
     CheckInDialog,
+    CornieRadio,
     CheckinIcon,
     RegistrationChart,
     RegistrationDialog,
@@ -166,17 +217,48 @@ export default class MarkupSettings extends Vue {
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
 
-
-  loading= false;
+  loading = false;
   filterAdvanced = false;
   filteredPatients: IPatient[] = [];
   checkInPatient!: IPatient;
   checkingIn = false;
   registerNew = false;
 
+  @org.State
+  organizationInfo!: any;
+
+  @org.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  @account.State
+  currentLocation!: string;
+
+  @account.Getter
+  cornieUser!: any;
+
+  @account.Getter
+  authorizedLocations!: AuthorizedLocation[];
+
   SUC = 1000;
   PercentageMarkup = 200;
   MaxDiscount = 10 / 100;
+
+  locationBasedModification = "";
+  itemBasedModification = "";
+
+  @Watch("locationBasedModification")
+  handle() {
+    console.log(this.locationBasedModification);
+  }
+
+  get location() {
+    // let location = this.authorizedLocations.find(
+    //   (item: AuthorizedLocation) => item.id === this.currentLocation
+    // );
+
+    // if (location) return location.name;
+    return this.currentLocation;
+  }
 
   get CDM() {
     return this.SUC * (this.PercentageMarkup / 100);
@@ -222,23 +304,25 @@ export default class MarkupSettings extends Vue {
     return `XXXXX${mrn?.substr(31)}`;
   }
 
-locationAdminsCanSetForLocations = false;
+  locationAdminsCanSetForLocations = false;
 
   async submit() {
     this.loading = true;
-     await this.submitMarkup();
+    await this.submitMarkup();
     this.loading = false;
   }
-    query = "";
+  query = "";
   markupId = "";
 
-
-   @markup.State
+  @markup.State
   markups!: IMarkup[];
-
 
   @markup.Action
   fetchMarkups!: () => Promise<void>;
+
+  get isRoot() {
+    return Boolean(this.organizationInfo.rootUserId === this.cornieUser.id);
+  }
 
   get items() {
     const markups = this.markups.map((markup) => {
@@ -250,7 +334,6 @@ locationAdminsCanSetForLocations = false;
     if (!this.query) return markups;
     return search.searchObjectArray(markups, this.query);
   }
-
 
   // @Watch("markupId")
   // idChanged() {
@@ -269,14 +352,24 @@ locationAdminsCanSetForLocations = false;
   //   this.discountMargin = markup.discountedMargin;
   //   this.discountMarginPercentage = markup.discountedMarginPercentage;
   //   this.locationAdminsCanSetForLocations = markup.locationAdminsCanSetForLocations;
- 
+
   // }
+
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+    const response = await Promise.all([AllLocation]);
+    // this.location = response[0].data;
+    console.log(response[0].data);
+  }
   async submitMarkup() {
     try {
       const { data } = await cornieClient().post(
         `/api/v1/markup-discount/createEditForOrganizationAdmin`,
         {
           sampleUnitCost: this.SUC,
+          locationId: this.location,
           markupPercentage: this.PercentageMarkup,
           cdmPrice: this.CDM,
           margin: this.margin,
@@ -302,9 +395,12 @@ locationAdminsCanSetForLocations = false;
     }
   }
 
-async created(){
-  await this.fetchMarkups();
-}
+  async created() {
+    await this.fetchMarkups();
 
+    if (!this.organizationInfo) await this.fetchOrgInfo();
+
+    console.log(this.organizationInfo);
+  }
 }
 </script>
