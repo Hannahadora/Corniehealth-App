@@ -18,6 +18,7 @@
           <slot name="labelicon" />
         </span>
         <span class="text-danger ml-1" v-if="required"> * </span>
+         <span class="float-right" :class="[textred ? 'text-red-500' : 'text-green-500' ]" v-if="labelText"> {{ innerlabel }} </span>
       </label>
       <div
         class="flex rounded-md border-1 border-gray-300"
@@ -108,6 +109,9 @@ export default class CornieInput extends Vue {
   label!: string;
 
   @Prop({ type: String, default: "" })
+  innerlabel!: string;
+
+  @Prop({ type: String, default: "" })
   labelicon!: string;
 
   @Prop({ type: String })
@@ -115,6 +119,12 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   setPrimary!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  labelText!: boolean;
+
+ @Prop({ type: Boolean, default: false })
+  textred!: boolean;
 
   @Prop({ type: Boolean, default: false })
   required!: boolean;

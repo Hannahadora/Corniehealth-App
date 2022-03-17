@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="float-right flex space-x-7 justify-end w-full">
-                <span class="cursor-pointer" v-if="currentLocation">
+                <span class="cursor-pointer" v-if="currentLocation && avaialbleStatus == 'available'">
                     <cornie-menu top="30px" >
                     <template #activator="{ on }">
                         <icon-btn v-on="on">
@@ -49,8 +49,8 @@
                 </div>
             </div>
 
+    <appointment-modal v-model="showModal" :appoimtentId="id" :range="range" :range2="range2"/>
     </div>
-    <appointment-modal v-model="showModal" :appoimtentId="id"/>
 </template>
 
 <script lang="ts">
@@ -145,7 +145,8 @@ export default class AvailableActors extends Vue {
     actorType = "";
     isAvailable = "";
     appoimtentId = "";
-     showModal=  false;
+    showModal=  false;
+  
     
 
     get actorname(){

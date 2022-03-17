@@ -65,11 +65,20 @@ export default {
       height: 30%;
   }
 
+.dp__time_col {
+    font-size: 1rem !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
 
 
+  
   .dp__instance_calendar {
-      position: relative;
-      height: 250px;
+    position: relative;
+    height: 100px !important;
   }
 
 

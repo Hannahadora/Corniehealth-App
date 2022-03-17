@@ -1,10 +1,11 @@
 <template>
-  <div class="menu">
+  <div class="menu" @click="onMenuClick">
     <slot name="activator" :on="{ click }" />
-    <div class="absolute pt-2 z-50 -left-44 right-0 top-2">
+    <div class="absolute -left-10  pt-2 z-50 right-0 w-full">
       <card
         v-show="showMenu"
-        class="relative py-2 p-0 bg-white border border-gray-200 rounded-md block w-56 shadow-xl"
+        class="relative py-2 p-0 bg-white border border-gray-200 rounded-md block w-full shadow-xl"
+        style="width: 130% !important;"
         ref="card"
       >
         <slot class="p-0" />
@@ -67,10 +68,10 @@ export default class Menu extends Vue {
   }
 
   click(event: Event) {
+    event.stopPropagation();
     if (!this.showMenu) {
-      event.stopPropagation();
       document.body.addEventListener("click", this.closeHandler);
-      this.showMenu = !this.showMenu;
+      this.showMenu = true;
     } else this.close();
   }
 

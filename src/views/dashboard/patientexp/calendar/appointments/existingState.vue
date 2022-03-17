@@ -2,12 +2,12 @@
   <div class="w-full pb-7">
     <span class="flex justify-end float-right w-86">
         <date-picker class="w-full mt-3 mr-4"/>
-      <button
+      <!-- <button
         class="bg-danger rounded-lg text-white mt-5 mb-5 py-2.5 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="showAppointmentModal = true"
       >
         Create
-      </button>
+      </button> -->
     </span>
     <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false">
       <template #actions="{ item }">
@@ -26,15 +26,30 @@
           <plus-icon class="text-green-400 fill-current" />
           <span class="ml-3 text-xs">Add Actor</span>
         </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCollectModal(item.id)">
+          <plus-icon class="text-yellow-400 fill-current" />
+          <span class="ml-3 text-xs">Collect Payment</span>
+        </div>
+        <!-- <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPost = true">
+          <plus-icon class="text-purple-400 fill-current" />
+          <span class="ml-3 text-xs">Post Claim</span>
+        </div> -->
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayLinkModal(item.id)">
+          <plus-icon class="text-pink-400 fill-current" />
+          <span class="ml-3 text-xs">Share Pay Link</span>
+        </div>
          <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <share-icon class="text-blue-800 fill-current" />
           <span class="ml-3 text-xs">Share</span>
         </div>
          <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
           <cancel-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Deactivate</span>
+          <span class="ml-3 text-xs">Cancel</span>
         </div> 
       </template>
      
@@ -116,6 +131,20 @@
     v-model="showAppointmentModal"
     :id="appointmentId"
   />
+  <collect-modal v-model="showCollect" :id="appointmentId"/>
+  <share-modal v-model="showShare" :id="appointmentId"/>
+  <post-modal v-model="showPost" :id="appointmentId"/>
+  <bill-modal v-model="showBill" :id="appointmentId"/>
+
+  
+    <status-modal
+      :id="appointmentId"
+      :updatedBy="updatedBy"
+      :currentStatus="currentStatus"
+      :dateUpdated="update"
+      @appointment-added="appointmentAdded"
+      v-model="showStatusModal"
+    />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -141,8 +170,15 @@ import DatePicker from "@/components/daterangecalendar.vue";
 import ActorsSection from "./actors.vue";
 import AppointmentModal from '../appointments/addAppointmentModal.vue';
 import IAppointment from "@/types/IAppointment";
+import CollectModal from "./collectpayment.vue";
+import ShareModal from "./sharepaylink.vue";
+import PostModal from "./postclaim.vue";
+import BillModal from "./sharebill.vue";
+import StatusModal from "./status-update.vue";
+import { IPatient } from "@/types/IPatient";
 
 
+const patients = namespace("patients");
 const appointment = namespace("appointment");
 
 @Options({
@@ -150,12 +186,16 @@ const appointment = namespace("appointment");
     CornieTable,
     SortIcon,
     ThreeDotIcon,
+    CollectModal,
     CancelIcon,
     SettingsIcon,
+    ShareModal,
     SearchIcon,
     DatePicker,
     ActorsSection,
+    PostModal,
     PrintIcon,
+    BillModal,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
@@ -165,6 +205,7 @@ const appointment = namespace("appointment");
     ShareIcon,
     PlusIcon,
     AppointmentModal,
+    StatusModal
   },
 })
 export default class SchedulesExistingState extends Vue {
@@ -175,6 +216,18 @@ export default class SchedulesExistingState extends Vue {
   appointmentId = "";
   showAppointmentModal = false;
 
+  showCollect = false;
+  showShare = false;
+  showPost = false;
+  showBill = false;
+
+   showStatusModal = false;
+  updatedBy = "";
+  currentStatus = "";
+  update = "";
+  onePatientId = "";
+  onePractitionerId = "";
+
   @appointment.State
   appointments!: IAppointment[];
 
@@ -183,6 +236,12 @@ export default class SchedulesExistingState extends Vue {
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
+
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
 
   rawHeaders = [
     {
@@ -223,6 +282,21 @@ export default class SchedulesExistingState extends Vue {
         year: "numeric",
       });
 
+       const pateintId = appointment.Patients.map((patient: any) => {
+        this.onePatientId = patient.patientId;
+      });
+      const practitionerId = appointment.Practitioners.map(
+        (Practitioner: any) => {
+          this.onePractitionerId = Practitioner.practitionerId;
+        }
+      );
+      this.updatedBy = this.getPatientName(this.onePatientId);
+      this.currentStatus = appointment.status;
+      this.update = (appointment as any).updatedAt = new Date(
+        (appointment as any).updatedAt
+      ).toLocaleDateString("en-US");
+      const patientNewId = this.onePatientId;
+
       return {
         ...appointment,
         action: appointment.id,
@@ -232,20 +306,27 @@ export default class SchedulesExistingState extends Vue {
     return search.searchObjectArray(appointments, this.query);
   }
 
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
+
   stringifyOperationHours(opHours: HoursOfOperation[]) {
     const [opHour, ...rest] = opHours;
     if (!opHour) return "All Day";
     return `${opHour.openTime} - ${opHour.closeTime}`;
   }
 
-  async remove(id: string) {
+   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this practitioner",
+      message: "You are about to cancel this appointment",
+      title: "Cancel appointment",
     });
     if (!confirmed) return;
+
     if (await this.deleteAppointment(id))
-      window.notify({ msg: "Practitioner deleted", status: "success" });
-    else window.notify({ msg: "Practitioner not deleted", status: "error" });
+      window.notify({ msg: "Appointment canceled", status: "success" });
+    else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
   async updateLocation() {
     await this.fetchAppointments();
@@ -254,6 +335,23 @@ export default class SchedulesExistingState extends Vue {
    showAppointment(value:string){
     this.showAppointmentModal = true;
     this.appointmentId = value;
+  }
+
+  showCollectModal(value:string){
+    this.showCollect = true;
+     this.appointmentId = value;
+  }
+
+  showPayLinkModal(value:string){
+     this.appointmentId = value;
+    this.showShare = true
+  }
+   appointmentAdded() {
+    this.fetchAppointments();
+  }
+
+  async created(){
+    await this.fetchPatients();
   }
 }
 </script>

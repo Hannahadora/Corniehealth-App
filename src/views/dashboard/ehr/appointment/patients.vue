@@ -166,6 +166,7 @@ export default class Patients extends Vue {
   orderBy: Sorter = () => 1;
   patientIds = [] as any;
   firstPatient = [] as any;
+  singlePatientId = "";
 
 
   @patients.State
@@ -187,6 +188,7 @@ export default class Patients extends Vue {
   pushValue(item:any,id:string){
     this.patientIds.push({patientId: id, required: true });
     this.firstPatient.push(item);
+     this.singlePatientId = id;
   }
 
    async submit() {
@@ -196,7 +198,7 @@ export default class Patients extends Vue {
     this.loading = false;
   }
   async updatePatientData(){
-      this.$emit('patient-data',this.firstPatient,this.patientIds);
+      this.$emit('patient-data',this.firstPatient,this.patientIds,this.singlePatientId);
     this.done();
   }
   async apply(){

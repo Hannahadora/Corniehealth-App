@@ -625,11 +625,10 @@ get payload(){
       );
       if (response.success) {
         window.notify({ msg: "Availability created", status: "success" });
-        this.$router.push("/dashboard/provider/experience/calendar");
-        this.show = false;
+        
       }
-    } catch (error) {
-      window.notify({ msg: "Availability not created", status: "error" });
+    } catch (error:any) {
+       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
 
@@ -793,6 +792,10 @@ async addBreak(){
       }else {
          this.breaks.splice(index, 1);
       }
+  }
+  done(){
+     this.$emit("schedule-added");
+    this.show = false;
   }
 
   async created() {

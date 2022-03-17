@@ -696,10 +696,10 @@ async deletePractitionerItem(value:string,index:number) {
       );
       if (response.success) {
         window.notify({ msg: "Event created", status: "success" });
-        this.show = false;
+        this.done();
       }
-    } catch (error) {
-      window.notify({ msg: "There is already a slot for this time frame", status: "error" });
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
 
@@ -716,6 +716,11 @@ async deletePractitionerItem(value:string,index:number) {
     } catch (error) {
       window.notify({ msg: "Event not updated", status: "error" });
     }
+  }
+
+  done(){
+    this.$emit("event-added");
+    this.show = false;
   }
 
 

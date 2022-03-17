@@ -1,6 +1,9 @@
 <template>
 <div class="mt-12">
-          <div class="flex w-full"  v-for="(item, index) in dayCalendar" :key="index">
+        <div v-if="!currentLocation">
+         <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
+        </div>
+          <div class="flex w-full" v-else v-for="(item, index) in dayCalendar" :key="index">
               <span class="text-xs text-gray-500 font-semibold p-3 border-r-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span>
               <div class="border-gray-100 w-full  border-b-2 ">
                 <actors-section :items="item" :singletime="index" :range="index > 9 ? index +':00' : '0' + index +':00'" :range2="index  >= 9 ? (parseInt(index) + 1) +':00' : '0' + (parseInt(index) + 1) +':00'"/>
@@ -62,7 +65,7 @@ export default class Daily extends Vue {
   schedules!: ISchedule[];
 
   @Prop({ type: String, default: "" })
-  startDate!: string;
+  startDate!: any;
 
   @user.Getter
   cornieData!: IPractitioner;
@@ -95,20 +98,12 @@ export default class Daily extends Vue {
     }
 }
   async fetchDayCalendar() {
-   const date = this.startDate as any;
-   if(this.currentLocation && this.$route.query.practitioner){
-      const AllCalendarDay = cornieClient().get(
-       `/api/v1/calendar/personal/day-view/${this.currentLocation}/practitioner/${this.$route.query.practitioner}?date=2021-10-12`,);
-      
-      const response = await Promise.all([AllCalendarDay]);
-      this.dayCalendar = response[0].data;
-   }else{
+   const date = this.startDate.toISOString() as any;
      const AllCalendarDay = cornieClient().get(
-        '/api/v1/calendar/organization/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a/day-view?date=2021-10-12',);
+        `/api/v1/calendar/organization/${this.currentLocation}/day-view?date=${date}`,);
      
      const response = await Promise.all([AllCalendarDay]);
      this.dayCalendar = response[0].data;
-   }
    
   }
 

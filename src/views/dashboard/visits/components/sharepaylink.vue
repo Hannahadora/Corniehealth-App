@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right class="w-3/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-          Collect Payment
+                Post Claim
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -17,21 +17,33 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-         <v-form ref="form">
+        <v-form ref="form">
+            <span class="text-xs font-semibold text-green-600 mb-4">View Bill</span>
              <cornie-input
-                    label="Amount to Due (NGN)"
-                    class="w-full mt-5"
-                    :placeholder="'Autoloaded'"
+                    label="Pay Link"
+                    class="w-full"
+                    placeholder="Enter"
                     :disabled="true"
-                    v-model="bill.total"
-            />
-           <cornie-input
-                    label="Payment Type"
-                    class="w-full mt-5"
-                    :placeholder="'Point of sale'"
+                  
+            >
+                <template #append-inner>
+                    <copy-icon />
+                    
+                </template>
+             </cornie-input>
+             <cornie-input
+                    label="Patient’s Email"
+                    class="w-full"
+                    placeholder="Enter"
                     :disabled="true"
             />
-               <text-area :label="'Note'" v-model="note" placeholder="Type here" class="w-full"/>
+             <cornie-input
+                    label="Payment Amount (NGN)"
+                    class="w-full"
+                    placeholder="Autoloaded"
+                    :disabled="true"
+            />
+               <text-area :label="'Note'"  placeholder="Type here" class="w-full"/>
        
         </v-form>
       </cornie-card-text>
@@ -45,7 +57,7 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-             @click="submit"
+             @click="show = false"
             class="text-white bg-danger px-2 rounded-xl"
            >
             Submit
@@ -54,7 +66,7 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"    :specilatyId="specilatyId"/>
+  <new-practitioner v-model="showPractitionerModal"   @practitioner-added="specialadded" :specilatyId="specilatyId"/>
 
   </cornie-dialog>
 </template>
@@ -82,6 +94,7 @@ import ISpecial from "@/types/ISpecial";
 import SelectOption from "@/components/custom-checkbox.vue";
 import search from "@/plugins/search";
 import TextArea from "@/components/textarea.vue";
+import CopyIcon from "@/components/icons/copy.vue";
 import CornieInput from "@/components/cornieinput.vue";
 
 const practitioner = namespace("practitioner");
@@ -95,27 +108,28 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "collectPayment",
+  name: "managePractitioner",
   components: {
     ...CornieCard,
     CornieIconBtn,
     ArrowLeftIcon,
     Multiselect,
+    CornieInput,
     CancelIcon,
     CornieDialog,
     Avatar,
+    CopyIcon,
     SelectOption,
     SearchIcon,
     TextArea,
     DeleteIcon,
     IconInput,
-     CornieInput,
     CornieBtn,
     CornieSelect,
     CloseIcon
   },
 })
-export default class collectPayment extends Vue {
+export default class managePractitioner extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -134,9 +148,7 @@ export default class collectPayment extends Vue {
   aPractitioner = [];
   localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
-  orderBy: Sorter = () => 1;
-  bill = [] as any;
-  note = "";
+ orderBy: Sorter = () => 1;
 
 
  @practitioner.State
@@ -146,57 +158,14 @@ export default class collectPayment extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
-   @Watch("id")
-  idChanged() {
-    this.fetchBill();
-  }
-
  get filteredItems() {
     return this.practitioners
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
 
-  async fetchBill() {
-     try {
-      const response = await cornieClient().post(
-      `/api/v1/appointment/bill/generate/${this.id}`,{note: this.note}
-      );
-      if (response.success) {
-         this.bill = response.data;
-      }
-    } catch (error:any) {
-     window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-
-   async submit() {
-    this.loading = true;
-    if (this.id) await this.createPayment();
-    this.loading = false;
-  }
-
-  async createPayment() {
-     try {
-      const response = await cornieClient().post(
-      `/api/v1/appointment/bill/collect/${this.id}`,{note: this.note}
-      );
-      if (response.success) {
-        window.notify({ msg: "Payment collected succesfully", status: "success" });
-        this.show = false;  
-      }
-    } catch (error:any) {
-     window.notify({ msg: error.response.data.message, status: "error" });
-    }
-    
-   // this.bill = response[0].data;
-  }
-  mounted(){
-     if (this.id)  this.fetchBill();
-  }
   async created() {
     await this.fetchPractitioners();
-    if (this.id)  await this.fetchBill();
   }
 }
 </script>
@@ -204,5 +173,111 @@ export default class collectPayment extends Vue {
 <style>
 .dflex {
   display: -webkit-box;
+}
+.multiselect-option.is-selected {
+  background: #fe4d3c;
+  color: var(--ms-option-color-selected, #fff);
+}
+.multiselect-option.is-selected.is-pointed {
+  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+  color: var(--ms-option-color-selected-pointed, #fff);
+}
+.multiselect-option.is-selected {
+  background: var(--ms-option-bg-selected, #fe4d3c);
+  color: var(--ms-option-color-selected, #fff);
+}
+
+.multiselect {
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+  border-radius: var(--ms-radius, 4px);
+  background: var(--ms-bg, #fff);
+  font-size: var(--ms-font-size, 1rem);
+  min-height: calc(
+    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+  );
+}
+
+.multiselect-tags {
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin: var(--ms-tag-my, 0.25rem) 0 0;
+  padding-left: var(--ms-py, 0.5rem);
+  align-items: center;
+}
+
+.multiselect-tag.is-user {
+  padding: 5px 12px;
+  border-radius: 22px;
+  background: #080056;
+  margin: 3px 3px 8px;
+  position: relative;
+  left: -10px;
+}
+
+/* .multiselect-clear-icon {
+      -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
+      mask-image: url("/components/icons/chevrondownprimary.vue");
+      background-color: #080056;
+      display: inline-block;
+      transition: .3s;
+  } */
+
+.multiselect-placeholder {
+  font-size: 0.8em;
+  font-weight: 400;
+  font-style: italic;
+  color: #667499;
+}
+
+.multiselect-caret {
+  transform: rotate(0deg);
+  transition: transform 0.3s;
+  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+  mask-image: url("../../../../../assets/img/Chevron.png");
+  background-color: #080056;
+  margin: 0 var(--ms-px, 0.875rem) 0 0;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  flex-grow: 0;
+  pointer-events: none;
+}
+
+.multiselect-tag.is-user img {
+  width: 18px;
+  border-radius: 50%;
+  height: 18px;
+  margin-right: 8px;
+  border: 2px solid #ffffffbf;
+}
+
+.multiselect-tag.is-user i:before {
+  color: #ffffff;
+  border-radius: 50%;
+}
+
+.multiselect-tag-remove {
+  display: flex;
+  align-items: center;
+  /* border: 1px solid #fff;
+    background: #fff; */
+  border-radius: 50%;
+  color: #fff;
+  justify-content: center;
+  padding: 0.77px;
+  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
 }
 </style>

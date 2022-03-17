@@ -85,7 +85,7 @@
                     <dots-horizontal-icon v-on="on" />
                   </icon-btn>
                 </template>
-                <cornie-card-text>
+                <cornie-card-text :tablecard="true">
                   <slot name="actions" :item="row" :index="index" />
                 </cornie-card-text>
               </cornie-menu>

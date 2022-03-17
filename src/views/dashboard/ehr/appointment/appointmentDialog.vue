@@ -182,21 +182,21 @@
                                 <div class="w-full">
                                   <span class="text-xs text-gray-400 font-semibold">{{billingType}}</span>    
                                 </div>
-                                <div class="w-full">
+                                <!-- <div class="w-full">
                                     <span class="text-xs flex justify-end w-full text-danger cursor-pointer" @click="showBilling = true">Change billing type</span>
-                                </div>
+                                </div> -->
                         </div>
-                         <cornie-select
+                         <!-- <cornie-select
                                 v-if="showBilling"
                                 :label="'Change Billing Type'"
                                 placeholder="--Select--"
                                 :items="['insurance', 'cash']"
                                 class="w-full mt-4"
                                 v-model="billingType"
-                            />
+                            /> -->
                       </div>
                       <text-area :label="'Comment'" v-model="comment" placeholder="Placeholder" class="w-full"/>
-                        <div class="w-full">
+                        <!-- <div class="w-full">
                             <span class="text-sm text-primary font-semibold mb-5">Payment</span>
                             <div class="grid grid-cols-3 gap-1 mt-5">
                                 <span class="border py-1 px-6 text-xs text-center border-gray-200 cursor-pointer rounded-lg" @click="showCollect = true">
@@ -213,7 +213,7 @@
                                 </span>
 
                             </div>
-                        </div>
+                        </div> -->
 
 
                   </template>    
@@ -294,13 +294,13 @@ import CollectModal from "./collectpayment.vue";
 import ShareModal from "./sharepaylink.vue";
 import PostModal from "./postclaim.vue";
 import BillModal from "./sharebill.vue";
-
+import { IPatient } from "@/types/IPatient";
 
 const appointment = namespace("appointment");
 const location = namespace("location");
 const user = namespace("user");
 const practitioner = namespace("practitioner");
-
+const patients = namespace("patients");
 
 @Options({
   name: "appointmentModal",
@@ -354,6 +354,12 @@ export default class appointmentModal extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
   @user.State
    currentLocation!: string;
 
@@ -375,6 +381,7 @@ export default class appointmentModal extends Vue {
   showShare = false;
   showPost = false;
   showBill = false;
+
 
 
 
@@ -409,14 +416,16 @@ export default class appointmentModal extends Vue {
   date = "2022-03-11";
   startTime = "00:00";
   endTime = "00:00";
-  billingType = "";
+  billingType = "cash";
   venueAddress = "";
   meetingLink = "";
   venue = "";
-  patientId = [];
+  patientId = [] as any;
   practitionerId = [] as any;
   serviceId = [];
-   localSrc = require("../../../../assets/img/placeholder.png");
+  localSrc = require("../../../../assets/img/placeholder.png");
+  singlePractitonerId = "";
+  singlePatientId = "";
 
 
 
@@ -461,7 +470,9 @@ get payload(){
     startTime: this.startTime,
     endTime : this.endTime,
     locationId : this.locationId,
-    bookingLocationId: this.bookingLocationId
+    bookingLocationId: this.bookingLocationId,
+    practitionerId: this.singlePractitonerId,
+    patientId: this.patientrouteId,
 
   }
 }
@@ -477,18 +488,24 @@ get payload(){
   async createAppointment() {
     this.locationId = this.currentLocation;
 
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/appointment",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({ msg: "Appointment created", status: "success" });
-        this.show = false;
+    if(this.currentLocation){
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/appointment",
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Appointment created", status: "success" });
+          this.done();
+        }
+      } catch (error) {
+        window.notify({ msg: "Appointment not created", status: "error" });
       }
-    } catch (error) {
-      window.notify({ msg: "Appointment not created", status: "error" });
+    }else{
+      window.notify({ msg: "Kindly switch default location", status: "error" });
     }
+
+
   }
 
   async updateAppointment() {
@@ -506,20 +523,32 @@ get payload(){
     }
   }
 
+ get patientrouteId() {
+    return this.$route.params.id;
+  }
    getAppointment() {
     const pt = this.practitioners.find((i: any) => i.id === this.appoimtentId);
     this.practitionerId.push({practitionerId: this.appoimtentId, required: true });
     return this.Practitioners = [pt];
   }
 
-  patientdata(value:any,valueId:any){
-      this.Patients = value;
-      this.patientId = valueId;
+  getPatient() {
+    const pt = this.patients.find((i: any) => i.id === this.patientrouteId);
+    this.patientId.push({patientId: this.patientrouteId, required: true });
+    return this.Patients = [pt];
   }
 
-  practitionerdata(value:any,valueId:any){
+
+  patientdata(value:any,valueId:any,id:string){
+      this.Patients = value;
+      this.patientId = valueId;
+      this.singlePatientId = id;
+  }
+
+  practitionerdata(value:any,valueId:any,singleValue:string){
      this.Practitioners = value;
       this.practitionerId = valueId;
+      this.singlePractitonerId = singleValue;
   }
   devicedata(value:any,valueId:any){
       this.Devices = value;
@@ -579,9 +608,16 @@ get payload(){
      this.services.splice(index, 1);
  }
 
+ done(){
+    this.$emit("appointment-added");
+   this.show = false;
+ }
+
   async created() {
     await this.fetchLocations();
     await this.fetchPractitioners();
+    await this.fetchPatients();
+    await this.getPatient();
     if(this.appoimtentId) await this.getAppointment();
   }
 }

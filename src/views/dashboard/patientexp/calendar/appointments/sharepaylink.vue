@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-3/12 h-full">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-                Post Claim
+                Share Pay Link
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -18,31 +18,45 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <span class="text-xs font-semibold text-green-600 mb-4">View Bill</span>
-             <cornie-input
-                    label="Pay Link"
-                    class="w-full"
-                    placeholder="Enter"
-                    :disabled="true"
-            >
-                <template #append-inner>
-                    <copy-icon />
-                    
-                </template>
-             </cornie-input>
-             <cornie-input
-                    label="Patient’s Email"
-                    class="w-full"
-                    placeholder="Enter"
-                    :disabled="true"
-            />
-             <cornie-input
-                    label="Payment Amount (NGN)"
-                    class="w-full"
-                    placeholder="Autoloaded"
-                    :disabled="true"
-            />
-               <text-area :label="'Note'"  placeholder="Type here" class="w-full"/>
+           <div v-if="loading">
+            <div class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center">
+              <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+              <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
+              <p class="w-1/3 text-center text-white">This may take a few seconds, please don't close this modal.</p>
+            </div>
+          
+          </div>
+          <div v-else>
+              <span class="text-xs font-semibold text-green-600 mb-4">View Bill</span>
+              <cornie-input
+                      label="Pay Link"
+                      class="w-full mt-4"
+                      placeholder="Autoloaded"
+                      :disabled="true"
+                      v-model="link.paymentLink"
+              >
+                  <template #append-inner>
+                      <copy-icon @click="copyURL(link.paymentLink)" class="cursor-pointer"/>
+                      
+                  </template>
+              </cornie-input>
+              <cornie-input
+                      label="Patient’s Email"
+                      class="w-full mt-4"
+                      placeholder="Autoloaded"
+                      :disabled="true"
+                      v-model="PatientName"
+                     
+              />
+              <cornie-input
+                      label="Payment Amount (NGN)"
+                      class="w-full mt-4"
+                      placeholder="Autoloaded"
+                      :disabled="true"
+                       v-model="bill.total"
+              />
+                <!-- <text-area :label="'Note'"  placeholder="Type here" class="w-full"/> -->
+          </div>
        
         </v-form>
       </cornie-card-text>
@@ -55,17 +69,11 @@
           >
             Cancel
           </cornie-btn>
-          <cornie-btn
-             @click="show = false"
-            class="text-white bg-danger px-2 rounded-xl"
-           >
-            Submit
-          </cornie-btn>
-
+         
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"   @practitioner-added="specialadded" :specilatyId="specilatyId"/>
+  <new-practitioner v-model="showPractitionerModal"   :specilatyId="specilatyId"/>
 
   </cornie-dialog>
 </template>
@@ -95,9 +103,12 @@ import search from "@/plugins/search";
 import TextArea from "@/components/textarea.vue";
 import CopyIcon from "@/components/icons/copy.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import { IPatient } from "@/types/IPatient";
+
 
 const practitioner = namespace("practitioner");
 const special = namespace("special");
+const patients = namespace("patients");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -141,13 +152,29 @@ export default class managePractitioner extends Vue {
   @Prop({ type: String, default: "" })
   specilatyId!: string;
 
+  
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
 
   loading = false;
   showPractitionerModal = false;
   aPractitioner = [];
   localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
- orderBy: Sorter = () => 1;
+  orderBy: Sorter = () => 1;
+  link = [] as any;
+  bill = [] as any;
+  note = "";
+
+
+ @Watch("id")
+  idChanged() {
+    this.fetchPaylink();
+  }
 
 
  @practitioner.State
@@ -163,8 +190,59 @@ export default class managePractitioner extends Vue {
       .sort(this.orderBy);
   }
 
+  get PatientName() {
+    if(this.bill){
+      const pt = this.patients.find((i: any) => i.id === this.bill.patientId) as any;
+     return pt.contactInfo.map((item:any) => {
+         return `${item.email}`;
+      })
+    }
+  }
+
+async copyURL(mytext:string) {
+    try {
+      await navigator.clipboard.writeText(mytext);
+      window.notify({ msg: "Payment link copied!", status: "success" });
+    } catch($e) {
+      window.notify({ msg: "Payment link  not copied!", status: "error" });
+    }
+}
+
+async fetchPaylink() {
+     this.loading = true;
+     try {
+      const response = await cornieClient().post(
+      `/api/v1/appointment/bill/generate-link/${this.id}`,{}
+      );
+      if (response.success) {
+         this.link = response.data;
+         this.loading = false;
+      }
+    } catch (error:any) {
+       this.loading = false;
+     window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+  async fetchBill() {
+     try {
+      const response = await cornieClient().post(
+      `/api/v1/appointment/bill/generate/${this.id}`,{note: this.note}
+      );
+      if (response.success) {
+         this.bill = response.data;
+      }
+    } catch (error:any) {
+     window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+
+
   async created() {
+    if (this.id)  await this.fetchPaylink();
+    if (this.id)  this.fetchBill();
     await this.fetchPractitioners();
+    await this.fetchPatients();
   }
 }
 </script>
@@ -173,110 +251,28 @@ export default class managePractitioner extends Vue {
 .dflex {
   display: -webkit-box;
 }
-.multiselect-option.is-selected {
-  background: #fe4d3c;
-  color: var(--ms-option-color-selected, #fff);
-}
-.multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
-  color: var(--ms-option-color-selected-pointed, #fff);
-}
-.multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
+.loader {
+	border-top-color: #3498db;
+	-webkit-animation: spinner 1.5s linear infinite;
+	animation: spinner 1.5s linear infinite;
 }
 
-.multiselect {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  cursor: pointer;
-  outline: none;
-  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-  border-radius: var(--ms-radius, 4px);
-  background: var(--ms-bg, #fff);
-  font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
+@-webkit-keyframes spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
 }
 
-.multiselect-tags {
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--ms-tag-my, 0.25rem) 0 0;
-  padding-left: var(--ms-py, 0.5rem);
-  align-items: center;
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
-.multiselect-tag.is-user {
-  padding: 5px 12px;
-  border-radius: 22px;
-  background: #080056;
-  margin: 3px 3px 8px;
-  position: relative;
-  left: -10px;
-}
-
-/* .multiselect-clear-icon {
-      -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
-      mask-image: url("/components/icons/chevrondownprimary.vue");
-      background-color: #080056;
-      display: inline-block;
-      transition: .3s;
-  } */
-
-.multiselect-placeholder {
-  font-size: 0.8em;
-  font-weight: 400;
-  font-style: italic;
-  color: #667499;
-}
-
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
-
-.multiselect-tag.is-user img {
-  width: 18px;
-  border-radius: 50%;
-  height: 18px;
-  margin-right: 8px;
-  border: 2px solid #ffffffbf;
-}
-
-.multiselect-tag.is-user i:before {
-  color: #ffffff;
-  border-radius: 50%;
-}
-
-.multiselect-tag-remove {
-  display: flex;
-  align-items: center;
-  /* border: 1px solid #fff;
-    background: #fff; */
-  border-radius: 50%;
-  color: #fff;
-  justify-content: center;
-  padding: 0.77px;
-  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
-}
 </style>

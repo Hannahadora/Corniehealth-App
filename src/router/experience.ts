@@ -147,12 +147,12 @@ export const ExperienceRoutes: RouteRecordRaw = {
     },
     {
       path: "visits",
-      name: "Patient Visits",
+      name: "Visits",
       component: () => import("@/views/dashboard/visits/index.vue"),
     },
     {
       path: "visits/timeline",
-      name: "Patient Visits Timeline",
+      name: "Visits Timeline",
       component: () =>
         import("@/views/dashboard/visits/components/timeline-table.vue"),
     },
