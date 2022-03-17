@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 w-full" v-if="account == 'Patient'">
+  <!-- <div class="grid grid-cols-1 w-full" v-if="account == 'Patient'">
     <cornie-select
       v-model="PatientType"
       :items="['Private', 'Employer']"
@@ -7,9 +7,9 @@
       placeholder="--Select--"
       label="Patient Type"
     />
-  </div>
+  </div> -->
   <div class="w-full grid grid-cols-2 gap-4">
-    <cornie-select
+    <!-- <cornie-select
       v-if="account !== 'Patient'"
       v-model="practiceType"
       :items="[
@@ -21,8 +21,8 @@
       class="w-full"
       placeholder="--Select--"
       label="Practice Type"
-    />
-    <div v-if="practiceType == 'Hospital/Clinic'">
+    /> -->
+    <!-- <div v-if="practiceType == 'Hospital/Clinic'">
       <cornie-select
         v-if="account !== 'Patient' || practiceType == 'Hospital/Clinic'"
         v-model="subType"
@@ -31,8 +31,8 @@
         placeholder="--Select--"
         label="Select your practice sub-type      "
       />
-    </div>
-    <div v-if="practiceType == 'Solo Practice'">
+    </div> -->
+    <!-- <div v-if="practiceType == 'Solo Practice'">
       <cornie-select
         v-if="account !== 'Patient'"
         v-model="subType"
@@ -41,7 +41,7 @@
         placeholder="--Select--"
         label="Select your practice sub-type"
       />
-    </div>
+    </div> -->
     <cornie-input
       :rules="requiredString"
       v-model="firstName"
@@ -73,13 +73,22 @@
     />
 
     <cornie-input
-      v-if="account !== 'Patient'"
+      v-if="account === 'Provider'"
       :rules="requiredString"
       v-model="practiceName"
       required
       class="w-full"
       placeholder="--Enter--"
       label="Practice Name"
+    />
+    <cornie-input
+      v-if="account === 'Payer'"
+      :rules="requiredString"
+      v-model="organisationName"
+      required
+      class="w-full"
+      placeholder="--Enter--"
+      label="Organisation Name"
     />
     <!-- <cornie-input
        v-if="account !== 'Patient'"
@@ -148,8 +157,9 @@ export default {
     const dialCode = ref("+234");
     const practiceName = ref("");
     const domainName = ref("");
+    const organisationName = ref("");
     const PatientType = ref("");
-    const practiceType = ref("");
+    // const practiceType = ref("");
     const subType = ref("");
     const checkRequire = ref(false);
 
@@ -160,10 +170,11 @@ export default {
         email,
         practiceName,
         domainName,
+        organisationName,
         phone,
         dialCode,
         PatientType,
-        practiceType,
+        // practiceType,
         subType,
       });
     };
@@ -182,6 +193,7 @@ export default {
       email,
       practiceName,
       domainName,
+      organisationName,
       phone,
       dialCode,
       required,
@@ -189,7 +201,7 @@ export default {
       phoneRule,
       PatientType,
       subType,
-      practiceType,
+      // practiceType,
       emailRule,
       next,
       checkRequire,

@@ -1,15 +1,15 @@
 <template>
-  <div class="h-5/6 2xl:h-3/6 w-2/3 block rounded-lg bg-white -mt-12">
-    <form class="w-full h-full flex flex-col p-12">
+  <div class="block rounded-lg bg-white">
+    <form class="w-full h-full flex flex-col py-9 px-12">
       <div class="flex flex-col" v-if="requiresTwoFactor">
-        <h3 class="font-bold text-primary text-xl mb-5">Sign-In Protection</h3>
+        <h3 class="font-bold text-primary text-4xl mb-5">Sign-In Protection</h3>
         <p class="block text-sm">
           This helps us verify your identity. You can enable or disable this in
           your profile account settings.
         </p>
       </div>
       <div class="flex flex-col mb-44" v-else>
-        <h3 class="font-bold text-primary text-xl mb-5">Sign-In Protection</h3>
+        <h3 class="font-bold text-primary text-4xl mb-5">Sign-In Protection</h3>
         <p class="block text-sm">2FA Verification not available</p>
       </div>
       <div class="flex flex-col w-full" v-if="requiresTwoFactor">
@@ -38,12 +38,12 @@
           </span>
         </label>
       </div>
-      <div class="flex mt-auto w-full justify-end">
+      <div class="flex items-center justify-center mt-auto w-full">
         <cornie-btn
           v-if="requiresTwoFactor"
           type="submit"
           :loading="loading"
-          class="py-1 px-3 w-full bg-danger text-white font-semibold rounded"
+          class="py-1 px-3 w-1/3 bg-danger text-white font-semibold rounded-lg"
         >
           Submit
         </cornie-btn>
@@ -51,7 +51,7 @@
           else
           @click="$router.push('/signup')"
           type="button"
-          class="py-1 px-3 w-full bg-gray-600 text-white font-semibold rounded"
+          class="py-1 px-3 w-1/3 bg-gray-600 text-white font-semibold rounded-lg"
         >
           Back
         </cornie-btn>
@@ -122,6 +122,10 @@ export default class TwoFactor extends Vue {
 
   async submitSecurityAnswer() {
     // not implemented
+  }
+
+  created() {
+    this.$emit('change-path')
   }
 }
 </script>

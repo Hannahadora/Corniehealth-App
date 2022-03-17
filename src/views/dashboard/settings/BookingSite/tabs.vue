@@ -1,18 +1,26 @@
 <template>
   <div class="nav-tabs">
-    <div class="flex w-full font-semibold nav-tabs py-2 mx-auto mt-4">
-       <chevron-left-icon class="righticon cursor-pointer" @click="scroll_right"/>
-      <template v-for="(tab, index) in items" :key="`tab-${index}`">
+    <div class="w-full font-semibold nav-tabs mx-auto mt-4">
+      <!-- <chevron-left-icon
+        class="righticon cursor-pointer"
+        @click="scroll_right"
+      /> -->
+      <div class="flex items-center space-x-7 w-full border-b-4">
+        <template v-for="(tab, index) in items" :key="`tab-${index}`">
           <span
-            class="flex px-3 py-2 border-b-4 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 text-xxs"
-            :class="syncedValue == index ? ['border-danger'] : ['text-gray-500']"
+            class="flex px-3 py-2 text-gray-400 cursor-pointer text-xxs"
+            :class="{'border-b-4 border-red-500 text-black' : syncedValue == index}"
             @click="syncedValue = index"
           >
             {{ tab }}
           </span>
-      </template>
-           <chevron-right-icon class="lefticon cursor-pointer" @click="scroll_left"/>
-      <span class="flex px-3 pb-2 border-b-4 flex-grow"></span>
+        </template>
+      </div>
+      <!-- <chevron-right-icon
+        class="lefticon cursor-pointer"
+        @click="scroll_left"
+      /> -->
+      <!-- <span class="flex px-3 pb-2 border-b-4 flex-grow"></span> -->
     </div>
     <tab :vnode="$slots.default()[syncedValue]" />
   </div>
@@ -41,7 +49,7 @@ class Tab extends Vue {
   components: {
     Tab,
     ChevronRightIcon,
-    ChevronLeftIcon
+    ChevronLeftIcon,
   },
 })
 export default class Tabs extends Vue {
@@ -59,11 +67,11 @@ export default class Tabs extends Vue {
 }
 </script>
 <style scoped>
-.righticon{
-   margin-top: 16px;
+.righticon {
+  margin-top: 16px;
 }
-.lefticon{
-   margin-top: 16px;
+.lefticon {
+  margin-top: 16px;
 }
 .text-xxs {
   font-size: 0.8rem;

@@ -1,6 +1,6 @@
 <template>
-  <auth :step="user" :type="type">
-    <create-account v-model:user="user" @check-type="setType" />
+  <auth :step="user" :currentStep="currentStep" :type="type" areaPath="signup">
+    <create-account v-model:user="user" @check-type="setType" @set-step="setCurrentStep" />
   </auth>
 </template>
 <script lang="ts">
@@ -27,7 +27,8 @@ export default class SignUp extends Vue {
   // type!: String;
 
   user = {} as CreatedUser;
-  type = "";
+  type = "Patient";
+  currentStep = 2;
 
   userCreated = false;
 
@@ -37,6 +38,9 @@ export default class SignUp extends Vue {
   }
   setType(value: string) {
     this.type = value;
+  }
+  setCurrentStep(value: any) {
+    this.currentStep = value;
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!login">
+  <div class="block rounded-lg bg-white" v-if="!login">
     <div class="w-full block p-12">
       <div>
         <h2 class="font-bold text-3xl text-primary mb-4">Welcome Back!</h2>
@@ -29,20 +29,20 @@
     </div>
   </div>
   <div
-    class="h-full w-2/3 flex justify-center rounded-lg bg-white -mt-12 lg:-mt-10 xl:-mt-2 md:-mt-2"
+    class="h-full flex justify-center rounded-lg bg-white px-9 py-10"
     v-else
   >
-    <div class="w-full h-44 block p-12">
+    <div class="w-full block">
       <form class="w-full" @submit.prevent="submit">
-        <h2 class="font-bold text-3xl text-primary mb-5">
+        <h2 class="font-bold text-3xl mb-12">
           Sign In to CornieHealth
         </h2>
         <div class="w-full gap-y-2 grid-cols-1 grid">
-          <cornie-input
+          <!-- <cornie-input
             class="w-full"
             v-model="domainName"
             label="Domain Name"
-          />
+          /> -->
           <!-- <span class="text-right text-gray-400 mb-2 text-xs"
             >Forgot Domain?</span
           > -->
@@ -78,13 +78,15 @@
           <cornie-checkbox />
           <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
         </span>
-        <cornie-btn
+       <div class="flex items-center justify-center">
+          <cornie-btn
           :loading="loading"
-          class="font-semibold rounded bg-danger mt-3 mb-5 w-full text-white py-1 px-3"
+          class="font-semibold rounded-lg bg-danger mt-3 mb-5 text-white py-1 px-5"
           type="submit"
         >
-          Login
+          Sign In
         </cornie-btn>
+       </div>
         <!-- <span class="w-full text-center block my-1">or Sign Up with</span>
           <cornie-btn
             class="font-semibold rounded-full bg-primary mt-2 w-full text-white p-2"
@@ -124,16 +126,16 @@ import { string } from "yup";
 export default class Signin extends Vue {
   email = "";
   password = "";
-  domainName = "";
+  // domainName = "";
   loading = false;
-  login = false;
+  login = true;
 
   get payload() {
     const payload: any = {
       email: this.email,
       authPassword: this.password,
     };
-    if (this.domainName) payload.accountId = this.domainName;
+    // if (this.domainName) payload.accountId = this.domainName;
     return payload;
   }
 
@@ -156,7 +158,8 @@ export default class Signin extends Vue {
       await login(this.payload);
 
       this.$emit("logged-in");
-      if (this.domainName) setAuthDomain(this.domainName);
+      // if (this.domainName) setAuthDomain(this.domainName);
+
     } catch (error) {
       window.notify({ msg: "Username or password incorrect", status: "error" });
     }

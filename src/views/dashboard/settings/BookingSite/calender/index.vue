@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pb-7">
+  <div class="w-full mb-8 p-6">
     <accordion-component
       class="shadow rounded-sm border-none text-primary mt-5"
       title="Calendar"
@@ -120,6 +120,8 @@
       </div>
     </accordion-component>
 
+    <reminder-section />
+
     <accordion-component
       class="shadow rounded-sm border-none text-primary mt-5"
       title="Preferences"
@@ -229,6 +231,8 @@ import DateTimePicker from "@/components/datetime-picker.vue";
 import PlusIcon from "@/components/icons/add.vue";
 import search from "@/plugins/search";
 
+import ReminderSection from "../reminder/index.vue";
+
 const level = namespace("OrgLevels");
 const calendar = namespace("calendar");
 const prefrence = namespace("prefrence");
@@ -248,6 +252,7 @@ const prefrence = namespace("prefrence");
     CalendarIcon,
     DateTimePicker,
     PlusIcon,
+    ReminderSection
   },
 })
 export default class CalenderExistingState extends Vue {
