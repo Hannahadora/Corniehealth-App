@@ -28,15 +28,10 @@
       </div>
     </div>
   </div>
-  <div
-    class="h-full flex justify-center rounded-lg bg-white px-9 py-10"
-    v-else
-  >
+  <div class="h-full flex justify-center rounded-lg bg-white px-9 py-10" v-else>
     <div class="w-full block">
       <form class="w-full" @submit.prevent="submit">
-        <h2 class="font-bold text-3xl mb-12">
-          Sign In to CornieHealth
-        </h2>
+        <h2 class="font-bold text-3xl mb-12">Sign In to CornieHealth</h2>
         <div class="w-full gap-y-2 grid-cols-1 grid">
           <!-- <cornie-input
             class="w-full"
@@ -78,15 +73,24 @@
           <cornie-checkbox />
           <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
         </span>
-       <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center">
           <cornie-btn
-          :loading="loading"
-          class="font-semibold rounded-lg bg-danger mt-3 mb-5 text-white py-1 px-5"
-          type="submit"
+            :loading="loading"
+            class="font-semibold rounded-lg bg-danger mt-3 mb-5 text-white py-1 px-5"
+            type="submit"
+          >
+            Sign In
+          </cornie-btn>
+        </div>
+        <span
+          class="w-full flex justify-center items-center text-sm text-center mt-9"
+          v-if="step != 4 && step != 3"
         >
-          Sign In
-        </cornie-btn>
-       </div>
+          Don't have an account?
+          <router-link class="ml-1 text-danger" to="/Signup">
+            Sign Up
+          </router-link>
+        </span>
         <!-- <span class="w-full text-center block my-1">or Sign Up with</span>
           <cornie-btn
             class="font-semibold rounded-full bg-primary mt-2 w-full text-white p-2"
@@ -159,7 +163,6 @@ export default class Signin extends Vue {
 
       this.$emit("logged-in");
       // if (this.domainName) setAuthDomain(this.domainName);
-
     } catch (error) {
       window.notify({ msg: "Username or password incorrect", status: "error" });
     }

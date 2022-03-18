@@ -1,11 +1,11 @@
 <template>
-  <div class="w-full h-full py-11 px-28" style="background: #080056">
+  <div class="w-full pt-11 pb-20 px-28" style="background: #080056">
     <div>
       <img src="../../assets/logo(1).png" alt="" />
     </div>
-    <div class="gap-x-14 grid items-center grid-cols-12">
-      <div class="col-span-5 flex flex-col gap-8 justify-center items-center">
-        <div>
+    <div class="gap-x-10 grid items-center grid-cols-12">
+      <div class="col-span-5 h-full w-full flex flex-col space-y-8 justify-center items-center">
+        <div class="">
           <div v-if="areaPath === 'signup'">
             <div v-if="currentStep == 2">
               <img

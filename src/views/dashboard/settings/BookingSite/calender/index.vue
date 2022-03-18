@@ -21,12 +21,12 @@
                 />
                 <cornie-select
                   placeholder="Days"
-                  class="w-20"
+                  class="w-20 font-bold"
                   :items="['Days', 'Weeks', 'Months']"
                   v-model="onlineBookingRequirements.type"
                 />
               </div>
-              <span class="text-sm text-black mt-3">Ahead</span>
+              <span class="text-sm text-black mt-3">In advance</span>
             </div>
             <div class="flex space-x-10 w-full">
               <span class="text-sm text-black mt-3 pr-20"
@@ -35,13 +35,13 @@
               <div class="flex space-x-2">
                 <cornie-select
                   placeholder="10"
-                  class="w-20"
+                  class="w-20 font-bold"
                   :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
                   v-model="showAvailability.no"
                 />
                 <cornie-select
                   placeholder="Days"
-                  class="w-20"
+                  class="w-20 font-bold"
                   :items="['Days', 'Weeks', 'Months']"
                   v-model="showAvailability.type"
                 />
@@ -56,7 +56,7 @@
                 >Send Notifications To</span
               >
             </div>
-            <div class="flex space-x-10 w-full mt-5">
+            <div class="flex space-x-10 w-full mt-8">
               <div>
                 <span class="text-sm font-semibold mb-5 text-black"
                   >Practice Email:</span
@@ -120,17 +120,17 @@
       </div>
     </accordion-component>
 
-    <reminder-section />
+    <reminder-section class="mt-8" />
 
     <accordion-component
-      class="shadow rounded-sm border-none text-primary mt-5"
+      class="shadow rounded-sm border-none text-primary mt-8"
       title="Preferences"
       :opened="true"
     >
       <div>
         <v-form>
-          <div class="w-full">
-            <div class="flex space-x-10 w-full mt-8">
+          <div class="w-1/2">
+            <div class="grid grid-cols-2 gap-8 w-full mt-8">
               <date-time-picker
                 label="Appointment time hold limit"
                 class="w-full"
@@ -158,7 +158,7 @@
                 </div>
               </div>
             </div>
-            <div class="flex space-x-10 w-full mt-8">
+            <div class="grid grid-cols-2 gap-8 w-full mt-8">
               <cornie-input
                 class="w-20"
                 label="Waitlist threshhold (% of Set Capacity)"

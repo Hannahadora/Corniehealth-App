@@ -1,55 +1,60 @@
 <template>
   <div class="h-full w-full">
-    <div class="bg-gray-100 rounded-md w-full p-5">
-      <span class="text-black text-xs float-left w-full -mt-2"
-        >Specify notification reminder timelines prior to appointment
-        time.</span
-      >
-      <span
-        class="text-black text-xs float-right flex cursor-pointer -mt-4"
-        @click="AddReminder"
-      >
-        <add-blue-icon class="mr-2" /> Add Reminder</span
-      >
-    </div>
     <accordion-component
       class="pb-10 capitalize"
-      editabetitle="Reminder me to..."
+      editabetitle="Reminder"
       :opened="true"
     >
-      <div class="flex pt-5 mt-4">
-        <p class="lbl mt-2 flex capitalize text-black mb-1 text-sm">
-          All - day
-        </p>
-        <label class="switch">
-          <input
-            name="category"
-            type="checkbox"
-            @input="selected"
-            v-model="switchshow"
-            value="2"
-          />
-          <span class="slider round"></span>
-        </label>
+      <div class="bg-gray-100 rounded-md w-full p-5 mt-8">
+        <span class="text-black text-xs float-left w-full -mt-2"
+          >Specify notification reminder timelines prior to appointment
+          time.</span
+        >
+        <span
+          class="text-black text-xs float-right flex cursor-pointer -mt-4"
+          @click="AddReminder"
+        >
+          <add-blue-icon class="mr-2" /> Add Reminder</span
+        >
       </div>
-      <div class="grid grid-cols-2 gap-4 w-full">
-        <div class="flex space-x-4 w-full">
-          <div class="w-full">
-            <span class="text-black text-sm capitalize font-semibold">{{
-              new Date(data.startDate).toLocaleDateString("en-US", dateoptions)
-            }}</span>
-            <date-time-picker
-              v-model:date="data.startDate"
-              v-model:time="data.startTime"
-              class="w-full"
+      <div class="grid grid-cols-3 gap-6">
+        <div class="flex pt-5 mt-4">
+          <p class="lbl mt-2 flex capitalize text-black mb-1 text-sm">
+            All - day
+          </p>
+          <label class="switch">
+            <input
+              name="category"
+              type="checkbox"
+              @input="selected"
+              v-model="switchshow"
+              value="2"
+            />
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="grid grid-cols-2 gap-4 w-full">
+          <div class="flex space-x-4 w-full">
+            <div class="w-full">
+              <span class="text-black text-sm capitalize font-semibold">{{
+                new Date(data.startDate).toLocaleDateString(
+                  "en-US",
+                  dateoptions
+                )
+              }}</span>
+              <date-time-picker
+                v-model:date="data.startDate"
+                v-model:time="data.startTime"
+                class="w-full"
+              />
+            </div>
+            <cornie-select
+              class="w-full mt-3"
+              v-model="format"
+              :items="['Does not repeat', 'Custom']"
+              placeholder="--Link from forms--"
             />
           </div>
-          <cornie-select
-            class="w-full mt-3"
-            v-model="format"
-            :items="['Does not repeat', 'Custom']"
-            placeholder="--Link from forms--"
-          />
         </div>
       </div>
       <div class="flex space-x-4 mb-12 pb-14 mt-5 float-right">
