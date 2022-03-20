@@ -7,26 +7,31 @@
     :opened="true"
   >
     <div>
-      <div class="flex space-x-4 w-full justify-between mt-3">
-        <p class="text-sm mt-3 text-black">
-          The information contained below will appear in the CornieHealth
-          booking site, if you have embedded the link. This information does not
-          affect <br />
-          other related data in your practice settings
-        </p>
-        <div
-          class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
-          v-if="showEdit"
-          @click="showEdit = false"
-        >
-          <edit-icon class="fill-current text-primary mr-4" /> Edit
+      <div class="w-full flex items-start justify-between mt-3">
+        <div class="">
+          <p class="text-sm mt-3 text-black">
+            The information contained below will appear in your Cornie Health
+            public profile and on your booking site, if you have embedded the
+            link.<br />
+            This information does not affect other related data in your practice
+            settings.
+          </p>
         </div>
-        <div
-          v-else
-          class="flex space-x-4 text-danger font-semibold text-sm mt-3 cursor-pointer"
-          @click="showEditSection"
-        >
-          <edit-icon class="fill-current text-danger mr-4" /> Edit
+        <div>
+          <div
+            class="flex text-primary font-semibold text-sm mt-3 cursor-pointer"
+            v-if="showEdit"
+            @click="showEdit = false"
+          >
+            <edit-icon class="fill-current text-primary mr-4" /> Edit
+          </div>
+          <div
+            v-else
+            class="flex text-danger font-semibold text-sm mt-3 cursor-pointer"
+            @click="showEditSection"
+          >
+            <edit-icon class="fill-current text-danger mr-4" /> Edit
+          </div>
         </div>
       </div>
     </div>
@@ -111,13 +116,27 @@
         </cornie-card-text>
       </cornie-card>
     </div>
-    <div class="w-full mt-8 mb-32" v-else>
-      <div class="float-left">
-        <img class="mr-2" v-if="orgInfo.image" :src="orgInfo.image" />
-        <avatar class="mr-2 w-15 h-15" v-else :src="localSrc" />
+    <div class="w-full mt-8 grid grid-cols-7 items-start" v-else>
+      <div
+        class="col-span-2 bg-white shadow p-4 mr-6 flex flex-col justify-center"
+      >
+        <div class="flex flex-col items-center justify-center">
+          <img class="w-24 h-24" v-if="orgInfo.image" :src="orgInfo.image" />
+          <avatar class="mr-2 w-24 h-24" v-else :src="localSrc" />
+          <star-icon class="mt-2" />
+          <div class="text-gray-300 text-xs mt-2">
+            {{ orgInfo.registrationNumber }}
+          </div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <div class="text-gray-300 text-xs">Domain:</div>
+          <div class="text-black text-xs">
+            {{ orgInfo.domainName }}
+          </div>
+        </div>
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-300 text-xs">Active Since:</div>
-          <div class="text-blue-600 font-bold text-xs">
+          <div v-if="orgInfo.createdAt" class="text-black text-xs">
             {{
               new Date(orgInfo.createdAt).toLocaleDateString(
                 "en-US",
@@ -125,51 +144,120 @@
               )
             }}
           </div>
+          <div v-else class="text-black text-xs">Nil</div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <star-icon />
-          <span class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
+          <div class="text-gray-300 text-xs">Address:</div>
+          <div class="text-black text-xs">
+            {{ orgInfo.address }}
+          </div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <div class="text-gray-300 text-xs">Email:</div>
+          <div class="text-black text-xs">
+            {{ orgInfo.email }}
+          </div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <div class="text-gray-300 text-xs">Mobile:</div>
+          <div class="text-black text-xs">
+            {{ orgInfo.mobile }}
+          </div>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <span class="text-gray-300 text-xs"
+            >Total Ratings:
+            <span class="text-black text-xs">16</span>
+          </span>
+        </div>
+        <div class="flex space-x-4 mt-2">
+          <span class="text-gray-300 text-xs"
+            >Patients Seen:
+            <span class="text-black text-xs">24</span>
+          </span>
+        </div>
+        <p class="text-sm text-black mb-1">{{ orgInfo.website }}</p>
+        <div></div>
+
+        <div class="flex space-x-4 items-center justify-center mt-2">
+          <span
+            v-if="!verified"
+            class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
             >Get Verified</span
           >
           <span
             class="text-xs text-green-600 bg-green-100 rounded-full"
             v-if="verified"
-            >Verified</span
+            >Get Verified</span
           >
         </div>
-      </div>
-      <div class="float-right">
-        <p class="text-sm text-black mb-1">
-          {{ orgInfo.address }}
-        </p>
-        <!-- <p class="text-sm text-black mb-1"> {{
-                authPractitioner.phone.dialCode + authPractitioner.phone.number
-              }}</p> -->
-        <!-- <p class="text-sm text-black mb-1"> {{ authPractitioner.email }}</p> -->
-        <p class="text-sm text-black mb-1">{{ orgInfo.website }}</p>
-        <div class="flex space-x-4 mt-2">
+
+        <div class="flex items-center justify-between mt-7 border-t pt-6">
           <span class="text-gray-300 text-xs"
-            >Total Ratings:
-            <span class="text-blue-600 font-bold text-xs">16</span>
-          </span>
-          <span class="text-gray-300 text-xs"
-            >Patients Seen:
-            <span class="text-blue-600 font-bold text-xs">24</span>
+            >Account Owner:
+            <span class="text-black text-xs">{{ orgInfo.website }}</span>
           </span>
         </div>
-        <div class="mt-10">
+
+        <div class="my-10 flex items-center justify-center">
           <cornie-btn
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            class="border-primary border-2 px-0 mr-3 rounded-xl text-primary"
           >
             <view-icon class="mr-2" /> View
           </cornie-btn>
-          <cornie-btn class="text-white bg-danger px-6 rounded-xl">
+          <cornie-btn class="text-white bg-danger px-0 rounded-xl">
             <share-icon class="mr-2" /> Share
           </cornie-btn>
         </div>
       </div>
+
+      <div class="col-span-5 bg-white shadow p-4 h-full relative">
+        <label
+          for="ecounter"
+          class="w-full capitalize text-black text-sm font-bold"
+          >Site Message
+          <span class="text-xs text-red-600 font-medium italic"
+            >(Max 150 characters)</span
+          ></label
+        >
+        <div class="w-full">
+          <Textarea
+            class="w-full text-xs"
+            placeholder="Start typing...."
+            :rules="required"
+            v-model="siteMessage"
+          />
+        </div>
+
+        <cornie-card class="absolute bottom-12 right-4">
+          <cornie-card-text class="flex justify-end">
+            <cornie-btn
+              @click="show = false"
+              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            >
+              Cancel
+            </cornie-btn>
+            <cornie-btn
+              :loading="loading"
+              @click="apply()"
+              class="text-white bg-danger px-6 rounded-xl"
+            >
+              Save
+            </cornie-btn>
+          </cornie-card-text>
+        </cornie-card>
+      </div>
+    </div>
+    <div class="">
+      <!-- <p class="text-sm text-black mb-1"> {{
+                authPractitioner.phone.dialCode + authPractitioner.phone.number
+              }}</p> -->
+      <!-- <p class="text-sm text-black mb-1"> {{ authPractitioner.email }}</p> -->
     </div>
   </accordion-component>
+
+  <photo-section />
+
   <accordion-component
     class="shadow-none rounded-none pb-14 mb-32 border-none mt-32 text-primary"
     title="Practice Hours"
@@ -242,6 +330,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import PhotoSection from "../photo.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -369,6 +458,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     Textarea,
     ViewIcon,
     Field,
+    PhotoSection,
   },
 })
 export default class CarePartnersExistingState extends Vue {

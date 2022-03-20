@@ -8,8 +8,8 @@
       <div class="flex items-center space-x-7 w-full border-b-4">
         <template v-for="(tab, index) in items" :key="`tab-${index}`">
           <span
-            class="flex px-3 py-2 text-gray-400 cursor-pointer text-xxs"
-            :class="{'border-b-4 border-red-500 text-black' : syncedValue == index}"
+            class="flex px-3 py-2 text-gray-400 cursor-pointer text-xxs -m-1"
+            :class="{'border-b-4 border-red-500 text-gray-900' : syncedValue == index}"
             @click="syncedValue = index"
           >
             {{ tab }}

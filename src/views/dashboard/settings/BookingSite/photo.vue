@@ -1,8 +1,14 @@
 <template>
   <div class="h-screen flex justify-center">
-    <div class="bg-white w-full shadow-md p-4">
-      <image-section />
-    </div>
+    <accordion-component
+      class="shadow-none rounded-none pb-14 py-8 mb-32 border-none mt-8 text-primary"
+      title="Photos"
+      expand="true"
+      v-model="opened"
+      :opened="true"
+    >
+      <image-section class="mt-8" />
+    </accordion-component>
   </div>
 </template>
 <script lang="ts">
@@ -10,6 +16,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
+import AccordionComponent from "@/components/dialog-accordion.vue";
 import OperationHours from "./new-operation-hours.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { cornieClient } from "@/plugins/http";
@@ -43,6 +50,7 @@ const location = namespace("location");
     DateTimePicker,
     CornieTextArea,
     ImageSection,
+    AccordionComponent,
   },
 })
 export default class AddLocationn extends Vue {
