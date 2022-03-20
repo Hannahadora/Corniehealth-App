@@ -71,7 +71,6 @@
               <div
                 v-for="(item, i) in processedItems"
                 :key="i"
-                @click="selected(item)"
                 class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
               >
                 <template v-if="Boolean($slots.item)">
@@ -81,7 +80,12 @@
                   v-else
                   class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
                 >
-                  {{ item.display || item }}
+                  <check-box
+                    v-model="item.checked"
+                    class="mr-2"
+                    @click="selected(item)"
+                  />
+                  <div>{{ item.display || item }}</div>
                 </div>
               </div>
             </div>
@@ -100,6 +104,8 @@ import ChevronDownIcon from "./icons/chevrondownprimary.vue";
 import { Field } from "vee-validate";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "./icons/search.vue";
+import CheckBox from "@/components/custom-checkbox.vue";
+import { IndexableObject } from "@/lib/http";
 
 @Options({
   components: {
@@ -107,8 +113,9 @@ import SearchIcon from "./icons/search.vue";
     Field,
     IconInput,
     SearchIcon,
+    CheckBox,
   },
-  emits: ["query"],
+  emits: ["query", "handleSelectedItems"],
 })
 export default class AutoComplete extends Vue {
   @Prop({ type: Array, default: [] })
@@ -121,7 +128,7 @@ export default class AutoComplete extends Vue {
   modelValue!: string;
 
   @PropSync("modelValue")
-  modelValueSync!: string;
+  modelValueSync!: any[];
 
   @Prop({ type: Boolean, default: false })
   required!: boolean;
@@ -139,7 +146,11 @@ export default class AutoComplete extends Vue {
     if (this.filter) return this.filter(item, this.query);
     if (typeof item === "string" || item instanceof String)
       return item.toLowerCase().includes(this.query.toLowerCase());
-    const { code, display }: { code: string; display: string } = item;
+    const {
+      code,
+      display,
+      checked,
+    }: { code: string; display: string; checked: boolean } = item;
     return (
       `${code}`.toLowerCase().includes(this.query.toLowerCase()) ||
       `${display}`.toLowerCase().includes(this.query.toLowerCase())
@@ -150,6 +161,8 @@ export default class AutoComplete extends Vue {
   id = "";
 
   query = "";
+
+  checked = "";
 
   @Watch("query")
   searched(query: string) {
@@ -165,13 +178,20 @@ export default class AutoComplete extends Vue {
     if (!this.modelValue || this.items.length < 1) return;
 
     const selected = this.selectedItem;
-    return selected?.display || selected || "";
+    return this.selectedItem || selected || "";
   }
 
+  selectedItems = [] as any;
+
   get selectedItem() {
-    const selected = this.items.find(
-      (item) => item.code == this.modelValue || item == this.modelValue
-    );
+    let selected = "";
+
+    if (!this.selectedItems.length) return;
+    for (let i = 0; i < this.selectedItems.length; i++) {
+      let isFirst = Boolean(i === 0);
+      selected += `${!isFirst ? "," : ""}${this.selectedItems[i]?.display}`;
+    }
+
     return selected;
   }
 
@@ -182,8 +202,21 @@ export default class AutoComplete extends Vue {
 
   selected(item: any) {
     nextTick(() => {
-      this.showDatalist = false;
-      this.modelValueSync = item.code || item;
+      let selected = this.items.find((i: any) => i.code === item.code);
+
+      let isAdded = this.selectedItems.some((i: any) => i.code === item.code);
+
+      if (isAdded) {
+        this.selectedItems = this.selectedItems.filter(
+          (i: any) => i.code !== item.code
+        );
+        selected.checked = false;
+      } else {
+        this.selectedItems.push(item);
+        selected.checked = true;
+      }
+
+      this.$emit("handleSelectedItems", this.selectedItems);
     });
   }
   get inputName() {

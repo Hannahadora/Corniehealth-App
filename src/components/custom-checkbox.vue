@@ -19,6 +19,7 @@
       v-model="valueSync"
       @change="$emit('change', $event.target.checked)"
       type="checkbox"
+      :checked="valueSync"
     />
     <span class="ml-2 text-sm">{{ label }}</span>
     <span v-if="errorMessage" class="text-xs text-red-500 block">{{

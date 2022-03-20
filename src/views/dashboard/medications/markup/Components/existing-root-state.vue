@@ -22,27 +22,6 @@
     :showActions="false"
   >
   </cornie-table>
-
-  <div class="flex flex-col gap-4 mt-8">
-    <span class="font-bold text-sm text-jet_black"
-      >Allow location admins to modify</span
-    >
-    <div class="flex gap-4">
-      <cornie-radio
-        name="confirm"
-        :value="true"
-        v-model="locationAdminsCanSetForLocations"
-        checked
-        label="Yes"
-      />
-      <cornie-radio
-        name="confirm"
-        :value="false"
-        v-model="locationAdminsCanSetForLocations"
-        label="No"
-      />
-    </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -67,7 +46,5 @@ export default class ExistingRootState extends Vue {
 
   @Prop({ default: "" })
   markupId!: string;
-
-  locationAdminsCanSetForLocations = "";
 }
 </script>
