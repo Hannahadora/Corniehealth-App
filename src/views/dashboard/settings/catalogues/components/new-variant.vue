@@ -56,12 +56,12 @@
         />
       </div>
 
-      <div class="w-full my-4">
+      <button class="w-full my-4" @click="add">
         <a class="flex add-xteristic"
           ><span class="mr-2"><add-icon /></span>
           <span>Add New Characteristics</span></a
         >
-      </div>
+      </button>
     </div>
 
     <span class="w-full bg-danger">
@@ -76,7 +76,7 @@
 
         <cornie-btn
           class="bg-danger px-2 text-white my-5 mx-4 font-semibold rounded-full"
-          @click="onSave"
+          @click="() => $emit('closesidemodal')"
         >
           Save
         </cornie-btn>
@@ -104,11 +104,44 @@ import AddIcon from "@/components/icons/add-orange.vue";
 export default class NewVariant extends Vue {
   img = setup(() => useHandleImage());
 
-  data = {} as any;
+  data = {
+    id: Math.random() * 1999 + Math.random() * 2999,
+    image: "",
+    form: "",
+    pack: "",
+    packQuantity: "",
+    strength: "",
+  } as any;
 
-  onSave() {
+  add() {
+    const { form, pack, packQuantity, strength } = this.data;
+    if (
+      form === "" ||
+      packQuantity === "" ||
+      pack === "" ||
+      strength === "" ||
+      this.img.url === ""
+    )
+      return;
+
+    this.data.image = this.img.url;
+
     this.$emit("added", this.data);
-    this.$emit("closesidemodal");
+
+    this.img.url = "";
+
+    this.reset();
+  }
+
+  reset() {
+    this.data = {
+      id: Math.random() * 1999 + Math.random() * 2999,
+      image: "",
+      form: "",
+      pack: "",
+      packQuantity: "",
+      strength: "",
+    } as any;
   }
 }
 </script>

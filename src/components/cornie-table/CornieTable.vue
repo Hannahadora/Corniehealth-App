@@ -2,8 +2,8 @@
   <div>
     <div class="flex" v-if="!listmenu">
       <slot name="topleft" v-if="search">
-        <span class="flex items-center" :class="{'mt-4' : !menu}">
-          <sort-icon class="mr-5" v-if="menu"/>
+        <span class="flex items-center" :class="{ 'mt-4': !menu }">
+          <sort-icon class="mr-5" v-if="menu" />
           <icon-input
             class="border border-gray-600 py-2 rounded-full focus:outline-none"
             placeholder="Search Table"
@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, prop, Vue } from "vue-class-component";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
@@ -192,6 +192,9 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: true })
   search!: boolean;
+
+  @Prop({ type: Boolean, default: true })
+  showActions!: boolean;
 
   @Prop({ type: Boolean, default: true })
   menu!: boolean;
