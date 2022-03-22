@@ -81,7 +81,7 @@
       
     </cornie-card>
   </cornie-dialog>
-  <check-in-modal v-model="showCheckinModal" :patients="firstPatient" :patientId="patientId" @checkin-added="checkinadded"/>
+  <check-in-modal v-model="showCheckinModal" :patients="firstPatient" :patientId="patientId"/>
 </template>
 
 <script lang="ts">
@@ -167,11 +167,6 @@ export default class searchPatient extends Vue {
       //   this.firstPatient = [];
       //  this.patientId ="";
      
-  }
-
-  checkinadded(value:any){
-    this.$emit('checkin-data',value);
-    this.show = false;
   }
 
   submit(){

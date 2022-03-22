@@ -79,7 +79,7 @@
   </div>
 </div>
 
- <actors-modal :singletime="singletime" :actors="setActors" :range="range" :range2="range2"  v-model="showActors" @one-id="setId"/>
+ <actors-modal :singletime="singletime" :date="date" :actors="setActors" :range="range" :range2="range2"  v-model="showActors" @one-id="setId"/>
 </template>
 
 <script lang="ts">
@@ -115,6 +115,9 @@ export default class ActorsList extends Vue {
 
   @Prop({ type: Array, default: [] })
   items!: any;
+
+  @Prop({ type: String, default: "" })
+  date!: string;
 
   setActors= [];
   showActors = false;

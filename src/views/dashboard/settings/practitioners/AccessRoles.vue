@@ -568,9 +568,9 @@ export default class Accessrole extends Vue {
 }
 </script>
 <style scoped>
-.active {
+/* .active {
   background: #080056;
   border: 1px solid #080056;
   color: #fff;
-}
+} */
 </style>

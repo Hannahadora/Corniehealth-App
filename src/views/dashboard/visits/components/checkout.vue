@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Check-In
+           Check-Out
           </h2>
           <!-- <cancel-icon
             class="float-right cursor-pointer"
@@ -18,20 +18,20 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in patients.slice(0, 1)" :key="i">     
+            <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4">     
                 <div class="w-full flex space-x-4 mb-3">
                     <div class="w-10 h-10">
                         <avatar
                             class="mr-2"
-                            v-if="item.profilePhoto"
-                            :src="item.profilePhoto"
+                            v-if="patient.profilePhoto"
+                            :src="patient.profilePhoto"
                         />
                         <avatar class="mr-2" v-else :src="localSrc" />
                     </div>
                     <div class="w-full mt-2">
                         <p class="text-sm text-dark font-semibold">
-                            {{ item.firstname }}
-                            {{ item.lastname }}
+                            {{ patient.firstname }}
+                            {{ patient.lastname }}
                         </p>
                     </div>
                 </div>
@@ -40,59 +40,52 @@
                 <time-picker :label="'Time'"/>
                 <date-picker :label="'Date'" v-model="date"/>
             </div>
-            <div class="border-b-2 -mt-9  border-dashed border-gray-200">
-                <div class="w-full border-2 border-gray-200 p-3 flex space-x-7 mt-4" v-for="(item, i) in patients.slice(0, 1)" :key="i">     
-                    <div class="w-full flex space-x-4 mb-3">
-                        <div class="w-10 h-10">
-                            <avatar
-                                class="mr-2"
-                                v-if="item.profilePhoto"
-                                :src="item.profilePhoto"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
-                        </div>
-                        <div class="w-full mt-2">
-                            <p class="text-sm text-dark font-semibold">
-                                {{ item.firstname }}
-                                {{ item.lastname }}
-                            </p>
-                        </div>
-                    </div>
-                    <span class="text-sm">Attending / Discharging Physician</span>
-                </div>
+            <div class="border-b-2 -mt-9 mb-5 pb-5 border-dashed border-gray-200">
+              <div class="border-2 border-gray-200 p-3">
+                  <div class="w-full flex space-x-7 mt-4">     
+                      <div class="w-full flex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="practitionerdata?.image"
+                                  :src="practitionerdata?.image"
+                              />
+                              <avatar class="mr-2" v-else :src="localSrc" />
+                          </div>
+                          <div class="w-full mt-2">
+                              <p class="text-sm text-dark font-semibold">
+                                  {{ practitionerdata?.firstName }}
+                                  {{ practitionerdata?.lastName }}
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+                    <span class="text-sm w-full">Attending / Discharging Physician</span>
+              </div>
                     
             </div>
+
             <div>
 
-             <cornie-input :label="'Total bill'" :innerlabel="'Paid'" :labelText="true">
+             <cornie-input class="" :label="'Total bill'" :innerlabel="'Paid'" :labelText="true" >
                 <template #append>
                     <eye-icon />
                 </template>
              
              </cornie-input>
 
-             <cornie-select
+             <cornie-input
                 :label="'Room'"
                 placeholder="--Select--"
-                :items="allRooms"
-                class="w-full mt-4"
+                v-model="allvisit.room.name"
+                :disabled="true"
+                class="w-full mt-5 mb-5"
             />
 
-             <date-picker :label="'Follow up Appointment'" v-model="date"/>
+             <date-picker class="mt-5" :disabled="true"  :label="'Follow up Appointment'" v-model="allvisit.checkInTime"/>
             
             </div>
-            <div v-if="practitionerName">
-              <span class="font-bold text-primary text-sm">All patients for Dr. {{ practitionerName }}</span>
-            </div>
-            <div>
-            <div class="container-fluid my-5 pb-2" v-for="(patient, index) in onepatient" :key="index">
-              <patient-section :patient="patient" />
-            </div>
-            <div v-if="onepatient.length === 0">
-                <span class="text-center text-xs">No patient available for Dr. {{ practitionerName }}</span>
-            </div>
             
-            </div>
         </v-form>
       </cornie-card-text>
       
@@ -105,13 +98,14 @@
             Cancel
           </cornie-btn>
            <cornie-btn
+            v-if="BillStatus.length > 0"
             :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
            >
-            Check-Out
+            Submit
           </cornie-btn>
-         <split-button>
+         <split-button v-else>
           <template #main>
             <span>Collect Payment</span>
           </template>
@@ -119,7 +113,7 @@
             <span><chevron-down class="stroke-current text-white" /></span>
           </template>
           <template #dropdownoptions>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="submit">
               <span class="ml-3 text-xs">Check-Out</span>
             </div>
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayment = true">
@@ -128,9 +122,9 @@
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayLink = true">
               <span class="ml-3 text-xs">Share Pay Link</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showPostClaim = true">
+            <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showPostClaim = true">
               <span class="ml-3 text-xs">Post Claim</span>
-            </div>
+            </div> -->
           </template>
 
         </split-button>
@@ -187,7 +181,7 @@ const practitioner = namespace("practitioner");
 
 
 @Options({
-  name: "checkinModal",
+  name: "checkoutModal",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -216,7 +210,7 @@ const practitioner = namespace("practitioner");
     ChevronDown
   },
 })
-export default class checkinModal extends Vue {
+export default class checkoutModal extends Vue {
  @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -225,6 +219,18 @@ export default class checkinModal extends Vue {
 
   @Prop({ type: Array, default: [] })
   patients!: object;
+
+  @Prop({ type: Object, default: {} })
+  practitionerdata!: object;
+
+  @Prop({ type: Object, default: {} })
+  patient!: any;
+
+  @Prop({ type: Object, default: {} })
+  allvisit!: any;
+
+
+
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -250,6 +256,11 @@ export default class checkinModal extends Vue {
   showPayment = false;
   showPayLink = false;
   showPostClaim = false;
+  bill = [];
+
+  roomId = "";
+  notes = "";
+  startTime = "";
 
 
   get allPractitioner() {
@@ -280,6 +291,12 @@ export default class checkinModal extends Vue {
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
 
+    get payload(){
+      return {
+       followUpId: this.allvisit.appointmentId || null
+      }
+    }
+
   async fetchPatientAppointment() {
     const newdate = this.date;
     const AllPractitioner = cornieClient().get(`/api/v1/appointment/practitioner/get-day/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a`, {date : "2022-03-13"});
@@ -288,12 +305,71 @@ export default class checkinModal extends Vue {
   }
 
 
-  async submit() {
+   async submit() {
+    this.loading = true;
+    // if (this.id) await this.updateCheckin();
+     await this.createCheckin();
+    this.loading = false;
+  }
+
+
+
+  async createCheckin() {
+    
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/visit/check-out/${this.id}`,
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Patient checked-out successfully", status: "success" });
+         this.done();
+        }
+      } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
   
   }
 
+  async updateCheckin() {
+
+    const url = `"/api/v1/visit/check-out/${this.id}`;
+    const payload = { ...this.payload, id: this.id };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Checkout updated", status: "success" });
+        this.done();
+      }
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+  done(){
+       this.$emit("checkout-added");
+        this.show = false;
+  }
+   get BillStatus(){
+    return this.bill.filter((c:any) => c.status == 'paid');
+  }
+
+   async fetchBill() {
+     try {
+      const response = await cornieClient().post(
+      `/api/v1/appointment/bill/generate/${this.allvisit.appointmentId}`,{}
+      );
+      if (response.success) {
+         this.bill = response.data;
+      }
+    } catch (error:any) {
+     window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
   async created() {
- this.fetchPatientAppointment();
+    if(this.allvisit.appointmentId)  await this.fetchBill();
+   this.fetchPatientAppointment();
    await this.fetchPractitioners();
    await this.fetchLocations();
   }

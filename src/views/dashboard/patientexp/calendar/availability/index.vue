@@ -11,10 +11,10 @@
             <span class="text-green-400 text-5xl -mt-3">.</span> Available
          </span>
          <span class="text-xs">
-            <span class="text-blue-600 text-5xl -mt-3">.</span> Busy
+            <span class="text-yellow-500 text-5xl -mt-3">.</span> Tentative
          </span>
          <span class="text-xs">
-            <span class="text-yellow-500 text-5xl -mt-3">.</span> Tentative
+            <span class="text-red-600 text-5xl -mt-3">.</span> Busy
          </span>
      </div>
 

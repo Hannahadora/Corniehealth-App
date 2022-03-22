@@ -9,7 +9,7 @@
       <template #activator="{ on }">
           <icon-btn v-on="on">
               <button
-                class="bg-danger rounded-lg text-white mt-5 py-2 px-8 focus:outline-none hover:opacity-90 font-semibold inline-flex"
+                class="bg-danger rounded-lg text-white mt-5 py-2 px-14 focus:outline-none hover:opacity-90 font-semibold inline-flex"
                 @click="() => $emit('clicked')"
               >
                   <span class="mr-1">Check-In to Start </span>
@@ -23,7 +23,7 @@
         <div class="p-2 w-full hover:bg-gray-100 p-3 cursor-pointer" @click="showPatient">
           <span class="ml-3 text-xs">Check-In from Patients Register</span>
         </div>
-        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer">
+        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/calendar')">
           <span class="ml-3 text-xs">Check-In from Scheduled Appointments</span>
         </div>
       </card-text>

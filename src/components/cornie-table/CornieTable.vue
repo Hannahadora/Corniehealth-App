@@ -53,7 +53,7 @@
               </div>
             </th>
           </template>
-          <th class="text-left p-2" width="1" v-if="show">
+          <th class="text-left p-2" width="1" v-if="!menushow">
             <table-settings-icon
               class="text-primary cursor-pointer"
               @click="showColumnFilter = true"
@@ -77,7 +77,7 @@
               </slot>
             </td>
           </template>
-          <td v-if="showActions">
+          <td v-if="!menushow">
             <div class="flex justify-center">
               <cornie-menu top="30px" right="100%">
                 <template #activator="{ on }">
@@ -180,6 +180,9 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: true })
   check!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  menushow!: boolean;
 
   @Prop({ type: Boolean, default: false })
   listmenu!: boolean;

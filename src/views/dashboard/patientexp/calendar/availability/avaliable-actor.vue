@@ -6,8 +6,8 @@
                 <div class="w-full flex space-x-4">
                     <div>
                      <p class="text-4xl text-green-400 font-bold" v-if="avaialbleStatus == 'available'">.</p>
-                      <p class="text-4xl text-blue-600 font-bold" v-if="avaialbleStatus == 'unavailable'">.</p>
-                      <p class="text-4xl text-yellow-400 font-bold" v-if="avaialbleStatus == 'event'">.</p>
+                      <!-- <p class="text-4xl text-yellow-400 font-bold" v-if="avaialbleStatus == 'unavailable'">.</p> -->
+                      <p class="text-4xl text-red-600 font-bold" v-else>.</p>
                     </div>
                     <div class="w-10 h-10">
                     <avatar
@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-    <appointment-modal v-model="showModal" :appoimtentId="id" :range="range" :range2="range2"/>
+    <appointment-modal v-model="showModal" :appoitmentDate="date" :appoimtentId="id" :range="range" :range2="range2"/>
     </div>
 </template>
 
@@ -111,7 +111,7 @@ export default class AvailableActors extends Vue {
     id!: string;
 
     @Prop({ type: String, default: "" })
-    date!: string;
+    date!: any;
 
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
@@ -165,7 +165,7 @@ export default class AvailableActors extends Vue {
 
     async Available(){
         const AllCalendarDay = cornieClient().get(
-        `/api/v1/calendar/personal/day-view/${this.currentLocation}/${this.actorname}/${this.id}?date=2021-10-12`,);
+        `/api/v1/calendar/personal/day-view/${this.currentLocation}/${this.actorname}/${this.id}?date=${this.date.toISOString()}`,);
         
         const response = await Promise.all([AllCalendarDay]);
         this.responseData = response[0].data;

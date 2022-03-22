@@ -47,7 +47,7 @@
       >
         <span class="flex justify-end w-full mb-8">
           <button
-            class="bg-danger rounded-full text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+            class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
             @click="$router.push('/dashboard/provider/experience/add-request')"
           >
             New Requests
@@ -218,7 +218,7 @@ import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-//import CloseIcon from "@/components/icons/CloseIcon.vue";
+import Tabs from "@/components/tabs.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
@@ -258,7 +258,7 @@ const appointment = namespace("appointment");
     CornieDialog,
   },
 })
-export default class AppointmentExistingState extends Vue {
+export default class RequestExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;

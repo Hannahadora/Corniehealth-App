@@ -179,6 +179,16 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { Prop } from "vue-property-decorator";
+import search from "@/plugins/search";
+
+import { IPatient } from "@/types/IPatient";
+import IAppointment from "@/types/IAppointment";
+
+
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
@@ -191,17 +201,9 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
-import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import AllParticipants from "./allParticipants.vue";
-import NotesAdd from "./notes.vue";
-import StatusModal from "./status-update.vue";
-import ActorsSection from "./actors.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
@@ -210,13 +212,15 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import AppointmentModal from "./appointmentDialog.vue";
 import EHRVisits from "@/views/dashboard/ehr/visits/index.vue";
-import { IPatient } from "@/types/IPatient";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import CheckinComponent from "@/views/dashboard/ehr/visits/components/patient-checkin.vue";
+
+import AppointmentModal from "./appointmentDialog.vue";
+import AllParticipants from "./allParticipants.vue";
+import NotesAdd from "./notes.vue";
+import StatusModal from "./status-update.vue";
+import ActorsSection from "./actors.vue";
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");

@@ -143,7 +143,6 @@ export default class managePractitioner extends Vue {
   loading = false;
   showPractitionerModal = false;
   aPractitioner = [];
-  localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
  orderBy: Sorter = () => 1;
 
@@ -170,111 +169,5 @@ export default class managePractitioner extends Vue {
 <style>
 .dflex {
   display: -webkit-box;
-}
-.multiselect-option.is-selected {
-  background: #fe4d3c;
-  color: var(--ms-option-color-selected, #fff);
-}
-.multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
-  color: var(--ms-option-color-selected-pointed, #fff);
-}
-.multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
-}
-
-.multiselect {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  cursor: pointer;
-  outline: none;
-  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-  border-radius: var(--ms-radius, 4px);
-  background: var(--ms-bg, #fff);
-  font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
-}
-
-.multiselect-tags {
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--ms-tag-my, 0.25rem) 0 0;
-  padding-left: var(--ms-py, 0.5rem);
-  align-items: center;
-}
-
-.multiselect-tag.is-user {
-  padding: 5px 12px;
-  border-radius: 22px;
-  background: #080056;
-  margin: 3px 3px 8px;
-  position: relative;
-  left: -10px;
-}
-
-/* .multiselect-clear-icon {
-      -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
-      mask-image: url("/components/icons/chevrondownprimary.vue");
-      background-color: #080056;
-      display: inline-block;
-      transition: .3s;
-  } */
-
-.multiselect-placeholder {
-  font-size: 0.8em;
-  font-weight: 400;
-  font-style: italic;
-  color: #667499;
-}
-
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
-
-.multiselect-tag.is-user img {
-  width: 18px;
-  border-radius: 50%;
-  height: 18px;
-  margin-right: 8px;
-  border: 2px solid #ffffffbf;
-}
-
-.multiselect-tag.is-user i:before {
-  color: #ffffff;
-  border-radius: 50%;
-}
-
-.multiselect-tag-remove {
-  display: flex;
-  align-items: center;
-  /* border: 1px solid #fff;
-    background: #fff; */
-  border-radius: 50%;
-  color: #fff;
-  justify-content: center;
-  padding: 0.77px;
-  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
 }
 </style>

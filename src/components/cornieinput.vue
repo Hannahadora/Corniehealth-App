@@ -6,19 +6,20 @@
     :rules="rules"
     v-model="valueSync"
     class="mb-5"
+    :class="{'w-full' : setfull}"
   >
     <div v-bind="$attrs" class="w-full">
       <label
         class="flex capitalize items-center mb-1 text-black text-sm font-semibold"
       >
         <slot name="label">
-          {{ label }}
+         <span class="w-full"> {{ label }} </span>
         </slot>
         <span class="ml-1 mb-1" v-if="$slots.labelicon">
           <slot name="labelicon" />
         </span>
         <span class="text-danger ml-1" v-if="required"> * </span>
-         <span class="float-right" :class="[textred ? 'text-red-500' : 'text-green-500' ]" v-if="labelText"> {{ innerlabel }} </span>
+         <span class="float-right flex justify-end w-full" :class="[textred ? 'text-red-500' : 'text-green-500' ]" v-if="labelText"> {{ innerlabel }} </span>
       </label>
       <div
         class="flex rounded-md border-1 border-gray-300"
@@ -119,6 +120,9 @@ export default class CornieInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   setPrimary!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  setfull!: boolean;
 
   @Prop({ type: Boolean, default: false })
   labelText!: boolean;

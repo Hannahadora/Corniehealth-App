@@ -29,7 +29,7 @@
                 }}
               </p>
               <span class="flex items-center text-sm">
-                <span class="uppercase text-success">Appointment Time 10:00</span>
+                <span class="uppercase text-success">Appointment Time {{ time }}</span>
                 <span class="uppercase text-success mx-3">|</span>
                 <span class="uppercase text-success">Queue #03</span>
               </span>
@@ -61,6 +61,9 @@ export default class CheckIn extends Vue {
 
   @Prop({ type: String, default: "" })
   id!: string;
+
+  @Prop({ type: String, default: "" })
+  time!: string;
 
   @Prop({ type: Object, default: {} })
   patient!: object;

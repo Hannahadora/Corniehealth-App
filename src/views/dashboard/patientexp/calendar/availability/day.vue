@@ -6,7 +6,7 @@
           <div class="flex w-full" v-else v-for="(item, index) in dayCalendar" :key="index">
               <span class="text-xs text-gray-500 font-semibold p-3 border-r-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span>
               <div class="border-gray-100 w-full  border-b-2 ">
-                <actors-section :items="item" :singletime="index" :range="index > 9 ? index +':00' : '0' + index +':00'" :range2="index  >= 9 ? (parseInt(index) + 1) +':00' : '0' + (parseInt(index) + 1) +':00'"/>
+                <actors-section :date="startDate" :items="item" :singletime="index" :range="index > 9 ? index +':00' : '0' + index +':00'" :range2="index  >= 9 ? (parseInt(index) + 1) +':00' : '0' + (parseInt(index) + 1) +':00'"/>
                       <!-- <actors-section    :items="cal?.practitioners" @set-oneId="setoneId"  :range="tConvert(cal?.startTime) +' - '+ tConvert(cal?.endTime)"/> -->
               </div>
               <span class="text-xs text-gray-500 font-semibold p-3 border-l-2  border-gray-100">{{ index > 9 ? index +':00' : '0' + index +':00'}}</span> 

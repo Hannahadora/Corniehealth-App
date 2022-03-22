@@ -18,7 +18,27 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in patients.slice(0, 1)" :key="i">     
+            <div v-if="appoitmentData.length > 0">
+              <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in appoitmentData" :key="i">     
+                  <div class="w-full flex space-x-4 mb-3" v-for="(value,index) in item.Patients">
+                      <div class="w-10 h-10">
+                          <avatar
+                              class="mr-2"
+                              v-if="value.patient.profilePhoto"
+                              :src="value.patient.profilePhoto"
+                          />
+                          <avatar class="mr-2" v-else :src="localSrc" />
+                      </div>
+                      <div class="w-full mt-2">
+                          <p class="text-sm text-dark font-semibold">
+                              {{ value.patient.firstname }}
+                              {{ value.patient.lastname }}
+                          </p>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div v-else class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in patients.slice(0, 1)" :key="i">     
                 <div class="w-full flex space-x-4 mb-3">
                     <div class="w-10 h-10">
                         <avatar
@@ -36,21 +56,23 @@
                     </div>
                 </div>
             </div>
+
             <div class="grid grid-cols-2 gap-4 mt-5">
-                <time-picker :label="'Time'"/>
+                <time-picker :label="'Time'" v-model="startTime"/>
                 <date-picker :label="'Date'" v-model="date"/>
             </div>
             <div class="border-b-2 -mt-9  border-dashed border-gray-200">
                   <cornie-select
                     :label="'Physician'"
                     placeholder="--Select--"
-                    :items="allPractitioner"
                     v-model="practitioner"
+                    :items="allPractitioner"
                     class="w-full mt-4"
                 />
                   <cornie-select
                     :label="'Room'"
                     placeholder="--Select--"
+                    v-model="roomId"
                     :items="allRooms"
                     class="w-full mt-4"
                 />
@@ -60,20 +82,34 @@
                <text-area
                 :label="'Notes'"
                 class="w-full"
+                v-model="notes"
               />
             
             </div>
-            <div v-if="practitionerName">
-              <span class="font-bold text-primary text-sm">All patients for Dr. {{ practitionerName }}</span>
+             <div v-if="appoitmentData.length > 0">
+              <div>
+                <span class="font-bold text-primary text-sm" >All patients for Dr. {{ practitionerName }}</span>
+              </div>
+              <div v-for="(item, i) in appoitmentData" :key="i">
+                <div class="container-fluid my-5 pb-2" v-for="(value,index) in item.Patients">
+                  <patient-section :patient="value.patient" :time="item.startTime"/>
+                </div>
+              </div>
             </div>
-            <div>
-            <div class="container-fluid my-5 pb-2" v-for="(patient, index) in onepatient" :key="index">
-              <patient-section :patient="patient" />
-            </div>
-            <div v-if="onepatient.length === 0">
-                <span class="text-center text-xs">No patient available for Dr. {{ practitionerName }}</span>
-            </div>
-            
+
+            <div v-else>
+              <div v-if="practitionerName">
+                <span class="font-bold text-primary text-sm">All patients for Dr. {{ practitionerName }}</span>
+              </div>
+              <div>
+                <div class="container-fluid my-5 pb-2" v-for="(patient, index) in onepatient" :key="index">
+                  <patient-section :patient="patient" />
+                </div>
+                <div v-if="onepatient.length === 0">
+                    <span class="text-center text-xs">No patient available for Dr. {{ practitionerName }}</span>
+                </div>
+              
+              </div>
             </div>
         </v-form>
       </cornie-card-text>
@@ -86,7 +122,15 @@
           >
             Cancel
           </cornie-btn>
-         <split-button>
+           <cornie-btn
+            v-if="BillStatus.length > 0"
+            :loading="loading"
+            @click="submit"
+            class="text-white bg-danger px-6 rounded-xl"
+           >
+            Submit
+          </cornie-btn>
+         <split-button v-else>
           <template #main>
             <span>Check-In</span>
           </template>
@@ -97,12 +141,13 @@
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayment = true">
               <span class="ml-3 text-xs">Collect Payment</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="submit">
               <span class="ml-3 text-xs">Check-In</span>
             </div>
           </template>
 
         </split-button>
+        
 
         </cornie-card-text>
       </cornie-card>
@@ -142,7 +187,7 @@ import ILocation from "@/types/ILocation";
 import IPractitioner from "@/types/IPractitioner";
 import PatientSection from "./visitor.vue";
 import ChevronDown from "@/components/icons/chevrondown.vue";
-import PaymentModal from "./collectPayment.vue";
+import PaymentModal from "@/views/dashboard/patientexp/calendar/appointments/collectpayment.vue";
 
 const appointment = namespace("appointment");
 const location = namespace("location");
@@ -184,8 +229,17 @@ export default class checkinModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: String, default: "" })
+  appiontmentid!: string;
+
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
   @Prop({ type: Array, default: [] })
   patients!: object;
+
+  @Prop({ type: Array, default: [] })
+  appoitmentData!: any;
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -205,19 +259,43 @@ export default class checkinModal extends Vue {
 
   loading = false;
   localSrc = require("../../../../assets/img/placeholder.png");
-  practitioner= "";
+  practitioner= [];
   onepatient = [] as any;
   date = "";
   showPayment = false;
+  bill = [];
+
+  roomId = "";
+  notes = "";
+  startTime = "";
+
+
+  get payload(){
+  return {
+    roomId: this.roomId,
+    notes: this.notes,
+    // startTime: this.startTime,
+    patientId: this.patientId || this.patientIdAppoitment.toString(),
+  }
+}
 
   get allPractitioner() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.firstName + " " + i.lastName,
-      };
-    });
+    if(this.appoitmentData.length > 0){
+        return this.appoitmentData.map((i:any) => i.Practitioners[0]).map((k:any) => {
+          return {
+          code: k.practitionerId, display:k.practitioner.firstName +' '+ k.practitioner.lastName
+          }
+        });
+    }else{
+       if (!this.practitioners || this.practitioners.length === 0) return [];
+        return this.practitioners.map((i: any) => {
+          return {
+            code: i.id,
+            display: i.firstName + " " + i.lastName,
+          };
+        });
+
+    }
   }
   get allRooms() {
     if (!this.locations || this.locations.length === 0) return [];
@@ -233,9 +311,14 @@ export default class checkinModal extends Vue {
     return this.practitioners.find((i: any) => i.id === this.practitioner);
   }
 
-   get practitionerName() {
+  get practitionerName() {
     const pt = this.practitioners.find((i: any) => i.id === this.practitioner);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+   get patientIdAppoitment() {
+     if(this.appoitmentData.length > 0){
+       return this.appoitmentData.map((i:any) => i.Patients[0]).map((k:any) => k.patientId)
+     }
   }
 
   async fetchPatientAppointment() {
@@ -246,12 +329,71 @@ export default class checkinModal extends Vue {
   }
 
 
-  async submit() {
+ async submit() {
+    this.loading = true;
+    if (this.id) await this.updateCheckin();
+    else await this.createCheckin();
+    this.loading = false;
+  }
+
+  get BillStatus(){
+    return this.bill.filter((c:any) => c.status == 'paid');
+  }
+
+
+  async createCheckin() {
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/visit/check-in",
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Patient checked-in successfully", status: "success" });
+         this.done();
+        }
+      } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
   
   }
 
+  async updateCheckin() {
+
+    const url = `/api/v1/visit/check-in/${this.id}`;
+    const payload = { ...this.payload, id: this.id };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Checkedin updated", status: "success" });
+        this.done();
+      }
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+   done(){
+       this.$emit("checkin-added");
+        this.show = false;
+    }
+
+     async fetchBill() {
+     try {
+      const response = await cornieClient().post(
+      `/api/v1/appointment/bill/generate/${this.appiontmentid}`,{}
+      );
+      if (response.success) {
+         this.bill = response.data;
+      }
+    } catch (error:any) {
+     window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+
   async created() {
- this.fetchPatientAppointment();
+    if(this.appiontmentid) await this.fetchBill();
+   this.fetchPatientAppointment();
    await this.fetchPractitioners();
    await this.fetchLocations();
   }

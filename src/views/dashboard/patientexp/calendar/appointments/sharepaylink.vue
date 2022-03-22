@@ -69,6 +69,12 @@
           >
             Cancel
           </cornie-btn>
+            <cornie-btn
+             @click="submit"
+            class="text-white bg-danger px-2 rounded-xl"
+           >
+            Submit
+          </cornie-btn>
          
         </cornie-card-text>
       </cornie-card>
@@ -193,7 +199,7 @@ export default class managePractitioner extends Vue {
   get PatientName() {
     if(this.bill){
       const pt = this.patients.find((i: any) => i.id === this.bill.patientId) as any;
-     return pt.contactInfo.map((item:any) => {
+     return pt?.contactInfo?.map((item:any) => {
          return `${item.email}`;
       })
     }
@@ -203,6 +209,7 @@ async copyURL(mytext:string) {
     try {
       await navigator.clipboard.writeText(mytext);
       window.notify({ msg: "Payment link copied!", status: "success" });
+      this.show = false;
     } catch($e) {
       window.notify({ msg: "Payment link  not copied!", status: "error" });
     }
@@ -215,8 +222,8 @@ async fetchPaylink() {
       `/api/v1/appointment/bill/generate-link/${this.id}`,{}
       );
       if (response.success) {
+        this.loading = false;
          this.link = response.data;
-         this.loading = false;
       }
     } catch (error:any) {
        this.loading = false;
@@ -229,9 +236,11 @@ async fetchPaylink() {
       `/api/v1/appointment/bill/generate/${this.id}`,{note: this.note}
       );
       if (response.success) {
+        this.loading = false;
          this.bill = response.data;
       }
     } catch (error:any) {
+      this.loading = false;
      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
@@ -239,8 +248,8 @@ async fetchPaylink() {
 
 
   async created() {
-    if (this.id)  await this.fetchPaylink();
-    if (this.id)  this.fetchBill();
+    if (this.id)await this.fetchBill();
+    if (this.id)await this.fetchPaylink();
     await this.fetchPractitioners();
     await this.fetchPatients();
   }

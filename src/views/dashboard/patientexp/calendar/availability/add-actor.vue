@@ -27,7 +27,7 @@
           </div>
           <div class="container flex flex-col mt-4">
 
-            <available-actors v-for="(input, index) in actors" :key="index" :singletime="singletime" :actor="input" :range="range" :range2="range2" :id="input.id"/>
+            <available-actors v-for="(input, index) in actors" :key="index" :date="date" :singletime="singletime" :actor="input" :range="range" :range2="range2" :id="input.id"/>
 
           </div>
         </div>
@@ -121,11 +121,14 @@ export default class AddActors extends Vue {
   @Prop({ type: String, default: "" })
   range!: string;
 
-@Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   range2!: string;
 
   @Prop({ type: String, default: 0 })
   singletime!: number;
+
+  @Prop({ type: String, default: "" })
+  date!: string;
 
   actorSelected(actor: any) {
     this.$emit("actoradded", { id: actor.code, firstName: actor.display });
@@ -143,8 +146,8 @@ export default class AddActors extends Vue {
 
    showAvailable(practitioner:any,value:string){
     console.log(practitioner,value,"HELLO First")
-   this.$emit('one-id',practitioner,value);
-      this.show = false;
+    this.$emit('one-id',practitioner,value);
+    this.show = false;
 
   }
   async done(){
