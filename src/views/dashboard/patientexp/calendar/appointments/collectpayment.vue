@@ -25,12 +25,18 @@
                     :disabled="true"
                     v-model="bill.total"
             />
-           <cornie-input
+           <!-- <cornie-input
                     label="Payment Type"
                     class="w-full mt-5"
                     :placeholder="'Point of sale'"
                     :disabled="true"
-            />
+            /> -->
+             <cornie-select
+                    :items="['Cash','POS','Transfer','Wallet','Card on file']"
+                    :placeholder="'Select'"
+                    :label="'Payment Type'"
+                    class="w-full mt-5"
+              />
                <text-area :label="'Note'" v-model="note" placeholder="Type here" class="w-full"/>
        
         </v-form>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-sm rounded p-3 mb-2 w-full"
+    class="flex justify-center bg-white shadow-sm rounded p-5 mb-2 h-full w-full"
   >
     <div class="w-full">
       <span
@@ -16,7 +16,7 @@
   </div>
 </template>
 <script lang="ts">
-import IAppointment from "@/types/IAppointment";
+import IVisit from "@/types/IVisit";
 import { Options, Vue } from "vue-class-component";
 import VisitEmptyState from "./emptyState.vue";
 import VisitExistingState from "./existingState.vue";
@@ -36,14 +36,14 @@ export default class VisitIndex extends Vue {
   show = false;
 
   get empty() {
-    return this.patientVisits.length < 1;
+    return this.visits.length < 1;
   }
 
   @visitsStore.Action
   getVisits!: () => Promise<void>;
 
   @visitsStore.State
-  patientVisits!: any[];
+  visits!: IVisit[];
 
 
   async created() {

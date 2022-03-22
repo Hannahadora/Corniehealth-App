@@ -468,6 +468,9 @@ export default class appointmentModal extends Vue {
   @Prop({ type: String, default: "" })
   appoimtentId!: string;
 
+  @Prop({ type: String, default: "" })
+  appoitmentDate!: string;
+
 
   @Prop({ type: String, default: "" })
   range!: string;
@@ -579,30 +582,30 @@ export default class appointmentModal extends Vue {
 
   }
 
-get payload(){
-  return {
-    appointmentType: this.appointmentType,
-    description: this.description,
-    venue: this.venue,
-    meetingLink: this.meetingLink,
-    venueAddress: this.venueAddress,
-    billingType: this.billingType,
-    services : this.serviceId,
-    Practitioners: this.practitionerId,
-    Devices: this.deviceId,
-    Patients: this.patientId,
-    comment: this.comment,
-    serviceCategory : this.serviceCategory,
-    date: this.date,
-    startTime: this.startTime,
-    endTime : this.endTime,
-    locationId : this.locationId,
-    bookingLocationId: this.bookingLocationId,
-    practitionerId: this.appoimtentId,
-    patientId: this.singlePatientId
+  get payload(){
+    return {
+      appointmentType: this.appointmentType,
+      description: this.description,
+      venue: this.venue,
+      meetingLink: this.meetingLink,
+      venueAddress: this.venueAddress,
+      billingType: this.billingType,
+      services : this.serviceId,
+      Practitioners: this.practitionerId,
+      Devices: this.deviceId,
+      Patients: this.patientId,
+      comment: this.comment,
+      serviceCategory : this.serviceCategory,
+      date: this.date,
+      startTime: this.startTime,
+      endTime : this.endTime,
+      locationId : this.locationId,
+      bookingLocationId: this.bookingLocationId,
+      practitionerId: this.appoimtentId,
+      patientId: this.singlePatientId
 
+    }
   }
-}
   async submit() {
     this.loading = true;
     if (this.id) await this.updateAppointment();
@@ -616,6 +619,8 @@ get payload(){
     this.locationId = this.currentLocation;
     this.payload.startTime = this.range;
     this.payload.endTime = this.range2;
+    this.payload.date = this.appoitmentDate;
+
     if(this.currentLocation){
       try {
         const response = await cornieClient().post(

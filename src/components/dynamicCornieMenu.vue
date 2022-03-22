@@ -4,8 +4,8 @@
     <div class="absolute -left-10  pt-2 z-50 right-0 w-full">
       <card
         v-show="showMenu"
-        class="relative py-2 p-0 bg-white border border-gray-200 rounded-md block w-full shadow-xl"
-        style="width: 130% !important;"
+        class="ml-10 relative py-2 p-0 bg-white border border-gray-200 rounded-md block w-full shadow-xl"
+        style="width: 100% !important;"
         ref="card"
       >
         <slot class="p-0" />

@@ -1,306 +1,178 @@
 <template>
-  <div class="w-full my-2 h-screen">
+  <div class="w-full pb-7">
  
-    <div class="container-fluid bg-white sm:p-6 h-full">
-      <div class="w-full border-b-2 curved flex py-2 mt-4">
-        <div class="container-fluid flex font-semibold text-xl py-2">
-          <h2>Active Visits</h2>
-        </div>
-      </div>
-
-      <div class="w-full mt-6">
-        <div class="w-full flex my-6">
-          <div
-            class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer"
-            :class="{ 'light-grey-bg': selectedStatus === 0 }"
-            @click="() => (selectedStatus = 0)"
-          >
-            <span class="flex flex-col uppercase">
-              <span class="text-primary font-normal text-sm">All Visits</span>
-              <span class="text-primary font-semibold">{{
-                visits.length
-              }}</span>
-            </span>
-          </div>
-          <div
-            class=".w-full shadow-md w-2/12 p-4 rounded-lg mx-4 cursor-pointer"
-            :class="{ 'light-grey-bg': selectedStatus === 2 }"
-            @click="() => (selectedStatus = 2)"
-          >
-            <span class="flex flex-col uppercase">
-              <span class="text-warning font-normal text-sm">In-Progress</span>
-              <span class="text-warning font-semibold">{{
-                visits.filter(
-                  (i) =>
-                    i.status?.toLowerCase() === "in-progress" ||
-                    i.status?.toLowerCase() === "active"
-                ).length
-              }}</span>
-            </span>
-          </div>
-          <div
-            class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer"
-            :class="{ 'light-grey-bg': selectedStatus === 3 }"
-            @click="() => (selectedStatus = 3)"
-          >
-            <span class="flex flex-col uppercase">
-              <span class="text-danger font-normal text-sm text-success"
-                >Completed</span
+    <span class="flex justify-end w-full">
+      <cornie-menu top="30px" right="100%">
+      <template #activator="{ on }">
+          <icon-btn v-on="on">
+              <button
+                class="bg-danger rounded-lg text-white mt-5 py-2 px-14 focus:outline-none hover:opacity-90 font-semibold inline-flex"
+                @click="() => $emit('clicked')"
               >
-              <span class="text-danger font-semibold text-success">{{
-                visits.filter(
-                  (i) =>
-                    i.status?.toLowerCase() !== "in-progress" &&
-                    i.status?.toLowerCase() !== "queue" &&
-                    i.status?.toLowerCase() !== "active"
-                ).length
-              }}</span>
-            </span>
-          </div>
+                  <span class="mr-1">Check-In to Start </span>
+                  <chevron-down-icon
+                    class="text-white mb-2 stroke-current mt-2 ml-1"
+                  />
+              </button>
+          </icon-btn>
+      </template>
+      <card-text>
+        <div class="p-2 w-full hover:bg-gray-100 p-3 cursor-pointer" @click="showPatient">
+          <span class="ml-3 text-xs">Check-In from Patients Register</span>
         </div>
-
-        <div class="w-full curved flex py-2 justify-end my-6">
-          <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
-            <Button :loading="false">
-              <router-link
-                :to="{ name: 'Appointment' }"
-                style="background: #fe4d3c"
-                class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-md"
-              >
-                Go To Appointments
-              </router-link>
-            </Button>
-          </div>
+        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/calendar')">
+          <span class="ml-3 text-xs">Check-In from Scheduled Appointments</span>
         </div>
-
-        <div class="w-full" v-if="false">
-          <TimeLine />
-        </div>
-
-        <div class="w-full pb-7 mb-8">
-          <cornie-table :columns="rawHeaders" v-model="items">
-            <template #appointmentType-header="{}">
+      </card-text>
+      </cornie-menu>
+    </span>
+       
+    <cornie-table :columns="rawHeaders" v-model="items">
+    
+       <template #status="{ item }">
+            <div class="flex items-center">
               <p
-                class="cursor-pointer md"
-                style="font-weight: 600"
-                @click="() => (selectType = !selectType)"
+                class="text-xs bg-gray-300 p-1 rounded"
+                v-if="item.status == 'Vitals acquired' || item.status == 'Visit Ended'"
               >
-                Appointment Type
+                {{ item.status }}
               </p>
-              <div class="absolute md" v-if="selectType">
-                <div
-                  style="max-height: 280px; overflow-y: scroll; width: 200px"
-                  class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="menu-button"
-                  tabindex="-1"
-                >
-                  <div class="py-1 md" role="none">
-                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                    <a
-                      class="md text-gray-700 block px-4 py-2 text-sm flex items-center"
-                      role="menuitem"
-                      tabindex="-1"
-                      id="menu-item-0"
-                      v-for="(day, index) in types"
-                      :key="index"
-                    >
-                      <span
-                        ><input
-                          type="checkbox"
-                          class="h-4 w-4 md"
-                          name=""
-                          v-model="filterByType"
-                          id=""
-                          :value="day"
-                      /></span>
-                      <span class="mx-2 text-xs md">{{ day }}</span>
-                    </a>
-                  </div>
+              <p
+                class="text-xs bg-yellow-100 text-yellow-500 p-1 rounded"
+                v-if="item.status == 'Queued' || item.status == 'Waitlisted' || item.status == 'In-Progress' || item.status == 'Bill Processing'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-100 text-green-500 p-1 rounded"
+                v-if="item.status == 'On-time | Late' || item.status == 'completed' || item.status == 'Diagnostics Completed' || item.status == 'Medication Dispensed' || item.status == 'Discharged' || item.status == 'checked-out' || item.status == 'checked-in'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-purple-100 text-purple-600 p-1 rounded"
+                v-if="item.status == 'Referred'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-red-100 text-red-600 p-1 rounded"
+                v-if="item.status == 'Cancelled'"
+              >
+                {{ item.status }}
+              </p>
+            </div>
+      </template>
+      <template #checkedInBy="{ item }">
+           <div class="w-full flex space-x-4 mb-3">
+                <div class="w-10 h-10">
+                    <avatar
+                        class="mr-2"
+                        v-if="item.image"
+                        :src="item.image"
+                    />
+                    <avatar class="mr-2" v-else :src="localSrc" />
                 </div>
-              </div>
-            </template>
-
-            <template #status-header="{}">
-              <p
-                class="cursor-pointer md"
-                style="font-weight: 600"
-                @click="() => (filterStatus = !filterStatus)"
-              >
-                Participant Status
-              </p>
-              <div class="absolute md" v-if="filterStatus">
-                <div
-                  style="max-height: 280px; overflow-y: scroll; width: 200px"
-                  class="md origin-top-right right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="menu-button"
-                  tabindex="-1"
-                >
-                  <div class="py-1 md" role="none">
-                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                    <a
-                      class="md text-gray-700 block px-4 py-2 text-sm flex items-center"
-                      role="menuitem"
-                      tabindex="-1"
-                      id="menu-item-0"
-                      v-for="(day, index) in statuses"
-                      :key="index"
-                    >
-                      <span
-                        ><input
-                          type="checkbox"
-                          class="h-4 w-4 md"
-                          name=""
-                          id=""
-                          v-model="filterByStatus"
-                          :value="day"
-                      /></span>
-                      <span class="mx-2 text-xs md">{{ day }}</span>
-                    </a>
-                  </div>
+                <div class="w-full mt-2">
+                    <p class="text-sm text-dark font-semibold">
+                        {{ item.firstName }}
+                        {{ item.lastName }}
+                    </p>
                 </div>
-              </div>
-            </template>
+            </div>
 
-            <template #name="{ item }">
-              <p>{{ getAppointment(item.appointmentId).specialty }}</p>
-            </template>
-            <template #patient="{ item }">
-              <p
-                class="cursor-pointer"
-                @click="showPatientDetails(item.patientId)"
-              >
-                {{ item.patient }}
-              </p>
-            </template>
-            <template #days="{ item }">
-              <p>{{ item.days.map((i) => i.substring(0, 3)).join(", ") }}</p>
-            </template>
-            <template #appointmentType="{ item }">
-              <p>
-                {{
-                  item.appointmentId
-                    ? getAppointment(item.appointmentId).appointmentType
-                    : ""
-                }}
-              </p>
-            </template>
-            <template #status="{ item }">
-              <div class="container">
-                <span
-                  class="rounded-full"
-                  :class="{
-                    'status-inactive': item.status === 'inactive',
-                    'status-active': item.status === 'active',
-                  }"
-                  >{{ item.status }}</span
-                >
-              </div>
-            </template>
-            <template #practitioners="{ item }">
-              <div
-                class="container cursor-pointer"
-                @click="viewSchedule(item.id)"
-              >
-                <span class="rounded-full">
-                  <Actors :items="item.practitioners" />
-                </span>
-              </div>
-            </template>
-            <template #actions="{ item }">
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                style="width: 200px"
-              >
-                <eye-icon class="mt-1" />
-                <span class="ml-3 text-xs" @click="showTimeline(item.id)"
-                  >View timeline</span
-                >
-              </div>
-              <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <ArrowRight />
-                    <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
-                    </div> -->
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="start(item.id)"
-              >
-                <EncounterIcon class="mr-3 mt-1" />
-                <span class="ml-3 text-xs">Start Encounter</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="destroy(item.id)"
-              >
-                <CancelIcon />
-                <span class="ml-3 text-xs">Cancel Visit</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              >
-                <AddIcon />
-                <span class="ml-3 text-xs">Add Vitals</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              >
-                <ArrowRight />
-                <span class="ml-3 text-xs">Refer Patient</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              >
-                <ManageBillIcon />
-                <span class="ml-3 text-xs">Manage Bill</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              >
-                <AddIcon />
-                <span class="ml-3 text-xs">Admit Patient</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="markAsNoShow(item.id)"
-              >
-                <NoshowIcon />
-                <span class="ml-3 text-xs">No Show</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showCheckoutPane(item.id)"
-              >
-                <CheckoutIcon />
-                <span class="ml-3 text-xs">Check-out</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showCheckoutPane(item.id)"
-              >
-                <UpdateIcon />
-                <span class="ml-3 text-xs">Update Status</span>
-              </div>
-            </template>
-          </cornie-table>
+        <!-- <div
+          class="container cursor-pointer"
+          @click="viewSchedule(item.id)"
+        >
+          <span class="rounded-full">
+            <Actors :items="item.practitioners" />
+          </span>
+        </div> -->
+      </template>
+      
+      <template #actions="{ item }">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          style="width: 200px"
+        >
+          <eye-icon class="mt-1" />
+          <span class="ml-3 text-xs" @click="showTimeline(item.id,item.timelines,item.patient)"
+            >View timeline</span
+          >
+        </div>
+        <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <ArrowRight />
+              <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
+              </div> -->
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="start(item.id)"
+        >
+          <EncounterIcon class="mr-3 mt-1" />
+          <span class="ml-3 text-xs">Start Encounter</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="destroy(item.id)"
+        >
+          <CancelIcon />
+          <span class="ml-3 text-xs">Cancel Visit</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <AddIcon />
+          <span class="ml-3 text-xs">Add Vitals</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <ArrowRight />
+          <span class="ml-3 text-xs">Refer Patient</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <ManageBillIcon />
+          <span class="ml-3 text-xs">Manage Bill</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <AddIcon />
+          <span class="ml-3 text-xs">Admit Patient</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="markAsNoShow(item.id)"
+        >
+          <NoshowIcon />
+          <span class="ml-3 text-xs">No Show</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showCheckoutPane(item.id,item.checkedInBy, item.patient,item)"
+        >
+          <CheckoutIcon />
+          <span class="ml-3 text-xs">Check-out</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showCheckoutPane(item.id, item.checkedInBy, item.patient,item)"
+        >
+          <UpdateIcon />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+      </template>
+    </cornie-table>
 
           <column-filter
             :columns="rawHeaders"
             v-model:preferred="preferredHeaders"
             v-model:visible="showColumnFilter"
           />
-          <side-modal
-            :visible="showCheckout"
-            :header="'Check-Out'"
-            @closesidemodal="() => (showCheckout = false)"
-          >
-            <CheckOut
-              :item="currentVisit"
-              @close="() => (showCheckout = false)"
-            />
-          </side-modal>
+         
 
           <!-- <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
                     <CheckIn :item="appointments[0]" @close="() => showCheckin = false"  />
@@ -334,26 +206,6 @@
             </div>
           </side-modal>
 
-          <modal :visible="timeLineVissible">
-            <template #title>
-              <p
-                class="md flex items-center justify-between px2"
-                style="width: 440px"
-              >
-                <span class="md font-lignt text-primary p-2 text-xl"
-                  >Timeline</span
-                >
-                <span class="md text-danger cursor-pointer">
-                  <a class="md"> See all </a>
-                </span>
-              </p>
-            </template>
-            <ActionLog
-              :timeline="selectedVisit.timelines"
-              :appointmentId="currentVisit.appointmentId"
-              @closetimeline="() => (timeLineVissible = false)"
-            />
-          </modal>
 
           <modal :visible="viewDetails">
             <template #title>
@@ -445,17 +297,19 @@
               </div>
             </div>
           </modal>
-        </div>
 
-        <div style="height: 400px"></div>
-      </div>
-    </div>
+    <patient-search v-model="showPatientModal" @checkin-data="checkindata"/>
+    <timeline-modal v-model="timeLineVissible" :id="currentVisitId" :timeline="timeline" :patient="patientTimeline"/>
+    <check-out v-model="showCheckout" :allvisit="allvisit" @checkout-added="checkindata"  :patient="patientTimeline" :practitionerdata="practitioner" :id="currentVisitId"/>
+  
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { namespace } from "vuex-class";
+import search from "@/plugins/search";
 
-import Actors from "../schedules/components/actors.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -464,8 +318,6 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
@@ -473,18 +325,15 @@ import EditIcon from "@/components/icons/edit.vue";
 import AddIcon from "@/components/icons/add.vue";
 import DeactivateIcon from "@/components/icons/deactivate.vue";
 import Button from "@/components/globals/corniebtn.vue";
-
-import SideModal from "../schedules/components/side-modal.vue";
-import CheckIn from "./components/oldcheckin.vue";
-import CheckOut from "./components/oldcheckout.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import TimeLine from "./components/timeline-table.vue";
 import Modal from "@/components/modal.vue";
+import Avatar from "@/components/avatar.vue";
 //import Close from '@/components/icons/close.vue'
-import CheckinNoapp from "./components/checkin-noappointment.vue";
+
 import ArrowRight from "@/components/icons/arrow-right.vue";
 import EncounterIcon from "@/components/icons/encounter.vue";
-import MultiSelect from "../schedules/components/apply-to.vue";
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import CornieMenu from "@/components/dynamicCornieMenu.vue";
 import CheckoutIcon from "@/components/icons/checkout.vue";
 
 import EmptyState from "./emptyState.vue";
@@ -493,6 +342,15 @@ import UpdateIcon from "./components/update.vue";
 import NoshowIcon from "./components/no-show.vue";
 import ManageBillIcon from "./components/manage-bill.vue";
 import ActionLog from "./components/timeline-component.vue";
+import MultiSelect from "../schedules/components/apply-to.vue";
+import TimeLine from "./components/timeline-table.vue";
+import SideModal from "../schedules/components/side-modal.vue";
+import CheckIn from "./components/checkin.vue";
+import CheckOut from "./components/checkout.vue";
+import Actors from "../schedules/components/actors.vue";
+import PatientSearch from "./components/searchPatient.vue"
+import TimelineModal from "./components/timeline.vue";
+
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
@@ -502,7 +360,7 @@ const appointment = namespace("appointment");
     ActionLog,
     MultiSelect,
     CancelIcon,
-    //Close,
+   CornieMenu,
     TimeLine,
     SortIcon,
     ThreeDotIcon,
@@ -511,10 +369,14 @@ const appointment = namespace("appointment");
     TableRefreshIcon,
     FilterIcon,
     IconInput,
+    TimelineModal,
+    Avatar,
     DeleteIcon,
     EyeIcon,
     ColumnFilter,
+    PatientSearch,
     TableOptions,
+    ChevronDownIcon,
     EditIcon,
     Button,
     SideModal,
@@ -526,7 +388,6 @@ const appointment = namespace("appointment");
     CheckOut,
     Modal,
     Actors,
-    CheckinNoapp,
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
@@ -540,12 +401,17 @@ export default class PractitionerExistingState extends Vue {
   show = false;
   query = "";
   search = "";
+  showPatientModal = false;
+  allvisit = [];
 
   selectedStatus = 0;
   filterByType: any = [];
   filterByStatus: any = [];
   completedStatus: any = [];
   currentVisitId = "";
+  timeline = [] as any;
+  patientTimeline = [] as any;
+  practitioner = [];
 
   activeTab = 0;
   showEditPane = false;
@@ -560,6 +426,7 @@ export default class PractitionerExistingState extends Vue {
   showCheckout = false;
   timeLineVissible = false;
   viewDetails = false;
+  localSrc = require("../../../assets/img/placeholder.png");
 
   selectedSchedule: any = {};
   selectedVisit: any = {};
@@ -619,33 +486,37 @@ export default class PractitionerExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Identifier",
+      title: "Check-In Time",
+      key: "checkInTime",
+      show: true,
+      noOrder: true
+    },
+    {
+      title: "visit id",
       key: "id",
       show: true,
+      noOrder: true
     },
     {
-      title: "Specialty",
-      key: "name",
+      title: "visit type",
+      key: "visittype",
       show: true,
+      noOrder: true
     },
     {
-      title: "Patient",
-      key: "patient",
+      title: "practitioner(s)",
+      key: "checkedInBy",
       show: true,
+       noOrder: true
     },
     {
-      title: "Appointment Type",
-      key: "appointmentType",
+      title: "period",
+      key: "period",
       show: true,
+       noOrder: true
     },
-    { title: "Slot", key: "slot", show: true },
-    {
-      title: "Practitioner",
-      key: "practitioners",
-      show: true,
-    },
-    {
-      title: "Participant Status",
+     {
+      title: "status",
       key: "status",
       show: true,
     },
@@ -670,68 +541,83 @@ export default class PractitionerExistingState extends Vue {
   }
 
   get items() {
-    if (!this.visits || this.visits.length === 0) return [];
-    const filtered = this.visits.filter((i: any) => {
-      if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
-        return i;
-      } else {
-        if (
-          this.filterByStatus.includes("All") ||
-          this.filterByType.includes("All")
-        )
-          return true;
-        const indexInTypes = this.filterByType.findIndex(
-          (j: any) =>
-            j.toLowerCase() ===
-            this.getAppointment(i.appointmentId).appointmentType.toLowerCase()
-        );
-        const indexInStatuses = this.filterByStatus.findIndex(
-          (j: any) => j.toLowerCase() === i.status.toLowerCase()
-        );
-
-        if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
-      }
-    });
-
-    const visits = filtered.map((i: any) => {
-      if (i.status === "cancelled" || i.status === "no-show") {
-        i.completedStatus = "Completed";
-      } else if (i.status === "queue") {
-        i.completedStatus = "Queue";
-      } else {
-        i.completedStatus = "In-Progress";
-      }
-
+    const visits = this.visits.map((visit) => {
+      visit.checkInTime = new Date(
+          visit.checkInTime
+        ).toLocaleDateString("en-US");
       return {
-        ...i,
-        action: i.id,
-        patient: this.getPatientName(i.patientId),
-        location: i.room ? i.room.name : "",
-        status: i.status,
-        slot: `10:00 - 13:00`,
-        // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
-        practitioners: this.getActors(i.appointmentId),
+        ...visit,
+        action: visit.id,
+        visittype: 'xxxxxx'
       };
     });
-    if (this.selectedStatus === 1)
-      return visits.filter((i: any) => i.completedStatus === "Queue");
-    if (this.selectedStatus === 2)
-      return visits.filter(
-        (i) =>
-          i.status?.toLowerCase() === "in-progress" ||
-          i.status?.toLowerCase() === "active"
-      );
-    if (this.selectedStatus === 3)
-      return visits.filter(
-        (i) =>
-          i.status?.toLowerCase() !== "in-progress" &&
-          i.status?.toLowerCase() !== "queue" &&
-          i.status?.toLowerCase() !== "active"
-      );
-    return visits;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
+    if (!this.query) return visits;
+    return search.searchObjectArray(visits, this.query);
   }
+
+  // get items() {
+  //   if (!this.visits || this.visits.length === 0) return [];
+  //   const filtered = this.visits.filter((i: any) => {
+  //     if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
+  //       return i;
+  //     } else {
+  //       if (
+  //         this.filterByStatus.includes("All") ||
+  //         this.filterByType.includes("All")
+  //       )
+  //         return true;
+  //       const indexInTypes = this.filterByType.findIndex(
+  //         (j: any) =>
+  //           j.toLowerCase() ===
+  //           this.getAppointment(i.appointmentId).appointmentType.toLowerCase()
+  //       );
+  //       const indexInStatuses = this.filterByStatus.findIndex(
+  //         (j: any) => j.toLowerCase() === i.status.toLowerCase()
+  //       );
+
+  //       if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
+  //     }
+  //   });
+
+  //   const visits = filtered.map((i: any) => {
+  //     if (i.status === "cancelled" || i.status === "no-show") {
+  //       i.completedStatus = "Completed";
+  //     } else if (i.status === "queue") {
+  //       i.completedStatus = "Queue";
+  //     } else {
+  //       i.completedStatus = "In-Progress";
+  //     }
+
+  //     return {
+  //       ...i,
+  //       action: i.id,
+  //       patient: this.getPatientName(i.patientId),
+  //       location: i.room ? i.room.name : "",
+  //       status: i.status,
+  //       slot: `10:00 - 13:00`,
+  //       // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
+  //       practitioners: this.getActors(i.appointmentId),
+  //     };
+  //   });
+  //   if (this.selectedStatus === 1)
+  //     return visits.filter((i: any) => i.completedStatus === "Queue");
+  //   if (this.selectedStatus === 2)
+  //     return visits.filter(
+  //       (i) =>
+  //         i.status?.toLowerCase() === "in-progress" ||
+  //         i.status?.toLowerCase() === "active"
+  //     );
+  //   if (this.selectedStatus === 3)
+  //     return visits.filter(
+  //       (i) =>
+  //         i.status?.toLowerCase() !== "in-progress" &&
+  //         i.status?.toLowerCase() !== "queue" &&
+  //         i.status?.toLowerCase() !== "active"
+  //     );
+  //   return visits;
+  //   // if (!this.query) return shifts;
+  //   // return search.searchObjectArray(shifts, this.query);
+  // }
 
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
@@ -753,6 +639,12 @@ export default class PractitionerExistingState extends Vue {
 
     return pt ? pt.Practitioners : [];
   }
+  
+
+  showPatient(){
+      this.showPatientModal = true;
+  }
+
 
   getAppointment(id: string) {
     const pt = this.appointments.find((i: any) => i.id === id);
@@ -801,8 +693,12 @@ export default class PractitionerExistingState extends Vue {
     // this.showViewPane = true;
   }
 
-  showCheckoutPane(id: string) {
-    this.setSelectedVisit(id);
+  showCheckoutPane(id: string,practitioner:any,patient:any,visit:any) {
+
+    this.practitioner = practitioner;
+    this.patientTimeline = patient;
+    this.allvisit = visit;
+
     this.currentVisitId = id;
     this.showCheckout = true;
   }
@@ -812,8 +708,10 @@ export default class PractitionerExistingState extends Vue {
     this.viewDetails = true;
   }
 
-  showTimeline(id: string) {
-    this.setSelectedVisit(id);
+  showTimeline(id: string,timeline:any,patient:any) {
+    this.timeline = timeline;
+    this.patientTimeline = patient;
+    //this.setSelectedVisit(id);
     this.currentVisitId = id;
     this.timeLineVissible = true;
   }
@@ -825,6 +723,9 @@ export default class PractitionerExistingState extends Vue {
 
   closeEditPane() {
     this.showEditPane = false;
+  }
+  async checkindata(){
+    await this.getPatients();
   }
 
   async created() {

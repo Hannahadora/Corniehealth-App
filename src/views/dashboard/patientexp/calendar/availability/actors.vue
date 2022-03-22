@@ -216,6 +216,9 @@ export default class managePractitioner extends Vue {
   @Prop({ type: String, default: "" })
   specilatyId!: string;
 
+  @Prop({ type: String, default: "" })
+  date!: string;
+
   @patients.State
   patients!: IPatient[];
 
