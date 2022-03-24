@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div
+    <!-- <div
       class="w-full py-40 mt-12 flex flex-col justify-center items-center"
       v-if="empty"
     >
@@ -14,8 +14,8 @@
       >
         Add New
       </cornie-btn>
-    </div>
-    <div class="w-full h-full pb-7" v-else>
+    </div> -->
+    <div class="w-full h-full pb-7">
       <div class="flex justify-end items-center mb-6">
         <cornie-btn
           class="bg-danger px-3 rounded-full text-white m-5"

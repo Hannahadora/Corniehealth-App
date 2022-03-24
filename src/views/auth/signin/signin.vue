@@ -160,8 +160,13 @@ export default class Signin extends Vue {
     this.loading = true;
     try {
       await login(this.payload);
-
-      this.$emit("logged-in");
+      if (
+        !store.state.user.requiresTwoFactorAuth ||
+        !store.state.user.requiresSecurityQuestion
+      ) {
+        this.$router.push("/dashboard");
+      }
+      else this.$emit("logged-in");
       // if (this.domainName) setAuthDomain(this.domainName);
     } catch (error) {
       window.notify({ msg: "Username or password incorrect", status: "error" });

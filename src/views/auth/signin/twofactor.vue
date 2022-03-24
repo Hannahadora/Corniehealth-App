@@ -124,7 +124,7 @@ export default class TwoFactor extends Vue {
     // not implemented
   }
 
-  created() {
+  mounted() {
     this.$emit('change-path')
   }
 }
