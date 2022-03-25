@@ -24,24 +24,11 @@
             />
           </div>
         </div>
-        <div class="flex flex-col gap-4 mt-8 col-span-6">
+        <!-- <div class="flex flex-col gap-4 mt-8 col-span-6">
           <span class="font-bold text-sm text-jet_black"
             >Override location based modifications</span
           >
           <div class="w-full">
-            <!-- <cornie-radio
-              name="location-based"
-              :value="'on'"
-              v-model="locationBasedModification"
-              checked
-              label="Yes"
-            />
-            <cornie-radio
-              name="location-based"
-              :value="'off'"
-              v-model="locationBasedModification"
-              label="No"
-            /> -->
             <cornie-search-input
               :items="allLocation"
               :placeholder="'--Select--'"
@@ -50,7 +37,7 @@
             >
             </cornie-search-input>
           </div>
-        </div>
+        </div> -->
       </div>
     </template>
     <div class="w-full mt-4 grid grid-cols-12 gap-2">
@@ -60,6 +47,7 @@
           label="Sample Unit Cost (NGN)"
           placeholder="--Autoloaded--"
           v-model="SUC"
+          disabled
         >
         </cornie-input>
       </div>
@@ -255,6 +243,9 @@ export default class MarkupSettings extends Vue {
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
 
+  @Prop({ type: String, default: false })
+  markupId!: String;
+
   loading = false;
   filterAdvanced = false;
   filteredPatients: IPatient[] = [];
@@ -277,7 +268,7 @@ export default class MarkupSettings extends Vue {
   }
 
   handleSelectedItems(items: any) {
-    this.selectedLocation = items;
+    this.selectedLocations = items;
   }
 
   @org.State
@@ -291,6 +282,12 @@ export default class MarkupSettings extends Vue {
 
   @account.Getter
   cornieUser!: any;
+
+  @Prop({ default: "" })
+  locationId!: string;
+
+  @Prop({ type: Boolean, default: false })
+  editing!: Boolean;
 
   @account.Getter
   authorizedLocations!: AuthorizedLocation[];
@@ -364,13 +361,30 @@ export default class MarkupSettings extends Vue {
     this.loading = false;
   }
   query = "";
-  markupId = "";
 
-  @markup.State
-  markups!: IMarkup[];
+  markups = [] as any;
 
-  @markup.Action
-  fetchMarkups!: () => Promise<void>;
+  async fetchMarkups() {
+    if (this.isRoot) {
+      const markups = await cornieClient().get("/api/v1/markup-discount");
+      const response = await Promise.all([markups]);
+      this.markups = response[0].data as any;
+
+      this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
+      this.PercentageMarkup = this.markups[0]?.markupPercentage;
+    } else {
+      if (!this.locationId) return [];
+      const markups = await cornieClient().get(
+        `/api/v1/markup-discount/location/${this.locationId}`
+      );
+      const response = await Promise.all([markups]);
+
+      this.markups = response[0].data;
+
+      this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
+      this.PercentageMarkup = this.markups[0]?.markupPercentage;
+    }
+  }
 
   get isRoot() {
     let isRoot = Boolean(
@@ -380,16 +394,16 @@ export default class MarkupSettings extends Vue {
     return isRoot;
   }
 
-  get items() {
-    const markups = this.markups.map((markup) => {
-      const markupId = markup.id;
-      return {
-        ...markup,
-      };
-    });
-    if (!this.query) return markups;
-    return search.searchObjectArray(markups, this.query);
-  }
+  // get items() {
+  //   const markups = this.markups.map((markup) => {
+  //     const markupId = markup.id;
+  //     return {
+  //       ...markup,
+  //     };
+  //   });
+  //   if (!this.query) return markups;
+  //   return search.searchObjectArray(markups, this.query);
+  // }
 
   // @Watch("markupId")
   // idChanged() {
@@ -422,22 +436,52 @@ export default class MarkupSettings extends Vue {
 
   async submitMarkup() {
     try {
-      const { data } = await cornieClient().post(
-        `/api/v1/markup-discount/createEditForOrganizationAdmin`,
-        {
-          sampleUnitCost: this.SUC,
-          locationId: this.location,
-          markupPercentage: this.PercentageMarkup,
-          cdmPrice: this.CDM,
-          margin: this.margin,
-          marginPercentage: this.percentageMargin,
-          maxAllowedDiscount: this.MaxDiscount,
-          minPrice: this.minimumPrice,
-          discountedMargin: this.discountMargin,
-          discountedMarginPercentage: this.discountMarginPercentage,
-          locationAdminsCanSetForLocations: true,
+      if (this.locationId) {
+        const { data } = await cornieClient().post(
+          `/api/v1/markup-discount/location/${this.locationId}`,
+          {
+            markupPercentage: this.PercentageMarkup,
+            marginPercentage: this.percentageMargin,
+            maxAllowedDiscount: this.MaxDiscount,
+            locationAdminsCanSetForLocations:
+              this.locationAdminsCanSetForLocations,
+            locationOverrides: this.selectedLocations.map((item: any) => {
+              return item.code;
+            }),
+          }
+        );
+      } else {
+        if (this.editing) {
+          const { data } = await cornieClient().put(
+            `/api/v1/markup-discount/${this.markupId}`,
+            {
+              id: this.markupId,
+              markupPercentage: this.PercentageMarkup,
+              marginPercentage: this.percentageMargin,
+              maxAllowedDiscount: this.MaxDiscount,
+              locationAdminsCanSetForLocations:
+                this.locationAdminsCanSetForLocations,
+              locationOverrides: this.selectedLocations.map((item: any) => {
+                return item.code;
+              }),
+            }
+          );
+        } else {
+          const { data } = await cornieClient().post(
+            `/api/v1/markup-discount`,
+            {
+              markupPercentage: this.PercentageMarkup,
+              marginPercentage: this.percentageMargin,
+              maxAllowedDiscount: this.MaxDiscount,
+              locationAdminsCanSetForLocations:
+                this.locationAdminsCanSetForLocations,
+              locationOverrides: this.selectedLocations.map((item: any) => {
+                return item.code;
+              }),
+            }
+          );
         }
-      );
+      }
 
       window.notify({
         msg: "Markup updated successfully",
@@ -446,9 +490,9 @@ export default class MarkupSettings extends Vue {
       this.$emit("markup-saved");
 
       this.$router.push(`/dashboard/provider/settings/markup`);
-    } catch (error) {
+    } catch (error: any) {
       window.notify({
-        msg: "There was an error when Submittin markup details",
+        msg: `Error: ${error.response.data.message}`,
         status: "error",
       });
     }

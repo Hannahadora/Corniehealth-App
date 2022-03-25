@@ -15,14 +15,15 @@
       Setup
     </button>
 
-    <setup-markup v-model="dialog" />
+    <setup-markup v-model="dialog" :locationId="locationId" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import SetupMarkup from "./setup-markup.vue";
+import { Prop } from "vue-property-decorator";
 
 @Options({
   name: "EmptyState",
@@ -33,5 +34,12 @@ import SetupMarkup from "./setup-markup.vue";
 })
 export default class EmptyState extends Vue {
   dialog = false;
+
+  @Prop({ type: String, default: "" })
+  locationId!: String;
+
+  created() {
+    console.log(this.locationId);
+  }
 }
 </script>

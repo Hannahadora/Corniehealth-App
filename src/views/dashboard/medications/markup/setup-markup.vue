@@ -16,9 +16,12 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <markup-settings
-          @markup-saved="show = false"
+          @markup-saved="handleSaved"
           @markup-canceled="show = false"
           @isRoot="handleIsRoot"
+          :locationId="locationId"
+          :editing="editing"
+          :markupId="markupId"
         />
       </cornie-card-text>
     </cornie-card>
@@ -32,7 +35,7 @@ import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import MarkupSettings from "./markup-settings.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import { PropSync } from "vue-property-decorator";
+import { Prop, PropSync } from "vue-property-decorator";
 
 @Options({
   name: "SetupMarkup",
@@ -49,10 +52,24 @@ export default class SetupMarkup extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ default: "" })
+  locationId!: string;
+
+  @Prop({ type: Boolean, default: false })
+  editing!: Boolean;
+
+  @Prop({ type: Boolean, default: false })
+  markupId!: Boolean;
+
   isRoot = false;
 
   handleIsRoot(val: boolean) {
     this.isRoot = val;
+  }
+
+  handleSaved() {
+    this.$emit("markup-saved");
+    this.show = false;
   }
 }
 </script>
