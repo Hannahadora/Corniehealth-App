@@ -10,18 +10,36 @@
 
     <button
       class="bg-danger text-base font-semibold rounded-md text-white py-2 px-14"
-      @click="$router.push('/dashboard/provider/settings/markup-settings')"
+      @click="dialog = true"
     >
       Setup
     </button>
+
+    <setup-markup v-model="dialog" :locationId="locationId" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import CornieDialog from "@/components/CornieDialog.vue";
+import SetupMarkup from "./setup-markup.vue";
+import { Prop } from "vue-property-decorator";
 
 @Options({
   name: "EmptyState",
+  components: {
+    CornieDialog,
+    SetupMarkup,
+  },
 })
-export default class EmptyState extends Vue {}
+export default class EmptyState extends Vue {
+  dialog = false;
+
+  @Prop({ type: String, default: "" })
+  locationId!: String;
+
+  created() {
+    console.log(this.locationId);
+  }
+}
 </script>

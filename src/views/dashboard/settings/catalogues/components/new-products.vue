@@ -432,7 +432,11 @@
                     class="th flex items-center"
                     v-if="reqBody.purchaseType?.toLowerCase() === 'purchase'"
                   >
-                    <span><cornie-input v-model="supplier.supplier" /></span>
+                    <span
+                      ><cornie-input
+                        v-model="supplier.supplier"
+                        :placeholder="'--Enter--'"
+                    /></span>
                   </div>
                   <div class="th flex items-center">
                     <span
@@ -441,14 +445,18 @@
                         'pl-2':
                           reqBody.purchaseType?.toLowerCase() !== 'purchase',
                       }"
-                      >Carton</span
+                      >{{ supplier.uom }}</span
                     >
                   </div>
                   <div class="th flex items-center">
-                    <span class="small-text capitalize">90</span>
+                    <span class="small-text capitalize">{{
+                      supplier.quantity
+                    }}</span>
                   </div>
                   <div class="th flex items-center">
-                    <span><cornie-input v-model="supplier.unitCost" /></span>
+                    <span
+                      ><cornie-input v-model="supplier.unitCost" type="text"
+                    /></span>
                   </div>
                   <div class="th flex items-center">
                     <span><cornie-input v-model="supplier.costPerItem" /></span>
@@ -459,10 +467,24 @@
                     /></span>
                   </div>
                   <div class="th flex items-center">
-                    <span class="small-text capitalize">Autoloaded</span>
+                    <span class="small-text capitalize">
+                      {{
+                        (
+                          (+supplier.availableQuantity / +totalAvailability) *
+                          100
+                        ).toFixed(2)
+                      }}
+                    </span>
                   </div>
                   <div class="th flex items-center">
-                    <span class="small-text capitalize">Autoloaded</span>
+                    <span class="small-text capitalize">
+                      {{
+                        (
+                          (+supplier.availableQuantity / +totalAvailability) *
+                          supplier.costPerItem
+                        ).toFixed(2)
+                      }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -496,8 +518,8 @@
                 "
               >
                 <p class="flex flex-col">
-                  <span class="sales-label">Sales Information</span>
-                  <span class="sales-value">--Autoloaded--</span>
+                  <span class="sales-label">Weighted Av. Cost (NGN)</span>
+                  <span class="sales-value">{{ weightedAverageCost }}</span>
                 </p>
               </div>
               <div
@@ -509,8 +531,8 @@
                 "
               >
                 <p class="flex flex-col">
-                  <span class="sales-label">Sales Information</span>
-                  <span class="sales-value">--Autoloaded--</span>
+                  <span class="sales-label">Sales Markup (%)</span>
+                  <span class="sales-value">{{ PercentageMarkup }}</span>
                 </p>
               </div>
               <div
@@ -522,8 +544,10 @@
                 "
               >
                 <p class="flex flex-col">
-                  <span class="sales-label">Sales Information</span>
-                  <span class="sales-value">--Autoloaded--</span>
+                  <span class="sales-label"
+                    >Maximum Allowable Discount (%)</span
+                  >
+                  <span class="sales-value">{{ MaxDiscount }}</span>
                 </p>
               </div>
             </div>
@@ -540,7 +564,7 @@
                     <span>service cost</span>
                   </div>
                   <div class="th flex items-center">
-                    <span>Fee markup</span>
+                    <span>Sales markup</span>
                   </div>
                   <div class="th flex items-center">
                     <span>Service fee</span>
@@ -574,7 +598,7 @@
                     <span class="small-text">{{ sale.unitName }}</span>
                   </div>
                   <div class="th flex items-center">
-                    <span class="small-text">900</span>
+                    <span class="small-text">{{ sale.itemQuantity }}</span>
                   </div>
                   <div class="th flex items-center">
                     <span class="small-text">₦ 120,000.00</span>
@@ -608,41 +632,6 @@
                     <span class="small-text">43%</span>
                   </div>
                 </div>
-                <!-- <div class="w-full flex tbs py-2" style="min-width:1330px">
-                                    <div class="th flex items-center">
-                                        <span class="small-text">Carton</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">900</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">₦ 120,000.00</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text"><cornie-input /></span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">₦ 240,000.00</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">₦ 240,000.00</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">50%</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text"><cornie-input /></span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">₦ 216,000.00</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text"> ₦ 86,000.00</span>
-                                    </div>
-                                    <div class="th flex items-center">
-                                        <span class="small-text">43%</span>
-                                    </div>
-                                </div> -->
               </div>
             </div>
 
@@ -870,9 +859,15 @@ import {
 import { namespace } from "vuex-class";
 import ILocation from "@/types/ILocation";
 import { Watch } from "vue-property-decorator";
+import IPractitioner from "@/types/IPractitioner";
+import { cornieClient } from "@/plugins/http";
 
 const location = namespace("location");
 const catalogue = namespace("catalogues");
+const markup = namespace("markup");
+const account = namespace("user");
+const org = namespace("organization");
+const practitioner = namespace("practitioner");
 
 @Options({
   components: {
@@ -893,6 +888,8 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class NewProuct extends Vue {
+  markups = [] as any;
+
   @location.State
   locations!: ILocation[];
 
@@ -901,6 +898,24 @@ export default class NewProuct extends Vue {
 
   @catalogue.Action
   createProduct!: (data: ICatalogueProduct) => Promise<boolean>;
+
+  @org.State
+  organizationInfo!: any;
+
+  @org.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  @account.State
+  currentLocation!: string;
+
+  @account.Getter
+  cornieUser!: any;
+
+  @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
 
   isInventoryItem = "";
 
@@ -917,25 +932,55 @@ export default class NewProuct extends Vue {
   suppliers = [
     {
       id: Math.random() * 1999 + Math.random() * 2999,
+      uom: "Carton",
       type: "purchase",
       unitCost: 0,
       availableQuantity: 0,
-      supplier: "--Enter--",
-      default: "",
+      supplier: "",
+      default: false,
       costPerItem: 0,
+      quantity: 90,
     },
+    // {
+    //   id: Math.random() * 1999 + Math.random() * 2999,
+    //   uom: "Pack",
+    //   type: "purchase",
+    //   unitCost: 0,
+    //   availableQuantity: 0,
+    //   supplier: "",
+    //   default: "",
+    //   costPerItem: 0,
+    //   quantity: 90,
+    // },
+    // {
+    //   id: Math.random() * 1999 + Math.random() * 2999,
+    //   uom: "Card",
+    //   type: "purchase",
+    //   unitCost: 0,
+    //   availableQuantity: 0,
+    //   supplier: "",
+    //   default: "",
+    //   costPerItem: 0,
+    //   quantity: 90,
+    // },
   ] as any[];
 
   sales = [
     {
       unitName: "Carton",
-      itemQuantity: 0,
+      itemQuantity: 900,
       markup: 0,
       discountLimit: 0,
     },
     {
-      unitName: "Carton",
-      itemQuantity: 0,
+      unitName: "Pack",
+      itemQuantity: 90,
+      markup: 0,
+      discountLimit: 0,
+    },
+    {
+      unitName: "Card",
+      itemQuantity: 30,
       markup: 0,
       discountLimit: 0,
     },
@@ -995,15 +1040,36 @@ export default class NewProuct extends Vue {
     );
   }
 
+  get totalAvailability() {
+    let total = this.suppliers.reduce(
+      (acc, item: any) => (acc += +item.availableQuantity),
+      0
+    );
+    return total;
+  }
+
+  get weightedAverageCost() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total +=
+        (this.suppliers[i].availableQuantity / this.totalAvailability) *
+        this.suppliers[i].costPerItem;
+    }
+
+    return total.toFixed(2);
+  }
+
   addAnotherSupplier() {
     this.suppliers.push({
       id: Math.random() * 1999 + Math.random() * 2999,
+      uom: "Carton",
       type: this.reqBody.purchaseType,
       unitCost: 0,
       availableQuantity: 0,
       supplier: "--Enter--",
       default: "",
       costPerItem: 12,
+      quantity: 90,
     });
   }
 
@@ -1059,7 +1125,120 @@ export default class NewProuct extends Vue {
     });
   }
 
+  SUC = 1000;
+  PercentageMarkup = 200;
+  MaxDiscount = 10;
+
+  get isRoot() {
+    let isRoot = Boolean(
+      this.organizationInfo?.rootUserId === this.cornieUser?.id
+    );
+
+    return isRoot;
+  }
+  get CDM() {
+    return this.SUC * (this.PercentageMarkup / 100);
+  }
+
+  get minimumPrice() {
+    return Math.abs(this.CDM * (1 - this.MaxDiscount));
+  }
+
+  locationId = null;
+
+  async fetchMarkups() {
+    if (this.isRoot) {
+      const markups = await cornieClient().get("/api/v1/markup-discount");
+      const response = await Promise.all([markups]);
+      this.markups = response[0].data as any;
+
+      this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
+      this.PercentageMarkup = this.markups[0]?.markupPercentage;
+    } else {
+      if (!this.locationId) return [];
+      const markups = await cornieClient().get(
+        `/api/v1/markup-discount/location/${this.locationId}`
+      );
+      const response = await Promise.all([markups]);
+
+      this.markups = response[0].data;
+
+      this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
+      this.PercentageMarkup = this.markups[0]?.markupPercentage;
+    }
+
+    this.sales.forEach(
+      (item: any) => (item.markup = this.PercentageMarkup || 200)
+    );
+  }
+
+  // get markupItems() {
+  //   const markups = this.locations.map((loc: any) => {
+  //     let cdm = this.SUC * (this.markups?.markupPercentage / 100);
+  //     let margin = Math.abs(cdm - this.SUC);
+  //     let percentageMargin = (margin / cdm) * 100;
+  //     let minimumPrice = Math.abs(cdm * (1 - this.markups?.maxAllowedDiscount));
+  //     let discountMargin = Math.abs(minimumPrice - this.SUC);
+  //     let discountMarginPercentage = Math.floor(
+  //       (discountMargin / minimumPrice) * 100
+  //     );
+
+  //     return {
+  //       location: loc.name,
+  //       sampleUnitCost: this.SUC,
+  //       markupPercentage: this.markups?.markupPercentage,
+  //       cdmPrice: cdm,
+  //       margin: margin,
+  //       marginPercentage: percentageMargin,
+  //       maxAllowedDiscount: this.markups?.maxAllowedDiscount,
+  //       minPrice: minimumPrice,
+  //       discountedMargin: discountMargin,
+  //       discountedMarginPercentage: discountMarginPercentage,
+  //     };
+  //   });
+
+  //   return markups;
+  // }
+
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+
+    const response = await Promise.all([AllLocation]);
+
+    if (!this.isRoot) {
+      if (!this.locationId) return [];
+
+      response[0].data.forEach((item: any) => {
+        if (item.id === this.locationId) {
+          this.locations = [item];
+        }
+      });
+    } else {
+      this.locations = response[0].data;
+    }
+  }
+
   async created() {
+    if (!this.organizationInfo) await this.fetchOrgInfo();
+
+    await this.fetchMarkups();
+
+    if (!this.isRoot) {
+      if (!this.practitioners.length) await this.fetchPractitioners();
+      let currentPractiotioner = this.practitioners.find(
+        (item: any) => item?.userId === this.cornieUser?.id
+      );
+
+      currentPractiotioner?.locationRoles?.forEach((item: any) => {
+        if (!item.default) {
+          this.locationId = item.locationId;
+        }
+      });
+    }
+    await this.fetchLocation();
+
     if (this.locations?.length <= 0) await this.fetchLocations();
   }
 }
