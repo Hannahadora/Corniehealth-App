@@ -1,65 +1,209 @@
 <template>
   <div class="h-full w-full">
-    <div class="bg-gray-100 rounded-md w-full p-5">
-      <span class="text-black text-xs float-left w-full -mt-2"
-        >Specify notification reminder timelines prior to appointment
-        time.</span
-      >
-      <span
-        class="text-black text-xs float-right flex cursor-pointer -mt-4"
-        @click="AddReminder"
-      >
-        <add-blue-icon class="mr-2" /> Add Reminder</span
-      >
-    </div>
-    <accordion-component
+    <accordion-
       class="pb-10 capitalize"
-      editabetitle="Reminder me to..."
+      title="Reminder"
       :opened="true"
     >
-      <div class="flex pt-5 mt-4">
-        <p class="lbl mt-2 flex capitalize text-black mb-1 text-sm">
-          All - day
-        </p>
-        <label class="switch">
-          <input
-            name="category"
-            type="checkbox"
-            @input="selected"
-            v-model="switchshow"
-            value="2"
-          />
-          <span class="slider round"></span>
-        </label>
+      <div class="bg-gray-100 rounded-md w-full p-5 mt-8">
+        <span class="text-black text-xs float-left w-full -mt-2"
+          >Specify notification reminder timelines prior to appointment
+          time.</span
+        >
+        <span
+          class="text-black text-xs float-right flex cursor-pointer -mt-4"
+          @click="AddReminder"
+        >
+          <add-blue-icon class="mr-2" /> Adcomponentd Reminder</span
+        >
       </div>
-      <div class="grid grid-cols-2 gap-4 w-full">
-        <div class="flex space-x-4 w-full">
-          <div class="w-full">
-            <span class="text-black text-sm capitalize font-semibold">{{
-              new Date(data.startDate).toLocaleDateString("en-US", dateoptions)
-            }}</span>
-            <date-time-picker
-              v-model:date="data.startDate"
-              v-model:time="data.startTime"
-              class="w-full"
+      <div
+        v-for="(reminders, index) in reminder"
+        :key="index"
+        class="grid grid-cols-3 gap-6 mt-8"
+      >
+        <accordion-component
+          class="pb-10 capitalize"
+          editabetitle="1st Reminder"
+          :opened="true"
+        >
+          <div class="mt-7">
+            <label class="switch">
+              <input
+                name="category"
+                type="checkbox"
+                @input="selected"
+                v-model="istReminder.switchshow"
+                value="2"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="flex space-x-4 w-full mt-8">
+            <cornie-radio
+              label="Hour"
+              value="Hour"
+              v-model="istReminder.time"
+              checked
+              name="email"
+            />
+            <cornie-radio
+              label="Day"
+              value="Day"
+              v-model="istReminder.days"
+              name="email"
+            />
+            <cornie-radio
+              label="Week"
+              value="Week"
+              v-model="istReminder.weeks"
+              name="email"
             />
           </div>
-          <cornie-select
-            class="w-full mt-3"
-            v-model="format"
-            :items="['Does not repeat', 'Custom']"
-            placeholder="--Link from forms--"
+
+          <div class="my-8">
+            <input
+              type="number"
+              v-model="istReminder.pref"
+              max="52"
+              placeholder="30"
+              class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12 mr-7"
+            />
+            <label for="">{{ pref }} Before</label>
+          </div>
+
+          <delete-icon
+            class="float-right cursor-pointer"
+            @click="questions.splice(index, 1)"
           />
-        </div>
+        </accordion-component>
+
+        <accordion-component
+          class="pb-10 capitalize"
+          editabetitle="2nd Reminder"
+          :opened="true"
+        >
+          <div class="mt-7">
+            <label class="switch">
+              <input
+                name="category"
+                type="checkbox"
+                @input="selected"
+                v-model="secondReminder.switchshow"
+                value="2"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="flex space-x-4 w-full mt-8">
+            <cornie-radio
+              label="Hour"
+              value="time"
+              v-model="secondReminder.time"
+              checked
+              @change="handleChange(value)"
+              name="email"
+            />
+            <cornie-radio
+              label="Day"
+              value="day"
+              v-model="secondReminder.days"
+              @change="handleChange(value)"
+              name="email"
+            />
+            <cornie-radio
+              label="Week"
+              value="week"
+              v-model="secondReminder.weeks"
+              @change="handleChange(value)"
+              name="email"
+            />
+          </div>
+
+          <div class="my-8">
+            <input
+              type="number"
+              v-model="secondReminder.pref"
+              max="52"
+              placeholder="30"
+              class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12 mr-7"
+            />
+            <label for="">{{ pref }} Before</label>
+          </div>
+
+          <delete-icon
+            class="float-right cursor-pointer"
+            @click="questions.splice(index, 1)"
+          />
+        </accordion-component>
+
+        <accordion-component
+          class="pb-10 capitalize"
+          editabetitle="3rd Reminder"
+          :opened="true"
+        >
+          <div class="mt-7">
+            <label class="switch">
+              <input
+                name="category"
+                type="checkbox"
+                @input="selected"
+                v-model="thirdReminder.switchshow"
+                value="2"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="flex space-x-4 w-full mt-8">
+            <cornie-radio
+              label="Hour"
+              value="Hour"
+              v-model="thirdReminder.time"
+              checked
+              name="email"
+            />
+            <cornie-radio
+              label="Day"
+              value="Day"
+              v-model="thirdReminder.days"
+              name="email"
+            />
+            <cornie-radio
+              label="Week"
+              value="Week"
+              v-model="thirdReminder.weeks"
+              name="email"
+            />
+          </div>
+
+          <div class="my-8">
+            <input
+              type="number"
+              v-model="thirdReminder.startDate"
+              max="52"
+              placeholder="30"
+              class="text-center placeholder-black font-bold font-black outline-none border border-blue-lighter rounded-md h-12 w-12 mr-7"
+            />
+            <label for="">Hours Before</label>
+          </div>
+
+          <delete-icon
+            class="float-right cursor-pointer"
+            @click="questions.splice(index, 1)"
+          />
+        </accordion-component>
       </div>
-      <div class="flex space-x-4 mb-12 pb-14 mt-5 float-right">
+      <!-- <div class="flex space-x-4 mb-12 pb-14 mt-5 float-right">
         <copyform-icon class="float-right" />
         <delete-icon
           class="float-right cursor-pointer"
           @click="questions.splice(index, 1)"
         />
-      </div>
-    </accordion-component>
+      </div> -->
+    </accordion->
     <!-- <div class="w-full">
 
       <div class="w-full">
@@ -254,6 +398,7 @@ import AutoComplete from "@/components/autocomplete.vue";
 import AddBlueIcon from "@/components/icons/addblue.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
 import DateTimePicker from "@/components/datetime-picker.vue";
+import CornieRadio from "@/components/cornieradio.vue";
 
 const countries = getCountries();
 
@@ -272,6 +417,7 @@ const location = namespace("location");
     CopyformIcon,
     CalendarIcon,
     DateTimePicker,
+    CornieRadio,
   },
 })
 export default class AddLocation extends Vue {
@@ -284,25 +430,31 @@ export default class AddLocation extends Vue {
 
   get istReminder() {
     return {
-      days: 0,
-      weeks: 0,
+      days: "",
+      weeks: "",
       time: "",
+      switchshow: true,
+      pref: "30",
     };
   }
 
   get secondReminder() {
     return {
-      days: 0,
-      weeks: 0,
+      days: "",
+      weeks: "",
       time: "",
+      switchshow: true,
+      pref: "30",
     };
   }
 
   get thirdReminder() {
     return {
-      days: 0,
-      weeks: 0,
-      time: "",
+      days: false,
+      weeks: true,
+      time: false,
+      switchshow: false,
+      pref: "",
     };
   }
   @Prop({ type: String, default: "" })
@@ -322,7 +474,7 @@ export default class AddLocation extends Vue {
     endTime: "",
   };
   reminders = [] as any;
-  reminder = [] as any;
+  reminder = [{}] as any;
 
   name = "";
   locationStatus = "";
@@ -346,6 +498,8 @@ export default class AddLocation extends Vue {
   careOptions = "";
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
+
+  pref = "Hours";
 
   dropdowns = {} as IIndexableObject;
 
@@ -384,6 +538,17 @@ export default class AddLocation extends Vue {
     this.states = states;
   }
 
+  handleChange(val: string) {
+   
+    if (val === "time") {
+      this.pref = "Hours";
+    } else {
+      this.pref = val;
+    }
+
+     val = this.istReminder.pref;
+  }
+
   AddReminder() {
     this.reminder.push(this.reminders);
   }
@@ -418,12 +583,12 @@ export default class AddLocation extends Vue {
     return Number(val);
   }
   get payload() {
-    this.istReminder.days = Number(this.istReminder.days);
-    this.istReminder.weeks = Number(this.istReminder.weeks);
-    this.secondReminder.days = Number(this.secondReminder.days);
-    this.secondReminder.weeks = Number(this.secondReminder.weeks);
-    this.thirdReminder.days = Number(this.thirdReminder.days);
-    this.thirdReminder.weeks = Number(this.thirdReminder.weeks);
+    // this.istReminder.days = Number(this.istReminder.days);
+    // this.istReminder.weeks = Number(this.istReminder.weeks);
+    // this.secondReminder.days = Number(this.secondReminder.days);
+    // this.secondReminder.weeks = Number(this.secondReminder.weeks);
+    // this.thirdReminder.days = Number(this.thirdReminder.days);
+    // this.thirdReminder.weeks = Number(this.thirdReminder.weeks);
     return {
       first: this.istReminder,
       second: this.secondReminder,
@@ -507,5 +672,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 :focus-visible {
   outline: none !important;
+}
+.reminder-card {
+  background: #ffffff;
+  box-shadow: 0px 1px 2px rgba(46, 41, 78, 0.02),
+    0px 4px 8px rgba(46, 41, 78, 0.08);
+  border-radius: 4px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div v-if="!hiderating">
-    <div class="grid grid-cols-4 gap-1 w-full justify-center">
+    <div class="grid grid-cols-5 gap-1 py-8 w-full justify-center">
       <img src="../../../../assets/1.svg" alt="image" />
       <img src="../../../../assets/2.svg" alt="image" />
       <img src="../../../../assets/3.svg" alt="image" />

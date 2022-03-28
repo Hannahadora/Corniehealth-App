@@ -1,16 +1,21 @@
 <template>
   <div class="w-full flex flex-col">
     <span class="w-full flex justify-between items-center">
-      <span class="text-blue-yonder mb-1">
-        {{ title }}
-        <span class="text-danger ml-1 text-xs">
-          {{ subtitle }}
-        </span>
-      </span>
+      <div class="flex items-center w-9/12">
+        <div class="mb-1 w-1/3 mr-11 flex items-center">
+          <div class="w-2 h-2 rounded-full mr-4" :style="{ background }"></div>
+          <img :src="title" alt="" />
+        </div>
+        <div class="w-2/3">
+          <progress-bar :width="`${percent}%`" :color="`bg-${color}`" />
+        </div>
+      </div>
       <slot name="label" v-if="$slots.label" />
-      <span :class="[`text-${color}`]" v-else>{{ percent }}%</span>
+      <div class="text-base flex items-center" v-else>
+        <span class="font-bold mr-2">{{ percent }}%</span
+        ><span>({{ total }})</span>
+      </div>
     </span>
-    <progress-bar :width="`${percent}%`" :color="`bg-${color}`" />
   </div>
 </template>
 <script lang="ts">
@@ -32,9 +37,12 @@ export default class RatingBar extends Vue {
   title!: string;
 
   @Prop({ type: String, default: "" })
-  subtitle!: string;
+  total!: string;
 
-  @Prop({ type: String, default: "warning" })
+  @Prop({ type: String, default: "blue-700" })
   color!: string;
+
+  @Prop({ type: String, default: "blue-700" })
+  background!: string;
 }
 </script>

@@ -1,60 +1,72 @@
 <template>
-  <chart-card title="Resource Efficiency" height="439px">
-    <div class="w-full grid grid-cols-1 gap-y-4">
-      <rating-bar
-        :percent="30"
-        color="blue-400"
-        title="AV. VISIT TIME PER PATIENT"
-      >
-        <template #label>
-          <span class="font-extrabold"> 10mins </span>
-        </template>
-      </rating-bar>
-      <rating-bar
-        :percent="30"
-        color="warning"
-        title="AV. ENCOUNTER TIME PER PHYSICIAN"
-      >
-        <template #label>
-          <span class="font-extrabold"> 5mins </span>
-        </template>
-      </rating-bar>
-
-      <rating-bar
-        :percent="30"
-        color="blue-yonder"
-        title="AV. TEST PROCESSING TIME"
-      >
-        <template #label>
-          <span class="font-extrabold"> 8mins </span>
-        </template>
-      </rating-bar>
-
-      <rating-bar :percent="30" color="success" title="AV. DISPENSE TIME">
-        <template #label>
-          <span class="font-extrabold"> 10mins </span>
-        </template>
-      </rating-bar>
-
-      <rating-bar
-        :percent="30"
-        color="blue-300"
-        title="AV. WAIT TIME PER PATIENT"
-      >
-        <template #label>
-          <span class="font-extrabold"> 12mins </span>
-        </template>
-      </rating-bar>
-
-      <rating-bar
-        :percent="30"
-        color="danger"
-        title="AV. CHECKOUT PROCESSING TIME"
-      >
-        <template #label>
-          <span class="font-extrabold"> 10mins </span>
-        </template>
-      </rating-bar>
+  <chart-card title="Resource Efficiency" height="325px">
+    <div class="w-full grid grid-cols-6 gap-x-6">
+      <div class="resource-card flex flex-col">
+        <div>
+          <img class="mb-8" src="@/assets/resources-icons/icon(4).png" alt="" />
+        </div>
+        <span class="mb-4">Average Visit time per Patient</span>
+        <div class="record">
+          <span v-if="!restricted && record">30 mins</span
+          ><span v-if="!restricted && !record">No Data Available</span>
+          <span v-if="restricted">Restricted Data</span>
+        </div>
+      </div>
+      <div class="resource-card flex flex-col">
+        <div>
+          <img class="mb-8" src="@/assets/resources-icons/icon(5).png" alt="" />
+        </div>
+        <span class="mb-4">Average Wait time per Patient</span>
+        <div class="record">
+          <span v-if="!restricted && record">20 mins</span
+          ><span v-if="!restricted && !record">No Data Available</span>
+          <span v-if="restricted">Restricted Data</span>
+        </div>
+      </div>
+      <div class="resource-card flex flex-col">
+        <div>
+          <img class="mb-8" src="@/assets/resources-icons/icon(6).png" alt="" />
+        </div>
+        <span class="mb-4">Average Encounter Time per Physician</span>
+        <div class="record">
+          <span v-if="!restricted && record">15 mins</span
+          ><span v-if="!restricted && !record">No Data Available</span>
+          <span v-if="restricted">Restricted Data</span>
+        </div>
+      </div>
+      <div class="resource-card flex flex-col">
+        <div>
+          <img class="mb-8" src="@/assets/resources-icons/icon(7).png" alt="" />
+        </div>
+        <span class="mb-4">Average Test Processing Time</span>
+        <div class="record">
+          <span v-if="!restricted && record">8 mins</span
+          ><span v-if="!restricted && !record">No Data Available</span>
+          <span v-if="restricted">Restricted Data</span>
+        </div>
+      </div>
+      <div class="resource-card flex flex-col">
+        <div>
+          <img class="mb-8" src="@/assets/resources-icons/icon(8).png" alt="" />
+        </div>
+        <span class="mb-4">Average Dispense Time</span>
+        <div class="record">
+          <span v-if="!restricted && record">15 mins</span
+          ><span v-if="!restricted && !record">No Data Available</span>
+          <span v-if="restricted">Restricted Data</span>
+        </div>
+      </div>
+      <div class="resource-card flex flex-col">
+        <div>
+          <img class="mb-8" src="@/assets/resources-icons/icon(9).png" alt="" />
+        </div>
+        <span class="mb-4">Average Check-out Processing Time</span>
+        <div class="record">
+          <span v-if="!restricted && record">25 mins</span
+          ><span v-if="!restricted && !record">No Data Available</span>
+          <span v-if="restricted">Restricted Data</span>
+        </div>
+      </div>
     </div>
   </chart-card>
 </template>
@@ -70,5 +82,30 @@ import RatingBar from "./rating-bar.vue";
     RatingBar,
   },
 })
-export default class ResourceChart extends Vue {}
+export default class ResourceChart extends Vue {
+  record: boolean = true
+  restricted: boolean = false
+}
 </script>
+
+<style scoped>
+.resource-card {
+  background: #ffffff;
+  padding: 24px;
+  border: 0.5px solid #c2c7d6;
+  border-radius: 8px;
+}
+
+.resource-card > span:nth-of-type(1) {
+  font-size: 16px;
+  line-height: 24px;
+  color: #667499;
+}
+
+.record {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #14171f;
+}
+</style>

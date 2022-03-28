@@ -9,21 +9,16 @@
         Booking Site
       </span>
       <span class="w-full h-screen">
-
-          <tabs :items="tabLinks" v-model="currentTab">
-            <practice-info />
-            <booking-site />
-            <appointment-types />
-            <appointment-rooms />
-            <reminder-section />
-            <calender-preference />
-            <notification-template />
-            <cancel-section />
-            <photo-section />
-            <rating-section />
-            <!-- <performance-section/> -->
-          </tabs>
-        
+        <tabs :items="tabLinks" v-model="currentTab">
+          <practice-info />
+          <booking-site />
+          <appointment-types />
+          <appointment-rooms />
+          <calender-preference />
+          <notification-template />
+          <cancel-section />
+          <rating-section />
+        </tabs>
       </span>
     </div>
   </div>
@@ -71,18 +66,18 @@ export default class Bookings extends Vue {
   tabLinks = [
     "Practice Information",
     "Booking Site",
-    "Appointment Types",
+    // "Appointment Types",
+    "Services",
     "Appointment Rooms",
-    "Reminders",
-    "Calender & Preferences",
+    // "Reminders",
+    "Calender",
     "Notification Templates",
     "Cancellation",
-    "Photos",
+    // "Photos",
     "Rating",
   ];
   currentTab = 0;
 }
 </script>
 
-<style>
-</style>
+<style></style>

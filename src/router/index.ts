@@ -101,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/settings/",
         name: "Settings",
         component: Settings,
-        redirect: to => `${to.path}/org-info`.replace("//", "/"),
+        // redirect: to => `${to.path}/org-info`.replace("//", "/"),
         children: [
           {
             path: "care-partners",

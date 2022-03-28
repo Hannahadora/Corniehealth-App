@@ -1,136 +1,68 @@
 <template>
-  <div class="2xl:h-3/6 w-2/3 block rounded-lg bg-white" v-if="!createaccount">
-    <div class="w-full block p-12">
-      <div>
-        <h2 class="font-bold text-primary text-3xl mb-5">Join Corniehealth</h2>
-        <p class="text-black mb-10">Create a corniehealth account</p>
-        <cornie-btn
-          @click="createaccount = true"
-          class="font-semibold rounded bg-danger mt-3 w-full text-white p-2"
-          type="button"
-        >
-          Sign up with Email
-        </cornie-btn>
-        <span class="w-full text-center block my-1">or</span>
-        <cornie-btn
-          class="font-semibold rounded mb-5 border-primary border-2 py-1 px-3 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2"
-        >
-          <span class="inline-flex justify-center pb-1"
-            ><quantum-icon class="mr-2 pt-1" /></span
-          >Quantum
-        </cornie-btn>
-        <span class="w-full flex text-sm mt-2">
-          Already have an account?
-          <router-link class="ml-1 text-danger" to="/login">
-            Login
-          </router-link>
-        </span>
-      </div>
-    </div>
+  <div class="" v-if="!createaccount">
+    
   </div>
 
-  <div
-    class="h-5/6 2xl:h-3/6 w-full flex flex-col justify-center rounded-lg bg-white -mt-12"
-    v-else
-  >
-    <v-form class="w-full p-6" @submit="submit">
-      <div v-if="step == 1">
+  <h1 v-if="step == 2" class="text-white font-bold text-left text-5xl mb-6">Create an Account</h1>
+
+  <div class="w-full flex flex-col justify-center rounded-lg bg-white px-9 py-14">
+    <v-form class="w-full" @submit="submit">
+      <div class="mb-12" v-if="step == 2 && !userCreated"> 
         <One
           :checked="checked"
           :checked2="checked2"
           :checked3="checked3"
           :isVisible="isVisible"
-          @next="next()"
+          @next="setStep = true"
           @selected="checkedType($event)"
         />
       </div>
 
-      <div v-if="step == 2">
-          <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20" :class="[accountType == 'Patient' ? 'mt-36' : 'mt-48']">
-              <h1 class="text-primary font-bold text-2xl mb-2">Create an account</h1>
-               <div class="bg-light_gray text-sm w-full p-4 text-jet_black mb-5" v-if="accountType == 'Patient'">
-                You must be 18 or older to create a CornieCare Patient Online account.
-                Parents must create dependent accounts for patients under 18.
-              </div>
+      <div v-if="step == 2 && !userCreated">
+        <div class="container flex flex-col">
+          <div
+            class="bg-light_gray text-sm w-full p-4 text-jet_black mb-5"
+            v-if="accountType == 'Patient'"
+          >
+            You must be 18 or older to create a CornieCare Patient Online
+            account. Parents must create dependent accounts for patients under
+            18.
+          </div>
 
-            <div class="flex flex-wrap mb-8" style="width:115vh">
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      py-3
-                      font-medium
-                      leading-none
-                      rounded-t
-                       tracking-wider
-                      text-sm
-                      title-font
-                      cursor-pointer
-                      relative
-                      hover:text-gray-900
-                    "
-                     :class="[
-                        step == 2
-                          ? 'border-b-4 border-danger text-black icon-wrap'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
-                    Enter Information
-                  </a>
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      py-3
-                       tracking-wider
-                      font-medium
-                      leading-none
-                      rounded-t
-                      text-sm
-                      title-font
-                      cursor-pointer
-                      relative
-                      hover:text-gray-900
-                    "
-                    :class="[
-                        step == 3 && userCreated
-                          ? 'border-b-2 border-danger text-black'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
+          <div v-if="setStep && step === 2" class="grid grid-cols-3 mb-16 w-full" style="">
+            <a
+              class="inline-flex items-center justify-center py-3 font-medium leading-none rounded-t tracking-wider text-sm title-font cursor-pointer relative hover:text-gray-900"
+              :class="[
+                step == 2
+                  ? 'border-b-4 border-danger text-black icon-wrap'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+              Enter Information
+            </a>
+            <a
+              class="inline-flex items-center justify-center py-3 tracking-wider font-medium leading-none rounded-t text-sm title-font cursor-pointer relative hover:text-gray-900"
+              :class="[
+                step == 3 && userCreated
+                  ? 'border-b-2 border-danger text-black'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+              Verify Email
+            </a>
+            <a
+              class="inline-flex items-center justify-center w-auto py-3 font-medium leading-none text-sm tracking-wider border-b-2 border-gray-200 sm:px-6 sm:w-auto sm:justify-start title-font hover:text-gray-900 relative"
+              :class="[
+                step == 4 && userCreated
+                  ? 'border-b-2 border-danger text-black'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+              Set Password
+            </a>
+          </div>
 
-                    Verify Email & Set Password
-                  </a>
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                       w-auto
-                      py-3
-                      font-medium
-                      leading-none
-                       text-sm
-                      tracking-wider
-                      border-b-2 border-gray-200
-                      sm:px-6 sm:w-auto sm:justify-start
-                      title-font
-                      hover:text-gray-900
-                      relative
-                    "
-                     :class="[
-                        step == 4 && userCreated
-                          ? 'border-b-2 border-danger text-black'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
-                     Access Dashboard
-                  </a>
-            </div>
-
-          <!-- <div class="flex flex-wrap mb-8" style="width: 115vh">
+          <!-- <div class="grid grid-cols-3 mb-8" style="width: 115vh">
             <a
               class="inline-flex items-center justify-center w-auto py-3 font-medium leading-none tracking-wider rounded-t text-sm sm:px-6 sm:w-auto sm:justify-start title-font cursor-pointer relative"
               :class="[
@@ -174,81 +106,44 @@
 
       <div class="" :user="user" v-if="step == 3 && userCreated">
         <!-- component -->
-        <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20 mt-2">
-        <h1 class="text-primary font-bold text-2xl mb-2">Create an account</h1>
-          <div class="flex flex-wrap mb-8" style="width:120vh">
-                  <a
-                    class="
-                     inline-flex
-                      items-center
-                      justify-center
-                      py-3
-                       tracking-wider
-                      font-medium
-                      leading-none
-                      rounded-t
-                      text-sm
-                      title-font
-                      cursor-pointer
-                      relative
-                      border-b-4 border-danger text-black
-                    "
-   
-                  >
-                  <span class="relative">
-                  <check-icon :class="[step == 3 && userCreated ? 'flex' : 'hidden']" class="icon-check-mark"/>
-                    Enter Information
-                  </span>
-                  </a>
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      py-3
-                       tracking-wider
-                      font-medium
-                      leading-none
-                      rounded-t
-                      text-sm
-                      title-font
-                      cursor-pointer
-                      relative
-                      hover:text-gray-900
-                    "
-                    :class="[
-                        step == 3 && userCreated
-                          ? 'border-b-4 border-danger text-black icon-wrap2'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
-
-                   Verify Email & Set Password
-                  </a>
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      w-1/2
-                      py-3
-                      text-sm
-                      font-medium
-                      leading-none
-                      tracking-wider
-                      border-b-2 border-gray-200
-                      sm:px-6 sm:w-auto sm:justify-start
-                      title-font
-                      hover:text-gray-900
-                    "
-                     :class="[
-                        step == 4 && userCreated
-                          ? 'border-b-4 border-danger text-black'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
-                     Access Dashboard
-                  </a>
+        <div
+          class="container flex flex-col flex-wrap"
+        >
+          <h1 class="text-primary font-bold text-4xl mb-12">
+            Create an account
+          </h1>
+          <div class="grid grid-cols-3 mb-8 w-full" style="">
+            <a
+              class="py-3 tracking-wider font-medium leading-none rounded-t text-sm title-font cursor-pointer relative border-b-4 border-danger text-black"
+            >
+              <span class="relative">
+                <check-icon
+                  :class="[step == 3 && userCreated ? 'flex' : 'hidden']"
+                  class="icon-check-mark"
+                />
+                Enter Information
+              </span>
+            </a>
+            <a
+              class="py-3 tracking-wider font-medium leading-none rounded-t text-sm title-font cursor-pointer relative hover:text-gray-900"
+              :class="[
+                step == 3 && userCreated
+                  ? 'border-b-4 border-danger text-black icon-wrap2'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+              Verify Email
+            </a>
+            <a
+              class="w-1/2 py-3 text-sm font-medium leading-none tracking-wider border-b-2 border-gray-200 sm:px-6 sm:w-auto sm:justify-start title-font hover:text-gray-900"
+              :class="[
+                step == 4 && userCreated
+                  ? 'border-b-4 border-danger text-black'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+              Set Password
+            </a>
           </div>
           <verify-email-code
             v-model:code="code"
@@ -260,9 +155,13 @@
       </div>
       <!-- component -->
       <div class="" :user="user" v-if="step == 4 && userCreated">
-        <div class="container flex flex-col flex-wrap px-5 py-4 w-9/12 mx-20 mt-28">
-        <h1 class="text-primary font-bold text-2xl mb-2">Create an account</h1>
-          <!-- <div class="flex flex-wrap mx-auto" style="width:120vh">
+        <div
+          class="container flex flex-col"
+        >
+          <h1 class="text-primary font-bold text-4xl mb-12">
+            Create an account
+          </h1>
+          <!-- <div class="grid grid-cols-3 mx-auto" style="width:120vh">
                   <a
                     class="
                       inline-flex
@@ -334,80 +233,38 @@
                      Access Dashboard
                   </a>
           </div> -->
-             <div class="flex flex-wrap mb-8" style="width:120vh">
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      py-3
-                       tracking-wider
-                      font-medium
-                      leading-none
-                      rounded-t
-                      text-sm
-                      title-font
-                      cursor-pointer
-                      relative
-                      hover:text-gray-900
-                      border-b-4 border-danger text-black
-                    "
-   
-                  >
-                  <span class="relative">
-                  <check-icon :class="[step == 4 && userCreated ? 'flex' : 'hidden']" class="icon-check-mark"/>
-                    Enter Information
-                  </span>
-                  </a>
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      py-3
-                       tracking-wider
-                      font-medium
-                      leading-none
-                      rounded-t
-                      text-sm
-                      title-font
-                      cursor-pointer
-                      relative
-                      hover:text-gray-900
-                    "
-                    :class="[
-                        step == 4 && userCreated
-                          ? 'border-b-4 border-danger text-black icon-wrap2'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
-
-                   Verify Email & Set Password
-                  </a>
-                  <a
-                    class="
-                      inline-flex
-                      items-center
-                      justify-center
-                      w-1/2
-                      py-3
-                      text-sm
-                      font-medium
-                      leading-none
-                      tracking-wider
-                      border-b-2 border-gray-200
-                      sm:px-6 sm:w-auto sm:justify-start
-                      title-font
-                      hover:text-gray-900
-                    "
-                     :class="[
-                        step == 4 && userCreated
-                          ? 'border-b-4 border-danger text-black'
-                          : 'text-gray-400 border-b-2 border-gray-200',
-                      ]"
-                  >
-                     Access Dashboard
-                  </a>
+          <div class="grid grid-cols-3 mb-8 w-full" style="">
+            <a
+              class="inline-flex items-center justify-center py-3 tracking-wider font-medium leading-none rounded-t text-sm title-font cursor-pointer relative hover:text-gray-900 border-b-4 border-danger text-black"
+            >
+              <span class="relative">
+                <check-icon
+                  :class="[step == 4 && userCreated ? 'flex' : 'hidden']"
+                  class="icon-check-mark"
+                />
+                Enter Information
+              </span>
+            </a>
+            <a
+              class="inline-flex items-center justify-center py-3 tracking-wider font-medium leading-none rounded-t text-sm title-font cursor-pointer relative hover:text-gray-900"
+              :class="[
+                step == 4 && userCreated
+                  ? 'border-b-4 border-danger text-black icon-wrap2'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+              Verify Email
+            </a>
+            <a
+              class="inline-flex items-center justify-center w-1/2 py-3 text-sm font-medium leading-none tracking-wider border-b-2 border-gray-200 sm:px-6 sm:w-auto sm:justify-start title-font hover:text-gray-900"
+              :class="[
+                step == 4 && userCreated
+                  ? 'border-b-4 border-danger text-black'
+                  : 'text-gray-400 border-b-2 border-gray-200',
+              ]"
+            >
+             Set Password
+            </a>
           </div>
           <activate-account
             :userId="user.id"
@@ -419,14 +276,14 @@
     </v-form>
 
     <span
-      class="w-full flex justify-center items-center text-sm text-center mt-2"
+      class="w-full flex justify-center items-center text-sm text-center mt-9 mb-12"
       v-if="step != 4 && step != 3"
     >
       Already have an account?
       <router-link class="ml-1 text-danger" to="/login"> Sign In </router-link>
     </span>
 
-    <span class="text-center mt-1 text-xs" v-if="step == 2">
+    <span class="text-center mb-4 text-xs" v-if="step == 2">
       <a href="javascript:void(0)" class="text-danger"> Terms of use</a> |
       <a href="javascript:void(0)" class="text-danger"> Privacy Policy</a> |
       <a href="javascript:void(0)" class="text-danger"> Help</a> | 2021 Cornie
@@ -513,18 +370,19 @@ export default class CreateAccount extends Vue {
   phone = "";
   dialCode = "+234";
   fullName = "";
-  accountType = "Provider";
+  accountType = "Patient";
   loading = false;
   createaccount = false;
-  checked = false;
+  checked = true;
   checked2 = false;
   checked3 = false;
   active = false;
   isVisible = false;
   isVisible2 = false;
-  step = 1;
-  width_percent = 25;
-  width = 25;
+  step = 2;
+  setStep = true;
+  width_percent = 33;
+  width = 33;
 
   @user.Mutation
   setCornieData!: (data: any) => void;
@@ -548,6 +406,7 @@ export default class CreateAccount extends Vue {
   }
   next() {
     this.step = this.step + 1;
+    this.$emit('set-step', this.step)
     this.width += this.width_percent;
   }
   checkedType(value: any) {
@@ -562,6 +421,7 @@ export default class CreateAccount extends Vue {
 
   back() {
     this.step >= 0 && (this.step -= 1);
+    this.$emit('set-step', this.step)
     this.width -= this.width_percent;
   }
 
@@ -585,12 +445,14 @@ export default class CreateAccount extends Vue {
     this.checked = false;
     this.checked3 = false;
     this.accountType = "Provider";
+    this.$emit("check-type", this.accountType);
   }
   checkValue3() {
     this.checked2 = false;
     this.checked = false;
     this.checked3 = true;
     this.accountType = "Payer";
+    this.$emit("check-type", this.accountType);
   }
 
   async submit() {
@@ -673,32 +535,30 @@ export default class CreateAccount extends Vue {
   background: #fff;
 }
 .icon-wrap::after {
-       content: '';
-    background: #fff;
-    position: inherit;
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #fe4d3c;
-    right: -2px;
-    top: 21px;
- 
+  content: "";
+  background: #fff;
+  position: inherit;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  right: -32px;
+  top: 21px;
 }
 .icon-wrap2::after {
-        content: '';
-    background: #fff;
-    position: inherit;
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #fe4d3c;
-    right: -5px;
-    top: 29px;
- 
+  content: "";
+  background: #fff;
+  position: inherit;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  right: -5px;
+  top: 29px;
 }
 .icon-wrap3::after {
   content: "";

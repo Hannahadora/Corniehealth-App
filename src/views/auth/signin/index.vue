@@ -1,5 +1,5 @@
 <template>
-  <auth>
+  <auth :areaPath="areaPath">
     <template v-slot:text>
       <div
         v-if="userCreated && showText"
@@ -14,8 +14,8 @@
       </div>
     </template>
     <template v-if="loggedIn">
-      <two-factor v-if="twoFactor" />
-      <recommendation v-else />
+      <two-factor v-if="twoFactor" @change-path="changePath('signin')"/>
+      <recommendation v-else @change-path="changePath('2fa')" />
     </template>
     <sign-in v-else @logged-in="loggedIn = true" />
   </auth>
@@ -44,6 +44,7 @@ const user = namespace("user");
 })
 export default class BaseSignIn extends Vue {
   loggedIn = false;
+  areaPath = 'signin'
 
   @Prop({ type: Boolean, default: "" })
   showText!: boolean;
@@ -71,5 +72,10 @@ export default class BaseSignIn extends Vue {
       store.state.user.requiresSecurityQuestion
     );
   }
+
+  changePath(val: any) {
+    this.areaPath = val
+  }
+
 }
 </script>

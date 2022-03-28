@@ -1,6 +1,42 @@
 <template>
-  <chart-card height="390px" title="Billings and Payments">
-    <canvas ref="chart" style="margin: auto"></canvas>
+  <chart-card
+    height="474px"
+    title="Account Receivables"
+    :subtitle="totalBillings"
+    action="View Billing"
+  >
+    <div class="w-full grid rating-grid mt-8">
+      <div class="w200">
+        <canvas ref="chart" style="margin: auto;"></canvas>
+      </div>
+
+      <div class="w-">
+        <table class="w-full">
+          <tbody>
+            <tr>
+              <td>Reliance HMO</td>
+              <td>₦ 2,050,000.00</td>
+            </tr>
+            <tr>
+              <td>AIICO</td>
+              <td>₦ 2,412,000.00</td>
+            </tr>
+            <tr>
+              <td>Avon</td>
+              <td>₦ 3,345,000.00</td>
+            </tr>
+            <tr>
+              <td>AXA Mansard</td>
+              <td>₦ 3,112,893.00</td>
+            </tr>
+            <tr>
+              <td>Others</td>
+              <td>₦ 754,112.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </chart-card>
 </template>
 <script lang="ts">
@@ -19,25 +55,30 @@ Chart.register(CustomDoughnutController);
 })
 export default class BillingsChart extends Vue {
   chart!: Chart;
+
+  get totalBillings() {
+    return "₦ 17,782,000.00";
+  }
+
   mounted() {
     this.mountChart();
   }
 
   mountChart() {
     const data = {
-      labels: ["New billing", "Old bill"],
+      labels: ["Claims (₦ 11,202,660.00)", "Self-pay (₦ 6,579,340.00)"],
       datasets: [
         {
           label: "Dataset 1",
-          backgroundColor: ["#541388", "#F0F4FE"],
-          data: [80, 20],
+          backgroundColor: ["#114FF5", "#35BA83"],
+          data: [63, 37],
         },
       ],
     };
     const ctx: any = this.$refs.chart;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
-      type: "derivedDoughnut",
+      type: "pie",
       data,
       options: {
         // cutout: 90,
@@ -45,7 +86,7 @@ export default class BillingsChart extends Vue {
           center: {
             text: "N800, 000",
             color: "#14171F",
-            fontStyle: "Arial",
+            fontStyle: "Inter",
             sidePadding: 12,
             minFontSize: 12,
             lineHeight: 25,
@@ -68,6 +109,40 @@ export default class BillingsChart extends Vue {
         },
       },
     });
+    if (this.chart && this.chart.canvas.parentNode) {
+      const parent: any = this.chart.canvas.parentNode;
+      parent.style.height = "200px";
+    }
   }
 }
 </script>
+
+<style scoped>
+.rating-grid {
+  grid-template-columns: 30% 70%;
+}
+.w200 {
+  width: 200px !;
+  height: 200px;
+}
+td {
+  font-size: 14px !important;
+  padding: 14px 16px !important;
+  line-height: 20px;
+  color: #14171f;
+}
+table > tbody > tr > td:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end !important;
+}
+table > tbody > tr:nth-of-type(even) {
+  background: #f0f4fe !important;
+  border-radius: 8px;
+}
+table,
+tbody,
+tr {
+  border: none !important;
+}
+</style>

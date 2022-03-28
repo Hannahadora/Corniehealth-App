@@ -1,34 +1,39 @@
 <template>
   <div class="block w-full">
-    <div class="flex justify-between w-full">
-      <span class="flex items-center">
-        <h2 class="font-bold">Patient Registration Chart</h2>
-        <div class="flex items-center">
-          <span class="mx-2">{{ order }}</span>
-          <chevron-down-icon
-            @click="filter = !filter"
-            class="stroke-current cursor-pointer text-danger"
-          />
-          <drop-down v-model="filter">
-            <div class="flex flex-col">
-              <span class="cursor-pointer" @click="reorder('Today')"
-                >Today</span
-              >
-              <span class="cursor-pointer" @click="reorder('WTD')">WTD</span>
-              <span class="cursor-pointer" @click="reorder('MTD')">MTD</span>
-              <span class="cursor-pointer" @click="reorder('YTD')">YTD</span>
-            </div>
-          </drop-down>
+    <div>
+      <div class="my-6">
+        <span class="flex items-center justify-between">
+          <h2 class="font-bold text-base" style="coolor: #667499">
+            Patient Registration Chart
+          </h2>
+          <span
+            class="mx-2 text-sm font-semibold cursor-pointer"
+            style="color: #fe4d3c"
+            >View Patients</span
+          >
+        </span>
+        <div v-if="!restricted" class="flex items-center">
+          <span class="text-2xl font-bold mr-2">3,500</span
+          ><span class="text-base font-bold text-green-400">+4.0%</span>
         </div>
-      </span>
-      <span> Total={{ chartData.total }} </span>
+      </div>
+      <canvas v-if="!restricted" ref="registration_chart"></canvas>
     </div>
-    <canvas ref="registration_chart"></canvas>
+    <div class="flex flex-col items-center justify-center"
+     style="height: 391px"
+      v-if="restricted"
+    >
+      <div class="text-center">
+        <p class="font-bold text-2xl text-purple-800 mb-2">Restricted Data</p>
+        <p class="text-base">You are not authorized to view this data</p>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Chart from "chart.js/auto";
+import ChartCard from "../dashboard/chart-card.vue";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import DropDown from "@/components/drop-down.vue";
 import { cornieClient } from "@/plugins/http";
@@ -41,6 +46,7 @@ import { Prop, Watch } from "vue-property-decorator";
   components: {
     ChevronDownIcon,
     DropDown,
+    ChartCard
   },
 })
 export default class RegistrationChart extends Vue {
@@ -60,6 +66,8 @@ export default class RegistrationChart extends Vue {
 
   raw: IStat[] = [];
 
+  restricted = false;
+
   reorder(order: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = order;
     this.filter = false;
@@ -71,6 +79,9 @@ export default class RegistrationChart extends Vue {
         "api/v1/patient/analytics/stats"
       );
       this.raw = response.data;
+      if ((response.data = "You are not allowed to access this resource")) {
+        this.restricted = true;
+      }
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error) {
       window.notify({ msg: "Failed to fetch chart data", status: "error" });

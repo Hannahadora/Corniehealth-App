@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="390px" title="Referral">
+  <chart-card height="422px" title="Referral" subtitle="18 Referrals" action="View Referrals">
     <canvas ref="chart" style="margin: auto"></canvas>
   </chart-card>
 </template>
@@ -25,12 +25,12 @@ export default class ReferralChart extends Vue {
 
   mountChart() {
     const data = {
-      labels: ["Incoming", "Outgoing"],
+      labels: ["15 Incoming", "3 Outgoing"],
       datasets: [
         {
           label: "Dataset 1",
-          backgroundColor: ["#F0F4FE", "#00D5E0"],
-          data: [4, 12],
+          backgroundColor: ["#35BA83", "#F7B538"],
+          data: [15, 3],
         },
       ],
     };
@@ -40,17 +40,17 @@ export default class ReferralChart extends Vue {
       type: "derivedDoughnut",
       data,
       options: {
-        // cutout: 90,
         elements: {
           center: {
-            text: "18 REFERRALS",
+            text: "18 Referrals",
             color: "#14171F",
-            fontStyle: "Arial",
+            fontStyle: "Inter",
             sidePadding: 12,
             minFontSize: 12,
             lineHeight: 25,
           },
         },
+        cutout: "80%",
         responsive: true,
         plugins: {
           legend: {
