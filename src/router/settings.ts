@@ -172,6 +172,18 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/settings/forms/index.vue"),
     },
     {
+      path: "medication",
+      props: true,
+      name: "Medications",
+      component: () => import("@/views/dashboard/medications/medication/index.vue"),
+    },
+    {
+      path: "diagnostics",
+      props: true,
+      name: "Diagnostics",
+      component: () => import("@/views/dashboard/diagnostics/diagnostic/index.vue"),
+    },
+    {
       path: "markup",
       props: true,
       name: "Markup",

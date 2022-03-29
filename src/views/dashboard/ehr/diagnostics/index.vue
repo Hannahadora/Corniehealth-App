@@ -7,59 +7,49 @@
         Diagnostics
       </span>
       <span class="w-full h-screen">
-        <diagnostic-empty-state v-if="empty" />
+       <diagnostic-empty-state v-if="empty" />
         <diagnostic-existing-state v-else />
       </span>
     </div>
   </div>
 </template>
+
 <script lang="ts">
-import IOtherrequest from "@/types/IOtherrequest";
 import { Options, Vue } from "vue-class-component";
+import IPractitioner from "@/types/IPractitioner";
+import { namespace } from "vuex-class";
 import DiagnosticEmptyState from "./emptyState.vue";
 import DiagnosticExistingState from "./existingState.vue";
-import { namespace } from "vuex-class";
+import IDiagnostic from "@/types/IDiagnostic";
 
-const otherrequest = namespace("otherrequest");
+
+const diagnostic = namespace("diagnostic");
 
 @Options({
-  name: "DiagonosticsIndex",
+  name: "DiagnosticIndex",
   components: {
-    DiagnosticEmptyState,
     DiagnosticExistingState,
+    DiagnosticEmptyState,
   },
 })
-export default class DiagnoticIndex extends Vue {
-  addDiagnotic = false;
-  show = false;
+export default class DiagnosticIndex extends Vue {
 
   get empty() {
-    return this.patientrequests.length < 1;
+    return this.patientdiagnostics.length < 1;
   }
 
-  //  @otherrequest.State
-  //   otherrequests!: IOtherrequest[];
+  @diagnostic.State
+  patientdiagnostics!: IDiagnostic[];
 
-  //   @otherrequest.Action
-  //   fetchOtherrequests!: () => Promise<void>;
   get patientId() {
     return this.$route.params.id as string;
   }
-  @otherrequest.State
-  patientrequests!: any[];
 
-  medicationAdded() {
-    this.show = false;
-    this.patientrequests;
-    this.fetchOtherrequestsById(this.patientId);
-  }
+  @diagnostic.Action
+  fetchDiagnosticById!: (patientId: string) => Promise<void>;
 
-  @otherrequest.Action
-  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
-
-  created() {
-    if (this.patientrequests.length < 1)
-      this.fetchOtherrequestsById(this.patientId);
+  async created() {
+    await this.fetchDiagnosticById(this.patientId);
   }
 }
 </script>

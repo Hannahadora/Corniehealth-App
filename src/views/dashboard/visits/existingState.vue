@@ -20,7 +20,7 @@
         <div class="p-2 w-full hover:bg-gray-100 p-3 cursor-pointer" @click="showPatient">
           <span class="ml-3 text-xs">Check-In from Patients Register</span>
         </div>
-        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/calendar')">
+        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer"  @click="showAppointment">
           <span class="ml-3 text-xs">Check-In from Scheduled Appointments</span>
         </div>
       </card-text>
@@ -68,15 +68,15 @@
                 <div class="w-10 h-10">
                     <avatar
                         class="mr-2"
-                        v-if="item.image"
-                        :src="item.image"
+                        v-if="item.checkedInBy.image"
+                        :src="item.checkedInBy.image"
                     />
                     <avatar class="mr-2" v-else :src="localSrc" />
                 </div>
                 <div class="w-full mt-2">
                     <p class="text-sm text-dark font-semibold">
-                        {{ item.firstName }}
-                        {{ item.lastName }}
+                        {{ item.checkedInBy.firstName }}
+                        {{ item.checkedInBy.lastName }}
                     </p>
                 </div>
             </div>
@@ -301,7 +301,7 @@
     <patient-search v-model="showPatientModal" @checkin-data="checkindata"/>
     <timeline-modal v-model="timeLineVissible" :id="currentVisitId" :timeline="timeline" :patient="patientTimeline"/>
     <check-out v-model="showCheckout" :allvisit="allvisit" @checkout-added="checkindata"  :patient="patientTimeline" :practitionerdata="practitioner" :id="currentVisitId"/>
-  
+    <scheduled-appointment v-model="showAppoitmentModal"/>
   </div>
 </template>
 <script lang="ts">
@@ -350,6 +350,7 @@ import CheckOut from "./components/checkout.vue";
 import Actors from "../schedules/components/actors.vue";
 import PatientSearch from "./components/searchPatient.vue"
 import TimelineModal from "./components/timeline.vue";
+import ScheduledAppointment from "./components/schedulesPatient.vue";
 
 
 const visitsStore = namespace("visits");
@@ -370,6 +371,7 @@ const appointment = namespace("appointment");
     FilterIcon,
     IconInput,
     TimelineModal,
+    ScheduledAppointment,
     Avatar,
     DeleteIcon,
     EyeIcon,
@@ -396,13 +398,14 @@ const appointment = namespace("appointment");
     ManageBillIcon,
   },
 })
-export default class PractitionerExistingState extends Vue {
+export default class visitExistingState extends Vue {
   showColumnFilter = false;
   show = false;
   query = "";
   search = "";
   showPatientModal = false;
   allvisit = [];
+  showAppoitmentModal = false;
 
   selectedStatus = 0;
   filterByType: any = [];
@@ -497,14 +500,14 @@ export default class PractitionerExistingState extends Vue {
       show: true,
       noOrder: true
     },
+    // {
+    //   title: "visit type",
+    //   key: "visittype",
+    //   show: true,
+    //   noOrder: true
+    // },
     {
-      title: "visit type",
-      key: "visittype",
-      show: true,
-      noOrder: true
-    },
-    {
-      title: "practitioner(s)",
+      title: "practitioner",
       key: "checkedInBy",
       show: true,
        noOrder: true
@@ -545,10 +548,15 @@ export default class PractitionerExistingState extends Vue {
       visit.checkInTime = new Date(
           visit.checkInTime
         ).toLocaleDateString("en-US");
+
+         visit.checkOutTime = new Date(
+          visit.checkOutTime
+        ).toLocaleDateString("en-US");
       return {
         ...visit,
         action: visit.id,
-        visittype: 'xxxxxx'
+        visittype: 'xxxxxx',
+        period: visit.checkInTime +'-'+ visit.checkOutTime
       };
     });
     if (!this.query) return visits;
@@ -643,6 +651,10 @@ export default class PractitionerExistingState extends Vue {
 
   showPatient(){
       this.showPatientModal = true;
+  }
+
+  showAppointment(){
+    this.showAppoitmentModal = true;
   }
 
 

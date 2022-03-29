@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-5/12 h-full">
+  <cornie-dialog v-model="show" right class="w-7/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -21,19 +21,19 @@
             <div class="grid grid-cols-3 gap-4 w-full justify-center border-b-2 border-dashed border-gray-200 pb-5">
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Request Date</span>
-                    <span class="py-3 rounded-md"> 29/10/2022 </span>
+                    <span class="py-3 rounded-md"> {{ new Date(input.createdAt).toLocaleDateString()}} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Requisition ID</span>
-                    <span class="py-3 rounded-md"> DF5456788 </span>
+                    <span class="py-3 rounded-md"> {{ input.identifier }} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Recorder</span>
-                    <span class="py-3 rounded-md"> Dr. Niyi Adegbola </span>
+                    <span class="py-3 rounded-md"> Dr. {{ authPractitioner.firstName +' '+ authPractitioner.lastName}} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Status</span>
-                    <span class="rounded-full bg-green-100 text-green-400 px-3 py-1 mt-3 text-xs"> Active </span>
+                    <span class="rounded-full bg-green-100 text-green-400 px-3 py-1 mt-3 text-xs"> {{ input.status }} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Status Reason</span>
@@ -41,19 +41,19 @@
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Based On</span>
-                    <span class="py-3 rounded-md"> Sercive Request </span>
+                    <span class="py-3 rounded-md"> {{ input.basedOn }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Intent</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ input.intent }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Priority</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ input?.priority }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Category</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ input.category }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Encounter</span>
@@ -65,15 +65,15 @@
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Requester</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ getPractitionerName(input.requesterId) }} </span>
                 </div>
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Patient</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ getPatientName(input.patientId) }} </span>
                 </div>
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Dispenser</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ getOrgName(input.dispenserId) }} </span>
                 </div>
 
               
@@ -83,12 +83,38 @@
               title="Medication"
               :opened="false"
             >
-             <cornie-table :columns="rawHeaders" v-model="items" :listmenu="true" :check="false">
+             <cornie-table :columns="medicationHeader" v-model="medications" :listmenu="true" :check="false">
                 <template #actions="{ item }">
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <danger-icon />
-                    <span class="ml-3 text-xs">Cancel</span>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showMedication(item)">
+                    <edit-icon />
+                    <span class="ml-3 text-xs">Edit Medication</span>
                     </div>
+                </template>
+                  <template #code="{ item }">
+                    <div class="flex space-x-3">
+                      <div>
+                        <p>{{ item.code }}</p>
+                        <p class="text-gray-400">{{ item.durationInDays }} days</p>
+                      </div>
+                        <medication-drug v-if="item.substitutionAllowed == true" />
+                        <refill-drug v-else/>
+                    </div>
+                  </template>
+                  <template #dosage="{ item }">
+                    <p >{{ item.dosageInstruction }}/day</p>
+                 </template>
+                <template #duration="{ item }">
+                    <p >{{ item.durationInDays }} Days</p>
+                </template>
+                <template #quantity="{ item }">
+                  <span>
+                    {{ item.quantity }}
+                  </span>
+                </template>
+                <template #courseOfTherapy="{ item}">
+                    <p>
+                      {{ item.courseOfTherapy}}
+                    </p>
                 </template>
             </cornie-table>
             </accordion-component>
@@ -96,12 +122,30 @@
               title="Refill"
               :opened="false"
             >
-             <cornie-table :columns="rawHeaders2" v-model="items" :listmenu="true" :check="false">
+             <cornie-table :columns="refillHeader" v-model="refills" :listmenu="true" :check="false">
                 <template #actions="{ item }">
-                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <danger-icon />
-                    <span class="ml-3 text-xs">Cancel</span>
+                   <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+                      <edit-icon />
+                      <span class="ml-3 text-xs">Edit Refill</span>
                     </div>
+                </template>
+                  <template #interval="{ item }">
+                    <div class="flex space-x-3">
+                      <div>
+                        <p class="text-gray-400">{{ item.interval }} {{ item.intervalUnit }}</p>
+                      </div>
+                    </div>
+                  </template>
+                  <template #startDate="{ item }">
+                      <span>{{ new Date(item.startDate).toLocaleDateString()}}</span>
+                 </template>
+                <template #duration="{ item }">
+                      <span>{{ item.supplyDuration }} Days</span>
+                </template>
+                <template #quantity="{ item }">
+                  <span>
+                    {{ item.quantity }}
+                  </span>
                 </template>
             </cornie-table>
             </accordion-component>
@@ -130,16 +174,19 @@
 
 
   </cornie-dialog>
+  <refill-modal  v-model="showRefillModal" :id="requestid" :medicationId="medicationid"/>
+  <edit-medication v-model="showEditMedication" @medication-added="medicationadded" :id="requestid" :medselectedItem="medselectedItem"/>
 </template>
 
 <script lang="ts">
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 import { string } from "yup";
+import { mapDisplay } from "@/plugins/definitions";
 
-import ISpecial from "@/types/ISpecial";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { IPatient } from "@/types/IPatient";
+import IRequest from "@/types/IRequest";
 
 import { Options, Vue, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -164,11 +211,16 @@ import CornieInput from "@/components/cornieinput.vue";
 import DRangePicker from "@/components/daterangecalendar.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import EditMedication from "./medication.vue";
+
+import RefillModal from "./refill.vue";
 
 
 const practitioner = namespace("practitioner");
-const special = namespace("special");
+const request = namespace("request");
 const patients = namespace("patients");
+const userStore = namespace("user");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -185,8 +237,11 @@ function defaultFilter(item: any, query: string) {
     CornieIconBtn,
     ArrowLeftIcon,
     DRangePicker,
+    EditMedication,
+    RefillModal,
     CancelIcon,
     CornieDialog,
+    EditIcon,
     CornieRadio,
     Avatar,
     CornieTable,
@@ -202,6 +257,9 @@ function defaultFilter(item: any, query: string) {
   },
 })
 export default class DetailedViewModal extends Vue {
+    @Prop({ type: String, default: "" })
+    id!: string;
+
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
@@ -209,7 +267,13 @@ export default class DetailedViewModal extends Vue {
     filter!: (item: any, query: string) => boolean;
 
     @Prop({ type: String, default: "" })
-    id!: string;
+    medicationid!: string;
+
+    @Prop({ type: Object, default: {} })
+    selectedItem!: any;
+
+    @Prop({ type: String, default: "" })
+    requestid!: string;
 
     @Prop({ type: String, default: "" })
     specilatyId!: string;
@@ -227,98 +291,129 @@ export default class DetailedViewModal extends Vue {
     @practitioner.Action
     fetchPractitioners!: () => Promise<void>;
 
+    @request.State
+    requests!: any[];
 
+
+    @request.Action
+    fetchRequests!: () => Promise<void>;
+
+    @userStore.Getter
+    authPractitioner!: IPractitioner;
+
+    @request.Action
+    getRequestById!: (id: string) => IRequest;
+
+
+    medicationMapper = (code: string) => "";
     loading = false;
     localSrc = require("../../../../../assets/img/placeholder.png");
     query = "";
     orderBy: Sorter = () => 1;
     required = string().required();
+    showRefillModal = false;
+    medicationId = "";
+    showEditMedication = false;
+    input = [] as any;
+    medselectedItem = {};
 
 
     @Watch("id")
     idChanged() {
-    
+      this.setRequest();
     }
-
-    rawHeaders = [
+    async setRequest() {
+        const request = await this.getRequestById(this.id);
+        if (!request) return;
+        this.input = request;
+        
+    }
+    medicationHeader = [
     {
       title: "medication code",
-      key: "id",
+      key: "code",
       show: true,
        noOrder: true,
     },
-    { title: "medication", key: "createdAt", show: true, noOrder: true, },
-    {
-      title: "Form",
-      key: "patient",
-      show: true,
-       noOrder: true,
-    },
+    // { title: "medication", key: "createdAt", show: true, noOrder: true, },
+    // {
+    //   title: "Form",
+    //   key: "patient",
+    //   show: true,
+    //    noOrder: true,
+    // },
     {
       title: "dosage",
-      key: "requester",
+      key: "dosage",
       show: true,
        noOrder: true,
     },
     {
       title: "duration",
-      key: "dispenser",
+      key: "duration",
       show: true,
        noOrder: true,
     },
     {
       title: "quantity",
-      key: "performer",
+      key: "quantity",
       show: true,
        noOrder: true,
     },
 
     {
       title: "course of therapy",
-      key: "completeStatus",
+      key: "courseOfTherapy",
       show: true,
        noOrder: true,
     },
     ];
-    rawHeaders2 = [
+    refillHeader = [
     {
       title: "DISPENSE INTERVAL",
-      key: "id",
+      key: "interval",
       show: true,
        noOrder: true,
     },
-    { title: "VALID PERIOD", key: "createdAt", show: true, noOrder: true, },
+    { title: "VALID PERIOD", key: "startDate", show: true, noOrder: true, },
     {
       title: "QUANTITY",
-      key: "patient",
+      key: "quantity",
       show: true,
       noOrder: true,
     },
     {
       title: "SUPPLY DURATION",
-      key: "requester",
+      key: "duration",
       show: true,
       noOrder: true,
     },
-    {
-      title: "Actions",
-      key: "actions",
-      show: true,
-      noOrder: true,
-    },
-    ];
-    get items() {
-      const requests = this.patients.map((i: any) => {
-      return {
-        ...i,
-    
-      };
-    });
 
-    return requests;
+    ];
+
+    get refills(){
+      return this.selectedItem?.refills ?? [] ;
+    }
+    get medications(){
+      return [this.selectedItem];
+    }
+    get items() {
+      const requests = this.requests.map((request) => {
+      const refillses = request.medications.map((medication:any) => medication.refills);
+        return {
+          ...request,
+          action: request.id,
+          refils: refillses[0]
+        };
+      });
+
+     return requests;
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);
-  }
+    }
+    
+    //  somereqeusts = this.requests.map((request) => request.medications.map((medication:any) => medication.refills));
+  
 
      get allRequester() {
         if (!this.patients || this.patients.length === 0) return [];
@@ -339,7 +434,31 @@ export default class DetailedViewModal extends Vue {
         };
         });
     }
+    async createMapper() {
+      this.medicationMapper = await mapDisplay(
+        "http://hl7.org/fhir/ValueSet/medication-codes"
+      );
+    }
+    showModal(id:string){
+      this.showRefillModal = true;
+    }
+    showMedication(item:string){
+      this.medselectedItem = item;
+      this.showEditMedication = true;
+    }
+   getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
 
+  getOrgName(id:string){
+    const pt = this.patients.find((i: any) => i.organizationId === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
 
 
 
@@ -348,8 +467,12 @@ export default class DetailedViewModal extends Vue {
     this.loading = false;
   }
 
+  async medicationadded(){
+    await this.fetchRequests();
+  }
 
   async created() {
+      await this.fetchRequests();
       await this.fetchPatients();
       await this.fetchPractitioners();
   }

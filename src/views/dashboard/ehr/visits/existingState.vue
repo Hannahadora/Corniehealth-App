@@ -1,163 +1,146 @@
 <template>
-  <div class="w-full h-screen">
-    <div  class="container-fluid bg-white sm:px-2 h-full">
-      <!-- <div class="w-full border-b-2 curved flex py-2">
-            <div class="container-fluid flex font-semibold text-xl py-2">
-                <h2>Active Visits</h2>
+  <div class="w-full pb-7">
+ 
+    <cornie-table :columns="rawHeaders" v-model="items">
+    
+       <template #status="{ item }">
+            <div class="flex items-center">
+              <p
+                class="text-xs bg-gray-300 p-1 rounded"
+                v-if="item.status == 'Vitals acquired' || item.status == 'Visit Ended'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-yellow-100 text-yellow-500 p-1 rounded"
+                v-if="item.status == 'Queued' || item.status == 'Waitlisted' || item.status == 'In-Progress' || item.status == 'Bill Processing'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-100 text-green-500 p-1 rounded"
+                v-if="item.status == 'On-time | Late' || item.status == 'completed' || item.status == 'Diagnostics Completed' || item.status == 'Medication Dispensed' || item.status == 'Discharged' || item.status == 'checked-out' || item.status == 'checked-in'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-purple-100 text-purple-600 p-1 rounded"
+                v-if="item.status == 'Referred'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-red-100 text-red-600 p-1 rounded"
+                v-if="item.status == 'Cancelled'"
+              >
+                {{ item.status }}
+              </p>
             </div>
+      </template>
+      <template #checkedInBy="{ item }">
+           <div class="w-full flex space-x-4 mb-3">
+                <div class="w-10 h-10">
+                    <avatar
+                        class="mr-2"
+                        v-if="item.checkedInBy.image"
+                        :src="item.checkedInBy.image"
+                    />
+                    <avatar class="mr-2" v-else :src="localSrc" />
+                </div>
+                <div class="w-full mt-2">
+                    <p class="text-sm text-dark font-semibold">
+                        {{ item.checkedInBy.firstName }}
+                        {{ item.checkedInBy.lastName }}
+                    </p>
+                </div>
+            </div>
+
+        <!-- <div
+          class="container cursor-pointer"
+          @click="viewSchedule(item.id)"
+        >
+          <span class="rounded-full">
+            <Actors :items="item.practitioners" />
+          </span>
         </div> -->
-
-      <div class="w-full mt-6">
-        <!-- <div class="w-full flex my-6">
-                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 0}"
-                  @click="() => selectedStatus = 0"
-                >
-                    <span class="flex flex-col uppercase">
-                      <span class="text-primary font-normal text-sm">All Visits</span>
-                      <span class="text-primary font-semibold">{{ patientVisits.length }}</span>
-                    </span>
-                </div>
-                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg mx-4 cursor-pointer" :class="{'light-grey-bg': selectedStatus === 2}"
-                  @click="() => selectedStatus = 2"
-                >
-                    <span class="flex flex-col uppercase">
-                      <span class="text-warning font-normal text-sm">In-Progress</span>
-                      <span class="text-warning font-semibold ">{{ patientVisits.filter((i) => i.status?.toLowerCase() === "in-progress" || i.status?.toLowerCase() === "active").length }}</span>
-                    </span>
-                </div>
-                <div class=".w-full shadow-md w-2/12 p-4 rounded-lg cursor-pointer" :class="{'light-grey-bg': selectedStatus === 3}"
-                  @click="() => selectedStatus = 3"
-                >
-                    <span class="flex flex-col uppercase">
-                      <span class="text-danger font-normal text-sm text-success">Completed</span>
-                      <span class="text-danger font-semibold text-success">{{ patientVisits.filter((i) => i.status?.toLowerCase() !== "in-progress" && i.status?.toLowerCase() !== "queue" && i.status?.toLowerCase() !== "active").length }}</span>
-                    </span>
-                </div>
-            </div> -->
-
-        <div class="w-full curved flex py-2 justify-end mb-4 -mt-2">
-          <div class=".w-full flex font-semibold text-xl py-2 justify-end pb-4">
-            <Button @click="() => $emit('gotoappointments')">
-              <a
-                style="background: #fe4d3c"
-                class="text-base bg-red-500 hover:bg-blue-700 focus:outline-none text-white font-semibold py-3 px-8 rounded-full"
-              >
-                Go To Appointments
-              </a>
-            </Button>
-          </div>
+      </template>
+      
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
+          <eye-icon class="mt-1" />
+          <span class="ml-3 text-xs" @click="showTimeline(item.id,item.timelines,item.patient)"
+            >View timeline</span >
         </div>
-
-        <div class="w-full pb-7 mb-8 bg-white">
-          <cornie-table :columns="rawHeaders" v-model="items">
-            <!-- <template #appointmentType="{ item }">
-                    <p>{{ item.appointmentId ? getAppointment(item.appointmentId).appointmentType : '' }}</p>
-                </template> -->
-            <template #slot="{ item }">
-              <div class="container flex justify-between" style="width: 100px">
-                <span>{{ item.startTime }}</span>
-                <span> - </span>
-                <span>{{ item.endTime }}</span>
-              </div>
-            </template>
-            <template #status="{ item }">
-              <div class="container">
-                <span
-                  class="status-border p-1"
-                  :class="{
-                    'status-inactive': item.status === 'inactive',
-                    'status-active': item.status === 'active',
-                    'text-success completed': item.status === 'completed',
-                    'text-danger queued': item.status === 'queued',
-                    'text-dark planned':
-                      item.status === 'planned' || item.status === 'no-show',
-                    arrived: item.status === 'arrived',
-                    waitlisted: item.status === 'waitlisted',
-                  }"
-                  >{{ item.status }}</span
-                >
-              </div>
-            </template>
-            <template #practitioners="{ item }">
-              <div
-                class="container cursor-pointer flex justify-center"
-                @click="viewSchedule(item.id)"
-              >
-                <span class="rounded-full">
-                  <Actors :items="item.practitioners" />
-                </span>
-              </div>
-            </template>
-            <template #actions="{ item }">
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                style="width: 200px"
-              >
-                <eye-icon class="mt-1" />
-                <span class="ml-3 text-xs">View</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                style="width: 200px"
-              >
-                <eye-icon class="mt-1" />
-                <span class="ml-3 text-xs" @click="showTimeline(item.id)"
-                  >View timeline</span
-                >
-              </div>
-              <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                    <ArrowRight />
-                    <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
-                    </div> -->
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showUpdateModal(item)"
-              >
-                <UpdateIcon />
-                <span class="ml-3 text-xs">Update Status</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showCheckoutPane(item.id)"
-              >
-                <CheckoutIcon />
-                <span class="ml-3 text-xs">Check-out</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              >
-                <AddIcon />
-                <span class="ml-3 text-xs">Add Vitals</span>
-              </div>
-            </template>
-          </cornie-table>
+        <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+              <ArrowRight />
+              <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
+              </div> -->
+        <!-- <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="start(item.id)"
+        >
+          <EncounterIcon class="mr-3 mt-1" />
+          <span class="ml-3 text-xs">Start Encounter</span>
+        </div> -->
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="destroy(item.id)"
+        >
+          <CancelIcon />
+          <span class="ml-3 text-xs">Cancel Visit</span>
+        </div>
+        <!-- <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <AddIcon />
+          <span class="ml-3 text-xs">Add Vitals</span>
+        </div> -->
+        <!-- <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <ArrowRight />
+          <span class="ml-3 text-xs">Refer Patient</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <ManageBillIcon />
+          <span class="ml-3 text-xs">Manage Bill</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <AddIcon />
+          <span class="ml-3 text-xs">Admit Patient</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="markAsNoShow(item.id)"
+        >
+          <NoshowIcon />
+          <span class="ml-3 text-xs">No Show</span>
+        </div> -->
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showCheckoutPane(item.id,item.checkedInBy, item.patient,item)">
+          <CheckoutIcon />
+          <span class="ml-3 text-xs">Check-out</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckoutPane(item.id, item.checkedInBy, item.patient,item)">
+          <UpdateIcon />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+      </template>
+    </cornie-table>
 
           <column-filter
             :columns="rawHeaders"
             v-model:preferred="preferredHeaders"
             v-model:visible="showColumnFilter"
           />
+         
 
           <!-- <side-modal :visible="showCheckin" :header="'Check-In'" @closesidemodal="() => showCheckin = false">
                     <CheckIn :item="appointments[0]" @close="() => showCheckin = false"  />
                 </side-modal> -->
-          <modal :visible="timeLineVissible">
-            <!-- <template #title>
-                    <p class="md flex items-center justify-between px2" style="width: 440px">
-                      <span class="md font-lignt text-primary p-2 text-xl">Timeline</span>
-                      <span class="md text-danger cursor-pointer">
-                        <a class="md">
-                          See all
-                        </a>
-                      </span>
-                    </p>
-                  </template> -->
-            <ActionLog
-              :timeline="selectedVisit.timelines"
-              :appointmentId="currentVisit.appointmentId"
-              @closetimeline="() => (timeLineVissible = false)"
-            />
-          </modal>
 
           <side-modal
             :visible="showCheckNoapp"
@@ -166,56 +149,13 @@
           >
             <CheckinNoapp
               :patientId="patients[0]?.id"
+              :item="appointments[0]"
               @close="() => (showCheckNoapp = false)"
             />
           </side-modal>
 
-          <side-modal
-            :visible="showCheckout"
-            :header="'Check-Out'"
-            :width="990"
-            @closesidemodal="closeUpdateModal"
-          >
-            <patient-checkout
-              :visit="currentVisit"
-              :visitId="currentVisit?.id"
-              @closesidemodal="closeUpdateModal"
-            />
-          </side-modal>
-
-          <side-modal
-            :visible="false"
-            :header="'Check-In'"
-            :width="990"
-            @closesidemodal="closeUpdateModal"
-          >
-            <!-- <side-modal :visible="showCheckin" :header="'Check-In'" :width="990"  @closesidemodal="closeUpdateModal"> -->
-            <patient-checkn
-              :visit="currentVisit"
-              :appointmentId="appointmentId"
-              @closesidemodal="() => (showCheckin = false)"
-            />
-          </side-modal>
-
-          <side-modal
-            :visible="showStatusUpdateModal"
-            @closesidemodal="closeUpdateModal"
-          >
-            <update-status
-              :updateData="updateData"
-              @changed="newStatusSelected"
-              @closesidemodal="closeUpdateModal"
-            >
-              <template #submit>
-                <CornieBtn
-                  :loading="loading"
-                  class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer"
-                  @click="updateStatus"
-                >
-                  <span class="text-white font-semibold">Update</span>
-                </CornieBtn>
-              </template>
-            </update-status>
+          <side-modal :visible="false">
+            <AdvancedFilter />
           </side-modal>
 
           <side-modal :visible="showViewPane" :header="'View Stot'">
@@ -229,19 +169,111 @@
               <ViewBreaks :schedule="selectedSchedule" />
             </div>
           </side-modal>
-        </div>
 
-        <!-- <div style="height: 400px">
 
-            </div> -->
-      </div>
-    </div>
+          <modal :visible="viewDetails">
+            <template #title>
+              <p
+                class="flex items-center justify-between px-2"
+                style="width: 440px"
+              >
+                <span class="font-bold text-danger p-2 text-xl">{{
+                  getPatientName(selectedPatient.id)
+                }}</span>
+                <span
+                  class="bg-danger cursor-pointer"
+                  @click="() => (viewDetails = false)"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0 4C0 1.79086 1.79086 0 4 0H20C22.2091 0 24 1.79086 24 4V20C24 22.2091 22.2091 24 20 24H4C1.79086 24 0 22.2091 0 20V4Z"
+                      fill="white"
+                    />
+                    <path
+                      d="M12 2C17.53 2 22 6.47 22 12C22 17.53 17.53 22 12 22C6.47 22 2 17.53 2 12C2 6.47 6.47 2 12 2ZM15.59 7L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41L15.59 7Z"
+                      fill="#FF0000"
+                    />
+                  </svg>
+                </span>
+              </p>
+            </template>
+            <div class="w-4/12 px-4" style="width: 440px">
+              <div class="w-full flex">
+                <div class="w-7/12">
+                  <div class="w-full">
+                    <div class="w-11/12">
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-primary">MRN No:</span>
+                        <span class="ml-2">{{ selectedPatientData.mrn }}</span>
+                      </div>
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-primary">D.O.B:</span>
+                        <span class="ml-2">{{ selectedPatientData.dob }}</span>
+                      </div>
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-primary"
+                          >Policy Expiry:</span
+                        >
+                        <span class="ml-2">XXXXXX</span>
+                      </div>
+                      <div class="w-full py-2">
+                        <span class="font-semibold text-primary"
+                          >Policy No:</span
+                        >
+                        <span class="ml-2">XXXXXX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-5/12">
+                  <div class="w-full">
+                    <div class="w-11/12">
+                      <div class="py-2 w-full">
+                        <span class="font-semibold text-primary">Gender:</span>
+                        <span class="ml-2">{{
+                          selectedPatientData.gender
+                        }}</span>
+                      </div>
+                      <div class="py-2 w-full">
+                        <span class="font-semibold text-primary"
+                          >Profile Type:</span
+                        >
+                        <span class="ml-2">XXXX</span>
+                      </div>
+                      <div class="py-2w-full">
+                        <span class="font-semibold text-primary">Payor:</span>
+                        <span class="ml-2">XXXXXX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full pt-3 pb-6">
+                <p class="text-center font-normal text-large text-primary">
+                  View Policy Coverage
+                </p>
+              </div>
+            </div>
+          </modal>
+
+    <patient-search v-model="showPatientModal" @checkin-data="checkindata"/>
+    <timeline-modal v-model="timeLineVissible" :id="currentVisitId" :timeline="timeline" :patient="patientTimeline"/>
+    <check-out v-model="showCheckout" :allvisit="allvisit" @checkout-added="checkindata"  :patient="patientTimeline" :practitionerdata="practitioner" :id="currentVisitId"/>
+  
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { namespace } from "vuex-class";
+import search from "@/plugins/search";
 
-import Actors from "@/views/dashboard/schedules/components/actors.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -250,49 +282,50 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/eye-yellow.vue";
+import EyeIcon from "@/components/icons/eye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import AddIcon from "@/components/icons/add-green.vue";
+import AddIcon from "@/components/icons/add.vue";
 import DeactivateIcon from "@/components/icons/deactivate.vue";
 import Button from "@/components/globals/corniebtn.vue";
-
-import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
-import CheckIn from "./components/checkin.vue";
-import CheckOut from "./components/checkout.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import Modal from "@/components/modal.vue";
+import Avatar from "@/components/avatar.vue";
 //import Close from '@/components/icons/close.vue'
-import CheckinNoapp from "./components/checkin-noappointment.vue";
+
 import ArrowRight from "@/components/icons/arrow-right.vue";
 import EncounterIcon from "@/components/icons/encounter.vue";
-import MultiSelect from "@/views/dashboard/schedules/components/apply-to.vue";
-import CheckoutIcon from "@/components/icons/check-red-bg.vue";
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import CornieMenu from "@/components/dynamicCornieMenu.vue";
+import CheckoutIcon from "@/components/icons/checkout.vue";
 
-
+import EmptyState from "./emptyState.vue";
 import CancelIcon from "./components/cancel.vue";
 import UpdateIcon from "./components/update.vue";
 import NoshowIcon from "./components/no-show.vue";
 import ManageBillIcon from "./components/manage-bill.vue";
 import ActionLog from "./components/timeline-component.vue";
-import UpdateStatus from "@/views/dashboard/ehr/encounter/components/update-status.vue";
-import IUpdateStatus from "@/types/IUpdateModel";
-import PatientCheckout from "./components/patient-checkout.vue";
-import PatientCheckn from "./components/patient-checkin.vue";
+// import MultiSelect from "../schedules/components/apply-to.vue";
+import TimeLine from "./components/timeline-table.vue";
+// import SideModal from "../schedules/components/side-modal.vue";
+import CheckIn from "./components/checkin.vue";
+import CheckOut from "./components/checkout.vue";
+// import Actors from "../schedules/components/actors.vue";
+import PatientSearch from "./components/searchPatient.vue"
+import TimelineModal from "./components/timeline.vue";
+
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
 
 @Options({
-    name:"VisitExistingState",
   components: {
     ActionLog,
-    MultiSelect,
+    // MultiSelect,
     CancelIcon,
-    //Close,
+   CornieMenu,
+    TimeLine,
     SortIcon,
     ThreeDotIcon,
     SearchIcon,
@@ -300,43 +333,49 @@ const appointment = namespace("appointment");
     TableRefreshIcon,
     FilterIcon,
     IconInput,
+    TimelineModal,
+    Avatar,
     DeleteIcon,
     EyeIcon,
     ColumnFilter,
+    PatientSearch,
     TableOptions,
+    ChevronDownIcon,
     EditIcon,
     Button,
-    SideModal,
+    // SideModal,
     CheckIn,
     CornieTable,
     AddIcon,
     DeactivateIcon,
+    EmptyState,
     CheckOut,
     Modal,
-    Actors,
-    CheckinNoapp,
+    // Actors,
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
     UpdateIcon,
     NoshowIcon,
     ManageBillIcon,
-    UpdateStatus,
-    PatientCheckout,
-    PatientCheckn,
   },
 })
-export default class VisitExistingState extends Vue {
+export default class PractitionerExistingState extends Vue {
   showColumnFilter = false;
   show = false;
   query = "";
   search = "";
+  showPatientModal = false;
+  allvisit = [];
 
   selectedStatus = 0;
   filterByType: any = [];
   filterByStatus: any = [];
   completedStatus: any = [];
   currentVisitId = "";
+  timeline = [] as any;
+  patientTimeline = [] as any;
+  practitioner = [];
 
   activeTab = 0;
   showEditPane = false;
@@ -351,8 +390,7 @@ export default class VisitExistingState extends Vue {
   showCheckout = false;
   timeLineVissible = false;
   viewDetails = false;
-
-  appointmentId = "";
+  localSrc = require("../../../../assets/img/placeholder.png");
 
   selectedSchedule: any = {};
   selectedVisit: any = {};
@@ -372,8 +410,6 @@ export default class VisitExistingState extends Vue {
     "December",
   ];
 
-  // @visitsStore.State
-  // visits!: any[];
 
   @visitsStore.Action
   getPatientVisits!: (patientId: string) => Promise<void>;
@@ -381,14 +417,12 @@ export default class VisitExistingState extends Vue {
   @visitsStore.State
   patientVisits!: any[];
 
+
   @visitsStore.State
   patients!: any[];
 
   @visitsStore.Action
   getPatients!: () => Promise<void>;
-
-  @visitsStore.Action
-  updateVisitStatus!: (body: any) => Promise<boolean>;
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
@@ -409,43 +443,47 @@ export default class VisitExistingState extends Vue {
   noShow!: (id: string) => Promise<boolean>;
 
   @appointment.State
-  patientappointments!: any[];
+  appointments!: any[];
 
   @appointment.Action
-  fetchByIdAppointments!: (patientId: string) => Promise<void>;
+  fetchAppointments!: () => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Recorded",
-      key: "recorded",
+      title: "Check-In Time",
+      key: "checkInTime",
       show: true,
+      noOrder: true
     },
     {
-      title: "Identifier",
-      key: "identifier",
+      title: "visit id",
+      key: "id",
       show: true,
+      noOrder: true
+    },
+    // {
+    //   title: "visit type",
+    //   key: "visittype",
+    //   show: true,
+    //   noOrder: true
+    // },
+    {
+      title: "practitioner",
+      key: "checkedInBy",
+      show: true,
+       noOrder: true
     },
     {
-      title: "Appointment Type",
-      key: "appointmentType",
+      title: "period",
+      key: "period",
       show: true,
+       noOrder: true
     },
-    { title: "Slot", key: "slot", show: true },
-    {
-      title: "Practitioner",
-      key: "practitioners",
-      show: true,
-    },
-    {
-      title: "Participant Status",
+     {
+      title: "status",
       key: "status",
-      show: true,
-    },
-    {
-      title: "Location",
-      key: "location",
       show: true,
     },
   ];
@@ -453,11 +491,6 @@ export default class VisitExistingState extends Vue {
   types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
   statuses = ["All", "Completed", "Queue", "In-Progress"];
   availableSlots: any = [];
-  showStatusUpdateModal = false;
-  updateData = {} as IUpdateStatus;
-  newStatus = "";
-  loading = false;
-  selectedVisitId = "";
 
   get currentVisit() {
     if (!this.currentVisitId) return {};
@@ -474,199 +507,89 @@ export default class VisitExistingState extends Vue {
   }
 
   get items() {
-    if (this.patientVisits?.length === 0) return [];
-    return this.patientVisits.map((visit: any) => {
-      let data = {
-        id: visit.id,
-        appointmentId: visit.appointmentId,
-        updatedAt: visit?.updatedAt,
-        recorded: new Date(visit.createdAt).toLocaleDateString(),
-        identifier: "XXXXX",
-        appointmentType:
-          this.getAppointment(visit.appointmentId).appointmentType ?? "N/A",
-        // appointmentType: this.getAppointment(visit.appointmentId).appointmentType ?? "N/A",
-        startTime: this.formatSlotTime(visit.slot?.startTime),
-        endTime: this.formatSlotTime(visit.slot?.endTime),
-        // startTime: `${visit.checkInTime.substring(11, 16)}`,
-        // endTime: `${new Date(new Date(visit.checkInTime).getMinutes() + 60).toLocaleTimeString().substring(0, 5)},
-        status: visit.status,
-        location: visit?.room?.name,
-        practitioners:
-          !visit.appointmentId || visit.Practitioners?.length <= 0
-            ? [
-                {
-                  firstName: visit.checkedInBy?.firstName,
-                  lastName: visit.checkedInBy?.lastName,
-                  image: visit.checkedInBy?.image
-                    ? visit.checkedInBy?.image
-                    : visit.checkedInBy?.user?.image,
-                  id: visit.checkedInBy?.id,
-                },
-              ]
-            : visit.Practitioners,
-        // practitioners: [
-        //   {
-        //       "phone": {
-        //         "number": "08122463202",
-        //         "dialCode": "+1264"
-        //       },
-        //       "firstName": "Darlington",
-        //       "lastName": "Onyemere",
-        //       "email": "anselem16m@outlook.com",
-        //       "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-        //       "accessRole": null,
-        //       "userId": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-        //       "department": "Oncology",
-        //       "jobDesignation": "Doctor",
-        //       "id": "87e846a3-bac0-43b9-a4db-0b2605426c42",
-        //       "user": {
-        //         "id": "91197e0d-4425-4bcf-ba84-366010fc29cf",
-        //         "firstName": "Darlington",
-        //         "email": "anselem16m@outlook.com",
-        //         "middleName": "",
-        //         "lastName": "Onyemere",
-        //         "organizationId": "0eb0c710-665a-449c-ab27-42014d25c676",
-        //         "image": "https://cloudenly-primary.s3.eu-west-2.amazonaws.com/corniehealth/1627042636794-golden-boy.png",
-        //         "accountType": "Provider",
-        //         "roleId": null,
-        //         "phone": {
-        //           "number": "08122463202",
-        //           "dialCode": "+1264"
-        //         },
-        //         "createdAt": "2021-07-23T12:20:34.591Z",
-        //         "updatedAt": "2021-07-23T12:20:34.591Z",
-        //         "OrganizationId": null
-        //       }
-        //     }
-        // ]
+    const visits = this.patientVisits.map((visit) => {
+      visit.checkInTime = new Date(
+          visit.checkInTime
+        ).toLocaleDateString("en-US");
+         visit.checkOutTime = new Date(
+          visit.checkOutTime
+        ).toLocaleDateString("en-US");
+      return {
+        ...visit,
+        action: visit.id,
+        visittype: 'xxxxxx',
+        period: visit.checkInTime +'-'+ visit.checkOutTime
       };
-
-      if (visit.appointmentId) {
-        if (visit.Practitioners?.length > 0)
-          data.practitioners = visit.Practitioners;
-        else
-          data.practitioners = [
-            {
-              firstName: visit.checkedInBy?.firstName,
-              lastName: visit.checkedInBy?.lastName,
-              image: visit.checkedInBy?.image
-                ? visit.checkedInBy?.image
-                : visit.checkedInBy?.user?.image,
-              id: visit.checkedInBy?.id,
-            },
-          ];
-      } else {
-        data.practitioners = [
-          {
-            firstName: visit.checkedInBy?.firstName,
-            lastName: visit.checkedInBy?.lastName,
-            image: visit.checkedInBy?.image
-              ? visit.checkedInBy?.image
-              : visit.checkedInBy?.user?.image,
-            id: visit.checkedInBy?.id,
-          },
-        ];
-      }
-      return data;
     });
+    if (!this.query) return visits;
+    return search.searchObjectArray(visits, this.query);
   }
-
-  newStatusSelected(status: any) {
-    this.newStatus = status;
+   get activePatientId() {
+    const id = this.$route?.params?.id.toString();
+    return id;
   }
+  // get items() {
+  //   if (!this.visits || this.visits.length === 0) return [];
+  //   const filtered = this.visits.filter((i: any) => {
+  //     if (this.filterByType.length === 0 && this.filterByStatus.length === 0) {
+  //       return i;
+  //     } else {
+  //       if (
+  //         this.filterByStatus.includes("All") ||
+  //         this.filterByType.includes("All")
+  //       )
+  //         return true;
+  //       const indexInTypes = this.filterByType.findIndex(
+  //         (j: any) =>
+  //           j.toLowerCase() ===
+  //           this.getAppointment(i.appointmentId).appointmentType.toLowerCase()
+  //       );
+  //       const indexInStatuses = this.filterByStatus.findIndex(
+  //         (j: any) => j.toLowerCase() === i.status.toLowerCase()
+  //       );
 
-  closeUpdateModal() {
-    this.showStatusUpdateModal = false;
-    this.showCheckout = false;
-    this.selectedVisitId = "";
-    this.updateData = {} as IUpdateStatus;
-  }
+  //       if (indexInTypes >= 0 || indexInStatuses >= 0) return true;
+  //     }
+  //   });
 
-  async updateStatus() {
-    try {
-      this.loading = true;
-      const updated = await this.updateVisitStatus({
-        id: this.selectedVisitId,
-        status: this.newStatus,
-      });
-      this.loading = false;
+  //   const visits = filtered.map((i: any) => {
+  //     if (i.status === "cancelled" || i.status === "no-show") {
+  //       i.completedStatus = "Completed";
+  //     } else if (i.status === "queue") {
+  //       i.completedStatus = "Queue";
+  //     } else {
+  //       i.completedStatus = "In-Progress";
+  //     }
 
-      if (updated) {
-        notify({
-          msg: "Status updated successfully",
-          status: "success",
-        });
-        this.showStatusUpdateModal = false;
-        await this.getPatientVisits(this.$route.params.id.toString());
-      } else {
-        notify({
-          msg: "There was an error updating status",
-          status: "error",
-        });
-      }
-    } catch (error) {
-      this.loading = false;
-    }
-  }
-
-  showUpdateModal(item: any) {
-    this.selectedVisitId = item?.id;
-    this.updateData = {
-      currentStatus: item.status,
-      lastUpdated: new Date(item?.updatedAt).toLocaleDateString(),
-      updatedBy: "",
-      statuses: [
-        {
-          code: "queued",
-          display: "Queued",
-        },
-        {
-          code: "no-show",
-          display: "No Show",
-        },
-        {
-          code: "cancelled",
-          display: "Cancelled",
-        },
-        {
-          code: "completed",
-          display: "Completed",
-        },
-        {
-          code: "planned",
-          display: "Planned",
-        },
-        {
-          code: "arrived",
-          display: "Arrived",
-        },
-        {
-          code: "waitlisted",
-          display: "Waitlisted",
-        },
-      ],
-    };
-    this.showStatusUpdateModal = true;
-  }
-
-  formatSlotTime(timeString: any) {
-    var H = +timeString.substr(0, 2);
-    var h = H % 12 || 12;
-    var ampm = H < 12 || H === 24 ? "AM" : "PM";
-    timeString = h + timeString.substr(2, 3) + ampm;
-    return timeString;
-  }
-
-  // formatSlotTime (time: any) {
-  //   // Check correct time format and split into components
-  //   time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-
-  //   if (time.length > 1) { // If time format correct
-  //     time = time.slice (1);  // Remove full string match value
-  //     time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
-  //     time[0] = +time[0] % 12 || 12; // Adjust hours
-  //   }
-  //   return time.join (''); // return adjusted time or original string
+  //     return {
+  //       ...i,
+  //       action: i.id,
+  //       patient: this.getPatientName(i.patientId),
+  //       location: i.room ? i.room.name : "",
+  //       status: i.status,
+  //       slot: `10:00 - 13:00`,
+  //       // slot: `${i.startTime ? i.startTime : ''} ${i.endTime ? i.endTime : ''}`,
+  //       practitioners: this.getActors(i.appointmentId),
+  //     };
+  //   });
+  //   if (this.selectedStatus === 1)
+  //     return visits.filter((i: any) => i.completedStatus === "Queue");
+  //   if (this.selectedStatus === 2)
+  //     return visits.filter(
+  //       (i) =>
+  //         i.status?.toLowerCase() === "in-progress" ||
+  //         i.status?.toLowerCase() === "active"
+  //     );
+  //   if (this.selectedStatus === 3)
+  //     return visits.filter(
+  //       (i) =>
+  //         i.status?.toLowerCase() !== "in-progress" &&
+  //         i.status?.toLowerCase() !== "queue" &&
+  //         i.status?.toLowerCase() !== "active"
+  //     );
+  //   return visits;
+  //   // if (!this.query) return shifts;
+  //   // return search.searchObjectArray(shifts, this.query);
   // }
 
   getPatientName(id: string) {
@@ -674,10 +597,10 @@ export default class VisitExistingState extends Vue {
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
 
-  setSelectedVisit(id: string) {
-    const pt = this.patientVisits.find((i: any) => i.id === id);
-    this.selectedVisit = pt ? pt : {};
-  }
+  // setSelectedVisit(id: string) {
+  //   const pt = this.visits.find((i: any) => i.id === id);
+  //   this.selectedVisit = pt ? pt : {};
+  // }
 
   setSelectedPatient(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
@@ -685,20 +608,34 @@ export default class VisitExistingState extends Vue {
   }
 
   getActors(id: string) {
-    const pt = this.patientappointments.find((i: any) => i?.id === id);
+    const pt = this.appointments.find((i: any) => i.id === id);
 
     return pt ? pt.Practitioners : [];
   }
+  
+
+  showPatient(){
+      this.showPatientModal = true;
+  }
+
 
   getAppointment(id: string) {
-    if (
-      this.patientappointments?.length === 0 ||
-      this.patientappointments?.length === 0
-    )
-      return {};
-    const pt = this.patientappointments?.find((i: any) => i?.id === id);
+    const pt = this.appointments.find((i: any) => i.id === id);
 
     return pt ? pt : {};
+  }
+
+  async start(id: string) {
+    await this.startEncounter(id).then((res: any) => {
+      window.notify({ msg: "Visit Started", status: "success" });
+    });
+  }
+
+  async destroy(id: string) {
+    const cancelled = await this.cancel(id);
+    if (cancelled) {
+      window.notify({ msg: "Visit Cancelled", status: "success" });
+    }
   }
 
   async markAsNoShow(id: string) {
@@ -729,10 +666,13 @@ export default class VisitExistingState extends Vue {
     // this.showViewPane = true;
   }
 
-  showCheckoutPane(id: string) {
-    this.setSelectedVisit(id);
+  showCheckoutPane(id: string,practitioner:any,patient:any,visit:any) {
+
+    this.practitioner = practitioner;
+    this.patientTimeline = patient;
+    this.allvisit = visit;
+
     this.currentVisitId = id;
-    this.selectedVisitId = id;
     this.showCheckout = true;
   }
 
@@ -741,28 +681,31 @@ export default class VisitExistingState extends Vue {
     this.viewDetails = true;
   }
 
-  showTimeline(id: string) {
-    this.setSelectedVisit(id);
+  showTimeline(id: string,timeline:any,patient:any) {
+    this.timeline = timeline;
+    this.patientTimeline = patient;
+    //this.setSelectedVisit(id);
     this.currentVisitId = id;
     this.timeLineVissible = true;
   }
 
-  showCheckinPane(id: string) {
-    this.setSelectedVisit(id);
-    this.showCheckin = true;
-  }
+  // showCheckinPane(id: string) {
+  //   this.setSelectedVisit(id);
+  //   this.showCheckin = true;
+  // }
 
   closeEditPane() {
     this.showEditPane = false;
   }
+  async checkindata(){
+    await this.getPatients();
+  }
 
   async created() {
-    setTimeout(() => {
-      this.appointmentId = "c4b30067-6d40-4548-b95c-8f2dbc97d0a8";
-    }, 5000);
-    if (this.patients?.length === 0) await this.getPatients();
-    await this.fetchByIdAppointments(this.$route.params.id.toString());
-    await this.getPatientVisits(this.$route.params.id.toString());
+    if (!this.patients || this.patients.length === 0) await this.getPatients();
+    if (!this.appointments || this.appointments.length === 0)
+      await this.fetchAppointments();
+   await this.getPatientVisits(this.activePatientId);
     window.addEventListener("click", (e: any) => {
       if (!e.target.classList.contains("md")) {
         this.selectType = false;
@@ -823,31 +766,5 @@ export default class VisitExistingState extends Vue {
 
 .light-grey-bg {
   background: #f0f4fe;
-}
-
-.status-border {
-  border-radius: 5px;
-}
-
-.completed {
-  background: rgba(53, 186, 131, 0.08);
-}
-
-.queued {
-  background: rgba(254, 77, 60, 0.08);
-}
-
-.planned {
-  background: #14171f26;
-}
-
-.arrived {
-  background: #54138826;
-  color: #541388;
-}
-
-.waitlisted {
-  background: #f7b53814;
-  color: #f7b538;
 }
 </style>

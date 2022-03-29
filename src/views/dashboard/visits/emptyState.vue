@@ -23,13 +23,14 @@
         <div class="p-2 w-full hover:bg-gray-100 p-3 cursor-pointer" @click="showPatient">
           <span class="ml-3 text-xs">Check-In from Patients Register</span>
         </div>
-        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer"  @click="$router.push('/dashboard/provider/experience/calendar')">
+        <div class="p-2 w-full flex hover:bg-gray-100 p-3 cursor-pointer"  @click="showAppointment">
           <span class="ml-3 text-xs">Check-In from Scheduled Appointments</span>
         </div>
       </card-text>
       </cornie-menu>
   </div>
   <patient-search v-model="showPatientModal"/>
+      <scheduled-appointment v-model="showAppoitmentModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -38,6 +39,7 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import CornieMenu from "@/components/dynamicCornieMenu.vue";
 import { namespace } from "vuex-class";
 import PatientSearch from "./components/searchPatient.vue"
+import ScheduledAppointment from "./components/schedulesPatient.vue";
 
 const patients = namespace("patients");
 
@@ -46,18 +48,23 @@ const patients = namespace("patients");
     Select,
     ChevronDownIcon,
     CornieMenu,
-    PatientSearch
+    PatientSearch,
+    ScheduledAppointment
   },
 })
 export default class VisitEmptyState extends Vue {
   visitType = "";
   showPatientModal = false;
+  showAppoitmentModal = false;
 
 
   showPatient(){
       this.showPatientModal = true;
   }
- 
+   showAppointment(){
+    this.showAppoitmentModal = true;
+  }
+
 
 }
 </script>

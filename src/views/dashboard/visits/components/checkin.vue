@@ -112,10 +112,7 @@
               </div>
             </div>
         </v-form>
-      </cornie-card-text>
-      
-      <cornie-card>
-        <cornie-card-text class="flex justify-end overflow-auto">
+        <div class="flex justify-end overflow-auto">
           <cornie-btn
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
@@ -130,7 +127,7 @@
            >
             Submit
           </cornie-btn>
-         <split-button v-else>
+         <split-button v-else :showup="true">
           <template #main>
             <span>Check-In</span>
           </template>
@@ -149,8 +146,12 @@
         </split-button>
         
 
-        </cornie-card-text>
+        </div>
+      </cornie-card-text>
+      
+      <cornie-card>
       </cornie-card>
+      
     </cornie-card>
 
   </cornie-dialog>
@@ -268,6 +269,8 @@ export default class checkinModal extends Vue {
   roomId = "";
   notes = "";
   startTime = "";
+   today = new Date().toISOString().slice(0, 10);
+   patientAppointment = [];
 
 
   get payload(){
@@ -322,11 +325,14 @@ export default class checkinModal extends Vue {
   }
 
   async fetchPatientAppointment() {
-    const newdate = this.date;
-    const AllPractitioner = cornieClient().get(`/api/v1/appointment/practitioner/get-day/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a`, {date : "2022-03-13"});
-    const response = await Promise.all([AllPractitioner]);
-    this.onepatient = response[0].data;
+    if(this.currentLocation){
+      const newdate = this.date;
+      const AllPractitioner = cornieClient().get(`/api/v1/appointment/practitioner/get-day/${this.currentLocation}`, {date : this.today});
+      const response = await Promise.all([AllPractitioner]);
+      this.onepatient = response[0].data;
+    }
   }
+
 
 
  async submit() {
@@ -377,7 +383,7 @@ export default class checkinModal extends Vue {
         this.show = false;
     }
 
-     async fetchBill() {
+  async fetchBill() {
      try {
       const response = await cornieClient().post(
       `/api/v1/appointment/bill/generate/${this.appiontmentid}`,{}
@@ -396,6 +402,7 @@ export default class checkinModal extends Vue {
    this.fetchPatientAppointment();
    await this.fetchPractitioners();
    await this.fetchLocations();
+
   }
 }
 </script>

@@ -15,10 +15,10 @@ import IPractitioner from "@/types/IPractitioner";
 import { namespace } from "vuex-class";
 import RefferalEmptyState from "./emptyState.vue";
 import RefferalExistingState from "./existingState.vue";
-import ISchedule,{Break, Repeat} from "@/types/ISchedule";
+import IRefferal from "@/types/IRefferal";
 
 
-const schedulesStore = namespace("schedules");
+const refferal = namespace("refferal");
 
 @Options({
   name: "RefferalIndex",
@@ -30,17 +30,17 @@ const schedulesStore = namespace("schedules");
 export default class RefferalIndex extends Vue {
 
   get empty() {
-    return this.schedules.length < 1;
+    return this.refferals.length < 1;
   }
 
-  @schedulesStore.State
-  schedules!: ISchedule[];
+  @refferal.State
+  refferals!: IRefferal[];
 
-  @schedulesStore.Action
-  getSchedules!: () => Promise<void>;
+  @refferal.Action
+  fetchRefferal!: () => Promise<void>;
 
   async created() {
-    await this.getSchedules();
+    await this.fetchRefferal();
   }
 }
 </script>

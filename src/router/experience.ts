@@ -104,48 +104,6 @@ export const ExperienceRoutes: RouteRecordRaw = {
         import("@/views/dashboard/patientexp/requests/index.vue"),
     },
     {
-      path: "add-request/:id?",
-      name: "New Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/addRequests.vue"),
-    },
-    {
-      path: "edit-request/:id?",
-      name: "View & Edit Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/editRequests.vue"),
-    },
-    {
-      path: "view-request/:id?",
-      name: "View Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/viewRequests.vue"),
-    },
-    {
-      path: "view-other-request/:id?",
-      name: "View Other Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/viewRefferal.vue"),
-    },
-    {
-      path: "edit-other-request/:id?",
-      name: "Edit Other Request",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/editRefferal.vue"),
-    },
-    {
-      path: "add-other-requests/:id?",
-      name: "New Other Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/addRefferRequests.vue"),
-    },
-    {
       path: "visits",
       name: "Visits",
       component: () => import("@/views/dashboard/visits/index.vue"),

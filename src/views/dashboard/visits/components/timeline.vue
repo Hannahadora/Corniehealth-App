@@ -51,7 +51,7 @@
                         <cornie-card-text>   
                             <div class="flex space-x-4 w-full">
                             
-                                <checkin-icon v-if="item.action == 'Checked in'"/>
+                                <checkin-icon v-if="item.action == 'Checked in' || item.action == 'Checked out'"/>
                                 <encounter-icon v-if="item.action == 'Encounter'"/>
                                 <lab-icon v-if="item.action == 'Lab'"/>
                                 <medication-icon v-if="item.action == 'Medication'"/>

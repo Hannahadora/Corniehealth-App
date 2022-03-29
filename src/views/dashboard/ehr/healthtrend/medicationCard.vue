@@ -76,7 +76,7 @@ import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import { namespace } from "vuex-class";
 import { mapDisplay } from "@/plugins/definitions";
 import { string } from "yup/lib/locale";
-import MedicationModal from "@/views/dashboard/ehr/medication/medicationdialog.vue";
+import MedicationModal from "@/views/dashboard/ehr/medication/medicationModal.vue";
 const request = namespace("request");
 
 @Options({

@@ -43,11 +43,11 @@
             :rules="required"
             label="Body Site"
           />
-          <encounter-select
+          <!-- <encounter-select
             v-model="referenceEncounter"
             :rules="required"
             label="Reference Encounter"
-          />
+          /> -->
         </div>
       </accordion-component>
       <accordion-component
