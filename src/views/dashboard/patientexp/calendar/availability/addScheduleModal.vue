@@ -144,7 +144,7 @@
                              v-model="endTime"
                            />
                        </div>
-                       <div class="mt-5">
+                       <div class="">
                         <span class="font-bold text-blue-700 text-xs cursor-pointer" @click="showRepeat = !showRepeat" >Repeat</span>
                        </div>
                         <div class="flex space-x-2" v-if="showRepeat">
@@ -153,6 +153,7 @@
                                 placeholder="Every"
                                 class="grow w-full"
                                 v-model="repeat.interval"
+                                 :setfull="true"
                             />
                             <cornie-select
                                 :items="['day','week','month','year']"
@@ -225,6 +226,7 @@
                             placeholder="20"
                             class="grow"
                              v-model="repeat.end.value"
+                              :setfull="true"
                             />
                              <cornie-select
                                 :items="['events','date']"
@@ -624,6 +626,7 @@ get payload(){
         this.payload
       );
       if (response.success) {
+        this.done();
         window.notify({ msg: "Availability created", status: "success" });
         
       }
@@ -640,10 +643,10 @@ get payload(){
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Availability updated", status: "success" });
-        this.$router.push("/dashboard/provider/experience/calendar");
+       this.done();
       }
-    } catch (error) {
-      window.notify({ msg: "Availability not updated", status: "error" });
+    } catch (error:any) {
+       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
 
@@ -768,7 +771,7 @@ async addBreak(){
            [value]
         );
         if(response.success){
-            // this.done();
+             this.done();
           window.notify({ msg: "Service deleted", status: "success" });
         }
         } catch (error) {

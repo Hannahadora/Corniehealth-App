@@ -540,16 +540,7 @@ import MessageIcon from "@/components/icons/message.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 
 const request = namespace("request");
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  Medications: Array(),
-};
+
 
 @Options({
   components: {
@@ -611,7 +602,7 @@ export default class ViewRequest extends Vue {
   @request.Action
   fetchRequests!: () => Promise<void>;
 
-  requestModel = { ...emptyRequest } as IRequest;
+  requestModel = { } as IRequest;
 
   @request.Action
   getRequestById!: (id: string) => IRequest;
@@ -807,19 +798,19 @@ export default class ViewRequest extends Vue {
     if (!this.query) return requests;
     return search.searchObjectArray(requests, this.query);
   }
-  get PatientName() {
-    const id = this.requestModel.subject.subject;
-    const pt = this.patients.find((i: any) => i.id === id);
-    this.selectedPatient = pt ? pt : {};
+  // get PatientName() {
+  //   const id = this.requestModel.subject.subject;
+  //   const pt = this.patients.find((i: any) => i.id === id);
+  //   this.selectedPatient = pt ? pt : {};
 
-    return pt;
-  }
-  get PractitionerName() {
-    const id = this.requestModel.medicationAdministration.performer;
-    const pt = this.practitioners.find((i: any) => i.id === id);
-    this.selectedPractitioner = pt ? pt : {};
-    return pt;
-  }
+  //   return pt;
+  // }
+  // get PractitionerName() {
+  //   const id = this.requestModel.medicationAdministration.performer;
+  //   const pt = this.practitioners.find((i: any) => i.id === id);
+  //   this.selectedPractitioner = pt ? pt : {};
+  //   return pt;
+  // }
   get selectedPatientData() {
     const data = this.selectedPatient;
     return {
@@ -852,7 +843,7 @@ export default class ViewRequest extends Vue {
     const request = await this.getRequestById(this.id);
     if (!request) return;
     this.requestModel = { ...request };
-    this.requestModel.Medications = request.Medications;
+  //  this.requestModel.Medications = request.Medications;
   }
 
   async fetchPatients() {

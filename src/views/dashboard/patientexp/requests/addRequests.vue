@@ -392,16 +392,7 @@ import MedicationModal from "./medication.vue";
 const request = namespace("request");
 const dropdown = namespace("dropdown");
 
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  Medications: Array(),
-};
+;
 
 @Options({
   components: {
@@ -430,7 +421,7 @@ export default class AddRequest extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, required: false, default: { ...emptyRequest } })
+  @Prop({ type: Object, required: false, default: {} as any })
   request!: IRequest;
 
   requestModel = {} as IRequest;
@@ -521,10 +512,10 @@ export default class AddRequest extends Vue {
       };
     });
   }
-  async showMedication(value: any) {
-    this.requestModel.Medications = value;
-    this.showMedicationModal = true;
-  }
+  // async showMedication(value: any) {
+  //   this.requestModel.Medications = value;
+  //   this.showMedicationModal = true;
+  // }
 
   async submit() {
     this.loading = true;

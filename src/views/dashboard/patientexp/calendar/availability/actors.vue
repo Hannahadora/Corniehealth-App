@@ -18,7 +18,8 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <span class="text-gray-500 text-xs mb-4">{{ firstPractitioner.length }} selected</span>
+            <span class="text-gray-500 text-xs mb-4" v-if="id">{{  practitionersnew.length }} selected</span>
+                        <!-- <span class="text-gray-500 text-xs mb-4" v-esle>{{ firstPractitioner.length  }} selected</span> -->
             <div class="flex space-x-2 w-full mb-7">
                   <cornie-select
                     :items="['Practitioner']"
@@ -80,7 +81,7 @@
                         </p>
                         </div>
                     </div>
-                    <select-option @click="pushValue(item,item.id)" :value="item.id"/>
+                    <select-option @click="pushValue(item,item.id,index)" :checked="getSelectedActor(item.id)"/>
                 </div>
             </div>
              <div v-if="actorType == 'Patient'">
@@ -104,7 +105,7 @@
                         </p>
                         </div>
                     </div>
-                    <select-option @click="pushPatientValue(item,item.id)"/>
+                    <!-- <select-option @click="pushPatientValue(item,item.id)"/> -->
                 </div>
             </div>
          
@@ -210,8 +211,8 @@ export default class managePractitioner extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: String, default: "" })
-  practitionerId!: string;
+  // @Prop({ type: String, default: "" })
+  // practitionerId!: string;
 
   @Prop({ type: String, default: "" })
   specilatyId!: string;
@@ -226,6 +227,13 @@ export default class managePractitioner extends Vue {
   fetchPatients!: () => Promise<void>;
 
 
+  @schedulesStore.State
+  schedules!: ISchedule[];
+
+  @schedulesStore.Action
+  getSchedules!: () => Promise<void>;
+
+
   loading = false;
   showPractitionerModal = false;
   showDatalist= false;
@@ -235,9 +243,12 @@ export default class managePractitioner extends Vue {
   orderBy: Sorter = () => 1;
   firstPractitioner = [] as any;
   practionerIds = [] as any;
+  oldpractionerIds = [] as any;
 
   firstPatients = [] as any;
   patientIds = [] as any;
+  schedulepractid = "";
+  practitionerId = "";
 
   actorType = "Practitioner";
   practionervalue = false;
@@ -257,13 +268,14 @@ export default class managePractitioner extends Vue {
     this.setSchedule();
   }
 
-practitionersnew = [] as any;
+  practitionersnew = [] as any;
 
   async setSchedule() {
     const schedule = await this.getScheduleById(this.id);
     if (!schedule) return;
     this.practitionersnew = schedule.practitioners;
     this.practionervalue = true;
+
 
   }
 
@@ -273,6 +285,13 @@ practitionersnew = [] as any;
        return true;
      }
    }
+  getSelectedActor(id:string) {
+    const pt = this.practitionersnew.find((i: any) => i.id === id);
+    if(this.id){
+      this.practionerIds.push(pt?.id as any)
+    }
+    return pt ? true : false;
+  }
   get filteredItems() {
     return this.practitioners
       .filter((item: any) => this.filter(item, this.query))
@@ -280,11 +299,19 @@ practitionersnew = [] as any;
   }
 
   get payload() {
-      return this.practionerIds;
+      return this.practionerIds.filter((c:any) => c !== undefined);
   }
-  pushValue(item:any,id:string){
-    this.practionerIds.push(id);
-    this.firstPractitioner.push(item);
+  pushValue(item:any,id:string,index:number){
+    if( this.practionerIds.indexOf(id) > -1){
+       this.practionerIds.splice(index, 1);
+      this.firstPractitioner.splice(index, 1);
+      this.practitionersnew.splice(index, 1);
+    }else{
+      this.practionerIds.push(id);
+      this.firstPractitioner.push(item);
+  
+      // this.practitionerId = id;
+    }
   }
 
   async updatePractitoinerData() {
@@ -359,6 +386,7 @@ practitionersnew = [] as any;
     await this.fetchPractitioners();
     await this.setSchedule();
     await this.fetchPatients();
+    await this.getSchedules();
   }
 }
 </script>

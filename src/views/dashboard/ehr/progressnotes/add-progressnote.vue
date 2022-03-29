@@ -799,17 +799,6 @@ const measurable = {
   string: "",
 };
 
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  Medications: [],
-};
-
 @Options({
   name: "AddProgressNote",
   components: {
@@ -1211,7 +1200,7 @@ export default class AddProgressNote extends Vue {
   otherupdatedBy = "";
   othercurrentStatus = "";
   otherupdate = "";
-  request: IRequest = emptyRequest;
+  request: IRequest = {} as any;
 
   get itemsrequest() {
     if (!this.requests || this.requests.length === 0) return [];

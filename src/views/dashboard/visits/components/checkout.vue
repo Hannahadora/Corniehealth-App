@@ -113,9 +113,9 @@
             <span><chevron-down class="stroke-current text-white" /></span>
           </template>
           <template #dropdownoptions>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="submit">
+            <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="submit">
               <span class="ml-3 text-xs">Check-Out</span>
-            </div>
+            </div> -->
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayment = true">
               <span class="ml-3 text-xs">Collect Payment</span>
             </div>

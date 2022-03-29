@@ -734,7 +734,7 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import IRequest, { Medications, MedicationDetails } from "@/types/IRequest";
+import IRequest, { Medications } from "@/types/IRequest";
 import { IPatient } from "@/types/IPatient";
 import Period from "@/types/IPeriod";
 import DateTimePicker from "./components/datetime-picker.vue";
@@ -750,30 +750,7 @@ const request = namespace("request");
 const dropdown = namespace("dropdown");
 const patients = namespace("patients");
 
-const emptyMedicationDetails: Medications = {
-  medicationDetails: {
-    medicationCode: "",
-    medicationReference: "",
-    courseOfTherapyType: "",
-    dosageInstruction: "",
-    initialFill: "",
-    quantity: 0,
-    duration: {} as Period,
-  },
-  refillInfo: {},
-  substitutionAllowed: {},
-};
 
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  Medications: [],
-};
 
 @Options({
   name: "requestDialog",
@@ -948,7 +925,7 @@ export default class Medication extends Vue {
     this.width -= this.width_percent;
   }
 
-  medicationsDetail = { ...emptyMedicationDetails };
+  medicationsDetail = { } as any;
   // medicationsDetail = this.requestModel.Medications;
   medicationsDetails: Medications[] = [];
 
@@ -959,23 +936,15 @@ export default class Medication extends Vue {
   removemedication(index: number) {
     this.medicationsDetails.splice(index, 1);
   }
-  async setRequestModel() {
-    this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest }));
-    this.requestModel.Medications = [this.allMedications];
-  }
+  // async setRequestModel() {
+  //   this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest }));
+  //   this.requestModel.Medications = [this.allMedications];
+  // }
   async setRequest() {
     const request = await this.getRequestById(this.id);
     if (!request) return;
     // this.requestModel =  (request);
-    this.requestModel.requestInfo = request.requestInfo;
-    this.requestModel.requestDetails = request.requestDetails;
-    this.requestModel.subject = request.subject;
-    this.requestModel.performer = request.performer;
-    this.requestModel.medicationAdministration =
-      request.medicationAdministration;
-    this.requestModel.fufillment = request.fufillment;
-    this.requestModel.history = request.history;
-    this.requestModel.Medications = request.Medications;
+  
   }
   get newaction() {
     return this.id ? "Update" : "Save";
@@ -984,14 +953,7 @@ export default class Medication extends Vue {
     //  const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
     // return model;
     return {
-      requestInfo: this.requestModel.requestInfo,
-      requestDetails: this.requestModel.requestDetails,
-      subject: this.requestModel.subject,
-      performer: this.requestModel.performer,
-      medicationAdministration: this.requestModel.medicationAdministration,
-      fufillment: this.requestModel.fufillment,
-      history: this.requestModel.history,
-      medications: this.requestModel.Medications,
+    
     };
   }
   get allaction() {
@@ -1016,7 +978,7 @@ export default class Medication extends Vue {
     });
   }
   async showMedication(value: any) {
-    this.requestModel.Medications = value;
+    //this.requestModel.Medications = value;
     this.showMedicationModal = true;
   }
   done() {
@@ -1034,12 +996,12 @@ export default class Medication extends Vue {
     const practitionerfullnameid = this.authPractitioner.id;
     const patientfullnameid = this.PatientName.id;
 
-    this.payload.requestDetails.recorder = practitionerfullnameid;
-    this.payload.requestDetails.requester = patientfullnameid;
-    this.payload.subject.subject = patientfullnameid;
-    this.payload.performer.dispenser = practitionerfullnameid;
-    this.payload.medicationAdministration.performer = practitionerfullnameid;
-    this.payload.medications = this.medicationsDetails;
+    // this.payload.requestDetails.recorder = practitionerfullnameid;
+    // this.payload.requestDetails.requester = patientfullnameid;
+    // this.payload.subject.subject = patientfullnameid;
+    // this.payload.performer.dispenser = practitionerfullnameid;
+    // this.payload.medicationAdministration.performer = practitionerfullnameid;
+    // this.payload.medications = this.medicationsDetails;
     try {
       const response = await cornieClient().post(
         "/api/v1/requests",
@@ -1082,7 +1044,7 @@ export default class Medication extends Vue {
 
   async created() {
     this.setRequest();
-    this.setRequestModel();
+    //this.setRequestModel();
     this.fetchPatients();
     this.fetchAllPatients();
     this.fetchPractitioner();

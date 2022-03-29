@@ -22,19 +22,19 @@
                 <div  class="w-full h-full">
                     <div class="w-full">
                             <div class="bg-primary p-5 w-full flex mb-5">
-                                <p class="float-left text-white w-full">Prescription ID #: <span class="font-semibold">243204</span></p>
-                                    <p class="float-right flex justify-end w-full text-white">State: <span class="font-semibold">Active</span></p>
+                                <p class="float-left text-white w-full">Prescription ID #: <span class="font-semibold">{{ selectedItem.identifier }} </span></p>
+                                    <p class="float-right flex justify-end w-full text-white">Status: <span class="font-semibold">{{ selectedItem.status }}</span></p>
                             </div>
                             <div class="">
                                 <div class="flex space-x-8">
-                                    <avatar class="mr-2 w-16 h-16" :src="localSrc" />
-                                    <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
+                                     <avatar class="mr-2 w-16 h-16" v-if="authPractitioner.image" :src="authPractitioner.image" />
+                                    <avatar class="mr-2 w-16 h-16" v-else :src="localSrc" />
                                     <div class="float-right w-full flex justify-end">
                                         <div>
-                                            <p class="font-bold mb-2 text-right">St. Nicholas Hospital</p>
-                                            <p class="text-right mb-2">57 Campbell Street, Lagos Island. Lagos</p>
-                                            <p class="text-right mb-2">(+234) 802 290 8484 <span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
-                                            <p class="text-right mb-2"> <span class="text-gray-300">Practice ID #:</span>3276680BA</p>
+                                            <p class="font-bold mb-2 text-right">{{ authPractitioner?.department }}</p>
+                                            <p class="text-right mb-2">{{ authPractitioner?.address }}</p>
+                                            <p class="text-right mb-2">{{ authPractitioner?.phone?.dialCode +''+ authPractitioner?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
+                                            <p class="text-right mb-2"> <span class="text-gray-300">Practice ID #:</span>{{ authPractitioner?.identifier }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -44,7 +44,7 @@
                     <div class="w-full border-b-2 mt-5 border-dashed border-gray-200 pb-8">
                         <div class="bg-primary p-5 w-full flex mb-5">
                             <p class="float-left text-white w-full">Safety Cap Request #: <span class="font-semibold">Yes</span></p>
-                            <p class="float-right flex justify-end w-full text-white">Delivery Instruction: <span class="font-semibold">Deliver to Patient (Priority)</span></p>
+                            <p class="float-right flex justify-end w-full text-white">Delivery Instruction: <span class="font-semibold"> {{ selectedItem?.deliveryLocation }}</span></p>
                         </div>
 
                          <div class="grid grid-cols-3 gap-4 mt-8">
@@ -52,11 +52,11 @@
                                 <p class="text-lg font-bold">Request Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Date Requested</p>
-                                    <p class="text-sm text-right w-full">22 January 2022, 14:00</p>
+                                    <p class="text-sm text-right w-full">{{ new Date(selectedItem?.createdAt).toLocaleDateString() }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Encounter ID</p>
-                                    <p class="text-sm text-right w-full">EN-233298</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.euncounterId }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">ICD-11 Code</p>
@@ -64,15 +64,15 @@
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Priority</p>
-                                    <p class="text-sm text-right w-full">20/02/2022</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.priority }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Requester</p>
-                                    <p class="text-sm text-right w-full">Dr. Sarah Johnson</p>
+                                    <p class="text-sm text-right w-full">{{ getPractitionerName(selectedItem?.dispenserId) }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Practitioner ID</p>
-                                    <p class="text-sm text-right w-full">457789</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.dispenserId }}</p>
                                 </div>
                             </div>
                              <div class="bg-white rounded-lg shadow-md p-3">
@@ -83,34 +83,34 @@
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Practitioner ID</p>
-                                    <p class="text-sm text-right w-full">EN-233298</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.dispenserId }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Pharmacy Name</p>
-                                    <p class="text-sm text-right w-full">32DA788</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.dispenserId || 'N/A'}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
-                                    <p class="text-sm text-right w-full">20/02/2022</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.dispenserId || 'N/A'}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Email</p>
-                                    <p class="text-sm text-right w-full">Dr. Sarah Johnson</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.dispenserId || 'N/A'}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">457789</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.address || 'N/A'}}</p>
                                 </div>
                             </div>
                              <div class="bg-blue-50 rounded-lg shadow-md p-3">
                                 <p class="text-lg font-bold">Patient Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Patient Name</p>
-                                    <p class="text-sm text-right w-full">Nkechi Claire Obi</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.firstname +''+ selectedItem?.patient?.lastname }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">MRN #:</p>
-                                    <p class="text-sm text-right w-full">***3454</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.mrn}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Payment Profile</p>
@@ -118,15 +118,15 @@
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
-                                    <p class="text-sm text-right w-full">20/02/2022</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.phone || 'N/A'}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Email</p>
-                                    <p class="text-sm text-right w-full">Dr. Sarah Johnson</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.email || 'N/A'}}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">457789</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.address || 'N/A'}}</p>
                                 </div>
                             </div>
                         </div>
@@ -134,26 +134,70 @@
 
                     <div class="mt-5 w-full  border-b-2 border-dashed border-gray-200 pb-8">
                         <span class="font-bold text-lg my-9">Medicaiton</span>
-                         <cornie-table :columns="rawHeaders" v-model="items" :listmenu="true" :check="false" :menushow="true">
-                            <template #actions="{ item }">
-                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                                <danger-icon />
-                                <span class="ml-3 text-xs">Cancel</span>
-                                </div>
-                            </template>
-                        </cornie-table>
+                         <cornie-table :columns="medicationHeader" v-model="medications" :listmenu="true" :check="false">
+                                    <!-- <template #actions="{ item }">
+                                        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showMedication(item)">
+                                        <edit-icon />
+                                        <span class="ml-3 text-xs">Edit Medication</span>
+                                        </div>
+                                    </template> -->
+                                    <template #code="{ item }">
+                                        <div class="flex space-x-3">
+                                        <div>
+                                            <p>{{ item.code }}</p>
+                                            <p class="text-gray-400">{{ item.durationInDays }} days</p>
+                                        </div>
+                                            <medication-drug v-if="item.substitutionAllowed == true" />
+                                            <refill-drug v-else/>
+                                        </div>
+                                    </template>
+                                    <template #dosage="{ item }">
+                                        <p >{{ item.dosageInstruction }}/day</p>
+                                    </template>
+                                    <template #duration="{ item }">
+                                        <p >{{ item.durationInDays }} Days</p>
+                                    </template>
+                                    <template #quantity="{ item }">
+                                    <span>
+                                        {{ item.quantity }}
+                                    </span>
+                                    </template>
+                                    <template #courseOfTherapy="{ item}">
+                                        <p>
+                                        {{ item.courseOfTherapy}}
+                                        </p>
+                                    </template>
+                                </cornie-table>
                     
                     </div>
 
                      <div class="mt-5 w-full  border-b-2  border-dashed border-gray-200 pb-8">
                         <span class="font-bold text-lg my-8">Refill</span>
-                         <cornie-table :columns="rawHeaders2" v-model="items" :listmenu="true" :check="false" :menushow="true">
-                            <template #actions="{ item }">
-                                <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-                                <danger-icon />
-                                <span class="ml-3 text-xs">Cancel</span>
-                                </div>
-                            </template>
+                          <cornie-table :columns="refillHeader" v-model="refills" :listmenu="true" :check="false">
+                                    <!-- <template #actions="{ item }">
+                                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+                                        <edit-icon />
+                                        <span class="ml-3 text-xs">Edit Refill</span>
+                                        </div>
+                                    </template> -->
+                                    <template #interval="{ item }">
+                                        <div class="flex space-x-3">
+                                        <div>
+                                            <p class="text-gray-400">{{ item.interval }} {{ item.intervalUnit }}</p>
+                                        </div>
+                                        </div>
+                                    </template>
+                                    <template #startDate="{ item }">
+                                        <span>{{ new Date(item.startDate).toLocaleDateString()}}</span>
+                                    </template>
+                                    <template #duration="{ item }">
+                                        <span>{{ item.supplyDuration }} Days</span>
+                                    </template>
+                                    <template #quantity="{ item }">
+                                    <span>
+                                        {{ item.quantity }}
+                                    </span>
+                                    </template>
                         </cornie-table>
                     
                     </div>
@@ -162,19 +206,19 @@
                     <div class="w-full grid grid-cols-2 mt-5 gap-4">
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold">Supporting Info</label>
-                            <p class="text-xs text-gray-800"> Click on the secure link below to pay for this bill. This service is provided in partnership with Paystack.</p>
+                            <p class="text-xs text-gray-800">{{ selectedItem?.supp }}</p>
                         </div>
                          <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold">Notes</label>
-                            <p class="text-xs text-gray-800"> A follow up appointment has been scheduled for patient on 18 October, 2021</p>
+                            <p class="text-xs text-gray-800"> {{ selectedItem.note }}</p>
                         </div>
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold">Medication Allergies</label>
-                            <p class="text-xs text-gray-800"> Aspirin, Codeine, Penicilin</p>
+                            <p class="text-xs text-gray-800"> {{ selectedItem?.allergies }} </p>
                         </div>
                          <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold">Existing Conditions</label>
-                            <p class="text-xs text-gray-800"> Aspirin, Codeine, Penicilin</p>
+                            <p class="text-xs text-gray-800"> {{ selectedItem?.contions }}</p>
                         </div>
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class="text-sm font-bold">History</label>
@@ -222,7 +266,7 @@ import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 import { string } from "yup";
 
-import ISpecial from "@/types/ISpecial";
+import IRequest from "@/types/IRequest";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { IPatient } from "@/types/IPatient";
 
@@ -252,7 +296,7 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 
 
 const practitioner = namespace("practitioner");
-const special = namespace("special");
+const userStore = namespace("user");
 const patients = namespace("patients");
 const request = namespace("request");
 
@@ -291,164 +335,121 @@ export default class printSection extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
-    @Prop({ type: Function, default: defaultFilter })
-    filter!: (item: any, query: string) => boolean;
-
-    @Prop({ type: String, default: "" })
-    id!: string;
-
-    @Prop({ type: String, default: "" })
-    specilatyId!: string;
-
-    @patients.State
-    patients!: IPatient[];
-
-    @patients.Action
-    fetchPatients!: () => Promise<void>;
+    @Prop({ type: Object, default: {} })
+    selectedItem!: any;
 
     @practitioner.State
     practitioners!: IPractitioner[];
 
-
     @practitioner.Action
     fetchPractitioners!: () => Promise<void>;
 
-     @request.State
+    @request.State
     requests!: any[];
 
     @request.Action
     fetchRequests!: () => Promise<void>;
 
+    @userStore.Getter
+    authPractitioner!: any;
 
+  
     loading = false;
     localSrc = require("../../../../../assets/img/placeholder.png");
-    query = "";
-    orderBy: Sorter = () => 1;
-    required = string().required();
 
-    rawHeaders = [
-    { title: "medication", key: "code", show: true,   noOrder: true, },
+
+    medicationHeader = [
     {
-        title: "dosage",
-        key: "dosage",
-        show: true,
-        noOrder: true,
+      title: "medication code",
+      key: "code",
+      show: true,
+       noOrder: true,
+    },
+    // { title: "medication", key: "createdAt", show: true, noOrder: true, },
+    // {
+    //   title: "Form",
+    //   key: "patient",
+    //   show: true,
+    //    noOrder: true,
+    // },
+    {
+      title: "dosage",
+      key: "dosage",
+      show: true,
+       noOrder: true,
     },
     {
-        title: "duration",
-        key: "duration",
-        show: true,
-        noOrder: true,
+      title: "duration",
+      key: "duration",
+      show: true,
+       noOrder: true,
     },
     {
-        title: "course of therapy",
-        key: "course",
-        show: true,
-        noOrder: true,
+      title: "quantity",
+      key: "quantity",
+      show: true,
+       noOrder: true,
     },
+
     {
-        title: "refill",
-        key: "refill",
-        show: true,
-        noOrder: true,
+      title: "course of therapy",
+      key: "courseOfTherapy",
+      show: true,
+       noOrder: true,
     },
     ];
-    rawHeaders2 = [
-    { title: "DISPENSE INTERVAL", key: "code", show: true,   noOrder: true, },
+    refillHeader = [
     {
-        title: "VALID PERIOD",
-        key: "dosage",
-        show: true,
-        noOrder: true,
+      title: "DISPENSE INTERVAL",
+      key: "interval",
+      show: true,
+       noOrder: true,
+    },
+    { title: "VALID PERIOD", key: "startDate", show: true, noOrder: true, },
+    {
+      title: "QUANTITY",
+      key: "quantity",
+      show: true,
+      noOrder: true,
     },
     {
-        title: "QUANTITY",
-        key: "duration",
-        show: true,
-        noOrder: true,
+      title: "SUPPLY DURATION",
+      key: "duration",
+      show: true,
+      noOrder: true,
     },
-    {
-        title: "SUPPLY DURATION",
-        key: "course",
-        show: true,
-        noOrder: true,
-    },
+
     ];
 
+   get refills(){
+      return this.selectedItem?.refills ?? [] ;
+    }
+    get medications(){
+      return [this.selectedItem];
+    }
     get items() {
-         const requests =this.requests.map((request)=>{
-            return {
-            ...request,
-            code: "Panadol (10mg)",
-            dosage: "0 : 1: 0 /day",
-            duration:"10 Days",
-            course: "Oral",
-            refill:"Yes"
-        
-        }
-        })
-        
-        return requests
-    }
-
-
-    requestDetails = {
-        recorder :  "",
-        requester : "",
-        encounter : "",
-        reasonCode : "",
-        reasonReference : " ",
-        definition : "",
-        basedOn :  "",
-        supportingInformation : "",
-    }
-
-    requestInfo = {
-        statusReason: "",
-        intent: "",
-        category: "",
-        priority: "",
-        doNotPerform : "",
-        reasonForProhibition : ""
-    }
-
-
-    @Watch("id")
-    idChanged() {
-    
-    }
-
-     get allRequester() {
-        if (!this.patients || this.patients.length === 0) return [];
-        return this.patients.map((i: any) => {
+      const requests = this.requests.map((request) => {
+      const refillses = request.medications.map((medication:any) => medication.refills);
         return {
-            code: i.id,
-            display: i.firstname + " " + i.lastname,
+          ...request,
+          action: request.id,
+          refils: refillses[0]
         };
-        });
-    }
+      });
 
-    get allPerformer() {
-        if (!this.practitioners || this.practitioners.length === 0) return [];
-        return this.practitioners.map((i: any) => {
-        return {
-            code: i.id,
-            display: i.firstName + " " + i.lastName,
-        };
-        });
+     return requests;
+    // if (!this.query) return shifts;
+    // return search.searchObjectArray(shifts, this.query);
     }
 
 
-
-
-   async submit() {
-    this.loading = true;
-    this.loading = false;
+getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
 
-
   async created() {
-      await this.fetchPatients();
+      await this.fetchRequests();
       await this.fetchPractitioners();
   }
 }

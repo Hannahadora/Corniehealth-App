@@ -118,16 +118,6 @@ const request = namespace("request");
 const dropdown = namespace("dropdown");
 const patients = namespace("patients");
 
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  Medications: [],
-};
 
 @Options({
   name: "requestDialog",
@@ -275,13 +265,12 @@ export default class Medication extends Vue {
   requestModel = {} as IRequest;
 
   async setRequestModel() {
-    this.requestModel = JSON.parse(JSON.stringify({ ...emptyRequest }));
+    this.requestModel = JSON.parse(JSON.stringify({}));
   }
   async setRequest() {
     const request = await this.getRequestById(this.id);
     if (!request) return;
     this.requestModel = request;
-    this.requestModel.Medications = request.Medications;
   }
   get newaction() {
     return this.id ? "Update" : "Create New";

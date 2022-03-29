@@ -1029,16 +1029,6 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
 
 const request = namespace("request");
-const emptyRequest: IRequest = {
-  requestInfo: {},
-  requestDetails: {},
-  subject: {},
-  performer: {},
-  medicationAdministration: {},
-  fufillment: {},
-  history: {},
-  Medications: Array(),
-};
 @Options({
   components: {
     CornieInput,
@@ -1092,7 +1082,7 @@ export default class AddAppointment extends Vue {
   //   @Prop({ type: Object, required: false, default: { ...emptyRequest} })
   //   request!: IRequest;
 
-  requestModel = { ...emptyRequest } as IRequest;
+  requestModel = {  } as IRequest;
 
   @request.Action
   getRequestById!: (id: string) => IRequest;
@@ -1312,14 +1302,14 @@ export default class AddAppointment extends Vue {
     return search.searchObjectArray(requests, this.query);
   }
 
-  get PatientName() {
-    const id = this.requestModel.subject.subject;
-    const pt = this.patients.find((i: any) => i.id === id);
-    this.patientName = `${pt.firstname}  ${pt.lastname}`;
-    this.selectedPatient = pt ? pt : {};
+  // get PatientName() {
+  //   const id = this.requestModel.subject.subject;
+  //   const pt = this.patients.find((i: any) => i.id === id);
+  //   this.patientName = `${pt.firstname}  ${pt.lastname}`;
+  //   this.selectedPatient = pt ? pt : {};
 
-    return pt ? `${pt.firstname} ${pt.lastname}` : "";
-  }
+  //   return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  // }
   get selectedPatientData() {
     const data = this.selectedPatient;
     return {
@@ -1331,24 +1321,24 @@ export default class AddAppointment extends Vue {
     };
   }
 
-  get PractitionerName() {
-    const id = this.requestModel.medicationAdministration.performer;
-    const pt = this.practitioners.find((i: any) => i.id === id);
-    this.performername = `${pt.firstName} ${pt.lastName}`;
-    return pt ? `${pt.firstName} ${pt.lastName}` : "";
-  }
-  get NewDispenserName() {
-    const id = this.requestModel.performer.dispenser;
-    const pt = this.practitioners.find((i: any) => i.id === id);
-    this.dispenserName = `${pt.firstName} ${pt.lastName}`;
-    return pt ? `${pt.firstName} ${pt.lastName}` : "";
-  }
+  // get PractitionerName() {
+  //   const id = this.requestModel.medicationAdministration.performer;
+  //   const pt = this.practitioners.find((i: any) => i.id === id);
+  //   this.performername = `${pt.firstName} ${pt.lastName}`;
+  //   return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  // }
+  // get NewDispenserName() {
+  //   const id = this.requestModel.performer.dispenser;
+  //   const pt = this.practitioners.find((i: any) => i.id === id);
+  //   this.dispenserName = `${pt.firstName} ${pt.lastName}`;
+  //   return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  // }
 
   async setRequest() {
     const request = await this.getRequestById(this.id);
     if (!request) return;
     this.requestModel = { ...request };
-    this.requestModel.Medications = request.Medications;
+
   }
   get payload() {
     const model = JSON.parse(JSON.stringify({ ...this.requestModel }));
@@ -1387,10 +1377,10 @@ export default class AddAppointment extends Vue {
       };
     });
   }
-  async showMedication(value: any) {
-    this.requestModel.Medications = value;
-    this.showMedicationModal = true;
-  }
+  // async showMedication(value: any) {
+  //   this.requestModel.Medications = value;
+  //   this.showMedicationModal = true;
+  // }
 
   async submit() {
     this.loading = true;

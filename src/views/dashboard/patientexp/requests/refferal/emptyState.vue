@@ -6,17 +6,23 @@
         Make a new service reques by clicking on “New Request” above
     </h3>
     <button
+    @click="showRefferalModal = true"
       class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90"
     >
       New Requests
     </button>
   </div>
+  <refferal-modal v-model="showRefferalModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-
+import RefferalModal from "./refferalModal.vue";
 @Options({
-  components: {},
+  components: {
+    RefferalModal
+  },
 })
-export default class refferalEmptyState extends Vue {}
+export default class refferalEmptyState extends Vue {
+  showRefferalModal = false;
+}
 </script>

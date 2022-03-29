@@ -21,6 +21,11 @@
     <div class="shadow-lg p-2 absolute overflow-auto h-full" v-if="show">
         <slot name="dropdownoptions"/>
     </div>
+      <div class="shadow-lg p-2 absolute overflow-auto h-full" v-else>
+         <div v-if="show">
+          <slot name="dropdownoptions"/>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -28,6 +33,13 @@
 import { ref } from "@vue/reactivity";
 
 export default {
+
+   props: {
+        showup: {
+            type: Boolean,
+            default: false
+        },
+    },
   setup() {
     const show = ref(false);
 

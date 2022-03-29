@@ -5,22 +5,42 @@
     <p class="text-center">
       Check in patients from your patients' register or from scheduled appointments to start a visit.
     </p>
-    <button
-      class="bg-danger rounded-lg text-white mt-5 py-2 px-8 focus:outline-none hover:opacity-90 font-semibold"
-      @click="() => $emit('clicked')"
-    >
-      Check-In to Start
-    </button>
   </div>
+  <patient-search v-model="showPatientModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import VisitIcon from "./components/empty-icon.vue";
+import Select from "@/components/formselect.vue";
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import CornieMenu from "@/components/dynamicCornieMenu.vue";
+import { namespace } from "vuex-class";
+import PatientSearch from "./components/searchPatient.vue"
+
+const patients = namespace("patients");
 
 @Options({
   components: {
-    VisitIcon,
+    Select,
+    ChevronDownIcon,
+    CornieMenu,
+    PatientSearch
   },
 })
-export default class VisitEmptyState extends Vue {}
+export default class VisitEmptyState extends Vue {
+  visitType = "";
+  showPatientModal = false;
+
+
+  showPatient(){
+      this.showPatientModal = true;
+  }
+ 
+
+}
 </script>
+<style>
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+</style>

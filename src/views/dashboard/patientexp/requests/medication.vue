@@ -223,27 +223,6 @@ import Period from "@/types/IPeriod";
 import { duration } from "moment";
 import IRequest, { Medications } from "@/types/IRequest";
 
-const emptyMedication: Medications = {
-  medicationDetails: {
-    medicationCode: "",
-    medicationReference: "",
-    courseOfTherapyType: "",
-    dosageInstruction: "",
-    initialFill: "",
-    quantity: 0,
-    duration: { start: "", end: "" },
-  },
-  refillInfo: {
-    dispenseInterval: {} as Period,
-    numberOfRepeatsAllowed: 0,
-    quantity: 0,
-    expectedSupplyDuration: 0,
-  },
-  substitutionAllowed: {
-    code: "",
-    reason: "",
-  },
-};
 
 @Options({
   name: "notes",
@@ -288,13 +267,13 @@ export default class Medication extends Vue {
   newmedications = [];
   // medication =[];
 
-  medication = { ...emptyMedication };
+  medication = { };
   medications: Medications[] = [];
 
-  addMedication() {
-    this.medications.push({ ...this.medication });
-    window.notify({ msg: "Medication Added", status: "success" });
-  }
+  // addMedication() {
+  //   this.medications.push({ ...this.medication });
+  //   window.notify({ msg: "Medication Added", status: "success" });
+  // }
   editMedication(id: string, index: number) {
     this.medication = this.medications[index];
   }
