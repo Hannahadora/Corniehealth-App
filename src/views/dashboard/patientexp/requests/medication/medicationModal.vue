@@ -861,7 +861,7 @@ export default class MedicationModal extends Vue {
         if (!this.searchresult || this.searchresult.length === 0) return [];
         return this.searchresult.map((i: any) => {
         return {
-            code: i.id,
+            code: i.name,
             display: i.name,
         };
         });
