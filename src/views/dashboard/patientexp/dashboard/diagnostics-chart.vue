@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="390px" title="Diagnostic">
+  <chart-card height="422px" title="Diagnostic" action="View Requests">
     <canvas ref="chart" style="margin: auto"></canvas>
   </chart-card>
 </template>
@@ -65,11 +65,11 @@ export default class MedicationChart extends Vue {
     this.chart = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: ["Community pharm", "Internal pharmcy", "laboratory"],
+        labels: ["Internal Laboratory", "Community Laboratory",],
         datasets: [
           {
-            data: [30, 20, 40],
-            backgroundColor: ["#114FF5", "#35BA83", "#541388"],
+            data: [64, 22,],
+            backgroundColor: [ "#35BA83", "#114FF5",],
           },
         ],
       },

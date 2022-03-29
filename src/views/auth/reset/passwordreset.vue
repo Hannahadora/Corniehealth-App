@@ -1,7 +1,7 @@
 <template>
-  <div class=" w-2/3 block rounded-lg bg-white -mt-4">
+  <div class="block rounded-lg bg-white -mt-4 p-9">
     <div
-      class="w-80 lg:w-full xl:w-full md:w-full block"
+      class="lg:w-full xl:w-full md:w-full block"
     >
       <form class="m-8" @submit.prevent="submit">
         <h2 class="font-bold text-primary mb-5 text-xl">Reset Password</h2>

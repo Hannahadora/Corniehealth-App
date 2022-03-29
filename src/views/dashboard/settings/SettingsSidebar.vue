@@ -101,6 +101,7 @@ import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
 import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
 import MarkupIcon from "@/components/icons/markup.vue";
 import KycIcon from "@/components/icons/kyc.vue";
+import CdmIcon from "@/components/icons/cdm.vue";
 
 type INav = { name: string; to: string; icon: string };
 
@@ -136,6 +137,7 @@ type INav = { name: string; to: string; icon: string };
     TeamIcon,
     PartnersIcon,
     MarkupIcon,
+    CdmIcon,
   },
 })
 export default class Settings extends Vue {
@@ -197,7 +199,7 @@ export default class Settings extends Vue {
       {
         name: "Charge Description Master",
         to: "charge-description-master",
-        icon: "bank-icon",
+        icon: "cdm-icon",
       },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div
-      class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+    <!-- <div
+      class="w-full py-40 mt-12 flex flex-col justify-center items-center"
       v-if="empty"
     >
       <img src="@/assets/type.svg" class="mb-2" />
@@ -14,8 +14,8 @@
       >
         Add New
       </cornie-btn>
-    </div>
-    <div class="w-full pb-7" v-else>
+    </div> -->
+    <div class="w-full h-full pb-7">
       <div class="flex justify-end items-center mb-6">
         <cornie-btn
           class="bg-danger px-3 rounded-full text-white m-5"

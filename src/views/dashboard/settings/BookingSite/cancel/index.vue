@@ -1,13 +1,15 @@
 <template>
   <div class="h-screen flex justify-center">
-    <div class="bg-white shadow-md p-4">
+    <div class="bg-white w-full shadow-md p-4">
       <div>
-        <div class="flex space-x-4 w-full justify-between mt-3">
-          <p class="text-sm mt-3 text-black">
-            Patients will be able to see your cancellation notice when they book
-            appointments online and when they recieve appointment notification
-            emails. notification reminder timelines prior to appointment time
-          </p>
+        <div class="w-full flex items-center justify-between mt-3">
+          <div class="">
+            <p class="text-sm mt-3 text-black">
+              Patients will be able to see your cancellation notice when they
+              book appointments online and when they receive appointment
+              notification emails.
+            </p>
+          </div>
           <div
             class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
           >
@@ -15,19 +17,19 @@
           </div>
         </div>
       </div>
-      <div class="w-full mb-12">
+      <div class="w-full mb-14">
         <label
           for="ecounter"
-          class="w-full capitalize text-black text-sm font-bold mt-12"
-          >Message
+          class="w-full capitalize text-black text-sm font-bold mt-8"
+          >Cancellation Notice
           <span class="text-xs text-red-600 font-medium italic"
-            >(Max 150 characters)</span
+            >(Max. of 300 characters)</span
           ></label
         >
-        <div class="w-full -mt-6">
+        <div class="mt-1">
           <Textarea
             class="w-full text-xs"
-            placeholder="Sta"
+            placeholder="Start typing..."
             :rules="required"
             v-model="message"
           />

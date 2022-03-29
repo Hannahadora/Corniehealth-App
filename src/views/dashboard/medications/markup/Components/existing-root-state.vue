@@ -8,9 +8,7 @@
   <div class="w-full py-4 flex justify-end">
     <button
       class="bg-danger text-base font-bold rounded text-white py-2 px-24"
-      @click="
-        $router.push(`/dashboard/provider/settings/markup-settings/${markupId}`)
-      "
+      @click="handleEditing"
     >
       Edit
     </button>
@@ -23,26 +21,13 @@
   >
   </cornie-table>
 
-  <div class="flex flex-col gap-4 mt-8">
-    <span class="font-bold text-sm text-jet_black"
-      >Allow location admins to modify</span
-    >
-    <div class="flex gap-4">
-      <cornie-radio
-        name="confirm"
-        :value="true"
-        v-model="locationAdminsCanSetForLocations"
-        checked
-        label="Yes"
-      />
-      <cornie-radio
-        name="confirm"
-        :value="false"
-        v-model="locationAdminsCanSetForLocations"
-        label="No"
-      />
-    </div>
-  </div>
+  <setup-markup
+    v-model="dialog"
+    :locationId="locationId"
+    :editing="editing"
+    :markupId="markupId"
+    @markup-saved="$emit('markup-saved')"
+  />
 </template>
 
 <script lang="ts">
@@ -50,12 +35,14 @@ import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieRadio from "@/components/cornieradio.vue";
+import SetupMarkup from "../setup-markup.vue";
 
 @Options({
   name: "ExistingRootState",
   components: {
     CornieTable,
     CornieRadio,
+    SetupMarkup,
   },
 })
 export default class ExistingRootState extends Vue {
@@ -68,6 +55,16 @@ export default class ExistingRootState extends Vue {
   @Prop({ default: "" })
   markupId!: string;
 
-  locationAdminsCanSetForLocations = "";
+  @Prop({ default: "" })
+  locationId!: string;
+
+  dialog = false as boolean;
+
+  editing = false as boolean;
+
+  handleEditing() {
+    this.editing = true;
+    this.dialog = true;
+  }
 }
 </script>

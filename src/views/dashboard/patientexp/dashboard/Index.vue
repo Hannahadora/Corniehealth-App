@@ -1,36 +1,94 @@
 <template>
   <div class="w-full overflow-auto mb-5">
+    <div class="sect1 my-8">
+      <div class="greet">Good Morning, Dr. Johnson!</div>
+      <div class="flex items-center mt-4">
+        <span class="">Have a lovely day</span>
+        <!-- <img class="ml-6" src="@/assets/emoji.png" alt="" /> -->
+      </div>
+
+      <div class="s1-slider mt-8">
+        <span class="px-5 py-2 rounded-lg mr-1">My Dashbord</span>
+        <span class="px-5 py-2 rounded-lg bg-white font-semibold"
+          >Admin Dashboard</span
+        >
+      </div>
+    </div>
+
+    <div class="bg-white p-6 mb-8">
+      <span class="font-bold text-xl">Timeframe</span>
+
+      <div
+        class="grid items-center gap-8 mt-4"
+        style="grid-template-columns: 23% 23% 1% 23% 23%"
+      >
+        <div class="flex items-center px-4 py-3" style="background: #f0f4fe">
+          <img class="mr-4" src="@/assets/calendericon.svg" alt="" />
+          <span class="text-base w-10/12" style="">Preferred Period Range</span>
+          <img class="ml-4" src="@/assets/chevrindownprimary.svg" alt="" />
+        </div>
+
+        <div>
+          <input
+            type="date"
+            class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200"
+          />
+        </div>
+        <span>to</span>
+        <div>
+          <input
+            type="date"
+            class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200"
+          />
+        </div>
+
+        <div>
+          <button
+            class="py-3 px-20 rounded-lg text-white font-bold text-base"
+            style="background: #fe4d3c"
+            type="button"
+          >
+            Fetch Records
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div
-      class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
+      class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-8 rounded w-full overflow-auto"
     >
       <div class="w-full p-2">
-        <span
-          class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
-        >
-          Dashboards
-        </span>
         <registration-chart class="w-full" />
       </div>
     </div>
-    <div class="w-full grid grid-cols-3 gap-4">
-      <appointment-chart />
-      <visits-chart />
-      <billings-chart />
-      <medication-chart />
 
-      <diagnostics-chart />
-      <!-- <chart-card height="439px" title="Diagnostics" /> -->
+    <div class="w-full grid grid-cols-3 gap-8 mb-8">
+      <div class="col-span-3">
+        <appointment-chart />
+      </div>
+
       <referral-chart />
+      <visits-chart />
+      <InpatientChart />
     </div>
-    <span class="w-full grid">
+
+    <div class="w-full grid grid-cols-2 gap-8 mb-8">
+      <medication-chart />
+      <diagnostics-chart />
+    </div>
+
+    <div class="mb-8">
+      <billings-chart />
+    </div>
+    <div class="mb-8">
       <rating-chart />
-    </span>
-    <div class="w-full grid gap-x-3" style="grid-template-columns: 64% 35%">
+    </div>
+    <div class="mb-8">
       <resource-chart />
+    </div>
+    <div class="mb-11">
       <messages-chart />
     </div>
-    <questionnaire-chart />
-    <InpatientChart />
   </div>
 </template>
 <script lang="ts">
@@ -47,7 +105,6 @@ import RatingChart from "./ratings-chart.vue";
 import ResourceChart from "./resource-chart.vue";
 import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
-import QuestionnaireChart from "./questionnaire-chart.vue";
 
 @Options({
   name: "DashboardHome",
@@ -64,8 +121,31 @@ import QuestionnaireChart from "./questionnaire-chart.vue";
     MedicationChart,
     RatingChart,
     ResourceChart,
-    QuestionnaireChart,
   },
 })
 export default class DashboardHome extends Vue {}
 </script>
+
+<style scoped>
+.greet {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 45px;
+  color: #14171f;
+}
+
+.s1-slider {
+  width: fit-content;
+  font-family: "Inter";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #14171f;
+  background: #f0f1f5;
+  display: flex;
+  flex-direction: row;
+}
+</style>

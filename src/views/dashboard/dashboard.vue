@@ -12,8 +12,8 @@
     </div>
     <div class="h-full flex flex-col w-auto">
       <nav-bar class="" />
-      <div class="pr-4 pl-6 pt-2 flex flex-col body-content bg-gray-100">
-        <bread-crumbs class="" />
+      <div class="pr-6 pl-6 pt-2 flex flex-col body-content bg-gray-100">
+        <!-- <bread-crumbs class="" /> -->
         <router-view class="flex-grow" />
       </div>
     </div>
