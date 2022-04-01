@@ -221,5 +221,23 @@ export const SettingsRoute: RouteRecordRaw = {
           "@/views/dashboard/settings/catalogues/components/new-products.vue"
         ),
     },
+    {
+      path: "pos",
+      props: true,
+      name: "POS Sales",
+      component: () => import("@/views/dashboard/medications/pos/index.vue"),
+    },
+    {
+      path: "dispense",
+      props: true,
+      name: "Dispense",
+      component: () => import("@/views/dashboard/medications/dispense/index.vue"),
+    },
+    {
+      path: "diagnostics",
+      name: "Diagnostic Report",
+      component: () =>
+        import("@/views/dashboard/diagnostics/index.vue"),
+    },
   ],
 };

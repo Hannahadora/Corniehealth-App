@@ -83,7 +83,7 @@ import RatingBar from "./rating-bar.vue";
   },
 })
 export default class ResourceChart extends Vue {
-  record: boolean = true
+  record: boolean = false
   restricted: boolean = false
 }
 </script>
