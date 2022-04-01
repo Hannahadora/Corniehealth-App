@@ -6,8 +6,9 @@
       {{ label }}
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
-    <div class="grid grid-cols-3 gap-3 mt-4 w-1/2">
+    <div class="grid grid-cols-4 gap-4 mt-4 w-1/2">
       <cornie-radio :name="name" v-model="type" value="age" label="Age" />
+       <cornie-radio :name="name" v-model="type" label="Date" value="date" />
       <cornie-radio :name="name" v-model="type" label="Range" value="range" />
       <cornie-radio :name="name" v-model="type" value="string" label="String" />
     </div>
@@ -16,6 +17,15 @@
         v-model="measurable.age"
         label="Age"
         class=""
+      />
+
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-4" v-if="type == 'date'">
+        <date-picker
+           v-model:date="measurable.startDate"
+            v-model:time="measurable.startTime"
+            label="Deceased Date"
+            width="w-full"
       />
 
     </div>
@@ -37,6 +47,7 @@ import CornieTooltip from "@/components/CornieTooltip.vue";
 import InfoIcon from "@/components/icons/info.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import IMeasurable from "@/types/IMeasurable";
+import DatePicker from "@/components/date-time-picker.vue";
 
 const measurable = {
   age: "",
@@ -44,6 +55,8 @@ const measurable = {
   min: "",
   max: "",
   string: "",
+startDate: "",
+  startTime: "",
 };
 
 @Options({
@@ -53,6 +66,7 @@ const measurable = {
     CornieInput,
     CornieTooltip,
     InfoIcon,
+    DatePicker
   },
 })
 export default class TimeablePicker extends Vue {
@@ -62,7 +76,7 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: measurable })
   measurable!: IMeasurable;
 
-  type: "age" | "range" | "string" = "range";
+    type: "age" | "date" | "range" | "string" = "range";
 
   @Prop({ type: String })
   label!: string;

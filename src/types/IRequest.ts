@@ -8,7 +8,8 @@ export interface RefillSection {
   supplyDurationUnit: string;
 }
 export interface Medications {
-  code:string;
+  genericCode:null;
+  genericName:string;
   reference:string;
   courseOfTherapy:string;
   dosageInstruction:string;

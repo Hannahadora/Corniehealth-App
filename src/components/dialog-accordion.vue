@@ -1,15 +1,13 @@
 <template>
   <div class="shadow-md -mb-5 p-3 w-full h-auto">
-    <div class="w-full">
+    <div class="w-full cursor-pointer">
       <div
-        class="h-11 w-full flex items-center border-b-2 justify-between"
-        :class="{
-          'rounded-t-xl': first && expand,
-        }"
+        class="h-11 w-full flex items-center cursor-pointer justify-between"
+         :class="{ 'text-primary': expand, 'border-b-2 border-gray-200' : !addborder }" @click="expand = !expand" 
       >
         <div
-          class="font-bold text-md text-primary mb-1"
-          :class="{ 'text-primary': expand }"
+          class="font-bold text-md text-black mb-1"
+          :class="{ 'text-black': expand }"
         >
           {{ title }}
         </div>
@@ -57,6 +55,9 @@ export default class AccordionComponent extends Vue {
 
   @Prop({ type: Boolean, default: false })
   first!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  addborder!: boolean;
 
   expand = false;
 

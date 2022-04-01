@@ -144,7 +144,9 @@
                           label="medication code"
                           placeholder="--Select--"
                         /> -->
-                        <auto-complete :label="'medication code'" :items="allDrug" @input="search"  v-model="emptyMedicationDetails.code" :placeholder="'Select'"/>
+                        <auto-complete :label="'Generic Name'"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
+
+                        <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
                         <cornie-select
                             class="w-full"
                             :items="['Condition', 'Observation']"
@@ -790,7 +792,8 @@ export default class MedicationModal extends Vue {
     supplyDurationUnit: "",
   };
   emptyMedicationDetails = {
-    code : "",
+    genericCode : null as any,
+    genericName : "",
     reference: "",
     courseOfTherapy: "",
     dosageInstruction : "",
@@ -810,9 +813,9 @@ export default class MedicationModal extends Vue {
     }
 
      addMedicationDetails() {
-       this.resultData(this.emptyMedicationDetails.code);
+       //this.resultData(this.emptyMedicationDetails.code);
 
-        this.emptyMedicationDetails.code = this.emptyMedicationDetails.code.toString();
+        this.emptyMedicationDetails.genericCode = this.emptyMedicationDetails?.genericCode?.toString();
         this.medications.push(this.emptyMedicationDetails);
         this.emptyMedicationDetails.refills.push(this.emptyRefill);
     }
@@ -861,7 +864,16 @@ export default class MedicationModal extends Vue {
         if (!this.searchresult || this.searchresult.length === 0) return [];
         return this.searchresult.map((i: any) => {
         return {
-            code: i.name,
+            code: i.id,
+            display: i.name,
+        };
+        });
+    }
+    allBrand(){
+       if (!this.fullInfo || this.fullInfo.length === 0) return [];
+        return this.fullInfo.map((i: any) => {
+        return {
+            code: i.id,
             display: i.name,
         };
         });
@@ -996,8 +1008,6 @@ export default class MedicationModal extends Vue {
   }
 
   async search(event:any){
-        console.log(event.target.value,"VSLUEJFFJ");
-        console.log(event,"000");
         const AllNotes = cornieClient().get(
         `/api/v1/emdex/generic-by-keyword/`,
         {
@@ -1012,17 +1022,23 @@ export default class MedicationModal extends Vue {
             this.searchresult = response[0].data;
         }
   }
- async resultData(id:any){
-        const AllNotes = cornieClient().get(
-        `/api/v1/emdex/generic-brands/${id}`,
-        );
-        const response = await Promise.all([AllNotes]);
-        if(response[0].data === 0){
-            this.fullInfo = 'No medication code found'
-        }else{
+  async resultData(){
 
-            this.fullInfo = response[0].data;
-        }
+    if(this.emptyMedicationDetails.genericCode !== null){
+
+      console.log("ALL BRNAD NAMW")
+          const AllNotes = cornieClient().get(
+          `/api/v1/emdex/generic-brands/${this.emptyMedicationDetails.genericCode}`,
+          );
+          const response = await Promise.all([AllNotes]);
+          if(response[0].data === 0){
+              this.fullInfo = 'No medication code found'
+          }else{
+
+              this.fullInfo = response[0].data;
+          }
+    }
+
   }
   done() {
         this.$emit("medication-added");
@@ -1034,6 +1050,7 @@ export default class MedicationModal extends Vue {
       await this.createMapper();
       await this.fetchPatients();
       await this.fetchPractitioners();
+      await this.resultData();
 
   }
 }

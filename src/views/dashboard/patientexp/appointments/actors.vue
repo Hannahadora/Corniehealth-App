@@ -279,34 +279,6 @@
                 />
               </div>
               <div class="w-full p-3" v-if="singleId == input.id">
-                <!-- <cornie-select
-                        :onChange="setValue"
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="apatient.type"
-                        label="TYPE"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="apatient.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                <!-- <div class="w-full flex space-x-2 mb-5">
-                          <input
-                          checked
-                            v-model="apatient.required"
-                            type="checkbox"
-                            class="bg-danger focus-within:bg-danger px-6 shadow"
-                          />
-                          <p class="text-sm">Required</p>
-                      </div> -->
                 <cornie-select
                   class="required w-full"
                   :rules="required"
@@ -486,16 +458,6 @@ export default class Actors extends Vue {
 
   @Prop({ type: String, default: "" })
   appointmentId!: string;
-
-  // @Prop({ type: Boolean, default: false })
-  // visible: boolean;
-
-  // @Prop({ type: Boolean, default: false })
-  // showPartcipants: boolean;
-
-
-  // @Prop({ type: Array, default: () => [] })
-  // available!: object;
 
   @Prop({ type: Array, default: () => [] })
   columns!: object;
