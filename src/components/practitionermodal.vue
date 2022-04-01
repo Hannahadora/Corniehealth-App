@@ -3,6 +3,7 @@
   <div
     :class="classes"
     class="flex items-center justify-center fixed left-0 bottom-0 w-full h-full bg-gray-500 bg-opacity-50"
+    style="z-index: 999999999;"
   >
     <div
       v-bind="$attrs"

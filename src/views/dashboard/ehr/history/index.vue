@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-sm rounded-3xl p-3 mb-2 w-full"
+    class="flex justify-center bg-white shadow-sm rounded-lg p-3 mb-2 w-full"
   >
     <div class="w-full">
       <span
@@ -17,11 +17,13 @@
 </template>
 <script lang="ts">
 import Ihistory from "@/types/Ihistory";
+import IAllergy from "@/types/IAllergy";
 import { Options, Vue } from "vue-class-component";
 import HistoryEmptyState from "./emptyState.vue";
 import HistoryExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
+const allergy = namespace("allergy");
 const history = namespace("history");
 
 @Options({
@@ -36,12 +38,18 @@ export default class HistoryIndex extends Vue {
   show = false;
 
   get empty() {
-    return this.historys.length < 1;
+    return this.allergys.length < 1;
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
   }
+
+  @allergy.State
+  allergys!: IAllergy[];
+
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
   @history.State
   historys!: Ihistory[];
@@ -56,7 +64,8 @@ export default class HistoryIndex extends Vue {
   }
 
   created() {
-    if (this.fetchHistorys.length < 1) this.fetchHistorys(this.activePatientId);
+    if (this.activePatientId) this.fetchHistorys(this.activePatientId);
+    this.fetchAllergys(this.activePatientId);
   }
 }
 </script>

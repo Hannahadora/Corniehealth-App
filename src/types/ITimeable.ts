@@ -6,4 +6,8 @@ export interface ITimeable {
   endTime?: string;
   date?: string;
   time?: string;
+  unit?: string;
+  min?: string;
+  max?: string;
+  string?: string;
 }
