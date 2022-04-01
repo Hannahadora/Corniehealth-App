@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-lg bg-white p-3 mb-2 mt-5 w-full cursor-pointer" :class="{'shadow-md':!addborder}">
+  <div class="rounded-lg bg-white p-3 mb-2 mt-5 w-full cursor-pointer" :class="{'shadow-xl':!addborder}">
     <div class="w-full">
       <div class="flex space-x-4 w-full">
         <div
@@ -21,8 +21,8 @@
             :class="{ 'text-black': expand }"
           >
             {{ title }}
-            <span class="lowercase text-xs text-red-500" v-if="spanCaption">{{ spanText }}</span>
-            <span class="capitalize text-xs text-gray-400" v-if="grayCaption">(Optional)</span>
+            <span class="capitalize text-xs text-blue-400" v-if="spanCaption">{{ spanText }}</span>
+            <span class="text-xs text-gray-500" v-if="grayCaption">(Optional)</span>
           </div>
           <div class="flex space-x-6 justify-end items-end">
             <span
@@ -75,14 +75,19 @@
             </div>
 
             <div v-if="expand" class>
+              <ToggleCheckIcon v-if="check" :modelValue="true"/>
               <chevron-down-icon
+                v-else
                 class="cursor-pointer stroke-current -mt-4"
                 :class="{ 'text-primary': expand }"
                 @click="expand = false"
               />
+            
             </div>
             <div v-else>
+             <ToggleCheckIcon v-if="check" :modelValue="false"/>
               <chevron-right-icon
+                v-else
                 class="cursor-pointer stroke-current -mt-4"
                 :class="{ 'text-primary': expand }"
                 @click="expand = true"
@@ -110,6 +115,7 @@ import VideoIcon from "@/components/icons/formvideo.vue";
 import EditIcon from "@/components/icons/formedit.vue";
 import AddIcon from "@/components/icons/add.vue";
 import ExpandIcon from "@/components/icons/expandgreen.vue";
+import ToggleCheckIcon from "@/components/ToogleCheck.vue";
 
 @Options({
   name: "AccordionItem",
@@ -120,6 +126,7 @@ import ExpandIcon from "@/components/icons/expandgreen.vue";
     GroupIcon,
     QuestionIcon,
     DisplayIcon,
+    ToggleCheckIcon,
     ImageIcon,
     VideoIcon,
     EditIcon,
@@ -152,8 +159,11 @@ export default class AccordionComponent extends Vue {
   @Prop({ type: Boolean, default: false })
   text!: boolean;
 
-   @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false })
   spanText!: boolean;
+
+   @Prop({ type: Boolean, default: false })
+  check!: boolean;
 
    @Prop({ type: Boolean, default: false })
   grayCaption!: boolean;

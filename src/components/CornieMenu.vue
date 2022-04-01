@@ -1,5 +1,5 @@
 <template>
-  <div class="menu" @click="onMenuClick">
+  <div class="menu">
     <slot name="activator" :on="{ click }" />
     <div class="absolute pt-2 z-50 -left-44 right-0 top-2">
       <card
@@ -38,6 +38,12 @@ export default class Menu extends Vue {
   @Prop({ type: String, default: "auto" })
   left!: string;
 
+  @Prop({ type: String, default: "-11rem;" })
+  newleft!: string;
+
+  @Prop({ type: String, default: "0.5rem" })
+  newtop!: string;
+
   @Prop({ type: String, default: "auto" })
   right!: string;
 
@@ -61,10 +67,10 @@ export default class Menu extends Vue {
   }
 
   click(event: Event) {
-    event.stopPropagation();
     if (!this.showMenu) {
+      event.stopPropagation();
       document.body.addEventListener("click", this.closeHandler);
-      this.showMenu = true;
+      this.showMenu = !this.showMenu;
     } else this.close();
   }
 

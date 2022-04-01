@@ -358,7 +358,7 @@ import Modal from "@/components/modal.vue";
 import ArrowRight from "@/components/icons/arrow-right.vue";
 import EncounterIcon from "@/components/icons/encounter.vue";
 import CheckoutIcon from "@/components/icons/checkout.vue";
-import Checkin from "../../visits/components/checkin.vue";
+import Checkin from "../../visits/components/oldcheckin.vue";
 import SideModal from "../../schedules/components/side-modal.vue";
 import NotesSection from "./notes.vue";
 import showConfirmModal from "./cancel.vue";

@@ -101,6 +101,7 @@ import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
 import ChevronDownIcon from "@/components/icons/dialogchevrondown.vue";
 import MarkupIcon from "@/components/icons/markup.vue";
 import KycIcon from "@/components/icons/kyc.vue";
+import CdmIcon from "@/components/icons/cdm.vue";
 
 type INav = { name: string; to: string; icon: string };
 
@@ -136,6 +137,7 @@ type INav = { name: string; to: string; icon: string };
     TeamIcon,
     PartnersIcon,
     MarkupIcon,
+    CdmIcon,
   },
 })
 export default class Settings extends Vue {
@@ -146,10 +148,14 @@ export default class Settings extends Vue {
   open = 0;
   get organization() {
     return [
-      { name: "Practice Information", to: "practice-information", icon: "org-icon" },
+      {
+        name: "Practice Information",
+        to: "practice-information",
+        icon: "org-icon",
+      },
       { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
-       { name: "Specialties", to: "specialties", icon: "special-icon" },
-       { name: "KYC", to: "kyc", icon: "kyc-icon" },
+      { name: "Specialties", to: "specialties", icon: "special-icon" },
+      { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
         name: "Location",
         to: "location",
@@ -190,6 +196,11 @@ export default class Settings extends Vue {
         icon: "health-service-icon",
       },
       { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
+      {
+        name: "Charge Description Master",
+        to: "charge-description-master",
+        icon: "cdm-icon",
+      },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
       { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
@@ -265,7 +276,7 @@ export default class Settings extends Vue {
       nav.name.toLowerCase().includes(this.query.toLowerCase())
     );
   }
-   clicked() {
+  clicked() {
     this.show = false;
   }
 }

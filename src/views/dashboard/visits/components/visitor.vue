@@ -5,14 +5,14 @@
         <div class="w-full flex items-center">
           <div class="w-1/12 rounded-full">
             <img
-              v-if="patient && patient.image"
+              v-if="patient.profilePhoto"
               src="https://via.placeholder.com/40x40"
               class="rounded-full w-full"
               alt="Image"
             />
             <img
               v-else
-              src="https://via.placeholder.com/40x40"
+              :src="localSrc"
               class="rounded-full w-full"
               alt="Image"
             />
@@ -28,15 +28,15 @@
                     : "Unavailbale"
                 }}
               </p>
+              <span class="flex items-center text-sm">
+                <span class="uppercase text-success">Appointment Time {{ time }}</span>
+                <span class="uppercase text-success mx-3">|</span>
+                <span class="uppercase text-success">Queue #03</span>
+              </span>
             </div>
           </div>
         </div>
         <div class="w-full">
-          <span class="flex items-center text-sm">
-            <span class="uppercase text-success">Appointment Time 10:00</span>
-            <span class="uppercase text-success mx-3">|</span>
-            <span class="uppercase text-success">Queue #03</span>
-          </span>
         </div>
       </div>
     </div>
@@ -62,10 +62,18 @@ export default class CheckIn extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  get patient() {
-    if (!this.id) return {};
-    return this.patients.find((i: any) => i.id === this.id);
-  }
+  @Prop({ type: String, default: "" })
+  time!: string;
+
+  @Prop({ type: Object, default: {} })
+  patient!: object;
+
+  localSrc = require("../../../../assets/img/placeholder.png");
+
+  // get patient() {
+  //   if (!this.id) return {};
+  //   return this.patients.find((i: any) => i.id === this.id);
+  // }
 
   async created() {
     if (!this.patients || this.patients.length === 0) await this.getPatients();

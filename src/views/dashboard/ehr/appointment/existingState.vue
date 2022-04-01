@@ -1,168 +1,135 @@
 <template>
   <div class="w-full pb-80">
-    <ul class="nav nav-tabs nav-tabs-bottom widget_categories">
-      <li class="nav-item cursor-pointer">
-        <a
-          class="nav-link"
-          @click="select(1)"
-          :class="{ active: selected === 1 }"
-          :aria-selected="selected === 1"
-          >Appointments</a
-        >
-      </li>
-      <li class="nav-item cursor-pointer">
-        <a
-          class="nav-link"
-          @click="select(2)"
-          :class="{ active: selected === 2 }"
-          :aria-selected="selected === 2"
-          >Visits</a
-        >
-      </li>
-    </ul>
-    <div class="tab-content">
-      <div
-        class="tab-pane"
-        v-if="selected == 1"
-        :class="{ active: selected === 1 }"
-        id="Appointments"
+
+
+    <span class="flex justify-end w-full mb-8">
+      <button
+        class="bg-danger rounded-lg text-white mt-5 py-3 px-3 pl-7 pr-7 font-semibold focus:outline-none hover:opacity-90"
+        @click="showAppointment('false')"
       >
-        <span class="flex justify-end w-full mb-8">
-          <button
-            class="bg-danger rounded-full text-white mt-5 py-3 px-3 pl-7 pr-7 font-semibold focus:outline-none hover:opacity-90"
-            @click="showAppointment('false')"
-          >
-            New Appointment
-          </button>
-        </span>
-        <cornie-table :columns="rawHeaders" v-model="sortAppointments">
-          <template #actions="{ item }">
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-              <newview-icon class="text-blue-300 fill-current" />
-              <span class="ml-3 text-xs">View</span>
-            </div>
-            <div
-              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="showAppointment(item.id)"
-            >
-              <newview-icon class="text-blue-300 fill-current" />
-              <span class="ml-3 text-xs">Edit</span>
-            </div>
-            <div
-              @click="showStatus(item.id)"
-              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            >
-              <update-icon class="text-danger fill-current" />
-              <span class="ml-3 text-xs"> Update Status </span>
-            </div>
-            <div
-              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="showCheckinPane(item.id)"
-            >
-              <checkin-icon />
-              <span class="ml-3 text-xs">Check-In</span>
-            </div>
-            <div
-              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="makeNotes(item.id)"
-            >
-              <note-icon class="text-green-600 fill-current" />
-              <span class="ml-3 text-xs">Make Notes</span>
-            </div>
-            <div
-              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="deleteItem(item.id)"
-            >
-              <cancel-icon />
-              <span class="ml-3 text-xs">Cancel</span>
-            </div>
-          </template>
-          <template #Participants="{ item }">
-            <div class="flex items-center">
-              <span class="text-xs">{{ item.Participants }}</span>
-              <eye-icon
-                class="cursor-pointer ml-3"
-                @click="displayParticipants(item.id)"
-              />
-            </div>
-          </template>
-          <template #status="{ item }">
-            <div class="flex items-center">
-              <p
-                class="text-xs bg-gray-300 p-1 rounded"
-                v-if="item.status == 'Proposed'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
-                v-if="item.status == 'Pending'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-green-200 text-green-500 p-1 rounded"
-                v-if="item.status == 'Booked'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-                v-if="item.status == 'Arrived'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-green-200 text-green-500 p-1 rounded"
-                v-if="item.status == 'Fullfiled'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-red-300 text-red-600 p-1 rounded"
-                v-if="item.status == 'Cancelled'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
-                v-if="item.status == 'No show'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-                v-if="item.status == 'Entered-in-Error'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-green-200 text-green-500 p-1 rounded"
-                v-if="item.status == 'Checked-in'"
-              >
-                {{ item.status }}
-              </p>
-              <p
-                class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-                v-if="item.status == 'Waitlist'"
-              >
-                {{ item.status }}
-              </p>
-            </div>
-          </template>
-        </cornie-table>
-      </div>
-      <div
-        class="tab-pane"
-        v-if="selected == 2"
-        :class="{ active: selected === 2 }"
-        id="Visits"
-      >
-        <div class="w-full">
-          <EHRVisits @gotoappointments="() => (selected = 1)" />
+        New Appointment
+      </button>
+    </span>
+    <cornie-table :columns="rawHeaders" v-model="sortAppointments">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <newview-icon class="text-blue-300 fill-current" />
+          <span class="ml-3 text-xs">View</span>
         </div>
-      </div>
-    </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showAppointment(item.id)"
+        >
+          <newview-icon class="text-blue-300 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div
+          @click="showStatus(item.id)"
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <update-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs"> Update Status </span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showCheckinPane(item.id)"
+        >
+          <checkin-icon />
+          <span class="ml-3 text-xs">Check-In</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="makeNotes(item.id)"
+        >
+          <note-icon class="text-green-600 fill-current" />
+          <span class="ml-3 text-xs">Make Notes</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item.id)"
+        >
+          <cancel-icon />
+          <span class="ml-3 text-xs">Cancel</span>
+        </div>
+      </template>
+      <!-- <template #Participants="{ item }">
+        <div class="flex items-center">
+          <span class="text-xs">{{ item.Participants }}</span>
+          <eye-icon
+            class="cursor-pointer ml-3"
+            @click="displayParticipants(item.id)"
+          />
+        </div>
+      </template> -->
+      <template #Participants="{ item }">
+          <actors-section :items="item.Participants" class="cursor-pointer"   @click="displayParticipants(item.id)"/>
+      </template>
+      <template #status="{ item }">
+        <div class="flex items-center">
+          <p
+            class="text-xs bg-gray-300 p-1 rounded"
+            v-if="item.status == 'Proposed'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
+            v-if="item.status == 'Pending'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-green-200 text-green-500 p-1 rounded"
+            v-if="item.status == 'Booked'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+            v-if="item.status == 'Arrived'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-green-200 text-green-500 p-1 rounded"
+            v-if="item.status == 'Fullfiled'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-red-300 text-red-600 p-1 rounded"
+            v-if="item.status == 'Cancelled'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
+            v-if="item.status == 'No show'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+            v-if="item.status == 'Entered-in-Error'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-green-200 text-green-500 p-1 rounded"
+            v-if="item.status == 'Checked-in'"
+          >
+            {{ item.status }}
+          </p>
+          <p
+            class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+            v-if="item.status == 'Waitlist'"
+          >
+            {{ item.status }}
+          </p>
+        </div>
+      </template>
+    </cornie-table>
+
     <notes-add
       :appointmentNotes="appointmentNotes"
       :appointmentId="appointmentId"
@@ -170,10 +137,8 @@
       v-model:visible="showNotes"
     />
     <all-participants
+      v-model="showPartcipants"
       :appointmentId="appointmentId"
-      :columns="singleParticipant"
-      @update:preferred="displayParticipants"
-      v-model:visible="showPartcipants"
     />
     <appointment-modal
       v-if="appointmentId == 'false'"
@@ -187,6 +152,7 @@
       @appointment-added="appointmentAdded"
       @show:modal="showAppointment"
       v-model="showAppointmentModal"
+
     />
 
     <status-modal
@@ -213,6 +179,16 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { Prop } from "vue-property-decorator";
+import search from "@/plugins/search";
+
+import { IPatient } from "@/types/IPatient";
+import IAppointment from "@/types/IAppointment";
+
+
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
@@ -225,16 +201,9 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
-import IAppointment from "@/types/IAppointment";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import AllParticipants from "./participants.vue";
-import NotesAdd from "./notes.vue";
-import StatusModal from "./status-update.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import NoteIcon from "@/components/icons/notes.vue";
@@ -243,13 +212,15 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import AppointmentModal from "./appointmentDialog.vue";
 import EHRVisits from "@/views/dashboard/ehr/visits/index.vue";
-import { IPatient } from "@/types/IPatient";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import CheckinComponent from "@/views/dashboard/ehr/visits/components/patient-checkin.vue";
+
+import AppointmentModal from "./appointmentDialog.vue";
+import AllParticipants from "./allParticipants.vue";
+import NotesAdd from "./notes.vue";
+import StatusModal from "./status-update.vue";
+import ActorsSection from "./actors.vue";
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -267,6 +238,7 @@ const patients = namespace("patients");
     ThreeDotIcon,
     NotesAdd,
     PlusIcon,
+    ActorsSection,
     SearchIcon,
     AllParticipants,
     //  CloseIcon,
@@ -327,7 +299,7 @@ export default class AppointmentExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     { title: "Recorded", key: "createdAt", show: true },
-    { title: "Identifier", key: "id", show: true },
+    { title: "Identifier", key: "idn", show: true },
     {
       title: "Appointment Type",
       key: "appointmentType",
@@ -341,11 +313,6 @@ export default class AppointmentExistingState extends Vue {
     {
       title: "Participants",
       key: "Participants",
-      show: true,
-    },
-    {
-      title: "Slot",
-      key: "newslot",
       show: true,
     },
     {
@@ -429,13 +396,6 @@ export default class AppointmentExistingState extends Vue {
         year: "numeric",
       });
 
-      const singleParticipantlength =
-        patientappointment.Practitioners.length +
-        patientappointment.Devices.length +
-        patientappointment.Patients.length +
-        patientappointment.Location.length +
-        patientappointment.HealthCare.length;
-
       const pateintId = patientappointment.Patients.map((patient: any) => {
         this.onePatientId = patient.patientId;
       });
@@ -450,12 +410,12 @@ export default class AppointmentExistingState extends Vue {
         (patientappointment as any).updatedAt
       ).toLocaleDateString("en-US");
       const patientNewId = this.onePatientId;
+
+
       return {
         ...patientappointment,
         action: patientappointment.id,
         patient: this.getPatientName(this.onePatientId),
-        newslot: this.showSlots(patientappointment.slot),
-        Participants: singleParticipantlength,
       };
     });
     return patientappointments;
@@ -503,15 +463,6 @@ export default class AppointmentExistingState extends Vue {
   async displayParticipants(value: string) {
     this.appointmentId = value;
     this.showPartcipants = true;
-    try {
-      const response = await cornieClient().get(`/api/v1/appointment/${value}`);
-      if (response.success) {
-        this.singleParticipant = response.data;
-      }
-    } catch (error) {
-      this.loading = false;
-      console.error(error);
-    }
   }
   get sortAppointments() {
     return this.items.slice().sort(function (a: any, b: any) {
@@ -529,11 +480,11 @@ export default class AppointmentExistingState extends Vue {
 
   async created() {
     await this.fetchByIdAppointments(this.$route.params.id.toString());
-    this.getSlot();
+    if(this.onePractitionerId) await this.getSlot();
   }
 }
 </script>
-<style>
+<style scoped>
 .outline-primary {
   border: 2px solid #080056;
 }

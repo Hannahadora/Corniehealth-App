@@ -1,6 +1,6 @@
 <template>
   <access-role
-    :show="addAccessRole"
+    v-model="addAccessRole"
     :deletedRole="deletedRole"
     @close-access-diag="addAccessRole = false"
     @add-access-roles="addAccessRoles"
@@ -328,7 +328,7 @@
               <div class="w-full grid grid-cols-3 gap-4 mt-5">
                 <cornie-input
                   :rules="required"
-                  v-model="jobDesignation"
+                  v-model="employmentType"
                   label="Employment Type"
                   placeholder="--Enter--"
                   :required="true"
@@ -367,6 +367,32 @@
                     <add-icon @click="showSpecialModal" />
                   </template>
                 </cornie-input>
+
+                <cornie-select
+                  :items="['a', 'b']"
+                  label="Job Designation"
+                  placeholder="--Select--"
+                  class="mt-0.5 flex-none"
+                  v-model="jobDesignation"
+                />
+
+                <cornie-select
+                  :items="dropdown.CommunicationLanguage"
+                  v-model="communicationLanguage"
+                  label="Communication"
+                  placeholder="--Select--"
+                  class="w-full"
+                  :required="true"
+                />
+
+                <cornie-select
+                  :rules="required"
+                  v-model="consultationChannel"
+                  label="Consultation Channel"
+                  :items="dropdown.ConsultationChannel"
+                  placeholder="--Select--"
+                  :required="true"
+                />
 
                 <div class="w-full -mt-1">
                   <span class="text-sm font-semibold mb-3"
@@ -410,102 +436,24 @@
                     />
                   </div>
                 </div>
-                <cornie-select
-                  :items="dropdown.CommunicationLanguage"
-                  v-model="communicationLanguage"
-                  label="Communication"
-                  placeholder="--Select--"
-                  class="w-full"
-                  :required="true"
-                />
-                <cornie-select
-                  :rules="required"
-                  v-model="consultationChannel"
-                  label="Consultation Channel"
-                  :items="dropdown.ConsultationChannel"
-                  placeholder="--Select--"
-                  :required="true"
-                />
               </div>
             </template>
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
-          <accordion-component title="Education" :opened="false">
-            <template v-slot:default>
-              <div class="w-full grid grid-cols-3 gap-4 mt-3">
-                <cornie-input
-                  label="Issuer"
-                  v-model="licenseIssuer"
-                  :required="true"
-                />
-                <cornie-select
-                  :items="dropdown.Qualification"
-                  v-model="qualificationCode"
-                  label="Qualification"
-                  placeholder="--Select--"
-                  class="w-full"
-                  :required="true"
-                />
-                <date-picker
-                  class="w-full mb-5"
-                  label="Year of Graduation"
-                  v-model="graduationYear"
-                  :rules="required"
-                  :required="true"
-                />
-              </div>
-            </template>
-            <template v-slot:misc>
-              <info-icon class="fill-current text-primary" />
-            </template>
-          </accordion-component>
-          <accordion-component title="Board License" :opened="false">
-            <template v-slot:default>
-              <div class="w-full grid grid-cols-3 gap-4 mt-3">
-                <cornie-input
-                  v-model="qualificationIssuer"
-                  label="Issuer"
-                  class="w-full"
-                  placeholder="--Enter--"
-                  :required="true"
-                />
-
-                <cornie-input
-                  v-model="licenseNumber"
-                  label="License Number"
-                  placeholder="--Enter--"
-                  :required="true"
-                />
-                <period-picker
-                  label="Period"
-                  class="-mt-1.5 w-full"
-                  v-model="licensePeriod"
-                  placeholder="--Select--"
-                  :required="true"
-                />
-              </div>
-            </template>
-            <template v-slot:misc>
-              <info-icon class="fill-current text-primary" />
-            </template>
-          </accordion-component>
-          <accordion-component title="Location(s) & privileges" :opened="false">
+          <accordion-component title="Locations & privileges" :opened="false">
             <template v-slot:default>
               <div class="w-full mt-5">
-                <span class="font-bold text-sm mb-5 flex space-x-4">
+                <div class="font-bold text-sm mb-5 flex space-x-4">
                   <span
                     class="-mt-1 text-danger font-bold cursor-pointer"
                     @click="addAccessRole = true"
                   >
                     Location(s) & privileges</span
                   >
-                  <plus
-                    class="fill-current text-danger font-bold w-3"
-                    @click="addAccessRole = true"
-                  />
-                </span>
+                  <plus-icon class="fill-current text-danger font-bold w-3" />
+                </div>
                 <div class="grid grid-cols-4 gap-4">
                   <div
                     class="flex space-x-4 mt-5 border-r-2 border-gray-100 pr-5"
@@ -570,6 +518,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- End -->
               </div>
             </template>
             <template v-slot:misc>
@@ -578,11 +527,14 @@
           </accordion-component>
           <accordion-component title="Education" :opened="false">
             <template v-slot:default>
-              <div class="border-b-2 border-gray-100 border-dashed pb-4">
+              <div
+                class="border-gray-100 border-dashed pb-4"
+                :class="educations.length ? 'border-b-2' : ''"
+              >
                 <div class="w-full grid grid-cols-3 gap-4 mt-3">
                   <cornie-input
                     label="Issuer"
-                    v-model="licenseIssuer"
+                    v-model="qualificationIssuer"
                     :required="true"
                   />
                   <cornie-select
@@ -601,18 +553,31 @@
                     :required="true"
                   />
                 </div>
-                <span class="text-sm text-danger font-semibold">
+                <span
+                  class="text-sm text-danger font-semibold"
+                  @click="addEducation"
+                >
                   Add <span class="text-lg"> + </span>
                 </span>
               </div>
-              <div class="grid grid-cols-4 mt-5 gap-4 w-full">
-                <div class="border-r-2 border-gray-200">
-                  <p class="text-black font-semibold">University of Unilag</p>
-                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
-                </div>
-                <div class="border-r-2 border-gray-200">
-                  <p class="text-black font-semibold">University of Unilag</p>
-                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
+              <div
+                class="grid grid-cols-4 mt-5 gap-4 w-full"
+                v-if="educations.length"
+              >
+                <div
+                  class="border-gray-200"
+                  v-for="(item, index) in educations"
+                  :key="index"
+                  :class="index !== educations.length - 1 ? 'border-r-2' : ''"
+                >
+                  <p class="text-black font-semibold">
+                    {{ item.issuer }}
+                  </p>
+                  <div class="text-gray-600 text-sm flex items-center">
+                    <div>{{ item.qualification }}</div>
+                    <div class="font-bold text-xs leading-none mx-1">•</div>
+                    <div>{{ item.graduationYear.split("-")[0] }}</div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -622,10 +587,13 @@
           </accordion-component>
           <accordion-component title="Board License" :opened="false">
             <template v-slot:default>
-              <div class="border-b-2 border-gray-100 border-dashed pb-4">
+              <div
+                class="border-gray-100 border-dashed pb-4"
+                :class="licenses.length ? 'border-b-2' : ''"
+              >
                 <div class="w-full grid grid-cols-3 gap-4 mt-3">
                   <cornie-input
-                    v-model="qualificationIssuer"
+                    v-model="licenseIssuer"
                     label="Issuer"
                     class="w-full"
                     placeholder="--Enter--"
@@ -646,18 +614,39 @@
                     :required="true"
                   />
                 </div>
-                <span class="text-sm text-danger font-semibold">
+                <span
+                  class="text-sm text-danger font-semibold"
+                  @click="addLicense"
+                >
                   Add <span class="text-lg"> + </span>
                 </span>
               </div>
-              <div class="grid grid-cols-4 mt-5 gap-4 w-full">
-                <div class="border-r-2 border-gray-200">
-                  <p class="text-black font-semibold">University of Unilag</p>
-                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
-                </div>
-                <div class="border-r-2 border-gray-200">
-                  <p class="text-black font-semibold">University of Unilag</p>
-                  <p class="text-gray-600 text-sm">MBBS . 2006</p>
+              <div
+                class="grid grid-cols-4 mt-5 gap-4 w-full"
+                v-if="licenses.length"
+              >
+                <div
+                  class="border-gray-200"
+                  v-for="(item, index) in licenses"
+                  :key="index"
+                  :class="index !== licenses.length - 1 ? 'border-r-2' : ''"
+                >
+                  <p class="text-black font-semibold">
+                    {{ item.issuer
+                    }}<span class="text-gray-400 font-light text-sm"
+                      >({{ item.licenseNumber }})</span
+                    >
+                  </p>
+                  <div class="text-gray-600 text-sm flex items-center">
+                    <div>
+                      {{
+                        new Date(item.period.start)
+                          .toLocaleDateString()
+                          .toString()
+                          .split("/")[2]
+                      }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -804,6 +793,45 @@ export default class AddPractitioner extends Vue {
 
   loading = false;
 
+  educations = [] as any;
+  licenses = [] as any;
+
+  addEducation() {
+    if (
+      !this.graduationYear ||
+      !this.qualificationIssuer ||
+      !this.qualificationCode
+    )
+      return;
+
+    this.educations = [
+      {
+        graduationYear: this.graduationYear,
+        issuer: this.qualificationIssuer,
+        qualification: this.qualificationCode,
+      },
+      ...this.educations,
+    ];
+
+    this.qualificationIssuer = this.qualificationCode = "";
+  }
+
+  addLicense() {
+    if (!this.licensePeriod || !this.licenseIssuer || !this.licenseNumber)
+      return;
+
+    this.licenses = [
+      {
+        licenseNumber: this.licenseNumber,
+        issuer: this.licenseIssuer,
+        period: this.licensePeriod,
+      },
+      ...this.licenses,
+    ];
+
+    this.licenseIssuer = this.licenseNumber = "";
+  }
+
   dobValidator = date().max(
     createDate(0, 0, -16),
     "Practitioner must be at least 16yrs."
@@ -831,6 +859,7 @@ export default class AddPractitioner extends Vue {
   address = "";
   dateOfBirth = "";
   jobDesignation = "";
+  employmentType = "";
   department = "department";
   accessRole = "";
   singleLocation = "";
@@ -878,7 +907,7 @@ export default class AddPractitioner extends Vue {
     relationship: "",
     email: "",
     phone: "",
-    dialCode: "",
+    dialCode: "+234",
     country: "",
     state: "",
     city: "",
@@ -898,10 +927,10 @@ export default class AddPractitioner extends Vue {
     value: 0,
     unit: "Hour",
   };
-  graduationYear = "";
+  graduationYear = "" as any;
   licenseIssuer = "";
   newservices = [] as any;
-  licensePeriod = {} as Period;
+  licensePeriod = "" as any;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -1053,11 +1082,17 @@ export default class AddPractitioner extends Vue {
       postCode: this.postCode,
       aptNumber: this.aptNumber,
       specialties: this.specialties,
+      practiceDuartion: {},
       practiceDuration: this.practiceDuration,
       consultationRate: this.consultationRate,
+      hourlyRate: this.consultationRate.value,
       graduationYear: this.graduationYear,
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
+      education: this.educations,
+      boardLicenses: this.licenses,
+      location: this.locations,
+      employmentType: this.employmentType,
     };
   }
   get payloadEdit() {
@@ -1074,6 +1109,7 @@ export default class AddPractitioner extends Vue {
       email: this.email,
       activeState: this.activeState,
       gender: this.gender,
+      locations: this.locations,
       phone: {
         number: this.phone,
         dialCode: this.dialCode,
@@ -1103,11 +1139,19 @@ export default class AddPractitioner extends Vue {
       postCode: this.postCode,
       aptNumber: this.aptNumber,
       specialties: this.newspecialties,
-      practiceDuration: this.practiceDuration,
-      consultationRate: this.consultationRate,
+      practiceDuration: {
+        value: this.practiceDurationvalue,
+        unit: this.practiceDurationunit,
+      },
+      consultationRate: {
+        value: this.consultationRatevalue,
+        unit: this.consultationRateunit,
+      },
       graduationYear: this.graduationYear,
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
+      availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
+       hourlyRate: this.consultationRate.value,
     };
   }
 
@@ -1139,11 +1183,6 @@ export default class AddPractitioner extends Vue {
   }
 
   async createPractitioner() {
-    this.payload.consultationRate.value = this.consultationRatevalue;
-    this.payload.consultationRate.unit = this.consultationRateunit;
-    this.payload.practiceDuration.value = this.practiceDurationvalue;
-    this.payload.practiceDuration.unit = this.practiceDurationunit;
-
     try {
       const response = await cornieClient().post(
         "/api/v1/practitioner",
@@ -1208,6 +1247,8 @@ export default class AddPractitioner extends Vue {
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
     this.dropdown = data;
+
+    console.log(data);
   }
   async created() {
     this.fetchSpecials();

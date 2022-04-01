@@ -1,290 +1,386 @@
 <template>
-  <div class="w-full p-4 overflow-y-scroll h-scrren">
-    <div class="container-fluid">
-      <div class="w-full">
-        <PatientDetail :id="item.patientId" />
-      </div>
-      <div class="w-full flex items-center">
-        <div class="w-4/12">
-          <div class="w-11/12">
-            <label class="block uppercase mb-1 text-xs font-bold">
-              <span class="mb-2">Time</span>
-              <input
-                type="time"
-                name=""
-                class="p-3 mt-2 border rounded-md w-full"
-                id=""
-                v-model="item.checkInTime"
-              />
-            </label>
-          </div>
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title class="w-full">
+        <cornie-icon-btn @click="show = false" class="">
+                <arrow-left-icon />
+        </cornie-icon-btn>
+        <div class="w-full border-l-2 border-gray-100">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+           Check-Out
+          </h2>
+          <!-- <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          /> -->
         </div>
-        <div class="w-8/12 flex">
-          <div class="container">
-            <div class="w-12/12">
-              <DatePicker
-                color="red"
-                class="w-full"
-                :label="'Date'"
-                style="width: 100%"
-                v-model="data.date"
-              />
+      </cornie-card-title>
+
+      <cornie-card-text class="flex-grow scrollable">
+        <v-form ref="form">
+            <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4">     
+                <div class="w-full flex space-x-4 mb-3">
+                    <div class="w-10 h-10">
+                        <avatar
+                            class="mr-2"
+                            v-if="patient.profilePhoto"
+                            :src="patient.profilePhoto"
+                        />
+                        <avatar class="mr-2" v-else :src="localSrc" />
+                    </div>
+                    <div class="w-full mt-2">
+                        <p class="text-sm text-dark font-semibold">
+                            {{ patient.firstname }}
+                            {{ patient.lastname }}
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
+            <div class="grid grid-cols-2 gap-4 mt-5">
+                <time-picker :label="'Time'"/>
+                <date-picker :label="'Date'" v-model="date"/>
+            </div>
+            <div class="border-b-2 -mt-9 mb-5 pb-5 border-dashed border-gray-200">
+              <div class="border-2 border-gray-200 p-3">
+                  <div class="w-full flex space-x-7 mt-4">     
+                      <div class="w-full flex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="practitionerdata?.image"
+                                  :src="practitionerdata?.image"
+                              />
+                              <avatar class="mr-2" v-else :src="localSrc" />
+                          </div>
+                          <div class="w-full mt-2">
+                              <p class="text-sm text-dark font-semibold">
+                                  {{ practitionerdata?.firstName }}
+                                  {{ practitionerdata?.lastName }}
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+                    <span class="text-sm w-full">Attending / Discharging Physician</span>
+              </div>
+                    
+            </div>
 
-      <div class="w-full my-5 image_area p-2">
-        <div
-          class="container"
-          v-for="(actor, index) in appment ? appment.Practitioners : []"
-          :key="index"
-        >
-          <ActorView :id="actor.id" />
-        </div>
-      </div>
+            <div>
 
-      <div class="w-full" style="border-bottom: 1px dashed #c2c7d6"></div>
+             <cornie-input class="" :label="'Total bill'" :innerlabel="'Paid'" :labelText="true" >
+                <template #append>
+                    <eye-icon />
+                </template>
+             
+             </cornie-input>
 
-      <div class="w-full my-5">
-        <label class="block uppercase mb-1 text-xs font-bold">
-          <span class="flex justify-between">
-            <span class="uppercase font-semibold">Total Bill</span>
-            <span class="uppercase text-success">paid</span>
-          </span>
-          <input
-            type="text"
-            name=""
-            class="p-3 border rounded-md w-full mt-1"
-            id=""
-            v-model="data.paidBill"
-          />
-        </label>
-      </div>
+             <cornie-input
+                :label="'Room'"
+                placeholder="--Select--"
+                v-model="allvisit.room.name"
+                :disabled="true"
+                class="w-full mt-5 mb-5"
+            />
 
-      <div class="w-full my-4">
-        <CornieSelect
-          :items="rooms"
-          :label="'Room'"
-          v-model="checkoutData.roomId"
-          style="width: 100%"
-        />
-      </div>
-
-      <div class="w-full my-4">
-        <DatePicker
-          :items="[1, 2, 3]"
-          :label="'Follow up Appointment'"
-          class="w-full"
-          v-model="data.date"
-          style="width: 100%"
-        />
-      </div>
-    </div>
-
-    <div class="w-full mb-3 mt-8">
-      <div class="container-fluid flex justify-end items-center">
-        <corniebtn>
-          <router-link
-            to=""
-            style="border: 1px solid #080056"
-            class="cursor-pointer bg-white focus:outline-none text-primary border mr-6 font-bold py-3 px-8 rounded-full"
+             <date-picker class="mt-5" :disabled="true"  :label="'Follow up Appointment'" v-model="allvisit.checkInTime"/>
+            
+            </div>
+            
+        </v-form>
+      </cornie-card-text>
+      
+      <cornie-card>
+        <cornie-card-text class="flex justify-end overflow-auto">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Cancel
-          </router-link>
-        </corniebtn>
-        <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
-                    <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save
-                    </a>
-                    <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
-                </button> -->
-        <SplitButton>
+          </cornie-btn>
+           <cornie-btn
+            v-if="BillStatus.length > 0"
+            :loading="loading"
+            @click="submit"
+            class="text-white bg-danger px-6 rounded-xl"
+           >
+            Submit
+          </cornie-btn>
+         <split-button v-else>
           <template #main>
-            <span @click="endSession">Check-Out</span>
+            <span>Collect Payment</span>
           </template>
           <template #dropdown>
-            <span><ChevronDown class="stroke-current white dd" /></span>
+            <span><chevron-down class="stroke-current text-white" /></span>
           </template>
-        </SplitButton>
-      </div>
-    </div>
-  </div>
-</template>
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Accordion from "@/components/accordion-component.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import { namespace } from "vuex-class";
-import CustomDropdown from "@/components/cornieselect.vue";
-import Button from "@/components/globals/corniebtn.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import ChevronDown from "@/components/icons/chevrondownprimary.vue";
-import DatePicker from "@/components/datepicker.vue";
-import ToggleCheck from "@/components/ToogleCheck.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import TextArea from "@/components/textarea.vue";
-import ILocation from "@/types/ILocation";
-import { Prop, Watch } from "vue-property-decorator";
-import PatientDetail from "./patient-details.vue";
-import SplitButton from "@/components/split-button.vue";
-import ActorView from "./practitioner.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
+          <template #dropdownoptions>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="submit">
+              <span class="ml-3 text-xs">Check-Out</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayment = true">
+              <span class="ml-3 text-xs">Collect Payment</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayLink = true">
+              <span class="ml-3 text-xs">Share Pay Link</span>
+            </div>
+            <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showPostClaim = true">
+              <span class="ml-3 text-xs">Post Claim</span>
+            </div> -->
+          </template>
 
-const visitsStore = namespace("visits");
-const locationsStore = namespace("location");
+        </split-button>
+
+        </cornie-card-text>
+      </cornie-card>
+    </cornie-card>
+
+  </cornie-dialog>
+  <payment-modal  v-model="showPayment"/>
+  <payment-link v-model="showPayLink"/>
+  <post-modal v-model="showPostClaim"/>
+</template>
+
+<script lang="ts">
+import { Options, Vue, setup } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieCard from "@/components/cornie-card";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/autocomplete.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import { cornieClient } from "@/plugins/http";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import DatePicker from "@/components/datepicker.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
+import { namespace } from "vuex-class";
+import Period from "@/types/IPeriod";
+import SelectOption from "@/components/custom-checkbox.vue";
+import TimePicker from "@/components/pickerTime.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import AddIcon from "@/components/icons/add-orange.vue";
+import EyeIcon from "@/components/icons/yelloweye.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import TextArea from "@/components/textarea.vue";
+import Avatar from "@/components/avatar.vue";
+import SplitButton from "@/components/split-button.vue";
+import ILocation from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
+import PatientSection from "./visitor.vue";
+import ChevronDown from "@/components/icons/chevrondown.vue";
+import PaymentModal from "./collectPayment.vue";
+import PaymentLink from "./sharepaylink.vue";
+import PostModal from "./postclaim.vue";
+
 const appointment = namespace("appointment");
+const location = namespace("location");
+const user = namespace("user");
+const practitioner = namespace("practitioner");
+
 
 @Options({
+  name: "checkoutModal",
   components: {
-    ActorView,
-    SplitButton,
-    Accordion,
-    CornieInput,
-    CustomDropdown,
-    Button,
-    DeleteIcon,
-    ChevronDown,
+    ...CornieCard,
+    CornieIconBtn,
+    ArrowLeftIcon,
     DatePicker,
-    ToggleCheck,
-    CornieSelect,
+    PaymentModal,
+    PhoneInput,
+    CancelIcon,
+    DeleteIcon,
     TextArea,
-    PatientDetail,
+    TimePicker,
+    PaymentLink,
+    Avatar,
+    CornieDialog,
+    SearchIcon,
+    CornieRadio,
+    PostModal,
+    EyeIcon,
+    IconInput,
+    CornieInput,
+    CornieSelect,
     CornieBtn,
+    PatientSection,
+    SplitButton,
+    SelectOption,
+    ChevronDown
   },
 })
-export default class CheckIn extends Vue {
-  showDetails = true;
-  showBreaks = false;
-  showPlanning = false;
-  loading = false;
+export default class checkoutModal extends Vue {
+ @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
 
-  @appointment.State
-  appointments!: any[];
+  @Prop({ type: String, default: "" })
+  id!: string;
 
-  @appointment.Action
-  fetchAppointments!: () => Promise<void>;
+  @Prop({ type: Array, default: [] })
+  patients!: object;
 
-  @Prop()
-  item!: any;
+  @Prop({ type: Object, default: {} })
+  practitionerdata!: object;
 
-  @locationsStore.State
+  @Prop({ type: Object, default: {} })
+  patient!: any;
+
+  @Prop({ type: Object, default: {} })
+  allvisit!: any;
+
+
+
+
+  @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
+  @location.State
   locations!: ILocation[];
 
-  @locationsStore.Action
+
+  @location.Action
   fetchLocations!: () => Promise<void>;
 
-  @visitsStore.Action
-  checkout!: (id: string) => Promise<boolean>;
+   @user.State
+   currentLocation!: string;
 
-  data: any = { paidBill: "72,630", roomId: "", date: new Date(Date.now()) };
-  checkoutData: any = { paidBill: "72,630", roomId: this.item.roomId };
+  loading = false;
+ localSrc = require("../../../../../assets/img/placeholder.png");
+  practitioner= "";
+  onepatient = [] as any;
+  date = "";
+  showPayment = false;
+  showPayLink = false;
+  showPostClaim = false;
+  bill = [];
 
-  activeStates: any = [
-    { display: "Yes", value: "yes" },
-    { display: "No", value: "no" },
-  ];
+  roomId = "";
+  notes = "";
+  startTime = "";
 
-  waitList: any = [
-    { display: "Yes", value: "yes" },
-    { display: "No", value: "no" },
-  ];
 
-  slotOccurence: any = [
-    { display: "Do not repeat", code: "do not repeat" },
-    { display: "Every day", code: "every day" },
-    { display: "Every week", code: "every week" },
-    { display: "Every month", code: "every month" },
-    { display: "Every forever", code: "every forever" },
-    { display: "Custom", code: "Custom" },
-  ];
-
-  ends: any = [
-    { display: "Never", code: "never" },
-    { display: "On", code: "" },
-    { display: "After", code: "" },
-  ];
-
-  days: any = [
-    { display: "Monday", code: true },
-    { display: "Tuesday", code: false },
-    { display: "Wednesday", code: false },
-    { display: "Thursday", code: false },
-    { display: "Friday", code: false },
-    { display: "Saturday", code: false },
-    { display: "Sunday", code: false },
-  ];
-
-  @Watch("item", { immediate: true, deep: true })
-  onGetSlots() {
-    const room = this.rooms.find((i: any) => i.code === this.item.roomId);
-    this.checkoutData.roomId = room ? room.code : "";
-  }
-
-  get rooms() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i) => {
-      return { code: i.id, display: i.name };
+  get allPractitioner() {
+    if (!this.practitioners || this.practitioners.length === 0) return [];
+    return this.practitioners.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.firstName + " " + i.lastName,
+      };
     });
   }
-
-  get appment() {
-    if (!this.appointments || this.appointments.length === 0) return {};
-    return this.appointments.find((i: any) => i.id === this.item.appointmentId);
+  get allRooms() {
+    if (!this.locations || this.locations.length === 0) return [];
+    return this.locations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+  get patientAppointemnt() {
+    if (!this.practitioner) return {};
+    return this.practitioners.find((i: any) => i.id === this.practitioner);
   }
 
-  get updates() {
-    if (!this.item) return {};
-    this.data.checkInTime = this.item.checkInTime;
-    this.data.room = {
-      code: this.item.room ? this.item.roomId : "",
-      display: this.item.room ? this.item.room.name : "",
-    };
+   get practitionerName() {
+    const pt = this.practitioners.find((i: any) => i.id === this.practitioner);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
 
-  async endSession() {
+    get payload(){
+      return {
+       followUpId: this.allvisit.appointmentId || null
+      }
+    }
+
+  async fetchPatientAppointment() {
+    const newdate = this.date;
+    const AllPractitioner = cornieClient().get(`/api/v1/appointment/practitioner/get-day/25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a`, {date : "2022-03-13"});
+    const response = await Promise.all([AllPractitioner]);
+    this.onepatient = response[0].data;
+  }
+
+
+   async submit() {
     this.loading = true;
-    const response = await this.checkout(this.item.id);
+    // if (this.id) await this.updateCheckin();
+     await this.createCheckin();
     this.loading = false;
-    if (response) window.notify({ msg: "Checked Out", status: "success" });
-    this.$emit("close");
+  }
+
+
+
+  async createCheckin() {
+    
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/visit/check-out/${this.id}`,
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Patient checked-out successfully", status: "success" });
+         this.done();
+        }
+      } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
+  
+  }
+
+  async updateCheckin() {
+
+    const url = `"/api/v1/visit/check-out/${this.id}`;
+    const payload = { ...this.payload, id: this.id };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Checkout updated", status: "success" });
+        this.done();
+      }
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+  done(){
+       this.$emit("checkout-added");
+        this.show = false;
+  }
+   get BillStatus(){
+    return this.bill.filter((c:any) => c.status == 'paid');
+  }
+
+   async fetchBill() {
+     try {
+      const response = await cornieClient().post(
+      `/api/v1/appointment/bill/generate/${this.allvisit.appointmentId}`,{}
+      );
+      if (response.success) {
+         this.bill = response.data;
+      }
+    } catch (error:any) {
+     window.notify({ msg: error.response.data.message, status: "error" });
+    }
   }
 
   async created() {
-    if (!this.locations || this.locations.length === 0)
-      await this.fetchLocations();
-    if (!this.appointments || this.appointments.length === 0)
-      await this.fetchAppointments();
+    if(this.allvisit.appointmentId)  await this.fetchBill();
+   this.fetchPatientAppointment();
+   await this.fetchPractitioners();
+   await this.fetchLocations();
   }
 }
 </script>
+
 <style>
-.dashed-bottom {
-  border-bottom: 1px dashed #667499;
+.border-r-0 {
+    border-right-width: 0px !important;
 }
-
-.h-scrren {
-  height: 100vh;
-  overflow: scroll;
-  padding-bottom: 40px;
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.h-scrren::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.h-scrren {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.image_area {
-  background: #ffffff;
-
-  box-shadow: 0px 1px 2px rgba(46, 41, 78, 0.02),
-    0px 4px 8px rgba(46, 41, 78, 0.08);
-  border-radius: 5px;
+.border-l-0 {
+    border-left-width: 0px !important;
 }
 </style>

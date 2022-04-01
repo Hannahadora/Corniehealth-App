@@ -1,12 +1,12 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-sm rounded-3xl p-3 mb-2 w-full"
+    class="flex justify-center bg-white shadow-sm rounded p-3 mb-2 w-full"
   >
     <div class="w-full">
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-dye py-2"
       >
-        Appointments | Visits
+        Appointments
       </span>
       <span class="w-full h-screen">
         <appointment-empty-state v-if="empty" />
@@ -59,8 +59,7 @@ export default class ApppointmentIndex extends Vue {
   }
 
   async created() {
-    if (this.fetchByIdAppointments.length < 1)
-      this.fetchByIdAppointments(this.$route.params.id.toString());
+    await  this.fetchByIdAppointments(this.$route.params.id.toString());
   }
 }
 </script>

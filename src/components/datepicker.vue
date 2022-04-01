@@ -1,8 +1,10 @@
 <template>
-  <span class="block w-full">
-    <label class="block capitalize mb-0.5 text-black text-sm font-semibold">{{
-      label
-    }}</label>
+  <span class="" :class="[$attrs.width || 'w-full']">
+    <label
+      class="flex capitalize mb-1 -mt-1.5 text-black text-sm font-semibold"
+    >
+      {{ label }}
+    </label>
     <Field
       v-model="date"
       :rules="customRules"
@@ -10,7 +12,14 @@
       v-slot="{ meta, handleChange, errorMessage }"
     >
       <div class="relative" style="width: 100%" :id="inputName">
-        <div @click="toggleDropdown" class="block w-full">
+        <div
+          @click="
+            () => {
+              if (!$slots.time) toggleDropdown;
+            }
+          "
+          class="block w-full"
+        >
           <cornie-input
             class="w-full"
             readonly
@@ -21,14 +30,17 @@
             v-model="inputFieldText"
           >
             <template #prepend-inner>
-              <calendar-icon />
+              <calendar-icon class="cursor-pointer" @click="toggleDropdown" />
+            </template>
+            <template #append-inner>
+              <slot name="time" />
             </template>
           </cornie-input>
         </div>
         <div
           v-if="visible"
           :class="{ 'right-0 min-w-max': right, 'left-0 min-w-max': left }"
-          class="origin-top-right absolute mt-2 w-full border-1 border-gray-300 rounded-md shadow-lg bg-white z-20 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+          class="origin-top-right absolute mt-2 w-full rounded-md shadow-lg bg-white z-20 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           tabindex="-1"
@@ -61,8 +73,7 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { Field } from "vee-validate";
 import { clickOutside, createDate } from "@/plugins/utils";
 import { date } from "yup";
-import CornieInput from "@/components/cornieinput.vue";
-
+import CornieInput from "./cornieinput.vue";
 @Options({
   name: "DatePicker",
   inheritAttrs: false,
@@ -80,52 +91,42 @@ export default class DatePicker extends Vue {
     default: new Date(Date.now()).toLocaleDateString("en-NG"),
   })
   modelValue!: string;
-
   @PropSync("modelValue")
   date!: string;
-
   @Prop({ type: Object })
   rules!: any;
-
+  @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
   @Prop({ type: Boolean, default: false })
   left!: boolean;
-
   @Prop({ type: Boolean, default: false })
   right!: boolean;
-
   visible = false;
-
   toggleDropdown(): void {
+    if (this.disabled) return;
     this.visible = !this.visible;
   }
-
   get customRules() {
     const defaultRule = date();
-    if (!this.rules) return defaultRule.concat(this.rules);
+    if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
-
   @Watch("date")
   changed() {
     this.visible = false;
   }
-
   get inputFieldText() {
     if (!this.date) return "dd/mm/yyyy";
     return new Date(this.date).toLocaleDateString("en-NG");
   }
-
   @Prop({ type: String, default: "" })
   name: any;
-
   @Prop({ type: String, default: "" })
   label: any;
-
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);
     return this.name || `input-${id}`;
   }
-
   mounted() {
     clickOutside(this.inputName, () => (this.visible = false));
   }

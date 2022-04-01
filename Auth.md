@@ -2,6 +2,7 @@
 
 Authentication flow and endpoints for Cornie Health
 
+## API Root is http://18.132.188.41:7000/
 ## API Reference
 
 #### Create a user

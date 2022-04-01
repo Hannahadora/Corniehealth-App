@@ -108,8 +108,8 @@
       </div>
 
       <div class="w-full my-4">
-        <CornieSelect
-          :items="slots"
+        <cornie-select
+          :items="newSlots"
           :label="'Slot'"
           v-model="checkinData.slot"
           style="width: 100%; font-size: 13px"
@@ -182,7 +182,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-          @click="setSession"
+          @click="processCheckin"
           type="submit"
           class="text-white bg-danger px-3 rounded-xl"
         >
@@ -205,7 +205,7 @@ import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import TextArea from "@/components/textarea.vue";
 import ILocation from "@/types/ILocation";
-import MultiSelect from "@/views/dashboard/schedules/components/apply-to.vue";
+import MultiSelect from "../../schedules/components/apply-to.vue";
 import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
 import { Prop, Watch } from "vue-property-decorator";
@@ -259,8 +259,6 @@ export default class CheckIn extends Vue {
   loading = false;
   date = new Date();
 
-  arr = [] as any[];
-
   data: any = {};
   selectedActors: any[] = [];
   availableSlots: any[] = [];
@@ -304,7 +302,9 @@ export default class CheckIn extends Vue {
 
   selectPractitioner(actor: any, index: number) {
     if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
+      this.checkinData.practitioner = actor.code;
       this.getSlots(actor.code);
+      this.testSlots(actor.code);
       this.selectedActors.push(actor);
     } else {
       this.selectedActors.splice(index, 1);
@@ -328,24 +328,24 @@ export default class CheckIn extends Vue {
     });
   }
 
-  async setSession() {
+  async setSession(slotId: string) {
     try {
       this.loading = true;
-      const slot = this.checkinData.slot;
+      // const slot = this.checkinData.slot;
       this.loading = false;
-      if (slot) {
+      if (slotId) {
         const checkedIn = await this.checkin({
           patientId: this.patientId,
           type: this.checkinData.type,
           status: "In-progress",
           roomId: this.checkinData.room,
           notes: this.checkinData.notes,
-          slotId: slot,
+          slotId: slotId,
           // "practitioners": this.selectedActors.map(i => i.id)
         });
 
         if (checkedIn && checkedIn) {
-          window.notify({ msg: "Patient Check-in", status: "success" });
+          window.notify({ msg: "Patient Checked-in", status: "success" });
           this.$emit("close");
         } else {
           window.notify({ msg: "Patient check-in failed", status: "error" });
@@ -355,7 +355,46 @@ export default class CheckIn extends Vue {
       }
     } catch (error) {
       this.loading = false;
+      window.notify({ msg: "Error checking-in patient", status: "error" });
     }
+  }
+
+  slotDoesExist(id: string) {
+    const slot = this.arr.find((item: any) => item.id === id);
+    return slot ?? null;
+  }
+
+  async processCheckin() {
+    const slot = this.slotDoesExist(this.checkinData.slot);
+
+    let createdSlot;
+    if (!slot) {
+      const index = this.checkinData.slot?.split("_")[1];
+      const scheduleData = this.arr[index];
+      // const scheduleData = this.arr.find((item: any) => item.scheduleId === this.checkinData.slot)
+
+      try {
+        createdSlot = await this.createSlot({
+          scheduleId: this.checkinData?.slot?.split("_")[0],
+          startTime: new Date(scheduleData.startTime)
+            .toLocaleTimeString()
+            .substring(0, 5),
+          endTime: new Date(scheduleData.endTime)
+            .toLocaleTimeString()
+            .substring(0, 5),
+          status: "active",
+          active: true,
+          date: this.date,
+          practitionerId: this.checkinData.practitioner,
+        });
+      } catch (error) {
+        window.notify({ msg: "Error checking-in patient", status: "error" });
+      }
+
+      if (createdSlot?.id) await this.setSession(createdSlot.id);
+    }
+
+    if (slot?.id) await this.setSession(slot.id);
   }
 
   get selectedPractitioners() {
@@ -405,6 +444,43 @@ export default class CheckIn extends Vue {
     if (!this.date) return new Date(Date.now());
     const x = new Date(`${new Date(this.date).toISOString()}`);
     return x;
+  }
+
+  arr = [] as any[];
+
+  get newSlots() {
+    if (this.arr?.length <= 0) return [];
+    const slots = this.arr.map((item: any, index: number) => {
+      return {
+        code: item.id ? item.id : `${item.scheduleId}_${index}`,
+        display: `${new Date(item.startTime).toLocaleDateString()}, ${new Date(
+          item.startTime
+        )
+          .toLocaleTimeString()
+          ?.substring(0, 5)} - ${new Date(
+          item.endTime
+        ).toLocaleDateString()}, ${new Date(item.endTime)
+          .toLocaleTimeString()
+          ?.substring(0, 5)}`,
+      };
+    });
+    return slots;
+  }
+
+  testSlots(id: string) {
+    this.arr = [];
+    this.schedulesByPractitioner(id).then((res) => {
+      if (!res || res.length == 0) return;
+
+      this.arr = slotService.slots(res, this.date);
+    });
+  }
+
+  @Watch("date", { immediate: true, deep: true })
+  updateArr() {
+    if (this.checkinData.practitioner) {
+      this.testSlots(this.checkinData.practitioner);
+    }
   }
 
   async created() {

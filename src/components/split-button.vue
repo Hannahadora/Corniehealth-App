@@ -2,11 +2,10 @@
   <div class="w-auto relative">
     <div class="">
       <button
-        style="background: #fe4d3c; border-radius: 124px"
-        class="flex items-center"
+        class="flex items-center bg-danger rounded-lg"
       >
         <a
-          class="cursor-pointer focus:outline-none text-white font-bold py-2 px-5 rounded-full"
+          class="cursor-pointer focus:outline-none text-white font-bold py-2 px-5 rounded-lg"
         >
           <slot name="main" />
         </a>
@@ -19,8 +18,13 @@
         </p>
       </button>
     </div>
-    <div class="shadow-lg p-2 absolute" v-if="show">
-      <a href="">Collect Payment</a>
+    <div class="shadow-lg p-2 absolute overflow-auto h-full" v-if="show">
+        <slot name="dropdownoptions"/>
+    </div>
+      <div class="shadow-lg p-2 absolute overflow-auto h-full" v-else>
+         <div v-if="show">
+          <slot name="dropdownoptions"/>
+        </div>
     </div>
   </div>
 </template>
@@ -29,6 +33,13 @@
 import { ref } from "@vue/reactivity";
 
 export default {
+
+   props: {
+        showup: {
+            type: Boolean,
+            default: false
+        },
+    },
   setup() {
     const show = ref(false);
 

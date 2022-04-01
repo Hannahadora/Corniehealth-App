@@ -27,16 +27,16 @@ const links: ISidebarLink[] = [
         to: "/dashboard/experience/calendar",
         hasSubsection: false,
       },
-      {
-        name: "Schedules",
-        to: "/dashboard/experience/schedules",
-        hasSubsection: false,
-      },
-      {
-        name: "Appointments",
-        to: { name: "Appointment" },
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Schedules",
+      //   to: "/dashboard/experience/schedules",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Appointments",
+      //   to: { name: "Appointment" },
+      //   hasSubsection: false,
+      // },
       {
         name: "Visits",
         to: "/dashboard/experience/visits",
@@ -75,7 +75,7 @@ const links: ISidebarLink[] = [
   },
   {
     name: "Diagnostics",
-    to: "diagnostics",
+    to: "settings/diagnostics",
     icon: "clip-board-icon",
     hasSubsection: false,
   },
@@ -85,6 +85,11 @@ const links: ISidebarLink[] = [
     icon: "pill-icon",
     hasSubsection: true,
     children: [
+      {
+        name: "Medication",
+        to: "/dashboard/provider/settings/medication",
+        hasSubsection: false,
+      },
       {
         name: "Markup",
         to: "/dashboard/provider/settings/markup",

@@ -1,177 +1,190 @@
 <template>
   <div class="w-full pb-80">
-    <div>
-      <span class="flex justify-end w-full mb-8">
-        <button
-          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
-          @click="showMedication('false')"
-        >
-          New Request
-        </button>
-      </span>
-      <cornie-table :columns="rawHeaders" v-model="sortMedications">
-        <template #actions="{ item }">
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showViewMedication(item.id)"
-          >
-            <eye-icon class="text-blue-300 fill-current" />
-            <span class="ml-8 text-xs">View</span>
+    <span class="flex justify-end w-full mb-8">
+          <button
+            class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+            @click="showMedicationRequest = true">
+            New Request
+          </button>
+    </span>
+    <div class="flex justify-start space-x-6 w-full mb-8">
+        <span class="flex space-x-4">
+          <medication-drug class="mr-2"/> Substitution Allowed
+        </span>
+        <span class="flex space-x-4">
+            <refill-drug class="mr-2"/> Refilled Required
+        </span>
+    </div>
+    <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+          <edit-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
+          <eye-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">View Details</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
+          <update-icon />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
+              <refill-icon />
+              <span class="ml-3 text-xs">Refill Request</span>
+            </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
+          <print-icon />
+          <span class="ml-3 text-xs">Print</span>
+        </div>
+      </template>
+      <template #prescription="{ item }">
+          <p>{{ item.identifier }}</p>
+          <p class="text-gray-400">{{ new Date(item.createdAt).toLocaleDateString()}}</p>
+
+      </template>
+      <template #subject="{ item }">
+          <p>{{ item.patient.firstname +''+ item.patient.lastname}}</p>
+          <p class="text-gray-400">{{ item.patient.mrn }}</p>
+
+      </template>
+      <template #medication="{ item }">
+        <div class="flex space-x-3">
+          <div>
+            <p>{{ item.code}}</p>
+            <p class="text-gray-400">{{ item.durationInDays }} days</p>
           </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showMedication(item.id)"
-          >
-            <edit-icon class="text-blue-300 fill-current" />
-            <span class="ml-8 text-xs">Edit</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showStatus(item.id)"
-          >
-            <update-icon class="text-purple-800 fill-current" />
-            <span class="ml-8 text-xs">Update Status</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="
-              $router.push('/dashboard/provider/experience/add-appointment')
-            "
-          >
-            <calender-icon />
-            <span class="ml-8 text-xs">Add Appointment</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showDiagnostic(item.id)"
-          >
-            <checkin-icon class="text-yellow-600 fill-current" />
-            <span class="ml-8 text-xs">Check In</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showCheckoutPane(item.id)"
-          >
-            <checkout-icon class="text-red-600 fill-current" />
-            <span class="ml-8 text-xs">Check Out</span>
-          </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <send-icon class="text-purple-800 fill-current" />
-            <span class="ml-8 text-xs">Report</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="$router.push('/dashboard/provider/experience/add-task')"
-          >
-            <plus-icon class="text-green-400 fill-current" />
-            <span class="ml-8 text-xs">Add Task</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)"
-          >
-            <message-icon class="text-blue-600 fill-current" />
-            <span class="ml-8 text-xs">Message</span>
-          </div>
-        </template>
-        <template #asserter="{ item }">
-          <p class="cursor-pointer">{{ item.asserter }}</p>
-        </template>
-        <template #recorder="{ item }">
-          <p class="cursor-pointer">{{ item.asserter }}</p>
-        </template>
-        <template #status="{ item }">
+            <medication-drug v-if="item.substitutionAllowed == true" />
+            <refill-drug v-else/>
+        </div>
+      </template>
+       <template #dosage="{ item }">
+          <p >{{ item.dosageInstruction }}/day</p>
+      </template>
+       <template #duration="{ item }">
+          <p>{{ item.durationInDays }} Days</p>
+      </template>
+        <template #quantity="{ item }">
+           <span>
+             {{ item.quantity }}
+           </span>
+      </template>
+      <template #status="{ item }">
           <div class="flex items-center">
             <p
               class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'Draft'"
+              v-if="item.status == 'draft'"
             >
               {{ item.status }}
             </p>
             <p
-              class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded"
-              v-if="item.status == 'On-Hold'"
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'on-hold'"
             >
               {{ item.status }}
             </p>
             <p
               class="text-xs bg-green-100 text-green-500 p-1 rounded"
-              v-if="item.status == 'Active'"
+              v-if="item.status == 'active'"
             >
               {{ item.status }}
             </p>
             <p
               class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'Unknown'"
+              v-if="item.status == 'unknown'"
             >
               {{ item.status }}
             </p>
             <p
               class="text-xs bg-green-100 text-green-400 p-1 rounded"
-              v-if="item.status == 'Completed'"
+              v-if="item.status == 'completed'"
             >
               {{ item.status }}
             </p>
             <p
-              class="text-xs bg-red-300 text-red-600 p-1 rounded"
-              v-if="item.status == 'Revoked'"
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'revoked' || item.status == 'cancelled'"
             >
               {{ item.status }}
             </p>
             <p
               class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-              v-if="item.status == 'Entered-in-Error'"
+              v-if="item.status == 'entered-in-error'"
             >
               {{ item.status }}
             </p>
             <p
               class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-              v-if="item.status == 'Do Not Perform'"
+              v-if="item.status == 'do-not-perform'"
             >
               {{ item.status }}
             </p>
           </div>
         </template>
-      </cornie-table>
-    </div>
+    </cornie-table>
 
+    <medication-request-modal v-model="showMedicationRequest" :id="requestId" @medication-added="medicationadded"/>
+
+    <view-modal v-model="showDetails" :selectedItem="selectedItem" :id="requestId" :medicationid="medicationId"/>
+    <refill-modal v-model="showRefill" :id="requestId"/>
+    <print-modal v-model="showPrint" :selectedItem="selectedItem" />
+
+   <notes-add
+      :requestnotes="requestnotes"
+      :requestId="requestId"
+      v-model="showNotes"
+    />
+    <other-notes-add
+      :otherrequestnotes="otherrequestnotes"
+      :requestId="requestId"
+      v-model="showOthersNotes"
+    />
     <medication-modal
-      v-if="requestId == 'false'"
-      :columns="practitioner"
-      @medication-added="medicationAdded"
+      :requestId="requestId"
       @update:preferred="showMedication"
       v-model="showMedicationModal"
     />
-
-    <medication-modal
-      v-else
-      :id="requestId"
-      @update:preferred="showMedication"
-      v-model="showMedicationModal"
+    <edit-medication-modal
+      :requestId="requestId"
+      @update:preferred="showEditMedication"
+      v-model="showEditMedicationModal"
     />
-
-    <view-modal
-      :id="requestId"
-      @medication-added="medicationAdded"
-      @update:preferred="showViewMedication"
-      v-model="showViewMedicationModal"
-    />
-
     <status-modal
       :id="requestId"
-      :updatedBy="updatedBy"
-      :currentStatus="currentStatus"
-      :dateUpdated="update"
-      @medication-added="medicationAdded"
+      :selectedItem="selectedItem"
+      :updatedBy="otherupdatedBy"
+      :currentStatus="othercurrentStatus"
+      :dateUpdated="otherupdate"
+      :patientId="patientId"
+      :dispenserId="dispenserId"
+      :requesterId="requesterId"
+
       v-model="showStatusModal"
+      @status-added="statusadded"
     />
-  </div>
+
+    <other-status-modal
+      :id="requestId"
+      :updatedBy="otherupdatedBy"
+      :currentStatus="othercurrentStatus"
+      :dateUpdated="otherupdate"
+      @update:preferred="showOtherStatus"
+      v-model="showOtherStatusModal"
+    />
+    
+</div>
 </template>
 <script lang="ts">
+import { cornieClient } from "@/plugins/http";
+import { first, getTableKeyValue } from "@/plugins/utils";
 import { Options, Vue } from "vue-class-component";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import CardText from "@/components/cornie-card/CornieCardText.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
+import { namespace } from "vuex-class";
+import search from "@/plugins/search";
+import { mapDisplay } from "@/plugins/definitions";
+
+import IOtherrequest from "@/types/IOtherrequest";
+import IRequest from "@/types/IRequest";
+
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -181,113 +194,173 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
+import AddIcon from "@/components/icons/add.vue";
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+import Button from "@/components/globals/corniebtn.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
-import TimelineIcon from "@/components/icons/timeline.vue";
-import DangerIcon from "@/components/icons/danger.vue";
-import ShareIcon from "@/components/icons/share.vue";
+import NoteIcon from "@/components/icons/notes.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
-import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
-import MessageIcon from "@/components/icons/message.vue";
-import MedicationModal from "./medicationdialog.vue";
-import ViewModal from "./viewRequest.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import Modal from "@/components/modal.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import DangerIcon from "@/components/icons/danger.vue";
+import ArrowRight from "@/components/icons/arrow-right.vue";
+import EncounterIcon from "@/components/icons/encounter.vue";
+import CheckoutIcon from "@/components/icons/checkout.vue";
+import SpecimenIcon from "@/components/icons/specimenicon.vue";
+import RefillIcon from "@/components/icons/refill.vue";
+import MedicationDrug from "@/components/icons/drugicon.vue";
+import RefillDrug from "@/components/icons/refillIcon.vue";
+
+import PrintModal from "./print.vue";
+
+import ViewModal from "./viewDetails.vue";
+import MedicationRequestModal from "./medicationModal.vue";
 import StatusModal from "./status.vue";
-import { namespace } from "vuex-class";
-import SendIcon from "@/components/icons/send.vue";
-import CheckoutIcon from "@/components/icons/newcheckout.vue";
-import CalenderIcon from "@/components/icons/newcalender.vue";
-import User from "@/types/user";
-import IPractitioner from "@/types/IPractitioner";
+import RefillModal from "./refill.vue";
+
+// import MedicationModal from "./medication.vue";
+// import EditMedicationModal from "./updateMedication.vue";
+// import NotesAdd from "./notes.vue";
+// import StatusModal from "./status.vue";
+// import OtherStatusModal from "./statusother.vue";
+// import OtherNotesAdd from "./othernote.vue";
+import EmptyState from "./emptyState.vue";
 
 const request = namespace("request");
-const userStore = namespace("user");
+const otherrequest = namespace("otherrequest");
+
 
 @Options({
   components: {
-    CancelIcon,
-    CheckoutIcon,
+    //Close,
     SortIcon,
-    CheckinIcon,
-    SendIcon,
-    MedicationModal,
-    ViewModal,
-    CalenderIcon,
-    NewviewIcon,
-    UpdateIcon,
-    TimelineIcon,
-    ShareIcon,
     ThreeDotIcon,
-    DangerIcon,
-    PlusIcon,
+    MedicationRequestModal,
+    ViewModal,
     StatusModal,
+    // OtherNotesAdd,
     SearchIcon,
-    MessageIcon,
+    // NotesAdd,
     PrintIcon,
+    // StatusModal,
+    // OtherStatusModal,
+    PlusIcon,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
-    ColumnFilter,
-    TableOptions,
+    RefillDrug,
     DeleteIcon,
+    PrintModal,
     EyeIcon,
+    ColumnFilter,
+    MedicationDrug,
+    // MedicationModal,
+    // EditMedicationModal,
+    CancelIcon,
+    DangerIcon,
+    TableOptions,
+    SpecimenIcon,
     EditIcon,
+    RefillModal,
+    Button,
+    RefillIcon,
+    NoteIcon,
     CornieTable,
-    CardText,
-    CornieDialog,
+    CheckinIcon,
+    UpdateIcon,
+    AddIcon,
+    NewviewIcon,
+    DeactivateIcon,
+    EmptyState,
+    Modal,
+    ArrowRight,
+    EncounterIcon,
+    CheckoutIcon,
   },
 })
-export default class AllergyExistingState extends Vue {
+export default class RequestExistingState extends Vue {
+  medicationMapper = (code: string) => "";
+
+  showMedicationRequest = false;
+  showDetails = false;
+  showRefill = false;
+  showPrint = false;
+
   showColumnFilter = false;
-  showModal = false;
-  loading = false;
-  query = "";
-  selected = 1;
-  showNotes = false;
   showMedicationModal = false;
-  showViewMedicationModal = false;
+  showEditMedicationModal = false;
+  show = false;
+  selected = 1;
   requestId = "";
-  tasknotes = [];
+  showPartcipants = false;
+  query = "";
+  search = "";
+  selectedItem = {} as any;
+  
+  patientId = "";
+  dispenserId = "";
+  requesterId = "";
+  medicationId = "";
+
+  selectedStatus = 0;
+  filterByStatus: any = [];
+  completeStatus: any = [];
+  currentVisitId = "";
   onePatientId = "";
+  showNotes = false;
+  taskId = "";
+  activeTab = 0;
+  showOthersNotes = false;
+  selectType = false;
+  filterStatus = false;
   showStatusModal = false;
+  showOtherStatusModal = false;
+  viewDetails = false;
+  requestnotes = [];
+  otherrequestnotes = [];
+  selectedSchedule: any = {};
+  singleParticipant = [];
+  selectedVisit: any = {};
+  selectedPatient: any = {};
+  months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "Auust",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   updatedBy = "";
   currentStatus = "";
   update = "";
-
-  @userStore.Getter
-  authPractitioner!: IPractitioner;
-
-  @userStore.State
-  user!: User;
-
-  @userStore.State
-  practitionerAuthenticated!: User;
-
-  @userStore.Action
-  updatePractitionerAuthStatus!: () => Promise<void>;
-
-  // @request.State
-  // requests!: any[];
-
-  @request.State
-  patientrequests!: any[];
+  otherupdatedBy = "";
+  othercurrentStatus = "";
+  otherupdate = "";
+  request: IRequest = {} as any;
 
   @request.Action
-  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+  deleteRequest!: (id: string) => Promise<boolean>;
 
-  @request.State
-  practitioners!: any[];
+  @otherrequest.Action
+  deleteOtherrequest!: (id: string) => Promise<boolean>;
 
   @request.State
   patients!: any[];
 
-  @request.Action
-  deleteRequest!: (id: string) => Promise<boolean>;
+  @request.State
+  practitioners!: any[];
 
   @request.Action
   getPatients!: () => Promise<void>;
@@ -295,44 +368,120 @@ export default class AllergyExistingState extends Vue {
   @request.Action
   getPractitioners!: () => Promise<void>;
 
-  // @request.Action
-  // fetchRequests!: () => Promise<void>;
+  select(i: number) {
+    this.selected = i;
+  }
+
+   @request.State
+  patientrequests!: IRequest[];
+
+  @request.Action
+  fetchrequestsById!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
-    { title: "Date", key: "createdAt", show: true },
     {
-      title: "rEQUISITION id",
-      key: "id",
+      title: "prescription id",
+      key: "prescription",
       show: true,
+      noOrder: true
     },
+    { title: "subject (PATIENT)", key: "subject", show: true,  noOrder: true },
     {
-      title: "Patient",
-      key: "patient",
+      title: "medication",
+      key: "medication",
       show: true,
+      noOrder: true
     },
     {
-      title: "Requester",
-      key: "requester",
-      show: false,
-    },
-    {
-      title: "Dispenser",
-      key: "dispenser",
+      title: "",
+      key: "drug",
       show: true,
+      noOrder: true
     },
     {
-      title: "Performer",
-      key: "performer",
+      title: "dosage",
+      key: "dosage",
       show: true,
+      noOrder: true
     },
     {
-      title: "Status",
+      title: "duration",
+      key: "duration",
+      show: true,
+       noOrder: true
+    },
+    {
+      title: "quantity",
+      key: "quantity",
+      show: true,
+      noOrder: true
+    },
+    {
+      title: "status",
       key: "status",
       show: true,
     },
+    {
+      title: "course of therapy",
+      key: "course",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "substitution?",
+      key: "substitution",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "reason code",
+      key: "reasoncode",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "refill?",
+      key: "refill",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "dispense interval",
+      key: "interval",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "validity period",
+      key: "period",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "no of refill",
+      key: "refillno",
+      show: false,
+      noOrder: true
+    },
+    {
+      title: "quantity",
+      key: "qunatity",
+      show: false,
+       noOrder: true
+    },
+    {
+      title: "supply duration",
+      key: "duration",
+      show: false,
+       noOrder: true
+    },
   ];
+
+  types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
+  statuses = ["Show All", "On-Hold", "Cancelled", "Completed", "Stopped"];
+  availableSlots: any = [];
 
   get headers() {
     const preferred =
@@ -340,112 +489,177 @@ export default class AllergyExistingState extends Vue {
         ? this.preferredHeaders
         : this.rawHeaders;
     const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
+    return [...first(4, headers), { title: "", key: "action", image: true }];
   }
 
-  get items() {
-    const patientrequests = this.patientrequests.map((request) => {
-      (request as any).createdAt = new Date(
-        (request as any).createdAt
-      ).toDateString();
-      (request as any).updatedAt = new Date(
-        (request as any).updatedAt
-      ).toDateString();
-      this.updatedBy = this.getPatientName(this.patientId as string);
-      this.currentStatus = request.status;
-      this.update = request.updatedAt;
-      return {
-        ...request,
-        action: request.id,
-        patient: this.getPatientName(this.patientId as string),
-        requester: this.getPatientName(this.patientId as string),
-        dispenser:
-          this.authPractitioner.firstName +
-          "-" +
-          this.authPractitioner.lastName,
-        performer:
-          this.authPractitioner.firstName +
-          "-" +
-          this.authPractitioner.lastName,
-      };
-    });
+   get items() {
+    const combined = this.patientrequests.map(this.medicationRequest)
+    const requests = combined.flatMap(value => value);
 
-    if (!this.query) return patientrequests;
-    return search.searchObjectArray(patientrequests, this.query);
-  }
-  // getPractitionerName(id: string){
-  //    const pt = this.practitioners.find((i: any) => i.id === id);
-  //     return pt ? `${pt.firstName} ${pt.lastName}` : '';
-  // }
-  async showMedication(value: string) {
-    this.showMedicationModal = true;
-    this.requestId = value;
-  }
-  get patientId() {
-    return this.$route.params.id as string;
-  }
-  async showViewMedication(value: string) {
-    this.showViewMedicationModal = true;
-    this.requestId = value;
+    if (!this.query) return requests;
+    return search.searchObjectArray(requests, this.query);
   }
 
-  async showStatus(value: string) {
-    this.showStatusModal = true;
-    this.requestId = value;
-  }
-
-  medicationAdded() {
-    this.fetchOtherrequestsById(this.patientId);
+  medicationRequest( request: any){
+    const { medications, ...rest} = request;
+    return medications.map((medication:any) => {
+      return {...medication, ...rest, medicationId: medication.id, requestId: request.id, createdAt: new Date(request.createdAt).toLocaleDateString()}
+    } )
   }
   getPatientName(id: string) {
     const pt = this.patients.find((i: any) => i.id === id);
     return pt ? `${pt.firstname} ${pt.lastname}` : "";
   }
-  getPractitionerName(id: string) {
-    const pt = this.practitioners.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  getPatientMrn(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.mrn}` : "";
   }
 
+   async createMapper() {
+    this.medicationMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/medication-codes"
+    );
+  }
+
+  async showStatus(item: any) {
+    this.showStatusModal = true;
+    this.selectedItem = item;
+
+    // const medId = request.medications.map((c:any) => c.id);
+    //    (request as any).createdAt = new Date((request as any).createdAt).toDateString();
+
+    //   this.otherupdatedBy = this.getPractitionerName(request.requesterId);
+    //   this.othercurrentStatus = request.status;
+
+    //   this.otherupdate = request.createdAt;
+
+    //   this.patientId = request.patientId;
+    //   this.dispenserId = request.dispenserId;
+    //   this.requesterId = request.requesterId;
+
+  }
+  showDetailsModal(item:any){
+    this.selectedItem = item;
+     this.showDetails = true;
+  }
+  showRefillModal(value:string){
+    this.showRefill = true;
+    this.requestId = value;
+  }
+  showPrintModal(item:any){
+    this.showPrint = true;
+     this.selectedItem = item;
+  }
+  showModal(value:string){
+    this.showMedicationRequest = true;
+    this.requestId = value;
+  }
+  async showOtherStatus(value: string) {
+    this.showOtherStatusModal = true;
+    this.requestId = value;
+  }
+
+  async makeNotes(id: string) {
+    this.requestId = id;
+    this.showNotes = true;
+    this.fetchNotes();
+  }
+
+  async makeothersNotes(id: string) {
+    this.requestId = id;
+    this.showOthersNotes = true;
+    this.fetchOtherNotes();
+  }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this medication",
-      title: "Delete medication",
+      message: "You are about to cancel this request",
+      title: "Cancel request",
     });
     if (!confirmed) return;
 
     if (await this.deleteRequest(id))
-      window.notify({ msg: "Medicaiton deleted", status: "success" });
-    else window.notify({ msg: "Medication not deleted", status: "error" });
+      window.notify({ msg: "Request canceled", status: "success" });
+    else window.notify({ msg: "Request not canceled", status: "error" });
   }
 
-  get sortMedications() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
+ 
+  getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  setSelectedPatient(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    this.selectedPatient = pt ? pt : {};
   }
 
+  getRequest(id: string) {
+    const pt = this.patientrequests.find((i: any) => i.id === id);
+    return pt ? pt : {};
+  }
+
+  get selectedPatientData() {
+    if (!this.selectedPatient || !this.selectedPatient.id) return {};
+    const data = this.selectedPatient;
+    return {
+      gender: data.gender,
+      dob: `${new Date(data.dateOfBirth).getDate()} ${
+        this.months[new Date(data.dateOfBirth).getMonth()]
+      }, ${new Date(data.dateOfBirth).getFullYear()}`,
+      mrn: data.mrn,
+    };
+  }
+
+  showPatientDetails(id: string) {
+    this.setSelectedPatient(id);
+    this.viewDetails = true;
+  }
+  async fetchNotes() {
+    const id = this.requestId;
+    const AllNotes = cornieClient().get(
+      `/api/v1/requests/getNotesByRequestId/${id}`
+    );
+    const response = await Promise.all([AllNotes]);
+    this.requestnotes = response[0].data;
+  }
+
+  async fetchOtherNotes() {
+    const id = this.requestId;
+    const AllNotes = cornieClient().get(
+      `/api/v1/other-requests/getNotesByOtherRequestId/${id}`
+    );
+    const response = await Promise.all([AllNotes]);
+    this.otherrequestnotes = response[0].data;
+  }
+
+  async showMedication(value: string) {
+    this.requestId = value;
+    this.showMedicationModal = true;
+  }
+
+  async showEditMedication(value: string) {
+    this.requestId = value;
+    this.showEditMedicationModal = true;
+  }
+
+  async statusadded(){
+     await this.fetchrequestsById(this.onepatientId);
+  }
+
+  async medicationadded(){
+    await this.fetchrequestsById(this.onepatientId);
+  }
+   get onepatientId() {
+    return this.$route.params.id as string;
+  }
   async created() {
-    this.getPractitioners();
-    this.getPatients();
-    this.sortMedications;
-    this.fetchOtherrequestsById(this.patientId);
+     await this.createMapper();
+      await this.fetchrequestsById(this.onepatientId);
   }
 }
 </script>
+
 <style>
 .outline-primary {
   border: 2px solid #080056;
-}
-.status-accepted {
-  background: #f3fcf8;
-  color: #35ba83;
-}
-.status-inactive {
-  background: #fff1f0;
-  color: #fe4d3c;
-}
-.status-warning {
-  background: #fefaf0;
-  color: #f7b538;
 }
 </style>

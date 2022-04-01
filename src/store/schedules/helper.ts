@@ -10,10 +10,21 @@ export async function getSchedules() {
   }
   return {};
 }
-export async function singlePractitonerSlot(practitionerId: string) {
+export async function singlePractitonerSlot(locationId: string) {
   try {
     const response = await cornieClient().get(
-      `/api/v1/slot/practitioner/${practitionerId}`
+      `/api/v1/schedule/slot/${locationId}`
+    );
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {}
+}
+
+export async function FetchDayCalendar(locationId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/calendar/organization/${locationId}/day-view`
     );
     if (response.success) {
       return response.data;
@@ -152,3 +163,39 @@ export async function updateShift(shift: any, id: string) {
     });
   }
 }
+
+
+export async function removeService(body: any, id: any) {
+  try {
+    const response = await cornieClient().post(
+      `/api/v1/schedule/remove-services/${id}`,
+      body
+    );
+
+    return response.success as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error removing this service",
+      status: "error",
+    });
+  }
+}
+
+
+export async function removeBreak(body: any, id: any) {
+  try {
+    const response = await cornieClient().post(
+      `/api/v1/schedule/break/${id}`,
+      body
+    );
+
+    return response.success as boolean;
+  } catch (error) {
+    notify({
+      msg: "There was an error removing this break",
+      status: "error",
+    });
+  }
+}
+
+

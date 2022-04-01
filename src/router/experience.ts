@@ -53,8 +53,15 @@ export const ExperienceRoutes: RouteRecordRaw = {
         import("@/views/dashboard/patientexp/appointments/index.vue"),
     },
     {
-      path: "calendar",
+      path: "calendar/:practitionerId?",
+      props: route => ({practitionerId: route.query.practitioner}),
       name: "Calendar",
+      component: () =>
+        import("@/views/dashboard/patientexp/calendar/index.vue"),
+    },
+    {
+      path: "actor-calendar/:practitionerId?",
+      props: route => ({practitionerId: route.query.practitioner}),
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },
@@ -97,55 +104,13 @@ export const ExperienceRoutes: RouteRecordRaw = {
         import("@/views/dashboard/patientexp/requests/index.vue"),
     },
     {
-      path: "add-request/:id?",
-      name: "New Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/addRequests.vue"),
-    },
-    {
-      path: "edit-request/:id?",
-      name: "View & Edit Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/editRequests.vue"),
-    },
-    {
-      path: "view-request/:id?",
-      name: "View Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/viewRequests.vue"),
-    },
-    {
-      path: "view-other-request/:id?",
-      name: "View Other Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/viewRefferal.vue"),
-    },
-    {
-      path: "edit-other-request/:id?",
-      name: "Edit Other Request",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/editRefferal.vue"),
-    },
-    {
-      path: "add-other-requests/:id?",
-      name: "New Other Requests",
-      props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/requests/addRefferRequests.vue"),
-    },
-    {
       path: "visits",
-      name: "Patient Visits",
+      name: "Visits",
       component: () => import("@/views/dashboard/visits/index.vue"),
     },
     {
       path: "visits/timeline",
-      name: "Patient Visits Timeline",
+      name: "Visits Timeline",
       component: () =>
         import("@/views/dashboard/visits/components/timeline-table.vue"),
     },

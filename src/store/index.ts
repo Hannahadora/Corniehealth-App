@@ -19,6 +19,8 @@ import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
 import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
+import DiagnosticStore from "./diagnostic";
+import RefferalStore from "./refferal";
 
 import CalenderStore from "./calendar";
 import PrefrenceStore from "./prefrence";
@@ -30,7 +32,6 @@ import ShiftsStore from "./shift";
 import ScheduleStore from "./schedules";
 import PatientStore from "./patient";
 import RequestStore from "./request";
-import OtherrequestStore from "./otherrequest";
 import AllergyStore from "./allergy";
 import ImpressionStore from "./impression";
 import HistoryStore from "./history";
@@ -85,7 +86,6 @@ export default createStore({
     practiceinformation: PracticeInformationStore,
     appointment: AppointmentStore,
     request: RequestStore,
-    otherrequest: OtherrequestStore,
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,
@@ -113,5 +113,7 @@ export default createStore({
     prefrence: PrefrenceStore,
     cancel: CanelStore,
     kyc: KycStore,
+    diagnostic: DiagnosticStore,
+    refferal: RefferalStore,
   },
 } as StoreOptions<any>);

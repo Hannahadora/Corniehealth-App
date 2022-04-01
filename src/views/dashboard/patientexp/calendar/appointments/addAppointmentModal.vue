@@ -22,12 +22,21 @@
                  <cornie-select
                     :label="'Type'"
                     placeholder="--Select--"
+                    :items="[
+                      'Check-Up',
+                      'Follow-Up',
+                      'Emergency',
+                      'Routine',
+                      'Walk-In',
+                    ]"
                     class="w-full mt-4"
+                    v-model="appointmentType"
                 />
                 <cornie-input
                     label="Description"
                     class="w-full mb-5"
                     placeholder="--Enter--"
+                    v-model="description"
                 />
                
             </div>
@@ -38,30 +47,56 @@
                     </div>
                     <add-icon class="flex justify-end float-right cursor-pointer" @click="showPatient = true"/>
                 </div>
-                  <!-- <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.practitioners" :key="index">
+                <div v-if="id">
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Patients" :key="index">
+                      
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="item.patient.profilePhoto"
+                                  :src="item.patient.profilePhoto"
+                              />
+                              <avatar class="mr-2" v-else :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                  {{ item.patient.firstname }}
+                                  {{ item.patient.lastname }}
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{ item.patient.mrn }}
+                          </p>
+                          </div>
+                      </div>
+                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deletePatientItem(item.id,index)"/>
+                  </div> 
+                </div>
+                <div v-else>
+                    <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Patients" :key="index">
                     
                     <div class="w-full dflex space-x-4 mb-3">
                         <div class="w-10 h-10">
                             <avatar
                                 class="mr-2"
-                                v-if="item.image"
-                                :src="item.image"
+                                v-if="item.profilePhoto"
+                                :src="item.profilePhoto"
                             />
                             <avatar class="mr-2" v-else :src="localSrc" />
                         </div>
                         <div class="w-full">
                             <p class="text-xs text-dark font-medium">
-                                {{ item.firstName }}
-                                {{ item.lastName }}
+                                {{ item.firstname }}
+                                {{ item.lastname }}
                             </p>
                             <p class="text-xs text-gray-500 font-meduim">
-                            {{ item.jobDesignation }}
-                            {{ item.department }}
+                            {{ item.mrn }}
                         </p>
                         </div>
                     </div>
-                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)"/>
-                </div> -->
+                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deletePatientItem(item.id,index)"/>
+                    </div> 
+                </div>
             </div>
              <div class="w-full mt-2 mb-2">
                 <div class="flex w-full border-dashed border-b border-gray-100">
@@ -70,80 +105,169 @@
                     </div>
                     <add-icon class="flex justify-end float-right cursor-pointer" @click="showParticipant = true"/>
                 </div>
-                  <!-- <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.practitioners" :key="index">
-                    
-                    <div class="w-full dflex space-x-4 mb-3">
-                        <div class="w-10 h-10">
-                            <avatar
-                                class="mr-2"
-                                v-if="item.image"
-                                :src="item.image"
-                            />
-                            <avatar class="mr-2" v-else :src="localSrc" />
-                        </div>
-                        <div class="w-full">
-                            <p class="text-xs text-dark font-medium">
-                                {{ item.firstName }}
-                                {{ item.lastName }}
-                            </p>
-                            <p class="text-xs text-gray-500 font-meduim">
-                            {{ item.jobDesignation }}
-                            {{ item.department }}
-                        </p>
-                        </div>
-                    </div>
-                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)"/>
-                </div> -->
+                <div v-if="id">
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Practitioners" :key="index">
+                      
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="item.practitioner.image"
+                                  :src="item.practitioner.image"
+                              />
+                              <avatar class="mr-2" v-else :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                  {{ item.practitioner.firstName }}
+                                  {{ item.practitioner.lastName }}
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{ item.practitioner.jobDesignation }}
+                              {{ item.practitioner.department }}
+                          </p>
+                          </div>
+                      </div>
+                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deletePractItem(item.id,index)"/>
+                  </div>
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Devices" :key="index">
+                      
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar class="mr-2" :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                  {{ item?.deviceName?.name }}
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{ item?.deviceName?.nameType }}
+                          </p>
+                          </div>
+                      </div>
+                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteDeviceItem(index)"/>
+                  </div>
+                </div>
+                <div v-else>
+                  <!-- <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newPractitioners" :key="index">
+                      
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="item.image"
+                                  :src="item.image"
+                              />
+                              <avatar class="mr-2" v-else :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                  {{ item.firstName }}
+                                  {{ item.lastName }}
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{ item.jobDesignation }}
+                              {{ item.department }}
+                          </p>
+                          </div>
+                      </div>
+                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deletePractItem(item.id,index)"/>
+                  </div> -->
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Practitioners" :key="index">
+                      
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar
+                                  class="mr-2"
+                                  v-if="item.image"
+                                  :src="item.image"
+                              />
+                              <avatar class="mr-2" v-else :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                  {{ item.firstName }}
+                                  {{ item.lastName }}
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{ item.jobDesignation }}
+                              {{ item.department }}
+                          </p>
+                          </div>
+                      </div>
+                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deletePractItem(item.id,index)"/>
+                  </div>
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Devices" :key="index">
+                      
+                      <div class="w-full dflex space-x-4 mb-3">
+                          <div class="w-10 h-10">
+                              <avatar class="mr-2" :src="localSrc" />
+                          </div>
+                          <div class="w-full">
+                              <p class="text-xs text-dark font-medium">
+                                  {{ item?.deviceName?.name }}
+                              </p>
+                              <p class="text-xs text-gray-500 font-meduim">
+                              {{ item?.deviceName?.nameType }}
+                          </p>
+                          </div>
+                      </div>
+                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteDeviceItem(index)"/>
+                  </div> 
+                </div>
             </div>
             <accordion-component :title="'Location'" :addborder="true" :opened="false">
                   <template v-slot:default>
                       <div class="w-full mt-5">
-                            <span class="text-primary font-semibold text-xs ">Select where you’ll like appointment to be held</span>
+                            <span class="text-primary font-semibold text-sm">Select where you’ll like appointment to be held</span>
                            <div class="w-full flex flex-wrap items-center py-5">
                                 <div class="-mb-2">
                                     <cornie-radio
                                     :label="'Hospital/Clinic'"
-                                    :value="'HospitalClinic'"
+                                    :value="'clinic'"
                                     name="practiceRegister"
-                                    v-model="locationType"
+                                    v-model="venue"
                                     />
                                 </div>
                                 <div class="-mb-2 ml-4">
                                     <cornie-radio
                                     :label="'Virtual'"
-                                    :value="'Virtual'"
+                                    :value="'virtual'"
                                     name="practiceRegister"
-                                      v-model="locationType"
+                                      v-model="venue"
                                     />
                                 </div>
                                 <div class="ml-4 -mb-2">
                                     <cornie-radio
                                     :label="'At Home'"
-                                    :value="'AtHome'"
+                                    :value="'at-home'"
                                     name="practiceRegister"
-                                      v-model="locationType"
+                                      v-model="venue"
                                     />
                                 </div>
                            </div>
                       </div>
                        <cornie-select
-                            v-if="locationType == 'HospitalClinic'"
-                            :items="['Days','Weeks','Months','Years']"
+                            v-if="venue == 'clinic'"
+                            :items="allLocations"
                             placeholder="--Select--"
                             :label="'Hospital/Clinic'"
                             class="w-full"
+                            v-model="bookingLocationId"
                         />
                          <cornie-input
-                            v-if="locationType == 'Virtual'"
+                            v-if="venue == 'virtual'"
                             :label="'Link'"
                             placeholder="Paste meeting link"
                             class="w-full"
+                            v-model="meetingLink"
                         />
                         <cornie-input
-                            v-if="locationType == 'AtHome'"
+                            v-if="venue == 'at-home'"
                             :label="'Address'"
                             placeholder="Enter address"
                             class="w-full"
+                             v-model="venueAddress"
                         />
                   </template>    
             </accordion-component>
@@ -154,7 +278,7 @@
                     </div>
                     <add-icon class="flex justify-end float-right cursor-pointer" @click="showService = true"/>
                 </div>
-                  <!-- <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.practitioners" :key="index">
+                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in services" :key="index">
                     
                     <div class="w-full dflex space-x-4 mb-3">
                         <div class="w-10 h-10">
@@ -167,17 +291,15 @@
                         </div>
                         <div class="w-full">
                             <p class="text-xs text-dark font-medium">
-                                {{ item.firstName }}
-                                {{ item.lastName }}
+                                {{ item.name }}
                             </p>
                             <p class="text-xs text-gray-500 font-meduim">
-                            {{ item.jobDesignation }}
-                            {{ item.department }}
+                             ₦ {{ item.cost }}
                         </p>
                         </div>
                     </div>
-                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)"/>
-                </div> -->
+                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteServiceItem(index)"/>
+                </div> 
             </div>
   
             <accordion-component :addborder="true" :title="'Billing Type'" :opened="false">
@@ -185,21 +307,23 @@
                       <div class="w-full border-dashed border-b-2 pb-4 border-gray-100">
                         <div class="flex w-full">
                                 <div class="w-full">
-                                  <span class="text-xs text-gray-400 font-semibold">Insurance</span>    
+                                  <span class="text-xs text-gray-400 font-semibold">{{billingType}}</span>    
                                 </div>
-                                <div class="w-full">
+                                <!-- <div class="w-full">
                                     <span class="text-xs flex justify-end w-full text-danger cursor-pointer" @click="showBilling = true">Change billing type</span>
-                                </div>
+                                </div> -->
                         </div>
-                         <cornie-select
-                                    v-if="showBilling"
-                                    :label="'Change Billing Type'"
-                                    placeholder="--Select--"
-                                    class="w-full mt-4"
-                            />
+                         <!-- <cornie-select
+                                v-if="showBilling"
+                                :label="'Change Billing Type'"
+                                placeholder="--Select--"
+                                :items="['insurance', 'cash']"
+                                class="w-full mt-4"
+                                v-model="billingType"
+                            /> -->
                       </div>
-                      <text-area :label="'Comment'"  placeholder="Placeholder" class="w-full"/>
-                        <div class="w-full">
+                      <text-area :label="'Comment'" v-model="comment" placeholder="Placeholder" class="w-full"/>
+                        <!-- <div class="w-full">
                             <span class="text-sm text-primary font-semibold mb-5">Payment</span>
                             <div class="grid grid-cols-3 gap-1 mt-5">
                                 <span class="border py-1 px-6 text-xs text-center border-gray-200 cursor-pointer rounded-lg" @click="showCollect = true">
@@ -216,7 +340,7 @@
                                 </span>
 
                             </div>
-                        </div>
+                        </div> -->
 
 
                   </template>    
@@ -246,9 +370,9 @@
       </cornie-card>
     </cornie-card>
 
-        <patient-modal v-model="showPatient" />
-        <participant-modal v-model="showParticipant"/>
-        <services-modal v-model="showService"/>
+        <patient-modal v-model="showPatient" :Patients="Patients" @patient-added="patientadded" @patient-data="patientdata"/>
+        <participant-modal v-model="showParticipant" :Practitioners="Practitioners" :id="id" :appoimtentId="appoimtentId" @practitioner-data="practitionerdata" @device-data="devicedata"/>
+        <services-modal v-model="showService" @service-data="servicedata"/>
 
         <collect-modal v-model="showCollect"/>
         <share-modal v-model="showShare"/>
@@ -274,6 +398,7 @@ import AccordionComponent from "../components/accordion.vue";
 import DatePicker from "@/components/datepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
+import Period from "@/types/IPeriod";
 import SelectOption from "@/components/custom-checkbox.vue";
 import TimePicker from "@/components/Timepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
@@ -288,6 +413,16 @@ import CollectModal from "./collectpayment.vue";
 import ShareModal from "./sharepaylink.vue";
 import PostModal from "./postclaim.vue";
 import BillModal from "./sharebill.vue";
+import Avatar from "@/components/avatar.vue";
+import IAppointment from "@/types/IAppointment";
+import ILocation from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
+
+
+const appointment = namespace("appointment");
+const location = namespace("location");
+const user = namespace("user");
+const practitioner = namespace("practitioner");
 
 
 @Options({
@@ -309,6 +444,7 @@ import BillModal from "./sharebill.vue";
     DeleteIcon,
     TextArea,
     TimePicker,
+    Avatar,
     CornieDialog,
     ServicesModal,
     SearchIcon,
@@ -329,20 +465,283 @@ export default class appointmentModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: String, default: "" })
+  appoimtentId!: string;
+
+  @Prop({ type: String, default: "" })
+  appoitmentDate!: string;
+
+
+  @Prop({ type: String, default: "" })
+  range!: string;
+
+  @Prop({ type: String, default: "" })
+  range2!: string;
+
+
+
+  @appointment.Action
+  getAppointmentById!: (id: string) => IAppointment;
+
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  @user.State
+   currentLocation!: string;
+
+  @practitioner.State
+  practitioners!: IPractitioner[];
+
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
   showPatient = false;
   locationType = "";
   showBilling = false;
   showParticipant = false;
   showService = false;
+  loading = false;
 
   showCollect = false;
   showShare = false;
   showPost = false;
   showBill = false;
- 
 
-  created() {
-    //this.setImpression();
+
+
+  serviceCategory = "serviceCategory";
+  locationId = "";
+  deviceId = [];
+  serviceType = "";
+  specialty = "";
+  appointmentType = "";
+  reasonCode = "";
+  reasonRef = "";
+  priority = "";
+  description = "";
+  supportingInfo = "";
+  slot = "";
+  basedOn = "";
+  duration = "";
+  comments = "";
+  patientInstruction = "";
+  period = {} as Period;
+  participantDetail = [];
+  Practitioners = [] as any;
+  Devices = [];
+  Patients = [] as any;
+  Locations = [];
+  HealthCare = [];
+  appointmentId = "";
+  bookingLocationId = "";
+  comment = "";
+  status = "";
+  services = [] as any;
+  date = "2022-03-11";
+  startTime = "00:00";
+  endTime = "00:00";
+  billingType = "cash";
+  venueAddress = "";
+  meetingLink = "";
+  venue = "";
+  patientId = [];
+  practitionerId = [] as any;
+  newPractitioners = [] as any;
+  serviceId = [];
+   localSrc = require("../../../../../assets/img/placeholder.png");
+   errmsg = "" as any;
+   singlePatientId = "";
+
+
+
+ @Watch("id")
+  idChanged() {
+    this.setAppoitment();
+  }
+
+
+  async setAppoitment() {
+    const appointment = await this.getAppointmentById(this.id);
+    if (!appointment) return;
+    this.appointmentType = appointment.appointmentType;
+    this.description = appointment.description;
+    this.venue = appointment.venue;
+    this.meetingLink = appointment.meetingLink;
+    this.venueAddress = appointment.venueAddress;
+    this.billingType = appointment.billingType;
+    this.Practitioners = appointment.Practitioners;
+    this.Patients = appointment.Patients;
+    this.services = appointment.services;
+    this.comment = appointment.comment;
+    this.newPractitioners = appointment.Practitioners[0];
+   
+
+  }
+
+  get payload(){
+    return {
+      appointmentType: this.appointmentType,
+      description: this.description,
+      venue: this.venue,
+      meetingLink: this.meetingLink,
+      venueAddress: this.venueAddress,
+      billingType: this.billingType,
+      services : this.serviceId,
+      Practitioners: this.practitionerId,
+      Devices: this.deviceId,
+      Patients: this.patientId,
+      comment: this.comment,
+      serviceCategory : this.serviceCategory,
+      date: this.date,
+      startTime: this.startTime,
+      endTime : this.endTime,
+      locationId : this.locationId,
+      bookingLocationId: this.bookingLocationId,
+      practitionerId: this.appoimtentId,
+      patientId: this.singlePatientId
+
+    }
+  }
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.updateAppointment();
+    else await this.createAppointment();
+    this.loading = false;
+  }
+
+
+
+  async createAppointment() {
+    this.locationId = this.currentLocation;
+    this.payload.startTime = this.range;
+    this.payload.endTime = this.range2;
+    this.payload.date = this.appoitmentDate;
+
+    if(this.currentLocation){
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/appointment",
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Appointment created", status: "success" });
+         this.done();
+        }
+      } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
+    }else{
+      window.notify({ msg: "Kindly switch default location", status: "error" });
+    }
+  }
+
+  async updateAppointment() {
+
+    const url = `/api/v1/appointment/${this.id}`;
+    const payload = { ...this.payload, id: this.id };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Appointment updated", status: "success" });
+        this.$router.push("/dashboard/provider/experience/calendar");
+      }
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+   getAppointment() {
+    if(this.Practitioners.length < 1){
+      const pt = this.practitioners.find((i: any) => i.id === this.appoimtentId);
+      this.practitionerId.push({practitionerId: this.appoimtentId, required: true });
+      return this.Practitioners =[pt];
+    }
+  }
+
+  patientdata(value:any,valueId:any,id:string){
+      this.Patients = value;
+      this.patientId = valueId;
+      this.singlePatientId = id;
+
+      console.log(value,"THIS IS VALUE");
+  }
+
+  practitionerdata(value:any,valueId:any){
+      this.Practitioners.push(...value);
+      this.practitionerId.push(...valueId);
+     
+     console.log(this.practitionerId,"FDFk");
+  }
+  devicedata(value:any,valueId:any){
+      this.Devices = value;
+      this.deviceId = valueId;
+  }
+
+  servicedata(value:any,valueId:any){
+      this.services = value;
+      this.serviceId = valueId;
+  }
+
+ patientadded(){
+
+ }
+  get allLocations() {
+    if (!this.locations || this.locations.length === 0) return [];
+    return this.locations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+
+   async deletePatientItem(value:string,index:number) {
+      const confirmed = await window.confirmAction({
+        message: "You are about to delete this patient details",
+        title: "Delete patient details",
+      });
+      if (!confirmed) return;
+     this.Patients.splice(index, 1);
+  }
+
+ async deleteDeviceItem (index:number) {
+    const confirmed = await window.confirmAction({
+        message: "You are about to delete this device details",
+        title: "Delete device details",
+      });
+      if (!confirmed) return;
+     this.Devices.splice(index, 1);
+ }
+ async deletePractItem (value:string,index:number) {
+    const confirmed = await window.confirmAction({
+        message: "You are about to delete this practitioner details",
+        title: "Delete practitioner details",
+      });
+      if (!confirmed) return;
+     this.Practitioners.splice(index, 1);
+ }
+
+ async deleteServiceItem (index:number) {
+    const confirmed = await window.confirmAction({
+        message: "You are about to delete this service",
+        title: "Delete service",
+      });
+      if (!confirmed) return;
+     this.services.splice(index, 1);
+ }
+
+ done(){
+    this.show = false;
+ }
+
+  async created() {
+    await this.fetchLocations();
+    await this.fetchPractitioners();
+    if(this.appoimtentId && this.Practitioners.length != 1) await this.getAppointment();
   }
 }
 </script>

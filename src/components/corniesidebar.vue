@@ -121,16 +121,16 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: true,
       children: [
         { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
-         {
+        {
           name: "Calendar",
           to: "/dashboard/experience/calendar",
           hasSubsection: false,
         },
-        {
-          name: "Schedules",
-          to: "/dashboard/experience/schedules",
-          hasSubsection: false,
-        },
+        // {
+        //   name: "Schedules",
+        //   to: "/dashboard/experience/schedules",
+        //   hasSubsection: false,
+        // },
         {
           name: "Appointments",
           to: { name: "Appointment" },
@@ -195,8 +195,8 @@ export default class CorniDashboardeSideBar extends Vue {
           hasSubsection: false,
         },
         {
-          name: "Catalogue",
-          to: "catologue",
+          name: "Charge Description Master",
+          to: "/dashboard/settings/catalogues/index.vue",
           hasSubsection: false,
         },
         {

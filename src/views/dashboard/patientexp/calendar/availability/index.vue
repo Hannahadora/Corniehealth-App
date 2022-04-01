@@ -11,10 +11,10 @@
             <span class="text-green-400 text-5xl -mt-3">.</span> Available
          </span>
          <span class="text-xs">
-            <span class="text-blue-600 text-5xl -mt-3">.</span> Busy
+            <span class="text-yellow-500 text-5xl -mt-3">.</span> Tentative
          </span>
          <span class="text-xs">
-            <span class="text-yellow-500 text-5xl -mt-3">.</span> Tentative
+            <span class="text-red-600 text-5xl -mt-3">.</span> Busy
          </span>
      </div>
 
@@ -25,13 +25,13 @@
             <tabs :items="tabLinks" v-model="currentTab" :dDate="start"  @filter="showFilterPane" @left="setLeft" @right="setRight">
 
                 <div>
-                    <day-section @set-oneId="setoneId" :schedules="schedules" :startDate="'3/22/2022'"/>
+                    <day-section :startDate="start"/>
                 </div>
                 <div>
-                    <week-section @set-oneId="setoneId" :schedules="schedules" :startDate="'22/3/2022'"></week-section>
+                    <week-section  :startDate="start"></week-section>
                 </div>
                 <div>
-                <month-section @set-oneId="setoneId" :schedules="schedules" :startDate="'3/22/2022'"/>
+                <month-section  :startDate="start"/>
                 </div>
                  <template #actions>
                     <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showAvailable">
@@ -41,7 +41,7 @@
                         <span class="text-xs font-medium">Appointment</span>
                     </div>
                     <div class="flex items-center mb-1 p-3 cursor-pointer" @click="showblocked = true">
-                        <span class="text-xs font-medium">Blocked Slot</span>
+                        <span class="text-xs font-medium">Events</span>
                     </div>
                 </template>
             </tabs>
@@ -60,6 +60,7 @@
 import { Vue, Options } from "vue-class-component";
 import Tabs from "@/components/smalltab.vue";
 import WeekSection from "./week.vue";
+import { Prop, Watch } from "vue-property-decorator";
 import DaySection from "./day.vue";
 import MonthSection from "./month.vue"
 import AvailabiltyModal from "./addScheduleModal.vue";
@@ -69,6 +70,7 @@ import AdvancedFilter from "./advanced-filter.vue";
 import { namespace } from "vuex-class";
 import ISchedule from "@/types/ISchedule";
 import slotService from "@/views/dashboard/visits/helper/slot-service";
+import { getWeekStart, printWeekday, addDays } from "@/plugins/utils";
 
 const visitsStore = namespace("visits");
 
@@ -102,8 +104,39 @@ export default class AvailabilityIndex extends Vue {
   filterOptions: any = {};
   filteredSlots: any = [];
 
+
+  start  = new Date();
+
   @visitsStore.Action
   schedulesByPractitioner!: (id: string) => Promise<ISchedule[]>;
+
+   setLeft(value:any){
+    const now = this.start ?? new Date(); 
+    if (value == 0){
+      this.start = addDays (now, -1);
+      this.$emit('setCalendar')
+    } else if (value == 1){
+      this.start = addDays (now, -7);
+       this.$emit('setCalendar')
+
+    } else  {
+      this.start = addDays (now, -30);
+       this.$emit('setCalendar')
+    }
+  }
+  setRight(value:any){
+   const now = this.start ?? new Date(); 
+    if (value == 0){
+      this.start = addDays (now, 1);
+       this.$emit('setCalendar')
+    } else if (value == 1){
+      this.start = addDays (now, 7);
+       this.$emit('setCalendar')
+    } else  {
+      this.start = addDays (now, 30);
+       this.$emit('setCalendar')
+    }
+  }
 
   showAvailable(){
       this.showAvailableModal = true;

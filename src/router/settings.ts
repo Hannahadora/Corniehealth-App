@@ -129,6 +129,13 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/practitioners/addPractitioner.vue"),
     },
     {
+      path: "view-practitioner/:id",
+      props: true,
+      name: "View Practitioner",
+      component: () =>
+        import("@/views/dashboard/settings/practitioners/viewPractitioner.vue"),
+    },
+    {
       path: "care-teams",
       name: "Care Teams",
       component: () => import("@/views/dashboard/settings/careteam/index.vue"),
@@ -163,6 +170,18 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "practice-templates",
       name: "Practice Forms/Templates",
       component: () => import("@/views/dashboard/settings/forms/index.vue"),
+    },
+    {
+      path: "medication",
+      props: true,
+      name: "Medications",
+      component: () => import("@/views/dashboard/medications/medication/index.vue"),
+    },
+    {
+      path: "diagnostics",
+      props: true,
+      name: "Diagnostics",
+      component: () => import("@/views/dashboard/diagnostics/diagnostic/index.vue"),
     },
     {
       path: "markup",
