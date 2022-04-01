@@ -14,7 +14,7 @@
           class="text-black text-xs float-right flex cursor-pointer -mt-4"
           @click="AddReminder"
         >
-          <add-blue-icon class="mr-2" /> Adcomponentd Reminder</span
+          <add-blue-icon class="mr-2" /> + Add Reminder</span
         >
       </div>
       <div
@@ -79,7 +79,7 @@
           />
         </accordion-component>
 
-        <accordion-component
+        <!-- <accordion-component
           class="pb-10 capitalize"
           editabetitle="2nd Reminder"
           :opened="true"
@@ -137,9 +137,9 @@
             class="float-right cursor-pointer"
             @click="questions.splice(index, 1)"
           />
-        </accordion-component>
+        </accordion-component> -->
 
-        <accordion-component
+        <!-- <accordion-component
           class="pb-10 capitalize"
           editabetitle="3rd Reminder"
           :opened="true"
@@ -194,7 +194,7 @@
             class="float-right cursor-pointer"
             @click="questions.splice(index, 1)"
           />
-        </accordion-component>
+        </accordion-component> -->
       </div>
       <!-- <div class="flex space-x-4 mb-12 pb-14 mt-5 float-right">
         <copyform-icon class="float-right" />

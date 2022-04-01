@@ -1,7 +1,7 @@
 <template>
   <div class="w-full overflow-auto mb-5">
     <div class="sect1 my-8">
-      <div class="greet">Good Morning, Dr. Johnson!</div>
+      <div class="greet">Good Morning, Dr. {{ cornieUser.firstName }}!</div>
       <div class="flex items-center mt-4">
         <span class="">Have a lovely day</span>
         <!-- <img class="ml-6" src="@/assets/emoji.png" alt="" /> -->
@@ -106,6 +106,10 @@ import ResourceChart from "./resource-chart.vue";
 import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
 
+import {namespace} from 'vuex-class'
+
+const user = namespace("user")
+
 @Options({
   name: "DashboardHome",
   components: {
@@ -123,7 +127,12 @@ import InpatientChart from "./inpatient-chart.vue";
     ResourceChart,
   },
 })
-export default class DashboardHome extends Vue {}
+export default class DashboardHome extends Vue {
+
+ @user.Getter
+ cornieUser!: ""
+}
+
 </script>
 
 <style scoped>
