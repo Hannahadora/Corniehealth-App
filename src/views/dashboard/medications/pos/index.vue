@@ -64,7 +64,7 @@
       <span class="flex justify-end">
         <cornie-btn
           class="bg-danger px-3 py-1 text-base rounded-lg text-white m-5"
-          @click="showRoom = true"
+          @click="showRecord= true"
         >
           Create New
         </cornie-btn>

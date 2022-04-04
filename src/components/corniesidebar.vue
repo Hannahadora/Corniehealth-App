@@ -190,11 +190,6 @@ export default class CorniDashboardeSideBar extends Vue {
           hasSubsection: false,
         },
         {
-          name: "POS Sales",
-          to: "/dashboard/provider/settings/pos",
-          hasSubsection: false,
-        },
-        {
           name: "Catalogue",
           to: "catologue",
           hasSubsection: false,
@@ -207,6 +202,11 @@ export default class CorniDashboardeSideBar extends Vue {
         {
           name: "Pricebook",
           to: "pricebook",
+          hasSubsection: false,
+        }, 
+        {
+          name: "POS Sales",
+          to: "/dashboard/provider/settings/pos",
           hasSubsection: false,
         },
         {
