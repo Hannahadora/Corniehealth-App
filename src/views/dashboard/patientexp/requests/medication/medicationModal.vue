@@ -144,7 +144,7 @@
                           label="medication code"
                           placeholder="--Select--"
                         /> -->
-                        <auto-complete :label="'Generic Name'"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
+                        <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
 
                         <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
                         <cornie-select
@@ -327,7 +327,7 @@
                     <div class="flex space-x-10">
                       <div class="mb-0 p-2">
                         <p class="text-xs text-primary font-semibold">
-                          {{input.code }}
+                          {{input.genericName }}
                         </p>
                         <p class="text-xs text-gray-500 font-light">
                           {{ input.dosageInstruction }}
@@ -793,6 +793,7 @@ export default class MedicationModal extends Vue {
   };
   emptyMedicationDetails = {
     genericCode : null as any,
+    code: "",
     genericName : "",
     reference: "",
     courseOfTherapy: "",
@@ -816,6 +817,7 @@ export default class MedicationModal extends Vue {
        //this.resultData(this.emptyMedicationDetails.code);
 
         this.emptyMedicationDetails.genericCode = this.emptyMedicationDetails?.genericCode?.toString();
+        this.emptyMedicationDetails.code = this.emptyMedicationDetails?.genericCode?.toString();
         this.medications.push(this.emptyMedicationDetails);
         this.emptyMedicationDetails.refills.push(this.emptyRefill);
     }
@@ -869,11 +871,11 @@ export default class MedicationModal extends Vue {
         };
         });
     }
-    allBrand(){
+    get allBrand(){
        if (!this.fullInfo || this.fullInfo.length === 0) return [];
         return this.fullInfo.map((i: any) => {
         return {
-            code: i.id,
+            code: i.name,
             display: i.name,
         };
         });
@@ -1018,17 +1020,14 @@ export default class MedicationModal extends Vue {
         if(response[0].data === 0){
             this.searchresult = 'No medication code found'
         }else{
-
             this.searchresult = response[0].data;
         }
+     
   }
-  async resultData(){
-
-    if(this.emptyMedicationDetails.genericCode !== null){
-
+  async resultData(code:string){
       console.log("ALL BRNAD NAMW")
           const AllNotes = cornieClient().get(
-          `/api/v1/emdex/generic-brands/${this.emptyMedicationDetails.genericCode}`,
+          `/api/v1/emdex/generic-brands/${code}`,
           );
           const response = await Promise.all([AllNotes]);
           if(response[0].data === 0){
@@ -1037,7 +1036,6 @@ export default class MedicationModal extends Vue {
 
               this.fullInfo = response[0].data;
           }
-    }
 
   }
   done() {
@@ -1050,8 +1048,7 @@ export default class MedicationModal extends Vue {
       await this.createMapper();
       await this.fetchPatients();
       await this.fetchPractitioners();
-      await this.resultData();
-
+    // await this.resultData(this.emptyMedicationDetails.genericCode);
   }
 }
 </script>
