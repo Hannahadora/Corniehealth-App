@@ -18,8 +18,9 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
             <div>
-                <auto-complete class="w-full" v-model="medselectedItem.code" :label="'Medication code'" :items="allDrug" @input="search" :placeholder="'Medicaiton code'"/>
+                <auto-complete class="w-full" @click="resultData(emptyMedicationDetails.genericCode)"  v-model="medselectedItem.genericCode" :label="'Medication code'" :items="allDrug" @input="search" :placeholder="'Medicaiton code'"/>
             </div>
+            <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
               <cornie-select
                 class="w-full"
                 :items="['Condition', 'Observation']"
@@ -198,6 +199,7 @@ export default class EditMedication extends Vue {
   expand = false;
   isVisible = "";
   searchresult = [] as any;
+  fullInfo = [] as any;
   days2 = "";
   days = "";
 
@@ -215,6 +217,8 @@ export default class EditMedication extends Vue {
     supplyDurationUnit: "",
   };
     emptyMedicationDetails = {
+   genericCode : this.medselectedItem.genericCode,
+    genericName : this.medselectedItem.genericName,
     code : this.medselectedItem.code,
     reference: this.medselectedItem.reference,
     courseOfTherapy: this.medselectedItem.courseOfTherapy,
@@ -287,6 +291,15 @@ export default class EditMedication extends Vue {
         };
         });
     }
+        get allBrand(){
+       if (!this.fullInfo || this.fullInfo.length === 0) return [];
+        return this.fullInfo.map((i: any) => {
+        return {
+            code: i.name,
+            display: i.name,
+        };
+        });
+    }
 
   done() {
     this.$emit("medication-added");
@@ -318,6 +331,20 @@ export default class EditMedication extends Vue {
         }
 
     }
+     async resultData(code:string){
+      console.log("ALL BRNAD NAMW")
+          const AllNotes = cornieClient().get(
+          `/api/v1/emdex/generic-brands/${code}`,
+          );
+          const response = await Promise.all([AllNotes]);
+          if(response[0].data === 0){
+              this.fullInfo = 'No medication code found'
+          }else{
+
+              this.fullInfo = response[0].data;
+          }
+
+  }
   async created() {}
 }
 </script>
