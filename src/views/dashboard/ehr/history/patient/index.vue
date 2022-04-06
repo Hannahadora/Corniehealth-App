@@ -20,13 +20,13 @@ const allergy = namespace("allergy");
 const history = namespace("history");
 
 @Options({
-  name: "HistoryIndex",
+  name: "PatientIndex",
   components: {
     HistoryEmptyState,
     HistoryExistingState,
   },
 })
-export default class HistoryIndex extends Vue {
+export default class PatientIndex extends Vue {
   addHistory = false;
   show = false;
 

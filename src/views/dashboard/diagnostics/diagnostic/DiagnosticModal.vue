@@ -515,13 +515,13 @@ export default class MedicationModal extends Vue {
 
     status =  "";
     basedOn = "";
-    intent =  "";
-    priority = "";
+    intent =  null;
+    priority = null;
     category = "";
     patientId = "";
     reasonCode = null;
     reasonReference = null;
-    note = "";
+    note = null;
     performer = "";
 
     orderDetail = "";

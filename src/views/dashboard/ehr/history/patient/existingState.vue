@@ -6,7 +6,7 @@
           @click="showHistory('false')"
           class="bg-danger rounded-lg text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
-           Create New
+          Create New
         </button>
       </span>
       <cornie-table :columns="headers" v-model="sortHistory">
@@ -39,11 +39,6 @@
             <update-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs"> Update Status </span>
           </div>
-           <div
-              class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
-              <cancel-icon class="text-danger fill-current" />
-              <span class="ml-3 text-xs">Cancel</span>
-            </div> 
         </template>
         <template #member>
           <p>John Paschal</p>
@@ -139,9 +134,10 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 
+
 import { IPatient } from "@/types/IPatient";
-import IAllergy from "@/types/IAllergy";
 import Ihistory from "@/types/Ihistory";
+import IAllergy from "@/types/IAllergy";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -149,19 +145,18 @@ import NewViewIcon from "@/components/icons/newview.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
 import HistoryIcon from "@/components/icons/history.vue";
 import PlusIcon from "@/components/icons/plus.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
 
-import StatusUpdate from "./status-update.vue";
-import HistoryModal from "./historyDialog.vue";
-import StatusModal from "./status-update.vue";
-import ViewModal from "./viewHistory.vue";
+import StatusUpdate from "../status-update.vue";
+import HistoryModal from "../historyDialog.vue";
+import StatusModal from "../status-update.vue";
+import ViewModal from "../viewHistory.vue";
 
 const history = namespace("history");
 const patients = namespace("patients");
 const allergy = namespace("allergy");
 
 @Options({
-  name: "HistoryExistingState",
+  name: "PatientExistingState",
   components: {
     CornieTable,
     HistoryModal,
@@ -169,14 +164,13 @@ const allergy = namespace("allergy");
     EditIcon,
     NewViewIcon,
     UpdateIcon,
-    CancelIcon,
     PlusIcon,
     HistoryIcon,
     StatusModal,
     ViewModal,
   },
 })
-export default class ExistingState extends Vue {
+export default class PatientExistingState extends Vue {
   @patients.State
   patients!: IPatient[];
 
@@ -220,28 +214,23 @@ export default class ExistingState extends Vue {
       noOrder: true,
     },
     {
-      title: "date recorded",
+     title: "date recorded",
       key: "createdAt",
       show: true,
     },
     {
-      title: "member",
+      title: "recorded by",
       key: "member",
       show: true,
     },
     {
-      title: "condition",
-      key: "condition",
+      title: "encounter",
+      key: "identifier",
       show: true,
     },
     {
-      title: "deceased?",
-      key: "deceased",
-      show: true,
-    },
-    {
-      title:"reference code",
-      key: "keydisplay",
+      title: "practice",
+      key: "identifier",
       show: true,
     },
     {
