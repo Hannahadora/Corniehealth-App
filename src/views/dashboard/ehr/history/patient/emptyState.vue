@@ -11,7 +11,7 @@
           class="bg-danger rounded-lg text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
           @click="showHistory"
         >
-          Create New
+         Create New
         </button>
       </span>
     </div>
@@ -26,7 +26,7 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
-import HistoryModal from "./historyDialog.vue";
+import HistoryModal from "../historyDialog.vue";
 @Options({
   components: {
     ChevronDownIcon,
@@ -36,7 +36,7 @@ import HistoryModal from "./historyDialog.vue";
     HistoryModal,
   },
 })
-export default class HistoryEmptyState extends Vue {
+export default class PatientEmptyState extends Vue {
   showHistoryModal = false;
   async showHistory() {
     this.showHistoryModal = true;

@@ -2,8 +2,8 @@ export default interface IDiagnostic {
     id?: string;
     status: string;
     basedOn: string;
-    intent: string;
-    priority: string;
+    intent: null;
+    priority: null;
     category: string;
     requesterId: string;
     patientId: string;
@@ -11,7 +11,7 @@ export default interface IDiagnostic {
     supportingInformation: string;
     reasonCode: null;
     reasonReference: null;
-    note: string;
+    note: null;
     identifier: string;
     safetyCapRequest: boolean;
     deliveryLocation: string;

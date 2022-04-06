@@ -9,6 +9,7 @@ interface Range {
 export interface Timeable {
   id?: string;
   dateTime?: string;
+  day?: string;
   age?: string;
   period?: Period;
   range?: Range;
