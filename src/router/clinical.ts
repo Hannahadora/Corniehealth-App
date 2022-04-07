@@ -88,10 +88,10 @@ export const ClinicalsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/ehr/procedures/index.vue"),
     },
     {
-      path: "medical-family-history",
+      path: "history",
       props: true,
-      name: "Medical | Family History",
-      component: () => import("@/views/dashboard/ehr/history/index.vue"),
+      name: "History",
+      component: () => import("@/views/dashboard/ehr/history/initialindex.vue"),
     },
     {
       path: "appointments",

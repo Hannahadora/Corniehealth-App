@@ -1,549 +1,417 @@
 <template>
-  <div class="w-full p-4 overflow-y-scroll h-scrren">
-    <div class="container-fluid">
-      <div class="w-full" v-if="item?.Patients && item?.Patients?.length > 0">
-        <PatientDetails
-          :id="
-            appointmentPatients.length > 0 ? appointmentPatients[0].code : ''
-          "
-        />
-      </div>
-
-      <div class="w-full flex items-center">
-        <div class="w-4/12">
-          <div class="w-11/12">
-            <label class="block uppercase mb-1 text-xs font-bold">
-              Time
-              <input
-                type="time"
-                name=""
-                class="p-3 border rounded-md w-full"
-                id=""
-                v-model="data.time"
-              />
-            </label>
-          </div>
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title class="w-full">
+        <cornie-icon-btn @click="show = false" class="">
+                <arrow-left-icon />
+        </cornie-icon-btn>
+        <div class="w-full border-l-2 border-gray-100">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+           Check-In
+          </h2>
+          <!-- <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          /> -->
         </div>
-        <div class="w-8/12 flex">
-          <div class="container">
-            <div class="w-12/12">
-              <DatePicker
-                color="red"
-                class="w-full"
-                :label="'Date'"
-                style="width: 100% !important"
-                width="100%"
-                v-model="date"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      </cornie-card-title>
 
-      <div class="w-full my-5">
-        <label class="block uppercase mb-1 text-xs font-bold">
-          <span class="flex justify-between">
-            <span class="uppercase font-semibold">Physician</span>
-            <span class="uppercase text-danger">reassign to physician</span>
-          </span>
-          <!-- <input type="text" name="" class="p-3 border rounded-md w-full mt-1" id="" v-model="data.time"> -->
-          <!-- <CornieSelect :items="actors" v-model="data.practitioner" @change="selectPractitioner" style="width: 100%" /> -->
-          <span>
-            <MultiSelect :fullWidth="true">
-              <template #selected>
-                <span>
-                  <span>{{ selectedPractitioners }}</span>
-                </span>
-              </template>
-              <div
-                style="max-height: 350px; overflow-y: scroll; z-index: 99999"
-                class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="menu-button"
-                tabindex="-1"
-              >
-                <div class="py-1 px-1" role="none">
-                  <div
-                    class="w-full flex relative items-center my-2"
-                    v-for="(actor, index) in allActors"
-                    :key="index"
-                  >
-                    <div class="w-1/12">
-                      <input
-                        type="checkbox"
-                        :checked="
-                          selectedActors.findIndex(
-                            (i) => i.code === actor.code
-                          ) >= 0
-                        "
-                        name=""
-                        @click="selectPractitioner(actor)"
-                        id=""
-                      />
-                    </div>
-                    <div class="w-5/12" @click="selectPractitioner(actor)">
-                      <p class="capitalize font-semibold text-sm">
-                        {{ actor.display }}
-                      </p>
-                      <span
-                        class="capitalize text-gray-400 font-normal text-xs"
-                        >{{ actor.type }}</span
-                      >
-                    </div>
-                    <div class="w-6/12 flex justify-between ml-1">
-                      <span class="text-danger text-xs font-semibold capitalize"
-                        >View Avaliability</span
-                      >
-                      <span class="text-danger text-xs font-semibold capitalize"
-                        >View Profile</span
-                      >
-                    </div>
+      <cornie-card-text class="flex-grow scrollable">
+        <v-form ref="form">
+            <div v-if="appoitmentData.length > 0">
+              <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in appoitmentData" :key="i">     
+                  <div class="w-full flex space-x-4 mb-3" v-for="(value,index) in item.Patients">
+                      <div class="w-10 h-10">
+                          <avatar
+                              class="mr-2"
+                              v-if="value.patient.profilePhoto"
+                              :src="value.patient.profilePhoto"
+                          />
+                          <avatar class="mr-2" v-else :src="localSrc" />
+                      </div>
+                      <div class="w-full mt-2">
+                          <p class="text-sm text-dark font-semibold">
+                              {{ value.patient.firstname }}
+                              {{ value.patient.lastname }}
+                          </p>
+                      </div>
                   </div>
+              </div>
+            </div>
+            <div v-else class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in patients.slice(0, 1)" :key="i">     
+                <div class="w-full flex space-x-4 mb-3">
+                    <div class="w-10 h-10">
+                        <avatar
+                            class="mr-2"
+                            v-if="item.profilePhoto"
+                            :src="item.profilePhoto"
+                        />
+                        <avatar class="mr-2" v-else :src="localSrc" />
+                    </div>
+                    <div class="w-full mt-2">
+                        <p class="text-sm text-dark font-semibold">
+                            {{ item.firstname }}
+                            {{ item.lastname }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-5">
+                <time-picker :label="'Time'" v-model="startTime"/>
+                <date-picker :label="'Date'" v-model="date"/>
+            </div>
+            <div class="border-b-2 -mt-9  border-dashed border-gray-200">
+                  <cornie-select
+                    :label="'Physician'"
+                    placeholder="--Select--"
+                    v-model="practitioner"
+                    :items="allPractitioner"
+                    class="w-full mt-4"
+                />
+                  <cornie-select
+                    :label="'Room'"
+                    placeholder="--Select--"
+                    v-model="roomId"
+                    :items="allRooms"
+                    class="w-full mt-4"
+                />
+            
+            </div>
+            <div>
+               <text-area
+                :label="'Notes'"
+                class="w-full"
+                v-model="notes"
+              />
+            
+            </div>
+             <div v-if="appoitmentData.length > 0">
+              <div>
+                <span class="font-bold text-primary text-sm" >All patients for Dr. {{ practitionerName }}</span>
+              </div>
+              <div v-for="(item, i) in appoitmentData" :key="i">
+                <div class="container-fluid my-5 pb-2" v-for="(value,index) in item.Patients">
+                  <patient-section :patient="value.patient" :time="item.startTime"/>
                 </div>
               </div>
-            </MultiSelect>
-          </span>
-        </label>
-      </div>
+            </div>
 
-      <div class="w-full my-4" style="border-bottom: 1px dashed #c2c7d6">
-        <CornieSelect
-          :items="rooms"
-          :label="'Room'"
-          v-model="checkinData.roomId"
-          style="width: 100%"
-        />
-      </div>
-
-      <!-- <div class="w-full my-4">
-                <CornieSelect :items="allPatients" :label="'Patient'" v-model="checkinData.patientId" style="width: 100%" />
-            </div> -->
-
-      <div class="w-full my-4">
-        <CornieSelect
-          :items="slots"
-          :label="'Slot'"
-          v-model="checkinData.slot"
-          style="width: 100%; font-size: 13px"
-        />
-      </div>
-
-      <div class="w-full mb-4 mt-8">
-        <TextArea
-          :label="'Notes'"
-          v-model="checkinData.notes"
-          style="width: 100%"
-        />
-      </div>
-
-      <div class="w-full">
-        <div class="container-fluid">
-          <p class="font-semibold font-normall text-sm">
-            All patients for visit
-          </p>
-        </div>
-
-        <div
-          class="container-fluid my-5 pb-2"
-          v-for="(patient, index) in appointmentPatients"
-          :key="index"
-        >
-          <Visitor :id="patient.id" />
-        </div>
-      </div>
-    </div>
-    <div class="w-full mb-3 mt-8">
-      <div class="container-fluid flex justify-end items-center">
-        <corniebtn>
-          <router-link
-            to=""
-            style="border: 1px solid #080056"
-            class="cursor-pointer bg-white focus:outline-none text-primary border mr-6 font-bold py-3 px-8 rounded-full"
+            <div v-else>
+              <div v-if="practitionerName">
+                <span class="font-bold text-primary text-sm">All patients for Dr. {{ practitionerName }}</span>
+              </div>
+              <div>
+                <div class="container-fluid my-5 pb-2" v-for="(patient, index) in onepatient" :key="index">
+                  <patient-section :patient="patient" />
+                </div>
+                <div v-if="onepatient.length === 0">
+                    <span class="text-center text-xs">No patient available for Dr. {{ practitionerName }}</span>
+                </div>
+              
+              </div>
+            </div>
+        </v-form>
+        <div class="flex justify-end overflow-auto">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Cancel
-          </router-link>
-        </corniebtn>
-        <!-- <button  style="background: #FE4D3C;border-radius: 124px;" class="flex items-center">
-                    <a @click="setSession" class="hover:bg-blue-700 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full">
-                        Save
-                    </a>
-                    <p style="height: 48px" class="px-4 border-l-2 flex items-center">A</p>
-                </button> -->
-        <SplitButton>
+          </cornie-btn>
+           <cornie-btn
+            v-if="BillStatus.length > 0"
+            :loading="loading"
+            @click="submit"
+            class="text-white bg-danger px-6 rounded-xl"
+           >
+            Submit
+          </cornie-btn>
+         <split-button v-else :showup="true">
           <template #main>
-            <span @click="setSession">Check-In</span>
+            <span>Check-In</span>
           </template>
           <template #dropdown>
-            <span><ChevronDown class="stroke-current white dd" /></span>
+            <span><chevron-down class="stroke-current text-white" /></span>
           </template>
-        </SplitButton>
-      </div>
-    </div>
-  </div>
-</template>
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Accordion from "@/components/accordion-component.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import { namespace } from "vuex-class";
-import CustomDropdown from "@/components/cornieselect.vue";
-import Button from "@/components/globals/corniebtn.vue";
-import DeleteIcon from "@/components/icons/delete.vue";
-import ChevronDown from "@/components/icons/chevrondownprimary.vue";
-import DatePicker from "@/components/datepicker.vue";
-import ToggleCheck from "@/components/ToogleCheck.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import TextArea from "@/components/textarea.vue";
-import ILocation from "@/types/ILocation";
-import { Prop, Watch } from "vue-property-decorator";
-import SplitButton from "@/components/split-button.vue";
-import PatientDetails from "./patient-details.vue";
-import slotService from "../helper/slot-service";
-import MultiSelect from "../../schedules/components/apply-to.vue";
-import IPractitioner from "@/types/IPractitioner";
-import Visitor from "./visitor.vue";
+          <template #dropdownoptions>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayment = true">
+              <span class="ml-3 text-xs">Collect Payment</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="submit">
+              <span class="ml-3 text-xs">Check-In</span>
+            </div>
+          </template>
 
-const visitsStore = namespace("visits");
-const locationsStore = namespace("location");
-const practitionersStore = namespace("practitioner");
+        </split-button>
+        
+
+        </div>
+      </cornie-card-text>
+      
+      <cornie-card>
+      </cornie-card>
+      
+    </cornie-card>
+
+  </cornie-dialog>
+  <payment-modal  v-model="showPayment"/>
+</template>
+
+<script lang="ts">
+import { Options, Vue, setup } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieCard from "@/components/cornie-card";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/autocomplete.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import { cornieClient } from "@/plugins/http";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import DatePicker from "@/components/datepicker.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
+import { namespace } from "vuex-class";
+import Period from "@/types/IPeriod";
+import SelectOption from "@/components/custom-checkbox.vue";
+import TimePicker from "@/components/pickerTime.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import AddIcon from "@/components/icons/add-orange.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
+import TextArea from "@/components/textarea.vue";
+import Avatar from "@/components/avatar.vue";
+import SplitButton from "@/components/split-button.vue";
+import ILocation from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
+import PatientSection from "./visitor.vue";
+import ChevronDown from "@/components/icons/chevrondown.vue";
+import PaymentModal from "@/views/dashboard/patientexp/calendar/appointments/collectpayment.vue";
+
 const appointment = namespace("appointment");
+const location = namespace("location");
+const user = namespace("user");
+const practitioner = namespace("practitioner");
+
 
 @Options({
+  name: "checkinModal",
   components: {
-    SplitButton,
-    Visitor,
-    Accordion,
-    CornieInput,
-    CustomDropdown,
-    Button,
-    DeleteIcon,
-    ChevronDown,
+    ...CornieCard,
+    CornieIconBtn,
+    ArrowLeftIcon,
     DatePicker,
-    ToggleCheck,
-    CornieSelect,
+    PhoneInput,
+    CancelIcon,
+    DeleteIcon,
     TextArea,
-    PatientDetails,
-    MultiSelect,
+    TimePicker,
+    Avatar,
+    CornieDialog,
+    SearchIcon,
+    CornieRadio,
+    IconInput,
+    CornieInput,
+    CornieSelect,
+    CornieBtn,
+    PatientSection,
+    SplitButton,
+    SelectOption,
+    ChevronDown,
+    PaymentModal
   },
 })
-export default class CheckIn extends Vue {
-  showDetails = true;
-  showBreaks = false;
-  showPlanning = false;
-  loading = false;
-  selectedActors: any = [];
-  schedules: any = [];
+export default class checkinModal extends Vue {
+ @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
 
-  @Prop()
-  item!: any;
+  @Prop({ type: String, default: "" })
+  id!: string;
 
-  availableSlots: any = [];
-  checkinData: any = {
-    appointmentId: this.item?.id,
-    patientId: this.patientId,
-    // "type": this.item.appointmentType,
-    status: "In-progress",
-    roomId: "",
-    notes: "",
-    slotId: "",
-  };
+  @Prop({ type: String, default: "" })
+  appiontmentid!: string;
 
-  @appointment.State
-  appointments!: any[];
+  @Prop({ type: String, default: "" })
+  patientId!: string;
 
-  @appointment.Action
-  fetchAppointments!: () => Promise<void>;
+  @Prop({ type: Array, default: [] })
+  patients!: object;
 
-  @visitsStore.Action
-  checkin!: (body: any) => Promise<boolean>;
+  @Prop({ type: Array, default: [] })
+  appoitmentData!: any;
 
-  @locationsStore.State
-  locations!: ILocation[];
-
-  @visitsStore.Action
-  getPatients!: () => Promise<void>;
-
-  @visitsStore.State
-  patients!: any[];
-
-  @visitsStore.Action
-  schedulesByPractitioner!: (id: string) => Promise<any>;
-
-  @locationsStore.Action
-  fetchLocations!: () => Promise<void>;
-
-  @practitionersStore.State
+  @practitioner.State
   practitioners!: IPractitioner[];
 
-  @practitionersStore.Action
+  @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
-  @visitsStore.Action
-  createSlot!: (body: any) => Promise<any>;
+  @location.State
+  locations!: ILocation[];
 
-  async checkinPatient(slotId: string) {
-    try {
-      this.loading = true;
-      const checkedIn = await this.checkin({
-        patientId:
-          this.item?.Patients && this.item?.Patients?.length > 0
-            ? this.item?.Patients[0]?.id
-            : "",
-        appointmentId: this.item?.id,
-        status: "In-progress",
-        roomId: this.checkinData.roomId,
-        notes: this.checkinData.notes,
-        slotId: slotId,
-      });
-      this.loading = false;
 
-      if (checkedIn && checkedIn) {
-        window.notify({ msg: "Patient Check-in", status: "success" });
-        this.$emit("close");
-      } else {
-        window.notify({ msg: "Patient check-in failed", status: "error" });
-      }
-    } catch (error) {
-      this.loading = false;
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+   @user.State
+   currentLocation!: string;
+
+  loading = false;
+  localSrc = require("../../../../assets/img/placeholder.png");
+  practitioner= [];
+  onepatient = [] as any;
+  date = "";
+  showPayment = false;
+  bill = [];
+
+  roomId = "";
+  notes = "";
+  startTime = "";
+   today = new Date().toISOString().slice(0, 10);
+   patientAppointment = [];
+
+
+  get payload(){
+  return {
+    roomId: this.roomId,
+    notes: this.notes,
+    // startTime: this.startTime,
+    patientId: this.patientId || this.patientIdAppoitment.toString(),
+  }
+}
+
+  get allPractitioner() {
+    if(this.appoitmentData.length > 0){
+        return this.appoitmentData.map((i:any) => i.Practitioners[0]).map((k:any) => {
+          return {
+          code: k.practitionerId, display:k.practitioner.firstName +' '+ k.practitioner.lastName
+          }
+        });
+    }else{
+       if (!this.practitioners || this.practitioners.length === 0) return [];
+        return this.practitioners.map((i: any) => {
+          return {
+            code: i.id,
+            display: i.firstName + " " + i.lastName,
+          };
+        });
+
     }
   }
-
-  async setSession() {
-    let createdSlot;
-    if (!this.checkinData?.slot?.id) {
-      const { slot } = this.checkinData;
-      const { startTime, endTime } = slot;
-
-      createdSlot = await this.createSlot({
-        scheduleId: this.checkinData?.slot.scheduleId,
-        startTime: new Date(startTime).toTimeString().substring(0, 5),
-        endTime: new Date(endTime).toTimeString().substring(0, 5),
-        status: "active",
-        active: true,
-      });
-
-      if (createdSlot?.id) await this.checkinPatient(createdSlot.id);
-    }
-
-    if (this.checkinData?.slot.id) await this.checkinPatient(createdSlot.id);
-  }
-
-  data: any = {
-    date: new Date(Date.now()),
-    time: new Date().toTimeString().substring(0, 5),
-  };
-  date = new Date();
-  activeStates: any = [
-    { display: "Yes", value: "yes" },
-    { display: "No", value: "no" },
-  ];
-
-  waitList: any = [
-    { display: "Yes", value: "yes" },
-    { display: "No", value: "no" },
-  ];
-
-  slotOccurence: any = [
-    { display: "Do not repeat", code: "do not repeat" },
-    { display: "Every day", code: "every day" },
-    { display: "Every week", code: "every week" },
-    { display: "Every month", code: "every month" },
-    { display: "Every forever", code: "every forever" },
-    { display: "Custom", code: "Custom" },
-  ];
-
-  ends: any = [
-    { display: "Never", code: "never" },
-    { display: "On", code: "" },
-    { display: "After", code: "" },
-  ];
-
-  days: any = [
-    { display: "Monday", code: true },
-    { display: "Tuesday", code: false },
-    { display: "Wednesday", code: false },
-    { display: "Thursday", code: false },
-    { display: "Friday", code: false },
-    { display: "Saturday", code: false },
-    { display: "Sunday", code: false },
-  ];
-
-  get rooms() {
+  get allRooms() {
     if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i) => {
-      return { code: i.id, display: i.name };
-    });
-  }
-
-  get actors() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners.map((i: any) => {
-      return { code: i.id, display: i.firstName + i.lastName };
-    });
-  }
-
-  get actorsInAppointment() {
-    if (!this.item || !this.item?.appointmentId) return [];
-    const apmt = this.appointments.find(
-      (i: any) => i.id === this.item?.appointmentId
-    );
-
-    return apmt ? apmt.Practitioners : [];
-  }
-
-  get allActors() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners.map((i) => {
+    return this.locations.map((i: any) => {
       return {
         code: i.id,
-        display: `${i.firstName} ${i.lastName}`,
-        type: i.type,
+        display: i.name,
       };
     });
   }
-
-  get selectedPractitioners() {
-    if (!this.selectedActors || this.selectedActors.length === 0)
-      return "Select";
-    let str = this.selectedActors[0].display;
-    if (this.selectedActors.length > 1) return `${str}...`;
-    return str;
+  get patientAppointemnt() {
+    if (!this.practitioner) return {};
+    return this.practitioners.find((i: any) => i.id === this.practitioner);
   }
 
-  get allPatients() {
-    if (!this.patients || this.patients.length === 0) return [];
-    return this.patients.map((i: any) => {
-      return {
-        code: i.id,
-        display: `${i.firstname} ${i.lastname}`,
-      };
-    });
+  get practitionerName() {
+    const pt = this.practitioners.find((i: any) => i.id === this.practitioner);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+   get patientIdAppoitment() {
+     if(this.appoitmentData.length > 0){
+       return this.appoitmentData.map((i:any) => i.Patients[0]).map((k:any) => k.patientId)
+     }
   }
 
-  get scheduleId() {
-    if (!this.schedules || this.schedules.length === 0) return 0;
-    return this.schedules[0].id;
-  }
-
-  get patientId() {
-    if (
-      !this.item ||
-      !this.item.Practitioners ||
-      this.item.Practitioners.length === 0
-    )
-      return 0;
-    return this.item.Practitioners[0].id;
-  }
-
-  get appointmentPatients() {
-    if (!this.item?.Patients || this.item?.Patients.length === 0) return [];
-    if (this.item?.Patients.length > 2) return this.item?.Patients.slice(0, 2);
-    return this.item?.Patients.map((i: any) => {
-      return {
-        code: i.id,
-        display: `${i.firstname} ${i.lastname}`,
-      };
-    });
-  }
-
-  get slots() {
-    if (!this.availableSlots || this.availableSlots.length === 0) return [];
-    return this.availableSlots.map((i: any) => {
-      const startTime = i.id
-        ? i.startTime.substring(0, 5)
-        : new Date(i.startTime).toTimeString().substring(0, 5);
-      const endTime = i.id
-        ? i.endTime.substring(0, 5)
-        : new Date(i.endTime).toTimeString().substring(0, 5);
-      return {
-        code: i,
-        // code: `${i.scheduleId}_${i.id ? i.id : ''}`,
-        display: `${startTime} - ${endTime}`,
-      };
-    });
-  }
-
-  selectPractitioner(actor: any) {
-    if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
-      this.getSlots(actor.code);
-      this.selectedActors.push(actor);
-    } else {
-      this.selectedActors = this.selectedActors.filter(
-        (i: any) => i.code !== actor.code
-      );
+  async fetchPatientAppointment() {
+    if(this.currentLocation){
+      const newdate = this.date;
+      const AllPractitioner = cornieClient().get(`/api/v1/appointment/practitioner/get-day/${this.currentLocation}`, {date : this.today});
+      const response = await Promise.all([AllPractitioner]);
+      this.onepatient = response[0].data;
     }
   }
 
-  getSlots(id: string) {
-    this.availableSlots = [];
-    this.schedulesByPractitioner(id).then((res) => {
-      if (!res || res.length == 0) return;
 
-      this.availableSlots = slotService.slots(res, this.date);
-    });
+
+ async submit() {
+    this.loading = true;
+    if (this.id) await this.updateCheckin();
+    else await this.createCheckin();
+    this.loading = false;
   }
 
-  get visitDate() {
-    if (!this.date) return new Date(Date.now());
-    const x = new Date(`${new Date(this.date).toISOString()}`);
-    return x;
+  get BillStatus(){
+    return this.bill.filter((c:any) => c.status == 'paid');
   }
 
-  @Watch("item", { immediate: true, deep: true })
-  onGetSlots() {
-    if (
-      !this.item ||
-      !this.item.Practitioners ||
-      this.item.Practitioners.length === 0
-    )
-      return;
-    if (this.patientId) this.getSlots(this.patientId);
+
+  async createCheckin() {
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/visit/check-in",
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Patient checked-in successfully", status: "success" });
+         this.done();
+        }
+      } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
+  
   }
 
-  @Watch("date", { immediate: true, deep: true })
-  refreshSlots() {
-    if (this.patientId) this.getSlots(this.patientId);
+  async updateCheckin() {
+
+    const url = `/api/v1/visit/check-in/${this.id}`;
+    const payload = { ...this.payload, id: this.id };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Checkedin updated", status: "success" });
+        this.done();
+      }
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
   }
+
+   done(){
+       this.$emit("checkin-added");
+        this.show = false;
+    }
+
+  async fetchBill() {
+     try {
+      const response = await cornieClient().post(
+      `/api/v1/appointment/bill/generate/${this.appiontmentid}`,{}
+      );
+      if (response.success) {
+         this.bill = response.data;
+      }
+    } catch (error:any) {
+     window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
 
   async created() {
-    if (!this.locations || this.locations.length === 0)
-      await this.fetchLocations();
-    if (!this.patients || this.patients.length === 0) await this.getPatients();
-    if (!this.appointments || this.appointments.length === 0)
-      await this.fetchAppointments();
-    if (!this.practitioners || this.practitioners.length === 0)
-      await this.fetchPractitioners();
+    if(this.appiontmentid) await this.fetchBill();
+   this.fetchPatientAppointment();
+   await this.fetchPractitioners();
+   await this.fetchLocations();
 
-    // this.checkin(req).then((res: any) => {
-    //   ;
-    // })
-    // .catch((err: any) => {
-    //   ;
-
-    // });
   }
 }
 </script>
+
 <style>
-.dashed-bottom {
-  border-bottom: 1px dashed #667499;
+.border-r-0 {
+    border-right-width: 0px !important;
 }
-
-.h-scrren {
-  height: 100vh;
-  overflow: scroll;
-  padding-bottom: 40px;
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.h-scrren::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.h-scrren {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+.border-l-0 {
+    border-left-width: 0px !important;
 }
 </style>

@@ -34,11 +34,11 @@ export default {
     },
     checkedText: {
       type: String,
-      default: false,
+      default: '',
     },
     uncheckedText: {
       type: String,
-      default: false,
+      default: '',
     },
   },
   computed: {
@@ -73,7 +73,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #fe4d3c;
+  background-color: #ccc;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -93,7 +93,7 @@ input:checked + .slider:before {
 }
 
 input:checked + .slider {
-  background: #35ba83;
+  background: #fe4d3c;
 }
 
 .checked + * + input:checked {

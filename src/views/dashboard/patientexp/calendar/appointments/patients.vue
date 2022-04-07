@@ -36,30 +36,27 @@
                     </span>
                 </div>
             </div>
-             <span class="text-gray-500 text-xs mb-4">0 selected</span>
-                <div class="w-full flex space-x-7 mt-4">
-                    
-                    <div class="w-full dflex space-x-4 mb-3">
+             <span class="text-gray-500 text-xs mb-4">{{ firstPatient.length }} selected</span>
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in patients" :key="index">
+                    <div class="w-full dflex space-x-4 mb-3" >
                         <div class="w-10 h-10">
-                            <!-- <avatar
+                            <avatar
                                 class="mr-2"
-                                v-if="item.image"
-                                :src="item.image"
-                            /> -->
-                            <avatar class="mr-2"  :src="localSrc" />
+                                v-if="item.profilePhoto"
+                                :src="item.profilePhoto"
+                            />
+                            <avatar class="mr-2" v-else  :src="localSrc" />
                         </div>
                         <div class="w-full">
                             <p class="text-xs text-dark font-medium">
-                               dfsiogfodis
-                              iooioi
+                              {{ item.firstname }} {{ item.lastname }}
                             </p>
                             <p class="text-xs text-gray-500 font-meduim">
-                            banker
-                            bn
+                             {{ item.mrn }}
                         </p>
                         </div>
                     </div>
-                    <select-option/>
+                    <select-option @click="pushValue(item,item.id)" :value="item.id"/>
                 </div>
          
           
@@ -76,7 +73,7 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-             @click="show = false"
+             @click="submit"
             class="text-white bg-danger px-2 rounded-xl"
            >
             Add
@@ -112,8 +109,10 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import ISpecial from "@/types/ISpecial";
 import SelectOption from "@/components/custom-checkbox.vue";
 import search from "@/plugins/search";
+import { IPatient } from "@/types/IPatient";
 
-const practitioner = namespace("practitioner");
+
+const patients = namespace("patients");
 const special = namespace("special");
 
 type Sorter = (a: any, b: any) => number;
@@ -124,7 +123,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "managePractitioner",
+  name: "Patients",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -142,7 +141,7 @@ function defaultFilter(item: any, query: string) {
     CloseIcon
   },
 })
-export default class managePractitioner extends Vue {
+export default class Patients extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -155,30 +154,97 @@ export default class managePractitioner extends Vue {
   @Prop({ type: String, default: "" })
   specilatyId!: string;
 
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
 
   loading = false;
   showPractitionerModal = false;
   aPractitioner = [];
   localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
- orderBy: Sorter = () => 1;
+  orderBy: Sorter = () => 1;
+  patientIds = [] as any;
+  firstPatient = [] as any;
+  singlePatientId = "";
 
 
- @practitioner.State
-  practitioners!: IPractitioner[];
+  @patients.State
+  patients!: IPatient[];
 
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  get payload() {
+      return this.patientIds;
+  }
 
- get filteredItems() {
-    return this.practitioners
+  get filteredItems() {
+    return this.patients
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
 
+  pushValue(item:any,id:string){
+    this.patientIds.push({patientId: id, required: true });
+    this.firstPatient.push(item);
+    this.singlePatientId = id;
+  }
+
+   async submit() {
+    this.loading = true;
+    if (this.id) await this.apply();
+    else await this.updatePatientData();
+    this.loading = false;
+  }
+  async updatePatientData(){
+      this.$emit('patient-data',this.firstPatient,this.patientIds, this.singlePatientId);
+      this.firstPatient = [];
+      this.patientIds = [];
+      this.singlePatientId = "";
+    this.done();
+  }
+  async apply(){
+      this.loading = true;
+        if (this.patientId) await this.updatePatient();
+        else await this.savePatient();
+     this.loading = false;
+  }
+  async savePatient() {
+      try {
+      const response = await cornieClient().post(
+        `/api/v1/schedule/add-practitioners/${this.id}`,
+        this.payload
+      );
+      if(response.success){
+          this.done();
+        window.notify({ msg: "Practitioner added successfully", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not added", status: "error" });
+    }
+  }
+  
+  async updatePatient() {
+    const url = `/api/v1/schedule/add-practitioners/${this.patientId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Practitioner updated successffuly", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not updated", status: "error" });
+    }
+  }
+ done() {
+    this.$emit("patient-added");
+    this.show = false;
+  }
+
   async created() {
-    await this.fetchPractitioners();
+    await this.fetchPatients();
   }
 }
 </script>

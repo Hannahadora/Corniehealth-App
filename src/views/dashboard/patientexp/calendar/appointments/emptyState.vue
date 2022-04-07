@@ -1,19 +1,28 @@
 <template>
   <div class="w-full flex flex-col justify-center items-center h-96">
     <img src="@/assets/img/practitioners.svg" />
-    <h3 class="text-center mt-5">There are no appoinments on record</h3>
-    <button
+    <p class="text-center">
+      There are no appointments on record. <br />
+    Schedule a new appointment by viewing a practitioner on the availability section
+    </p>
+    <!-- <button
       class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90"
+     @click="showAppointmentModal = true"
     >
       Create
-    </button>
+    </button> -->
   </div>
+   <appointment-modal  v-model="showAppointmentModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-
+import AppointmentModal from './addAppointmentModal.vue';
 @Options({
-  components: {},
+  components: {
+    AppointmentModal
+  },
 })
-export default class AppointmentEmptyState extends Vue {}
+export default class AppointmentEmptyState extends Vue {
+  showAppointmentModal = false;
+}
 </script>

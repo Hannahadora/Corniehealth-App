@@ -1,6 +1,9 @@
 <template>
 <div class="mt-10">
-
+    <div v-if="!currentLocation">
+         <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
+    </div>
+<div v-else>
     <div class="grid grid-cols-7 text-gray-400 font-bold" style="height: 4.5rem;">
         <span class="border-l-2 px-4 border-gray-100 h-full w-full">Sunday</span>
         <span class="border-l-2 px-4 border-gray-100 h-full w-full">Monday</span>
@@ -11,11 +14,14 @@
         <span class="border-l-2 px-4 border-gray-100 h-full w-full">Saturday</span>
     </div>
     <div class="grid grid-cols-7 text-gray-500 divide-x border-l-2 border-gray-100 font-bold">
-        <div class="px-4 py-8 border-t-2 flex space-x-5 border-gray-100" v-for="(item, index) in _items" :key="index">
-            {{ item?.date.toLocaleDateString('en',options) }}  
-            <actors-section v-for="(cal, index) in item?.schedules"  :key="index" :items="cal.practitioners" @set-oneId="setoneId" />
+        <div class="px-4 py-8 border-t-2 mb-3 border-gray-100" v-for="(item, index) in monthlyData" :key="index">
+            {{ new Date(item.month).toLocaleDateString('en-US',options) }}  
+            <div class="mb-1">
+                <actors-section  :items="item.content" />
+            </div>
         </div>
     </div>
+</div>
 </div>
 
 </template>
@@ -35,16 +41,12 @@ import EditIcon from "@/components/icons/edit.vue";
 import CopyIcon from "@/components/icons/copy.vue";
 import CancelIcon from "@/components/icons/cancel.vue"
 import ShareIcon from "@/components/icons/share.vue"
-import { dateBetween } from "@/plugins/utils";
-import group from "@/store/group";
-import IPractitioner from "@/types/IPractitioner";
-import search from "@/plugins/search";
+import { cornieClient } from "@/plugins/http";
 import Tabs from "@/components/smalltab.vue";
+import ActorsSection from "./monthActors.vue";
 
-
-const practitionersStore = namespace("practitioner");
+const user = namespace("user");
 const locationsStore = namespace("location");
-const visitsStore = namespace("visits");
 
 interface Time {
   hour: number;
@@ -63,6 +65,7 @@ interface Time {
     CancelIcon,
     ShareIcon,
     Tabs,
+    ActorsSection
   },
 })
 export default class Monthly extends Vue {
@@ -73,99 +76,20 @@ export default class Monthly extends Vue {
   schedules!: ISchedule[];
 
      options = {
-        // weekday: "short", //to display the full name of the day, you can use short to indicate an abbreviation of the day
-        day: "numeric",
+        day: 'numeric',
+    } 
+
+   options2 = {
+         weekday: 'short', //to display the full name of the day, you can use short to indicate an abbreviation of the day
+        day: 'numeric',
         // month: "short", //to display the full name of the month
     } 
 
+  @Prop({ type: String, default: "" })
+  startDate!: any;
 
-@Prop({ type: String, default: "" })
-  startDate!: string
-
-  actorsValue = [] as any;
-
-@visitsStore.Action
-  schedulesByPractitioner!: (id: string) => Promise<ISchedule[]>;
-
-  /// Start
-
-  start  = new Date();
-
- 
- getMonthDates(start: Date) {
-    const dates: Date[] = [];
-    for (let i = 0; i < 30; i++) {
-      const current = start.getMonth();
-      const date = new Date(start);
-      date.setDate(current + i);
-      dates.push(date);
-    }
-    return dates;
-  }
-  get Calendar(){
-     const dates = this.CalendarDates;
-     const [first, ...rest] = dates;
-     const pad = first.getDay();
-    const allDates = dates.map((date:any) =>  date.toLocaleDateString('en',this.options))
-     return [...Array(pad).fill(null), ...allDates];
-  }
-  get CalendarDates(){
-     const dates = this.getMonthDates(new Date(this.startDate));
-     return dates;
-  }
-   get ActiveSchedules(){
-       const dates = this.getMonthDates(new Date(this.startDate)).map((date) =>{
-         const newdate = new Date(date).toISOString().split('T')[0];
-         return newdate
-       })
-       const dateSet = new Set(dates);
-      //  return this.schedules.filter((c) => dateSet.has(c.startDate as string));
-       return ["00:00","00:00","00:00","00:00"];
-   }
-  get _items() {
-
-  const item =  this.CalendarDates.map( date => ({
-      date, 
-      schedules: this.getMatchingSchedules(date) ,
-      practitioners:""
-      // practitioners: this.getMatchingSchedules(date).map(schedule => schedule.practitioners )
-    }));
-     
-  const [first, ..._] = item;
-  const pad = first.date.getDay();
-  return [...Array(pad).fill(null), ...item];
-
-  }
-
-  getMatchingSchedules(date: Date){
-      return this.ActiveSchedules.filter((schedule) =>{
-          // return dateBetween(
-          //     date.toISOString(),
-          //     schedule.startDate as string,
-          //     schedule.endDate as string
-          // )
-      })
-
-  }
-   setoneId(practitioner:any,value:string){
-     console.log(practitioner,value,"HELLO ThIRD")
-    this.$emit('set-oneId', practitioner,value)
-  }
-
-
-  //// End
-
-  @practitionersStore.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  @practitionersStore.State
-  practitioners!: Practitioner[];
-
-  @locationsStore.Action
-  fetchLocations!: () => Promise<void>;
-
-  @locationsStore.State
-  locations!: ILocation[];
+  @user.State
+  currentLocation!: string;
 
 
 
@@ -174,48 +98,107 @@ export default class Monthly extends Vue {
 
 
   query = "";
-
+  monthCalendar = [];
   showFilter = false;
-  filterOptions: any = {};
-  selectedSlots: string[] = [];
-  selectedSlot: any = {};
 
-  filteredSlots: any = [];
-
-  get seletedPractitioner() {
-    if (!this.filterOptions || !this.filterOptions.byPractitioners) return {};
-    const practitioner = this.practitioners.find(
-      (practitioner) =>
-        practitioner.id === this.filterOptions?.byPractitioners[0]
-    );
-    if (!practitioner) return {};
-    return practitioner;
-  }
-
-  getFirstDayOfWeek(date: Date) {
-    return new Date(
-      new Date().setDate(date.getDate() - ((new Date().getDay() + 6) % 6))
-    );
-  }
-  get availabilityDates() {
-    let arr = [];
-    for (let i = 0; i < 7; i++) {
-      // let sunday = new Date();
-      let sunday = new Date(
-        new Date().setDate(
-          new Date().getDate() - ((new Date().getDay() + 6) % 6)
-        )
-      );
-      arr.push(new Date(sunday.setDate(sunday.getDate() + i)).toDateString());
+  get IdPract(){
+    if(this.$route.query.practitioner){
+      return this.$route.query.practitioner;
     }
+ }
 
-    return arr;
+
+async fetchMonthCalendar() {
+   const date = this.startDate.toISOString() as any;
+     const AllCalendarDay = cornieClient().get(
+      `/api/v1/calendar/organization/${this.currentLocation}/month-view?date=${date}`,);
+     
+     const response = await Promise.all([AllCalendarDay]);
+     this.monthCalendar = response[0].data;
+   
+  
+
+  }
+
+  // interface MonthCalendar {
+  //     [day: string]: string[];
+  // }
+
+   getMonthDates(entry: Date) {
+    const start = new Date(entry);
+    start.setDate(1);
+    const month = start.getMonth();
+    const dates: Date[] = [];
+    while (start.getMonth() === month) {
+      dates.push(new Date(start));
+      const day = start.getDate();
+      start.setDate(day + 1);
+    }
+    return dates;
+  }
+
+   fillDates(start: Date){
+    const offset = start.getDay()
+    const sunday = new Date(start)
+    sunday.setDate(sunday.getDate() - offset)
+    const dates = []
+    for(let i  = sunday.getDay(); i < offset; i++){
+      const date = new Date(sunday)
+      date.setDate(sunday.getDate() + i)
+      dates.push(date)
+    }
+    return dates
+  }
+
+  padDates(last: Date){
+    const lastDay = last.getDay()
+    const dates: any[] = []
+    const offset = 7 - lastDay
+    for (let i = 1; i <= offset; i++ ){
+      const date = new Date(last)
+      date.setDate(date.getDate() + i)
+      dates.push()
+    }
+    return dates
+  }
+
+  toDateString(date: Date) {
+    const [dateStr, _] = date.toISOString().split("T");
+    return dateStr;
+  }
+
+  get report(){
+    return this.monthCalendar
+  }
+
+  get monthlyData(){
+    const monthDates = this.getMonthDates(new Date('2021-10-12'))  // 2022-03-12
+    const [firstDay, ..._] = monthDates
+    const lastDay = [...monthDates].pop()
+    const frontPad = this.fillDates(firstDay)
+    const backPad = this.padDates(lastDay as any)
+    const paddedMonthDates = [...frontPad, ...monthDates, ...backPad]
+
+
+    const monthDateStrs =   paddedMonthDates.map(this.toDateString) 
+    const views: { month: string; content: string[]; }[] = []
+
+    monthDateStrs.forEach(month => {
+      const content = this.monthCalendar[month as any]
+      const view = {month, content}
+      views.push(view)
+    })
+
+    return views
+
+  
+
   }
 
 
   async created() {
-    if (!this.practitioners) await this.fetchPractitioners();
-    if (!this.locations) await this.fetchLocations();
+    this.fetchMonthCalendar()
+    // if (!this.currentLocation) await this.fetchMonthCalendar();
   }
 }
 </script>

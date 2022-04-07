@@ -5,7 +5,7 @@
         <cornie-icon-btn @click="show = false" class="">
                 <arrow-left-icon />
         </cornie-icon-btn>
-        <div class="w-full border-l-2 border-gray-100">
+        <div class="w-full border-l-2 border-gray-200">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
            Actors
           </h2>
@@ -18,12 +18,14 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <span class="text-gray-500 text-xs mb-4">0 selected</span>
+            <span class="text-gray-500 text-xs mb-4" v-if="id">{{  practitionersnew.length }} selected</span>
+                        <!-- <span class="text-gray-500 text-xs mb-4" v-esle>{{ firstPractitioner.length  }} selected</span> -->
             <div class="flex space-x-2 w-full mb-7">
                   <cornie-select
                     :items="['Practitioner']"
                     placeholder="--Select--"
                     class="w-40"
+                    v-model="actorType"
                 />
                 <div class="w-60">
                  <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
@@ -58,30 +60,54 @@
                   </div>
                 </div>
             </div>
-                <div class="w-full flex space-x-7 mt-4">
-                    
+            <div v-if="actorType == 'Practitioner'">
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in practitioners" :key="index">  
                     <div class="w-full dflex space-x-4 mb-3">
                         <div class="w-10 h-10">
-                            <!-- <avatar
+                            <avatar
                                 class="mr-2"
                                 v-if="item.image"
                                 :src="item.image"
-                            /> -->
-                            <avatar class="mr-2"  :src="localSrc" />
+                            />
+                            <avatar class="mr-2" v-else  :src="localSrc" />
                         </div>
                         <div class="w-full">
                             <p class="text-xs text-dark font-medium">
-                               dfsiogfodis
-                              iooioi
+                              {{item.firstName}}  {{item.lastName}}
+                             
                             </p>
                             <p class="text-xs text-gray-500 font-meduim">
-                            banker
-                            bn
+                             {{item.department}}
                         </p>
                         </div>
                     </div>
-                    <select-option/>
+                    <select-option @click="pushValue(item,item.id,index)" :checked="getSelectedActor(item.id)"/>
                 </div>
+            </div>
+             <div v-if="actorType == 'Patient'">
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in patients" :key="index">  
+                    <div class="w-full dflex space-x-4 mb-3">
+                        <div class="w-10 h-10">
+                            <avatar
+                                class="mr-2"
+                                v-if="item.profilePhoto"
+                                :src="item.profilePhoto"
+                            />
+                            <avatar class="mr-2" v-else  :src="localSrc" />
+                        </div>
+                        <div class="w-full">
+                            <p class="text-xs text-dark font-medium">
+                              {{item.firstname}}  {{item.lastname}}
+                             
+                            </p>
+                            <p class="text-xs text-gray-500 font-meduim">
+                             {{item.mrn}}
+                        </p>
+                        </div>
+                    </div>
+                    <!-- <select-option @click="pushPatientValue(item,item.id)"/> -->
+                </div>
+            </div>
          
           
        
@@ -97,17 +123,26 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-             @click="show = false"
+          v-if="actorType == 'Practitioner'"
+          :loading="loading"
+             @click="submit"
             class="text-white bg-danger px-2 rounded-xl"
            >
             Add
           </cornie-btn>
+          <!-- <cornie-btn
+          v-if="actorType == 'Patient'"
+          :loading="loading"
+             @click="submitPatient"
+            class="text-white bg-danger px-2 rounded-xl"
+           >
+            Add
+          </cornie-btn> -->
 
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"   @practitioner-added="specialadded" :specilatyId="specilatyId"/>
-
+ 
   </cornie-dialog>
 </template>
 
@@ -130,12 +165,15 @@ import CornieSelect from "@/components/cornieselect.vue";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import ISpecial from "@/types/ISpecial";
+import ISchedule,{Break, Repeat} from "@/types/ISchedule";
 import SelectOption from "@/components/custom-checkbox.vue";
 import search from "@/plugins/search";
+import { IPatient } from "@/types/IPatient";
 
 const practitioner = namespace("practitioner");
 const special = namespace("special");
+const schedulesStore = namespace("schedules");
+const patients = namespace("patients");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -173,17 +211,47 @@ export default class managePractitioner extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  // @Prop({ type: String, default: "" })
+  // practitionerId!: string;
+
   @Prop({ type: String, default: "" })
   specilatyId!: string;
+
+  @Prop({ type: String, default: "" })
+  date!: string;
+
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+
+  @schedulesStore.State
+  schedules!: ISchedule[];
+
+  @schedulesStore.Action
+  getSchedules!: () => Promise<void>;
 
 
   loading = false;
   showPractitionerModal = false;
+  showDatalist= false;
   aPractitioner = [];
   localSrc = require("../../../../../assets/img/placeholder.png");
   query = "";
- orderBy: Sorter = () => 1;
+  orderBy: Sorter = () => 1;
+  firstPractitioner = [] as any;
+  practionerIds = [] as any;
+  oldpractionerIds = [] as any;
 
+  firstPatients = [] as any;
+  patientIds = [] as any;
+  schedulepractid = "";
+  practitionerId = "";
+
+  actorType = "Practitioner";
+  practionervalue = false;
 
  @practitioner.State
   practitioners!: IPractitioner[];
@@ -192,14 +260,133 @@ export default class managePractitioner extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
- get filteredItems() {
+  @schedulesStore.Action
+  getScheduleById!: (id: string) => Promise<ISchedule>;
+  
+  @Watch("id")
+  idChanged() {
+    this.setSchedule();
+  }
+
+  practitionersnew = [] as any;
+
+  async setSchedule() {
+    const schedule = await this.getScheduleById(this.id);
+    if (!schedule) return;
+    this.practitionersnew = schedule.practitioners;
+    this.practionervalue = true;
+
+
+  }
+
+   get checkValue (){
+    const activeactor = this.practitioners.filter((c) => c === this.practitionersnew);
+     if(activeactor){
+       return true;
+     }
+   }
+  getSelectedActor(id:string) {
+    const pt = this.practitionersnew.find((i: any) => i.id === id);
+    if(this.id){
+      this.practionerIds.push(pt?.id as any)
+    }
+    return pt ? true : false;
+  }
+  get filteredItems() {
     return this.practitioners
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
 
+  get payload() {
+      return this.practionerIds.filter((c:any) => c !== undefined);
+  }
+  pushValue(item:any,id:string,index:number){
+    if( this.practionerIds.indexOf(id) > -1){
+       this.practionerIds.splice(index, 1);
+      this.firstPractitioner.splice(index, 1);
+      this.practitionersnew.splice(index, 1);
+    }else{
+      this.practionerIds.push(id);
+      this.firstPractitioner.push(item);
+  
+      // this.practitionerId = id;
+    }
+  }
+
+  async updatePractitoinerData() {
+   this.$emit('practitioner-data',this.firstPractitioner,this.practionerIds);
+    this.done();
+  }
+  async updatePatientData() {
+   this.$emit('patient-data',this.firstPatients,this.patientIds);
+    this.done();
+  }
+   done(){
+     this.$emit("schedule-added");
+    this.show = false;
+  }
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.apply();
+    else await this.updatePractitoinerData();
+    this.loading = false;
+  }
+  async submitPatient() {
+    this.loading = true;
+    if (this.id) await this.applyPatient();
+    else await this.updatePatientData();
+    this.loading = false;
+  }
+   async apply() {
+    this.loading = true;
+    if (this.practitionerId) await this.updatePractiitoner();
+    else await this.savePractitoner();
+    this.loading = false;
+  }
+  async applyPatient() {
+    this.loading = true;
+    if(this.practitionerId) await this.updatePractiitoner();
+    else await this.savePractitoner();
+    this.loading = false;
+  }
+
+   async savePractitoner() {
+      try {
+      const response = await cornieClient().post(
+        `/api/v1/schedule/add-practitioners/${this.id}`,
+        this.payload
+      );
+      if(response.success){
+          this.done();
+        window.notify({ msg: "Practitioner added successfully", status: "success" });
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not added", status: "error" });
+    }
+  }
+  
+  async updatePractiitoner() {
+    const url = `/api/v1/schedule/add-practitioners/${this.practitionerId}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Practitioner updated successffuly", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Practitioner not updated", status: "error" });
+    }
+  }
+
+
+
   async created() {
     await this.fetchPractitioners();
+    await this.setSchedule();
+    await this.fetchPatients();
+    await this.getSchedules();
   }
 }
 </script>

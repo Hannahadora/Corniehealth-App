@@ -248,8 +248,8 @@ export default class Settings extends Vue {
     return [
       { name: "Health Trend", to: "health-trend", icon: "trend-icon" },
       {
-        name: "Medical | Family History",
-        to: "medical-family-history",
+        name: "History",
+        to: "history",
         icon: "medical-icon",
       },
       {

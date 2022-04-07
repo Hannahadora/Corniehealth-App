@@ -426,7 +426,7 @@ export default class NavBar extends Vue {
     const pt = this.authorizedLocations?.find(
       (i: any) => i.id === this.currentLocation
     );
-    return pt ? `${pt.name}` : "Set default location";
+    return pt ? `${pt.name}` : "Switch default location";
   }
   get sortLocations() {
     const sorted = this.authorizedLocations?.sort((a, b) => {

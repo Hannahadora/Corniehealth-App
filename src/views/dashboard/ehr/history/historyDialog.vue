@@ -1,274 +1,217 @@
 <template>
   <big-dialog
     v-model="show"
-    :title="newaction + ' ' + 'History'"
-    subtext="All Fields are required"
+    :title="newaction + ' ' + 'New'"
     class=""
   >
     <v-form ref="form">
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Basic Info"
-        :opened="true"
-      >
-        <div class="grid grid-cols-2 gap-3 mt-3">
-          <cornie-select
-            class="w-full"
-            v-model="instantiatesCanonical"
-            label="Instantiates Canonical"
-            :items="[
-              'Plan Definition',
-              'Questionaire',
-              'Activity Definition',
-              'Measure',
-              'Operation Definition',
-            ]"
-            :rules="required"
-          />
-          <cornie-select
-            class="w-full"
-            v-model="instantiatesUri"
-            label="Instantiates Uri"
-            :items="['https://techsolutions.net//']"
-            :rules="required"
-          />
-          <auto-complete
-            v-model="status"
-            :rules="required"
-            class="w-full"
-            :items="[
-              'Partial',
-              'Completed',
-              'Entered in Error',
-              'Health Unknown',
-            ]"
-            label="Status"
-          />
-          <cornie-select
-            v-model="dataAbsentReason"
-            class="w-full"
-            label="Data Absent Reason"
-            :rules="required"
-            :items="[
-              'Subject Unknown',
-              'Information Withheld',
-              'Unable To Obtain',
-              'Deferred',
-            ]"
-          />
-          <cornie-input
-            disabled
-            :rules="required"
-            label="Patient"
-            v-model="asinglename"
-            class="w-full"
-          />
-          <date-picker
-            :rules="required"
-            v-model="date"
-            label="Date"
-            width="w-full"
-          />
-          <!-- <cornie-input  :rules="required"  label="Relationship" v-model="relationship"  class="w-full" /> -->
-          <auto-complete
-            v-model="relationship"
-            class="w-full"
-            :rules="required"
-            :items="[
-              'family member',
-              'Child',
-              'Adopted child',
-              'Adopted daughter',
-              'Adopted son',
-              'Daughter',
-            ]"
-            label="Relationship"
-          />
-          <auto-complete
-            v-model="sex"
-            class="w-full"
-            :rules="required"
-            :items="['Male', 'Female', 'Other', 'Unknown	']"
-            label="Sex"
-          />
-        </div>
-      </accordion-component>
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Born"
-      >
-        <timeable-picker
-          v-model="bornTimeable"
-          class="w-full"
-          label="heading"
-        />
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <cornie-input
-            :rules="required"
-            label="Born String"
-            v-model="bornString"
-          />
-        </div>
-      </accordion-component>
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Age"
-      >
-        <div class="grid grid-cols-2 mt-5 gap-2">
-          <cornie-input
-            :rules="required"
-            label="Age"
-            placeholder="--Enter--"
-            v-model="oneage"
-            class="cursor-pointer w-full"
-          />
-          <cornie-select
-            class="w-full"
-            v-model="estimatedAge"
-            label="Estimated Age?"
-            :items="[10, 90, 80]"
-            :rules="required"
-          />
-        </div>
-        <measurable label="Age Range/String" v-model="agemesurable" />
-      </accordion-component>
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Deceased"
-      >
-        <div class="grid grid-cols-2 mt-5 gap-2">
-          <cornie-select
-            v-model="diseasedBoolean"
-            label="Deceased?"
-            :items="[true, false]"
-            :rules="required"
-          />
-        </div>
-        <timeable-picker
-          v-model="deceasedtimeable"
-          class="w-full"
-          label="Deceased Date/Age"
-        />
-        <measurable
-          v-model="deceasedmeasurable"
-          class="w-full"
-          label="Deceased Range/String"
-        />
-        <div class="grid grid-cols-2 gap-4">
-          <auto-complete
-            v-model="reasonCode"
-            class="w-full"
-            :rules="required"
-            :items="[
-              'Anxiety disorder of childhood OR adolescence',
-              'Choroidal hemorrhage',
-              'Spontaneous abortion with laceration of cervix',
-              '	Homoiothermia',
-              '	Decreased hair growth',
-              '	Chronic pharyngitis',
-              'Normal peripheral vision',
-            ]"
-            label="Reason Code"
-          />
-          <!-- <div class="" v-if="refItems.length > 0" >
-                <label for="assessor"  @click="showRef" class="cursor-pointer flex capitalize text-black text-sm font-bold">Reason Reference
-                </label>
-                <cornie-select
-                class="w-full"
-                :items="refItems"
-                v-model="reasonReference"
-                       :rules="required"
-                >
-                </cornie-select>
-              </div> -->
-
-          <div class="w-full cursor-pointer" @click="showRef">
-            <label class="flex normal-case mb-0 text-black text-sm font-bold"
-              >Reason Reference</label
-            >
-            <input-desc-rounded :info="''" class="cursor-pointer">
-              <input
-                type="text"
-                disabled
-                :value="reasonReference"
-                placeholder="Select"
-                class="cursor-pointer p-2 border w-100 w-full"
-                style="border-radius: 8px"
-              />
-              <span>
-                <plus-icon class="aadd text-danger fill-current" />
-              </span>
-            </input-desc-rounded>
-            <!-- <cornie-input   :rules="required" label="Reason Reference"  :value="reasonReference" v-model="reasonReference"  class="cursor-pointer w-full" />  -->
+      <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component
+          title="Basic Info"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <cornie-input
+              :rules="required"
+              label="Name"
+              class="w-full"
+            />
+            <cornie-select
+              class="w-full"
+              label="Relationship"
+              :rules="required"
+              :items="[
+                'Brother',
+                'Sister',
+              ]"
+              :placeholder="'Select'"
+            />
+              <cornie-select
+              class="w-full"
+              label="Sex"
+              :rules="required"
+              :items="[
+                'Male',
+                'Female',
+                'Other',
+              ]"
+              :placeholder="'Select'"
+            />
+          </div>
+        </accordion-component>
+      </div>
+       <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component
+          title="Born"
+          :opened="false"
+        >
+          <born-picker label="Year" v-model="agemesurable" class="w-full mb-5"/>
+        </accordion-component>
+      </div>
+       <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component
+           title="Age"
+          :opened="false"
+        >
+        <measurable label="Age" v-model="agemesurable" />
+         <div class="mt-5">
+           <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
+          <div class="flex space-x-4 mt-5">
+            <cornie-radio name="estimate" value="yes" label="Yes" />
+            <cornie-radio name="estimate"  label="No" value="no" />
           </div>
         </div>
-        <cornie-text-area
-          :rules="required"
-          v-model="note"
-          placeholder="Placeholder"
-          label="Notes"
-          class="w-full"
-          rows="4"
-        />
-      </accordion-component>
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Condition (Related Person)"
-      >
-        <div class="grid grid-cols-2 gap-2 mt-5">
-          <cornie-select
-            class="w-full"
-            v-model="code"
-            label="Code"
-            :items="[
-              'Anxiety disorder of childhood OR adolescence',
-              'Choroidal hemorrhage',
-              'Accident-prone',
-              'Injury of ascending right colon without open wound into abdominal cavity',
-              'Poisoning by sawfly larvae',
-            ]"
-            :rules="required"
-          />
-          <cornie-select
-            v-model="outcome"
-            label="Outcome"
-            class="w-full"
-            :items="[
-              'Anxiety disorder of childhood OR adolescence',
-              'Spontaneous abortion with laceration of cervix',
-              'Spontaneous abortion with laceration of cervix',
-              '	Homoiothermia',
-              '	Decreased hair growth',
-              '	Chronic pharyngitis',
-              'Normal peripheral vision',
-            ]"
-            :rules="required"
-          />
-          <cornie-select
-            v-model="contributedToDeath"
-            class="w-full"
-            label="Contributed to Death?"
-            :items="['true', 'false']"
-            :rules="required"
-          />
-        </div>
-      </accordion-component>
-      <accordion-component
-        class="shadow-none rounded-none border-none text-primary"
-        title="Onset"
-      >
-        <timeable-picker v-model="onsettimeable" label="Start Date & Time" />
-        <measurable v-model="onsetmesurable" label="Heading" />
+        
+        </accordion-component>
+       </div>
+        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+            <accordion-component
+               :opened="false"
+              title="Deceased"
+            >
+              <div class="mt-5">
+                <span class="text-sm font-semibold mb-3 text-black">Deceased</span>
+                <div class="flex space-x-4 mt-5">
+                  <cornie-radio name="Deceased" value="yes" label="Yes" />
+                  <cornie-radio name="Deceased"  label="No" value="no" />
+                </div>
+              <measurable label="Deceased Age" v-model="agemesurable" />
+              <div class="mt-5">
+                <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
+                <div class="flex space-x-4 mt-5">
+                  <cornie-radio name="estimate" value="yes" label="Yes" />
+                  <cornie-radio name="estimate"  label="No" value="no" />
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
+              <div class="bg-white shadow-md rounded-lg p-3" v-for="(item, i) in references"
+                                  :key="i">
+                <span class="text-danger font-bold">Reason Reference</span>
+                <div class="flex space-x-4 w-full mt-4 mb-3">
+                  <div class="w-full">
+                    <p class="text-sm text-black font-bold">{{ item?.category }}</p>
+                    <p class="text-gray-400 text-xs">xxxxxxx</p>
+                    <p class="text-xs text-black">Dr. {{ getPractitionerName(item?.practitionerId) }} <span class="text-gray-400 text-xs">{{ getPractitonerJob(item?.practitionerId) }}</span></p>
+                  </div>
+                  <div class="flex w-full justify-end">
+                    <delete-icon @click="deleteRef(i)"/>
+                  </div>
 
-        <cornie-text-area
-          :rules="required"
-          v-model="onsetnote"
-          placeholder="Placeholder"
-          label="Notes"
-          class="w-full"
-          rows="4"
-        />
-      </accordion-component>
+                </div>
+
+              </div>
+            </div>
+            </accordion-component>
+        </div>
+        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+              <accordion-component
+                :opened="false"
+                title="Reason for History (Patient)"
+              >
+                <div class="grid grid-cols-2 gap-2 mt-5">
+                  <cornie-select
+                    class="w-full"
+                    v-model="code"
+                    label="Reason Code"
+                    :items="[
+                      'Anxiety disorder of childhood OR adolescence',
+                      'Choroidal hemorrhage',
+                      'Accident-prone',
+                      'Injury of ascending right colon without open wound into abdominal cavity',
+                      'Poisoning by sawfly larvae',
+                    ]"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                  />
+                  <cornie-select
+                    v-model="outcome"
+                    label="Reason Reference"
+                    class="w-full"
+                    :items="[
+                      'Anxiety disorder of childhood OR adolescence',
+                      'Spontaneous abortion with laceration of cervix',
+                      'Spontaneous abortion with laceration of cervix',
+                      '	Homoiothermia',
+                      '	Decreased hair growth',
+                      '	Chronic pharyngitis',
+                      'Normal peripheral vision',
+                    ]"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                  />
+                  <cornie-input
+                    v-model="contributedToDeath"
+                    class="w-full"
+                    label="Note"
+                    :rules="required"
+                    :placeholder="'Enter'"
+                  />
+                </div>
+              </accordion-component>
+        </div>
+         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+              <accordion-component
+                :opened="false"
+                title="Condition (Related Person)"
+              >
+                <div class="grid grid-cols-2 gap-2 mt-5">
+                  <cornie-select
+                    class="w-full"
+                    v-model="code"
+                    label="Condition Code"
+                    :items="[
+                      'Anxiety disorder of childhood OR adolescence',
+                      'Choroidal hemorrhage',
+                      'Accident-prone',
+                      'Injury of ascending right colon without open wound into abdominal cavity',
+                      'Poisoning by sawfly larvae',
+                    ]"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                  />
+                  <cornie-select
+                    v-model="outcome"
+                    label="Outcome"
+                    class="w-full"
+                    :items="[
+                      'Anxiety disorder of childhood OR adolescence',
+                      'Spontaneous abortion with laceration of cervix',
+                      'Spontaneous abortion with laceration of cervix',
+                      '	Homoiothermia',
+                      '	Decreased hair growth',
+                      '	Chronic pharyngitis',
+                      'Normal peripheral vision',
+                    ]"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                  />
+                 <div class="mt-5">
+                    <span class="text-sm font-semibold mb-3 text-black">Contributed to Death?</span>
+                    <div class="flex space-x-4 mt-5">
+                      <cornie-radio name="to" value="yes" label="Yes" />
+                      <cornie-radio name="to"  label="No" value="no" />
+                    </div>
+                  </div>
+                </div>
+              </accordion-component>
+        </div>
+         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+          <accordion-component
+             :opened="false"
+            title="Onset"
+          >
+          <onset-picker v-model="onsettimeable" label="Onset"/>
+            <cornie-text-area
+              :rules="required"
+              v-model="onsetnote"
+              placeholder="Placeholder"
+              label="Notes"
+              class="w-full"
+              rows="4"
+            />
+          </accordion-component>
+         </div>
     </v-form>
     <template #actions>
       <cornie-btn
@@ -287,32 +230,41 @@
     </template>
   </big-dialog>
   <reference-modal
-    :conditions="conditions"
-    :allergy="allergy"
-    @show:modal="showRef"
-    v-model:visible="showRefModal"
+    @ref-value="refvalue"
+    v-model="showRefModal"
   />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { string } from "yup";
+import { cornieClient } from "@/plugins/http";
+
+import { IPatient } from "@/types/IPatient";
+import IPractitioner from "@/types/IPractitioner";
+
 import BigDialog from "@/components/bigdialog.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
 import CornieTextArea from "@/components/textarea.vue";
-import DatePicker from "./datepicker.vue";
 import Measurable from "@/components/measurable.vue";
-import ReferenceModal from "./reasonref.vue";
 import plusIcon from "@/components/icons/plus.vue";
-import { IPatient } from "@/types/IPatient";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import TimeablePicker from "@/components/timeable.vue";
-import { namespace } from "vuex-class";
-import { string } from "yup";
-import { cornieClient } from "@/plugins/http";
+import DeceasedPicker from "@/components/deaceased.vue";
+import BornPicker from "@/components/bornable.vue";
+import OnsetPicker from "@/components/onset.vue";
+import DeleteIcon from "@/components/icons/deleteorange.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+
+import DatePicker from "./datepicker.vue";
+import ReferenceModal from "./reference.vue";
+const practitioner = namespace("practitioner");
+
 import Ihistory, {
   BasicInfo,
   OnSet,
@@ -347,15 +299,20 @@ const measurable = {
     TimeablePicker,
     CornieNumInput,
     CornieBtn,
+    DeleteIcon,
     AutoComplete,
+    DeceasedPicker,
     DatePicker,
+    OnsetPicker,
     Measurable,
     plusIcon,
     AccordionComponent,
     ReferenceModal,
     CornieSelect,
     CornieInput,
+    CornieRadio,
     CornieTextArea,
+    BornPicker,
   },
 })
 export default class AddCondition extends Vue {
@@ -377,6 +334,12 @@ export default class AddCondition extends Vue {
   @history.Action
   gethistoryById!: (id: string) => Ihistory;
 
+  @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
   required = string().required();
   @Watch("id")
   idChanged() {
@@ -389,6 +352,7 @@ export default class AddCondition extends Vue {
   condtions = [];
   allergy = [];
   refItems = [];
+  references = [] as any;
   loading = false;
 
   instantiatesCanonical = "";
@@ -438,17 +402,27 @@ export default class AddCondition extends Vue {
   onsetString = "";
 
   get patientId() {
-    return this.$route.params.id;
+    return this.$route.params.id as string;
   }
-  get asinglename() {
-    return this.PatientName.firstname + " " + this.PatientName.lastname;
-  }
-  get PatientName() {
-    var id = this.$route.params.patientId;
+  // get asinglename() {
+  //   return this.PatientName.firstname + " " + this.PatientName.lastname;
+  // }
+  getPatientName(id:string) {
     const pt = this.patients.find((i: any) => i.id === id);
-    return {
-      ...pt,
-    };
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
+  getPractitionerName(id: string) {
+        const pt = this.practitioners.find((i: any) => i.id === id);
+        return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+
+  getPractitonerJob(id: string) {
+        const pt = this.practitioners.find((i: any) => i.id === id);
+        return pt ? `${pt.jobDesignation}` : "";
+  }
+
+  deleteRef(index: number) {
+        this.references.splice(index, 1);
   }
 
   get onset() {
@@ -580,11 +554,14 @@ export default class AddCondition extends Vue {
     };
   }
   get newaction() {
-    return this.id ? "Update" : "New";
+    return this.id ? "Update" : "Create";
   }
   async showRef(value: any) {
     this.showRefModal = true;
     this.reasonReference = value;
+  }
+  refvalue(value:any){
+    this.references.push(value);
   }
   done() {
     this.$emit("history-added");
@@ -642,6 +619,7 @@ export default class AddCondition extends Vue {
   async created() {
     this.setHistory();
     this.fetchAllergy();
+    await this.fetchPractitioners();
   }
 }
 </script>

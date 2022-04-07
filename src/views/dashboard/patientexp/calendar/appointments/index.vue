@@ -11,12 +11,12 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import IPractitioner from "@/types/IPractitioner";
+import IAppointment from "@/types/IAppointment";
 import { namespace } from "vuex-class";
 import AppointmentEmptyState from "./emptyState.vue";
 import AppointmentExistingState from "./existingState.vue";
 
-const practitioner = namespace("practitioner");
+const appointment = namespace("appointment");
 
 @Options({
   name: "AppointmentIndex",
@@ -26,21 +26,19 @@ const practitioner = namespace("practitioner");
   },
 })
 export default class AppointmentIndex extends Vue {
-  addPractitioner = false;
-  practitionerToUpdate = {} as IPractitioner;
 
   get empty() {
-    return this.practitioners.length < 1;
+    return this.appointments.length < 1;
   }
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  @appointment.State
+  appointments!: IAppointment[];
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
 
-  created() {
-    this.fetchPractitioners();
+  async created() {
+    await this.fetchAppointments();
   }
 }
 </script>

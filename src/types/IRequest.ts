@@ -1,84 +1,49 @@
-import Period from "./IPeriod";
-
-interface RequestInfo {
-  statusReason?: string;
-  intent?: string;
-  category?: string;
-  priority?: string;
-  doNotPerform?: string;
-  reasonForProhibition?: string;
-}
-interface RequestDetails {
-  recorder?: string;
-  requester?: string;
-  encounter?: string;
-  reasonCode?: string;
-  reasonReference?: string;
-  definition?: string;
-  basedOn?: string;
-  supportingInformation?: string;
-}
-interface Subject {
-  paymentOption?: string;
-  subject?: string;
-}
-interface Performer {
-  dispenserType?: string;
-  dispenser?: string;
-}
-interface MedicationAdministration {
-  performerType?: string;
-  performer?: string;
-}
-interface Fufillment {
-  nonSafetyCapRequest?: string;
-  affixLabel?: string;
-  fulfillmentOption?: string;
-  priorityShipping?: string;
-}
-interface History {
-  priorPrescription?: string;
-  detectedIssue?: string;
-  eventHistory?: string;
-}
-export interface MedicationDetails {
-  medicationCode?: string;
-  medicationReference?: string;
-  courseOfTherapyType?: string;
-  dosageInstruction?: string;
-  initialFill?: string;
-  quantity?: number;
-  duration?: Period;
+export interface RefillSection {
+  medicationId: string;
+  interval: number;
+  intervalUnit: string;
+  startDate: string;
+  quantity: number;
+  supplyDuration: number;
+  supplyDurationUnit: string;
 }
 export interface Medications {
-  medicationDetails: {
-    medicationCode?: string;
-    medicationReference?: string;
-    courseOfTherapyType?: string;
-    dosageInstruction?: string;
-    initialFill?: string;
-    quantity?: number;
-    duration?: Period;
-  };
-  refillInfo: {
-    dispenseInterval?: Period;
-    numberOfRepeatsAllowed?: number;
-    quantity?: number;
-    expectedSupplyDuration?: number;
-  };
-  substitutionAllowed: {
-    code?: string;
-    reason?: string;
-  };
+  genericCode:null;
+  genericName:string;
+  reference:string;
+  courseOfTherapy:string;
+  dosageInstruction:string;
+  durationInDays:string;
+  requestId:string;
+  refills: RefillSection[];
+  substitutionAllowed:boolean;
+  substitutionCode?:null;
+  reasonForSubstitution?:null;
+  reasonAgainstSubstitution?:null;
 }
 export default interface IRequest {
   id?: string;
-  requestInfo: RequestInfo;
-  requestDetails: RequestDetails;
-  subject: Subject;
-  performer: Performer;
-  medicationAdministration: MedicationAdministration;
-  fufillment: Fufillment;
-  history: History;
-  Medications: Medications[];
+  basedOn: string;
+  intent: string;
+  priority: string;
+  category: string;
+  requesterId: string;
+  patientId: string;
+  dispenserId: string;
+  supportingInformation: string;
+  medications: Medications[];
+  status: string;
+  reasonCode: string;
+  reasonReference: string;
+  note: string;
+  allergies: string[];
+  conditions: string[];
+  identifier: string;
+  safetyCapRequest: boolean;
+  deliveryLocation: string;
+  priorPrescription: string;
+  detectedIssues: string[];
+  priorityShipping: boolean;
+  performer: string;
+  performerRole: string;
 }

@@ -1,4 +1,5 @@
-import IMedication from './IMedication'
+import IMedication from "./IMedication"
+import { IPatient } from "./IPatient"
 
 export default interface IMedicationReq {
     organizationId: string,
@@ -11,6 +12,7 @@ export default interface IMedicationReq {
     dispenserId: string,
     supportingInformation: string,
     medications: IMedication[],
+    patient: IPatient ,
     status: string,
     reasonCode: string,
     reasonReference: string,

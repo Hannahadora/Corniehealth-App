@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-5/12 h-2/3">
+  <cornie-dialog v-model="show" center class="w-4/12 h-2/3">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false">
@@ -22,34 +22,38 @@
               <cornie-input
                 disabled
                 label="Current Status"
-                v-model="currentStatus"
+                :modelValue="currentStatus?.value"
                 class="w-full mb-4"
               />
               <cornie-input
                 disabled
                 label="Updated By"
                 class="w-full mb-4"
-                v-model="updatedBy"
+                :modelValue="currentStatus?.practitionerName"
               />
               <cornie-input
                 disabled
                 label="Date Last Updated"
                 class="w-full mb-4"
-                v-model="dateUpdated"
+                :modelValue="currentDate"
               />
 
               <cornie-select
                 :label="'New Status'"
                 v-model="status"
                 :items="[
-                  'Active',
-                  'On-Hold',
-                  'Revoked',
-                  'Completed',
-                  'Draft',
-                  'Do Not Perform',
-                  'Unknown',
-                  'Entered-in-Error',
+                  'draft',
+                  'active',
+                  'on-hold',
+                  'cancelled',
+                  'dispensed',
+                  'substituted',
+                  'completed',
+                  'stopped',
+                  'do-not-perform',
+                  'unknown',
+                  'entered-in-error',
+                  'ordered',
                 ]"
                 style="width: 100%"
               />
@@ -70,7 +74,7 @@
             @click="apply"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Status
+            Update
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -108,10 +112,12 @@ import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
 import { string } from "yup";
-import DateTimePicker from "./components/datetime-picker.vue";
+import IAppointment from "@/types/IAppointment";
+import { namespace } from "vuex-class";
 
+const appointment = namespace("appointment");
 @Options({
-  name: "requestDialog",
+  name: "statusDialog",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -128,7 +134,6 @@ import DateTimePicker from "./components/datetime-picker.vue";
     CancelIcon,
     InfoIcon,
     CornieDialog,
-    DateTimePicker,
     SearchIcon,
     AccordionComponent,
     IconInput,
@@ -148,14 +153,35 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
+  @Prop({ type: String, default: "" })
+  requesterId!: string;
+
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
+  @Prop({ type: String, default: "" })
+  dispenserId!: string;
+
+
+
   @Prop({ type: String, default: "" })
   updatedBy!: string;
 
   @Prop({ type: String, default: "" })
-  currentStatus!: string;
-
-  @Prop({ type: String, default: "" })
   dateUpdated!: string;
+
+  @Prop({ type: Object })
+  appointments!: IAppointment;
+
+  @appointment.Mutation
+  setPatientAppointment!: ({
+    appointments,
+  }: {
+    appointments: IAppointment[];
+  }) => Promise<void>;
 
   status = "";
   loading = false;
@@ -164,14 +190,23 @@ export default class Medication extends Vue {
 
   required = string().required();
 
+
+  get currentStatus(){
+    return this.selectedItem?.statusHistory?.find((history:any) => history.current);
+  }
+
+  get currentDate(){
+    if(!this.currentStatus) return '';
+    return new Date(this.currentStatus?.start).toLocaleDateString();
+  }
+
   async updateStatus() {
-    const id = this.id;
-    const url = `/api/v1/requests/${id}`;
+    const url = `/api/v1/medication-requests/${this.selectedItem.requestId}`;
     const body = {
       status: this.status,
     };
     try {
-      const response = await cornieClient().put(url, body);
+      const response = await cornieClient().patch(url, body);
       if (response.success) {
         window.notify({ msg: "Status Updated", status: "success" });
         this.done();
@@ -183,7 +218,7 @@ export default class Medication extends Vue {
   }
 
   done() {
-    this.$emit("medicationAdded");
+    this.$emit("status-added");
     this.show = false;
   }
   async apply() {

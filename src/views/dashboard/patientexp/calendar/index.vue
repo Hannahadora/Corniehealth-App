@@ -10,8 +10,9 @@
       </span>
       <span class="w-full h-screen">
 
+            <!-- <day-availabiblty-section v-if="practitionerId"/> -->
           <tabs :items="tabLinks" v-model="currentTab">
-            <availability-section />
+            <availability-section/>
             <schedules-section />
             <appointment-section />
             <slots-section />
@@ -24,8 +25,10 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
 import Tabs from "@/components/tabs.vue";
 import AvailabilitySection from "./availability/index.vue";
+import DayAvailabibltySection from "./dayavailaibilty/index.vue";
 import SchedulesSection from "./schedules/index.vue";
 import AppointmentSection from "./appointments/index.vue";
 import SlotsSection from "./blockedslots/index.vue";
@@ -37,16 +40,20 @@ import SlotsSection from "./blockedslots/index.vue";
     AvailabilitySection,
     SchedulesSection,
     AppointmentSection,
-    SlotsSection
+    SlotsSection,
+    DayAvailabibltySection
 
   },
 })
 export default class CalendarIndex extends Vue {
+  @Prop({ type: String, default: "" })
+  practitionerId!: string;
+
   tabLinks = [
     "Availability",
     "Schedules",
     "Appointments",
-    "Blocked Slots",
+    "Event",
   ];
   currentTab = 0;
 }

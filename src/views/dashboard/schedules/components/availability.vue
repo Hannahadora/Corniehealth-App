@@ -3,24 +3,39 @@
     <div class="w-full">
       <div class="container-fluid">
         <!-- <div class="container-fluid" v-if="filterOptions.byPractitioners?.length === 0"> -->
-         <tabs :items="tabLinks" v-model="currentTab" :dDate="start"  @filter="showFilterPane" @left="setLeft" @right="setRight">
-
-           <div>
-            <day-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
-           </div>
-              <div>
-                <week-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"></week-section>
-              </div>
-            <div>
-             <month-section @set-oneId="setoneId" :schedules="schedules" :startDate="start"/>
-            </div>
-          </tabs>
-       
+        <tabs
+          :items="tabLinks"
+          v-model="currentTab"
+          :dDate="start"
+          @filter="showFilterPane"
+          @left="setLeft"
+          @right="setRight"
+        >
+          <div>
+            <day-section
+              @set-oneId="setoneId"
+              :schedules="schedules"
+              :startDate="start"
+            />
+          </div>
+          <div>
+            <week-section
+              @set-oneId="setoneId"
+              :schedules="schedules"
+              :startDate="start"
+            ></week-section>
+          </div>
+          <div>
+            <month-section
+              @set-oneId="setoneId"
+              :schedules="schedules"
+              :startDate="start"
+            />
+          </div>
+        </tabs>
       </div>
 
       <advanced-filter v-model="showFilter" @applyfilter="applyFilter" />
-
-      
     </div>
   </div>
 </template>
@@ -47,8 +62,8 @@ import ISchedule from "@/types/ISchedule";
 import CalendarIcon from "@/components/icons/bcalendar.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CopyIcon from "@/components/icons/copy.vue";
-import CancelIcon from "@/components/icons/cancel.vue"
-import ShareIcon from "@/components/icons/share.vue"
+import CancelIcon from "@/components/icons/cancel.vue";
+import ShareIcon from "@/components/icons/share.vue";
 import { getWeekStart, printWeekday, addDays } from "@/plugins/utils";
 import group from "@/store/group";
 import IPractitioner from "@/types/IPractitioner";
@@ -57,7 +72,7 @@ import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
 import WeekSection from "./weekly.vue";
 import DaySection from "./daily.vue";
-import MonthSection from "./monthly.vue"
+import MonthSection from "./monthly.vue";
 
 const practitionersStore = namespace("practitioner");
 const locationsStore = namespace("location");
@@ -102,34 +117,29 @@ export default class Availability extends Vue {
 
   /// Start
 
-  tabLinks = [
-    "Day",
-    "Week",
-    "Month"
-  ];
+  tabLinks = ["Day", "Week", "Month"];
   currentTab = 0;
 
-  start  = new Date();
+  start = new Date();
 
-  setLeft(value:any){
-    const now = this.start ?? new Date(); 
-    if (value == 0){
-      this.start = addDays (now, -1);
-    } else if (value == 1){
-      this.start = addDays (now, -7);
-
-    } else  {
-      this.start = addDays (now, -30);
+  setLeft(value: any) {
+    const now = this.start ?? new Date();
+    if (value == 0) {
+      this.start = addDays(now, -1);
+    } else if (value == 1) {
+      this.start = addDays(now, -7);
+    } else {
+      this.start = addDays(now, -30);
     }
   }
-  setRight(value:any){
-   const now = this.start ?? new Date(); 
-    if (value == 0){
-      this.start = addDays (now, 1);
-    } else if (value == 1){
-      this.start = addDays (now, 7);
-    } else  {
-      this.start = addDays (now, 30);
+  setRight(value: any) {
+    const now = this.start ?? new Date();
+    if (value == 0) {
+      this.start = addDays(now, 1);
+    } else if (value == 1) {
+      this.start = addDays(now, 7);
+    } else {
+      this.start = addDays(now, 30);
     }
   }
   getWeekDates(start: Date) {
@@ -144,7 +154,7 @@ export default class Availability extends Vue {
   }
 
   get headers() {
-   // const now = new Date(); // sun jan 23, 2022 //
+    // const now = new Date(); // sun jan 23, 2022 //
     const startDate = this.start;
     const now = this.start;
     const start = getWeekStart(now);
@@ -239,8 +249,8 @@ export default class Availability extends Vue {
   }
 
   insertWeekDays(map: Map<string, IPractitioner[]>, schedule: ISchedule) {
-    const { days } = schedule;
-    days.forEach((day) => {
+    const { days } = schedule as any;
+    days.forEach((day:any) => {
       const _practitioners = map.get(day) ?? [];
       const practitioners = schedule.practitioners ?? [];
       map.set(
@@ -250,8 +260,8 @@ export default class Availability extends Vue {
       // this.filterPractitioners([... practitioners, ..._practitioners])
     });
   }
-  filterPractitioners(practitioners:IPractitioner[]) {
-      return search.searchObjectArray(practitioners, this.query);
+  filterPractitioners(practitioners: IPractitioner[]) {
+    return search.searchObjectArray(practitioners, this.query);
   }
 
   goToAppoimment(item: any) {
@@ -266,9 +276,9 @@ export default class Availability extends Vue {
     // }
   }
 
-  setoneId(practitioner:any,value:string){
-     console.log(practitioner,value,"HELLO Fourth")
-    this.$emit('set-oneId', practitioner,value)
+  setoneId(practitioner: any, value: string) {
+    console.log(practitioner, value, "HELLO Fourth");
+    this.$emit("set-oneId", practitioner, value);
   }
   //// End
 
@@ -289,7 +299,6 @@ export default class Availability extends Vue {
 
   @locationsStore.Action
   fetchDevices!: () => Promise<void>;
-
 
   query = "";
 
@@ -343,8 +352,6 @@ export default class Availability extends Vue {
       return { code: location.id, display: location.name };
     });
   }
-
-
 
   get availabilityHeaders() {
     if (!this.availabilityDates) return [];

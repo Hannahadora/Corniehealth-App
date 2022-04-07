@@ -20,6 +20,7 @@
               <span class="ml-1 mb-1" v-if="$slots.labelicon">
                 <slot name="labelicon" />
               </span>
+               <span class="float-right flex justify-end w-full text-blue-500"  v-if="labelText"> {{ innerlabel }} </span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -142,12 +143,17 @@ export default class CornieSelect extends Vue {
   @Prop({ type: Boolean, default: false })
   disabled!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  labelText!: boolean;
   
   @Prop({ type: Boolean, default: false })
   setCheck!: boolean;
 
   @Prop({ type: Boolean, default: false })
   addCheck!: boolean;
+
+  @Prop({ type: String, default: "" })
+  innerlabel!: string;
 
 
   @Prop({ type: String })

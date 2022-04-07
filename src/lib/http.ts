@@ -20,6 +20,7 @@ export class ErrorResponse extends Error {
 }
 
 export class JsonResponse {
+[x: string]: any;
   data?: any;
   numberOfPages?: number | undefined;
   nextPage?: number | undefined;
@@ -27,6 +28,7 @@ export class JsonResponse {
   currentPage?: number;
   errors?: Errors | undefined;
   token: string;
+message: any;
   baseResponse: Response;
 
   get status(): number {

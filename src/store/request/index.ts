@@ -6,7 +6,7 @@ import {
   fetchRequests,
   getPatients,
   getPractitioners,
-  fetchOtherrequestsById,
+  fetchrequestsById,
 } from "./helper";
 
 interface RequestState {
@@ -52,8 +52,8 @@ export default {
     },
   },
   actions: {
-    async fetchOtherrequestsById(ctx, patientId: string) {
-      const requests = await fetchOtherrequestsById(patientId);
+    async fetchrequestsById(ctx, patientId: string) {
+      const requests = await fetchrequestsById(patientId);
       ctx.commit("setPatientRequests", requests);
     },
     async fetchRequests(ctx) {
@@ -72,6 +72,10 @@ export default {
     async getRequestById(ctx, id: string) {
       if (ctx.state.requests.length < 1) await ctx.dispatch("fetchRequests");
       return ctx.state.requests.find(request => request.id == id);
+    },
+    async getOneRequestById(ctx, id: string) {
+      if (ctx.state.patientrequests.length < 1) await ctx.dispatch("fetchrequestsById");
+      return ctx.state.patientrequests.find(request => request.id == id);
     },
     async deleteRequest(ctx, id: string) {
       const deleted = await deleteRequest(id);

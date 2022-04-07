@@ -1,4 +1,4 @@
-import IMedication from './IMedication'
+import IMedication from "./IMedication"
 interface IPerformer {
     name: string,
     mrn: string,

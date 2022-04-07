@@ -1,52 +1,32 @@
 <template>
   <div class="w-full pb-80">
     <div class="w-full flex flex-col justify-center items-center h-96">
-      <img src="@/assets/bro.svg" />
-      <h3 class="text-center mt-5">
-        There are no current medications for this patient <br />
-        Add a new medication by clicking the button below
-      </h3>
+            <img src="@/assets/img/empty-requests.svg" />
+    <h3 class="text-center mt-5">
+        You’ve made no requests!<br />
+        Make a new service reques by clicking on “New Request” above
+    </h3>
       <span class="flex justify-center w-full">
-        <button
-          class="bg-danger rounded-full text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
-          @click="showMedication"
-        >
-          New Request
-        </button>
+          <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
+      New Requests
+    </button>
       </span>
     </div>
-    <medication-modal
-      :columns="practitioner"
-      @update:preferred="showMedication"
-      v-model="showMedicationModal"
-    />
+  
   </div>
+
+  <medication-modal v-model="showMedication" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-import Select from "@/components/newautocomplete.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import IconInput from "@/components/IconInput.vue";
-import MedicationModal from "./medicationdialog.vue";
+import MedicationModal from "./medicationModal.vue";
+
 @Options({
   components: {
-    ChevronDownIcon,
-    Select,
-    SearchIcon,
-    IconInput,
-    MedicationModal,
+      MedicationModal
   },
 })
-export default class AllergysEmptyState extends Vue {
-  showMedicationModal = false;
-  async showMedication() {
-    this.showMedicationModal = true;
-  }
+export default class medicationEmptyState extends Vue {
+    showMedication  = false;
 }
 </script>
-<style>
-.outline-primary {
-  border: 2px solid #080056;
-}
-</style>

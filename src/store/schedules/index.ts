@@ -2,15 +2,18 @@ import { StoreOptions } from "vuex";
 import {Slot} from "@/types/ISchedule";
 import {
   deleteSchedule,
-  createSchedule,
-  getSchedules,
-  activateSchedule,
-  deactivateSchedule,
-  updateSchedule,
   removePractitioner,
   addPractitioner,
   deleteSlot,
-  singlePractitonerSlot
+  singlePractitonerSlot,
+  removeBreak,
+  removeService,
+  getSchedules,
+  createSchedule,
+  updateSchedule,
+  activateSchedule,
+  deactivateSchedule,
+  FetchDayCalendar
 } from "./helper";
 
 interface SchedulesStore {
@@ -34,7 +37,7 @@ export default {
     addSchedule(state, sch) {
       if (sch) state.schedules.unshift(sch);
     },
-
+    
     removeSchedule(state, id) {
       if (id) state.schedules = state.schedules.filter(i => i.id !== id);
     },
@@ -60,6 +63,35 @@ export default {
           );
       }
     },
+    removeBreak(state, data) {
+      if (data) {
+        const index = state.schedules.findIndex(
+          i => i.id === data.scheduleId
+        );
+        if (index >= 0)
+          state.schedules[index].breaks = state.schedules[
+            index
+          ].breaks.filter(
+            (i: any) =>
+              data.removeBreaks.find((j: any) => j.id === i.id) < 0
+          );
+      }
+    },
+
+    removeService(state, data) {
+      if (data) {
+        const index = state.schedules.findIndex(
+          i => i.id === data.scheduleId
+        );
+        if (index >= 0)
+          state.schedules[index].services = state.schedules[
+            index
+          ].services.filter(
+            (i: any) =>
+              data.removeServices.find((j: any) => j.id === i.id) < 0
+          );
+      }
+    },
 
     deactivateSchedule(state, id) {
       if (id) {
@@ -74,6 +106,15 @@ export default {
         if (index >= 0) state.schedules[index] = { ...sch };
       }
     },
+    deleteSlot(state, id: string) {
+      const index = state.slots.findIndex(
+        slot => slot.id == id
+      );
+      if (index < 0) return;
+      const slots = [...state.slots];
+      slots.splice(index, 1);
+      state.slots = [...slots];
+    },
   },
 
   actions: {
@@ -81,9 +122,23 @@ export default {
       const schs = await getSchedules();
       ctx.commit("setSchedules", schs);
     },
-    async singlePractitonerSlot(ctx, practitionerId: string) {
-      const slots = await singlePractitonerSlot(practitionerId);
+    getScheduleById(ctx, id: string) {
+      return ctx.state.schedules.find(
+        schedule => schedule.id == id
+      );
+    },
+    getSlotById(ctx, id: string) {
+      return ctx.state.slots.find(
+        slot => slot.id == id
+      );
+    },
+    async singlePractitonerSlot(ctx, locationId: string) {
+      const slots = await singlePractitonerSlot(locationId);
       ctx.commit("setSlotPractitioner", slots);
+    },
+    async fetchDayCalendar(ctx, locationId: string) {
+      const slots = await FetchDayCalendar(locationId);
+      ctx.commit("setSchedules", slots);
     },
     async deleteSchedule(ctx, id: string) {
       const deleted = await deleteSchedule(id);
@@ -99,10 +154,10 @@ export default {
       ctx.commit("addSchedule", sch);
       return true;
     },
-
     async deleteSlot(ctx, id: string) {
       const deleted = await deleteSlot(id);
       if (!deleted) return false;
+      ctx.commit("deleteSlot", id);
       return true;
     },
 
@@ -126,6 +181,24 @@ export default {
       ctx.commit("removePractitioner", {
         scheduleId: reqData.id,
         removedPractitioners: reqData.body,
+      });
+      return true;
+    },
+    async removeBreak(ctx, reqData: any) {
+      const removed = await removeBreak(reqData.body, reqData.id);
+      if (!removed) return false;
+      ctx.commit("removeBreak", {
+        scheduleId: reqData.id,
+        removeBreaks: reqData.body,
+      });
+      return true;
+    },
+    async removeService(ctx, reqData: any) {
+      const removed = await removeService(reqData.body, reqData.id);
+      if (!removed) return false;
+      ctx.commit("removeService", {
+        scheduleId: reqData.id,
+        removeServices: reqData.body,
       });
       return true;
     },

@@ -117,7 +117,7 @@ import AllParticipants from "./participants.vue";
 import PatientDetails from "./policy.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
-import Checkin from "../../visits/components/checkin.vue";
+import Checkin from "../../visits/components/oldcheckin.vue";
 import SideModal from "../../schedules/components/side-modal.vue";
 
 const appointment = namespace("appointment");

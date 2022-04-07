@@ -17,7 +17,6 @@
 import { Options, Vue } from "vue-class-component";
 import DatePicker from "@/components/datepicker.vue";
 import { Prop, PropSync } from "vue-property-decorator";
-
 @Options({
   name: "DateTimePicker",
   inheritAttrs: false,
@@ -28,13 +27,10 @@ import { Prop, PropSync } from "vue-property-decorator";
 export default class DateTimePicker extends Vue {
   @Prop({ type: String, default: "" })
   date!: string;
-
   @Prop({ type: String, default: "00:00" })
   time!: string;
-
   @PropSync("date")
   dateSync!: string;
-
   @PropSync("time")
   timeSync!: string;
 }
@@ -43,7 +39,6 @@ export default class DateTimePicker extends Vue {
 input[type="time"] {
   position: relative;
 }
-
 input[type="time"]::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 0;

@@ -292,8 +292,8 @@ export default class Daily extends Vue {
   }
 
   insertWeekDays(map: Map<string, IPractitioner[]>, schedule: ISchedule) {
-    const { days } = schedule;
-    days.forEach((day) => {
+    const { days } = schedule as any;
+    days.forEach((day:any) => {
       const _practitioners = map.get(day) ?? [];
       const practitioners = schedule.practitioners ?? [];
        map.set(day,this.filterPractitioners([... practitioners, ..._practitioners]) as any);

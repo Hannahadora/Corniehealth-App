@@ -16,7 +16,7 @@ export async function fetchByIdAppointments(patientId: string) {
       `/api/v1/appointment/getAllByPatient/${patientId}`
     );
     if (response.success) {
-      return response.data;
+      return response.data.result.filter((c:any) => c !== null);
     }
   } catch (error) {}
   return [] as IAppointment[];

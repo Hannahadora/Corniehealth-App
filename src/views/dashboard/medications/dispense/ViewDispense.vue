@@ -86,9 +86,9 @@
           </div>
           <div class="w-bg1">
             <p class="font-bold mb-4">Patient Information</p>
-            <!-- <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Patient Name</span>
-              <span class="">{{ dispense?.patient.firstname }}</span>
+              <span class="">{{ dispense?.patient.name }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">MRN #</span>
@@ -96,47 +96,47 @@
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Payment Info</span>
-              <span class="">{{ dispense?.patient.paymentInfo }}</span>
+              <span class="">{{ dispense?.patient.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Phone Number</span>
-              <span class="">{{ dispense?.patient?.contactInfo[0]?.phone?.dialCode }}{{ dispense?.patient?.contactInfo[0]?.phone?.number }}</span>
+              <span class="">{{ dispense?.patient?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Email</span>
-              <span class="">{{ dispense?.patient.contactInfo[0].email }}</span>
+              <span class="">{{ dispense?.patient.email }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Address</span>
-              <span class="">{{ dispense?.patient.contactInfo[0].primaryAddress }}</span>
-            </div> -->
+              <span class="">{{ dispense?.patient.address }}</span>
+            </div>
           </div>
           <div class="blue-bg1">
             <p class="font-bold mb-4">Performer Information</p>
-            <!-- <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Patient Name</span>
-              <span class="">{{ dispense?.patient?.firstname }}</span>
+              <span class="">{{ dispense?.patient.name }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">MRN #</span>
-              <span class="">{{ dispense?.patient?.mrn }}</span>
+              <span class="">{{ dispense?.patient.mrn }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Payment Info</span>
-              <span class="">{{ dispense?.patient?.paymentInfo }}</span>
+              <span class="">{{ dispense?.patient.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Phone Number</span>
-              <span class="">{{ dispense?.patient?.contactInfo[0]?.phone?.dialCode }}{{ dispense?.patient?.contactInfo[0]?.phone?.number }}</span>
+              <span class="">{{ dispense?.patient?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Email</span>
-              <span class="">{{ dispense?.patient?.contactInfo[0]?.email }}</span>
+              <span class="">{{ dispense?.patient.email }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Address</span>
-              <span class="">{{ dispense?.patient?.contactInfo[0]?.primaryAddress }}</span>
-            </div> -->
+              <span class="">{{ dispense?.patient.address }}</span>
+            </div>
           </div>
         </div>
 
@@ -235,6 +235,7 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 
 import search from "@/plugins/search";
 import IMedicationReq from "@/types/ImedicationReq";
+import IDispense from "@/types/IDispense";
 
 const dispense = namespace("dispense");
 const request = namespace("request");
@@ -278,7 +279,7 @@ export default class ViewRequest extends Vue {
   location = [];
 
   @dispense.State
-  dispense!: IMedicationReq;
+  dispense!: IDispense;
 
   @dispense.Action
   viewDispense!: (requestId: string, locationId: string) => Promise<void>;
