@@ -53,6 +53,8 @@ import KycStore from "./kyc";
 import RouterStore from "./routing";
 import SpecialStore from "./special";
 
+import DispenseStore from "./dispense"
+
 import AppointmentRoomStore from "./appointmentroom";
 
 export default createStore({
@@ -113,5 +115,7 @@ export default createStore({
     prefrence: PrefrenceStore,
     cancel: CanelStore,
     kyc: KycStore,
+
+    dispense: DispenseStore
   },
 } as StoreOptions<any>);

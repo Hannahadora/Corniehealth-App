@@ -63,16 +63,16 @@
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showItem(item.id)"
+            @click="viewItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <eye-yellow class="text-danger fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <update-status class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
           </div>
         </template>
@@ -107,6 +107,11 @@
       v-model="openDispense"
       @closesidemodal="closeModal"
     />
+
+    <view-dispense
+      :id="typeId"
+      v-model="viewDispense"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -127,15 +132,19 @@ import PlusIcon from "@/components/icons/add.vue";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EditIcon from "@/components/icons/edit.vue";
+import EyeYelllow from "@/components/icons/eye-yellow.vue";
+import UpdateStatus from "@/components/icons/update-status.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import DispenseModal from './DispenseModal.vue'
+import DispenseModal from "./DispenseModal.vue";
+import ViewDispense from "./ViewDispense.vue";
 
-const location = namespace("location");
+import IMedicationReq from "@/types/ImedicationReq";
+
+const dispense = namespace("dispense");
+const request = namespace("request");
 
 @Options({
   components: {
@@ -150,19 +159,22 @@ const location = namespace("location");
     PlusIcon,
     IconInput,
     DeleteIcon,
-    EditIcon,
+    EyeYelllow,
+    UpdateStatus,
     ColumnFilter,
     TableOptions,
 
     ArrowLeftIcon,
     ArrowRightIcon,
-    DispenseModal
+    DispenseModal,
+    ViewDispense,
   },
 })
 export default class DISPENSE extends Vue {
   query = "";
   typeId = "";
   openDispense = false;
+  viewDispense = false;
   practitioner = [] as any;
   location = [] as any;
   updatedBy = "";
@@ -172,7 +184,24 @@ export default class DISPENSE extends Vue {
   totalDispensed = 0;
   totalVolume = 0;
 
-  allDispenses = [{}];
+  // get patientId() {
+  //   return this.$route.params.id as string
+  // }
+
+  @dispense.State
+  medicationRequest!: any[];
+
+  @dispense.Action
+  fetchMedReq!: () => Promise<void>;
+
+  @request.State
+  patients!: any[];
+
+  @request.State
+  practitioners!: any[];
+
+  @request.Action
+  getPatients!: () => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -214,35 +243,87 @@ export default class DISPENSE extends Vue {
     },
   ];
 
-  get items() {
-    const allDispenses = this.allDispenses.map((dispense) => {
-      (dispense as any).createdAt = new Date(
-        (dispense as any).createdAt
-      ).toLocaleDateString("en-US");
-      return {
-        ...dispense,
-        // action: dispense.id,
-        keydisplay: "XXXXXXX",
-        dispenseId: "-----",
-        subject: "-----",
-        medication: "-----",
-        unitPrice: "-----",
-        qantity: "-----",
-        amount: "-----",
-        status: "Active",
-      };
-    });
-    if (!this.query) return allDispenses;
-    return search.searchObjectArray(allDispenses, this.query);
+  // get items() {
+  //   const medReq = this.medicationRequest && this.medicationRequest.map((request) => {
+  //     (request as any).createdAt = new Date(
+  //       (request as any).createdAt
+  //     ).toLocaleDateString("en-US");
+  //     return {
+  //       ...request,
+  //       action: request.id,
+  //       keydisplay: request.keydisplay,
+  //       dispenseId: request.dispenseId,
+  //       subject: request.subject,
+  //       medication: request.medications.map((el: any) => el.name),
+  //       unitPrice: request.medications.map((el: any) => el.unitPrice),
+  //       qantity: request.medications.map((el: any) => el.quantity),
+  //       amount: request.medications.map((el: any) => el.amount),
+  //       status: request.status,
+  //     };
+  //   });
+  //   if (!this.query) return medReq;
+  //   return search.searchObjectArray(medReq, this.query);
+  // }
+
+  types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
+  statuses = ["Show All", "On-Hold", "Cancelled", "Completed", "Stopped"];
+  availableSlots: any = [];
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", key: "action", image: true }];
   }
 
-   showItem(value: string) {
+  get items() {
+    const combined = this.medicationRequest.map(this.medicationReq);
+    const requests = combined.flatMap((value) => value);
+    if (!this.query) return requests;
+    return search.searchObjectArray(requests, this.query);
+  }
+
+  medicationReq(request: any) {
+    const { medications, ...rest } = request;
+    return medications.map((medication: any) => {
+      return {
+        ...medication,
+        ...rest,
+        medicationId: medication.id,
+        requestId: request.id,
+        createdAt: new Date(request.createdAt).toLocaleDateString(),
+      };
+    });
+  }
+
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
+  getPatientMrn(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.mrn}` : "";
+  }
+
+  showItem(value: string) {
     this.openDispense = true;
     this.typeId = value;
   }
-  
+
+  viewItem(value: string) {
+    this.viewDispense = true;
+    this.typeId = value;
+  }
+
   closeModal() {
     this.openDispense = false;
+  }
+
+  async created() {
+    await this.fetchMedReq();
+
+    if (this.medicationRequest.length < 1) this.fetchMedReq();
   }
 }
 </script>
