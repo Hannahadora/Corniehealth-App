@@ -144,7 +144,8 @@
                           label="medication code"
                           placeholder="--Select--"
                         /> -->
-                        <auto-complete :label="'medication code'" :items="allDrug" @input="search"  v-model="emptyMedicationDetails.code" :placeholder="'Select'"/>
+                        <auto-complete :label="'medication code'" @click="resultData(emptyMedicationDetails.genericCode)" :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Select'"/>
+                        <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
                         <cornie-select
                             class="w-full"
                             :items="['Condition', 'Observation']"
@@ -790,7 +791,9 @@ export default class MedicationModal extends Vue {
     supplyDurationUnit: "",
   };
   emptyMedicationDetails = {
-    code : "",
+    genericCode : null as any,
+    code: "",
+    genericName : "",
     reference: "",
     courseOfTherapy: "",
     dosageInstruction : "",
@@ -810,7 +813,7 @@ export default class MedicationModal extends Vue {
     }
 
      addMedicationDetails() {
-       this.resultData(this.emptyMedicationDetails.code);
+      // this.resultData(this.emptyMedicationDetails.code);
 
         this.emptyMedicationDetails.code = this.emptyMedicationDetails.code.toString();
         this.medications.push(this.emptyMedicationDetails);
@@ -1020,10 +1023,16 @@ export default class MedicationModal extends Vue {
       "http://hl7.org/fhir/ValueSet/medication-codes"
     );
   }
-
+  get allBrand(){
+       if (!this.fullInfo || this.fullInfo.length === 0) return [];
+        return this.fullInfo.map((i: any) => {
+        return {
+            code: i.name,
+            display: i.name,
+        };
+        });
+    }
   async search(event:any){
-        console.log(event.target.value,"VSLUEJFFJ");
-        console.log(event,"000");
         const AllNotes = cornieClient().get(
         `/api/v1/emdex/generic-by-keyword/`,
         {

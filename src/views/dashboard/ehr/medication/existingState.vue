@@ -51,7 +51,7 @@
       <template #medication="{ item }">
         <div class="flex space-x-3">
           <div>
-            <p>{{ item.code}}</p>
+            <p>{{ item.genericName}}</p>
             <p class="text-gray-400">{{ item.durationInDays }} days</p>
           </div>
             <medication-drug v-if="item.substitutionAllowed == true" />
