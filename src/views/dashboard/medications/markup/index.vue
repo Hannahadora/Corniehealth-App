@@ -7,7 +7,7 @@
     :markupId="markupId"
     :locationId="locationId"
     v-else
-    @markup-saved="fetchMarkups"
+    @markup-saved="SerchMarkups"
   />
   <!-- <div v-else>
     <existing-state-user
@@ -26,7 +26,7 @@ import { namespace } from "vuex-class";
 import { Options, Vue } from "vue-class-component";
 import search from "@/plugins/search";
 import EmptyState from "./empty-state.vue";
-import { IOrganization } from "@/types/IOrganization";
+import  IMarkup  from "@/types/IMarkup";
 import ExistingStateUser from "./Components/existing-state.vue";
 import ExistingRootState from "./Components/existing-root-state.vue";
 import IPractitioner from "@/types/IPractitioner";
@@ -34,6 +34,7 @@ import IPractitioner from "@/types/IPractitioner";
 const user = namespace("user");
 const markup = namespace("markup");
 const org = namespace("organization");
+const account = namespace("user");
 const practitioner = namespace("practitioner");
 
 @Options({
@@ -49,7 +50,7 @@ export default class ExistingState extends Vue {
   @user.Getter
   cornieUser!: any;
 
-  markups = [] as any;
+  //  markups = [] as any;
 
   @org.State
   organizationInfo!: any;
@@ -63,23 +64,39 @@ export default class ExistingState extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
+  @account.State
+  currentLocation!: string;
+
   locations = [] as any;
 
   locationId = null;
 
-  async fetchMarkups() {
+  @markup.State
+  markups!: IMarkup[];
+
+  @markup.Action
+  fetchMarkups!: () => Promise<void>;
+
+  @markup.Action
+  fetchLocationMarkups!: (locationId: string) => Promise<void>;
+
+ 
+
+  async SerchMarkups() {
     if (this.isRoot) {
-      const markups = await cornieClient().get("/api/v1/markup-discount");
-      const response = await Promise.all([markups]);
-      this.markups = response[0].data;
+      // const markups = await cornieClient().get("/api/v1/markup-discount");
+      // const response = await Promise.all([markups]);
+      // this.markups = response[0].data;
+      await this.fetchMarkups();
     } else {
       if (!this.locationId) return [];
-      const markups = await cornieClient().get(
-        `/api/v1/markup-discount/location/${this.locationId}`
-      );
-      const response = await Promise.all([markups]);
+      await this.fetchLocationMarkups(this.currentLocation);
+      // const markups = await cornieClient().get(
+      //   `/api/v1/markup-discount/location/${this.locationId}`
+      // );
+      // const response = await Promise.all([markups]);
 
-      this.markups = response[0].data;
+      // this.markups = response[0].data;
     }
   }
 
@@ -111,51 +128,61 @@ export default class ExistingState extends Vue {
       title: "Location",
       key: "location",
       show: true,
+      noOrder: true
     },
     {
       title: "Sample Unit Cost (NGN)",
       key: "sampleUnitCost",
       show: true,
+       noOrder: true
     },
     {
       title: "MARKUP (NGN)",
       key: "markupPercentage",
       show: true,
+      noOrder: true
     },
     {
       title: "CDM PRICE",
       key: "cdmPrice",
       show: true,
+      noOrder: true
     },
     {
       title: "MARGIN (NGN)",
       key: "margin",
       show: true,
+      noOrder: true
     },
     {
       title: "Margin (%)",
       key: "marginPercentage",
       show: true,
+      noOrder: true
     },
     {
       title: "Max Allowable Discount (%)",
       key: "maxAllowedDiscount",
       show: true,
+      noOrder: true
     },
     {
       title: "Minimum Price",
       key: "minPrice",
       show: true,
+      noOrder: true
     },
     {
       title: "Discounted Margin (NGN)",
       key: "discountedMargin",
       show: true,
+      noOrder: true
     },
     {
       title: "Discounted Margin (%)",
       key: "discountedMarginPercentage",
       show: true,
+      noOrder: true
     },
   ];
 
@@ -167,16 +194,18 @@ export default class ExistingState extends Vue {
   PercentageMarkup = 200;
   MaxDiscount = 10;
 
+   
+
   get items() {
     if (!this.isRoot) {
-      const markups = this.locations.map((loc: any) => {
-        const markupId = this.markups.id;
+      const markups = this.markups.map((markup: any) => {
+        const markupId = markup.id;
         this.markupId = markupId;
-        let cdm = this.SUC * (this.markups?.markupPercentage / 100);
+        let cdm = this.SUC * (markup?.markupPercentage / 100);
         let margin = Math.abs(cdm - this.SUC);
         let percentageMargin = (margin / cdm) * 100;
         let minimumPrice = Math.abs(
-          cdm * (1 - this.markups?.maxAllowedDiscount)
+          cdm * (1 - markup?.maxAllowedDiscount)
         );
         let discountMargin = Math.abs(minimumPrice - this.SUC);
         let discountMarginPercentage = Math.floor(
@@ -184,30 +213,32 @@ export default class ExistingState extends Vue {
         );
 
         return {
-          location: loc.name,
+          location: markup?.location?.name,
           sampleUnitCost: this.SUC,
-          markupPercentage: this.markups?.markupPercentage,
+          markupPercentage: markup?.markupPercentage,
           cdmPrice: cdm,
           margin: margin,
           marginPercentage: percentageMargin,
-          maxAllowedDiscount: this.markups?.maxAllowedDiscount,
+          maxAllowedDiscount: markup?.maxAllowedDiscount,
           minPrice: minimumPrice,
           discountedMargin: discountMargin,
           discountedMarginPercentage: discountMarginPercentage,
+          default: markup.default,
+          modifiable: markup.modifiable,
         };
       });
 
       if (!this.query) return markups;
       return search.searchObjectArray(markups, this.query);
     } else {
-      const markups = this.locations.map((loc: any) => {
-        const markupId = this.markups[0].id;
+      const markups = this.markups.map((markup: any) => {
+        const markupId = markup.id;
         this.markupId = markupId;
-        let cdm = this.SUC * (this.markups[0]?.markupPercentage / 100);
+        let cdm = this.SUC * (markup?.markupPercentage / 100);
         let margin = Math.abs(cdm - this.SUC);
         let percentageMargin = (margin / cdm) * 100;
         let minimumPrice = Math.abs(
-          cdm * (1 - this.markups[0]?.maxAllowedDiscount)
+          cdm * (1 - markup?.maxAllowedDiscount)
         );
         let discountMargin = Math.abs(minimumPrice - this.SUC);
         let discountMarginPercentage = Math.floor(
@@ -215,16 +246,18 @@ export default class ExistingState extends Vue {
         );
 
         return {
-          location: loc.name,
+          location: markup?.location?.name,
           sampleUnitCost: this.SUC,
-          markupPercentage: this.markups[0]?.markupPercentage,
+          markupPercentage: markup?.markupPercentage,
           cdmPrice: cdm,
           margin: margin,
           marginPercentage: percentageMargin,
-          maxAllowedDiscount: this.markups[0]?.maxAllowedDiscount,
+          maxAllowedDiscount: markup?.maxAllowedDiscount,
           minPrice: minimumPrice,
           discountedMargin: discountMargin,
           discountedMarginPercentage: discountMarginPercentage,
+          default: markup.default,
+          modifiable: markup.modifiable,
         };
       });
       if (!this.query) return markups;
@@ -250,7 +283,7 @@ export default class ExistingState extends Vue {
 
     await this.fetchLocation();
 
-    await this.fetchMarkups();
+    await this.SerchMarkups();
   }
 }
 </script>

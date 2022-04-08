@@ -65,24 +65,27 @@
               v-if="reqBody.type?.toLowerCase() === 'medication'"
             >
               <div class="w-full col-span-4">
-                <cornie-select
+                <auto-complete :label="'Generic Name'" :items="allName" @click="resultData(reqBody.genericName)" @input="searchData"  v-model="reqBody.genericName" :placeholder="'Select'"/>
+                <!-- <cornie-select
                   v-model="reqBody.genericName"
                   :label="'Generic Name'"
                   :items="['Option 1']"
-                />
+                /> -->
               </div>
               <div class="w-full col-span-4">
-                <cornie-select
+                <cornie-select :label="'Brand/Manufacturer'"  :items="allBrand"  v-model="reqBody.brand" :placeholder="'Select'"/>
+                <!-- <cornie-select
                   v-model="reqBody.brand"
                   :label="'Brand/Manufacturer'"
                   :items="['Option 1']"
-                />
+                /> -->
               </div>
               <div class="w-full col-span-4">
                 <cornie-select
                   v-model="reqBody.form"
                   :label="'Form'"
-                  :items="['Option 1']"
+                  :items="allForms"
+                  :placeholder="'Select'"
                 />
               </div>
 
@@ -321,7 +324,7 @@
       <div class="w-full my-5" v-if="isInventoryItem">
         <div
           class="stock py-5 cursor-pointer px-2"
-          @click="() => (showNewStock = true)"
+          @click="showNewStock = true"
         >
           <p class="flex justify-between px-2 sub-header">
             <span>Stock Unit of Measurement (UoM)</span>
@@ -785,14 +788,14 @@
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full m4-5">
           <cornie-btn
-            class="m-5 px-5 font-semibold rounded-full"
+            class="m-5 px-5 font-semibold rounded-lg"
             style="color: #080056; border: 1px solid #080056"
           >
             Cancel
           </cornie-btn>
 
           <cornie-btn
-            class="bg-danger px-8 text-white my-5 mx-4 font-semibold rounded-full"
+            class="bg-danger px-8 text-white my-5 mx-4 font-semibold rounded-lg"
             @click="onSave"
             :loading="loading"
           >
@@ -808,7 +811,7 @@
     <side-modal
       :visible="showNewVariant"
       :header="'Variant Characteristics'"
-      :width="400"
+      :width="600"
       @closesidemodal="() => (showNewVariant = false)"
     >
       <new-variant
@@ -817,17 +820,10 @@
       />
     </side-modal>
 
-    <side-modal
-      :visible="showNewStock"
-      :header="'Stock Unit of Measurement (UoM)'"
-      :width="550"
-      @closesidemodal="() => (showNewStock = false)"
-    >
-      <stock-unit
-        @closesidemodal="() => (showNewStock = false)"
-        @added="stockAdded"
+     <stock-unit
+        v-model="showNewStock"
+        @added-stockunit="stockAdded"
       />
-    </side-modal>
   </div>
 </template>
 
@@ -845,7 +841,7 @@ import Avatar from "@/components/avatar.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import NewVariant from "./new-variant.vue";
-import StockUnit from "./stock-unit.vue";
+import StockUnit from "./stockUnitMeasurement.vue";
 import AccordionComponent from "@/components/accordion-component.vue";
 import DeleteRed from "@/components/icons/delete-red.vue";
 
@@ -861,6 +857,8 @@ import ILocation from "@/types/ILocation";
 import { Watch } from "vue-property-decorator";
 import IPractitioner from "@/types/IPractitioner";
 import { cornieClient } from "@/plugins/http";
+import AutoComplete from "@/components/autocomplete.vue";
+import IPracticeform from "@/types/IPracticeform";
 
 const location = namespace("location");
 const catalogue = namespace("catalogues");
@@ -868,6 +866,7 @@ const markup = namespace("markup");
 const account = namespace("user");
 const org = namespace("organization");
 const practitioner = namespace("practitioner");
+const practiceform = namespace("practiceform");
 
 @Options({
   components: {
@@ -885,6 +884,7 @@ const practitioner = namespace("practitioner");
     SideModal,
     NewVariant,
     StockUnit,
+    AutoComplete,
   },
 })
 export default class NewProuct extends Vue {
@@ -917,7 +917,15 @@ export default class NewProuct extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
+  @practiceform.State
+  practiceforms!: IPracticeform[];
+
+  @practiceform.Action
+  fetchPracticeforms!: () => Promise<void>;
+
   isInventoryItem = "";
+  searchresult = [] as any;
+  fullInfo = [] as any;
 
   reqBody = {
     type: "medication",
@@ -1220,10 +1228,70 @@ export default class NewProuct extends Vue {
     }
   }
 
+   get allName() {
+        if (!this.searchresult || this.searchresult.length === 0) return [];
+        return this.searchresult.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.name,
+        };
+        });
+    }
+
+    get allBrand(){
+       if (!this.fullInfo || this.fullInfo.length === 0) return [];
+        return this.fullInfo.map((i: any) => {
+        return {
+            code: i.name,
+            display: i.name,
+        };
+        });
+    }
+
+    get allForms() {
+    if (!this.practiceforms || this.practiceforms.length === 0) return [];
+    return this.practiceforms.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+
+    async searchData(event:any){
+        const AllNotes = cornieClient().get(
+        `/api/v1/emdex/generic-by-keyword/`,
+        {
+            keyword : event.target.value,
+        }
+        );
+        const response = await Promise.all([AllNotes]);
+        if(response[0].data === 0){
+            this.searchresult = 'No medication code found'
+        }else{
+
+            this.searchresult = response[0].data;
+        }
+  }
+
+   async resultData(id:any){
+        const AllNotes = cornieClient().get(
+        `/api/v1/emdex/generic-brands/${id}`,
+        );
+        const response = await Promise.all([AllNotes]);
+        if(response[0].data === 0){
+            this.fullInfo = 'No medication code found'
+        }else{
+
+            this.fullInfo = response[0].data;
+        }
+  }
+
   async created() {
     if (!this.organizationInfo) await this.fetchOrgInfo();
 
     await this.fetchMarkups();
+    await this.fetchPracticeforms();
 
     if (!this.isRoot) {
       if (!this.practitioners.length) await this.fetchPractitioners();

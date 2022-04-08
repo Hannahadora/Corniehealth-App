@@ -60,9 +60,9 @@
     </button>
 
     <span class="w-full bg-danger">
-      <span class="flex justify-end w-full m4-5">
+      <span class="flex justify-end w-full mt-5">
         <cornie-btn
-          class="m-5 font-semibold rounded-full"
+          class="m-5 font-semibold rounded-lg"
           style="color: #080056; border: 1px solid #080056"
           @click="$emit('closesidemodal')"
         >
@@ -70,7 +70,7 @@
         </cornie-btn>
 
         <cornie-btn
-          class="bg-danger px-2 text-white my-5 mx-4 font-semibold rounded-full"
+          class="bg-danger px-2 text-white my-5 mx-4 font-semibold rounded-lg"
           @click="$emit('closesidemodal')"
         >
           Save
