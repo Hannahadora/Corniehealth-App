@@ -1,55 +1,62 @@
 <template>
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card
+      v-if="!substitute"
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
     >
-      <cornie-card-title class="">
-        <icon-btn @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Update Status
-          </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+      <cornie-card-title class="pb-6 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <icon-btn @click="show = false">
+            <arrow-left stroke="#ffffff" />
+          </icon-btn>
+          <p class="text-3xl font-bold">{{ medication.brandcode }}</p>
         </div>
+
+        <span class="flex space-x-4" @click="substitute = true">
+          <substitution-allowed class="mr-2" /> Substitute
+        </span>
       </cornie-card-title>
+
       <cornie-card-text class="flex-grow scrollable">
         <v-form class="flex-grow flex flex-col" @submit="submit">
-          <cornie-input
-            class="w-full"
-            label="Current Status"
-            placeholder="Current Status"
-            v-model="currentStatus"
+          <cornie-select
+            class="w-full mt-6"
+            label="Form"
+            placeholder="Tablet"
+            v-model="medication.tablet"
+            :items="tablets"
             :disabled="true"
-            :rules="required"
           />
           <cornie-input
             class="w-full"
-            label="Updated By"
-            placeholder="Updated By"
-            v-model="updatedBy"
+            label="strength"
+            v-model="medication.strength"
             :disabled="true"
-            :rules="required"
           />
-          <date-picker
+          <cornie-input
             class="w-full"
-            label="Last Updated"
-            v-model="lastUpdated"
+            label="Prescribed Quantity"
+            v-model="medication.quantity"
+            :disabled="true"
             :rules="required"
           />
 
           <cornie-select
             class="w-full mt-6"
-            label="Update Status"
+            label="Pharmacy Supply Type"
             placeholder="--Select one--"
-            v-model="newStatus"
-            :items="statuses"
+            v-model="supplyType"
+            :items="supplyTypes"
           />
+
+           <cornie-input
+            class="w-full"
+            label="Quantity"
+            v-model="quantity"
+            :rules="required"
+          />
+
         </v-form>
       </cornie-card-text>
 
@@ -59,14 +66,14 @@
             @click="show = false"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
-            View History
+           Save
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
           >
-            Update
+            Save & Continue
           </cornie-btn>
         </div>
       </div>
@@ -96,13 +103,16 @@ import IDispense from "@/types/IDispense";
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
+import Substituted from "@/components/icons/substituted.vue";
+import SubstitutionAllowed from "@/components/icons/substitution-allowed.vue";
+
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 const appointmentRoom = namespace("appointmentRoom");
 
 @Options({
-  name: "UpdateStatusModal",
+  name: "ModifyRequest",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -118,7 +128,7 @@ const appointmentRoom = namespace("appointmentRoom");
     CancelIcon,
   },
 })
-export default class DispenseModal extends Vue {
+export default class ModifyRequestModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -126,25 +136,15 @@ export default class DispenseModal extends Vue {
   id!: string;
 
   @Prop({ type: Object, default: "" })
-  request!: IDispense;
+  medication!: IDispense;
 
   required = string().required();
 
   loading = false;
 
-  newStatus = "";
-
-  get currentStatus() {
-    return "";
-  }
-
-  get updatedBy() {
-    return this.request?.performer?.name;
-  }
-
-  get statuses() {
-    return ["Active", "Substituted", "On-Hold", "Dispensed"];
-  }
+  substitute = false;
+  quantity = "";
+  supplyType = "";
 }
 </script>
 

@@ -6,7 +6,7 @@ import IMedicationReq from "@/types/ImedicationReq";
 export async function fetchMedReq() {
   try {
     const response = await cornieClient2().get(
-      "/api/v1/medication-requests/"
+      "/api/v1/medication-requests/dispenser"
     );
     if (response.success) return response.data;
   } catch (error) {}

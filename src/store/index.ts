@@ -19,8 +19,6 @@ import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
 import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
-import DiagnosticStore from "./diagnostic";
-import RefferalStore from "./refferal";
 
 import CalenderStore from "./calendar";
 import PrefrenceStore from "./prefrence";
@@ -115,12 +113,7 @@ export default createStore({
     prefrence: PrefrenceStore,
     cancel: CanelStore,
     kyc: KycStore,
-<<<<<<< HEAD
 
     dispense: DispenseStore
-=======
-    diagnostic: DiagnosticStore,
-    refferal: RefferalStore,
->>>>>>> f2fa5b0703657e5e6ca1cb2740fe67ee61f1c3ab
   },
 } as StoreOptions<any>);

@@ -37,13 +37,27 @@
                 :rules="required"
               />
 
-              <cornie-select
-                class="w-full"
-                label="Customer"
-                placeholder="--Search or Create New--"
-                v-model="custodian"
+              <auto-complete
+                v-bind="$attrs"
+                v-model="customer"
+                :filter="customerFilter"
                 :items="customers"
-              />
+              >
+                <template #item="{ item }">
+                  <div class="w-full flex items-center my-1 justify-between">
+                    <div class="flex items-center">
+                      <avatar :src="item.image" />
+                      <div class="flex ml-1 flex-col">
+                        <span class="text-xs">{{ item.name }}</span>
+                      </div>
+                    </div>
+                    <span class="text-xs font-semibold text-gray-500">
+                      {{ item.mrn }}
+                    </span>
+                  </div>
+                </template>
+              </auto-complete>
+
               <cornie-select
                 class="w-full"
                 label="Type"
@@ -236,7 +250,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient } from "@/plugins/http";
+import { cornieClient2 } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
@@ -248,7 +262,6 @@ import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import FullPayment from "./components/FullPayment.vue";
 import SplitPayment from "./components/SplitPayment.vue";
-
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
@@ -282,10 +295,12 @@ export default class AppointmentRoomDialog extends Vue {
 
   loading = false;
   activeTab = "Full Payment";
+  customers = <any>[];
+  customerFilter = "";
 
+  customer = "";
   reference = "";
   salesDate = 0;
-  customers = "";
   types = "";
 
   getKeyValue = getTableKeyValue;
@@ -312,6 +327,47 @@ export default class AppointmentRoomDialog extends Vue {
       show: true,
     },
   ];
+
+  //   get customers() {
+  //   return this.practitioners.map((practitioner) => ({
+  //     ...practitioner,
+  //     code: practitioner.id,
+  //     display: printPractitioner(practitioner),
+  //   }));
+  // }
+
+  @Watch("customerFilter")
+  filterChanged() {
+    this.setCustomers();
+  }
+  async setCustomers() {
+    await this.fetchCustomers();
+  }
+
+  async fetchCustomers() {
+    try {
+      const { data } = await cornieClient2().get(
+        `/api/v1/pharmacy/find-customer/?query=${this.customerFilter}`
+      );
+      this.customers =
+        data[0].map((customer: any) => ({
+          ...customer,
+          code: customer.id,
+          name: customer.name,
+          mrn: customer.mrn,
+          // display: printCustomer(customer),
+        })) || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching customers details",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    await this.fetchCustomers();
+  }
 }
 </script>
 

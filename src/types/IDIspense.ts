@@ -16,6 +16,7 @@ interface IPInfo {
 }
 
 export default interface IDispense {
+    status: string,
     createdAt: string,
     priority: string,
     requester: string,

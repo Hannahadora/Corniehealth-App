@@ -4,19 +4,15 @@
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
     >
-      <cornie-card-title class="">
-        <icon-btn @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
-        <div class="pb-6 flex items-center space-x-4">
-          <img src="" alt="" />
+      <cornie-card-title class="pb-6 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <icon-btn @click="show = false">
+            <arrow-left stroke="#ffffff" />
+          </icon-btn>
           <p class="text-3xl font-bold">Medication Request</p>
-
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
         </div>
+
+        <cancel-icon class="float-right cursor-pointer" @click="show = false" />
       </cornie-card-title>
 
       <cornie-card-text>
@@ -24,17 +20,17 @@
           <div>
             <span class="text-white text-sm mr-2">Dispense ID #:</span>
             <span class="font-semi-bold text-white">{{
-              dispense.dispenserId
+              request.requestrId
             }}</span>
           </div>
           <div>
             <span class="text-white text-sm mr-2">Status:</span>
-            <span class="font-semi-bold text-white">{{ dispense.status }}</span>
+            <span class="font-semi-bold text-white">{{ request.status }}</span>
           </div>
           <div>
-            <span class="text-white text-sm mr-2">Dispense Date:</span>
+            <span class="text-white text-sm mr-2">request Date:</span>
             <span class="font-semi-bold text-white">{{
-              dispense.createdAt
+              request.createdAt
             }}</span>
           </div>
         </div>
@@ -45,13 +41,13 @@
           <div>
             <span class="text-white text-sm mr-2">Safety Cap Request</span>
             <span class="font-semi-bold">{{
-              dispense.safetyCapRequest ? dispense.safetyCapRequest : ""
+              request?.safetyCapRequest ? request?.safetyCapRequest : ""
             }}</span>
           </div>
           <div>
             <span class="text-white text-sm mr-2">Delivery Instruction:</span>
             <span class="font-semi-bold">{{
-              dispense.deliveryInstruction ? dispense.deliveryInstruction : ""
+              request.deliveryInstruction ? request?.deliveryInstruction : ""
             }}</span>
           </div>
         </div>
@@ -61,94 +57,120 @@
             <p class="font-bold mb-4">Request Information</p>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Date Reqested</span>
-              <span class="">{{ dispense?.dateRequested }}</span>
+              <span class="">{{ request?.requesterId }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Encounter ID</span>
-              <span class="">{{ dispense?.dateRequested }}</span>
+              <span class="">{{ request?.requesterId }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">ICD-11 Code</span>
-              <span class="">{{ dispense?.dateRequested }}</span>
+              <span class="">{{ request?.requesterId }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Priority</span>
-              <span class="">{{ dispense?.priority }}</span>
+              <span class="">{{ request?.priority }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Requester ID</span>
-              <span class="">{{ dispense?.requesterId }}</span>
+              <span class="">{{ request?.requesterIdentifier }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Practitioner ID</span>
-              <span class="">{{ dispense?.dispenserId }}</span>
+              <span class="">{{ request?.practitonerId }}</span>
             </div>
           </div>
           <div class="w-bg1">
             <p class="font-bold mb-4">Patient Information</p>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Patient Name</span>
-              <span class="">{{ dispense?.patient.name }}</span>
+              <span class="">{{ request?.patient?.name }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">MRN #</span>
-              <span class="">{{ dispense?.patient.mrn }}</span>
+              <span class="">{{ request?.patient?.mrn }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Payment Info</span>
-              <span class="">{{ dispense?.patient.phone }}</span>
+              <span class="">{{ request?.patient?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Phone Number</span>
-              <span class="">{{ dispense?.patient?.phone }}</span>
+              <span class="">{{ request?.patient?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Email</span>
-              <span class="">{{ dispense?.patient.email }}</span>
+              <span class="">{{ request?.patient?.email }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Address</span>
-              <span class="">{{ dispense?.patient.address }}</span>
+              <span class="">{{ request?.patient?.address }}</span>
             </div>
           </div>
           <div class="blue-bg1">
             <p class="font-bold mb-4">Performer Information</p>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Patient Name</span>
-              <span class="">{{ dispense?.patient.name }}</span>
+              <span class="">{{ request?.performer?.name }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">MRN #</span>
-              <span class="">{{ dispense?.patient.mrn }}</span>
+              <span class="">{{ request?.performer?.mrn }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Payment Info</span>
-              <span class="">{{ dispense?.patient.phone }}</span>
+              <span class="">{{ request?.performer?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Phone Number</span>
-              <span class="">{{ dispense?.patient?.phone }}</span>
+              <span class="">{{ request?.performer?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Email</span>
-              <span class="">{{ dispense?.patient.email }}</span>
+              <span class="">{{ request?.performer?.email }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Address</span>
-              <span class="">{{ dispense?.patient.address }}</span>
+              <span class="">{{ request?.performer?.address }}</span>
             </div>
           </div>
         </div>
 
-        <cornie-table :columns="rawHeaders" v-model="items" class="mt-7">
+      
+        <cornie-table
+          :columns="rawHeaders"
+          v-model="items"
+          :listmenu="true"
+          :check="false"
+        >
           <template #actions="{ item }">
             <div
               class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="showItem(item.id)"
+              @click="modifyItem(item)"
             >
               <edit-icon class="text-danger fill-current" />
               <span class="ml-3 text-xs">Modify</span>
             </div>
+          </template>
+          <template #medication="{ item }">
+            <div class="flex space-x-3">
+              <div>
+                <p class="text-gray-400">
+                  {{ item.brandCode }}
+                </p>
+              </div>
+            </div>
+          </template>
+          <template #unitPrice="{ item }">
+            <span>{{ item.unitPrice }}</span>
+          </template>
+          <template #quantity="{ item }">
+            <span>{{ item.quantity }}</span>
+          </template>
+          <template #amount="{ item }">
+            <span>
+              {{ item.amount }}
+            </span>
           </template>
         </cornie-table>
 
@@ -170,19 +192,23 @@
               <tbody>
                 <tr>
                   <td>Total Discount</td>
-                  <td>----</td>
+                  <td>
+                    {{ request.totalDiscount ? request.totalDiscount : "0" }}
+                  </td>
                 </tr>
                 <tr>
                   <td>Sub Total</td>
-                  <td>----</td>
+                  <td>{{ request.subTotal ? request.subTotal : "0" }}</td>
                 </tr>
                 <tr>
                   <td class="font-bold">Shipping Cost</td>
-                  <td>----</td>
+                  <td class="font-bold">
+                    {{ request.shippingCost ? request.shippingCost : "0" }}
+                  </td>
                 </tr>
                 <tr class="">
                   <td class="font-bold">Grand Total</td>
-                  <td>----</td>
+                  <td class="font-bold">{{ grandTotal }}</td>
                 </tr>
               </tbody>
             </table>
@@ -196,14 +222,14 @@
             @click="show = false"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
-            View History
+            Post Bill
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
           >
-            Update
+            Collect Payment
           </cornie-btn>
         </div>
       </div>
@@ -217,7 +243,9 @@ import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
+import EditIcon from "@/components/icons/edit.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -226,7 +254,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient } from "@/plugins/http";
+import { cornieClient, cornieClient2 } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
@@ -238,10 +266,10 @@ import IMedicationReq from "@/types/ImedicationReq";
 import IDispense from "@/types/IDispense";
 
 const dispense = namespace("dispense");
-const request = namespace("request");
+const user = namespace("user");
 
 @Options({
-  name: "AppointmentRoomDialog",
+  name: "ViewRequestModal",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -255,6 +283,8 @@ const request = namespace("request");
     CornieRadio,
     DatePicker,
     CancelIcon,
+    CornieTable,
+    EditIcon
   },
 })
 export default class ViewRequest extends Vue {
@@ -264,12 +294,14 @@ export default class ViewRequest extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: "" })
+  request!: IDispense;
+
   required = string().required();
 
   query = "";
 
   loading = false;
-  activeTab = "Full Payment";
 
   reference = "";
   salesDate = 0;
@@ -278,11 +310,37 @@ export default class ViewRequest extends Vue {
 
   location = [];
 
+  @user.Getter
+  authorizedLocations!: any;
+
+  @user.Getter
+  authCurrentLocation!: any;
+
   @dispense.State
   dispense!: IDispense;
 
   @dispense.Action
-  viewDispense!: (requestId: string, locationId: string) => Promise<void>;
+  viewDispense!: (locationId: string, requestId: string) => Promise<void>;
+
+  get statuses() {
+    return ["Active", "Substituted", "On-Hold", "Dispensed"];
+  }
+
+  get locationId() {
+    return this.authCurrentLocation;
+  }
+
+  get requestId() {
+    return this.id;
+  }
+
+  get grandTotal() {
+    return (
+      this.request?.subTotal +
+        this.request?.totalDiscount +
+        this.request?.shippingCost || 0
+    );
+  }
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -303,52 +361,39 @@ export default class ViewRequest extends Vue {
       show: true,
     },
     {
-      title: "Amount",
+      title: "AMOUNT",
       key: "amount",
       show: true,
     },
   ];
 
-  // get items() {
-  //   const medications = this.dispense && this.dispense?.medications.map((med) => {
-  //     (med as any).createdAt = new Date(
-  //       (med as any).createdAt
-  //     ).toLocaleDateString("en-US");
-  //     return {
-  //       ...med,
-  //       action: med.code,
-  //       keydisplay: "XXXXXXX",
-  //       medication: med.name,
-  //       unitPrice: med.unitPrice,
-  //       quantity: med.quantity,
-  //       amount: med.amount,
-  //     };
-  //   });
-  //   if (!this.query) return medications;
-  //   return search.searchObjectArray(medications, this.query);
+  // get refills() {
+  //   return this.selectedItem?.refills ?? [];
   // }
+  // get medications() {
+  //   return [this.selectedItem];
+  // }
+  get items() {
+    const requests =  this.request && this.request?.medications?.map((request) => {
+      const refillses = this.request.medications.map(
+        (medication: any) => medication.refills
+      );
+      return {
+        ...request,
+        action: request,
+        refils: refillses[0],
+      };
+    });
 
-  get statuses() {
-    return ["Active", "Substituted", "On-Hold", "Dispensed"];
+    return requests;
+    // if (!this.query) return shifts;
+    // return search.searchObjectArray(shifts, this.query);
   }
 
-  async fetchLocation() {
-    const AllLocation = cornieClient().get(
-      "/api/v1/location/myOrg/getMyOrgLocations"
-    );
-    const response = await Promise.all([AllLocation]);
-    this.location = response[0].data;
+  modifyItem(item: any) {
+    this.$emit('modifyItem', item)
   }
 
-  getLocationId(id: string) {
-    const pt: any = this.location.find((i: any) => i.id === id);
-    return pt ? `${pt.id}` : "";
-  }
-
-  async created() {
-    this.fetchLocation()
-    // this.viewDispense(this.id, this.getLocationId(this.id));
-  }
 }
 </script>
 
