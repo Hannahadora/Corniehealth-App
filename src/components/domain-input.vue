@@ -90,12 +90,14 @@ export default class DomainInput extends Vue {
   rules!: any;
 
   get customRule() {
-    const domainRule = string().test({
-      name: "uniqueDomain",
-      message: "Domain name already exists",
-      test: checkDomain,
-    });
-    if (this.rules) return domainRule.concat(domainRule);
+    const domainRule = string()
+      .matches(/^[0-9a-z]+$/)
+      .test({
+        name: "uniqueDomain",
+        message: "Domain name already exists",
+        test: checkDomain,
+      });
+    if (this.rules) return domainRule.concat(this.rules);
     return domainRule;
   }
 
