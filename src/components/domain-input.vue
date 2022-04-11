@@ -46,7 +46,7 @@ import { string, StringSchema } from "yup";
 import { cornieClient } from "@/plugins/http";
 
 async function checkDomain(domainName?: string) {
-  if (!domainName) return false;
+  if (!domainName) return true;
   try {
     const { success } = await cornieClient().post(
       "/api/v1/domain/checkDomain",
