@@ -391,7 +391,7 @@ export default class ViewRequest extends Vue {
   //   return [this.selectedItem];
   // }
   get items() {
-    const requests =  this.request?.medications?.map((request) => {
+    const requests =  this.request?.medications?.map((request: any) => {
       const refillses = this.request?.medications?.map(
         (medication: any) => medication.refills
       );
@@ -411,7 +411,7 @@ export default class ViewRequest extends Vue {
     this.requestDetails = false
     this.viewModificationModal = true
     this.medicationId = value
-    const item: any  = this.request?.medications?.find((el) => el.brandCode = value)
+    const item: any  = this.request?.medications?.find((el: any) => el.brandCode = value)
     this.selectedMedication = item
   }
 
