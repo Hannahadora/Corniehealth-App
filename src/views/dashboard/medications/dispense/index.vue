@@ -97,10 +97,11 @@
           <div class="flex space-x-3">
             <div>
               <p>{{ item.genericName }}</p>
+
               <p class="text-gray-400">{{ item.durationInDays }} days</p>
             </div>
-            <medication-drug v-if="item.substitutionAllowed == true" />
-            <refill-drug v-else />
+            <substituted class="mr-2" v-if="item.substitutionAllowed" />
+            <substitution-allowed v-else class="mr-2" />
           </div>
         </template>
         <template #dosage="{ item }">
@@ -198,19 +199,12 @@
       v-model="openDispense"
       :request="request"
       @closesidemodal="closeModal"
-      @viewHistory="viewHistory(id)"
     />
 
     <view-dispense
       :id="requestId"
       :request="request"
       v-model="viewDispenseDetails"
-    />
-
-    <modify-request
-      :id="requestId"
-       :medication="medication"
-      v-model="viewModificationModal"
     />
   </div>
 </template>
@@ -242,7 +236,6 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 
 import DispenseModal from "./DispenseModal.vue";
 import ViewDispense from "./ViewDispense.vue";
-import ModifyRequest from "./ModifyRequest.vue";
 
 import IMedicationReq from "@/types/ImedicationReq";
 import IDispense from "@/types/IDispense";
@@ -275,13 +268,11 @@ const user = namespace("user");
     ArrowRightIcon,
     DispenseModal,
     ViewDispense,
-    ModifyRequest,
   },
 })
 export default class DISPENSE extends Vue {
   query = "";
   request = "";
-  medication = "";
   requestId = "";
   openDispense = false;
   viewDispenseDetails = false;
@@ -293,7 +284,6 @@ export default class DISPENSE extends Vue {
   totalRx = 0;
   totalDispensed = 0;
   totalVolume = 0;
-  viewModificationModal = false
 
   // get patientId() {
   //   return this.$route.params.id as string
@@ -490,13 +480,6 @@ export default class DISPENSE extends Vue {
     this.setRequest();
   }
 
-  viewHistory(id: any) {
-    this.openDispense = false;
-    this.viewDispenseDetails = true;
-    this.requestId = id;
-    this.setRequest();
-  }
-
   async setRequest() {
     // const request = await this.viewDispense(this.id, this.locationId);
     try {
@@ -516,11 +499,7 @@ export default class DISPENSE extends Vue {
     this.openDispense = false;
   }
 
-  modifyItem(medication: any) {
-    this.viewDispenseDetails = false;
-    this.medication = medication
-    this.viewModificationModal = true
-  }
+
   async created() {
     await this.fetchMedReq();
 

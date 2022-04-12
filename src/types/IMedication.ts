@@ -9,6 +9,7 @@ interface IRefill {
 }
 
 export default interface IMedication {
+    id: string,
     code: string,
     name: string,
     reference: string,

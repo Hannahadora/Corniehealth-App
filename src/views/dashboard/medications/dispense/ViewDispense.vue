@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-10/12 h-full">
+  <cornie-dialog v-model="show" right class="w-10/12 h-full"> 
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
@@ -146,7 +146,7 @@
           <template #actions="{ item }">
             <div
               class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="modifyItem(item)"
+              @click="modifyItem(item.brandCode)"
             >
               <edit-icon class="text-danger fill-current" />
               <span class="ml-3 text-xs">Modify</span>
@@ -235,6 +235,10 @@
       </div>
     </cornie-card>
   </cornie-dialog>
+
+  <modify-request @medication-modified="medicationModiifed" :id="requestid" :medication="selectedMedication"
+      v-model="viewModificationModal"
+    />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -261,9 +265,13 @@ import IAppointmentRoom from "@/types/IAppointmentRoom";
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
+import ModifyRequest from './ModifyRequest.vue'
+
 import search from "@/plugins/search";
 import IMedicationReq from "@/types/ImedicationReq";
 import IDispense from "@/types/IDispense";
+import IMedication from "@/types/IMedication";
+import { AnyObject } from "yup/lib/object";
 
 const dispense = namespace("dispense");
 const user = namespace("user");
@@ -284,7 +292,8 @@ const user = namespace("user");
     DatePicker,
     CancelIcon,
     CornieTable,
-    EditIcon
+    EditIcon,
+    ModifyRequest
   },
 })
 export default class ViewRequest extends Vue {
@@ -297,16 +306,24 @@ export default class ViewRequest extends Vue {
   @Prop({ type: Object, default: "" })
   request!: IDispense;
 
+  viewModificationModal = false;
+  requestDetails = true;
+
+  medicationId = "";
+
   required = string().required();
 
   query = "";
 
   loading = false;
 
+  selectedMedication = {} as IMedication;
+
   reference = "";
   salesDate = 0;
   customers = "";
   types = "";
+  coupon = "";
 
   location = [];
 
@@ -374,13 +391,13 @@ export default class ViewRequest extends Vue {
   //   return [this.selectedItem];
   // }
   get items() {
-    const requests =  this.request && this.request?.medications?.map((request) => {
-      const refillses = this.request.medications.map(
+    const requests =  this.request?.medications?.map((request) => {
+      const refillses = this.request?.medications?.map(
         (medication: any) => medication.refills
       );
-      return {
+      return { 
         ...request,
-        action: request,
+        action: request.brandCode,
         refils: refillses[0],
       };
     });
@@ -390,8 +407,12 @@ export default class ViewRequest extends Vue {
     // return search.searchObjectArray(shifts, this.query);
   }
 
-  modifyItem(item: any) {
-    this.$emit('modifyItem', item)
+  modifyItem(value: any) {
+    this.requestDetails = false
+    this.viewModificationModal = true
+    this.medicationId = value
+    const item: any  = this.request?.medications?.find((el) => el.brandCode = value)
+    this.selectedMedication = item
   }
 
 }
