@@ -252,12 +252,12 @@ export const SettingsRoute: RouteRecordRaw = {
       name: "Dispense",
       component: () => import("@/views/dashboard/medications/dispense/index.vue"),
     },
-    // {
-    //   path: "view-request",
-    //   props: true,
-    //   name: "View Request",
-    //   component: () => import("@/views/dashboard/medications/dispense/ViewRequest.vue"),
-    // },
+    {
+      path: "virtual-lab-orders",
+      props: true,
+      name: "Virtual-Lab-Orders",
+      component: () => import("@/views/dashboard/diagnostics/virtual-lab-orders/index.vue"),
+    },
     {
       path: "diagnostics",
       name: "Diagnostic Report",

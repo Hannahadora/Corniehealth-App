@@ -8,96 +8,45 @@
       v-if="empty"
     >
       <img src="@/assets/rafiki.svg" class="mb-2" />
-      <h4 class="text-black text-center">There are no POS sales on record.</h4>
+      <h4 class="text-black text-center">There is no record.</h4>
       <cornie-btn
         class="bg-danger px-3 rounded-full text-white m-5"
-        @click="salesData = false; showRoom = true"
+        @click="showRoom = true"
       >
         Add New
       </cornie-btn>
     </div>
-    <div class="w-full pb-7" v-else>
-      <div class="grid grid-cols-3 gap-8 my-8">
-        <div
-          class="bg-white px-4 py-6 c-shadow flex items-center justify-between rounded-2xl"
-        >
-          <div>
-            <p class="mb-1 text-sm" style="color: #667499">Total Sales</p>
-            <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalSales }}
-            </p>
-          </div>
-          <div>
-            <img src="../../../../assets/img/total-sales-badge.png" alt="" />
-          </div>
-        </div>
-        <div
-          class="bg-white px-4 py-6 c-shadow flex items-center justify-between rounded-2xl"
-        >
-          <div>
-            <p class="mb-1 text-sm" style="color: #667499">Completed Sales</p>
-            <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ completedSales }}
-            </p>
-          </div>
-          <div>
-            <img src="../../../../assets/img/completed-sales.png" alt="" />
-          </div>
-        </div>
-        <div
-          class="bg-white px-4 py-6 c-shadow flex items-center justify-between rounded-2xl"
-        >
-          <div>
-            <p class="mb-1 text-sm" style="color: #667499">
-              Total Sales Volume
-            </p>
-            <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalSalesVolume }}
-            </p>
-          </div>
-          <div>
-            <img src="../../../../assets/img/total-sales-vol.png" alt="" />
-          </div>
-        </div>
-      </div>
+    <div class="w-full pb-7 mt-28" v-else>
 
-      <span class="flex justify-end">
-        <cornie-btn
-          class="bg-danger px-3 py-1 text-base rounded-lg text-white m-5"
-          @click="showRecord= true"
-        >
-          Create New
-        </cornie-btn>
-      </span>
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="viewItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs">View</span>
+            <eye-blue-bg class="text-danger fill-current" />
+            <span class="ml-3 text-xs">View Result</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Void</span>
+            <update-status-yellow class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update Status</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Process return</span>
+            <plus-icon-black class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Add Appointment</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="deleteItem(item.id)"
           >
-            <delete-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Reprint</span>
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update Report</span>
           </div>
         </template>
       </cornie-table>
@@ -126,7 +75,7 @@
       </div>
     </div>
   </div>
-  <pos-dialog v-model="showRecord" :salesData="salesData" :id="salesId" @sales-added="salesAdded" :sales="sales" />
+  <view-orders v-model="showResult" :id="typeId" :request="request" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -144,14 +93,15 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
 import { cornieClient } from "@/plugins/http";
-import PosDialog from "./PosDialog.vue";
 import search from "@/plugins/search";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import ArrowLeftIcon from "../components/arrowleft.vue";
-import ArrowRightIcon from "../components/arrow-right.vue";
+import EyeBlueBg from "@/components/icons/eye-blue-bg.vue";
+import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
+import UpdateReportGreen from "@/components/icons/update-report-green.vue";
+import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
+
+import ViewOrders from './ViewOrders.vue'
 
 const location = namespace("location");
 
@@ -159,7 +109,6 @@ const location = namespace("location");
   components: {
     CornieTable,
     SortIcon,
-    PosDialog,
     ThreeDotIcon,
     SearchIcon,
     PrintIcon,
@@ -168,21 +117,20 @@ const location = namespace("location");
     FilterIcon,
     PlusIcon,
     IconInput,
-    DeleteIcon,
-    EditIcon,
+    EyeBlueBg,
+    PlusIconBlack,
     ColumnFilter,
     TableOptions,
-
-    ArrowLeftIcon,
-    ArrowRightIcon,
+    UpdateStatusYellow,
+    UpdateReportGreen,
+  ViewOrders,
   },
 })
-export default class POSSALES extends Vue {
+export default class VirtualLabOrder extends Vue {
   query = "";
-  salesId = "";
-  sales = "";
-  salesData = false;
+  typeId = "";
   showRecord = false;
+  showResult = false;
   practitioner = [] as any;
   location = [] as any;
   updatedBy = "";
@@ -192,39 +140,44 @@ export default class POSSALES extends Vue {
   completedSales = 0;
   totalSalesVolume = 0;
 
-  allPosSales = [{}]
+  diagnosticsReports = [{}]
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "REFERENCE NO",
-      key: "referenceNo",
+      title: "REQUEST ID",
+      key: "requestId",
       show: true,
     },
     {
-      title: "DATE",
-      key: "date",
+      title: "REPORT ID",
+      key: "reportId",
       show: true,
     },
     {
-      title: "CUSTOMER",
-      key: "customer",
+      title: "CATEGORY",
+      key: "category",
       show: true,
     },
     {
-      title: "TYPE",
-      key: "type",
+      title: "SERVICE NAME",
+      key: "serviceName",
       show: true,
     },
     {
-      title: "SALES TOTAL",
-      key: "salesTotal",
+      title: "SUBJECT",
+      key: "subject",
       show: true,
     },
     {
-      title: "PAYMENT TOTAL",
-      key: "paymentTotal",
+      title: "PERFORMER",
+      key: "performer",
+      show: true,
+    },
+    {
+      title: "INTERPRETER",
+      key: "interpreter",
       show: true,
     },
     {
@@ -235,45 +188,37 @@ export default class POSSALES extends Vue {
   ];
 
   get items() {
-    const allPosSales = this.allPosSales.map((sale) => {
-      (sale as any).createdAt = new Date(
-        (sale as any).createdAt
+    const diagnosticsReports = this.diagnosticsReports.map((report) => {
+      (report as any).createdAt = new Date(
+        (report as any).createdAt
       ).toLocaleDateString("en-US");
       return {
-        ...sale,
+        ...report,
         // action: sale.id,
         keydisplay: "XXXXXXX",
-        referenceNo: "-----",
-        Date: "-----",
-        customer: "-----",
-        type: "-----",
-        salesTotal: "-----",
-        paymentTotal: "-----",
+        requestId: "-----",
+        reportId: "-----",
+        category: "-----",
+        serviceName: "-----",
+        subject: "-----",
+        performer: "-----",
+        interpreter: "-----",
         status: "Active",
       };
     });
-    if (!this.query) return allPosSales;
-    return search.searchObjectArray(allPosSales, this.query);
+    if (!this.query) return diagnosticsReports;
+    return search.searchObjectArray(diagnosticsReports, this.query);
   }
 
   
    showItem(value: string) {
     this.showRecord = true;
-    this.salesId = value;
+    this.typeId = value;
   }
   
    viewItem(value: string) {
-    this.showRecord = true;
-    this.salesId = value;
-    this.findSales(value)
-  }
-
-  findSales(value: any) {
-    const xSales: any = this.allPosSales.find((sales: any) => {
-      sales.id === value
-    })
-    this.sales = xSales;
-    this.salesData = true
+    this.showResult = true;
+    this.typeId = value;
   }
   
   closeModal() {

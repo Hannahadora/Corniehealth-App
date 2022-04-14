@@ -33,32 +33,34 @@
                 class="w-full"
                 label="Sales Date"
                 v-model="salesDate"
+                :disabled="salesData"
               />
 
               <div class="relative">
                 <span
-                  class="text-red-500 float-right text-sm absolute right-0 cursor-pointer"
+                  class="z-20 text-red-500 float-right font-bold text-sm absolute right-0 cursor-pointer"
+                  @click.stop="addCustomerModal = true"
                   >Add</span
                 >
                 <auto-complete
                   v-bind="$attrs"
                   label="Customer"
                   placeholder="Select one"
-                  v-model="customer.name"
+                  v-model="customerId"
+                  :rules="required"
                   :items="customers"
                   @query="fetchCustomers"
+                  :disabled="salesData"
                 >
                   <template #item="{ item }">
-                    <div class="w-full flex items-center my-1 justify-between">
-                      <div class="flex items-center">
-                        <!-- <avatar :src="item.image" /> -->
-                        <div class="flex ml-1 flex-col">
-                          <span class="text-xs">{{ item.name }}</span>
-                        </div>
+                    <div class="w-full flex items-center my-1">
+                      <!-- <avatar :src="item.image" /> -->
+                      <div class="ml-4 flex flex-col">
+                        <span class="text-xs">{{ item.name }}</span>
+                        <span class="text-xs font-semibold text-gray-500">
+                          {{ item.mrn }}
+                        </span>
                       </div>
-                      <span class="text-xs font-semibold text-gray-500">
-                        {{ item.mrn }}
-                      </span>
                     </div>
                   </template>
                 </auto-complete>
@@ -69,22 +71,42 @@
                 label="Type"
                 placeholder="--Select--"
                 v-model="type"
-                :items="['Store Pick-Up', 'Delivery']"
+                :items="['pickup', 'delivery']"
+                :disabled="salesData"
               />
             </div>
 
-            <div class="flex items-center justify-end mt-12">
+            <div
+              v-if="!salesData || !checkSales"
+              class="flex items-center justify-between mt-12"
+            >
+              <div class="">
+                <cornie-search
+                  class="w-full rounded-full mb-3"
+                  placeholder="Search Item by name or code"
+                  v-model="medQuery"
+                  :results="medicationData"
+                >
+                </cornie-search>
+              </div>
               <cornie-btn
                 type="submit"
                 class="text-white bg-danger px-12 rounded-lg"
                 @click.prevent="addMedication"
               >
+                <plus-icon-white class="mr-3" />
                 Add
               </cornie-btn>
             </div>
           </v-form>
 
-          <cornie-table :columns="rawHeaders" v-model="items" class="mt-7">
+          <cornie-table
+            :columns="rawHeaders"
+            v-model="items"
+            :listmenu="true"
+            :check="false"
+            class="mt-7"
+          >
             <template #actions="{ item }">
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -106,7 +128,7 @@
           <div class="mt-8 flex items-start justify-between">
             <div class="w-1/3">
               <div
-                class="p-4 border rounded-md flex items-center justify-between w-full"
+                class="px-4 py-3 text-sm border rounded-md flex items-center justify-between w-full"
               >
                 <span class="w-3/5 text-xs">Coupon | Promo Code</span>
                 <input
@@ -114,9 +136,12 @@
                   type="text"
                   v-model="coupon"
                   placeholder="----"
+                  :disabled="salesData"
                 />
-              </div> 
-              <span class="text-xs text-red-500 mt-2 text-right">A Coupon/Promo discount of 20% applies.</span>
+              </div>
+              <span class="text-xs text-red-500 mt-2 text-right"
+                >A Coupon/Promo discount of 20% applies.</span
+              >
             </div>
 
             <div class="w-1/3">
@@ -171,17 +196,19 @@
               <full-payment
                 v-if="activeTab === 'Full Payment'"
                 :payments="payments"
+                :salesData="salesData"
               />
               <split-payment
                 v-if="activeTab === 'Split Payment'"
                 :payments="payments"
+                :salesData="salesData"
               />
             </div>
           </div>
         </cornie-card-text>
       </div>
 
-      <div class="flex items-center justify-between mt-14">
+      <div class="flex items-center justify-between mt-14" v-if="checkSales && sales.status !== 'completed'">
         <div>
           <span
             class="text-red-500 font-bold text-base cursor-pointer"
@@ -196,7 +223,7 @@
           >
             Cancel
           </cornie-btn>
-          <cornie-btn
+          <cornie-btn 
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -208,6 +235,8 @@
       </div>
     </cornie-card>
   </cornie-dialog>
+
+  <add-customer v-model="addCustomerModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -215,6 +244,7 @@ import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import PlusIconWhite from "@/components/icons/plus-icon-white.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -230,13 +260,15 @@ import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
 import DatePicker from "@/components/datepicker.vue";
-import SearchInput from "@/components/search-input.vue";
+import SearchInput from "@/components/singleSearch.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import FullPayment from "./components/FullPayment.vue";
 import SplitPayment from "./components/SplitPayment.vue";
+import AddCustomer from "./AddCustomer.vue";
+import CornieSearch from "@/components/search-input.vue";
 
 import search from "@/plugins/search";
 
@@ -265,33 +297,47 @@ const appointmentRoom = namespace("appointmentRoom");
     FullPayment,
     SplitPayment,
     CancelIcon,
+    CornieSearch,
+    PlusIconWhite,
+    AddCustomer,
   },
 })
-export default class AppointmentRoomDialog extends Vue {
+export default class PosDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: <any>{} })
+  sales!: any;
+
+  @Prop({ type: Boolean, default: false })
+  salesData!: boolean;
+
   required = string().required();
 
   query = "";
+  medQuery = "";
+  addCustomerModal = false;
 
   loading = false;
   activeTab = "Full Payment";
-  customers = <any>[];
+  customerDetails = <any>[];
+  medicationDetails = <any>[];
 
-  status = "";
-  type = "";
-  coupon = "";
+  status = this.sales?.status || "";
+  type = this.sales?.type || "";
+  coupon = this.sales?.coupon || "";
+  customerId = "";
   customer = {
-    name: "",
+    name: this.sales?.customer?.name || "",
   };
-  reference = "";
-  salesDate = "";
-  medications = <any>[];
-  payments = [
+  reference = this.sales?.reference || "";
+  salesDate = this.sales?.createdAt || "";
+  medications = this.sales?.medications || <any>[];
+  medication = "";
+  payments = this.sales?.payments || [
     {
       amount: "",
       paymentType: "",
@@ -326,9 +372,12 @@ export default class AppointmentRoomDialog extends Vue {
     },
   ];
 
-   get patientId() {
-    return (this.$route.params.id || this.$route.params.patientId) as string;
-  }
+   get checkSales() {
+    if (Object.entries(this.sales).length === 0) {
+      return true;
+    }
+    return false;
+  };
 
   get locationId() {
     return this.authCurrentLocation;
@@ -354,14 +403,7 @@ export default class AppointmentRoomDialog extends Vue {
       const { data } = await cornieClient2().get(
         `/api/v1/pharmacy/find-customer/?query=${query}`
       );
-      this.customers =
-        data[0].map((customer: any) => ({
-          ...customer,
-          code: customer.id,
-          name: customer.name,
-          mrn: customer.mrn,
-          // display: printCustomer(customer),
-        })) || [];
+      this.customerDetails = data || [];
     } catch (error) {
       window.notify({
         msg: "There was an error fetching customers details",
@@ -370,28 +412,73 @@ export default class AppointmentRoomDialog extends Vue {
     }
   }
 
+  get customers() {
+    const xCustomers = this.customerDetails?.map((customer: any) => {
+      return {
+        ...customer,
+        code: customer.id,
+        display: customer.name,
+        name: customer.name,
+        mrn: customer.mrn,
+        id: customer.id,
+      };
+    });
+    if (!this.query) return xCustomers;
+    return search.searchObjectArray(xCustomers, this.query);
+  }
+
+  async fetchMedications(query: string) {
+    try {
+      const { data } = await cornieClient2().get(
+        `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
+      );
+      this.medicationDetails = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching medications",
+        status: "error",
+      });
+    }
+  }
+
+  get medicationData() {
+    const xMedications = this.medicationDetails?.map((medication: any) => {
+      return {
+        ...medication,
+        code: medication.id,
+        name: medication.name,
+        display: medication.brandCode,
+        brandCode: medication.brandCode,
+        unitPrice: medication.unitPrice,
+        available: medication.available,
+        form: medication.form,
+        id: medication.id,
+        totalDiscount: medication.tota,
+      };
+    });
+    if (!this.query) return xMedications;
+    return search.searchObjectArray(xMedications, this.query);
+  }
+
+  get patientName() {
+    const pId = this.customerDetails.find((el: any) => {
+      el.id === this.customerId;
+    });
+    return pId.name;
+  }
+
   addMedication() {
-    const newM = {
-      reference: this.reference,
-      salesDate: this.salesDate,
-      customer: this.customer,
-      type: this.type,
-    };
-    this.medications.push({ ...newM });
-    this.reference = "";
-    this.salesDate = "";
-    this.customer.name = "";
-    this.type = "";
+    this.medications.push({ ...this.medicationData });
   }
 
   async addSales(type: any) {
-    if(type === 0) {
-      this.status = 'on-hold'
-    }else if (type === 1){
-      this.status = 'completed'
+    if (type === 0) {
+      this.status = "on-hold";
+    } else if (type === 1) {
+      this.status = "completed";
     }
-    const salesData = {
-      patientId: this.patientId,
+    const newSales = {
+      patientId: this.customerId,
       type: this.type,
       status: this.status,
       coupon: this.coupon,
@@ -410,12 +497,14 @@ export default class AppointmentRoomDialog extends Vue {
           paymentType: el.paymentType,
         };
       }),
-      customer: this.customer,
+      customer: {
+        name: this.customerId,
+      },
     };
     try {
       const { data } = await cornieClient2().post(
         `/api/v1/pharmacy/pos-dispense/${this.locationId}`,
-        { ...salesData }
+        { ...newSales }
       );
     } catch (error) {
       window.notify({
@@ -423,6 +512,11 @@ export default class AppointmentRoomDialog extends Vue {
         status: "error",
       });
     }
+  }
+
+  @Watch("medQuery")
+  typed(medQuery: string) {
+    this.fetchMedications(medQuery);
   }
 
   async created() {}

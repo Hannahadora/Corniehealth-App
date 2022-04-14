@@ -77,7 +77,19 @@ const links: ISidebarLink[] = [
     name: "Diagnostics",
     to: "settings/diagnostics",
     icon: "clip-board-icon",
-    hasSubsection: false,
+    hasSubsection: true,
+    children: [
+      {
+        name: "Diagnostic",
+        to: "/dashboard/provider/settings/diagnostic",
+        hasSubsection: false,
+      },
+      {
+        name: "Virtual-Lab-Orders",
+        to: "/dashboard/provider/settings/virtual-lab-orders",
+        hasSubsection: false,
+      },
+    ]
   },
   {
     name: "Medications",

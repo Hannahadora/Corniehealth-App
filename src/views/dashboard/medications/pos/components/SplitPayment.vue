@@ -12,6 +12,7 @@
         placeholder="--Enter--"
         v-model="payment.amount"
         :rules="required"
+        :disabled="salesData"
       />
 
       <cornie-select
@@ -20,11 +21,12 @@
         placeholder="--Search--"
         v-model="payment.PaymentType"
         :items="['Card', 'Cash', 'Insurance', 'Wallet', 'Others']"
+        :disabled="salesData"
       />
 
       <div>
         <div
-          v-if="payment.amountDue === '' && payment.paymentType === ''"
+          v-if="payment.amount === '' || payment.paymentType === ''"
           class="flex items-center justify-center px-5 py-2"
         >
           <img src="../../../../../assets/img/plus-blue-icon.png" alt="" />
@@ -36,7 +38,9 @@
         </div>
         <div v-else class="flex items-center justify-center px-5 py-2">
           <img src="../../../../../assets/img/del-red-icon.png" alt="" />
-          <span class="cursor-pointer text-sm text-red-500 font-bold ml-4"
+          <span
+            class="cursor-pointer text-sm text-red-500 font-bold ml-4"
+            @click="payments.splice(idx, 1)"
             >Remove</span
           >
         </div>
@@ -72,6 +76,9 @@ const appointmentRoom = namespace("appointmentRoom");
 export default class SplitPayment extends Vue {
   @Prop({ type: Array, default: [{}] })
   payments!: [{}];
+
+  @Prop({ type: Boolean, default: false })
+  salesData!: boolean;
 
   payment = {
     amount: "",

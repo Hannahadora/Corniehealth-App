@@ -11,6 +11,7 @@
         placeholder="--Enter--"
         v-model="payment.amount"
         :rules="required"
+        :disabled="salesData"
       />
 
       <cornie-select
@@ -19,6 +20,7 @@
         placeholder="--Search--"
         v-model="payment.paymentType"
         :items="['Card', 'Cash', 'Insurance', 'Wallet', 'Others']"
+        :disabled="salesData"
       />
     </div>
   </div>
@@ -51,6 +53,9 @@ const appointmentRoom = namespace("appointmentRoom");
 export default class FullPayment extends Vue {
   @Prop({ type: Array, default: [{}] })
   payments!: [{}];
+
+  @Prop({ type: Boolean, default: false })
+  salesData!: boolean;
 
   payment = {
     amount: "",

@@ -176,7 +176,19 @@ export default class CorniDashboardeSideBar extends Vue {
       name: "Diagnostics",
       to: "diagnostics",
       icon: "clip-board-icon",
-      hasSubsection: false,
+      hasSubsection: true,
+      children: [
+        {
+          name: "Diagnostic",
+          to: "/dashboard/provider/settings/diagnostics",
+          hasSubsection: false,
+        },
+        {
+          name: "Virtual-Lab-Orders",
+          to: "/dashboard/provider/settings/virtual-lab-orders",
+          hasSubsection: false,
+        },
+      ],
     },
     {
       name: "Medications",
@@ -203,7 +215,7 @@ export default class CorniDashboardeSideBar extends Vue {
           name: "Pricebook",
           to: "pricebook",
           hasSubsection: false,
-        }, 
+        },
         {
           name: "POS Sales",
           to: "/dashboard/provider/settings/pos",
