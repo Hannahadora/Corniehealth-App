@@ -1,5 +1,5 @@
 import { cornieClient2 } from "@/plugins/http";
-import { IDispenseInfo } from "@/types/IDispenseInfo";
+import IDispenseInfo from "../../types/IDispenseInfo";
 import IMedicationReq from "@/types/ImedicationReq";
 
 
