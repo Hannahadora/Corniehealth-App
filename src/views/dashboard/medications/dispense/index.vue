@@ -72,7 +72,7 @@
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="viewItem(item.id)"
           >
-            <eye-yellow class="text-danger fill-current" />
+            <eye-yellow class="text-blue-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
           <div
@@ -204,6 +204,7 @@
     <view-dispense
       :id="requestId"
       :request="request"
+      :organization="organizationInfo"
       v-model="viewDispenseDetails"
     />
   </div>
@@ -228,7 +229,7 @@ import PlusIcon from "@/components/icons/add.vue";
 import { cornieClient, cornieClient2 } from "@/plugins/http";
 import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeYelllow from "@/components/icons/eye-yellow.vue";
+import EyeYellow from "@/components/icons/eye-yellow.vue";
 import UpdateStatus from "@/components/icons/update-status.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
@@ -239,10 +240,12 @@ import ViewDispense from "./ViewDispense.vue";
 
 import IMedicationReq from "@/types/ImedicationReq";
 import IDispense from "@/types/IDispense";
+import { IOrganization } from "@/types/IOrganization";
 
 const dispense = namespace("dispense");
 const request = namespace("request");
 const user = namespace("user");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -257,7 +260,7 @@ const user = namespace("user");
     PlusIcon,
     IconInput,
     DeleteIcon,
-    EyeYelllow,
+    EyeYellow,
     UpdateStatus,
     ColumnFilter,
     TableOptions,
@@ -273,6 +276,7 @@ const user = namespace("user");
 export default class DISPENSE extends Vue {
   query = "";
   request = "";
+  organization = "";
   requestId = "";
   openDispense = false;
   viewDispenseDetails = false;
@@ -297,6 +301,12 @@ export default class DISPENSE extends Vue {
 
   @request.State
   patients!: any[];
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
 
   @request.State
   practitioners!: any[];
@@ -478,6 +488,7 @@ export default class DISPENSE extends Vue {
     this.viewDispenseDetails = true;
     this.requestId = value;
     this.setRequest();
+    this.fetchOrgInfo();
   }
 
   async setRequest() {
@@ -499,11 +510,12 @@ export default class DISPENSE extends Vue {
     this.openDispense = false;
   }
 
-
   async created() {
     await this.fetchMedReq();
 
     if (this.medicationRequest.length < 1) this.fetchMedReq();
+
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-10/12 h-full"> 
+  <cornie-dialog v-model="show" right class="w-10/12 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
@@ -35,7 +35,30 @@
           </div>
         </div>
 
-        <div class="p-4 bg-white h-20"></div>
+        <div class="p-6 bg-white h-20">
+          <div class="flex items-center justify-between">
+            <div></div>
+
+            <div class="flex flex-col text-right">
+              <div class="font-bold text-base mb-4">
+                {{ organization?.name }}
+              </div>
+              <div>{{ organization?.address }}</div>
+              <div class="flex items-center">
+                <span class="mr-2">{{ organization?.phone || "Nil" }}</span>
+                <span
+                  class="w-2 h-2 rounded-full"
+                  style="background: '#C2C7D6'"
+                ></span>
+                <span>{{ organization.email }}</span>
+                <div>
+                  <span style="color: '#C2C7D6'" ;>Patient ID:</span>
+                  {{ request?.patient?.id }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="p-4 bg-purple-900 flex items-center justify-between">
           <div>
@@ -136,7 +159,6 @@
           </div>
         </div>
 
-      
         <cornie-table
           :columns="rawHeaders"
           v-model="items"
@@ -217,6 +239,7 @@
       </cornie-card-text>
 
       <div class="flex items-center justify-end mt-24">
+        <div class="text-red-500 text-base font-bold py-3 px-9" @click="show = false">Cancel</div>
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -233,12 +256,42 @@
           </cornie-btn>
         </div>
       </div>
+
+      <div class="detail-footer">
+        <div class="text-center border-dashed border-b">
+          <span class="c-667499 text-sm mb-4"> Powered By Cornie Health </span>
+          <span class="mb-10"
+            >This is a system generated document from CornieHealth. CornieHealth
+            is a healthtech system solution vendor for healthcare providers and
+            patients. Visit
+            <a
+              class="text-red-500 font-semibold"
+              href="www.corniehealth.com"
+            ></a>
+            to create your free account.
+          </span>
+        </div>
+
+        <div class="text-center">
+          <span class="mt-10">
+            Save Earth, Go Paperless. Join so many other amazing providers and
+            patients on CornieHealth.</span
+          >
+          <span class="mt-4">
+            Document Type: Medication Prescription|Rx ID: {{ request?.Requester?.RXID }} | Requester:
+            {{ request?.Requester?.name }} | DateTime Created: {{ request?.Requester?.createdAt }}
+          </span>
+        </div>
+      </div>
     </cornie-card>
   </cornie-dialog>
 
-  <modify-request @medication-modified="medicationModiifed" :id="requestid" :medication="selectedMedication"
-      v-model="viewModificationModal"
-    />
+  <modify-request
+    @medication-modified="medicationModiifed"
+    :id="requestid"
+    :medication="selectedMedication"
+    v-model="viewModificationModal"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -265,13 +318,14 @@ import IAppointmentRoom from "@/types/IAppointmentRoom";
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import ModifyRequest from './ModifyRequest.vue'
+import ModifyRequest from "./ModifyRequest.vue";
 
 import search from "@/plugins/search";
 import IMedicationReq from "@/types/ImedicationReq";
 import IDispense from "@/types/IDispense";
 import IMedication from "@/types/IMedication";
 import { AnyObject } from "yup/lib/object";
+import { IOrganization } from "@/types/IOrganization";
 
 const dispense = namespace("dispense");
 const user = namespace("user");
@@ -293,7 +347,7 @@ const user = namespace("user");
     CancelIcon,
     CornieTable,
     EditIcon,
-    ModifyRequest
+    ModifyRequest,
   },
 })
 export default class ViewRequest extends Vue {
@@ -305,6 +359,9 @@ export default class ViewRequest extends Vue {
 
   @Prop({ type: Object, default: "" })
   request!: IDispense;
+
+  @Prop({ type: Object, default: "" })
+  organization!: IOrganization;
 
   viewModificationModal = false;
   requestDetails = true;
@@ -391,11 +448,11 @@ export default class ViewRequest extends Vue {
   //   return [this.selectedItem];
   // }
   get items() {
-    const requests =  this.request?.medications?.map((request: any) => {
+    const requests = this.request?.medications?.map((request: any) => {
       const refillses = this.request?.medications?.map(
         (medication: any) => medication.refills
       );
-      return { 
+      return {
         ...request,
         action: request.brandCode,
         refils: refillses[0],
@@ -408,13 +465,14 @@ export default class ViewRequest extends Vue {
   }
 
   modifyItem(value: any) {
-    this.requestDetails = false
-    this.viewModificationModal = true
-    this.medicationId = value
-    const item: any  = this.request?.medications?.find((el: any) => el.brandCode = value)
-    this.selectedMedication = item
+    this.requestDetails = false;
+    this.viewModificationModal = true;
+    this.medicationId = value;
+    const item: any = this.request?.medications?.find(
+      (el: any) => (el.brandCode = value)
+    );
+    this.selectedMedication = item;
   }
-
 }
 </script>
 
@@ -440,5 +498,13 @@ td {
 }
 .c-667499 {
   color: #667499;
+}
+
+.detail-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px 24px;
+  background: #f0f4fe;
 }
 </style>

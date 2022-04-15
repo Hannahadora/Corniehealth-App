@@ -75,13 +75,13 @@ const links: ISidebarLink[] = [
   },
   {
     name: "Diagnostics",
-    to: "settings/diagnostics",
+    to: "diagnostics",
     icon: "clip-board-icon",
     hasSubsection: true,
     children: [
       {
-        name: "Diagnostic",
-        to: "/dashboard/provider/settings/diagnostic",
+        name: "Diagnostics",
+        to: "/dashboard/provider/settings/diagnostics",
         hasSubsection: false,
       },
       {
@@ -154,6 +154,24 @@ const links: ISidebarLink[] = [
     hasSubsection: false,
   },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  {
+    name: "Categories",
+    to: "categories",
+    icon: "categories-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Location",
+        to: "/dashboard/provider/settings/location",
+        hasSubsection: false,
+      },
+      {
+        name: "Group",
+        to: "/dashboard/provider/settings/group",
+        hasSubsection: false,
+      },
+    ]
+  },
 ];
 
 const soloLinks = [
@@ -211,6 +229,7 @@ const soloLinks = [
     hasSubsection: false,
   },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  { name: "CAtegories", to: "categories", icon: "categories-icon", hasSubsection: true },
 ];
 export function getPracticeNav(type: EPracticeType) {
   if (type == EPracticeType.Solo) return soloLinks;

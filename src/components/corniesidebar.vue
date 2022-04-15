@@ -54,6 +54,7 @@ import ChartIcon from "./icons/chart.vue";
 import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
 import PatientIcon from "./icons/PatientIcon.vue";
+import CategoriesIcon from "./icons/categories.vue";
 import SidebarLink from "./sidebarlink.vue";
 import { namespace } from "vuex-class";
 import { AccountMeta } from "@/types/user";
@@ -86,6 +87,7 @@ const user = namespace("user");
     PillIcon,
     ClipBoardIcon,
     PatientIcon,
+    CategoriesIcon,
   },
 })
 export default class CorniDashboardeSideBar extends Vue {
@@ -179,7 +181,7 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: true,
       children: [
         {
-          name: "Diagnostic",
+          name: "Diagnostics",
           to: "/dashboard/provider/settings/diagnostics",
           hasSubsection: false,
         },
@@ -248,6 +250,24 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: false,
     },
     { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+    {
+      name: "Categories",
+      to: "categories",
+      icon: "categories-icon",
+      hasSubsection: true,
+      children: [
+        {
+          name: "Location",
+          to: "/dashboard/provider/settings/location",
+          hasSubsection: false,
+        },
+        {
+          name: "Group",
+          to: "/dashboard/provider/settings/group",
+          hasSubsection: false,
+        },
+      ],
+    },
   ];
 
   hmoLinks: ISidebarLink[] = [
