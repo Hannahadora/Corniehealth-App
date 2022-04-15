@@ -199,7 +199,7 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient, cornieClient2 } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
-import IDispense from "@/types/IDispense";
+import IDispenseInfo from "@/types/IDispenseInfo";
 
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";

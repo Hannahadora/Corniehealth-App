@@ -1,11 +1,11 @@
 import { StoreOptions } from "vuex";
 import { fetchMedReq, viewDispense } from "./helper";
-import IDispense from "@/types/IDispense";
+import IDispenseInfo from "@/types/IDispenseInfo";
 import IMedicationReq from "@/types/ImedicationReq";
 
 interface DispenseState {
   dispenses: any[];
-  dispense: IDispense
+  dispense: IDispenseInfo
   medicationRequest: IMedicationReq[]
 }
 
@@ -20,7 +20,7 @@ export default {
     setMedReq(state, medReq: IMedicationReq[]) {
       state.medicationRequest = medReq;
     },
-    setDispense(state, dispense: IDispense) {
+    setDispense(state, dispense: IDispenseInfo) {
       state.dispense = dispense;
     },
   },

@@ -1,5 +1,5 @@
 import { cornieClient2 } from "@/plugins/http";
-import IDispense from "@/types/IDispense";
+import IDispenseInfo from "@/types/IDispenseInfo";
 import IMedicationReq from "@/types/ImedicationReq";
 
 
@@ -20,7 +20,7 @@ export async function dispenseARequest(patientId?: string) {
     );
     if (response.success) return response.data;
   } catch (error) {}
-  return {} as IDispense;
+  return {} as IDispenseInfo;
 }
 
 export async function viewDispense(locationId: string, requestId: string) {
@@ -30,5 +30,5 @@ export async function viewDispense(locationId: string, requestId: string) {
     );
     if (response.success) return response.data;
   } catch (error) {}
-  return {} as IDispense;
+  return {} as IDispenseInfo;
 }

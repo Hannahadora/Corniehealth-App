@@ -91,7 +91,7 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
-import IDispense from "@/types/IDispense";
+import IDispenseInfo from "@/types/IDispenseInfo";
 
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -126,7 +126,7 @@ export default class DispenseModal extends Vue {
   id!: string;
 
   @Prop({ type: Object, default: "" })
-  request!: IDispense;
+  request!: IDispenseInfo;
 
   required = string().required();
 

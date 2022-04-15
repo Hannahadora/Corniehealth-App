@@ -239,7 +239,7 @@ import DispenseModal from "./DispenseModal.vue";
 import ViewDispense from "./ViewDispense.vue";
 
 import IMedicationReq from "@/types/ImedicationReq";
-import IDispense from "@/types/IDispense";
+import IDispenseInfo from "@/types/IDispenseInfo";
 import { IOrganization } from "@/types/IOrganization";
 
 const dispense = namespace("dispense");
@@ -321,7 +321,7 @@ export default class DISPENSE extends Vue {
   authCurrentLocation!: any;
 
   @dispense.State
-  dispense!: IDispense;
+  dispense!: IDispenseInfo;
 
   @dispense.Action
   viewDispense!: (requestId: string, locationId: string) => Promise<void>;

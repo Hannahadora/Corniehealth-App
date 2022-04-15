@@ -322,7 +322,7 @@ import ModifyRequest from "./ModifyRequest.vue";
 
 import search from "@/plugins/search";
 import IMedicationReq from "@/types/ImedicationReq";
-import IDispense from "@/types/IDispense";
+import IDispenseInfo from "@/types/IDispenseInfo";
 import IMedication from "@/types/IMedication";
 import { AnyObject } from "yup/lib/object";
 import { IOrganization } from "@/types/IOrganization";
@@ -358,7 +358,7 @@ export default class ViewRequest extends Vue {
   id!: string;
 
   @Prop({ type: Object, default: "" })
-  request!: IDispense;
+  request!: IDispenseInfo;
 
   @Prop({ type: Object, default: "" })
   organization!: IOrganization;
@@ -391,7 +391,7 @@ export default class ViewRequest extends Vue {
   authCurrentLocation!: any;
 
   @dispense.State
-  dispense!: IDispense;
+  dispense!: IDispenseInfo;
 
   @dispense.Action
   viewDispense!: (locationId: string, requestId: string) => Promise<void>;
