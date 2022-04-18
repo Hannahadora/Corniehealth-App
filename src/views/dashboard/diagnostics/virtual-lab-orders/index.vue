@@ -17,7 +17,6 @@
       </cornie-btn>
     </div>
     <div class="w-full pb-7 mt-28" v-else>
-
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
@@ -32,21 +31,21 @@
             @click="showItem(item.id)"
           >
             <update-status-yellow class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Update Status</span>
+            <span class="ml-3 text-xs">Get Spwcimen ID</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <plus-icon-black class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Add Appointment</span>
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update Status</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="deleteItem(item.id)"
           >
             <update-report-green class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Update Report</span>
+            <span class="ml-3 text-xs">Report</span>
           </div>
         </template>
       </cornie-table>
@@ -75,7 +74,12 @@
       </div>
     </div>
   </div>
-  <view-orders v-model="showResult" :id="typeId" :request="request" />
+  <view-orders
+    v-model="showResult"
+    :id="typeId"
+    :organization="organizationInfo"
+    :request="request"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -100,10 +104,12 @@ import UpdateReportGreen from "@/components/icons/update-report-green.vue";
 import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
+import { IOrganization } from "@/types/IOrganization";
 
-import ViewOrders from './ViewOrders.vue'
+import ViewOrders from "./ViewOrders.vue";
 
 const location = namespace("location");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -123,7 +129,7 @@ const location = namespace("location");
     TableOptions,
     UpdateStatusYellow,
     UpdateReportGreen,
-  ViewOrders,
+    ViewOrders,
   },
 })
 export default class VirtualLabOrder extends Vue {
@@ -140,7 +146,13 @@ export default class VirtualLabOrder extends Vue {
   completedSales = 0;
   totalSalesVolume = 0;
 
-  diagnosticsReports = [{}]
+  diagnosticsReports = [{}];
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -210,19 +222,24 @@ export default class VirtualLabOrder extends Vue {
     return search.searchObjectArray(diagnosticsReports, this.query);
   }
 
-  
-   showItem(value: string) {
+  showItem(value: string) {
     this.showRecord = true;
     this.typeId = value;
+    this.fetchOrgInfo();
   }
-  
-   viewItem(value: string) {
+
+  viewItem(value: string) {
     this.showResult = true;
     this.typeId = value;
+    this.fetchOrgInfo();
   }
-  
+
   closeModal() {
-    this.showRecord = false;
+    this.showResult = false;
+  }
+
+  async created() {
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

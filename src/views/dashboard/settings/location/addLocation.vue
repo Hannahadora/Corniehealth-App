@@ -11,7 +11,7 @@
           <accordion-component title="Location Details" :opened="true">
             <template v-slot:default>
               <div class="w-full">
-                <div class="w-full mt-5 grid grid-cols-3 gap-4">
+                <div class="w-full mt-5 grid grid-cols-2 gap-4">
                   <!-- <cornie-input
                     disabled
                     :modelValue="identifier"
@@ -189,7 +189,7 @@
                 <div class="mt-3 w-full col-span-12">
                   <operation-hours v-model="hoursOfOperation" />
                 </div>
-                <div class="w-full mt-16 grid gap-10 grid-cols-3 col-span-12">
+                <div class="w-full mt-16 grid gap-4 grid-cols-2 col-span-12">
                   <cornie-select
                     :rules="required"
                     required
@@ -205,7 +205,7 @@
                     v-model="openTo"
                     label="Open To"
                     placeholder="--Enter--"
-                    class="w-full mb-3"
+                    class="w-full"
                   />
                   <cornie-select
                     :rules="required"

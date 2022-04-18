@@ -204,7 +204,7 @@
             @click="show = false"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
-            CAncel
+            Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
@@ -269,6 +269,8 @@ const appointmentRoom = namespace("appointmentRoom");
   },
 })
 export default class ViewResult extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
   required = string().required();
 
   loading = false;

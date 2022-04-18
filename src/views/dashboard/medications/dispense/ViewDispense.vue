@@ -239,7 +239,12 @@
       </cornie-card-text>
 
       <div class="flex items-center justify-end mt-24">
-        <div class="text-red-500 text-base font-bold py-3 px-9" @click="show = false">Cancel</div>
+        <div
+          class="text-red-500 text-base font-bold py-3 px-9"
+          @click="show = false"
+        >
+          Cancel
+        </div>
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -259,9 +264,9 @@
 
       <div class="detail-footer">
         <div class="text-center border-dashed border-b">
-          <span class="c-667499 text-sm mb-4"> Powered By Cornie Health </span>
-          <span class="mb-10"
-            >This is a system generated document from CornieHealth. CornieHealth
+          <div class="c-667499 text-sm mb-4">Powered By Cornie Health</div>
+          <div class="mb-10">
+            This is a system generated document from CornieHealth. CornieHealth
             is a healthtech system solution vendor for healthcare providers and
             patients. Visit
             <a
@@ -269,18 +274,20 @@
               href="www.corniehealth.com"
             ></a>
             to create your free account.
-          </span>
+          </div>
         </div>
 
         <div class="text-center">
-          <span class="mt-10">
+          <div class="mt-10">
             Save Earth, Go Paperless. Join so many other amazing providers and
-            patients on CornieHealth.</span
-          >
-          <span class="mt-4">
-            Document Type: Medication Prescription|Rx ID: {{ request?.Requester?.RXID }} | Requester:
-            {{ request?.Requester?.name }} | DateTime Created: {{ request?.Requester?.createdAt }}
-          </span>
+            patients on CornieHealth.
+          </div>
+          <div class="mt-4">
+            Document Type: Medication Prescription|Rx ID:
+            {{ request?.Requester?.RXID }} | Requester:
+            {{ request?.Requester?.name }} | DateTime Created:
+            {{ request?.Requester?.createdAt }}
+          </div>
         </div>
       </div>
     </cornie-card>

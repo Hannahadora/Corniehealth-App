@@ -208,7 +208,10 @@
         </cornie-card-text>
       </div>
 
-      <div class="flex items-center justify-between mt-14" v-if="checkSales && sales.status !== 'completed'">
+      <div
+        class="flex items-center justify-between mt-14"
+        v-if="checkSales && sales.status !== 'completed'"
+      >
         <div>
           <span
             class="text-red-500 font-bold text-base cursor-pointer"
@@ -223,7 +226,7 @@
           >
             Cancel
           </cornie-btn>
-          <cornie-btn 
+          <cornie-btn
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -374,12 +377,12 @@ export default class PosDialog extends Vue {
     },
   ];
 
-   get checkSales() {
+  get checkSales() {
     if (Object.entries(this.sales).length === 0) {
       return true;
     }
     return false;
-  };
+  }
 
   get locationId() {
     return this.authCurrentLocation;
@@ -401,23 +404,19 @@ export default class PosDialog extends Vue {
   }
 
   fetchCustomers(query: string) {
-
-      debounce(async () => {
-
-    try {
-      const { data } = await cornieClient2().get(
-        `/api/v1/pharmacy/find-customer/?query=${query}`
-      );
-      this.customerDetails = data || [];
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching customers details",
-        status: "error",
-      });
-    }
-
-      }, 1000)();
-
+    debounce(async () => {
+      try {
+        const { data } = await cornieClient2().get(
+          `/api/v1/pharmacy/find-customer/?query=${query}`
+        );
+        this.customerDetails = data || [];
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching customers details",
+          status: "error",
+        });
+      }
+    }, 1000)();
   }
 
   get customers() {

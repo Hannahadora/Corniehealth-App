@@ -179,9 +179,9 @@ export const SettingsRoute: RouteRecordRaw = {
     },
     {
       path: "diagnostics",
-      props: true,
+      // props: true,
       name: "Diagnostics",
-      component: () => import("@/views/dashboard/diagnostics/diagnostic/index.vue"),
+      component: () => import("@/views/dashboard/diagnostics/index.vue"),
     },
     {
       path: "markup",

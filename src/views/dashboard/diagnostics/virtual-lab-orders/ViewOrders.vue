@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-10/12 h-full"> 
+  <cornie-dialog v-model="show" right class="w-10/12 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
@@ -9,7 +9,7 @@
           <icon-btn @click="show = false">
             <arrow-left stroke="#ffffff" />
           </icon-btn>
-          <p class="text-3xl font-bold">Medication Request</p>
+          <p class="text-3xl font-bold">Dispense</p>
         </div>
 
         <cancel-icon class="float-right cursor-pointer" @click="show = false" />
@@ -35,7 +35,30 @@
           </div>
         </div>
 
-        <div class="p-4 bg-white h-20"></div>
+        <div class="p-6 bg-white h-20">
+          <div class="flex items-center justify-between">
+            <div></div>
+
+            <div class="flex flex-col text-right">
+              <div class="font-bold text-base mb-4">
+                {{ organization?.name }}
+              </div>
+              <div>{{ organization?.address }}</div>
+              <div class="flex items-center">
+                <span class="mr-2">{{ organization?.phone || "Nil" }}</span>
+                <span
+                  class="w-2 h-2 rounded-full"
+                  style="background: '#C2C7D6'"
+                ></span>
+                <span>{{ organization?.email }}</span>
+                <div>
+                  <span style="color: '#C2C7D6'" ;>Patient ID:</span>
+                  {{ request?.patient?.id }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="p-4 bg-purple-900 flex items-center justify-between">
           <div>
@@ -136,7 +159,6 @@
           </div>
         </div>
 
-      
         <cornie-table
           :columns="rawHeaders"
           v-model="items"
@@ -173,50 +195,9 @@
             </span>
           </template>
         </cornie-table>
-
-        <div class="mt-8 flex items-start justify-between">
-          <div
-            class="p-4 border rounded-md flex items-center justify-between w-1/4"
-          >
-            <span class="w-2/3 text-sm">Coupon | Promo Code</span>
-            <input
-              class="w-1/3 self-end"
-              type="text"
-              v-model="coupon"
-              placeholder="----"
-            />
-          </div>
-
-          <div class="w-1/3">
-            <table class="w-full">
-              <tbody>
-                <tr>
-                  <td>Total Discount</td>
-                  <td>
-                    {{ request.totalDiscount ? request.totalDiscount : "0" }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Sub Total</td>
-                  <td>{{ request.subTotal ? request.subTotal : "0" }}</td>
-                </tr>
-                <tr>
-                  <td class="font-bold">Shipping Cost</td>
-                  <td class="font-bold">
-                    {{ request.shippingCost ? request.shippingCost : "0" }}
-                  </td>
-                </tr>
-                <tr class="">
-                  <td class="font-bold">Grand Total</td>
-                  <td class="font-bold">{{ grandTotal }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </cornie-card-text>
 
-      <div class="flex items-center justify-end mt-24">
+      <!-- <div class="flex items-center justify-end mt-24">
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -231,6 +212,35 @@
           >
             Collect Payment
           </cornie-btn>
+        </div>
+      </div> -->
+
+      <div class="detail-footer">
+        <div class="text-center border-dashed border-b">
+          <span class="c-667499 text-sm mb-4"> Powered By Cornie Health </span>
+          <div class="mb-10"
+            >This is a system generated document from CornieHealth. CornieHealth
+            is a healthtech system solution vendor for healthcare providers and
+            patients. Visit
+            <a
+              class="text-red-500 font-semibold"
+              href="www.corniehealth.com"
+            ></a>
+            to create your free account.
+          </div>
+        </div>
+
+        <div class="text-center">
+          <div class="mt-10">
+            Save Earth, Go Paperless. Join so many other amazing providers and
+            patients on CornieHealth.
+          </div>
+          <div class="mt-4">
+            Document Type: Medication Prescription|Rx ID:
+            {{ request?.Requester?.RXID }} | Requester:
+            {{ request?.Requester?.name }} | DateTime Created:
+            {{ request?.Requester?.createdAt }}
+          </div>
         </div>
       </div>
     </cornie-card>
@@ -257,11 +267,12 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient, cornieClient2 } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
+import { IOrganization } from "@/types/IOrganization";
 
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import ModifyRequest from './ModifyRequest.vue'
+import ModifyRequest from "./ModifyRequest.vue";
 
 import search from "@/plugins/search";
 import IMedicationReq from "@/types/ImedicationReq";
@@ -299,7 +310,10 @@ export default class ViewOrder extends Vue {
   id!: string;
 
   @Prop({ type: Object, default: "" })
-  request!: any;
+  request!: IDispenseInfo;
+
+  @Prop({ type: Object, default: "" })
+  organization!: IOrganization;
 
   viewModificationModal = false;
   requestDetails = true;
@@ -386,11 +400,11 @@ export default class ViewOrder extends Vue {
   //   return [this.selectedItem];
   // }
   get items() {
-    const requests =  this.request?.medications?.map((request: any) => {
+    const requests = this.request?.medications?.map((request: any) => {
       const refillses = this.request?.medications?.map(
         (medication: any) => medication.refills
       );
-      return { 
+      return {
         ...request,
         action: request.brandCode,
         refils: refillses[0],
@@ -401,15 +415,6 @@ export default class ViewOrder extends Vue {
     // if (!this.query) return shifts;
     // return search.searchObjectArray(shifts, this.query);
   }
-
-  modifyItem(value: any) {
-    this.requestDetails = false
-    this.viewModificationModal = true
-    this.medicationId = value
-    const item: any  = this.request?.medications?.find((el: any) => el.brandCode = value)
-    this.selectedMedication = item
-  }
-
 }
 </script>
 
@@ -435,5 +440,13 @@ td {
 }
 .c-667499 {
   color: #667499;
+}
+
+.detail-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px 24px;
+  background: #f0f4fe;
 }
 </style>
