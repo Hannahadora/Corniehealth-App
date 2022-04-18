@@ -19,7 +19,7 @@
         label="Payment Type"
         placeholder="--Search--"
         v-model="payment.paymentType"
-        :items="['Card', 'Cash', 'Insurance', 'Wallet', 'Others']"
+        :items="['pos', 'cash']"
         :disabled="salesData"
       />
     </div>
@@ -59,7 +59,13 @@ export default class FullPayment extends Vue {
 
   payment = {
     amount: "",
-    paymentType: ""
+    paymentType: "",
+    total: this.paymentTotal(),
+  };
+
+ paymentTotal() {
+    const total: any = this.payment?.amount;
+    return total
   }
 }
 </script>

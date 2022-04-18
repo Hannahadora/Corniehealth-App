@@ -270,6 +270,8 @@ import SplitPayment from "./components/SplitPayment.vue";
 import AddCustomer from "./AddCustomer.vue";
 import CornieSearch from "@/components/search-input.vue";
 
+import { debounce } from "lodash";
+
 import search from "@/plugins/search";
 
 const hierarchy = namespace("hierarchy");
@@ -398,7 +400,10 @@ export default class PosDialog extends Vue {
     return search.searchObjectArray(dMed, this.query);
   }
 
-  async fetchCustomers(query: string) {
+  fetchCustomers(query: string) {
+
+      debounce(async () => {
+
     try {
       const { data } = await cornieClient2().get(
         `/api/v1/pharmacy/find-customer/?query=${query}`
@@ -410,6 +415,9 @@ export default class PosDialog extends Vue {
         status: "error",
       });
     }
+
+      }, 1000)();
+
   }
 
   get customers() {
