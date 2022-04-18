@@ -54,6 +54,7 @@ import ChartIcon from "./icons/chart.vue";
 import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
 import PatientIcon from "./icons/PatientIcon.vue";
+import CategoriesIcon from "./icons/categories.vue";
 import SidebarLink from "./sidebarlink.vue";
 import { namespace } from "vuex-class";
 import { AccountMeta } from "@/types/user";
@@ -86,6 +87,7 @@ const user = namespace("user");
     PillIcon,
     ClipBoardIcon,
     PatientIcon,
+    CategoriesIcon,
   },
 })
 export default class CorniDashboardeSideBar extends Vue {
@@ -176,7 +178,19 @@ export default class CorniDashboardeSideBar extends Vue {
       name: "Diagnostics",
       to: "diagnostics",
       icon: "clip-board-icon",
-      hasSubsection: false,
+      hasSubsection: true,
+      children: [
+        {
+          name: "Diagnostics",
+          to: "/dashboard/provider/settings/diagnostics",
+          hasSubsection: false,
+        },
+        {
+          name: "Virtual-Lab-Orders",
+          to: "/dashboard/provider/settings/virtual-lab-orders",
+          hasSubsection: false,
+        },
+      ],
     },
     {
       name: "Medications",
@@ -190,13 +204,8 @@ export default class CorniDashboardeSideBar extends Vue {
           hasSubsection: false,
         },
         {
-          name: "POS Sales",
-          to: "/dashboard/provider/settings/pos",
-          hasSubsection: false,
-        },
-        {
-          name: "Charge Description Master",
-          to: "/dashboard/settings/catalogues/index.vue",
+          name: "Catalogue",
+          to: "catologue",
           hasSubsection: false,
         },
         {
@@ -207,6 +216,11 @@ export default class CorniDashboardeSideBar extends Vue {
         {
           name: "Pricebook",
           to: "pricebook",
+          hasSubsection: false,
+        },
+        {
+          name: "POS Sales",
+          to: "/dashboard/provider/settings/pos",
           hasSubsection: false,
         },
         {
@@ -236,6 +250,24 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: false,
     },
     { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+    {
+      name: "Categories",
+      to: "categories",
+      icon: "categories-icon",
+      hasSubsection: true,
+      children: [
+        {
+          name: "Location",
+          to: "/dashboard/provider/settings/location",
+          hasSubsection: false,
+        },
+        {
+          name: "Group",
+          to: "/dashboard/provider/settings/group",
+          hasSubsection: false,
+        },
+      ],
+    },
   ];
 
   hmoLinks: ISidebarLink[] = [

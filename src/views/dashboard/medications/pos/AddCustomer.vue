@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+  <cornie-dialog v-model="show" right class="w-1/3 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Update Status
+            Add New Customer
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -18,55 +18,48 @@
           />
         </div>
       </cornie-card-title>
-      <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="submit">
-          <cornie-input
-            class="w-full"
-            label="Current Status"
-            placeholder="Current Status"
-            v-model="currentStatus"
-            :disabled="true"
-            :rules="required"
-          />
-          <cornie-input
-            class="w-full"
-            label="Updated By"
-            placeholder="Updated By"
-            v-model="updatedBy"
-            :disabled="true"
-            :rules="required"
-          />
-          <date-picker
-            class="w-full"
-            label="Last Updated"
-            v-model="lastUpdated"
-            :rules="required"
-          />
+      <div class="">
+        <cornie-card-text class="flex-grow scrollable">
+          <v-form class="flex-grow flex flex-col" @submit="submit">
+            <cornie-input
+              class="w-full"
+              label="Name"
+              placeholder="--Enter--"
+              v-model="name"
+            />
+            <cornie-input
+              class="w-full"
+              label="Email"
+              placeholder="--Email--"
+              v-model="email"
+            />
 
-          <cornie-select
-            class="w-full mt-6"
-            label="Update Status"
-            placeholder="--Select one--"
-            v-model="newStatus"
-            :items="statuses"
-          />
-        </v-form>
-      </cornie-card-text>
+            <cornie-phone-input
+              label="Mobile Number 2"
+              class="mb-5"
+              placeholder="Enter"
+              v-model="phoneNumber"
+              v-model:code="dialCode"
+            />
+          </v-form>
+        </cornie-card-text>
+      </div>
 
-      <div class="flex items-center justify-end mt-24">
+      <div class="flex items-center justify-end mt-14 absolute right-6 bottom-6">
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
+            class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
           >
-            View History
+            Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
+            @click="addCustomer"
           >
-            Update
+            Save
           </cornie-btn>
         </div>
       </div>
@@ -85,16 +78,25 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieBtn from "@/components/CornieBtn.vue";
+import CorniePhoneInput from "@/components/phone-input.vue";
 import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient } from "@/plugins/http";
+import { cornieClient2 } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
-import IDispenseInfo from "@/types/IDispenseInfo";
+import IAppointmentRoom from "@/types/IAppointmentRoom";
 
-import DatePicker from "@/components/daterangepicker.vue";
+import DatePicker from "@/components/datepicker.vue";
+import SearchInput from "@/components/search-input.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
+
+import TableOptions from "@/components/table-options.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import FullPayment from "./components/FullPayment.vue";
+import SplitPayment from "./components/SplitPayment.vue";
+
+import search from "@/plugins/search";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
@@ -102,7 +104,7 @@ const user = namespace("user");
 const appointmentRoom = namespace("appointmentRoom");
 
 @Options({
-  name: "UpdateStatusModal",
+  name: "POSDialog",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -115,36 +117,56 @@ const appointmentRoom = namespace("appointmentRoom");
     AutoComplete,
     CornieRadio,
     DatePicker,
+    SearchInput,
+    CornieTable,
+    TableOptions,
+    FullPayment,
+    SplitPayment,
     CancelIcon,
+    CorniePhoneInput,
   },
 })
-export default class DispenseModal extends Vue {
+export default class AppointmentRoomDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, default: "" })
-  request!: IDispenseInfo;
-
   required = string().required();
 
+  query = "";
+
   loading = false;
+  name = "";
+  email = "";
+  phoneNumber = "";
+  dialCode = "";
 
-  newStatus = "";
-
-  get currentStatus() {
-    return "";
+  async addCustomer() {
+    const newData = {
+      name: this.name,
+      email: this.email,
+      phone: {
+        number: this.phoneNumber,
+        dialCode: this.dialCode,
+      },
+    };
+    try {
+      const { data } = await cornieClient2().post(
+        "/api/v1/pharmacy/add-customer",
+        { ...newData }
+      );
+      this.show = false;
+    } catch (error) {
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
   }
 
-  get updatedBy() {
-    return this.request?.performer?.name;
-  }
-
-  get statuses() {
-    return ["Active", "Substituted", "On-Hold", "Dispensed"];
-  }
+  async created() {}
 }
 </script>
 

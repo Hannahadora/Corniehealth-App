@@ -77,7 +77,7 @@
             <span class="text-white text-3xl font-bold text-center w-full">
               Sign In to your account
             </span>
-            <span class="text-left text-base text-white mt-4">
+            <span class="text-center text-base text-white mt-4">
               This helps us verify your identity. You can enable or disable this
               in your profile account settings.
             </span>
@@ -89,7 +89,7 @@
             <span class="text-white text-3xl font-bold text-center w-full">
               You’ve successfully created an account
             </span>
-            <span class="text-left text-base text-white mt-4">
+            <span class="text-center text-base text-white mt-4">
               This helps us verify your identity. You can enable or disable this
               in your profile account settings.
             </span>
@@ -137,6 +137,10 @@ export default {
 ::-webkit-scrollbar-track {
   box-shadow: none;
   width: 0.75rem;
+}
+
+.h-inherit {
+  height: inherit;
 }
 
 .dauth {
