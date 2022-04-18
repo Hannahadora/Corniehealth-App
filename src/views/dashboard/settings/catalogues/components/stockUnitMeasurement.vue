@@ -21,7 +21,7 @@
                         <cornie-select
                         :label="'Purchase UOM'"
                         style="width: 100%"
-                        :items="['Option 1']"
+                        :items="dropdwonOptions"
                         placeholder="Select"
                         v-model="stock.purchase"
                         />
@@ -34,7 +34,7 @@
                         <cornie-select
                         :label="'Inventory UOM'"
                         style="width: 100%"
-                        :items="['Option 1']"
+                        :items="dropdwonOptions"
                         v-model="stock.inventory"
                         placeholder="Select"
                         />
@@ -47,7 +47,7 @@
                         <cornie-select
                         :label="'Sales UOM'"
                         style="width: 100%"
-                        :items="['Option 1']"
+                        :items="dropdwonOptions"
                         v-model="stock.sales"
                         placeholder="Select"
                         />
@@ -125,15 +125,129 @@ export default class stockUnitMeasuremnt extends Vue {
  
 
     submit() {
-        this.loading = true;
+     this.loading = true;
 
         this.$emit("added-stockunit", this.stock);
 
         this.loading = false;
         this.reset();
+        this.show = false;
     }
 
 
+   get dropdwonOptions(){
+     return [
+        'Acre-Foot'	,
+        'Are',
+        'Bag',	
+        'Bale',
+        'Barrel',
+        'Box',
+        'Bucket',
+        'Bushel',
+        'Bundle',
+        'Bottle',
+        'Can',
+        'Carton',
+        'Crate',
+        'Case',	
+        'Chain',
+        'Calorie',
+        'Centigrade',	
+        'Centiliter',	
+        'Centimeter',	
+       ' Cubic Foot',	
+        'Cubic Inch',
+        'Cubic Meter',
+        'Cubic Yard',
+        'Cup',
+        'Day',
+        'Decigrams',
+        'Deciliter',
+        'Decimeter',
+        'Degree',	
+        'Density',
+        'Drum',	
+        'Dozen',
+        'Dram',
+        'Each',	
+        'Fahrenheit',
+        'Farad',
+        'Feet per second',	
+        'Fluid ounce',	
+        'Foot',	
+        'Gallon',	
+        'Gill',	
+        'Grain',
+        'Grams',
+        'Gravity Imperial',	
+        'Gravity Metric',	
+        'Gross', 
+        'Hectare',	
+        'Hectoliter',	
+        'Horsepower',
+        'Hour',
+        'Hundredweight',
+        'Inch', 	
+        'Joule',
+        'Kelvin',	
+        'Kilogram', 
+        'Kilogram meters per second',	
+        'Kilometer',
+        'Kilopond', 
+        'Kit	kit',
+        'Kilowatt', 	
+        'Linear Foot',
+        'Light Year',	
+        'Liter',	
+        'Lumen',
+        'Lumen Seconds',
+        'Lux',
+        'Meter', 
+       'Meters per second', 
+        'Mile', 
+        'Miles per hour',
+        'Milliliter',
+        'Millimeter',
+        'Minute',
+        'Month', 	
+        'Ounce', 
+        'Pack', 
+        'Pad',
+        'Pair',	
+        'Pallet',
+        'Piece', 
+        'Pint',	
+        'Pond',	
+        'Pound', 
+        'Pounds per square inch',
+        'Quart',
+        'Rack',	
+        'Ream',	
+        'Roll',	
+        'Second',
+        'Sheet',
+        'Square',
+        'Square Decimeter',	
+        'Square centimeter',
+        'Square feet',
+        'Square inches',
+        'Square kilometer',	
+        'Square meter',	
+        'Square miles', 
+        'Square millimeter', 
+        'Square yards',	
+        'Tablespoon',
+        'Teaspoon', 
+        'Ton',	
+        'Tonne',
+        'Volt',
+        'Watt',	
+        'Week',
+        'Yard',
+        'Year',	
+     ]
+ }
   
  reset() {
     this.stock = {

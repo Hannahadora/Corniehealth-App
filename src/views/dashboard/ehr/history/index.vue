@@ -10,13 +10,12 @@
 </template>
 <script lang="ts">
 import Ihistory from "@/types/Ihistory";
-import IAllergy from "@/types/IAllergy";
 import { Options, Vue } from "vue-class-component";
 import HistoryEmptyState from "./emptyState.vue";
 import HistoryExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
 
-const allergy = namespace("allergy");
+
 const history = namespace("history");
 
 @Options({
@@ -31,18 +30,13 @@ export default class HistoryIndex extends Vue {
   show = false;
 
   get empty() {
-    return this.allergys.length < 1;
+    return this.historys.length < 1;
   }
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
   }
 
-  @allergy.State
-  allergys!: IAllergy[];
-
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
 
   @history.State
   historys!: Ihistory[];
@@ -56,9 +50,8 @@ export default class HistoryIndex extends Vue {
     this.fetchHistorys(this.activePatientId);
   }
 
-  created() {
-    if (this.activePatientId) this.fetchHistorys(this.activePatientId);
-    this.fetchAllergys(this.activePatientId);
+  async created() {
+    await this.fetchHistorys(this.activePatientId);
   }
 }
 </script>

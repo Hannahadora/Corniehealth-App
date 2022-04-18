@@ -22,30 +22,30 @@
               <cornie-input
                 disabled
                 label="Current Status"
-                v-model="currentStatus"
+                :modelValue="currentStatus?.value"
                 class="w-full mb-4"
               />
               <cornie-input
                 disabled
                 label="Updated By"
                 class="w-full mb-4"
-                v-model="updatedBy"
+                 :modelValue="currentStatus?.practitionerName"
               />
               <cornie-input
                 disabled
                 label="Date Last Updated"
                 class="w-full mb-4"
-                v-model="dateUpdated"
+               :modelValue="currentDate"
               />
 
               <cornie-select
                 :label="'New Status'"
                 v-model="status"
                 :items="[
-                  'Partial',
-                  'Completed',
-                  'Entered in Error',
-                  'Health Unknown',
+                  'partial',
+                  'completed',
+                  'entered-in-error',
+                  'health-unknown',
                 ]"
                 style="width: 100%"
               />
@@ -142,11 +142,12 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   @Prop({ type: String, default: "" })
   updatedBy!: string;
 
-  @Prop({ type: String, default: "" })
-  currentStatus!: string;
 
   @Prop({ type: String, default: "" })
   dateUpdated!: string;
@@ -162,20 +163,32 @@ export default class Medication extends Vue {
     this.$emit("history-added");
     this.show = false;
   }
-  async updateStatus() {
-    const id = this.id;
-    const url = `/api/v1/family-history/${id}`;
+
+  
+
+  get currentStatus(){
+    return this.selectedItem?.statusHistory?.find((history:any) => history.current);
+  }
+
+  get currentDate(){
+    if(!this.currentStatus) return '';
+    return new Date(this.currentStatus?.start).toLocaleDateString();
+  }
+
+
+    async updateStatus() {
+    const url = `/api/v1/family-history/status/${this.selectedItem.id}`;
     const body = {
       status: this.status,
     };
     try {
-      const response = await cornieClient().put(url, body);
+      const response = await cornieClient().patch(url, body);
       if (response.success) {
         window.notify({ msg: "Status Updated", status: "success" });
         this.done();
       }
     } catch (error) {
-      window.notify({ msg: "Status Not Updated", status: "success" });
+      window.notify({ msg: "Status Not Updated", status: "error" });
       this.loading = false;
     }
   }

@@ -4,7 +4,7 @@ import Ihistory from "@/types/Ihistory";
 export async function fetchHistorys(patientId: string) {
   try {
     const response = await cornieClient().get(
-      `/api/v1/family-history/findAllByPatient/${patientId}`
+      `/api/v1/family-history/get-for-patient/${patientId}`
     );
     if (response.success) {
       return response.data;
