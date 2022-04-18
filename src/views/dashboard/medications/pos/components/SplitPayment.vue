@@ -10,8 +10,9 @@
         class="w-full"
         label="Amount Due"
         placeholder="--Enter--"
-        v-model="payment.amountDue"
+        v-model="payment.amount"
         :rules="required"
+        :disabled="salesData"
       />
 
       <cornie-select
@@ -19,20 +20,29 @@
         label="Payment Type"
         placeholder="--Search--"
         v-model="payment.PaymentType"
-        :items="customers"
+        :items="['Card', 'Cash', 'Insurance', 'Wallet', 'Others']"
+        :disabled="salesData"
       />
 
       <div>
         <div
-          v-if="payment.amountDue === '' && payment.paymentType === ''"
+          v-if="payment.amount === '' || payment.paymentType === ''"
           class="flex items-center justify-center px-5 py-2"
         >
-        <img src="../../../../../assets/img/plus-blue-icon.png" alt="">
-          <span class="cursor-pointer text-sm text-blue-500 font-bold ml-4" @click="payments.push({})">Add</span>
+          <img src="../../../../../assets/img/plus-blue-icon.png" alt="" />
+          <span
+            class="cursor-pointer text-sm text-blue-500 font-bold ml-4"
+            @click="payments.push({})"
+            >Add</span
+          >
         </div>
         <div v-else class="flex items-center justify-center px-5 py-2">
-            <img src="../../../../../assets/img/del-red-icon.png" alt="">
-          <span class="cursor-pointer text-sm text-red-500 font-bold ml-4">Remove</span>
+          <img src="../../../../../assets/img/del-red-icon.png" alt="" />
+          <span
+            class="cursor-pointer text-sm text-red-500 font-bold ml-4"
+            @click="payments.splice(idx, 1)"
+            >Remove</span
+          >
         </div>
       </div>
     </div>
@@ -64,11 +74,15 @@ const appointmentRoom = namespace("appointmentRoom");
   },
 })
 export default class SplitPayment extends Vue {
-  payments = [
-    {
-      paymentType: "",
-      amountDue: "",
-    },
-  ];
+  @Prop({ type: Array, default: [{}] })
+  payments!: [{}];
+
+  @Prop({ type: Boolean, default: false })
+  salesData!: boolean;
+
+  payment = {
+    amount: "",
+    paymentType: "",
+  };
 }
 </script>

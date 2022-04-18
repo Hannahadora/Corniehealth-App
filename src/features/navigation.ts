@@ -75,9 +75,21 @@ const links: ISidebarLink[] = [
   },
   {
     name: "Diagnostics",
-    to: "settings/diagnostics",
+    to: "diagnostics",
     icon: "clip-board-icon",
-    hasSubsection: false,
+    hasSubsection: true,
+    children: [
+      {
+        name: "Diagnostics",
+        to: "/dashboard/provider/settings/diagnostics",
+        hasSubsection: false,
+      },
+      {
+        name: "Virtual-Lab-Orders",
+        to: "/dashboard/provider/settings/virtual-lab-orders",
+        hasSubsection: false,
+      },
+    ]
   },
   {
     name: "Medications",
@@ -110,6 +122,16 @@ const links: ISidebarLink[] = [
         to: "pricebook",
         hasSubsection: false,
       },
+      {
+        name: "POS Sales",
+        to: "/dashboard/provider/settings/pos",
+        hasSubsection: false,
+      },
+      {
+        name: "Dispense",
+        to: "dispense",
+        hasSubsection: false,
+      },
     ],
   },
 
@@ -132,6 +154,24 @@ const links: ISidebarLink[] = [
     hasSubsection: false,
   },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  {
+    name: "Categories",
+    to: "categories",
+    icon: "categories-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Location",
+        to: "/dashboard/provider/settings/location",
+        hasSubsection: false,
+      },
+      {
+        name: "Group",
+        to: "/dashboard/provider/settings/group",
+        hasSubsection: false,
+      },
+    ]
+  },
 ];
 
 const soloLinks = [
@@ -189,6 +229,7 @@ const soloLinks = [
     hasSubsection: false,
   },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  { name: "CAtegories", to: "categories", icon: "categories-icon", hasSubsection: true },
 ];
 export function getPracticeNav(type: EPracticeType) {
   if (type == EPracticeType.Solo) return soloLinks;

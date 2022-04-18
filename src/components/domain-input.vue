@@ -42,11 +42,11 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import { Field } from "vee-validate";
-import { string, StringSchema } from "yup";
+import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
 
 async function checkDomain(domainName?: string) {
-  if (!domainName) return false;
+  if (!domainName) return true;
   try {
     const { success } = await cornieClient().post(
       "/api/v1/domain/checkDomain",
@@ -90,12 +90,14 @@ export default class DomainInput extends Vue {
   rules!: any;
 
   get customRule() {
-    const domainRule = string().test({
-      name: "uniqueDomain",
-      message: "Domain name already exists",
-      test: checkDomain,
-    });
-    if (this.rules) return domainRule.concat(domainRule);
+    const domainRule = string()
+      .matches(/^[0-9a-z]+$/)
+      .test({
+        name: "uniqueDomain",
+        message: "Domain name already exists",
+        test: checkDomain,
+      });
+    if (this.rules) return domainRule.concat(this.rules);
     return domainRule;
   }
 

@@ -1,26 +1,30 @@
 <template>
   <div>
-    <div class="grid grid-cols-2 gap-6 mb-6">
+    <div
+      class="grid grid-cols-2 gap-6 mb-6"
+      v-for="(payment, idx) in payments"
+      :key="idx"
+    >
       <cornie-input
         class="w-full"
         label="Amount Due"
         placeholder="--Enter--"
-        v-model="amountDue"
+        v-model="payment.amount"
         :rules="required"
+        :disabled="salesData"
       />
 
-       <cornie-select
+      <cornie-select
         class="w-full"
         label="Payment Type"
         placeholder="--Search--"
-        v-model="PaymentType"
-        :items="customers"
-        />
-        
+        v-model="payment.paymentType"
+        :items="['Card', 'Cash', 'Insurance', 'Wallet', 'Others']"
+        :disabled="salesData"
+      />
     </div>
   </div>
 </template>
-
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -46,5 +50,16 @@ const appointmentRoom = namespace("appointmentRoom");
     CornieBtn,
   },
 })
-export default class FullPayment extends Vue {}
+export default class FullPayment extends Vue {
+  @Prop({ type: Array, default: [{}] })
+  payments!: [{}];
+
+  @Prop({ type: Boolean, default: false })
+  salesData!: boolean;
+
+  payment = {
+    amount: "",
+    paymentType: ""
+  }
+}
 </script>

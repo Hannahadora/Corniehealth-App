@@ -67,9 +67,6 @@
           </label>
         </div>
         <span class="flex item-center mb-1">
-          <!-- <label class="inline-flex items-center mt-3">
-            <input type="checkbox" />
-          </label> -->
           <cornie-checkbox />
           <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
         </span>
@@ -84,25 +81,12 @@
         </div>
         <span
           class="w-full flex justify-center items-center text-sm text-center mt-9"
-          v-if="step != 4 && step != 3"
         >
           Don't have an account?
           <router-link class="ml-1 text-danger" to="/Signup">
             Sign Up
           </router-link>
         </span>
-        <!-- <span class="w-full text-center block my-1">or Sign Up with</span>
-          <cornie-btn
-            class="font-semibold rounded-full bg-primary mt-2 w-full text-white p-2"
-          >
-            Quantum
-          </cornie-btn>
-          <span class="w-full flex text-sm mt-2">
-            Don't have an account?
-            <router-link class="ml-1 text-blue-500" to="/signup">
-              Sign Up
-            </router-link>
-          </span>-->
       </form>
     </div>
   </div>
@@ -130,7 +114,6 @@ import { string } from "yup";
 export default class Signin extends Vue {
   email = "";
   password = "";
-  // domainName = "";
   loading = false;
   login = true;
 
@@ -165,11 +148,20 @@ export default class Signin extends Vue {
         !store.state.user.requiresSecurityQuestion
       ) {
         this.$router.push("/dashboard");
-      }
-      else this.$emit("logged-in");
+      } else this.$emit("logged-in");
       // if (this.domainName) setAuthDomain(this.domainName);
-    } catch (error) {
-      window.notify({ msg: "Username or password incorrect", status: "error" });
+    } catch (error: any) {
+      if (!error.response) {
+        window.notify({
+          msg: "Error connecting to remote host",
+          status: "error",
+        });
+      } else {
+        window.notify({
+          msg: "Username or password incorrect",
+          status: "error",
+        });
+      }
     }
     this.loading = false;
   }
