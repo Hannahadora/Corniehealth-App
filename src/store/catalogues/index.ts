@@ -8,6 +8,7 @@ import {
   updateService,
   createProduct,
   getProducts,
+  deleteProduct,
 } from "./helper";
 
 interface CatalogueStore {
@@ -52,6 +53,9 @@ export default {
     deleteService(state, id: string) {
       state.services = state.services.filter(service => service.id != id);
     },
+    deleteProduct(state, id: string) {
+      state.products = state.products.filter(product => product.id != id);
+    },
   },
 
   actions: {
@@ -59,9 +63,15 @@ export default {
       const res = await getServices();
       commit("setServices", res);
     },
-    async getServicesById(ctx, id: string) {
-      if (ctx.state.services.length < 1) await ctx.dispatch("getServices");
-      return ctx.state.services.find(service => service.id == id);
+    getServicesById(ctx, id: string) {
+      return ctx.state.services.find(
+        service => service.id == id
+      );
+    },
+    getProductsById(ctx, id: string) {
+      return ctx.state.products.find(
+        product => product.id == id
+      );
     },
     async getProducts({ commit }) {
       const res = await getProducts();
@@ -93,6 +103,12 @@ export default {
       const deleted = await deleteService(id);
       if (!deleted) return false;
       ctx.commit("deleteService", id);
+      return true;
+    },
+    async deleteProduct(ctx, id: string) {
+      const deleted = await deleteProduct(id);
+      if (!deleted) return false;
+      ctx.commit("deleteProduct", id);
       return true;
     },
   },

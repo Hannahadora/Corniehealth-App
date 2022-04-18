@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="w-full" v-if="products.lenght >0">
+    <div class="w-full" v-if="products.length >0">
       <cornie-table v-model="items" :columns="headers">
         <template #name="{ item }">
           <div
@@ -68,6 +68,7 @@
       <h3 class="text-center mt-5">Start by adding a product</h3>
       <button
         class="bg-danger font-semibold rounded text-sm text-white mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
+       @click="$router.push({ name: 'New Product' })"
       >
         Add Product
       </button>
@@ -158,6 +159,8 @@ export default class ProductsTable extends Vue {
 
   @catalogue.Action
   getProducts!: () => Promise<void>;
+
+
 
   async created() {
     await this.getProducts();

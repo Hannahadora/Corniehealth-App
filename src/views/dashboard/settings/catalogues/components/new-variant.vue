@@ -26,7 +26,8 @@
           :label="'Form'"
           v-model="data.form"
           style="width: 100%"
-          :items="['Option 1']"
+          :items="allForms"
+          :placeholder="'Select'"
         />
       </div>
 
@@ -36,6 +37,7 @@
           v-model="data.pack"
           style="width: 100%"
           :items="['Option 1']"
+          :placeholder="'Select'"
         />
       </div>
 
@@ -44,6 +46,7 @@
           :label="'Pack Quantity'"
           v-model="data.packQuantity"
           style="width: 100%"
+          :placeholder="'Enter'"
         />
       </div>
 
@@ -53,6 +56,7 @@
           v-model="data.strength"
           style="width: 100%"
           :items="['Option 1']"
+          :placeholder="'Select'"
         />
       </div>
 
@@ -67,7 +71,7 @@
     <span class="w-full bg-danger">
       <span class="flex justify-end w-full m4-5">
         <cornie-btn
-          class="m-5 font-semibold rounded-full"
+          class="m-5 font-semibold rounded-lg"
           style="color: #080056; border: 1px solid #080056"
           @click="() => $emit('closesidemodal')"
         >
@@ -75,7 +79,7 @@
         </cornie-btn>
 
         <cornie-btn
-          class="bg-danger px-2 text-white my-5 mx-4 font-semibold rounded-full"
+          class="bg-danger px-2 text-white my-5 mx-4 font-semibold rounded-lg"
           @click="() => $emit('closesidemodal')"
         >
           Save
@@ -92,6 +96,10 @@ import { useHandleImage } from "@/composables/useHandleImage";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
+import { namespace } from "vuex-class";
+import IPracticeform from "@/types/IPracticeform";
+
+const practiceform = namespace("practiceform");
 
 @Options({
   components: {
@@ -103,6 +111,12 @@ import AddIcon from "@/components/icons/add-orange.vue";
 })
 export default class NewVariant extends Vue {
   img = setup(() => useHandleImage());
+
+   @practiceform.State
+  practiceforms!: IPracticeform[];
+
+  @practiceform.Action
+  fetchPracticeforms!: () => Promise<void>;
 
   data = {
     id: Math.random() * 1999 + Math.random() * 2999,
@@ -131,6 +145,15 @@ export default class NewVariant extends Vue {
     this.img.url = "";
 
     this.reset();
+  }
+   get allForms() {
+    if (!this.practiceforms || this.practiceforms.length === 0) return [];
+    return this.practiceforms.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
   }
 
   reset() {

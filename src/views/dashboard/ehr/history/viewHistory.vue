@@ -237,10 +237,8 @@ import InformationIcon from "@/components/icons/info.vue";
 
 import BornIcon from "./components/born.vue";
 import Ihistory, {
-  BasicInfo,
   OnSet,
   Age,
-  ConditionRelatedPerson,
   Born,
 } from "@/types/Ihistory";
 
@@ -249,20 +247,31 @@ const patients = namespace("patients");
 const userStore = namespace("user");
 
 const timeable = {
-  age: "",
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
-  date: "",
-  time: "",
+  age: null,
+  startDate: null,
+  startTime: null,
+  endDate: null,
+  endTime: null,
+  date: null,
+  time: null,
 };
 
 const measurable = {
-  unit: "",
-  min: 0,
-  max: 0,
-  string: "",
+  age: null,
+  ageUnit: null,
+  ageValue: null,
+  day: null,
+  unit: null,
+  min: null,
+  minUnit: null,
+  minValue: null,
+  max: null,
+  maxUnit: null,
+  maxValue: null,
+  string: null,
+  startDate: null,
+  startTime: null,
+  endDate: null,
 };
 @Options({
   name: "ViewMedicalHistory",
@@ -349,24 +358,33 @@ export default class AddCondition extends Vue {
 
   agemesurable = { ...measurable };
   oneage = 0;
-  estimatedAge = 0;
 
   deceasedtimeable = { ...timeable };
   deceasedmeasurable = { ...measurable };
 
+  reasonCode = "";
+  reasonReference = "";
+  note = "";
+  conditionCode = "";
+  conditionOutcome = "";
+  conditionContributedToDeath = false;
+
+
   diseasedBoolean = false;
-  deceasedAge = 0;
   deceasedRangeMin = "";
   deceasedRangeMax = "";
   deceasedDate = "";
   deceasedString = "";
-  reasonCode = "";
-  reasonReference = "";
-  note = "";
   condition = "condition";
   code = "";
   outcome = "";
   contributedToDeath = "";
+  estimatedAge = false;
+  onsetNote = "";
+  ageValue = "";
+  ageUnit = "";
+  deceased = false;
+  estimatedDeceased = false;
 
   onsettimeable = { ...timeable };
   onsetmesurable = { ...measurable };
@@ -395,24 +413,28 @@ export default class AddCondition extends Vue {
 
   get onset() {
     return {
-      onsetPeriodAge: this.onsettimeable.age,
-      startAndEndDateTime: {
-        start: this.onsettimeable.startDate,
-        end: this.onsettimeable.endDate,
+      range: {
+        unit: this.onsetmesurable.unit,
+        min: this.onsetmesurable.min,
+        max: this.onsetmesurable.max,
       },
-      onsetRangeString: this.onsetmesurable.string,
-      unitOfMesurement: this.onsetmesurable.unit,
-      onsetRangeMin: this.onsetmesurable.min,
-      onsetRangeMax: this.onsetmesurable.max,
+      age: {
+        unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+      },
+      period: {
+        start: this.onsetmesurable.startDate,
+        end: this.onsetmesurable.endDate,
+      },
     };
   }
 
   get born() {
     return {
       //bornDateTimePeriod: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
-      bornDateTimePeriod: this.bornTimeable.startDate,
-      bornDateTime: this.bornTimeable.date,
-      bornString: this.bornString,
+      period: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
+      dateTime: this.bornTimeable.date,
+      year: this.bornTimeable.age,
     };
   }
 
@@ -423,44 +445,40 @@ export default class AddCondition extends Vue {
       contributedToDeath: this.contributedToDeath,
     };
   }
-  get basicInfo() {
-    return {
-      patientId: this.patientId,
-      instantiatesCanonical: this.instantiatesCanonical,
-      instantiatesUri: this.instantiatesUri,
-      status: this.status,
-      dataAbsentReason: this.dataAbsentReason,
-      date: this.date,
-      relationship: this.relationship,
-      sex: this.sex,
-    };
-  }
 
   get age() {
     return {
-      age: this.oneage,
-      ageRangeString: this.agemesurable.string,
-      unitOfMesurement: this.agemesurable.unit,
-      ageRangeMin: this.agemesurable.min,
-      ageRangeMax: this.agemesurable.max,
-      estimatedAge: this.estimatedAge,
+      estimated: this.estimatedAge,
+      year: this.agemesurable.string,
+      range: {
+        unit: this.agemesurable.unit,
+        min: this.agemesurable.min,
+        max: this.agemesurable.max
+      },
+      age: {
+        unit: this.agemesurable.ageUnit,
+        value: this.agemesurable.ageValue,
+      },
+     
     };
   }
 
-  get deceased() {
+  get deceasedAge() {
     return {
-      deceased: this.diseasedBoolean,
-      deceasedDateAge: this.deceasedtimeable.age,
-      deceasedDate: this.deceasedtimeable.date,
-      deceasedRangeString: this.deceasedmeasurable.string,
-      unitOfMesurement: this.deceasedmeasurable.unit,
-      deceasedRangeMin: this.deceasedmeasurable.min,
-      deceasedRangeMax: this.deceasedmeasurable.max,
-      reasonCode: this.reasonCode,
-      reasonReference: this.reasonReference,
-      notes: this.note,
+       estimated: this.estimatedDeceased,
+        year: this.deceasedmeasurable.string,
+        range:  {
+          unit: this.deceasedmeasurable.unit,
+          min:  this.deceasedmeasurable.min,
+          max: this.deceasedmeasurable.max
+        },
+        age: {
+          unit: this.deceasedmeasurable.ageUnit,
+          value: this.deceasedmeasurable.ageValue,
+        },
     };
   }
+
   async setNewHistoryModel() {
     this.historymodel = JSON.parse(JSON.stringify(this.payload));
   }
@@ -470,44 +488,41 @@ export default class AddCondition extends Vue {
     if (!history) return;
     this.historymodel = history;
 
-    this.onsettimeable.age = history.onset.onsetPeriodAge;
-    this.onsettimeable.startDate = history.onset.startAndEndDateTime
-      .start as string;
-    this.onsettimeable.endDate = history.onset.startAndEndDateTime
-      .end as string;
-    this.onsetmesurable.string = history.onset.onsetRangeString;
-    this.onsetmesurable.unit = history.onset.unitOfMesurement;
-    this.onsetmesurable.min = history.onset.onsetRangeMin;
-    this.onsetmesurable.max = history.onset.onsetRangeMax;
-    this.diseasedBoolean = history.deceased.deceased;
-    this.deceasedtimeable.age = history.deceased.deceasedDateAge;
-    this.deceasedtimeable.date = history.deceased.deceasedDate;
-    this.deceasedmeasurable.string = history.deceased.deceasedRangeString;
-    this.deceasedmeasurable.unit = history.deceased.unitOfMesurement;
-    this.deceasedmeasurable.min = history.deceased.deceasedRangeMin;
-    this.deceasedmeasurable.max = history.deceased.deceasedRangeMax;
-    this.reasonCode = history.deceased.reasonCode;
-    this.reasonReference = history.deceased.reasonReference;
-    this.note = history.deceased.note;
-    this.oneage = history.age.age;
-    this.agemesurable.string = history.age.ageRangeString as string;
-    this.agemesurable.unit = history.age.unitOfMesurement;
-    this.agemesurable.min = history.age.ageRangeMin;
-    this.agemesurable.max = history.age.ageRangeMax;
-    this.estimatedAge = history.age.estimatedAge;
-    this.instantiatesCanonical = history.basicInfo.instantiatesCanonical;
-    this.instantiatesUri = history.basicInfo.instantiatesUri;
-    this.status = history.basicInfo.status;
-    this.dataAbsentReason = history.basicInfo.dataAbsentReason;
-    this.date = history.basicInfo.date;
-    this.relationship = history.basicInfo.relationship;
-    this.sex = history.basicInfo.sex;
-    this.code = history.conditionRelatedPerson.code;
-    this.outcome = history.conditionRelatedPerson.outcome;
-    this.contributedToDeath = history.conditionRelatedPerson.contributedToDeath;
-    this.bornTimeable.startDate = history.born.bornDateTimePeriod;
-    this.bornTimeable.date = history.born.bornDateTime;
-    this.bornString = history.born.bornString;
+     this.onsetmesurable.ageUnit = history.onset.age.unit;
+     this.onsetmesurable.ageValue = history.onset.age.value;
+     this.onsetmesurable.unit = history.onset.range.unit;
+     this.onsetmesurable.max = history.onset.range.max;
+     this.onsetmesurable.min = history.onset.range.min;
+     this.onsetmesurable.startDate = history.onset.period.start;
+     this.onsetmesurable.endDate = history.onset.period.end;
+     this.onsetNote = history.onsetNote;
+     this.deceased = history.deceased;
+     this.deceasedmeasurable.ageUnit = history.deceasedAge.age.unit;
+     this.deceasedmeasurable.ageValue = history.deceasedAge.age.value;
+     this.deceasedmeasurable.unit = history.deceasedAge.range.unit;
+     this.deceasedmeasurable.max = history.deceasedAge.range.max;
+     this.deceasedmeasurable.min = history.deceasedAge.range.min;
+     this.deceasedmeasurable.string = history.deceasedAge.year;
+     this.reasonCode = history.reasonCode;
+     this.reasonReference = history.reasonReference;
+     this.note = history.note;
+     this.agemesurable.ageUnit = history.age.age.unit;
+     this.agemesurable.ageValue = history.age.age.value;
+     this.agemesurable.unit = history.age.range.unit;
+     this.agemesurable.max = history.age.range.max;
+     this.agemesurable.min = history.age.range.min;
+     this.agemesurable.string = history.age.year;
+     this.estimatedAge = history.age.estimated;
+     this.relationship = history.relationship;
+     this.sex = history.sex;
+     this.conditionCode = history.conditionCode;
+     this.conditionOutcome = history.conditionOutcome;
+     this.conditionContributedToDeath = history.conditionContributedToDeath;
+    // this.outcome = history.conditionRelatedPerson.outcome;
+    // this.contributedToDeath = history.conditionRelatedPerson.contributedToDeath;
+    // this.bornTimeable.startDate = history.born.bornDateTimePeriod;
+    // this.bornTimeable.date = history.born.bornDateTime;
+    // this.yearString = history.born.yearString;
   }
   async setId() {
     this.newhistoryId = this.id;
@@ -518,7 +533,6 @@ export default class AddCondition extends Vue {
   get payload() {
     return {
       patientId: this.patientId,
-      basicInfo: this.basicInfo,
       conditionRelatedPerson: this.conditionRelatedPerson,
       born: this.born,
       age: this.age,

@@ -5,7 +5,7 @@
         <div class="w-full flex items-center justify-between">
           <div class="w-full flex items-center">
             <span class="pr-2 flex items-center cursor-pointer border-r-2">
-              <cornie-icon-btn @click="$emit('close-access-diag')">
+              <cornie-icon-btn @click="show = false">
                 <arrow-left-icon />
               </cornie-icon-btn>
             </span>
@@ -22,16 +22,6 @@
             <div class="col-span-12">
               <cornie-select
                 :rules="required"
-                :items="practitionerRoles"
-                v-model="role"
-                label="Role"
-                placeholder="--Select--"
-                class="w-full"
-              />
-            </div>
-            <div class="col-span-12">
-              <cornie-select
-                :rules="required"
                 :items="allLocation"
                 v-model="location"
                 label="Location"
@@ -40,7 +30,7 @@
               />
             </div>
 
-            <!-- <div class="col-span-12">
+             <div class="col-span-12">
               <span class="text-primary text-sm font-semibold mb-5"> Available Days </span>
               <div class="grid grid-cols-7 gap-4 w-full mt-4">
                 <div :class="{'active' : isActiveMon}" @click="setActive('mon')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
@@ -66,7 +56,7 @@
                 </div>
 
               </div>
-            </div> -->
+            </div>
             <div
               class="col-span-12 flex justify-start mt-5 border-b-2 border-dashed border-gray-200 pb-4"
             >
@@ -77,98 +67,28 @@
                 <span class="text-lg">+</span> Add
               </span>
             </div>
-            <div class="col-span-12 pt-4">
-              <div class="text-sm font-bold mb-5 uppercase">
-                Change default location
+            <div class="bg-white shadow-md p-1 w-full col-span-full mt-5 rounded-lg"  v-for="(item, index) in locationDays" :key="index">
+              <div class="flex space-x-4 w-full">
+                <span class="flex items-center">
+                    <avatar :src="localSrc" class="mr-1" />
+                  </span>
+                <div class="w-full">
+                  <p class="font-bold text-sm">{{ getLocationName(item.location) }}</p>
+                   <span class="text-gray-400 text-xs font-light">
+                        {{ isActiveMon ? item?.days?.mon : '' }} {{isActiveTue ? item?.days?.tue : ''}}  {{isActiveWed ? item?.days?.wed : ''}}
+                        {{isActiveThu ? item?.days?.thu : ''}}  {{isActiveFir ? item?.days?.fri : ''}}  {{isActiveSat ? item?.days?.sat : ''}}
+                        {{isActiveSun ? item?.days?.sun : ''}}
+                    </span>
+                </div>
+                <div class="float-right flex justify-end w-full">
+                  <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
+                    <delete-red class="mt-1" @click="deleteLocationDays(index)"/>
+                  </div>
+                </div>
               </div>
-              <template v-if="accessRoles.length">
-                <div v-if="roleId && id && locationId">
-                  <div
-                    class="flex justify-between mb-4"
-                    v-for="(access, index) in accessRoles"
-                    :key="index"
-                  >
-                    <div class="flex justify-center items-center">
-                      <cornie-radio
-                        v-model="defaultVal"
-                        name="default"
-                        :value="`${access.roleId}?${access.locationId}`"
-                        @update:modelValue="setDefault"
-                      ></cornie-radio>
-                      <div class="flex flex-col">
-                        <div class="mb-0 font-bold text-sm">
-                          {{ access.location.name }}
-                          <!-- <span class="ml-5 text-gray-400 text-xs font-light">
-                            {{ isActiveMon ? data?.mon : '' }} {{isActiveTue ? data?.tue : ''}}  {{isActiveWed ? data?.wed : ''}}
-                              {{isActiveThu ? data?.thu : ''}}  {{isActiveFir ? data?.fri : ''}}  {{isActiveSat ? data?.sat : ''}}
-                              {{isActiveSun ? data?.sun : ''}}
-                          </span> -->
-                        </div>
-                        <div class="text-xs text-gray-400">
-                          {{ getRoleName(access.roleId) }}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="flex justify-center items-center">
-                      <button class="border-0 mr-5">
-                        <edit-icon class="fill-current text-primary" />
-                      </button>
-                      <button
-                        class="border-0"
-                        @click="
-                          deleteRoleAccess(access.roleId, access.locationId)
-                        "
-                      >
-                        <delete-red />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  v-else
-                  class="flex justify-between mb-4"
-                  v-for="(access, index) in accessRoles"
-                  :key="index"
-                >
-                  <div class="flex justify-center items-center">
-                    <cornie-radio
-                      v-model="defaultVal"
-                      name="default"
-                      :value="`${access.roleId}?${access.locationId}`"
-                      @update:modelValue="setDefault"
-                    ></cornie-radio>
-                    <div class="flex flex-col">
-                      <div class="mb-0 font-bold text-sm">
-                        {{ access.location }}
-                        <span class="ml-5 text-gray-400 text-xs font-light">
-                          {{ isActiveMon ? data?.mon : "" }}
-                          {{ isActiveTue ? data?.tue : "" }}
-                          {{ isActiveWed ? data?.wed : "" }}
-                          {{ isActiveThu ? data?.thu : "" }}
-                          {{ isActiveFir ? data?.fri : "" }}
-                          {{ isActiveSat ? data?.sat : "" }}
-                          {{ isActiveSun ? data?.sun : "" }}
-                        </span>
-                      </div>
-                      <div class="text-xs text-gray-400">{{ access.role }}</div>
-                    </div>
-                  </div>
-                  <div class="flex justify-center items-center">
-                    <button class="border-0 mr-5">
-                      <edit-icon class="fill-current text-primary" />
-                    </button>
-                    <button
-                      class="border-0"
-                      @click="
-                        deleteRoleAccess(access.roleId, access.locationId)
-                      "
-                    >
-                      <delete-red />
-                    </button>
-                  </div>
-                </div>
-              </template>
+
             </div>
+
           </div>
         </div>
       </cornie-card-text>
@@ -194,6 +114,13 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { string } from "yup";
+
+
+import IPractitioner, { PractitionerLocationRole } from "@/types/IPractitioner";
+import { cornieClient } from "@/plugins/http";
+
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -208,7 +135,6 @@ import UpdateIcon from "@/components/icons/blueupdate.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import CheckIcon from "@/components/icons/authcheck.vue";
-import { cornieClient } from "@/plugins/http";
 import DEdit from "@/components/icons/aedit.vue";
 import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import CDelete from "@/components/icons/adelete.vue";
@@ -218,9 +144,7 @@ import IconInput from "@/components/IconInput.vue";
 import DeleteRed from "@/components/icons/delete-red.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import SearchIcon from "@/components/icons/search.vue";
-import { namespace } from "vuex-class";
-import { string } from "yup";
-import IPractitioner, { PractitionerLocationRole } from "@/types/IPractitioner";
+import Avatar from "@/components/avatar.vue";
 
 const dropdown = namespace("dropdown");
 const roles = namespace("roles");
@@ -232,6 +156,7 @@ const practitioner = namespace("practitioner");
     ...CornieCard,
     CornieIconBtn,
     ArrowLeftIcon,
+    Avatar,
     CDelete,
     UpdateIcon,
     DeleteorangeIcon,
@@ -255,7 +180,7 @@ const practitioner = namespace("practitioner");
   },
 })
 export default class LocationDays extends Vue {
-  @Prop({ type: Boolean, default: false })
+ @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   required = string().required();
@@ -268,7 +193,44 @@ export default class LocationDays extends Vue {
   isActiveSat = false;
   isActiveSun = false;
 
+  locations = [] as any;
+   locationsId = [] as any;
+  location = "";
+  loading = false;
+  localSrc = require("../../../../../assets/img/placeholder.png");
+
+  locationDays = [] as any;
+
   data = {} as any;
+
+
+
+  
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+
+  @roles.State
+  roles!: { id: string; name: string }[];
+
+  @roles.Action
+  getRoles!: () => Promise<void>;
+
+  @practitioner.Action
+  getPractitionerById!: (id: string) => Promise<IPractitioner>;
+
+  get allLocation() {
+    if (!this.locations || this.locations.length === 0) return [];
+    return this.locations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+  getLocationName(id: string) {
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
 
   setActive(item: string) {
     if (item == "mon") {
@@ -294,6 +256,48 @@ export default class LocationDays extends Vue {
       this.isActiveSun = !this.isActiveSun;
     }
   }
+
+  async add(){
+    this.locationDays.push({
+        location: this.location,
+        days: this.data
+    })
+    this.locationsId.push(this.location);
+    this.data = {};
+  }
+  
+  async deleteLocationDays(index:number){
+    this.locationDays.splice(index, 1);
+  }
+
+
+  async submit(){
+    this.loading = true;
+
+     this.$emit("location-days", this.locationDays, this.locationsId);
+
+     this.loading = false;
+     this.done();
+  }
+
+  done(){
+     this.show = false;
+  }
+
+  
+  async fetchLocation() {
+    const AllLocation = cornieClient().get(
+      "/api/v1/location/myOrg/getMyOrgLocations"
+    );
+    const response = await Promise.all([AllLocation]);
+    this.locations = response[0].data;
+  }
+
+   async created() {
+    await this.fetchLocation();
+    await this.getRoles();
+  }
+
 }
 </script>
 <style scoped>

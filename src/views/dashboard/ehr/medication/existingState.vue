@@ -51,7 +51,7 @@
       <template #medication="{ item }">
         <div class="flex space-x-3">
           <div>
-            <p>{{ item.code}}</p>
+            <p>{{ item.genericName}}</p>
             <p class="text-gray-400">{{ item.durationInDays }} days</p>
           </div>
             <medication-drug v-if="item.substitutionAllowed == true" />
@@ -524,18 +524,6 @@ export default class RequestExistingState extends Vue {
   async showStatus(item: any) {
     this.showStatusModal = true;
     this.selectedItem = item;
-
-    // const medId = request.medications.map((c:any) => c.id);
-    //    (request as any).createdAt = new Date((request as any).createdAt).toDateString();
-
-    //   this.otherupdatedBy = this.getPractitionerName(request.requesterId);
-    //   this.othercurrentStatus = request.status;
-
-    //   this.otherupdate = request.createdAt;
-
-    //   this.patientId = request.patientId;
-    //   this.dispenserId = request.dispenserId;
-    //   this.requesterId = request.requesterId;
 
   }
   showDetailsModal(item:any){
