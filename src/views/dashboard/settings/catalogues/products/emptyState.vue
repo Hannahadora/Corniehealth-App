@@ -1,23 +1,19 @@
 <template>
   <div class="w-full pb-80">
     <div class="w-full flex flex-col justify-center items-center h-96">
-      <img src="@/assets/img/history.svg" />
+       <img src="@/assets/img/product.svg" />
       <h2 class="text-center mt-5 font-bold">
-        No Medical | Family History on Record
+        Start by adding a product
       </h2>
-      <span class="text-gray-400 text-sm">Family History added will be displayed here</span>
-      <!-- <span class="flex justify-center w-full">
+      <span class="flex justify-center w-full">
         <button
           class="bg-danger rounded-lg text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
-          @click="showHistory"
+          @click="$router.push({ name: 'New Product' })"
         >
-         Create New
+         Add Product
         </button>
-      </span> -->
+      </span>
     </div>
-    <history-modal
-      v-model="showHistoryModal"
-    />
   </div>
 </template>
 <script lang="ts">
@@ -26,21 +22,19 @@ import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
-import HistoryModal from "../historyDialog.vue";
+
+
 @Options({
   components: {
     ChevronDownIcon,
     Select,
     SearchIcon,
     IconInput,
-    HistoryModal,
+
   },
 })
-export default class PatientEmptyState extends Vue {
-  showHistoryModal = false;
-  async showHistory() {
-    this.showHistoryModal = true;
-  }
+export default class ProductEmptyState extends Vue {
+ 
 }
 </script>
 <style>

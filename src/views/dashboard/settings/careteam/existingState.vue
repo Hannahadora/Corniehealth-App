@@ -2,9 +2,9 @@
   <div class="w-full">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded text-white mt-5 py-2 pr-5 pl-5 px-3 focus:outline-none hover:opacity-90"
-        @click="$router.push('add-careteam')"
-      >
+        class="bg-danger rounded-lg text-sm text-white mt-5 py-2  px-5 focus:outline-none hover:opacity-90"
+        @click="showCareTeam = true"
+         >
         Create a Care Team
       </button>
     </span>
@@ -59,6 +59,7 @@
       @update-status="updateStatus"
     />
   </div>
+  <careteam-modal v-model="showCareTeam"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -87,6 +88,7 @@ import UpdateStatusIcon from "@/components/icons/update-status.vue";
 import DeleteRed from "@/components/icons/delete-red.vue";
 import DeactivateIcon from "@/components/icons/deactivate.vue";
 import UpdateStatus from "./components/UpdateStatus.vue";
+import CareteamModal from "./components/teamDialog.vue";
 
 const careteam = namespace("careteam");
 
@@ -107,6 +109,7 @@ const careteam = namespace("careteam");
     EyeIcon,
     CloseIcon,
     CancelIcon,
+    CareteamModal,
     UpdateStatusIcon,
     UpdateStatus,
     DeleteRed,
@@ -117,6 +120,7 @@ export default class CareteamExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
+  showCareTeam = false;
   query = "";
 
   @careteam.State

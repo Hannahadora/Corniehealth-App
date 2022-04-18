@@ -64,3 +64,18 @@ export const deleteService = async (id: string) => {
     return response.data;
   } catch (error) {}
 };
+
+
+export async function deleteProduct(id: string) {
+  try {
+    const response = await cornieClient().delete(
+      `/api/v1/catalogue-product/${id}`
+    );
+    if (response.success) {
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+  return false;
+}

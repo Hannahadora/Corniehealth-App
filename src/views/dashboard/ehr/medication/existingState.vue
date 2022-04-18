@@ -525,18 +525,6 @@ export default class RequestExistingState extends Vue {
     this.showStatusModal = true;
     this.selectedItem = item;
 
-    // const medId = request.medications.map((c:any) => c.id);
-    //    (request as any).createdAt = new Date((request as any).createdAt).toDateString();
-
-    //   this.otherupdatedBy = this.getPractitionerName(request.requesterId);
-    //   this.othercurrentStatus = request.status;
-
-    //   this.otherupdate = request.createdAt;
-
-    //   this.patientId = request.patientId;
-    //   this.dispenserId = request.dispenserId;
-    //   this.requesterId = request.requesterId;
-
   }
   showDetailsModal(item:any){
     this.selectedItem = item;

@@ -225,8 +225,9 @@ export const SettingsRoute: RouteRecordRaw = {
         ),
     },
     {
-      path: "newproduct",
+      path: "newproduct/:id?",
       name: "New Product",
+      props: true,
       component: () =>
         import(
           "@/views/dashboard/settings/catalogues/components/new-products.vue"

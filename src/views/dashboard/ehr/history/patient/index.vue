@@ -2,8 +2,9 @@
     <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span class="w-full">
-         <history-empty-state v-if="empty" />
-        <history-existing-state v-else />
+         <history-empty-state />
+         <!-- <history-empty-state v-if="empty" />
+        <history-existing-state v-else /> -->
       </span>
     </div>
   </div>

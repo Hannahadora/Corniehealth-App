@@ -19,14 +19,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.age"
+              v-model="measurable.ageValue"
               />
               <cornie-select
-                :items="['Days']"
+                 :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.day"
+                v-model="measurable.ageUnit"
               />
           </div>
        </div>
@@ -39,14 +39,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.min"
+              v-model="measurable.minValue"
               />
               <cornie-select
-                :items="['Days']"
+                 :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.day"
+                v-model="measurable.minUnit"
               />
           </div>
        </div>
@@ -57,14 +57,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.max"
+              v-model="measurable.maxValue"
               />
               <cornie-select
-                :items="['Days']"
+                :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.day"
+                v-model="measurable.maxUnit"
               />
           </div>
        </div>
@@ -90,9 +90,15 @@ import CornieSelect from "@/components/cornieselect.vue";
 
 const measurable = {
   age: "",
+  ageUnit: "",
+  ageValue: "",
   day: "",
   unit: "",
   min: "",
+  minUnit: "",
+  minValue: "",
+  maxUnit : "",
+  maxValue: "",
   max: "",
   string: "",
 };

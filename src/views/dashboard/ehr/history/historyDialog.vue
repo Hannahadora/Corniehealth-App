@@ -1,7 +1,7 @@
 <template>
   <big-dialog
     v-model="show"
-    :title="newaction + ' ' + 'New'"
+    :title="newaction"
     class=""
   >
     <v-form ref="form">
@@ -15,6 +15,7 @@
               :rules="required"
               label="Name"
               class="w-full"
+              v-model="name"
             />
             <cornie-select
               class="w-full"
@@ -25,6 +26,7 @@
                 'Sister',
               ]"
               :placeholder="'Select'"
+              v-model="relationship"
             />
               <cornie-select
               class="w-full"
@@ -36,6 +38,7 @@
                 'Other',
               ]"
               :placeholder="'Select'"
+              v-model="sex"
             />
           </div>
         </accordion-component>
@@ -45,7 +48,7 @@
           title="Born"
           :opened="false"
         >
-          <born-picker label="Year" v-model="agemesurable" class="w-full mb-5"/>
+          <born-picker label="Year" v-model="bornTimeable" class="w-full mb-5"/>
         </accordion-component>
       </div>
        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -57,8 +60,8 @@
          <div class="mt-5">
            <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
           <div class="flex space-x-4 mt-5">
-            <cornie-radio name="estimate" value="yes" label="Yes" />
-            <cornie-radio name="estimate"  label="No" value="no" />
+            <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedAge"/>
+            <cornie-radio name="estimate"  :label="'No'" :value="false" v-model="estimatedAge"/>
           </div>
         </div>
         
@@ -72,19 +75,19 @@
               <div class="mt-5">
                 <span class="text-sm font-semibold mb-3 text-black">Deceased</span>
                 <div class="flex space-x-4 mt-5">
-                  <cornie-radio name="Deceased" value="yes" label="Yes" />
-                  <cornie-radio name="Deceased"  label="No" value="no" />
+                  <cornie-radio name="Deceased" :value="true" label="Yes" v-model="deceased"/>
+                  <cornie-radio name="Deceased"  label="No" :value="false" v-model="deceased"/>
                 </div>
-              <measurable label="Deceased Age" v-model="agemesurable" />
+              <measurable label="Deceased Age" v-model="deceasedmeasurable" />
               <div class="mt-5">
                 <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
                 <div class="flex space-x-4 mt-5">
-                  <cornie-radio name="estimate" value="yes" label="Yes" />
-                  <cornie-radio name="estimate"  label="No" value="no" />
+                  <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedDeceased"/>
+                  <cornie-radio name="estimate"  label="No" :value="false" v-model="estimatedDeceased"/>
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
+            <!-- <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
               <div class="bg-white shadow-md rounded-lg p-3" v-for="(item, i) in references"
                                   :key="i">
                 <span class="text-danger font-bold">Reason Reference</span>
@@ -101,7 +104,7 @@
                 </div>
 
               </div>
-            </div>
+            </div> -->
             </accordion-component>
         </div>
         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -112,7 +115,6 @@
                 <div class="grid grid-cols-2 gap-2 mt-5">
                   <cornie-select
                     class="w-full"
-                    v-model="code"
                     label="Reason Code"
                     :items="[
                       'Anxiety disorder of childhood OR adolescence',
@@ -123,9 +125,10 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
+                    v-model="reasonCode"
                   />
                   <cornie-select
-                    v-model="outcome"
+                    v-model="reasonReference"
                     label="Reason Reference"
                     class="w-full"
                     :items="[
@@ -141,7 +144,7 @@
                     :placeholder="'--Select--'"
                   />
                   <cornie-input
-                    v-model="contributedToDeath"
+                    v-model="note"
                     class="w-full"
                     label="Note"
                     :rules="required"
@@ -158,7 +161,7 @@
                 <div class="grid grid-cols-2 gap-2 mt-5">
                   <cornie-select
                     class="w-full"
-                    v-model="code"
+                    v-model="conditionCode"
                     label="Condition Code"
                     :items="[
                       'Anxiety disorder of childhood OR adolescence',
@@ -171,7 +174,7 @@
                     :placeholder="'--Select--'"
                   />
                   <cornie-select
-                    v-model="outcome"
+                    v-model="conditionOutcome"
                     label="Outcome"
                     class="w-full"
                     :items="[
@@ -189,29 +192,29 @@
                  <div class="mt-5">
                     <span class="text-sm font-semibold mb-3 text-black">Contributed to Death?</span>
                     <div class="flex space-x-4 mt-5">
-                      <cornie-radio name="to" value="yes" label="Yes" />
-                      <cornie-radio name="to"  label="No" value="no" />
+                      <cornie-radio name="to" :value="true" label="Yes"  v-model="conditionContributedToDeath"/>
+                      <cornie-radio name="to"  label="No" :value="false" v-model="conditionContributedToDeath"/>
                     </div>
                   </div>
                 </div>
               </accordion-component>
         </div>
-         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
           <accordion-component
              :opened="false"
             title="Onset"
           >
-          <onset-picker v-model="onsettimeable" label="Onset"/>
+          <onset-picker v-model="onsetmesurable" label="Onset"/>
             <cornie-text-area
               :rules="required"
-              v-model="onsetnote"
+              v-model="onsetNote"
               placeholder="Placeholder"
               label="Notes"
               class="w-full"
               rows="4"
             />
           </accordion-component>
-         </div>
+        </div>
     </v-form>
     <template #actions>
       <cornie-btn
@@ -243,6 +246,7 @@ import { cornieClient } from "@/plugins/http";
 
 import { IPatient } from "@/types/IPatient";
 import IPractitioner from "@/types/IPractitioner";
+import Period from "@/types/IPeriod";
 
 import BigDialog from "@/components/bigdialog.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
@@ -263,13 +267,12 @@ import CornieRadio from "@/components/cornieradio.vue";
 
 import DatePicker from "./datepicker.vue";
 import ReferenceModal from "./reference.vue";
+
 const practitioner = namespace("practitioner");
 
 import Ihistory, {
-  BasicInfo,
   OnSet,
   Age,
-  ConditionRelatedPerson,
   Born,
 } from "@/types/Ihistory";
 
@@ -277,23 +280,34 @@ const history = namespace("history");
 const patients = namespace("patients");
 
 const timeable = {
-  age: "",
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
-  date: "",
-  time: "",
+  age: null,
+  startDate: null,
+  startTime: null,
+  endDate: null,
+  endTime: null,
+  date: null,
+  time: null,
 };
 
 const measurable = {
-  unit: "",
-  min: 0,
-  max: 0,
-  string: "",
+  age: null,
+  ageUnit: null,
+  ageValue: null,
+  day: null,
+  unit: null,
+  min: null,
+  minUnit: null,
+  minValue: null,
+  max: null,
+  maxUnit: null,
+  maxValue: null,
+  string: null,
+  startDate: null,
+  startTime: null,
+  endDate: null,
 };
 @Options({
-  name: "AddMedicalHistory",
+  name: "HistoryDialog",
   components: {
     BigDialog,
     TimeablePicker,
@@ -315,7 +329,7 @@ const measurable = {
     BornPicker,
   },
 })
-export default class AddCondition extends Vue {
+export default class HistoryDialog extends Vue {
   @Prop({ type: Boolean, default: false })
   modelValue!: boolean;
 
@@ -341,6 +355,7 @@ export default class AddCondition extends Vue {
   fetchPractitioners!: () => Promise<void>;
 
   required = string().required();
+
   @Watch("id")
   idChanged() {
     this.setHistory();
@@ -355,51 +370,57 @@ export default class AddCondition extends Vue {
   references = [] as any;
   loading = false;
 
-  instantiatesCanonical = "";
-  instantiatesUri = "";
-  status = "";
-  dataAbsentReason = "";
-  date = "";
+
   name = "";
-  relationship = "";
+  relationship =  "";
   sex = "";
+  status = "partial";
+  // born = { ...timeable };
+
+  // age = { ...measurable };
+  estimatedAge = false;
+  ageValue = "";
+  ageUnit = "";
+  deceased = false;
+  estimatedDeceased = false;
+  // deceasedAge = { ...measurable };
+
+  reasonCode = "";
+  reasonReference = "";
+  note = "";
+  conditionCode = "";
+  conditionOutcome = "";
+  conditionContributedToDeath = false;
+
+
 
   // startAndEndDateTimeStart = "";
   // startAndEndDateTimeEnd = "";
   // bornDateTime = "";
   bornTimeable = { ...timeable };
-  bornString = "";
+  yearString = "";
 
   agemesurable = { ...measurable };
   oneage = 0;
-  estimatedAge = 0;
+
 
   deceasedtimeable = { ...timeable };
   deceasedmeasurable = { ...measurable };
 
   diseasedBoolean = false;
-  deceasedAge = 0;
   deceasedRangeMin = "";
   deceasedRangeMax = "";
   deceasedDate = "";
   deceasedString = "";
-  reasonCode = "";
-  reasonReference = "";
-  note = "";
   condition = "condition";
   code = "";
   outcome = "";
-  contributedToDeath = "";
+  contributedToDeath = false;
 
-  onsettimeable = { ...timeable };
+
   onsetmesurable = { ...measurable };
-  onsetAge = "";
-  onsetstartAndEndDateTimeStart = "";
-  onsetstartAndEndDateTimeEnd = "";
-  onsetRangeMin = "";
-  onsetRangeMax = "";
-  onsetnote = "";
-  onsetString = "";
+  onsetNote = "";
+
 
   get patientId() {
     return this.$route.params.id as string;
@@ -427,70 +448,93 @@ export default class AddCondition extends Vue {
 
   get onset() {
     return {
-      onsetPeriodAge: this.onsettimeable.age,
-      startAndEndDateTime: {
-        start: this.onsettimeable.startDate,
-        end: this.onsettimeable.endDate,
-      },
-      onsetRangeString: this.onsetmesurable.string,
-      unitOfMesurement: this.onsetmesurable.unit,
-      onsetRangeMin: this.onsetmesurable.min,
-      onsetRangeMax: this.onsetmesurable.max,
+      range: !Object.values({
+        unit: this.onsetmesurable.unit,
+        min: this.onsetmesurable.min,
+        max: this.onsetmesurable.max,
+      }).every(o => o === null) ? {
+        unit: this.onsetmesurable.unit,
+        min: this.onsetmesurable.min,
+        max: this.onsetmesurable.max,
+      } : null,
+      age: !Object.values({
+        unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+      }).every(o => o === null) ? {
+        unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+      } : null, 
+      year: this.onsetmesurable.string || null,
+      // period: !Object.values({
+      //   start: this.onsetmesurable.startDate,
+      //   end: this.onsetmesurable.endDate,
+      // }).every(o => o === null) ? {
+      //   start: this.onsetmesurable.startDate,
+      //   end: this.onsetmesurable.endDate,
+      // } : null,
     };
   }
 
   get born() {
     return {
       //bornDateTimePeriod: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
-      bornDateTimePeriod: this.bornTimeable.startDate,
-      bornDateTime: this.bornTimeable.date,
-      bornString: this.bornString,
+      period: !Object.values({
+          start: this.bornTimeable.startDate, 
+          end: this.bornTimeable.endDate
+        }).every(o => o === null) ? {
+          start: this.bornTimeable.startDate, 
+          end: this.bornTimeable.endDate
+        } : null,
+      dateTime: this.bornTimeable.date || null,
+      year: this.bornTimeable.age || null,
     };
   }
 
-  get conditionRelatedPerson() {
-    return {
-      code: this.code,
-      outcome: this.outcome,
-      contributedToDeath: this.contributedToDeath,
-    };
-  }
-  get basicInfo() {
-    return {
-      patientId: this.patientId,
-      instantiatesCanonical: this.instantiatesCanonical,
-      instantiatesUri: this.instantiatesUri,
-      status: this.status,
-      dataAbsentReason: this.dataAbsentReason,
-      date: this.date,
-      relationship: this.relationship,
-      sex: this.sex,
-    };
-  }
-
+ 
   get age() {
     return {
-      age: this.oneage,
-      ageRangeString: this.agemesurable.string,
-      unitOfMesurement: this.agemesurable.unit,
-      ageRangeMin: this.agemesurable.min,
-      ageRangeMax: this.agemesurable.max,
-      estimatedAge: this.estimatedAge,
+      estimated: this.estimatedAge || null,
+      year: this.agemesurable.string || null,
+      range: !Object.values({
+          unit: this.agemesurable.unit,
+          min: this.agemesurable.min,
+          max: this.agemesurable.max
+      }).every(o => o === null) ?  {
+          unit: this.agemesurable.unit,
+          min: this.agemesurable.min,
+          max: this.agemesurable.max
+      } : null,
+      age: !Object.values({
+        unit: this.agemesurable.ageUnit,
+        value: this.agemesurable.ageValue,
+      }).every(o => o === null) ? {
+        unit: this.agemesurable.ageUnit,
+        value: this.agemesurable.ageValue,
+      } : null,
+     
     };
   }
 
-  get deceased() {
+  get deceasedAge() {
     return {
-      deceased: this.diseasedBoolean,
-      deceasedDateAge: this.deceasedtimeable.age,
-      deceasedDate: this.deceasedtimeable.date,
-      deceasedRangeString: this.deceasedmeasurable.string,
-      unitOfMesurement: this.deceasedmeasurable.unit,
-      deceasedRangeMin: this.deceasedmeasurable.min,
-      deceasedRangeMax: this.deceasedmeasurable.max,
-      reasonCode: this.reasonCode,
-      reasonReference: this.reasonReference,
-      notes: this.note,
+       estimated: this.estimatedDeceased,
+        year: this.deceasedmeasurable.string || null,
+        range: !Object.values({
+          unit: this.deceasedmeasurable.unit,
+          min:  this.deceasedmeasurable.min,
+          max: this.deceasedmeasurable.max
+        }).every(o => o === null) ? {
+          unit: this.deceasedmeasurable.unit,
+          min:  this.deceasedmeasurable.min,
+          max: this.deceasedmeasurable.max
+        } : null,
+        age: !Object.values({
+          unit: this.deceasedmeasurable.ageUnit,
+          value: this.deceasedmeasurable.ageValue,
+        }).every(o => o === null) ? {
+          unit: this.deceasedmeasurable.ageUnit,
+          value: this.deceasedmeasurable.ageValue,
+        } :  null,
     };
   }
   async setNewHistoryModel() {
@@ -502,59 +546,69 @@ export default class AddCondition extends Vue {
     if (!history) return;
     this.historymodel = history;
 
-    this.onsettimeable.age = history.onset.onsetPeriodAge;
-    this.onsettimeable.startDate = history.onset.startAndEndDateTime
-      .start as string;
-    this.onsettimeable.endDate = history.onset.startAndEndDateTime
-      .end as string;
-    this.onsetmesurable.string = history.onset.onsetRangeString;
-    this.onsetmesurable.unit = history.onset.unitOfMesurement;
-    this.onsetmesurable.min = history.onset.onsetRangeMin;
-    this.onsetmesurable.max = history.onset.onsetRangeMax;
-    this.diseasedBoolean = history.deceased.deceased;
-    this.deceasedtimeable.age = history.deceased.deceasedDateAge;
-    this.deceasedtimeable.date = history.deceased.deceasedDate;
-    this.deceasedmeasurable.string = history.deceased.deceasedRangeString;
-    this.deceasedmeasurable.unit = history.deceased.unitOfMesurement;
-    this.deceasedmeasurable.min = history.deceased.deceasedRangeMin;
-    this.deceasedmeasurable.max = history.deceased.deceasedRangeMax;
-    this.reasonCode = history.deceased.reasonCode;
-    this.reasonReference = history.deceased.reasonReference;
-    this.note = history.deceased.note;
-    this.oneage = history.age.age;
-    this.agemesurable.string = history.age.ageRangeString as string;
-    this.agemesurable.unit = history.age.unitOfMesurement;
-    this.agemesurable.min = history.age.ageRangeMin;
-    this.agemesurable.max = history.age.ageRangeMax;
-    this.estimatedAge = history.age.estimatedAge;
-    this.instantiatesCanonical = history.basicInfo.instantiatesCanonical;
-    this.instantiatesUri = history.basicInfo.instantiatesUri;
-    this.status = history.basicInfo.status;
-    this.dataAbsentReason = history.basicInfo.dataAbsentReason;
-    this.date = history.basicInfo.date;
-    this.relationship = history.basicInfo.relationship;
-    this.sex = history.basicInfo.sex;
-    this.code = history.conditionRelatedPerson.code;
-    this.outcome = history.conditionRelatedPerson.outcome;
-    this.contributedToDeath = history.conditionRelatedPerson.contributedToDeath;
-    this.bornTimeable.startDate = history.born.bornDateTimePeriod;
-    this.bornTimeable.date = history.born.bornDateTime;
-    this.bornString = history.born.bornString;
+     this.onsetmesurable.ageUnit = history?.onset?.age?.unit || null;
+     this.onsetmesurable.ageValue = history?.onset?.age?.value || null;
+     this.onsetmesurable.unit = history?.onset?.range?.unit || null;
+     this.onsetmesurable.max = history?.onset?.range?.max || null;
+     this.onsetmesurable.min = history?.onset?.range?.min || null;
+     this.onsetmesurable.startDate = history?.onset?.period?.start || null;
+     this.onsetmesurable.endDate = history?.onset?.period?.end || null;
+     this.onsetNote = history?.onsetNote;
+     this.deceased = history?.deceased;
+     this.deceasedmeasurable.ageUnit = history?.deceasedAge?.age?.unit || null;
+     this.deceasedmeasurable.ageValue = history?.deceasedAge?.age?.value || null;
+     this.deceasedmeasurable.unit = history?.deceasedAge?.range?.unit || null;
+     this.deceasedmeasurable.max = history?.deceasedAge?.range?.max || null;
+     this.deceasedmeasurable.min = history?.deceasedAge?.range?.min|| null;
+     this.deceasedmeasurable.string = history?.deceasedAge?.year || null;
+     this.reasonCode = history?.reasonCode;
+     this.reasonReference = history?.reasonReference;
+     this.note = history?.note;
+     this.agemesurable.ageUnit = history?.age?.age?.unit || null;
+     this.agemesurable.ageValue = history?.age?.age?.value || null;
+     this.agemesurable.unit = history?.age?.range?.unit || null;
+     this.agemesurable.max = history?.age?.range?.max || null;
+     this.agemesurable.min = history?.age?.range?.min || null;
+     this.agemesurable.string = history?.age?.year || null;
+     this.estimatedAge = history?.age?.estimated;
+     this.relationship = history?.relationship;
+     this.sex = history?.sex;
+     this.conditionCode = history?.conditionCode;
+     this.conditionOutcome = history?.conditionOutcome;
+     this.conditionContributedToDeath = history?.conditionContributedToDeath;
+     this.onsetNote = history?.onsetNote;
+     this.name = history?.name;
+     this.bornTimeable.age = history?.born?.year || null;
+     this.bornTimeable.date = history?.born?.dateTime || null;
+     this.bornTimeable.startDate = history?.born?.period?.start || null;
+     this.bornTimeable.endDate = history?.born?.period?.end || null;
+     this.status = history.status;
+
   }
 
   get payload() {
     return {
       patientId: this.patientId,
-      basicInfo: this.basicInfo,
-      conditionRelatedPerson: this.conditionRelatedPerson,
       born: this.born,
       age: this.age,
+      status: this.status,
       deceased: this.deceased,
       onset: this.onset,
+      reasonCode: this.reasonCode,
+      reasonReference: this.reasonReference,
+      note: this.note,
+      conditionCode: this.conditionCode,
+      conditionOutcome: this.conditionOutcome,
+      conditionContributedToDeath: this.conditionContributedToDeath,
+      name: this.name,
+      relationship: this.relationship,
+      sex: this.sex,
+      deceasedAge: this.deceasedAge,
+   
     };
   }
   get newaction() {
-    return this.id ? "Update" : "Create";
+    return this.id ? "Update History" : "Create New";
   }
   async showRef(value: any) {
     this.showRefModal = true;
@@ -586,9 +640,9 @@ export default class AddCondition extends Vue {
         });
         this.done();
       }
-    } catch (error) {
+    } catch (error:any) {
       window.notify({
-        msg: "Medical family history not created",
+        msg: error.response.data.message,
         status: "error",
       });
     }

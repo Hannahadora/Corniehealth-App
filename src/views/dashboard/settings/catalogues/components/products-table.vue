@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="w-full" v-if="products.lenght >0">
+    <div class="w-full" v-if="products.length >0">
       <cornie-table v-model="items" :columns="headers">
         <template #name="{ item }">
           <div
