@@ -2,7 +2,7 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full">
       <button
-        class="bg-danger rounded-md text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-md text-white mt-5 py-3 text-sm px-4 focus:outline-none hover:opacity-90"
         @click="showAddCarePartners = true"
       >
         Add a Care Partner
@@ -32,11 +32,63 @@
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.CarePartners.status == 'waiting'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.CarePartners.status == 'pending'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.CarePartners.status == 'active'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.CarePartners.status == 'unknown'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.CarePartners.status == 'completed'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.CarePartners.status == 'revoked' || item.CarePartners.status == 'cancelled'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.CarePartners.status == 'entered-in-error'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.CarePartners.status == 'do-not-perform'"
+            >
+              {{ item.CarePartners.status }}
+            </p>
+          </div>
+        </template>
     </cornie-table>
 
     <add-care-partners
-      :visible="showAddCarePartners"
-      @close-add-care-partner="showAddCarePartners = false"
+      v-model="showAddCarePartners"
+      @addPartner="addPartner"
       @open-add-care-partner="showAddCarePartners = true"
       :partnerToEdit="partnerToEdit"
     />
@@ -62,7 +114,7 @@ import EditIcon from "@/components/icons/edit-purple.vue";
 import ICarePartner from "@/types/ICarePartner";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import AddCarePartners from "./components/AddCarePartners.vue";
+import AddCarePartners from "./PartnerModal.vue";
 import IEmail from "@/types/IEmail";
 import IPhone from "@/types/IPhone";
 
@@ -97,6 +149,9 @@ export default class CarePartnersExistingState extends Vue {
 
   @CarePartnersStore.Action
   delete!: (partner: ICarePartner) => Promise<boolean>;
+
+ @CarePartnersStore.Action
+  get!: () => Promise<void>;
 
   headers = [
     {
@@ -136,7 +191,7 @@ export default class CarePartnersExistingState extends Vue {
   ];
 
   get items() {
-    return this.carePartners.map((partner) => {
+    return this.carePartners.map((partner:any) => {
       return {
         ...partner,
         action: partner.id,
@@ -144,8 +199,7 @@ export default class CarePartnersExistingState extends Vue {
         phone:
           (partner?.phone as unknown as IPhone)?.dialCode ||
           "+234" + (partner?.phone as unknown as IPhone)?.number,
-        identifier: partner?.identifier ? partner?.identifier : "Not specified",
-        status: "Unknown",
+        identifier: partner?.CarePartners?.carePartnerId,
       };
     });
   }
@@ -159,7 +213,16 @@ export default class CarePartnersExistingState extends Vue {
   }
 
   async deactivatePartner(id: string) {
-    console.log(id);
+      const confirmed = await window.confirmAction({
+      title: "Deactivate Care Partner",
+      message:
+        "Are you sure you want to deactivate this care partner? This action cannot be undone.",
+    });
+    if (!confirmed) return;
+    const partner = this.carePartners.find((element) => element.id == id);
+    if (partner && (await this.delete(partner)))
+      notify({ msg: "Care partner deactivated", status: "success" });
+    else notify({ msg: "Care partner not deactivated", status: "error" });
   }
 
   async deletePartner(id: string) {
@@ -173,6 +236,13 @@ export default class CarePartnersExistingState extends Vue {
     if (partner && (await this.delete(partner)))
       notify({ msg: "Care partner deleted", status: "success" });
     else notify({ msg: "Care partner not deleted", status: "error" });
+  }
+  async addPartner(){
+      await this.get();
+  }
+
+  async created(){
+    await this.get();
   }
 }
 </script>

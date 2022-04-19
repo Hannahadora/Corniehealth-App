@@ -23,6 +23,11 @@ export const ClinicalsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
     },
     {
+      path: "care-partners",
+      name: "EHR - Care Partners",
+      component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
+    },
+    {
       path: "visits",
       name: "EHR - Visit",
       component: () => import("@/views/dashboard/ehr/visits/index.vue"),
