@@ -13,8 +13,8 @@ export default {
   },
 
   mutations: {
-    setPatientPlans(state, items) {
-      if (items && items.length > 0) state.patientCarePlans = [...items];
+    setPatientPlans(state, patientCarePlans: ICarePlan[]) {
+      state.patientCarePlans = [...patientCarePlans];
     },
 
     addNewItem(state, data) {

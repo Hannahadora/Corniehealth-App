@@ -198,6 +198,8 @@ import AttachIcon from "@/components/icons/ehrattach.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
 import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
 import eyeIcon from "@/components/icons/yelloweye.vue";
+import PartnersIcon from "@/components/icons/partners.vue";
+import PlanIcon from "@/components/icons/plan.vue";
 import { namespace } from "vuex-class";
 import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
 import { Prop, Ref } from "vue-property-decorator";
@@ -217,10 +219,12 @@ type INav = { name: string; to: string; icon: string };
     ImpressionIcon,
     RefferIcon,
     TrendIcon,
+    PartnersIcon,
     MedicalIcon,
     AllergyIcon,
     AppointIcon,
     VisitIcon,
+    PlanIcon,
     VitalIcon,
     EncounterIcon,
     ConditionIcon,
@@ -277,6 +281,8 @@ export default class Settings extends Vue {
       { name: "Procedure", to: "procedure", icon: "proceed-icon" },
       { name: "Referral", to: "referral", icon: "reffer-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },
+      { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
+       { name: "Care Plan", to: "care-plan", icon: "plan-icon" },
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
       { name: "Attachments", to: "attachments", icon: "attach-icon" },
