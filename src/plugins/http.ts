@@ -23,7 +23,7 @@ export const cornieClient = () =>
       "Content-Type": "application/json",
       Authorization: authToken(),
     },
-    cornieUrl
+    "https://dev.corniehealth.com"
   );
 
 export const cornieClient2 = () =>
