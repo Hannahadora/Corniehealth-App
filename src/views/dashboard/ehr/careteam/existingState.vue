@@ -12,28 +12,37 @@
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`add-careteam/${item.id}`)"
+          @click="showModal(item.id)"
         >
           <edit-icon class="mr-3 text-primary fill-current" />
-          <span class="ml-3 text-xs">Edit & View</span>
+          <span class="ml-3 text-xs">Edit</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="handleUpdateStatus(item.id)"
+          @click="handleUpdateStatus(item)"
         >
           <update-status-icon class="mr-3" />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <span class="mr-3 text-2xl bold text-green-400">+</span>
           <span class="ml-3 text-xs">Add Member </span>
-        </div>
+        </div> -->
         <div
+        v-if="item.status == 'active'"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="deactivateCareteam(item.id)"
         >
           <deactivate-icon class="mr-3" />
           <span class="ml-3 text-xs">Deactivate</span>
+        </div>
+         <div
+         v-else
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="activateCareteam(item.id)"
+        >
+          <deactivate-icon class="mr-3" />
+          <span class="ml-3 text-xs">Activate</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -43,6 +52,58 @@
           <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
+      <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'waiting'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'pending'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'inactive' || item.status == 'cancelled'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p>
+          </div>
+        </template>
     </cornie-table>
 
     <column-filter
@@ -52,14 +113,12 @@
     />
 
     <update-status
-      v-if="showUpdateStatusDiag"
-      :show="showUpdateStatusDiag"
-      :teamStatus="teamStatus"
-      @close-status-diag="showUpdateStatusDiag = false"
+      v-model="showUpdateStatusDiag"
+      :selectedItem="selectedItem"
       @update-status="updateStatus"
     />
   </div>
-  <careteam-modal v-model="showCareTeam"/>
+  <careteam-modal v-model="showCareTeam" @careteam-added="careteamadded" :id="careteamId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -119,13 +178,17 @@ const careteam = namespace("careteam");
 })
 export default class CareteamExistingState extends Vue {
   showColumnFilter = false;
-  showModal = false;
   loading = false;
   showCareTeam = false;
   query = "";
+  careteamId = "";
+  selectedItem = [];
 
   @careteam.State
   careteams!: ICareteam[];
+
+  @careteam.Action
+  fetchCareteams!: () => Promise<void>;
 
   @careteam.Action
   deleteCareteam!: (id: string) => Promise<boolean>;
@@ -184,12 +247,18 @@ export default class CareteamExistingState extends Vue {
   showUpdateStatusDiag = false;
   teamStatus = "" as String;
 
-  async handleUpdateStatus(id: string) {
-    this.teamToUpdate = id;
-    this.showUpdateStatusDiag = true;
-    let team = this.careteams.find((item: any) => item.id === id);
+  async careteamadded(){
+    await this.fetchCareteams();
+  }
 
-    this.teamStatus = team?.status || "";
+  async showModal(value:string){
+    this.showCareTeam = true;
+    this.careteamId = value;
+  }
+
+  async handleUpdateStatus(item: any) {
+     this.showUpdateStatusDiag = true;
+    this.selectedItem = item;
   }
 
   async updateStatus(status: string) {
@@ -246,6 +315,7 @@ export default class CareteamExistingState extends Vue {
         );
         if (response.success) {
           window.notify({ msg: "Care team deactivated", status: "success" });
+          this.careteamadded();
         }
       } catch (error) {
         window.notify({ msg: "Care team not deactivated", status: "error" });
@@ -267,12 +337,17 @@ export default class CareteamExistingState extends Vue {
         );
         if (response.success) {
           window.notify({ msg: "Care team activated", status: "success" });
+          this.careteamadded();
         }
       } catch (error) {
         window.notify({ msg: "Care team not activated", status: "error" });
         console.error(error);
       }
     }
+  }
+
+  async created(){
+    await this.fetchCareteams();
   }
 }
 </script>

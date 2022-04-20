@@ -29,10 +29,11 @@
             :items="genderOptions"
             v-model="gender"
           />
-          <cornie-input
+          <cornie-select
             label="Relationship"
             class="w-full"
-            placeholder="Input"
+            placeholder="Select"
+            :items="relationshipOptions"
             v-model="relationship"
           />
           <cornie-input
@@ -95,6 +96,7 @@
             label="Email"
             class="w-full"
             placeholder="Enter"
+            :rules="emailRule"
             v-model="email"
           />
           <cornie-input
@@ -137,6 +139,15 @@
 <script lang="ts">
 import { Vue, Options, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { string } from "yup";
+import ObjectSet from "@/lib/objectset";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+
+import { IPatient, RelatedPerson } from "@/types/IPatient";
+import Period from "@/types/IPeriod";
+
+import { useCountryStates } from "@/composables/useCountryStates";
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
@@ -147,13 +158,7 @@ import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/datepicker.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PeriodPicker from "@/components/daterangepicker.vue";
-import { IPatient, RelatedPerson } from "@/types/IPatient";
-import ObjectSet from "@/lib/objectset";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import Period from "@/types/IPeriod";
 import AutoComplete from "@/components/autocomplete.vue";
-import { useCountryStates } from "@/composables/useCountryStates";
 
 const patients = namespace("patients");
 
@@ -200,6 +205,7 @@ export default class EmergencyDontactDialog extends Vue {
   mailingAddress = "";
   primaryPhone = { number: "", dialCode: "+234" };
   secondaryPhone = { number: "", dialCode: "+234" };
+  emailRule = string().email().required();
   genderOptions = [
     { code: "male", display: "Male" },
     { code: "female", display: "Female" },
@@ -265,11 +271,16 @@ export default class EmergencyDontactDialog extends Vue {
   }
 
   batch() {
-    const contactSet = new ObjectSet(
-      [...this.emergencyContactsSync, this.payload],
-      "email"
-    );
-    this.emergencyContactsSync = [...contactSet];
+    this.loading = true;
+    // const emergency = this.emergencyContactsSync ?? [];
+    // const contactSet = new ObjectSet(
+    //   [this.emergencyContactsSync, this.payload],
+    //   "email"
+    // );
+    // this.emergencyContactsSync = [...contactSet];
+    this.$emit('allContacts', this.payload);
+    this.loading = false;
+    this.show = false;
   }
 
   async submit() {

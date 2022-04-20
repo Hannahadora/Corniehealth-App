@@ -25,11 +25,13 @@ export default interface ICarePlan {
   outcome: string;
   detail: IPlanDetail;
   scheduleTiming: {
-    scheduleTiming: string;
-    startDate: string;
-    endDate: string;
-    location: string;
-    performer: string;
+    date: null,
+    location: string,
+    performer: string,
+    period: {
+      start: null,
+      end: null,
+    }
   };
   product: {
     productCode: string;
@@ -39,17 +41,17 @@ export default interface ICarePlan {
     description: string;
     note: string;
   };
+  startTime: string;
+  endTime: string;
+  ReasonCode: string;
+  reasonReference: string;
 }
 
 export interface IPlanDetail {
-  kind: string;
-  instantiatesCanonical: string;
-  instantiatesUri: string;
-  code: string;
-  reasonCode: string;
-  referenceCode: string;
-  goal: string;
-  status: string;
-  statusReason: string;
-  doNotPerform: true;
+  reasonCode: string,
+    goal: string,
+    status: string,
+    statusReason: string,
+    doNotPerform: boolean,
+    reasonReference : string,
 }

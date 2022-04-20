@@ -201,7 +201,7 @@ export default class CareteamStatus extends Vue {
   }
 
   async updateStatus() {
-    const url = `/api/v1/care-teams/${this.selectedItem.id}`;
+    const url = `/api/v1/care-plan/status/${this.selectedItem.id}`;
     const body = {
       status: this.status,
     };

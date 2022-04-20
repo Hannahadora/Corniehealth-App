@@ -11,7 +11,7 @@
       <registration-chart class="w-full" :height="100" />
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full mb-5">
-          <cornie-btn class="text-primary border border-primary m-5">
+          <cornie-btn class="text-primary border-2 font-semibold border-primary m-5">
             Export Register
           </cornie-btn>
           <cornie-btn

@@ -23,20 +23,21 @@
               Intent | Title
             </div>
           </template>
-          <template #actions="{}">
-            <table-action>
-              <newview-icon class="text-yellow-500 fill-current" />
-              <span class="ml-3 text-xs">View</span>
-            </table-action>
-            <table-action>
-              <update-icon class="text-primary fill-current" />
-              <span class="ml-3 text-xs">Edit</span>
-            </table-action>
-            <table-action>
-              <edit-icon class="text-primary fill-current" />
-              <span class="ml-3 text-xs">Update</span>
-            </table-action>
-            <table-action>
+          <template #actions="{ item }">
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+                <newview-icon class="mr-3 text-yellow-400 fill-current" />
+                <span class="ml-3 text-xs">View</span>
+              </div>
+              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+                 <update-icon class="text-primary fill-current" />
+                 <span class="ml-3 text-xs">Edit care plan</span>
+              </div>
+              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatusModal(item)">
+                <edit-icon class="text-primary fill-current" />
+                <span class="ml-3 text-xs">Update Status</span>
+              </div>
+
+               <!-- <table-action>
               <add-icon class="text-primary fill-current" />
               <span class="ml-3 text-xs">Add Subject</span>
             </table-action>
@@ -56,16 +57,23 @@
             <table-action>
               <feedback-icon class="text-primary fill-current" />
               <span class="ml-3 text-xs">Request Feedback</span>
-            </table-action>
+            </table-action> -->
           </template>
     </cornie-table>
 
    
   </div>
-  <careplan-modal v-model="showNewModal"/>
+  <status-modal v-model="showStatus" :selectedItem="selectedItem" @careplan-added="careplanadded"/>
+  <careplan-modal v-model="showNewModal" @careplan-added="careplanadded" :id="carePlanId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import search from "@/plugins/search";
+
+import IPractitioner from "@/types/IPractitioner";
+import ICarePlan from "@/types/ICarePlan";
+
 import CornieBtn from "@/components/CornieBtn.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import Avatar from "@/components/avatar.vue";
@@ -76,7 +84,6 @@ import SettingsIcon from "@/components/icons/settings.vue";
 import TableAction from "@/components/table-action.vue";
 import Modal from "@/components/modal.vue";
 import SearchInput from "@/components/search-input.vue";
-import EmptyState from "./components/empty-state.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -86,12 +93,14 @@ import AddIcon from "@/components/icons/add.vue";
 import NewPlan from "./components/new-plan.vue";
 import DocIcon from "@/components/icons/assign-careteam.vue";
 import FeedbackIcon from "@/components/icons/feedback.vue";
-import { namespace } from "vuex-class";
-import ICarePlan from "@/types/ICarePlan";
+
 
 import CareplanModal from "./PlanModal.vue";
+import StatusModal from "./status.vue";
+import EmptyState from "./components/empty-state.vue";
 
 const careplan = namespace("careplan");
+const practitioner = namespace("practitioner");
 
 @Options({
   name: "EHRPatients",
@@ -110,6 +119,7 @@ const careplan = namespace("careplan");
     SearchInput,
     EmptyState,
     CareplanModal,
+    StatusModal,
     CornieSelect,
     SideModal,
     UpdateIcon,
@@ -124,17 +134,25 @@ export default class ExistingState extends Vue {
   getCarePlans!: (patientId: string) => Promise<void>;
 
   @careplan.State
-  careplans!: ICarePlan[];
+  patientCarePlans!: ICarePlan[];
+
+  
+    @practitioner.State
+    practitioners!: IPractitioner[];
+
+
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
 
   headers = [
     {
       title: "Identifier",
-      key: "identifier",
+      key: "id",
       show: true,
     },
     {
       title: "Recorded",
-      key: "recorded",
+      key: "startDate",
       show: true,
     },
     {
@@ -143,8 +161,8 @@ export default class ExistingState extends Vue {
       show: true,
     },
     {
-      title: "Addresses",
-      key: "address",
+      title: "Intent",
+      key: "intent",
       show: true,
     },
     {
@@ -166,24 +184,63 @@ export default class ExistingState extends Vue {
 
   showNewModal = false;
   filterAdvanced = false;
+  showStatus = false;
+  selectedItem = {};
+  carePlanId = "";
+  query = "";
 
-  get items() {
-    return [
-      {
-        id: "1",
-        identifier: "XXXXX",
-        recorded: "1/2/3000",
-        title: "title",
-        address: "address",
-        author: `Author`,
-        schedule: "Schedule",
-        performer: "Performer",
-      },
-    ];
+
+ get items() {
+    let careplans = this.patientCarePlans.map((careplan:any) => {
+        (careplan as any).startDate = new Date(
+        (careplan as any).startDate
+      ).toLocaleDateString("en-US");
+      return {
+        ...careplan,
+        action: careplan.id,
+        address: careplan.practitioner.firstName +' '+ careplan.practitioner.lastName,
+        author: this.getPractitionerName(careplan.author) ,
+        schedule: new Date (careplan?.scheduleTiming?.date)?.toLocaleDateString("en-US") ||
+         new Date (careplan?.scheduleTiming?.period?.start)?.toLocaleDateString("en-US") +'-'+
+          new Date (careplan?.scheduleTiming?.period?.end)?.toLocaleDateString("en-US"),
+        performer: this.getPractitionerName(careplan.scheduleTiming.performer) 
+      };
+    });
+    if (!this.query) return careplans;
+    return search.searchObjectArray(careplans, this.query);
   }
+   getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  // get items() {
+  //   return [
+  //     {
+  //       id: "1",
+  //       identifier: "XXXXX",
+  //       recorded: "1/2/3000",
+  //       title: "title",
+  //       address: "address",
+  //       author: `Author`,
+  //       schedule: "Schedule",
+  //       performer: "Performer",
+  //     },
+  //   ];
+  // }
 
   closeNewModal() {
     this.showNewModal = false;
+  }
+
+  showStatusModal(value:any){
+    this.selectedItem = value;
+    this.showStatus = true; 
+
+  }
+
+  showModal(value:string){
+    this.showNewModal = true;
+    this.carePlanId = value;
   }
 
   get activePatientId() {
@@ -191,8 +248,13 @@ export default class ExistingState extends Vue {
     return id;
   }
 
+  async careplanadded(){
+    await this.getCarePlans(this.$route.params.id.toString());
+  }
+
   async created() {
     await this.getCarePlans(this.$route.params.id.toString());
+    await this.fetchPractitioners();
   }
 }
 </script>
