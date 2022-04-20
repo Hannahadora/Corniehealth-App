@@ -19,26 +19,26 @@
             @selected="selected"
           />
 
-          <v-form class="mt-4 w-full" @submit="submit">
+          <v-form class="mt-4 w-full">
             <div class="w-full grid grid-cols-1 gap-y-3">
               <cornie-input
                 label="Practice Assigned Provider"
                 class="rounded-none w-full"
                 v-model="practice"
-                :readonly="true"
+              
               />
               <cornie-input
                 label="Email Address"
                 v-model="email"
-                :rules="requiredEmail"
+                :rules="emailRule"
                 class="rounded-none w-full"
-                :readonly="true"
+              
               />
               <cornie-input
                 label="Reference Organization"
                 class="rounded-none w-full"
                 v-model="referenceOrganizationName"
-                :readonly="true"
+               
               />
             </div>
             <span class="flex justify-end">
@@ -49,7 +49,8 @@
                 Cancel
               </cornie-btn>
               <cornie-btn
-                type="submit"
+                type="button"
+                @click="save"
                 class="text-white bg-danger px-6 rounded-xl"
               >
                 Save
@@ -193,6 +194,7 @@ export default class PractitionersDialog extends Vue {
   referenceOrganization = "";
   referenceOrganizationName = "";
   practitioner!: IPractitioner;
+  emailRule = string().email().required();
 
   @patients.Action
   updatePatientField!: (data: {

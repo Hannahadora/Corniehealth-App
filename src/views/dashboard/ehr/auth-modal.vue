@@ -13,7 +13,7 @@
             v-model="password"
             class="border rounded"
             placeholder="Type in your password"
-            :autocomplete="false"
+            autocomplete="off"
           />
         </label>
       </div>

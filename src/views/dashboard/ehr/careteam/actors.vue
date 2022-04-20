@@ -28,9 +28,12 @@
               />
           </div>
         </cornie-card-title>
+
         <cornie-card-text
           class="flex-grow scrollable flex flex-col overflow-y-hidden"
         >
+        <v-form>
+
           <span class="text-sm text-black mb-3">
             Add Participant(s) to this care team
           </span>
@@ -184,25 +187,29 @@
             </div>
           </div>
         
+        </v-form>
         </cornie-card-text>
-         <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2  px-3 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="updateSelectedActors"
-            class="text-white bg-danger px-5 rounded-lg"
-           >
-            Add
-          </cornie-btn>
+      
+      
+        <cornie-card>
+            <cornie-card-text class="flex justify-end">
+              <cornie-btn
+                @click="show = false"
+                class="border-primary border-2  px-3 mr-3 rounded-xl text-primary"
+              >
+                Cancel
+              </cornie-btn>
+              <cornie-btn
+                :loading="loading"
+                @click="submit"
+                class="text-white bg-danger px-5 rounded-lg"
+              >
+                Add
+              </cornie-btn>
 
-        </cornie-card-text>
-      </cornie-card>
+            </cornie-card-text>
+        </cornie-card>
+
       </cornie-card>
     </cornie-dialog>
   </div>
@@ -358,13 +365,15 @@ export default class AddActor extends Vue {
    job = "";
    type = "";
    image = "";
+   deviceId = "";
+   practitionerId = "";
 
   addParticipant(item: any){
-    this.id = item?.id;
-    this.name = item.firstName + ' '+ item.lastName ? item?.deviceName?.name :  item.firstName + ' '+ item.lastName;
-    this.job =  item.jobDesignation;
-    this.type = this.entity;
-    this.image = item.image;
+      this.id = item?.id;
+      this.name = item.firstName + ' '+ item.lastName ? item?.deviceName?.name :  item.firstName + ' '+ item.lastName;
+      this.job =  item.jobDesignation;
+      this.type = this.entity;
+      this.image = item.image;
     
   }
 
@@ -393,18 +402,33 @@ export default class AddActor extends Vue {
     }
   }
 
-  async updateSelectedActors() {
-      this.selectedActors.push({
-       id: this?.id,
-        name: this.name,
-        job: this.job,
-        type: this.entity,
-        image: this.image,
-        role: this.role,
-        onBehalfOf: this.onBehalfOf,
-        period: this.period,
-    });
+   submit($event: any) {
+     $event.preventDefault();
+     if (this.entity == 'Practitioner'){
+          this.selectedActors.push({
+              practitionerId: this?.id,
+              name: this.name,
+              job: this.job,
+              type: this.entity,
+              image: this.image,
+              role: this.role,
+              onBehalfOf: this.onBehalfOf,
+              period: this.period,
+          });
 
+     }else {
+        this.selectedActors.push({
+           deviceId: this?.id,
+            name: this.name,
+            job: this.job,
+            type: this.entity,
+            image: this.image,
+            role: this.role,
+            onBehalfOf: this.onBehalfOf,
+            period: this.period,
+        });
+
+     }
     this.$emit("update-actors-list", this.selectedActors);
      this.show = false;
     // this.selectedEntity = "";
@@ -417,7 +441,7 @@ export default class AddActor extends Vue {
   async created() {
     if (!this.practitioners.length) await this.fetchPractitioners();
     if (!this.devices.length) await this.fetchDevices();
-    this.actors = <IPractitioner[]>[...this.practitioners];
+     this.actors = <IPractitioner[]>[...this.practitioners];
 
     const data = await this.getDropdowns("careTeam");
     this.dropdowns = data;

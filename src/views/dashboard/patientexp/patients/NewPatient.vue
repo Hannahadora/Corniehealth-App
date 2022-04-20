@@ -22,7 +22,7 @@
 
       <!-- Patient Information -->
       <cornie-card-text :class="{ hidden: !showPatientInformation }">
-        <v-form @submit="saveBasic" ref="basic">
+        <v-form>
           <div
             class="flex justify-between items-center px-4 border-t-2 border-gray pt-5"
           >
@@ -59,14 +59,22 @@
               :rules="requiredRule"
               :readonly="viewOnly"
             />
-            <cornie-input
+            <auto-complete
+                class="w-full"
+                v-model="nationality"
+                label="Nationality"
+                :items="nationState.countries"
+                placeholder="Enter"
+                :readonly="viewOnly"
+              />
+            <!-- <cornie-input
               label="Nationality"
               class="w-full"
               placeholder="Enter"
               v-model="nationality"
               :readonly="viewOnly"
             >
-            </cornie-input>
+            </cornie-input> -->
 
             <date-picker
               class="w-full"
@@ -86,16 +94,14 @@
               v-model="gender"
               :readonly="viewOnly"
             />
-
-            <cornie-input
+             <cornie-select
+              class="w-full mt-2"
               label="Blood Group"
-              class="w-full"
-              placeholder="Enter"
-              v-model="nationality"
+              placeholder="Select One"
+              :items="['A','B','AB', 'O']"
+              v-model="bloodGroup"
               :readonly="viewOnly"
-            >
-            </cornie-input>
-
+            />
             <cornie-input
               label="Genotype"
               class="w-full"
@@ -128,14 +134,14 @@
 
             <cornie-input
               label="Number of Children"
-              class="w-full"
+              class="w-full mt-2"
               placeholder="Enter"
               v-model="numberOfChildren"
               :readonly="viewOnly"
             >
             </cornie-input>
             <cornie-select
-              class="w-full"
+              class="w-full mt-2"
               label="Multiple Birth?"
               placeholder="Select One"
               :items="multipleBirthOptions"
@@ -143,7 +149,7 @@
               :readonly="viewOnly"
             />
             <cornie-input
-              class="w-full mb-10"
+              class="w-full"
               placeholder="Enter"
               v-model="multipleBirthInteger"
               type="number"
@@ -164,9 +170,10 @@
           <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
               loading-color="white"
-              type="submit"
+              type="button"
+              @click="saveBasic"
               :loading="loading"
-              class="bg-primary text-white px-10 py-1 rounded-md"
+              class="bg-primary text-white px-6 py-1 rounded-md"
             >
               Save
             </cornie-btn>
@@ -191,7 +198,7 @@
 
       <!-- Patient Identity and association -->
       <cornie-card-text :class="{ hidden: !showPatientIdentity }">
-        <v-form @submit="saveIdentity" ref="basic">
+        <v-form ref="basic">
           <div class="grid grid-cols-12">
             <div class="col-span-4">
               <cornie-input
@@ -272,9 +279,9 @@
           </div>
           <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
-              loading-color="white"
-              type="submit"
+              type="button"
               :loading="loading"
+              @click="saveIdentity"
               class="bg-primary text-white px-10 py-1 rounded-md"
             >
               Save
@@ -355,7 +362,7 @@
         <div class="flex justify-end m-5">
           <cornie-btn
             loading-color="white"
-            type="submit"
+            type="button"
             class="bg-primary text-white px-10 py-1"
           >
             Save
@@ -372,6 +379,7 @@
       </cornie-btn>
       <cornie-btn
         class="bg-danger text-white m-5 px-10"
+        type="button"
         @click="submit"
         :loading="loading"
       >
@@ -380,6 +388,7 @@
     </div>
 
     <emergency-contact-dialog
+      @allContacts="allContacts"
       :patient="patient"
       v-model="showEmergencyContactDialog"
     />
@@ -400,6 +409,7 @@
 
     <providers-dialog
       :patient="patient"
+      @add-providers="addproviders"
       v-model:labs="labs"
       v-model:pharmacies="pharmacies"
       v-model="showProvidersDialog"
@@ -420,7 +430,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue, Options,setup } from "vue-class-component";
+import { Field } from "vee-validate";
+import { string, number, date, array } from "yup";
+import { Prop, Ref } from "vue-property-decorator";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import { useCountryStates } from "@/composables/useCountryStates";
+
+import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+
 import CornieCard from "@/components/cornie-card/index";
 import CornieSpacer from "@/components/CornieSpacer.vue";
 import ChevronRightIcon from "@/components/icons/chevronright.vue";
@@ -443,28 +462,25 @@ import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import UrlIcon from "@/components/icons/UrlIcon.vue";
 import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
-import DemographicIcon from "@/components/icons/DemographicIcon.vue";
-import { Field } from "vee-validate";
+import DemographicIcon from "@/components/icons/DemographicIcon.vue"
+import AutoComplete from "@/components/autocomplete.vue";;
+import PlusIcon from "@/components/icons/plus.vue";
+import DeleteIcon from "@/components/icons/delete-red.vue";
+import CornieTooltip from "@/components/tooltip.vue";
+import QuestionIcon from "@/components/icons/question.vue";
+import InfoIcon from "@/components/icons/info-blue-bg.vue";
 
+
+import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
 import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
 import LinksDialog from "./dialogs/LinksDialog.vue";
 import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
 import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
 import AssociationDialog from "./dialogs/AssociationDialog.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import DeleteIcon from "@/components/icons/delete-red.vue";
 import PaymentDialog from "./dialogs/PaymentDialog.vue";
-
 import ContactInfo from "./contact-information.vue";
-import { string, number, date, array } from "yup";
-import { Prop, Ref } from "vue-property-decorator";
-import { cornieClient } from "@/plugins/http";
-import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
-import { namespace } from "vuex-class";
-import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
-import CornieTooltip from "@/components/tooltip.vue";
-import QuestionIcon from "@/components/icons/question.vue";
-import InfoIcon from "@/components/icons/info-blue-bg.vue";
+
+
 
 const patients = namespace("patients");
 
@@ -481,6 +497,7 @@ const patients = namespace("patients");
     ChevronDownIcon,
     IconBtn,
     PractitionersDialog,
+    AutoComplete,
     CornieAvatarField,
     CustomCheckbox,
     CornieInput,
@@ -549,9 +566,13 @@ export default class NewPatient extends Vue {
   dateOfBirth = "";
   image = "";
   idNumber = "";
+  bloodGroup = "";
+  nationState = setup(() => useCountryStates());
+
 
   contacts = [];
-  emergencyContacts = [];
+  emergencyContacts = [] as any;
+  providers = [] as any;
   guarantor!: Guarantor;
   insurances = [];
   labs = [];
@@ -619,6 +640,13 @@ export default class NewPatient extends Vue {
     return this.associations;
   }
 
+
+  allContacts(value:any){
+    this.emergencyContacts.push(value);
+  }
+  addproviders(value:any){
+    this.providers.push(value);
+  }
   get providerLength() {
     const labLen = this.patient?.preferredLabs?.length || this.labs.length;
     const pharmLen =
@@ -639,13 +667,13 @@ export default class NewPatient extends Vue {
         click: () => (this.showEmergencyContactDialog = true),
         number:
           this.patient?.emergencyContacts?.length ||
-          this.emergencyContacts.length,
+          this?.emergencyContacts?.length,
       },
       {
         name: "Providers",
         icon: "medicine-icon",
         click: () => (this.showProvidersDialog = true),
-        number: this.providerLength,
+        number: this.providerLength || this.providers.length,
       },
       {
         name: "Primary Doctor",
@@ -687,12 +715,31 @@ export default class NewPatient extends Vue {
   }
 
   async submit() {
-    const report = await (this.$refs.basic as any).validate();
-    if (!report.valid) return;
+    // const report = await (this.$refs.basic as any).validate();
+    // if (!report.valid) return;
     this.loading = true;
     if (this.id) await this.updateData();
     else await this.registerPatient();
     this.loading = false;
+  }
+
+  async saveIdentity(){
+     if(this.id){
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/patient/association/${this.id}`,
+            this.associations
+          );
+          if (response.success) {
+            window.notify({ msg: "Association added successfully updated", status: "success" });
+          }
+        } catch (error:any) {
+          window.notify({ msg: error.response.data.message, status: "error" });
+        }
+     } else{
+        window.notify({ msg: "Association added successfully updated", status: "success" });
+     }
+  
   }
 
   get payload() {
@@ -706,6 +753,7 @@ export default class NewPatient extends Vue {
       maritalStatus: this.maritalStatus,
       vip: this.vip,
       dateOfBirth: this.dateOfBirth,
+      bloodGroup: this.bloodGroup,
       identityNos: [{ type: this.idType, number: this.idNumber }],
       profilePhoto: this.image,
       accountType: "individual",
@@ -737,10 +785,13 @@ export default class NewPatient extends Vue {
       );
       const patient = response.data;
       this.updatePatient(patient);
-    } catch (error) {
-      window.notify({ msg: "Failed to add patient", status: "error" });
+      window.notify({ msg: "Patient added successfully", status: "success" });
+        
+      this.$router.go(-1);
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
-    this.$router.back();
+  
   }
 
   async updateData() {
@@ -752,8 +803,9 @@ export default class NewPatient extends Vue {
       const patient = response.data;
       this.updatePatient(patient);
       window.notify({ msg: "Patient Updated", status: "success" });
-    } catch (e) {
-      window.notify({ msg: "Failed to update patient", status: "error" });
+        this.$router.go(-1);
+    } catch (e:any) {
+      window.notify({ msg: e.response.data.message, status: "error" });
     }
   }
 
@@ -763,7 +815,8 @@ export default class NewPatient extends Vue {
       await this.updateData();
       this.loading = false;
     } else {
-      this.showPatientInformation = false;
+     this.showPatientInformation = false;
+      window.notify({ msg: "Patient infromation Updated", status: "success" });
       this.basicCompleted = false;
     }
   }
