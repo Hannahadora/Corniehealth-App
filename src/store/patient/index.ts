@@ -23,7 +23,11 @@ export default {
       state.patients = [...patientSet];
     },
     deletePatient(state, id: string) {
-      state.patients = state.patients.filter(p => p.id != id);
+      const index = state.patients.findIndex(patient => patient.id == id);
+      if (index < 0) return;
+      const patients = [...state.patients];
+      patients.splice(index, 1);
+      state.patients = [...patients];
     },
     deleteProvider(state, { type, id, patientId }: any) {
       const patient = state.patients.find(p => p.id == patientId);
@@ -52,8 +56,9 @@ export default {
     },
     async deletePatient(ctx, id: string) {
       const deleted = await deletePatient(id);
-      if (deleted) ctx.commit("deletePatient", id);
-      return deleted;
+      if (!deleted) return false;
+      ctx.commit("deletePatient", id);
+      return true;
     },
     async deleteProvider(ctx, { type, id, patientId }: Provider) {
       const deleted = await deleteProvider(patientId, id!);

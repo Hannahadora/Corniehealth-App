@@ -357,18 +357,6 @@ import AddActor from "./components/AddActor.vue";
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
 
-const emptyParticipant: Participants = {
-  name: "",
-  role: "",
-  onBehalfOf: "",
-  period: { start: "2011/12/15", end: "2017/12/19" },
-  reasonCode: "",
-  reasonReference: "",
-  managingOrganization: "",
-  phone: { number: "", dialCode: "" },
-  email: "",
-  notes: "",
-};
 
 @Options({
   components: {
@@ -441,7 +429,6 @@ export default class AddCareteam extends Vue {
   status = "";
   category = "";
   name = "";
-  participant = { ...emptyParticipant };
   participants: Participants[] = [];
   period = { start: "2011/09/12", end: "2011/12/19" };
   required = string().required();
@@ -516,66 +503,6 @@ export default class AddCareteam extends Vue {
     };
   }
 
-  async checkParticipant() {
-    this.loading = true;
-    if (this.id) await this.updateParticipant();
-    else await this.addParticipant();
-    this.loading = false;
-  }
-  async editParticipant(id: string, index: number, fieldType: object) {
-    this.participant = this.participants[index];
-  }
-  async updateParticipant() {
-    const url = `/api/v1/participants/${this.id}`;
-    const payload = { ...this.participant };
-    try {
-      const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Participant updated", status: "success" });
-      }
-    } catch (error) {
-      window.notify({ msg: "Participant not updated", status: "error" });
-    }
-  }
-  async addParticipant() {
-    if (!this.id) {
-      this.participants.push({ ...this.participant });
-      this.reset();
-      window.notify({ msg: "Participant added", status: "success" });
-      return;
-    }
-    //  this.participant.careTeamId = this.id;
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/participants",
-        this.participant
-      );
-      if (response.success) {
-        this.participants.push(response.data);
-        window.notify({ msg: "Participant added", status: "success" });
-        this.reset();
-      }
-    } catch (error) {
-      window.notify({ msg: "Participant  not added", status: "error" });
-    }
-  }
-
-  async reset() {
-    this.participant = { ...emptyParticipant };
-  }
-  async removeParticipant(id: string, index: number, fieldType: object) {
-    this.participants.splice(index, 1);
-    window.notify({ msg: "Participant deleted", status: "success" });
-    //  try {
-    // const response = await cornieClient().delete(`/api/v1/participants/${id}`);
-    // if (response.success) {
-    //     this.participants.splice(index, 1);
-    //     window.notify({ msg: "Participant deleted", status: "success" });
-    // }
-    // } catch (error) {
-    //   window.notify({ msg: "Participant not deleted", status: "error" });
-    // }
-  }
 
   async submit() {
     this.loading = true;
@@ -589,12 +516,6 @@ export default class AddCareteam extends Vue {
       this.payload.period.start
     ).toISOString();
     this.payload.period.end = new Date(this.payload.period.end).toISOString();
-    this.participant.period.start = new Date(
-      this.participant.period.start
-    ).toISOString();
-    this.participant.period.end = new Date(
-      this.participant.period.end
-    ).toISOString();
     try {
       const response = await cornieClient().post(
         "/api/v1/care-teams",
@@ -626,7 +547,6 @@ export default class AddCareteam extends Vue {
         "/api/v1/organization/myOrg/get"
       );
       this.identifier = response.data.identifier;
-      this.participant.managingOrganization = response.data.name;
     } catch (error) {
       alert("Could not fetch organization");
     }

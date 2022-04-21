@@ -121,6 +121,11 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { PropSync, Prop, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+
+import { IPatient, RelatedPerson } from "@/types/IPatient";
+
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
@@ -130,7 +135,6 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import { namespace } from "vuex-class";
 import PeriodPicker from "@/components/daterangepicker.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -140,7 +144,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import CornieAccordion from "@/components/accordion-component-provider.vue";
 
 @Options({
-  name: "association-dialog",
+  name: "providersdialog",
   components: {
     ...CornieCard,
     CornieAccordion,
@@ -161,18 +165,30 @@ import CornieAccordion from "@/components/accordion-component-provider.vue";
   },
   emits: ["add-providers"],
 })
-export default class EmergencyDontactDialog extends Vue {
+export default class providersdialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
+
+  @Prop({ type: Object })
+  patient!: IPatient;
+
 
   providerType = "";
   name = "";
   practice = "";
   email = "";
+  loading = false;
 
   providers = [] as any;
 
   providersList = [] as any;
+
+   @Watch("patient")
+  patientChanged() {
+    
+  }
+
+
 
   reset() {
     this.providerType = "";
@@ -236,12 +252,57 @@ export default class EmergencyDontactDialog extends Vue {
     }
   }
 
-  async save() {
+  // async save() {
+  //   console.log(this.providers);
+  //   this.$emit("add-providers", this.providers);
+
+  //   this.show = false;
+  //   this.providers = [];
+  // }
+
+async save() {
+    this.loading = true;
+    if (this.patient) await this.submit();
+    else this.batch();
+    this.loading = false;
+  }
+
+  batch() {
     console.log(this.providers);
     this.$emit("add-providers", this.providers);
 
     this.show = false;
     this.providers = [];
+  }
+
+  async submit() {
+    const action = this.patient?.id ? "Updated" : "Created";
+    let result: any;
+    try {
+      if (this.patient?.id) result = await this.update();
+      else result = await this.createNew();
+      window.notify({
+        msg: ` ${action} successfully`,
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({ msg: `Provider not ${action}`, status: "error" });
+    }
+  }
+
+    async createNew() {
+    const response = await cornieClient().post(
+      "/api/v1/patient/provider",
+      this.providers
+    );
+    return response.data;
+  }
+  async update() {
+    const response = await cornieClient().put(
+      `/api/v1/patient/provider/${this.patient?.id}`,
+      this.providers
+    );
+    return response.data;
   }
 
   created() {}

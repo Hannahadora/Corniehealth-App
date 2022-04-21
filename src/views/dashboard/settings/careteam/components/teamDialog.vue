@@ -73,81 +73,44 @@
              </div>
             <div  class="border-b-2 pb-5 border-dashed border-gray-200">
                 <accordion-component title="Participants" :opened="false">
-                <add-actor />
-                <!-- <div class="w-full grid grid-cols-12 gap-5 mt-4">
-                    <div class="col-span-4">
-                    <div class="flex flex-row justify-center items-center w-full">
-                        <div class="mr-3">
-                        <cornie-select
-                            :rules="required"
-                            :items="dropdowns.member"
-                            label="Member"
-                            v-model="member"
-                            aria-selected="--Select--"
-                        >
-                        </cornie-select>
+                <add-actor @update-actors-list="actorslist"/>
+                  <div class="grid grid-cols-3 gap-4 mt-4">
+                      <div
+                        class="border-r-2"
+                        v-for="(item, index) in Actors"
+                        :key="index"
+                      >
+                        <div class="mb-8">
+                          <div class="flex space-x-4">
+                            <avatar
+                              class="mr-2 h-14 w-14"
+                              v-if="item?.image"
+                              :src="item?.image"
+                            />
+                            <avatar
+                              class="mr-2"
+                              v-else
+                              :src="localSrc"
+                            />
+                            <div>
+                              <p class="text-sm mb-1 text-dark font-semibold">
+                              {{ item?.name }}
+                              <span class="text-gray-500 text-sm"> {{ item?.job }}</span>
+                              </p>
+                              <p class="text-sm text-gray font-light">
+                                {{ item.type }}
+                              </p>
+                            </div>
+                          </div>
+                          <span>
+                            <deleteorange-icon
+                              class="float-right cursor-pointer relative bottom-8 mr-4"
+                              @click="removeActor(index)"
+                            />
+                          </span>
                         </div>
-                        <div>
-                        <cornie-input-team v-model="search" placeholder="--Search--">
-                            <template #prepend>
-                            <search-icon />
-                            </template>
-                        </cornie-input-team>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="col-span-4">
-                    <cornie-input
-                        v-model="onBehalfOf"
-                        placeholder="--Enter--"
-                        :rules="required"
-                    >
-                        <template #label>On behalf of</template>
-                        <template #labelicon>
-                        <info-blue-bg class="w-4" />
-                        </template>
-                    </cornie-input>
-                    </div>
-                </div>
-                <div class="w-full font-bold text-red-400 text-xs mt-5 mb-3">
-                    PERIOD
-                </div>
-                <div class="w-full grid grid-cols-12 gap-5">
-                    <div class="col-span-2">
-                    <div class="font-bold">Start date & time</div>
-                    <date-time-picker
-                        title="Start date & time"
-                        v-model="startDateTimePeriod"
-                    ></date-time-picker>
-                    </div>
-                    <div class="col-span-2">
-                    <div class="font-bold">End date & time</div>
-                    <date-time-picker
-                        title="End date & time"
-                        v-model="endDateTimePeriod"
-                    ></date-time-picker>
-                    </div>
-                    <div class="col-span-4">
-                    <cornie-select
-                        :rules="required"
-                        :items="dropdowns.reasonCode"
-                        label="Reason Code"
-                        v-model="participant.reasonCode"
-                        aria-selected="Select one"
-                    >
-                    </cornie-select>
-                    </div>
-                    <div class="col-span-4">
-                    <cornie-select
-                        :rules="required"
-                        :items="dropdowns.reasonReference"
-                        label="Reason Reference"
-                        v-model="reasonReference"
-                        aria-selected="Select one"
-                    >
-                    </cornie-select>
-                    </div>
-                </div> -->
+                      </div>
+                  </div>
                 </accordion-component>
             </div>
             <div  class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -256,7 +219,6 @@ import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import Multiselect from "@vueform/multiselect";
 import FhirInput from "@/components/fhir-input.vue";
 import AutoComplete from "@/components/autocomplete.vue";
-import DateTimePicker from "@/components/date-time-picker.vue";
 import InfoBlueBg from "@/components/icons/info-blue-bg.vue";
 import AddActor from "./AddActor.vue";
 
@@ -266,18 +228,6 @@ import SystemButtonGroup from "./systembtngroup.vue";
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
 
-const emptyParticipant: Participants = {
-  name: "",
-  role: "",
-  onBehalfOf: "",
-  period: { start: "2011/12/15", end: "2017/12/19" },
-  reasonCode: "",
-  reasonReference: "",
-  managingOrganization: "",
-  phone: { number: "", dialCode: "" },
-  email: "",
-  notes: "",
-};
 
 @Options({
   name: "careTeamModal",
@@ -343,6 +293,7 @@ export default class careTeamModal extends Vue {
   value = "";
   reasonCode = "";
   reasonReference = "";
+  localSrc = require("../../../../../assets/img/placeholder.png");
   use = "Home";
   system = "Phone";
   subject = "Patient";
@@ -365,12 +316,12 @@ export default class careTeamModal extends Vue {
   status = "";
   category = "";
   name = "";
-  participant = { ...emptyParticipant };
   participants: Participants[] = [];
   period = { start: "2011/09/12", end: "2011/12/19" };
   required = string().required();
   phone = "";
   fax = "";
+  Actors = [];
 
 
  async handleSystemChange(val: string) {
@@ -403,6 +354,12 @@ export default class careTeamModal extends Vue {
     this.value = this.startDateTimeCom = this.endDateTimeCom = "";
   }
 
+  actorslist(value:any){
+    this.Actors = value;
+  }
+   removeActor(index: number) {
+    this.Actors.splice(index, 1);
+  }
     @Watch("id")
     idChanged() {
       this.setCareteam();
@@ -436,66 +393,8 @@ export default class careTeamModal extends Vue {
         };
    }
 
-      async checkParticipant() {
-    this.loading = true;
-    if (this.id) await this.updateParticipant();
-    else await this.addParticipant();
-    this.loading = false;
-  }
-  async editParticipant(id: string, index: number, fieldType: object) {
-    this.participant = this.participants[index];
-  }
-  async updateParticipant() {
-    const url = `/api/v1/participants/${this.id}`;
-    const payload = { ...this.participant };
-    try {
-      const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Participant updated", status: "success" });
-      }
-    } catch (error) {
-      window.notify({ msg: "Participant not updated", status: "error" });
-    }
-  }
-  async addParticipant() {
-    if (!this.id) {
-      this.participants.push({ ...this.participant });
-      this.reset();
-      window.notify({ msg: "Participant added", status: "success" });
-      return;
-    }
-    //  this.participant.careTeamId = this.id;
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/participants",
-        this.participant
-      );
-      if (response.success) {
-        this.participants.push(response.data);
-        window.notify({ msg: "Participant added", status: "success" });
-        this.reset();
-      }
-    } catch (error) {
-      window.notify({ msg: "Participant  not added", status: "error" });
-    }
-  }
-
-  async reset() {
-    this.participant = { ...emptyParticipant };
-  }
-  async removeParticipant(id: string, index: number, fieldType: object) {
-    this.participants.splice(index, 1);
-    window.notify({ msg: "Participant deleted", status: "success" });
-    //  try {
-    // const response = await cornieClient().delete(`/api/v1/participants/${id}`);
-    // if (response.success) {
-    //     this.participants.splice(index, 1);
-    //     window.notify({ msg: "Participant deleted", status: "success" });
-    // }
-    // } catch (error) {
-    //   window.notify({ msg: "Participant not deleted", status: "error" });
-    // }
-  }
+ 
+ 
 
 
 
@@ -511,12 +410,6 @@ export default class careTeamModal extends Vue {
       this.payload.period.start
     ).toISOString();
     this.payload.period.end = new Date(this.payload.period.end).toISOString();
-    this.participant.period.start = new Date(
-      this.participant.period.start
-    ).toISOString();
-    this.participant.period.end = new Date(
-      this.participant.period.end
-    ).toISOString();
     try {
       const response = await cornieClient().post(
         "/api/v1/care-teams",
@@ -549,7 +442,6 @@ export default class careTeamModal extends Vue {
         "/api/v1/organization/myOrg/get"
       );
       this.identifier = response.data.identifier;
-      this.participant.managingOrganization = response.data.name;
     } catch (error) {
       alert("Could not fetch organization");
     }
