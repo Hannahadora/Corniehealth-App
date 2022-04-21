@@ -14,8 +14,8 @@ export const quantumClient = () =>
     "http://18.132.188.41:7000"
   );
 
-const cornieUrl = "https://dev.corniehealth.com";
-const cornieUrl2 = "https://dev.corniehealth.com"
+// const cornieUrl = "https://corniehealth.herokuapp.com";
+const cornieUrl = "https://dev.corniehealth.com"
 
 export const cornieClient = () =>
   new JSONClient(
@@ -23,14 +23,6 @@ export const cornieClient = () =>
       "Content-Type": "application/json",
       Authorization: authToken(),
     },
-    "https://dev.corniehealth.com"
+    "https://dev.corniehealth.com" || cornieUrl
   );
 
-export const cornieClient2 = () =>
-  new JSONClient(
-    {
-      "Content-Type": "application/json",
-      Authorization: authToken(),
-    },
-    cornieUrl2
-  );

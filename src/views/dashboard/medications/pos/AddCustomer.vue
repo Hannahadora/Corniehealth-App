@@ -83,7 +83,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
@@ -153,7 +153,7 @@ export default class AppointmentRoomDialog extends Vue {
       },
     };
     try {
-      const { data } = await cornieClient2().post(
+      const { data } = await cornieClient().post(
         "/api/v1/pharmacy/add-customer",
         { ...newData }
       );

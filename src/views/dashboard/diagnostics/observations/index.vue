@@ -24,28 +24,42 @@
             @click="viewItem(item.id)"
           >
             <eye-blue class="text-danger fill-current" />
-            <span class="ml-3 text-xs">View Result</span>
+            <span class="ml-3 text-xs">View</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <get-specimen class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Get Specimen ID</span>
+            <update-status-yellow class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <update-report-green class="text-danger fill-current" />
+            <update-status-purple class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showItem(item.id)"
+          >
+            <correct-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Correct</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showItem(item.id)"
+          >
+            <amend-blue class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Amend</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="deleteItem(item.id)"
           >
-            <report class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Report</span>
+            <cancel-red-bg class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Cancel</span>
           </div>
         </template>
         <template #status="{ item }">
@@ -125,13 +139,11 @@
         </div>
       </div>
     </div>
-  </div>
-  <view-orders
-    v-model="showResult"
-    :id="typeId"
-    :organization="organizationInfo"
-    :request="request"
+
+    <create-observation
+    :id="typeId" v-model="createObs"
   />
+  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -141,29 +153,29 @@ import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
+import CorrectGreen from "@/components/icons/correct-green.vue";
+import AmendBlue from "@/components/icons/amend-blue.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import IconInput from "@/components/IconInput.vue";
-import Report from "@/components/icons/report.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
-import GetSpecimen from "@/components/icons/get-specimen.vue";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 import EyeBlue from "@/components/icons/eye-blue.vue";
 import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
+import UpdateStatusPurple from "@/components/icons/update-status-purple.vue";
 import UpdateReportGreen from "@/components/icons/update-report-green.vue";
 import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
-import { IOrganization } from "@/types/IOrganization";
 
-import ViewOrders from "./ViewOrders.vue";
+import CreateObservation from "./create-observation.vue";
 
 const location = namespace("location");
-const organization = namespace("organization");
 
 @Options({
   components: {
@@ -182,17 +194,20 @@ const organization = namespace("organization");
     ColumnFilter,
     TableOptions,
     UpdateStatusYellow,
+    UpdateStatusPurple,
     UpdateReportGreen,
-    ViewOrders,
-    GetSpecimen,
-    Report,
+    CorrectGreen,
+    AmendBlue,
+    CancelRedBg,
+    CreateObservation
   },
 })
-export default class VirtualLabOrder extends Vue {
+export default class DiagnosticReport extends Vue {
   query = "";
   typeId = "";
   showRecord = false;
   showResult = false;
+  createObs = false;
   practitioner = [] as any;
   location = [] as any;
   updatedBy = "";
@@ -204,18 +219,17 @@ export default class VirtualLabOrder extends Vue {
 
   diagnosticsReports = [{}];
 
-  @organization.State
-  organizationInfo!: IOrganization;
-
-  @organization.Action
-  fetchOrgInfo!: () => Promise<void>;
-
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "ORDER ID",
-      key: "orderId",
+      title: "OBSERVATION ID",
+      key: "observationId",
+      show: true,
+    },
+    {
+      title: "BASED ON",
+      key: "basedOn",
       show: true,
     },
     {
@@ -224,8 +238,8 @@ export default class VirtualLabOrder extends Vue {
       show: true,
     },
     {
-      title: "SERVICE NAME",
-      key: "serviceName",
+      title: "OBSERVATION CODE",
+      key: "observationCode",
       show: true,
     },
     {
@@ -239,8 +253,8 @@ export default class VirtualLabOrder extends Vue {
       show: true,
     },
     {
-      title: "AMOUNT PAID",
-      key: "amountPaid",
+      title: "INTERPRETER",
+      key: "interpreter",
       show: true,
     },
     {
@@ -259,12 +273,12 @@ export default class VirtualLabOrder extends Vue {
         ...report,
         // action: sale.id,
         keydisplay: "XXXXXXX",
-        orderId: "-----",
+        observationId: "-----",
+        basedOn: "-----",
         category: "-----",
-        serviceName: "-----",
+        obsetvationCode: "-----",
         subject: "-----",
         performer: "-----",
-        amountPaid: "-----",
         status: "Active",
       };
     });
@@ -275,21 +289,15 @@ export default class VirtualLabOrder extends Vue {
   showItem(value: string) {
     this.showRecord = true;
     this.typeId = value;
-    this.fetchOrgInfo();
   }
 
   viewItem(value: string) {
-    this.showResult = true;
+    this.createObs = true;
     this.typeId = value;
-    this.fetchOrgInfo();
   }
 
   closeModal() {
-    this.showResult = false;
-  }
-
-  async created() {
-    if (!this.organizationInfo) this.fetchOrgInfo();
+    this.showRecord = false;
   }
 }
 </script>

@@ -81,14 +81,81 @@
               class="flex items-center justify-between mt-12"
             >
               <div class="">
-                <cornie-search
-                  class="w-full rounded-full mb-3"
-                  placeholder="Search Item by name or code"
-                  v-model="medQuery"
-                  :results="medicationData"
+                <span
+                  class="mb-2 w-full rounded-full"
+                  @click="showDatalist = !showDatalist"
                 >
-                </cornie-search>
+                  <icon-input
+                    autocomplete="off"
+                    class="border border-gray-600 rounded-full focus:outline-none"
+                    type="search"
+                    placeholder="Search"
+                    v-model="medQuery"
+                  >
+                    <template v-slot:prepend>
+                      <search-icon />
+                    </template>
+                  </icon-input>
+                </span>
+                <div
+                  :class="[
+                    !showDatalist ? 'hidden' : 'o',
+                    medicationData.length === 0 ? 'h-20' : 'h-auto',
+                  ]"
+                  class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
+                  style="width: 50%"
+                >
+                  <div class="flex flex-col w-full p-3">
+                    <div
+                      v-for="(item, i) in medicationData"
+                      :key="i"
+                      class="cursor-pointer mb-3 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                    >
+                      <div class="flex items-center justify-between">
+                        <div
+                          class="w-full text-sm items-center p-2 border-transparent border-l-2 relative"
+                        >
+                          {{ item.name }}
+                          <p class="text-xs text-gray-400 italic">
+                            {{ item?.brandCode }}
+                          </p>
+                        </div>
+
+                        <cornie-radio
+                          name="search"
+                          @click="selectMed(item, item.name)"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="medicationData.length === 0">
+                    <span
+                      class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                      >No Match!</span
+                    >
+                  </div>
+                </div>
+
+                <!-- <cornie-card-text
+                  class="flex justify-end"
+                  v-if="medicationData.length > 0"
+                >
+                  <cornie-btn
+                    @click="showDatalist = false"
+                    class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+                  >
+                    Cancel
+                  </cornie-btn>
+                  <cornie-btn
+                    :loading="loading"
+                    @click="showDatalist = false"
+                    class="text-white bg-danger font-semibold px-6 rounded-xl"
+                  >
+                    Add
+                  </cornie-btn>
+                </cornie-card-text> -->
               </div>
+
               <cornie-btn
                 type="submit"
                 class="text-white bg-danger px-12 rounded-lg"
@@ -123,6 +190,23 @@
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
+            <template #quantity="{ item }">
+              <div>
+                <cornie-input
+                  type="number"
+                  class="w-full"
+                  placeholder="Enter"
+                  v-model="quantity"
+                />
+              </div>
+            </template>
+            <!-- <template #lineTotal="{ item }">
+              <div class="flex space-x-3">
+                <span>
+                  {{ item.quantity * item.unitPrice  || '0' }}
+                </span>
+              </div>
+            </template> -->
           </cornie-table>
 
           <div class="mt-8 flex items-start justify-between">
@@ -208,7 +292,10 @@
         </cornie-card-text>
       </div>
 
-      <div class="flex items-center justify-between mt-14" v-if="checkSales && sales.status !== 'completed'">
+      <div
+        class="flex items-center justify-between mt-14"
+        v-if="checkSales && sales.status !== 'completed'"
+      >
         <div>
           <span
             class="text-red-500 font-bold text-base cursor-pointer"
@@ -223,7 +310,7 @@
           >
             Cancel
           </cornie-btn>
-          <cornie-btn 
+          <cornie-btn
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -242,6 +329,8 @@
 import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import PlusIconWhite from "@/components/icons/plus-icon-white.vue";
@@ -255,7 +344,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
@@ -269,6 +358,8 @@ import FullPayment from "./components/FullPayment.vue";
 import SplitPayment from "./components/SplitPayment.vue";
 import AddCustomer from "./AddCustomer.vue";
 import CornieSearch from "@/components/search-input.vue";
+
+import { debounce } from "lodash";
 
 import search from "@/plugins/search";
 
@@ -300,6 +391,8 @@ const appointmentRoom = namespace("appointmentRoom");
     CornieSearch,
     PlusIconWhite,
     AddCustomer,
+    IconInput,
+    SearchIcon,
   },
 })
 export default class PosDialog extends Vue {
@@ -317,9 +410,15 @@ export default class PosDialog extends Vue {
 
   required = string().required();
 
+  activeMedIndex = 0;
+
+  showDatalist = false;
+  quantity = 1;
+
   query = "";
   medQuery = "";
   addCustomerModal = false;
+  selectedMed = {};
 
   loading = false;
   activeTab = "Full Payment";
@@ -341,6 +440,7 @@ export default class PosDialog extends Vue {
     {
       amount: "",
       paymentType: "",
+      total: 0,
     },
   ];
 
@@ -372,44 +472,69 @@ export default class PosDialog extends Vue {
     },
   ];
 
-   get checkSales() {
+  get checkSales() {
     if (Object.entries(this.sales).length === 0) {
       return true;
     }
     return false;
-  };
+  }
+
+  // get locationId() {
+  //   return this.authCurrentLocation;
+  // }
 
   get locationId() {
-    return this.authCurrentLocation;
+    return "21b84341-2051-4cad-b6b6-feae04f81215";
+  }
+
+  @Watch("quantity")
+  updateLineTotal() {
+    this.medications?.map((medication: any, i: number) => {
+      return {
+        ...medication,
+        lineTotal: ((medication.unitPrice as number) *
+          medication.quantity) as number,
+      };
+    });
   }
 
   get items() {
-    const dMed = this.medications?.map((medication: any) => {
+    const dMed = this.medications?.map((medication: any, i: number) => {
       return {
         ...medication,
         action: medication.id,
         itemName: medication.name,
         unitPrice: medication.unitPrice,
-        quantity: medication.quantity,
-        lineTotal: medication.total,
+        quantity: this.quantity,
+        lineTotal: ((medication.unitPrice as number) *
+          medication.quantity) as number,
       };
     });
     if (!this.query) return dMed;
     return search.searchObjectArray(dMed, this.query);
   }
 
-  async fetchCustomers(query: string) {
-    try {
-      const { data } = await cornieClient2().get(
-        `/api/v1/pharmacy/find-customer/?query=${query}`
-      );
-      this.customerDetails = data || [];
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching customers details",
-        status: "error",
-      });
-    }
+  selectMed(item: any) {
+    this.$emit("selected", item);
+    console.log("item", item);
+    this.selectedMed = item;
+    this.showDatalist = false;
+  }
+
+  fetchCustomers(query: string) {
+    debounce(async () => {
+      try {
+        const { data } = await cornieClient().get(
+          `/api/v1/pharmacy/find-customer/?query=${query}`
+        );
+        this.customerDetails = data || [];
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching customers details",
+          status: "error",
+        });
+      }
+    }, 1000)();
   }
 
   get customers() {
@@ -429,7 +554,7 @@ export default class PosDialog extends Vue {
 
   async fetchMedications(query: string) {
     try {
-      const { data } = await cornieClient2().get(
+      const { data } = await cornieClient().get(
         `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
       );
       this.medicationDetails = data || [];
@@ -450,10 +575,13 @@ export default class PosDialog extends Vue {
         display: medication.brandCode,
         brandCode: medication.brandCode,
         unitPrice: medication.unitPrice,
+        lineTotal: ((medication.unitPrice as number) *
+          medication.quantity) as number,
+        quantity: 1,
         available: medication.available,
         form: medication.form,
         id: medication.id,
-        totalDiscount: medication.tota,
+        totalDiscount: medication,
       };
     });
     if (!this.query) return xMedications;
@@ -468,7 +596,8 @@ export default class PosDialog extends Vue {
   }
 
   addMedication() {
-    this.medications.push({ ...this.medicationData });
+    this.medications.push({ ...this.selectedMed });
+    this.activeMedIndex = this.medications.length - 1;
   }
 
   async addSales(type: any) {
@@ -485,7 +614,7 @@ export default class PosDialog extends Vue {
       medications: this.medications.map((el: any) => {
         return {
           ...el,
-          dispensedProductId: el.dispensedProductId,
+          dispensedProductId: el.id,
           reasonForSubstitution: el.reasonForSubstitution,
           quantity: el.quantity,
         };
@@ -502,7 +631,7 @@ export default class PosDialog extends Vue {
       },
     };
     try {
-      const { data } = await cornieClient2().post(
+      const { data } = await cornieClient().post(
         `/api/v1/pharmacy/pos-dispense/${this.locationId}`,
         { ...newSales }
       );
@@ -517,6 +646,13 @@ export default class PosDialog extends Vue {
   @Watch("medQuery")
   typed(medQuery: string) {
     this.fetchMedications(medQuery);
+  }
+
+  deleteItem(itemId: string) {
+    this.medications.filter((el: any) => {
+      el.id = itemId;
+      this.medications = this.medications.splice(el, 1);
+    });
   }
 
   async created() {}

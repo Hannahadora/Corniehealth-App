@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <div class="p-6 bg-white h-20">
+        <div class="p-6 bg-white h-auto">
           <div class="flex items-center justify-between">
             <div></div>
 
@@ -52,7 +52,7 @@
                 ></span>
                 <span>{{ organization.email }}</span>
                 <div>
-                  <span style="color: '#C2C7D6'" ;>Patient ID:</span>
+                  <span style="color: '#C2C7D6'">Patient ID:</span>
                   {{ request?.patient?.id }}
                 </div>
               </div>
@@ -238,8 +238,13 @@
         </div>
       </cornie-card-text>
 
-      <div class="flex items-center justify-end mt-24">
-        <div class="text-red-500 text-base font-bold py-3 px-9" @click="show = false">Cancel</div>
+      <div class="flex items-center justify-between mt-24">
+        <div
+          class="text-red-500 text-base font-bold py-3 px-9"
+          @click="show = false"
+        >
+          Cancel
+        </div>
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -259,28 +264,29 @@
 
       <div class="detail-footer">
         <div class="text-center border-dashed border-b">
-          <span class="c-667499 text-sm mb-4"> Powered By Cornie Health </span>
-          <span class="mb-10"
-            >This is a system generated document from CornieHealth. CornieHealth
+          <div class="c-667499 text-sm mb-4">Powered By Cornie Health</div>
+          <div class="mb-10">
+            This is a system generated document from CornieHealth. CornieHealth
             is a healthtech system solution vendor for healthcare providers and
             patients. Visit
-            <a
-              class="text-red-500 font-semibold"
-              href="www.corniehealth.com"
-            ></a>
+            <a class="text-red-500 font-semibold" href="www.corniehealth.com"
+              >www.corniehealth.com</a
+            >
             to create your free account.
-          </span>
+          </div>
         </div>
 
         <div class="text-center">
-          <span class="mt-10">
+          <div class="mt-10">
             Save Earth, Go Paperless. Join so many other amazing providers and
-            patients on CornieHealth.</span
-          >
-          <span class="mt-4">
-            Document Type: Medication Prescription|Rx ID: {{ request?.Requester?.RXID }} | Requester:
-            {{ request?.Requester?.name }} | DateTime Created: {{ request?.Requester?.createdAt }}
-          </span>
+            patients on CornieHealth.
+          </div>
+          <div class="mt-4">
+            Document Type: Medication Prescription|Rx ID:
+            {{ request?.Requester?.RXID }} | Requester:
+            {{ request?.Requester?.name }} | DateTime Created:
+            {{ request?.Requester?.createdAt }}
+          </div>
         </div>
       </div>
     </cornie-card>
@@ -311,7 +317,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient, cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
@@ -441,12 +447,6 @@ export default class ViewRequest extends Vue {
     },
   ];
 
-  // get refills() {
-  //   return this.selectedItem?.refills ?? [];
-  // }
-  // get medications() {
-  //   return [this.selectedItem];
-  // }
   get items() {
     const requests = this.request?.medications?.map((request: any) => {
       const refillses = this.request?.medications?.map(
@@ -464,15 +464,15 @@ export default class ViewRequest extends Vue {
     // return search.searchObjectArray(shifts, this.query);
   }
 
-  modifyItem(value: any) {
-    this.requestDetails = false;
-    this.viewModificationModal = true;
-    this.medicationId = value;
-    const item: any = this.request?.medications?.find(
-      (el: any) => (el.brandCode = value)
-    );
-    this.selectedMedication = item;
-  }
+  // modifyItem(value: any) {
+  //   this.requestDetails = false;
+  //   this.viewModificationModal = true;
+  //   this.medicationId = value;
+  //   const item: any = this.request?.medications?.find(
+  //     (el: any) => (el.brandCode = value)
+  //   );
+  //   this.selectedMedication = item;
+  // }
 }
 </script>
 

@@ -58,14 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center space-x-6 w-full -mb-10">
-        <span class="flex space-x-4">
-          <substituted class="mr-2" /> Substitution Permitted
-        </span>
-        <span class="flex space-x-4">
-          <substitution-allowed class="mr-2" /> Substituted
-        </span>
-      </div>
+     
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
@@ -79,11 +72,18 @@
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <update-status class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Update Status</span>
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Dispense</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showItem(item.id)"
+          >
+            <decline class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Decline</span>
           </div>
         </template>
-        <template #prescription="{ item }">
+        <template #orderId="{ item }">
           <p>{{ item.identifier }}</p>
           <p class="text-gray-400">
             {{ new Date(item.createdAt).toLocaleDateString() }}
@@ -104,15 +104,20 @@
             <substitution-allowed v-else class="mr-2" />
           </div>
         </template>
-        <template #dosage="{ item }">
-          <p>{{ item.dosageInstruction }}/day</p>
-        </template>
-        <template #duration="{ item }">
-          <p>{{ item.durationInDays }} Days</p>
+        <template #unit="{ item }">
+          <p>{{ item.unit }}/day</p>
         </template>
         <template #quantity="{ item }">
+          <p>{{ item.quantity }} Days</p>
+        </template>
+        <template #unitPrice="{ item }">
           <span>
-            {{ item.quantity }}
+            {{ item.unitPrice }}
+          </span>
+        </template>
+        <template #total="{ item }">
+          <span>
+            {{ item.total }}
           </span>
         </template>
         <template #status="{ item }">
@@ -193,20 +198,15 @@
         </div>
       </div>
     </div>
-
-    <dispense-modal
-      :id="requestId"
-      v-model="openDispense"
-      :request="request"
-      @closesidemodal="closeModal"
-    />
-
-    <view-dispense
-      :id="requestId"
-      :request="request"
-      :organization="organizationInfo"
-      v-model="viewDispenseDetails"
-    />
+    
+    
+  <view-orders
+    v-model="showResult"
+    :id="typeId"
+    :organization="organizationInfo"
+    :request="request"
+  />
+   
   </div>
 </template>
 <script lang="ts">
@@ -230,13 +230,13 @@ import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeYellow from "@/components/icons/eye-yellow.vue";
-import UpdateStatus from "@/components/icons/update-status.vue";
+import UpdateReportGreen from "@/components/icons/update-report-green.vue";
+import Decline from "@/components/icons/decline.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import DispenseModal from "./DispenseModal.vue";
-import ViewDispense from "./ViewDispense.vue";
+import ViewOrders from "./ViewOrders.vue";
 
 import IMedicationReq from "@/types/ImedicationReq";
 import IDispenseInfo from "@/types/IDispenseInfo";
@@ -261,25 +261,26 @@ const organization = namespace("organization");
     IconInput,
     DeleteIcon,
     EyeYellow,
-    UpdateStatus,
+    UpdateReportGreen,
     ColumnFilter,
     TableOptions,
     Substituted,
     SubstitutionAllowed,
+    Decline,
+    ViewOrders,
 
     ArrowLeftIcon,
     ArrowRightIcon,
-    DispenseModal,
-    ViewDispense,
   },
 })
-export default class DISPENSE extends Vue {
+export default class PHARMACYORDER extends Vue {
   query = "";
   request = "";
   organization = "";
   requestId = "";
+  typeId = "";
   openDispense = false;
-  viewDispenseDetails = false;
+  showResult = false;
   practitioner = [] as any;
   location = [] as any;
   updatedBy = "";
@@ -330,12 +331,12 @@ export default class DISPENSE extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "prescription id",
-      key: "prescription",
+      title: "order id",
+      key: "orderId",
       show: true,
       noOrder: true,
     },
-    { title: "subject (PATIENT)", key: "subject", show: true, noOrder: true },
+    { title: "Patient", key: "subject", show: true, noOrder: true },
     {
       title: "medication",
       key: "medication",
@@ -343,26 +344,38 @@ export default class DISPENSE extends Vue {
       noOrder: true,
     },
     {
-      title: "",
-      key: "drug",
+      title: "unit",
+      key: "unit",
       show: true,
       noOrder: true,
     },
     {
       title: "dosage",
       key: "dosage",
-      show: true,
+      show: false,
       noOrder: true,
     },
     {
       title: "duration",
       key: "duration",
-      show: true,
+      show: false,
       noOrder: true,
     },
     {
       title: "quantity",
       key: "quantity",
+      show: true,
+      noOrder: true,
+    },
+    {
+      title: "unit price",
+      key: "unitPrice",
+      show: true,
+      noOrder: true,
+    },
+    {
+      title: "total",
+      key: "total",
       show: true,
       noOrder: true,
     },
@@ -410,12 +423,6 @@ export default class DISPENSE extends Vue {
     {
       title: "no of refill",
       key: "refillno",
-      show: false,
-      noOrder: true,
-    },
-    {
-      title: "quantity",
-      key: "qunatity",
       show: false,
       noOrder: true,
     },
@@ -480,13 +487,13 @@ export default class DISPENSE extends Vue {
 
   showItem(value: string) {
     this.openDispense = true;
-    this.requestId = value;
+    this.typeId = value;
     this.setRequest();
   }
 
   viewItem(value: string) {
-    this.viewDispenseDetails = true;
-    this.requestId = value;
+    this.showResult = true;
+    this.typeId = value;
     this.setRequest();
     this.fetchOrgInfo();
   }
@@ -495,7 +502,7 @@ export default class DISPENSE extends Vue {
     // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.requestId}`
+        `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.typeId}`
       );
       this.request = data;
     } catch (error) {
@@ -511,11 +518,6 @@ export default class DISPENSE extends Vue {
   }
 
   async created() {
-    await this.fetchMedReq();
-
-    if (this.medicationRequest.length < 1) this.fetchMedReq();
-
-    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

@@ -197,7 +197,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient, cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IDispenseInfo from "@/types/IDispenseInfo";
 
@@ -261,7 +261,7 @@ export default class ModifyRequestModal extends Vue {
 
   async queryMade(query: string) {
     try {
-      const { data } = await cornieClient2().get(
+      const { data } = await cornieClient().get(
         `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
       );
       this.medicationInStock = data;

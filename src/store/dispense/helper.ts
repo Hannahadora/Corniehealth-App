@@ -1,11 +1,11 @@
-import { cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import IDispenseInfo from "../../types/IDispenseInfo";
 import IMedicationReq from "@/types/ImedicationReq";
 
 
 export async function fetchMedReq() {
   try {
-    const response = await cornieClient2().get(
+    const response = await cornieClient().get(
       "/api/v1/medication-requests/dispenser"
     );
     if (response.success) return response.data;
@@ -15,7 +15,7 @@ export async function fetchMedReq() {
 
 export async function dispenseARequest(patientId?: string) {
   try {
-    const response = await cornieClient2().get(
+    const response = await cornieClient().get(
       `/api/v1/medication-requests/dispenser?patientId=${patientId}`
     );
     if (response.success) return response.data;
@@ -25,7 +25,7 @@ export async function dispenseARequest(patientId?: string) {
 
 export async function viewDispense(locationId: string, requestId: string) {
   try {
-    const response = await cornieClient2().get(
+    const response = await cornieClient().get(
       `/api/v1/pharmacy/dispense-view/${locationId}/${requestId}`
     );
     if (response.success) return response.data;

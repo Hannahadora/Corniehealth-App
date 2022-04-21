@@ -15,7 +15,7 @@ interface IPInfo {
     address: string
 }
 
-export default interface IDispense {
+export default interface IDispenseInfo {
     status: string,
     createdAt: string,
     priority: string,
