@@ -17,14 +17,13 @@
       </cornie-btn>
     </div>
     <div class="w-full pb-7 mt-28" v-else>
-
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="viewItem(item.id)"
           >
-            <eye-blue-bg class="text-danger fill-current" />
+            <eye-blue class="text-danger fill-current" />
             <span class="ml-3 text-xs">View Result</span>
           </div>
           <div
@@ -47,6 +46,58 @@
           >
             <update-report-green class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Report</span>
+          </div>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'on-hold'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'revoked' || item.status == 'cancelled'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p>
           </div>
         </template>
       </cornie-table>
@@ -75,7 +126,11 @@
       </div>
     </div>
   </div>
-  <diagnostic-dialog v-model="showRecord" :id="typeId" @sales-added="salesAdded" />
+  <diagnostic-dialog
+    v-model="showRecord"
+    :id="typeId"
+    @sales-added="salesAdded"
+  />
   <view-result v-model="showResult" :id="typeId" />
 </template>
 <script lang="ts">
@@ -95,15 +150,15 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
-import EyeBlueBg from "@/components/icons/eye-blue-bg.vue";
+import EyeBlue from "@/components/icons/eye-blue.vue";
 import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
 import UpdateReportGreen from "@/components/icons/update-report-green.vue";
 import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import DiagnosticDialog from './DiagnosticDialog.vue'
-import ViewResult from './ViewResult.vue'
+import DiagnosticDialog from "./DiagnosticDialog.vue";
+import ViewResult from "./ViewResult.vue";
 
 const location = namespace("location");
 
@@ -119,14 +174,14 @@ const location = namespace("location");
     FilterIcon,
     PlusIcon,
     IconInput,
-    EyeBlueBg,
+    EyeBlue,
     PlusIconBlack,
     ColumnFilter,
     TableOptions,
     UpdateStatusYellow,
     UpdateReportGreen,
-  DiagnosticDialog,
-  ViewResult
+    DiagnosticDialog,
+    ViewResult,
   },
 })
 export default class DiagnosticReport extends Vue {
@@ -143,7 +198,7 @@ export default class DiagnosticReport extends Vue {
   completedSales = 0;
   totalSalesVolume = 0;
 
-  diagnosticsReports = [{}]
+  diagnosticsReports = [{}];
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -213,17 +268,16 @@ export default class DiagnosticReport extends Vue {
     return search.searchObjectArray(diagnosticsReports, this.query);
   }
 
-  
-   showItem(value: string) {
+  showItem(value: string) {
     this.showRecord = true;
     this.typeId = value;
   }
-  
-   viewItem(value: string) {
+
+  viewItem(value: string) {
     this.showResult = true;
     this.typeId = value;
   }
-  
+
   closeModal() {
     this.showRecord = false;
   }

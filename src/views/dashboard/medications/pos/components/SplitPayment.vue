@@ -84,8 +84,7 @@ export default class SplitPayment extends Vue {
   };
 
   paymentTotal() {
-    const total: any = this.payment?.amount as string;
-    return total;
+    return this.payments.forEach((el: any) => el.amount);
   }
 }
 </script>

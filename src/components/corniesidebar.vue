@@ -228,6 +228,11 @@ export default class CorniDashboardeSideBar extends Vue {
           to: "dispense",
           hasSubsection: false,
         },
+        {
+          name: "Pharmacy Orders",
+          to: "pharmacy-order",
+          hasSubsection: false,
+        },
       ],
     },
 

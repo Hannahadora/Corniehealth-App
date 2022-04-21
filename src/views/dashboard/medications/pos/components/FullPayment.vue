@@ -63,9 +63,8 @@ export default class FullPayment extends Vue {
     total: this.paymentTotal(),
   };
 
- paymentTotal() {
-    const total: any = this.payment?.amount;
-    return total
+  paymentTotal() {
+    return this.payments.forEach((el: any) => el.amount);
   }
 }
 </script>
