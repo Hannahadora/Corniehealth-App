@@ -151,9 +151,12 @@ import EditIcon from "@/components/icons/edit.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { IOrganization } from "@/types/IOrganization";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 const location = namespace("location");
+const user = namespace("user");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -192,7 +195,18 @@ export default class POSSALES extends Vue {
   completedSales = 0;
   totalSalesVolume = 0;
 
-  allPosSales = [{}]
+  allPosSales = [] as any;
+
+  
+  @user.Getter
+  authCurrentLocation!: any;
+
+   @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -235,7 +249,7 @@ export default class POSSALES extends Vue {
   ];
 
   get items() {
-    const allPosSales = this.allPosSales.map((sale) => {
+    const allPosSales = this.allPosSales.map((sale: any) => {
       (sale as any).createdAt = new Date(
         (sale as any).createdAt
       ).toLocaleDateString("en-US");
@@ -278,6 +292,33 @@ export default class POSSALES extends Vue {
   
   closeModal() {
     this.showRecord = false;
+  }
+
+   get locationId() {
+    return this.authCurrentLocation;
+  }
+
+  async fetchPosHistory() {
+    // const request = await this.viewDispense(this.id, this.locationId);
+    try {
+      const data = await cornieClient().get(
+        `/api/v1/pharmacy/pos-history/${this.locationId}`
+      );
+      this.allPosSales = data.data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching pos history",
+        status: "error",
+      });
+    }
+  }
+
+   async created() {
+    await this.fetchPosHistory();
+
+    if (this.allPosSales.length < 1) this.fetchPosHistory();
+
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

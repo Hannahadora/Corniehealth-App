@@ -505,9 +505,9 @@ export default class PosDialog extends Vue {
         action: medication.id,
         itemName: medication.name,
         unitPrice: medication.unitPrice,
-        quantity: this.quantity,
-        lineTotal: ((medication.unitPrice as number) *
-          medication.quantity) as number,
+        quantity: Number(this.quantity),
+        lineTotal: Number(medication.unitPrice *
+          medication.quantity),
       };
     });
     if (!this.query) return dMed;
