@@ -135,63 +135,62 @@
             :items="supplyTypes"
           />
 
-           <div class="">
-                <span
-                  class="mb-2 w-full rounded-full"
-                  @click="showDatalist = !showDatalist"
-                >
-                  <icon-input
-                    autocomplete="off"
-                    class="border border-gray-600 rounded-full focus:outline-none"
-                    type="search"
-                    placeholder="Search"
-                    v-model="medQuery"
-                  >
-                    <template v-slot:prepend>
-                      <search-icon />
-                    </template>
-                  </icon-input>
-                </span>
+          <div class="">
+            <span
+              class="mb-2 w-full rounded-full"
+              @click="showDatalist = !showDatalist"
+            >
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-600 rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-model="medQuery"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </span>
+            <div
+              :class="[
+                !showDatalist ? 'hidden' : 'o',
+                medicationData.length === 0 ? 'h-20' : 'h-auto',
+              ]"
+              class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
+              style="width: 50%"
+            >
+              <div class="flex flex-col w-full p-3">
                 <div
-                  :class="[
-                    !showDatalist ? 'hidden' : 'o',
-                    medicationData.length === 0 ? 'h-20' : 'h-auto',
-                  ]"
-                  class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-                  style="width: 50%"
+                  v-for="(item, i) in medicationData"
+                  :key="i"
+                  class="cursor-pointer mb-3 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
                 >
-                  <div class="flex flex-col w-full p-3">
+                  <div class="flex items-center justify-between">
                     <div
-                      v-for="(item, i) in medicationData"
-                      :key="i"
-                      class="cursor-pointer mb-3 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                      class="w-full text-sm items-center p-2 border-transparent border-l-2 relative"
                     >
-                      <div class="flex items-center justify-between">
-                        <div
-                          class="w-full text-sm items-center p-2 border-transparent border-l-2 relative"
-                        >
-                          {{ item.name }}
-                          <p class="text-xs text-gray-400 italic">
-                            {{ item?.brandCode }}
-                          </p>
-                        </div>
-
-                        <cornie-radio
-                          name="search"
-                          @click="selectMed(item, item.name)"
-                        />
-                      </div>
+                      {{ item.name }}
+                      <p class="text-xs text-gray-400 italic">
+                        {{ item?.brandCode }}
+                      </p>
                     </div>
-                  </div>
-                  <div v-if="medicationData.length === 0">
-                    <span
-                      class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
-                      >No Match!</span
-                    >
+
+                    <cornie-radio
+                      name="search"
+                      @click="selectMed(item, item.name)"
+                    />
                   </div>
                 </div>
-
-         </div>
+              </div>
+              <div v-if="medicationData.length === 0">
+                <span
+                  class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                  >No Match!</span
+                >
+              </div>
+            </div>
+          </div>
         </v-form>
       </cornie-card-text>
 
@@ -320,19 +319,17 @@ export default class ModifyRequestModal extends Vue {
     }
   }
 
-   selectMed(item: any) {
+  selectMed(item: any) {
     this.$emit("selected", item);
     console.log("item", item);
     this.selectedMed = item;
     this.showDatalist = false;
   }
 
-  
   @Watch("medQuery")
   typed(medQuery: string) {
     this.fetchMedications(medQuery);
   }
-
 }
 </script>
 
