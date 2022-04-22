@@ -12,7 +12,7 @@
           <p class="text-3xl font-bold">Medication Request</p>
         </div>
 
-        <cancel-icon class="float-right cursor-pointer" @click="show = false" />
+        <cancel-red-bg class="float-right cursor-pointer" @click="show = false" />
       </cornie-card-title>
 
       <cornie-card-text>
@@ -37,7 +37,9 @@
 
         <div class="p-6 bg-white h-auto">
           <div class="flex items-center justify-between">
-            <div></div>
+            <div>
+              <img class="w-24 h-24" :src="organization.image" alt="">
+            </div>
 
             <div class="flex flex-col text-right">
               <div class="font-bold text-base mb-4">
@@ -304,7 +306,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -350,7 +352,7 @@ const user = namespace("user");
     AutoComplete,
     CornieRadio,
     DatePicker,
-    CancelIcon,
+    CancelRedBg,
     CornieTable,
     EditIcon,
     ModifyRequest,
@@ -464,15 +466,15 @@ export default class ViewRequest extends Vue {
     // return search.searchObjectArray(shifts, this.query);
   }
 
-  // modifyItem(value: any) {
-  //   this.requestDetails = false;
-  //   this.viewModificationModal = true;
-  //   this.medicationId = value;
-  //   const item: any = this.request?.medications?.find(
-  //     (el: any) => (el.brandCode = value)
-  //   );
-  //   this.selectedMedication = item;
-  // }
+  modifyItem(value: any) {
+    this.requestDetails = false;
+    this.viewModificationModal = true;
+    this.medicationId = value;
+    const item: any = this.request?.medications?.find(
+      (el: any) => (el.brandCode = value)
+    );
+    this.selectedMedication = item;
+  }
 }
 </script>
 

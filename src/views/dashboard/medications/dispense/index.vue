@@ -315,9 +315,6 @@ export default class DISPENSE extends Vue {
   getPatients!: () => Promise<void>;
 
   @user.Getter
-  authorizedLocations!: any;
-
-  @user.Getter
   authCurrentLocation!: any;
 
   @dispense.State
