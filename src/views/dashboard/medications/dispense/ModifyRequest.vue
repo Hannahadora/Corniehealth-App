@@ -191,7 +191,7 @@
                   </div>
                 </div>
 
-         
+         </div>
         </v-form>
       </cornie-card-text>
 
@@ -220,6 +220,8 @@ import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -268,7 +270,9 @@ const appointmentRoom = namespace("appointmentRoom");
     DatePicker,
     CancelIcon,
     SubstitutionAllowed,
-    CornieSearch
+    CornieSearch,
+    IconInput,
+    SearchIcon,
   },
 })
 export default class ModifyRequestModal extends Vue {
@@ -285,10 +289,9 @@ export default class ModifyRequestModal extends Vue {
 
   loading = false;
   selectedMed = "";
-  query = "";
-
   showDatalist = false;
   medicationDetails = <any>[];
+  medicationData = <any>[];
   substitute = false;
   quantity = "";
   supplyType = "";
@@ -308,35 +311,13 @@ export default class ModifyRequestModal extends Vue {
       const { data } = await cornieClient().get(
         `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
       );
-      this.medicationDetails = data || [];
+      this.medicationData = data || [];
     } catch (error) {
       window.notify({
         msg: "There was an error fetching medications",
         status: "error",
       });
     }
-  }
-
-  get medicationData() {
-    const xMedications = this.medicationDetails?.map((medication: any) => {
-      return {
-        ...medication,
-        code: medication.id,
-        name: medication.name,
-        display: medication.brandCode,
-        brandCode: medication.brandCode,
-        unitPrice: medication.unitPrice,
-        lineTotal: ((medication.unitPrice as number) *
-          medication.quantity) as number,
-        quantity: 1,
-        available: medication.available,
-        form: medication.form,
-        id: medication.id,
-        totalDiscount: medication,
-      };
-    });
-    if (!this.query) return xMedications;
-    return search.searchObjectArray(xMedications, this.query);
   }
 
    selectMed(item: any) {

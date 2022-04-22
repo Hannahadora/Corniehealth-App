@@ -1,4 +1,4 @@
-  export default interface IPossale {
+export default interface IPossale {
     id: string,
       identifier: string,
       patientId: string,
