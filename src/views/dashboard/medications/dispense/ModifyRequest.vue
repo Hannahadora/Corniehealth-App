@@ -15,7 +15,7 @@
 
         <span
           v-if="medication.substitutionAllowed"
-          class="flex items-center space-x-4 text-red-500"
+          class="flex items-center space-x-4 text-red-500 cursor-pointer"
           @click="substitute = true"
         >
           <substitution-allowed class="mr-2" /> Substitute
@@ -191,6 +191,30 @@
               </div>
             </div>
           </div>
+
+           <search-input
+            v-model="query"
+            background="bg-gray-300"
+            :results="medicationData"
+            @selected="selected"
+          >
+            <template #item="{ item }">
+              <div class="w-full flex items-center justify-between">
+                <div class="flex items-center">
+                  <avatar :src="item.image" />
+                  <div class="flex ml-1 flex-col">
+                    <span class="font-semibold text-sm">Dr Ajayi Charles</span>
+                    <span class="text-xs font-semibold text-gray-500">
+                      Paediatrics
+                    </span>
+                  </div>
+                </div>
+                <span class="text-danger font-semibold text-sm">
+                  Grant Access
+                </span>
+              </div>
+            </template>
+          </search-input>
         </v-form>
       </cornie-card-text>
 
@@ -236,7 +260,7 @@ import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IDispenseInfo from "@/types/IDispenseInfo";
 
-import CornieSearch from "@/components/search-input.vue";
+import SearchInput from "@/components/search-input.vue";
 
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -269,7 +293,7 @@ const appointmentRoom = namespace("appointmentRoom");
     DatePicker,
     CancelIcon,
     SubstitutionAllowed,
-    CornieSearch,
+    SearchInput,
     IconInput,
     SearchIcon,
   },
