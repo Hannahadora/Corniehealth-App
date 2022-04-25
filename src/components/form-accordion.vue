@@ -93,10 +93,13 @@
                 @click="expand = true"
               />
             </div>
+            
           </div>
         </div>
         <move-icon class="cursor-pointer mt-1 float-right" v-if="move" />
       </div>
+
+
       <div v-if="expand"><slot name="default" /></div>
     </div>
   </div>

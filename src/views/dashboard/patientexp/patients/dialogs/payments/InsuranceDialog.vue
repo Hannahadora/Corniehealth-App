@@ -21,7 +21,7 @@
             v-model="owner"
           />
           <cornie-input
-            label="Payor"
+            label="Payer"
             class="w-full"
             placeholder="--Enter--"
             v-model="payor"
@@ -34,53 +34,63 @@
             v-model="priority"
           />
           <cornie-input
-            label="Type"
+            label="Group Policy ID"
             class="w-full"
-            placeholder="--Enter--"
-            v-model="type"
+            placeholder="Select One"
+            v-model="groupPolicyNo"
           />
-
-          <cornie-input
-            label="Payer"
+           <cornie-input
+            label="Description"
             class="w-full"
             placeholder="Enter"
-            v-model="payer"
+            v-model="description"
           />
-          <cornie-input
+
+            <cornie-input
             label="plan"
             class="w-full"
             placeholder="Enter"
             v-model="plan"
           />
-          <cornie-input
-            label="policy No."
+           <cornie-input
+            label="Policy Number"
             class="w-full"
             placeholder="Enter"
             v-model="policyNo"
           />
-          <cornie-date-picker
-            label="Policy Expiry"
-            class="w-full"
-            v-model="policyExpiry"
-          />
           <cornie-input
-            label="Deductible/Co-pay AMT"
-            class="w-full mt-3"
+            label="Coverage"
+            class="w-full"
+            placeholder="--Enter--"
+            v-model="coverage"
+          />
+
+          <cornie-input
+            label="Excess"
+            class="w-full"
+            placeholder="Enter"
+            v-model="excess"
+          />
+           <cornie-input
+            label="Deductible/Co-Pay Amt."
+            class="w-full"
             placeholder="Enter"
             v-model="deductible"
           />
-          <cornie-input
-            label="Main Policy Holder"
+        
+          <cornie-date-picker
+            label="End Date/Time"
             class="w-full"
-            placeholder="Enter"
-            v-model="mainPolicyHolder"
+            v-model="endDate"
           />
-          <cornie-input
-            label="Group Policy No."
-            class="w-full"
-            placeholder="Enter"
-            v-model="groupPolicyNo"
+
+          <cornie-date-picker
+            label="Start Date/Time"
+            class="w-full mt-4"
+            v-model="startDate"
           />
+        
+        
         </v-form>
       </cornie-card-text>
       <cornie-card>
@@ -123,7 +133,7 @@ import { cornieClient } from "@/plugins/http";
 const patients = namespace("patients");
 
 @Options({
-  name: "guarantor-dialog",
+  name: "InsuranceDialog",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -137,7 +147,7 @@ const patients = namespace("patients");
   },
   emits: ["canceled"],
 })
-export default class EmergencyDontactDialog extends Vue {
+export default class InsuranceDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -168,18 +178,34 @@ export default class EmergencyDontactDialog extends Vue {
   loading = false;
   policyExpiry = "";
 
+  owner = "";
+  payor = "";
+  priority = "";
+  description = "";
+  coverage = "";
+  excess = "";
+  endDate = "";
+  startDate = "";
+
+
+
   currentId = "";
 
   get payload() {
     const payload = {
-      type: this.type,
-      group: this.group,
-      payer: this.payer,
+      patientId: this?.patient?.id,
+      mainPolicyHolder: this.owner,
+      payer: this.payor,
+      type: this.priority,
       plan: this.plan,
       policyNo: this.policyNo,
       deductible: this.deductible,
-      mainPolicyHolder: this.mainPolicyHolder,
+      description: this.description,
       groupPolicyNo: this.groupPolicyNo,
+      coverage: this.coverage,
+      excess: this.excess,
+      policyExpiry: this.endDate,
+      policyStartDate: this.startDate,
     } as Insurance;
     if (this.patient?.id) payload.patientId = this.patient.id;
     if (this.currentId) payload.id = this.currentId;
@@ -200,7 +226,15 @@ export default class EmergencyDontactDialog extends Vue {
   }
 
   batch() {
-    this.insuranceSync = [...this.insuranceSync, this.payload];
+  //  this.insurances.push(this.payload);
+    this.$emit('setInsurance', this.payload);
+    window.notify({
+        msg: `Insurance added successfully`,
+        status: "success",
+      });
+
+    this.show = false;
+   // this.insuranceSync = [...this.insuranceSync, this.payload];
   }
 
   async submit() {

@@ -5,6 +5,7 @@ import { SettingsRoute } from "./settings";
 import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
+import { PracticeRoutes } from "./practice";
 import { NewSettingsRoutes } from "./newsettings";
 import Settings from "@/views/dashboard/settings/index.vue";
 
@@ -97,6 +98,7 @@ const routes: Array<RouteRecordRaw> = [
       ExperienceRoutes,
       InPatientRoutes,
       NewSettingsRoutes,
+      PracticeRoutes,
       {
         path: "/settings/",
         name: "Settings",

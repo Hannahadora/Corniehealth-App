@@ -50,6 +50,11 @@ export default {
       patient = updateModelField(patient, field, data);
       ctx.commit("updatePatient", patient);
     },
+    getPatientById(ctx, id: string) {
+      return ctx.state.patients.find(
+        patient => patient.id == id
+      );
+    },
     async fetchPatients(ctx) {
       const patients = await fetchPatients();
       ctx.commit("addPatients", patients);

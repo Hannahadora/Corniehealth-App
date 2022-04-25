@@ -2,13 +2,13 @@
   <div class="w-full">
     <div
       @click="handle"
-      class="cursor-pointer h-11 w-full flex items-center justify-between px-3 border-b-2"
+      class="cursor-pointer h-11 w-full flex items-center justify-between border-b-2"
       :class="{
         'border-0  text-base text-jet_black font-bold': expanded,
         'rounded-t-xl': first && expanded,
       }"
     >
-      <div class="font-semibold" :class="{ 'text-jet_black': expanded }">
+      <div class="font-bold" :class="{ 'text-jet_black': expanded }">
         {{ title }}
       </div>
       <span class="flex items-center">

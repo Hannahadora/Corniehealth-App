@@ -168,6 +168,7 @@
                             <div class="flex space-x-2 w-full">
                                 <cornie-input
                                 :rules="required"
+                                v-maska="'#*:#*:#*'"
                                 placeholder="0:0:0"
                                 class="grow w-full"
                                 :setfull="true"

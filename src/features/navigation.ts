@@ -134,7 +134,39 @@ const links: ISidebarLink[] = [
       },
     ],
   },
-
+  {
+    name: "Practice",
+    to: "practice",
+    icon: "practice-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Locations",
+        to: "locations",
+        hasSubsection: false,
+      },
+      {
+        name: "Charge Description Master",
+        to: "/dashboard/provider/practice/practice",
+        hasSubsection: false,
+      },
+      {
+        name: "Inventory Stock",
+        to: "/dashboard/provider/practice/inventory",
+        hasSubsection: false,
+      },
+      {
+        name: "Loyalty",
+        to: "inventory",
+        hasSubsection: false,
+      },
+      {
+        name: "Promotions",
+        to: "pricebook",
+        hasSubsection: false,
+      },
+    ],
+  },
   {
     name: "Bills & Payments",
     to: "bills",

@@ -2,12 +2,12 @@
   <div
     v-for="(tab, index) in items"
     :key="`tab-${index}`"
-    class="px-1 py-0.5 my-2 border-l-2 text-xs cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 block"
+    class="px-1 py-0.5 my-2 border-l-2 text-sm cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 block"
     :class="syncedValue == index ? ['border-danger'] : ['border-transparent']"
     @click="syncedValue = index"
   >
     <span>
-      {{ tab }}
+      {{ tab }} 
     </span>
   </div>
   <!-- <tab :vnode="$slots.default()[syncedValue]" /> -->
@@ -17,6 +17,7 @@
 import { VNode } from "@vue/runtime-core";
 import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
+import SidebarLink from "./sidebarlink.vue";
 
 @Options({
   name: "tab",
@@ -34,6 +35,7 @@ class Tab extends Vue {
   name: "tabs",
   components: {
     Tab,
+    SidebarLink,
   },
 })
 export default class Tabs extends Vue {
