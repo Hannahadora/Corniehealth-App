@@ -135,29 +135,62 @@
             :items="supplyTypes"
           />
 
-          <auto-complete
-            v-bind="$attrs"
-            label="Select medication to substitute with"
-            placeholder="Select one"
-            v-model="newMedication"
-            :items="items"
-            @query="queryMade"
-          >
-            <template #item="{ item }">
-              <div class="w-full flex items-center my-1 justify-between">
-                <div class="flex items-center">
-                  <div class="flex ml-1 flex-col">
-                    <span class="text-xs">{{ item.brandCode }}</span>
+          <div class="">
+            <span
+              class="mb-2 w-full rounded-full"
+              @click="showDatalist = !showDatalist"
+            >
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-600 rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-model="medQuery"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </span>
+            <div
+              :class="[
+                !showDatalist ? 'hidden' : 'o',
+                medicationData.length === 0 ? 'h-20' : 'h-auto',
+              ]"
+              class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
+              style="width: 50%"
+            >
+              <div class="flex flex-col w-full p-3">
+                <div
+                  v-for="(item, i) in medicationData"
+                  :key="i"
+                  class="cursor-pointer mb-3 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                >
+                  <div class="flex items-center justify-between">
+                    <div
+                      class="w-full text-sm items-center p-2 border-transparent border-l-2 relative"
+                    >
+                      {{ item.name }}
+                      <p class="text-xs text-gray-400 italic">
+                        {{ item?.brandCode }}
+                      </p>
+                    </div>
+
+                    <cornie-radio
+                      name="search"
+                      @click="selectMed(item, item.name)"
+                    />
                   </div>
                 </div>
-                <span class="text-xs font-semibold text-gray-500">
-                  {{ item.form }}
-                </span>
               </div>
-            </template>
-          </auto-complete>
-
-         
+              <div v-if="medicationData.length === 0">
+                <span
+                  class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                  >No Match!</span
+                >
+              </div>
+            </div>
+          </div>
         </v-form>
       </cornie-card-text>
 
@@ -186,6 +219,8 @@ import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -197,9 +232,11 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient, cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IDispenseInfo from "@/types/IDispenseInfo";
+
+import CornieSearch from "@/components/search-input.vue";
 
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -207,6 +244,9 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 import Substituted from "@/components/icons/substituted.vue";
 import SubstitutionAllowed from "@/components/icons/substitution-allowed.vue";
 import IMedication from "@/types/IMedication";
+import { debounce } from "lodash";
+
+import search from "@/plugins/search";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
@@ -229,6 +269,9 @@ const appointmentRoom = namespace("appointmentRoom");
     DatePicker,
     CancelIcon,
     SubstitutionAllowed,
+    CornieSearch,
+    IconInput,
+    SearchIcon,
   },
 })
 export default class ModifyRequestModal extends Vue {
@@ -244,7 +287,10 @@ export default class ModifyRequestModal extends Vue {
   required = string().required();
 
   loading = false;
-
+  selectedMed = "";
+  showDatalist = false;
+  medicationDetails = <any>[];
+  medicationData = <any>[];
   substitute = false;
   quantity = "";
   supplyType = "";
@@ -259,27 +305,31 @@ export default class ModifyRequestModal extends Vue {
     return this.authCurrentLocation;
   }
 
-  async queryMade(query: string) {
+  async fetchMedications(query: string) {
     try {
-      const { data } = await cornieClient2().get(
+      const { data } = await cornieClient().get(
         `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
       );
-      this.medicationInStock = data;
+      this.medicationData = data || [];
     } catch (error) {
       window.notify({
-        msg: "There was an error fetching medications in stock",
+        msg: "There was an error fetching medications",
         status: "error",
       });
     }
   }
 
-    get items() {
-      return this.medicationInStock?.map((medStock: any) => ({
-        ...medStock,
-        code: medStock.brandCode,
-        // display: printmedStock(medStock),
-      }));
-    }
+  selectMed(item: any) {
+    this.$emit("selected", item);
+    console.log("item", item);
+    this.selectedMed = item;
+    this.showDatalist = false;
+  }
+
+  @Watch("medQuery")
+  typed(medQuery: string) {
+    this.fetchMedications(medQuery);
+  }
 }
 </script>
 

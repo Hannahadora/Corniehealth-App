@@ -585,9 +585,9 @@ export default class carePlanModal extends Vue {
     this.category = careplan.category;
     this.title = careplan.title;
     this.startDate = careplan.startDate;
-    this.startTime = careplan.startTime;
+    // this.startTime = careplan.startTime;
     this.endDate = careplan.endDate;
-    this.endTime = careplan.endTime;
+    // this.endTime = careplan.endTime;
     this.reference = careplan.reference;
     this.outcomeReference = careplan.outcomeReference;
     this.outcome = careplan.outcome;

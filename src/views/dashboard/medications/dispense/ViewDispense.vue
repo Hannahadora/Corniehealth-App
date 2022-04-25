@@ -12,7 +12,7 @@
           <p class="text-3xl font-bold">Medication Request</p>
         </div>
 
-        <cancel-icon class="float-right cursor-pointer" @click="show = false" />
+        <cancel-red-bg class="float-right cursor-pointer" @click="show = false" />
       </cornie-card-title>
 
       <cornie-card-text>
@@ -35,9 +35,11 @@
           </div>
         </div>
 
-        <div class="p-6 bg-white h-20">
+        <div class="p-6 bg-white h-auto">
           <div class="flex items-center justify-between">
-            <div></div>
+            <div>
+              <img class="w-24 h-24" :src="organization.image" alt="">
+            </div>
 
             <div class="flex flex-col text-right">
               <div class="font-bold text-base mb-4">
@@ -52,7 +54,7 @@
                 ></span>
                 <span>{{ organization.email }}</span>
                 <div>
-                  <span style="color: '#C2C7D6'" ;>Patient ID:</span>
+                  <span style="color: '#C2C7D6'">Patient ID:</span>
                   {{ request?.patient?.id }}
                 </div>
               </div>
@@ -238,8 +240,13 @@
         </div>
       </cornie-card-text>
 
-      <div class="flex items-center justify-end mt-24">
-        <div class="text-red-500 text-base font-bold py-3 px-9" @click="show = false">Cancel</div>
+      <div class="flex items-center justify-between mt-24">
+        <div
+          class="text-red-500 text-base font-bold py-3 px-9"
+          @click="show = false"
+        >
+          Cancel
+        </div>
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -259,28 +266,29 @@
 
       <div class="detail-footer">
         <div class="text-center border-dashed border-b">
-          <span class="c-667499 text-sm mb-4"> Powered By Cornie Health </span>
-          <span class="mb-10"
-            >This is a system generated document from CornieHealth. CornieHealth
+          <div class="c-667499 text-sm mb-4">Powered By Cornie Health</div>
+          <div class="mb-10">
+            This is a system generated document from CornieHealth. CornieHealth
             is a healthtech system solution vendor for healthcare providers and
             patients. Visit
-            <a
-              class="text-red-500 font-semibold"
-              href="www.corniehealth.com"
-            ></a>
+            <a class="text-red-500 font-semibold" href="www.corniehealth.com"
+              >www.corniehealth.com</a
+            >
             to create your free account.
-          </span>
+          </div>
         </div>
 
         <div class="text-center">
-          <span class="mt-10">
+          <div class="mt-10">
             Save Earth, Go Paperless. Join so many other amazing providers and
-            patients on CornieHealth.</span
-          >
-          <span class="mt-4">
-            Document Type: Medication Prescription|Rx ID: {{ request?.Requester?.RXID }} | Requester:
-            {{ request?.Requester?.name }} | DateTime Created: {{ request?.Requester?.createdAt }}
-          </span>
+            patients on CornieHealth.
+          </div>
+          <div class="mt-4">
+            Document Type: Medication Prescription|Rx ID:
+            {{ request?.Requester?.RXID }} | Requester:
+            {{ request?.Requester?.name }} | DateTime Created:
+            {{ request?.Requester?.createdAt }}
+          </div>
         </div>
       </div>
     </cornie-card>
@@ -298,7 +306,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -311,7 +319,7 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient, cornieClient2 } from "@/plugins/http";
+import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 
@@ -344,7 +352,7 @@ const user = namespace("user");
     AutoComplete,
     CornieRadio,
     DatePicker,
-    CancelIcon,
+    CancelRedBg,
     CornieTable,
     EditIcon,
     ModifyRequest,
@@ -441,12 +449,6 @@ export default class ViewRequest extends Vue {
     },
   ];
 
-  // get refills() {
-  //   return this.selectedItem?.refills ?? [];
-  // }
-  // get medications() {
-  //   return [this.selectedItem];
-  // }
   get items() {
     const requests = this.request?.medications?.map((request: any) => {
       const refillses = this.request?.medications?.map(

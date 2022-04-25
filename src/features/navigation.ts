@@ -85,8 +85,13 @@ const links: ISidebarLink[] = [
         hasSubsection: false,
       },
       {
-        name: "Virtual-Lab-Orders",
+        name: "Virtual Lab Orders",
         to: "/dashboard/provider/settings/virtual-lab-orders",
+        hasSubsection: false,
+      },
+      {
+        name: "Observations",
+        to: "/dashboard/provider/settings/observations",
         hasSubsection: false,
       },
     ]
@@ -132,7 +137,12 @@ const links: ISidebarLink[] = [
         to: "dispense",
         hasSubsection: false,
       },
-    ],
+      {
+        name: "Virtual Pharmacy Orders",
+        to: "pharmacy-orders",
+        hasSubsection: false,
+      }
+    ]
   },
   {
     name: "Practice",

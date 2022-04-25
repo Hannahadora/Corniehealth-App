@@ -22,8 +22,8 @@
         <v-form class="flex-grow flex flex-col" @submit="submit">
           <accordion-component
             class="shadow-none rounded-none border-none text-primary"
-            title="Basic Info"
-            v-model="openedS"
+            title="General"
+            :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
               <cornie-select
@@ -93,35 +93,58 @@
           <accordion-component
             class="shadow-none rounded-none border-none text-primary"
             title="Effective"
-            v-model="openedS"
+            :opened="false"
           >
+            <div class="grid grid-cols-2 gap-3 mt-2 w-1/2">
+              <cornie-radio
+                :name="name"
+                v-model="type"
+                label="Date/Time"
+                value="date-time"
+              />
+              <cornie-radio
+                :name="name"
+                v-model="type"
+                value="period"
+                label="Period"
+              />
+            </div>
             <div class="grid grid-cols-2 gap-6 py-6">
               <date-time-picker
                 class="w-full"
-                label="Issued"
-                v-model="issued"
-                :rules="required"
+                label="Start Date/Time"
+                v-model:date="issuedDate"
+                v-model:time="issuedTime"
+                 v-if="type == 'period'"
               />
               <date-time-picker
                 class="w-full"
-                label="Issued"
-                v-model="issued"
-                :rules="required"
+                label="End Date/Time"
+                v-model:date="issuedDate"
+                v-model:time="issuedTime"
+                 v-if="type == 'period'"
+              />
+              <date-time-picker
+                class="w-full"
+                label="Date/Time"
+                v-model:date="issuedDate"
+                v-model:time="issuedTime"
+                 v-if="type == 'date-time'"
               />
             </div>
           </accordion-component>
           <accordion-component
             class="shadow-none rounded-none border-none text-primary"
             title="Issue Info"
-            v-model="openedS"
+            :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
               <div class="col-span-2 grid grid-cols-2 gap-6">
                 <date-time-picker
                   class="w-full"
                   label="Issued"
-                  v-model="issued"
-                  :rules="required"
+                  v-model:date="issuedDate"
+                  v-model:time="issuedTime"
                 />
               </div>
               <cornie-select
@@ -143,7 +166,7 @@
           <accordion-component
             class="shadow-none rounded-none border-none text-primary"
             title="Result"
-            v-model="openedS"
+            :opened="false"
           >
             <div class="flex items-center my-6 justify-end">
               <plus-icon />
@@ -204,7 +227,7 @@
             @click="show = false"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
-            CAncel
+            Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
@@ -269,10 +292,18 @@ const appointmentRoom = namespace("appointmentRoom");
   },
 })
 export default class ViewResult extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
   required = string().required();
 
   loading = false;
   activeTab = "Full Payment";
+  opened = true;
+  type = "date-time"
+
+  issuedDate = "";
+  issuedTime = "";
 
   reference = "";
   salesDate = 0;

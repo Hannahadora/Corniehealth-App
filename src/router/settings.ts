@@ -179,9 +179,9 @@ export const SettingsRoute: RouteRecordRaw = {
     },
     {
       path: "diagnostics",
-      props: true,
+      // props: true,
       name: "Diagnostics",
-      component: () => import("@/views/dashboard/diagnostics/diagnostic/index.vue"),
+      component: () => import("@/views/dashboard/diagnostics/index.vue"),
     },
     {
       path: "markup",
@@ -256,7 +256,7 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "virtual-lab-orders",
       props: true,
-      name: "Virtual-Lab-Orders",
+      name: "Virtual Lab Orders",
       component: () => import("@/views/dashboard/diagnostics/virtual-lab-orders/index.vue"),
     },
     {
@@ -264,6 +264,17 @@ export const SettingsRoute: RouteRecordRaw = {
       name: "Diagnostic Report",
       component: () =>
         import("@/views/dashboard/diagnostics/index.vue"),
-    }
+    },
+    {
+      path: "observations",
+      name: "Observations",
+      component: () => import("@/views/dashboard/diagnostics/observations/index.vue"),
+    },
+    {
+      path: "pharmacy-orders",
+      props: true,
+      name: "Virtual Pharmacy Orders",
+      component: () => import("@/views/dashboard/medications/virtual-pharmacy-orders/index.vue"),
+    },
   ],
 };

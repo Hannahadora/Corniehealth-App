@@ -165,7 +165,7 @@
           :listmenu="true"
           :check="false"
         >
-          <!-- <template #actions="{ item }">
+          <template #actions="{ item }">
             <div
               class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
               @click="modifyItem(item.brandCode)"
@@ -173,7 +173,7 @@
               <edit-icon class="text-danger fill-current" />
               <span class="ml-3 text-xs">Modify</span>
             </div>
-          </template> -->
+          </template>
           <template #category="{ item }">
             <div class="flex space-x-3">
               <div>
@@ -200,7 +200,7 @@
         </cornie-table>
       </cornie-card-text>
 
-      <div class="w-full flex items-center justify-end mt-6 mb-8">
+      <div class="w-full flex flex-col items-end justify-end mt-6 mb-8">
         <div class="w-1/3 flex items-center justify-end border rounded-lg">
           <div
             class="w-1/2 border-r p-4 rounded-l-lg font-bold text-primary"
@@ -213,6 +213,12 @@
             ₦ 0
           </div>
         </div>
+         <cornie-btn
+        class="bg-danger px-3 py-2 rounded-lg text-white mt-5"
+        @click="showRoom = true"
+      >
+        Complete Dispense
+      </cornie-btn>
       </div>
 
       <div class="detail-footer mb-10">
@@ -283,7 +289,7 @@ const dispense = namespace("dispense");
 const user = namespace("user");
 
 @Options({
-  name: "ViewRequestModal",
+  name: "ViewPharmacyOrderl",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -301,7 +307,7 @@ const user = namespace("user");
     EditIcon,
   },
 })
-export default class ViewOrder extends Vue {
+export default class ViewPharmacyOrderl extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -309,7 +315,7 @@ export default class ViewOrder extends Vue {
   id!: string;
 
   @Prop({ type: Object, default: "" })
-  request!: IDispenseInfo;
+  request!: any;
 
   @Prop({ type: Object, default: "" })
   organization!: IOrganization;
