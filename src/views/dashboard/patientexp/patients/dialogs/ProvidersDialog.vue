@@ -38,6 +38,7 @@
           <cornie-input
             label="Email Address"
             class="rounded-none w-full"
+            :rules="emailRule"
             v-model="email"
           />
           <div class="flex justify-end w-full">
@@ -122,6 +123,7 @@
 import { Vue, Options } from "vue-class-component";
 import { PropSync, Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
 
 import { IPatient, RelatedPerson } from "@/types/IPatient";
@@ -178,6 +180,7 @@ export default class providersdialog extends Vue {
   practice = "";
   email = "";
   loading = false;
+  emailRule = string().email().required();
 
   providers = [] as any;
 
@@ -269,7 +272,7 @@ async save() {
 
   batch() {
     console.log(this.providers);
-    this.$emit("add-providers", this.providers);
+    this.$emit("add-providers", this.providers, this.providerType);
 
     this.show = false;
     this.providers = [];

@@ -280,6 +280,7 @@ export default class AppointmentExistingState extends Vue {
   appointmentNotes = [];
   availableSlots = [];
   create = "";
+  
   @patients.State
   patients!: IPatient[];
 

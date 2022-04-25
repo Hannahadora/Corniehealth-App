@@ -196,11 +196,11 @@ export default class Settings extends Vue {
         icon: "health-service-icon",
       },
       { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
-      {
-        name: "Charge Description Master",
-        to: "charge-description-master",
-        icon: "cdm-icon",
-      },
+      // {
+      //   name: "Charge Description Master",
+      //   to: "charge-description-master",
+      //   icon: "cdm-icon",
+      // },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       // { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
       { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },

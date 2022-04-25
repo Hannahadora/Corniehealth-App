@@ -14,6 +14,7 @@ export interface Contact {
   email?: string;
   phone?: Phone;
   apartment?: string;
+
 }
 export interface Demographics {
   id?: string;
@@ -71,6 +72,14 @@ export interface Insurance {
   mainPolicyHolder: string;
   groupPolicyNo: string;
   patientId: string;
+  payor: string,
+  priority: string,
+  description: string,
+  coverage: string,
+  excess: string,
+  endDate: string,
+  policyStartDate: string,
+
 }
 
 export interface RelatedPerson {
@@ -140,5 +149,10 @@ export interface IPatient {
   demographicsData?: Demographics;
   belongsToPractice?: boolean;
   profilePhoto?: string;
+  genotype : string;
+  numberOfChildren : string;
+  multipleBirth : boolean;
+  bloodGroup: string;
   authorizedPractitioners?: authorizedPractitioners[];
+  associates: [];
 }

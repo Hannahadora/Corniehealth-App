@@ -55,6 +55,7 @@ import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
 import PatientIcon from "./icons/PatientIcon.vue";
 import CategoriesIcon from "./icons/categories.vue";
+import PracticeIcon from "./icons/practiceIcon.vue";
 import SidebarLink from "./sidebarlink.vue";
 import { namespace } from "vuex-class";
 import { AccountMeta } from "@/types/user";
@@ -84,6 +85,7 @@ const user = namespace("user");
     ScheduleIcon,
     BookIcon,
     ClinicIcon,
+    PracticeIcon,
     PillIcon,
     ClipBoardIcon,
     PatientIcon,
@@ -235,7 +237,39 @@ export default class CorniDashboardeSideBar extends Vue {
         },
       ],
     },
-
+    {
+    name: "Practice",
+    to: "practice",
+    icon: "practice-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Locations",
+        to: "locations",
+        hasSubsection: false,
+      },
+     {
+        name: "Charge Description Master",
+        to: "/dashboard/provider/practice/practice",
+        hasSubsection: false,
+      },
+      {
+        name: "Inventory Stock",
+          to: "/dashboard/provider/practice/inventory",
+        hasSubsection: false,
+      },
+      {
+        name: "Loyalty",
+        to: "inventory",
+        hasSubsection: false,
+      },
+      {
+        name: "Promotions",
+        to: "pricebook",
+        hasSubsection: false,
+      },
+    ],
+   },
     {
       name: "Bills & Payments",
       to: "bills",
