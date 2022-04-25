@@ -42,7 +42,7 @@
       </div>
     </div>
   </div>
-    <div v-if="expand">
+    <div v-if="expand && syncedValue == 3">
       <div v-for="(setting, key, i) in organization" :key="i">
         <s-bar-link
           :name="setting.name"

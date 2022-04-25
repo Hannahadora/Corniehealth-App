@@ -101,7 +101,8 @@ export default class MedicationCard extends Vue {
   patientrequests!: any;
 
   @request.Action
-  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+  fetchDiagnosticById!: (patientId: string) => Promise<void>;
+  
   showMedicationModal = false;
   async showMedication() {
     this.showMedicationModal = true;
@@ -155,7 +156,7 @@ export default class MedicationCard extends Vue {
   }
   async created() {
     await this.createMapper();
-    await this.fetchOtherrequestsById(this.patientId);
+    await this.fetchDiagnosticById(this.patientId);
   }
 }
 </script>

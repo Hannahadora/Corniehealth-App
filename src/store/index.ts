@@ -53,6 +53,8 @@ import RouterStore from "./routing";
 import SpecialStore from "./special";
 
 import DispenseStore from "./dispense"
+import DiagnostocStore from "./diagnostic";
+import RefferalStore from "./refferal";
 
 import AppointmentRoomStore from "./appointmentroom";
 
@@ -86,6 +88,8 @@ export default createStore({
     practiceinformation: PracticeInformationStore,
     appointment: AppointmentStore,
     request: RequestStore,
+    refferal: RefferalStore,
+    diagnostic: DiagnostocStore,
 
     usersettings: UserSettingsStore,
     schedules: ScheduleStore,

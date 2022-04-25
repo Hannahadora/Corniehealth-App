@@ -63,7 +63,7 @@ export default class ReferrerSelect extends Vue {
   //   fetchOtherrequests!: () => Promise<void>;
 
   @otherrequest.Action
-  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+  fetchDiagnosticById!: (patientId: string) => Promise<void>;
 
   //   get patientId() {
   //     return this.$route.params.id;
@@ -143,7 +143,7 @@ export default class ReferrerSelect extends Vue {
     this.fetchReferrer();
     // if (!this.otherrequests || this.otherrequests.length === 0) await this.fetchOtherrequests();
     if (!this.otherrequests || this.otherrequests.length === 0)
-      await this.fetchOtherrequestsById(this.patientId);
+      await this.fetchDiagnosticById(this.patientId);
   }
 }
 </script>
