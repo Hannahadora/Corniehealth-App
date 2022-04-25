@@ -68,12 +68,12 @@
 
         <div class="w-full flex justify-end pb-2 mt-10">
           <div class="text-xs text-danger font-semibold">
-            <router-link
+            <!-- <router-link
               class="cursor-pointer"
               :to="{ name: 'Medical | Family History' }"
             >
               View all
-            </router-link>
+            </router-link> -->
           </div>
         </div>
       </div>

@@ -215,11 +215,11 @@ export default class AppointmentCard extends Vue {
         });
 
         const singleParticipantlength =
-          patientappointment.Practitioners.length +
-          patientappointment.Devices.length +
-          patientappointment.Patients.length +
-          patientappointment.Location.length +
-          patientappointment.HealthCare.length;
+          patientappointment?.Practitioners?.length +
+          patientappointment?.Devices?.length +
+          patientappointment?.Patients?.length +
+          patientappointment?.Location?.length +
+          patientappointment?.HealthCare?.length;
 
         const pateintId = patientappointment.Patients.map((patient: any) => {
           this.onePatientId = patient.patientId;
