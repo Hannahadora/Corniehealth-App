@@ -251,7 +251,7 @@
 
       <div
         class="flex items-center justify-between mt-14"
-        v-if="checkSales && sales.status !== 'completed'"
+        v-if="!salesData || sales.status !== 'completed'"
       >
         <div>
           <span
@@ -303,6 +303,8 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IPossale from "@/types/IPossale";
+import DeleteIcon from "@/components/icons/delete.vue";
+import EditIcon from "@/components/icons/edit.vue";
 
 import DatePicker from "@/components/datepicker.vue";
 import SearchInput from "@/components/singleSearch.vue";
@@ -347,6 +349,8 @@ const user = namespace("user");
     PlusIconWhite,
     AddCustomer,
     AddMedications,
+    DeleteIcon,
+    EditIcon,
   },
 })
 export default class PosDialog extends Vue {
@@ -383,7 +387,7 @@ export default class PosDialog extends Vue {
     name: this.sales?.customer || "",
   };
   reference = this.sales?.identifier || "";
-  // salesDate = new Date(this.sales?.createdAt).toJSON().slice(0,10).split('-').reverse().join('/') || "";
+  // salesDate = new Date(this.sales?.createdAt).toLocaleDateString("en-US");
   salesDate = "";
   medications = this.sales?.medications || <any>[];
   payments = this.sales?.payments || [
@@ -543,7 +547,7 @@ export default class PosDialog extends Vue {
     // this.medications.splice(itemId, 1)
   }
 
-  showItem() {}
+  showItem(id: any) {}
 
   created() {}
 }

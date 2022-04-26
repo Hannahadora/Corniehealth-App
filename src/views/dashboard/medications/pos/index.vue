@@ -321,7 +321,7 @@ export default class POSSALES extends Vue {
         action: sale.id,
         keydisplay: sale.id,
         referenceNo: sale.identifier,
-        date: new Date(sale.createdAt).toJSON().slice(0,10).split('-').reverse().join('/'),
+        date: new Date(sale.createdAt).toLocaleDateString("en-US"),
         customer: sale.customer,
         type: sale.type,
         salesTotal: sale.medications.flatMap((value: any) =>(value.quantity * value.unitPrice) + (value.quantity * value.unitPrice)),

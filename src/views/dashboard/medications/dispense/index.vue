@@ -9,10 +9,7 @@
     >
       <img src="@/assets/rafiki.svg" class="mb-2" />
       <h4 class="text-black text-center">There is no record.</h4>
-      <cornie-btn
-        class="bg-danger px-3 rounded-full text-white m-5"
-        @click="showRoom = true"
-      >
+      <cornie-btn class="bg-danger px-3 rounded-full text-white m-5">
         Add New
       </cornie-btn>
     </div>
@@ -50,7 +47,7 @@
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Volume</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalVolume }}
+              N {{ totalVolume }}
             </p>
           </div>
           <div>
@@ -83,7 +80,7 @@
             <span class="ml-3 text-xs">Update Status</span>
           </div>
         </template>
-        <template #prescription="{ item }">
+        <template #dispenseId="{ item }">
           <p>{{ item.identifier }}</p>
           <p class="text-gray-400">
             {{ new Date(item.createdAt).toLocaleDateString() }}
@@ -98,22 +95,22 @@
             <div>
               <p>{{ item.genericName }}</p>
 
-              <p class="text-gray-400">{{ item.durationInDays }} days</p>
+              <p class="text-gray-400">{{ item.form }} days</p>
             </div>
             <substituted class="mr-2" v-if="item.substitutionAllowed" />
             <substitution-allowed v-else class="mr-2" />
           </div>
         </template>
-        <template #dosage="{ item }">
-          <p>{{ item.dosageInstruction }}/day</p>
-        </template>
-        <template #duration="{ item }">
-          <p>{{ item.durationInDays }} Days</p>
+        <template #unitPrice="{ item }">
+          <p>{{ item.unitPrice }}/day</p>
         </template>
         <template #quantity="{ item }">
           <span>
             {{ item.quantity }}
           </span>
+        </template>
+        <template #amount="{ item }">
+          <p>{{ item.amount }} Days</p>
         </template>
         <template #status="{ item }">
           <div class="flex items-center">
@@ -275,6 +272,7 @@ const organization = namespace("organization");
 })
 export default class DISPENSE extends Vue {
   query = "";
+  empty = "";
   request = "";
   organization = "";
   requestId = "";
@@ -285,9 +283,6 @@ export default class DISPENSE extends Vue {
   updatedBy = "";
   currentStatus = "";
   showStatusModal = false;
-  totalRx = 0;
-  totalDispensed = 0;
-  totalVolume = 0;
 
   // get patientId() {
   //   return this.$route.params.id as string
@@ -327,8 +322,8 @@ export default class DISPENSE extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "prescription id",
-      key: "prescription",
+      title: "dispense id",
+      key: "dispenseId",
       show: true,
       noOrder: true,
     },
@@ -342,24 +337,24 @@ export default class DISPENSE extends Vue {
     {
       title: "",
       key: "drug",
-      show: true,
+      show: false,
       noOrder: true,
     },
     {
-      title: "dosage",
-      key: "dosage",
-      show: true,
-      noOrder: true,
-    },
-    {
-      title: "duration",
-      key: "duration",
+      title: "unit price",
+      key: "unitprice",
       show: true,
       noOrder: true,
     },
     {
       title: "quantity",
       key: "quantity",
+      show: true,
+      noOrder: true,
+    },
+    {
+      title: "amount",
+      key: "amount",
       show: true,
       noOrder: true,
     },
@@ -475,6 +470,21 @@ export default class DISPENSE extends Vue {
     return this.authCurrentLocation;
   }
 
+  get totalRx() {
+    const rx = this.medicationRequest?.map((el: any) => {
+      el.status === "completed";
+    });
+    return rx.length || 0;
+  }
+
+  get totalDispensed() {
+    return this.medicationRequest?.length || 0;
+  }
+
+  get totalVolume() {
+    return 0;
+  }
+
   showItem(value: string) {
     this.openDispense = true;
     this.requestId = value;
@@ -484,7 +494,12 @@ export default class DISPENSE extends Vue {
   viewItem(value: string) {
     this.viewDispenseDetails = true;
     this.requestId = value;
-    this.setRequest();
+    this.medicationRequest.filter((el: any) => {
+      if (el.id == value) {
+        this.request = el;
+      }
+    });
+    // this.setRequest();
     this.fetchOrgInfo();
   }
 
