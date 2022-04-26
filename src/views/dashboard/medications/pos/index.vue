@@ -11,7 +11,10 @@
       <h4 class="text-black text-center">There are no POS sales on record.</h4>
       <cornie-btn
         class="bg-danger px-3 rounded-full text-white m-5"
-        @click="salesData = false; showRoom = true"
+        @click="
+          salesData = false;
+          showRecord = true;
+        "
       >
         Add New
       </cornie-btn>
@@ -52,7 +55,7 @@
               Total Sales Volume
             </p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalSalesVolume }}
+              N {{ totalSalesVolume }}
             </p>
           </div>
           <div>
@@ -64,7 +67,7 @@
       <span class="flex justify-end">
         <cornie-btn
           class="bg-danger px-3 py-1 text-base rounded-lg text-white m-5"
-          @click="showRecord= true"
+          @click="showRecord = true, salesData = false, sales = ''"
         >
           Create New
         </cornie-btn>
@@ -75,29 +78,81 @@
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="viewItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <eye-yellow class="text-danger fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <decline class="text-danger fill-current" />
             <span class="ml-3 text-xs">Void</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <arrow-right-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Process return</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="deleteItem(item.id)"
           >
-            <delete-icon class="text-danger fill-current" />
+            <print class="text-danger fill-current" />
             <span class="ml-3 text-xs">Reprint</span>
+          </div>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'on-hold'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'revoked' || item.status == 'cancelled'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p>
           </div>
         </template>
       </cornie-table>
@@ -126,7 +181,13 @@
       </div>
     </div>
   </div>
-  <pos-dialog v-model="showRecord" :salesData="salesData" :id="salesId" @sales-added="salesAdded" :sales="sales" />
+  <pos-dialog
+    v-model="showRecord"
+    :salesData="salesData"
+    :id="salesId"
+    @salesAdded="salesAdded"
+    :sales="sales"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -136,6 +197,10 @@ import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
+import EyeYellow from "@/components/icons/eye-yellow.vue";
+import Decline from "@/components/icons/decline.vue";
+import Print from "@/components/icons/print.vue";
+import ArrowRightIcon from "@/components/icons/arrow-right.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import { namespace } from "vuex-class";
@@ -149,7 +214,6 @@ import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
-import ArrowRightIcon from "../components/arrow-right.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { IOrganization } from "@/types/IOrganization";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -175,6 +239,9 @@ const organization = namespace("organization");
     EditIcon,
     ColumnFilter,
     TableOptions,
+    EyeYellow,
+    Decline,
+    Print,
 
     ArrowLeftIcon,
     ArrowRightIcon,
@@ -182,6 +249,7 @@ const organization = namespace("organization");
 })
 export default class POSSALES extends Vue {
   query = "";
+  empty = false;
   salesId = "";
   sales = "";
   salesData = false;
@@ -191,22 +259,17 @@ export default class POSSALES extends Vue {
   updatedBy = "";
   currentStatus = "";
   showStatusModal = false;
-  totalSales = 0;
-  completedSales = 0;
-  totalSalesVolume = 0;
 
   allPosSales = [] as any;
 
-  
   @user.Getter
   authCurrentLocation!: any;
 
-   @organization.State
+  @organization.State
   organizationInfo!: IOrganization;
 
   @organization.Action
   fetchOrgInfo!: () => Promise<void>;
-
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -232,13 +295,13 @@ export default class POSSALES extends Vue {
       show: true,
     },
     {
-      title: "SALES TOTAL",
+      title: "SALES TOTAL(NGN)",
       key: "salesTotal",
       show: true,
     },
     {
-      title: "PAYMENT TOTAL",
-      key: "paymentTotal",
+      title: "PAYMENT Status",
+      key: "paymentStatus",
       show: true,
     },
     {
@@ -255,51 +318,73 @@ export default class POSSALES extends Vue {
       ).toLocaleDateString("en-US");
       return {
         ...sale,
-        // action: sale.id,
-        keydisplay: "XXXXXXX",
-        referenceNo: "-----",
-        Date: "-----",
-        customer: "-----",
-        type: "-----",
-        salesTotal: "-----",
-        paymentTotal: "-----",
-        status: "Active",
+        action: sale.id,
+        keydisplay: sale.id,
+        referenceNo: sale.identifier,
+        date: new Date(sale.createdAt).toLocaleDateString("en-US"),
+        customer: sale.customer,
+        type: sale.type,
+        salesTotal: sale.medications.flatMap((value: any) =>(value.quantity * value.unitPrice) + (value.quantity * value.unitPrice)),
+        paymentStatus: sale.payments.map((value: any) => value.paymentStatus),
+        status: sale.status,
       };
     });
     if (!this.query) return allPosSales;
     return search.searchObjectArray(allPosSales, this.query);
   }
 
-  
-   showItem(value: string) {
+  get completedSales() {
+    const completedSales = this.allPosSales.map((sale: any) => {
+      sale.status === "completed" || 0;
+    });
+
+    return completedSales.length;
+  }
+
+  get totalSales() {
+    return this.allPosSales.length || 0;
+  }
+
+  get totalSalesVolume() {
+    const sv = this.allPosSales.map(
+      (sale: any) => Number(sale.medications.unitPrice) * Number(sale.medications.quantity)
+    );
+
+    const tsv = sv.reduce((a: any, b: any) => a + b, 0);
+    return tsv || 0;
+  }
+
+  showItem(value: string) {
     this.showRecord = true;
     this.salesId = value;
   }
-  
-   viewItem(value: string) {
+
+  viewItem(value: string) {
     this.showRecord = true;
     this.salesId = value;
-    this.findSales(value)
+    this.findSales(this.salesId);
   }
 
   findSales(value: any) {
-    const xSales: any = this.allPosSales.find((sales: any) => {
-      sales.id === value
-    })
-    this.sales = xSales;
-    this.salesData = true
+    this.allPosSales.filter((sales: any) => {
+     if(sales.id == value) {
+      this.sales = sales;
+     };
+    });
+    console.log('sales', this.sales)
+    this.salesData = true;
   }
-  
+
   closeModal() {
     this.showRecord = false;
   }
 
-   get locationId() {
-    return this.authCurrentLocation;
+  get locationId() {
+    // return this.authCurrentLocation;
+    return "21b84341-2051-4cad-b6b6-feae04f81215";
   }
 
   async fetchPosHistory() {
-    // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const data = await cornieClient().get(
         `/api/v1/pharmacy/pos-history/${this.locationId}`
@@ -313,7 +398,12 @@ export default class POSSALES extends Vue {
     }
   }
 
-   async created() {
+  async salesAdded() {
+    await this.fetchPosHistory();
+    this.showRecord = false
+  }
+
+  async created() {
     await this.fetchPosHistory();
 
     if (this.allPosSales.length < 1) this.fetchPosHistory();

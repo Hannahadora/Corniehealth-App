@@ -33,14 +33,14 @@
       <form class="w-full" @submit.prevent="submit">
         <h2 class="font-bold text-3xl mb-12">Sign In to CornieHealth</h2>
         <div class="w-full gap-y-2 grid-cols-1 grid">
-          <!-- <cornie-input
+          <cornie-input
             class="w-full"
             v-model="domainName"
             label="Domain Name"
-          /> -->
-          <!-- <span class="text-right text-gray-400 mb-2 text-xs"
+          />
+          <span class="text-right text-gray-400 mb-2 text-xs"
             >Forgot Domain?</span
-          > -->
+          >
           <cornie-input
             v-model="email"
             :rules="emailRule"
@@ -80,7 +80,7 @@
           </cornie-btn>
         </div>
         <span
-          class="w-full flex justify-center items-center text-sm text-center mt-9"
+          class="w-full flex justify-center items-center text-sm text-center mt-6"
         >
           Don't have an account?
           <router-link class="ml-1 text-danger" to="/Signup">
@@ -115,6 +115,7 @@ export default class Signin extends Vue {
   email = "";
   password = "";
   loading = false;
+  domainName = ""
   login = true;
 
   get payload() {
@@ -122,7 +123,7 @@ export default class Signin extends Vue {
       email: this.email,
       authPassword: this.password,
     };
-    // if (this.domainName) payload.accountId = this.domainName;
+    if (this.domainName) payload.accountId = this.domainName;
     return payload;
   }
 
@@ -149,7 +150,7 @@ export default class Signin extends Vue {
       ) {
         this.$router.push("/dashboard");
       } else this.$emit("logged-in");
-      // if (this.domainName) setAuthDomain(this.domainName);
+      if (this.domainName) setAuthDomain(this.domainName);
     } catch (error: any) {
       if (!error.response) {
         window.notify({
