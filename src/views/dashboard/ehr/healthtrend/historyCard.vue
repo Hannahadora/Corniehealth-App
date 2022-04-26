@@ -39,7 +39,7 @@
             </div>
             <div class="w-3/12 flex justify-end">
               <span
-                class="tag flex flex items-center px-3 py-1"
+                class="tag flex items-center px-3 py-1"
                 :class="{
                   'new-item': item.status?.toLocaleLowerCase() !== 'completed',
                   'bg-success rounded-full':

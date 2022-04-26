@@ -82,7 +82,8 @@
               <cornie-menu top="30px" right="100%">
                 <template #activator="{ on }">
                   <icon-btn v-on="on">
-                    <dots-horizontal-icon v-on="on" />
+                    <delete-icon v-if="deleteRow" @click="$emit('delete')"/>
+                    <dots-horizontal-icon v-on="on" v-else/>
                   </icon-btn>
                 </template>
                 <cornie-card-text :tablecard="true">
@@ -123,6 +124,7 @@ import Card from "@/components/cornie-card/CornieCard.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import search from "@/plugins/search";
 import CornieCard from "@/components/cornie-card";
+import DeleteIcon from "@/components/icons/deleteorange.vue";
 
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
@@ -158,6 +160,7 @@ function defaultFilter(item: any, query: string) {
     FilterIcon,
     CornieSpacer,
     DotsHorizontalIcon,
+    DeleteIcon,
     DotsVerticalIcon,
     ColumnFilter,
     FilterByIcon,
@@ -186,6 +189,9 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: false })
   listmenu!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  deleteRow!: boolean;
 
   @Prop({ type: Boolean, default: false })
   refreshing!: boolean;
